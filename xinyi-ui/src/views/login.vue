@@ -1,6 +1,15 @@
 <template>
   <div class="login">
+    <div class="login-aurora" aria-hidden="true"></div>
+    <section class="brand-panel">
+      <img src="@/assets/logo/xinyi-lotus.png" alt="信仪" class="brand-mark" />
+      <p class="brand-kicker">XINYI WORKSPACE</p>
+      <h1>让每一次运营<br />都更笃定。</h1>
+      <p class="brand-copy">为组织提供清晰、安全、流畅的数字工作体验。</p>
+    </section>
     <el-form ref="loginRef" :model="loginForm" :rules="loginRules" class="login-form">
+      <div class="form-brand"><img src="@/assets/logo/xinyi-lotus.png" alt="" /><span>信仪</span></div>
+      <p class="form-eyebrow">欢迎回来</p>
       <h3 class="title">{{ title }}</h3>
       <el-form-item prop="username">
         <el-input
@@ -173,21 +182,58 @@ getCookie()
   justify-content: center;
   align-items: center;
   height: 100%;
-  background-image: url("../assets/images/login-background.jpg");
-  background-size: cover;
+  overflow: hidden;
+  background: linear-gradient(160deg, #eef4ff 0%, #f8fbff 45%, #ffffff 100%);
+  position: relative;
+  gap: clamp(48px, 12vw, 190px);
 }
+.login-aurora {
+  position: absolute;
+  width: 62vw;
+  height: 62vw;
+  border-radius: 50%;
+  left: -22vw;
+  top: -30vw;
+  background: radial-gradient(circle, rgba(22,119,255,.16), rgba(22,119,255,.05) 42%, transparent 68%);
+  filter: blur(10px);
+  &::after {
+    content: '';
+    position: absolute;
+    right: -46vw;
+    bottom: -56vw;
+    width: 40vw;
+    height: 40vw;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(68,184,153,.12), transparent 66%);
+  }
+}
+.brand-panel { position: relative; color: #101828; width: 360px; z-index: 1; }
+.brand-mark {
+  width: 60px;
+  height: 60px;
+  margin-bottom: 36px;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 14px 30px rgba(22,119,255,.14), 0 0 0 1px rgba(16,24,40,.05);
+}
+.brand-kicker, .form-eyebrow { margin: 0 0 12px; color: #1677ff; font-size: 11px; font-weight: 700; letter-spacing: .16em; }
+.brand-panel h1 { margin: 0; font-size: 42px; line-height: 1.22; letter-spacing: -.05em; font-weight: 650; color: #101828; }
+.brand-copy { width: 270px; margin-top: 22px; color: #667085; font-size: 14px; line-height: 1.8; }
 .title {
-  margin: 0px auto 30px auto;
-  text-align: center;
-  color: #707070;
+  margin: 0 0 32px;
+  color: #182230;
+  font-size: 25px;
+  letter-spacing: -.04em;
 }
 
 .login-form {
-  border-radius: 6px;
-  background: #ffffff;
-  width: 400px;
-  padding: 25px 25px 5px 25px;
+  border-radius: 22px;
+  background: rgba(255,255,255,.92);
+  width: 390px;
+  padding: 32px 32px 12px;
   z-index: 1;
+  border: 1px solid rgba(16,24,40,.06);
+  box-shadow: 0 24px 64px rgba(22,60,140,.12);
   .el-input {
     height: 40px;
     input {
@@ -200,10 +246,12 @@ getCookie()
     margin-left: 0px;
   }
 }
+.form-brand { display:flex; align-items:center; gap:9px; color:#101828; font-size:17px; font-weight:700; margin-bottom:35px; letter-spacing:.08em; }
+.form-brand img { width:28px; height:28px; border-radius: 8px; }
 .login-tip {
   font-size: 13px;
   text-align: center;
-  color: #bfbfbf;
+  color: #98a2b3;
 }
 .login-code {
   width: 33%;
@@ -221,21 +269,29 @@ getCookie()
   bottom: 0;
   width: 100%;
   text-align: center;
-  color: #fff;
+  color: #98a2b3;
   font-family: Arial;
   font-size: 12px;
   letter-spacing: 1px;
 }
+@media (max-width: 760px) { .brand-panel { display:none; } .login { padding:24px; } .login-form { width:min(390px, 100%); } }
 .login-code-img {
   height: 40px;
   padding-left: 12px;
 }
 
 html.dark .login {
-  background-image: linear-gradient(rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.55)), url("../assets/images/login-background.jpg");
+  background: linear-gradient(160deg, #0b1526 0%, #101a2e 55%, #0d1420 100%);
+  .login-aurora { background: radial-gradient(circle, rgba(45,110,255,.28), rgba(45,110,255,.08) 42%, transparent 68%); }
+  .brand-panel { color: #f2f4f7; }
+  .brand-panel h1 { color: #f2f4f7; }
+  .brand-copy { color: #98a2b3; }
+  .brand-mark { background: #1b2432; box-shadow: 0 14px 30px rgba(0,0,0,.4); }
+  .title, .form-brand { color: #f2f4f7; }
   .login-form {
-    background: var(--el-bg-color-overlay) !important;
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+    background: rgba(27,36,50,.92) !important;
+    border-color: rgba(255,255,255,.08);
+    box-shadow: 0 24px 64px rgba(0,0,0,.45);
   }
 }
 </style>

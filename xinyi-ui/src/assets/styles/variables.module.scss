@@ -10,19 +10,19 @@ $panGreen: #30B08F;
 
 // 默认主题变量
 $menuText: #bfcbd9;
-$menuActiveText: #409eff;
-$menuBg: #1a1f2e;
-$menuHover: #263445;
+$menuActiveText: #1677ff;
+$menuBg: #0b1424;
+$menuHover: rgba(255,255,255,.08);
 
 // 浅色主题theme-light
 $menuLightBg: #ffffff;
-$menuLightHover: #f0f1f5;
-$menuLightText: #303133;
-$menuLightActiveText: #409EFF;
+$menuLightHover: #eef4ff;
+$menuLightText: #475467;
+$menuLightActiveText: #1677ff;
 
 // 基础变量
-$base-sidebar-width: 200px;
-$sideBarWidth: 200px;
+$base-sidebar-width: 232px;
+$sideBarWidth: 232px;
 
 // 菜单暗色变量
 $base-menu-color: rgba(255,255,255,.65);
@@ -32,7 +32,7 @@ $base-sub-menu-background: #141824;
 $base-sub-menu-hover: rgba(255,255,255,.06);
 
 // 组件变量
-$--color-primary: #409EFF;
+$--color-primary: #1677ff;
 $--color-success: #67C23A;
 $--color-warning: #E6A23C;
 $--color-danger: #F56C6C;

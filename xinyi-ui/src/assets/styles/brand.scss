@@ -1,0 +1,59 @@
+:root {
+  --xy-ink: #101828;
+  --xy-muted: #667085;
+  --xy-line: rgba(16, 24, 40, .09);
+  --xy-surface: rgba(255, 255, 255, .82);
+  --xy-canvas: #f4f7fb;
+  --xy-accent: #1677ff;
+  --el-color-primary: #1677ff;
+  --el-color-primary-light-3: #75b4ff;
+  --el-color-primary-light-5: #a3ceff;
+  --el-border-radius-base: 10px;
+  --el-border-color: rgba(16, 24, 40, .11);
+  --el-fill-color-light: #f5f7fa;
+  --el-bg-color: #fff;
+}
+
+body { background: var(--xy-canvas); color: var(--xy-ink); font-family: Inter, "SF Pro Display", "PingFang SC", "Microsoft YaHei", sans-serif; }
+.app-container { padding: 24px 28px 36px; }
+.app-main { background: radial-gradient(circle at 100% 0, rgba(22,119,255,.07), transparent 30%), var(--xy-canvas); }
+
+.el-card, .el-dialog, .el-drawer { border: 1px solid var(--xy-line) !important; box-shadow: 0 12px 34px rgba(16,24,40,.055) !important; }
+.el-card { border-radius: 16px !important; overflow: hidden; }
+.el-card__header { padding: 18px 20px; border-bottom-color: var(--xy-line); font-weight: 650; }
+.el-dialog { border-radius: 18px !important; overflow: hidden; }
+.el-dialog__header, .el-drawer__header { padding: 18px 24px; margin: 0; border-bottom: 1px solid var(--xy-line); }
+.el-dialog__title { color: var(--xy-ink); font-size: 17px; font-weight: 650; letter-spacing: -.02em; }
+.el-dialog__headerbtn { top: 15px; right: 18px; width: 30px; height: 30px; border-radius: 8px; }
+.el-dialog__headerbtn:hover { background: var(--el-fill-color-light); }
+.el-dialog__body { padding: 22px 24px; }
+.el-dialog__footer { padding: 14px 24px 20px; border-top: 1px solid var(--xy-line); }
+.el-button { border-radius: 9px; font-weight: 600; transition: transform .18s ease, box-shadow .18s ease; }
+.el-button--primary { box-shadow: 0 6px 16px rgba(22,119,255,.22); }
+.el-button--primary:hover { transform: translateY(-1px); box-shadow: 0 9px 20px rgba(22,119,255,.28); }
+.el-input__wrapper, .el-textarea__inner, .el-select__wrapper { border-radius: 9px !important; box-shadow: 0 0 0 1px var(--xy-line) inset !important; background: #fff !important; }
+.el-input__wrapper.is-focus, .el-select__wrapper.is-focused { box-shadow: 0 0 0 3px rgba(22,119,255,.14), 0 0 0 1px #1677ff inset !important; }
+.el-table { --el-table-header-bg-color: #f7f9fc; --el-table-row-hover-bg-color: #f2f8ff; border-radius: 12px; overflow: hidden; }
+.el-table th.el-table__cell { color: #475467; font-size: 12px; font-weight: 650; letter-spacing: .04em; text-transform: uppercase; }
+.el-table td.el-table__cell, .el-table th.el-table__cell { border-bottom-color: var(--xy-line); }
+.el-pagination { margin-top: 20px; justify-content: flex-end; }
+.el-pagination.is-background .el-pager li, .el-pagination.is-background .btn-next, .el-pagination.is-background .btn-prev { border-radius: 8px; }
+.el-tag { border-radius: 999px; font-weight: 600; }
+.el-form-item__label { color: #475467; font-weight: 600; }
+.el-form-item { margin-bottom: 20px; }
+.el-radio-button__inner { padding: 9px 14px; font-weight: 600; box-shadow: none !important; }
+.el-input-group__append { border-color: var(--xy-line); background: #f7f9fc; }
+.el-input-group__append .el-button { font-weight: 650; }
+.el-dropdown-menu { border-radius: 12px; padding: 6px; box-shadow: 0 14px 30px rgba(16,24,40,.13); }
+.el-dropdown-menu__item { border-radius: 7px; }
+
+html.dark { --xy-ink: #f2f4f7; --xy-muted: #98a2b3; --xy-line: rgba(255,255,255,.1); --xy-surface: rgba(29,35,47,.86); --xy-canvas: #111827; --el-bg-color: #161d29; --el-bg-color-overlay: #1b2432; }
+html.dark .app-main { background: radial-gradient(circle at 100% 0, rgba(53,117,255,.14), transparent 30%), #111827; }
+html.dark .el-input__wrapper, html.dark .el-textarea__inner, html.dark .el-select__wrapper { background: #1b2432 !important; }
+
+/* 细滚动条，贴合整体风格 */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-thumb { background: rgba(16,24,40,.16); border-radius: 8px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(16,24,40,.28); }
+::-webkit-scrollbar-track { background: transparent; }
+html.dark ::-webkit-scrollbar-thumb { background: rgba(255,255,255,.18); }

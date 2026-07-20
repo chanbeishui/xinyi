@@ -14,7 +14,7 @@
 </template>
 
 <script setup lang="ts">
-import logo from '@/assets/logo/logo.png'
+import logo from '@/assets/logo/xinyi-lotus.png'
 import useSettingsStore from '@/store/modules/settings'
 import variables from '@/assets/styles/variables.module.scss'
 
@@ -48,7 +48,7 @@ const getLogoTextColor = computed(() => {
   if (settingsStore.navType == 3) {
     return variables.menuLightText
   }
-  return sideTheme.value === 'theme-dark' ? '#fff' : variables.menuLightText
+  return sideTheme.value === 'theme-dark' ? '#fff' : '#101828'
 })
 </script>
 
@@ -87,8 +87,9 @@ const getLogoTextColor = computed(() => {
       color: v-bind(getLogoTextColor);
       font-weight: 600;
       line-height: 50px;
-      font-size: 14px;
-      font-family: Avenir, Helvetica Neue, Arial, Helvetica, sans-serif;
+      font-size: 16px;
+      letter-spacing: .08em;
+      font-family: Inter, "SF Pro Display", "PingFang SC", sans-serif;
       vertical-align: middle;
     }
   }
