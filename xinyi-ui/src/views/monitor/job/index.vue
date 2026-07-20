@@ -139,15 +139,15 @@
       />
 
       <!-- 添加或修改定时任务对话框 -->
-      <el-dialog :title="title" v-model="open" width="820px" append-to-body>
-         <el-form ref="jobRef" :model="form" :rules="rules" label-width="120px">
-            <el-row>
-               <el-col :span="12">
+      <el-dialog :title="title" v-model="open" width="820px" class="job-dialog" append-to-body>
+         <el-form ref="jobRef" :model="form" :rules="rules" label-width="100px" class="job-form">
+            <el-row :gutter="16">
+               <el-col :span="14">
                   <el-form-item label="任务名称" prop="jobName">
                      <el-input v-model="form.jobName" placeholder="请输入任务名称" />
                   </el-form-item>
                </el-col>
-               <el-col :span="12">
+               <el-col :span="10">
                   <el-form-item label="任务分组" prop="jobGroup">
                      <el-select v-model="form.jobGroup" placeholder="请选择">
                         <el-option
@@ -202,7 +202,7 @@
                      </el-radio-group>
                   </el-form-item>
                </el-col>
-               <el-col :span="12">
+               <el-col :span="14">
                   <el-form-item label="执行策略" prop="misfirePolicy">
                      <el-radio-group v-model="form.misfirePolicy">
                         <el-radio-button value="1">立即执行</el-radio-button>
@@ -211,7 +211,7 @@
                      </el-radio-group>
                   </el-form-item>
                </el-col>
-               <el-col :span="12">
+               <el-col :span="10">
                   <el-form-item label="是否并发" prop="concurrent">
                      <el-radio-group v-model="form.concurrent">
                         <el-radio-button value="0">允许</el-radio-button>
@@ -434,3 +434,22 @@ function handleExport() {
 
 getList()
 </script>
+
+<style lang="scss">
+.job-dialog {
+  .el-dialog__body { padding: 22px 28px 12px; }
+  .el-form-item { margin-bottom: 18px; }
+  .el-select { width: 100%; }
+  .el-input-group__append { padding: 0; overflow: hidden; background: #f7f9fc; }
+  .el-input-group__append .el-button { min-height: 38px; margin: 0; border: 0; border-radius: 0; box-shadow: none; }
+  .el-radio-group { display: flex; flex-wrap: nowrap; }
+  .el-radio-button__inner { min-width: 76px; padding: 9px 12px; font-weight: 600; }
+  .el-dialog__footer { padding: 14px 28px 22px; border-top: 1px solid var(--xy-line); }
+}
+
+@media (max-width: 760px) {
+  .job-dialog { width: calc(100% - 24px) !important; }
+  .job-dialog .el-col { width: 100%; max-width: 100%; flex: 0 0 100%; }
+  .job-dialog .el-radio-group { flex-wrap: wrap; gap: 6px; }
+}
+</style>
