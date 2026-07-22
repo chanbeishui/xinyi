@@ -22,6 +22,19 @@
       </el-tooltip>
     </div>
     <div class="setting-drawer-title">
+      <h3 class="drawer-title">外观模式</h3>
+    </div>
+    <div class="drawer-item">
+      <span>主题风格</span>
+      <span class="comp-style">
+        <el-radio-group v-model="colorSchemeVal" size="small" @change="colorSchemeChange">
+          <el-radio-button label="light">浅色</el-radio-button>
+          <el-radio-button label="dark">深色</el-radio-button>
+          <el-radio-button label="auto">跟随系统</el-radio-button>
+        </el-radio-group>
+      </span>
+    </div>
+    <div class="setting-drawer-title">
       <h3 class="drawer-title">主题风格设置</h3>
     </div>
     <div class="setting-drawer-block-checbox">
@@ -137,6 +150,7 @@ const showSettings = ref<boolean>(false)
 const navType = ref<number>(settingsStore.navType)
 const theme = ref<string>(settingsStore.theme)
 const sideTheme = ref<string>(settingsStore.sideTheme)
+const colorSchemeVal = ref<string>(settingsStore.colorScheme)
 const tagsViewPersist = ref(settingsStore.tagsViewPersist)
 const storeSettings = computed(() => settingsStore)
 const predefineColors = ref<string[]>(["#409EFF", "#ff4500", "#ff8c00", "#ffd700", "#90ee90", "#00ced1", "#1e90ff", "#c71585"])
@@ -154,6 +168,11 @@ function tagsViewPersistChange(val: boolean): void {
 function themeChange(val: string): void {
   settingsStore.theme = val
   handleThemeStyle(val)
+}
+
+function colorSchemeChange(val: string): void {
+  settingsStore.setColorScheme(val)
+  colorSchemeVal.value = val
 }
 
 function handleTheme(val: string): void {
@@ -201,7 +220,8 @@ function saveSetting(): void {
     "dynamicTitle": storeSettings.value.dynamicTitle,
     "footerVisible": storeSettings.value.footerVisible,
     "sideTheme": storeSettings.value.sideTheme,
-    "theme": storeSettings.value.theme
+    "theme": storeSettings.value.theme,
+    "colorScheme": storeSettings.value.colorScheme
   }
   localStorage.setItem("layout-setting", JSON.stringify(layoutSetting))
   setTimeout(proxy.$modal.closeLoading(), 1000)
