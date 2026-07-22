@@ -1,14 +1,24 @@
 import defaultSettings from '@/settings'
-import { useDark, useToggle } from '@vueuse/core'
+import { useColorMode, usePreferredDark } from '@vueuse/core'
 import { useDynamicTitle } from '@/utils/dynamicTitle'
 import { handleThemeStyle } from '@/utils/theme'
 
-const isDark = useDark()
-const toggleDark = useToggle(isDark)
+const colorMode = useColorMode({
+  storageKey: 'vueuse-color-scheme',
+  storage: localStorage,
+})
 
-const { sideTheme, showSettings, navType, tagsView, tagsViewPersist, tagsIcon, tagsViewStyle, fixedHeader, sidebarLogo, dynamicTitle, footerVisible, footerContent } = defaultSettings
+const prefersDark = usePreferredDark()
 
-const storageSetting = JSON.parse(localStorage.getItem('layout-setting') || '{}') || {} 
+// 响应式计算当前是否为深色模式
+const isDarkComputed = computed(() => {
+  if (colorMode.value === 'auto') return prefersDark.value
+  return colorMode.value === 'dark'
+})
+
+const { sideTheme, showSettings, navType, tagsView, tagsViewPersist, tagsIcon, tagsViewStyle, fixedHeader, sidebarLogo, dynamicTitle, footerVisible, footerContent, colorScheme } = defaultSettings
+
+const storageSetting = JSON.parse(localStorage.getItem('layout-setting') || '{}') || {}
 
 interface SettingsState {
   title: string
@@ -25,7 +35,7 @@ interface SettingsState {
   dynamicTitle: boolean
   footerVisible: boolean
   footerContent: string
-  isDark: boolean
+  colorScheme: string
 }
 
 const useSettingsStore = defineStore(
@@ -46,8 +56,13 @@ const useSettingsStore = defineStore(
       dynamicTitle: storageSetting.dynamicTitle === undefined ? dynamicTitle : storageSetting.dynamicTitle,
       footerVisible: storageSetting.footerVisible === undefined ? footerVisible : storageSetting.footerVisible,
       footerContent: footerContent,
-      isDark: isDark.value
+      colorScheme: storageSetting.colorScheme || colorScheme || 'auto'
     }),
+    getters: {
+      isDark(): boolean {
+        return isDarkComputed.value
+      }
+    },
     actions: {
       // 修改布局设置
       changeSetting(data: { key: string; value: any }) {
@@ -61,10 +76,10 @@ const useSettingsStore = defineStore(
         this.title = title
         useDynamicTitle()
       },
-      // 切换暗黑模式
-      toggleTheme() {
-        this.isDark = !this.isDark
-        toggleDark()
+      // 设置外观模式：light / dark / auto
+      setColorScheme(mode: string) {
+        this.colorScheme = mode
+        colorMode.value = mode
         nextTick(() => {
           handleThemeStyle(this.theme)
         })
