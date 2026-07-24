@@ -138,9 +138,17 @@ public class ServletUtils
      */
     public static void renderString(HttpServletResponse response, String string)
     {
+        renderString(response, string, HttpServletResponse.SC_OK);
+    }
+
+    /**
+     * 将字符串按指定HTTP状态渲染到客户端。
+     */
+    public static void renderString(HttpServletResponse response, String string, int status)
+    {
         try
         {
-            response.setStatus(200);
+            response.setStatus(status);
             response.setContentType("application/json");
             response.setCharacterEncoding("utf-8");
             response.getWriter().print(string);

@@ -52,7 +52,12 @@
             </template>
          </el-table-column>
           <el-table-column label="用户昵称" align="center" key="nickName" prop="nickName" v-if="columns.nickName.visible" :show-overflow-tooltip="true" />
-          <el-table-column label="部门" align="center" key="deptName" prop="dept.deptName" v-if="columns.deptName.visible" :show-overflow-tooltip="true" />
+          <el-table-column label="主部门/可见任职" align="center" key="deptName" v-if="columns.deptName.visible" :show-overflow-tooltip="true">
+            <template #default="scope">
+              <span>{{ scope.row.dept?.deptName || '主部门不可见' }}</span>
+              <el-tag v-if="scope.row.deptIds?.length" size="small" class="ml5">{{ scope.row.deptIds.length }} 个可见任职</el-tag>
+            </template>
+          </el-table-column>
           <el-table-column label="手机号码" align="center" key="phonenumber" prop="phonenumber" v-if="columns.phonenumber.visible" width="120" />
           <el-table-column label="状态" align="center" key="status" v-if="columns.status.visible">
             <template #default="scope">
@@ -69,7 +74,7 @@
               <span>{{ parseTime(scope.row.createTime) }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="操作" align="center" width="150" class-name="small-padding fixed-width">
+          <el-table-column label="操作" align="center" width="190" class-name="small-padding fixed-width">
             <template #default="scope">
               <el-tooltip content="修改" placement="top" v-if="scope.row.userId !== 1">
                 <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)" v-hasPermi="['system:user:edit']"></el-button>
@@ -81,7 +86,10 @@
                 <el-button link type="primary" icon="Key" @click="handleResetPwd(scope.row)" v-hasPermi="['system:user:resetPwd']"></el-button>
               </el-tooltip>
               <el-tooltip content="分配角色" placement="top" v-if="scope.row.userId !== 1">
-                <el-button link type="primary" icon="CircleCheck" @click="handleAuthRole(scope.row)" v-hasPermi="['system:user:edit']"></el-button>
+                <el-button link type="primary" icon="CircleCheck" @click="handleAuthRole(scope.row)" v-hasPermi="['system:user:role:edit']"></el-button>
+              </el-tooltip>
+              <el-tooltip content="任职部门" placement="top" v-if="scope.row.userId !== 1">
+                <el-button link type="primary" icon="OfficeBuilding" @click="handleDepartments(scope.row)" v-hasPermi="['system:user:dept:edit']"></el-button>
               </el-tooltip>
             </template>
           </el-table-column>
@@ -99,7 +107,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="归属部门" prop="deptId">
+            <el-form-item v-if="form.userId == undefined" label="主部门" prop="deptId">
               <el-tree-select v-model="form.deptId" :data="enabledDeptOptions" :props="{ value: 'id', label: 'label', children: 'children' }" value-key="id" placeholder="请选择归属部门" clearable check-strictly />
             </el-form-item>
           </el-col>
@@ -137,7 +145,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="状态">
+            <el-form-item v-if="form.userId == undefined" label="状态">
               <el-radio-group v-model="form.status">
                 <el-radio v-for="dict in sys_normal_disable" :key="dict.value" :value="dict.value">{{ dict.label }}</el-radio>
               </el-radio-group>
@@ -153,10 +161,17 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="角色">
+            <el-form-item v-if="form.userId == undefined" label="角色">
               <el-select v-model="form.roleIds" multiple placeholder="请选择">
                 <el-option v-for="item in roleOptions" :key="item.roleId" :label="item.roleName" :value="item.roleId" :disabled="item.status == 1"></el-option>
               </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row v-if="form.userId == undefined">
+          <el-col :span="24">
+            <el-form-item label="任职部门" prop="deptIds">
+              <el-tree-select v-model="form.deptIds" :data="enabledDeptOptions" :props="{ value: 'id', label: 'label', children: 'children' }" value-key="id" multiple show-checkbox check-strictly placeholder="请选择全部任职部门" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -176,10 +191,28 @@
       </template>
     </el-dialog>
 
+    <el-dialog title="修改任职部门" v-model="deptOpen" width="560px" append-to-body>
+      <el-form :model="deptForm" label-width="90px">
+        <el-form-item label="主部门" required>
+          <el-tree-select v-model="deptForm.primaryDeptId" :data="enabledDeptOptions" :props="{ value: 'id', label: 'label', children: 'children' }" value-key="id" check-strictly />
+        </el-form-item>
+        <el-form-item label="任职部门" required>
+          <el-tree-select v-model="deptForm.deptIds" :data="enabledDeptOptions" :props="{ value: 'id', label: 'label', children: 'children' }" value-key="id" multiple show-checkbox check-strictly />
+        </el-form-item>
+        <el-form-item label="变更原因" required>
+          <el-input v-model="deptForm.reason" type="textarea" maxlength="500" show-word-limit />
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <el-button type="primary" @click="submitDepartments">确 定</el-button>
+        <el-button @click="deptOpen = false">取 消</el-button>
+      </template>
+    </el-dialog>
+
     <!-- 用户详情抽屉 -->
     <user-view-drawer ref="userViewRef" />
     <!-- 用户导入对话框 -->
-    <excel-import-dialog ref="importUserRef" title="用户导入" action="/system/user/importData" template-action="/system/user/importTemplate" template-file-name="user_template" update-support-label="是否更新已经存在的用户数据" @success="getList" />
+    <excel-import-dialog ref="importUserRef" title="用户导入" action="/system/user/import/preview" preview-action="/system/user/import/preview" execute-action="/system/user/import/execute" template-action="/system/user/importTemplate" template-file-name="user_template" update-support-label="是否更新已经存在的用户数据" @success="getList" />
   </div>
 </template>
 
@@ -188,7 +221,7 @@ import TreePanel from "@/components/TreePanel/index.vue"
 import ExcelImportDialog from "@/components/ExcelImportDialog/index.vue"
 import UserViewDrawer from "./view.vue"
 import { usePasswordRule } from "@/utils/passwordRule"
-import { changeUserStatus, listUser, resetUserPwd, delUser, getUser, updateUser, addUser, deptTreeSelect } from "@/api/system/user"
+import { changeUserStatus, listUser, resetUserPwd, delUser, getUser, updateUser, addUser, deptTreeSelect, updateUserDepartments } from "@/api/system/user"
 import type { SysUser, UserQueryParams, UserFormDataResult } from '@/types/api/system/user'
 import type { SysRole } from '@/types/api/system/role'
 import type { SysPost } from '@/types/api/system/post'
@@ -214,6 +247,13 @@ const enabledDeptOptions = ref<TreeSelect[] | undefined>(undefined)
 const initPassword = ref<string | undefined>(undefined)
 const postOptions = ref<SysPost[]>([])
 const roleOptions = ref<SysRole[]>([])
+const deptOpen = ref(false)
+const deptTargetUserId = ref<number>()
+const deptForm = reactive({
+  primaryDeptId: undefined as number | undefined,
+  deptIds: [] as number[],
+  reason: ''
+})
 // 列显隐信息
 const columns = ref<Record<string, TableShowColumns>>({
   userId: { label: '用户编号', visible: true },
@@ -238,6 +278,8 @@ const data = reactive({
   rules: {
     userName: [{ required: true, message: "用户名称不能为空", trigger: "blur" }, { min: 2, max: 20, message: "用户名称长度必须介于 2 和 20 之间", trigger: "blur" }],
     nickName: [{ required: true, message: "用户昵称不能为空", trigger: "blur" }],
+    deptId: [{ required: true, message: "主部门不能为空", trigger: "change" }],
+    deptIds: [{ required: true, type: "array", min: 1, message: "任职部门不能为空", trigger: "change" }],
     email: [{ type: "email", message: "请输入正确的邮箱地址", trigger: ["blur", "change"] }],
     phonenumber: [{ pattern: /^1[3|4|5|6|7|8|9][0-9]\d{8}$/, message: "请输入正确的手机号码", trigger: "blur" }]
   }
@@ -300,8 +342,13 @@ function resetQuery() {
 /** 删除按钮操作 */
 function handleDelete(row?: SysUser) {
   const userIds = row?.userId || ids.value
-  proxy.$modal.confirm('是否确认删除用户编号为"' + userIds + '"的数据项？').then(function () {
-    return delUser(userIds)
+  proxy.$prompt('删除用户将立即撤销其全部会话，请填写删除原因', '删除确认', {
+    confirmButtonText: '确认删除',
+    cancelButtonText: '取消',
+    inputPattern: /\S+/,
+    inputErrorMessage: '必须填写删除原因'
+  }).then(({ value }: { value: string }) => {
+    return delUser(userIds, value)
   }).then(() => {
     getList()
     proxy.$modal.msgSuccess("删除成功")
@@ -318,8 +365,13 @@ function handleExport() {
 /** 用户状态修改  */
 function handleStatusChange(row: SysUser) {
   const text = row.status === "0" ? "启用" : "停用"
-  proxy.$modal.confirm('确认要"' + text + '""' + row.userName + '"用户吗?').then(function () {
-    return changeUserStatus(row.userId!, row.status!)
+  proxy.$prompt(`确认要${text}「${row.userName}」吗？请输入原因`, '状态变更', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    inputPattern: /\S+/,
+    inputErrorMessage: '必须填写变更原因'
+  }).then(({ value }: { value: string }) => {
+    return changeUserStatus(row.userId!, row.status!, value)
   }).then(() => {
     proxy.$modal.msgSuccess(text + "成功")
   }).catch(function () {
@@ -354,9 +406,17 @@ function handleResetPwd(row: SysUser) {
     cancelButtonText: "取消",
     closeOnClickModal: false,
     inputValidator: pwdPromptValidator
-  }).then(({ value }: { value: string }) => { 
-    resetUserPwd(row.userId!, value).then(() => {
-      proxy.$modal.msgSuccess("修改成功，新密码是：" + value)
+  }).then(({ value }: { value: string }) => {
+    const password = value
+    return proxy.$prompt('请输入本次管理员重置密码的原因', '安全审计', {
+      confirmButtonText: '确认重置',
+      cancelButtonText: '取消',
+      inputPattern: /\S+/,
+      inputErrorMessage: '必须填写重置原因'
+    }).then(({ value: reason }: { value: string }) => {
+      return resetUserPwd(row.userId!, password, reason)
+    }).then(() => {
+      proxy.$modal.msgSuccess("密码重置成功")
     })
   }).catch(() => {})
 }
@@ -383,6 +443,7 @@ function reset() {
   form.value = {
     userId: undefined,
     deptId: undefined,
+    deptIds: [],
     userName: undefined,
     nickName: undefined,
     password: undefined,
@@ -436,12 +497,33 @@ function submitForm() {
   proxy.$refs["userRef"].validate((valid: boolean) => {
     if (valid) {
       if (form.value.userId != undefined) {
-        updateUser(form.value).then(() => {
-          proxy.$modal.msgSuccess("修改成功")
-          open.value = false
-          getList()
-        })
+        proxy.$prompt('请输入修改用户资料或岗位的原因', '安全审计', {
+          confirmButtonText: '确认修改',
+          cancelButtonText: '取消',
+          inputPattern: /\S+/,
+          inputErrorMessage: '必须填写修改原因'
+        }).then(({ value }: { value: string }) => {
+          const payload = {
+            userId: form.value.userId,
+            nickName: form.value.nickName,
+            phonenumber: form.value.phonenumber,
+            email: form.value.email,
+            sex: form.value.sex,
+            remark: form.value.remark,
+            postIds: form.value.postIds,
+            reason: value
+          }
+          return updateUser(payload)
+        }).then(() => {
+            proxy.$modal.msgSuccess("修改成功")
+            open.value = false
+            getList()
+          }).catch(() => {})
       } else {
+        if (!form.value.deptId || !form.value.deptIds?.includes(form.value.deptId)) {
+          proxy.$modal.msgError('主部门必须包含在任职部门中')
+          return
+        }
         addUser(form.value).then(() => {
           proxy.$modal.msgSuccess("新增成功")
           open.value = false
@@ -449,6 +531,36 @@ function submitForm() {
         })
       }
     }
+  })
+}
+
+function handleDepartments(row: SysUser) {
+  getUser(row.userId).then(response => {
+    deptTargetUserId.value = row.userId
+    deptForm.primaryDeptId = response.data?.deptId
+    deptForm.deptIds = response.data?.deptIds || []
+    deptForm.reason = ''
+    deptOpen.value = true
+  })
+}
+
+function submitDepartments() {
+  if (!deptTargetUserId.value || !deptForm.primaryDeptId || !deptForm.deptIds.length || !deptForm.reason.trim()) {
+    proxy.$modal.msgError('主部门、任职部门和变更原因均不能为空')
+    return
+  }
+  if (!deptForm.deptIds.includes(deptForm.primaryDeptId)) {
+    proxy.$modal.msgError('主部门必须包含在任职部门中')
+    return
+  }
+  updateUserDepartments(deptTargetUserId.value, {
+    primaryDeptId: deptForm.primaryDeptId,
+    deptIds: deptForm.deptIds,
+    reason: deptForm.reason
+  }).then(() => {
+    proxy.$modal.msgSuccess('任职部门修改成功')
+    deptOpen.value = false
+    getList()
   })
 }
 

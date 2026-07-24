@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xinyi.system.mapper.SysSecurityAuditLogMapper">
+    <insert id="insert" useGeneratedKeys="true" keyProperty="auditId">
+        insert into sys_security_audit_log(
+            event_type, actor_user_id, actor_user_name, target_user_id,
+            request_id, client_ip, reason, before_json, after_json,
+            auth_version_before, auth_version_after, result, failure_code,
+            failure_message, create_time
+        ) values (
+            #{eventType}, #{actorUserId}, #{actorUserName}, #{targetUserId},
+            #{requestId}, #{clientIp}, #{reason}, #{beforeJson}, #{afterJson},
+            #{authVersionBefore}, #{authVersionAfter}, #{result}, #{failureCode},
+            #{failureMessage}, sysdate()
+        )
+    </insert>
+</mapper>

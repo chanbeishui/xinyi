@@ -22,12 +22,12 @@ import com.xinyi.common.core.domain.entity.SysUser;
 import com.xinyi.common.core.page.TableDataInfo;
 import com.xinyi.common.enums.BusinessType;
 import com.xinyi.common.utils.poi.ExcelUtil;
-import com.xinyi.framework.web.service.SysPermissionService;
-import com.xinyi.framework.web.service.TokenService;
 import com.xinyi.system.domain.SysUserRole;
+import com.xinyi.system.domain.dto.SysUserQuery;
 import com.xinyi.system.service.ISysDeptService;
 import com.xinyi.system.service.ISysRoleService;
 import com.xinyi.system.service.ISysUserService;
+import com.xinyi.system.service.IUserAuthorizationMutationService;
 
 /**
  * 角色信息
@@ -42,13 +42,10 @@ public class SysRoleController extends BaseController
     private ISysRoleService roleService;
 
     @Autowired
-    private TokenService tokenService;
-
-    @Autowired
-    private SysPermissionService permissionService;
-
-    @Autowired
     private ISysUserService userService;
+
+    @Autowired
+    private IUserAuthorizationMutationService authorizationMutationService;
 
     @Autowired
     private ISysDeptService deptService;
@@ -89,7 +86,7 @@ public class SysRoleController extends BaseController
     @PreAuthorize("@ss.hasPermi('system:role:add')")
     @Log(title = "角色管理", businessType = BusinessType.INSERT)
     @PostMapping
-    public AjaxResult add(@Validated @RequestBody SysRole role)
+    public AjaxResult add(@Validated @RequestBody SysRole role, String reason)
     {
         if (!roleService.checkRoleNameUnique(role))
         {
@@ -100,7 +97,7 @@ public class SysRoleController extends BaseController
             return error("新增角色'" + role.getRoleName() + "'失败，角色权限已存在");
         }
         role.setCreateBy(getUsername());
-        return toAjax(roleService.insertRole(role));
+        return toAjax(roleService.insertRole(role, reason));
 
     }
 
@@ -110,7 +107,7 @@ public class SysRoleController extends BaseController
     @PreAuthorize("@ss.hasPermi('system:role:edit')")
     @Log(title = "角色管理", businessType = BusinessType.UPDATE)
     @PutMapping
-    public AjaxResult edit(@Validated @RequestBody SysRole role)
+    public AjaxResult edit(@Validated @RequestBody SysRole role, String reason)
     {
         roleService.checkRoleAllowed(role);
         roleService.checkRoleDataScope(role.getRoleId());
@@ -124,10 +121,8 @@ public class SysRoleController extends BaseController
         }
         role.setUpdateBy(getUsername());
         
-        if (roleService.updateRole(role) > 0)
+        if (roleService.updateRole(role, reason) > 0)
         {
-            // 刷新所有持有该角色的在线用户权限
-            tokenService.refreshPermissionByRoleId(role.getRoleId(), permissionService);
             return success();
         }
         return error("修改角色'" + role.getRoleName() + "'失败，请联系管理员");
@@ -139,11 +134,11 @@ public class SysRoleController extends BaseController
     @PreAuthorize("@ss.hasPermi('system:role:edit')")
     @Log(title = "角色管理", businessType = BusinessType.UPDATE)
     @PutMapping("/dataScope")
-    public AjaxResult dataScope(@RequestBody SysRole role)
+    public AjaxResult dataScope(@RequestBody SysRole role, String reason)
     {
         roleService.checkRoleAllowed(role);
         roleService.checkRoleDataScope(role.getRoleId());
-        return toAjax(roleService.authDataScope(role));
+        return toAjax(roleService.authDataScope(role, reason));
     }
 
     /**
@@ -152,12 +147,12 @@ public class SysRoleController extends BaseController
     @PreAuthorize("@ss.hasPermi('system:role:edit')")
     @Log(title = "角色管理", businessType = BusinessType.UPDATE)
     @PutMapping("/changeStatus")
-    public AjaxResult changeStatus(@RequestBody SysRole role)
+    public AjaxResult changeStatus(@RequestBody SysRole role, String reason)
     {
         roleService.checkRoleAllowed(role);
         roleService.checkRoleDataScope(role.getRoleId());
         role.setUpdateBy(getUsername());
-        return toAjax(roleService.updateRoleStatus(role));
+        return toAjax(roleService.updateRoleStatus(role, reason));
     }
 
     /**
@@ -166,9 +161,9 @@ public class SysRoleController extends BaseController
     @PreAuthorize("@ss.hasPermi('system:role:remove')")
     @Log(title = "角色管理", businessType = BusinessType.DELETE)
     @DeleteMapping("/{roleIds}")
-    public AjaxResult remove(@PathVariable Long[] roleIds)
+    public AjaxResult remove(@PathVariable Long[] roleIds, String reason)
     {
-        return toAjax(roleService.deleteRoleByIds(roleIds));
+        return toAjax(roleService.deleteRoleByIds(roleIds, reason));
     }
 
     /**
@@ -186,10 +181,10 @@ public class SysRoleController extends BaseController
      */
     @PreAuthorize("@ss.hasPermi('system:role:list')")
     @GetMapping("/authUser/allocatedList")
-    public TableDataInfo allocatedList(SysUser user)
+    public TableDataInfo allocatedList(SysUserQuery query)
     {
         startPage();
-        List<SysUser> list = userService.selectAllocatedList(user);
+        List<SysUser> list = userService.selectAllocatedList(query);
         return getDataTable(list);
     }
 
@@ -198,10 +193,10 @@ public class SysRoleController extends BaseController
      */
     @PreAuthorize("@ss.hasPermi('system:role:list')")
     @GetMapping("/authUser/unallocatedList")
-    public TableDataInfo unallocatedList(SysUser user)
+    public TableDataInfo unallocatedList(SysUserQuery query)
     {
         startPage();
-        List<SysUser> list = userService.selectUnallocatedList(user);
+        List<SysUser> list = userService.selectUnallocatedList(query);
         return getDataTable(list);
     }
 
@@ -211,9 +206,10 @@ public class SysRoleController extends BaseController
     @PreAuthorize("@ss.hasPermi('system:role:edit')")
     @Log(title = "角色管理", businessType = BusinessType.GRANT)
     @PutMapping("/authUser/cancel")
-    public AjaxResult cancelAuthUser(@RequestBody SysUserRole userRole)
+    public AjaxResult cancelAuthUser(@RequestBody SysUserRole userRole, String reason)
     {
-        return toAjax(roleService.deleteAuthUser(userRole));
+        return toAjax(authorizationMutationService.revokeRoleFromUsers(userRole.getRoleId(),
+                new Long[] { userRole.getUserId() }, reason));
     }
 
     /**
@@ -222,9 +218,9 @@ public class SysRoleController extends BaseController
     @PreAuthorize("@ss.hasPermi('system:role:edit')")
     @Log(title = "角色管理", businessType = BusinessType.GRANT)
     @PutMapping("/authUser/cancelAll")
-    public AjaxResult cancelAuthUserAll(Long roleId, Long[] userIds)
+    public AjaxResult cancelAuthUserAll(Long roleId, Long[] userIds, String reason)
     {
-        return toAjax(roleService.deleteAuthUsers(roleId, userIds));
+        return toAjax(authorizationMutationService.revokeRoleFromUsers(roleId, userIds, reason));
     }
 
     /**
@@ -233,10 +229,9 @@ public class SysRoleController extends BaseController
     @PreAuthorize("@ss.hasPermi('system:role:edit')")
     @Log(title = "角色管理", businessType = BusinessType.GRANT)
     @PutMapping("/authUser/selectAll")
-    public AjaxResult selectAuthUserAll(Long roleId, Long[] userIds)
+    public AjaxResult selectAuthUserAll(Long roleId, Long[] userIds, String reason)
     {
-        roleService.checkRoleDataScope(roleId);
-        return toAjax(roleService.insertAuthUsers(roleId, userIds));
+        return toAjax(authorizationMutationService.grantRoleToUsers(roleId, userIds, reason));
     }
 
     /**

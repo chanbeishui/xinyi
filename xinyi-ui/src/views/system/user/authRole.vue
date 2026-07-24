@@ -46,7 +46,7 @@
 </template>
 
 <script setup lang="ts" name="AuthRole">
-import { getAuthRole, updateAuthRole } from "@/api/system/user"
+import { getAuthRole, updateUserRoles } from "@/api/system/user"
 import type { SysRole } from '@/types/api/system/role'
 import type { SysUser } from '@/types/api/system/user'
 
@@ -101,11 +101,17 @@ function close() {
 /** 提交按钮 */
 function submitForm() {
   const userId = form.value.userId
-  const rIds = roleIds.value.join(",")
-  updateAuthRole({ userId: userId!, roleIds: rIds }).then(() => {
-    proxy.$modal.msgSuccess("授权成功")
-    close()
-  })
+  proxy.$prompt('请输入本次角色变更原因', '安全审计', {
+    confirmButtonText: '确认授权',
+    cancelButtonText: '取消',
+    inputPattern: /\S+/,
+    inputErrorMessage: '必须填写变更原因'
+  }).then(({ value }: { value: string }) => {
+    return updateUserRoles(userId!, { roleIds: roleIds.value, reason: value })
+  }).then(() => {
+      proxy.$modal.msgSuccess("授权成功")
+      close()
+    }).catch(() => {})
 }
 
 (() => {

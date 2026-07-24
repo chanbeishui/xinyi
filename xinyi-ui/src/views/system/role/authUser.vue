@@ -156,8 +156,11 @@ function openSelectUser() {
 
 /** 取消授权按钮操作 */
 function cancelAuthUser(row: SysUser) {
-  proxy.$modal.confirm('确认要取消该用户"' + row.userName + '"角色吗？').then(function () {
-    return authUserCancel({ userId: row.userId!, roleId: queryParams.roleId })
+  proxy.$prompt('确认取消该用户角色，请填写原因', '安全审计', {
+    inputPattern: /\S+/,
+    inputErrorMessage: '必须填写变更原因'
+  }).then(({ value }: { value: string }) => {
+    return authUserCancel({ userId: row.userId!, roleId: queryParams.roleId }, value)
   }).then(() => {
     getList()
     proxy.$modal.msgSuccess("取消授权成功")
@@ -168,8 +171,11 @@ function cancelAuthUser(row: SysUser) {
 function cancelAuthUserAll() {
   const roleId = queryParams.roleId
   const uIds = userIds.value.join(",")
-  proxy.$modal.confirm("是否取消选中用户授权数据项?").then(function () {
-    return authUserCancelAll({ roleId: roleId, userIds: uIds })
+  proxy.$prompt('确认批量取消角色，请填写原因', '安全审计', {
+    inputPattern: /\S+/,
+    inputErrorMessage: '必须填写变更原因'
+  }).then(({ value }: { value: string }) => {
+    return authUserCancelAll({ roleId: roleId, userIds: uIds, reason: value })
   }).then(() => {
     getList()
     proxy.$modal.msgSuccess("取消授权成功")

@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 import { parseStrEmpty } from "@/utils/ruoyi"
-import type { UserQueryParams, UserFormDataResult, UserProfileResult, UserAuthRoleResult, UserProfileAvatarResult, SysUser, SysUserRole, SysUserRoles, AjaxResult, TableDataInfo, TreeSelect } from '@/types'
+import type { UserQueryParams, UserFormDataResult, UserProfileResult, UserAuthRoleResult, UserProfileAvatarResult, SysUser, SysUserRole, SysUserRoles, AjaxResult, TableDataInfo, TreeSelect, UserDeptUpdateRequest, UserRoleUpdateRequest } from '@/types'
 
 // 查询用户列表
 export function listUser(query: UserQueryParams): Promise<TableDataInfo<SysUser[]>> {
@@ -38,18 +38,20 @@ export function updateUser(data: SysUser): Promise<AjaxResult> {
 }
 
 // 删除用户
-export function delUser(userId: number | number[]): Promise<AjaxResult> {
+export function delUser(userId: number | number[], reason: string): Promise<AjaxResult> {
   return request({
     url: '/system/user/' + userId,
-    method: 'delete'
+    method: 'delete',
+    params: { reason }
   })
 }
 
 // 用户密码重置
-export function resetUserPwd(userId: number, password: string): Promise<AjaxResult> {
+export function resetUserPwd(userId: number, password: string, reason: string): Promise<AjaxResult> {
   const data = {
     userId,
-    password
+    password,
+    reason
   }
   return request({
     url: '/system/user/resetPwd',
@@ -59,10 +61,11 @@ export function resetUserPwd(userId: number, password: string): Promise<AjaxResu
 }
 
 // 用户状态修改
-export function changeUserStatus(userId: number, status: string): Promise<AjaxResult> {
+export function changeUserStatus(userId: number, status: string, reason: string): Promise<AjaxResult> {
   const data = {
     userId,
-    status
+    status,
+    reason
   }
   return request({
     url: '/system/user/changeStatus',
@@ -125,6 +128,22 @@ export function updateAuthRole(data: SysUserRoles): Promise<AjaxResult> {
     url: '/system/user/authRole',
     method: 'put',
     params: data
+  })
+}
+
+export function updateUserDepartments(userId: number, data: UserDeptUpdateRequest): Promise<AjaxResult> {
+  return request({
+    url: `/system/user/${userId}/departments`,
+    method: 'put',
+    data
+  })
+}
+
+export function updateUserRoles(userId: number, data: UserRoleUpdateRequest): Promise<AjaxResult> {
+  return request({
+    url: `/system/user/${userId}/roles`,
+    method: 'put',
+    data
   })
 }
 

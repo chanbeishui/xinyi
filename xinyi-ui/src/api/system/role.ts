@@ -19,34 +19,37 @@ export function getRole(roleId: number): Promise<AjaxResult<SysRole>> {
 }
 
 // 新增角色
-export function addRole(data: SysRole): Promise<AjaxResult> {
+export function addRole(data: SysRole, reason: string): Promise<AjaxResult> {
   return request({
     url: '/system/role',
     method: 'post',
-    data: data
+    data: data,
+    params: { reason }
   })
 }
 
 // 修改角色
-export function updateRole(data: SysRole): Promise<AjaxResult> {
+export function updateRole(data: SysRole, reason: string): Promise<AjaxResult> {
   return request({
     url: '/system/role',
     method: 'put',
-    data: data
+    data: data,
+    params: { reason }
   })
 }
 
 // 角色数据权限
-export function dataScope(data: SysRole): Promise<AjaxResult> {
+export function dataScope(data: SysRole, reason: string): Promise<AjaxResult> {
   return request({
     url: '/system/role/dataScope',
     method: 'put',
-    data: data
+    data: data,
+    params: { reason }
   })
 }
 
 // 角色状态修改
-export function changeRoleStatus(roleId: number, status: string): Promise<AjaxResult> {
+export function changeRoleStatus(roleId: number, status: string, reason: string): Promise<AjaxResult> {
   const data = {
     roleId,
     status
@@ -54,15 +57,17 @@ export function changeRoleStatus(roleId: number, status: string): Promise<AjaxRe
   return request({
     url: '/system/role/changeStatus',
     method: 'put',
-    data: data
+    data: data,
+    params: { reason }
   })
 }
 
 // 删除角色
-export function delRole(roleId: number | number[]): Promise<AjaxResult> {
+export function delRole(roleId: number | number[], reason: string): Promise<AjaxResult> {
   return request({
     url: '/system/role/' + roleId,
-    method: 'delete'
+    method: 'delete',
+    params: { reason }
   })
 }
 
@@ -85,11 +90,12 @@ export function unallocatedUserList(query: AuthUserQueryParams): Promise<TableDa
 }
 
 // 取消用户授权角色
-export function authUserCancel(data: SysUserRole): Promise<AjaxResult> {
+export function authUserCancel(data: SysUserRole, reason: string): Promise<AjaxResult> {
   return request({
     url: '/system/role/authUser/cancel',
     method: 'put',
-    data: data
+      data: data,
+      params: { reason }
   })
 }
 

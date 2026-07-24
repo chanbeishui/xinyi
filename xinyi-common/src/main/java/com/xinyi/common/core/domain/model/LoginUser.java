@@ -2,6 +2,7 @@ package com.xinyi.common.core.domain.model;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -29,6 +30,16 @@ public class LoginUser implements UserDetails
      * 部门ID
      */
     private Long deptId;
+
+    /**
+     * 全部有效任职部门ID
+     */
+    private List<Long> deptIds;
+
+    /**
+     * 登录签发时授权版本
+     */
+    private Long authVersion;
 
     /**
      * 用户唯一标识
@@ -111,6 +122,26 @@ public class LoginUser implements UserDetails
     public void setDeptId(Long deptId)
     {
         this.deptId = deptId;
+    }
+
+    public List<Long> getDeptIds()
+    {
+        return deptIds;
+    }
+
+    public void setDeptIds(List<Long> deptIds)
+    {
+        this.deptIds = deptIds;
+    }
+
+    public Long getAuthVersion()
+    {
+        return authVersion;
+    }
+
+    public void setAuthVersion(Long authVersion)
+    {
+        this.authVersion = authVersion;
     }
 
     public String getToken()

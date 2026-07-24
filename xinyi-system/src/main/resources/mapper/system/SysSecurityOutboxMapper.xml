@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xinyi.system.mapper.SysSecurityOutboxMapper">
+
+    <resultMap id="OutboxResult" type="SysSecurityOutbox">
+        <id property="eventId" column="event_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="targetAuthVersion" column="target_auth_version"/>
+        <result property="eventType" column="event_type"/>
+        <result property="status" column="status"/>
+        <result property="retryCount" column="retry_count"/>
+        <result property="nextRetryTime" column="next_retry_time"/>
+        <result property="lastError" column="last_error"/>
+        <result property="createTime" column="create_time"/>
+        <result property="completeTime" column="complete_time"/>
+    </resultMap>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="eventId">
+        insert into sys_security_outbox(
+            user_id, target_auth_version, event_type, status, retry_count,
+            next_retry_time, create_time
+        ) values (
+            #{userId}, #{targetAuthVersion}, #{eventType}, 'PENDING', 0,
+            sysdate(), sysdate()
+        )
+    </insert>
+
+    <select id="selectPending" resultMap="OutboxResult">
+        select event_id, user_id, target_auth_version, event_type, status,
+               retry_count, next_retry_time, last_error, create_time, complete_time
+        from sys_security_outbox
+        where status in ('PENDING', 'RETRY')
+          and next_retry_time &lt;= #{now}
+        order by event_id
+        limit #{limit}
+    </select>
+
+    <update id="markDone">
+        update sys_security_outbox
+        set status = 'DONE', complete_time = sysdate(), last_error = null
+        where event_id = #{eventId}
+          and status in ('PENDING', 'RETRY')
+    </update>
+
+    <update id="markRetry">
+        update sys_security_outbox
+        set status = 'RETRY',
+            retry_count = #{retryCount},
+            next_retry_time = #{nextRetryTime},
+            last_error = #{lastError}
+        where event_id = #{eventId}
+          and status in ('PENDING', 'RETRY')
+    </update>
+</mapper>

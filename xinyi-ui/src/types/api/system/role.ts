@@ -18,7 +18,8 @@ export interface RoleQueryParams extends PageDomain {
 /** 批量授权用户参数 */
 export interface AuthUserSelectParams {
   roleId: number;
-  userIds: number[];
+  userIds: number[] | string;
+  reason: string;
 }
 
 /** 用户和角色关联信息 */
@@ -27,6 +28,7 @@ export interface SysUserRole {
   userId?: number;
   /** 角色编号 */
   roleId: number;
+  reason?: string;
 }
 
 /** 用户和多角色关联信息 */

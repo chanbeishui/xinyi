@@ -42,6 +42,8 @@ drop table if exists sys_user;
 create table sys_user (
   user_id           bigint(20)      not null auto_increment    comment '用户ID',
   dept_id           bigint(20)      default null               comment '部门ID',
+  management_scope  varchar(16)     not null default 'DEPT'    comment '管理范围（DEPT部门账号 PLATFORM平台账号）',
+  auth_version      bigint(20)      not null default 0         comment '授权版本',
   user_name         varchar(30)     not null                   comment '用户账号',
   nick_name         varchar(30)     not null                   comment '用户昵称',
   user_type         varchar(2)      default '00'               comment '用户类型（00系统用户）',
@@ -66,8 +68,8 @@ create table sys_user (
 -- ----------------------------
 -- 初始化-用户信息表数据
 -- ----------------------------
-insert into sys_user values(1,  103, 'admin', '若依', '00', 'ry@163.com', '15888888888', '1', '', '$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2', '0', '0', '127.0.0.1', sysdate(), sysdate(), 'admin', sysdate(), '', null, '管理员');
-insert into sys_user values(2,  105, 'ry',    '若依', '00', 'ry@qq.com',  '15666666666', '1', '', '$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2', '0', '0', '127.0.0.1', sysdate(), sysdate(), 'admin', sysdate(), '', null, '测试员');
+insert into sys_user values(1,  103, 'DEPT', 0, 'admin', '若依', '00', 'ry@163.com', '15888888888', '1', '', '$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2', '0', '0', '127.0.0.1', sysdate(), sysdate(), 'admin', sysdate(), '', null, '管理员');
+insert into sys_user values(2,  105, 'DEPT', 0, 'ry',    '若依', '00', 'ry@qq.com',  '15666666666', '1', '', '$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2', '0', '0', '127.0.0.1', sysdate(), sysdate(), 'admin', sysdate(), '', null, '测试员');
 
 
 -- ----------------------------
@@ -259,6 +261,9 @@ insert into sys_menu values('1057', '生成删除', '116', '3', '#', '', '', '',
 insert into sys_menu values('1058', '导入代码', '116', '4', '#', '', '', '', 1, 0, 'F', '0', '0', 'tool:gen:import',            '#', 'admin', sysdate(), '', null, '');
 insert into sys_menu values('1059', '预览代码', '116', '5', '#', '', '', '', 1, 0, 'F', '0', '0', 'tool:gen:preview',           '#', 'admin', sysdate(), '', null, '');
 insert into sys_menu values('1060', '生成代码', '116', '6', '#', '', '', '', 1, 0, 'F', '0', '0', 'tool:gen:code',              '#', 'admin', sysdate(), '', null, '');
+insert into sys_menu values('1061', '任职部门修改', '100', '8', '', '', '', '', 1, 0, 'F', '0', '0', 'system:user:dept:edit',       '#', 'admin', sysdate(), '', null, '');
+insert into sys_menu values('1062', '用户角色修改', '100', '9', '', '', '', '', 1, 0, 'F', '0', '0', 'system:user:role:edit',       '#', 'admin', sysdate(), '', null, '');
+insert into sys_menu values('1063', '平台账号降级', '100', '10', '', '', '', '', 1, 0, 'F', '0', '0', 'system:user:management:edit', '#', 'admin', sysdate(), '', null, '');
 
 
 -- ----------------------------
@@ -276,6 +281,23 @@ create table sys_user_role (
 -- ----------------------------
 insert into sys_user_role values ('1', '1');
 insert into sys_user_role values ('2', '2');
+
+
+-- ----------------------------
+-- 6.1、用户任职部门关联表
+-- ----------------------------
+drop table if exists sys_user_dept;
+create table sys_user_dept (
+  user_id      bigint(20)      not null                   comment '用户ID',
+  dept_id      bigint(20)      not null                   comment '任职部门ID',
+  create_by    varchar(64)     default ''                 comment '创建者',
+  create_time  datetime                                   comment '创建时间',
+  primary key (user_id, dept_id),
+  key idx_sys_user_dept_dept_user (dept_id, user_id)
+) engine=innodb comment = '用户任职部门关联表';
+
+insert into sys_user_dept values (1, 103, 'admin', sysdate());
+insert into sys_user_dept values (2, 105, 'admin', sysdate());
 
 
 -- ----------------------------
@@ -554,6 +576,7 @@ insert into sys_config values(6, '用户登录-黑名单列表',           'sys.
 insert into sys_config values(7, '用户管理-初始密码修改策略',     'sys.account.initPasswordModify',   '1',             'Y', 'admin', sysdate(), '', null, '0：初始密码修改策略关闭，没有任何提示，1：提醒用户，如果未修改初始密码，则在登录时就会提醒修改密码对话框');
 insert into sys_config values(8, '用户管理-账号密码更新周期',     'sys.account.passwordValidateDays', '0',             'Y', 'admin', sysdate(), '', null, '密码更新周期（填写数字，数据初始化值为0不限制，若修改必须为大于0小于365的正整数），如果超过这个周期登录系统时，则在登录时就会提醒修改密码对话框');
 insert into sys_config values(9, '用户管理-密码字符范围',         'sys.account.chrtype',              '0',             'Y', 'admin', sysdate(), '', null, '默认任意字符范围，0任意（密码可以输入任意字符），1数字（密码只能为0-9数字），2英文字母（密码只能为a-z和A-Z字母），3字母和数字（密码必须包含字母，数字）,4字母数字和特殊字符（目前支持的特殊字符包括：~!@#$%^&*()-=_+）');
+insert into sys_config values(10, '用户注册-默认主部门',          'sys.user.defaultDeptId',           '103',           'Y', 'admin', sysdate(), '', null, '开启用户注册前必须配置为有效部门ID，禁止创建无部门账号');
 
 
 -- ----------------------------
@@ -662,7 +685,56 @@ create table sys_notice_read (
 
 
 -- ----------------------------
--- 19、代码生成业务表
+-- 19、安全会话清理outbox
+-- ----------------------------
+drop table if exists sys_security_outbox;
+create table sys_security_outbox (
+  event_id            bigint(20)      not null auto_increment comment '事件ID',
+  user_id             bigint(20)      not null                comment '受影响用户ID',
+  target_auth_version bigint(20)      not null                comment '目标授权版本',
+  event_type          varchar(64)     not null                comment '事件类型',
+  status              varchar(16)     not null default 'PENDING' comment 'PENDING RETRY DONE',
+  retry_count         int             not null default 0      comment '重试次数',
+  next_retry_time     datetime        not null                comment '下次执行时间',
+  last_error          varchar(1000)   default null            comment '最后错误',
+  create_time         datetime        not null                comment '创建时间',
+  complete_time       datetime        default null            comment '完成时间',
+  primary key (event_id),
+  key idx_security_outbox_pending (status, next_retry_time, event_id),
+  key idx_security_outbox_user (user_id, event_id)
+) engine=innodb comment='安全会话清理outbox';
+
+
+-- ----------------------------
+-- 20、安全审计表
+-- ----------------------------
+drop table if exists sys_security_audit_log;
+create table sys_security_audit_log (
+  audit_id            bigint(20)      not null auto_increment comment '审计ID',
+  event_type          varchar(64)     not null                comment '事件类型',
+  actor_user_id       bigint(20)      default null            comment '操作者用户ID',
+  actor_user_name     varchar(64)     default null            comment '操作者账号',
+  target_user_id      bigint(20)      default null            comment '目标用户ID',
+  request_id          varchar(64)     not null                comment '请求ID',
+  client_ip           varchar(128)    default null            comment '客户端IP',
+  reason              varchar(500)    default null            comment '操作原因',
+  before_json         text                                    comment '变更前快照',
+  after_json          text                                    comment '变更后快照',
+  auth_version_before bigint(20)      default null            comment '变更前版本',
+  auth_version_after  bigint(20)      default null            comment '变更后版本',
+  result              varchar(16)     not null                comment 'SUCCESS FAILURE',
+  failure_code        varchar(64)     default null            comment '失败码',
+  failure_message     varchar(1000)   default null            comment '失败信息',
+  create_time         datetime        not null                comment '创建时间',
+  primary key (audit_id),
+  key idx_security_audit_target (target_user_id, create_time),
+  key idx_security_audit_actor (actor_user_id, create_time),
+  key idx_security_audit_request (request_id)
+) engine=innodb comment='不可由业务接口删除的安全审计';
+
+
+-- ----------------------------
+-- 21、代码生成业务表
 -- ----------------------------
 drop table if exists gen_table;
 create table gen_table (

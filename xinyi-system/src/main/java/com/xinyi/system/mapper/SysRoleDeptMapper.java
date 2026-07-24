@@ -1,6 +1,7 @@
 package com.xinyi.system.mapper;
 
 import java.util.List;
+import org.apache.ibatis.annotations.Param;
 import com.xinyi.system.domain.SysRoleDept;
 
 /**
@@ -41,4 +42,9 @@ public interface SysRoleDeptMapper
      * @return 结果
      */
     public int batchRoleDept(List<SysRoleDept> roleDeptList);
+
+    /**
+     * 查询多个角色的自定义部门。
+     */
+    public List<Long> selectDeptIdsByRoleIds(@Param("roleIds") List<Long> roleIds);
 }

@@ -3,7 +3,9 @@ package com.xinyi.system.service.impl;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,6 +25,8 @@ import com.xinyi.system.mapper.SysRoleMapper;
 import com.xinyi.system.mapper.SysRoleMenuMapper;
 import com.xinyi.system.mapper.SysUserRoleMapper;
 import com.xinyi.system.service.ISysRoleService;
+import com.xinyi.system.service.ISecurityAuditService;
+import com.xinyi.system.service.IUserAuthorizationMutationService;
 
 /**
  * 角色 业务层处理
@@ -43,6 +47,12 @@ public class SysRoleServiceImpl implements ISysRoleService
 
     @Autowired
     private SysRoleDeptMapper roleDeptMapper;
+
+    @Autowired
+    private IUserAuthorizationMutationService authorizationMutationService;
+
+    @Autowired
+    private ISecurityAuditService securityAuditService;
 
     /**
      * 根据条件分页查询角色数据
@@ -205,7 +215,11 @@ public class SysRoleServiceImpl implements ISysRoleService
                 List<SysRole> roles = SpringUtils.getAopProxy(this).selectRoleList(role);
                 if (StringUtils.isEmpty(roles))
                 {
-                    throw new ServiceException("没有权限访问角色数据！");
+                    ServiceException ex = new ServiceException("没有权限访问角色数据！");
+                    securityAuditService.recordFailure("ROLE_ACCESS_DENIED", null,
+                            "角色数据范围拒绝", null, Map.of("roleId", roleId),
+                            "DATA_SCOPE_DENIED", ex.getMessage());
+                    throw ex;
                 }
             }
         }
@@ -231,11 +245,23 @@ public class SysRoleServiceImpl implements ISysRoleService
      */
     @Override
     @Transactional
-    public int insertRole(SysRole role)
+    public int insertRole(SysRole role, String reason)
     {
-        // 新增角色信息
-        roleMapper.insertRole(role);
-        return insertRoleMenu(role);
+        requireReason(reason);
+        try
+        {
+            roleMapper.insertRole(role);
+            int rows = insertRoleMenu(role);
+            securityAuditService.recordSuccess("ROLE_CREATE", null, reason,
+                    null, roleSnapshot(role), null, null);
+            return rows;
+        }
+        catch (RuntimeException ex)
+        {
+            securityAuditService.recordFailure("ROLE_CREATE", null, reason,
+                    null, roleSnapshot(role), "ROLE_MUTATION_FAILED", ex.getMessage());
+            throw ex;
+        }
     }
 
     /**
@@ -246,13 +272,29 @@ public class SysRoleServiceImpl implements ISysRoleService
      */
     @Override
     @Transactional
-    public int updateRole(SysRole role)
+    public int updateRole(SysRole role, String reason)
     {
-        // 修改角色信息
-        roleMapper.updateRole(role);
-        // 删除角色与菜单关联
-        roleMenuMapper.deleteRoleMenuByRoleId(role.getRoleId());
-        return insertRoleMenu(role);
+        requireReason(reason);
+        Map<String, Object> before = roleSnapshot(roleMapper.selectRoleById(role.getRoleId()));
+        try
+        {
+            roleMapper.updateRole(roleEditUpdate(role));
+            roleMenuMapper.deleteRoleMenuByRoleId(role.getRoleId());
+            int rows = insertRoleMenu(role);
+            authorizationMutationService.invalidateUsersByRole(role.getRoleId(),
+                    "ROLE_PERMISSION_UPDATE", reason);
+            SysRole persisted = roleMapper.selectRoleById(role.getRoleId());
+            persisted.setMenuIds(role.getMenuIds());
+            securityAuditService.recordSuccess("ROLE_PERMISSION_CONFIG_UPDATE", null, reason,
+                    before, roleSnapshot(persisted), null, null);
+            return rows;
+        }
+        catch (RuntimeException ex)
+        {
+            securityAuditService.recordFailure("ROLE_PERMISSION_CONFIG_UPDATE", null, reason,
+                    before, roleSnapshot(role), "ROLE_MUTATION_FAILED", ex.getMessage());
+            throw ex;
+        }
     }
 
     /**
@@ -262,9 +304,33 @@ public class SysRoleServiceImpl implements ISysRoleService
      * @return 结果
      */
     @Override
-    public int updateRoleStatus(SysRole role)
+    @Transactional
+    public int updateRoleStatus(SysRole role, String reason)
     {
-        return roleMapper.updateRole(role);
+        requireReason(reason);
+        Map<String, Object> before = roleSnapshot(roleMapper.selectRoleById(role.getRoleId()));
+        try
+        {
+            SysRole statusUpdate = new SysRole();
+            statusUpdate.setRoleId(role.getRoleId());
+            statusUpdate.setStatus(role.getStatus());
+            statusUpdate.setUpdateBy(role.getUpdateBy());
+            int rows = roleMapper.updateRole(statusUpdate);
+            if (rows > 0)
+            {
+                authorizationMutationService.invalidateUsersByRole(role.getRoleId(),
+                        "ROLE_STATUS_UPDATE", reason);
+                securityAuditService.recordSuccess("ROLE_STATUS_CONFIG_UPDATE", null, reason,
+                        before, roleSnapshot(roleMapper.selectRoleById(role.getRoleId())), null, null);
+            }
+            return rows;
+        }
+        catch (RuntimeException ex)
+        {
+            securityAuditService.recordFailure("ROLE_STATUS_CONFIG_UPDATE", null, reason,
+                    before, roleSnapshot(role), "ROLE_MUTATION_FAILED", ex.getMessage());
+            throw ex;
+        }
     }
 
     /**
@@ -275,14 +341,34 @@ public class SysRoleServiceImpl implements ISysRoleService
      */
     @Override
     @Transactional
-    public int authDataScope(SysRole role)
+    public int authDataScope(SysRole role, String reason)
     {
-        // 修改角色信息
-        roleMapper.updateRole(role);
-        // 删除角色与部门关联
-        roleDeptMapper.deleteRoleDeptByRoleId(role.getRoleId());
-        // 新增角色和部门信息（数据权限）
-        return insertRoleDept(role);
+        requireReason(reason);
+        Map<String, Object> before = roleSnapshot(roleMapper.selectRoleById(role.getRoleId()));
+        try
+        {
+            SysRole scopeUpdate = new SysRole();
+            scopeUpdate.setRoleId(role.getRoleId());
+            scopeUpdate.setDataScope(role.getDataScope());
+            scopeUpdate.setDeptCheckStrictly(role.isDeptCheckStrictly());
+            scopeUpdate.setUpdateBy(role.getUpdateBy());
+            roleMapper.updateRole(scopeUpdate);
+            roleDeptMapper.deleteRoleDeptByRoleId(role.getRoleId());
+            int rows = insertRoleDept(role);
+            authorizationMutationService.invalidateUsersByRole(role.getRoleId(),
+                    "ROLE_DATA_SCOPE_UPDATE", reason);
+            SysRole persisted = roleMapper.selectRoleById(role.getRoleId());
+            persisted.setDeptIds(role.getDeptIds());
+            securityAuditService.recordSuccess("ROLE_DATA_SCOPE_CONFIG_UPDATE", null, reason,
+                    before, roleSnapshot(persisted), null, null);
+            return rows;
+        }
+        catch (RuntimeException ex)
+        {
+            securityAuditService.recordFailure("ROLE_DATA_SCOPE_CONFIG_UPDATE", null, reason,
+                    before, roleSnapshot(role), "ROLE_MUTATION_FAILED", ex.getMessage());
+            throw ex;
+        }
     }
 
     /**
@@ -341,13 +427,9 @@ public class SysRoleServiceImpl implements ISysRoleService
      */
     @Override
     @Transactional
-    public int deleteRoleById(Long roleId)
+    public int deleteRoleById(Long roleId, String reason)
     {
-        // 删除角色与菜单关联
-        roleMenuMapper.deleteRoleMenuByRoleId(roleId);
-        // 删除角色与部门关联
-        roleDeptMapper.deleteRoleDeptByRoleId(roleId);
-        return roleMapper.deleteRoleById(roleId);
+        return deleteRoleByIds(new Long[] { roleId }, reason);
     }
 
     /**
@@ -358,8 +440,10 @@ public class SysRoleServiceImpl implements ISysRoleService
      */
     @Override
     @Transactional
-    public int deleteRoleByIds(Long[] roleIds)
+    public int deleteRoleByIds(Long[] roleIds, String reason)
     {
+        requireReason(reason);
+        List<Map<String, Object>> before = new ArrayList<>();
         for (Long roleId : roleIds)
         {
             checkRoleAllowed(new SysRole(roleId));
@@ -369,12 +453,23 @@ public class SysRoleServiceImpl implements ISysRoleService
             {
                 throw new ServiceException(String.format("%1$s已分配,不能删除", role.getRoleName()));
             }
+            before.add(roleSnapshot(role));
         }
-        // 删除角色与菜单关联
-        roleMenuMapper.deleteRoleMenu(roleIds);
-        // 删除角色与部门关联
-        roleDeptMapper.deleteRoleDept(roleIds);
-        return roleMapper.deleteRoleByIds(roleIds);
+        try
+        {
+            roleMenuMapper.deleteRoleMenu(roleIds);
+            roleDeptMapper.deleteRoleDept(roleIds);
+            int rows = roleMapper.deleteRoleByIds(roleIds);
+            securityAuditService.recordSuccess("ROLE_DELETE", null, reason,
+                    before, null, null, null);
+            return rows;
+        }
+        catch (RuntimeException ex)
+        {
+            securityAuditService.recordFailure("ROLE_DELETE", null, reason,
+                    before, roleIds, "ROLE_MUTATION_FAILED", ex.getMessage());
+            throw ex;
+        }
     }
 
     /**
@@ -386,7 +481,7 @@ public class SysRoleServiceImpl implements ISysRoleService
     @Override
     public int deleteAuthUser(SysUserRole userRole)
     {
-        return userRoleMapper.deleteUserRoleInfo(userRole);
+        throw new ServiceException("角色撤销必须调用统一授权服务并填写原因");
     }
 
     /**
@@ -399,7 +494,7 @@ public class SysRoleServiceImpl implements ISysRoleService
     @Override
     public int deleteAuthUsers(Long roleId, Long[] userIds)
     {
-        return userRoleMapper.deleteUserRoleInfos(roleId, userIds);
+        throw new ServiceException("批量角色撤销必须调用统一授权服务并填写原因");
     }
 
     /**
@@ -412,15 +507,44 @@ public class SysRoleServiceImpl implements ISysRoleService
     @Override
     public int insertAuthUsers(Long roleId, Long[] userIds)
     {
-        // 新增用户与角色管理
-        List<SysUserRole> list = new ArrayList<SysUserRole>();
-        for (Long userId : userIds)
+        throw new ServiceException("批量角色授予必须调用统一授权服务并填写原因");
+    }
+
+    private void requireReason(String reason)
+    {
+        if (StringUtils.isBlank(reason))
         {
-            SysUserRole ur = new SysUserRole();
-            ur.setUserId(userId);
-            ur.setRoleId(roleId);
-            list.add(ur);
+            throw new ServiceException("角色权限相关操作必须填写原因");
         }
-        return userRoleMapper.batchUserRole(list);
+    }
+
+    private Map<String, Object> roleSnapshot(SysRole role)
+    {
+        Map<String, Object> snapshot = new LinkedHashMap<>();
+        if (role == null)
+        {
+            return snapshot;
+        }
+        snapshot.put("roleId", role.getRoleId());
+        snapshot.put("roleName", role.getRoleName());
+        snapshot.put("roleKey", role.getRoleKey());
+        snapshot.put("dataScope", role.getDataScope());
+        snapshot.put("status", role.getStatus());
+        snapshot.put("menuIds", role.getMenuIds());
+        snapshot.put("deptIds", role.getDeptIds());
+        return snapshot;
+    }
+
+    private SysRole roleEditUpdate(SysRole role)
+    {
+        SysRole update = new SysRole();
+        update.setRoleId(role.getRoleId());
+        update.setRoleName(role.getRoleName());
+        update.setRoleKey(role.getRoleKey());
+        update.setRoleSort(role.getRoleSort());
+        update.setMenuCheckStrictly(role.isMenuCheckStrictly());
+        update.setRemark(role.getRemark());
+        update.setUpdateBy(role.getUpdateBy());
+        return update;
     }
 }

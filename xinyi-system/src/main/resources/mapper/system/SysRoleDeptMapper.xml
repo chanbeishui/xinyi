@@ -30,5 +30,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			(#{item.roleId},#{item.deptId})
 		</foreach>
 	</insert>
+
+	<select id="selectDeptIdsByRoleIds" resultType="Long">
+		select distinct rd.dept_id
+		from sys_role_dept rd
+		inner join sys_dept d on d.dept_id = rd.dept_id
+			and d.del_flag = '0' and d.status = '0'
+		where rd.role_id in
+		<foreach collection="roleIds" item="roleId" open="(" separator="," close=")">
+			#{roleId}
+		</foreach>
+	</select>
 	
-</mapper> 
+</mapper>

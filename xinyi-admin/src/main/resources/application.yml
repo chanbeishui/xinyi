@@ -145,3 +145,13 @@ xss:
   excludes: /system/notice
   # 匹配链接
   urlPatterns: /system/*,/monitor/*,/tool/*
+
+# 多部门授权安全开关
+security:
+  # 迁移验证后先开启查询
+  multi-dept-query-enabled: true
+  # 已完成迁移校验、撤权与审计验证，开启多部门写入
+  multi-dept-write-enabled: true
+  outbox:
+    fixed-delay: 5000
+  user-dept-integrity-cron: "0 30 2 * * ?"
