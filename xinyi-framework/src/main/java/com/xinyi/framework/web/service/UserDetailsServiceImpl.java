@@ -1,5 +1,7 @@
 package com.xinyi.framework.web.service;
 
+import java.util.Arrays;
+import java.util.Collections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,6 +63,11 @@ public class UserDetailsServiceImpl implements UserDetailsService
 
     public UserDetails createLoginUser(SysUser user)
     {
-        return new LoginUser(user.getUserId(), user.getDeptId(), user, permissionService.getMenuPermission(user));
+        LoginUser loginUser = new LoginUser(user.getUserId(), user.getDeptId(), user,
+                permissionService.getMenuPermission(user));
+        loginUser.setDeptIds(user.getDeptIds() == null
+                ? Collections.singletonList(user.getDeptId()) : Arrays.asList(user.getDeptIds()));
+        loginUser.setAuthVersion(user.getAuthVersion());
+        return loginUser;
     }
 }

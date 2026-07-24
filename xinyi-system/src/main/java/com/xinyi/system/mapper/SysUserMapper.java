@@ -4,6 +4,9 @@ import java.util.Date;
 import java.util.List;
 import org.apache.ibatis.annotations.Param;
 import com.xinyi.common.core.domain.entity.SysUser;
+import com.xinyi.system.domain.SysUserAuthState;
+import com.xinyi.system.domain.dto.SysUserQuery;
+import com.xinyi.system.domain.dto.UserVisibilityContext;
 
 /**
  * 用户表 数据层
@@ -18,7 +21,8 @@ public interface SysUserMapper
      * @param sysUser 用户信息
      * @return 用户信息集合信息
      */
-    public List<SysUser> selectUserList(SysUser sysUser);
+    public List<SysUser> selectUserList(@Param("query") SysUserQuery query,
+            @Param("visibility") UserVisibilityContext visibility);
 
     /**
      * 根据条件分页查询已配用户角色列表
@@ -26,7 +30,8 @@ public interface SysUserMapper
      * @param user 用户信息
      * @return 用户信息集合信息
      */
-    public List<SysUser> selectAllocatedList(SysUser user);
+    public List<SysUser> selectAllocatedList(@Param("query") SysUserQuery query,
+            @Param("visibility") UserVisibilityContext visibility);
 
     /**
      * 根据条件分页查询未分配用户角色列表
@@ -34,7 +39,8 @@ public interface SysUserMapper
      * @param user 用户信息
      * @return 用户信息集合信息
      */
-    public List<SysUser> selectUnallocatedList(SysUser user);
+    public List<SysUser> selectUnallocatedList(@Param("query") SysUserQuery query,
+            @Param("visibility") UserVisibilityContext visibility);
 
     /**
      * 通过用户名查询用户
@@ -53,6 +59,18 @@ public interface SysUserMapper
     public SysUser selectUserById(Long userId);
 
     /**
+     * 锁定并查询用户。
+     */
+    public SysUser selectUserByIdForUpdate(Long userId);
+
+    /**
+     * 查询用户认证权威状态。
+     */
+    public SysUserAuthState selectAuthStateByUserId(Long userId);
+
+    public List<Long> selectActiveUserIds();
+
+    /**
      * 新增用户信息
      * 
      * @param user 用户信息
@@ -67,6 +85,11 @@ public interface SysUserMapper
      * @return 结果
      */
     public int updateUser(SysUser user);
+
+    /**
+     * 员工自助资料更新，只允许写入非授权字段。
+     */
+    public int updateUserProfile(SysUser user);
 
     /**
      * 修改用户头像
@@ -85,6 +108,17 @@ public interface SysUserMapper
      * @return 结果
      */
     public int updateUserStatus(@Param("userId") Long userId, @Param("status") String status);
+
+    /**
+     * 修改账号管理范围。
+     */
+    public int updateManagementScope(@Param("userId") Long userId,
+            @Param("managementScope") String managementScope, @Param("updateBy") String updateBy);
+
+    /**
+     * 原子递增授权版本。
+     */
+    public int incrementAuthVersion(Long userId);
 
     /**
      * 更新用户登录信息（IP和登录时间）

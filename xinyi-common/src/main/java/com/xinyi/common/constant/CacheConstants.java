@@ -13,6 +13,16 @@ public class CacheConstants
     public static final String LOGIN_TOKEN_KEY = "login_tokens:";
 
     /**
+     * 用户登录令牌索引 redis key
+     */
+    public static final String USER_TOKEN_KEY = "sys_user_tokens:";
+
+    /**
+     * 用户导入预检 redis key
+     */
+    public static final String USER_IMPORT_PREVIEW_KEY = "sys_user_import_preview:";
+
+    /**
      * 验证码 redis key
      */
     public static final String CAPTCHA_CODE_KEY = "captcha_codes:";

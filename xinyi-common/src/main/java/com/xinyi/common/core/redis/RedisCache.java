@@ -109,6 +109,15 @@ public class RedisCache
     }
 
     /**
+     * 原子读取并删除一次性缓存值。
+     */
+    public <T> T getAndDeleteCacheObject(final String key)
+    {
+        ValueOperations<String, T> operation = redisTemplate.opsForValue();
+        return operation.getAndDelete(key);
+    }
+
+    /**
      * 删除单个对象
      *
      * @param key
@@ -180,6 +189,24 @@ public class RedisCache
     public <T> Set<T> getCacheSet(final String key)
     {
         return redisTemplate.opsForSet().members(key);
+    }
+
+    /**
+     * 向Set中新增单个值。
+     */
+    public <T> long addCacheSetValue(final String key, final T value)
+    {
+        Long count = redisTemplate.opsForSet().add(key, value);
+        return count == null ? 0 : count;
+    }
+
+    /**
+     * 从Set中移除单个值。
+     */
+    public <T> long removeCacheSetValue(final String key, final T value)
+    {
+        Long count = redisTemplate.opsForSet().remove(key, value);
+        return count == null ? 0 : count;
     }
 
     /**

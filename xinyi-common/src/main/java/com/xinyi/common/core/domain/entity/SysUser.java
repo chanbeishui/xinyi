@@ -32,6 +32,15 @@ public class SysUser extends BaseEntity
     @Excel(name = "部门编号", type = Type.IMPORT)
     private Long deptId;
 
+    /** 完整任职部门ID */
+    private Long[] deptIds;
+
+    /** 账号管理范围 */
+    private String managementScope;
+
+    /** 授权版本 */
+    private Long authVersion;
+
     /** 用户账号 */
     @Excel(name = "登录名称")
     private String userName;
@@ -129,6 +138,36 @@ public class SysUser extends BaseEntity
     public void setDeptId(Long deptId)
     {
         this.deptId = deptId;
+    }
+
+    public Long[] getDeptIds()
+    {
+        return deptIds;
+    }
+
+    public void setDeptIds(Long[] deptIds)
+    {
+        this.deptIds = deptIds;
+    }
+
+    public String getManagementScope()
+    {
+        return managementScope;
+    }
+
+    public void setManagementScope(String managementScope)
+    {
+        this.managementScope = managementScope;
+    }
+
+    public Long getAuthVersion()
+    {
+        return authVersion;
+    }
+
+    public void setAuthVersion(Long authVersion)
+    {
+        this.authVersion = authVersion;
     }
 
     @Xss(message = "用户昵称不能包含脚本字符")
@@ -315,6 +354,9 @@ public class SysUser extends BaseEntity
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
             .append("userId", getUserId())
             .append("deptId", getDeptId())
+            .append("deptIds", getDeptIds())
+            .append("managementScope", getManagementScope())
+            .append("authVersion", getAuthVersion())
             .append("userName", getUserName())
             .append("nickName", getNickName())
             .append("email", getEmail())

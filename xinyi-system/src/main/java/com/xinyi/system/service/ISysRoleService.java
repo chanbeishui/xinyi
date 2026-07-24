@@ -103,7 +103,7 @@ public interface ISysRoleService
      * @param role 角色信息
      * @return 结果
      */
-    public int insertRole(SysRole role);
+    public int insertRole(SysRole role, String reason);
 
     /**
      * 修改保存角色信息
@@ -111,7 +111,7 @@ public interface ISysRoleService
      * @param role 角色信息
      * @return 结果
      */
-    public int updateRole(SysRole role);
+    public int updateRole(SysRole role, String reason);
 
     /**
      * 修改角色状态
@@ -119,7 +119,7 @@ public interface ISysRoleService
      * @param role 角色信息
      * @return 结果
      */
-    public int updateRoleStatus(SysRole role);
+    public int updateRoleStatus(SysRole role, String reason);
 
     /**
      * 修改数据权限信息
@@ -127,7 +127,7 @@ public interface ISysRoleService
      * @param role 角色信息
      * @return 结果
      */
-    public int authDataScope(SysRole role);
+    public int authDataScope(SysRole role, String reason);
 
     /**
      * 通过角色ID删除角色
@@ -135,7 +135,7 @@ public interface ISysRoleService
      * @param roleId 角色ID
      * @return 结果
      */
-    public int deleteRoleById(Long roleId);
+    public int deleteRoleById(Long roleId, String reason);
 
     /**
      * 批量删除角色信息
@@ -143,7 +143,7 @@ public interface ISysRoleService
      * @param roleIds 需要删除的角色ID
      * @return 结果
      */
-    public int deleteRoleByIds(Long[] roleIds);
+    public int deleteRoleByIds(Long[] roleIds, String reason);
 
     /**
      * 取消授权用户角色

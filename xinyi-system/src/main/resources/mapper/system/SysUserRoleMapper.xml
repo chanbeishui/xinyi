@@ -41,4 +41,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
  	        #{userId}
             </foreach> 
 	</delete>
-</mapper> 
+
+	<select id="selectRoleIdsByUserId" resultType="Long">
+		select role_id from sys_user_role where user_id = #{userId} order by role_id
+	</select>
+
+	<select id="selectUserIdsByRoleId" resultType="Long">
+		select user_id from sys_user_role where role_id = #{roleId} order by user_id
+	</select>
+</mapper>

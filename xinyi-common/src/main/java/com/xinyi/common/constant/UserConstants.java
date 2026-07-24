@@ -21,6 +21,12 @@ public class UserConstants
     /** 用户封禁状态 */
     public static final String USER_DISABLE = "1";
 
+    /** 部门管理账号 */
+    public static final String MANAGEMENT_SCOPE_DEPT = "DEPT";
+
+    /** 平台管理账号 */
+    public static final String MANAGEMENT_SCOPE_PLATFORM = "PLATFORM";
+
     /** 角色正常状态 */
     public static final String ROLE_NORMAL = "0";
 

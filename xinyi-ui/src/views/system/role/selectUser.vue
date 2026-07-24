@@ -63,6 +63,7 @@
 <script setup lang="ts" name="SelectUser">
 import { authUserSelectAll, unallocatedUserList } from "@/api/system/role"
 import type { SysUser, UserQueryParams } from '@/types/api/system/user'
+import type { AjaxResult } from '@/types/api/common'
 
 const props = defineProps({
   roleId: {
@@ -132,11 +133,16 @@ function handleSelectUser() {
     proxy.$modal.msgError("请选择要分配的用户")
     return
   }
-  authUserSelectAll({ roleId: roleId!, userIds: uIds }).then(res => {
-    proxy.$modal.msgSuccess(res.msg)
-    visible.value = false
-    emit("ok")
-  })
+  proxy.$prompt('请输入本次批量授权原因', '安全审计', {
+    inputPattern: /\S+/,
+    inputErrorMessage: '必须填写授权原因'
+  }).then(({ value }: { value: string }) => {
+    return authUserSelectAll({ roleId: roleId!, userIds: uIds, reason: value })
+  }).then((res: AjaxResult) => {
+      proxy.$modal.msgSuccess(res.msg)
+      visible.value = false
+      emit("ok")
+    }).catch(() => {})
 }
 
 defineExpose({

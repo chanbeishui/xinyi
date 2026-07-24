@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xinyi.system.mapper.SysUserDeptMapper">
+
+    <resultMap id="SysUserDeptResult" type="com.xinyi.system.domain.SysUserDept">
+        <id property="userId" column="user_id"/>
+        <id property="deptId" column="dept_id"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+    </resultMap>
+
+    <select id="selectDeptIdsByUserId" resultType="Long">
+        select dept_id
+        from sys_user_dept
+        where user_id = #{userId}
+        order by dept_id
+    </select>
+
+    <select id="selectActiveDeptIdsByUserId" resultType="Long">
+        select ud.dept_id
+        from sys_user_dept ud
+        inner join sys_dept d on d.dept_id = ud.dept_id
+        where ud.user_id = #{userId}
+          and d.del_flag = '0'
+          and d.status = '0'
+        order by ud.dept_id
+    </select>
+
+    <select id="selectByUserIds" resultMap="SysUserDeptResult">
+        select user_id, dept_id
+        from sys_user_dept
+        where user_id in
+        <foreach collection="userIds" item="userId" open="(" separator="," close=")">
+            #{userId}
+        </foreach>
+        order by user_id, dept_id
+    </select>
+
+    <select id="selectUserIdsByDeptId" resultType="Long">
+        select distinct user_id
+        from sys_user_dept
+        where dept_id = #{deptId}
+    </select>
+
+    <select id="countByDeptId" resultType="int">
+        select count(1)
+        from sys_user_dept ud
+        inner join sys_user u on u.user_id = ud.user_id and u.del_flag = '0'
+        where ud.dept_id = #{deptId}
+    </select>
+
+    <delete id="deleteByUserId">
+        delete from sys_user_dept where user_id = #{userId}
+    </delete>
+
+    <delete id="deleteByUserIds">
+        delete from sys_user_dept where user_id in
+        <foreach collection="array" item="userId" open="(" separator="," close=")">
+            #{userId}
+        </foreach>
+    </delete>
+
+    <insert id="batchInsert">
+        insert into sys_user_dept(user_id, dept_id, create_by, create_time) values
+        <foreach collection="items" item="item" separator=",">
+            (#{item.userId}, #{item.deptId}, #{item.createBy}, sysdate())
+        </foreach>
+    </insert>
+
+    <select id="countIntegrityIssues" resultType="int">
+        select count(1)
+        from (
+            select u.user_id, 'DEPT_SCOPE_RELATION_COUNT' issue_type
+            from sys_user u
+            left join sys_user_dept ud on ud.user_id = u.user_id
+            where u.del_flag = '0' and u.management_scope = 'DEPT'
+            group by u.user_id, u.dept_id
+            having count(ud.dept_id) != 1 or min(ud.dept_id) != u.dept_id
+            union all
+            select u.user_id, 'PRIMARY_NOT_IN_MEMBERSHIP'
+            from sys_user u
+            where u.del_flag = '0'
+              and not exists (
+                select 1 from sys_user_dept ud
+                where ud.user_id = u.user_id and ud.dept_id = u.dept_id
+              )
+            union all
+            select ud.user_id, 'ORPHAN_OR_DELETED_RELATION'
+            from sys_user_dept ud
+            left join sys_user u on u.user_id = ud.user_id
+            left join sys_dept d on d.dept_id = ud.dept_id
+            where u.user_id is null or u.del_flag != '0'
+               or d.dept_id is null or d.del_flag != '0'
+        ) issues
+    </select>
+</mapper>

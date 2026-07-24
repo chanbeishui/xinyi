@@ -32,6 +32,12 @@ export interface SysUser extends BaseEntity {
   userId?: number;
   /** 部门ID */
   deptId?: number;
+  /** 全部任职部门ID */
+  deptIds?: number[];
+  /** 账号管理范围 */
+  managementScope?: 'DEPT' | 'PLATFORM';
+  /** 授权版本 */
+  authVersion?: number;
   /** 用户账号 */
   userName?: string;
   /** 用户昵称 */
@@ -56,6 +62,8 @@ export interface SysUser extends BaseEntity {
   roleIds?: number[];
   /** 岗位组 */
   postIds?: number[];
+  /** 敏感变更原因（仅写请求使用） */
+  reason?: string;
 }
 
 /** 注册信息 */
@@ -104,4 +112,15 @@ export interface UserAuthRoleResult extends AjaxResult {
   user: SysUser
   /** 角色列表 */
   roles: SysRole[]
+}
+
+export interface UserDeptUpdateRequest {
+  primaryDeptId: number;
+  deptIds: number[];
+  reason: string;
+}
+
+export interface UserRoleUpdateRequest {
+  roleIds: number[];
+  reason: string;
 }

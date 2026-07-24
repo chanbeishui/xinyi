@@ -25,6 +25,7 @@
 <script setup lang="ts">
 import type {  AjaxResult } from '@/types/api/common'
 import { getToken } from '@/utils/auth'
+import request from '@/utils/request'
 
 const { proxy } = getCurrentInstance()
 
@@ -43,6 +44,16 @@ const props = defineProps({
   action: {
     type: String,
     required: true
+  },
+  // 安全导入预检接口；与executeAction同时配置时启用双阶段导入
+  previewAction: {
+    type: String,
+    default: ''
+  },
+  // 安全导入正式执行接口
+  executeAction: {
+    type: String,
+    default: ''
   },
   // 模板下载接口地址，不传则不显示下载模板链接
   templateAction: {
@@ -131,7 +142,55 @@ function handleSubmit() {
     proxy.$modal.msgError("请选择后缀为 “xls”或“xlsx”的文件。")
     return
   }
+  if (props.previewAction && props.executeAction) {
+    handleSecureSubmit(file.raw)
+    return
+  }
   uploadRef.value.submit()
+}
+
+async function handleSecureSubmit(file: File) {
+  isUploading.value = true
+  try {
+    const previewForm = new FormData()
+    previewForm.append('file', file)
+    previewForm.append('updateSupport', String(updateSupport.value))
+    const previewResponse: any = await request({
+      url: props.previewAction,
+      method: 'post',
+      headers: { 'Content-Type': 'multipart/form-data' },
+      data: previewForm
+    })
+    const summary = previewResponse.data
+    const message = `共 ${summary.rowCount} 行：新增 ${summary.createCount}，覆盖 ${summary.updateCount}，涉及平台账号 ${summary.platformAccountCount}。请输入本次导入原因后确认执行。`
+    const promptResult = await proxy.$prompt(message, '导入预检通过', {
+      confirmButtonText: '确认执行',
+      cancelButtonText: '取消',
+      inputPattern: /\S+/,
+      inputErrorMessage: '必须填写导入原因',
+      closeOnClickModal: false
+    })
+
+    const executeForm = new FormData()
+    executeForm.append('file', file)
+    executeForm.append('updateSupport', String(updateSupport.value))
+    executeForm.append('previewToken', summary.previewToken)
+    executeForm.append('confirmed', 'true')
+    executeForm.append('reason', promptResult.value)
+    await request({
+      url: props.executeAction,
+      method: 'post',
+      headers: { 'Content-Type': 'multipart/form-data' },
+      data: executeForm
+    })
+    visible.value = false
+    proxy.$modal.msgSuccess('导入成功')
+    emit('success')
+  } catch (error) {
+    // 请求错误由统一拦截器提示；取消确认无需额外提示。
+  } finally {
+    isUploading.value = false
+  }
 }
 
 defineExpose({ open })

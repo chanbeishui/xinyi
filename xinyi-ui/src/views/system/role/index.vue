@@ -326,8 +326,12 @@ function resetQuery() {
 /** 删除按钮操作 */
 function handleDelete(row?: SysRole) {
   const roleIds = row?.roleId || ids.value
-  proxy.$modal.confirm('是否确认删除角色编号为"' + roleIds + '"的数据项?').then(function () {
-    return delRole(roleIds)
+  proxy.$modal.prompt('请输入删除角色编号为"' + roleIds + '"的原因').then((response: any) => {
+    const value = response.value
+    if (!value?.trim()) {
+      return Promise.reject(new Error("必须填写删除原因"))
+    }
+    return delRole(roleIds, value.trim())
   }).then(() => {
     getList()
     proxy.$modal.msgSuccess("删除成功")
@@ -351,8 +355,12 @@ function handleSelectionChange(selection: SysRole[]) {
 /** 角色状态修改 */
 function handleStatusChange(row: SysRole) {
   const text = row.status === "0" ? "启用" : "停用"
-  proxy.$modal.confirm('确认要"' + text + '""' + row.roleName + '"角色吗?').then(function () {
-    return changeRoleStatus(row.roleId!, row.status!)
+  proxy.$modal.prompt('请输入"' + text + '""' + row.roleName + '"角色的原因').then((response: any) => {
+    const value = response.value
+    if (!value?.trim()) {
+      return Promise.reject(new Error("必须填写状态变更原因"))
+    }
+    return changeRoleStatus(row.roleId!, row.status!, value.trim())
   }).then(() => {
     proxy.$modal.msgSuccess(text + "成功")
   }).catch(function () {
@@ -516,18 +524,30 @@ function submitForm() {
     if (valid) {
       if (form.value.roleId != undefined) {
         form.value.menuIds = getMenuAllCheckedKeys()
-        updateRole(form.value).then(() => {
+        proxy.$modal.prompt("请输入修改角色权限配置的原因").then((response: any) => {
+          const value = response.value
+          if (!value?.trim()) {
+            return Promise.reject(new Error("必须填写修改原因"))
+          }
+          return updateRole(form.value, value.trim())
+        }).then(() => {
           proxy.$modal.msgSuccess("修改成功")
           open.value = false
           getList()
-        })
+        }).catch(() => {})
       } else {
         form.value.menuIds = getMenuAllCheckedKeys()
-        addRole(form.value).then(() => {
+        proxy.$modal.prompt("请输入新增角色的原因").then((response: any) => {
+          const value = response.value
+          if (!value?.trim()) {
+            return Promise.reject(new Error("必须填写新增原因"))
+          }
+          return addRole(form.value, value.trim())
+        }).then(() => {
           proxy.$modal.msgSuccess("新增成功")
           open.value = false
           getList()
-        })
+        }).catch(() => {})
       }
     }
   })
@@ -570,11 +590,17 @@ function handleDataScope(row: SysRole) {
 function submitDataScope() {
   if (form.value.roleId != undefined) {
     form.value.deptIds = getDeptAllCheckedKeys()
-    dataScope(form.value).then(() => {
+    proxy.$modal.prompt("请输入修改角色数据范围的原因").then((response: any) => {
+      const value = response.value
+      if (!value?.trim()) {
+        return Promise.reject(new Error("必须填写修改原因"))
+      }
+      return dataScope(form.value, value.trim())
+    }).then(() => {
       proxy.$modal.msgSuccess("修改成功")
       openDataScope.value = false
       getList()
-    })
+    }).catch(() => {})
   }
 }
 

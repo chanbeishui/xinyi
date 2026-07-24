@@ -6,7 +6,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <resultMap type="SysUser" id="SysUserResult">
         <id     property="userId"        column="user_id"         />
-        <result property="deptId"        column="dept_id"         />
+        <result property="deptId"        column="user_dept_id"    />
+        <result property="managementScope" column="management_scope" />
+        <result property="authVersion"   column="auth_version"    />
         <result property="userName"      column="user_name"       />
         <result property="nickName"      column="nick_name"       />
         <result property="email"         column="email"           />
@@ -46,9 +48,17 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="dataScope"    column="data_scope"     />
         <result property="status"       column="role_status"    />
     </resultMap>
+
+    <resultMap id="UserAuthStateResult" type="SysUserAuthState">
+        <id property="userId" column="user_id"/>
+        <result property="authVersion" column="auth_version"/>
+        <result property="status" column="status"/>
+        <result property="delFlag" column="del_flag"/>
+    </resultMap>
 	
 	<sql id="selectUserVo">
-        select u.user_id, u.dept_id, u.user_name, u.nick_name, u.email, u.avatar, u.phonenumber, u.password, u.sex, u.status, u.del_flag, u.login_ip, u.login_date, u.pwd_update_date, u.create_by, u.create_time, u.update_by, u.update_time, u.remark, 
+        select u.user_id, u.dept_id as user_dept_id, u.management_scope, u.auth_version,
+        u.user_name, u.nick_name, u.email, u.avatar, u.phonenumber, u.password, u.sex, u.status, u.del_flag, u.login_ip, u.login_date, u.pwd_update_date, u.create_by, u.create_time, u.update_by, u.update_time, u.remark,
         d.dept_id, d.parent_id, d.ancestors, d.dept_name, d.order_num, d.leader, d.status as dept_status,
         r.role_id, r.role_name, r.role_key, r.role_sort, r.data_scope, r.status as role_status
         from sys_user u
@@ -56,69 +66,253 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		    left join sys_user_role ur on u.user_id = ur.user_id
 		    left join sys_role r on r.role_id = ur.role_id
     </sql>
+
+    <sql id="userVisibilityFilter">
+        <if test="!visibility.allData">
+            AND (
+                <if test="visibility.visibleDeptIds != null and visibility.visibleDeptIds.size() > 0">
+                    EXISTS (
+                        SELECT 1 FROM sys_user_dept scope_ud
+                        WHERE scope_ud.user_id = u.user_id
+                          AND scope_ud.dept_id IN
+                          <foreach collection="visibility.visibleDeptIds" item="deptId" open="(" separator="," close=")">
+                              #{deptId}
+                          </foreach>
+                    )
+                </if>
+                <if test="visibility.visibleDeptIds != null and visibility.visibleDeptIds.size() > 0 and visibility.includeSelf">
+                    OR
+                </if>
+                <if test="visibility.includeSelf">
+                    u.user_id = #{visibility.currentUserId}
+                </if>
+                <if test="(visibility.visibleDeptIds == null or visibility.visibleDeptIds.size() == 0) and !visibility.includeSelf">
+                    1 = 0
+                </if>
+            )
+        </if>
+        <if test="visibility.searchDeptIds != null and visibility.searchDeptIds.size() > 0">
+            AND (
+                <choose>
+                    <when test="visibility.allData">
+                        EXISTS (
+                            SELECT 1 FROM sys_user_dept search_ud
+                            WHERE search_ud.user_id = u.user_id
+                              AND search_ud.dept_id IN
+                              <foreach collection="visibility.searchDeptIds" item="deptId" open="(" separator="," close=")">
+                                  #{deptId}
+                              </foreach>
+                        )
+                    </when>
+                    <otherwise>
+                        <if test="visibility.visibleDeptIds != null and visibility.visibleDeptIds.size() > 0">
+                            EXISTS (
+                                SELECT 1 FROM sys_user_dept search_ud
+                                WHERE search_ud.user_id = u.user_id
+                                  AND search_ud.dept_id IN
+                                  <foreach collection="visibility.searchDeptIds" item="deptId" open="(" separator="," close=")">
+                                      #{deptId}
+                                  </foreach>
+                                  AND search_ud.dept_id IN
+                                  <foreach collection="visibility.visibleDeptIds" item="deptId" open="(" separator="," close=")">
+                                      #{deptId}
+                                  </foreach>
+                            )
+                        </if>
+                        <if test="visibility.visibleDeptIds != null and visibility.visibleDeptIds.size() > 0 and visibility.includeSelf">
+                            OR
+                        </if>
+                        <if test="visibility.includeSelf">
+                            (
+                                u.user_id = #{visibility.currentUserId}
+                                AND EXISTS (
+                                    SELECT 1 FROM sys_user_dept self_ud
+                                    WHERE self_ud.user_id = u.user_id
+                                      AND self_ud.dept_id IN
+                                      <foreach collection="visibility.searchDeptIds" item="deptId" open="(" separator="," close=")">
+                                          #{deptId}
+                                      </foreach>
+                                )
+                            )
+                        </if>
+                        <if test="(visibility.visibleDeptIds == null or visibility.visibleDeptIds.size() == 0) and !visibility.includeSelf">
+                            1 = 0
+                        </if>
+                    </otherwise>
+                </choose>
+            )
+        </if>
+    </sql>
     
-    <select id="selectUserList" parameterType="SysUser" resultMap="SysUserResult">
-		select u.user_id, u.dept_id, u.nick_name, u.user_name, u.email, u.avatar, u.phonenumber, u.sex, u.status, u.del_flag, u.login_ip, u.login_date, u.create_by, u.create_time, u.remark, d.dept_name, d.leader from sys_user u
+    <select id="selectUserList" resultMap="SysUserResult">
+		select u.user_id,
+        <choose>
+            <when test="visibility.allData">
+                u.dept_id as user_dept_id, d.dept_id, d.dept_name, d.leader,
+            </when>
+            <otherwise>
+                case when
+                    <if test="visibility.visibleDeptIds != null and visibility.visibleDeptIds.size() > 0">
+                        u.dept_id in
+                        <foreach collection="visibility.visibleDeptIds" item="deptId" open="(" separator="," close=")">
+                            #{deptId}
+                        </foreach>
+                    </if>
+                    <if test="visibility.visibleDeptIds != null and visibility.visibleDeptIds.size() > 0 and visibility.includeSelf">
+                        or
+                    </if>
+                    <if test="visibility.includeSelf">
+                        u.user_id = #{visibility.currentUserId}
+                    </if>
+                    <if test="(visibility.visibleDeptIds == null or visibility.visibleDeptIds.size() == 0) and !visibility.includeSelf">
+                        1 = 0
+                    </if>
+                then u.dept_id else null end as user_dept_id,
+                case when
+                    <if test="visibility.visibleDeptIds != null and visibility.visibleDeptIds.size() > 0">
+                        u.dept_id in
+                        <foreach collection="visibility.visibleDeptIds" item="deptId" open="(" separator="," close=")">
+                            #{deptId}
+                        </foreach>
+                    </if>
+                    <if test="visibility.visibleDeptIds != null and visibility.visibleDeptIds.size() > 0 and visibility.includeSelf">
+                        or
+                    </if>
+                    <if test="visibility.includeSelf">
+                        u.user_id = #{visibility.currentUserId}
+                    </if>
+                    <if test="(visibility.visibleDeptIds == null or visibility.visibleDeptIds.size() == 0) and !visibility.includeSelf">
+                        1 = 0
+                    </if>
+                then d.dept_id else null end as dept_id,
+                case when
+                    <if test="visibility.visibleDeptIds != null and visibility.visibleDeptIds.size() > 0">
+                        u.dept_id in
+                        <foreach collection="visibility.visibleDeptIds" item="deptId" open="(" separator="," close=")">
+                            #{deptId}
+                        </foreach>
+                    </if>
+                    <if test="visibility.visibleDeptIds != null and visibility.visibleDeptIds.size() > 0 and visibility.includeSelf">
+                        or
+                    </if>
+                    <if test="visibility.includeSelf">
+                        u.user_id = #{visibility.currentUserId}
+                    </if>
+                    <if test="(visibility.visibleDeptIds == null or visibility.visibleDeptIds.size() == 0) and !visibility.includeSelf">
+                        1 = 0
+                    </if>
+                then d.dept_name else null end as dept_name,
+                case when
+                    <if test="visibility.visibleDeptIds != null and visibility.visibleDeptIds.size() > 0">
+                        u.dept_id in
+                        <foreach collection="visibility.visibleDeptIds" item="deptId" open="(" separator="," close=")">
+                            #{deptId}
+                        </foreach>
+                    </if>
+                    <if test="visibility.visibleDeptIds != null and visibility.visibleDeptIds.size() > 0 and visibility.includeSelf">
+                        or
+                    </if>
+                    <if test="visibility.includeSelf">
+                        u.user_id = #{visibility.currentUserId}
+                    </if>
+                    <if test="(visibility.visibleDeptIds == null or visibility.visibleDeptIds.size() == 0) and !visibility.includeSelf">
+                        1 = 0
+                    </if>
+                then d.leader else null end as leader,
+            </otherwise>
+        </choose>
+        u.management_scope, u.auth_version, u.nick_name, u.user_name, u.email, u.avatar,
+        u.phonenumber, u.sex, u.status, u.del_flag, u.login_ip, u.login_date,
+        u.create_by, u.create_time, u.remark
+        from sys_user u
 		left join sys_dept d on u.dept_id = d.dept_id
 		where u.del_flag = '0'
-		<if test="userId != null and userId != 0">
-			AND u.user_id = #{userId}
+		<if test="query.userId != null and query.userId != 0">
+			AND u.user_id = #{query.userId}
 		</if>
-		<if test="userName != null and userName != ''">
-			AND u.user_name like concat('%', #{userName}, '%')
+		<if test="query.userName != null and query.userName != ''">
+			AND u.user_name like concat('%', #{query.userName}, '%')
 		</if>
-		<if test="status != null and status != ''">
-			AND u.status = #{status}
+		<if test="query.status != null and query.status != ''">
+			AND u.status = #{query.status}
 		</if>
-		<if test="phonenumber != null and phonenumber != ''">
-			AND u.phonenumber like concat('%', #{phonenumber}, '%')
+		<if test="query.phonenumber != null and query.phonenumber != ''">
+			AND u.phonenumber like concat('%', #{query.phonenumber}, '%')
 		</if>
-		<if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
-			AND date_format(u.create_time,'%Y%m%d') &gt;= date_format(#{params.beginTime},'%Y%m%d')
+		<if test="query.params.beginTime != null and query.params.beginTime != ''">
+			AND date_format(u.create_time,'%Y%m%d') &gt;= date_format(#{query.params.beginTime},'%Y%m%d')
 		</if>
-		<if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
-			AND date_format(u.create_time,'%Y%m%d') &lt;= date_format(#{params.endTime},'%Y%m%d')
+		<if test="query.params.endTime != null and query.params.endTime != ''">
+			AND date_format(u.create_time,'%Y%m%d') &lt;= date_format(#{query.params.endTime},'%Y%m%d')
 		</if>
-		<if test="deptId != null and deptId != 0">
-			AND (u.dept_id = #{deptId} OR u.dept_id IN ( SELECT t.dept_id FROM sys_dept t WHERE find_in_set(#{deptId}, ancestors) ))
-		</if>
-		<!-- 数据范围过滤 -->
-		${params.dataScope}
+        <include refid="userVisibilityFilter"/>
 	</select>
 	
-	<select id="selectAllocatedList" parameterType="SysUser" resultMap="SysUserResult">
-	    select distinct u.user_id, u.dept_id, u.user_name, u.nick_name, u.email, u.phonenumber, u.status, u.create_time
+	<select id="selectAllocatedList" resultMap="SysUserResult">
+	    select distinct u.user_id,
+        <choose>
+            <when test="visibility.allData">u.dept_id as user_dept_id,</when>
+            <otherwise>
+                case when
+                    <if test="visibility.visibleDeptIds != null and visibility.visibleDeptIds.size() > 0">
+                        u.dept_id in
+                        <foreach collection="visibility.visibleDeptIds" item="deptId" open="(" separator="," close=")">
+                            #{deptId}
+                        </foreach>
+                    </if>
+                    <if test="visibility.visibleDeptIds != null and visibility.visibleDeptIds.size() > 0 and visibility.includeSelf">or</if>
+                    <if test="visibility.includeSelf">u.user_id = #{visibility.currentUserId}</if>
+                    <if test="(visibility.visibleDeptIds == null or visibility.visibleDeptIds.size() == 0) and !visibility.includeSelf">1 = 0</if>
+                then u.dept_id else null end as user_dept_id,
+            </otherwise>
+        </choose>
+        u.management_scope, u.auth_version,
+               u.user_name, u.nick_name, u.email, u.phonenumber, u.status, u.create_time
 	    from sys_user u
-			 left join sys_dept d on u.dept_id = d.dept_id
 			 left join sys_user_role ur on u.user_id = ur.user_id
 			 left join sys_role r on r.role_id = ur.role_id
-	    where u.del_flag = '0' and r.role_id = #{roleId}
-	    <if test="userName != null and userName != ''">
-			AND u.user_name like concat('%', #{userName}, '%')
+	    where u.del_flag = '0' and r.role_id = #{query.roleId}
+	    <if test="query.userName != null and query.userName != ''">
+			AND u.user_name like concat('%', #{query.userName}, '%')
 		</if>
-		<if test="phonenumber != null and phonenumber != ''">
-			AND u.phonenumber like concat('%', #{phonenumber}, '%')
+		<if test="query.phonenumber != null and query.phonenumber != ''">
+			AND u.phonenumber like concat('%', #{query.phonenumber}, '%')
 		</if>
-		<!-- 数据范围过滤 -->
-		${params.dataScope}
+        <include refid="userVisibilityFilter"/>
 	</select>
 	
-	<select id="selectUnallocatedList" parameterType="SysUser" resultMap="SysUserResult">
-	    select distinct u.user_id, u.dept_id, u.user_name, u.nick_name, u.email, u.phonenumber, u.status, u.create_time
+	<select id="selectUnallocatedList" resultMap="SysUserResult">
+	    select distinct u.user_id,
+        <choose>
+            <when test="visibility.allData">u.dept_id as user_dept_id,</when>
+            <otherwise>
+                case when
+                    <if test="visibility.visibleDeptIds != null and visibility.visibleDeptIds.size() > 0">
+                        u.dept_id in
+                        <foreach collection="visibility.visibleDeptIds" item="deptId" open="(" separator="," close=")">
+                            #{deptId}
+                        </foreach>
+                    </if>
+                    <if test="visibility.visibleDeptIds != null and visibility.visibleDeptIds.size() > 0 and visibility.includeSelf">or</if>
+                    <if test="visibility.includeSelf">u.user_id = #{visibility.currentUserId}</if>
+                    <if test="(visibility.visibleDeptIds == null or visibility.visibleDeptIds.size() == 0) and !visibility.includeSelf">1 = 0</if>
+                then u.dept_id else null end as user_dept_id,
+            </otherwise>
+        </choose>
+        u.management_scope, u.auth_version,
+               u.user_name, u.nick_name, u.email, u.phonenumber, u.status, u.create_time
 	    from sys_user u
-			 left join sys_dept d on u.dept_id = d.dept_id
 			 left join sys_user_role ur on u.user_id = ur.user_id
 			 left join sys_role r on r.role_id = ur.role_id
-	    where u.del_flag = '0' and (r.role_id != #{roleId} or r.role_id IS NULL)
-	    and u.user_id not in (select u.user_id from sys_user u inner join sys_user_role ur on u.user_id = ur.user_id and ur.role_id = #{roleId})
-	    <if test="userName != null and userName != ''">
-			AND u.user_name like concat('%', #{userName}, '%')
+	    where u.del_flag = '0' and (r.role_id != #{query.roleId} or r.role_id IS NULL)
+	    and u.user_id not in (select iu.user_id from sys_user iu inner join sys_user_role iur on iu.user_id = iur.user_id and iur.role_id = #{query.roleId})
+	    <if test="query.userName != null and query.userName != ''">
+			AND u.user_name like concat('%', #{query.userName}, '%')
 		</if>
-		<if test="phonenumber != null and phonenumber != ''">
-			AND u.phonenumber like concat('%', #{phonenumber}, '%')
+		<if test="query.phonenumber != null and query.phonenumber != ''">
+			AND u.phonenumber like concat('%', #{query.phonenumber}, '%')
 		</if>
-		<!-- 数据范围过滤 -->
-		${params.dataScope}
+        <include refid="userVisibilityFilter"/>
 	</select>
 	
 	<select id="selectUserByUserName" parameterType="String" resultMap="SysUserResult">
@@ -130,6 +324,29 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<include refid="selectUserVo"/>
 		where u.user_id = #{userId}
 	</select>
+
+    <select id="selectUserByIdForUpdate" parameterType="Long" resultMap="SysUserResult">
+        select u.user_id, u.dept_id as user_dept_id, u.management_scope, u.auth_version,
+               u.user_name, u.nick_name, u.email, u.avatar, u.phonenumber, u.password,
+               u.sex, u.status, u.del_flag, u.create_by, u.create_time, u.update_by,
+               u.update_time, u.remark
+        from sys_user u
+        where u.user_id = #{userId}
+        for update
+    </select>
+
+    <select id="selectAuthStateByUserId" parameterType="Long" resultMap="UserAuthStateResult">
+        select user_id, auth_version, status, del_flag
+        from sys_user
+        where user_id = #{userId}
+    </select>
+
+    <select id="selectActiveUserIds" resultType="Long">
+        select user_id
+        from sys_user
+        where del_flag = '0'
+        order by user_id
+    </select>
 	
 	<select id="checkUserNameUnique" parameterType="String" resultMap="SysUserResult">
 		select user_id, user_name from sys_user where user_name = #{userName} and del_flag = '0' limit 1
@@ -158,6 +375,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
  			<if test="pwdUpdateDate != null">pwd_update_date,</if>
  			<if test="createBy != null and createBy != ''">create_by,</if>
  			<if test="remark != null and remark != ''">remark,</if>
+            management_scope, auth_version,
  			create_time
  		)values(
  			<if test="userId != null and userId != ''">#{userId},</if>
@@ -173,6 +391,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
  			<if test="pwdUpdateDate != null">#{pwdUpdateDate},</if>
  			<if test="createBy != null and createBy != ''">#{createBy},</if>
  			<if test="remark != null and remark != ''">#{remark},</if>
+            coalesce(#{managementScope}, 'DEPT'), 0,
  			sysdate()
  		)
 	</insert>
@@ -180,7 +399,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<update id="updateUser" parameterType="SysUser">
  		update sys_user
  		<set>
- 			<if test="deptId != 0">dept_id = #{deptId},</if>
+			<if test="deptId != null and deptId != 0">dept_id = #{deptId},</if>
  			<if test="nickName != null and nickName != ''">nick_name = #{nickName},</if>
  			<if test="email != null ">email = #{email},</if>
  			<if test="phonenumber != null ">phonenumber = #{phonenumber},</if>
@@ -191,15 +410,38 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
  			<if test="loginIp != null and loginIp != ''">login_ip = #{loginIp},</if>
  			<if test="loginDate != null">login_date = #{loginDate},</if>
  			<if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
- 			<if test="remark != null">remark = #{remark},</if>
+			<if test="remark != null">remark = #{remark},</if>
+            <if test="managementScope != null and managementScope != ''">management_scope = #{managementScope},</if>
  			update_time = sysdate()
  		</set>
  		where user_id = #{userId}
 	</update>
+
+    <update id="updateUserProfile" parameterType="SysUser">
+        update sys_user
+        set nick_name = #{nickName},
+            email = #{email},
+            phonenumber = #{phonenumber},
+            sex = #{sex},
+            update_time = sysdate()
+        where user_id = #{userId}
+    </update>
 	
 	<update id="updateUserStatus" parameterType="SysUser">
  		update sys_user set status = #{status}, update_time = sysdate() where user_id = #{userId}
 	</update>
+
+    <update id="updateManagementScope">
+        update sys_user
+        set management_scope = #{managementScope}, update_by = #{updateBy}, update_time = sysdate()
+        where user_id = #{userId}
+    </update>
+
+    <update id="incrementAuthVersion">
+        update sys_user
+        set auth_version = auth_version + 1, update_time = sysdate()
+        where user_id = #{userId}
+    </update>
 	
 	<update id="updateUserAvatar" parameterType="SysUser">
  		update sys_user set avatar = #{avatar}, update_time = sysdate() where user_id = #{userId}
@@ -224,4 +466,4 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </foreach> 
  	</delete>
 	
-</mapper> 
+</mapper>

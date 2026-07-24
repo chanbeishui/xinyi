@@ -122,4 +122,14 @@ public interface SysDeptMapper
      * @return 结果
      */
     public int deleteDeptById(Long deptId);
+
+    /**
+     * 查询存在且启用的部门ID。
+     */
+    public List<Long> selectActiveDeptIds(@Param("deptIds") List<Long> deptIds);
+
+    /**
+     * 展开指定部门及其全部启用下级部门。
+     */
+    public List<Long> selectDeptAndChildIds(@Param("deptIds") List<Long> deptIds);
 }

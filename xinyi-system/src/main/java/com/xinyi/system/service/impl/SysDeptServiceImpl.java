@@ -2,7 +2,9 @@ package com.xinyi.system.service.impl;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,7 +21,10 @@ import com.xinyi.common.utils.StringUtils;
 import com.xinyi.common.utils.spring.SpringUtils;
 import com.xinyi.system.mapper.SysDeptMapper;
 import com.xinyi.system.mapper.SysRoleMapper;
+import com.xinyi.system.mapper.SysUserMapper;
 import com.xinyi.system.service.ISysDeptService;
+import com.xinyi.system.service.ISecurityAuditService;
+import com.xinyi.system.service.IUserAuthorizationMutationService;
 
 /**
  * 部门管理 服务实现
@@ -34,6 +39,15 @@ public class SysDeptServiceImpl implements ISysDeptService
 
     @Autowired
     private SysRoleMapper roleMapper;
+
+    @Autowired
+    private SysUserMapper userMapper;
+
+    @Autowired
+    private IUserAuthorizationMutationService authorizationMutationService;
+
+    @Autowired
+    private ISecurityAuditService securityAuditService;
 
     /**
      * 查询部门管理数据
@@ -197,7 +211,13 @@ public class SysDeptServiceImpl implements ISysDeptService
             List<SysDept> depts = SpringUtils.getAopProxy(this).selectDeptList(dept);
             if (StringUtils.isEmpty(depts))
             {
-                throw new ServiceException("没有权限访问部门数据！");
+                ServiceException ex = new ServiceException("没有权限访问部门数据！");
+                Map<String, Object> requested = new LinkedHashMap<>();
+                requested.put("deptId", deptId);
+                securityAuditService.recordFailure("DEPT_ACCESS_DENIED", null,
+                        "部门数据范围拒绝", null, requested,
+                        "DATA_SCOPE_DENIED", ex.getMessage());
+                throw ex;
             }
         }
     }
@@ -228,6 +248,7 @@ public class SysDeptServiceImpl implements ISysDeptService
      * @return 结果
      */
     @Override
+    @Transactional
     public int updateDept(SysDept dept)
     {
         SysDept newParentDept = deptMapper.selectDeptById(dept.getParentId());
@@ -245,6 +266,16 @@ public class SysDeptServiceImpl implements ISysDeptService
         {
             // 如果该部门是启用状态，则启用该部门的所有上级部门
             updateParentDeptStatusNormal(dept);
+        }
+        boolean authorizationScopeChanged = oldDept != null
+                && (!StringUtils.equals(oldDept.getStatus(), dept.getStatus())
+                        || !java.util.Objects.equals(oldDept.getParentId(), dept.getParentId()));
+        if (authorizationScopeChanged)
+        {
+            authorizationMutationService.invalidateUsers(userMapper.selectActiveUserIds(),
+                    "DEPT_AUTHORIZATION_SCOPE_UPDATE", "部门状态或层级变更");
+            securityAuditService.recordSuccess("DEPT_AUTHORIZATION_CONFIG_UPDATE", null,
+                    "部门状态或层级变更", deptSnapshot(oldDept), deptSnapshot(dept), null, null);
         }
         return result;
     }
@@ -291,12 +322,27 @@ public class SysDeptServiceImpl implements ISysDeptService
     @Transactional
     public void updateDeptSort(String[] deptIds, String[] orderNums)
     {
+        if (deptIds == null || orderNums == null || deptIds.length != orderNums.length)
+        {
+            throw new ServiceException("部门排序参数不完整");
+        }
         try
         {
+            List<Long> validatedDeptIds = new ArrayList<>();
+            for (String deptId : deptIds)
+            {
+                Long id = Convert.toLong(deptId);
+                checkDeptDataScope(id);
+                if (deptMapper.selectDeptById(id) == null)
+                {
+                    throw new ServiceException("部门不存在: " + id);
+                }
+                validatedDeptIds.add(id);
+            }
             for (int i = 0; i < deptIds.length; i++)
             {
                 SysDept dept = new SysDept();
-                dept.setDeptId(Convert.toLong(deptIds[i]));
+                dept.setDeptId(validatedDeptIds.get(i));
                 dept.setOrderNum(Convert.toInt(orderNums[i]));
                 deptMapper.updateDeptSort(dept);
             }
@@ -314,9 +360,34 @@ public class SysDeptServiceImpl implements ISysDeptService
      * @return 结果
      */
     @Override
+    @Transactional
     public int deleteDeptById(Long deptId)
     {
-        return deptMapper.deleteDeptById(deptId);
+        int rows = deptMapper.deleteDeptById(deptId);
+        if (rows > 0)
+        {
+            authorizationMutationService.invalidateUsers(userMapper.selectActiveUserIds(),
+                    "DEPT_DELETE", "部门删除影响数据范围");
+            Map<String, Object> before = new LinkedHashMap<>();
+            before.put("deptId", deptId);
+            securityAuditService.recordSuccess("DEPT_DELETE", null,
+                    "部门删除影响数据范围", before, null, null, null);
+        }
+        return rows;
+    }
+
+    private Map<String, Object> deptSnapshot(SysDept dept)
+    {
+        Map<String, Object> snapshot = new LinkedHashMap<>();
+        if (dept == null)
+        {
+            return snapshot;
+        }
+        snapshot.put("deptId", dept.getDeptId());
+        snapshot.put("parentId", dept.getParentId());
+        snapshot.put("status", dept.getStatus());
+        snapshot.put("ancestors", dept.getAncestors());
+        return snapshot;
     }
 
     /**
