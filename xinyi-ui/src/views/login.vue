@@ -2,7 +2,7 @@
   <div class="login">
     <div class="login-aurora" aria-hidden="true"></div>
     <section class="brand-panel">
-      <img src="@/assets/logo/xinyi-lotus.png" alt="信仪" class="brand-mark" />
+      <img src="@/assets/logo/xinyi-lotus.png" alt="集信国控" class="brand-mark" />
       <p class="brand-kicker">XINYI WORKSPACE</p>
       <h1>让每一次运营<br />都更笃定。</h1>
       <p class="brand-copy">为组织提供清晰、安全、流畅的数字工作体验。</p>
