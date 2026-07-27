@@ -71,6 +71,19 @@ export const constantRoutes = [
     ]
   },
   {
+    path: '/dataScreen',
+    component: Layout,
+    hidden: true,
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/dataScreen/index.vue'),
+        name: 'DataScreen',
+        meta: { title: '数据大屏', icon: 'chart' }
+      }
+    ]
+  },
+  {
     path: '/lock',
     component: () => import('@/views/lock.vue'),
     hidden: true,
