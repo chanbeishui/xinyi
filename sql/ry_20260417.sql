@@ -264,8 +264,6 @@ insert into sys_menu values('1060', '生成代码', '116', '6', '#', '', '', '',
 insert into sys_menu values('1061', '任职部门修改', '100', '8', '', '', '', '', 1, 0, 'F', '0', '0', 'system:user:dept:edit',       '#', 'admin', sysdate(), '', null, '');
 insert into sys_menu values('1062', '用户角色修改', '100', '9', '', '', '', '', 1, 0, 'F', '0', '0', 'system:user:role:edit',       '#', 'admin', sysdate(), '', null, '');
 insert into sys_menu values('1063', '平台账号降级', '100', '10', '', '', '', '', 1, 0, 'F', '0', '0', 'system:user:management:edit', '#', 'admin', sysdate(), '', null, '');
-insert into sys_menu values('2024', '数据大屏', '0', '5', 'dataScreen', null, '', '', 1, 0, 'M', '0', '0', '', 'chart', 'admin', sysdate(), '', null, '数据大屏目录');
-insert into sys_menu values('2025', '检测BI看板', '2024', '1', 'index', 'dataScreen/index', '', '', 1, 0, 'C', '0', '0', 'dataScreen:index:list', 'chart', 'admin', sysdate(), '', null, '检测行业BI看板数据大屏');
 
 
 -- ----------------------------
@@ -400,8 +398,6 @@ insert into sys_role_menu values ('2', '1057');
 insert into sys_role_menu values ('2', '1058');
 insert into sys_role_menu values ('2', '1059');
 insert into sys_role_menu values ('2', '1060');
-insert into sys_role_menu values ('1', '2024');
-insert into sys_role_menu values ('1', '2025');
 
 -- ----------------------------
 -- 8、角色和部门关联表  角色1-N部门

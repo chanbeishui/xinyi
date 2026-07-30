@@ -29,7 +29,7 @@ Java 代码位于各模块的 `src/main/java`，资源和 MyBatis XML 位于 `sr
 - `cd xinyi-ui && npm run build:stage`：构建预发布环境前端资源。
 - `cd xinyi-ui && npm run preview`：预览构建结果。
 
-Windows 下如果 npm 指向错误的全局目录，先把 `npm_config_prefix` 设置为 Node 安装目录。
+Windows 下如果 npm 指向错误的全局目录，先把 `npm_config_prefix` 设置为 Node 安装目录���
 
 ## 代码风格与命名规范
 

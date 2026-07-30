@@ -65,21 +65,8 @@ export const constantRoutes = [
       {
         path: '/index',
         component: () => import('@/views/index.vue'),
-        name: 'Index',
+        name: 'Home',
         meta: { title: '首页', icon: 'dashboard', affix: true }
-      }
-    ]
-  },
-  {
-    path: '/dataScreen',
-    component: Layout,
-    hidden: true,
-    children: [
-      {
-        path: 'index',
-        component: () => import('@/views/dataScreen/index.vue'),
-        name: 'DataScreen',
-        meta: { title: '数据大屏', icon: 'chart' }
       }
     ]
   },

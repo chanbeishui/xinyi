@@ -62,7 +62,7 @@ function isDashboard(route?: any): boolean {
   if (!name) {
     return false
   }
-  return String(name).trim() === 'Index'
+  return String(name).trim() === 'Home'
 }
 function handleLink(item: any): void {
   const { redirect, path } = item
