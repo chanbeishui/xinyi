@@ -1,0 +1,5 @@
+# Generated digital-twin bundles are deployment artifacts. Keep their bytes
+# unchanged and avoid noisy source diffs on GitHub.
+xinyi-ui/public/digital-twin/**/*.js binary linguist-generated=true
+xinyi-ui/public/digital-twin/**/*.css binary linguist-generated=true
+xinyi-ui/public/digital-twin/**/*.gif binary linguist-generated=true
