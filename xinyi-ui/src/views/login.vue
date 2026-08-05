@@ -4,11 +4,11 @@
     <section class="brand-panel">
       <img src="@/assets/logo/xinyi-lotus.png" alt="集信国控" class="brand-mark" />
       <p class="brand-kicker">XINYI WORKSPACE</p>
-      <h1>让每一次运营<br />都更笃定。</h1>
-      <p class="brand-copy">为组织提供清晰、安全、流畅的数字工作体验。</p>
+      <h1>让每一次检测<br />都更可靠。</h1>
+      <p class="brand-copy">为公众提供严格、安全、可靠的检测工作。</p>
     </section>
     <el-form ref="loginRef" :model="loginForm" :rules="loginRules" class="login-form">
-      <div class="form-brand"><img src="@/assets/logo/xinyi-lotus.png" alt="" /><span>信仪</span></div>
+      <div class="form-brand"><img src="@/assets/logo/xinyi-lotus.png" alt="" /><span>集信国控</span></div>
       <p class="form-eyebrow">欢迎回来</p>
       <h3 class="title">{{ title }}</h3>
       <el-form-item prop="username">
