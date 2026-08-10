@@ -2,8 +2,9 @@
 
 ## 本次变更
 
-- 新增“数字孪生”一级菜单，以及“数字档案室”“智慧仪器室”两个子菜单。
+- 新增“数字孪生”一级菜单，以及“数字档案室”“智慧仪器室”“业务点分布图”三个子菜单。
 - 新增两个数字孪生前端生产构建，并通过同源 `iframe` 嵌入若依内容区。
+- 将业务点分布图作为若依原生 Vue 页面接入数字孪生菜单，支持粤桂总览和茂名市级巡检。
 - 新增可重复执行的菜单迁移脚本，新数据库和已有数据库使用同一份增量脚本。
 - 保留数字孪生子项目的独立资源目录，后续可分别替换构建产物，不影响若依其他业务页面。
 
@@ -14,6 +15,7 @@
 - 数字孪生
 - 数字档案室
 - 智慧仪器室
+- 业务点分布图
 
 菜单完全由数据库 `sys_menu` 生成，前端路由中不写死菜单项。
 
@@ -24,6 +26,7 @@
 - `xinyi-ui/src/components/DigitalTwinFrame/index.vue`：若依内嵌容器
 - `xinyi-ui/src/views/digital-twin/archive-room/index.vue`：数字档案室菜单页面
 - `xinyi-ui/src/views/digital-twin/instrument-room/index.vue`：智慧仪器室菜单页面
+- `xinyi-ui/src/views/bizMap/`：业务点分布图及地图交互组件
 - `sql/migration_20260804_digital_twin_menu.sql`：已有数据库迁移脚本
 
 ## 数据库初始化
