@@ -1,7 +1,12 @@
--- 数字孪生菜单与角色授权
--- 适用于已有数据库，可重复执行。
+-- 数字孪生菜单数据包与角色授权
+-- 前置版本：已导入 sql/ry_20260417.sql，且存在 sys_menu、sys_role、sys_role_menu 表。
+-- 执行顺序：在基础初始化脚本及其他业务迁移完成后执行本文件。
+-- 备份要求：生产环境执行前请备份 sys_menu 与 sys_role_menu 表。
+-- 适用范围：已有数据库增量升级；脚本允许重复执行。
 -- 管理员角色（role_id = 1）由若依内置逻辑自动拥有全部菜单；
 -- 本脚本同时授权默认普通角色（role_id = 2），其他自定义角色请在角色管理中按需授权。
+
+SET NAMES utf8mb4;
 
 START TRANSACTION;
 
@@ -174,5 +179,28 @@ WHERE menu.menu_id IN (
   );
 
 COMMIT;
+
+-- 执行结果校验：正常情况下应返回 4 条菜单和 4 条默认角色授权记录。
+SELECT menu_id, menu_name, parent_id, order_num, path, component, route_name,
+       menu_type, visible, status
+FROM sys_menu
+WHERE menu_id IN (
+  @digital_twin_parent_id,
+  @archive_room_menu_id,
+  @instrument_room_menu_id,
+  @business_map_menu_id
+)
+ORDER BY parent_id, order_num, menu_id;
+
+SELECT role_id, menu_id
+FROM sys_role_menu
+WHERE role_id = 2
+  AND menu_id IN (
+    @digital_twin_parent_id,
+    @archive_room_menu_id,
+    @instrument_room_menu_id,
+    @business_map_menu_id
+  )
+ORDER BY menu_id;
 
 -- 执行后请退出并重新登录，使当前用户重新加载动态菜单。
