@@ -264,6 +264,14 @@ insert into sys_menu values('1060', '生成代码', '116', '6', '#', '', '', '',
 insert into sys_menu values('1061', '任职部门修改', '100', '8', '', '', '', '', 1, 0, 'F', '0', '0', 'system:user:dept:edit',       '#', 'admin', sysdate(), '', null, '');
 insert into sys_menu values('1062', '用户角色修改', '100', '9', '', '', '', '', 1, 0, 'F', '0', '0', 'system:user:role:edit',       '#', 'admin', sysdate(), '', null, '');
 insert into sys_menu values('1063', '平台账号降级', '100', '10', '', '', '', '', 1, 0, 'F', '0', '0', 'system:user:management:edit', '#', 'admin', sysdate(), '', null, '');
+-- 数据大屏菜单
+insert into sys_menu values('2024', '数据大屏', '0', '4', 'dataScreen', null, '', 'DataScreen', 1, 0, 'M', '0', '0', '', 'monitor',       'admin', sysdate(), '', null, '数据大屏目录');
+insert into sys_menu values('2025', '管理层BI看板', '2024', '1', 'biDashboard', 'dataScreen/index', '', 'BiDashboard', 1, 0, 'C', '0', '0', '', 'chart', 'admin', sysdate(), '', null, '管理层BI看板（ECharts 数据可视化）');
+insert into sys_menu values('2026', '档案室管理', '2024', '2', 'archiveRoom', 'archiveRoom/index', '', 'ArchiveRoomManage', 1, 0, 'C', '0', '0', '', 'documentation', 'admin', sysdate(), '', null, '档案室平面图管理与检索');
+-- 数字孪生菜单
+insert into sys_menu values('9000', '数字孪生', '0', '5', 'digital-twin', null, '', 'DigitalTwin', 1, 0, 'M', '0', '0', '', 'monitor', 'admin', sysdate(), '', null, '数字孪生目录');
+insert into sys_menu values('9001', '数字档案室', '9000', '1', 'archive-room', 'digital-twin/archive-room/index', '', 'ArchiveRoomDigitalTwin', 1, 0, 'C', '0', '0', '', 'documentation', 'admin', sysdate(), '', null, '数字档案室三维看板');
+insert into sys_menu values('9002', '智慧仪器室', '9000', '2', 'instrument-room', 'digital-twin/instrument-room/index', '', 'InstrumentRoomDigitalTwin', 1, 0, 'C', '0', '0', '', 'dashboard', 'admin', sysdate(), '', null, '智慧仪器室三维看板');
 
 
 -- ----------------------------
@@ -398,6 +406,12 @@ insert into sys_role_menu values ('2', '1057');
 insert into sys_role_menu values ('2', '1058');
 insert into sys_role_menu values ('2', '1059');
 insert into sys_role_menu values ('2', '1060');
+insert into sys_role_menu values ('2', '2024');
+insert into sys_role_menu values ('2', '2025');
+insert into sys_role_menu values ('2', '2026');
+insert into sys_role_menu values ('2', '9000');
+insert into sys_role_menu values ('2', '9001');
+insert into sys_role_menu values ('2', '9002');
 
 -- ----------------------------
 -- 8、角色和部门关联表  角色1-N部门

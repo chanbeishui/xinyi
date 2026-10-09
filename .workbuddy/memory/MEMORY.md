@@ -4,7 +4,8 @@
 - Vue 3 + Vite 6 + TypeScript + Element Plus 2.13.1 + Pinia
 - RuoYi-Vue3 框架：constantRoutes + 数据库驱动的动态路由
 - Vite dev server 运行在 port 3000（非默认 5173）
-- 后端 port 8080，MySQL localhost:3307/xinyi
+- 后端 port 8080，MySQL localhost:3306/xinyi（2026-09 起从 3307 迁到 3306，brew MySQL 9.6，root 密码 chenbeishui）
+- 多部门任职体系已落地：sys_user_dept 关联表 + sys_user.management_scope/auth_version + sys_security_outbox/audit_log（详见 sql/migration_multi_dept_authorization.sql），规范见 AGENTS.md 部门数据权限章节
 
 ## 重要 Bug 修复记录
 
