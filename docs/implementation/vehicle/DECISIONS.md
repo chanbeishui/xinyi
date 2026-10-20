@@ -29,6 +29,6 @@
 
 ## 环境/工具链裁决
 
-- D-ENV-1 Docker 不可用（exitCode 127）：E02 的 compose 隔离 MySQL8.4+Redis 路径不可用。按用户指示 II.2，**适配为本机运行中的 MySQL（3306）建独立库 `xinyi_vi_dev` + 本机 Redis 独立实例/命名空间**，仍满足"独立开发数据库 + 真实探针"。不连/不写用户原 xinyi 库。
+- D-ENV-1 Docker 不可用（exitCode 127）：E02 的 compose 隔离 MySQL8.4+Redis 路径不可用。**用户最终决定（2026-10-21，覆盖此前"本机独立库 xinyi_vi_dev"方案）：vi 表初装到现有 `xinyi` 库（与框架 sys_ 表同库，RuoYi 单数据源），Redis 复用现有 6379，不另建任何实例。** 已删除误建的 `xinyi_vi_dev` 库+`vi_dev` 用户、停止误起的 Redis 36379；用户原库/原 Redis 未受影响。实测 `xinyi` 库排序规则 utf8mb4_0900_ai_ci 与 vi 表一致→R11 collation 混用风险消除。MySQL 服务端 9.6.0（vs 目标 8.4）：满足 ≥8.0.22，M0 开发可用，生产 8.4 须复跑 SQL/CAS（RELEASE 门槛）。E03 在 `xinyi` 库增量建 66 张 vi_ 表（IF NOT EXISTS 防护、绝不动 sys_ 及其他既有表）。
 - D-ENV-2 Maven 绑定 JDK25 与运行 JDK21 不一致：E04/E05 构建前统一（JAVA_HOME 指向 21 或配置 maven toolchain release17），避免 release17 编译落在 JDK25 上的未验证组合。
 - D-ENV-3 Node v22.16.0 满足 uni-app 模板 engines，无需 nvm 切换、不放宽 engines。
