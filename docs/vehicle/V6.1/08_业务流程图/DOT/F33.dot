@@ -1,0 +1,30 @@
+digraph F33 {
+graph [rankdir=TB, bgcolor="white", pad="0.35", nodesep="0.3", ranksep="0.38", fontname="Noto Sans CJK SC", fontsize=18, labelloc=t, label="F33 撤回、差异处理与确认后调差"];
+node [shape=box, style="rounded,filled", fillcolor="#F3F6FA", color="#CFD6E0", fontname="Noto Sans CJK SC", fontsize=12, margin="0.15,0.10"];
+edge [color="#74849A", fontname="Noto Sans CJK SC", fontsize=10];
+"n1" [label="需要修改账单金额或成员范围"];
+"n2" [label="已确认或已有付款记录？",shape=diamond,fillcolor="#EEF4FF"];
+"n3" [label="原账只读，原行申请正负调差"];
+"n4" [label="其他授权人员独立复核"];
+"n5" [label="追加差额，纳入后续/补充账单"];
+"n6" [label="已发送或待内部复核？",shape=diamond,fillcolor="#EEF4FF"];
+"n7" [label="明确撤回当前版本，和本人确认互斥"];
+"n8" [label="撤回成功？",shape=diamond,fillcolor="#EEF4FF"];
+"n9" [label="旧确认/复核失效，回草稿"];
+"n10" [label="在草稿修改拟价或增减服务\n保留改价和成员变更历史"];
+"n11" [label="更新内容版本；有人工改价整单复核\n全部规则价由授权人员重新发出"];
+"n12" [label="司机确认当前有效版本"];
+"n1" -> "n2" [label=""];
+"n2" -> "n3" [label="是"];
+"n3" -> "n4" [label=""];
+"n4" -> "n5" [label="通过"];
+"n2" -> "n6" [label="否"];
+"n6" -> "n7" [label="是"];
+"n7" -> "n8" [label=""];
+"n8" -> "n3" [label="确认已先成功"];
+"n8" -> "n9" [label="是"];
+"n6" -> "n10" [label="否：草稿/差异"];
+"n9" -> "n10" [label=""];
+"n10" -> "n11" [label=""];
+"n11" -> "n12" [label="核对无误"];
+}

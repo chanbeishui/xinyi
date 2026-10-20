@@ -1,0 +1,184 @@
+[
+  {
+    "name": "vi_payment_order",
+    "comment": "支付交易与可退资金",
+    "cols": [
+      [
+        "id",
+        "BIGINT NOT NULL AUTO_INCREMENT",
+        "数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串"
+      ],
+      [
+        "order_id",
+        "BIGINT NOT NULL",
+        "订单"
+      ],
+      [
+        "out_trade_no",
+        "VARCHAR(64) NOT NULL",
+        "稳定微信商户单号"
+      ],
+      [
+        "transaction_id",
+        "VARCHAR(64)",
+        "渠道交易号"
+      ],
+      [
+        "status",
+        "VARCHAR(24) NOT NULL",
+        "PaymentStatus: PENDING,SUCCESS,CLOSED,UNKNOWN"
+      ],
+      [
+        "total_fen",
+        "BIGINT NOT NULL",
+        "应付"
+      ],
+      [
+        "paid_fen",
+        "BIGINT NOT NULL DEFAULT 0",
+        "实付"
+      ],
+      [
+        "refund_reserved_fen",
+        "BIGINT NOT NULL DEFAULT 0",
+        "处理中退款金额预留"
+      ],
+      [
+        "refunded_fen",
+        "BIGINT NOT NULL DEFAULT 0",
+        "已成功退款"
+      ],
+      [
+        "paid_at",
+        "DATETIME(3)",
+        "支付成功"
+      ],
+      [
+        "expires_at",
+        "DATETIME(3) NOT NULL",
+        "对应30分钟时点"
+      ],
+      [
+        "created_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "创建时间，统一UTC"
+      ],
+      [
+        "updated_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "UTC更新时间；Mapper每次修改显式SET updated_at=UTC_TIMESTAMP(3)，不依赖连接时区"
+      ],
+      [
+        "version",
+        "BIGINT NOT NULL DEFAULT 0",
+        "乐观锁版本"
+      ]
+    ],
+    "indexes": [
+      "UNIQUE KEY uk_trade (out_trade_no)",
+      "UNIQUE KEY uk_transaction (transaction_id)",
+      "UNIQUE KEY uk_order (order_id)",
+      "CONSTRAINT ck_refund_balance CHECK (paid_fen>=0 AND refund_reserved_fen>=0 AND refunded_fen>=0 AND refund_reserved_fen+refunded_fen<=paid_fen)"
+    ],
+    "rule": "预支付重试复用稳定商户单；退款批准时锁支付记录预留额度",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "engine": "InnoDB",
+    "collation": "utf8mb4_0900_ai_ci",
+    "columnRules": {
+      "id": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "order_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "out_trade_no": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "transaction_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "status": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false,
+        "enumRef": "PaymentStatus"
+      },
+      "total_fen": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "paid_fen": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "refund_reserved_fen": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "refunded_fen": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "paid_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "expires_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "created_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "updated_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "version": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      }
+    },
+    "checks": [
+      "CONSTRAINT ck_66_a1f02dcffc3b CHECK (`status` IN ('PENDING','SUCCESS','CLOSED','UNKNOWN'))",
+      "CONSTRAINT ck_ver_payment_order CHECK (version >= 0)"
+    ]
+  }
+]

@@ -1,0 +1,1447 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>四视角字段可见矩阵</title><style>body{font:16px/1.75 -apple-system,BlinkMacSystemFont,"Microsoft YaHei",sans-serif;color:#202632;margin:0;background:#f6f7f9}header{padding:14px 24px;background:white;border-bottom:1px solid #ddd}main{max-width:1120px;margin:24px auto;padding:30px;background:white}h1{font-size:30px}h2{margin-top:36px}a{color:#0661bd}table{border-collapse:collapse;width:100%;display:block;overflow:auto;font-size:14px}td,th{border:1px solid #dde2ea;padding:10px;vertical-align:top}th{background:#f1f5fb}pre{padding:15px;background:#f2f4f7;overflow:auto}img{max-width:100%;height:auto}blockquote{padding:10px 20px;border-left:3px solid #2571be;background:#f4f8fc}@media(max-width:700px){main{padding:15px;margin:8px}h1{font-size:25px}}</style></head><body><header><a href="../00_开始.html">V6.1 完整资料</a>　<a href="../02_UI/index.html">交互原型</a>　T3.1</header><main><h1>四视角订单DTO与字段裁剪规范 V6.0</h1>
+<p>本规范是本轮针对契约缺口作出的技术设计，不把历史通用Order实体作为API。OwnerOrderView、DriverOrderView、StationOrderView、AdminOrderView分别有独立字段白名单；列表采用对应Summary。</p>
+<h2>强制规则</h2>
+<p>订单详情/列表/动作回包均不得先序列化实体后靠前端隐藏。跨参与方交接/取消回包用OrderActionReceipt最小事实，前端再GET本视角详情。交接码只从特定持码接口返回，所有订单视图均不含code。任意视角不返回密码、微信密钥、完整证件、证件密文、存储对象键、内部台账/安全审计。</p>
+<p>司机ACTIVE_ASSIGNMENT必须绑定自己的有效assignmentId；邀约未接受时只展示邀约摘要。承接结束立即采用HISTORY，地址/坐标/联系人父对象必须null；历史证据的查看再经业务允许时间及敏感文件接口校验。站点界面不返回上门住址、客户付款金额、司机报酬。后台默认也不获得财务或住址字段。</p>
+<p>空值与缺字段：required+nullable字段在无权/未产生时明确null；未在本视角Schema声明的字段必须完全省略。列表Summary不自动包含详情字段。公开审核文字由服务端专门生成/选取，不直接拷贝内部意见。</p>
+<table>
+<thead>
+<tr>
+  <th>视角</th>
+  <th>字段（含嵌套）</th>
+  <th>可见阶段/权限</th>
+  <th>处理</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>OWNER</td>
+  <td><code>orderNo</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>OWNER</td>
+  <td><code>fulfillmentStatus</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>OWNER</td>
+  <td><code>displayStatus</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>OWNER</td>
+  <td><code>cancelStatus</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>OWNER</td>
+  <td><code>custody</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>OWNER</td>
+  <td><code>vehicle.vehicleId</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>OWNER</td>
+  <td><code>vehicle.plateNo</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>OWNER</td>
+  <td><code>vehicle.vehicleTypeCode</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>OWNER</td>
+  <td><code>vehicle.vehicleTypeLabel</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>OWNER</td>
+  <td><code>vehicle.brandModel</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>OWNER</td>
+  <td><code>vehicle.vinLast4</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>最多后四位；所有通用订单视角不返回完整VIN</td>
+</tr>
+<tr>
+  <td>OWNER</td>
+  <td><code>station.stationId</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>OWNER</td>
+  <td><code>station.name</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>OWNER</td>
+  <td><code>station.publicAddress</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>OWNER</td>
+  <td><code>station.location.lng</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>OWNER</td>
+  <td><code>station.location.lat</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>OWNER</td>
+  <td><code>station.location.coordinateSystem</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>OWNER</td>
+  <td><code>station.servicePhone</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>OWNER</td>
+  <td><code>slotStartAt</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>OWNER</td>
+  <td><code>slotEndAt</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>OWNER</td>
+  <td><code>returnedAt</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>OWNER</td>
+  <td><code>version</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>OWNER</td>
+  <td><code>view</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>OWNER</td>
+  <td><code>paymentStatus</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>OWNER</td>
+  <td><code>refundStatus</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>OWNER</td>
+  <td><code>disputeStatus</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>OWNER</td>
+  <td><code>pickupAddress.address</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>OWNER</td>
+  <td><code>pickupAddress.location.lng</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>OWNER</td>
+  <td><code>pickupAddress.location.lat</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>OWNER</td>
+  <td><code>pickupAddress.location.coordinateSystem</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>OWNER</td>
+  <td><code>pickupAddress.contact.displayName</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>OWNER</td>
+  <td><code>pickupAddress.contact.phoneMask</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>仅手机号掩码；完整号码不得出现</td>
+</tr>
+<tr>
+  <td>OWNER</td>
+  <td><code>pickupAddress.contact.canRequestContact</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>OWNER</td>
+  <td><code>returnAddress.address</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>OWNER</td>
+  <td><code>returnAddress.location.lng</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>OWNER</td>
+  <td><code>returnAddress.location.lat</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>OWNER</td>
+  <td><code>returnAddress.location.coordinateSystem</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>OWNER</td>
+  <td><code>returnAddress.contact.displayName</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>OWNER</td>
+  <td><code>returnAddress.contact.phoneMask</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>仅手机号掩码；完整号码不得出现</td>
+</tr>
+<tr>
+  <td>OWNER</td>
+  <td><code>returnAddress.contact.canRequestContact</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>OWNER</td>
+  <td><code>driver.displayName</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>OWNER</td>
+  <td><code>driver.driverCode</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>OWNER</td>
+  <td><code>driver.rating</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>OWNER</td>
+  <td><code>driver.contact.displayName</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>OWNER</td>
+  <td><code>driver.contact.phoneMask</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>仅手机号掩码；完整号码不得出现</td>
+</tr>
+<tr>
+  <td>OWNER</td>
+  <td><code>driver.contact.canRequestContact</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>OWNER</td>
+  <td><code>dispatchAt</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>OWNER</td>
+  <td><code>payExpireAt</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>OWNER</td>
+  <td><code>autoConfirmAt</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>OWNER</td>
+  <td><code>money.items[].feeCode</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>OWNER</td>
+  <td><code>money.items[].name</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>OWNER</td>
+  <td><code>money.items[].amount</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>OWNER</td>
+  <td><code>money.items[].calculation</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>OWNER</td>
+  <td><code>money.totalAmount</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>OWNER</td>
+  <td><code>money.paidAmount</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>OWNER</td>
+  <td><code>money.refundedAmount</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>OWNER</td>
+  <td><code>mileage.pickupKm</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>OWNER</td>
+  <td><code>mileage.returnKm</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>OWNER</td>
+  <td><code>mileage.distanceKm</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>OWNER</td>
+  <td><code>mileage.abnormal</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>OWNER</td>
+  <td><code>mileage.publicExplanation</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>仅明确面向服务参与人的文本，不复用内部reason/notes</td>
+</tr>
+<tr>
+  <td>OWNER</td>
+  <td><code>afterSale.caseId</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>OWNER</td>
+  <td><code>afterSale.kind</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>OWNER</td>
+  <td><code>afterSale.caseStatus</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>OWNER</td>
+  <td><code>afterSale.approvedAmount</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>OWNER</td>
+  <td><code>afterSale.returnState</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>OWNER</td>
+  <td><code>afterSale.refundState</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>OWNER</td>
+  <td><code>afterSale.publicOpinion</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>仅明确面向服务参与人的文本，不复用内部reason/notes</td>
+</tr>
+<tr>
+  <td>OWNER</td>
+  <td><code>afterSale.version</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>OWNER</td>
+  <td><code>allowedActions[]</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>DRIVER</td>
+  <td><code>orderNo</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>DRIVER</td>
+  <td><code>fulfillmentStatus</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>DRIVER</td>
+  <td><code>displayStatus</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>DRIVER</td>
+  <td><code>cancelStatus</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>DRIVER</td>
+  <td><code>custody</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>DRIVER</td>
+  <td><code>vehicle.vehicleId</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>DRIVER</td>
+  <td><code>vehicle.plateNo</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>DRIVER</td>
+  <td><code>vehicle.vehicleTypeCode</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>DRIVER</td>
+  <td><code>vehicle.vehicleTypeLabel</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>DRIVER</td>
+  <td><code>vehicle.brandModel</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>DRIVER</td>
+  <td><code>vehicle.vinLast4</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>最多后四位；所有通用订单视角不返回完整VIN</td>
+</tr>
+<tr>
+  <td>DRIVER</td>
+  <td><code>station.stationId</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>DRIVER</td>
+  <td><code>station.name</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>DRIVER</td>
+  <td><code>station.publicAddress</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>DRIVER</td>
+  <td><code>station.location.lng</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>DRIVER</td>
+  <td><code>station.location.lat</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>DRIVER</td>
+  <td><code>station.location.coordinateSystem</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>DRIVER</td>
+  <td><code>station.servicePhone</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>DRIVER</td>
+  <td><code>slotStartAt</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>DRIVER</td>
+  <td><code>slotEndAt</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>DRIVER</td>
+  <td><code>returnedAt</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>DRIVER</td>
+  <td><code>version</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>DRIVER</td>
+  <td><code>view</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>DRIVER</td>
+  <td><code>assignmentId</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>DRIVER</td>
+  <td><code>assignmentEndedAt</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>DRIVER</td>
+  <td><code>accessPhase</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>DRIVER</td>
+  <td><code>pickupArea</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>DRIVER</td>
+  <td><code>pickupAddress.address</code></td>
+  <td>仅当前有效承接；HISTORY时父对象整体为null</td>
+  <td>有效期间最小必要；历史不保留精确地址/坐标/联系人</td>
+</tr>
+<tr>
+  <td>DRIVER</td>
+  <td><code>pickupAddress.location.lng</code></td>
+  <td>仅当前有效承接；HISTORY时父对象整体为null</td>
+  <td>有效期间最小必要；历史不保留精确地址/坐标/联系人</td>
+</tr>
+<tr>
+  <td>DRIVER</td>
+  <td><code>pickupAddress.location.lat</code></td>
+  <td>仅当前有效承接；HISTORY时父对象整体为null</td>
+  <td>有效期间最小必要；历史不保留精确地址/坐标/联系人</td>
+</tr>
+<tr>
+  <td>DRIVER</td>
+  <td><code>pickupAddress.location.coordinateSystem</code></td>
+  <td>仅当前有效承接；HISTORY时父对象整体为null</td>
+  <td>有效期间最小必要；历史不保留精确地址/坐标/联系人</td>
+</tr>
+<tr>
+  <td>DRIVER</td>
+  <td><code>pickupAddress.contact.displayName</code></td>
+  <td>仅当前有效承接；HISTORY时父对象整体为null</td>
+  <td>有效期间最小必要；历史不保留精确地址/坐标/联系人</td>
+</tr>
+<tr>
+  <td>DRIVER</td>
+  <td><code>pickupAddress.contact.phoneMask</code></td>
+  <td>仅当前有效承接；HISTORY时父对象整体为null</td>
+  <td>有效期间最小必要；历史不保留精确地址/坐标/联系人</td>
+</tr>
+<tr>
+  <td>DRIVER</td>
+  <td><code>pickupAddress.contact.canRequestContact</code></td>
+  <td>仅当前有效承接；HISTORY时父对象整体为null</td>
+  <td>有效期间最小必要；历史不保留精确地址/坐标/联系人</td>
+</tr>
+<tr>
+  <td>DRIVER</td>
+  <td><code>returnAddress.address</code></td>
+  <td>仅当前有效承接；HISTORY时父对象整体为null</td>
+  <td>有效期间最小必要；历史不保留精确地址/坐标/联系人</td>
+</tr>
+<tr>
+  <td>DRIVER</td>
+  <td><code>returnAddress.location.lng</code></td>
+  <td>仅当前有效承接；HISTORY时父对象整体为null</td>
+  <td>有效期间最小必要；历史不保留精确地址/坐标/联系人</td>
+</tr>
+<tr>
+  <td>DRIVER</td>
+  <td><code>returnAddress.location.lat</code></td>
+  <td>仅当前有效承接；HISTORY时父对象整体为null</td>
+  <td>有效期间最小必要；历史不保留精确地址/坐标/联系人</td>
+</tr>
+<tr>
+  <td>DRIVER</td>
+  <td><code>returnAddress.location.coordinateSystem</code></td>
+  <td>仅当前有效承接；HISTORY时父对象整体为null</td>
+  <td>有效期间最小必要；历史不保留精确地址/坐标/联系人</td>
+</tr>
+<tr>
+  <td>DRIVER</td>
+  <td><code>returnAddress.contact.displayName</code></td>
+  <td>仅当前有效承接；HISTORY时父对象整体为null</td>
+  <td>有效期间最小必要；历史不保留精确地址/坐标/联系人</td>
+</tr>
+<tr>
+  <td>DRIVER</td>
+  <td><code>returnAddress.contact.phoneMask</code></td>
+  <td>仅当前有效承接；HISTORY时父对象整体为null</td>
+  <td>有效期间最小必要；历史不保留精确地址/坐标/联系人</td>
+</tr>
+<tr>
+  <td>DRIVER</td>
+  <td><code>returnAddress.contact.canRequestContact</code></td>
+  <td>仅当前有效承接；HISTORY时父对象整体为null</td>
+  <td>有效期间最小必要；历史不保留精确地址/坐标/联系人</td>
+</tr>
+<tr>
+  <td>DRIVER</td>
+  <td><code>ownerContact.displayName</code></td>
+  <td>仅当前有效承接；HISTORY时父对象整体为null</td>
+  <td>有效期间最小必要；历史不保留精确地址/坐标/联系人</td>
+</tr>
+<tr>
+  <td>DRIVER</td>
+  <td><code>ownerContact.phoneMask</code></td>
+  <td>仅当前有效承接；HISTORY时父对象整体为null</td>
+  <td>有效期间最小必要；历史不保留精确地址/坐标/联系人</td>
+</tr>
+<tr>
+  <td>DRIVER</td>
+  <td><code>ownerContact.canRequestContact</code></td>
+  <td>仅当前有效承接；HISTORY时父对象整体为null</td>
+  <td>有效期间最小必要；历史不保留精确地址/坐标/联系人</td>
+</tr>
+<tr>
+  <td>DRIVER</td>
+  <td><code>mileage.pickupKm</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>DRIVER</td>
+  <td><code>mileage.returnKm</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>DRIVER</td>
+  <td><code>mileage.distanceKm</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>DRIVER</td>
+  <td><code>mileage.abnormal</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>DRIVER</td>
+  <td><code>mileage.publicExplanation</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>仅明确面向服务参与人的文本，不复用内部reason/notes</td>
+</tr>
+<tr>
+  <td>DRIVER</td>
+  <td><code>cancellation.returnRequired</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>DRIVER</td>
+  <td><code>cancellation.displayStatus</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>DRIVER</td>
+  <td><code>cancellation.publicInstruction</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>DRIVER</td>
+  <td><code>driverReleased</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>DRIVER</td>
+  <td><code>allowedActions[]</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>STATION</td>
+  <td><code>orderNo</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>STATION</td>
+  <td><code>fulfillmentStatus</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>STATION</td>
+  <td><code>displayStatus</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>STATION</td>
+  <td><code>cancelStatus</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>STATION</td>
+  <td><code>custody</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>STATION</td>
+  <td><code>vehicle.vehicleId</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>STATION</td>
+  <td><code>vehicle.plateNo</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>STATION</td>
+  <td><code>vehicle.vehicleTypeCode</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>STATION</td>
+  <td><code>vehicle.vehicleTypeLabel</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>STATION</td>
+  <td><code>vehicle.brandModel</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>STATION</td>
+  <td><code>vehicle.vinLast4</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>最多后四位；所有通用订单视角不返回完整VIN</td>
+</tr>
+<tr>
+  <td>STATION</td>
+  <td><code>station.stationId</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>STATION</td>
+  <td><code>station.name</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>STATION</td>
+  <td><code>station.publicAddress</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>STATION</td>
+  <td><code>station.location.lng</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>STATION</td>
+  <td><code>station.location.lat</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>STATION</td>
+  <td><code>station.location.coordinateSystem</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>STATION</td>
+  <td><code>station.servicePhone</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>STATION</td>
+  <td><code>slotStartAt</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>STATION</td>
+  <td><code>slotEndAt</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>STATION</td>
+  <td><code>returnedAt</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>STATION</td>
+  <td><code>version</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>STATION</td>
+  <td><code>view</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>STATION</td>
+  <td><code>paymentStatus</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>STATION</td>
+  <td><code>driver.displayName</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>STATION</td>
+  <td><code>driver.driverCode</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>STATION</td>
+  <td><code>driver.rating</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>STATION</td>
+  <td><code>driver.contact.displayName</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>STATION</td>
+  <td><code>driver.contact.phoneMask</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>仅手机号掩码；完整号码不得出现</td>
+</tr>
+<tr>
+  <td>STATION</td>
+  <td><code>driver.contact.canRequestContact</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>STATION</td>
+  <td><code>assignmentId</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>STATION</td>
+  <td><code>licenseReviewStatus</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>STATION</td>
+  <td><code>result</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>STATION</td>
+  <td><code>cancellation.returnRequired</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>STATION</td>
+  <td><code>cancellation.displayStatus</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>STATION</td>
+  <td><code>cancellation.publicInstruction</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>STATION</td>
+  <td><code>allowedActions[]</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>ADMIN</td>
+  <td><code>orderNo</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>ADMIN</td>
+  <td><code>fulfillmentStatus</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>ADMIN</td>
+  <td><code>displayStatus</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>ADMIN</td>
+  <td><code>cancelStatus</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>ADMIN</td>
+  <td><code>custody</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>ADMIN</td>
+  <td><code>vehicle.vehicleId</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>ADMIN</td>
+  <td><code>vehicle.plateNo</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>ADMIN</td>
+  <td><code>vehicle.vehicleTypeCode</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>ADMIN</td>
+  <td><code>vehicle.vehicleTypeLabel</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>ADMIN</td>
+  <td><code>vehicle.brandModel</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>ADMIN</td>
+  <td><code>vehicle.vinLast4</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>最多后四位；所有通用订单视角不返回完整VIN</td>
+</tr>
+<tr>
+  <td>ADMIN</td>
+  <td><code>station.stationId</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>ADMIN</td>
+  <td><code>station.name</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>ADMIN</td>
+  <td><code>station.publicAddress</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>ADMIN</td>
+  <td><code>station.location.lng</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>ADMIN</td>
+  <td><code>station.location.lat</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>ADMIN</td>
+  <td><code>station.location.coordinateSystem</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>ADMIN</td>
+  <td><code>station.servicePhone</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>ADMIN</td>
+  <td><code>slotStartAt</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>ADMIN</td>
+  <td><code>slotEndAt</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>ADMIN</td>
+  <td><code>returnedAt</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>ADMIN</td>
+  <td><code>version</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>ADMIN</td>
+  <td><code>view</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>ADMIN</td>
+  <td><code>ownerAccountId</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>ADMIN</td>
+  <td><code>ownerContact.displayName</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>ADMIN</td>
+  <td><code>ownerContact.phoneMask</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>仅手机号掩码；完整号码不得出现</td>
+</tr>
+<tr>
+  <td>ADMIN</td>
+  <td><code>ownerContact.canRequestContact</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>ADMIN</td>
+  <td><code>driver.displayName</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>ADMIN</td>
+  <td><code>driver.driverCode</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>ADMIN</td>
+  <td><code>driver.rating</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>ADMIN</td>
+  <td><code>driver.contact.displayName</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>ADMIN</td>
+  <td><code>driver.contact.phoneMask</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>仅手机号掩码；完整号码不得出现</td>
+</tr>
+<tr>
+  <td>ADMIN</td>
+  <td><code>driver.contact.canRequestContact</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>ADMIN</td>
+  <td><code>assignmentId</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>ADMIN</td>
+  <td><code>authoritativeDeptId</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>ADMIN</td>
+  <td><code>paymentStatus</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>ADMIN</td>
+  <td><code>refundStatus</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>ADMIN</td>
+  <td><code>disputeStatus</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>ADMIN</td>
+  <td><code>money.items[].feeCode</code></td>
+  <td>biz:order:finance + 订单范围；否则money=null</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>ADMIN</td>
+  <td><code>money.items[].name</code></td>
+  <td>biz:order:finance + 订单范围；否则money=null</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>ADMIN</td>
+  <td><code>money.items[].amount</code></td>
+  <td>biz:order:finance + 订单范围；否则money=null</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>ADMIN</td>
+  <td><code>money.items[].calculation</code></td>
+  <td>biz:order:finance + 订单范围；否则money=null</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>ADMIN</td>
+  <td><code>money.totalAmount</code></td>
+  <td>biz:order:finance + 订单范围；否则money=null</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>ADMIN</td>
+  <td><code>money.paidAmount</code></td>
+  <td>biz:order:finance + 订单范围；否则money=null</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>ADMIN</td>
+  <td><code>money.refundedAmount</code></td>
+  <td>biz:order:finance + 订单范围；否则money=null</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>ADMIN</td>
+  <td><code>pickupAddress.address</code></td>
+  <td>biz:order:address + 订单范围；否则父对象null</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>ADMIN</td>
+  <td><code>pickupAddress.location.lng</code></td>
+  <td>biz:order:address + 订单范围；否则父对象null</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>ADMIN</td>
+  <td><code>pickupAddress.location.lat</code></td>
+  <td>biz:order:address + 订单范围；否则父对象null</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>ADMIN</td>
+  <td><code>pickupAddress.location.coordinateSystem</code></td>
+  <td>biz:order:address + 订单范围；否则父对象null</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>ADMIN</td>
+  <td><code>pickupAddress.contact.displayName</code></td>
+  <td>biz:order:address + 订单范围；否则父对象null</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>ADMIN</td>
+  <td><code>pickupAddress.contact.phoneMask</code></td>
+  <td>biz:order:address + 订单范围；否则父对象null</td>
+  <td>仅手机号掩码；完整号码不得出现</td>
+</tr>
+<tr>
+  <td>ADMIN</td>
+  <td><code>pickupAddress.contact.canRequestContact</code></td>
+  <td>biz:order:address + 订单范围；否则父对象null</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>ADMIN</td>
+  <td><code>returnAddress.address</code></td>
+  <td>biz:order:address + 订单范围；否则父对象null</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>ADMIN</td>
+  <td><code>returnAddress.location.lng</code></td>
+  <td>biz:order:address + 订单范围；否则父对象null</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>ADMIN</td>
+  <td><code>returnAddress.location.lat</code></td>
+  <td>biz:order:address + 订单范围；否则父对象null</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>ADMIN</td>
+  <td><code>returnAddress.location.coordinateSystem</code></td>
+  <td>biz:order:address + 订单范围；否则父对象null</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>ADMIN</td>
+  <td><code>returnAddress.contact.displayName</code></td>
+  <td>biz:order:address + 订单范围；否则父对象null</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>ADMIN</td>
+  <td><code>returnAddress.contact.phoneMask</code></td>
+  <td>biz:order:address + 订单范围；否则父对象null</td>
+  <td>仅手机号掩码；完整号码不得出现</td>
+</tr>
+<tr>
+  <td>ADMIN</td>
+  <td><code>returnAddress.contact.canRequestContact</code></td>
+  <td>biz:order:address + 订单范围；否则父对象null</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>ADMIN</td>
+  <td><code>mileage.pickupKm</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>ADMIN</td>
+  <td><code>mileage.returnKm</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>ADMIN</td>
+  <td><code>mileage.distanceKm</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>ADMIN</td>
+  <td><code>mileage.abnormal</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>ADMIN</td>
+  <td><code>mileage.publicExplanation</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>仅明确面向服务参与人的文本，不复用内部reason/notes</td>
+</tr>
+<tr>
+  <td>ADMIN</td>
+  <td><code>afterSale.caseId</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>ADMIN</td>
+  <td><code>afterSale.kind</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>ADMIN</td>
+  <td><code>afterSale.caseStatus</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>ADMIN</td>
+  <td><code>afterSale.approvedAmount</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>ADMIN</td>
+  <td><code>afterSale.returnState</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>ADMIN</td>
+  <td><code>afterSale.refundState</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>ADMIN</td>
+  <td><code>afterSale.publicOpinion</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>仅明确面向服务参与人的文本，不复用内部reason/notes</td>
+</tr>
+<tr>
+  <td>ADMIN</td>
+  <td><code>afterSale.version</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>ADMIN</td>
+  <td><code>payExpireAt</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>ADMIN</td>
+  <td><code>dispatchAt</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>ADMIN</td>
+  <td><code>autoConfirmAt</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>ADMIN</td>
+  <td><code>driverReleased</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+<tr>
+  <td>ADMIN</td>
+  <td><code>allowedActions[]</code></td>
+  <td>授权可见订单期间；仍受留存策略与对象归属限制</td>
+  <td>按Schema明示；未定义字段不返回</td>
+</tr>
+</tbody>
+</table>
+</main></body></html>

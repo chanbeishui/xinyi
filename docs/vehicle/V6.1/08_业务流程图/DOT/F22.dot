@@ -1,0 +1,21 @@
+digraph F22 {
+graph [rankdir=TB, bgcolor="white", pad="0.35", nodesep="0.3", ranksep="0.38", fontname="Noto Sans CJK SC", fontsize=18, labelloc=t, label="F22 照片上传、里程、封存与授权查看"];
+node [shape=box, style="rounded,filled", fillcolor="#F3F6FA", color="#CFD6E0", fontname="Noto Sans CJK SC", fontsize=12, margin="0.15,0.10"];
+edge [color="#74849A", fontname="Noto Sans CJK SC", fontsize=10];
+"n1" [label="申请限定业务、节点、操作者的上传凭证"];
+"n2" [label="上传真实文件，服务端核验对象及内容"];
+"n3" [label="生成水印、计算哈希、绑定订单与版本"];
+"n4" [label="六类必拍与该节点里程满足条件？",shape=diamond,fillcolor="#EEF4FF"];
+"n5" [label="完成节点交接时封存该证据版本"];
+"n6" [label="提示缺少照片／上传失败，支持单张重传"];
+"n7" [label="查看前再校验权限，返回短期地址并留审计"];
+"n8" [label="封存后只能追加更正说明，不能覆盖历史"];
+"n1" -> "n2" [label=""];
+"n2" -> "n3" [label=""];
+"n3" -> "n4" [label=""];
+"n4" -> "n5" [label="是"];
+"n4" -> "n6" [label="否"];
+"n6" -> "n1" [label="重试"];
+"n5" -> "n7" [label=""];
+"n7" -> "n8" [label=""];
+}

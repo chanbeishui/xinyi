@@ -1,0 +1,9 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>00_验收分层说明</title><style>body{font:16px/1.75 -apple-system,BlinkMacSystemFont,"Microsoft YaHei",sans-serif;color:#202632;margin:0;background:#f6f7f9}header{padding:14px 24px;background:white;border-bottom:1px solid #ddd}main{max-width:1120px;margin:24px auto;padding:30px;background:white}h1{font-size:30px}h2{margin-top:36px}a{color:#0661bd}table{border-collapse:collapse;width:100%;display:block;overflow:auto;font-size:14px}td,th{border:1px solid #dde2ea;padding:10px;vertical-align:top}th{background:#f1f5fb}pre{padding:15px;background:#f2f4f7;overflow:auto}img{max-width:100%;height:auto}blockquote{padding:10px 20px;border-left:3px solid #2571be;background:#f4f8fc}@media(max-width:700px){main{padding:15px;margin:8px}h1{font-size:25px}}</style></head><body><header><a href="../00_开始.html">V6.1 完整资料</a>　<a href="../02_UI/index.html">交互原型</a>　T3.1</header><main><h1>验收分层 V6.0</h1>
+<ol>
+<li>资料结构/语义约束：check_package.py和contract_tests.py在本轮实际运行，结果见09。它们验证文件引用、投影白名单、错误/权限/类型、DDL结构与枚举、同源用例，不证明真实Service。</li>
+<li>本地浏览器原型：保留既有交互回归并增补培训/申诉/绑定页面测试；真实运行记录在09。不调用微信/云/OCR/数据库，不能当实际权限或银行凭证核实。</li>
+<li>本目录全部test_cases JSON与feature均为真实系统待执行规格，status=NOT_RUN。feature由JSON产生并一一标记ID；没有glue/step实现，不能宣称自动化通过。</li>
+<li>SQL必须在选定版本MySQL真实执行；001虽然语法/结构经检查，本轮无MySQL服务所以NOT_RUN。生产仓库构建、MyBatis、并发、sys兼容、真机及外部商户由Agent独立提交证据。</li>
+</ol>
+<p>每个真实用例证据：commit/环境/凭据模式（脱敏）/执行命令/输入/实际结果/截图或日志/requestId。失败不改成PASS，未执行不标通过。重复生成文件以JSON为源修正，再生成MD/CSV/feature；不能凭“某个文件权威”放任另一个冲突。</p>
+</main></body></html>

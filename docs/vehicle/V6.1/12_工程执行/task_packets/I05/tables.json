@@ -1,0 +1,452 @@
+[
+  {
+    "name": "vi_employee_binding",
+    "comment": "微信账户与框架员工受控绑定",
+    "cols": [
+      [
+        "id",
+        "BIGINT NOT NULL AUTO_INCREMENT",
+        "数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串"
+      ],
+      [
+        "account_id",
+        "BIGINT NOT NULL",
+        "关联vi_account"
+      ],
+      [
+        "sys_user_id",
+        "BIGINT NOT NULL",
+        "引用现有sys_user，不重建员工"
+      ],
+      [
+        "bound_by",
+        "BIGINT NOT NULL",
+        "受控绑定审批人"
+      ],
+      [
+        "bound_at",
+        "DATETIME(3) NOT NULL",
+        "绑定时间"
+      ],
+      [
+        "revoked_at",
+        "DATETIME(3)",
+        "解除时间"
+      ],
+      [
+        "active_account",
+        "BIGINT GENERATED ALWAYS AS (IF(revoked_at IS NULL, account_id, NULL)) STORED",
+        "生效账户唯一"
+      ],
+      [
+        "active_user",
+        "BIGINT GENERATED ALWAYS AS (IF(revoked_at IS NULL, sys_user_id, NULL)) STORED",
+        "生效员工唯一"
+      ],
+      [
+        "permission_version",
+        "BIGINT NOT NULL DEFAULT 0",
+        "员工关联权限版本；撤权事务更新"
+      ],
+      [
+        "created_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "创建时间，统一UTC"
+      ],
+      [
+        "updated_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "UTC更新时间；Mapper每次修改显式SET updated_at=UTC_TIMESTAMP(3)，不依赖连接时区"
+      ],
+      [
+        "version",
+        "BIGINT NOT NULL DEFAULT 0",
+        "乐观锁版本"
+      ]
+    ],
+    "indexes": [
+      "UNIQUE KEY uk_active_account (active_account)",
+      "UNIQUE KEY uk_active_user (active_user)"
+    ],
+    "rule": "",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "engine": "InnoDB",
+    "collation": "utf8mb4_0900_ai_ci",
+    "columnRules": {
+      "id": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "account_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "sys_user_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "bound_by": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "bound_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "revoked_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "active_account": {
+        "generated": true,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "active_user": {
+        "generated": true,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "permission_version": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "created_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "updated_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "version": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      }
+    },
+    "checks": [
+      "CONSTRAINT ck_ver_employee_binding CHECK (version >= 0)"
+    ]
+  },
+  {
+    "name": "vi_employee_binding_request",
+    "comment": "本人发起的受控员工绑定申请",
+    "cols": [
+      [
+        "id",
+        "BIGINT NOT NULL AUTO_INCREMENT",
+        "数据库生成业务主键；插入不提供id"
+      ],
+      [
+        "account_id",
+        "BIGINT NOT NULL",
+        "不可由客户端选择申请主体"
+      ],
+      [
+        "request_code",
+        "VARCHAR(64) CHARACTER SET ascii COLLATE ascii_bin NOT NULL",
+        "公开核对编号，不是授权秘密"
+      ],
+      [
+        "status",
+        "VARCHAR(32) NOT NULL DEFAULT 'REQUESTED'",
+        "EmployeeBindingStatus: REQUESTED,CREDENTIAL_ISSUED,BOUND,REJECTED,EXPIRED,REVOKED"
+      ],
+      [
+        "request_reason",
+        "VARCHAR(500) NOT NULL",
+        "本人申请理由"
+      ],
+      [
+        "expires_at",
+        "DATETIME(3) NOT NULL",
+        "到期不自动绑定"
+      ],
+      [
+        "created_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "创建时刻UTC"
+      ],
+      [
+        "updated_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "更新时间UTC；更新必须显式设置UTC_TIMESTAMP(3)"
+      ],
+      [
+        "version",
+        "BIGINT NOT NULL DEFAULT 0",
+        "手写CAS版本"
+      ]
+    ],
+    "indexes": [
+      "UNIQUE KEY uk_binding_request_code (request_code)",
+      "KEY ix_binding_request_owner (account_id,status)"
+    ],
+    "rule": "申请码泄露不能绑定任何员工；必须由可管理目标员工的后台人员签发绑定到此account的凭证",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "engine": "InnoDB",
+    "collation": "utf8mb4_0900_ai_ci",
+    "columnRules": {
+      "id": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "account_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "request_code": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "status": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false,
+        "enumRef": "EmployeeBindingStatus"
+      },
+      "request_reason": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "expires_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "created_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "updated_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "version": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      }
+    },
+    "checks": [
+      "CONSTRAINT ck_66_8efc7aae47ab CHECK (`status` IN ('REQUESTED','CREDENTIAL_ISSUED','BOUND','REJECTED','EXPIRED','REVOKED'))",
+      "CONSTRAINT ck_ver_employee_binding_request CHECK (version >= 0)"
+    ]
+  },
+  {
+    "name": "vi_employee_binding_credential",
+    "comment": "管理员签发的一次性员工绑定凭证",
+    "cols": [
+      [
+        "id",
+        "BIGINT NOT NULL AUTO_INCREMENT",
+        "数据库生成业务主键；插入不提供id"
+      ],
+      [
+        "request_id",
+        "BIGINT NOT NULL",
+        "绑定申请"
+      ],
+      [
+        "target_account_id",
+        "BIGINT NOT NULL",
+        "凭证只能由此已认证account消费"
+      ],
+      [
+        "target_sys_user_id",
+        "BIGINT NOT NULL",
+        "核对现有sys_user及其全部任职"
+      ],
+      [
+        "token_hash",
+        "BINARY(32) NOT NULL",
+        "随机凭证摘要；不保存或日志输出明文"
+      ],
+      [
+        "status",
+        "VARCHAR(24) NOT NULL DEFAULT 'ISSUED'",
+        "BindingCredentialStatus: ISSUED,CONSUMED,REVOKED,EXPIRED"
+      ],
+      [
+        "issued_by_user_id",
+        "BIGINT NOT NULL",
+        "真正后台签发人"
+      ],
+      [
+        "expires_at",
+        "DATETIME(3) NOT NULL",
+        "UTC短期失效"
+      ],
+      [
+        "consumed_at",
+        "DATETIME(3) NULL",
+        "一次性消费"
+      ],
+      [
+        "reason",
+        "VARCHAR(500) NOT NULL",
+        "签发理由"
+      ],
+      [
+        "created_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "创建时刻UTC"
+      ],
+      [
+        "updated_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "更新时间UTC；更新必须显式设置UTC_TIMESTAMP(3)"
+      ],
+      [
+        "version",
+        "BIGINT NOT NULL DEFAULT 0",
+        "手写CAS版本"
+      ]
+    ],
+    "indexes": [
+      "UNIQUE KEY uk_binding_token_hash (token_hash)",
+      "KEY ix_binding_credential_request (request_id,status)"
+    ],
+    "rule": "默认5分钟有效技术参数；明文只返回一次；新签发应撤销该申请未消费的旧凭证；禁止同人accountId数字冒充sysUserId",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "engine": "InnoDB",
+    "collation": "utf8mb4_0900_ai_ci",
+    "columnRules": {
+      "id": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "request_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "target_account_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "target_sys_user_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "token_hash": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "status": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false,
+        "enumRef": "BindingCredentialStatus"
+      },
+      "issued_by_user_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "expires_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "consumed_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "reason": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "created_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "updated_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "version": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      }
+    },
+    "checks": [
+      "CONSTRAINT ck_66_ec6a315733a1 CHECK (`status` IN ('ISSUED','CONSUMED','REVOKED','EXPIRED'))",
+      "CONSTRAINT ck_ver_employee_binding_credential CHECK (version >= 0)"
+    ]
+  }
+]

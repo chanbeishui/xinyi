@@ -1,0 +1,352 @@
+[
+  {
+    "name": "vi_evidence_group",
+    "comment": "照片节点分组",
+    "cols": [
+      [
+        "id",
+        "BIGINT NOT NULL AUTO_INCREMENT",
+        "数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串"
+      ],
+      [
+        "order_id",
+        "BIGINT NOT NULL",
+        "订单"
+      ],
+      [
+        "assignment_id",
+        "BIGINT NOT NULL",
+        "承接"
+      ],
+      [
+        "node_no",
+        "TINYINT NOT NULL",
+        "1接车2到站3取车4归还"
+      ],
+      [
+        "status",
+        "VARCHAR(16) NOT NULL",
+        "EvidenceStatus: DRAFT,READY,SEALED"
+      ],
+      [
+        "mileage_km",
+        "DECIMAL(7,1)",
+        "仪表公里数"
+      ],
+      [
+        "mileage_source",
+        "VARCHAR(16)",
+        "MANUAL/OCR_REVIEWED"
+      ],
+      [
+        "mileage_reason",
+        "VARCHAR(1000)",
+        "异常说明"
+      ],
+      [
+        "sealed_at",
+        "DATETIME(3)",
+        "交接时封存"
+      ],
+      [
+        "created_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "创建时间，统一UTC"
+      ],
+      [
+        "updated_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "UTC更新时间；Mapper每次修改显式SET updated_at=UTC_TIMESTAMP(3)，不依赖连接时区"
+      ],
+      [
+        "version",
+        "BIGINT NOT NULL DEFAULT 0",
+        "乐观锁版本"
+      ]
+    ],
+    "indexes": [
+      "UNIQUE KEY uk_assignment_node (assignment_id,node_no)",
+      "CONSTRAINT ck_node CHECK (node_no BETWEEN 1 AND 4)",
+      "CONSTRAINT ck_mileage CHECK (mileage_km IS NULL OR mileage_km>=0)"
+    ],
+    "rule": "仅实际发生节点必录；归还组不是提交就启动自动完成",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "engine": "InnoDB",
+    "collation": "utf8mb4_0900_ai_ci",
+    "columnRules": {
+      "id": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "order_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "assignment_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "node_no": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "status": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false,
+        "enumRef": "EvidenceStatus"
+      },
+      "mileage_km": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "mileage_source": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "mileage_reason": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "sealed_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "created_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "updated_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "version": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      }
+    },
+    "checks": [
+      "CONSTRAINT ck_66_6c92d2f8851d CHECK (`status` IN ('DRAFT','READY','SEALED'))",
+      "CONSTRAINT ck_ver_evidence_group CHECK (version >= 0)"
+    ]
+  },
+  {
+    "name": "vi_photo",
+    "comment": "照片版本与服务端元数据",
+    "cols": [
+      [
+        "id",
+        "BIGINT NOT NULL AUTO_INCREMENT",
+        "数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串"
+      ],
+      [
+        "group_id",
+        "BIGINT NOT NULL",
+        "证据组"
+      ],
+      [
+        "photo_type",
+        "VARCHAR(24) NOT NULL",
+        "PhotoType: FRONT,BACK,LEFT,RIGHT,DASHBOARD,INTERIOR,EXTRA"
+      ],
+      [
+        "file_id",
+        "BIGINT NOT NULL",
+        "私有文件"
+      ],
+      [
+        "client_capture_id",
+        "VARCHAR(64) NOT NULL",
+        "同次重传去重"
+      ],
+      [
+        "revision",
+        "INT NOT NULL",
+        "版本"
+      ],
+      [
+        "superseded_at",
+        "DATETIME(3)",
+        "草稿重拍历史"
+      ],
+      [
+        "captured_at",
+        "DATETIME(3) NOT NULL",
+        "客户端采集，仅作声明"
+      ],
+      [
+        "received_at",
+        "DATETIME(3) NOT NULL",
+        "服务端收件时间"
+      ],
+      [
+        "location_cipher",
+        "VARBINARY(1024)",
+        "节点位置"
+      ],
+      [
+        "watermark_file_id",
+        "BIGINT",
+        "服务端生成水印副本"
+      ],
+      [
+        "active_type",
+        "VARCHAR(24) GENERATED ALWAYS AS (IF(superseded_at IS NULL AND photo_type<>'EXTRA',photo_type,NULL)) STORED",
+        "每类有效图唯一，EXTRA不覆盖"
+      ],
+      [
+        "created_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "创建时间，统一UTC"
+      ],
+      [
+        "updated_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "UTC更新时间；Mapper每次修改显式SET updated_at=UTC_TIMESTAMP(3)，不依赖连接时区"
+      ],
+      [
+        "version",
+        "BIGINT NOT NULL DEFAULT 0",
+        "乐观锁版本"
+      ]
+    ],
+    "indexes": [
+      "UNIQUE KEY uk_capture (group_id,client_capture_id)",
+      "UNIQUE KEY uk_current_type (group_id,active_type)"
+    ],
+    "rule": "",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "engine": "InnoDB",
+    "collation": "utf8mb4_0900_ai_ci",
+    "columnRules": {
+      "id": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "group_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "photo_type": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false,
+        "enumRef": "PhotoType"
+      },
+      "file_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "client_capture_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "revision": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "superseded_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "captured_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "received_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "location_cipher": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "watermark_file_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "active_type": {
+        "generated": true,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "created_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "updated_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "version": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      }
+    },
+    "checks": [
+      "CONSTRAINT ck_66_37b55c2a7354 CHECK (`photo_type` IN ('FRONT','BACK','LEFT','RIGHT','DASHBOARD','INTERIOR','EXTRA'))",
+      "CONSTRAINT ck_ver_photo CHECK (version >= 0)"
+    ]
+  }
+]

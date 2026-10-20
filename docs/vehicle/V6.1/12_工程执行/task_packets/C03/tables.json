@@ -1,0 +1,183 @@
+[
+  {
+    "name": "vi_quota_slot",
+    "comment": "上门服务与站点接收额度",
+    "cols": [
+      [
+        "id",
+        "BIGINT NOT NULL AUTO_INCREMENT",
+        "数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串"
+      ],
+      [
+        "quota_type",
+        "VARCHAR(24) NOT NULL",
+        "QuotaType: PICKUP,STATION_RECEIVE"
+      ],
+      [
+        "scope_key",
+        "VARCHAR(64) NOT NULL",
+        "区域标识或站点标识"
+      ],
+      [
+        "station_id",
+        "BIGINT",
+        "接收额度所属站点"
+      ],
+      [
+        "starts_at",
+        "DATETIME(3) NOT NULL",
+        "时间区间起"
+      ],
+      [
+        "ends_at",
+        "DATETIME(3) NOT NULL",
+        "时间区间止"
+      ],
+      [
+        "total_quota",
+        "INT NOT NULL",
+        "可提供数量"
+      ],
+      [
+        "held_quota",
+        "INT NOT NULL DEFAULT 0",
+        "未付预占数量"
+      ],
+      [
+        "confirmed_quota",
+        "INT NOT NULL DEFAULT 0",
+        "已付预约尚未消耗"
+      ],
+      [
+        "consumed_quota",
+        "INT NOT NULL DEFAULT 0",
+        "已经真实消耗"
+      ],
+      [
+        "enabled",
+        "TINYINT NOT NULL DEFAULT 1",
+        "停约开关"
+      ],
+      [
+        "created_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "创建时间，统一UTC"
+      ],
+      [
+        "updated_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "UTC更新时间；Mapper每次修改显式SET updated_at=UTC_TIMESTAMP(3)，不依赖连接时区"
+      ],
+      [
+        "version",
+        "BIGINT NOT NULL DEFAULT 0",
+        "乐观锁版本"
+      ]
+    ],
+    "indexes": [
+      "UNIQUE KEY uk_scope_slot (quota_type,scope_key,starts_at,ends_at)",
+      "CONSTRAINT ck_quota_nonnegative CHECK (total_quota>=0 AND held_quota>=0 AND confirmed_quota>=0 AND consumed_quota>=0)",
+      "CONSTRAINT ck_quota_limit CHECK (held_quota+confirmed_quota+consumed_quota<=total_quota)"
+    ],
+    "rule": "双额度为P04设计，开工模块前评审；调整容量不得小于实际占用之和",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "engine": "InnoDB",
+    "collation": "utf8mb4_0900_ai_ci",
+    "columnRules": {
+      "id": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "quota_type": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false,
+        "enumRef": "QuotaType"
+      },
+      "scope_key": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "station_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "starts_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "ends_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "total_quota": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "held_quota": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "confirmed_quota": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "consumed_quota": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "enabled": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "created_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "updated_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "version": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      }
+    },
+    "checks": [
+      "CONSTRAINT ck_66_6d097fde07cc CHECK (`quota_type` IN ('PICKUP','STATION_RECEIVE'))",
+      "CONSTRAINT ck_ver_quota_slot CHECK (version >= 0)"
+    ]
+  }
+]

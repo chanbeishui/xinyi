@@ -1,0 +1,126 @@
+[
+  {
+    "name": "vi_owner_profile",
+    "comment": "车主运营档案扩展，非另一套登录账户",
+    "cols": [
+      [
+        "id",
+        "BIGINT NOT NULL AUTO_INCREMENT",
+        "数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串"
+      ],
+      [
+        "account_id",
+        "BIGINT NOT NULL",
+        "关联vi_account"
+      ],
+      [
+        "service_name",
+        "VARCHAR(100)",
+        "服务称呼"
+      ],
+      [
+        "service_flag",
+        "VARCHAR(24) NOT NULL DEFAULT 'NORMAL'",
+        "OwnerServiceFlag: NORMAL,VERIFY_AGAIN"
+      ],
+      [
+        "internal_remark",
+        "VARCHAR(1000)",
+        "内部备注"
+      ],
+      [
+        "maintained_by",
+        "BIGINT",
+        "框架维护人"
+      ],
+      [
+        "created_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "UTC"
+      ],
+      [
+        "updated_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "UTC更新时间；Mapper每次修改显式SET updated_at=UTC_TIMESTAMP(3)，不依赖连接时区"
+      ],
+      [
+        "version",
+        "BIGINT NOT NULL DEFAULT 0",
+        "乐观锁"
+      ]
+    ],
+    "indexes": [
+      "UNIQUE KEY uk_owner_profile (account_id)"
+    ],
+    "rule": "默认脱敏；微信标识与已验证手机通过认证服务维护，不由运营字段覆盖。；本人ProfilePatch.realName映射service_name，仅服务称呼不是真实核验姓名；与vi_account版本门禁同事务更新。",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "engine": "InnoDB",
+    "collation": "utf8mb4_0900_ai_ci",
+    "columnRules": {
+      "id": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "account_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "service_name": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "service_flag": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false,
+        "enumRef": "OwnerServiceFlag"
+      },
+      "internal_remark": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "maintained_by": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "created_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "updated_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "version": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      }
+    },
+    "checks": [
+      "CONSTRAINT ck_66_49501f04f5eb CHECK (`service_flag` IN ('NORMAL','VERIFY_AGAIN'))",
+      "CONSTRAINT ck_ver_owner_profile CHECK (version >= 0)"
+    ]
+  }
+]

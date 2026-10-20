@@ -1,0 +1,21 @@
+digraph F21 {
+graph [rankdir=TB, bgcolor="white", pad="0.35", nodesep="0.3", ranksep="0.38", fontname="Noto Sans CJK SC", fontsize=18, labelloc=t, label="F21 普通服务异常、拒收与失联"];
+node [shape=box, style="rounded,filled", fillcolor="#F3F6FA", color="#CFD6E0", fontname="Noto Sans CJK SC", fontsize=12, margin="0.15,0.10"];
+edge [color="#74849A", fontname="Noto Sans CJK SC", fontsize=10];
+"n1" [label="上报联系不上、拒收、资料不符、无法继续等服务事实"];
+"n2" [label="记录当前车辆保管方、位置、责任任务"];
+"n3" [label="通知运营并保留必要证据"];
+"n4" [label="可恢复原预约服务？",shape=diamond,fillcolor="#EEF4FF"];
+"n5" [label="协调后按真实节点恢复，不伪造完成"];
+"n6" [label="需要取消则走审核及必要返还F12/F13"];
+"n7" [label="归还对象联系不上：保持保管台账与人工处理"];
+"n8" [label="禁止把车随意停下后点击释放；不自动归因为平台全责"];
+"n1" -> "n2" [label=""];
+"n2" -> "n3" [label=""];
+"n3" -> "n4" [label=""];
+"n4" -> "n5" [label="是"];
+"n4" -> "n6" [label="否"];
+"n6" -> "n7" [label="无法实际交还"];
+"n7" -> "n8" [label=""];
+"n5" -> "n8" [label=""];
+}

@@ -1,0 +1,30 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TASK</title><style>body{font:16px/1.75 -apple-system,BlinkMacSystemFont,"Microsoft YaHei",sans-serif;color:#202632;margin:0;background:#f6f7f9}header{padding:14px 24px;background:white;border-bottom:1px solid #ddd}main{max-width:1120px;margin:24px auto;padding:30px;background:white}h1{font-size:30px}h2{margin-top:36px}a{color:#0661bd}table{border-collapse:collapse;width:100%;display:block;overflow:auto;font-size:14px}td,th{border:1px solid #dde2ea;padding:10px;vertical-align:top}th{background:#f1f5fb}pre{padding:15px;background:#f2f4f7;overflow:auto}img{max-width:100%;height:auto}blockquote{padding:10px 20px;border-left:3px solid #2571be;background:#f4f8fc}@media(max-width:700px){main{padding:15px;margin:8px}h1{font-size:25px}}</style></head><body><header><a href="../../../00_开始.html">V6.1 完整资料</a>　<a href="../../../02_UI/index.html">交互原型</a>　T3.1</header><main><h1>E06 · 幂等、审计、outbox与任务基座</h1>
+<p>阶段：M0；当前用户未实施M0。前置：E03, E04。</p>
+<h2>本任务交付</h2>
+<ul>
+<li>同事务业务写与outbox</li>
+<li>有序锁/唯一约束/请求幂等</li>
+<li>审计双主体</li>
+</ul>
+<h2>代码落位</h2>
+<p><code>docs/implementation/vehicle/E06/</code></p>
+<h2>失败与边界</h2>
+<ul>
+<li>登录刷新不缓存明文</li>
+<li>重复键不同体409</li>
+<li>失败不写成功日志</li>
+</ul>
+<h2>验证命令</h2>
+<pre><code class="language-text">mvn -pl xinyi-admin -am test
+mvn -pl xinyi-admin -am -Pvi-it -Dit.test=E06PlatformIT verify
+</code></pre>
+<p>初次无小程序lockfile先npm install并提交生成结果，之后npm ci。部署/供应商凭据缺失不替代构建或资料证据。</p>
+<h2>完成判据</h2>
+<ul>
+<li>源接口/页面/表/用例均有明确实现文件与关联测试；不能以目录存在当完成</li>
+<li>本任务真实集成与负向场景实际通过且保存原始报告；无测试/跳过不能通过</li>
+<li>提交独立复核记录；标注测试第三方替身，不声称真实渠道通过</li>
+</ul>
+<h2>持续执行</h2>
+<p>完成后更新真实任务账本和证据，继续taskctl next；不得把本任务完成写成M0整体完成。用户没有做M0，不要求用户先补M0。中止时保留恢复点，不清空工作区。</p>
+</main></body></html>

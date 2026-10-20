@@ -1,0 +1,351 @@
+[
+  {
+    "name": "vi_driver_profile",
+    "comment": "代驾资格与听单偏好",
+    "cols": [
+      [
+        "id",
+        "BIGINT NOT NULL AUTO_INCREMENT",
+        "数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串"
+      ],
+      [
+        "account_id",
+        "BIGINT NOT NULL",
+        "同一个基础账户"
+      ],
+      [
+        "qualification_status",
+        "VARCHAR(24) NOT NULL",
+        "QualificationStatus: DRAFT,SUBMITTED,APPROVED,REJECTED,EXPIRED,SUSPENDED"
+      ],
+      [
+        "new_assignment_enabled",
+        "TINYINT NOT NULL DEFAULT 0",
+        "是否允许新增承接"
+      ],
+      [
+        "listening_enabled",
+        "TINYINT NOT NULL DEFAULT 0",
+        "本人听单偏好"
+      ],
+      [
+        "review_due_at",
+        "DATETIME(3)",
+        "年度复审到期"
+      ],
+      [
+        "license_class",
+        "VARCHAR(64)",
+        "实际准驾类别，不用字母排序比较"
+      ],
+      [
+        "license_valid_to",
+        "DATETIME(3)",
+        "到期日"
+      ],
+      [
+        "license_long_term",
+        "TINYINT NOT NULL DEFAULT 0",
+        "长期有效标记"
+      ],
+      [
+        "qualification_revision",
+        "BIGINT",
+        "生效认证版本"
+      ],
+      [
+        "internal_remark",
+        "VARCHAR(1000)",
+        "授权运营备注，变更留痕"
+      ],
+      [
+        "created_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "创建时间，统一UTC"
+      ],
+      [
+        "updated_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "UTC更新时间；Mapper每次修改显式SET updated_at=UTC_TIMESTAMP(3)，不依赖连接时区"
+      ],
+      [
+        "version",
+        "BIGINT NOT NULL DEFAULT 0",
+        "乐观锁版本"
+      ]
+    ],
+    "indexes": [
+      "UNIQUE KEY uk_account (account_id)",
+      "KEY ix_pool (qualification_status,new_assignment_enabled,listening_enabled)"
+    ],
+    "rule": "",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "engine": "InnoDB",
+    "collation": "utf8mb4_0900_ai_ci",
+    "columnRules": {
+      "id": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "account_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "qualification_status": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false,
+        "enumRef": "QualificationStatus"
+      },
+      "new_assignment_enabled": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "listening_enabled": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "review_due_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "license_class": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "license_valid_to": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "license_long_term": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "qualification_revision": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "internal_remark": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "created_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "updated_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "version": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      }
+    },
+    "checks": [
+      "CONSTRAINT ck_66_c6bf03f0ceed CHECK (`qualification_status` IN ('DRAFT','SUBMITTED','APPROVED','REJECTED','EXPIRED','SUSPENDED'))",
+      "CONSTRAINT ck_ver_driver_profile CHECK (version >= 0)"
+    ]
+  },
+  {
+    "name": "vi_driver_application",
+    "comment": "代驾资格申请与复审版本",
+    "cols": [
+      [
+        "id",
+        "BIGINT NOT NULL AUTO_INCREMENT",
+        "数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串"
+      ],
+      [
+        "driver_id",
+        "BIGINT NOT NULL",
+        "关联代驾档案"
+      ],
+      [
+        "status",
+        "VARCHAR(24) NOT NULL",
+        "QualificationStatus: DRAFT,SUBMITTED,APPROVED,REJECTED,EXPIRED,SUSPENDED"
+      ],
+      [
+        "sensitive_payload_cipher",
+        "LONGBLOB",
+        "证件信息加密，不存明文JSON"
+      ],
+      [
+        "evidence_file_ids",
+        "JSON",
+        "证件文件关联ID"
+      ],
+      [
+        "provider_result_ids",
+        "JSON",
+        "可信核验和培训记录ID"
+      ],
+      [
+        "submitted_at",
+        "DATETIME(3)",
+        "完整提交时间"
+      ],
+      [
+        "reviewer_user_id",
+        "BIGINT",
+        "审核人"
+      ],
+      [
+        "reviewed_at",
+        "DATETIME(3)",
+        "审核时间"
+      ],
+      [
+        "review_opinion",
+        "VARCHAR(1000)",
+        "审批意见"
+      ],
+      [
+        "created_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "创建时间，统一UTC"
+      ],
+      [
+        "updated_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "UTC更新时间；Mapper每次修改显式SET updated_at=UTC_TIMESTAMP(3)，不依赖连接时区"
+      ],
+      [
+        "version",
+        "BIGINT NOT NULL DEFAULT 0",
+        "乐观锁版本"
+      ]
+    ],
+    "indexes": [
+      "KEY ix_driver_status (driver_id,status)",
+      "KEY ix_review_queue (status,submitted_at)"
+    ],
+    "rule": "不以客户端PASSED当实名核验成功；禁止本人审批",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "engine": "InnoDB",
+    "collation": "utf8mb4_0900_ai_ci",
+    "columnRules": {
+      "id": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "driver_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "status": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false,
+        "enumRef": "QualificationStatus"
+      },
+      "sensitive_payload_cipher": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "evidence_file_ids": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "provider_result_ids": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "submitted_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "reviewer_user_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "reviewed_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "review_opinion": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "created_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "updated_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "version": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      }
+    },
+    "checks": [
+      "CONSTRAINT ck_66_ef6019b02577 CHECK (`status` IN ('DRAFT','SUBMITTED','APPROVED','REJECTED','EXPIRED','SUSPENDED'))",
+      "CONSTRAINT ck_ver_driver_application CHECK (version >= 0)"
+    ]
+  }
+]

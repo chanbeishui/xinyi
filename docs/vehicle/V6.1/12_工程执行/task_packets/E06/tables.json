@@ -1,0 +1,539 @@
+[
+  {
+    "name": "vi_event_log",
+    "comment": "不可变业务事实流水",
+    "cols": [
+      [
+        "id",
+        "BIGINT NOT NULL AUTO_INCREMENT",
+        "数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串"
+      ],
+      [
+        "order_id",
+        "BIGINT",
+        "可关联订单"
+      ],
+      [
+        "aggregate_type",
+        "VARCHAR(64) NOT NULL",
+        "聚合类型"
+      ],
+      [
+        "aggregate_id",
+        "BIGINT NOT NULL",
+        "聚合ID"
+      ],
+      [
+        "action",
+        "VARCHAR(64) NOT NULL",
+        "事件或动作"
+      ],
+      [
+        "actor_account_id",
+        "BIGINT",
+        "小程序账户"
+      ],
+      [
+        "actor_user_id",
+        "BIGINT",
+        "框架人员"
+      ],
+      [
+        "acting_role",
+        "VARCHAR(64)",
+        "视角"
+      ],
+      [
+        "station_id",
+        "BIGINT",
+        "操作上下文"
+      ],
+      [
+        "before_summary",
+        "JSON",
+        "脱敏前值"
+      ],
+      [
+        "after_summary",
+        "JSON",
+        "脱敏后值"
+      ],
+      [
+        "reason",
+        "VARCHAR(1000)",
+        "原因"
+      ],
+      [
+        "actor_realm",
+        "VARCHAR(24)",
+        "MINI/ADMIN/SYSTEM/CALLBACK；不可混淆数值ID"
+      ],
+      [
+        "session_id",
+        "BIGINT",
+        "可信小程序会话，可空"
+      ],
+      [
+        "context_version",
+        "BIGINT",
+        "业务动作的可信上下文版本"
+      ],
+      [
+        "created_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "创建时间，统一UTC"
+      ],
+      [
+        "updated_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "UTC更新时间；Mapper每次修改显式SET updated_at=UTC_TIMESTAMP(3)，不依赖连接时区"
+      ],
+      [
+        "version",
+        "BIGINT NOT NULL DEFAULT 0",
+        "乐观锁版本"
+      ]
+    ],
+    "indexes": [
+      "KEY ix_order_time (order_id,created_at,id)"
+    ],
+    "rule": "表仅追加，框架审计复用/扩展；不能记交接码、证件或秘密",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "engine": "InnoDB",
+    "collation": "utf8mb4_0900_ai_ci",
+    "columnRules": {
+      "id": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "order_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "aggregate_type": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "aggregate_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "action": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "actor_account_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "actor_user_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "acting_role": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "station_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "before_summary": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "after_summary": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "reason": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "actor_realm": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "session_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "context_version": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "created_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "updated_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "version": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      }
+    },
+    "checks": [
+      "CONSTRAINT ck_ver_event_log CHECK (version >= 0)"
+    ]
+  },
+  {
+    "name": "vi_outbox",
+    "comment": "可靠异步事务消息",
+    "cols": [
+      [
+        "id",
+        "BIGINT NOT NULL AUTO_INCREMENT",
+        "数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串"
+      ],
+      [
+        "event_key",
+        "VARCHAR(128) NOT NULL",
+        "事件唯一键"
+      ],
+      [
+        "aggregate_type",
+        "VARCHAR(64) NOT NULL",
+        "所属对象"
+      ],
+      [
+        "aggregate_id",
+        "BIGINT NOT NULL",
+        "对象ID"
+      ],
+      [
+        "event_type",
+        "VARCHAR(64) NOT NULL",
+        "通知/支付查单/补偿等"
+      ],
+      [
+        "payload",
+        "JSON NOT NULL",
+        "最小必要载荷，不塞敏感原文"
+      ],
+      [
+        "status",
+        "VARCHAR(24) NOT NULL",
+        "OutboxStatus: READY,PROCESSING,DONE,FAILED"
+      ],
+      [
+        "attempts",
+        "INT NOT NULL DEFAULT 0",
+        "重试次数"
+      ],
+      [
+        "next_attempt_at",
+        "DATETIME(3) NOT NULL",
+        "退避时间"
+      ],
+      [
+        "lease_until",
+        "DATETIME(3)",
+        "工作者租约"
+      ],
+      [
+        "created_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "创建时间，统一UTC"
+      ],
+      [
+        "updated_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "UTC更新时间；Mapper每次修改显式SET updated_at=UTC_TIMESTAMP(3)，不依赖连接时区"
+      ],
+      [
+        "version",
+        "BIGINT NOT NULL DEFAULT 0",
+        "乐观锁版本"
+      ]
+    ],
+    "indexes": [
+      "UNIQUE KEY uk_event (event_key)",
+      "KEY ix_due (status,next_attempt_at,id)"
+    ],
+    "rule": "不在长数据库事务里调用外部支付或等待人工审核",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "engine": "InnoDB",
+    "collation": "utf8mb4_0900_ai_ci",
+    "columnRules": {
+      "id": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "event_key": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "aggregate_type": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "aggregate_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "event_type": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "payload": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "status": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false,
+        "enumRef": "OutboxStatus"
+      },
+      "attempts": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "next_attempt_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "lease_until": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "created_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "updated_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "version": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      }
+    },
+    "checks": [
+      "CONSTRAINT ck_66_61a047126522 CHECK (`status` IN ('READY','PROCESSING','DONE','FAILED'))",
+      "CONSTRAINT ck_ver_outbox CHECK (version >= 0)"
+    ]
+  },
+  {
+    "name": "vi_idempotency",
+    "comment": "请求级幂等",
+    "cols": [
+      [
+        "id",
+        "BIGINT NOT NULL AUTO_INCREMENT",
+        "数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串"
+      ],
+      [
+        "subject_key",
+        "VARCHAR(96) NOT NULL",
+        "统一主体命名空间"
+      ],
+      [
+        "action_key",
+        "VARCHAR(160) NOT NULL",
+        "HTTP动作+资源"
+      ],
+      [
+        "request_key",
+        "VARCHAR(64) NOT NULL",
+        "UUID幂等头"
+      ],
+      [
+        "request_mac",
+        "BINARY(32) NOT NULL",
+        "请求摘要"
+      ],
+      [
+        "result_json",
+        "JSON",
+        "成功结果或可重放结果"
+      ],
+      [
+        "status",
+        "VARCHAR(64) NOT NULL",
+        "IdempotencyStatus: PROCESSING,DONE"
+      ],
+      [
+        "expires_at",
+        "DATETIME(3) NOT NULL",
+        "至少24h，请求级保存时限"
+      ],
+      [
+        "created_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "创建时间，统一UTC"
+      ],
+      [
+        "updated_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "UTC更新时间；Mapper每次修改显式SET updated_at=UTC_TIMESTAMP(3)，不依赖连接时区"
+      ],
+      [
+        "version",
+        "BIGINT NOT NULL DEFAULT 0",
+        "乐观锁版本"
+      ]
+    ],
+    "indexes": [
+      "UNIQUE KEY uk_request (subject_key,action_key,request_key)",
+      "KEY ix_expire (expires_at)"
+    ],
+    "rule": "资金和交接另依赖永久业务去重，不能仅依赖缓存24小时",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "engine": "InnoDB",
+    "collation": "utf8mb4_0900_ai_ci",
+    "columnRules": {
+      "id": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "subject_key": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "action_key": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "request_key": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "request_mac": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "result_json": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "status": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false,
+        "enumRef": "IdempotencyStatus"
+      },
+      "expires_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "created_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "updated_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "version": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      }
+    },
+    "checks": [
+      "CONSTRAINT ck_66_0b655b918367 CHECK (`status` IN ('PROCESSING','DONE'))",
+      "CONSTRAINT ck_ver_idempotency CHECK (version >= 0)"
+    ]
+  }
+]

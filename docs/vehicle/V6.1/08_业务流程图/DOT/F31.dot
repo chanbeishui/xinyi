@@ -1,0 +1,22 @@
+digraph F31 {
+graph [rankdir=TB, bgcolor="white", pad="0.35", nodesep="0.3", ranksep="0.38", fontname="Noto Sans CJK SC", fontsize=18, labelloc=t, label="F31 司机占用状态与归还后再接单"];
+node [shape=box, style="rounded,filled", fillcolor="#F3F6FA", color="#CFD6E0", fontname="Noto Sans CJK SC", fontsize=12, margin="0.15,0.10"];
+edge [color="#74849A", fontname="Noto Sans CJK SC", fontsize=10];
+"n1" [label="司机空闲且资格有效"];
+"n2" [label="单人邀约预占"];
+"n3" [label="司机有效接受？",shape=diamond,fillcolor="#EEF4FF"];
+"n4" [label="已承接：持续占用至实际交还"];
+"n5" [label="拒绝／超时：按邀约ID释放"];
+"n6" [label="未接车取消承接或实际交还完成？",shape=diamond,fillcolor="#EEF4FF"];
+"n7" [label="按承接ID原子释放，保留历史记录"];
+"n8" [label="接下一个订单；旧单仍可等待服务确认"];
+"n1" -> "n2" [label=""];
+"n2" -> "n3" [label=""];
+"n3" -> "n4" [label="是"];
+"n3" -> "n5" [label="否"];
+"n5" -> "n1" [label=""];
+"n4" -> "n6" [label=""];
+"n6" -> "n7" [label="是"];
+"n7" -> "n8" [label=""];
+"n8" -> "n2" [label="新邀约"];
+}

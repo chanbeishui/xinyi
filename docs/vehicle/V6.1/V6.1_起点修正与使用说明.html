@@ -1,0 +1,17 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>V6.1_起点修正与使用说明</title><style>body{font:16px/1.75 -apple-system,BlinkMacSystemFont,"Microsoft YaHei",sans-serif;color:#202632;margin:0;background:#f6f7f9}header{padding:14px 24px;background:white;border-bottom:1px solid #ddd}main{max-width:1120px;margin:24px auto;padding:30px;background:white}h1{font-size:30px}h2{margin-top:36px}a{color:#0661bd}table{border-collapse:collapse;width:100%;display:block;overflow:auto;font-size:14px}td,th{border:1px solid #dde2ea;padding:10px;vertical-align:top}th{background:#f1f5fb}pre{padding:15px;background:#f2f4f7;overflow:auto}img{max-width:100%;height:auto}blockquote{padding:10px 20px;border-left:3px solid #2571be;background:#f4f8fc}@media(max-width:700px){main{padding:15px;margin:8px}h1{font-size:25px}}</style></head><body><header><a href="00_开始.html">V6.1 完整资料</a>　<a href="02_UI/index.html">交互原型</a>　T3.1</header><main><h1>V6.1 起点修正与使用说明</h1>
+<p>用户最新确认：<strong>没有做M0，当前仅有若依前后端分离改版后的xinyi框架。</strong></p>
+<p>本次读到的 <code>rongli-wx</code> HEAD 为 <code>890cfbbfc5e0db404a932ab5ef8b449d07c7f444</code>。当前代码树没有业务模块、小程序或旧M0身份会话迁移。之前V6.0引用另一个提交并将旧M0适配作为默认背景，现予撤销。</p>
+<h2>本轮已经修改</h2>
+<ol>
+<li>baseline.json、当前源码证据、START-CODEX及其副本改为M0未开始；E00首任务。</li>
+<li>E03改成新vi首次建表、框架原库保护；删除默认旧M0转换流程，意外同名表只是防护。</li>
+<li>E04明确负责创建xinyi-rongli与uni-app，E06/E07增加真实模块前置；M0任务采用各自阶段可执行验收，不要求完整交易提前存在。</li>
+<li>doctor只记录框架/源码/模块与用户阶段；从不推断M0完成。安装器保留根规范和实际进度，规范入口更新到V6.1，不把旧入口留成两个并行生效源。</li>
+<li>产品、UI、API、SQL主体和298业务用例不改变已确认业务，沿用V6.0组件；T3.1整合本次工程起点。包内有完整资料，不需叠加V6.0。</li>
+</ol>
+<h2>需要区分</h2>
+<p>“没有做M0”不等于删除任何数据库；当前源码也不能证明本机库无同名表。仍先预检，再在本包新隔离库初装。</p>
+<p>“已修正资料与支持工具”不等于M0已实现。Maven/MySQL/uni-app/微信和供应商验证需要由Codex在实际开发环境执行。历史验证记录位于09_验证记录/历史_V6.0，本轮结果另列。</p>
+<h2>使用</h2>
+<p>在实际rongli-wx工作区打开Codex，提供START-CODEX.md全文。首轮应从E00、E01、E02、E03/E04等开始实际工程建设；后续继续78任务至G01，不停在M0说明。不要回退到另一个提交以寻找不存在的前置实现。</p>
+</main></body></html>

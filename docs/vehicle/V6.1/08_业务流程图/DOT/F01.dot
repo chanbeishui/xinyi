@@ -1,0 +1,24 @@
+digraph F01 {
+graph [rankdir=TB, bgcolor="white", pad="0.35", nodesep="0.3", ranksep="0.38", fontname="Noto Sans CJK SC", fontsize=18, labelloc=t, label="F01 端到端业务总览"];
+node [shape=box, style="rounded,filled", fillcolor="#F3F6FA", color="#CFD6E0", fontname="Noto Sans CJK SC", fontsize=12, margin="0.15,0.10"];
+edge [color="#74849A", fontname="Noto Sans CJK SC", fontsize=10];
+"n1" [label="车主｜选上门时段、地址、车辆"];
+"n2" [label="系统｜匹配站点、报价、预占名额"];
+"n3" [label="车主｜30分钟内支付"];
+"n4" [label="系统｜到配置的时间启动派单"];
+"n5" [label="代驾｜接单、出发、到达、接车交接"];
+"n6" [label="检测点｜收车后进入检测中"];
+"n7" [label="检测点｜完成检测并登记结果"];
+"n8" [label="代驾｜站点取车、返程、归还交接"];
+"n9" [label="系统｜实物交还完成，立即释放司机"];
+"n10" [label="车主／系统｜服务确认或24小时自动完成"];
+"n1" -> "n2" [label=""];
+"n2" -> "n3" [label=""];
+"n3" -> "n4" [label=""];
+"n4" -> "n5" [label=""];
+"n5" -> "n6" [label=""];
+"n6" -> "n7" [label=""];
+"n7" -> "n8" [label=""];
+"n8" -> "n9" [label=""];
+"n9" -> "n10" [label=""];
+}

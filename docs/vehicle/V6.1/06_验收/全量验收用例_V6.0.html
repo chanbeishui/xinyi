@@ -1,0 +1,2700 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>全量验收用例_V6.0</title><style>body{font:16px/1.75 -apple-system,BlinkMacSystemFont,"Microsoft YaHei",sans-serif;color:#202632;margin:0;background:#f6f7f9}header{padding:14px 24px;background:white;border-bottom:1px solid #ddd}main{max-width:1120px;margin:24px auto;padding:30px;background:white}h1{font-size:30px}h2{margin-top:36px}a{color:#0661bd}table{border-collapse:collapse;width:100%;display:block;overflow:auto;font-size:14px}td,th{border:1px solid #dde2ea;padding:10px;vertical-align:top}th{background:#f1f5fb}pre{padding:15px;background:#f2f4f7;overflow:auto}img{max-width:100%;height:auto}blockquote{padding:10px 20px;border-left:3px solid #2571be;background:#f4f8fc}@media(max-width:700px){main{padding:15px;margin:8px}h1{font-size:25px}}</style></head><body><header><a href="../00_开始.html">V6.1 完整资料</a>　<a href="../02_UI/index.html">交互原型</a>　T3.1</header><main><h1>全量业务验收 V6.0</h1>
+<p>同源JSON与feature逐条映射；所有生产业务测试NOT_RUN。写出Gherkin不等于已自动运行。</p>
+<table>
+<thead>
+<tr>
+  <th>ID</th>
+  <th>模块</th>
+  <th>场景</th>
+  <th>前置</th>
+  <th>操作</th>
+  <th>预期</th>
+  <th>状态</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>TC-001</td>
+  <td>身份权限</td>
+  <td>一个微信一个基础账号</td>
+  <td>微信标识相同</td>
+  <td>分别从车主/代驾/员工入口登录</td>
+  <td>同accountId；不创建三套互不关联账户</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-002</td>
+  <td>身份权限</td>
+  <td>伪造role不能提权</td>
+  <td>普通车主</td>
+  <td>登录请求额外传STATION/DRIVER等未知授权字段</td>
+  <td>400拒绝未知字段；不授予高权</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-003</td>
+  <td>身份权限</td>
+  <td>未审核可申请不能接单</td>
+  <td>新车主未通过认证</td>
+  <td>保存申请并尝试邀约accept</td>
+  <td>申请可保存，接单403；不形成资格自我阻断</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-004</td>
+  <td>身份权限</td>
+  <td>员工代驾同标审核</td>
+  <td>检测员工已绑定但未通过代驾审核</td>
+  <td>切代驾接单</td>
+  <td>展示待审核，不跳过普通人所需条件</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-005</td>
+  <td>身份权限</td>
+  <td>员工可单独做检测</td>
+  <td>员工有站点功能和授权但代驾未过</td>
+  <td>进入检测工作台</td>
+  <td>可做授权检测工作，不以代驾审批阻挡</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-006</td>
+  <td>身份权限</td>
+  <td>角色切换隔离缓存</td>
+  <td>员工看过B站订单</td>
+  <td>切为车主</td>
+  <td>只返回本人客户订单，清理B站数据/缓存</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-007</td>
+  <td>身份权限</td>
+  <td>切角色不解除任务</td>
+  <td>司机有在手承接</td>
+  <td>切车主或检测视角</td>
+  <td>保留同assignment占用</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-008</td>
+  <td>身份权限</td>
+  <td>跨站授权可写</td>
+  <td>员工授权A和B且有结果登记权限</td>
+  <td>切B登记B订单</td>
+  <td>成功并审计B上下文</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-009</td>
+  <td>身份权限</td>
+  <td>跨站不越功能权限</td>
+  <td>员工授权B但无退款审批</td>
+  <td>审批B退款</td>
+  <td>403，无资金变更</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-010</td>
+  <td>身份权限</td>
+  <td>伪造stationId拒绝</td>
+  <td>员工仅授权A</td>
+  <td>提交B订单并请求体声称A</td>
+  <td>用真实order.station_id拒绝</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-011</td>
+  <td>身份权限</td>
+  <td>两个设备切站隔离</td>
+  <td>同员工两设备分别A/B</td>
+  <td>设备1切B而设备2提交A</td>
+  <td>设备2请求不被共享当前站字段误写；验证独立上下文</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-012</td>
+  <td>身份权限</td>
+  <td>撤权后立即拒绝</td>
+  <td>页面加载时有B权限</td>
+  <td>管理员撤B后提交旧页面</td>
+  <td>后端拒绝，切有权站或无权页，不回未经授权所属站</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-013</td>
+  <td>身份权限</td>
+  <td>数据统计也鉴权</td>
+  <td>员工无B</td>
+  <td>搜索/统计/导出B订单</td>
+  <td>数量和详情均不泄露</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-014</td>
+  <td>身份权限</td>
+  <td>禁止手机号碰撞绑员工</td>
+  <td>普通账号手机号相同或被篡改</td>
+  <td>申请绑定sys_user</td>
+  <td>须受控框架证明/邀请；手机号本身不授权</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-015</td>
+  <td>身份权限</td>
+  <td>禁止自审资格</td>
+  <td>员工能审核但申请人为自己</td>
+  <td>审核自己的司机申请</td>
+  <td>拒绝并留痕</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-016</td>
+  <td>身份权限</td>
+  <td>证件有效期准驾校验</td>
+  <td>申请司机资格有效但不满足该车实际准驾</td>
+  <td>发起邀约</td>
+  <td>不入候选；不按车型字典显示名称判断</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-017</td>
+  <td>身份权限</td>
+  <td>资格到期阻新增</td>
+  <td>司机资格今日过期</td>
+  <td>自动/人工派单</td>
+  <td>都拒绝新承接，进行中按安全处置规范不自动释放</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-018</td>
+  <td>身份权限</td>
+  <td>无权站列表最小信息</td>
+  <td>员工无B权限</td>
+  <td>打开切站目录</td>
+  <td>可显示公开名称但不显示B业务量/员工手机号</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-019</td>
+  <td>预约计价</td>
+  <td>先时段后地址</td>
+  <td>新车主无地址</td>
+  <td>点击立即预约</td>
+  <td>先选候选上门时段，再填地址，不强制证件页</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-020</td>
+  <td>预约计价</td>
+  <td>无地址不虚占站点</td>
+  <td>尚未填写地址</td>
+  <td>选择候选时段</td>
+  <td>candidateOnly=true，不扣某站quota</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-021</td>
+  <td>预约计价</td>
+  <td>补齐车型后才报价</td>
+  <td>只有车牌没有车型</td>
+  <td>报价</td>
+  <td>提示补充车型，不默认某车型或0元</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-022</td>
+  <td>预约计价</td>
+  <td>新增字典无需改代码</td>
+  <td>后台新增并启用车型+支持站点+价规</td>
+  <td>重新拉字典并下单</td>
+  <td>可选择并正确计价，无硬编码枚举拦截</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-023</td>
+  <td>预约计价</td>
+  <td>车型缺价阻止</td>
+  <td>车型启用但无生效计价规则</td>
+  <td>报价</td>
+  <td>明示配置不全，不能套其他车型</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-024</td>
+  <td>预约计价</td>
+  <td>多价规冲突</td>
+  <td>同车型同业务时间重叠的两规则</td>
+  <td>审核发布</td>
+  <td>拒绝重叠或强制唯一优先级明确，不随机选择</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-025</td>
+  <td>预约计价</td>
+  <td>价格变更不影响既有单</td>
+  <td>订单已有价格快照</td>
+  <td>发布新价规</td>
+  <td>历史订单金额及明细不变</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-026</td>
+  <td>预约计价</td>
+  <td>地址修改重报价</td>
+  <td>报价A地址</td>
+  <td>修改B地址再创建旧quote订单</td>
+  <td>拒绝或明确重报二次确认，不静默变价</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-027</td>
+  <td>预约计价</td>
+  <td>报价不等于锁额</td>
+  <td>尚未创建订单</td>
+  <td>报价后其他人抢最后名额</td>
+  <td>建单再次原子检查；满额提示保留信息</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-028</td>
+  <td>预约计价</td>
+  <td>最后一名额并发</td>
+  <td>一个名额两个不同车主</td>
+  <td>并发建单</td>
+  <td>只有一个成功，两类配额无负数无半扣</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-029</td>
+  <td>预约计价</td>
+  <td>重复创建幂等</td>
+  <td>相同主体、键和请求</td>
+  <td>重传3次</td>
+  <td>一个订单一次预占；返回同orderNo</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-030</td>
+  <td>预约计价</td>
+  <td>同键不同体冲突</td>
+  <td>同幂等键不同quote</td>
+  <td>重传</td>
+  <td>409，不返回另一报价的旧成功</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-031</td>
+  <td>预约计价</td>
+  <td>停约不抹历史单</td>
+  <td>站点未来时段已有已付预约</td>
+  <td>修改为停约</td>
+  <td>不消除历史承诺；需影响预览和协调</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-032</td>
+  <td>预约计价</td>
+  <td>容量低于占用拒绝</td>
+  <td>held+confirmed+consumed=8</td>
+  <td>改total=5</td>
+  <td>拒绝，不能负可售</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-033</td>
+  <td>预约计价</td>
+  <td>已检测退款不重卖容量</td>
+  <td>真实消耗的站点名额</td>
+  <td>事后退款</td>
+  <td>consumed不回可售</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-034</td>
+  <td>预约计价</td>
+  <td>只用真实路线计价</td>
+  <td>客户提交假的距离</td>
+  <td>报价</td>
+  <td>服务端查询/可信缓存距离；不接受客户端距离</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-035</td>
+  <td>预约计价</td>
+  <td>不自动收等待费</td>
+  <td>P02未评审启用</td>
+  <td>司机等待超时</td>
+  <td>可以记录等待但不自动扣/编造追加已付</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-036</td>
+  <td>预约计价</td>
+  <td>超范围保留草稿</td>
+  <td>接车地址超服务范围</td>
+  <td>点击报价</td>
+  <td>提示修改地址或联系；不创建假自送履约</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-037</td>
+  <td>支付关单</td>
+  <td>支付截止30分钟</td>
+  <td>10:00创建订单</td>
+  <td>查看prepay和倒计时</td>
+  <td>payExpireAt=10:30，与微信time_expire一致</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-038</td>
+  <td>支付关单</td>
+  <td>前端成功不可信</td>
+  <td>前端伪造requestPayment成功</td>
+  <td>回到成功页</td>
+  <td>服务端仍待确认，不能派单</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-039</td>
+  <td>支付关单</td>
+  <td>合法回调唯一确认</td>
+  <td>签名/金额/商户/app/order均正确</td>
+  <td>发送一次支付通知</td>
+  <td>一个SUCCESS、一份正式预占、一份待通知事件</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-040</td>
+  <td>支付关单</td>
+  <td>重复回调无二扣</td>
+  <td>已处理同交易</td>
+  <td>重发相同或不同通知ID同交易</td>
+  <td>不重复正式扣额或派单</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-041</td>
+  <td>支付关单</td>
+  <td>错误金额拒绝</td>
+  <td>回调实付不等应付</td>
+  <td>处理通知</td>
+  <td>资金异常告警，不按成功履约</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-042</td>
+  <td>支付关单</td>
+  <td>错误商户拒绝</td>
+  <td>回调商户或AppID不符</td>
+  <td>处理通知</td>
+  <td>拒绝并留安全审计</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-043</td>
+  <td>支付关单</td>
+  <td>待付超时关闭</td>
+  <td>30min且渠道查为未付</td>
+  <td>执行关单</td>
+  <td>渠道关单可信后本地CLOSED，释放该单预占一次</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-044</td>
+  <td>支付关单</td>
+  <td>支付回调先于关闭</td>
+  <td>最后时刻已真实支付</td>
+  <td>关闭任务与回调竞争</td>
+  <td>只一条可信结论；已支付不当未付释放</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-045</td>
+  <td>支付关单</td>
+  <td>关闭完成晚来付款通知</td>
+  <td>本地已关闭并释放额度后收到真实成功</td>
+  <td>处理通知</td>
+  <td>先核实渠道与额度，进入对账补偿；不直接超卖重开</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-046</td>
+  <td>支付关单</td>
+  <td>渠道不可查询</td>
+  <td>30min超时且微信不可用</td>
+  <td>关单任务</td>
+  <td>记录UNKNOWN/重试，不伪造已关成功</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-047</td>
+  <td>支付关单</td>
+  <td>关单后不可续付</td>
+  <td>订单可信关闭</td>
+  <td>请求新prepay</td>
+  <td>拒绝，重新预约生成新单</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-048</td>
+  <td>支付关单</td>
+  <td>支付多次唤起同商户单</td>
+  <td>未支付单仍有效</td>
+  <td>prepay重复</td>
+  <td>复用稳定交易号，不延长截止</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-049</td>
+  <td>支付关单</td>
+  <td>回调持久化失败</td>
+  <td>数据库事务回滚</td>
+  <td>接收渠道通知</td>
+  <td>不返回成功ack，允许重试</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-050</td>
+  <td>支付关单</td>
+  <td>有效支付转未来预约</td>
+  <td>已付且尚未到dispatchAt</td>
+  <td>处理成功</td>
+  <td>SCHEDULED，无司机占用</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-051</td>
+  <td>派单资格</td>
+  <td>提前N分钟调度</td>
+  <td>上门10:00且N=30</td>
+  <td>09:29/09:30定时扫描</td>
+  <td>前者不派，后者对已付有效单派</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-052</td>
+  <td>派单资格</td>
+  <td>过计划点支付</td>
+  <td>09:40支付且10:00预约可服务</td>
+  <td>可信支付确认</td>
+  <td>立即进入派单，不等待第二天任务</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-053</td>
+  <td>派单资格</td>
+  <td>N变更只影响新单默认</td>
+  <td>旧预约已固化计划</td>
+  <td>后台改N</td>
+  <td>旧单不被静默提前/重复派发</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-054</td>
+  <td>派单资格</td>
+  <td>已有计划受控更新</td>
+  <td>旧预约尚未派发</td>
+  <td>影响预览后批准更新</td>
+  <td>只改预览版本仍匹配订单，已承接不动</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-055</td>
+  <td>派单资格</td>
+  <td>统一售后审核中不派新司机</td>
+  <td>订单挂起取消</td>
+  <td>调度任务启动</td>
+  <td>按P05拒派；不把客户申请当最终取消</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-056</td>
+  <td>派单资格</td>
+  <td>资格不足人工也拒绝</td>
+  <td>停用/过期/无准驾候选</td>
+  <td>运营人工指派</td>
+  <td>不可绕过资格</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-057</td>
+  <td>派单资格</td>
+  <td>位置陈旧不派</td>
+  <td>司机上次前台打点过期</td>
+  <td>候选筛选</td>
+  <td>排除并提示刷新位置，不能伪称实时</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-058</td>
+  <td>派单资格</td>
+  <td>单司机跨订单邀约互斥</td>
+  <td>司机无占用，两个订单竞争</td>
+  <td>并发发出邀约</td>
+  <td>occupancy只有一个；失败订单继续候选</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-059</td>
+  <td>派单资格</td>
+  <td>同邀约并发响应</td>
+  <td>双设备点击accept</td>
+  <td>并发请求</td>
+  <td>一份assignment，多次返回同接受结果</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-060</td>
+  <td>派单资格</td>
+  <td>超时接受拒绝</td>
+  <td>邀约绝对expiresAt已到</td>
+  <td>旧弹窗accept</td>
+  <td>409/过期，不抢回已轮转订单</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-061</td>
+  <td>派单资格</td>
+  <td>人工邀约需本人同意</td>
+  <td>运营选择司机</td>
+  <td>发人工邀约</td>
+  <td>DISPATCHING/WAIT_RESPONSE，不直接ACCEPTED</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-062</td>
+  <td>派单资格</td>
+  <td>拒绝响应不是接单</td>
+  <td>有效邀约</td>
+  <td>REJECT</td>
+  <td>邀约REJECTED，释放此invite占用，订单重派</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-063</td>
+  <td>派单资格</td>
+  <td>总截止优先整轮</td>
+  <td>50个候选每人60s且deadline300s</td>
+  <td>无人响应</td>
+  <td>至总截止撤邀约进人工，不等50min</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-064</td>
+  <td>派单资格</td>
+  <td>扩圈不重邀约风暴</td>
+  <td>初始半径无人</td>
+  <td>扩圈一次</td>
+  <td>按唯一轮次去重，不并发向同司机重复邀约</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-065</td>
+  <td>派单资格</td>
+  <td>监听关闭不丢任务</td>
+  <td>有assignment</td>
+  <td>关闭听单</td>
+  <td>不新增邀约但仍必须履约，无释放</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-066</td>
+  <td>派单资格</td>
+  <td>旧邀约超时不清新任务</td>
+  <td>inviteA已过期司机已接B</td>
+  <td>A超时job晚到</td>
+  <td>匹配holder检查，B占用保留</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-067</td>
+  <td>交接归还</td>
+  <td>到达不等于接车</td>
+  <td>已出发尚未车主交车</td>
+  <td>到达动作</td>
+  <td>ARRIVED_PICKUP，不消费码不转保管</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-068</td>
+  <td>交接归还</td>
+  <td>码只给持有方</td>
+  <td>司机核验接车码</td>
+  <td>读secret或订单详情</td>
+  <td>secret403；详情无code字段</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-069</td>
+  <td>交接归还</td>
+  <td>实际接车完整校验</td>
+  <td>六类节点1图、里程、码和assignment正确</td>
+  <td>确认交接1</td>
+  <td>PICKED_UP，保管=driver，封存图/消费码同事务</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-070</td>
+  <td>交接归还</td>
+  <td>照片不足拒绝</td>
+  <td>缺仪表图</td>
+  <td>确认接车</td>
+  <td>422返回缺项，保管未变</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-071</td>
+  <td>交接归还</td>
+  <td>里程缺失拒绝</td>
+  <td>节点1或4无里程</td>
+  <td>确认交接</td>
+  <td>拒绝推进且保留上传内容</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-072</td>
+  <td>交接归还</td>
+  <td>错误码3次锁定</td>
+  <td>同订单交接连续错误</td>
+  <td>第3次核验</td>
+  <td>锁定并持久化计数；失败事务不能使计数回滚</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-073</td>
+  <td>交接归还</td>
+  <td>重发码不洗次数</td>
+  <td>已失败2次</td>
+  <td>重发后再错1次</td>
+  <td>仍锁定，不无限重置计数</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-074</td>
+  <td>交接归还</td>
+  <td>跨类型码不能通用</td>
+  <td>拿到接车码</td>
+  <td>用于归还或站点取车</td>
+  <td>拒绝，保管不变</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-075</td>
+  <td>交接归还</td>
+  <td>站点收车即可检测中</td>
+  <td>授权员工、节点2证据及码齐</td>
+  <td>确认交接2</td>
+  <td>保管=station，正常单INSPECTING，不需start接口</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-076</td>
+  <td>交接归还</td>
+  <td>取消站点收车保持取消态</td>
+  <td>已批准取消但为安全交接需要进站</td>
+  <td>完成真实交接</td>
+  <td>保管记录准确，不能强行完成检测结果</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-077</td>
+  <td>交接归还</td>
+  <td>站点取车需真实放行</td>
+  <td>已完成结果，司机有节点3照片</td>
+  <td>完成站点持码方批准并核验</td>
+  <td>CAR_TAKEN保管回driver；照片本身不越过站点</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-078</td>
+  <td>交接归还</td>
+  <td>取消返还不需假结果</td>
+  <td>取消通过车辆在站内未检</td>
+  <td>站点放行交接</td>
+  <td>允许按取消分支返回，无假PASS/FAIL</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-079</td>
+  <td>交接归还</td>
+  <td>只上传归还照片不释放</td>
+  <td>节点4上传已齐，车尚未交还</td>
+  <td>提交照片ready</td>
+  <td>不写returnedAt，不启动24h，不释放</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-080</td>
+  <td>交接归还</td>
+  <td>正常归还即释放</td>
+  <td>CAR_TAKEN且码、实物和节点4齐备</td>
+  <td>确认交接4</td>
+  <td>returnedAt写入，WAIT_CONFIRM，driver occupation精确释放</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-081</td>
+  <td>交接归还</td>
+  <td>释放后可接新单</td>
+  <td>A已实物归还但WAIT_CONFIRM</td>
+  <td>B发邀约并接受</td>
+  <td>可承接B，无须等待A完成</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-082</td>
+  <td>交接归还</td>
+  <td>服务确认不要求第二次还车</td>
+  <td>A已归还</td>
+  <td>车主确认服务</td>
+  <td>COMPLETED，不再次核码、不再释放</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-083</td>
+  <td>交接归还</td>
+  <td>争议不重新占司机</td>
+  <td>A归还并driver接B</td>
+  <td>车主对A发服务争议</td>
+  <td>A自动完成冻结，B占用不动</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-084</td>
+  <td>交接归还</td>
+  <td>无争议24h自动完成</td>
+  <td>A归还24h无活动争议</td>
+  <td>补偿job</td>
+  <td>COMPLETED，不能触碰司机在B占用</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-085</td>
+  <td>交接归还</td>
+  <td>归还无人接收</td>
+  <td>司机到家车主失联</td>
+  <td>上传图或催确认</td>
+  <td>不得以照片/时间当已交还；联系客服且保留保管责任</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-086</td>
+  <td>交接归还</td>
+  <td>历史图不可覆盖</td>
+  <td>节点已SEALED</td>
+  <td>用同photoType重新上传替换</td>
+  <td>拒绝覆盖；更正追加记录留原文件</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-087</td>
+  <td>交接归还</td>
+  <td>跨订单文件拒绝</td>
+  <td>用户有其他订单fileId</td>
+  <td>关联到本单证据</td>
+  <td>拒绝用途和归属不符</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-088</td>
+  <td>交接归还</td>
+  <td>客户端假READY拒绝</td>
+  <td>文件未真实到OSS</td>
+  <td>提交complete/伪hash</td>
+  <td>服务器实际核查，不标READY</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-089</td>
+  <td>交接归还</td>
+  <td>同账号站点交接不能自证</td>
+  <td>兼岗员工本身为该单司机</td>
+  <td>切station自己持码再切driver核销</td>
+  <td>按P03拦截或走已批准独立复核；不能静默伪造两方</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-090</td>
+  <td>取消重派</td>
+  <td>未接车客户取消需审核</td>
+  <td>已付已承接尚未接车</td>
+  <td>车主申请取消</td>
+  <td>APPLIED；审核前不正式CANCELLED</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-091</td>
+  <td>取消重派</td>
+  <td>未接车审核通过办结</td>
+  <td>已付款车仍owner</td>
+  <td>管理员批准</td>
+  <td>CANCELLED+结束对应assignment+精确释放，退款另流程</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-092</td>
+  <td>取消重派</td>
+  <td>已接车批准待返还</td>
+  <td>车在driver</td>
+  <td>管理员批准取消</td>
+  <td>APPROVED_WAIT_RETURN，保管与driver占用继续</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-093</td>
+  <td>取消重派</td>
+  <td>取消归还后正式办结</td>
+  <td>APPROVED_WAIT_RETURN</td>
+  <td>交接4成功</td>
+  <td>CANCELLED+cancelCOMPLETED+实际归还+释放同事务</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-094</td>
+  <td>取消重派</td>
+  <td>取消车在站内</td>
+  <td>APPROVED_WAIT_RETURN且custody=STATION</td>
+  <td>尝试直接归还4</td>
+  <td>拒绝；须先真实站点放行给driver，再还owner</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-095</td>
+  <td>取消重派</td>
+  <td>中途取消只拍实际节点</td>
+  <td>接车后尚未到站</td>
+  <td>批准并返还</td>
+  <td>仅要求实际节点1/4，不造2/3照片</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-096</td>
+  <td>取消重派</td>
+  <td>取消驳回不回滚实际事实</td>
+  <td>审核期间真实保管位置有变化</td>
+  <td>驳回</td>
+  <td>恢复合法动作，不把车辆/状态强行倒回申请时</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-097</td>
+  <td>取消重派</td>
+  <td>申请时未接车审核时已接车</td>
+  <td>并发跨过接车</td>
+  <td>审核取消通过</td>
+  <td>按锁内custody走待返还，不直接释放</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-098</td>
+  <td>取消重派</td>
+  <td>归还先于统一售后审核</td>
+  <td>取消挂起期间已归还</td>
+  <td>管理员之后批准</td>
+  <td>取消办结不需二次实物归还，也不二次释放司机</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-099</td>
+  <td>取消重派</td>
+  <td>司机取消不是取消车主单</td>
+  <td>driver尚未接车</td>
+  <td>取消assignment</td>
+  <td>原orderNo/支付/站点额度保留，重派别人</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-100</td>
+  <td>取消重派</td>
+  <td>司机取消与接车互斥</td>
+  <td>driver在接车边界</td>
+  <td>并发取消和接车确认</td>
+  <td>一方成功，不能已拿车仍解除任务</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-101</td>
+  <td>取消重派</td>
+  <td>司机已接车不可自助退单</td>
+  <td>PICKED_UP</td>
+  <td>调用取消assignment</td>
+  <td>拒绝，提供联系运营，不丢保管责任</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-102</td>
+  <td>取消重派</td>
+  <td>处罚只计有效取消一次</td>
+  <td>重复同幂等取消</td>
+  <td>提交3次</td>
+  <td>一次解除一次计数</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-103</td>
+  <td>取消重派</td>
+  <td>第三次取消停止当日新邀约</td>
+  <td>已计2次</td>
+  <td>第三次有效取消</td>
+  <td>按批准P01参数停新增，不使用7/30天</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-104</td>
+  <td>取消重派</td>
+  <td>有责计次申诉独立</td>
+  <td>司机取消有效且有申诉</td>
+  <td>审核免计次</td>
+  <td>更正统计不恢复旧assignment，不抢回已重派订单</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-105</td>
+  <td>检测结果</td>
+  <td>人工核验代替OCR失败</td>
+  <td>OCR供应商不可用</td>
+  <td>工作人员人工填写并复核</td>
+  <td>资料可VERIFIED且审计来源；不写伪OCR成功</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-106</td>
+  <td>检测结果</td>
+  <td>未核验资料不交结果</td>
+  <td>station已收车但license未验证</td>
+  <td>提交PASS</td>
+  <td>拒绝说明资料待复核；状态仍INSPECTING</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-107</td>
+  <td>检测结果</td>
+  <td>双端同内容幂等</td>
+  <td>S11已成功</td>
+  <td>B11重放同请求</td>
+  <td>返回已有结果、不重复通知</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-108</td>
+  <td>检测结果</td>
+  <td>双端不同结果冲突</td>
+  <td>S11/B11同version分别PASS/FAIL</td>
+  <td>并发提交</td>
+  <td>一个成功另409，绝不覆盖</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-109</td>
+  <td>检测结果</td>
+  <td>不合格需对应明细证据</td>
+  <td>整体FAIL无失败项</td>
+  <td>提交</td>
+  <td>拒绝并明确缺项</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-110</td>
+  <td>检测结果</td>
+  <td>结果事实不能伪造</td>
+  <td>取消未实际检测</td>
+  <td>为推进返还提交PASS</td>
+  <td>禁止；走取消放行</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-111</td>
+  <td>检测结果</td>
+  <td>结果更正留历史</td>
+  <td>已存在结果版本1</td>
+  <td>批准版本2</td>
+  <td>原版只结束有效性，内容保留；version2生效</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-112</td>
+  <td>检测结果</td>
+  <td>更正后不重履约</td>
+  <td>已返还司机已接新单</td>
+  <td>结果更正</td>
+  <td>更新结果展示并通知，不改变保管或司机占用</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-113</td>
+  <td>检测结果</td>
+  <td>不合格正常返还</td>
+  <td>真实FAIL结果</td>
+  <td>司机取车返还</td>
+  <td>正常履约无强制新复检订单</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-114</td>
+  <td>检测结果</td>
+  <td>无PDF入口</td>
+  <td>S11/B11/O18</td>
+  <td>页面及API扫描</td>
+  <td>无报告上传/自动报告编号/下载PDF业务</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-115</td>
+  <td>退款资金</td>
+  <td>统一售后申请仅待审</td>
+  <td>已付order含可退余额</td>
+  <td>申请退款</td>
+  <td>APPLIED非PROCESSING，不发渠道退款</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-116</td>
+  <td>退款资金</td>
+  <td>禁止自审退款</td>
+  <td>申请人与审核人同真实身份</td>
+  <td>批准</td>
+  <td>拒绝，角色切换不改变主体</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-117</td>
+  <td>退款资金</td>
+  <td>并发部分退款金额守恒</td>
+  <td>实付10000已退2000处理中3000</td>
+  <td>并发批准新6000</td>
+  <td>拒绝超额；成功+预留≤实付</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-118</td>
+  <td>退款资金</td>
+  <td>重复退款请求稳定单号</td>
+  <td>渠道请求超时未知</td>
+  <td>重试任务</td>
+  <td>先查原outRefundNo，不换号多退</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-119</td>
+  <td>退款资金</td>
+  <td>受理不当成功</td>
+  <td>微信返回PROCESSING</td>
+  <td>处理响应</td>
+  <td>保留处理中，不显示到账成功</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-120</td>
+  <td>退款资金</td>
+  <td>退款通知重复</td>
+  <td>已SUCCESS</td>
+  <td>同通知重复3次</td>
+  <td>金额只加一次，预留只减一次</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-121</td>
+  <td>退款资金</td>
+  <td>ABNORMAL需处理</td>
+  <td>渠道异常状态</td>
+  <td>手动retry</td>
+  <td>转核实原单异常流程，不盲目生成另退款</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-122</td>
+  <td>退款资金</td>
+  <td>零元取消无退款</td>
+  <td>批准取消但退款金额0</td>
+  <td>办结取消</td>
+  <td>不创建金额0渠道退款，不阻止返还</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-123</td>
+  <td>退款资金</td>
+  <td>退款等待不占司机</td>
+  <td>实际归还+取消已办结但渠道处理中</td>
+  <td>司机请求下一单</td>
+  <td>允许；退款不使用driver occupancy</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-124</td>
+  <td>退款资金</td>
+  <td>资金回调晚到不倒退</td>
+  <td>SUCCESS已写</td>
+  <td>晚到PROCESSING事件</td>
+  <td>保持可信最终结果并记录，不回退</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-125</td>
+  <td>退款资金</td>
+  <td>统一售后申请有明确orderNo</td>
+  <td>车主试向他人orderNo申请</td>
+  <td>提交</td>
+  <td>归属拒绝，不靠最近订单推断</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-126</td>
+  <td>退款资金</td>
+  <td>统一售后审核不是资金终审</td>
+  <td>站点只有协助取消权限</td>
+  <td>尝试执行退款</td>
+  <td>要求独立资金功能权限</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-127</td>
+  <td>并发补偿</td>
+  <td>A完成不清B任务</td>
+  <td>A归还、司机占用已为B</td>
+  <td>A自动完成job晚到</td>
+  <td>B占用保持，不按driverId裸清</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-128</td>
+  <td>并发补偿</td>
+  <td>A退款不清B任务</td>
+  <td>A取消退款后B已接</td>
+  <td>A退款成功回调</td>
+  <td>不操作B占用或状态</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-129</td>
+  <td>并发补偿</td>
+  <td>重复归还幂等</td>
+  <td>A归还成功且司机转B</td>
+  <td>A确认请求重放</td>
+  <td>返回A首次成功，不清B</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-130</td>
+  <td>并发补偿</td>
+  <td>数据库回滚资源一致</td>
+  <td>归还中写流水失败</td>
+  <td>事务回滚</td>
+  <td>码/封存/保管/占用均不半成功</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-131</td>
+  <td>并发补偿</td>
+  <td>outbox失败不回滚已业务</td>
+  <td>结果提交事务成功</td>
+  <td>通知供应商失败</td>
+  <td>结果有效，outbox退避与待办，不重复结果</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-132</td>
+  <td>并发补偿</td>
+  <td>重启后到期任务补偿</td>
+  <td>系统停机跨派单时间</td>
+  <td>恢复服务扫描</td>
+  <td>只对有效已付单补派且幂等</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-133</td>
+  <td>并发补偿</td>
+  <td>Redis丢失不双接</td>
+  <td>缓存重启</td>
+  <td>两个实例并发接单</td>
+  <td>数据库唯一与条件更新仍保护占用</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-134</td>
+  <td>并发补偿</td>
+  <td>订阅拒绝不假送达</td>
+  <td>用户未授权/发送失败</td>
+  <td>关键事件触发</td>
+  <td>记录失败和站内待办，不伪造readAt</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-135</td>
+  <td>并发补偿</td>
+  <td>后台/锁屏真机验证</td>
+  <td>真实小程序设备</td>
+  <td>前后台/锁屏/弱网切换</td>
+  <td>记录实际邀约可达性和定位行为，未通过不承诺稳定后台听单</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-136</td>
+  <td>并发补偿</td>
+  <td>敏感文件短期授权</td>
+  <td>无查看原图权限</td>
+  <td>拿到fileId访问</td>
+  <td>403，不单靠签名接口登录即放行</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-137</td>
+  <td>并发补偿</td>
+  <td>导出与查询同范围</td>
+  <td>只有A站权限</td>
+  <td>改导出filter=B</td>
+  <td>拒绝或按A安全过滤，无B数据</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-138</td>
+  <td>并发补偿</td>
+  <td>日志无秘密</td>
+  <td>执行登录/交接/支付/证件操作</td>
+  <td>检查日志与埋点</td>
+  <td>无token、交接码、明文证件、支付密钥</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-139</td>
+  <td>并发补偿</td>
+  <td>隐私请求不盲删资金</td>
+  <td>用户有在途订单或必要留存</td>
+  <td>删除数据请求</td>
+  <td>登记受理并解释保留依据，不删除审计资金事实</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-140</td>
+  <td>并发补偿</td>
+  <td>灰度关闭新单保履约</td>
+  <td>切关闭新下单</td>
+  <td>已付订单继续交接</td>
+  <td>可继续履约/取消退款，不被全局停服误伤</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-141</td>
+  <td>并发补偿</td>
+  <td>回滚不丢新状态事实</td>
+  <td>代码回滚评审</td>
+  <td>检验数据库与旧版兼容</td>
+  <td>保留已归还、待返还和占用记录；禁止DROP回滚</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-142</td>
+  <td>并发补偿</td>
+  <td>排除范围全链路扫描</td>
+  <td>PRD已收敛</td>
+  <td>扫描路由菜单字段任务</td>
+  <td>无事故保险钱包结算及实时检测阶段；普通异常支付退款保留</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-143</td>
+  <td>统一售后</td>
+  <td>同一申请一次审核</td>
+  <td>客户需要取消并退费</td>
+  <td>提交CANCEL_REFUND并一次批准</td>
+  <td>只建立一份case与一条决定，不再建立独立退款审核</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-144</td>
+  <td>统一售后</td>
+  <td>仅退款不取消</td>
+  <td>服务已完成或继续</td>
+  <td>批准REFUND_ONLY</td>
+  <td>履约与保管不变，不释放司机</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-145</td>
+  <td>统一售后</td>
+  <td>有车先返还</td>
+  <td>已接车且车在站点</td>
+  <td>统一审核通过</td>
+  <td>待返还，司机占用保留；退款金额已预留</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-146</td>
+  <td>统一售后</td>
+  <td>归还后无需二次审核</td>
+  <td>取消已通过且退款预留</td>
+  <td>真实返还</td>
+  <td>正式取消、释放匹配承接，执行同一批准退款</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-147</td>
+  <td>统一售后</td>
+  <td>零元取消仍需返还</td>
+  <td>已接车申请取消</td>
+  <td>批准金额0</td>
+  <td>无渠道退款单，但返还完成前不能取消办结</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-148</td>
+  <td>统一售后</td>
+  <td>重复活动申请</td>
+  <td>订单已有未办结case</td>
+  <td>再次创建</td>
+  <td>返回原申请或409；不创建第二条</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-149</td>
+  <td>统一售后</td>
+  <td>统一金额授权</td>
+  <td>只有旧取消权限</td>
+  <td>尝试批准带退款</td>
+  <td>拒绝，不自动提升资金权限</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-150</td>
+  <td>统一售后</td>
+  <td>不可本人审本人</td>
+  <td>账号关联本人申请</td>
+  <td>切后台角色审核</td>
+  <td>仍拒绝</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-151</td>
+  <td>统一售后</td>
+  <td>并发金额预留</td>
+  <td>可退100元，两请求各80元</td>
+  <td>并发批准</td>
+  <td>至多一笔通过，预留不会160元</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-152</td>
+  <td>统一售后</td>
+  <td>审批时发生接车</td>
+  <td>预览为未接车</td>
+  <td>接车完成后提交旧版本批准</td>
+  <td>409或按重核规则重新确认，不按旧快照释放</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-153</td>
+  <td>统一售后</td>
+  <td>退款未知保持预留</td>
+  <td>已提交渠道但超时</td>
+  <td>刷新/任务重试</td>
+  <td>查询原退款号，不新退款，不释放预留</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-154</td>
+  <td>统一售后</td>
+  <td>旧退款成功重复回调</td>
+  <td>已经记入已退</td>
+  <td>同回调重来</td>
+  <td>不重复增加已退，不影响新承接</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-155</td>
+  <td>资料列表</td>
+  <td>资料ID正确</td>
+  <td>点击第二辆车辆</td>
+  <td>打开详情</td>
+  <td>字段属于点击vehicleId，不是第一条</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-156</td>
+  <td>资料列表</td>
+  <td>列表独立可发现</td>
+  <td>已登录运营</td>
+  <td>打开资料与人员菜单</td>
+  <td>车辆/车主/代驾分别独立入口</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-157</td>
+  <td>资料列表</td>
+  <td>同车牌跨客户保护</td>
+  <td>两个客户录同一车牌</td>
+  <td>查看本人或授权档案</td>
+  <td>不自动归并，不泄露对方联系方式</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-158</td>
+  <td>资料列表</td>
+  <td>档案变更不追改订单</td>
+  <td>已有已付历史订单</td>
+  <td>修改车型/品牌档案</td>
+  <td>历史订单仍使用原快照</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-159</td>
+  <td>资料列表</td>
+  <td>手机号验证边界</td>
+  <td>运营维护车主</td>
+  <td>提交phone/openid等非法字段</td>
+  <td>拒绝字段绑定，不直接覆盖认证数据</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-160</td>
+  <td>资料列表</td>
+  <td>关注标记不封禁</td>
+  <td>用户标记需二次核实</td>
+  <td>继续下单</td>
+  <td>提示核实，不暗中禁用</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-161</td>
+  <td>资料列表</td>
+  <td>分页与权限总数一致</td>
+  <td>有跨站未授权记录</td>
+  <td>搜索/分页/导出</td>
+  <td>行及总数均经过相同授权过滤</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-162</td>
+  <td>资料列表</td>
+  <td>停新邀约不弃车</td>
+  <td>司机持车履约</td>
+  <td>后台关闭新接单</td>
+  <td>在手任务保留，不清保管责任</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-163</td>
+  <td>代驾费用</td>
+  <td>真实承接结束事件</td>
+  <td>已实际归还</td>
+  <td>重复结束消息</td>
+  <td>一条基础费用事件，不重复计费</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-164</td>
+  <td>代驾费用</td>
+  <td>费用失败不阻断释放</td>
+  <td>归还成功后费用服务异常</td>
+  <td>台账写失败</td>
+  <td>司机仍已释放，补偿台账任务重试</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-165</td>
+  <td>代驾费用</td>
+  <td>报酬与客户收费独立</td>
+  <td>客户代驾服务费60元</td>
+  <td>匹配45元报酬规则</td>
+  <td>应付按45元规则，不默认60元</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-166</td>
+  <td>代驾费用</td>
+  <td>未核价不是零</td>
+  <td>取消场景无规则</td>
+  <td>产生费用条目</td>
+  <td>PENDING_PRICING且amount=null，无法确认账单</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-167</td>
+  <td>代驾费用</td>
+  <td>明确零元合法</td>
+  <td>接车前解除有0元规则</td>
+  <td>核定费用</td>
+  <td>记录明确0元与版本，不是缺规则</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-168</td>
+  <td>代驾费用</td>
+  <td>重派按承接核对</td>
+  <td>A解除B完成</td>
+  <td>形成服务记录</td>
+  <td>A/B各自条目可追溯，不对两人重复记完整报酬</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-169</td>
+  <td>代驾费用</td>
+  <td>规则版本不追改</td>
+  <td>V2费用已形成</td>
+  <td>发布V3</td>
+  <td>旧条目仍V2；缺价逐条核价有依据</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-170</td>
+  <td>代驾费用</td>
+  <td>路线与仪表分开</td>
+  <td>仪表增加异常</td>
+  <td>计费</td>
+  <td>使用约定路线快照，不自动报酬加价</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-171</td>
+  <td>代驾对账</td>
+  <td>日期只筛选不定义组单成员</td>
+  <td>同一司机有跨月服务A/B/C，其中A/B被明确勾选</td>
+  <td>切换筛选月份后提交selectedEntries A/B</td>
+  <td>仅A/B进入草稿；服务跨度从所选成员派生，不自动加入C</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-172</td>
+  <td>代驾对账</td>
+  <td>同费用不得跨单重复</td>
+  <td>费用已经分配</td>
+  <td>将同一费用ID提交至另一有效账单</td>
+  <td>唯一分配阻止重复纳入</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-173</td>
+  <td>代驾对账</td>
+  <td>不同幂等键并发选择重叠集合</td>
+  <td>同一司机主体存在可组单A/B/C，两请求分别选择A/B与B/C</td>
+  <td>并发以不同Idempotency-Key提交selectedEntries及源版本</td>
+  <td>一份成功另一份409冲突；失败请求无草稿成员和费用占用，不能静默排除B继续生成</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-174</td>
+  <td>代驾对账</td>
+  <td>不同主体不混单</td>
+  <td>同司机两个付款主体</td>
+  <td>生成对账</td>
+  <td>分别出单，不混合汇总净额</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-175</td>
+  <td>代驾对账</td>
+  <td>无回应不自动确认</td>
+  <td>SENT账单无人操作</td>
+  <td>过了展示提醒时限</td>
+  <td>仍SENT，不生成本人确认记录</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-176</td>
+  <td>代驾对账</td>
+  <td>本人版本确认</td>
+  <td>账单更新revision</td>
+  <td>用旧hash/版本确认</td>
+  <td>409保留视图，重读后再确认</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-177</td>
+  <td>代驾对账</td>
+  <td>不允许他人确认</td>
+  <td>司机A</td>
+  <td>访问B账单及确认</td>
+  <td>403/404，不暴露B费用</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-178</td>
+  <td>代驾对账</td>
+  <td>差异不直接改额</td>
+  <td>司机提交差异</td>
+  <td>后台接收</td>
+  <td>原金额保持，进入差异处理</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-179</td>
+  <td>代驾对账</td>
+  <td>调整不可自审</td>
+  <td>A申请调整</td>
+  <td>A切另一角色审核</td>
+  <td>拒绝，需不同真实身份</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-180</td>
+  <td>代驾对账</td>
+  <td>已确认账单不可覆盖</td>
+  <td>原单双方确认</td>
+  <td>后续退费/资料更正/调整</td>
+  <td>原快照不变，追加后续调整</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-181</td>
+  <td>代驾对账</td>
+  <td>客户退款不自动扣司机</td>
+  <td>客户退款成功</td>
+  <td>同步事件</td>
+  <td>不修改报酬；有依据独立调整</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-182</td>
+  <td>代驾对账</td>
+  <td>负额不自动追收</td>
+  <td>跨期调整导致负净额</td>
+  <td>确认账单</td>
+  <td>显示待核对冲抵，不发扣款/提现指令</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-183</td>
+  <td>付款核对</td>
+  <td>登记不是已付</td>
+  <td>经办上传付款凭证</td>
+  <td>保存PENDING</td>
+  <td>已付仍0，复核后才计</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-184</td>
+  <td>付款核对</td>
+  <td>独立复核</td>
+  <td>登记人本人</td>
+  <td>审核付款</td>
+  <td>拒绝自审</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-185</td>
+  <td>付款核对</td>
+  <td>重复流水</td>
+  <td>同主体外部引用已登记</td>
+  <td>再次上传</td>
+  <td>不重复计付</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-186</td>
+  <td>付款核对</td>
+  <td>部分付款</td>
+  <td>应付190元</td>
+  <td>核对50元付款</td>
+  <td>已付50，待付140，不标全额支付</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-187</td>
+  <td>付款核对</td>
+  <td>并发超记</td>
+  <td>待付100元，两笔各80元</td>
+  <td>同时复核</td>
+  <td>锁账单，累计不能160</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-188</td>
+  <td>付款核对</td>
+  <td>无证据不能核实</td>
+  <td>缺少付款凭证</td>
+  <td>提交复核</td>
+  <td>422，不以已对账当付款证据</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-189</td>
+  <td>付款核对</td>
+  <td>确认前不登记</td>
+  <td>账单DRAFT/SENT</td>
+  <td>新增付款记录</td>
+  <td>拒绝正常登记，转人工核实</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-190</td>
+  <td>交互</td>
+  <td>未保存离开</td>
+  <td>维护表单已输入</td>
+  <td>返回列表</td>
+  <td>继续编辑/保存草稿/丢弃明确选择，取消不丢输入</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-191</td>
+  <td>交互</td>
+  <td>字段错误定位</td>
+  <td>多个字段一个非法</td>
+  <td>提交</td>
+  <td>指出字段原因、焦点到错误、其他内容保留</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-192</td>
+  <td>交互</td>
+  <td>弹窗焦点恢复</td>
+  <td>从按钮打开审核弹窗</td>
+  <td>Tab/Escape关闭</td>
+  <td>焦点不逃逸，关闭回触发按钮</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-193</td>
+  <td>交互</td>
+  <td>减少动态与透明</td>
+  <td>用户开启设置</td>
+  <td>查看页面</td>
+  <td>无不必要转场、导航不透明，状态文字仍可见</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-194</td>
+  <td>交互</td>
+  <td>大字与安全区</td>
+  <td>小屏和大字体</td>
+  <td>输入长地址/键盘弹起</td>
+  <td>主操作可见可达，内容不横向溢出</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-195</td>
+  <td>安全</td>
+  <td>CSV公式注入</td>
+  <td>备注以=+-@开头</td>
+  <td>合法导出</td>
+  <td>作为普通文本，不执行公式</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-196</td>
+  <td>迁移</td>
+  <td>新业务初始化不触碰框架资金和用户</td>
+  <td>已有sys表，机动车业务尚未开发且无vi表</td>
+  <td>在隔离测试库执行本版001初始化并比对sys结构/数据摘要</td>
+  <td>仅新增本版vi结构，sys表不变；无任何支付退款重放</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-R41-001</td>
+  <td>对账内核价</td>
+  <td>未核价进入草稿</td>
+  <td>本期有一条NULL价格服务</td>
+  <td>建立草稿</td>
+  <td>成功保存、amount=NULL、knownAmount独立，不把NULL置0</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-R41-002</td>
+  <td>对账内核价</td>
+  <td>行内填写初始价格</td>
+  <td>NULL草稿行</td>
+  <td>填写30元和依据</td>
+  <td>保存拟价3000分与历史、源NULL不覆盖，需要整单复核</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-R41-003</td>
+  <td>对账内核价</td>
+  <td>修改最终价不是加差额</td>
+  <td>规则60元</td>
+  <td>先70再65</td>
+  <td>最终拟价65，历史两次，最终结转+5一次</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-R41-004</td>
+  <td>对账内核价</td>
+  <td>同额保存无重复记录</td>
+  <td>已有65元拟价</td>
+  <td>再次保存65</td>
+  <td>不产生重复金额事件</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-R41-005</td>
+  <td>对账内核价</td>
+  <td>缺原因拒绝</td>
+  <td>合法金额</td>
+  <td>空原因保存</td>
+  <td>422/字段提示，其他输入保留</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-R41-006</td>
+  <td>对账内核价</td>
+  <td>金额精度</td>
+  <td>普通服务行</td>
+  <td>输入70.001/-1/科学计数</td>
+  <td>拒绝，不改变拟价；合法0.01精确为1分</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-R41-007</td>
+  <td>对账内核价</td>
+  <td>明确零元</td>
+  <td>未核价服务</td>
+  <td>填0并说明依据</td>
+  <td>0与NULL区分，人工复核仍必需</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-R41-008</td>
+  <td>对账内核价</td>
+  <td>父行双版本冲突</td>
+  <td>两个编辑者读同版本</td>
+  <td>先后保存</td>
+  <td>后者409，输入保留，不能覆盖前者</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-R41-009</td>
+  <td>对账内核价</td>
+  <td>整单集中复核</td>
+  <td>多行人工改价</td>
+  <td>一次submit-review</td>
+  <td>一份待审完整快照，不生成多份B41日常调整</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-R41-010</td>
+  <td>对账内核价</td>
+  <td>禁止任一贡献者自审</td>
+  <td>A和B都改过</td>
+  <td>A或B审核</td>
+  <td>按实际身份拒绝，不只排除最后编辑者</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-R41-011</td>
+  <td>对账内核价</td>
+  <td>跨域同人复核</td>
+  <td>Mini账号绑定某sys_user</td>
+  <td>切后台审核本人报酬改价</td>
+  <td>拒绝，不因ID数字不同认为独立</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-R41-012</td>
+  <td>对账内核价</td>
+  <td>直接发送绕过</td>
+  <td>草稿有未审核人工价格</td>
+  <td>调用send</td>
+  <td>拒绝，不因前端按钮可点放行</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-R41-013</td>
+  <td>对账内核价</td>
+  <td>批准发送同事务</td>
+  <td>独立人员核对正确快照</td>
+  <td>APPROVE</td>
+  <td>决定、SENT、发布快照、outbox同事务</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-R41-014</td>
+  <td>对账内核价</td>
+  <td>复核时改价竞态</td>
+  <td>已提交待审</td>
+  <td>改价与approve并发</td>
+  <td>状态/版本门禁明确，只一条有效变更；不审旧快照</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-R41-015</td>
+  <td>对账内核价</td>
+  <td>退回保留拟价</td>
+  <td>内部复核退回</td>
+  <td>经办重开</td>
+  <td>仍为草稿，原拟价及理由历史保留</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-R41-016</td>
+  <td>对账内核价</td>
+  <td>撤回复核</td>
+  <td>INTERNAL_REVIEW</td>
+  <td>撤回后改价</td>
+  <td>旧审核失效，新内容重新提交</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-R41-017</td>
+  <td>对账内核价</td>
+  <td>撤回与确认并发</td>
+  <td>SENT账单</td>
+  <td>撤回与本人confirm并发</td>
+  <td>同一statement锁，只有一个先成功，另一409</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-R41-018</td>
+  <td>对账内核价</td>
+  <td>旧版确认</td>
+  <td>平台撤回改价重发</td>
+  <td>司机旧弹窗confirm</td>
+  <td>不能确认新金额，刷新后重新核对</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-R41-019</td>
+  <td>对账内核价</td>
+  <td>只查本人发布账单</td>
+  <td>平台草稿或其他司机账单</td>
+  <td>小程序查询</td>
+  <td>不返回内部草稿及他人账单明细</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-R41-020</td>
+  <td>对账内核价</td>
+  <td>NULL首次结转</td>
+  <td>审核并发布30元</td>
+  <td>本人确认</td>
+  <td>初始核价记录唯一，原NULL保留，最终30不重复</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-R41-021</td>
+  <td>对账内核价</td>
+  <td>重复确认结转</td>
+  <td>已确认人工改价</td>
+  <td>请求重放/任务重试</td>
+  <td>永久业务键去重，不产生第二笔</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-R41-022</td>
+  <td>对账内核价</td>
+  <td>结转不再入未来账单</td>
+  <td>确认时派生差额</td>
+  <td>预览另一期间</td>
+  <td>已直接分配原单，不能再次纳入</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-R41-023</td>
+  <td>对账内核价</td>
+  <td>确认后行内调差</td>
+  <td>已确认服务65元</td>
+  <td>申请补5元</td>
+  <td>原账65不改，批准后独立5元进入后续账单</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-R41-024</td>
+  <td>对账内核价</td>
+  <td>付款存在锁定</td>
+  <td>任何状态已登记付款记录</td>
+  <td>尝试改价/撤回/作废</td>
+  <td>拒绝，不删除付款记录解锁</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-R41-025</td>
+  <td>对账内核价</td>
+  <td>草稿改价无客户副作用</td>
+  <td>客户支付及司机任务存在</td>
+  <td>改司机拟价</td>
+  <td>客户金额/退款/占用/规则不变</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-R41-026</td>
+  <td>对账内核价</td>
+  <td>差异同页处理</td>
+  <td>司机反馈金额差异</td>
+  <td>保存说明并改价</td>
+  <td>本工作单复核后重发，不另造重复账</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-R41-027</td>
+  <td>对账内核价</td>
+  <td>来源与导出</td>
+  <td>草稿/发送/确认版本</td>
+  <td>导出</td>
+  <td>标清版本状态、NULL与小计，长ID文本、权限再验</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-R41-028</td>
+  <td>对账内核价</td>
+  <td>主体权限</td>
+  <td>只有A站服务查看权</td>
+  <td>改B主体司机账单</td>
+  <td>拒绝，不继承无关财务权限</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-R41-029</td>
+  <td>对账内核价</td>
+  <td>初次建立工作行与不可变快照结构</td>
+  <td>新业务空vi目标</td>
+  <td>执行本版初始化并创建草稿/发送版本/确认版本</td>
+  <td>工作行和快照关联正确、主键/唯一约束存在；不运行V4迁移</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-R41-030</td>
+  <td>对账内核价</td>
+  <td>通知失败</td>
+  <td>approve事务已成功</td>
+  <td>通知超时重试</td>
+  <td>不退回/重审，原决定与版本不变</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-R42-001</td>
+  <td>勾选组单与未结清</td>
+  <td>按明确集合生成</td>
+  <td>选中服务1、3、5</td>
+  <td>提交明确entryId/sourceVersion</td>
+  <td>只包含所选3笔，不补入相同日期其他服务</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-R42-002</td>
+  <td>勾选组单与未结清</td>
+  <td>跨月自由组单</td>
+  <td>同一司机主体币种的9月与10月两笔</td>
+  <td>一起选择生成</td>
+  <td>允许组单，日期跨度由成员计算</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-R42-003</td>
+  <td>勾选组单与未结清</td>
+  <td>同日多张账单</td>
+  <td>同一日有6筆服务</td>
+  <td>分两组选不同3笔</td>
+  <td>各自生成，不按日期唯一限制</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-R42-004</td>
+  <td>勾选组单与未结清</td>
+  <td>日期不是成员条件</td>
+  <td>改变日期过滤</td>
+  <td>提交此前保留的所选明细</td>
+  <td>仍按明确集合，过滤变化不自动加入/移除选择</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-R42-005</td>
+  <td>勾选组单与未结清</td>
+  <td>跨页选择</td>
+  <td>第1页勾选两笔</td>
+  <td>翻页再勾选一笔</td>
+  <td>底部显示共3笔，可查看全部已选</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-R42-006</td>
+  <td>勾选组单与未结清</td>
+  <td>全选本页</td>
+  <td>存在多页</td>
+  <td>点击表头全选</td>
+  <td>只选择当前页可选行，不默选所有匹配结果</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-R42-007</td>
+  <td>勾选组单与未结清</td>
+  <td>更换主体</td>
+  <td>选择未提交</td>
+  <td>切到另一费用主体</td>
+  <td>确认后清空不适用选择，取消时原选择保留</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-R42-008</td>
+  <td>勾选组单与未结清</td>
+  <td>空与重复选择</td>
+  <td>entryIds空或同ID重复</td>
+  <td>生成草稿</td>
+  <td>400，零账单零占用</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-R42-009</td>
+  <td>勾选组单与未结清</td>
+  <td>跨主体混入</td>
+  <td>混合两公司明细</td>
+  <td>提交生成</td>
+  <td>整体拒绝，不披露无权对象详情</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-R42-010</td>
+  <td>勾选组单与未结清</td>
+  <td>跨司机混入</td>
+  <td>driverId与一条明细司机不符</td>
+  <td>提交生成</td>
+  <td>整体拒绝，不部分生成</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-R42-011</td>
+  <td>勾选组单与未结清</td>
+  <td>任务未结束</td>
+  <td>存在在手司机任务</td>
+  <td>提交该费用入账</td>
+  <td>拒绝，不能因客户订单状态误判服务结束</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-R42-012</td>
+  <td>勾选组单与未结清</td>
+  <td>源版本变化</td>
+  <td>选中后源费用版本变更</td>
+  <td>提交旧sourceVersion</td>
+  <td>409指出可披露冲突，全部回滚</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-R42-013</td>
+  <td>勾选组单与未结清</td>
+  <td>并发抢占</td>
+  <td>两人选择重叠集合</td>
+  <td>同时提交生成</td>
+  <td>唯一分配只允许一组成功，另一组全部回滚</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-R42-014</td>
+  <td>勾选组单与未结清</td>
+  <td>同键重试</td>
+  <td>首次生成成功响应丢失</td>
+  <td>相同key同体重试</td>
+  <td>返回同一账单；同key异体409</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-R42-015</td>
+  <td>勾选组单与未结清</td>
+  <td>NULL草稿</td>
+  <td>有一条价格未知</td>
+  <td>生成草稿</td>
+  <td>允许；amountFen为空，knownAmount非最终，发送拒绝</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-R42-016</td>
+  <td>勾选组单与未结清</td>
+  <td>草稿移出</td>
+  <td>有手动改价历史的明细</td>
+  <td>移出某条</td>
+  <td>保留移出/价格历史，释放该源明细占用</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-R42-017</td>
+  <td>勾选组单与未结清</td>
+  <td>同稿再加入</td>
+  <td>同一源行曾移出</td>
+  <td>重新加入该草稿</td>
+  <td>复用工作行与改价历史，不破坏statement+ledger唯一键</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-R42-018</td>
+  <td>勾选组单与未结清</td>
+  <td>添加冲突</td>
+  <td>新增集合含已在别单费用</td>
+  <td>添加服务</td>
+  <td>整个新增请求失败，不影响已有成员</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-R42-019</td>
+  <td>勾选组单与未结清</td>
+  <td>空稿处理</td>
+  <td>移出最后一条服务</td>
+  <td>尝试发送</td>
+  <td>可保存空稿或作废，不能发送空账</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-R42-020</td>
+  <td>勾选组单与未结清</td>
+  <td>成员使复核失效</td>
+  <td>待内部复核或已发出</td>
+  <td>撤回后增删成员</td>
+  <td>内容revision/hash变化，原复核与旧确认失效</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-R42-021</td>
+  <td>勾选组单与未结清</td>
+  <td>已确认不可删除成员</td>
+  <td>已确认或已有任意付款记录</td>
+  <td>移出/作废</td>
+  <td>拒绝；差额走调差，不删除原始服务或付款</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-R42-022</td>
+  <td>勾选组单与未结清</td>
+  <td>作废恢复候选</td>
+  <td>未确认的DRAFT无付款</td>
+  <td>带原因作废</td>
+  <td>只释放本单占用，保留历史，成员可重新选择</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-R42-023</td>
+  <td>勾选组单与未结清</td>
+  <td>未结清分层</td>
+  <td>未组单/草稿/待确认/已确认未付并存</td>
+  <td>查询默认未结清</td>
+  <td>全部显示并指出所处阶段，不等同可重新组单</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-R42-024</td>
+  <td>勾选组单与未结清</td>
+  <td>全部历史账单</td>
+  <td>同一司机有多张各状态账单</td>
+  <td>查询记录及分页</td>
+  <td>保留所有历史含作废，点击ID正确，不只返回最近一张</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-R42-025</td>
+  <td>勾选组单与未结清</td>
+  <td>状态正交</td>
+  <td>司机已确认，尚未付款</td>
+  <td>查询账单</td>
+  <td>对账CONFIRMED与付款UNPAID分别显示</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-R42-026</td>
+  <td>勾选组单与未结清</td>
+  <td>账单绑定凭证</td>
+  <td>从已确认账单点击录入</td>
+  <td>打开表单</td>
+  <td>自动带入账单/代驾/主体，只填实际金额时间流水文件</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-R42-027</td>
+  <td>勾选组单与未结清</td>
+  <td>凭证待核实</td>
+  <td>新付款凭证已提交</td>
+  <td>查询未结清与付款</td>
+  <td>不计已付，登记预留防超记，仍显示待核实</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-R42-028</td>
+  <td>勾选组单与未结清</td>
+  <td>独立核实</td>
+  <td>登记人或收款代驾本人</td>
+  <td>审批同一付款凭证</td>
+  <td>拒绝，不因换角色绕过</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-R42-029</td>
+  <td>勾选组单与未结清</td>
+  <td>核实成功</td>
+  <td>金额对象与证据相符且授权有效</td>
+  <td>批准凭证</td>
+  <td>事务内计已核实款，更新账单级付款投影</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-R42-030</td>
+  <td>勾选组单与未结清</td>
+  <td>部分付款不分摊</td>
+  <td>账单300已核实200</td>
+  <td>查询服务行</td>
+  <td>各行显示所在账单部分付款，不自行指定哪行已付清</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-R42-031</td>
+  <td>勾选组单与未结清</td>
+  <td>整单付清</td>
+  <td>剩余100再次实际付款核实</td>
+  <td>查询个人页</td>
+  <td>账单PAID，成员离开默认未结清，历史保留</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-R42-032</td>
+  <td>勾选组单与未结清</td>
+  <td>0元无需付款</td>
+  <td>真实规则或经审价格总额0</td>
+  <td>本人确认</td>
+  <td>NO_PAYMENT_REQUIRED，不伪造0元付款凭证</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-R42-033</td>
+  <td>勾选组单与未结清</td>
+  <td>负额账单</td>
+  <td>有效已确认/历史账单净额负数</td>
+  <td>请求新增付款</td>
+  <td>禁止常规付款登记，人工核实冲抵，不自动追收</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-R42-034</td>
+  <td>勾选组单与未结清</td>
+  <td>同流水去重</td>
+  <td>同主体同外部流水已存在</td>
+  <td>再次登记或重复核实</td>
+  <td>不重复增加付款；跨账真实合并付款另走批准分配设计</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-R42-035</td>
+  <td>勾选组单与未结清</td>
+  <td>登记余额并发</td>
+  <td>两人同时登记剩余额度</td>
+  <td>两个事务并发</td>
+  <td>已核实+有效待核实预留不得超过应付，另一请求冲突</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-R42-036</td>
+  <td>勾选组单与未结清</td>
+  <td>退回凭证</td>
+  <td>证据不符</td>
+  <td>独立退回</td>
+  <td>不计已付，释放登记预留，原凭证历史不删除</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-R42-037</td>
+  <td>勾选组单与未结清</td>
+  <td>私有凭证与下载撤权</td>
+  <td>用户曾可查看凭证</td>
+  <td>撤权后重新下载</td>
+  <td>二次鉴权拒绝，短链不当永久权限</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-R42-038</td>
+  <td>勾选组单与未结清</td>
+  <td>司机端最小投影</td>
+  <td>本人有草稿和其他人的账单</td>
+  <td>查看本人未结清/付款</td>
+  <td>不暴露内部拟价/复核意见/其他人资料/原始银行信息</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-R42-039</td>
+  <td>勾选组单与未结清</td>
+  <td>拒绝旧period作为组单成员</td>
+  <td>新建对账接口只接受selectedEntries</td>
+  <td>仅提交旧期间字段或混入未知legacy模式</td>
+  <td>400拒绝未知字段或422缺明确集合；不得按日期查询自动补选</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-R42-040</td>
+  <td>勾选组单与未结清</td>
+  <td>导出和时间跨度</td>
+  <td>任意选择跨月及长ID</td>
+  <td>导出账单与列表</td>
+  <td>列出准确成员，长ID文本，日期仅跨度且无重复加总</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-R50-001</td>
+  <td>字段投影</td>
+  <td>OWNER详情白名单</td>
+  <td>已授权本人订单</td>
+  <td>读取OwnerOrderView并遍历所有嵌套字段</td>
+  <td>不出现员工ID/内部审查/司机应付/交接明码/存储对象键</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-R50-002</td>
+  <td>字段投影</td>
+  <td>DRIVER历史住址清除</td>
+  <td>司机曾完成订单并已有新承接</td>
+  <td>读取旧单DriverOrderView</td>
+  <td>accessPhase=HISTORY；pickupAddress/returnAddress/ownerContact为null，不能获取旧单有效联系凭证</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-R50-003</td>
+  <td>字段投影</td>
+  <td>STATION不读取客户金额</td>
+  <td>获授权站点员工</td>
+  <td>读取StationOrderView</td>
+  <td>不出现money或精确上门地址，只显示支付状态及工作所需资料</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-R50-004</td>
+  <td>字段投影</td>
+  <td>ADMIN字段附加权限</td>
+  <td>后台有订单查询但无order:finance/地址权限</td>
+  <td>查询AdminOrderView</td>
+  <td>money/地址为null，其他授权字段正常；有查询不代表财务/住址权限</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-R50-005</td>
+  <td>字段投影</td>
+  <td>确认回包仍为Public</td>
+  <td>本人正在查看已发布账单</td>
+  <td>POST confirm成功</td>
+  <td>DriverStatementPublic，不含knownAmount/manualPriceCount/reviewStatus/内部拟价与复核记录</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-R50-006</td>
+  <td>字段投影</td>
+  <td>公开hash独立于内部意见</td>
+  <td>同一已发布服务金额内容</td>
+  <td>修改内部非内容说明或核实付款</td>
+  <td>公开hash不因内部备注或付款变化而变化，新增成员/改金额必须新revision/hash</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-R50-007</td>
+  <td>会话</td>
+  <td>旧logout不实施</td>
+  <td>部署V5新服务</td>
+  <td>请求/api/common/logout</td>
+  <td>无业务映射404；不创建兼容清理或双域认证路径</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-R50-008</td>
+  <td>会话</td>
+  <td>双域退出隔离</td>
+  <td>有效MINI Token和ADMIN Token</td>
+  <td>交叉调用另一域退出/敏感接口</td>
+  <td>拒绝跨域；正确MINI session/logout按allDevices范围撤销</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-R50-009</td>
+  <td>路由</td>
+  <td>直连与代理路径一致</td>
+  <td>context-path=/，新Controller/api，代理原样转发</td>
+  <td>直连及代理GET /api/common/profile</td>
+  <td>两者到同一处理器，不产生/api/api；既有sys路径不变</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-R50-010</td>
+  <td>错误契约</td>
+  <td>限流回复可恢复</td>
+  <td>超过登录或请求配额</td>
+  <td>请求被限流</td>
+  <td>HTTP429、ApiError、Retry-After；不包含密钥，前端按errorCode提示</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-R50-011</td>
+  <td>错误契约</td>
+  <td>版本错误统一响应</td>
+  <td>后台和MINI分别持有旧version</td>
+  <td>更新资料或确认账单</td>
+  <td>HTTP409与稳定错误码及限定data字段；保持本地输入，不凭中文msg分支</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-R50-012</td>
+  <td>权限</td>
+  <td>中文自由权限被拒绝</td>
+  <td>修改接口x-permission为仅本人</td>
+  <td>运行契约检查</td>
+  <td>检查失败；功能权限必须注册，归属独立表达</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-R50-013</td>
+  <td>资料CAS</td>
+  <td>Profile缺版本拒绝</td>
+  <td>已读本人Profile.version</td>
+  <td>PATCH不带expectedVersion</td>
+  <td>400拒绝；正确版本更新并返回新version；服务称呼不改实名结论</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-R50-014</td>
+  <td>资料CAS</td>
+  <td>Address提供读取版本</td>
+  <td>存在本人地址</td>
+  <td>读取列表→修改→设默认</td>
+  <td>读取含version；更新必带expectedVersion；并发设默认最多一个有效默认</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-R50-015</td>
+  <td>资料CAS</td>
+  <td>创建无旧版本</td>
+  <td>不存在的车辆/站点/价格规则</td>
+  <td>用Create DTO新建再用Update DTO修改</td>
+  <td>创建不要求expectedVersion，修改必须提供最后读取版本</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-R50-016</td>
+  <td>绑定</td>
+  <td>绑定凭证生产消费</td>
+  <td>本人创建请求，管理员核实目标员工</td>
+  <td>签发一次性凭证并由匹配本人消费</td>
+  <td>签发返回限时凭证但未绑定；本人消费一次后建立关联；重复/他人/过期/撤销均拒绝</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-R50-017</td>
+  <td>培训</td>
+  <td>培训尝试字段闭环</td>
+  <td>ADMIN已发布课程/题库，司机完成学习</td>
+  <td>创建attempt、读取问题、提交答案、读取结果</td>
+  <td>产生attemptId和限时题目，返回中无标准答案；按原题库版本一次判分</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-R50-018</td>
+  <td>培训</td>
+  <td>进度不能快进伪造</td>
+  <td>播放会话墙钟经过10秒</td>
+  <td>客户端申报已看300秒或重放序号</td>
+  <td>不记完整通过；可核验累计&lt;=真实时间及允许媒体段</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-R50-019</td>
+  <td>培训</td>
+  <td>题库版本冻结</td>
+  <td>已有attempt引用课程V1</td>
+  <td>ADMIN发布新的课程题目版本</td>
+  <td>旧attempt仍按V1判分；新课程不覆盖旧记录</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-R50-020</td>
+  <td>处罚</td>
+  <td>获取处罚与申诉ID</td>
+  <td>司机合法解除触发已有规则限制</td>
+  <td>读本人处罚列表→详情→申诉→读取结果</td>
+  <td>所有ID来自真实记录；同一待审申请不重复，后台处理后公开意见可查</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-R50-021</td>
+  <td>活体</td>
+  <td>核验会话只信服务端</td>
+  <td>创建face-session返回业务ID/限时URL</td>
+  <td>前端返回passed=true或供应商页面关闭</td>
+  <td>不能据前端结论通过；仅可信厂商回调/查询更新；失败/未知明确展示</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-R50-022</td>
+  <td>数据库</td>
+  <td>四自然键唯一</td>
+  <td>初始化新vi表</td>
+  <td>并发对同driver插入两条occupancy/对同scope插两条cursor</td>
+  <td>唯一主键拒绝重复；业务不变量不靠注释或隐藏行号</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-R50-023</td>
+  <td>数据库</td>
+  <td>自增策略冻结</td>
+  <td>所有独立id表初始化</td>
+  <td>并行生成CRUD代码与插入记录</td>
+  <td>普通id一律数据库生成，四自然键显式提供，不出现逐表雪花混用</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-R50-024</td>
+  <td>数据库</td>
+  <td>生成列禁止写入</td>
+  <td>带generated column的实体及接口</td>
+  <td>伪造生成列HTTP输入/Mapper写入</td>
+  <td>DTO拒绝未知字段；写列清单排除所有生成列；数据库真实插入拒绝非DEFAULT赋值</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-R50-025</td>
+  <td>数据库</td>
+  <td>枚举与CHECK同源</td>
+  <td>加载主枚举和模型绑定</td>
+  <td>写入无效fulfillment/cancel/photo/治理type-status组合</td>
+  <td>服务校验拒绝；目标MySQL CHECK拒绝；合法枚举可持久化</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-R50-026</td>
+  <td>时间</td>
+  <td>会话时区变化仍UTC</td>
+  <td>两个连接session时区分别+00:00和+08:00</td>
+  <td>插入使用vi默认时间并读取UTC分量</td>
+  <td>两条created_at反映同一UTC区间；sys默认和历史未被全局移动</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-R50-027</td>
+  <td>时间</td>
+  <td>业务日边界一致</td>
+  <td>Asia/Shanghai业务日为10月20日</td>
+  <td>查询start&gt;=19日16:00Z,end&lt;20日16:00Z</td>
+  <td>仅该业务日数据，23:59:59.999不遗漏，次日00:00不混入</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-R50-028</td>
+  <td>并发</td>
+  <td>确认撤回互斥</td>
+  <td>同一SENT账单，司机与后台相同当前版本</td>
+  <td>一个confirm一个withdraw并发</td>
+  <td>仅一个成功；确认与公开快照、唯一结转同事务，不存在已确认又撤回</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-R50-029</td>
+  <td>组单</td>
+  <td>同幂等键重复</td>
+  <td>selectedEntries A/B及来源版本相同</td>
+  <td>同Idempotency-Key重复提交相同体</td>
+  <td>返回同一账单不重复费用占用；不同体同键409</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-R50-030</td>
+  <td>组单</td>
+  <td>同期间不重叠允许两账</td>
+  <td>同司机同主体可用A/B/C/D</td>
+  <td>同期间分别选A/B与C/D以不同键并发生成</td>
+  <td>两张均成功，日期范围不是唯一键</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-R50-031</td>
+  <td>初始化</td>
+  <td>已有vi表预检阻止覆盖</td>
+  <td>目标存在任何旧测试vi表</td>
+  <td>执行初次预检/初始化流程</td>
+  <td>停止比较并报告，不DROP或IF NOT EXISTS跳过差异</td>
+  <td>NOT_RUN</td>
+</tr>
+<tr>
+  <td>TC-R50-032</td>
+  <td>安全</td>
+  <td>后台订单字段无自证权限</td>
+  <td>accountId=1但非sys管理员</td>
+  <td>请求admin订单和敏感字段</td>
+  <td>认证域拒绝，不命中框架sys_user=1超管分支</td>
+  <td>NOT_RUN</td>
+</tr>
+</tbody>
+</table>
+</main></body></html>

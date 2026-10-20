@@ -1,0 +1,1002 @@
+openapi: 3.0.3
+info:
+  title: 付款凭证登记与独立核实
+  version: 6.0.0
+servers:
+- url: http://localhost:8080
+  description: 本地Java直连；paths已包含/api，不再次追加
+- url: https://{host}
+  description: 发布域名仅作部署变量；由环境设置真实已备案域名，代理保留/api
+  variables:
+    host:
+      default: api.example.invalid
+      description: 占位不可用于真实支付或发布
+paths:
+  /api/admin/driver-payment-records:
+    get:
+      operationId: V4_get_api_admin_driver_payment_records
+      summary: 外部付款证据列表
+      tags:
+      - ADMIN
+      security:
+      - AdminBearerAuth: []
+      x-flow-ids:
+      - F35
+      description: 完整历史分页；按真实司机及费用主体范围过滤，禁止只取最新一单。paymentStatus与statement.status分别筛选。
+      parameters:
+      - name: pageNum
+        in: query
+        schema:
+          type: integer
+          minimum: 1
+          default: 1
+      - name: pageSize
+        in: query
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 100
+          default: 20
+      - name: keyword
+        in: query
+        schema:
+          type: string
+      - name: status
+        in: query
+        schema:
+          type: string
+      - name: sort
+        in: query
+        schema:
+          type: string
+          description: 白名单字段，不允许原样SQL拼接
+      - name: payorEntityId
+        in: query
+        schema:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          description: 内部BIGINT/Java Long；新API主键十进制字符串，服务端检查Long上界。业务单号不适用此格式。
+      - name: driverId
+        in: query
+        schema:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          description: 内部BIGINT/Java Long；新API主键十进制字符串，服务端检查Long上界。业务单号不适用此格式。
+      - name: statementId
+        in: query
+        schema:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          description: 内部BIGINT/Java Long；新API主键十进制字符串，服务端检查Long上界。业务单号不适用此格式。
+      responses:
+        '200':
+          description: 成功，返回当前业务事实
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                properties:
+                  code:
+                    type: integer
+                    enum:
+                    - 200
+                  msg:
+                    type: string
+                  rows:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ExternalPaymentRecord'
+                  total:
+                    type: integer
+                    format: int64
+                    minimum: 0
+                    description: 符合授权条件的总数
+                required:
+                - code
+                - msg
+                - rows
+                - total
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+                enum:
+                - no-store
+              description: 身份/交易/个人业务响应不缓存
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalError'
+        '503':
+          $ref: '#/components/responses/Unavailable'
+      x-permission: biz:driverpayment:list
+      x-authorization:
+        realm: ADMIN
+        scope: ORG_DEPT_STATION_AND_PAYOR
+        permission: biz:driverpayment:list
+      x-error-codes:
+      - VI_REQUEST_INVALID
+      - VI_AUTH_REQUIRED
+      - VI_TOKEN_REALM_MISMATCH
+      - VI_REFRESH_REUSED
+      - VI_FORBIDDEN
+      - VI_SELF_REVIEW_DENIED
+      - VI_RATE_LIMITED
+      - VI_INTERNAL_ERROR
+      - VI_AUTHORITY_UNAVAILABLE
+      - VI_UPSTREAM_UNAVAILABLE
+      x-error-policy: GLOBAL_FAILURES_NO_RESOURCE_404
+      x-contract-baseline: V6.0
+    post:
+      operationId: V4_post_api_admin_driver_payment_records
+      summary: 登记已有外部付款证据
+      tags:
+      - ADMIN
+      security:
+      - AdminBearerAuth: []
+      x-flow-ids:
+      - F35
+      description: 执行前校验当前真实身份、功能权限与对象所属范围。所有金额来自服务端核对，不因UI显示可点而放行。
+      parameters:
+      - name: Idempotency-Key
+        in: header
+        required: true
+        schema:
+          type: string
+          description: UUID；同主体+动作+资源+键，同体重放，不同体409；领域唯一性额外永久去重
+      responses:
+        '200':
+          description: 成功，返回当前业务事实
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                properties:
+                  code:
+                    type: integer
+                    enum:
+                    - 200
+                  msg:
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/ExternalPaymentRecord'
+                required:
+                - code
+                - msg
+                - data
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+                enum:
+                - no-store
+              description: 身份/交易/个人业务响应不缓存
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalError'
+        '503':
+          $ref: '#/components/responses/Unavailable'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExternalPaymentApply'
+      x-permission: biz:driverpayment:create
+      x-authorization:
+        realm: ADMIN
+        scope: ORG_DEPT_STATION_AND_PAYOR
+        permission: biz:driverpayment:create
+      x-error-codes:
+      - VI_REQUEST_INVALID
+      - VI_AUTH_REQUIRED
+      - VI_TOKEN_REALM_MISMATCH
+      - VI_REFRESH_REUSED
+      - VI_FORBIDDEN
+      - VI_SELF_REVIEW_DENIED
+      - VI_VERSION_CONFLICT
+      - VI_STATE_CONFLICT
+      - VI_IDEMPOTENCY_CONFLICT
+      - VI_SELECTION_CONFLICT
+      - VI_CONTEXT_CHANGED
+      - VI_SNAPSHOT_CHANGED
+      - VI_DATA_INVALID
+      - VI_EVIDENCE_INCOMPLETE
+      - VI_HANDOVER_CODE_INVALID
+      - VI_HANDOVER_LOCKED
+      - VI_UNPRICED_LINES
+      - VI_REFUND_LIMIT
+      - VI_PAYMENT_LIMIT
+      - VI_SERVICE_UNAVAILABLE
+      - VI_CAPABILITY_NOT_CONFIGURED
+      - VI_TRAINING_NOT_READY
+      - VI_BINDING_CREDENTIAL_INVALID
+      - VI_RATE_LIMITED
+      - VI_INTERNAL_ERROR
+      - VI_AUTHORITY_UNAVAILABLE
+      - VI_UPSTREAM_UNAVAILABLE
+      x-error-policy: GLOBAL_FAILURES_NO_RESOURCE_404
+      x-contract-baseline: V6.0
+  /api/admin/driver-payment-records/{recordId}/verify:
+    post:
+      operationId: V4_post_api_admin_driver_payment_records__recordId__verify
+      summary: 独立复核外部付款证据
+      tags:
+      - ADMIN
+      security:
+      - AdminBearerAuth: []
+      x-flow-ids:
+      - F35
+      description: 指向具体recordId。独立核实；先锁父账单再锁付款行，重验当前余额；拒绝不计已付并释放凭证占用，原记录留存。
+      parameters:
+      - name: recordId
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+      - name: Idempotency-Key
+        in: header
+        required: true
+        schema:
+          type: string
+          description: UUID；同主体+动作+资源+键，同体重放，不同体409；领域唯一性额外永久去重
+      responses:
+        '200':
+          description: 成功，返回当前业务事实
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                properties:
+                  code:
+                    type: integer
+                    enum:
+                    - 200
+                  msg:
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/ExternalPaymentRecord'
+                required:
+                - code
+                - msg
+                - data
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+                enum:
+                - no-store
+              description: 身份/交易/个人业务响应不缓存
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalError'
+        '503':
+          $ref: '#/components/responses/Unavailable'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExternalPaymentVerify'
+      x-permission: biz:driverpayment:verify
+      x-authorization:
+        realm: ADMIN
+        scope: ORG_DEPT_STATION_AND_PAYOR
+        permission: biz:driverpayment:verify
+      x-error-codes:
+      - VI_REQUEST_INVALID
+      - VI_AUTH_REQUIRED
+      - VI_TOKEN_REALM_MISMATCH
+      - VI_REFRESH_REUSED
+      - VI_FORBIDDEN
+      - VI_SELF_REVIEW_DENIED
+      - VI_RESOURCE_NOT_VISIBLE
+      - VI_VERSION_CONFLICT
+      - VI_STATE_CONFLICT
+      - VI_IDEMPOTENCY_CONFLICT
+      - VI_SELECTION_CONFLICT
+      - VI_CONTEXT_CHANGED
+      - VI_SNAPSHOT_CHANGED
+      - VI_DATA_INVALID
+      - VI_EVIDENCE_INCOMPLETE
+      - VI_HANDOVER_CODE_INVALID
+      - VI_HANDOVER_LOCKED
+      - VI_UNPRICED_LINES
+      - VI_REFUND_LIMIT
+      - VI_PAYMENT_LIMIT
+      - VI_SERVICE_UNAVAILABLE
+      - VI_CAPABILITY_NOT_CONFIGURED
+      - VI_TRAINING_NOT_READY
+      - VI_BINDING_CREDENTIAL_INVALID
+      - VI_RATE_LIMITED
+      - VI_INTERNAL_ERROR
+      - VI_AUTHORITY_UNAVAILABLE
+      - VI_UPSTREAM_UNAVAILABLE
+      x-error-policy: OBJECT_404_HIDES_EXISTENCE
+      x-contract-baseline: V6.0
+  /api/admin/driver-payment-records/{recordId}:
+    get:
+      operationId: V42_get_api_admin_driver_payment_records__recordId
+      summary: 查看指定付款凭证及核实记录
+      tags:
+      - ADMIN
+      security:
+      - AdminBearerAuth: []
+      x-flow-ids:
+      - F39
+      - F40
+      description: 按V6.0/T3.1真实主体与范围校验；查看指定付款凭证及核实记录
+      parameters:
+      - name: recordId
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+      responses:
+        '200':
+          description: 成功，返回当前业务事实
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                properties:
+                  code:
+                    type: integer
+                    enum:
+                    - 200
+                  msg:
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/ExternalPaymentRecord'
+                required:
+                - code
+                - msg
+                - data
+                description: ''
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+                enum:
+                - no-store
+              description: 身份/交易/个人业务响应不缓存
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalError'
+        '503':
+          $ref: '#/components/responses/Unavailable'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      x-permission: biz:driverpayment:query
+      x-authorization:
+        realm: ADMIN
+        scope: ORG_DEPT_STATION_AND_PAYOR
+        permission: biz:driverpayment:query
+      x-error-codes:
+      - VI_REQUEST_INVALID
+      - VI_AUTH_REQUIRED
+      - VI_TOKEN_REALM_MISMATCH
+      - VI_REFRESH_REUSED
+      - VI_FORBIDDEN
+      - VI_SELF_REVIEW_DENIED
+      - VI_RESOURCE_NOT_VISIBLE
+      - VI_RATE_LIMITED
+      - VI_INTERNAL_ERROR
+      - VI_AUTHORITY_UNAVAILABLE
+      - VI_UPSTREAM_UNAVAILABLE
+      x-error-policy: OBJECT_404_HIDES_EXISTENCE
+      x-contract-baseline: V6.0
+  /api/app/driver/payment-records:
+    get:
+      operationId: V42_get_api_app_driver_payment_records
+      summary: 本人付款记录摘要
+      tags:
+      - DRIVER
+      security:
+      - MiniBearerAuth: []
+      x-flow-ids:
+      - F39
+      - F40
+      description: 按V6.0/T3.1真实主体与范围校验；本人付款记录摘要
+      parameters:
+      - name: pageNum
+        in: query
+        schema:
+          type: integer
+          minimum: 1
+          default: 1
+      - name: pageSize
+        in: query
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 100
+          default: 20
+      responses:
+        '200':
+          description: 成功，返回当前业务事实
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                properties:
+                  code:
+                    type: integer
+                    enum:
+                    - 200
+                  msg:
+                    type: string
+                  rows:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/DriverOwnPaymentSummary'
+                  total:
+                    type: integer
+                    minimum: 0
+                required:
+                - code
+                - msg
+                - rows
+                - total
+                description: ''
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+                enum:
+                - no-store
+              description: 身份/交易/个人业务响应不缓存
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalError'
+        '503':
+          $ref: '#/components/responses/Unavailable'
+      x-capability: DRIVER_DRIVERPAYMENT_LIST
+      x-authorization:
+        realm: MINI
+        scope: OWN_DRIVER_RECORD
+        capability: DRIVER_DRIVERPAYMENT_LIST
+      x-error-codes:
+      - VI_REQUEST_INVALID
+      - VI_AUTH_REQUIRED
+      - VI_TOKEN_REALM_MISMATCH
+      - VI_REFRESH_REUSED
+      - VI_FORBIDDEN
+      - VI_SELF_REVIEW_DENIED
+      - VI_RATE_LIMITED
+      - VI_INTERNAL_ERROR
+      - VI_AUTHORITY_UNAVAILABLE
+      - VI_UPSTREAM_UNAVAILABLE
+      x-error-policy: GLOBAL_FAILURES_NO_RESOURCE_404
+      x-contract-baseline: V6.0
+components:
+  responses:
+    Unavailable:
+      description: 权限权威状态暂不可读取。参见errorCode注册表；HTTP状态与code一致。
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+          example:
+            code: 503
+            errorCode: VI_AUTHORITY_UNAVAILABLE
+            msg: 权限权威状态暂不可读取
+            requestId: req-example
+            retryable: true
+            retryAfterSeconds: null
+            data: {}
+      headers:
+        Retry-After:
+          description: 建议等待秒数；429必带，503仅在可估计时返回
+          schema:
+            type: integer
+            minimum: 1
+    InternalError:
+      description: 处理失败，请联系服务人员。参见errorCode注册表；HTTP状态与code一致。
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+          example:
+            code: 500
+            errorCode: VI_INTERNAL_ERROR
+            msg: 处理失败，请联系服务人员
+            requestId: req-example
+            retryable: false
+            retryAfterSeconds: null
+            data: {}
+    TooManyRequests:
+      description: 操作过于频繁，请稍后重试。参见errorCode注册表；HTTP状态与code一致。
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+          example:
+            code: 429
+            errorCode: VI_RATE_LIMITED
+            msg: 操作过于频繁，请稍后重试
+            requestId: req-example
+            retryable: true
+            retryAfterSeconds: 10
+            data: {}
+      headers:
+        Retry-After:
+          description: 建议等待秒数；429必带，503仅在可估计时返回
+          schema:
+            type: integer
+            minimum: 1
+    Forbidden:
+      description: 没有执行此操作的权限。参见errorCode注册表；HTTP状态与code一致。
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+          example:
+            code: 403
+            errorCode: VI_FORBIDDEN
+            msg: 没有执行此操作的权限
+            requestId: req-example
+            retryable: false
+            retryAfterSeconds: null
+            data: {}
+    Unauthorized:
+      description: 登录已失效，请重新登录。参见errorCode注册表；HTTP状态与code一致。
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+          example:
+            code: 401
+            errorCode: VI_AUTH_REQUIRED
+            msg: 登录已失效，请重新登录
+            requestId: req-example
+            retryable: false
+            retryAfterSeconds: null
+            data: {}
+      headers:
+        WWW-Authenticate:
+          schema:
+            type: string
+          description: Bearer realm="mini" 或 "admin"；不泄露令牌细节
+    BadRequest:
+      description: 请求格式不正确。参见errorCode注册表；HTTP状态与code一致。
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+          example:
+            code: 400
+            errorCode: VI_REQUEST_INVALID
+            msg: 请求格式不正确
+            requestId: req-example
+            retryable: false
+            retryAfterSeconds: null
+            data: {}
+    NotFound:
+      description: 记录不存在或不可访问。参见errorCode注册表；HTTP状态与code一致。
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+          example:
+            code: 404
+            errorCode: VI_RESOURCE_NOT_VISIBLE
+            msg: 记录不存在或不可访问
+            requestId: req-example
+            retryable: false
+            retryAfterSeconds: null
+            data: {}
+    UnprocessableEntity:
+      description: 填写内容不符合要求。参见errorCode注册表；HTTP状态与code一致。
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+          example:
+            code: 422
+            errorCode: VI_DATA_INVALID
+            msg: 填写内容不符合要求
+            requestId: req-example
+            retryable: false
+            retryAfterSeconds: null
+            data: {}
+    Conflict:
+      description: 记录已变化，请刷新后重试。参见errorCode注册表；HTTP状态与code一致。
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+          example:
+            code: 409
+            errorCode: VI_VERSION_CONFLICT
+            msg: 记录已变化，请刷新后重试
+            requestId: req-example
+            retryable: false
+            retryAfterSeconds: null
+            data: {}
+  schemas:
+    ApiError:
+      type: object
+      additionalProperties: false
+      properties:
+        code:
+          type: integer
+          description: 等于HTTP状态
+          enum:
+          - 400
+          - 401
+          - 403
+          - 404
+          - 409
+          - 422
+          - 429
+          - 500
+          - 503
+        errorCode:
+          type: string
+          enum:
+          - VI_REQUEST_INVALID
+          - VI_AUTH_REQUIRED
+          - VI_TOKEN_REALM_MISMATCH
+          - VI_REFRESH_REUSED
+          - VI_FORBIDDEN
+          - VI_SELF_REVIEW_DENIED
+          - VI_RESOURCE_NOT_VISIBLE
+          - VI_VERSION_CONFLICT
+          - VI_STATE_CONFLICT
+          - VI_IDEMPOTENCY_CONFLICT
+          - VI_SELECTION_CONFLICT
+          - VI_CONTEXT_CHANGED
+          - VI_SNAPSHOT_CHANGED
+          - VI_DATA_INVALID
+          - VI_EVIDENCE_INCOMPLETE
+          - VI_HANDOVER_CODE_INVALID
+          - VI_HANDOVER_LOCKED
+          - VI_UNPRICED_LINES
+          - VI_REFUND_LIMIT
+          - VI_PAYMENT_LIMIT
+          - VI_SERVICE_UNAVAILABLE
+          - VI_CAPABILITY_NOT_CONFIGURED
+          - VI_TRAINING_NOT_READY
+          - VI_BINDING_CREDENTIAL_INVALID
+          - VI_RATE_LIMITED
+          - VI_INTERNAL_ERROR
+          - VI_AUTHORITY_UNAVAILABLE
+          - VI_UPSTREAM_UNAVAILABLE
+        msg:
+          type: string
+          description: 服务端安全人类文案，前端逻辑按errorCode而非此文本
+        requestId:
+          type: string
+        retryable:
+          type: boolean
+        retryAfterSeconds:
+          type: integer
+          minimum: 0
+          nullable: true
+        data:
+          $ref: '#/components/schemas/ApiErrorDetails'
+      required:
+      - code
+      - errorCode
+      - msg
+      - requestId
+      - retryable
+      - retryAfterSeconds
+      - data
+    ApiErrorDetails:
+      type: object
+      additionalProperties: false
+      properties:
+        fieldErrors:
+          type: array
+          items:
+            $ref: '#/components/schemas/FieldViolation'
+        conflicts:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConflictItem'
+        missingPhotoTypes:
+          type: array
+          items:
+            $ref: '#/components/schemas/PhotoType'
+        remainingAttempts:
+          type: integer
+          minimum: 0
+          nullable: true
+        currentVersion:
+          type: integer
+          format: int64
+          minimum: 0
+          maximum: 9007199254740991
+          description: 最后读取的非负版本；更新CAS，冲突409
+          nullable: true
+      description: 错误详情固定白名单；无明文Token/凭证/交接码/SQL
+    PhotoType:
+      type: string
+      enum:
+      - FRONT
+      - BACK
+      - LEFT
+      - RIGHT
+      - DASHBOARD
+      - INTERIOR
+      - EXTRA
+    ConflictItem:
+      type: object
+      additionalProperties: false
+      properties:
+        resourceType:
+          type: string
+        resourceId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+        reasonCode:
+          type: string
+        currentVersion:
+          type: integer
+          format: int64
+          minimum: 0
+          maximum: 9007199254740991
+          description: 最后读取的非负版本；更新CAS，冲突409
+          nullable: true
+      required:
+      - resourceType
+      - resourceId
+      - reasonCode
+      - currentVersion
+      description: 仅返回调用者已获权对象，禁止泄露其他账单成员
+    FieldViolation:
+      type: object
+      additionalProperties: false
+      properties:
+        field:
+          type: string
+        reasonCode:
+          type: string
+        message:
+          type: string
+      required:
+      - field
+      - reasonCode
+      - message
+    DriverOwnPaymentSummary:
+      type: object
+      additionalProperties: false
+      properties:
+        recordId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+        statementId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+        payorEntityName:
+          type: string
+        amount:
+          type: integer
+          format: int64
+          maximum: 9007199254740991
+          minimum: 0
+        paidAt:
+          type: string
+          format: date-time
+          description: ISO8601 UTC时刻，必须Z结尾；显示与业务日期Asia/Shanghai
+          pattern: Z$
+        verificationStatus:
+          type: string
+          enum:
+          - PENDING
+          - VERIFIED
+          - REJECTED
+          - REVERSED
+      required:
+      - recordId
+      - statementId
+      - amount
+      - paidAt
+      - verificationStatus
+      description: 仅本人关联记录摘要；不包含原始银行流水、其他收款对象或凭证文件URL。
+    ExternalPaymentRecord:
+      type: object
+      additionalProperties: false
+      properties:
+        recordId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+        statementId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+        driverId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+        payorEntityId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+        amount:
+          type: integer
+          format: int64
+          minimum: 0
+          description: 人民币分
+        externalReferenceMask:
+          type: string
+        status:
+          $ref: '#/components/schemas/ExternalPaymentStatus'
+        paidAt:
+          type: string
+          format: date-time
+          description: ISO8601 UTC时刻，必须Z结尾；显示与业务日期Asia/Shanghai
+          pattern: Z$
+        registeredBy:
+          type: string
+          description: 服务端不透明主键，以字符串传输
+        verifiedBy:
+          type: string
+          description: 服务端不透明主键，以字符串传输
+        version:
+          type: integer
+          format: int64
+          description: 最后读取版本，用于条件更新；409必须重新获取，不静默覆盖
+        evidenceFileIds:
+          type: array
+          items:
+            type: string
+            pattern: ^[1-9][0-9]{0,18}$
+            description: 内部BIGINT/Java Long；新API主键十进制字符串，服务端检查Long上界。业务单号不适用此格式。
+        verificationOpinion:
+          type: string
+      required:
+      - recordId
+      - statementId
+      - amount
+      - status
+      - version
+    ExternalPaymentStatus:
+      type: string
+      enum:
+      - PENDING
+      - VERIFIED
+      - REJECTED
+      - REVERSED
+    ExternalPaymentVerify:
+      type: object
+      additionalProperties: false
+      properties:
+        expectedVersion:
+          type: integer
+          format: int64
+          minimum: 0
+        decision:
+          type: string
+          enum:
+          - APPROVE
+          - REJECT
+        opinion:
+          type: string
+          minLength: 1
+          maxLength: 1000
+      required:
+      - expectedVersion
+      - decision
+      - opinion
+      description: 指向具体recordId。独立核实；先锁父账单再锁付款行，重验当前余额；拒绝不计已付并释放凭证占用，原记录留存。
+    ExternalPaymentApply:
+      type: object
+      additionalProperties: false
+      properties:
+        statementId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+        statementVersion:
+          type: integer
+          format: int64
+          description: 最后读取版本，用于条件更新；409必须重新获取，不静默覆盖
+        amount:
+          type: integer
+          format: int64
+          minimum: 1
+          description: 正数人民币分
+        externalReference:
+          type: string
+        paidAt:
+          type: string
+          format: date-time
+          description: ISO8601 UTC时刻，必须Z结尾；显示与业务日期Asia/Shanghai
+          pattern: Z$
+        evidenceFileIds:
+          type: array
+          items:
+            type: string
+            description: 服务端不透明主键，以字符串传输
+          minItems: 1
+          uniqueItems: true
+        reason:
+          type: string
+      required:
+      - statementId
+      - statementVersion
+      - amount
+      - externalReference
+      - paidAt
+      - evidenceFileIds
+      description: 只对已有CONFIRMED账单登记。账单ID由详情带入；服务端重验主体、收款人及余额；金额<=确认应付-净已核实-待核实预留。同主体流水永久唯一，凭证文件READY且有权。0元/负净额不登记。非真实转账。
+  securitySchemes:
+    MiniBearerAuth:
+      type: http
+      scheme: bearer
+      description: 小程序不透明随机访问令牌；数据库权威会话，非sys_user JWT；见T3.1
+    AdminBearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: 现有xinyi后台sys_user会话，不能作为小程序车主/代驾身份

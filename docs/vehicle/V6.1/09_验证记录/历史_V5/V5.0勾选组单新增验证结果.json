@@ -1,0 +1,176 @@
+{
+  "suite": "V5.0明确勾选、历史、未结清与付款新增验证",
+  "environment": "Playwright + Chromium; self-contained HTML via set_content; no backend",
+  "browserPlugin": "Browser connector exists; browser runtime skill not listed; local Playwright used",
+  "scope": "DOM_FLOW为真实点击/输入/本地文件选择；LOCAL_MODEL_GUARD为前端模型预置。均不是MySQL并发、安全或外部付款验证。",
+  "passed": 33,
+  "failed": 0,
+  "pageErrors": [],
+  "tests": [
+    {
+      "name": "S01 代驾对账入口进入三标签个人中心，不默认最近账单",
+      "mode": "DOM_FLOW",
+      "result": "PASS"
+    },
+    {
+      "name": "S02 跨页跨月只勾选两笔生成，其他同期间服务不补选",
+      "mode": "DOM_FLOW",
+      "result": "PASS"
+    },
+    {
+      "name": "S03 改日期筛选不丢已有选择，已选摘要显示隐藏项",
+      "mode": "DOM_FLOW",
+      "result": "PASS"
+    },
+    {
+      "name": "S04 全选仅本页，浏览器勾选不占用费用",
+      "mode": "DOM_FLOW",
+      "result": "PASS"
+    },
+    {
+      "name": "S05 跨付款主体切换确认后才清空选择，取消保持原选择",
+      "mode": "DOM_FLOW",
+      "result": "PASS"
+    },
+    {
+      "name": "S06 混入跨主体明细整个组单失败无部分占用",
+      "mode": "LOCAL_MODEL_GUARD",
+      "result": "PASS"
+    },
+    {
+      "name": "S07 空选择/重复ID/旧日期生成形式均拒绝",
+      "mode": "LOCAL_MODEL_GUARD",
+      "result": "PASS"
+    },
+    {
+      "name": "S08 另一个经办抢先占用一笔时，整个所选提交失败",
+      "mode": "LOCAL_MODEL_GUARD",
+      "result": "PASS"
+    },
+    {
+      "name": "S09 选择后源费用版本变化须重新确认",
+      "mode": "LOCAL_MODEL_GUARD",
+      "result": "PASS"
+    },
+    {
+      "name": "S10 未结束承接不允许组单",
+      "mode": "LOCAL_MODEL_GUARD",
+      "result": "PASS"
+    },
+    {
+      "name": "S11 草稿移出释放占用，再加入保留原行价格历史与版本",
+      "mode": "LOCAL_MODEL_GUARD",
+      "result": "PASS"
+    },
+    {
+      "name": "S12 可保留空草稿但不能发送空账单",
+      "mode": "LOCAL_MODEL_GUARD",
+      "result": "PASS"
+    },
+    {
+      "name": "S13 作废草稿恢复服务可选且历史账单保留",
+      "mode": "LOCAL_MODEL_GUARD",
+      "result": "PASS"
+    },
+    {
+      "name": "S14 已发送不能绕撤回直接改成员或作废",
+      "mode": "LOCAL_MODEL_GUARD",
+      "result": "PASS"
+    },
+    {
+      "name": "S15 已确认/存在付款凭证不得移出原账服务",
+      "mode": "LOCAL_MODEL_GUARD",
+      "result": "PASS"
+    },
+    {
+      "name": "S16 未结清视图包括整理中/待确认/部分付款，排除已付清",
+      "mode": "LOCAL_MODEL_GUARD",
+      "result": "PASS"
+    },
+    {
+      "name": "S17 历次账单全部可查并打开指定账单非最后一张",
+      "mode": "DOM_FLOW",
+      "result": "PASS"
+    },
+    {
+      "name": "S18 从个人付款记录查看所点击的准确凭证和账单",
+      "mode": "DOM_FLOW",
+      "result": "PASS"
+    },
+    {
+      "name": "S19 部分付款不自动分配服务，待核实不计已付且预留登记额",
+      "mode": "LOCAL_MODEL_GUARD",
+      "result": "PASS"
+    },
+    {
+      "name": "S20 账单内自动关联→选择本地文件→登记→独立核实部分付款",
+      "mode": "DOM_FLOW",
+      "result": "PASS"
+    },
+    {
+      "name": "S21 超过扣除已登记待核实后的可登记余额被拒绝",
+      "mode": "LOCAL_MODEL_GUARD",
+      "result": "PASS"
+    },
+    {
+      "name": "S22 同一凭证重复核实不重复加已付",
+      "mode": "LOCAL_MODEL_GUARD",
+      "result": "PASS"
+    },
+    {
+      "name": "S23 凭证不符保留历史、不计付款并释放登记预留",
+      "mode": "LOCAL_MODEL_GUARD",
+      "result": "PASS"
+    },
+    {
+      "name": "S24 明确0元确认后无需付款凭证且服务不再未结清",
+      "mode": "DOM_FLOW",
+      "result": "PASS"
+    },
+    {
+      "name": "S25 司机未结清服务可查，但不泄露草稿拟价和内部复核信息",
+      "mode": "DOM_FLOW",
+      "result": "PASS"
+    },
+    {
+      "name": "S26 司机可查本人付款摘要，不直接暴露原始流水/银行凭证",
+      "mode": "DOM_FLOW",
+      "result": "PASS"
+    },
+    {
+      "name": "S27 主体撤权后查询失败关闭且不能组单",
+      "mode": "LOCAL_MODEL_GUARD",
+      "result": "PASS"
+    },
+    {
+      "name": "S28 加入成员遇到账单旧版本，全部拒绝且不占用其他服务",
+      "mode": "LOCAL_MODEL_GUARD",
+      "result": "PASS"
+    },
+    {
+      "name": "S29 撤回后调整成员使旧复核内容版本/hash失效",
+      "mode": "LOCAL_MODEL_GUARD",
+      "result": "PASS"
+    },
+    {
+      "name": "S30 草稿添加服务及行内移出为真实可点交互",
+      "mode": "DOM_FLOW",
+      "result": "PASS"
+    },
+    {
+      "name": "S31 本人未结清服务375px无横向内容溢出",
+      "mode": "DOM_RENDER",
+      "result": "PASS"
+    },
+    {
+      "name": "S32 本人未结清服务390px无横向内容溢出",
+      "mode": "DOM_RENDER",
+      "result": "PASS"
+    },
+    {
+      "name": "S33 本人未结清服务428px无横向内容溢出",
+      "mode": "DOM_RENDER",
+      "result": "PASS"
+    }
+  ]
+}

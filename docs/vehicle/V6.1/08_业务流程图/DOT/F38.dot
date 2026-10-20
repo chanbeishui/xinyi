@@ -1,0 +1,28 @@
+digraph F38 {
+graph [rankdir=TB, bgcolor="white", pad="0.35", nodesep="0.3", ranksep="0.38", fontname="Noto Sans CJK SC", fontsize=18, labelloc=t, label="F38 部门、站点与费用主体组合授权"];
+node [shape=box, style="rounded,filled", fillcolor="#F3F6FA", color="#CFD6E0", fontname="Noto Sans CJK SC", fontsize=12, margin="0.15,0.10"];
+edge [color="#74849A", fontname="Noto Sans CJK SC", fontsize=10];
+"n1" [label="请求认证域、实际操作者和动作"];
+"n2" [label="加载数据库真实目标与归属"];
+"n3" [label="是本人车主或代驾业务？",shape=diamond,fillcolor="#EEF4FF"];
+"n4" [label="校验本人订单/真实承接/本人账单"];
+"n5" [label="员工/后台功能权限及组织边界"];
+"n6" [label="本操作部门范围 ∩ 显式站点授权"];
+"n7" [label="涉及司机对账还需整个费用主体权限"];
+"n8" [label="范围及状态版本全部满足？",shape=diamond,fillcolor="#EEF4FF"];
+"n9" [label="拒绝并审计；空范围不能省略过滤"];
+"n10" [label="事务写业务事实与脱敏审计"];
+"n11" [label="导出下载与后续请求重新鉴权"];
+"n1" -> "n2" [label=""];
+"n2" -> "n3" [label=""];
+"n3" -> "n4" [label="是"];
+"n3" -> "n5" [label="否"];
+"n5" -> "n6" [label=""];
+"n6" -> "n7" [label="费用业务"];
+"n6" -> "n8" [label="其他站点业务"];
+"n7" -> "n8" [label=""];
+"n4" -> "n8" [label=""];
+"n8" -> "n9" [label="否"];
+"n8" -> "n10" [label="是"];
+"n10" -> "n11" [label="后续"];
+}

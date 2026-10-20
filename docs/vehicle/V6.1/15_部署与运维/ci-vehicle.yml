@@ -1,0 +1,75 @@
+# 由E08合并到.github/workflows，实际安装时把actions版本锁到审核的完整SHA。
+name: vehicle-isolated-integration
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'xinyi-rongli/**'
+      - 'xinyi-admin/**'
+      - 'xinyi-framework/**'
+      - 'xinyi-ui/**'
+      - 'xinyi-miniapp/**'
+      - 'sql/**'
+      - 'docs/vehicle/V6.1/**'
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Prepare isolated runner
+        run: |
+          python -m pip install -r docs/vehicle/V6.1/12_工程执行/requirements.txt
+          python docs/vehicle/V6.1/12_工程执行/engineer.py env --repo . --apply
+          python docs/vehicle/V6.1/12_工程执行/engineer.py check --repo .
+          python docs/vehicle/V6.1/12_工程执行/engineer.py run --repo . --kind infra
+          python docs/vehicle/V6.1/12_工程执行/database.py bootstrap --repo . --confirm-db xinyi_vi_dev
+      - name: Stage-specific real tests (FOUNDATION is not full delivery)
+        shell: bash
+        run: |
+          set -euo pipefail
+          STAGE=$(python -c 'import json;print(json.load(open("docs/implementation/vehicle/ci-stage.json"))["stage"])')
+          case "$STAGE" in FOUNDATION|IDENTITY|BOOKING|FULL) ;; *) echo "Unknown stage"; exit 2;; esac
+          python -m pytest docs/vehicle/V6.1/12_工程执行/tests -q --junitxml=docs/implementation/vehicle/evidence/tools-junit.xml
+          python docs/vehicle/V6.1/12_工程执行/engineer.py run --repo . --kind backend-unit
+          python docs/vehicle/V6.1/12_工程执行/engineer.py run --repo . --kind db-test
+          if [ "$STAGE" = IDENTITY ]; then
+            python docs/vehicle/V6.1/12_工程执行/engineer.py run --repo . --kind integration-identity
+          elif [ "$STAGE" = BOOKING ] || [ "$STAGE" = FULL ]; then
+            python docs/vehicle/V6.1/12_工程执行/engineer.py run --repo . --kind integration-suite
+          fi
+          if [ "$STAGE" != FOUNDATION ]; then
+            npm --prefix xinyi-ui ci
+            npm --prefix xinyi-ui run build:prod
+            npm --prefix xinyi-miniapp ci
+            npm --prefix xinyi-miniapp run type-check
+            npm --prefix xinyi-miniapp run build:mp-weixin
+          fi
+          if [ "$STAGE" = FULL ]; then
+            # engineer launches with environment; all task-specific *IT are enabled by E08's mapped full runner.
+            python docs/vehicle/V6.1/12_工程执行/engineer.py run --repo . --kind integration-full
+          fi
+          echo "Executed stage: $STAGE. Earlier stages do not mean all functionality passed."
+      - name: Keep reports, never upload .env or private test tokens
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: vehicle-tests
+          path: |
+            docs/implementation/vehicle/evidence/*junit.xml
+            xinyi-admin/target/failsafe-reports/TEST-*.xml
+            xinyi-rongli/target/surefire-reports/TEST-*.xml
+          if-no-files-found: error

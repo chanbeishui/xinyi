@@ -1,0 +1,212 @@
+{
+  "kind": "DOCUMENT_AND_REFERENCE_POLICY",
+  "scope": "Schema/fixture/reference-policy validation only; no real endpoint, service, database, vendor, or xinyi execution",
+  "passed": 51,
+  "failed": 0,
+  "tests": [
+    {
+      "name": "Schema example valid OwnerOrderView",
+      "result": "PASS"
+    },
+    {
+      "name": "Schema example valid DriverOrderView",
+      "result": "PASS"
+    },
+    {
+      "name": "Schema example valid StationOrderView",
+      "result": "PASS"
+    },
+    {
+      "name": "Schema example valid AdminOrderView",
+      "result": "PASS"
+    },
+    {
+      "name": "OwnerOrderView rejects pickupCode",
+      "result": "PASS"
+    },
+    {
+      "name": "OwnerOrderView rejects idCardNo",
+      "result": "PASS"
+    },
+    {
+      "name": "OwnerOrderView rejects internalReview",
+      "result": "PASS"
+    },
+    {
+      "name": "OwnerOrderView nested rejects ownerAccountId",
+      "result": "PASS"
+    },
+    {
+      "name": "OwnerOrderView nested rejects privateCredential",
+      "result": "PASS"
+    },
+    {
+      "name": "DriverOrderView rejects pickupCode",
+      "result": "PASS"
+    },
+    {
+      "name": "DriverOrderView rejects idCardNo",
+      "result": "PASS"
+    },
+    {
+      "name": "DriverOrderView rejects internalReview",
+      "result": "PASS"
+    },
+    {
+      "name": "DriverOrderView nested rejects ownerAccountId",
+      "result": "PASS"
+    },
+    {
+      "name": "DriverOrderView nested rejects privateCredential",
+      "result": "PASS"
+    },
+    {
+      "name": "StationOrderView rejects pickupCode",
+      "result": "PASS"
+    },
+    {
+      "name": "StationOrderView rejects idCardNo",
+      "result": "PASS"
+    },
+    {
+      "name": "StationOrderView rejects internalReview",
+      "result": "PASS"
+    },
+    {
+      "name": "StationOrderView nested rejects ownerAccountId",
+      "result": "PASS"
+    },
+    {
+      "name": "StationOrderView nested rejects privateCredential",
+      "result": "PASS"
+    },
+    {
+      "name": "AdminOrderView rejects pickupCode",
+      "result": "PASS"
+    },
+    {
+      "name": "AdminOrderView rejects idCardNo",
+      "result": "PASS"
+    },
+    {
+      "name": "AdminOrderView rejects internalReview",
+      "result": "PASS"
+    },
+    {
+      "name": "AdminOrderView nested rejects ownerAccountId",
+      "result": "PASS"
+    },
+    {
+      "name": "AdminOrderView nested rejects privateCredential",
+      "result": "PASS"
+    },
+    {
+      "name": "DriverOrderView rejects customer money",
+      "result": "PASS"
+    },
+    {
+      "name": "StationOrderView rejects customer money",
+      "result": "PASS"
+    },
+    {
+      "name": "HISTORY reference policy protects all parent fields",
+      "result": "PASS"
+    },
+    {
+      "name": "MINI confirm returns only public statement graph",
+      "result": "PASS"
+    },
+    {
+      "name": "Public statement full send sample valid",
+      "result": "PASS"
+    },
+    {
+      "name": "Public statement rejects knownAmount",
+      "result": "PASS"
+    },
+    {
+      "name": "Public statement rejects manualPriceCount",
+      "result": "PASS"
+    },
+    {
+      "name": "Public statement rejects reviewStatus",
+      "result": "PASS"
+    },
+    {
+      "name": "Public line rejects internal reasons",
+      "result": "PASS"
+    },
+    {
+      "name": "Public statement rejects DRAFT",
+      "result": "PASS"
+    },
+    {
+      "name": "Public statement rejects INTERNAL_REVIEW",
+      "result": "PASS"
+    },
+    {
+      "name": "Public statement rejects VOID",
+      "result": "PASS"
+    },
+    {
+      "name": "Address update requires expectedVersion",
+      "result": "PASS"
+    },
+    {
+      "name": "Profile patch requires expectedVersion",
+      "result": "PASS"
+    },
+    {
+      "name": "Profile patch rejects permission field",
+      "result": "PASS"
+    },
+    {
+      "name": "Long ID remains exact JSON string",
+      "result": "PASS"
+    },
+    {
+      "name": "ID lexical reject -1",
+      "result": "PASS"
+    },
+    {
+      "name": "ID lexical reject 0",
+      "result": "PASS"
+    },
+    {
+      "name": "ID lexical reject 01",
+      "result": "PASS"
+    },
+    {
+      "name": "ID lexical reject 1.1",
+      "result": "PASS"
+    },
+    {
+      "name": "ID lexical reject abc",
+      "result": "PASS"
+    },
+    {
+      "name": "UTC suffix rejects ambiguous time",
+      "result": "PASS"
+    },
+    {
+      "name": "Money integer rejects fractional fen",
+      "result": "PASS"
+    },
+    {
+      "name": "Public hash fixture stable and amount change detected",
+      "result": "PASS"
+    },
+    {
+      "name": "Training questions do not contain standard answer fields",
+      "result": "PASS"
+    },
+    {
+      "name": "Appeal record rejects NONE",
+      "result": "PASS"
+    },
+    {
+      "name": "Schema definitions accepted by Draft7 after explicit OAS nullable conversion",
+      "result": "PASS"
+    }
+  ]
+}

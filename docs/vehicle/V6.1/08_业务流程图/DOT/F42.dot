@@ -1,0 +1,25 @@
+digraph F42 {
+graph [rankdir=TB, bgcolor="white", pad="0.35", nodesep="0.3", ranksep="0.38", fontname="Noto Sans CJK SC", fontsize=18, labelloc=t, label="F42 限制记录、申诉与公开结果"];
+node [shape=box, style="rounded,filled", fillcolor="#F3F6FA", color="#CFD6E0", fontname="Noto Sans CJK SC", fontsize=12, margin="0.15,0.10"];
+edge [color="#74849A", fontname="Noto Sans CJK SC", fontsize=10];
+"n1" [label="合法承接解除触发既有规则判定"];
+"n2" [label="生成处罚事实与penaltyId\n不删除承接记录"];
+"n3" [label="司机查本人处罚列表/详情"];
+"n4" [label="是否需要申诉？",shape=diamond,fillcolor="#EEF4FF"];
+"n5" [label="提交原因和私有凭证引用\n同一待审记录防重复"];
+"n6" [label="管理员读取申诉和服务依据\n权限/同人/版本校验"];
+"n7" [label="同意撤销？",shape=diamond,fillcolor="#EEF4FF"];
+"n8" [label="追加撤销与处理事实\n原处罚历史保留"];
+"n9" [label="保留原限制与公开驳回说明"];
+"n10" [label="司机查询申诉详情及公开意见"];
+"n1" -> "n2" [label=""];
+"n2" -> "n3" [label=""];
+"n3" -> "n4" [label=""];
+"n4" -> "n5" [label="是"];
+"n5" -> "n6" [label=""];
+"n6" -> "n7" [label=""];
+"n7" -> "n8" [label="是"];
+"n7" -> "n9" [label="否"];
+"n8" -> "n10" [label=""];
+"n9" -> "n10" [label=""];
+}

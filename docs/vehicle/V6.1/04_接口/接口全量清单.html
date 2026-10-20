@@ -1,0 +1,1752 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>接口全量清单</title><style>body{font:16px/1.75 -apple-system,BlinkMacSystemFont,"Microsoft YaHei",sans-serif;color:#202632;margin:0;background:#f6f7f9}header{padding:14px 24px;background:white;border-bottom:1px solid #ddd}main{max-width:1120px;margin:24px auto;padding:30px;background:white}h1{font-size:30px}h2{margin-top:36px}a{color:#0661bd}table{border-collapse:collapse;width:100%;display:block;overflow:auto;font-size:14px}td,th{border:1px solid #dde2ea;padding:10px;vertical-align:top}th{background:#f1f5fb}pre{padding:15px;background:#f2f4f7;overflow:auto}img{max-width:100%;height:auto}blockquote{padding:10px 20px;border-left:3px solid #2571be;background:#f4f8fc}@media(max-width:700px){main{padding:15px;margin:8px}h1{font-size:25px}}</style></head><body><header><a href="../00_开始.html">V6.1 完整资料</a>　<a href="../02_UI/index.html">交互原型</a>　T3.1</header><main><h1>接口全量清单 V6.0</h1>
+<p>从主 OpenAPI 当前内容生成，共 248 个操作。严格字段、嵌套结构、请求头、错误体及授权条件以 openapi_V6.0.yaml 的对应 operationId 为准。本表不另设一套规则。</p>
+<table>
+<thead>
+<tr>
+  <th>操作</th>
+  <th>名称</th>
+  <th>身份／权限／能力</th>
+  <th>输入</th>
+  <th>成功输出</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><code>POST /api/common/login/wechat</code><br>API_001_post</td>
+  <td>统一微信登录</td>
+  <td>PUBLIC<br><br></td>
+  <td>LoginRequest</td>
+  <td>Session</td>
+</tr>
+<tr>
+  <td><code>POST /api/common/phone/bind</code><br>API_002_post</td>
+  <td>绑定经微信核验手机号</td>
+  <td>MINI<br><br>COMMON_PHONE_CREATE</td>
+  <td>PhoneRequest</td>
+  <td>Profile</td>
+</tr>
+<tr>
+  <td><code>POST /api/common/phone/sms/send</code><br>API_003_post</td>
+  <td>短信兜底发送</td>
+  <td>MINI<br><br>COMMON_PHONE_SEND</td>
+  <td>SmsSend</td>
+  <td>Ack</td>
+</tr>
+<tr>
+  <td><code>POST /api/common/phone/sms/verify</code><br>API_004_post</td>
+  <td>短信兜底核验</td>
+  <td>MINI<br><br>COMMON_PHONE_VERIFY</td>
+  <td>SmsVerify</td>
+  <td>Profile</td>
+</tr>
+<tr>
+  <td><code>GET /api/common/profile</code><br>API_005_get</td>
+  <td>当前统一档案</td>
+  <td>MINI<br><br>PROFILE_READ</td>
+  <td></td>
+  <td>Profile</td>
+</tr>
+<tr>
+  <td><code>POST /api/common/session/role</code><br>API_006_post</td>
+  <td>切换角色</td>
+  <td>MINI<br><br>SESSION_SWITCH_ROLE</td>
+  <td>RoleSwitch</td>
+  <td>AccessSession</td>
+</tr>
+<tr>
+  <td><code>POST /api/common/session/station</code><br>API_007_post</td>
+  <td>切换站点</td>
+  <td>MINI<br><br>SESSION_SWITCH_STATION</td>
+  <td>StationSwitch</td>
+  <td>AccessSession</td>
+</tr>
+<tr>
+  <td><code>POST /api/common/employee-binding</code><br>API_008_post</td>
+  <td>员工受控绑定</td>
+  <td>MINI<br><br>EMPLOYEE_BINDING_CONSUME</td>
+  <td>EmployeeBinding</td>
+  <td>Profile</td>
+</tr>
+<tr>
+  <td><code>GET /api/common/dict/{dictType}</code><br>API_010_get</td>
+  <td>业务字典查询</td>
+  <td>MINI<br><br>COMMON_DICT_QUERY</td>
+  <td></td>
+  <td>DictItem</td>
+</tr>
+<tr>
+  <td><code>GET /api/common/stations</code><br>API_011_get</td>
+  <td>可见站点目录</td>
+  <td>MINI<br><br>COMMON_STATIONS_LIST</td>
+  <td></td>
+  <td>PublicStationView</td>
+</tr>
+<tr>
+  <td><code>PATCH /api/app/owner/profile</code><br>API_012_patch</td>
+  <td>修改选填档案</td>
+  <td>MINI<br><br>OWNER_PROFILE_EDIT</td>
+  <td>ProfilePatch</td>
+  <td>Profile</td>
+</tr>
+<tr>
+  <td><code>GET /api/app/owner/vehicles</code><br>API_013_get</td>
+  <td>本人vehicles列表</td>
+  <td>MINI<br><br>OWNER_VEHICLE_LIST</td>
+  <td></td>
+  <td>Vehicle</td>
+</tr>
+<tr>
+  <td><code>POST /api/app/owner/vehicles</code><br>API_014_post</td>
+  <td>新增vehicles</td>
+  <td>MINI<br><br>OWNER_VEHICLE_CREATE</td>
+  <td>VehicleCreate</td>
+  <td>Vehicle</td>
+</tr>
+<tr>
+  <td><code>PUT /api/app/owner/vehicles/{id}</code><br>API_015_put</td>
+  <td>修改vehicles</td>
+  <td>MINI<br><br>OWNER_VEHICLE_EDIT</td>
+  <td>VehicleUpdate</td>
+  <td>Vehicle</td>
+</tr>
+<tr>
+  <td><code>DELETE /api/app/owner/vehicles/{id}</code><br>API_016_delete</td>
+  <td>软删除vehicles</td>
+  <td>MINI<br><br>OWNER_VEHICLE_REMOVE</td>
+  <td>VersionReason</td>
+  <td>Ack</td>
+</tr>
+<tr>
+  <td><code>POST /api/app/owner/vehicles/{id}/default</code><br>API_017_post</td>
+  <td>设为常用vehicles</td>
+  <td>MINI<br><br>OWNER_VEHICLE_DEFAULT</td>
+  <td>VersionReason</td>
+  <td>Vehicle</td>
+</tr>
+<tr>
+  <td><code>GET /api/app/owner/addresses</code><br>API_018_get</td>
+  <td>本人addresses列表</td>
+  <td>MINI<br><br>OWNER_ADDRESSES_LIST</td>
+  <td></td>
+  <td>Address</td>
+</tr>
+<tr>
+  <td><code>POST /api/app/owner/addresses</code><br>API_019_post</td>
+  <td>新增addresses</td>
+  <td>MINI<br><br>OWNER_ADDRESSES_CREATE</td>
+  <td>AddressCreate</td>
+  <td>Address</td>
+</tr>
+<tr>
+  <td><code>PUT /api/app/owner/addresses/{id}</code><br>API_020_put</td>
+  <td>修改addresses</td>
+  <td>MINI<br><br>OWNER_ADDRESSES_EDIT</td>
+  <td>AddressUpdate</td>
+  <td>Address</td>
+</tr>
+<tr>
+  <td><code>DELETE /api/app/owner/addresses/{id}</code><br>API_021_delete</td>
+  <td>软删除addresses</td>
+  <td>MINI<br><br>OWNER_ADDRESSES_REMOVE</td>
+  <td>VersionReason</td>
+  <td>Ack</td>
+</tr>
+<tr>
+  <td><code>POST /api/app/owner/addresses/{id}/default</code><br>API_022_post</td>
+  <td>设为常用addresses</td>
+  <td>MINI<br><br>OWNER_ADDRESSES_DEFAULT</td>
+  <td>VersionReason</td>
+  <td>Address</td>
+</tr>
+<tr>
+  <td><code>GET /api/app/owner/schedule/slots</code><br>API_023_get</td>
+  <td>先选上门候选时段</td>
+  <td>MINI<br><br>OWNER_SCHEDULE_LIST</td>
+  <td></td>
+  <td>Slot</td>
+</tr>
+<tr>
+  <td><code>POST /api/app/owner/orders/quote</code><br>API_024_post</td>
+  <td>校验服务并报价</td>
+  <td>MINI<br><br>OWNER_ORDER_CREATE</td>
+  <td>QuoteRequest</td>
+  <td>Quote</td>
+</tr>
+<tr>
+  <td><code>POST /api/app/owner/orders</code><br>API_025_post</td>
+  <td>创建订单与预占</td>
+  <td>MINI<br><br>OWNER_ORDER_CREATE</td>
+  <td>OrderCreate</td>
+  <td>OwnerOrderView</td>
+</tr>
+<tr>
+  <td><code>GET /api/app/owner/orders</code><br>API_026_get</td>
+  <td>本人订单列表</td>
+  <td>MINI<br><br>OWNER_ORDER_LIST</td>
+  <td></td>
+  <td>OwnerOrderSummary</td>
+</tr>
+<tr>
+  <td><code>GET /api/app/owner/orders/{orderNo}</code><br>API_027_get</td>
+  <td>本人订单详情</td>
+  <td>MINI<br><br>OWNER_ORDER_QUERY</td>
+  <td></td>
+  <td>OwnerOrderView</td>
+</tr>
+<tr>
+  <td><code>GET /api/app/owner/orders/{orderNo}/timeline</code><br>API_028_get</td>
+  <td>订单时间轴</td>
+  <td>MINI<br><br>OWNER_ORDER_LIST</td>
+  <td></td>
+  <td>OrderTimelinePublic</td>
+</tr>
+<tr>
+  <td><code>POST /api/app/owner/orders/{orderNo}/prepay</code><br>API_029_post</td>
+  <td>微信预支付</td>
+  <td>MINI<br><br>OWNER_ORDER_CREATE</td>
+  <td></td>
+  <td>Prepay</td>
+</tr>
+<tr>
+  <td><code>GET /api/app/owner/orders/{orderNo}/payment</code><br>API_030_get</td>
+  <td>可信支付结果</td>
+  <td>MINI<br><br>OWNER_ORDER_LIST</td>
+  <td></td>
+  <td>Payment</td>
+</tr>
+<tr>
+  <td><code>POST /api/app/owner/orders/{orderNo}/close-unpaid</code><br>API_031_post</td>
+  <td>未支付主动关闭</td>
+  <td>MINI<br><br>OWNER_ORDER_CLOSEUNPAID</td>
+  <td>VersionReason</td>
+  <td>OwnerOrderView</td>
+</tr>
+<tr>
+  <td><code>POST /api/app/owner/orders/{orderNo}/service-confirmation</code><br>API_034_post</td>
+  <td>实际归还后的服务确认</td>
+  <td>MINI<br><br>OWNER_ORDER_SERVICECONFIRMATION</td>
+  <td>VersionInput</td>
+  <td>OwnerOrderView</td>
+</tr>
+<tr>
+  <td><code>POST /api/app/owner/orders/{orderNo}/disputes</code><br>API_037_post</td>
+  <td>发起服务争议</td>
+  <td>MINI<br><br>OWNER_ORDER_CREATE</td>
+  <td>DisputeInput</td>
+  <td>Dispute</td>
+</tr>
+<tr>
+  <td><code>GET /api/app/owner/orders/{orderNo}/disputes</code><br>API_038_get</td>
+  <td>查看服务争议</td>
+  <td>MINI<br><br>OWNER_ORDER_LIST</td>
+  <td></td>
+  <td>Dispute</td>
+</tr>
+<tr>
+  <td><code>POST /api/app/owner/orders/{orderNo}/reviews</code><br>API_039_post</td>
+  <td>服务评价</td>
+  <td>MINI<br><br>OWNER_ORDER_CREATE</td>
+  <td>ReviewInput</td>
+  <td>Review</td>
+</tr>
+<tr>
+  <td><code>GET /api/app/owner/orders/{orderNo}/result</code><br>API_040_get</td>
+  <td>结构化结果</td>
+  <td>MINI<br><br>OWNER_ORDER_LIST</td>
+  <td></td>
+  <td>InspectionResult</td>
+</tr>
+<tr>
+  <td><code>GET /api/app/owner/orders/{orderNo}/evidence</code><br>API_041_get</td>
+  <td>本人订单证据组</td>
+  <td>MINI<br><br>OWNER_ORDER_LIST</td>
+  <td></td>
+  <td>EvidenceGroup</td>
+</tr>
+<tr>
+  <td><code>GET /api/app/driver/qualification</code><br>API_042_get</td>
+  <td>我的申请</td>
+  <td>MINI<br><br>DRIVER_QUALIFICATION_LIST</td>
+  <td></td>
+  <td>Qualification</td>
+</tr>
+<tr>
+  <td><code>PUT /api/app/driver/qualification</code><br>API_043_put</td>
+  <td>保存资格草稿</td>
+  <td>MINI<br><br>DRIVER_QUALIFICATION_EDIT</td>
+  <td>QualificationDraft</td>
+  <td>Qualification</td>
+</tr>
+<tr>
+  <td><code>POST /api/app/driver/qualification</code><br>v5_post_api_app_driver_qualification</td>
+  <td>建立本人代驾资格草稿</td>
+  <td>MINI<br><br>DRIVER_QUALIFICATION_CREATE</td>
+  <td>QualificationCreate</td>
+  <td>Qualification</td>
+</tr>
+<tr>
+  <td><code>POST /api/app/driver/qualification/submit</code><br>API_044_post</td>
+  <td>提交资格审核</td>
+  <td>MINI<br><br>DRIVER_QUALIFICATION_SUBMIT</td>
+  <td>VersionReason</td>
+  <td>Qualification</td>
+</tr>
+<tr>
+  <td><code>POST /api/app/driver/qualification/face-session</code><br>API_045_post</td>
+  <td>创建实名活体核验会话</td>
+  <td>MINI<br><br>DRIVER_QUALIFICATION_CREATE</td>
+  <td>FaceSessionCreate</td>
+  <td>FaceSession</td>
+</tr>
+<tr>
+  <td><code>GET /api/app/driver/qualification/training</code><br>API_046_get</td>
+  <td>培训与考试任务</td>
+  <td>MINI<br><br>DRIVER_QUALIFICATION_LIST</td>
+  <td></td>
+  <td>Training</td>
+</tr>
+<tr>
+  <td><code>POST /api/app/driver/qualification/training/submit</code><br>API_047_post</td>
+  <td>提交考试答案</td>
+  <td>MINI<br><br>DRIVER_QUALIFICATION_SUBMIT</td>
+  <td>TrainingSubmit</td>
+  <td>TrainingAttempt</td>
+</tr>
+<tr>
+  <td><code>GET /api/app/driver/availability</code><br>API_048_get</td>
+  <td>可接单状态</td>
+  <td>MINI<br><br>DRIVER_AVAILABILITY_QUERY</td>
+  <td></td>
+  <td>Availability</td>
+</tr>
+<tr>
+  <td><code>PATCH /api/app/driver/listening</code><br>API_049_patch</td>
+  <td>听单开关</td>
+  <td>MINI<br><br>DRIVER_AVAILABILITY_EDIT</td>
+  <td>Listening</td>
+  <td>Availability</td>
+</tr>
+<tr>
+  <td><code>POST /api/app/driver/location</code><br>API_050_post</td>
+  <td>前台位置打点</td>
+  <td>MINI<br><br>DRIVER_LOCATION_CREATE</td>
+  <td>Location</td>
+  <td>Ack</td>
+</tr>
+<tr>
+  <td><code>GET /api/app/driver/invites</code><br>API_051_get</td>
+  <td>本人有效邀约</td>
+  <td>MINI<br><br>DRIVER_INVITE_LIST</td>
+  <td></td>
+  <td>Invite</td>
+</tr>
+<tr>
+  <td><code>GET /api/app/driver/invites/{inviteId}</code><br>API_052_get</td>
+  <td>邀约详情</td>
+  <td>MINI<br><br>DRIVER_INVITE_QUERY</td>
+  <td></td>
+  <td>Invite</td>
+</tr>
+<tr>
+  <td><code>POST /api/app/driver/invites/{inviteId}/response</code><br>API_053_post</td>
+  <td>响应邀约</td>
+  <td>MINI<br><br>DRIVER_INVITE_RESPONSE</td>
+  <td>InviteResponse</td>
+  <td>Invite</td>
+</tr>
+<tr>
+  <td><code>GET /api/app/driver/assignments/current</code><br>API_054_get</td>
+  <td>当前在手任务</td>
+  <td>MINI<br><br>DRIVER_ASSIGNMENT_QUERY</td>
+  <td></td>
+  <td>DriverOrderView</td>
+</tr>
+<tr>
+  <td><code>GET /api/app/driver/orders</code><br>API_055_get</td>
+  <td>历史服务订单</td>
+  <td>MINI<br><br>DRIVER_ORDER_LIST</td>
+  <td></td>
+  <td>DriverOrderSummary</td>
+</tr>
+<tr>
+  <td><code>GET /api/app/driver/orders/{orderNo}</code><br>API_056_get</td>
+  <td>本人受限订单详情</td>
+  <td>MINI<br><br>DRIVER_ORDER_QUERY</td>
+  <td></td>
+  <td>DriverOrderView</td>
+</tr>
+<tr>
+  <td><code>POST /api/app/driver/orders/{orderNo}/depart</code><br>API_057_post</td>
+  <td>出发前往接车</td>
+  <td>MINI<br><br>DRIVER_ORDER_DEPART</td>
+  <td>ActionRequest</td>
+  <td>DriverOrderView</td>
+</tr>
+<tr>
+  <td><code>POST /api/app/driver/orders/{orderNo}/arrive-pickup</code><br>API_058_post</td>
+  <td>到达接车点</td>
+  <td>MINI<br><br>DRIVER_ORDER_ARRIVEPICKUP</td>
+  <td>ActionRequest</td>
+  <td>DriverOrderView</td>
+</tr>
+<tr>
+  <td><code>POST /api/app/driver/orders/{orderNo}/arrive-station</code><br>API_059_post</td>
+  <td>到达检测点</td>
+  <td>MINI<br><br>DRIVER_ORDER_ARRIVESTATION</td>
+  <td>ActionRequest</td>
+  <td>DriverOrderView</td>
+</tr>
+<tr>
+  <td><code>POST /api/app/driver/orders/{orderNo}/assignment-cancellation</code><br>API_060_post</td>
+  <td>未接车取消承接</td>
+  <td>MINI<br><br>DRIVER_ORDER_ASSIGNMENTCANCELLATION</td>
+  <td>DriverCancel</td>
+  <td>DriverCancelResult</td>
+</tr>
+<tr>
+  <td><code>POST /api/app/driver/penalties/{penaltyId}/appeals</code><br>API_061_post</td>
+  <td>停单申诉</td>
+  <td>MINI<br><br>DRIVER_PENALTY_CREATE</td>
+  <td>PenaltyAppealCreate</td>
+  <td>PenaltyAppeal</td>
+</tr>
+<tr>
+  <td><code>POST /api/app/driver/orders/{orderNo}/exceptions</code><br>API_062_post</td>
+  <td>普通履约异常</td>
+  <td>MINI<br><br>DRIVER_ORDER_CREATE</td>
+  <td>ExceptionInput</td>
+  <td>Exception</td>
+</tr>
+<tr>
+  <td><code>POST /api/app/driver/orders/{orderNo}/evidence</code><br>API_063_post</td>
+  <td>创建本节点证据组</td>
+  <td>MINI<br><br>DRIVER_ORDER_CREATE</td>
+  <td>ActionRequest</td>
+  <td>EvidenceGroup</td>
+</tr>
+<tr>
+  <td><code>GET /api/app/driver/orders/{orderNo}/evidence</code><br>API_064_get</td>
+  <td>查询证据组</td>
+  <td>MINI<br><br>DRIVER_ORDER_LIST</td>
+  <td></td>
+  <td>EvidenceGroup</td>
+</tr>
+<tr>
+  <td><code>POST /api/app/driver/orders/{orderNo}/evidence/{groupId}/photos</code><br>API_065_post</td>
+  <td>关联已验证照片</td>
+  <td>MINI<br><br>DRIVER_ORDER_CREATE</td>
+  <td>PhotoDraft</td>
+  <td>EvidenceGroup</td>
+</tr>
+<tr>
+  <td><code>PUT /api/app/driver/orders/{orderNo}/evidence/{groupId}/mileage</code><br>API_066_put</td>
+  <td>提交人工复核里程</td>
+  <td>MINI<br><br>DRIVER_ORDER_EDIT</td>
+  <td>MileageInput</td>
+  <td>EvidenceGroup</td>
+</tr>
+<tr>
+  <td><code>POST /api/app/driver/orders/{orderNo}/evidence/{groupId}/ready</code><br>API_067_post</td>
+  <td>检查照片完整性</td>
+  <td>MINI<br><br>DRIVER_ORDER_READY</td>
+  <td>VersionInput</td>
+  <td>EvidenceGroup</td>
+</tr>
+<tr>
+  <td><code>POST /api/common/orders/{orderNo}/handovers</code><br>API_068_post</td>
+  <td>发起交接</td>
+  <td><br><br>COMMON_ORDERS_CREATE</td>
+  <td>HandoverCreate</td>
+  <td>Handover</td>
+</tr>
+<tr>
+  <td><code>GET /api/common/orders/{orderNo}/handovers/{handoverId}</code><br>API_069_get</td>
+  <td>交接状态</td>
+  <td><br><br>COMMON_ORDERS_QUERY</td>
+  <td></td>
+  <td>Handover</td>
+</tr>
+<tr>
+  <td><code>GET /api/common/orders/{orderNo}/handovers/{handoverId}/secret</code><br>API_070_get</td>
+  <td>持码方专用交接码</td>
+  <td><br><br>COMMON_ORDERS_LIST</td>
+  <td></td>
+  <td>HandoverSecret</td>
+</tr>
+<tr>
+  <td><code>POST /api/common/orders/{orderNo}/handovers/{handoverId}/confirm</code><br>API_071_post</td>
+  <td>核验并完成实物交接</td>
+  <td><br><br>COMMON_ORDERS_CONFIRM</td>
+  <td>HandoverConfirm</td>
+  <td>HandoverResult</td>
+</tr>
+<tr>
+  <td><code>GET /api/app/station/orders</code><br>API_072_get</td>
+  <td>工作订单列表</td>
+  <td>MINI<br>biz:order:list<br></td>
+  <td></td>
+  <td>StationOrderSummary</td>
+</tr>
+<tr>
+  <td><code>GET /api/app/station/orders/{orderNo}</code><br>API_073_get</td>
+  <td>工作订单详情</td>
+  <td>MINI<br>biz:order:query<br></td>
+  <td></td>
+  <td>StationOrderView</td>
+</tr>
+<tr>
+  <td><code>GET /api/app/station/orders/{orderNo}/license</code><br>API_074_get</td>
+  <td>行驶证复核状态</td>
+  <td>MINI<br>biz:license:list<br></td>
+  <td></td>
+  <td>License</td>
+</tr>
+<tr>
+  <td><code>PUT /api/app/station/orders/{orderNo}/license</code><br>API_075_put</td>
+  <td>登记并复核行驶证</td>
+  <td>MINI<br>biz:license:edit<br></td>
+  <td>LicenseReview</td>
+  <td>License</td>
+</tr>
+<tr>
+  <td><code>POST /api/app/station/orders/{orderNo}/results</code><br>API_076_post</td>
+  <td>登记最终检测结果</td>
+  <td>MINI<br>biz:result:create<br></td>
+  <td>ResultInput</td>
+  <td>InspectionResult</td>
+</tr>
+<tr>
+  <td><code>GET /api/app/station/orders/{orderNo}/results</code><br>API_077_get</td>
+  <td>查询结果版本</td>
+  <td>MINI<br>biz:result:list<br></td>
+  <td></td>
+  <td>InspectionResult</td>
+</tr>
+<tr>
+  <td><code>POST /api/app/station/orders/{orderNo}/result-corrections</code><br>API_078_post</td>
+  <td>申请结果更正</td>
+  <td>MINI<br>biz:resultcorrection:create<br></td>
+  <td>CorrectionInput</td>
+  <td>Correction</td>
+</tr>
+<tr>
+  <td><code>POST /api/app/station/orders/{orderNo}/pickup-notification</code><br>API_079_post</td>
+  <td>重发取车通知</td>
+  <td>MINI<br>biz:order:create<br></td>
+  <td>VersionReason</td>
+  <td>Ack</td>
+</tr>
+<tr>
+  <td><code>POST /api/app/station/orders/{orderNo}/exceptions</code><br>API_080_post</td>
+  <td>上报拒收等普通异常</td>
+  <td>MINI<br>biz:order:create<br></td>
+  <td>ExceptionInput</td>
+  <td>Exception</td>
+</tr>
+<tr>
+  <td><code>GET /api/app/station/capacity</code><br>API_081_get</td>
+  <td>查询容量</td>
+  <td>MINI<br>biz:capacity:list<br></td>
+  <td></td>
+  <td>Capacity</td>
+</tr>
+<tr>
+  <td><code>PUT /api/app/station/capacity/{slotId}</code><br>API_082_put</td>
+  <td>修改未来容量</td>
+  <td>MINI<br>biz:capacity:edit<br></td>
+  <td>CapacityChange</td>
+  <td>Capacity</td>
+</tr>
+<tr>
+  <td><code>GET /api/admin/orders</code><br>API_083_get</td>
+  <td>工作订单列表</td>
+  <td>ADMIN<br>biz:order:list<br></td>
+  <td></td>
+  <td>AdminOrderSummary</td>
+</tr>
+<tr>
+  <td><code>GET /api/admin/orders/{orderNo}</code><br>API_084_get</td>
+  <td>工作订单详情</td>
+  <td>ADMIN<br>biz:order:query<br></td>
+  <td></td>
+  <td>AdminOrderView</td>
+</tr>
+<tr>
+  <td><code>GET /api/admin/orders/{orderNo}/license</code><br>API_085_get</td>
+  <td>行驶证复核状态</td>
+  <td>ADMIN<br>biz:license:list<br></td>
+  <td></td>
+  <td>License</td>
+</tr>
+<tr>
+  <td><code>PUT /api/admin/orders/{orderNo}/license</code><br>API_086_put</td>
+  <td>登记并复核行驶证</td>
+  <td>ADMIN<br>biz:license:edit<br></td>
+  <td>LicenseReview</td>
+  <td>License</td>
+</tr>
+<tr>
+  <td><code>POST /api/admin/orders/{orderNo}/results</code><br>API_087_post</td>
+  <td>登记最终检测结果</td>
+  <td>ADMIN<br>biz:result:create<br></td>
+  <td>ResultInput</td>
+  <td>InspectionResult</td>
+</tr>
+<tr>
+  <td><code>GET /api/admin/orders/{orderNo}/results</code><br>API_088_get</td>
+  <td>查询结果版本</td>
+  <td>ADMIN<br>biz:result:list<br></td>
+  <td></td>
+  <td>InspectionResult</td>
+</tr>
+<tr>
+  <td><code>POST /api/admin/orders/{orderNo}/result-corrections</code><br>API_089_post</td>
+  <td>申请结果更正</td>
+  <td>ADMIN<br>biz:resultcorrection:create<br></td>
+  <td>CorrectionInput</td>
+  <td>Correction</td>
+</tr>
+<tr>
+  <td><code>POST /api/admin/orders/{orderNo}/pickup-notification</code><br>API_090_post</td>
+  <td>重发取车通知</td>
+  <td>ADMIN<br>biz:order:create<br></td>
+  <td>VersionReason</td>
+  <td>Ack</td>
+</tr>
+<tr>
+  <td><code>POST /api/admin/orders/{orderNo}/exceptions</code><br>API_091_post</td>
+  <td>上报拒收等普通异常</td>
+  <td>ADMIN<br>biz:order:create<br></td>
+  <td>ExceptionInput</td>
+  <td>Exception</td>
+</tr>
+<tr>
+  <td><code>GET /api/admin/capacity</code><br>API_092_get</td>
+  <td>查询容量</td>
+  <td>ADMIN<br>biz:capacity:list<br></td>
+  <td></td>
+  <td>Capacity</td>
+</tr>
+<tr>
+  <td><code>PUT /api/admin/capacity/{slotId}</code><br>API_093_put</td>
+  <td>修改未来容量</td>
+  <td>ADMIN<br>biz:capacity:edit<br></td>
+  <td>CapacityChange</td>
+  <td>Capacity</td>
+</tr>
+<tr>
+  <td><code>GET /api/app/station/authorized-stations</code><br>API_094_get</td>
+  <td>员工获授权站点</td>
+  <td>MINI<br>biz:station:list<br></td>
+  <td></td>
+  <td>Station</td>
+</tr>
+<tr>
+  <td><code>GET /api/app/station/info</code><br>API_095_get</td>
+  <td>当前站点资料</td>
+  <td>MINI<br>biz:station:query<br></td>
+  <td></td>
+  <td>Station</td>
+</tr>
+<tr>
+  <td><code>PUT /api/app/station/info</code><br>API_096_put</td>
+  <td>维护当前站点资料</td>
+  <td>MINI<br>biz:station:edit<br></td>
+  <td>StationUpdate</td>
+  <td>Station</td>
+</tr>
+<tr>
+  <td><code>GET /api/admin/dashboard</code><br>API_097_get</td>
+  <td>工作台指标</td>
+  <td>ADMIN<br>biz:dashboard:list<br></td>
+  <td></td>
+  <td>Metric</td>
+</tr>
+<tr>
+  <td><code>GET /api/admin/dispatch/queue</code><br>API_098_get</td>
+  <td>调度队列</td>
+  <td>ADMIN<br>biz:dispatch:list<br></td>
+  <td></td>
+  <td>AdminOrderSummary</td>
+</tr>
+<tr>
+  <td><code>GET /api/admin/dispatch/candidates</code><br>API_099_get</td>
+  <td>候选司机</td>
+  <td>ADMIN<br>biz:dispatch:list<br></td>
+  <td></td>
+  <td>Availability</td>
+</tr>
+<tr>
+  <td><code>POST /api/admin/dispatch/manual-invites</code><br>API_100_post</td>
+  <td>人工发出邀约</td>
+  <td>ADMIN<br>biz:dispatch:create<br></td>
+  <td>ManualInvite</td>
+  <td>Invite</td>
+</tr>
+<tr>
+  <td><code>GET /api/admin/dispatch/invites</code><br>API_101_get</td>
+  <td>派单邀约记录</td>
+  <td>ADMIN<br>biz:dispatch:list<br></td>
+  <td></td>
+  <td>Invite</td>
+</tr>
+<tr>
+  <td><code>GET /api/admin/dispatch/config</code><br>API_102_get</td>
+  <td>派单配置</td>
+  <td>ADMIN<br>biz:dispatch:query<br></td>
+  <td></td>
+  <td>DispatchConfigView</td>
+</tr>
+<tr>
+  <td><code>PUT /api/admin/dispatch/config</code><br>API_103_put</td>
+  <td>保存派单配置</td>
+  <td>ADMIN<br>biz:dispatch:edit<br></td>
+  <td>DispatchConfig</td>
+  <td>DispatchConfigView</td>
+</tr>
+<tr>
+  <td><code>POST /api/admin/dispatch/plans/preview</code><br>API_104_post</td>
+  <td>计划变更影响预览</td>
+  <td>ADMIN<br>biz:dispatch:preview<br></td>
+  <td>ConfigPatch</td>
+  <td>JobTask</td>
+</tr>
+<tr>
+  <td><code>POST /api/admin/dispatch/plans/{taskId}/apply</code><br>API_105_post</td>
+  <td>确认更新未派单计划</td>
+  <td>ADMIN<br>biz:dispatch:create<br></td>
+  <td>VersionReason</td>
+  <td>Ack</td>
+</tr>
+<tr>
+  <td><code>GET /api/admin/refunds/{refundNo}</code><br>API_113_get</td>
+  <td>渠道退款详情</td>
+  <td>ADMIN<br>biz:refund:query<br></td>
+  <td></td>
+  <td>Refund</td>
+</tr>
+<tr>
+  <td><code>POST /api/admin/refunds/{refundNo}/query</code><br>API_114_post</td>
+  <td>主动查退款</td>
+  <td>ADMIN<br>biz:refund:query<br></td>
+  <td>VersionReason</td>
+  <td>Refund</td>
+</tr>
+<tr>
+  <td><code>POST /api/admin/refunds/{refundNo}/retry</code><br>API_115_post</td>
+  <td>安全重试渠道请求</td>
+  <td>ADMIN<br>biz:refund:retry<br></td>
+  <td>VersionReason</td>
+  <td>Refund</td>
+</tr>
+<tr>
+  <td><code>GET /api/admin/disputes</code><br>API_116_get</td>
+  <td>争议列表</td>
+  <td>ADMIN<br>biz:dispute:list<br></td>
+  <td></td>
+  <td>Dispute</td>
+</tr>
+<tr>
+  <td><code>GET /api/admin/disputes/{disputeId}</code><br>API_117_get</td>
+  <td>争议详情</td>
+  <td>ADMIN<br>biz:dispute:query<br></td>
+  <td></td>
+  <td>Dispute</td>
+</tr>
+<tr>
+  <td><code>POST /api/admin/disputes/{disputeId}/resolve</code><br>API_118_post</td>
+  <td>处理争议</td>
+  <td>ADMIN<br>biz:dispute:resolve<br></td>
+  <td>DisputeResolve</td>
+  <td>Dispute</td>
+</tr>
+<tr>
+  <td><code>GET /api/admin/exceptions</code><br>API_119_get</td>
+  <td>普通异常列表</td>
+  <td>ADMIN<br>biz:exception:list<br></td>
+  <td></td>
+  <td>Exception</td>
+</tr>
+<tr>
+  <td><code>POST /api/admin/exceptions/{exceptionId}/resolve</code><br>API_120_post</td>
+  <td>登记异常处理</td>
+  <td>ADMIN<br>biz:exception:resolve<br></td>
+  <td>VersionReason</td>
+  <td>Exception</td>
+</tr>
+<tr>
+  <td><code>GET /api/admin/driver-qualifications</code><br>API_121_get</td>
+  <td>资格审核列表</td>
+  <td>ADMIN<br>biz:driverqualification:list<br></td>
+  <td></td>
+  <td>Qualification</td>
+</tr>
+<tr>
+  <td><code>GET /api/admin/driver-qualifications/{applicationId}</code><br>API_122_get</td>
+  <td>资格审核详情</td>
+  <td>ADMIN<br>biz:driverqualification:query<br></td>
+  <td></td>
+  <td>Qualification</td>
+</tr>
+<tr>
+  <td><code>POST /api/admin/driver-qualifications/{applicationId}/audit</code><br>API_123_post</td>
+  <td>批准或驳回资格</td>
+  <td>ADMIN<br>biz:driverqualification:audit<br></td>
+  <td>QualificationAudit</td>
+  <td>Qualification</td>
+</tr>
+<tr>
+  <td><code>GET /api/admin/owners</code><br>V4_get_api_admin_owners</td>
+  <td>车主列表</td>
+  <td>ADMIN<br>biz:owner:list<br></td>
+  <td></td>
+  <td>OwnerRecord</td>
+</tr>
+<tr>
+  <td><code>GET /api/admin/drivers</code><br>V4_get_api_admin_drivers</td>
+  <td>代驾员列表</td>
+  <td>ADMIN<br>biz:driver:list<br></td>
+  <td></td>
+  <td>DriverRecord</td>
+</tr>
+<tr>
+  <td><code>POST /api/admin/drivers/{driverId}/disable-new-assignments</code><br>API_126_post</td>
+  <td>禁止新增承接</td>
+  <td>ADMIN<br>biz:driver:disablenewassignments<br></td>
+  <td>VersionReason</td>
+  <td>Availability</td>
+</tr>
+<tr>
+  <td><code>POST /api/admin/penalty-appeals/{appealId}/audit</code><br>API_127_post</td>
+  <td>取消处罚申诉审核</td>
+  <td>ADMIN<br>biz:penaltyappeal:audit<br></td>
+  <td>Decision</td>
+  <td>AdminPenaltyAppealView</td>
+</tr>
+<tr>
+  <td><code>GET /api/admin/stations</code><br>API_128_get</td>
+  <td>检测点列表</td>
+  <td>ADMIN<br>biz:station:list<br></td>
+  <td></td>
+  <td>Station</td>
+</tr>
+<tr>
+  <td><code>POST /api/admin/stations</code><br>API_129_post</td>
+  <td>创建检测点</td>
+  <td>ADMIN<br>biz:station:create<br></td>
+  <td>StationCreate</td>
+  <td>Station</td>
+</tr>
+<tr>
+  <td><code>PUT /api/admin/stations/{stationId}</code><br>API_130_put</td>
+  <td>修改检测点</td>
+  <td>ADMIN<br>biz:station:edit<br></td>
+  <td>StationUpdate</td>
+  <td>Station</td>
+</tr>
+<tr>
+  <td><code>GET /api/admin/station-grants</code><br>API_131_get</td>
+  <td>员工站点授权</td>
+  <td>ADMIN<br>biz:stationgrant:list<br></td>
+  <td></td>
+  <td>StationGrant</td>
+</tr>
+<tr>
+  <td><code>PUT /api/admin/station-grants/{employeeUserId}</code><br>API_132_put</td>
+  <td>修改跨站授权</td>
+  <td>ADMIN<br>biz:stationgrant:edit<br></td>
+  <td>StationGrant</td>
+  <td>Ack</td>
+</tr>
+<tr>
+  <td><code>GET /api/admin/prices</code><br>API_133_get</td>
+  <td>计价规则列表</td>
+  <td>ADMIN<br>biz:price:list<br></td>
+  <td></td>
+  <td>PriceRule</td>
+</tr>
+<tr>
+  <td><code>POST /api/admin/prices</code><br>API_134_post</td>
+  <td>计价草稿</td>
+  <td>ADMIN<br>biz:price:create<br></td>
+  <td>PriceCreate</td>
+  <td>PriceRule</td>
+</tr>
+<tr>
+  <td><code>PUT /api/admin/prices/{ruleId}</code><br>API_135_put</td>
+  <td>修改计价草稿</td>
+  <td>ADMIN<br>biz:price:edit<br></td>
+  <td>PriceUpdate</td>
+  <td>PriceRule</td>
+</tr>
+<tr>
+  <td><code>POST /api/admin/prices/{ruleId}/submit</code><br>API_136_post</td>
+  <td>提交价格审核</td>
+  <td>ADMIN<br>biz:price:submit<br></td>
+  <td>VersionReason</td>
+  <td>PriceRule</td>
+</tr>
+<tr>
+  <td><code>POST /api/admin/prices/{ruleId}/audit</code><br>API_137_post</td>
+  <td>价格审核</td>
+  <td>ADMIN<br>biz:price:audit<br></td>
+  <td>Decision</td>
+  <td>PriceRule</td>
+</tr>
+<tr>
+  <td><code>POST /api/admin/prices/{ruleId}/publish</code><br>API_138_post</td>
+  <td>发布计价版本</td>
+  <td>ADMIN<br>biz:price:publish<br></td>
+  <td>VersionReason</td>
+  <td>PriceRule</td>
+</tr>
+<tr>
+  <td><code>GET /api/admin/result-corrections</code><br>API_139_get</td>
+  <td>结果更正列表</td>
+  <td>ADMIN<br>biz:resultcorrection:list<br></td>
+  <td></td>
+  <td>Correction</td>
+</tr>
+<tr>
+  <td><code>POST /api/admin/result-corrections/{correctionId}/audit</code><br>API_140_post</td>
+  <td>更正审核</td>
+  <td>ADMIN<br>biz:resultcorrection:audit<br></td>
+  <td>Decision</td>
+  <td>Correction</td>
+</tr>
+<tr>
+  <td><code>GET /api/admin/reconciliation</code><br>API_141_get</td>
+  <td>对账异常</td>
+  <td>ADMIN<br>biz:paymentreconciliation:list<br></td>
+  <td></td>
+  <td>Reconcile</td>
+</tr>
+<tr>
+  <td><code>POST /api/admin/reconciliation/{caseId}/query</code><br>API_142_post</td>
+  <td>重查可信渠道状态</td>
+  <td>ADMIN<br>biz:paymentreconciliation:query<br></td>
+  <td>VersionReason</td>
+  <td>Reconcile</td>
+</tr>
+<tr>
+  <td><code>POST /api/admin/reconciliation/{caseId}/resolve</code><br>API_143_post</td>
+  <td>基于证据登记对账结论</td>
+  <td>ADMIN<br>biz:paymentreconciliation:resolve<br></td>
+  <td>VersionReason</td>
+  <td>Reconcile</td>
+</tr>
+<tr>
+  <td><code>POST /api/admin/orders/export</code><br>API_144_post</td>
+  <td>申请脱敏订单导出</td>
+  <td>ADMIN<br>biz:order:export<br></td>
+  <td>ExportRequest</td>
+  <td>ExportTask</td>
+</tr>
+<tr>
+  <td><code>POST /api/admin/exports/{taskId}/audit</code><br>API_145_post</td>
+  <td>导出审批</td>
+  <td>ADMIN<br>biz:export:audit<br></td>
+  <td>Decision</td>
+  <td>ExportTask</td>
+</tr>
+<tr>
+  <td><code>GET /api/admin/exports/{taskId}</code><br>API_146_get</td>
+  <td>导出任务</td>
+  <td>ADMIN<br>biz:export:query<br></td>
+  <td></td>
+  <td>ExportTask</td>
+</tr>
+<tr>
+  <td><code>GET /api/admin/audit-events</code><br>API_147_get</td>
+  <td>审计事件</td>
+  <td>ADMIN<br>biz:audit:list<br></td>
+  <td></td>
+  <td>Audit</td>
+</tr>
+<tr>
+  <td><code>GET /api/admin/statistics</code><br>API_148_get</td>
+  <td>统计口径</td>
+  <td>ADMIN<br>biz:statistics:list<br></td>
+  <td></td>
+  <td>Metric</td>
+</tr>
+<tr>
+  <td><code>GET /api/admin/notification-templates</code><br>API_149_get</td>
+  <td>通知模板</td>
+  <td>ADMIN<br>biz:notificationtemplate:list<br></td>
+  <td></td>
+  <td>MessageTemplate</td>
+</tr>
+<tr>
+  <td><code>PUT /api/admin/notification-templates/{templateId}</code><br>API_150_put</td>
+  <td>修改消息模板</td>
+  <td>ADMIN<br>biz:notificationtemplate:edit<br></td>
+  <td>MessageTemplate</td>
+  <td>Ack</td>
+</tr>
+<tr>
+  <td><code>GET /api/admin/jobs</code><br>API_151_get</td>
+  <td>补偿任务队列</td>
+  <td>ADMIN<br>biz:job:list<br></td>
+  <td></td>
+  <td>JobTask</td>
+</tr>
+<tr>
+  <td><code>POST /api/admin/jobs/{taskId}/retry</code><br>API_152_post</td>
+  <td>受控补偿重试</td>
+  <td>ADMIN<br>biz:job:retry<br></td>
+  <td>VersionReason</td>
+  <td>Ack</td>
+</tr>
+<tr>
+  <td><code>GET /api/admin/privacy-cases</code><br>API_153_get</td>
+  <td>隐私请求列表</td>
+  <td>ADMIN<br>biz:privacycase:list<br></td>
+  <td></td>
+  <td>PrivacyCase</td>
+</tr>
+<tr>
+  <td><code>POST /api/admin/privacy-cases/{caseId}/resolve</code><br>API_154_post</td>
+  <td>隐私处理结论</td>
+  <td>ADMIN<br>biz:privacycase:resolve<br></td>
+  <td>VersionReason</td>
+  <td>PrivacyCase</td>
+</tr>
+<tr>
+  <td><code>GET /api/admin/config</code><br>API_155_get</td>
+  <td>业务配置</td>
+  <td>ADMIN<br>biz:config:query<br></td>
+  <td></td>
+  <td>ConfigPatchView</td>
+</tr>
+<tr>
+  <td><code>PUT /api/admin/config</code><br>API_156_put</td>
+  <td>配置保存</td>
+  <td>ADMIN<br>biz:config:edit<br></td>
+  <td>ConfigPatch</td>
+  <td>Ack</td>
+</tr>
+<tr>
+  <td><code>POST /api/common/uploads</code><br>API_157_post</td>
+  <td>申请限定用途上传</td>
+  <td><br><br>COMMON_UPLOADS_CREATE</td>
+  <td>UploadRequest</td>
+  <td>UploadTicket</td>
+</tr>
+<tr>
+  <td><code>POST /api/common/uploads/{uploadId}/complete</code><br>API_158_post</td>
+  <td>服务器核验上传完成</td>
+  <td><br><br>COMMON_UPLOADS_COMPLETE</td>
+  <td></td>
+  <td>FileReady</td>
+</tr>
+<tr>
+  <td><code>GET /api/common/files/{fileId}</code><br>API_159_get</td>
+  <td>文件验证状态</td>
+  <td><br><br>COMMON_FILES_QUERY</td>
+  <td></td>
+  <td>FileReady</td>
+</tr>
+<tr>
+  <td><code>POST /api/common/files/{fileId}/access</code><br>API_160_post</td>
+  <td>按权限申请短期文件访问</td>
+  <td><br><br>COMMON_FILES_ACCESS</td>
+  <td>AccessRequest</td>
+  <td>AccessResult</td>
+</tr>
+<tr>
+  <td><code>GET /api/common/messages</code><br>API_161_get</td>
+  <td>当前角色站内消息</td>
+  <td>MINI<br><br>COMMON_MESSAGES_LIST</td>
+  <td></td>
+  <td>Notification</td>
+</tr>
+<tr>
+  <td><code>POST /api/common/messages/{messageId}/read</code><br>API_162_post</td>
+  <td>标记本人消息已读</td>
+  <td>MINI<br><br>COMMON_MESSAGES_READ</td>
+  <td></td>
+  <td>Ack</td>
+</tr>
+<tr>
+  <td><code>POST /api/common/privacy-cases</code><br>API_163_post</td>
+  <td>发起隐私请求</td>
+  <td>MINI<br><br>COMMON_PRIVACYCASES_CREATE</td>
+  <td>PrivacyRequest</td>
+  <td>PrivacyCase</td>
+</tr>
+<tr>
+  <td><code>GET /api/common/privacy-cases</code><br>API_164_get</td>
+  <td>本人隐私请求</td>
+  <td>MINI<br><br>COMMON_PRIVACYCASES_LIST</td>
+  <td></td>
+  <td>PrivacyCase</td>
+</tr>
+<tr>
+  <td><code>POST /api/notify/wechat/pay</code><br>API_165_post</td>
+  <td>微信支付通知</td>
+  <td>CALLBACK<br><br></td>
+  <td>Callback</td>
+  <td></td>
+</tr>
+<tr>
+  <td><code>POST /api/notify/wechat/refund</code><br>API_166_post</td>
+  <td>微信退款通知</td>
+  <td>CALLBACK<br><br></td>
+  <td>Callback</td>
+  <td></td>
+</tr>
+<tr>
+  <td><code>POST /api/app/owner/orders/{orderNo}/after-sales</code><br>V4_post_api_app_owner_orders__orderNo__after_sales</td>
+  <td>创建统一取消与退款申请</td>
+  <td>MINI<br><br>OWNER_AFTERSALE_CREATE</td>
+  <td>AfterSaleApply</td>
+  <td>AfterSalePublic</td>
+</tr>
+<tr>
+  <td><code>GET /api/app/owner/orders/{orderNo}/after-sales</code><br>V4_get_api_app_owner_orders__orderNo__after_sales</td>
+  <td>查看本订单售后记录</td>
+  <td>MINI<br><br>OWNER_AFTERSALE_LIST</td>
+  <td></td>
+  <td>AfterSalePublic</td>
+</tr>
+<tr>
+  <td><code>POST /api/admin/orders/{orderNo}/after-sales</code><br>V4_post_api_admin_orders__orderNo__after_sales</td>
+  <td>创建统一取消与退款申请</td>
+  <td>ADMIN<br>biz:aftersale:create<br></td>
+  <td>AfterSaleApply</td>
+  <td>AfterSale</td>
+</tr>
+<tr>
+  <td><code>GET /api/admin/orders/{orderNo}/after-sales</code><br>V4_get_api_admin_orders__orderNo__after_sales</td>
+  <td>查看本订单售后记录</td>
+  <td>ADMIN<br>biz:aftersale:list<br></td>
+  <td></td>
+  <td>AfterSale</td>
+</tr>
+<tr>
+  <td><code>GET /api/app/owner/after-sales</code><br>V4_get_api_app_owner_after_sales</td>
+  <td>统一售后申请列表</td>
+  <td>MINI<br><br>OWNER_AFTERSALE_LIST</td>
+  <td></td>
+  <td>AfterSalePublic</td>
+</tr>
+<tr>
+  <td><code>GET /api/app/owner/after-sales/{caseId}</code><br>V4_get_api_app_owner_after_sales__caseId</td>
+  <td>统一售后详情</td>
+  <td>MINI<br><br>OWNER_AFTERSALE_QUERY</td>
+  <td></td>
+  <td>AfterSalePublic</td>
+</tr>
+<tr>
+  <td><code>POST /api/app/owner/after-sales/{caseId}/notes</code><br>V4_post_api_app_owner_after_sales__caseId__notes</td>
+  <td>补充售后说明</td>
+  <td>MINI<br><br>OWNER_AFTERSALE_CREATE</td>
+  <td>AfterSaleNote</td>
+  <td>AfterSalePublic</td>
+</tr>
+<tr>
+  <td><code>GET /api/admin/after-sales</code><br>V4_get_api_admin_after_sales</td>
+  <td>统一售后申请列表</td>
+  <td>ADMIN<br>biz:aftersale:list<br></td>
+  <td></td>
+  <td>AfterSale</td>
+</tr>
+<tr>
+  <td><code>GET /api/admin/after-sales/{caseId}</code><br>V4_get_api_admin_after_sales__caseId</td>
+  <td>统一售后详情</td>
+  <td>ADMIN<br>biz:aftersale:query<br></td>
+  <td></td>
+  <td>AfterSale</td>
+</tr>
+<tr>
+  <td><code>POST /api/admin/after-sales/{caseId}/notes</code><br>V4_post_api_admin_after_sales__caseId__notes</td>
+  <td>补充售后说明</td>
+  <td>ADMIN<br>biz:aftersale:create<br></td>
+  <td>AfterSaleNote</td>
+  <td>AfterSale</td>
+</tr>
+<tr>
+  <td><code>POST /api/admin/after-sales/{caseId}/review-preview</code><br>V4_post_api_admin_after_sales__caseId__review_preview</td>
+  <td>预览当前取消及退款后果</td>
+  <td>ADMIN<br>biz:aftersale:reviewpreview<br></td>
+  <td>AfterSaleReviewPreviewInput</td>
+  <td>AfterSaleReviewPreview</td>
+</tr>
+<tr>
+  <td><code>POST /api/admin/after-sales/{caseId}/review</code><br>V4_post_api_admin_after_sales__caseId__review</td>
+  <td>提交一次统一审核</td>
+  <td>ADMIN<br>biz:aftersale:review<br></td>
+  <td>AfterSaleReview</td>
+  <td>AfterSale</td>
+</tr>
+<tr>
+  <td><code>GET /api/admin/vehicles</code><br>V4_get_api_admin_vehicles</td>
+  <td>车辆列表</td>
+  <td>ADMIN<br>biz:vehicle:list<br></td>
+  <td></td>
+  <td>VehicleRecord</td>
+</tr>
+<tr>
+  <td><code>GET /api/admin/vehicles/{vehicleId}</code><br>V4_get_api_admin_vehicles__vehicleId</td>
+  <td>查看独立档案详情</td>
+  <td>ADMIN<br>biz:vehicle:query<br></td>
+  <td></td>
+  <td>VehicleRecord</td>
+</tr>
+<tr>
+  <td><code>PATCH /api/admin/vehicles/{vehicleId}</code><br>V4_patch_api_admin_vehicles__vehicleId</td>
+  <td>维护档案备注及允许字段</td>
+  <td>ADMIN<br>biz:vehicle:edit<br></td>
+  <td>VehicleMaintenance</td>
+  <td>VehicleRecord</td>
+</tr>
+<tr>
+  <td><code>GET /api/admin/owners/{ownerId}</code><br>V4_get_api_admin_owners__ownerId</td>
+  <td>查看独立档案详情</td>
+  <td>ADMIN<br>biz:owner:query<br></td>
+  <td></td>
+  <td>OwnerRecord</td>
+</tr>
+<tr>
+  <td><code>PATCH /api/admin/owners/{ownerId}</code><br>V4_patch_api_admin_owners__ownerId</td>
+  <td>维护档案备注及允许字段</td>
+  <td>ADMIN<br>biz:owner:edit<br></td>
+  <td>OwnerMaintenance</td>
+  <td>OwnerRecord</td>
+</tr>
+<tr>
+  <td><code>GET /api/admin/drivers/{driverId}</code><br>V4_get_api_admin_drivers__driverId</td>
+  <td>查看独立档案详情</td>
+  <td>ADMIN<br>biz:driver:query<br></td>
+  <td></td>
+  <td>DriverRecord</td>
+</tr>
+<tr>
+  <td><code>PATCH /api/admin/drivers/{driverId}</code><br>V4_patch_api_admin_drivers__driverId</td>
+  <td>维护档案备注及允许字段</td>
+  <td>ADMIN<br>biz:driver:edit<br></td>
+  <td>DriverMaintenance</td>
+  <td>DriverRecord</td>
+</tr>
+<tr>
+  <td><code>GET /api/admin/vehicles/{vehicleId}/orders</code><br>V4_get_api_admin_vehicles__vehicleId__orders</td>
+  <td>车辆关联orders</td>
+  <td>ADMIN<br>biz:vehicle:list<br></td>
+  <td></td>
+  <td>AdminOrderSummary</td>
+</tr>
+<tr>
+  <td><code>GET /api/admin/vehicles/{vehicleId}/inspection-results</code><br>V4_get_api_admin_vehicles__vehicleId__inspection_results</td>
+  <td>车辆关联inspection-results</td>
+  <td>ADMIN<br>biz:result:list<br></td>
+  <td></td>
+  <td>InspectionResult</td>
+</tr>
+<tr>
+  <td><code>GET /api/admin/owners/{ownerId}/vehicles</code><br>V4_get_api_admin_owners__ownerId__vehicles</td>
+  <td>车主关联vehicles</td>
+  <td>ADMIN<br>biz:owner:list<br></td>
+  <td></td>
+  <td>VehicleRecord</td>
+</tr>
+<tr>
+  <td><code>GET /api/admin/owners/{ownerId}/orders</code><br>V4_get_api_admin_owners__ownerId__orders</td>
+  <td>车主关联orders</td>
+  <td>ADMIN<br>biz:owner:list<br></td>
+  <td></td>
+  <td>AdminOrderSummary</td>
+</tr>
+<tr>
+  <td><code>GET /api/admin/owners/{ownerId}/after-sales</code><br>V4_get_api_admin_owners__ownerId__after_sales</td>
+  <td>车主关联after-sales</td>
+  <td>ADMIN<br>biz:aftersale:list<br></td>
+  <td></td>
+  <td>AfterSale</td>
+</tr>
+<tr>
+  <td><code>GET /api/admin/drivers/{driverId}/assignments</code><br>V4_get_api_admin_drivers__driverId__assignments</td>
+  <td>代驾承接服务记录</td>
+  <td>ADMIN<br>biz:assignment:list<br></td>
+  <td></td>
+  <td>DriverAssignmentRecord</td>
+</tr>
+<tr>
+  <td><code>GET /api/admin/drivers/{driverId}/fee-ledger</code><br>V4_get_api_admin_drivers__driverId__fee_ledger</td>
+  <td>个人服务费用台账</td>
+  <td>ADMIN<br>biz:driverledger:list<br></td>
+  <td></td>
+  <td>DriverFeeEntry</td>
+</tr>
+<tr>
+  <td><code>GET /api/admin/driver-fee-rules</code><br>V4_get_api_admin_driver_fee_rules</td>
+  <td>代驾费用规则列表</td>
+  <td>ADMIN<br>biz:driverfeerule:list<br></td>
+  <td></td>
+  <td>DriverFeeRule</td>
+</tr>
+<tr>
+  <td><code>POST /api/admin/driver-fee-rules</code><br>V4_post_api_admin_driver_fee_rules</td>
+  <td>创建代驾费用规则草稿</td>
+  <td>ADMIN<br>biz:driverfeerule:create<br></td>
+  <td>DriverFeeRuleCreate</td>
+  <td>DriverFeeRule</td>
+</tr>
+<tr>
+  <td><code>GET /api/admin/driver-fee-rules/{ruleId}</code><br>V4_get_api_admin_driver_fee_rules__ruleId</td>
+  <td>查看代驾费用版本</td>
+  <td>ADMIN<br>biz:driverfeerule:query<br></td>
+  <td></td>
+  <td>DriverFeeRule</td>
+</tr>
+<tr>
+  <td><code>PUT /api/admin/driver-fee-rules/{ruleId}</code><br>V4_put_api_admin_driver_fee_rules__ruleId</td>
+  <td>编辑未发布代驾费用草稿</td>
+  <td>ADMIN<br>biz:driverfeerule:edit<br></td>
+  <td>DriverFeeRuleUpdate</td>
+  <td>DriverFeeRule</td>
+</tr>
+<tr>
+  <td><code>POST /api/admin/driver-fee-rules/{ruleId}/publish</code><br>V4_post_api_admin_driver_fee_rules__ruleId__publish</td>
+  <td>独立审核后发布费用版本</td>
+  <td>ADMIN<br>biz:driverfeerule:publish<br></td>
+  <td>Decision</td>
+  <td>DriverFeeRule</td>
+</tr>
+<tr>
+  <td><code>POST /api/admin/driver-fee-rules/trial</code><br>V4_post_api_admin_driver_fee_rules_trial</td>
+  <td>试算代驾费用，不入账</td>
+  <td>ADMIN<br>biz:driverfeerule:trial<br></td>
+  <td>DriverFeeTrial</td>
+  <td>DriverFeeTrialResult</td>
+</tr>
+<tr>
+  <td><code>POST /api/admin/driver-statements/preview</code><br>V4_post_api_admin_driver_statements_preview</td>
+  <td>预览明确勾选的服务（不占用）</td>
+  <td>ADMIN<br>biz:driverstatement:preview<br></td>
+  <td>StatementSelectionRequest</td>
+  <td>StatementPreview</td>
+</tr>
+<tr>
+  <td><code>POST /api/admin/driver-statements</code><br>V4_post_api_admin_driver_statements</td>
+  <td>仅按勾选服务建立对账草稿</td>
+  <td>ADMIN<br>biz:driverstatement:create<br></td>
+  <td>StatementSelectionRequest</td>
+  <td>DriverStatement</td>
+</tr>
+<tr>
+  <td><code>GET /api/admin/driver-statements</code><br>V4_get_api_admin_driver_statements</td>
+  <td>对账单列表</td>
+  <td>ADMIN<br>biz:driverstatement:list<br></td>
+  <td></td>
+  <td>DriverStatement</td>
+</tr>
+<tr>
+  <td><code>GET /api/admin/driver-statements/{statementId}</code><br>V4_get_api_admin_driver_statements__statementId</td>
+  <td>查看对账单与快照</td>
+  <td>ADMIN<br>biz:driverstatement:query<br></td>
+  <td></td>
+  <td>DriverStatement</td>
+</tr>
+<tr>
+  <td><code>GET /api/app/driver/statements</code><br>V4_get_api_app_driver_statements</td>
+  <td>对账单列表</td>
+  <td>MINI<br><br>DRIVER_DRIVERSTATEMENT_LIST</td>
+  <td></td>
+  <td>DriverStatementPublic</td>
+</tr>
+<tr>
+  <td><code>GET /api/app/driver/statements/{statementId}</code><br>V4_get_api_app_driver_statements__statementId</td>
+  <td>查看对账单与快照</td>
+  <td>MINI<br><br>DRIVER_DRIVERSTATEMENT_QUERY</td>
+  <td></td>
+  <td>DriverStatementPublic</td>
+</tr>
+<tr>
+  <td><code>POST /api/admin/driver-statements/{statementId}/send</code><br>V4_post_api_admin_driver_statements__statementId__send</td>
+  <td>发给代驾确认</td>
+  <td>ADMIN<br>biz:driverstatement:send<br></td>
+  <td>StatementRevisionAction</td>
+  <td>DriverStatement</td>
+</tr>
+<tr>
+  <td><code>POST /api/admin/driver-statements/{statementId}/void</code><br>V4_post_api_admin_driver_statements__statementId__void</td>
+  <td>作废未确认对账单</td>
+  <td>ADMIN<br>biz:driverstatement:void<br></td>
+  <td>StatementMembershipAction</td>
+  <td>DriverStatement</td>
+</tr>
+<tr>
+  <td><code>POST /api/app/driver/statements/{statementId}/confirm</code><br>V4_post_api_app_driver_statements__statementId__confirm</td>
+  <td>代驾本人确认账单</td>
+  <td>MINI<br><br>DRIVER_DRIVERSTATEMENT_CONFIRM</td>
+  <td>StatementConfirm</td>
+  <td>DriverStatementPublic</td>
+</tr>
+<tr>
+  <td><code>POST /api/app/driver/statements/{statementId}/differences</code><br>V4_post_api_app_driver_statements__statementId__differences</td>
+  <td>代驾提交账单差异</td>
+  <td>MINI<br><br>DRIVER_DRIVERSTATEMENT_CREATE</td>
+  <td>StatementDifference</td>
+  <td>StatementDifferenceRecord</td>
+</tr>
+<tr>
+  <td><code>GET /api/admin/statement-differences</code><br>V4_get_api_admin_statement_differences</td>
+  <td>对账差异列表</td>
+  <td>ADMIN<br>biz:statementdifference:list<br></td>
+  <td></td>
+  <td>StatementDifferenceRecord</td>
+</tr>
+<tr>
+  <td><code>POST /api/admin/statement-differences/{differenceId}/resolve</code><br>V4_post_api_admin_statement_differences__differenceId__resolve</td>
+  <td>处理差异并按需重新发出</td>
+  <td>ADMIN<br>biz:statementdifference:resolve<br></td>
+  <td>DifferenceResolve</td>
+  <td>DriverStatement</td>
+</tr>
+<tr>
+  <td><code>GET /api/admin/driver-fee-adjustments</code><br>V4_get_api_admin_driver_fee_adjustments</td>
+  <td>费用调整列表</td>
+  <td>ADMIN<br>biz:driveradjust:list<br></td>
+  <td></td>
+  <td>DriverAdjustment</td>
+</tr>
+<tr>
+  <td><code>POST /api/admin/driver-fee-adjustments</code><br>V4_post_api_admin_driver_fee_adjustments</td>
+  <td>提出有依据的费用调整</td>
+  <td>ADMIN<br>biz:driveradjust:create<br></td>
+  <td>DriverAdjustmentApply</td>
+  <td>DriverAdjustment</td>
+</tr>
+<tr>
+  <td><code>POST /api/admin/driver-fee-adjustments/{adjustmentId}/audit</code><br>V4_post_api_admin_driver_fee_adjustments__adjustmentId__audit</td>
+  <td>独立审核费用调整</td>
+  <td>ADMIN<br>biz:driveradjust:audit<br></td>
+  <td>Decision</td>
+  <td>DriverAdjustment</td>
+</tr>
+<tr>
+  <td><code>GET /api/admin/driver-payment-records</code><br>V4_get_api_admin_driver_payment_records</td>
+  <td>外部付款证据列表</td>
+  <td>ADMIN<br>biz:driverpayment:list<br></td>
+  <td></td>
+  <td>ExternalPaymentRecord</td>
+</tr>
+<tr>
+  <td><code>POST /api/admin/driver-payment-records</code><br>V4_post_api_admin_driver_payment_records</td>
+  <td>登记已有外部付款证据</td>
+  <td>ADMIN<br>biz:driverpayment:create<br></td>
+  <td>ExternalPaymentApply</td>
+  <td>ExternalPaymentRecord</td>
+</tr>
+<tr>
+  <td><code>POST /api/admin/driver-payment-records/{recordId}/verify</code><br>V4_post_api_admin_driver_payment_records__recordId__verify</td>
+  <td>独立复核外部付款证据</td>
+  <td>ADMIN<br>biz:driverpayment:verify<br></td>
+  <td>ExternalPaymentVerify</td>
+  <td>ExternalPaymentRecord</td>
+</tr>
+<tr>
+  <td><code>POST /api/common/token/refresh</code><br>V41_post_api_common_token_refresh</td>
+  <td>轮换小程序访问与刷新令牌</td>
+  <td>REFRESH<br><br></td>
+  <td>TokenRefreshInput</td>
+  <td>Session</td>
+</tr>
+<tr>
+  <td><code>GET /api/common/session</code><br>V41_get_api_common_session</td>
+  <td>恢复当前小程序基础会话</td>
+  <td>MINI<br><br>SESSION_READ</td>
+  <td></td>
+  <td>SessionView</td>
+</tr>
+<tr>
+  <td><code>POST /api/common/session/logout</code><br>V41_post_api_common_session_logout</td>
+  <td>退出当前或全部小程序会话</td>
+  <td>MINI<br><br>SESSION_LOGOUT</td>
+  <td>SessionLogoutInput</td>
+  <td>LogoutResult</td>
+</tr>
+<tr>
+  <td><code>PUT /api/admin/driver-statements/{statementId}/lines/{lineId}/price</code><br>V41_put_api_admin_driver_statements_statementId_lines_lineId_price</td>
+  <td>对账行填写或修改拟价格</td>
+  <td>ADMIN<br>biz:driverstatement:price<br></td>
+  <td>StatementPriceInput</td>
+  <td>DriverStatement</td>
+</tr>
+<tr>
+  <td><code>GET /api/admin/driver-statements/{statementId}/lines/{lineId}/price-history</code><br>V41_get_api_admin_driver_statements_statementId_lines_lineId_price_history</td>
+  <td>查看本行修改记录</td>
+  <td>ADMIN<br>biz:driverstatement:list<br></td>
+  <td></td>
+  <td>PriceChangeRecord</td>
+</tr>
+<tr>
+  <td><code>POST /api/admin/driver-statements/{statementId}/submit-review</code><br>V41_post_api_admin_driver_statements_statementId_submit_review</td>
+  <td>提交整单内部复核</td>
+  <td>ADMIN<br>biz:driverstatement:submitreview<br></td>
+  <td>StatementRevisionAction</td>
+  <td>DriverStatement</td>
+</tr>
+<tr>
+  <td><code>POST /api/admin/driver-statements/{statementId}/review</code><br>V41_post_api_admin_driver_statements_statementId_review</td>
+  <td>整单复核通过并发送或退回</td>
+  <td>ADMIN<br>biz:driverstatement:review<br></td>
+  <td>StatementReviewDecision</td>
+  <td>DriverStatement</td>
+</tr>
+<tr>
+  <td><code>GET /api/admin/driver-statements/{statementId}/reviews</code><br>V41_get_api_admin_driver_statements_statementId_reviews</td>
+  <td>查看整单复核历史</td>
+  <td>ADMIN<br>biz:driverstatement:list<br></td>
+  <td></td>
+  <td>StatementReviewRecord</td>
+</tr>
+<tr>
+  <td><code>POST /api/admin/driver-statements/{statementId}/withdraw</code><br>V41_post_api_admin_driver_statements_statementId_withdraw</td>
+  <td>撤回待复核或已发出的账单</td>
+  <td>ADMIN<br>biz:driverstatement:withdraw<br></td>
+  <td>StatementWithdraw</td>
+  <td>DriverStatement</td>
+</tr>
+<tr>
+  <td><code>GET /api/admin/driver-statements/{statementId}/revisions/{revision}</code><br>V41_get_api_admin_driver_statements_statementId_revisions_revision</td>
+  <td>查看曾发布的账单版本</td>
+  <td>ADMIN<br>biz:driverstatement:query<br></td>
+  <td></td>
+  <td>DriverStatement</td>
+</tr>
+<tr>
+  <td><code>GET /api/admin/drivers/{driverId}/reconciliation-overview</code><br>V42_get_api_admin_drivers__driverId__reconciliation_overview</td>
+  <td>个人对账汇总指标</td>
+  <td>ADMIN<br>biz:driverstatement:list<br></td>
+  <td></td>
+  <td>DriverReconciliationOverview</td>
+</tr>
+<tr>
+  <td><code>GET /api/admin/drivers/{driverId}/reconciliation-entries</code><br>V42_get_api_admin_drivers__driverId__reconciliation_entries</td>
+  <td>未结清与全部服务明细</td>
+  <td>ADMIN<br>biz:driverstatement:list<br></td>
+  <td></td>
+  <td>DriverReconciliationEntry</td>
+</tr>
+<tr>
+  <td><code>POST /api/admin/driver-statements/{statementId}/lines/add</code><br>V42_post_api_admin_driver_statements__statementId__lines_add</td>
+  <td>向草稿添加明确选择的服务</td>
+  <td>ADMIN<br>biz:driverstatement:add<br></td>
+  <td>StatementAddEntries</td>
+  <td>DriverStatement</td>
+</tr>
+<tr>
+  <td><code>POST /api/admin/driver-statements/{statementId}/lines/{lineId}/remove</code><br>V42_post_api_admin_driver_statements__statementId__lines__lineId__remove</td>
+  <td>移出草稿服务并释放精确占用</td>
+  <td>ADMIN<br>biz:driverstatement:remove<br></td>
+  <td>StatementMembershipAction</td>
+  <td>DriverStatement</td>
+</tr>
+<tr>
+  <td><code>GET /api/admin/driver-statements/{statementId}/membership-history</code><br>V42_get_api_admin_driver_statements__statementId__membership_history</td>
+  <td>查看组单/添加/移出/作废历史</td>
+  <td>ADMIN<br>biz:driverstatement:list<br></td>
+  <td></td>
+  <td>StatementMembershipChange</td>
+</tr>
+<tr>
+  <td><code>GET /api/admin/driver-payment-records/{recordId}</code><br>V42_get_api_admin_driver_payment_records__recordId</td>
+  <td>查看指定付款凭证及核实记录</td>
+  <td>ADMIN<br>biz:driverpayment:query<br></td>
+  <td></td>
+  <td>ExternalPaymentRecord</td>
+</tr>
+<tr>
+  <td><code>GET /api/app/driver/reconciliation-entries</code><br>V42_get_api_app_driver_reconciliation_entries</td>
+  <td>本人未结清服务（不暴露内部草稿）</td>
+  <td>MINI<br><br>DRIVER_DRIVERSTATEMENT_LIST</td>
+  <td></td>
+  <td>DriverOwnReconciliationEntry</td>
+</tr>
+<tr>
+  <td><code>GET /api/app/driver/payment-records</code><br>V42_get_api_app_driver_payment_records</td>
+  <td>本人付款记录摘要</td>
+  <td>MINI<br><br>DRIVER_DRIVERPAYMENT_LIST</td>
+  <td></td>
+  <td>DriverOwnPaymentSummary</td>
+</tr>
+<tr>
+  <td><code>GET /api/app/driver/penalties</code><br>v5_get_api_app_driver_penalties</td>
+  <td>本人处罚记录</td>
+  <td>MINI<br><br>DRIVER_PENALTY_LIST</td>
+  <td></td>
+  <td>Penalty</td>
+</tr>
+<tr>
+  <td><code>GET /api/app/driver/penalties/{penaltyId}</code><br>v5_get_api_app_driver_penalties_penaltyId</td>
+  <td>处罚详情及申诉入口</td>
+  <td>MINI<br><br>DRIVER_PENALTY_QUERY</td>
+  <td></td>
+  <td>Penalty</td>
+</tr>
+<tr>
+  <td><code>GET /api/app/driver/penalty-appeals</code><br>v5_get_api_app_driver_penalty_appeals</td>
+  <td>申诉记录列表</td>
+  <td>MINI<br><br>DRIVER_PENALTYAPPEAL_LIST</td>
+  <td></td>
+  <td>PenaltyAppeal</td>
+</tr>
+<tr>
+  <td><code>GET /api/app/driver/penalty-appeals/{appealId}</code><br>v5_get_api_app_driver_penalty_appeals_appealId</td>
+  <td>申诉详情与公开处理结论</td>
+  <td>MINI<br><br>DRIVER_PENALTYAPPEAL_QUERY</td>
+  <td></td>
+  <td>PenaltyAppeal</td>
+</tr>
+<tr>
+  <td><code>GET /api/admin/penalties</code><br>v5_get_api_admin_penalties</td>
+  <td>授权范围内取消处罚</td>
+  <td>ADMIN<br>biz:penalty:list<br></td>
+  <td></td>
+  <td>AdminPenaltyView</td>
+</tr>
+<tr>
+  <td><code>GET /api/admin/penalties/{penaltyId}</code><br>v5_get_api_admin_penalties_penaltyId</td>
+  <td>处罚详情及申诉入口</td>
+  <td>ADMIN<br>biz:penalty:query<br></td>
+  <td></td>
+  <td>AdminPenaltyView</td>
+</tr>
+<tr>
+  <td><code>GET /api/admin/penalty-appeals</code><br>v5_get_api_admin_penalty_appeals</td>
+  <td>申诉记录列表</td>
+  <td>ADMIN<br>biz:penaltyappeal:list<br></td>
+  <td></td>
+  <td>AdminPenaltyAppealView</td>
+</tr>
+<tr>
+  <td><code>GET /api/admin/penalty-appeals/{appealId}</code><br>v5_get_api_admin_penalty_appeals_appealId</td>
+  <td>申诉详情与公开处理结论</td>
+  <td>ADMIN<br>biz:penaltyappeal:query<br></td>
+  <td></td>
+  <td>AdminPenaltyAppealView</td>
+</tr>
+<tr>
+  <td><code>GET /api/app/driver/qualification/training/{trainingId}</code><br>v5_get_api_app_driver_qualification_training_trainingId</td>
+  <td>查看课程与本人进度</td>
+  <td>MINI<br><br>DRIVER_QUALIFICATION_QUERY</td>
+  <td></td>
+  <td>TrainingUnit</td>
+</tr>
+<tr>
+  <td><code>POST /api/app/driver/qualification/training/{trainingId}/playback</code><br>v5_post_api_app_driver_qualification_training_trainingId_playback</td>
+  <td>开始受控学习会话</td>
+  <td>MINI<br><br>DRIVER_QUALIFICATION_PLAYBACK</td>
+  <td>TrainingAttemptCreate</td>
+  <td>TrainingPlayback</td>
+</tr>
+<tr>
+  <td><code>POST /api/app/driver/qualification/training/{trainingId}/progress</code><br>v5_post_api_app_driver_qualification_training_trainingId_progress</td>
+  <td>记录本人学习进度</td>
+  <td>MINI<br><br>DRIVER_QUALIFICATION_PROGRESS</td>
+  <td>TrainingProgressInput</td>
+  <td>TrainingUnit</td>
+</tr>
+<tr>
+  <td><code>POST /api/app/driver/qualification/training/{trainingId}/attempts</code><br>v5_post_api_app_driver_qualification_training_trainingId_attempts</td>
+  <td>建立本人的考试尝试</td>
+  <td>MINI<br><br>DRIVER_QUALIFICATION_ATTEMPTS</td>
+  <td>TrainingAttemptCreate</td>
+  <td>TrainingAttempt</td>
+</tr>
+<tr>
+  <td><code>GET /api/app/driver/qualification/training/attempts/{attemptId}</code><br>v5_get_api_app_driver_qualification_training_attempts_attemptId</td>
+  <td>读取本人考试尝试</td>
+  <td>MINI<br><br>DRIVER_QUALIFICATION_QUERY</td>
+  <td></td>
+  <td>TrainingAttempt</td>
+</tr>
+<tr>
+  <td><code>GET /api/admin/training-courses</code><br>v5_get_api_admin_training_courses</td>
+  <td>培训课程管理列表</td>
+  <td>ADMIN<br>biz:trainingcourse:list<br></td>
+  <td></td>
+  <td>TrainingCourseAdmin</td>
+</tr>
+<tr>
+  <td><code>POST /api/admin/training-courses</code><br>v5_post_api_admin_training_courses</td>
+  <td>创建培训课程草稿</td>
+  <td>ADMIN<br>biz:trainingcourse:create<br></td>
+  <td>TrainingCourseInput</td>
+  <td>TrainingCourseAdmin</td>
+</tr>
+<tr>
+  <td><code>GET /api/admin/training-courses/{trainingId}</code><br>v5_get_api_admin_training_courses_trainingId</td>
+  <td>培训课程管理详情</td>
+  <td>ADMIN<br>biz:trainingcourse:query<br></td>
+  <td></td>
+  <td>TrainingCourseAdmin</td>
+</tr>
+<tr>
+  <td><code>PUT /api/admin/training-courses/{trainingId}</code><br>v5_put_api_admin_training_courses_trainingId</td>
+  <td>编辑未发布培训课程</td>
+  <td>ADMIN<br>biz:trainingcourse:edit<br></td>
+  <td>TrainingCourseUpdate</td>
+  <td>TrainingCourseAdmin</td>
+</tr>
+<tr>
+  <td><code>POST /api/admin/training-courses/{trainingId}/publish</code><br>v5_post_api_admin_training_courses_trainingId_publish</td>
+  <td>发布不可变培训课程版本</td>
+  <td>ADMIN<br>biz:trainingcourse:publish<br></td>
+  <td>VersionReason</td>
+  <td>TrainingCourseAdmin</td>
+</tr>
+<tr>
+  <td><code>GET /api/app/driver/qualification/face-sessions/{verificationSessionId}</code><br>v5_get_api_app_driver_qualification_face_sessions_verificationSessionId</td>
+  <td>查询本人活体核验结果（服务端查询供应商）</td>
+  <td>MINI<br><br>DRIVER_QUALIFICATION_QUERY</td>
+  <td></td>
+  <td>FaceSession</td>
+</tr>
+<tr>
+  <td><code>POST /api/common/employee-binding-requests</code><br>v5_post_api_common_employee_binding_requests</td>
+  <td>本人发起员工绑定申请</td>
+  <td>MINI<br><br>EMPLOYEE_BINDING_REQUEST</td>
+  <td>BindingRequestCreate</td>
+  <td>BindingRequest</td>
+</tr>
+<tr>
+  <td><code>GET /api/common/employee-binding-requests</code><br>v5_get_api_common_employee_binding_requests</td>
+  <td>本人绑定申请记录</td>
+  <td>MINI<br><br>EMPLOYEE_BINDING_READ</td>
+  <td></td>
+  <td>BindingRequest</td>
+</tr>
+<tr>
+  <td><code>GET /api/admin/employee-binding-requests</code><br>v5_get_api_admin_employee_binding_requests</td>
+  <td>待处理员工绑定申请</td>
+  <td>ADMIN<br>biz:employeebinding:list<br></td>
+  <td></td>
+  <td>BindingRequest</td>
+</tr>
+<tr>
+  <td><code>POST /api/admin/employee-binding-credentials</code><br>v5_post_api_admin_employee_binding_credentials</td>
+  <td>签发绑定到特定申请人和员工的凭证</td>
+  <td>ADMIN<br>biz:employeebinding:issue<br></td>
+  <td>BindingCredentialIssue</td>
+  <td>BindingCredential</td>
+</tr>
+<tr>
+  <td><code>POST /api/admin/employee-binding-credentials/{credentialId}/revoke</code><br>v5_post_api_admin_employee_binding_credentials_credentialId_revoke</td>
+  <td>撤销未消费员工绑定凭证</td>
+  <td>ADMIN<br>biz:employeebinding:revoke<br></td>
+  <td>VersionReason</td>
+  <td>Ack</td>
+</tr>
+<tr>
+  <td><code>POST /api/common/orders/{orderNo}/contact-access</code><br>v5_post_api_common_orders_orderNo_contact_access</td>
+  <td>按履约及当前视角获取短期联系通道</td>
+  <td><br><br>COMMON_ORDERS_CONTACTACCESS</td>
+  <td>OrderContactRequest</td>
+  <td>OrderContactAccess</td>
+</tr>
+</tbody>
+</table>
+</main></body></html>

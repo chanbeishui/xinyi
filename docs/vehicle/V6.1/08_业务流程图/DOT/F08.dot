@@ -1,0 +1,23 @@
+digraph F08 {
+graph [rankdir=TB, bgcolor="white", pad="0.35", nodesep="0.3", ranksep="0.38", fontname="Noto Sans CJK SC", fontsize=18, labelloc=t, label="F08 支付、30分钟关闭与晚到回调"];
+node [shape=box, style="rounded,filled", fillcolor="#F3F6FA", color="#CFD6E0", fontname="Noto Sans CJK SC", fontsize=12, margin="0.15,0.10"];
+edge [color="#74849A", fontname="Noto Sans CJK SC", fontsize=10];
+"n1" [label="创建订单，固定支付截止时间"];
+"n2" [label="微信预支付；前端结果只作提示"];
+"n3" [label="服务端可信支付通知／主动查询"];
+"n4" [label="渠道已支付？",shape=diamond,fillcolor="#EEF4FF"];
+"n5" [label="原子记账、预占转正式、安排派单时间"];
+"n6" [label="达到30分钟或申请主动关闭"];
+"n7" [label="查单并关微信交易；未知则继续查证"];
+"n8" [label="仅确认未支付已关单后释放预占"];
+"n9" [label="已支付但无法履约／已关闭异常转人工退款"];
+"n1" -> "n2" [label=""];
+"n2" -> "n3" [label=""];
+"n3" -> "n4" [label=""];
+"n4" -> "n5" [label="是且可履约"];
+"n4" -> "n6" [label="否"];
+"n6" -> "n7" [label=""];
+"n7" -> "n8" [label="确认已关闭"];
+"n7" -> "n3" [label="支付已发生/未知重查"];
+"n4" -> "n9" [label="是但业务冲突"];
+}

@@ -1,0 +1,21 @@
+digraph F23 {
+graph [rankdir=TB, bgcolor="white", pad="0.35", nodesep="0.3", ranksep="0.38", fontname="Noto Sans CJK SC", fontsize=18, labelloc=t, label="F23 通知、失败重试与人工待办"];
+node [shape=box, style="rounded,filled", fillcolor="#F3F6FA", color="#CFD6E0", fontname="Noto Sans CJK SC", fontsize=12, margin="0.15,0.10"];
+edge [color="#74849A", fontname="Noto Sans CJK SC", fontsize=10];
+"n1" [label="业务事务同时写outbox事件"];
+"n2" [label="异步处理时核验事件仍相关"];
+"n3" [label="按接收人权限和订阅授权选择渠道"];
+"n4" [label="消息被渠道接受？",shape=diamond,fillcolor="#EEF4FF"];
+"n5" [label="记录渠道接受，不伪称用户已读"];
+"n6" [label="重试临时故障；无授权不无限重试"];
+"n7" [label="重要事件保留站内/后台待办，必要时人工联系"];
+"n8" [label="回到页面主动刷新订单真实状态"];
+"n1" -> "n2" [label=""];
+"n2" -> "n3" [label=""];
+"n3" -> "n4" [label=""];
+"n4" -> "n5" [label="是"];
+"n4" -> "n6" [label="否"];
+"n6" -> "n7" [label=""];
+"n5" -> "n8" [label=""];
+"n7" -> "n8" [label=""];
+}

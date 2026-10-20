@@ -1,0 +1,182 @@
+[
+  {
+    "name": "vi_price_rule",
+    "comment": "不可变生效计价版本",
+    "cols": [
+      [
+        "id",
+        "BIGINT NOT NULL AUTO_INCREMENT",
+        "数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串"
+      ],
+      [
+        "rule_key",
+        "VARCHAR(64) NOT NULL",
+        "稳定方案标识"
+      ],
+      [
+        "revision",
+        "INT NOT NULL",
+        "新版本号"
+      ],
+      [
+        "vehicle_type_code",
+        "VARCHAR(64) NOT NULL",
+        "车型字典编码"
+      ],
+      [
+        "inspection_type_code",
+        "VARCHAR(64) NOT NULL",
+        "检测业务类型"
+      ],
+      [
+        "status",
+        "VARCHAR(64) NOT NULL",
+        "PriceRuleStatus: DRAFT,IN_REVIEW,APPROVED,PUBLISHED,DISABLED"
+      ],
+      [
+        "config_json",
+        "JSON NOT NULL",
+        "按PriceInput约束的计价参数，分与米"
+      ],
+      [
+        "effective_from",
+        "DATETIME(3)",
+        "生效时间"
+      ],
+      [
+        "effective_to",
+        "DATETIME(3)",
+        "失效时间"
+      ],
+      [
+        "submitted_by",
+        "BIGINT",
+        "提交人"
+      ],
+      [
+        "approved_by",
+        "BIGINT",
+        "审核人"
+      ],
+      [
+        "created_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "创建时间，统一UTC"
+      ],
+      [
+        "updated_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "UTC更新时间；Mapper每次修改显式SET updated_at=UTC_TIMESTAMP(3)，不依赖连接时区"
+      ],
+      [
+        "version",
+        "BIGINT NOT NULL DEFAULT 0",
+        "乐观锁版本"
+      ]
+    ],
+    "indexes": [
+      "UNIQUE KEY uk_rule_revision (rule_key,revision)",
+      "KEY ix_lookup (vehicle_type_code,inspection_type_code,status,effective_from)"
+    ],
+    "rule": "服务层事务检查生效区间不得重叠；无规则不得0元报价；P02等待费受控启用",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "engine": "InnoDB",
+    "collation": "utf8mb4_0900_ai_ci",
+    "columnRules": {
+      "id": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "rule_key": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "revision": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "vehicle_type_code": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "inspection_type_code": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "status": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false,
+        "enumRef": "PriceRuleStatus"
+      },
+      "config_json": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "effective_from": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "effective_to": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "submitted_by": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "approved_by": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "created_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "updated_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "version": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      }
+    },
+    "checks": [
+      "CONSTRAINT ck_66_9d65819638e0 CHECK (`status` IN ('DRAFT','IN_REVIEW','APPROVED','PUBLISHED','DISABLED'))",
+      "CONSTRAINT ck_ver_price_rule CHECK (version >= 0)"
+    ]
+  }
+]

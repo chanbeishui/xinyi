@@ -1,0 +1,31 @@
+digraph F13 {
+graph [rankdir=TB, bgcolor="white", pad="0.35", nodesep="0.3", ranksep="0.38", fontname="Noto Sans CJK SC", fontsize=18, labelloc=t, label="F13 已接车取消·先返还后办结"];
+node [shape=box, style="rounded,filled", fillcolor="#F3F6FA", color="#CFD6E0", fontname="Noto Sans CJK SC", fontsize=12, margin="0.15,0.10"];
+edge [color="#74849A", fontname="Noto Sans CJK SC", fontsize=10];
+"n1" [label="车主提交取消并退款申请"];
+"n2" [label="统一审核当前保管方与拟退款金额"];
+"n3" [label="审核通过？",shape=diamond,fillcolor="#EEF4FF"];
+"n4" [label="驳回，保留既有车辆事实"];
+"n5" [label="保存同一个取消与退款决定、预留金额"];
+"n6" [label="显示取消已通过，待归还车辆"];
+"n7" [label="车辆是否在检测点？",shape=diamond,fillcolor="#EEF4FF"];
+"n8" [label="授权员工确认放行，代驾接收"];
+"n9" [label="代驾返还留证，车主准备现场交接"];
+"n10" [label="实际返还交接核验成功"];
+"n11" [label="同事务正式取消并释放匹配承接"];
+"n12" [label="执行原已批准退款，无二次默认审核"];
+"n13" [label="退款渠道确认后售后办结"];
+"n1" -> "n2" [label=""];
+"n2" -> "n3" [label=""];
+"n3" -> "n4" [label="否"];
+"n3" -> "n5" [label="是"];
+"n5" -> "n6" [label=""];
+"n6" -> "n7" [label=""];
+"n7" -> "n8" [label="是"];
+"n7" -> "n9" [label="否"];
+"n8" -> "n9" [label=""];
+"n9" -> "n10" [label=""];
+"n10" -> "n11" [label=""];
+"n11" -> "n12" [label=""];
+"n12" -> "n13" [label=""];
+}

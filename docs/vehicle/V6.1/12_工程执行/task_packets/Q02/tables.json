@@ -1,0 +1,340 @@
+[
+  {
+    "name": "vi_training_course",
+    "comment": "代驾培训不可变课程版本",
+    "cols": [
+      [
+        "id",
+        "BIGINT NOT NULL AUTO_INCREMENT",
+        "数据库生成业务主键；插入不提供id"
+      ],
+      [
+        "course_key",
+        "VARCHAR(64) CHARACTER SET ascii COLLATE ascii_bin NOT NULL",
+        "稳定课程编码"
+      ],
+      [
+        "course_version",
+        "INT NOT NULL",
+        "课程内容版本"
+      ],
+      [
+        "title",
+        "VARCHAR(200) NOT NULL",
+        "课程标题"
+      ],
+      [
+        "description",
+        "TEXT NULL",
+        "培训说明"
+      ],
+      [
+        "media_file_id",
+        "BIGINT NOT NULL",
+        "私有培训媒体"
+      ],
+      [
+        "required_duration_seconds",
+        "INT NOT NULL",
+        "规定学习时长；发布时校验>0"
+      ],
+      [
+        "pass_score",
+        "INT NOT NULL",
+        "0至100的配置门槛"
+      ],
+      [
+        "attempt_time_limit_seconds",
+        "INT NOT NULL",
+        "考试时间配置"
+      ],
+      [
+        "status",
+        "VARCHAR(24) NOT NULL DEFAULT 'DRAFT'",
+        "TrainingCourseStatus: DRAFT,PUBLISHED,DISABLED"
+      ],
+      [
+        "published_at",
+        "DATETIME(3) NULL",
+        "UTC发布时间"
+      ],
+      [
+        "published_by_user_id",
+        "BIGINT NULL",
+        "后台发布人"
+      ],
+      [
+        "created_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "创建时刻UTC"
+      ],
+      [
+        "updated_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "更新时间UTC；更新必须显式设置UTC_TIMESTAMP(3)"
+      ],
+      [
+        "version",
+        "BIGINT NOT NULL DEFAULT 0",
+        "手写CAS版本"
+      ]
+    ],
+    "indexes": [
+      "UNIQUE KEY uk_course_revision (course_key,course_version)",
+      "CONSTRAINT ck_course_score CHECK (pass_score BETWEEN 0 AND 100)",
+      "CONSTRAINT ck_course_duration CHECK (required_duration_seconds>0 AND attempt_time_limit_seconds>=60)"
+    ],
+    "rule": "课程发布后不可原地修改；更新发布新版本；正式题目和通过标准由业务配置，不是demo",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "engine": "InnoDB",
+    "collation": "utf8mb4_0900_ai_ci",
+    "columnRules": {
+      "id": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "course_key": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "course_version": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "title": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "description": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "media_file_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "required_duration_seconds": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "pass_score": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "attempt_time_limit_seconds": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "status": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false,
+        "enumRef": "TrainingCourseStatus"
+      },
+      "published_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "published_by_user_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "created_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "updated_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "version": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      }
+    },
+    "checks": [
+      "CONSTRAINT ck_66_0aa07ede2e69 CHECK (`status` IN ('DRAFT','PUBLISHED','DISABLED'))",
+      "CONSTRAINT ck_ver_training_course CHECK (version >= 0)"
+    ]
+  },
+  {
+    "name": "vi_training_question",
+    "comment": "培训课程版本的后台题库",
+    "cols": [
+      [
+        "id",
+        "BIGINT NOT NULL AUTO_INCREMENT",
+        "数据库生成业务主键；插入不提供id"
+      ],
+      [
+        "training_id",
+        "BIGINT NOT NULL",
+        "确切课程版本"
+      ],
+      [
+        "question_code",
+        "VARCHAR(64) CHARACTER SET ascii COLLATE ascii_bin NOT NULL",
+        "课程内稳定编码"
+      ],
+      [
+        "question_type",
+        "VARCHAR(24) NOT NULL",
+        "QuestionType: SINGLE,MULTIPLE,TRUE_FALSE"
+      ],
+      [
+        "prompt",
+        "TEXT NOT NULL",
+        "题干"
+      ],
+      [
+        "options_json",
+        "JSON NOT NULL",
+        "code和text"
+      ],
+      [
+        "correct_option_codes",
+        "JSON NOT NULL",
+        "仅课程管理/服务端阅卷可见，禁止MINI输出"
+      ],
+      [
+        "sort_no",
+        "INT NOT NULL",
+        "排序"
+      ],
+      [
+        "created_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "创建时刻UTC"
+      ],
+      [
+        "updated_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "更新时间UTC；更新必须显式设置UTC_TIMESTAMP(3)"
+      ],
+      [
+        "version",
+        "BIGINT NOT NULL DEFAULT 0",
+        "手写CAS版本"
+      ]
+    ],
+    "indexes": [
+      "UNIQUE KEY uk_course_question (training_id,question_code)"
+    ],
+    "rule": "发布题库只读；考试返回TrainingQuestion白名单，无正确答案；独立权限保护后台读取",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "engine": "InnoDB",
+    "collation": "utf8mb4_0900_ai_ci",
+    "columnRules": {
+      "id": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "training_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "question_code": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "question_type": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false,
+        "enumRef": "QuestionType"
+      },
+      "prompt": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "options_json": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "correct_option_codes": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "sort_no": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "created_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "updated_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "version": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      }
+    },
+    "checks": [
+      "CONSTRAINT ck_66_3f48408ab1be CHECK (`question_type` IN ('SINGLE','MULTIPLE','TRUE_FALSE'))",
+      "CONSTRAINT ck_ver_training_question CHECK (version >= 0)"
+    ]
+  }
+]

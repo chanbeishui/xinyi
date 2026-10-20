@@ -1,0 +1,23 @@
+digraph F18 {
+graph [rankdir=TB, bgcolor="white", pad="0.35", nodesep="0.3", ranksep="0.38", fontname="Noto Sans CJK SC", fontsize=18, labelloc=t, label="F18 实际归还、释放司机与后续确认分离"];
+node [shape=box, style="rounded,filled", fillcolor="#F3F6FA", color="#CFD6E0", fontname="Noto Sans CJK SC", fontsize=12, margin="0.15,0.10"];
+edge [color="#74849A", fontname="Noto Sans CJK SC", fontsize=10];
+"n1" [label="代驾到达约定归还处"];
+"n2" [label="节点4六类照片、里程、钥匙物品齐备"];
+"n3" [label="车主实际收车，提供归还专用码／确认"];
+"n4" [label="服务端核验本次归还交接"];
+"n5" [label="属于已批准取消返还？",shape=diamond,fillcolor="#EEF4FF"];
+"n6" [label="正式取消，记录实际归还时间"];
+"n7" [label="进入待服务确认，起算24小时"];
+"n8" [label="同一事务结束承接并释放本任务的司机占用"];
+"n9" [label="司机可接下一单；原单售后继续可追溯"];
+"n1" -> "n2" [label=""];
+"n2" -> "n3" [label=""];
+"n3" -> "n4" [label=""];
+"n4" -> "n5" [label=""];
+"n5" -> "n6" [label="是"];
+"n5" -> "n7" [label="否"];
+"n6" -> "n8" [label=""];
+"n7" -> "n8" [label=""];
+"n8" -> "n9" [label=""];
+}

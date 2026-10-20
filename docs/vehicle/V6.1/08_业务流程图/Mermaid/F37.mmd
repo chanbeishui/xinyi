@@ -1,0 +1,25 @@
+flowchart TD
+n1["PC管理员：sys_user + LoginUser + 原JWT"]
+n2["小程序：微信code经服务端核验"]
+n3["vi_account基础账号与独立设备session"]
+n4["不透明访问令牌＋原子轮换刷新令牌"]
+n5["请求匹配MINI或ADMIN安全链"]
+n6{"是否检测工作操作？"}
+n7["核验员工绑定、sys_user实时状态和auth_version"]
+n8["核验本人车主/承接/账单能力"]
+n9["服务端构造ActorContext，进入统一业务服务"]
+n10["角色/站点切换校验目标能力和上下文版本"]
+n11["只变本session，contextVersion递增并换访问令牌"]
+n1 -->|ADMIN| n5
+n2 --> n3
+n3 --> n4
+n4 -->|MINI| n5
+n5 -->|MINI工作请求| n6
+n6 -->|是| n7
+n6 -->|否| n8
+n7 --> n9
+n8 --> n9
+n5 -->|ADMIN真实权限| n9
+n4 -->|切换| n10
+n10 --> n11
+n11 -->|新上下文| n5

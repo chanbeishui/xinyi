@@ -1,0 +1,372 @@
+[
+  {
+    "name": "vi_dispatch_invite",
+    "comment": "单人派单邀约",
+    "cols": [
+      [
+        "id",
+        "BIGINT NOT NULL AUTO_INCREMENT",
+        "数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串"
+      ],
+      [
+        "order_id",
+        "BIGINT NOT NULL",
+        "订单"
+      ],
+      [
+        "driver_id",
+        "BIGINT NOT NULL",
+        "候选代驾"
+      ],
+      [
+        "status",
+        "VARCHAR(24) NOT NULL",
+        "InviteStatus: WAIT_RESPONSE,ACCEPTED,REJECTED,EXPIRED,REVOKED"
+      ],
+      [
+        "source",
+        "VARCHAR(16) NOT NULL",
+        "AUTO/MANUAL"
+      ],
+      [
+        "round_key",
+        "VARCHAR(64)",
+        "派单轮次"
+      ],
+      [
+        "issued_at",
+        "DATETIME(3) NOT NULL",
+        "邀约时刻"
+      ],
+      [
+        "expires_at",
+        "DATETIME(3) NOT NULL",
+        "绝对失效时间"
+      ],
+      [
+        "responded_at",
+        "DATETIME(3)",
+        "响应"
+      ],
+      [
+        "active_order",
+        "BIGINT GENERATED ALWAYS AS (IF(status='WAIT_RESPONSE',order_id,NULL)) STORED",
+        "同单最多一个待响应邀约"
+      ],
+      [
+        "created_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "创建时间，统一UTC"
+      ],
+      [
+        "updated_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "UTC更新时间；Mapper每次修改显式SET updated_at=UTC_TIMESTAMP(3)，不依赖连接时区"
+      ],
+      [
+        "version",
+        "BIGINT NOT NULL DEFAULT 0",
+        "乐观锁版本"
+      ]
+    ],
+    "indexes": [
+      "UNIQUE KEY uk_active_order (active_order)",
+      "KEY ix_driver_status (driver_id,status)",
+      "KEY ix_expire (status,expires_at)"
+    ],
+    "rule": "",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "engine": "InnoDB",
+    "collation": "utf8mb4_0900_ai_ci",
+    "columnRules": {
+      "id": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "order_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "driver_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "status": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false,
+        "enumRef": "InviteStatus"
+      },
+      "source": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "round_key": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "issued_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "expires_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "responded_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "active_order": {
+        "generated": true,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "created_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "updated_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "version": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      }
+    },
+    "checks": [
+      "CONSTRAINT ck_66_22cd3ab6b830 CHECK (`status` IN ('WAIT_RESPONSE','ACCEPTED','REJECTED','EXPIRED','REVOKED'))",
+      "CONSTRAINT ck_ver_dispatch_invite CHECK (version >= 0)"
+    ]
+  },
+  {
+    "name": "vi_driver_occupancy",
+    "comment": "司机唯一资源占用，不受订单待确认影响",
+    "cols": [
+      [
+        "driver_id",
+        "BIGINT NOT NULL",
+        "主键，唯一占用"
+      ],
+      [
+        "holder_type",
+        "VARCHAR(16) NOT NULL",
+        "OccupancyHolderType: INVITE,ASSIGNMENT"
+      ],
+      [
+        "holder_id",
+        "BIGINT NOT NULL",
+        "被占用邀约或承接ID"
+      ],
+      [
+        "order_id",
+        "BIGINT NOT NULL",
+        "对应订单"
+      ],
+      [
+        "expires_at",
+        "DATETIME(3)",
+        "仅邀约有自动失效"
+      ],
+      [
+        "created_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "创建时间，统一UTC"
+      ],
+      [
+        "updated_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "UTC更新时间；Mapper每次修改显式SET updated_at=UTC_TIMESTAMP(3)，不依赖连接时区"
+      ],
+      [
+        "version",
+        "BIGINT NOT NULL DEFAULT 0",
+        "乐观锁版本"
+      ]
+    ],
+    "indexes": [
+      "UNIQUE KEY uk_holder (holder_type,holder_id)"
+    ],
+    "rule": "PRIMARY KEY driver_id；释放必须匹配holder_type+holder_id，不得按driver_id裸删",
+    "primaryKey": [
+      "driver_id"
+    ],
+    "idStrategy": "BUSINESS_KEY",
+    "engine": "InnoDB",
+    "collation": "utf8mb4_0900_ai_ci",
+    "columnRules": {
+      "driver_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "holder_type": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false,
+        "enumRef": "OccupancyHolderType"
+      },
+      "holder_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "order_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "expires_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "created_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "updated_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "version": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      }
+    },
+    "checks": [
+      "CONSTRAINT ck_66_0d4b483893ce CHECK (`holder_type` IN ('INVITE','ASSIGNMENT'))",
+      "CONSTRAINT ck_ver_driver_occupancy CHECK (version >= 0)"
+    ]
+  },
+  {
+    "name": "vi_dispatch_cursor",
+    "comment": "全局轮转游标与版本",
+    "cols": [
+      [
+        "scope_key",
+        "VARCHAR(64) NOT NULL",
+        "全局或已确认调度域主键"
+      ],
+      [
+        "last_driver_id",
+        "BIGINT",
+        "上次派发指针"
+      ],
+      [
+        "round_no",
+        "BIGINT NOT NULL DEFAULT 0",
+        "轮次定义须P01评审"
+      ],
+      [
+        "created_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "创建时间，统一UTC"
+      ],
+      [
+        "updated_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "UTC更新时间；Mapper每次修改显式SET updated_at=UTC_TIMESTAMP(3)，不依赖连接时区"
+      ],
+      [
+        "version",
+        "BIGINT NOT NULL DEFAULT 0",
+        "乐观锁版本"
+      ]
+    ],
+    "indexes": [],
+    "rule": "事务锁内原子推进，与创建邀约和占用协调",
+    "primaryKey": [
+      "scope_key"
+    ],
+    "idStrategy": "BUSINESS_KEY",
+    "engine": "InnoDB",
+    "collation": "utf8mb4_0900_ai_ci",
+    "columnRules": {
+      "scope_key": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "last_driver_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "round_no": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "created_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "updated_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "version": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      }
+    },
+    "checks": [
+      "CONSTRAINT ck_ver_dispatch_cursor CHECK (version >= 0)"
+    ]
+  }
+]

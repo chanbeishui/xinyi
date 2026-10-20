@@ -1,0 +1,470 @@
+[
+  {
+    "name": "vi_order",
+    "comment": "订单主履约与实际保管",
+    "cols": [
+      [
+        "id",
+        "BIGINT NOT NULL AUTO_INCREMENT",
+        "数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串"
+      ],
+      [
+        "order_no",
+        "VARCHAR(64) NOT NULL",
+        "对外业务单号"
+      ],
+      [
+        "owner_account_id",
+        "BIGINT NOT NULL",
+        "下单账户"
+      ],
+      [
+        "vehicle_id",
+        "BIGINT",
+        "常用车辆档案"
+      ],
+      [
+        "station_id",
+        "BIGINT NOT NULL",
+        "业务权威检测点归属"
+      ],
+      [
+        "dept_id",
+        "BIGINT NOT NULL",
+        "框架数据归属快照"
+      ],
+      [
+        "quote_id",
+        "BIGINT NOT NULL",
+        "报价及价格快照"
+      ],
+      [
+        "vehicle_snapshot",
+        "JSON NOT NULL",
+        "历史车辆快照"
+      ],
+      [
+        "fulfillment_status",
+        "VARCHAR(32) NOT NULL",
+        "FulfillmentStatus: PENDING_PAY,SCHEDULED,PENDING_DISPATCH,DISPATCHING,MANUAL_DISPATCH,ACCEPTED,GOING_PICKUP,ARRIVED_PICKUP,PICKED_UP,ARRIVED_STATION,INSPECTING,INSPECTED,CAR_TAKEN,WAIT_CONFIRM,COMPLETED,CANCELLED,CLOSED"
+      ],
+      [
+        "cancel_status",
+        "VARCHAR(32) NOT NULL DEFAULT 'NONE'",
+        "CancelStatus: NONE,APPLIED,REJECTED,APPROVED_WAIT_RETURN,COMPLETED"
+      ],
+      [
+        "custody_type",
+        "VARCHAR(16) NOT NULL",
+        "CustodyType: OWNER,DRIVER,STATION"
+      ],
+      [
+        "custody_ref_id",
+        "BIGINT NOT NULL",
+        "实际保管方ID，须与类型联查"
+      ],
+      [
+        "active_assignment_id",
+        "BIGINT",
+        "当前承接指针，已释放时为空"
+      ],
+      [
+        "pickup_starts_at",
+        "DATETIME(3) NOT NULL",
+        "对外约定上门时间"
+      ],
+      [
+        "pickup_ends_at",
+        "DATETIME(3) NOT NULL",
+        "对外时段结束"
+      ],
+      [
+        "pay_expires_at",
+        "DATETIME(3) NOT NULL",
+        "创建后30分钟"
+      ],
+      [
+        "dispatch_at",
+        "DATETIME(3)",
+        "预约前N分钟"
+      ],
+      [
+        "dispatch_config_version",
+        "BIGINT",
+        "派单参数快照"
+      ],
+      [
+        "returned_at",
+        "DATETIME(3)",
+        "实际归还成功时间"
+      ],
+      [
+        "auto_confirm_at",
+        "DATETIME(3)",
+        "归还后24小时服务确认截止"
+      ],
+      [
+        "completed_at",
+        "DATETIME(3)",
+        "业务服务确认完成"
+      ],
+      [
+        "cancelled_at",
+        "DATETIME(3)",
+        "取消正式办结"
+      ],
+      [
+        "total_fen",
+        "BIGINT NOT NULL",
+        "应付分"
+      ],
+      [
+        "terms_version",
+        "VARCHAR(64) NOT NULL",
+        "服务协议版本"
+      ],
+      [
+        "created_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "创建时间，统一UTC"
+      ],
+      [
+        "updated_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "UTC更新时间；Mapper每次修改显式SET updated_at=UTC_TIMESTAMP(3)，不依赖连接时区"
+      ],
+      [
+        "version",
+        "BIGINT NOT NULL DEFAULT 0",
+        "乐观锁版本"
+      ]
+    ],
+    "indexes": [
+      "UNIQUE KEY uk_order_no (order_no)",
+      "UNIQUE KEY uk_quote (quote_id)",
+      "KEY ix_owner_list (owner_account_id,created_at,id)",
+      "KEY ix_station_queue (station_id,fulfillment_status,created_at,id)",
+      "KEY ix_dispatch_due (fulfillment_status,dispatch_at,id)",
+      "KEY ix_auto_confirm (fulfillment_status,auto_confirm_at,id)",
+      "CONSTRAINT ck_order_total CHECK (total_fen>=0)"
+    ],
+    "rule": "主状态不得存REFUNDING或事故标记；已返回不等于已服务确认",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "engine": "InnoDB",
+    "collation": "utf8mb4_0900_ai_ci",
+    "columnRules": {
+      "id": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "order_no": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "owner_account_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "vehicle_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "station_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "dept_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "quote_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "vehicle_snapshot": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "fulfillment_status": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false,
+        "enumRef": "FulfillmentStatus"
+      },
+      "cancel_status": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false,
+        "enumRef": "CancelStatus"
+      },
+      "custody_type": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false,
+        "enumRef": "CustodyType"
+      },
+      "custody_ref_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "active_assignment_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "pickup_starts_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "pickup_ends_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "pay_expires_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "dispatch_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "dispatch_config_version": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "returned_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "auto_confirm_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "completed_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "cancelled_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "total_fen": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "terms_version": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "created_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "updated_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "version": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      }
+    },
+    "checks": [
+      "CONSTRAINT ck_66_0ff90a4c30f3 CHECK (`fulfillment_status` IN ('PENDING_PAY','SCHEDULED','PENDING_DISPATCH','DISPATCHING','MANUAL_DISPATCH','ACCEPTED','GOING_PICKUP','ARRIVED_PICKUP','PICKED_UP','ARRIVED_STATION','INSPECTING','INSPECTED','CAR_TAKEN','WAIT_CONFIRM','COMPLETED','CANCELLED','CLOSED'))",
+      "CONSTRAINT ck_66_0237ff511e2d CHECK (`cancel_status` IN ('NONE','APPLIED','REJECTED','APPROVED_WAIT_RETURN','COMPLETED'))",
+      "CONSTRAINT ck_66_daacf35a5049 CHECK (`custody_type` IN ('OWNER','DRIVER','STATION'))",
+      "CONSTRAINT ck_ver_order CHECK (version >= 0)"
+    ]
+  },
+  {
+    "name": "vi_quota_reservation",
+    "comment": "每单额度占用凭证",
+    "cols": [
+      [
+        "id",
+        "BIGINT NOT NULL AUTO_INCREMENT",
+        "数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串"
+      ],
+      [
+        "order_id",
+        "BIGINT NOT NULL",
+        "关联订单"
+      ],
+      [
+        "slot_id",
+        "BIGINT NOT NULL",
+        "关联quota_slot"
+      ],
+      [
+        "status",
+        "VARCHAR(24) NOT NULL",
+        "ReservationStatus: HELD,CONFIRMED,CONSUMED,RELEASED"
+      ],
+      [
+        "quantity",
+        "INT NOT NULL DEFAULT 1",
+        "数量"
+      ],
+      [
+        "expires_at",
+        "DATETIME(3)",
+        "未付锁额截止"
+      ],
+      [
+        "released_at",
+        "DATETIME(3)",
+        "释放时间"
+      ],
+      [
+        "created_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "创建时间，统一UTC"
+      ],
+      [
+        "updated_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "UTC更新时间；Mapper每次修改显式SET updated_at=UTC_TIMESTAMP(3)，不依赖连接时区"
+      ],
+      [
+        "version",
+        "BIGINT NOT NULL DEFAULT 0",
+        "乐观锁版本"
+      ]
+    ],
+    "indexes": [
+      "UNIQUE KEY uk_order_slot (order_id,slot_id)",
+      "KEY ix_due (status,expires_at)"
+    ],
+    "rule": "每次变更和quota_slot聚合计数在同事务；只释放HELD/未消耗预约",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "engine": "InnoDB",
+    "collation": "utf8mb4_0900_ai_ci",
+    "columnRules": {
+      "id": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "order_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "slot_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "status": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false,
+        "enumRef": "ReservationStatus"
+      },
+      "quantity": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "expires_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "released_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "created_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "updated_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "version": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      }
+    },
+    "checks": [
+      "CONSTRAINT ck_66_44d120d4cf5a CHECK (`status` IN ('HELD','CONFIRMED','CONSUMED','RELEASED'))",
+      "CONSTRAINT ck_ver_quota_reservation CHECK (version >= 0)"
+    ]
+  }
+]

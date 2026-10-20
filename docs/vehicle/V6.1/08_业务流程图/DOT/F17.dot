@@ -1,0 +1,18 @@
+digraph F17 {
+graph [rankdir=TB, bgcolor="white", pad="0.35", nodesep="0.3", ranksep="0.38", fontname="Noto Sans CJK SC", fontsize=18, labelloc=t, label="F17 检测点向代驾放行取车"];
+node [shape=box, style="rounded,filled", fillcolor="#F3F6FA", color="#CFD6E0", fontname="Noto Sans CJK SC", fontsize=12, margin="0.15,0.10"];
+edge [color="#74849A", fontname="Noto Sans CJK SC", fontsize=10];
+"n1" [label="代驾到取车处，核对当前承接记录"];
+"n2" [label="正常完成检测或取消已获批待返还？",shape=diamond,fillcolor="#EEF4FF"];
+"n3" [label="不足条件则禁止放行并提示原因"];
+"n4" [label="节点3照片、车况与物品清单齐备"];
+"n5" [label="授权员工确认放行并提供专用码"];
+"n6" [label="代驾核验并完成取车交接"];
+"n7" [label="保管方变代驾；正常返程或取消返还"];
+"n1" -> "n2" [label=""];
+"n2" -> "n3" [label="否"];
+"n2" -> "n4" [label="是"];
+"n4" -> "n5" [label=""];
+"n5" -> "n6" [label=""];
+"n6" -> "n7" [label=""];
+}

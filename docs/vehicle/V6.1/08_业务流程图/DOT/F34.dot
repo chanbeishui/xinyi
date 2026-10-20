@@ -1,0 +1,26 @@
+digraph F34 {
+graph [rankdir=TB, bgcolor="white", pad="0.35", nodesep="0.3", ranksep="0.38", fontname="Noto Sans CJK SC", fontsize=18, labelloc=t, label="F34 费用规则与行内核价关系"];
+node [shape=box, style="rounded,filled", fillcolor="#F3F6FA", color="#CFD6E0", fontname="Noto Sans CJK SC", fontsize=12, margin="0.15,0.10"];
+edge [color="#74849A", fontname="Noto Sans CJK SC", fontsize=10];
+"n1" [label="按主体、车型、代驾和场景配置规则"];
+"n2" [label="试算并独立审核发布规则版本"];
+"n3" [label="真实结束事件匹配规则"];
+"n4" [label="有匹配金额？",shape=diamond,fillcolor="#EEF4FF"];
+"n5" [label="保存规则金额与版本"];
+"n6" [label="保留NULL待填写，不默认为0"];
+"n7" [label="费用源进入本期对账草稿"];
+"n8" [label="B38行内补填/修改，说明依据"];
+"n9" [label="人工价格整单复核；规则价无需逐条核价"];
+"n10" [label="发送当前账单给司机"];
+"n1" -> "n2" [label=""];
+"n2" -> "n3" [label=""];
+"n3" -> "n4" [label=""];
+"n4" -> "n5" [label="是"];
+"n4" -> "n6" [label="否"];
+"n5" -> "n7" [label=""];
+"n6" -> "n7" [label=""];
+"n7" -> "n8" [label="需要补/改"];
+"n7" -> "n9" [label="无需改"];
+"n8" -> "n9" [label=""];
+"n9" -> "n10" [label="符合条件"];
+}

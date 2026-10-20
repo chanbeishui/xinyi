@@ -1,0 +1,38 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>首次交给Agent的提示词</title><style>body{font:16px/1.75 -apple-system,BlinkMacSystemFont,"Microsoft YaHei",sans-serif;color:#202632;margin:0;background:#f6f7f9}header{padding:14px 24px;background:white;border-bottom:1px solid #ddd}main{max-width:1120px;margin:24px auto;padding:30px;background:white}h1{font-size:30px}h2{margin-top:36px}a{color:#0661bd}table{border-collapse:collapse;width:100%;display:block;overflow:auto;font-size:14px}td,th{border:1px solid #dde2ea;padding:10px;vertical-align:top}th{background:#f1f5fb}pre{padding:15px;background:#f2f4f7;overflow:auto}img{max-width:100%;height:auto}blockquote{padding:10px 20px;border-left:3px solid #2571be;background:#f4f8fc}@media(max-width:700px){main{padding:15px;margin:8px}h1{font-size:25px}}</style></head><body><header><a href="../00_开始.html">V6.1 完整资料</a>　<a href="../02_UI/index.html">交互原型</a>　T3.1</header><main><h1>Codex 从 M0 开始：V6.1 / T3.1 · rongli-wx 框架初装基线</h1>
+<h2>0. 用户已明确的开发起点</h2>
+<p>用户<strong>没有做 M0</strong>。当前项目是若依前后端分离改版后的 xinyi，不是已实现机动车业务的系统。源码为 <code>chanbeishui/xinyi</code> 的 <code>rongli-wx</code> 分支；本轮实际读取的提交为 <code>890cfbbfc5e0db404a932ab5ef8b449d07c7f444</code>。</p>
+<p>从 E00 开始建设 M0，再依任务推进全部已确认功能；不得默认 M0 通过、跳至 M1，或要求用户先完成 M0。当前源码没有 xinyi-rongli/xinyi-vehicle/xinyi-miniapp，也没有上一版误引的身份会话迁移；这些是本次要创建的内容。</p>
+<h2>1. 授权与终点</h2>
+<p>在用户指定的当前工作区实现完整功能，最终达到 <code>G01</code> 全功能代码交付。<code>L01–L03</code> 分别属于真实供应商、微信真机和生产启用门槛；缺凭据不阻止有明确测试边界的代码开发，但不能标记真实联调已通过。</p>
+<p>允许在项目范围内新增/修改源码、测试、文档和本地隔离环境配置；安装必需依赖并产生真实锁文件；仅在本包新建的隔离库内初装和测试。不授权生产写入、真实付款、外部发信、删除已有数据、自动改 Git 历史或绕过平台审批。</p>
+<h2>2. 源码与规范</h2>
+<ol>
+<li>阅读仓库根与作用域内 <code>AGENTS.md</code>，再读本包 <code>00_README.md</code>、<code>12_工程执行/03_当前框架与M0初建.md</code>。</li>
+<li><strong>实际工作区分支、HEAD、未提交改动必须读取</strong>。上述 commit 是审查快照，不是要求强制回退。用户后续提交正常保留；不自动 checkout/merge/reset/clean。</li>
+<li>默认新建 <code>xinyi-rongli</code>（<code>com.xinyi.rongli</code>）及 <code>xinyi-miniapp</code>（uni-app Vue3/TypeScript）。框架与 PC <code>xinyi-ui</code> 保留。随后出现的同名目录先核对，不重复造项目，不从目录存在推断阶段完成。</li>
+<li>规范目录为 <code>docs/vehicle/V6.1/</code>，执行状态为 <code>docs/implementation/vehicle/</code>。首次账本全部 NOT_ASSESSED，先执行 E00；重复安装保留真实已有进度。</li>
+<li>技术架构 T3.1、工程计划 V6.1 为当前入口。业务 PRD/API/data_model 文件继续使用 V6.0 组件版本，UI沿用已确认设计，不叠加旧包互相矛盾的要求。</li>
+<li>默认只做“框架基础 + 新机动车业务”初装，不做旧 M0 迁移。源码状态不能证明数据库为空；新隔离库仍须先查空。发现意外 vi 表，保留并只读核查，不 DROP、不盲 ALTER，也不重放旧初始化。</li>
+</ol>
+<h2>3. 开始（在用户实际 xinyi 仓库根执行）</h2>
+<p>Windows 可将 python 换为 py -3。PACKAGE_PATH 是本包完整解压路径。</p>
+<pre><code class="language-bash">python &quot;PACKAGE_PATH/12_工程执行/engineer.py&quot; doctor --repo .
+python &quot;PACKAGE_PATH/12_工程执行/engineer.py&quot; install --repo . --apply
+python -m pip install -r docs/vehicle/V6.1/12_工程执行/requirements.txt
+python docs/vehicle/V6.1/12_工程执行/engineer.py check --repo .
+python docs/vehicle/V6.1/12_工程执行/taskctl.py next --repo .
+</code></pre>
+<p>首次下一任务必须是 E00。完成最小必要核对后进入已经授权的实现，不以评估报告作为任务终点。</p>
+<h2>4. 先真正建设 M0</h2>
+<p>E00框架基线和权限规范 → E01契约回归与E02隔离环境 → E03初次业务建表 → E04小程序及业务模块模板、E05 PC接入 → E06事务/幂等/审计/outbox基础 → E07分阶段真实集成夹具 → E08 CI与证据。</p>
+<p>工程模板仅是起点。复制模板、创建空类、静态原型成功、SDK组件测试，都不能独立证明 M0 或完整业务已通过。对应任务需要构建、隔离环境和各自测试证据。</p>
+<h2>5. 持续开发，不削减范围</h2>
+<p>读取 taskctl next → 认领已就绪任务 → 实现 → 运行本任务测试 → 修复 → 保存证据和独立复核 → 继续下一项。78任务包含全部已确认功能；不因只做首个切片就省略对账、售后等后续范围。</p>
+<p>开发任务前置达到 IMPLEMENTED 可继续编码；VERIFIED 要求实际测试，REVIEWED 要求独立复核。验证环境不可用时保存 VERIFICATION 阻塞，不把全部编码标为失败，也不报测试通过。当前运行结束时更新 RESUME.md 和下一条命令；工具不会自动启动后台 Codex 会话。</p>
+<h2>6. 不得改动的业务与安全规则</h2>
+<p>实际归还立即释放指定承接，不等后续确认/核价/退款；已接车取消先审批待返还，实还后取消；未接车代驾取消承接仍原单重派。对账按 selectedEntries 明确勾选同人同主体组单，日期只筛选，行内核价和独立整单复核保留，确认后只调差，付款凭证独立核实。无钱包/自动转账。</p>
+<p>保留既有 sys_user 多部门、auth_version、安全 outbox、功能与数据权限；小程序 MiniPrincipal 必须新建并隔离，不伪装 LoginUser。不全局 permitAll，不把新接口金额和旧sys ID一并改类型。父/子版本、快照、幂等、私有证据和敏感字段裁剪仍以主契约与T3.1为准。</p>
+<h2>7. 分层阻塞与完成判断</h2>
+<p>CONTRACT只阻受影响接口；POLICY只阻相应正式规则启用；CREDENTIAL只阻真实供应商验证；ENVIRONMENT针对真实失败命令；ACCESS不允许绕过。开发夹具使用明确测试数据，不能擅定真实费率、补偿或准入政策。</p>
+<p><code>CODE_COMPLETE</code>、<code>LIVE_VENDOR_VERIFIED</code>、<code>RELEASE_APPROVED</code>分别记录。G01要求真实 API→Service→Mapper→MySQL、完整前端、恢复与安全测试，并有全量覆盖与独立复核；绝不能用固定Ack、假页面和文件数量代替。</p>
+</main></body></html>

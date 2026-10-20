@@ -1,0 +1,52 @@
+{
+  "edition": "V6.1",
+  "architecture": "T3.1",
+  "contract_component_version": "V6.0",
+  "product_component_version": "V6.0",
+  "ui_component_version": "V5.0 (unchanged; applicable to V6.1)",
+  "source_package": "机动车检测预约_完整开发资料包_V6.0_工程执行版.zip",
+  "source_sha256": "f9089fe791575aa99618cf3913e8ac5880e7d39e7d5543263806c3c90c3d187f",
+  "repo": "chanbeishui/xinyi",
+  "source_branch": "rongli-wx",
+  "observed_refs": {
+    "rongli-wx": "890cfbbfc5e0db404a932ab5ef8b449d07c7f444"
+  },
+  "observed_at": "2026-10-20",
+  "user_confirmed_stage": "FRAMEWORK_ONLY_M0_NOT_STARTED",
+  "m0_completed": false,
+  "initial_task": "E00",
+  "initial_task_status": "NOT_ASSESSED",
+  "actual_user_worktree": "NOT_ASSESSED",
+  "actual_user_database": "NOT_INSPECTED",
+  "runtime_jdk_major": 21,
+  "java_release": 17,
+  "runtime_jdk_basis": "existing engineering plan; actual runtime must be recorded by doctor",
+  "module_default": "xinyi-rongli",
+  "module_action": "CREATE_DURING_M0_NOT_PRESENT_AT_OBSERVED_COMMIT",
+  "miniapp_default": "xinyi-miniapp",
+  "initialization_strategy": "FRESH_ISOLATED_DATABASE",
+  "existing_vi_policy": "unexpected state: inventory only, preserve data, no assumed migration",
+  "build_strategy": "preserve current modified RuoYi framework; create new business module and miniapp during M0",
+  "completion_policy": "No stage completion inferred from commit messages, documents, SQL, SDK tests or directory existence",
+  "observed_maven_modules": [
+    "xinyi-admin",
+    "xinyi-framework",
+    "xinyi-system",
+    "xinyi-quartz",
+    "xinyi-generator",
+    "xinyi-common"
+  ],
+  "absent_at_observed_commit": [
+    "xinyi-rongli/",
+    "xinyi-vehicle/",
+    "xinyi-miniapp/",
+    "sql/migration_20261015_vehicle_identity_session.sql"
+  ],
+  "source_fingerprints": {
+    "pom.xml": "b07468753da31337b2a55caf006fc8d835376256",
+    "AGENTS.md": "7b1a3864e4fc77f4690d8a7faf0ec1dbd7494490",
+    "xinyi-ui/package.json": "1335f0a3af4ac5816f261d8428a71092b9c5fddd",
+    "xinyi-framework/src/main/java/com/xinyi/framework/config/SecurityConfig.java": "cbb669845087861ebfde9ba4955560554e8a2a80",
+    "xinyi-framework/src/main/java/com/xinyi/framework/security/filter/JwtAuthenticationTokenFilter.java": "8c66b190f38a6f8f3e9a3e3815c667edc08981e6"
+  }
+}

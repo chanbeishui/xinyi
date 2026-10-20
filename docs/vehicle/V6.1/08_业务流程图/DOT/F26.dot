@@ -1,0 +1,21 @@
+digraph F26 {
+graph [rankdir=TB, bgcolor="white", pad="0.35", nodesep="0.3", ranksep="0.38", fontname="Noto Sans CJK SC", fontsize=18, labelloc=t, label="F26 隐私授权、账号退出与删除请求"];
+node [shape=box, style="rounded,filled", fillcolor="#F3F6FA", color="#CFD6E0", fontname="Noto Sans CJK SC", fontsize=12, margin="0.15,0.10"];
+edge [color="#74849A", fontname="Noto Sans CJK SC", fontsize=10];
+"n1" [label="展示与场景相符的授权说明和协议版本"];
+"n2" [label="用户允许后按最少必要范围采集"];
+"n3" [label="用户查看/更正/撤回授权或提交删除请求"];
+"n4" [label="存在在手车辆、资金待核对或必要留存？",shape=diamond,fillcolor="#EEF4FF"];
+"n5" [label="停止非必要用途，人工核实保留部分及理由"];
+"n6" [label="按审批保留策略删除或匿名化相应资料"];
+"n7" [label="反馈处理结果，记录审计"];
+"n8" [label="退出登录清除本地敏感缓存，不伪装成服务已结束"];
+"n1" -> "n2" [label=""];
+"n2" -> "n3" [label=""];
+"n3" -> "n4" [label=""];
+"n4" -> "n5" [label="是"];
+"n4" -> "n6" [label="否"];
+"n5" -> "n7" [label=""];
+"n6" -> "n7" [label=""];
+"n7" -> "n8" [label=""];
+}
