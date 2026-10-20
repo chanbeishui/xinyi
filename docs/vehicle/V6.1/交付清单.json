@@ -1,0 +1,42 @@
+{
+  "version": "V6.1",
+  "architecture": "T3.1",
+  "date": "2026-10-20",
+  "baseline": "FRAMEWORK_ONLY_M0_NOT_STARTED",
+  "legacyViMigration": "NOT_APPLICABLE",
+  "counts": {
+    "screens": 287,
+    "mainViews": 144,
+    "states": 143,
+    "pngScreenshots": 574,
+    "operations": 249,
+    "schemas": 278,
+    "tables": 66,
+    "generatedColumns": 14,
+    "flows": 42,
+    "interactionRules": 75,
+    "testCases": 298,
+    "technicalGates": 71,
+    "engineeringTasks": 78
+  },
+  "sourceBaselines": [
+    "用户本轮明确未做M0",
+    "当前rongli-wx@890cfbb",
+    "已确认业务范围与V6工程规划"
+  ],
+  "validationResultsDirectory": "09_验证记录",
+  "notProductionRuntimeValidated": true,
+  "m0Completed": false,
+  "sourceRepo": "chanbeishui/xinyi",
+  "sourceBranch": "rongli-wx",
+  "sourceCommit": "890cfbbfc5e0db404a932ab5ef8b449d07c7f444",
+  "scopeOfChange": "engineering starting baseline, tasks, source observation and safe installation; product/API/UI unchanged",
+  "componentVersions": {
+    "product": "V6.0",
+    "openapi": "V6.0",
+    "dataModel": "V6.0",
+    "engineering": "V6.1",
+    "architecture": "T3.1",
+    "ui": "V5.0 (confirmed design)"
+  }
+}

@@ -1,0 +1,20 @@
+digraph F06 {
+graph [rankdir=TB, bgcolor="white", pad="0.35", nodesep="0.3", ranksep="0.38", fontname="Noto Sans CJK SC", fontsize=18, labelloc=t, label="F06 车型字典与计价方案发布"];
+node [shape=box, style="rounded,filled", fillcolor="#F3F6FA", color="#CFD6E0", fontname="Noto Sans CJK SC", fontsize=12, margin="0.15,0.10"];
+edge [color="#74849A", fontname="Noto Sans CJK SC", fontsize=10];
+"n1" [label="维护车型字典，保留稳定编码"];
+"n2" [label="配置站点支持车型与生效计价方案"];
+"n3" [label="填写检测费、起步、里程口径和进位方式"];
+"n4" [label="配置审核通过后版本化发布"];
+"n5" [label="车型有效且存在唯一适用规则？",shape=diamond,fillcolor="#EEF4FF"];
+"n6" [label="按可信路线距离计算费用"];
+"n7" [label="阻止报价，提示配置缺失／规则冲突"];
+"n8" [label="确认订单时保存车型、规则和金额快照"];
+"n1" -> "n2" [label=""];
+"n2" -> "n3" [label=""];
+"n3" -> "n4" [label=""];
+"n4" -> "n5" [label=""];
+"n5" -> "n6" [label="是"];
+"n5" -> "n7" [label="否"];
+"n6" -> "n8" [label=""];
+}

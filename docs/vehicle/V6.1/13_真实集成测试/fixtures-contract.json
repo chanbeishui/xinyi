@@ -1,0 +1,135 @@
+{
+  "fixture": [
+    "IDENTITY",
+    "BOOKING"
+  ],
+  "testOnly": true,
+  "sourceOfTruth": "Test-classpath FixtureApplicationService using actual framework/config services",
+  "request": {
+    "fixture": "IDENTITY or BOOKING",
+    "providerRunId": "<obtained from simulator /control/runs>"
+  },
+  "creationRules": [
+    "one fixture per (providerRunId,fixtureKind), same request reuses; IDENTITY needs only framework test roles/dictionary, no booking services; BOOKING extends IDENTITY with C02/C03/C04 station/price/slot",
+    "unique runtime test IDs resolved from insert generated keys, do not hardcode framework ID1 as normal role",
+    "new non-login accounts created through real login endpoint; test provider exchange returns providerRunId to private registry",
+    "TEST_CAR/supports TEST_INSPECTION; next business-day pickup slot; no real merchant",
+    "station A location (110.943,22.354) nearby, route mapping fixed through test adapter with PICKUP_A/STATION_A keys",
+    "customer rule totalFen34000 independent driver rule6500; both explicitly marked fixture",
+    "fixture operation does not insert paid orders, successful handovers, confirmed statements or payment proofs"
+  ],
+  "identities": {
+    "owner-a": "basic OWNER",
+    "owner-b": "another owner",
+    "driver-a": "apply then approved by Q flow, not implicit login role",
+    "driver-b": "second driver",
+    "station-a": "sys employee with A station",
+    "station-b": "sys employee B noA",
+    "operator-a": "PC A scope",
+    "finance-maker-a": "payorA recorder",
+    "finance-reviewer-a": "payorA distinct human-review persona",
+    "operator-b": "B negative scope"
+  },
+  "cleanup": "Keep test run evidence; disposable volume recreation only explicit user approval. No public arbitrary SQL/reset endpoint.",
+  "responseSchemas": {
+    "IDENTITY": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "providerRunId",
+        "runId",
+        "vehicleTypeCode",
+        "vehiclePlate",
+        "privacyVersion"
+      ],
+      "properties": {
+        "providerRunId": {
+          "type": "string"
+        },
+        "runId": {
+          "type": "string"
+        },
+        "vehicleTypeCode": {
+          "type": "string",
+          "enum": [
+            "TEST_CAR"
+          ]
+        },
+        "vehiclePlate": {
+          "type": "string"
+        },
+        "privacyVersion": {
+          "type": "string",
+          "enum": [
+            "TEST_PRIVACY_V1"
+          ]
+        }
+      }
+    },
+    "BOOKING": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "providerRunId",
+        "runId",
+        "slotId",
+        "vehicleTypeCode",
+        "inspectionTypeCode",
+        "vehiclePlate",
+        "expectedQuoteFen",
+        "termsVersion",
+        "privacyVersion",
+        "businessDate"
+      ],
+      "properties": {
+        "providerRunId": {
+          "type": "string"
+        },
+        "runId": {
+          "type": "string"
+        },
+        "slotId": {
+          "type": "string",
+          "pattern": "^[1-9][0-9]*$"
+        },
+        "vehicleTypeCode": {
+          "type": "string",
+          "enum": [
+            "TEST_CAR"
+          ]
+        },
+        "inspectionTypeCode": {
+          "type": "string",
+          "enum": [
+            "TEST_INSPECTION"
+          ]
+        },
+        "vehiclePlate": {
+          "type": "string"
+        },
+        "expectedQuoteFen": {
+          "type": "integer",
+          "enum": [
+            34000
+          ]
+        },
+        "termsVersion": {
+          "type": "string",
+          "enum": [
+            "TEST_TERMS_V1"
+          ]
+        },
+        "privacyVersion": {
+          "type": "string",
+          "enum": [
+            "TEST_PRIVACY_V1"
+          ]
+        },
+        "businessDate": {
+          "type": "string",
+          "format": "date"
+        }
+      }
+    }
+  }
+}

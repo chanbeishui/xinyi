@@ -1,0 +1,10 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>编译与运行边界</title><style>body{font:16px/1.75 -apple-system,BlinkMacSystemFont,"Microsoft YaHei",sans-serif;color:#202632;margin:0;background:#f6f7f9}header{padding:14px 24px;background:white;border-bottom:1px solid #ddd}main{max-width:1120px;margin:24px auto;padding:30px;background:white}h1{font-size:30px}h2{margin-top:36px}a{color:#0661bd}table{border-collapse:collapse;width:100%;display:block;overflow:auto;font-size:14px}td,th{border:1px solid #dde2ea;padding:10px;vertical-align:top}th{background:#f1f5fb}pre{padding:15px;background:#f2f4f7;overflow:auto}img{max-width:100%;height:auto}blockquote{padding:10px 20px;border-left:3px solid #2571be;background:#f4f8fc}@media(max-width:700px){main{padding:15px;margin:8px}h1{font-size:25px}}</style></head><body><header><a href="../00_开始.html">V5.0 完整资料</a>　<a href="../02_UI/index.html">交互原型</a>　T2.0</header><main><h1>类型与基础参考代码验证记录</h1>
+<p>日期：2026-10-20。本轮执行：</p>
+<ul>
+<li><code>tsc --noEmit --strict --target ES2020 04_接口/dto-types.ts</code>：通过；这是生成的HTTP类型语法与引用检查，不是uni-app构建。</li>
+<li>将内容完全相同的ContractScalars.java / ViRecord.java复制至ASCII临时路径后，<code>javac -encoding UTF-8 --release 17</code> 与 <code>java ContractScalars</code>：12条纯Java标量断言通过。原中文路径在当前JDK/locale组合中被命令行解码为问号，所以改用ASCII临时路径；未修改Java源内容。</li>
+<li><code>ViUtcInstantTypeHandler.java.example</code>：未编译，需真实MyBatis与目标JDBC依赖；不将示例片段当作已联调。</li>
+<li>MySQL服务/CLI不在本轮可用运行环境中，001初始化DDL未执行；提供预检和只读结构核验工具，实际表/约束/时间/并发测试NOT_RUN。</li>
+<li>没有构建最新xinyi、没有连接真实sys库、没有微信真机或真实供应商/商户请求。</li>
+</ul>
+</main></body></html>

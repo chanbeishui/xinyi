@@ -1,0 +1,57 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>06_生产参数与阻塞分类</title><style>body{font:16px/1.75 -apple-system,BlinkMacSystemFont,"Microsoft YaHei",sans-serif;color:#202632;margin:0;background:#f6f7f9}header{padding:14px 24px;background:white;border-bottom:1px solid #ddd}main{max-width:1120px;margin:24px auto;padding:30px;background:white}h1{font-size:30px}h2{margin-top:36px}a{color:#0661bd}table{border-collapse:collapse;width:100%;display:block;overflow:auto;font-size:14px}td,th{border:1px solid #dde2ea;padding:10px;vertical-align:top}th{background:#f1f5fb}pre{padding:15px;background:#f2f4f7;overflow:auto}img{max-width:100%;height:auto}blockquote{padding:10px 20px;border-left:3px solid #2571be;background:#f4f8fc}@media(max-width:700px){main{padding:15px;margin:8px}h1{font-size:25px}}</style></head><body><header><a href="../00_开始.html">V6.1 完整资料</a>　<a href="../02_UI/index.html">交互原型</a>　T3.1</header><main><h1>参数、供应商与局部阻塞</h1>
+<h2>开发不再等待的已定机制</h2>
+<p>统一审核、先返还后执行退款、实际归还释放、车型字典、后台费用配置、司机独立报酬、明确勾选组单、账单确认后登记凭证、独立复核、确认后调差、无钱包/自动转账。日期筛选不是账单成员。这些不再让Codex每轮重复问。</p>
+<h2>隔离环境可以使用的夹具</h2>
+<p>SIM_COMPANY_A/B、SIM_PAYOR_A/B、TEST_CAR、TEST_INSPECTION、客户34000分、司机6500分等仅由fixture装入隔离库，便于实现规则和边界测试。它们必须有TEST标识、禁入生产导出初始化，并配生产配置检测。生产系统可以保存缺价/未开通状态，但不能接受真实付费或授予驾驶资格。</p>
+<h2>上线前必须由人提供的事实</h2>
+<table>
+<thead>
+<tr>
+  <th>事实</th>
+  <th>谁提供</th>
+  <th>阻塞范围</th>
+  <th>开发可继续</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>客户收款商户与公司、微信AppID/合法关联</td>
+  <td>业务/财务/管理员</td>
+  <td>L01真实支付、L03开放付款</td>
+  <td>价格、订单、支付协议测试、其他功能</td>
+</tr>
+<tr>
+  <td>司机费用承担主体、真实费率、取消补偿</td>
+  <td>业务/财务</td>
+  <td>真实费用规则发布和真实司机服务承诺</td>
+  <td>规则引擎、人工核价/复核、账单全链</td>
+</tr>
+<tr>
+  <td>人员名单及独立复核岗位</td>
+  <td>管理人员</td>
+  <td>正式授权配置与真实审批</td>
+  <td>测试岗位角色和权限逻辑</td>
+</tr>
+<tr>
+  <td>真实活体/背景/短信等开通能力</td>
+  <td>供应商负责人</td>
+  <td>对应能力正式使用/资格审批</td>
+  <td>适配器接口、测试核验、其他功能</td>
+</tr>
+<tr>
+  <td>隐私/服务条款及留存政策</td>
+  <td>业务合规负责人</td>
+  <td>正式对外申请/收费</td>
+  <td>版本机制、公开白名单和请求流程</td>
+</tr>
+<tr>
+  <td>目标部署网络和备份责任</td>
+  <td>运维</td>
+  <td>L03正式发布</td>
+  <td>本地容器、CI、健康与恢复测试</td>
+</tr>
+</tbody>
+</table>
+<p>不把“没有生产金额”写成“不会设计计算”；也不能以“可配置”为由不实现配置校验/优先级/匹配冲突。无法确定具体业务含义时只阻相关POLICY分支，禁止Agent替用户决定。</p>
+<p>生产准备状态分别记录<code>CODE_COMPLETE</code>、<code>CHANNEL_VERIFIED</code>、<code>POLICY_APPROVED</code>、<code>RELEASE_APPROVED</code>，不能一个DONE覆盖全部。</p>
+</main></body></html>

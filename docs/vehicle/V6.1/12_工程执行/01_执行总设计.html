@@ -1,0 +1,89 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>01_执行总设计</title><style>body{font:16px/1.75 -apple-system,BlinkMacSystemFont,"Microsoft YaHei",sans-serif;color:#202632;margin:0;background:#f6f7f9}header{padding:14px 24px;background:white;border-bottom:1px solid #ddd}main{max-width:1120px;margin:24px auto;padding:30px;background:white}h1{font-size:30px}h2{margin-top:36px}a{color:#0661bd}table{border-collapse:collapse;width:100%;display:block;overflow:auto;font-size:14px}td,th{border:1px solid #dde2ea;padding:10px;vertical-align:top}th{background:#f1f5fb}pre{padding:15px;background:#f2f4f7;overflow:auto}img{max-width:100%;height:auto}blockquote{padding:10px 20px;border-left:3px solid #2571be;background:#f4f8fc}@media(max-width:700px){main{padding:15px;margin:8px}h1{font-size:25px}}</style></head><body><header><a href="../00_开始.html">V6.1 完整资料</a>　<a href="../02_UI/index.html">交互原型</a>　T3.1</header><main><blockquote>
+<p><strong>V6.1起点纠正</strong>：当前仅有改版xinyi框架，机动车业务从M0初建；工程状态全部待执行。</p>
+</blockquote>
+<h1>工程执行总设计</h1>
+<h2>1. 交付边界</h2>
+<p>本包是 V5 业务基线的工程化整合，不是再次从零设计产品。已有三角色、30分钟关单、计划派单、四次交接、统一售后、实际归还释放、明确勾选对账及凭证核实全部保留。UI主稿继续采用V5，287画板只是视图/状态参考，不要求287独立路由。</p>
+<p>本次新增分为：可以立即运行的仓库诊断/安装/任务账本/契约检查/模拟供应商/真实HTTP测试客户端/数据库探针，以及交给Codex实现的完整任务、测试服务边界和工程模板。模板不是已在真实xinyi运行的生产业务。状态不能用文件数量推断。</p>
+<h2>2. 工程技术选择（本轮规划决定）</h2>
+<table>
+<thead>
+<tr>
+  <th>项目</th>
+  <th>执行选择</th>
+  <th>与既有框架关系</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Java</td>
+  <td>JDK21运行、release17；Spring Boot4.0.6基线先沿用</td>
+  <td>不为引入测试换后端框架；必要安全更新另记证据</td>
+</tr>
+<tr>
+  <td>业务代码</td>
+  <td>模块化单体；M0新建xinyi-rongli、包com.xinyi.rongli</td>
+  <td>xinyi-admin放入口、安全装配；common/system能力按现有依赖复用</td>
+</tr>
+<tr>
+  <td>小程序</td>
+  <td>uni-app Vue3＋TypeScript，首期微信</td>
+  <td>H5只作辅助开发，不改变不开放H5真实下单的业务范围</td>
+</tr>
+<tr>
+  <td>PC</td>
+  <td>现有xinyi-ui/Element Plus/Pinia</td>
+  <td>新增vi API适配，不全局改变sys响应拦截器</td>
+</tr>
+<tr>
+  <td>数据库</td>
+  <td>本地独立MySQL8.4容器为标准验证靶场</td>
+  <td>已有8.0测试库只读比对；生产版本须执行同样SQL/CAS测试再批准</td>
+</tr>
+<tr>
+  <td>Redis</td>
+  <td>本地独立Redis实例</td>
+  <td>会话权限真相仍在数据库；不靠过期通知驱动唯一任务</td>
+</tr>
+<tr>
+  <td>文件</td>
+  <td>本地专用私有目录；正式部署接已选私有对象存储</td>
+  <td><code>ruoyi.profile</code>公共目录与vi私有目录彻底分开</td>
+</tr>
+<tr>
+  <td>第三方</td>
+  <td>适配接口＋隔离模拟服务＋真实厂商实现</td>
+  <td>模拟只发生在外部能力边界，不替代业务Service/数据库/权限</td>
+</tr>
+<tr>
+  <td>测试</td>
+  <td>Java单元/领域/Mapper＋真实HTTP Python pytest＋MySQL探针＋前端交互＋微信真机</td>
+  <td>没有Docker或网络时明确未执行，不以H2/SQLite替代MySQL约束</td>
+</tr>
+</tbody>
+</table>
+<h2>3. 整体目录</h2>
+<pre><code class="language-text">xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/  # 小程序/PC入口与装配
+xinyi-admin/src/test/java/com/xinyi/web/viit/             # 测试控制面和真实HTTP suite
+xinyi-rongli/src/main/java/com/xinyi/rongli/              # 业务Service、DTO、Mapper接口
+xinyi-rongli/src/main/resources/mapper/rongli/            # 参数化SQL、resultMap、显式CAS
+xinyi-ui/src/views/rongli/                                # 实际PC页面
+xinyi-ui/src/api/rongli/                                  # 仅新业务响应与错误适配
+xinyi-miniapp/                                           # 真正uni-app工程
+sql/migration_YYYYMMDD_&lt;feature&gt;.sql                      # 受控变更及验证
+sql/ry_20260417.sql                                      # 维护框架完整初始化一致性
+scripts/vehicle/                                         # 可移植构建与验收命令入口
+ docs/vehicle/V6.1/                                      # 当前规范只读来源
+ docs/implementation/vehicle/                            # 可更新进度、差异、证据
+</code></pre>
+<p>安全链、事务、数据裁剪、版本和密钥不放通用前端组件。禁止把开发者传入的userId/role/department参数视为操作者。测试控制器必须在test源码，不入生产Jar。</p>
+<h2>4. 开发顺序与并行</h2>
+<p>用户确认M0未开始。E00基线 → E01契约与E02环境 → E03库适配/E04小程序/E05PC/E06事务基座/E07测试夹具 → M1身份档案 → M2交易与未接车退款 → M3派单交接 → M4售后与异常 → M5对账付款凭证 → M6全量审计恢复。按 tasks.json 的依赖图而不是仅凭阶段名排序。</p>
+<p>技术负责人/集成人独占公共安全配置、根POM、数据主模型、主OpenAPI、taskctl账本合并。其他Agent可按边界并行实现PC/小程序/DTO/测试，使用独立分支或工作树；不能同时覆写同一公共文件。独立复核不等于同一Agent换一个标签自批。</p>
+<p>需要写入已经授权的隔离库时不反复问“是否继续M1”；需要碰生产、扩大业务规则、真实转账或破坏性历史变更时必须停在该动作申请确认。</p>
+<h2>5. 两种交付终点</h2>
+<p><strong>开发完整</strong>：所有已确认功能的代码、真实持久化、隔离集成、前端交互和独立复核完成；允许外部厂商用严格模拟协议，但真实适配器代码与配置校验须存在。不能用“后期接供应商”留下整条调用链未写。</p>
+<p><strong>可以上线</strong>：开发完整之后，真实供应商、用户主体/费率政策、微信真机、域名隐私、备份恢复、值班均获批准。不能用等待上线审批作为只写M0骨架的理由。</p>
+<h2>6. 本次仍非事实的内容</h2>
+<p>用户确认尚未执行M0；当前远程rongli-wx@890cfbbfc5e0db404a932ab5ef8b449d07c7f444为框架源码快照。实际本机分支/未提交工作、数据库与网络仍需doctor及inventory核对；不把源码或SQL文件存在推定为阶段完成。真实费率、收付款主体、人选、培训标准是上线前参数/政策，不采用演示值代替。</p>
+</main></body></html>

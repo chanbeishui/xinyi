@@ -1,0 +1,16 @@
+from pathlib import Path
+import json,datetime
+from playwright.sync_api import sync_playwright
+B=Path(__file__).resolve().parents[1]
+report={'kind':'DOCUMENT_BROWSER_QA','at':datetime.datetime.now(datetime.timezone.utc).isoformat(),'browser':'Chromium/PythonPlaywright','availability':'Browser skill/runtime not listed','transport':'original HTML set_content, about:blank','limitation':'Attempted localhost navigation failed with net::ERR_BLOCKED_BY_ADMINISTRATOR; no policy changes. Direct navigation/click-through not verified. Source link resolution checked separately.','scope':'new documentation only, not business UI','checks':[]}
+with sync_playwright() as p:
+ b=p.chromium.launch(executable_path='/usr/bin/chromium',headless=True,args=['--no-sandbox']);page=b.new_page(viewport={'width':1440,'height':1050});errors=[];page.on('pageerror',lambda e:errors.append(str(e)))
+ page.set_content((B/'00_开始.html').read_text(),wait_until='load');assert'V6'in page.title();assert page.locator('.card').count()==7
+ page.screenshot(path=str(B/'09_验证记录/V6_工程资料入口_桌面.png'),full_page=True);report['checks'].append({'name':'landing title/content/desktop screenshot','status':'PASS','viewport':[1440,1050],'url':page.url})
+ href=page.get_by_role('link',name='02 · 78项任务与输入').get_attribute('href');assert(B/href).is_file();page.set_content((B/href).read_text());assert page.locator('.task').count()==78
+ page.get_by_label('搜索任务').fill('报价快照');assert page.locator('.task').count()==1;assert'B02'in page.locator('.task').inner_text();page.screenshot(path=str(B/'09_验证记录/V6_任务导航_搜索报价.png'),full_page=False);report['checks'].append({'name':'78 tasks search narrows to B02','status':'PASS'})
+ href=page.get_by_role('link',name='B02 · 报价快照与服务校验').get_attribute('href');target=B/'12_工程执行'/href;assert target.is_file();page.set_content(target.read_text());assert'四组合输入'in page.locator('main').inner_text();report['checks'].append({'name':'task href resolves to actual packet file, memory rendering','status':'PASS','nativeNavigation':'NOT_VERIFIED'})
+ page.close();page=b.new_page(viewport={'width':1440,'height':1050});page.on('pageerror',lambda e:errors.append(str(e)));page.set_content((B/'04_接口/接口浏览器_V6.0.html').read_text());assert page.locator('details').count()==249;page.get_by_label('筛选接口').fill('/api/public/service-config');assert page.locator('details').count()==1;page.locator('summary').click();assert'PublicServiceConfig'in page.locator('pre').inner_text();report['checks'].append({'name':'249 API entries filter/expand','status':'PASS'})
+ page.set_viewport_size({'width':390,'height':844});page.set_content((B/'00_开始.html').read_text());assert page.evaluate('document.documentElement.scrollWidth<=window.innerWidth+1');page.screenshot(path=str(B/'09_验证记录/V6_工程资料入口_手机.png'),full_page=True);report['checks'].append({'name':'mobile390 no document horizontal overflow','status':'PASS','viewport':[390,844]})
+ assert not errors;report['checks'].append({'name':'page runtime errors','status':'PASS','errors':errors});b.close()
+report['passed']=len(report['checks']);report['failed']=0;report['environmentBlocked']=1;(B/'09_验证记录/V6_资料浏览验证.json').write_text(json.dumps(report,ensure_ascii=False,indent=2));print(json.dumps(report,ensure_ascii=False,indent=2))

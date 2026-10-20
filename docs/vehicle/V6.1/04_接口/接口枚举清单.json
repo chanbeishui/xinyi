@@ -1,0 +1,1028 @@
+{
+  "version": "V6.0",
+  "namedEnums": {
+    "AccountStatus": {
+      "values": [
+        "ACTIVE",
+        "LOCKED"
+      ],
+      "description": ""
+    },
+    "ActorRealm": {
+      "values": [
+        "MINI",
+        "ADMIN",
+        "SYSTEM",
+        "CALLBACK"
+      ]
+    },
+    "AdjustmentStatus": {
+      "values": [
+        "PENDING",
+        "APPROVED",
+        "REJECTED"
+      ],
+      "description": ""
+    },
+    "AdminOrderAction": {
+      "values": [
+        "MANUAL_INVITE",
+        "REVIEW_AFTERSALE",
+        "REVIEW_LICENSE",
+        "REGISTER_RESULT",
+        "REQUEST_RESULT_CORRECTION",
+        "CONTACT_OWNER",
+        "CONTACT_DRIVER",
+        "CONTACT_STATION",
+        "EXPORT",
+        "VIEW_DETAIL",
+        "VIEW_EVIDENCE",
+        "VIEW_RESULT",
+        "VIEW_PAYMENT"
+      ],
+      "description": "动作仍需服务端逐次鉴权，不可把UI集合当授权凭证"
+    },
+    "AfterSaleKind": {
+      "values": [
+        "CANCEL_REFUND",
+        "REFUND_ONLY"
+      ]
+    },
+    "AfterSaleReviewDecision": {
+      "values": [
+        "APPROVE",
+        "REJECT"
+      ]
+    },
+    "AfterSaleReviewStatus": {
+      "values": [
+        "PENDING",
+        "APPROVED",
+        "REJECTED"
+      ],
+      "description": ""
+    },
+    "AfterSaleStatus": {
+      "values": [
+        "PENDING_REVIEW",
+        "EXECUTING",
+        "CLOSED",
+        "REJECTED"
+      ],
+      "description": ""
+    },
+    "AllowedAction": {
+      "values": [
+        "ADD_REVIEW",
+        "ADD_TO_DRAFT",
+        "APPEAL_PENALTY",
+        "APPLY_ADJUSTMENT",
+        "APPLY_CANCEL_REFUND",
+        "APPLY_REFUND_ONLY",
+        "APPROVE_AND_SEND",
+        "ARRIVE_PICKUP",
+        "ARRIVE_STATION",
+        "CANCEL_ASSIGNMENT",
+        "CLOSE_UNPAID",
+        "CONFIRM_HANDOVER",
+        "CONFIRM_STATEMENT",
+        "CONTACT_DRIVER",
+        "CONTACT_OWNER",
+        "CONTACT_STATION",
+        "CREATE_HANDOVER",
+        "DEPART",
+        "EDIT_PRICE",
+        "EXPORT",
+        "FILL_MILEAGE",
+        "FILL_PRICE",
+        "MANUAL_INVITE",
+        "MARK_EVIDENCE_READY",
+        "OPEN_DISPUTE",
+        "PAY",
+        "RECORD_PAYMENT",
+        "REGISTER_RESULT",
+        "REJECT_REVIEW",
+        "REMOVE_FROM_DRAFT",
+        "RENOTIFY_PICKUP",
+        "REPORT_DIFFERENCE",
+        "REPORT_EXCEPTION",
+        "REQUEST_RESULT_CORRECTION",
+        "REVIEW_AFTERSALE",
+        "REVIEW_LICENSE",
+        "SEND_STATEMENT",
+        "SERVICE_CONFIRM",
+        "SUBMIT_REVIEW",
+        "UPLOAD_PHOTO",
+        "VERIFY_PAYMENT",
+        "VIEW_APPEAL",
+        "VIEW_DETAIL",
+        "VIEW_EVIDENCE",
+        "VIEW_HANDOVER_SECRET",
+        "VIEW_PAYMENT",
+        "VIEW_PRICE_HISTORY",
+        "VIEW_PRICING",
+        "VIEW_RESULT",
+        "VOID_STATEMENT",
+        "WITHDRAW_STATEMENT"
+      ],
+      "description": "服务端按当前角色、对象状态、版本和实时授权计算的可执行动作集合；不能由客户端授予"
+    },
+    "AppealRecordStatus": {
+      "values": [
+        "SUBMITTED",
+        "APPROVED",
+        "REJECTED"
+      ],
+      "description": ""
+    },
+    "ApplicantType": {
+      "values": [
+        "ACCOUNT",
+        "SYS_USER"
+      ],
+      "description": ""
+    },
+    "AssignmentEndReason": {
+      "values": [
+        "RETURNED",
+        "CANCELLED",
+        "DRIVER_CANCEL"
+      ],
+      "description": ""
+    },
+    "AttemptStatus": {
+      "values": [
+        "OPEN",
+        "SUBMITTED",
+        "PASSED",
+        "FAILED",
+        "EXPIRED"
+      ],
+      "description": ""
+    },
+    "BindingCredentialStatus": {
+      "values": [
+        "ISSUED",
+        "CONSUMED",
+        "REVOKED",
+        "EXPIRED"
+      ],
+      "description": ""
+    },
+    "CancelStatus": {
+      "values": [
+        "NONE",
+        "APPLIED",
+        "REJECTED",
+        "APPROVED_WAIT_RETURN",
+        "COMPLETED"
+      ],
+      "description": "一次售后决定派生的取消进展"
+    },
+    "CapabilityCode": {
+      "values": [
+        "COMMON_DICT_QUERY",
+        "COMMON_FILES_ACCESS",
+        "COMMON_FILES_QUERY",
+        "COMMON_MESSAGES_LIST",
+        "COMMON_MESSAGES_READ",
+        "COMMON_ORDERS_CONFIRM",
+        "COMMON_ORDERS_CONTACTACCESS",
+        "COMMON_ORDERS_CREATE",
+        "COMMON_ORDERS_LIST",
+        "COMMON_ORDERS_QUERY",
+        "COMMON_PHONE_CREATE",
+        "COMMON_PHONE_SEND",
+        "COMMON_PHONE_VERIFY",
+        "COMMON_PRIVACYCASES_CREATE",
+        "COMMON_PRIVACYCASES_LIST",
+        "COMMON_STATIONS_LIST",
+        "COMMON_UPLOADS_COMPLETE",
+        "COMMON_UPLOADS_CREATE",
+        "DRIVER_ASSIGNMENT_QUERY",
+        "DRIVER_AVAILABILITY_EDIT",
+        "DRIVER_AVAILABILITY_QUERY",
+        "DRIVER_DRIVERPAYMENT_LIST",
+        "DRIVER_DRIVERSTATEMENT_CONFIRM",
+        "DRIVER_DRIVERSTATEMENT_CREATE",
+        "DRIVER_DRIVERSTATEMENT_LIST",
+        "DRIVER_DRIVERSTATEMENT_QUERY",
+        "DRIVER_INVITE_LIST",
+        "DRIVER_INVITE_QUERY",
+        "DRIVER_INVITE_RESPONSE",
+        "DRIVER_LOCATION_CREATE",
+        "DRIVER_ORDER_ARRIVEPICKUP",
+        "DRIVER_ORDER_ARRIVESTATION",
+        "DRIVER_ORDER_ASSIGNMENTCANCELLATION",
+        "DRIVER_ORDER_CREATE",
+        "DRIVER_ORDER_DEPART",
+        "DRIVER_ORDER_EDIT",
+        "DRIVER_ORDER_LIST",
+        "DRIVER_ORDER_QUERY",
+        "DRIVER_ORDER_READY",
+        "DRIVER_PENALTYAPPEAL_LIST",
+        "DRIVER_PENALTYAPPEAL_QUERY",
+        "DRIVER_PENALTY_CREATE",
+        "DRIVER_PENALTY_LIST",
+        "DRIVER_PENALTY_QUERY",
+        "DRIVER_QUALIFICATION_ATTEMPTS",
+        "DRIVER_QUALIFICATION_CREATE",
+        "DRIVER_QUALIFICATION_EDIT",
+        "DRIVER_QUALIFICATION_LIST",
+        "DRIVER_QUALIFICATION_PLAYBACK",
+        "DRIVER_QUALIFICATION_PROGRESS",
+        "DRIVER_QUALIFICATION_QUERY",
+        "DRIVER_QUALIFICATION_SUBMIT",
+        "EMPLOYEE_BINDING_CONSUME",
+        "EMPLOYEE_BINDING_READ",
+        "EMPLOYEE_BINDING_REQUEST",
+        "OWNER_ADDRESSES_CREATE",
+        "OWNER_ADDRESSES_DEFAULT",
+        "OWNER_ADDRESSES_EDIT",
+        "OWNER_ADDRESSES_LIST",
+        "OWNER_ADDRESSES_REMOVE",
+        "OWNER_AFTERSALE_CREATE",
+        "OWNER_AFTERSALE_LIST",
+        "OWNER_AFTERSALE_QUERY",
+        "OWNER_ORDER_CLOSEUNPAID",
+        "OWNER_ORDER_CREATE",
+        "OWNER_ORDER_LIST",
+        "OWNER_ORDER_QUERY",
+        "OWNER_ORDER_SERVICECONFIRMATION",
+        "OWNER_PROFILE_EDIT",
+        "OWNER_SCHEDULE_LIST",
+        "OWNER_VEHICLE_CREATE",
+        "OWNER_VEHICLE_DEFAULT",
+        "OWNER_VEHICLE_EDIT",
+        "OWNER_VEHICLE_LIST",
+        "OWNER_VEHICLE_REMOVE",
+        "PROFILE_READ",
+        "SESSION_LOGOUT",
+        "SESSION_READ",
+        "SESSION_SWITCH_ROLE",
+        "SESSION_SWITCH_STATION"
+      ],
+      "description": "会话能力注册表；资格申请及本人历史不要求已获正式接单资格"
+    },
+    "ChannelRefundStatus": {
+      "values": [
+        "CREATED",
+        "PROCESSING",
+        "SUCCESS",
+        "CLOSED",
+        "ABNORMAL",
+        "UNKNOWN"
+      ],
+      "description": ""
+    },
+    "CorrectionStatus": {
+      "values": [
+        "APPLIED",
+        "APPROVED",
+        "REJECTED"
+      ],
+      "description": ""
+    },
+    "Currency": {
+      "values": [
+        "CNY"
+      ]
+    },
+    "CustodyType": {
+      "values": [
+        "OWNER",
+        "DRIVER",
+        "STATION"
+      ],
+      "description": "当前实物保管方类型"
+    },
+    "DisputeStatus": {
+      "values": [
+        "NONE",
+        "OPEN",
+        "PROCESSING",
+        "RESOLVED"
+      ],
+      "description": ""
+    },
+    "DriverFeeRuleStatus": {
+      "values": [
+        "DRAFT",
+        "PENDING_REVIEW",
+        "PUBLISHED",
+        "DISABLED"
+      ],
+      "description": ""
+    },
+    "DriverOrderAction": {
+      "values": [
+        "DEPART",
+        "ARRIVE_PICKUP",
+        "ARRIVE_STATION",
+        "CANCEL_ASSIGNMENT",
+        "CONTACT_OWNER",
+        "CONTACT_STATION",
+        "CREATE_HANDOVER",
+        "CONFIRM_HANDOVER",
+        "MARK_EVIDENCE_READY",
+        "UPLOAD_PHOTO",
+        "FILL_MILEAGE",
+        "REPORT_EXCEPTION",
+        "VIEW_DETAIL",
+        "VIEW_RESULT",
+        "VIEW_EVIDENCE",
+        "VIEW_HANDOVER_SECRET"
+      ],
+      "description": "动作仍需服务端逐次鉴权，不可把UI集合当授权凭证"
+    },
+    "EmployeeBindingStatus": {
+      "values": [
+        "REQUESTED",
+        "CREDENTIAL_ISSUED",
+        "BOUND",
+        "REJECTED",
+        "EXPIRED",
+        "REVOKED"
+      ],
+      "description": ""
+    },
+    "EvidenceStatus": {
+      "values": [
+        "DRAFT",
+        "READY",
+        "SEALED"
+      ],
+      "description": ""
+    },
+    "ExportTaskStatus": {
+      "values": [
+        "APPLIED",
+        "APPROVED",
+        "REJECTED",
+        "PROCESSING",
+        "READY",
+        "FAILED",
+        "EXPIRED"
+      ],
+      "description": ""
+    },
+    "ExternalPaymentStatus": {
+      "values": [
+        "PENDING",
+        "VERIFIED",
+        "REJECTED",
+        "REVERSED"
+      ],
+      "description": ""
+    },
+    "FaceLaunchMode": {
+      "values": [
+        "WEBVIEW_URL"
+      ],
+      "description": ""
+    },
+    "FaceSessionStatus": {
+      "values": [
+        "CREATED",
+        "PROCESSING",
+        "PASSED",
+        "FAILED",
+        "EXPIRED"
+      ],
+      "description": ""
+    },
+    "FeeEntryKind": {
+      "values": [
+        "NORMAL_RETURN",
+        "CANCEL_RETURN",
+        "CANCEL_BEFORE_PICKUP",
+        "ADJUSTMENT",
+        "INITIAL_VALUATION",
+        "PRICE_DELTA"
+      ]
+    },
+    "FileStatus": {
+      "values": [
+        "UPLOADING",
+        "VERIFYING",
+        "READY",
+        "REJECTED"
+      ],
+      "description": ""
+    },
+    "FulfillmentStatus": {
+      "values": [
+        "PENDING_PAY",
+        "SCHEDULED",
+        "PENDING_DISPATCH",
+        "DISPATCHING",
+        "MANUAL_DISPATCH",
+        "ACCEPTED",
+        "GOING_PICKUP",
+        "ARRIVED_PICKUP",
+        "PICKED_UP",
+        "ARRIVED_STATION",
+        "INSPECTING",
+        "INSPECTED",
+        "CAR_TAKEN",
+        "WAIT_CONFIRM",
+        "COMPLETED",
+        "CANCELLED",
+        "CLOSED"
+      ],
+      "description": "仅履约阶段；退款/对账不混入此状态"
+    },
+    "GovernanceStatus": {
+      "values": [
+        "APPLIED",
+        "APPROVED",
+        "CHECKING",
+        "COMPLETED",
+        "EXPIRED",
+        "FAILED",
+        "OPEN",
+        "PROCESSING",
+        "READY",
+        "REJECTED",
+        "RESOLVED",
+        "REVOKED"
+      ],
+      "description": "必须同时校验case_type对应子集"
+    },
+    "GovernanceType": {
+      "values": [
+        "PRIVACY",
+        "EXPORT",
+        "SENSITIVE_ACCESS",
+        "RECONCILE"
+      ],
+      "description": ""
+    },
+    "HandoverStatus": {
+      "values": [
+        "PENDING",
+        "CONFIRMED",
+        "LOCKED",
+        "EXPIRED"
+      ],
+      "description": ""
+    },
+    "HandoverType": {
+      "values": [
+        "OWNER_TO_DRIVER",
+        "DRIVER_TO_STATION",
+        "STATION_TO_DRIVER",
+        "DRIVER_TO_OWNER"
+      ],
+      "description": "四次实物交接类型，保持PRD已有字面量"
+    },
+    "IdempotencyStatus": {
+      "values": [
+        "PROCESSING",
+        "DONE"
+      ],
+      "description": ""
+    },
+    "InspectionConclusion": {
+      "values": [
+        "PASS",
+        "FAIL"
+      ]
+    },
+    "InternalReviewRecordStatus": {
+      "values": [
+        "PENDING",
+        "APPROVED",
+        "REJECTED",
+        "WITHDRAWN"
+      ],
+      "description": ""
+    },
+    "InviteSource": {
+      "values": [
+        "AUTO",
+        "MANUAL"
+      ]
+    },
+    "InviteStatus": {
+      "values": [
+        "WAIT_RESPONSE",
+        "ACCEPTED",
+        "REJECTED",
+        "EXPIRED",
+        "REVOKED"
+      ],
+      "description": ""
+    },
+    "LedgerPricingStatus": {
+      "values": [
+        "PENDING_PRICING",
+        "READY"
+      ],
+      "description": ""
+    },
+    "LicenseReviewStatus": {
+      "values": [
+        "MISSING",
+        "PENDING",
+        "VERIFIED"
+      ],
+      "description": ""
+    },
+    "MembershipAction": {
+      "values": [
+        "CREATE",
+        "ADD",
+        "REMOVE",
+        "REACTIVATE",
+        "VOID"
+      ]
+    },
+    "MileageSource": {
+      "values": [
+        "MANUAL",
+        "OCR_REVIEWED"
+      ]
+    },
+    "MiniRole": {
+      "values": [
+        "OWNER",
+        "DRIVER",
+        "STATION"
+      ],
+      "description": ""
+    },
+    "NotificationSendStatus": {
+      "values": [
+        "PENDING",
+        "ACCEPTED",
+        "FAILED",
+        "DISCARDED"
+      ],
+      "description": ""
+    },
+    "OccupancyHolderType": {
+      "values": [
+        "INVITE",
+        "ASSIGNMENT"
+      ],
+      "description": ""
+    },
+    "OccupationType": {
+      "values": [
+        "NONE",
+        "INVITE",
+        "ASSIGNMENT"
+      ],
+      "description": ""
+    },
+    "OutboxStatus": {
+      "values": [
+        "READY",
+        "PROCESSING",
+        "DONE",
+        "FAILED"
+      ],
+      "description": ""
+    },
+    "OwnerOrderAction": {
+      "values": [
+        "PAY",
+        "CLOSE_UNPAID",
+        "APPLY_CANCEL_REFUND",
+        "APPLY_REFUND_ONLY",
+        "SERVICE_CONFIRM",
+        "OPEN_DISPUTE",
+        "ADD_REVIEW",
+        "CONTACT_DRIVER",
+        "CONTACT_STATION",
+        "VIEW_DETAIL",
+        "VIEW_EVIDENCE",
+        "VIEW_RESULT",
+        "VIEW_HANDOVER_SECRET"
+      ],
+      "description": "动作仍需服务端逐次鉴权，不可把UI集合当授权凭证"
+    },
+    "OwnerServiceFlag": {
+      "values": [
+        "NORMAL",
+        "VERIFY_AGAIN"
+      ],
+      "description": ""
+    },
+    "PaymentStatus": {
+      "values": [
+        "PENDING",
+        "SUCCESS",
+        "CLOSED",
+        "UNKNOWN"
+      ],
+      "description": ""
+    },
+    "PenaltyAppealStatus": {
+      "values": [
+        "NONE",
+        "SUBMITTED",
+        "APPROVED",
+        "REJECTED"
+      ],
+      "description": ""
+    },
+    "PenaltyStatus": {
+      "values": [
+        "ACTIVE",
+        "EXPIRED",
+        "REVOKED"
+      ],
+      "description": ""
+    },
+    "PenaltyType": {
+      "values": [
+        "SKIP_ROUND",
+        "STOP_TODAY"
+      ],
+      "description": "普通取消处罚；不引入事故7/30天规则"
+    },
+    "PermissionCode": {
+      "values": [
+        "biz:aftersale:create",
+        "biz:aftersale:list",
+        "biz:aftersale:query",
+        "biz:aftersale:review",
+        "biz:aftersale:reviewpreview",
+        "biz:assignment:list",
+        "biz:audit:list",
+        "biz:capacity:edit",
+        "biz:capacity:list",
+        "biz:config:edit",
+        "biz:config:query",
+        "biz:dashboard:list",
+        "biz:dispatch:create",
+        "biz:dispatch:edit",
+        "biz:dispatch:list",
+        "biz:dispatch:preview",
+        "biz:dispatch:query",
+        "biz:dispute:list",
+        "biz:dispute:query",
+        "biz:dispute:resolve",
+        "biz:driver:disablenewassignments",
+        "biz:driver:edit",
+        "biz:driver:list",
+        "biz:driver:query",
+        "biz:driveradjust:audit",
+        "biz:driveradjust:create",
+        "biz:driveradjust:list",
+        "biz:driverfeerule:create",
+        "biz:driverfeerule:edit",
+        "biz:driverfeerule:list",
+        "biz:driverfeerule:publish",
+        "biz:driverfeerule:query",
+        "biz:driverfeerule:trial",
+        "biz:driverledger:list",
+        "biz:driverpayment:create",
+        "biz:driverpayment:list",
+        "biz:driverpayment:query",
+        "biz:driverpayment:verify",
+        "biz:driverqualification:audit",
+        "biz:driverqualification:list",
+        "biz:driverqualification:query",
+        "biz:driverstatement:add",
+        "biz:driverstatement:create",
+        "biz:driverstatement:list",
+        "biz:driverstatement:preview",
+        "biz:driverstatement:price",
+        "biz:driverstatement:query",
+        "biz:driverstatement:remove",
+        "biz:driverstatement:review",
+        "biz:driverstatement:send",
+        "biz:driverstatement:submitreview",
+        "biz:driverstatement:void",
+        "biz:driverstatement:withdraw",
+        "biz:employeebinding:create",
+        "biz:employeebinding:issue",
+        "biz:employeebinding:list",
+        "biz:employeebinding:revoke",
+        "biz:exception:list",
+        "biz:exception:resolve",
+        "biz:export:audit",
+        "biz:export:query",
+        "biz:files:access",
+        "biz:files:query",
+        "biz:handover:confirm",
+        "biz:handover:create",
+        "biz:handover:query",
+        "biz:handover:secret",
+        "biz:job:list",
+        "biz:job:retry",
+        "biz:license:edit",
+        "biz:license:list",
+        "biz:license:sensitive",
+        "biz:notificationtemplate:edit",
+        "biz:notificationtemplate:list",
+        "biz:order:address",
+        "biz:order:contact",
+        "biz:order:create",
+        "biz:order:export",
+        "biz:order:finance",
+        "biz:order:list",
+        "biz:order:query",
+        "biz:owner:edit",
+        "biz:owner:list",
+        "biz:owner:query",
+        "biz:paymentreconciliation:list",
+        "biz:paymentreconciliation:query",
+        "biz:paymentreconciliation:resolve",
+        "biz:penalty:list",
+        "biz:penalty:query",
+        "biz:penaltyappeal:audit",
+        "biz:penaltyappeal:list",
+        "biz:penaltyappeal:query",
+        "biz:price:audit",
+        "biz:price:create",
+        "biz:price:edit",
+        "biz:price:list",
+        "biz:price:publish",
+        "biz:price:submit",
+        "biz:privacycase:list",
+        "biz:privacycase:resolve",
+        "biz:refund:query",
+        "biz:refund:retry",
+        "biz:result:create",
+        "biz:result:list",
+        "biz:resultcorrection:audit",
+        "biz:resultcorrection:create",
+        "biz:resultcorrection:list",
+        "biz:statementdifference:list",
+        "biz:statementdifference:resolve",
+        "biz:station:create",
+        "biz:station:edit",
+        "biz:station:list",
+        "biz:station:query",
+        "biz:stationgrant:edit",
+        "biz:stationgrant:list",
+        "biz:statistics:list",
+        "biz:trainingcourse:create",
+        "biz:trainingcourse:edit",
+        "biz:trainingcourse:list",
+        "biz:trainingcourse:publish",
+        "biz:trainingcourse:query",
+        "biz:uploads:complete",
+        "biz:uploads:create",
+        "biz:vehicle:edit",
+        "biz:vehicle:list",
+        "biz:vehicle:query"
+      ],
+      "description": "注册表04_接口/权限与能力注册表.json；新权限先登记后发布。UI仅提示，后端每次鉴权"
+    },
+    "PhotoType": {
+      "values": [
+        "FRONT",
+        "BACK",
+        "LEFT",
+        "RIGHT",
+        "DASHBOARD",
+        "INTERIOR",
+        "EXTRA"
+      ],
+      "description": ""
+    },
+    "PriceRuleStatus": {
+      "values": [
+        "DRAFT",
+        "IN_REVIEW",
+        "APPROVED",
+        "PUBLISHED",
+        "DISABLED"
+      ],
+      "description": ""
+    },
+    "PricingSource": {
+      "values": [
+        "RULE",
+        "UNPRICED",
+        "MANUAL_FILLED",
+        "MANUAL_CHANGED",
+        "APPROVED_ADJUSTMENT"
+      ],
+      "description": ""
+    },
+    "PrivacyCaseStatus": {
+      "values": [
+        "APPLIED",
+        "PROCESSING",
+        "COMPLETED",
+        "REJECTED"
+      ],
+      "description": ""
+    },
+    "QualificationStatus": {
+      "values": [
+        "DRAFT",
+        "SUBMITTED",
+        "APPROVED",
+        "REJECTED",
+        "EXPIRED",
+        "SUSPENDED"
+      ],
+      "description": ""
+    },
+    "QuestionType": {
+      "values": [
+        "SINGLE",
+        "MULTIPLE",
+        "TRUE_FALSE"
+      ],
+      "description": ""
+    },
+    "QuotaType": {
+      "values": [
+        "PICKUP",
+        "STATION_RECEIVE"
+      ],
+      "description": ""
+    },
+    "ReconcileStatus": {
+      "values": [
+        "OPEN",
+        "CHECKING",
+        "RESOLVED"
+      ],
+      "description": ""
+    },
+    "RefundStatus": {
+      "values": [
+        "NONE",
+        "NOT_REQUIRED",
+        "WAIT_RETURN",
+        "READY",
+        "PROCESSING",
+        "SUCCESS",
+        "UNKNOWN",
+        "ABNORMAL",
+        "CLOSED"
+      ],
+      "description": "客户退款执行投影"
+    },
+    "ReservationStatus": {
+      "values": [
+        "HELD",
+        "CONFIRMED",
+        "CONSUMED",
+        "RELEASED"
+      ],
+      "description": ""
+    },
+    "ResultSource": {
+      "values": [
+        "STATION",
+        "ADMIN"
+      ]
+    },
+    "ReturnState": {
+      "values": [
+        "UNDETERMINED",
+        "NOT_REQUIRED",
+        "WAIT_RETURN",
+        "RETURNED"
+      ]
+    },
+    "SelectionMode": {
+      "values": [
+        "EXPLICIT"
+      ],
+      "description": ""
+    },
+    "SensitiveAccessStatus": {
+      "values": [
+        "APPLIED",
+        "APPROVED",
+        "REJECTED",
+        "EXPIRED",
+        "REVOKED"
+      ],
+      "description": ""
+    },
+    "ServiceCaseStatus": {
+      "values": [
+        "OPEN",
+        "PROCESSING",
+        "RESOLVED"
+      ],
+      "description": ""
+    },
+    "SessionRole": {
+      "values": [
+        "OWNER",
+        "DRIVER",
+        "STATION"
+      ]
+    },
+    "SessionStatus": {
+      "values": [
+        "ACTIVE",
+        "REVOKED",
+        "EXPIRED"
+      ],
+      "description": ""
+    },
+    "SessionTokenType": {
+      "values": [
+        "ACCESS",
+        "REFRESH"
+      ],
+      "description": ""
+    },
+    "StatementDifferenceStatus": {
+      "values": [
+        "OPEN",
+        "RESOLVED"
+      ],
+      "description": ""
+    },
+    "StatementReviewStatus": {
+      "values": [
+        "NOT_REQUIRED",
+        "REQUIRED",
+        "PENDING",
+        "APPROVED",
+        "REJECTED"
+      ],
+      "description": ""
+    },
+    "StatementStatus": {
+      "values": [
+        "DRAFT",
+        "INTERNAL_REVIEW",
+        "SENT",
+        "DISPUTED",
+        "CONFIRMED",
+        "VOID"
+      ],
+      "description": ""
+    },
+    "StationOrderAction": {
+      "values": [
+        "CONTACT_DRIVER",
+        "CREATE_HANDOVER",
+        "CONFIRM_HANDOVER",
+        "REVIEW_LICENSE",
+        "REGISTER_RESULT",
+        "REQUEST_RESULT_CORRECTION",
+        "RENOTIFY_PICKUP",
+        "REPORT_EXCEPTION",
+        "VIEW_DETAIL",
+        "VIEW_EVIDENCE",
+        "VIEW_RESULT",
+        "VIEW_HANDOVER_SECRET"
+      ],
+      "description": "动作仍需服务端逐次鉴权，不可把UI集合当授权凭证"
+    },
+    "TrainingCourseStatus": {
+      "values": [
+        "DRAFT",
+        "PUBLISHED",
+        "DISABLED"
+      ],
+      "description": ""
+    },
+    "TrainingStatus": {
+      "values": [
+        "NOT_STARTED",
+        "IN_PROGRESS",
+        "READY_FOR_EXAM",
+        "PASSED",
+        "FAILED"
+      ],
+      "description": ""
+    },
+    "VehicleVerificationStatus": {
+      "values": [
+        "PENDING",
+        "VERIFIED",
+        "REJECTED"
+      ],
+      "description": ""
+    },
+    "VerificationStatus": {
+      "values": [
+        "CREATED",
+        "PROCESSING",
+        "PASSED",
+        "FAILED",
+        "EXPIRED",
+        "UNAVAILABLE"
+      ],
+      "description": ""
+    },
+    "VerificationType": {
+      "values": [
+        "REALNAME",
+        "FACE",
+        "BACKGROUND",
+        "LICENSE",
+        "TRAINING"
+      ],
+      "description": ""
+    }
+  }
+}

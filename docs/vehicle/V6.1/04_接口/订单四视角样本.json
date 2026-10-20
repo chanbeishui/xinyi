@@ -1,0 +1,300 @@
+{
+  "OwnerOrderView": {
+    "orderNo": "VI202610200001",
+    "fulfillmentStatus": "ACCEPTED",
+    "displayStatus": "代驾已接单",
+    "cancelStatus": "NONE",
+    "custody": "OWNER",
+    "vehicle": {
+      "vehicleId": "100",
+      "plateNo": "粤K12345",
+      "vehicleTypeCode": "SMALL",
+      "vehicleTypeLabel": "示例小型车",
+      "brandModel": "演示车型",
+      "vinLast4": null
+    },
+    "station": {
+      "stationId": "200",
+      "name": "测试检测点",
+      "publicAddress": "示例服务地址",
+      "location": {
+        "lng": 110.123456,
+        "lat": 22.123456,
+        "coordinateSystem": "GCJ02"
+      },
+      "servicePhone": null
+    },
+    "slotStartAt": "2026-10-20T06:00:00.000Z",
+    "slotEndAt": "2026-10-20T07:00:00.000Z",
+    "returnedAt": null,
+    "version": 0,
+    "view": "OWNER",
+    "paymentStatus": "SUCCESS",
+    "refundStatus": "NONE",
+    "disputeStatus": "NONE",
+    "pickupAddress": {
+      "address": "示例上门地址",
+      "location": {
+        "lng": 110.123456,
+        "lat": 22.123456,
+        "coordinateSystem": "GCJ02"
+      },
+      "contact": {
+        "displayName": "车主称谓",
+        "phoneMask": "138****0000",
+        "canRequestContact": true
+      }
+    },
+    "returnAddress": {
+      "address": "示例上门地址",
+      "location": {
+        "lng": 110.123456,
+        "lat": 22.123456,
+        "coordinateSystem": "GCJ02"
+      },
+      "contact": {
+        "displayName": "车主称谓",
+        "phoneMask": "138****0000",
+        "canRequestContact": true
+      }
+    },
+    "driver": null,
+    "dispatchAt": null,
+    "payExpireAt": "2026-10-20T05:30:00.000Z",
+    "autoConfirmAt": null,
+    "money": {
+      "items": [],
+      "totalAmount": 34000,
+      "paidAmount": 34000,
+      "refundedAmount": 0
+    },
+    "mileage": {
+      "pickupKm": null,
+      "returnKm": null,
+      "distanceKm": null,
+      "abnormal": false,
+      "publicExplanation": null
+    },
+    "afterSale": null,
+    "allowedActions": [
+      "APPLY_CANCEL_REFUND"
+    ]
+  },
+  "DriverOrderView": {
+    "orderNo": "VI202610200001",
+    "fulfillmentStatus": "ACCEPTED",
+    "displayStatus": "代驾已接单",
+    "cancelStatus": "NONE",
+    "custody": "OWNER",
+    "vehicle": {
+      "vehicleId": "100",
+      "plateNo": "粤K12345",
+      "vehicleTypeCode": "SMALL",
+      "vehicleTypeLabel": "示例小型车",
+      "brandModel": "演示车型",
+      "vinLast4": null
+    },
+    "station": {
+      "stationId": "200",
+      "name": "测试检测点",
+      "publicAddress": "示例服务地址",
+      "location": {
+        "lng": 110.123456,
+        "lat": 22.123456,
+        "coordinateSystem": "GCJ02"
+      },
+      "servicePhone": null
+    },
+    "slotStartAt": "2026-10-20T06:00:00.000Z",
+    "slotEndAt": "2026-10-20T07:00:00.000Z",
+    "returnedAt": null,
+    "version": 0,
+    "view": "DRIVER",
+    "assignmentId": "300",
+    "assignmentEndedAt": null,
+    "accessPhase": "ACTIVE_ASSIGNMENT",
+    "pickupArea": "示例区域",
+    "pickupAddress": {
+      "address": "示例上门地址",
+      "location": {
+        "lng": 110.123456,
+        "lat": 22.123456,
+        "coordinateSystem": "GCJ02"
+      },
+      "contact": {
+        "displayName": "车主称谓",
+        "phoneMask": "138****0000",
+        "canRequestContact": true
+      }
+    },
+    "returnAddress": {
+      "address": "示例上门地址",
+      "location": {
+        "lng": 110.123456,
+        "lat": 22.123456,
+        "coordinateSystem": "GCJ02"
+      },
+      "contact": {
+        "displayName": "车主称谓",
+        "phoneMask": "138****0000",
+        "canRequestContact": true
+      }
+    },
+    "ownerContact": {
+      "displayName": "车主称谓",
+      "phoneMask": "138****0000",
+      "canRequestContact": true
+    },
+    "mileage": {
+      "pickupKm": null,
+      "returnKm": null,
+      "distanceKm": null,
+      "abnormal": false,
+      "publicExplanation": null
+    },
+    "cancellation": {
+      "returnRequired": false,
+      "displayStatus": "正常履约",
+      "publicInstruction": null
+    },
+    "driverReleased": false,
+    "allowedActions": [
+      "DEPART",
+      "CANCEL_ASSIGNMENT"
+    ]
+  },
+  "StationOrderView": {
+    "orderNo": "VI202610200001",
+    "fulfillmentStatus": "ACCEPTED",
+    "displayStatus": "代驾已接单",
+    "cancelStatus": "NONE",
+    "custody": "OWNER",
+    "vehicle": {
+      "vehicleId": "100",
+      "plateNo": "粤K12345",
+      "vehicleTypeCode": "SMALL",
+      "vehicleTypeLabel": "示例小型车",
+      "brandModel": "演示车型",
+      "vinLast4": null
+    },
+    "station": {
+      "stationId": "200",
+      "name": "测试检测点",
+      "publicAddress": "示例服务地址",
+      "location": {
+        "lng": 110.123456,
+        "lat": 22.123456,
+        "coordinateSystem": "GCJ02"
+      },
+      "servicePhone": null
+    },
+    "slotStartAt": "2026-10-20T06:00:00.000Z",
+    "slotEndAt": "2026-10-20T07:00:00.000Z",
+    "returnedAt": null,
+    "version": 0,
+    "view": "STATION",
+    "paymentStatus": "SUCCESS",
+    "driver": null,
+    "assignmentId": "300",
+    "licenseReviewStatus": "MISSING",
+    "result": null,
+    "cancellation": {
+      "returnRequired": false,
+      "displayStatus": "正常履约",
+      "publicInstruction": null
+    },
+    "allowedActions": [
+      "VIEW_DETAIL"
+    ]
+  },
+  "AdminOrderView": {
+    "orderNo": "VI202610200001",
+    "fulfillmentStatus": "ACCEPTED",
+    "displayStatus": "代驾已接单",
+    "cancelStatus": "NONE",
+    "custody": "OWNER",
+    "vehicle": {
+      "vehicleId": "100",
+      "plateNo": "粤K12345",
+      "vehicleTypeCode": "SMALL",
+      "vehicleTypeLabel": "示例小型车",
+      "brandModel": "演示车型",
+      "vinLast4": null
+    },
+    "station": {
+      "stationId": "200",
+      "name": "测试检测点",
+      "publicAddress": "示例服务地址",
+      "location": {
+        "lng": 110.123456,
+        "lat": 22.123456,
+        "coordinateSystem": "GCJ02"
+      },
+      "servicePhone": null
+    },
+    "slotStartAt": "2026-10-20T06:00:00.000Z",
+    "slotEndAt": "2026-10-20T07:00:00.000Z",
+    "returnedAt": null,
+    "version": 0,
+    "view": "ADMIN",
+    "ownerAccountId": "50",
+    "ownerContact": {
+      "displayName": "车主称谓",
+      "phoneMask": "138****0000",
+      "canRequestContact": true
+    },
+    "driver": null,
+    "assignmentId": "300",
+    "authoritativeDeptId": "4",
+    "paymentStatus": "SUCCESS",
+    "refundStatus": "NONE",
+    "disputeStatus": "NONE",
+    "money": {
+      "items": [],
+      "totalAmount": 34000,
+      "paidAmount": 34000,
+      "refundedAmount": 0
+    },
+    "pickupAddress": {
+      "address": "示例上门地址",
+      "location": {
+        "lng": 110.123456,
+        "lat": 22.123456,
+        "coordinateSystem": "GCJ02"
+      },
+      "contact": {
+        "displayName": "车主称谓",
+        "phoneMask": "138****0000",
+        "canRequestContact": true
+      }
+    },
+    "returnAddress": {
+      "address": "示例上门地址",
+      "location": {
+        "lng": 110.123456,
+        "lat": 22.123456,
+        "coordinateSystem": "GCJ02"
+      },
+      "contact": {
+        "displayName": "车主称谓",
+        "phoneMask": "138****0000",
+        "canRequestContact": true
+      }
+    },
+    "mileage": {
+      "pickupKm": null,
+      "returnKm": null,
+      "distanceKm": null,
+      "abnormal": false,
+      "publicExplanation": null
+    },
+    "afterSale": null,
+    "payExpireAt": "2026-10-20T05:30:00.000Z",
+    "dispatchAt": null,
+    "autoConfirmAt": null,
+    "driverReleased": false,
+    "allowedActions": [
+      "VIEW_DETAIL"
+    ]
+  }
+}

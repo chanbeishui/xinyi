@@ -1,0 +1,29 @@
+digraph F37 {
+graph [rankdir=TB, bgcolor="white", pad="0.35", nodesep="0.3", ranksep="0.38", fontname="Noto Sans CJK SC", fontsize=18, labelloc=t, label="F37 双认证域与小程序会话切换"];
+node [shape=box, style="rounded,filled", fillcolor="#F3F6FA", color="#CFD6E0", fontname="Noto Sans CJK SC", fontsize=12, margin="0.15,0.10"];
+edge [color="#74849A", fontname="Noto Sans CJK SC", fontsize=10];
+"n1" [label="PC管理员：sys_user + LoginUser + 原JWT"];
+"n2" [label="小程序：微信code经服务端核验"];
+"n3" [label="vi_account基础账号与独立设备session"];
+"n4" [label="不透明访问令牌＋原子轮换刷新令牌"];
+"n5" [label="请求匹配MINI或ADMIN安全链"];
+"n6" [label="是否检测工作操作？",shape=diamond,fillcolor="#EEF4FF"];
+"n7" [label="核验员工绑定、sys_user实时状态和auth_version"];
+"n8" [label="核验本人车主/承接/账单能力"];
+"n9" [label="服务端构造ActorContext，进入统一业务服务"];
+"n10" [label="角色/站点切换校验目标能力和上下文版本"];
+"n11" [label="只变本session，contextVersion递增并换访问令牌"];
+"n1" -> "n5" [label="ADMIN"];
+"n2" -> "n3" [label=""];
+"n3" -> "n4" [label=""];
+"n4" -> "n5" [label="MINI"];
+"n5" -> "n6" [label="MINI工作请求"];
+"n6" -> "n7" [label="是"];
+"n6" -> "n8" [label="否"];
+"n7" -> "n9" [label=""];
+"n8" -> "n9" [label=""];
+"n5" -> "n9" [label="ADMIN真实权限"];
+"n4" -> "n10" [label="切换"];
+"n10" -> "n11" [label=""];
+"n11" -> "n5" [label="新上下文"];
+}

@@ -1,0 +1,23 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>V6_本轮交付与验证</title><style>body{font:16px/1.75 -apple-system,BlinkMacSystemFont,"Microsoft YaHei",sans-serif;color:#202632;margin:0;background:#f6f7f9}header{padding:14px 24px;background:white;border-bottom:1px solid #ddd}main{max-width:1120px;margin:24px auto;padding:30px;background:white}h1{font-size:30px}h2{margin-top:36px}a{color:#0661bd}table{border-collapse:collapse;width:100%;display:block;overflow:auto;font-size:14px}td,th{border:1px solid #dde2ea;padding:10px;vertical-align:top}th{background:#f1f5fb}pre{padding:15px;background:#f2f4f7;overflow:auto}img{max-width:100%;height:auto}blockquote{padding:10px 20px;border-left:3px solid #2571be;background:#f4f8fc}@media(max-width:700px){main{padding:15px;margin:8px}h1{font-size:25px}}</style></head><body><header><a href="../00_开始.html">V6.0 完整资料</a>　<a href="../02_UI/index.html">交互原型</a>　T3.0</header><main><h1>V6工程执行版：交付与验证边界</h1>
+<p>核验日期2026-10-20。当前包是产品/契约基线加工程执行层，不是完整生产实现。用户仓库、数据库及供应商未被修改。</p>
+<h2>交付内容</h2>
+<p>78项任务（75开发、3联调发布）、249API/287画板/66模型/298用例完整责任映射、每任务API闭包、环境/安装/初始化/状态/完成脚本、uni-app与后端模板、测试classpath控制器及实际HTTP/MySQL测试。首次报价AddressCreate/XOR修复已入主契约和样本测试。V5 UI原文件和574截图保留，未重绘/重跑全UI。</p>
+<h2>本轮已运行</h2>
+<ul>
+<li>工具、报价Schema、供应商模拟测试：58项通过；仅模拟网关部分实际启动HTTP，不能当真实微信或xinyi。</li>
+<li>继承的契约/公开字段/参考策略检查：51项通过，非真实后端。</li>
+<li>工程责任映射/DAG/文件与入口检查：28项通过。</li>
+<li>业务资料一致性检查：以最终<code>资料深度一致性检查.json</code>为准；修订后重跑。</li>
+<li>新后端纯Java边界示例：javac --release17实际编译，6项断言通过。中文路径在本环境javac第一次出现文件名编码错误，复制到ASCII临时目录后按UTF-8编译通过，记录的是参考类而非Spring上下文。</li>
+<li>主dto-types.ts经tsc --noEmit --targetES2020通过。不是uni-app依赖构建通过。</li>
+<li>真实测试收集：19项HTTP＋6项MySQL可被pytest发现，<strong>仅收集，未执行</strong>。</li>
+</ul>
+<p>jsonschema.RefResolver发出弃用警告；当前固定环境中测试通过，E08升级该工具时迁移到referencing并重跑，不隐藏警告或将其视为业务失败。</p>
+<h2>本轮不能声称通过的项目</h2>
+<p>Maven/Docker/MySQL命令不存在，容器外部依赖下载DNS不可用。未运行实际xinyi构建、Spring测试上下文、66表建表、MySQL并发、npm install/uni-app打包、PC构建、微信开发者工具或真机、支付/地图/OCR/活体/短信、生产部署。对应真实测试和原298用例继续NOT_RUN；现有工作区实现账本继续NOT_ASSESSED。</p>
+<p>不存在真实生成的package-lock/镜像digest时明确NOT_RESOLVED；E02/E04从所选版本实际解析，不提供假锁文件。scaffold允许安全地合并缺失工程文件，已存在冲突必须处理，不替换旧业务。</p>
+<h2>浏览验证</h2>
+<p>本轮只验证新的离线入口、任务搜索/筛选和接口浏览；使用普通Playwright（会话没有列出Browser技能运行时）。本机HTTP导航被策略以ERR_BLOCKED_BY_ADMINISTRATOR阻止，未更改策略。改用原始HTML内存加载检查，6项通过，实际页面跳转没有记为通过。具体视口与结果见V6_资料浏览验证.json，不能把它当成小程序业务测试。</p>
+<h2>后续完整验收</h2>
+<p>G01先preflight验证其他74开发任务与全量台账，再独立审查并标记G01，最终门禁不再忽略G01。CI逐步FOUNDATION/IDENTITY/BOOKING/FULL，不以早期阶段绿灯称完整功能。L01供应商、L02真机、L03生产条件分别验收。测试控制面绝不进src/main或生产包，凭据只在本地受控配置中。</p>
+</main></body></html>

@@ -1,0 +1,19 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>02_初始化与框架接入</title><style>body{font:16px/1.75 -apple-system,BlinkMacSystemFont,"Microsoft YaHei",sans-serif;color:#202632;margin:0;background:#f6f7f9}header{padding:14px 24px;background:white;border-bottom:1px solid #ddd}main{max-width:1120px;margin:24px auto;padding:30px;background:white}h1{font-size:30px}h2{margin-top:36px}a{color:#0661bd}table{border-collapse:collapse;width:100%;display:block;overflow:auto;font-size:14px}td,th{border:1px solid #dde2ea;padding:10px;vertical-align:top}th{background:#f1f5fb}pre{padding:15px;background:#f2f4f7;overflow:auto}img{max-width:100%;height:auto}blockquote{padding:10px 20px;border-left:3px solid #2571be;background:#f4f8fc}@media(max-width:700px){main{padding:15px;margin:8px}h1{font-size:25px}}</style></head><body><header><a href="../00_开始.html">V6.1 完整资料</a>　<a href="../02_UI/index.html">交互原型</a>　T3.1</header><main><h1>初始化与框架接入 V6.0</h1>
+<h2>初次执行边界</h2>
+<p>以实际工作区和库结构为准。新隔离空库初始化当前vi表；意外已有vi表使用12_工程执行/03的异常核查路径，不默认安排旧M0迁移，不执行无来源的V4交易重放。本工程隔离验证基线为MySQL8.4；复用其他版本先验证生成列、表达式默认值、CHECK和索引。已有sys表不能DROP、重建或改时区。001脚本不含真实商户/价格/个人/司机数据，不含IF NOT EXISTS；已有同名vi表必须停止并比较，不认为可以删除。</p>
+<h2>预检与顺序</h2>
+<ol>
+<li>记录Git分支/commit、实际Maven与JDK、目标数据库名及版本；备份现有框架库并在隔离副本运行。</li>
+<li>运行05_数据设计/000_初始化预检.sql，确认无vi表且sys结构符合实际接入。</li>
+<li>对空业务目标执行001_vi业务表_初始化_V6.0.sql。DDL隐式提交，失败记录失败语句和已建表，不声称全量自动回滚；只在可丢弃测试库重建。</li>
+<li>运行002_结构验收.sql核对表/主键/自增/生成列/枚举CHECK。执行11_工具/verify_mysql.py可比较实际information_schema与源JSON。</li>
+<li>由Agent依据当前sys_menu主键/父菜单/权限机制生成一次性框架菜单字典接入脚本；菜单码源是权限注册表，不在本包硬造1/100等管理员ID。脚本与仓库增量规范同行提交，运行前有权限/数据范围回归。</li>
+<li>验证new vi UTC写入、sys原始时间不变、Long大ID传输、跨域Token、真实两站权限；不得只看应用启动成功。</li>
+</ol>
+<h2>实体和Mapper</h2>
+<p>实体独立ViRecord，不继承含params权限拼接的查询实体；查询/写DTO分开，scope只能Service构造。正常自增INSERT排除id，useGeneratedKeys=true/keyProperty=id；自然主键由真实driver/scope构造。任何update白名单排除生成列、主键、created_at，version递增及updated_at由SQL负责。不可变流水表不提供通用修改。</p>
+<h2>时间集成</h2>
+<p>独立vi Mapper使用UTC Instant TypeHandler；仅绑定明确时间字段，不全局覆盖sys Date。CURRENT_TIMESTAMP不能只靠注释称UTC；001默认UTC_TIMESTAMP(3)。日期筛选参数是业务日期，服务端用Asia/Shanghai转UTC边界，SQL使用&gt;=start AND &lt;endExclusive。现有sys真实时间存储需抽样对照原业务显示再决定转换；按外键join无需对整个结果统一加8小时。</p>
+<h2>真实SQL测试</h2>
+<p>至少测试4张自然键重复插入失败、有效司机承接唯一、已入单费用唯一、generated列写入拒绝、不同会话时区UTC默认一致、同键幂等、并发创建重叠/不重叠集合和确认/撤回互斥。本包本轮没有可用MySQL服务，结构检查不能替代这些执行记录。</p>
+</main></body></html>

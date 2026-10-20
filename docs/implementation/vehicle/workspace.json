@@ -1,0 +1,120 @@
+{
+  "baselineObservation": {
+    "sourceBranch": "rongli-wx",
+    "observedSourceCommit": "890cfbbfc5e0db404a932ab5ef8b449d07c7f444",
+    "actualHead": "18b5ce4e424211dc9711dffcf428fd4125f341cf",
+    "headMatchesObservation": false,
+    "userConfirmedStage": "FRAMEWORK_ONLY_M0_NOT_STARTED",
+    "m0Completion": "NOT_INFERRED_REQUIRES_CURRENT_TASK_EVIDENCE",
+    "businessModuleAction": "CREATE_NEW",
+    "databasePlan": "FRESH_ISOLATED_DATABASE",
+    "existingDatabaseStatus": "NOT_INSPECTED",
+    "note": "用户未做M0；SHA仅是本轮源快照，正常开发产生新HEAD不自动失败/回退。意外模块先核查，不覆盖。"
+  },
+  "observedAt": "2026-10-20T15:28:17.032675+00:00",
+  "repoRoot": "/Users/chenbeishui/Downloads/code_project/xinyi",
+  "checks": {
+    "gitHead": {
+      "argv": [
+        "git",
+        "rev-parse",
+        "HEAD"
+      ],
+      "exitCode": 0,
+      "stdout": "18b5ce4e424211dc9711dffcf428fd4125f341cf\n",
+      "stderr": ""
+    },
+    "gitBranch": {
+      "argv": [
+        "git",
+        "branch",
+        "--show-current"
+      ],
+      "exitCode": 0,
+      "stdout": "rongli-wx-home\n",
+      "stderr": ""
+    },
+    "gitStatus": {
+      "argv": [
+        "git",
+        "status",
+        "--short"
+      ],
+      "exitCode": 0,
+      "stdout": "?? docs/\n",
+      "stderr": ""
+    },
+    "java": {
+      "argv": [
+        "java",
+        "-version"
+      ],
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": "java version \"21.0.8\" 2025-07-15 LTS\nJava(TM) SE Runtime Environment (build 21.0.8+12-LTS-250)\nJava HotSpot(TM) 64-Bit Server VM (build 21.0.8+12-LTS-250, mixed mode, sharing)\n"
+    },
+    "node": {
+      "argv": [
+        "node",
+        "--version"
+      ],
+      "exitCode": 0,
+      "stdout": "v22.16.0\n",
+      "stderr": ""
+    },
+    "npm": {
+      "argv": [
+        "npm",
+        "--version"
+      ],
+      "exitCode": 0,
+      "stdout": "10.9.2\n",
+      "stderr": ""
+    },
+    "maven": {
+      "argv": [
+        "mvn",
+        "-version"
+      ],
+      "exitCode": 0,
+      "stdout": "Apache Maven 3.9.14 (996c630dbc656c76214ce58821dcc58be960875b)\nMaven home: /opt/homebrew/Cellar/maven/3.9.14/libexec\nJava version: 25.0.2, vendor: Homebrew, runtime: /opt/homebrew/Cellar/openjdk/25.0.2/libexec/openjdk.jdk/Contents/Home\nDefault locale: zh_CN_#Hans, platform encoding: UTF-8\nOS name: \"mac os x\", version: \"26.6.2\", arch: \"aarch64\", family: \"mac\"\n",
+      "stderr": ""
+    },
+    "docker": {
+      "argv": [
+        "docker",
+        "version"
+      ],
+      "exitCode": 127,
+      "error": "FileNotFoundError"
+    },
+    "compose": {
+      "argv": [
+        "docker",
+        "compose",
+        "version"
+      ],
+      "exitCode": 127,
+      "error": "FileNotFoundError"
+    }
+  },
+  "guidance": [
+    {
+      "path": "AGENTS.md",
+      "sha256": "9a618cb4c3448de5e31139c64b6b008fcb7d045bc28a7d3a6d62e629a7885628"
+    }
+  ],
+  "modules": [
+    "xinyi-admin",
+    "xinyi-system",
+    "xinyi-common",
+    "xinyi-generator",
+    "xinyi-quartz",
+    "xinyi-framework"
+  ],
+  "suggestedBusinessModule": "xinyi-rongli",
+  "moduleConflict": false,
+  "miniappExists": false,
+  "databaseStatus": "NOT_INSPECTED",
+  "note": "只记录工具版本/路径/Git；不读取输出application*.yml或环境变量秘密；存在代码不自动判完成。"
+}

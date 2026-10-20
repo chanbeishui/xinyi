@@ -1,0 +1,65 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>01_测试架构与控制面</title><style>body{font:16px/1.75 -apple-system,BlinkMacSystemFont,"Microsoft YaHei",sans-serif;color:#202632;margin:0;background:#f6f7f9}header{padding:14px 24px;background:white;border-bottom:1px solid #ddd}main{max-width:1120px;margin:24px auto;padding:30px;background:white}h1{font-size:30px}h2{margin-top:36px}a{color:#0661bd}table{border-collapse:collapse;width:100%;display:block;overflow:auto;font-size:14px}td,th{border:1px solid #dde2ea;padding:10px;vertical-align:top}th{background:#f1f5fb}pre{padding:15px;background:#f2f4f7;overflow:auto}img{max-width:100%;height:auto}blockquote{padding:10px 20px;border-left:3px solid #2571be;background:#f4f8fc}@media(max-width:700px){main{padding:15px;margin:8px}h1{font-size:25px}}</style></head><body><header><a href="../00_开始.html">V6.1 完整资料</a>　<a href="../02_UI/index.html">交互原型</a>　T3.1</header><main><h1>真实集成测试架构</h1>
+<h2>1. 三层不能混淆</h2>
+<p>A：资料/Schema/函数测试，验证设计与局部代码。B：真实HTTP→SpringSecurity→Controller→Service→MyBatis→MySQL＋实际文件字节，外部供应商可由独立模拟器代替。C：真实微信/支付/地图/OCR/活体/短信＋真机。</p>
+<p>本包提供20项模拟供应商测试、真实HTTP测试客户端和6项MySQL探针；它们的测试结果分层记录。模拟供应商的SQLite仅保存<strong>外部替身</strong>的code/支付/退款状态，绝不充当vi业务数据库。</p>
+<h2>2. E07必须在真实后端落地的测试入口</h2>
+<p>位置固定 <code>xinyi-admin/src/test/java/com/xinyi/web/viit/</code>，通过<code>@TestConfiguration</code>和<code>@SpringBootTest(webEnvironment=RANDOM_PORT)</code>导入，或者仅测试classpath的<code>ViIntegrationApplication</code>启动。不能放src/main、不让生产打包包含，不增加可公网调用的管理后门。</p>
+<p>全部入口必须同时满足：profile包含vi-it、系统environment=integration、仅loopback测试监听、X-Test-Control-Key常量时间校验、数据库test_environment_guard存在且hash匹配、SIMULATOR模式。生产Jar静态检查不能发现测试控制器；真实生产请求/__integration/*应404或网关拒绝。</p>
+<table>
+<thead>
+<tr>
+  <th>测试端点</th>
+  <th>请求/响应</th>
+  <th>实现限制</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>GET /__integration/runtime</td>
+  <td>返回environment=integration、databaseGuard、providerMode、contractVersion=6.0.0（buildCommit由实际运行证据额外记录）</td>
+  <td>不返回密钥、连接密码或个人信息</td>
+</tr>
+<tr>
+  <td>POST /__integration/fixtures</td>
+  <td>输入fixture=IDENTITY或BOOKING、providerRunId；201返回见fixtures-contract.json</td>
+  <td>仅装载基础组织/站点/规则/时段/测试角色，不直接造PAID/RETURNED订单</td>
+</tr>
+<tr>
+  <td>POST /__integration/clock/advance</td>
+  <td>runId、advanceSeconds非负且有上限</td>
+  <td>注入Clock，推进真实任务到期扫描；不直接改order.status</td>
+</tr>
+<tr>
+  <td>POST /__integration/provider-events</td>
+  <td>runId、原始模拟报文、模拟签名</td>
+  <td>使用测试ProviderVerifier后调用与真实渠道同一个可信事件应用服务；不暴露skipVerify选项</td>
+</tr>
+<tr>
+  <td>POST /__integration/jobs/run-due</td>
+  <td>runId、jobKind白名单</td>
+  <td>调用生产TaskProcessor的到期任务逻辑，允许租约/重试，不做任意SQL</td>
+</tr>
+</tbody>
+</table>
+<p>事件入口是测试通道，<strong>不把HMAC模拟签名当微信APIv3验签</strong>。真实APIv3适配器仍需官方SDK+本地RSA/AES协议测试和L01真实配置验证。</p>
+<h2>3. FixtureProvisioner的职责与事务</h2>
+<p>基础sys/dept/role/user测试数据只能在明确全新隔离库，用框架既有授权Service创建/绑定，递增auth_version和审计outbox照常。admin只用于fixture管理，不作为所有测试用例默认身份。准备范围受限的运营、调度、检测员、财务经办和财务复核，不同真实测试账号。</p>
+<p>BOOKING建2家公司边界、每公司1个部门，至少2站；运营仅A，另一B用于拒绝；财务主体A/B独立。车型TEST_CAR、检测TEST_INSPECTION、协议TEST_TERMS_V1/TEST_PRIVACY_V1仅测试。时段取注入Clock之后的本地业务日并转换UTC。客户价格和司机报酬分开，默认测试客户固定30000分＋起步4000分，路线6公里被含里程覆盖，expectedQuoteFen=34000。</p>
+<p>这些值是<strong>隔离测试夹具</strong>，不是真实价格/主体批准。providers用runId生成稳定测试openid；通过真实微信登录接口建立vi_account与安全会话，通过真实手机号绑定接口绑定测试号码。司机资格通过培训、测试活体及人工审批的正常Service形成，不直接伪造超管或把driver表设PASSED蒙混权限。未实现的资格模块不阻最初owner/address测试。</p>
+<p>fixture可写测试专用run资源登记表，不进入66业务主模型；记录用于审计和隔离资源追踪，不能对任意表开放generic insert。</p>
+<h2>4. 可运行入口</h2>
+<p><code>live/</code>实际发送HTTP并查询真实MySQL。当前后端尚未在本容器实现，缺入口会失败而非skip。E07使用<code>ViHttpSuiteIT</code>启动HTTP，ProcessBuilder运行Python pytest并传随机端口及已配置环境（日志中脱敏），测试结果非0使Maven失败。JUnit测试类不得仅执行Schema参考函数。</p>
+<p><code>database/</code>实际执行结构与约束探针，必须MySQL，不能替代业务Service测试。T06还要增加完整初装/增量对齐、生成列写失败、枚举拒绝、合并CAS等验证。</p>
+<p>跨运行数据独立runId，所有查询断言携带本次ID，不假定数据库中只存在一辆车/一张订单。HTTP事务不能依赖测试方法@Transactional自动回滚。测试成功也要确认重启后可读；另以T07管理进程重启，非前端刷新假装重启。</p>
+<h2>5. 故障注入</h2>
+<p>业务任务须在现有模拟器基础上补齐下列故障注入（本包模拟器尚未实现全部失联/乱序模式）：TIMEOUT_BEFORE_ACCEPT、ACCEPTED_RESPONSE_LOST、DUPLICATE_EVENT、WRONG_AMOUNT、REORDERED_EVENT等测试驱动。客户端写入结果未知，先查原交易，不创建新单重付。Redis故障需使数据库权威撤权继续拒绝；MySQL失败无成功回包；outbox通知失败不回滚已发生归还。</p>
+<p>完整场景、参与方和DB断言见02及case-test-plan.json。每个任务完成时新增对应真实测试方法；不能把298条中文Given/When/Then文件存在当298个已运行测试。</p>
+<h2>阶段化测试，避免M1被尚未实现M2卡死</h2>
+<p><code>integration-identity</code>只收集10项身份/资料真实HTTP测试，使用IDENTITY夹具：基础测试身份、框架授权和车型字典，不依赖报价/支付。<code>integration-booking</code>收集9项报价测试，BOOKING夹具扩展站点/时段/价格，依赖C02–C04。<code>integration-suite</code>运行这19项；<code>integration-full</code>再运行所有任务新增的*IT。没有收集的后续场景仍为NOT_RUN，不记为通过。</p>
+<p>E07分步完成FixturePort：先IDENTITY与守卫，后续C02/C03/C04分别补BOOKING所需构造。测试夹具只提供业务前置，不生成已经支付/交接/确认/付款的终态。原资料“BASE”统指基础夹具族，不作为请求字面量。</p>
+<p>工作区ci-stage.json从FOUNDATION→IDENTITY→BOOKING→FULL按代码能力逐步前移。所有PR仍构建/执行基座和数据库检查；未进入的后续阶段明确未验收。G01最终门禁要求FULL，不能以FOUNDATION工作流绿色称完整交付。</p>
+<pre><code class="language-bash">python docs/vehicle/V6.1/12_工程执行/engineer.py run --repo . --kind integration-identity
+python docs/vehicle/V6.1/12_工程执行/engineer.py run --repo . --kind integration-suite
+python docs/vehicle/V6.1/12_工程执行/engineer.py run --repo . --kind integration-full
+</code></pre>
+</main></body></html>

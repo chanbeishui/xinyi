@@ -1,0 +1,30 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TASK</title><style>body{font:16px/1.75 -apple-system,BlinkMacSystemFont,"Microsoft YaHei",sans-serif;color:#202632;margin:0;background:#f6f7f9}header{padding:14px 24px;background:white;border-bottom:1px solid #ddd}main{max-width:1120px;margin:24px auto;padding:30px;background:white}h1{font-size:30px}h2{margin-top:36px}a{color:#0661bd}table{border-collapse:collapse;width:100%;display:block;overflow:auto;font-size:14px}td,th{border:1px solid #dde2ea;padding:10px;vertical-align:top}th{background:#f1f5fb}pre{padding:15px;background:#f2f4f7;overflow:auto}img{max-width:100%;height:auto}blockquote{padding:10px 20px;border-left:3px solid #2571be;background:#f4f8fc}@media(max-width:700px){main{padding:15px;margin:8px}h1{font-size:25px}}</style></head><body><header><a href="../../../00_开始.html">V6.1 完整资料</a>　<a href="../../../02_UI/index.html">交互原型</a>　T3.1</header><main><h1>E00 · 框架基线核对：M0尚未开始</h1>
+<p>阶段：M0；当前用户未实施M0。前置：无。</p>
+<h2>本任务交付</h2>
+<ul>
+<li>记录当前rongli-wx工作区HEAD、branch、dirty、有效AGENTS与源码指纹；用户未做M0</li>
+<li>确认框架模块并记录将新建xinyi-rongli与xinyi-miniapp；不从旧日志推断完成</li>
+<li>保留sys和其他框架业务；不checkout/reset/clean，不重启或改写原数据库</li>
+</ul>
+<h2>代码落位</h2>
+<p><code>docs/implementation/vehicle/E00/</code></p>
+<h2>失败与边界</h2>
+<ul>
+<li>commit标题/目录存在/SQL文件不构成M0通过</li>
+<li>当前HEAD不同只登记，不自动回退</li>
+<li>数据库状态未知不能默认删除或迁移</li>
+</ul>
+<h2>验证命令</h2>
+<pre><code class="language-text">python docs/vehicle/V6.1/12_工程执行/engineer.py doctor --repo .
+python docs/vehicle/V6.1/12_工程执行/taskctl.py summary --repo .
+</code></pre>
+<p>初次无小程序lockfile先npm install并提交生成结果，之后npm ci。部署/供应商凭据缺失不替代构建或资料证据。</p>
+<h2>完成判据</h2>
+<ul>
+<li>当前工作区观察报告有真实命令、HEAD与差异；无密钥和个人数据</li>
+<li>只完成E00基线，不预标M0整体、构建或业务测试通过</li>
+<li>独立复核观察证据，随后继续E01/E02等就绪任务</li>
+</ul>
+<h2>持续执行</h2>
+<p>完成后更新真实任务账本和证据，继续taskctl next；不得把本任务完成写成M0整体完成。用户没有做M0，不要求用户先补M0。中止时保留恢复点，不清空工作区。</p>
+</main></body></html>

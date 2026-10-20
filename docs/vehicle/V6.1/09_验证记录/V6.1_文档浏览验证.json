@@ -1,0 +1,40 @@
+{
+  "kind": "DOCUMENT_BROWSER_CHECK",
+  "at": "2026-10-20T07:01:53.997543+00:00",
+  "scope": "rebaselined docs only, not business UI",
+  "browser": "Chromium/Playwright",
+  "browserSkill": "ABSENT: Browser skill/runtime not listed; regular Playwright",
+  "checks": [
+    {
+      "name": "home identity, nonblank, current starting state, desktop screenshot",
+      "result": "PASS",
+      "url": "about:blank",
+      "viewport": [
+        1440,
+        1000
+      ]
+    },
+    {
+      "name": "78 task catalog filters to framework E00 start",
+      "result": "PASS",
+      "transport": "set_content"
+    },
+    {
+      "name": "E04 explicitly creates business module and miniapp",
+      "result": "PASS"
+    },
+    {
+      "name": "mobile390 document no horizontal overflow",
+      "result": "PASS"
+    },
+    {
+      "name": "no document page errors",
+      "result": "PASS"
+    }
+  ],
+  "directNavigation": "BLOCKED",
+  "consoleErrors": [],
+  "navigationError": "Page.goto: net::ERR_BLOCKED_BY_ADMINISTRATOR at file:///mnt/data/v61_work/00_%E5%BC%80%E5%A7%8B.html\nCall log:\n  - navigating to \"file:///mnt/data/v61_work/00_%E5%BC%80%E5%A7%8B.html\", waiting until \"load\"\n",
+  "passed": 5,
+  "failed": 0
+}

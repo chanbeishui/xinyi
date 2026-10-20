@@ -1,0 +1,5307 @@
+[
+  {
+    "id": "E00",
+    "phase": "M0",
+    "title": "框架基线核对：M0尚未开始",
+    "domain": "platform",
+    "depends_on": [],
+    "deliverables": [
+      "记录当前rongli-wx工作区HEAD、branch、dirty、有效AGENTS与源码指纹；用户未做M0",
+      "确认框架模块并记录将新建xinyi-rongli与xinyi-miniapp；不从旧日志推断完成",
+      "保留sys和其他框架业务；不checkout/reset/clean，不重启或改写原数据库"
+    ],
+    "negative_checks": [
+      "commit标题/目录存在/SQL文件不构成M0通过",
+      "当前HEAD不同只登记，不自动回退",
+      "数据库状态未知不能默认删除或迁移"
+    ],
+    "api_ids": [],
+    "page_ids": [],
+    "tables": [],
+    "case_ids": [],
+    "scope": "DEVELOPMENT",
+    "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
+    "status": "VERIFIED",
+    "code_paths": [
+      "docs/implementation/vehicle/E00/"
+    ],
+    "test_class": "E00PlatformIT",
+    "commands": [
+      "python docs/vehicle/V6.1/12_工程执行/engineer.py doctor --repo .",
+      "python docs/vehicle/V6.1/12_工程执行/taskctl.py summary --repo ."
+    ],
+    "done_when": [
+      "当前工作区观察报告有真实命令、HEAD与差异；无密钥和个人数据",
+      "只完成E00基线，不预标M0整体、构建或业务测试通过",
+      "独立复核观察证据，随后继续E01/E02等就绪任务"
+    ],
+    "blocker_policy": {
+      "credential": "只阻L01或具体真实渠道验证，通用代码可继续",
+      "policy": "生产配置待批准；测试使用明示fixture",
+      "environment": "具体命令与错误落盘；不能假装已验收",
+      "access": "不得绕过限制；保存恢复点",
+      "contract": "局部冲突登记并修订同源契约，独立任务继续"
+    },
+    "starting_condition": "USER_CONFIRMED_NOT_STARTED",
+    "evidence": [
+      {
+        "path": "docs/implementation/vehicle/evidence/E00.json",
+        "sha256": "ff2a8956af49fe78fcbdc4d6ca1e553148f7145f9bd0f3b10f141bcb55f9e62b"
+      },
+      {
+        "path": "docs/implementation/vehicle/evidence/E00.json",
+        "sha256": "ff2a8956af49fe78fcbdc4d6ca1e553148f7145f9bd0f3b10f141bcb55f9e62b"
+      }
+    ],
+    "implementation": null,
+    "review": null,
+    "blocker": null,
+    "updatedAt": "2026-10-20T15:34:20.162283+00:00"
+  },
+  {
+    "id": "E01",
+    "phase": "M0",
+    "title": "契约修复和最小输入闭合",
+    "domain": "contract",
+    "depends_on": [
+      "E00"
+    ],
+    "deliverables": [
+      "验证新/旧车辆与新/旧地址四组合报价，XOR、同意协议约束",
+      "生成切片契约和类型"
+    ],
+    "negative_checks": [
+      "缺组、双传、null、ID溢出、伪造金额与站点必须拒绝"
+    ],
+    "api_ids": [],
+    "page_ids": [],
+    "tables": [],
+    "case_ids": [],
+    "scope": "DEVELOPMENT",
+    "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
+    "status": "VERIFIED",
+    "code_paths": [
+      "docs/implementation/vehicle/E01/"
+    ],
+    "test_class": "E01ContractIT",
+    "commands": [
+      "python docs/vehicle/V6.1/12_工程执行/engineer.py check --repo .",
+      "python -m pytest docs/vehicle/V6.1/12_工程执行/tests/test_contract_regression.py -q"
+    ],
+    "done_when": [
+      "执行本包契约与报价回归，保存实际断言记录",
+      "当前静态契约检查不标真实API已实现",
+      "继续环境/工程建设，不以再次设计整包作为结束"
+    ],
+    "blocker_policy": {
+      "credential": "只阻L01或具体真实渠道验证，通用代码可继续",
+      "policy": "生产配置待批准；测试使用明示fixture",
+      "environment": "具体命令与错误落盘；不能假装已验收",
+      "access": "不得绕过限制；保存恢复点",
+      "contract": "局部冲突登记并修订同源契约，独立任务继续"
+    },
+    "starting_condition": "USER_CONFIRMED_NOT_STARTED",
+    "evidence": [
+      {
+        "path": "docs/implementation/vehicle/evidence/E01.json",
+        "sha256": "aa9ce8f9133aef60671e99efd59c442a1a3be333ce77b44fd2114ce4523f5b7c"
+      },
+      {
+        "path": "docs/implementation/vehicle/evidence/E01.json",
+        "sha256": "aa9ce8f9133aef60671e99efd59c442a1a3be333ce77b44fd2114ce4523f5b7c"
+      }
+    ],
+    "implementation": null,
+    "review": null,
+    "blocker": null,
+    "updatedAt": "2026-10-20T16:13:48.395699+00:00"
+  },
+  {
+    "id": "E02",
+    "phase": "M0",
+    "title": "隔离运行环境与依赖锁定",
+    "domain": "platform",
+    "depends_on": [
+      "E00"
+    ],
+    "deliverables": [
+      "独立MySQL/Redis/文件目录/模拟供应商",
+      "JDK21运行release17",
+      "锁定包与镜像版本"
+    ],
+    "negative_checks": [
+      "生产URL和凭据不加载",
+      "镜像未就绪不得算启动成功",
+      "Docker不可用有独立测试实例路径"
+    ],
+    "api_ids": [],
+    "page_ids": [],
+    "tables": [],
+    "case_ids": [],
+    "scope": "DEVELOPMENT",
+    "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
+    "status": "NOT_ASSESSED",
+    "code_paths": [
+      "docs/implementation/vehicle/E02/"
+    ],
+    "test_class": "E02PlatformIT",
+    "commands": [
+      "python docs/vehicle/V6.1/12_工程执行/engineer.py env --repo . --apply",
+      "python docs/vehicle/V6.1/12_工程执行/engineer.py run --repo . --kind infra",
+      "python docs/vehicle/V6.1/12_工程执行/engineer.py run --repo . --kind infra-status"
+    ],
+    "done_when": [
+      "隔离环境配置、随机本地密钥与端口不干扰原库",
+      "真实工具版本/拉取/健康检查有证据；失败部分保持VERIFICATION阻塞",
+      "不要求未开发的身份/报价/付款提前通过"
+    ],
+    "blocker_policy": {
+      "credential": "只阻L01或具体真实渠道验证，通用代码可继续",
+      "policy": "生产配置待批准；测试使用明示fixture",
+      "environment": "具体命令与错误落盘；不能假装已验收",
+      "access": "不得绕过限制；保存恢复点",
+      "contract": "局部冲突登记并修订同源契约，独立任务继续"
+    },
+    "starting_condition": "USER_CONFIRMED_NOT_STARTED",
+    "evidence": [],
+    "implementation": null,
+    "review": null,
+    "blocker": null
+  },
+  {
+    "id": "E03",
+    "phase": "M0",
+    "title": "新vi数据库初装与框架数据保护",
+    "domain": "database",
+    "depends_on": [
+      "E00",
+      "E02"
+    ],
+    "deliverables": [
+      "新隔离空库先导入框架基础，再初建本版66vi表与guard；不默认执行旧M0迁移",
+      "在仓库sql/生成首次新增vi的受控增量并更新完整初始化；以实际结构对比验证一致性",
+      "已有sys库保留；意外同名vi表停止相关写入并只读记录"
+    ],
+    "negative_checks": [
+      "存在未知业务表/真实交易中止写入，不以IF NOT EXISTS隐藏结构差异"
+    ],
+    "api_ids": [],
+    "page_ids": [],
+    "tables": [],
+    "case_ids": [],
+    "scope": "DEVELOPMENT",
+    "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
+    "status": "NOT_ASSESSED",
+    "code_paths": [
+      "sql/migration_YYYYMMDD_vehicle_initial.sql",
+      "sql/ry_20260417.sql",
+      "docs/implementation/vehicle/E03/"
+    ],
+    "test_class": "E03DatabaseIT",
+    "commands": [
+      "python docs/vehicle/V6.1/12_工程执行/database.py inventory --repo .",
+      "python docs/vehicle/V6.1/12_工程执行/database.py bootstrap --repo . --confirm-db xinyi_vi_dev",
+      "python docs/vehicle/V6.1/12_工程执行/engineer.py run --repo . --kind db-test"
+    ],
+    "done_when": [
+      "在本包新建空隔离库实际执行初装及6项MySQL探针，并留报告",
+      "受控新增vi脚本与框架初装结构一致，生成列不手动写入",
+      "非空库拒绝、sys保护均已验证；未知库不盲转旧M0"
+    ],
+    "blocker_policy": {
+      "credential": "只阻L01或具体真实渠道验证，通用代码可继续",
+      "policy": "生产配置待批准；测试使用明示fixture",
+      "environment": "具体命令与错误落盘；不能假装已验收",
+      "access": "不得绕过限制；保存恢复点",
+      "contract": "局部冲突登记并修订同源契约，独立任务继续"
+    },
+    "starting_condition": "USER_CONFIRMED_NOT_STARTED",
+    "evidence": [],
+    "implementation": null,
+    "review": null,
+    "blocker": null
+  },
+  {
+    "id": "E04",
+    "phase": "M0",
+    "title": "新建业务Maven模块与uni-app工程",
+    "domain": "mobile",
+    "depends_on": [
+      "E01"
+    ],
+    "deliverables": [
+      "新建xinyi-rongli模块并接入根POM/admin依赖；保留现有六个框架模块",
+      "新建xinyi-miniapp Vue3/TS并实际生成lockfile，编译微信产物",
+      "请求、单在途刷新、视角上下文和错误处理基础；后续业务实现另走任务"
+    ],
+    "negative_checks": [
+      "无DOM移植",
+      "不以H5成功等同微信通过",
+      "存量工程不覆盖"
+    ],
+    "api_ids": [],
+    "page_ids": [],
+    "tables": [],
+    "case_ids": [],
+    "scope": "DEVELOPMENT",
+    "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
+    "status": "NOT_ASSESSED",
+    "code_paths": [
+      "pom.xml",
+      "xinyi-admin/pom.xml",
+      "xinyi-rongli/pom.xml",
+      "xinyi-rongli/src/main/",
+      "xinyi-miniapp/"
+    ],
+    "test_class": "E04MobileIT",
+    "commands": [
+      "python docs/vehicle/V6.1/12_工程执行/scaffold.py --repo .",
+      "python docs/vehicle/V6.1/12_工程执行/scaffold.py --repo . --apply",
+      "npm --prefix xinyi-miniapp install",
+      "npm --prefix xinyi-miniapp run type-check",
+      "npm --prefix xinyi-miniapp run build:mp-weixin",
+      "python docs/vehicle/V6.1/12_工程执行/engineer.py run --repo . --kind backend-build"
+    ],
+    "done_when": [
+      "新模块与小程序实际编译；lockfile来自真实安装而非猜测",
+      "模板安装不覆盖框架/已有源码；没有数据库的纯构建不标业务通过",
+      "保存编译日志与独立复核，后续使用npm ci"
+    ],
+    "blocker_policy": {
+      "credential": "只阻L01或具体真实渠道验证，通用代码可继续",
+      "policy": "生产配置待批准；测试使用明示fixture",
+      "environment": "具体命令与错误落盘；不能假装已验收",
+      "access": "不得绕过限制；保存恢复点",
+      "contract": "局部冲突登记并修订同源契约，独立任务继续"
+    },
+    "starting_condition": "USER_CONFIRMED_NOT_STARTED",
+    "evidence": [],
+    "implementation": null,
+    "review": null,
+    "blocker": null
+  },
+  {
+    "id": "E05",
+    "phase": "M0",
+    "title": "PC框架接入和双域API客户端",
+    "domain": "web",
+    "depends_on": [
+      "E01"
+    ],
+    "deliverables": [
+      "复用xinyi-ui布局与权限路由，新增vi请求适配而不改旧接口封装"
+    ],
+    "negative_checks": [
+      "根路径/api只出现一次",
+      "不覆盖原Jwt响应与错误处理"
+    ],
+    "api_ids": [],
+    "page_ids": [],
+    "tables": [],
+    "case_ids": [],
+    "scope": "DEVELOPMENT",
+    "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
+    "status": "NOT_ASSESSED",
+    "code_paths": [
+      "docs/implementation/vehicle/E05/"
+    ],
+    "test_class": "E05WebIT",
+    "commands": [
+      "npm --prefix xinyi-ui ci",
+      "npm --prefix xinyi-ui run build:prod"
+    ],
+    "done_when": [
+      "保留原PC框架行为并完成新请求适配的组件测试及生产构建",
+      "尚未实现的业务页面由后续各任务验收，不生成假Ack跳过",
+      "保存实际日志和独立复核"
+    ],
+    "blocker_policy": {
+      "credential": "只阻L01或具体真实渠道验证，通用代码可继续",
+      "policy": "生产配置待批准；测试使用明示fixture",
+      "environment": "具体命令与错误落盘；不能假装已验收",
+      "access": "不得绕过限制；保存恢复点",
+      "contract": "局部冲突登记并修订同源契约，独立任务继续"
+    },
+    "starting_condition": "USER_CONFIRMED_NOT_STARTED",
+    "evidence": [],
+    "implementation": null,
+    "review": null,
+    "blocker": null
+  },
+  {
+    "id": "E06",
+    "phase": "M0",
+    "title": "幂等、审计、outbox与任务基座",
+    "domain": "platform",
+    "depends_on": [
+      "E03",
+      "E04"
+    ],
+    "deliverables": [
+      "同事务业务写与outbox",
+      "有序锁/唯一约束/请求幂等",
+      "审计双主体"
+    ],
+    "negative_checks": [
+      "登录刷新不缓存明文",
+      "重复键不同体409",
+      "失败不写成功日志"
+    ],
+    "api_ids": [],
+    "page_ids": [],
+    "tables": [
+      "vi_event_log",
+      "vi_outbox",
+      "vi_idempotency"
+    ],
+    "case_ids": [],
+    "scope": "DEVELOPMENT",
+    "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
+    "status": "NOT_ASSESSED",
+    "code_paths": [
+      "docs/implementation/vehicle/E06/"
+    ],
+    "test_class": "E06PlatformIT",
+    "commands": [
+      "mvn -pl xinyi-admin -am test",
+      "mvn -pl xinyi-admin -am -Pvi-it -Dit.test=E06PlatformIT verify"
+    ],
+    "done_when": [
+      "源接口/页面/表/用例均有明确实现文件与关联测试；不能以目录存在当完成",
+      "本任务真实集成与负向场景实际通过且保存原始报告；无测试/跳过不能通过",
+      "提交独立复核记录；标注测试第三方替身，不声称真实渠道通过"
+    ],
+    "blocker_policy": {
+      "credential": "只阻L01或具体真实渠道验证，通用代码可继续",
+      "policy": "生产配置待批准；测试使用明示fixture",
+      "environment": "具体命令与错误落盘；不能假装已验收",
+      "access": "不得绕过限制；保存恢复点",
+      "contract": "局部冲突登记并修订同源契约，独立任务继续"
+    },
+    "starting_condition": "USER_CONFIRMED_NOT_STARTED",
+    "evidence": [],
+    "implementation": null,
+    "review": null,
+    "blocker": null
+  },
+  {
+    "id": "E07",
+    "phase": "M0",
+    "title": "测试夹具与控制平面接入",
+    "domain": "testing",
+    "depends_on": [
+      "E02",
+      "E03",
+      "E06",
+      "E04"
+    ],
+    "deliverables": [
+      "只在测试classpath建立fixtures/runtime/provider-event",
+      "真实会话授权和业务Service不mock",
+      "分步接入FixturePort：仅创建隔离测试的前置组织/用户/站点/配置；未开发服务可先建立接口和纯基础夹具，禁止生成任意支付/交接完成状态；随对应业务任务扩展，T01使用IDENTITY，T02使用BOOKING。"
+    ],
+    "negative_checks": [
+      "生产jar无__integration",
+      "控制密钥和DB guard双校验",
+      "禁止设任意订单目标状态"
+    ],
+    "api_ids": [],
+    "page_ids": [],
+    "tables": [],
+    "case_ids": [],
+    "scope": "DEVELOPMENT",
+    "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
+    "status": "NOT_ASSESSED",
+    "code_paths": [
+      "docs/implementation/vehicle/E07/"
+    ],
+    "test_class": "E07TestingIT",
+    "commands": [
+      "mvn -pl xinyi-admin -am -DskipTests package",
+      "mvn -pl xinyi-admin -am -Pvi-it -Dit.test=E07TestingIT verify"
+    ],
+    "done_when": [
+      "源接口/页面/表/用例均有明确实现文件与关联测试；不能以目录存在当完成",
+      "本任务真实集成与负向场景实际通过且保存原始报告；无测试/跳过不能通过",
+      "提交独立复核记录；标注测试第三方替身，不声称真实渠道通过"
+    ],
+    "blocker_policy": {
+      "credential": "只阻L01或具体真实渠道验证，通用代码可继续",
+      "policy": "生产配置待批准；测试使用明示fixture",
+      "environment": "具体命令与错误落盘；不能假装已验收",
+      "access": "不得绕过限制；保存恢复点",
+      "contract": "局部冲突登记并修订同源契约，独立任务继续"
+    },
+    "starting_condition": "USER_CONFIRMED_NOT_STARTED",
+    "evidence": [],
+    "implementation": null,
+    "review": null,
+    "blocker": null
+  },
+  {
+    "id": "E08",
+    "phase": "M0",
+    "title": "CI、任务台账与证据收集",
+    "domain": "platform",
+    "depends_on": [
+      "E01"
+    ],
+    "deliverables": [
+      "跨平台任务命令、接口页面表用例覆盖、JUnit报告、失败退出码"
+    ],
+    "negative_checks": [
+      "不允许NOT_RUN/skip算通过",
+      "无测试/无实体行为不得标DONE"
+    ],
+    "api_ids": [],
+    "page_ids": [],
+    "tables": [],
+    "case_ids": [],
+    "scope": "DEVELOPMENT",
+    "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
+    "status": "NOT_ASSESSED",
+    "code_paths": [
+      "docs/implementation/vehicle/E08/"
+    ],
+    "test_class": "E08PlatformIT",
+    "commands": [
+      "python -m pytest docs/vehicle/V6.1/12_工程执行/tests -q",
+      "python docs/vehicle/V6.1/12_工程执行/engineer.py check --repo ."
+    ],
+    "done_when": [
+      "CI/任务/证据工具在受控测试工作区验证，阶段从FOUNDATION开始",
+      "未实跑的数据库、HTTP、真机明确NOT_RUN",
+      "测试阶段按后续能力升级，不用FOUNDATION绿色代替全功能"
+    ],
+    "blocker_policy": {
+      "credential": "只阻L01或具体真实渠道验证，通用代码可继续",
+      "policy": "生产配置待批准；测试使用明示fixture",
+      "environment": "具体命令与错误落盘；不能假装已验收",
+      "access": "不得绕过限制；保存恢复点",
+      "contract": "局部冲突登记并修订同源契约，独立任务继续"
+    },
+    "starting_condition": "USER_CONFIRMED_NOT_STARTED",
+    "evidence": [],
+    "implementation": null,
+    "review": null,
+    "blocker": null
+  },
+  {
+    "id": "I01",
+    "phase": "M1",
+    "title": "微信登录与基础账号",
+    "domain": "identity",
+    "depends_on": [
+      "E06",
+      "E07"
+    ],
+    "deliverables": [
+      "可信openid创建唯一vi_account及安全状态",
+      "不透明token持久化",
+      "本人profile"
+    ],
+    "negative_checks": [
+      "同openid并发只一账号",
+      "不按role授高权",
+      "accountId=1不成为超管"
+    ],
+    "api_ids": [
+      "API_001_post",
+      "API_005_get"
+    ],
+    "page_ids": [
+      "O29",
+      "D01",
+      "S01",
+      "B01"
+    ],
+    "tables": [
+      "vi_account",
+      "vi_account_security"
+    ],
+    "case_ids": [
+      "TC-001",
+      "TC-002",
+      "TC-003",
+      "TC-004",
+      "TC-005",
+      "TC-006",
+      "TC-007",
+      "TC-008",
+      "TC-009",
+      "TC-010",
+      "TC-011",
+      "TC-012",
+      "TC-013",
+      "TC-014",
+      "TC-015",
+      "TC-016",
+      "TC-017",
+      "TC-018",
+      "TC-R50-007",
+      "TC-R50-008",
+      "TC-R50-012",
+      "TC-R50-032"
+    ],
+    "scope": "DEVELOPMENT",
+    "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
+    "status": "NOT_ASSESSED",
+    "code_paths": [
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/identity/",
+      "xinyi-rongli/src/main/resources/mapper/rongli/identity/",
+      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/identity/",
+      "xinyi-ui/src/views/rongli/identity/",
+      "xinyi-ui/src/api/rongli/identity.ts",
+      "xinyi-miniapp/src/features/identity/"
+    ],
+    "test_class": "I01IdentityIT",
+    "commands": [
+      "mvn -pl xinyi-admin -am -Pvi-it -Dit.test=I01IdentityIT verify",
+      "npm --prefix xinyi-ui run build:prod",
+      "npm --prefix xinyi-miniapp run build:mp-weixin"
+    ],
+    "done_when": [
+      "源接口/页面/表/用例均有明确实现文件与关联测试；不能以目录存在当完成",
+      "本任务真实集成与负向场景实际通过且保存原始报告；无测试/跳过不能通过",
+      "提交独立复核记录；标注测试第三方替身，不声称真实渠道通过"
+    ],
+    "blocker_policy": {
+      "credential": "只阻L01或具体真实渠道验证，通用代码可继续",
+      "policy": "生产配置待批准；测试使用明示fixture",
+      "environment": "具体命令与错误落盘；不能假装已验收",
+      "access": "不得绕过限制；保存恢复点",
+      "contract": "局部冲突登记并修订同源契约，独立任务继续"
+    },
+    "evidence": [],
+    "implementation": null,
+    "review": null,
+    "blocker": null
+  },
+  {
+    "id": "I02",
+    "phase": "M1",
+    "title": "手机号、档案与短信兜底",
+    "domain": "identity",
+    "depends_on": [
+      "I01"
+    ],
+    "deliverables": [
+      "微信手机凭据、受控短信验证、选填档案CAS、头像归属"
+    ],
+    "negative_checks": [
+      "不接受客户端手机号冒充验证",
+      "修改版本冲突、空白姓名不阻止低门槛预约"
+    ],
+    "api_ids": [
+      "API_002_post",
+      "API_003_post",
+      "API_004_post",
+      "API_012_patch"
+    ],
+    "page_ids": [
+      "O02",
+      "O25"
+    ],
+    "tables": [],
+    "case_ids": [],
+    "scope": "DEVELOPMENT",
+    "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
+    "status": "NOT_ASSESSED",
+    "code_paths": [
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/identity/",
+      "xinyi-rongli/src/main/resources/mapper/rongli/identity/",
+      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/identity/",
+      "xinyi-ui/src/views/rongli/identity/",
+      "xinyi-ui/src/api/rongli/identity.ts",
+      "xinyi-miniapp/src/features/identity/"
+    ],
+    "test_class": "I02IdentityIT",
+    "commands": [
+      "mvn -pl xinyi-admin -am -Pvi-it -Dit.test=I02IdentityIT verify",
+      "npm --prefix xinyi-ui run build:prod",
+      "npm --prefix xinyi-miniapp run build:mp-weixin"
+    ],
+    "done_when": [
+      "源接口/页面/表/用例均有明确实现文件与关联测试；不能以目录存在当完成",
+      "本任务真实集成与负向场景实际通过且保存原始报告；无测试/跳过不能通过",
+      "提交独立复核记录；标注测试第三方替身，不声称真实渠道通过"
+    ],
+    "blocker_policy": {
+      "credential": "只阻L01或具体真实渠道验证，通用代码可继续",
+      "policy": "生产配置待批准；测试使用明示fixture",
+      "environment": "具体命令与错误落盘；不能假装已验收",
+      "access": "不得绕过限制；保存恢复点",
+      "contract": "局部冲突登记并修订同源契约，独立任务继续"
+    },
+    "evidence": [],
+    "implementation": null,
+    "review": null,
+    "blocker": null
+  },
+  {
+    "id": "I03",
+    "phase": "M1",
+    "title": "刷新、退出和多设备会话",
+    "domain": "identity",
+    "depends_on": [
+      "I01"
+    ],
+    "deliverables": [
+      "单次刷新轮换、绝对到期、当前/全部退出和数据库权威撤权"
+    ],
+    "negative_checks": [
+      "重用刷新撤对应会话族",
+      "丢失刷新响应重新登录",
+      "Redis故障不放行"
+    ],
+    "api_ids": [
+      "V41_post_api_common_token_refresh",
+      "V41_get_api_common_session",
+      "V41_post_api_common_session_logout"
+    ],
+    "page_ids": [],
+    "tables": [
+      "vi_session",
+      "vi_session_token"
+    ],
+    "case_ids": [],
+    "scope": "DEVELOPMENT",
+    "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
+    "status": "NOT_ASSESSED",
+    "code_paths": [
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/identity/",
+      "xinyi-rongli/src/main/resources/mapper/rongli/identity/",
+      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/identity/",
+      "xinyi-ui/src/views/rongli/identity/",
+      "xinyi-ui/src/api/rongli/identity.ts",
+      "xinyi-miniapp/src/features/identity/"
+    ],
+    "test_class": "I03IdentityIT",
+    "commands": [
+      "mvn -pl xinyi-admin -am -Pvi-it -Dit.test=I03IdentityIT verify",
+      "npm --prefix xinyi-ui run build:prod",
+      "npm --prefix xinyi-miniapp run build:mp-weixin"
+    ],
+    "done_when": [
+      "源接口/页面/表/用例均有明确实现文件与关联测试；不能以目录存在当完成",
+      "本任务真实集成与负向场景实际通过且保存原始报告；无测试/跳过不能通过",
+      "提交独立复核记录；标注测试第三方替身，不声称真实渠道通过"
+    ],
+    "blocker_policy": {
+      "credential": "只阻L01或具体真实渠道验证，通用代码可继续",
+      "policy": "生产配置待批准；测试使用明示fixture",
+      "environment": "具体命令与错误落盘；不能假装已验收",
+      "access": "不得绕过限制；保存恢复点",
+      "contract": "局部冲突登记并修订同源契约，独立任务继续"
+    },
+    "evidence": [],
+    "implementation": null,
+    "review": null,
+    "blocker": null
+  },
+  {
+    "id": "I04",
+    "phase": "M1",
+    "title": "角色与站点上下文切换",
+    "domain": "identity",
+    "depends_on": [
+      "I03"
+    ],
+    "deliverables": [
+      "角色资格和contextVersion",
+      "返回新会话token，前端丢弃迟到响应"
+    ],
+    "negative_checks": [
+      "旧检测权限失效仍可切回OWNER",
+      "切换不释放assignment"
+    ],
+    "api_ids": [
+      "API_006_post",
+      "API_007_post"
+    ],
+    "page_ids": [
+      "U01",
+      "U01-unqualified",
+      "S21",
+      "S22"
+    ],
+    "tables": [],
+    "case_ids": [],
+    "scope": "DEVELOPMENT",
+    "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
+    "status": "NOT_ASSESSED",
+    "code_paths": [
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/identity/",
+      "xinyi-rongli/src/main/resources/mapper/rongli/identity/",
+      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/identity/",
+      "xinyi-ui/src/views/rongli/identity/",
+      "xinyi-ui/src/api/rongli/identity.ts",
+      "xinyi-miniapp/src/features/identity/"
+    ],
+    "test_class": "I04IdentityIT",
+    "commands": [
+      "mvn -pl xinyi-admin -am -Pvi-it -Dit.test=I04IdentityIT verify",
+      "npm --prefix xinyi-ui run build:prod",
+      "npm --prefix xinyi-miniapp run build:mp-weixin"
+    ],
+    "done_when": [
+      "源接口/页面/表/用例均有明确实现文件与关联测试；不能以目录存在当完成",
+      "本任务真实集成与负向场景实际通过且保存原始报告；无测试/跳过不能通过",
+      "提交独立复核记录；标注测试第三方替身，不声称真实渠道通过"
+    ],
+    "blocker_policy": {
+      "credential": "只阻L01或具体真实渠道验证，通用代码可继续",
+      "policy": "生产配置待批准；测试使用明示fixture",
+      "environment": "具体命令与错误落盘；不能假装已验收",
+      "access": "不得绕过限制；保存恢复点",
+      "contract": "局部冲突登记并修订同源契约，独立任务继续"
+    },
+    "evidence": [],
+    "implementation": null,
+    "review": null,
+    "blocker": null
+  },
+  {
+    "id": "I05",
+    "phase": "M1",
+    "title": "员工绑定完整生产消费链",
+    "domain": "identity",
+    "depends_on": [
+      "I03"
+    ],
+    "deliverables": [
+      "本人请求→后台核实名单→一次性凭证签发/撤销→本人消费"
+    ],
+    "negative_checks": [
+      "跨账户/重复/过期凭证拒绝",
+      "员工失效后OWNER仍可使用"
+    ],
+    "api_ids": [
+      "API_008_post",
+      "v5_post_api_common_employee_binding_requests",
+      "v5_get_api_common_employee_binding_requests",
+      "v5_get_api_admin_employee_binding_requests",
+      "v5_post_api_admin_employee_binding_credentials",
+      "v5_post_api_admin_employee_binding_credentials_credentialId_revoke"
+    ],
+    "page_ids": [
+      "U02",
+      "U02-expired",
+      "U02-pending",
+      "B36"
+    ],
+    "tables": [
+      "vi_employee_binding",
+      "vi_employee_binding_request",
+      "vi_employee_binding_credential"
+    ],
+    "case_ids": [
+      "TC-R50-017",
+      "TC-R50-018",
+      "TC-R50-019"
+    ],
+    "scope": "DEVELOPMENT",
+    "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
+    "status": "NOT_ASSESSED",
+    "code_paths": [
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/identity/",
+      "xinyi-rongli/src/main/resources/mapper/rongli/identity/",
+      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/identity/",
+      "xinyi-ui/src/views/rongli/identity/",
+      "xinyi-ui/src/api/rongli/identity.ts",
+      "xinyi-miniapp/src/features/identity/"
+    ],
+    "test_class": "I05IdentityIT",
+    "commands": [
+      "mvn -pl xinyi-admin -am -Pvi-it -Dit.test=I05IdentityIT verify",
+      "npm --prefix xinyi-ui run build:prod",
+      "npm --prefix xinyi-miniapp run build:mp-weixin"
+    ],
+    "done_when": [
+      "源接口/页面/表/用例均有明确实现文件与关联测试；不能以目录存在当完成",
+      "本任务真实集成与负向场景实际通过且保存原始报告；无测试/跳过不能通过",
+      "提交独立复核记录；标注测试第三方替身，不声称真实渠道通过"
+    ],
+    "blocker_policy": {
+      "credential": "只阻L01或具体真实渠道验证，通用代码可继续",
+      "policy": "生产配置待批准；测试使用明示fixture",
+      "environment": "具体命令与错误落盘；不能假装已验收",
+      "access": "不得绕过限制；保存恢复点",
+      "contract": "局部冲突登记并修订同源契约，独立任务继续"
+    },
+    "evidence": [],
+    "implementation": null,
+    "review": null,
+    "blocker": null
+  },
+  {
+    "id": "I06",
+    "phase": "M1",
+    "title": "部门、站点、主体组合权限",
+    "domain": "scope",
+    "depends_on": [
+      "I04",
+      "I05"
+    ],
+    "deliverables": [
+      "对接真实DeptScope",
+      "查询/详情/批量写/下载二次授权",
+      "空范围拒绝"
+    ],
+    "negative_checks": [
+      "站点不以OR绕部门边界",
+      "ALL部门不自动全站",
+      "财务不泄跨付款主体"
+    ],
+    "api_ids": [
+      "API_094_get",
+      "API_131_get",
+      "API_132_put"
+    ],
+    "page_ids": [
+      "S18",
+      "B25",
+      "B26",
+      "B26-revoke"
+    ],
+    "tables": [
+      "vi_station_grant"
+    ],
+    "case_ids": [],
+    "scope": "DEVELOPMENT",
+    "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
+    "status": "NOT_ASSESSED",
+    "code_paths": [
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/scope/",
+      "xinyi-rongli/src/main/resources/mapper/rongli/scope/",
+      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/scope/",
+      "xinyi-ui/src/views/rongli/scope/",
+      "xinyi-ui/src/api/rongli/scope.ts",
+      "xinyi-miniapp/src/features/scope/"
+    ],
+    "test_class": "I06ScopeIT",
+    "commands": [
+      "mvn -pl xinyi-admin -am -Pvi-it -Dit.test=I06ScopeIT verify",
+      "npm --prefix xinyi-ui run build:prod",
+      "npm --prefix xinyi-miniapp run build:mp-weixin"
+    ],
+    "done_when": [
+      "源接口/页面/表/用例均有明确实现文件与关联测试；不能以目录存在当完成",
+      "本任务真实集成与负向场景实际通过且保存原始报告；无测试/跳过不能通过",
+      "提交独立复核记录；标注测试第三方替身，不声称真实渠道通过"
+    ],
+    "blocker_policy": {
+      "credential": "只阻L01或具体真实渠道验证，通用代码可继续",
+      "policy": "生产配置待批准；测试使用明示fixture",
+      "environment": "具体命令与错误落盘；不能假装已验收",
+      "access": "不得绕过限制；保存恢复点",
+      "contract": "局部冲突登记并修订同源契约，独立任务继续"
+    },
+    "evidence": [],
+    "implementation": null,
+    "review": null,
+    "blocker": null
+  },
+  {
+    "id": "A01",
+    "phase": "M1",
+    "title": "车辆档案与PC车辆列表",
+    "domain": "vehicle",
+    "depends_on": [
+      "I01",
+      "I06",
+      "E05"
+    ],
+    "deliverables": [
+      "本人车辆CRUD/常用/软删，PC详情/维护/关联记录",
+      "历史快照不追改"
+    ],
+    "negative_checks": [
+      "伪造owner、猜车牌、软删后冲突、生成列不入DTO"
+    ],
+    "api_ids": [
+      "API_013_get",
+      "API_014_post",
+      "API_015_put",
+      "API_016_delete",
+      "API_017_post",
+      "V4_get_api_admin_vehicles",
+      "V4_get_api_admin_vehicles__vehicleId",
+      "V4_patch_api_admin_vehicles__vehicleId",
+      "V4_get_api_admin_vehicles__vehicleId__orders",
+      "V4_get_api_admin_vehicles__vehicleId__inspection_results"
+    ],
+    "page_ids": [
+      "O04",
+      "O05",
+      "O27",
+      "O27-address",
+      "B09",
+      "B09-detail",
+      "B09-edit",
+      "B09-empty",
+      "B09-error",
+      "B09-forbidden"
+    ],
+    "tables": [
+      "vi_vehicle"
+    ],
+    "case_ids": [],
+    "scope": "DEVELOPMENT",
+    "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
+    "status": "NOT_ASSESSED",
+    "code_paths": [
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/vehicle/",
+      "xinyi-rongli/src/main/resources/mapper/rongli/vehicle/",
+      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/vehicle/",
+      "xinyi-ui/src/views/rongli/vehicle/",
+      "xinyi-ui/src/api/rongli/vehicle.ts",
+      "xinyi-miniapp/src/features/vehicle/"
+    ],
+    "test_class": "A01VehicleIT",
+    "commands": [
+      "mvn -pl xinyi-admin -am -Pvi-it -Dit.test=A01VehicleIT verify",
+      "npm --prefix xinyi-ui run build:prod",
+      "npm --prefix xinyi-miniapp run build:mp-weixin"
+    ],
+    "done_when": [
+      "源接口/页面/表/用例均有明确实现文件与关联测试；不能以目录存在当完成",
+      "本任务真实集成与负向场景实际通过且保存原始报告；无测试/跳过不能通过",
+      "提交独立复核记录；标注测试第三方替身，不声称真实渠道通过"
+    ],
+    "blocker_policy": {
+      "credential": "只阻L01或具体真实渠道验证，通用代码可继续",
+      "policy": "生产配置待批准；测试使用明示fixture",
+      "environment": "具体命令与错误落盘；不能假装已验收",
+      "access": "不得绕过限制；保存恢复点",
+      "contract": "局部冲突登记并修订同源契约，独立任务继续"
+    },
+    "evidence": [],
+    "implementation": null,
+    "review": null,
+    "blocker": null
+  },
+  {
+    "id": "A02",
+    "phase": "M1",
+    "title": "地址簿与位置输入",
+    "domain": "address",
+    "depends_on": [
+      "I01"
+    ],
+    "deliverables": [
+      "新增/更新/删除/常用地址",
+      "API返回版本",
+      "地图失败可手填后解析"
+    ],
+    "negative_checks": [
+      "首次临时地址不强制先保存",
+      "设置常用并发不出现多个默认"
+    ],
+    "api_ids": [
+      "API_018_get",
+      "API_019_post",
+      "API_020_put",
+      "API_021_delete",
+      "API_022_post"
+    ],
+    "page_ids": [],
+    "tables": [
+      "vi_address"
+    ],
+    "case_ids": [],
+    "scope": "DEVELOPMENT",
+    "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
+    "status": "NOT_ASSESSED",
+    "code_paths": [
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/address/",
+      "xinyi-rongli/src/main/resources/mapper/rongli/address/",
+      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/address/",
+      "xinyi-ui/src/views/rongli/address/",
+      "xinyi-ui/src/api/rongli/address.ts",
+      "xinyi-miniapp/src/features/address/"
+    ],
+    "test_class": "A02AddressIT",
+    "commands": [
+      "mvn -pl xinyi-admin -am -Pvi-it -Dit.test=A02AddressIT verify",
+      "npm --prefix xinyi-ui run build:prod",
+      "npm --prefix xinyi-miniapp run build:mp-weixin"
+    ],
+    "done_when": [
+      "源接口/页面/表/用例均有明确实现文件与关联测试；不能以目录存在当完成",
+      "本任务真实集成与负向场景实际通过且保存原始报告；无测试/跳过不能通过",
+      "提交独立复核记录；标注测试第三方替身，不声称真实渠道通过"
+    ],
+    "blocker_policy": {
+      "credential": "只阻L01或具体真实渠道验证，通用代码可继续",
+      "policy": "生产配置待批准；测试使用明示fixture",
+      "environment": "具体命令与错误落盘；不能假装已验收",
+      "access": "不得绕过限制；保存恢复点",
+      "contract": "局部冲突登记并修订同源契约，独立任务继续"
+    },
+    "evidence": [],
+    "implementation": null,
+    "review": null,
+    "blocker": null
+  },
+  {
+    "id": "A03",
+    "phase": "M1",
+    "title": "车主档案管理",
+    "domain": "owner",
+    "depends_on": [
+      "I02",
+      "I06",
+      "E05"
+    ],
+    "deliverables": [
+      "车主列表、资料、关联车辆订单售后、备注与关注标记"
+    ],
+    "negative_checks": [
+      "手机号不能后台直接改验证结果",
+      "跨公司历史不因一条订单暴露"
+    ],
+    "api_ids": [
+      "V4_get_api_admin_owners",
+      "V4_get_api_admin_owners__ownerId",
+      "V4_patch_api_admin_owners__ownerId",
+      "V4_get_api_admin_owners__ownerId__vehicles",
+      "V4_get_api_admin_owners__ownerId__orders"
+    ],
+    "page_ids": [
+      "B27",
+      "B27-detail",
+      "B27-edit",
+      "B27-empty",
+      "B27-error",
+      "B27-forbidden"
+    ],
+    "tables": [
+      "vi_owner_profile"
+    ],
+    "case_ids": [],
+    "scope": "DEVELOPMENT",
+    "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
+    "status": "NOT_ASSESSED",
+    "code_paths": [
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/owner/",
+      "xinyi-rongli/src/main/resources/mapper/rongli/owner/",
+      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/owner/",
+      "xinyi-ui/src/views/rongli/owner/",
+      "xinyi-ui/src/api/rongli/owner.ts",
+      "xinyi-miniapp/src/features/owner/"
+    ],
+    "test_class": "A03OwnerIT",
+    "commands": [
+      "mvn -pl xinyi-admin -am -Pvi-it -Dit.test=A03OwnerIT verify",
+      "npm --prefix xinyi-ui run build:prod",
+      "npm --prefix xinyi-miniapp run build:mp-weixin"
+    ],
+    "done_when": [
+      "源接口/页面/表/用例均有明确实现文件与关联测试；不能以目录存在当完成",
+      "本任务真实集成与负向场景实际通过且保存原始报告；无测试/跳过不能通过",
+      "提交独立复核记录；标注测试第三方替身，不声称真实渠道通过"
+    ],
+    "blocker_policy": {
+      "credential": "只阻L01或具体真实渠道验证，通用代码可继续",
+      "policy": "生产配置待批准；测试使用明示fixture",
+      "environment": "具体命令与错误落盘；不能假装已验收",
+      "access": "不得绕过限制；保存恢复点",
+      "contract": "局部冲突登记并修订同源契约，独立任务继续"
+    },
+    "evidence": [],
+    "implementation": null,
+    "review": null,
+    "blocker": null
+  },
+  {
+    "id": "A04",
+    "phase": "M1",
+    "title": "代驾员档案与接单控制",
+    "domain": "driver",
+    "depends_on": [
+      "I06",
+      "E05"
+    ],
+    "deliverables": [
+      "代驾列表/资格/承接记录/备注/暂停新邀约",
+      "个人对账入口"
+    ],
+    "negative_checks": [
+      "关闭新增承接不解除持车责任",
+      "自身费用不可自审"
+    ],
+    "api_ids": [
+      "V4_get_api_admin_drivers",
+      "API_126_post",
+      "V4_get_api_admin_drivers__driverId",
+      "V4_patch_api_admin_drivers__driverId",
+      "V4_get_api_admin_drivers__driverId__assignments"
+    ],
+    "page_ids": [
+      "D27",
+      "S15",
+      "B28",
+      "B28-detail",
+      "B28-edit",
+      "B28-empty",
+      "B28-error",
+      "B28-forbidden"
+    ],
+    "tables": [],
+    "case_ids": [],
+    "scope": "DEVELOPMENT",
+    "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
+    "status": "NOT_ASSESSED",
+    "code_paths": [
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/driver/",
+      "xinyi-rongli/src/main/resources/mapper/rongli/driver/",
+      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/driver/",
+      "xinyi-ui/src/views/rongli/driver/",
+      "xinyi-ui/src/api/rongli/driver.ts",
+      "xinyi-miniapp/src/features/driver/"
+    ],
+    "test_class": "A04DriverIT",
+    "commands": [
+      "mvn -pl xinyi-admin -am -Pvi-it -Dit.test=A04DriverIT verify",
+      "npm --prefix xinyi-ui run build:prod",
+      "npm --prefix xinyi-miniapp run build:mp-weixin"
+    ],
+    "done_when": [
+      "源接口/页面/表/用例均有明确实现文件与关联测试；不能以目录存在当完成",
+      "本任务真实集成与负向场景实际通过且保存原始报告；无测试/跳过不能通过",
+      "提交独立复核记录；标注测试第三方替身，不声称真实渠道通过"
+    ],
+    "blocker_policy": {
+      "credential": "只阻L01或具体真实渠道验证，通用代码可继续",
+      "policy": "生产配置待批准；测试使用明示fixture",
+      "environment": "具体命令与错误落盘；不能假装已验收",
+      "access": "不得绕过限制；保存恢复点",
+      "contract": "局部冲突登记并修订同源契约，独立任务继续"
+    },
+    "evidence": [],
+    "implementation": null,
+    "review": null,
+    "blocker": null
+  },
+  {
+    "id": "C01",
+    "phase": "M1",
+    "title": "字典、公开条款与参数配置",
+    "domain": "config",
+    "depends_on": [
+      "I06",
+      "E05"
+    ],
+    "deliverables": [
+      "车型字典、检测类型、协议版本、客服资料、权限注册、默认安全配置"
+    ],
+    "negative_checks": [
+      "新车型无价格不能0元下单",
+      "生产不能采用测试主体与金额"
+    ],
+    "api_ids": [
+      "API_010_get",
+      "API_155_get",
+      "API_156_put",
+      "V6_get_public_service_config"
+    ],
+    "page_ids": [
+      "B21",
+      "B21-edit",
+      "B33",
+      "B33-edit"
+    ],
+    "tables": [],
+    "case_ids": [],
+    "scope": "DEVELOPMENT",
+    "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
+    "status": "NOT_ASSESSED",
+    "code_paths": [
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/config/",
+      "xinyi-rongli/src/main/resources/mapper/rongli/config/",
+      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/config/",
+      "xinyi-ui/src/views/rongli/config/",
+      "xinyi-ui/src/api/rongli/config.ts",
+      "xinyi-miniapp/src/features/config/"
+    ],
+    "test_class": "C01ConfigIT",
+    "commands": [
+      "mvn -pl xinyi-admin -am -Pvi-it -Dit.test=C01ConfigIT verify",
+      "npm --prefix xinyi-ui run build:prod",
+      "npm --prefix xinyi-miniapp run build:mp-weixin"
+    ],
+    "done_when": [
+      "源接口/页面/表/用例均有明确实现文件与关联测试；不能以目录存在当完成",
+      "本任务真实集成与负向场景实际通过且保存原始报告；无测试/跳过不能通过",
+      "提交独立复核记录；标注测试第三方替身，不声称真实渠道通过"
+    ],
+    "blocker_policy": {
+      "credential": "只阻L01或具体真实渠道验证，通用代码可继续",
+      "policy": "生产配置待批准；测试使用明示fixture",
+      "environment": "具体命令与错误落盘；不能假装已验收",
+      "access": "不得绕过限制；保存恢复点",
+      "contract": "局部冲突登记并修订同源契约，独立任务继续"
+    },
+    "evidence": [],
+    "implementation": null,
+    "review": null,
+    "blocker": null
+  },
+  {
+    "id": "C02",
+    "phase": "M1",
+    "title": "检测点、营业与服务区域",
+    "domain": "station",
+    "depends_on": [
+      "I06",
+      "C01"
+    ],
+    "deliverables": [
+      "站点CRUD/资质/地址/服务能力/营业范围",
+      "后台与员工共用Service"
+    ],
+    "negative_checks": [
+      "迁部门存在在手订单需拒绝或受控方案",
+      "版本必填"
+    ],
+    "api_ids": [
+      "API_011_get",
+      "API_095_get",
+      "API_096_put",
+      "API_128_get",
+      "API_129_post",
+      "API_130_put"
+    ],
+    "page_ids": [
+      "S16",
+      "B17",
+      "B17-disable",
+      "B17-edit"
+    ],
+    "tables": [
+      "vi_station"
+    ],
+    "case_ids": [],
+    "scope": "DEVELOPMENT",
+    "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
+    "status": "NOT_ASSESSED",
+    "code_paths": [
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/station/",
+      "xinyi-rongli/src/main/resources/mapper/rongli/station/",
+      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/station/",
+      "xinyi-ui/src/views/rongli/station/",
+      "xinyi-ui/src/api/rongli/station.ts",
+      "xinyi-miniapp/src/features/station/"
+    ],
+    "test_class": "C02StationIT",
+    "commands": [
+      "mvn -pl xinyi-admin -am -Pvi-it -Dit.test=C02StationIT verify",
+      "npm --prefix xinyi-ui run build:prod",
+      "npm --prefix xinyi-miniapp run build:mp-weixin"
+    ],
+    "done_when": [
+      "源接口/页面/表/用例均有明确实现文件与关联测试；不能以目录存在当完成",
+      "本任务真实集成与负向场景实际通过且保存原始报告；无测试/跳过不能通过",
+      "提交独立复核记录；标注测试第三方替身，不声称真实渠道通过"
+    ],
+    "blocker_policy": {
+      "credential": "只阻L01或具体真实渠道验证，通用代码可继续",
+      "policy": "生产配置待批准；测试使用明示fixture",
+      "environment": "具体命令与错误落盘；不能假装已验收",
+      "access": "不得绕过限制；保存恢复点",
+      "contract": "局部冲突登记并修订同源契约，独立任务继续"
+    },
+    "evidence": [],
+    "implementation": null,
+    "review": null,
+    "blocker": null
+  },
+  {
+    "id": "C03",
+    "phase": "M2",
+    "title": "上门时段与容量计划",
+    "domain": "capacity",
+    "depends_on": [
+      "C02",
+      "E06"
+    ],
+    "deliverables": [
+      "候选时段、地址后复核、容量调整影响预览和预占统计"
+    ],
+    "negative_checks": [
+      "上门时段非到站考核",
+      "无地址不承诺具体站名额",
+      "不得缩容低于有效占用"
+    ],
+    "api_ids": [
+      "API_081_get",
+      "API_082_put",
+      "API_092_get",
+      "API_093_put"
+    ],
+    "page_ids": [
+      "S17",
+      "S17-impact",
+      "B19",
+      "B19-impact"
+    ],
+    "tables": [
+      "vi_quota_slot"
+    ],
+    "case_ids": [],
+    "scope": "DEVELOPMENT",
+    "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
+    "status": "NOT_ASSESSED",
+    "code_paths": [
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/capacity/",
+      "xinyi-rongli/src/main/resources/mapper/rongli/capacity/",
+      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/capacity/",
+      "xinyi-ui/src/views/rongli/capacity/",
+      "xinyi-ui/src/api/rongli/capacity.ts",
+      "xinyi-miniapp/src/features/capacity/"
+    ],
+    "test_class": "C03CapacityIT",
+    "commands": [
+      "mvn -pl xinyi-admin -am -Pvi-it -Dit.test=C03CapacityIT verify",
+      "npm --prefix xinyi-ui run build:prod",
+      "npm --prefix xinyi-miniapp run build:mp-weixin"
+    ],
+    "done_when": [
+      "源接口/页面/表/用例均有明确实现文件与关联测试；不能以目录存在当完成",
+      "本任务真实集成与负向场景实际通过且保存原始报告；无测试/跳过不能通过",
+      "提交独立复核记录；标注测试第三方替身，不声称真实渠道通过"
+    ],
+    "blocker_policy": {
+      "credential": "只阻L01或具体真实渠道验证，通用代码可继续",
+      "policy": "生产配置待批准；测试使用明示fixture",
+      "environment": "具体命令与错误落盘；不能假装已验收",
+      "access": "不得绕过限制；保存恢复点",
+      "contract": "局部冲突登记并修订同源契约，独立任务继续"
+    },
+    "evidence": [],
+    "implementation": null,
+    "review": null,
+    "blocker": null
+  },
+  {
+    "id": "C04",
+    "phase": "M2",
+    "title": "客户计价规则和试算",
+    "domain": "pricing",
+    "depends_on": [
+      "C01",
+      "C02"
+    ],
+    "deliverables": [
+      "固定费/包含米/超里程单位进位/单或往返，独立审核发布版本"
+    ],
+    "negative_checks": [
+      "多匹配不猜最便宜",
+      "未配置拒绝报价",
+      "test配置与prod隔离"
+    ],
+    "api_ids": [
+      "API_133_get",
+      "API_134_post",
+      "API_135_put",
+      "API_136_post",
+      "API_137_post",
+      "API_138_post"
+    ],
+    "page_ids": [
+      "B20",
+      "B20-edit",
+      "B20-review"
+    ],
+    "tables": [
+      "vi_price_rule"
+    ],
+    "case_ids": [],
+    "scope": "DEVELOPMENT",
+    "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
+    "status": "NOT_ASSESSED",
+    "code_paths": [
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/pricing/",
+      "xinyi-rongli/src/main/resources/mapper/rongli/pricing/",
+      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/pricing/",
+      "xinyi-ui/src/views/rongli/pricing/",
+      "xinyi-ui/src/api/rongli/pricing.ts",
+      "xinyi-miniapp/src/features/pricing/"
+    ],
+    "test_class": "C04PricingIT",
+    "commands": [
+      "mvn -pl xinyi-admin -am -Pvi-it -Dit.test=C04PricingIT verify",
+      "npm --prefix xinyi-ui run build:prod",
+      "npm --prefix xinyi-miniapp run build:mp-weixin"
+    ],
+    "done_when": [
+      "源接口/页面/表/用例均有明确实现文件与关联测试；不能以目录存在当完成",
+      "本任务真实集成与负向场景实际通过且保存原始报告；无测试/跳过不能通过",
+      "提交独立复核记录；标注测试第三方替身，不声称真实渠道通过"
+    ],
+    "blocker_policy": {
+      "credential": "只阻L01或具体真实渠道验证，通用代码可继续",
+      "policy": "生产配置待批准；测试使用明示fixture",
+      "environment": "具体命令与错误落盘；不能假装已验收",
+      "access": "不得绕过限制；保存恢复点",
+      "contract": "局部冲突登记并修订同源契约，独立任务继续"
+    },
+    "evidence": [],
+    "implementation": null,
+    "review": null,
+    "blocker": null
+  },
+  {
+    "id": "C05",
+    "phase": "M5",
+    "title": "司机独立费用规则",
+    "domain": "driverfee",
+    "depends_on": [
+      "C01",
+      "I06"
+    ],
+    "deliverables": [
+      "固定/约定路线/取消返还/解除场景，草稿试算独立审核发布"
+    ],
+    "negative_checks": [
+      "客户收费不等于司机报酬",
+      "未匹配NULL不当0",
+      "不改历史"
+    ],
+    "api_ids": [
+      "V4_get_api_admin_driver_fee_rules",
+      "V4_post_api_admin_driver_fee_rules",
+      "V4_get_api_admin_driver_fee_rules__ruleId",
+      "V4_put_api_admin_driver_fee_rules__ruleId",
+      "V4_post_api_admin_driver_fee_rules__ruleId__publish",
+      "V4_post_api_admin_driver_fee_rules_trial"
+    ],
+    "page_ids": [
+      "B39",
+      "B39-edit",
+      "B39-review"
+    ],
+    "tables": [
+      "vi_driver_fee_rule"
+    ],
+    "case_ids": [
+      "TC-169",
+      "TC-170"
+    ],
+    "scope": "DEVELOPMENT",
+    "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
+    "status": "NOT_ASSESSED",
+    "code_paths": [
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/driverfee/",
+      "xinyi-rongli/src/main/resources/mapper/rongli/driverfee/",
+      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/driverfee/",
+      "xinyi-ui/src/views/rongli/driverfee/",
+      "xinyi-ui/src/api/rongli/driverfee.ts",
+      "xinyi-miniapp/src/features/driverfee/"
+    ],
+    "test_class": "C05DriverfeeIT",
+    "commands": [
+      "mvn -pl xinyi-admin -am -Pvi-it -Dit.test=C05DriverfeeIT verify",
+      "npm --prefix xinyi-ui run build:prod",
+      "npm --prefix xinyi-miniapp run build:mp-weixin"
+    ],
+    "done_when": [
+      "源接口/页面/表/用例均有明确实现文件与关联测试；不能以目录存在当完成",
+      "本任务真实集成与负向场景实际通过且保存原始报告；无测试/跳过不能通过",
+      "提交独立复核记录；标注测试第三方替身，不声称真实渠道通过"
+    ],
+    "blocker_policy": {
+      "credential": "只阻L01或具体真实渠道验证，通用代码可继续",
+      "policy": "生产配置待批准；测试使用明示fixture",
+      "environment": "具体命令与错误落盘；不能假装已验收",
+      "access": "不得绕过限制；保存恢复点",
+      "contract": "局部冲突登记并修订同源契约，独立任务继续"
+    },
+    "evidence": [],
+    "implementation": null,
+    "review": null,
+    "blocker": null
+  },
+  {
+    "id": "Q01",
+    "phase": "M1",
+    "title": "代驾资格草稿与提交",
+    "domain": "qualification",
+    "depends_on": [
+      "I02",
+      "C01",
+      "F01"
+    ],
+    "deliverables": [
+      "本人认证档案、证件归属、提交校验、驳回只补相关项"
+    ],
+    "negative_checks": [
+      "员工和普通人同审核",
+      "申请接口不要求先具备正式代驾资格"
+    ],
+    "api_ids": [
+      "API_042_get",
+      "API_043_put",
+      "v5_post_api_app_driver_qualification",
+      "API_044_post"
+    ],
+    "page_ids": [
+      "D02",
+      "D03",
+      "D05",
+      "D05-passed",
+      "D05-rejected",
+      "D28",
+      "D28-expired"
+    ],
+    "tables": [
+      "vi_driver_profile",
+      "vi_driver_application"
+    ],
+    "case_ids": [],
+    "scope": "DEVELOPMENT",
+    "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
+    "status": "NOT_ASSESSED",
+    "code_paths": [
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/qualification/",
+      "xinyi-rongli/src/main/resources/mapper/rongli/qualification/",
+      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/qualification/",
+      "xinyi-ui/src/views/rongli/qualification/",
+      "xinyi-ui/src/api/rongli/qualification.ts",
+      "xinyi-miniapp/src/features/qualification/"
+    ],
+    "test_class": "Q01QualificationIT",
+    "commands": [
+      "mvn -pl xinyi-admin -am -Pvi-it -Dit.test=Q01QualificationIT verify",
+      "npm --prefix xinyi-ui run build:prod",
+      "npm --prefix xinyi-miniapp run build:mp-weixin"
+    ],
+    "done_when": [
+      "源接口/页面/表/用例均有明确实现文件与关联测试；不能以目录存在当完成",
+      "本任务真实集成与负向场景实际通过且保存原始报告；无测试/跳过不能通过",
+      "提交独立复核记录；标注测试第三方替身，不声称真实渠道通过"
+    ],
+    "blocker_policy": {
+      "credential": "只阻L01或具体真实渠道验证，通用代码可继续",
+      "policy": "生产配置待批准；测试使用明示fixture",
+      "environment": "具体命令与错误落盘；不能假装已验收",
+      "access": "不得绕过限制；保存恢复点",
+      "contract": "局部冲突登记并修订同源契约，独立任务继续"
+    },
+    "evidence": [],
+    "implementation": null,
+    "review": null,
+    "blocker": null
+  },
+  {
+    "id": "Q02",
+    "phase": "M1",
+    "title": "培训课程和题库管理",
+    "domain": "training",
+    "depends_on": [
+      "I06",
+      "C01"
+    ],
+    "deliverables": [
+      "课程/题目草稿，核定标准和发布不可变版本"
+    ],
+    "negative_checks": [
+      "不向学员下发答案",
+      "发布后不覆盖旧试卷版本"
+    ],
+    "api_ids": [
+      "v5_get_api_admin_training_courses",
+      "v5_post_api_admin_training_courses",
+      "v5_get_api_admin_training_courses_trainingId",
+      "v5_put_api_admin_training_courses_trainingId",
+      "v5_post_api_admin_training_courses_trainingId_publish"
+    ],
+    "page_ids": [
+      "B43",
+      "B44"
+    ],
+    "tables": [
+      "vi_training_course",
+      "vi_training_question"
+    ],
+    "case_ids": [],
+    "scope": "DEVELOPMENT",
+    "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
+    "status": "NOT_ASSESSED",
+    "code_paths": [
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/training/",
+      "xinyi-rongli/src/main/resources/mapper/rongli/training/",
+      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/training/",
+      "xinyi-ui/src/views/rongli/training/",
+      "xinyi-ui/src/api/rongli/training.ts",
+      "xinyi-miniapp/src/features/training/"
+    ],
+    "test_class": "Q02TrainingIT",
+    "commands": [
+      "mvn -pl xinyi-admin -am -Pvi-it -Dit.test=Q02TrainingIT verify",
+      "npm --prefix xinyi-ui run build:prod",
+      "npm --prefix xinyi-miniapp run build:mp-weixin"
+    ],
+    "done_when": [
+      "源接口/页面/表/用例均有明确实现文件与关联测试；不能以目录存在当完成",
+      "本任务真实集成与负向场景实际通过且保存原始报告；无测试/跳过不能通过",
+      "提交独立复核记录；标注测试第三方替身，不声称真实渠道通过"
+    ],
+    "blocker_policy": {
+      "credential": "只阻L01或具体真实渠道验证，通用代码可继续",
+      "policy": "生产配置待批准；测试使用明示fixture",
+      "environment": "具体命令与错误落盘；不能假装已验收",
+      "access": "不得绕过限制；保存恢复点",
+      "contract": "局部冲突登记并修订同源契约，独立任务继续"
+    },
+    "evidence": [],
+    "implementation": null,
+    "review": null,
+    "blocker": null
+  },
+  {
+    "id": "Q03",
+    "phase": "M1",
+    "title": "学习播放与考试尝试",
+    "domain": "training",
+    "depends_on": [
+      "Q01",
+      "Q02"
+    ],
+    "deliverables": [
+      "播放会话/心跳/墙钟进度、考试尝试生成读取提交、结果复用"
+    ],
+    "negative_checks": [
+      "倍速伪造累计拒绝",
+      "超时/重复提交只判一次",
+      "次数由配置限制"
+    ],
+    "api_ids": [
+      "API_046_get",
+      "API_047_post",
+      "v5_get_api_app_driver_qualification_training_trainingId",
+      "v5_post_api_app_driver_qualification_training_trainingId_playback",
+      "v5_post_api_app_driver_qualification_training_trainingId_progress",
+      "v5_post_api_app_driver_qualification_training_trainingId_attempts",
+      "v5_get_api_app_driver_qualification_training_attempts_attemptId"
+    ],
+    "page_ids": [
+      "D39",
+      "D40",
+      "D41",
+      "D42"
+    ],
+    "tables": [
+      "vi_training_progress",
+      "vi_training_playback",
+      "vi_training_attempt"
+    ],
+    "case_ids": [
+      "TC-R50-020"
+    ],
+    "scope": "DEVELOPMENT",
+    "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
+    "status": "NOT_ASSESSED",
+    "code_paths": [
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/training/",
+      "xinyi-rongli/src/main/resources/mapper/rongli/training/",
+      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/training/",
+      "xinyi-ui/src/views/rongli/training/",
+      "xinyi-ui/src/api/rongli/training.ts",
+      "xinyi-miniapp/src/features/training/"
+    ],
+    "test_class": "Q03TrainingIT",
+    "commands": [
+      "mvn -pl xinyi-admin -am -Pvi-it -Dit.test=Q03TrainingIT verify",
+      "npm --prefix xinyi-ui run build:prod",
+      "npm --prefix xinyi-miniapp run build:mp-weixin"
+    ],
+    "done_when": [
+      "源接口/页面/表/用例均有明确实现文件与关联测试；不能以目录存在当完成",
+      "本任务真实集成与负向场景实际通过且保存原始报告；无测试/跳过不能通过",
+      "提交独立复核记录；标注测试第三方替身，不声称真实渠道通过"
+    ],
+    "blocker_policy": {
+      "credential": "只阻L01或具体真实渠道验证，通用代码可继续",
+      "policy": "生产配置待批准；测试使用明示fixture",
+      "environment": "具体命令与错误落盘；不能假装已验收",
+      "access": "不得绕过限制；保存恢复点",
+      "contract": "局部冲突登记并修订同源契约，独立任务继续"
+    },
+    "evidence": [],
+    "implementation": null,
+    "review": null,
+    "blocker": null
+  },
+  {
+    "id": "Q04",
+    "phase": "M1",
+    "title": "实名活体与核验适配",
+    "domain": "verification",
+    "depends_on": [
+      "Q01"
+    ],
+    "deliverables": [
+      "业务face session、白名单启动参数、可信结果查询、供应商适配"
+    ],
+    "negative_checks": [
+      "客户端passed拒绝",
+      "模拟结果仅测试环境",
+      "未开通不阻其他代码开发"
+    ],
+    "api_ids": [
+      "API_045_post",
+      "v5_get_api_app_driver_qualification_face_sessions_verificationSessionId"
+    ],
+    "page_ids": [
+      "D04",
+      "D46"
+    ],
+    "tables": [
+      "vi_provider_verification",
+      "vi_face_session"
+    ],
+    "case_ids": [],
+    "scope": "DEVELOPMENT",
+    "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
+    "status": "NOT_ASSESSED",
+    "code_paths": [
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/verification/",
+      "xinyi-rongli/src/main/resources/mapper/rongli/verification/",
+      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/verification/",
+      "xinyi-ui/src/views/rongli/verification/",
+      "xinyi-ui/src/api/rongli/verification.ts",
+      "xinyi-miniapp/src/features/verification/"
+    ],
+    "test_class": "Q04VerificationIT",
+    "commands": [
+      "mvn -pl xinyi-admin -am -Pvi-it -Dit.test=Q04VerificationIT verify",
+      "npm --prefix xinyi-ui run build:prod",
+      "npm --prefix xinyi-miniapp run build:mp-weixin"
+    ],
+    "done_when": [
+      "源接口/页面/表/用例均有明确实现文件与关联测试；不能以目录存在当完成",
+      "本任务真实集成与负向场景实际通过且保存原始报告；无测试/跳过不能通过",
+      "提交独立复核记录；标注测试第三方替身，不声称真实渠道通过"
+    ],
+    "blocker_policy": {
+      "credential": "只阻L01或具体真实渠道验证，通用代码可继续",
+      "policy": "生产配置待批准；测试使用明示fixture",
+      "environment": "具体命令与错误落盘；不能假装已验收",
+      "access": "不得绕过限制；保存恢复点",
+      "contract": "局部冲突登记并修订同源契约，独立任务继续"
+    },
+    "evidence": [],
+    "implementation": null,
+    "review": null,
+    "blocker": null
+  },
+  {
+    "id": "Q05",
+    "phase": "M1",
+    "title": "资格审批与到期复审",
+    "domain": "qualification",
+    "depends_on": [
+      "Q01",
+      "Q03",
+      "Q04",
+      "I06"
+    ],
+    "deliverables": [
+      "后台资格列表详情审核，资格快照、到期任务、拒绝原因"
+    ],
+    "negative_checks": [
+      "个人不能自批",
+      "证件失效禁新单但历史/返还不丢",
+      "无保险条件"
+    ],
+    "api_ids": [
+      "API_121_get",
+      "API_122_get",
+      "API_123_post"
+    ],
+    "page_ids": [
+      "B16",
+      "B16-review"
+    ],
+    "tables": [],
+    "case_ids": [],
+    "scope": "DEVELOPMENT",
+    "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
+    "status": "NOT_ASSESSED",
+    "code_paths": [
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/qualification/",
+      "xinyi-rongli/src/main/resources/mapper/rongli/qualification/",
+      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/qualification/",
+      "xinyi-ui/src/views/rongli/qualification/",
+      "xinyi-ui/src/api/rongli/qualification.ts",
+      "xinyi-miniapp/src/features/qualification/"
+    ],
+    "test_class": "Q05QualificationIT",
+    "commands": [
+      "mvn -pl xinyi-admin -am -Pvi-it -Dit.test=Q05QualificationIT verify",
+      "npm --prefix xinyi-ui run build:prod",
+      "npm --prefix xinyi-miniapp run build:mp-weixin"
+    ],
+    "done_when": [
+      "源接口/页面/表/用例均有明确实现文件与关联测试；不能以目录存在当完成",
+      "本任务真实集成与负向场景实际通过且保存原始报告；无测试/跳过不能通过",
+      "提交独立复核记录；标注测试第三方替身，不声称真实渠道通过"
+    ],
+    "blocker_policy": {
+      "credential": "只阻L01或具体真实渠道验证，通用代码可继续",
+      "policy": "生产配置待批准；测试使用明示fixture",
+      "environment": "具体命令与错误落盘；不能假装已验收",
+      "access": "不得绕过限制；保存恢复点",
+      "contract": "局部冲突登记并修订同源契约，独立任务继续"
+    },
+    "evidence": [],
+    "implementation": null,
+    "review": null,
+    "blocker": null
+  },
+  {
+    "id": "B01",
+    "phase": "M2",
+    "title": "先时段后地址的预约界面",
+    "domain": "booking",
+    "depends_on": [
+      "E04",
+      "A01",
+      "A02",
+      "C03"
+    ],
+    "deliverables": [
+      "实现O32→O33→O31→O34，草稿/返回/修改失效，链接API而非内存订单"
+    ],
+    "negative_checks": [
+      "切换地址车型重报价",
+      "已选时段不提前扣名额"
+    ],
+    "api_ids": [
+      "API_023_get"
+    ],
+    "page_ids": [
+      "O03",
+      "O03-empty",
+      "O31",
+      "O32",
+      "O32-unavailable",
+      "O33",
+      "O33-location-failed",
+      "O33-outside",
+      "O34",
+      "O34-full",
+      "O34-no-price",
+      "O34-price-changed"
+    ],
+    "tables": [],
+    "case_ids": [
+      "TC-019",
+      "TC-020",
+      "TC-021",
+      "TC-022",
+      "TC-023",
+      "TC-024",
+      "TC-025",
+      "TC-026",
+      "TC-027",
+      "TC-028",
+      "TC-029",
+      "TC-030",
+      "TC-031",
+      "TC-032",
+      "TC-033",
+      "TC-034",
+      "TC-035",
+      "TC-036"
+    ],
+    "scope": "DEVELOPMENT",
+    "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
+    "status": "NOT_ASSESSED",
+    "code_paths": [
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/booking/",
+      "xinyi-rongli/src/main/resources/mapper/rongli/booking/",
+      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/booking/",
+      "xinyi-ui/src/views/rongli/booking/",
+      "xinyi-ui/src/api/rongli/booking.ts",
+      "xinyi-miniapp/src/features/booking/"
+    ],
+    "test_class": "B01BookingIT",
+    "commands": [
+      "mvn -pl xinyi-admin -am -Pvi-it -Dit.test=B01BookingIT verify",
+      "npm --prefix xinyi-ui run build:prod",
+      "npm --prefix xinyi-miniapp run build:mp-weixin"
+    ],
+    "done_when": [
+      "源接口/页面/表/用例均有明确实现文件与关联测试；不能以目录存在当完成",
+      "本任务真实集成与负向场景实际通过且保存原始报告；无测试/跳过不能通过",
+      "提交独立复核记录；标注测试第三方替身，不声称真实渠道通过"
+    ],
+    "blocker_policy": {
+      "credential": "只阻L01或具体真实渠道验证，通用代码可继续",
+      "policy": "生产配置待批准；测试使用明示fixture",
+      "environment": "具体命令与错误落盘；不能假装已验收",
+      "access": "不得绕过限制；保存恢复点",
+      "contract": "局部冲突登记并修订同源契约，独立任务继续"
+    },
+    "evidence": [],
+    "implementation": null,
+    "review": null,
+    "blocker": null
+  },
+  {
+    "id": "B02",
+    "phase": "M2",
+    "title": "报价快照与服务校验",
+    "domain": "booking",
+    "depends_on": [
+      "C03",
+      "C04",
+      "A01",
+      "A02"
+    ],
+    "deliverables": [
+      "四组合输入归属、地图路线、站点匹配、保存报价输入和规则快照"
+    ],
+    "negative_checks": [
+      "越权地址车辆拒绝",
+      "快照过期/配置变更显式冲突",
+      "无隐藏自动保存地址簿"
+    ],
+    "api_ids": [
+      "API_024_post"
+    ],
+    "page_ids": [],
+    "tables": [
+      "vi_quote"
+    ],
+    "case_ids": [],
+    "scope": "DEVELOPMENT",
+    "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
+    "status": "NOT_ASSESSED",
+    "code_paths": [
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/booking/",
+      "xinyi-rongli/src/main/resources/mapper/rongli/booking/",
+      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/booking/",
+      "xinyi-ui/src/views/rongli/booking/",
+      "xinyi-ui/src/api/rongli/booking.ts",
+      "xinyi-miniapp/src/features/booking/"
+    ],
+    "test_class": "B02BookingIT",
+    "commands": [
+      "mvn -pl xinyi-admin -am -Pvi-it -Dit.test=B02BookingIT verify",
+      "npm --prefix xinyi-ui run build:prod",
+      "npm --prefix xinyi-miniapp run build:mp-weixin"
+    ],
+    "done_when": [
+      "源接口/页面/表/用例均有明确实现文件与关联测试；不能以目录存在当完成",
+      "本任务真实集成与负向场景实际通过且保存原始报告；无测试/跳过不能通过",
+      "提交独立复核记录；标注测试第三方替身，不声称真实渠道通过"
+    ],
+    "blocker_policy": {
+      "credential": "只阻L01或具体真实渠道验证，通用代码可继续",
+      "policy": "生产配置待批准；测试使用明示fixture",
+      "environment": "具体命令与错误落盘；不能假装已验收",
+      "access": "不得绕过限制；保存恢复点",
+      "contract": "局部冲突登记并修订同源契约，独立任务继续"
+    },
+    "evidence": [],
+    "implementation": null,
+    "review": null,
+    "blocker": null
+  },
+  {
+    "id": "B03",
+    "phase": "M2",
+    "title": "原子建单与预占",
+    "domain": "order",
+    "depends_on": [
+      "B02",
+      "E06"
+    ],
+    "deliverables": [
+      "只按报价创建订单/支付信息/预约预占/30分钟截止",
+      "协议接受记录"
+    ],
+    "negative_checks": [
+      "同键同体复用",
+      "不同体409",
+      "并发最后名额只一单成功"
+    ],
+    "api_ids": [
+      "API_025_post"
+    ],
+    "page_ids": [],
+    "tables": [
+      "vi_order",
+      "vi_quota_reservation"
+    ],
+    "case_ids": [],
+    "scope": "DEVELOPMENT",
+    "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
+    "status": "NOT_ASSESSED",
+    "code_paths": [
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/order/",
+      "xinyi-rongli/src/main/resources/mapper/rongli/order/",
+      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/order/",
+      "xinyi-ui/src/views/rongli/order/",
+      "xinyi-ui/src/api/rongli/order.ts",
+      "xinyi-miniapp/src/features/order/"
+    ],
+    "test_class": "B03OrderIT",
+    "commands": [
+      "mvn -pl xinyi-admin -am -Pvi-it -Dit.test=B03OrderIT verify",
+      "npm --prefix xinyi-ui run build:prod",
+      "npm --prefix xinyi-miniapp run build:mp-weixin"
+    ],
+    "done_when": [
+      "源接口/页面/表/用例均有明确实现文件与关联测试；不能以目录存在当完成",
+      "本任务真实集成与负向场景实际通过且保存原始报告；无测试/跳过不能通过",
+      "提交独立复核记录；标注测试第三方替身，不声称真实渠道通过"
+    ],
+    "blocker_policy": {
+      "credential": "只阻L01或具体真实渠道验证，通用代码可继续",
+      "policy": "生产配置待批准；测试使用明示fixture",
+      "environment": "具体命令与错误落盘；不能假装已验收",
+      "access": "不得绕过限制；保存恢复点",
+      "contract": "局部冲突登记并修订同源契约，独立任务继续"
+    },
+    "evidence": [],
+    "implementation": null,
+    "review": null,
+    "blocker": null
+  },
+  {
+    "id": "B04",
+    "phase": "M2",
+    "title": "四端订单投影与时间轴",
+    "domain": "order",
+    "depends_on": [
+      "B03",
+      "I06",
+      "E05",
+      "E04"
+    ],
+    "deliverables": [
+      "Owner/Driver/Station/Admin四DTO和列表",
+      "金额地址额外裁剪"
+    ],
+    "negative_checks": [
+      "不能从列表绕详情拿敏感字段",
+      "结束任务后driver地址联系人null"
+    ],
+    "api_ids": [
+      "API_026_get",
+      "API_027_get",
+      "API_028_get",
+      "API_055_get",
+      "API_056_get",
+      "API_072_get",
+      "API_073_get",
+      "API_083_get",
+      "API_084_get"
+    ],
+    "page_ids": [
+      "O14",
+      "O14-cancel-return",
+      "O14-cancel-review",
+      "O14-cancelled",
+      "O14-dispatching",
+      "O14-manual",
+      "O15",
+      "O26",
+      "O26-empty",
+      "O26-error",
+      "O26-loading",
+      "D09",
+      "D25",
+      "D25-cancelled",
+      "D36",
+      "S02",
+      "S03",
+      "S04",
+      "S05",
+      "S06",
+      "B03",
+      "B03-empty",
+      "B03-error",
+      "B03-forbidden",
+      "B03-loading",
+      "B04",
+      "B04-returned",
+      "B10"
+    ],
+    "tables": [],
+    "case_ids": [],
+    "scope": "DEVELOPMENT",
+    "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
+    "status": "NOT_ASSESSED",
+    "code_paths": [
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/order/",
+      "xinyi-rongli/src/main/resources/mapper/rongli/order/",
+      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/order/",
+      "xinyi-ui/src/views/rongli/order/",
+      "xinyi-ui/src/api/rongli/order.ts",
+      "xinyi-miniapp/src/features/order/"
+    ],
+    "test_class": "B04OrderIT",
+    "commands": [
+      "mvn -pl xinyi-admin -am -Pvi-it -Dit.test=B04OrderIT verify",
+      "npm --prefix xinyi-ui run build:prod",
+      "npm --prefix xinyi-miniapp run build:mp-weixin"
+    ],
+    "done_when": [
+      "源接口/页面/表/用例均有明确实现文件与关联测试；不能以目录存在当完成",
+      "本任务真实集成与负向场景实际通过且保存原始报告；无测试/跳过不能通过",
+      "提交独立复核记录；标注测试第三方替身，不声称真实渠道通过"
+    ],
+    "blocker_policy": {
+      "credential": "只阻L01或具体真实渠道验证，通用代码可继续",
+      "policy": "生产配置待批准；测试使用明示fixture",
+      "environment": "具体命令与错误落盘；不能假装已验收",
+      "access": "不得绕过限制；保存恢复点",
+      "contract": "局部冲突登记并修订同源契约，独立任务继续"
+    },
+    "evidence": [],
+    "implementation": null,
+    "review": null,
+    "blocker": null
+  },
+  {
+    "id": "P01",
+    "phase": "M2",
+    "title": "支付适配器与预支付",
+    "domain": "payment",
+    "depends_on": [
+      "B03",
+      "E07"
+    ],
+    "deliverables": [
+      "微信APIv3 SDK适配+测试网关，支付单商户快照和预支付状态"
+    ],
+    "negative_checks": [
+      "本地Mock不能上生产",
+      "客户端成功不修改paid",
+      "超期不重置截止"
+    ],
+    "api_ids": [
+      "API_029_post"
+    ],
+    "page_ids": [
+      "O10",
+      "O11",
+      "O12",
+      "O13",
+      "O13-closed"
+    ],
+    "tables": [
+      "vi_payment_order"
+    ],
+    "case_ids": [],
+    "scope": "DEVELOPMENT",
+    "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
+    "status": "NOT_ASSESSED",
+    "code_paths": [
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/payment/",
+      "xinyi-rongli/src/main/resources/mapper/rongli/payment/",
+      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/payment/",
+      "xinyi-ui/src/views/rongli/payment/",
+      "xinyi-ui/src/api/rongli/payment.ts",
+      "xinyi-miniapp/src/features/payment/"
+    ],
+    "test_class": "P01PaymentIT",
+    "commands": [
+      "mvn -pl xinyi-admin -am -Pvi-it -Dit.test=P01PaymentIT verify",
+      "npm --prefix xinyi-ui run build:prod",
+      "npm --prefix xinyi-miniapp run build:mp-weixin"
+    ],
+    "done_when": [
+      "源接口/页面/表/用例均有明确实现文件与关联测试；不能以目录存在当完成",
+      "本任务真实集成与负向场景实际通过且保存原始报告；无测试/跳过不能通过",
+      "提交独立复核记录；标注测试第三方替身，不声称真实渠道通过"
+    ],
+    "blocker_policy": {
+      "credential": "只阻L01或具体真实渠道验证，通用代码可继续",
+      "policy": "生产配置待批准；测试使用明示fixture",
+      "environment": "具体命令与错误落盘；不能假装已验收",
+      "access": "不得绕过限制；保存恢复点",
+      "contract": "局部冲突登记并修订同源契约，独立任务继续"
+    },
+    "evidence": [],
+    "implementation": null,
+    "review": null,
+    "blocker": null
+  },
+  {
+    "id": "P02",
+    "phase": "M2",
+    "title": "支付可信通知、查单与关单",
+    "domain": "payment",
+    "depends_on": [
+      "P01",
+      "E06"
+    ],
+    "deliverables": [
+      "原始body验签/解密/金额商户一致、查单补偿、30分钟可信关单"
+    ],
+    "negative_checks": [
+      "回调与关单竞争",
+      "未知不误报未扣款",
+      "回调防重放与永久去重"
+    ],
+    "api_ids": [
+      "API_030_get",
+      "API_031_post",
+      "API_165_post",
+      "API_166_post"
+    ],
+    "page_ids": [
+      "B31",
+      "B31-query"
+    ],
+    "tables": [
+      "vi_channel_event"
+    ],
+    "case_ids": [
+      "TC-037",
+      "TC-038",
+      "TC-039",
+      "TC-040",
+      "TC-041",
+      "TC-042",
+      "TC-043",
+      "TC-044",
+      "TC-045",
+      "TC-046",
+      "TC-047",
+      "TC-048",
+      "TC-049",
+      "TC-050"
+    ],
+    "scope": "DEVELOPMENT",
+    "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
+    "status": "NOT_ASSESSED",
+    "code_paths": [
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/payment/",
+      "xinyi-rongli/src/main/resources/mapper/rongli/payment/",
+      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/payment/",
+      "xinyi-ui/src/views/rongli/payment/",
+      "xinyi-ui/src/api/rongli/payment.ts",
+      "xinyi-miniapp/src/features/payment/"
+    ],
+    "test_class": "P02PaymentIT",
+    "commands": [
+      "mvn -pl xinyi-admin -am -Pvi-it -Dit.test=P02PaymentIT verify",
+      "npm --prefix xinyi-ui run build:prod",
+      "npm --prefix xinyi-miniapp run build:mp-weixin"
+    ],
+    "done_when": [
+      "源接口/页面/表/用例均有明确实现文件与关联测试；不能以目录存在当完成",
+      "本任务真实集成与负向场景实际通过且保存原始报告；无测试/跳过不能通过",
+      "提交独立复核记录；标注测试第三方替身，不声称真实渠道通过"
+    ],
+    "blocker_policy": {
+      "credential": "只阻L01或具体真实渠道验证，通用代码可继续",
+      "policy": "生产配置待批准；测试使用明示fixture",
+      "environment": "具体命令与错误落盘；不能假装已验收",
+      "access": "不得绕过限制；保存恢复点",
+      "contract": "局部冲突登记并修订同源契约，独立任务继续"
+    },
+    "evidence": [],
+    "implementation": null,
+    "review": null,
+    "blocker": null
+  },
+  {
+    "id": "P04",
+    "phase": "M2",
+    "title": "未接车退款执行与渠道基础",
+    "domain": "refund",
+    "depends_on": [
+      "S02",
+      "P02"
+    ],
+    "deliverables": [
+      "审核批准后退款单与渠道调用，复用原退款号查询及重试",
+      "为真实付款准备取消出口"
+    ],
+    "negative_checks": [
+      "未知结果不重复扣款",
+      "允许退额=实付减已退减预留，拒绝超额"
+    ],
+    "api_ids": [
+      "API_113_get",
+      "API_114_post",
+      "API_115_post",
+      "API_141_get",
+      "API_142_post",
+      "API_143_post"
+    ],
+    "page_ids": [],
+    "tables": [
+      "vi_refund_order"
+    ],
+    "case_ids": [],
+    "scope": "DEVELOPMENT",
+    "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
+    "status": "NOT_ASSESSED",
+    "code_paths": [
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/refund/",
+      "xinyi-rongli/src/main/resources/mapper/rongli/refund/",
+      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/refund/",
+      "xinyi-ui/src/views/rongli/refund/",
+      "xinyi-ui/src/api/rongli/refund.ts",
+      "xinyi-miniapp/src/features/refund/"
+    ],
+    "test_class": "P04RefundIT",
+    "commands": [
+      "mvn -pl xinyi-admin -am -Pvi-it -Dit.test=P04RefundIT verify",
+      "npm --prefix xinyi-ui run build:prod",
+      "npm --prefix xinyi-miniapp run build:mp-weixin"
+    ],
+    "done_when": [
+      "源接口/页面/表/用例均有明确实现文件与关联测试；不能以目录存在当完成",
+      "本任务真实集成与负向场景实际通过且保存原始报告；无测试/跳过不能通过",
+      "提交独立复核记录；标注测试第三方替身，不声称真实渠道通过"
+    ],
+    "blocker_policy": {
+      "credential": "只阻L01或具体真实渠道验证，通用代码可继续",
+      "policy": "生产配置待批准；测试使用明示fixture",
+      "environment": "具体命令与错误落盘；不能假装已验收",
+      "access": "不得绕过限制；保存恢复点",
+      "contract": "局部冲突登记并修订同源契约，独立任务继续"
+    },
+    "evidence": [],
+    "implementation": null,
+    "review": null,
+    "blocker": null
+  },
+  {
+    "id": "P03",
+    "phase": "M2",
+    "title": "计划派单和时间驱动任务",
+    "domain": "jobs",
+    "depends_on": [
+      "P02",
+      "C03",
+      "E06"
+    ],
+    "deliverables": [
+      "到dispatchAt才派，deadline任务扫描领取租约和补偿"
+    ],
+    "negative_checks": [
+      "重启不丢任务",
+      "多实例不重派",
+      "Clock可注入，不能sleep24h测试"
+    ],
+    "api_ids": [],
+    "page_ids": [],
+    "tables": [],
+    "case_ids": [],
+    "scope": "DEVELOPMENT",
+    "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
+    "status": "NOT_ASSESSED",
+    "code_paths": [
+      "docs/implementation/vehicle/P03/"
+    ],
+    "test_class": "P03JobsIT",
+    "commands": [
+      "mvn -pl xinyi-admin -am -Pvi-it -Dit.test=P03JobsIT verify",
+      "npm --prefix xinyi-ui run build:prod",
+      "npm --prefix xinyi-miniapp run build:mp-weixin"
+    ],
+    "done_when": [
+      "源接口/页面/表/用例均有明确实现文件与关联测试；不能以目录存在当完成",
+      "本任务真实集成与负向场景实际通过且保存原始报告；无测试/跳过不能通过",
+      "提交独立复核记录；标注测试第三方替身，不声称真实渠道通过"
+    ],
+    "blocker_policy": {
+      "credential": "只阻L01或具体真实渠道验证，通用代码可继续",
+      "policy": "生产配置待批准；测试使用明示fixture",
+      "environment": "具体命令与错误落盘；不能假装已验收",
+      "access": "不得绕过限制；保存恢复点",
+      "contract": "局部冲突登记并修订同源契约，独立任务继续"
+    },
+    "evidence": [],
+    "implementation": null,
+    "review": null,
+    "blocker": null
+  },
+  {
+    "id": "D01",
+    "phase": "M3",
+    "title": "听单、位置与资格判定",
+    "domain": "dispatch",
+    "depends_on": [
+      "Q05",
+      "I04"
+    ],
+    "deliverables": [
+      "分开听单意愿/客户端可达/定位新鲜度/在手任务，拒绝原因明确"
+    ],
+    "negative_checks": [
+      "旧定位不报实时",
+      "位置取样不成为后台轨迹直播"
+    ],
+    "api_ids": [
+      "API_048_get",
+      "API_049_patch",
+      "API_050_post"
+    ],
+    "page_ids": [
+      "D06",
+      "D06-occupied",
+      "D06-offline"
+    ],
+    "tables": [
+      "vi_driver_location"
+    ],
+    "case_ids": [],
+    "scope": "DEVELOPMENT",
+    "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
+    "status": "NOT_ASSESSED",
+    "code_paths": [
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/",
+      "xinyi-rongli/src/main/resources/mapper/rongli/dispatch/",
+      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/dispatch/",
+      "xinyi-ui/src/views/rongli/dispatch/",
+      "xinyi-ui/src/api/rongli/dispatch.ts",
+      "xinyi-miniapp/src/features/dispatch/"
+    ],
+    "test_class": "D01DispatchIT",
+    "commands": [
+      "mvn -pl xinyi-admin -am -Pvi-it -Dit.test=D01DispatchIT verify",
+      "npm --prefix xinyi-ui run build:prod",
+      "npm --prefix xinyi-miniapp run build:mp-weixin"
+    ],
+    "done_when": [
+      "源接口/页面/表/用例均有明确实现文件与关联测试；不能以目录存在当完成",
+      "本任务真实集成与负向场景实际通过且保存原始报告；无测试/跳过不能通过",
+      "提交独立复核记录；标注测试第三方替身，不声称真实渠道通过"
+    ],
+    "blocker_policy": {
+      "credential": "只阻L01或具体真实渠道验证，通用代码可继续",
+      "policy": "生产配置待批准；测试使用明示fixture",
+      "environment": "具体命令与错误落盘；不能假装已验收",
+      "access": "不得绕过限制；保存恢复点",
+      "contract": "局部冲突登记并修订同源契约，独立任务继续"
+    },
+    "evidence": [],
+    "implementation": null,
+    "review": null,
+    "blocker": null
+  },
+  {
+    "id": "D02",
+    "phase": "M3",
+    "title": "自动邀约轮转与扩圈",
+    "domain": "dispatch",
+    "depends_on": [
+      "D01",
+      "P03"
+    ],
+    "deliverables": [
+      "游标、公平轮转、单次邀约、截止和人工兜底",
+      "DB占用原子"
+    ],
+    "negative_checks": [
+      "司机/订单不能双占",
+      "候选为空不死循环",
+      "超时撤旧邀约"
+    ],
+    "api_ids": [],
+    "page_ids": [],
+    "tables": [
+      "vi_dispatch_invite",
+      "vi_driver_occupancy",
+      "vi_dispatch_cursor"
+    ],
+    "case_ids": [
+      "TC-051",
+      "TC-052",
+      "TC-053",
+      "TC-054",
+      "TC-055",
+      "TC-056",
+      "TC-057",
+      "TC-058",
+      "TC-059",
+      "TC-060",
+      "TC-061",
+      "TC-062",
+      "TC-063",
+      "TC-064",
+      "TC-065",
+      "TC-066"
+    ],
+    "scope": "DEVELOPMENT",
+    "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
+    "status": "NOT_ASSESSED",
+    "code_paths": [
+      "docs/implementation/vehicle/D02/"
+    ],
+    "test_class": "D02DispatchIT",
+    "commands": [
+      "mvn -pl xinyi-admin -am -Pvi-it -Dit.test=D02DispatchIT verify",
+      "npm --prefix xinyi-ui run build:prod",
+      "npm --prefix xinyi-miniapp run build:mp-weixin"
+    ],
+    "done_when": [
+      "源接口/页面/表/用例均有明确实现文件与关联测试；不能以目录存在当完成",
+      "本任务真实集成与负向场景实际通过且保存原始报告；无测试/跳过不能通过",
+      "提交独立复核记录；标注测试第三方替身，不声称真实渠道通过"
+    ],
+    "blocker_policy": {
+      "credential": "只阻L01或具体真实渠道验证，通用代码可继续",
+      "policy": "生产配置待批准；测试使用明示fixture",
+      "environment": "具体命令与错误落盘；不能假装已验收",
+      "access": "不得绕过限制；保存恢复点",
+      "contract": "局部冲突登记并修订同源契约，独立任务继续"
+    },
+    "evidence": [],
+    "implementation": null,
+    "review": null,
+    "blocker": null
+  },
+  {
+    "id": "D03",
+    "phase": "M3",
+    "title": "人工邀约与计划变更",
+    "domain": "dispatch",
+    "depends_on": [
+      "D02",
+      "E05"
+    ],
+    "deliverables": [
+      "调度队列/候选/邀约记录/规则和影响预览"
+    ],
+    "negative_checks": [
+      "人工派单仍需司机接受",
+      "不可绕资格",
+      "配置修改不追改在手任务"
+    ],
+    "api_ids": [
+      "API_098_get",
+      "API_099_get",
+      "API_100_post",
+      "API_101_get",
+      "API_102_get",
+      "API_103_put",
+      "API_104_post",
+      "API_105_post"
+    ],
+    "page_ids": [
+      "B05",
+      "B05-invite",
+      "B06",
+      "B24",
+      "B24-impact"
+    ],
+    "tables": [],
+    "case_ids": [],
+    "scope": "DEVELOPMENT",
+    "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
+    "status": "NOT_ASSESSED",
+    "code_paths": [
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/",
+      "xinyi-rongli/src/main/resources/mapper/rongli/dispatch/",
+      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/dispatch/",
+      "xinyi-ui/src/views/rongli/dispatch/",
+      "xinyi-ui/src/api/rongli/dispatch.ts",
+      "xinyi-miniapp/src/features/dispatch/"
+    ],
+    "test_class": "D03DispatchIT",
+    "commands": [
+      "mvn -pl xinyi-admin -am -Pvi-it -Dit.test=D03DispatchIT verify",
+      "npm --prefix xinyi-ui run build:prod",
+      "npm --prefix xinyi-miniapp run build:mp-weixin"
+    ],
+    "done_when": [
+      "源接口/页面/表/用例均有明确实现文件与关联测试；不能以目录存在当完成",
+      "本任务真实集成与负向场景实际通过且保存原始报告；无测试/跳过不能通过",
+      "提交独立复核记录；标注测试第三方替身，不声称真实渠道通过"
+    ],
+    "blocker_policy": {
+      "credential": "只阻L01或具体真实渠道验证，通用代码可继续",
+      "policy": "生产配置待批准；测试使用明示fixture",
+      "environment": "具体命令与错误落盘；不能假装已验收",
+      "access": "不得绕过限制；保存恢复点",
+      "contract": "局部冲突登记并修订同源契约，独立任务继续"
+    },
+    "evidence": [],
+    "implementation": null,
+    "review": null,
+    "blocker": null
+  },
+  {
+    "id": "D04",
+    "phase": "M3",
+    "title": "司机接受与拒绝邀约",
+    "domain": "dispatch",
+    "depends_on": [
+      "D02",
+      "E04"
+    ],
+    "deliverables": [
+      "本人邀约列表详情响应、当前承接，响应版本和占用转换"
+    ],
+    "negative_checks": [
+      "超时与接受只一成功",
+      "伪造driver拒绝",
+      "晚到响应不覆盖新单"
+    ],
+    "api_ids": [
+      "API_051_get",
+      "API_052_get",
+      "API_053_post",
+      "API_054_get"
+    ],
+    "page_ids": [
+      "D07",
+      "D08"
+    ],
+    "tables": [
+      "vi_driver_assignment"
+    ],
+    "case_ids": [],
+    "scope": "DEVELOPMENT",
+    "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
+    "status": "NOT_ASSESSED",
+    "code_paths": [
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/",
+      "xinyi-rongli/src/main/resources/mapper/rongli/dispatch/",
+      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/dispatch/",
+      "xinyi-ui/src/views/rongli/dispatch/",
+      "xinyi-ui/src/api/rongli/dispatch.ts",
+      "xinyi-miniapp/src/features/dispatch/"
+    ],
+    "test_class": "D04DispatchIT",
+    "commands": [
+      "mvn -pl xinyi-admin -am -Pvi-it -Dit.test=D04DispatchIT verify",
+      "npm --prefix xinyi-ui run build:prod",
+      "npm --prefix xinyi-miniapp run build:mp-weixin"
+    ],
+    "done_when": [
+      "源接口/页面/表/用例均有明确实现文件与关联测试；不能以目录存在当完成",
+      "本任务真实集成与负向场景实际通过且保存原始报告；无测试/跳过不能通过",
+      "提交独立复核记录；标注测试第三方替身，不声称真实渠道通过"
+    ],
+    "blocker_policy": {
+      "credential": "只阻L01或具体真实渠道验证，通用代码可继续",
+      "policy": "生产配置待批准；测试使用明示fixture",
+      "environment": "具体命令与错误落盘；不能假装已验收",
+      "access": "不得绕过限制；保存恢复点",
+      "contract": "局部冲突登记并修订同源契约，独立任务继续"
+    },
+    "evidence": [],
+    "implementation": null,
+    "review": null,
+    "blocker": null
+  },
+  {
+    "id": "D05",
+    "phase": "M3",
+    "title": "出发、到达及任务视图",
+    "domain": "fulfillment",
+    "depends_on": [
+      "D04",
+      "B04"
+    ],
+    "deliverables": [
+      "按强制顺序出发/到接车/到站",
+      "导航打点、联系令牌、服务历史"
+    ],
+    "negative_checks": [
+      "不传targetStatus",
+      "上门时间与预计到站不同",
+      "司机结束后通道失效"
+    ],
+    "api_ids": [
+      "API_057_post",
+      "API_058_post",
+      "API_059_post",
+      "v5_post_api_common_orders_orderNo_contact_access"
+    ],
+    "page_ids": [
+      "D10",
+      "D11",
+      "D14",
+      "D16",
+      "D21"
+    ],
+    "tables": [],
+    "case_ids": [],
+    "scope": "DEVELOPMENT",
+    "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
+    "status": "NOT_ASSESSED",
+    "code_paths": [
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/fulfillment/",
+      "xinyi-rongli/src/main/resources/mapper/rongli/fulfillment/",
+      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/fulfillment/",
+      "xinyi-ui/src/views/rongli/fulfillment/",
+      "xinyi-ui/src/api/rongli/fulfillment.ts",
+      "xinyi-miniapp/src/features/fulfillment/"
+    ],
+    "test_class": "D05FulfillmentIT",
+    "commands": [
+      "mvn -pl xinyi-admin -am -Pvi-it -Dit.test=D05FulfillmentIT verify",
+      "npm --prefix xinyi-ui run build:prod",
+      "npm --prefix xinyi-miniapp run build:mp-weixin"
+    ],
+    "done_when": [
+      "源接口/页面/表/用例均有明确实现文件与关联测试；不能以目录存在当完成",
+      "本任务真实集成与负向场景实际通过且保存原始报告；无测试/跳过不能通过",
+      "提交独立复核记录；标注测试第三方替身，不声称真实渠道通过"
+    ],
+    "blocker_policy": {
+      "credential": "只阻L01或具体真实渠道验证，通用代码可继续",
+      "policy": "生产配置待批准；测试使用明示fixture",
+      "environment": "具体命令与错误落盘；不能假装已验收",
+      "access": "不得绕过限制；保存恢复点",
+      "contract": "局部冲突登记并修订同源契约，独立任务继续"
+    },
+    "evidence": [],
+    "implementation": null,
+    "review": null,
+    "blocker": null
+  },
+  {
+    "id": "D06",
+    "phase": "M3",
+    "title": "未接车解除与原订单重派",
+    "domain": "fulfillment",
+    "depends_on": [
+      "D04",
+      "E06"
+    ],
+    "deliverables": [
+      "解除指定承接/释放精确占用/保留支付预约/重派",
+      "生成取消规则事实"
+    ],
+    "negative_checks": [
+      "已接车禁止自助丢车",
+      "原订单不取消",
+      "不重复记满额报酬"
+    ],
+    "api_ids": [
+      "API_060_post"
+    ],
+    "page_ids": [
+      "D31",
+      "D32",
+      "D33",
+      "D34",
+      "D35"
+    ],
+    "tables": [],
+    "case_ids": [
+      "TC-090",
+      "TC-091",
+      "TC-092",
+      "TC-093",
+      "TC-094",
+      "TC-095",
+      "TC-096",
+      "TC-097",
+      "TC-098",
+      "TC-099",
+      "TC-100",
+      "TC-101",
+      "TC-102",
+      "TC-103",
+      "TC-104"
+    ],
+    "scope": "DEVELOPMENT",
+    "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
+    "status": "NOT_ASSESSED",
+    "code_paths": [
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/fulfillment/",
+      "xinyi-rongli/src/main/resources/mapper/rongli/fulfillment/",
+      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/fulfillment/",
+      "xinyi-ui/src/views/rongli/fulfillment/",
+      "xinyi-ui/src/api/rongli/fulfillment.ts",
+      "xinyi-miniapp/src/features/fulfillment/"
+    ],
+    "test_class": "D06FulfillmentIT",
+    "commands": [
+      "mvn -pl xinyi-admin -am -Pvi-it -Dit.test=D06FulfillmentIT verify",
+      "npm --prefix xinyi-ui run build:prod",
+      "npm --prefix xinyi-miniapp run build:mp-weixin"
+    ],
+    "done_when": [
+      "源接口/页面/表/用例均有明确实现文件与关联测试；不能以目录存在当完成",
+      "本任务真实集成与负向场景实际通过且保存原始报告；无测试/跳过不能通过",
+      "提交独立复核记录；标注测试第三方替身，不声称真实渠道通过"
+    ],
+    "blocker_policy": {
+      "credential": "只阻L01或具体真实渠道验证，通用代码可继续",
+      "policy": "生产配置待批准；测试使用明示fixture",
+      "environment": "具体命令与错误落盘；不能假装已验收",
+      "access": "不得绕过限制；保存恢复点",
+      "contract": "局部冲突登记并修订同源契约，独立任务继续"
+    },
+    "evidence": [],
+    "implementation": null,
+    "review": null,
+    "blocker": null
+  },
+  {
+    "id": "D07",
+    "phase": "M4",
+    "title": "处罚及申诉查询审核",
+    "domain": "penalty",
+    "depends_on": [
+      "D06",
+      "I06"
+    ],
+    "deliverables": [
+      "本人处罚列表详情、申诉提交进度、后台审批，公开意见投影"
+    ],
+    "negative_checks": [
+      "不能任意创建处罚",
+      "不恢复事故7/30天旧规则",
+      "不丢penaltyId"
+    ],
+    "api_ids": [
+      "API_061_post",
+      "API_127_post",
+      "v5_get_api_app_driver_penalties",
+      "v5_get_api_app_driver_penalties_penaltyId",
+      "v5_get_api_app_driver_penalty_appeals",
+      "v5_get_api_app_driver_penalty_appeals_appealId",
+      "v5_get_api_admin_penalties",
+      "v5_get_api_admin_penalties_penaltyId",
+      "v5_get_api_admin_penalty_appeals",
+      "v5_get_api_admin_penalty_appeals_appealId"
+    ],
+    "page_ids": [
+      "D43",
+      "D44",
+      "D45",
+      "B45"
+    ],
+    "tables": [
+      "vi_penalty",
+      "vi_penalty_appeal"
+    ],
+    "case_ids": [],
+    "scope": "DEVELOPMENT",
+    "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
+    "status": "NOT_ASSESSED",
+    "code_paths": [
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/penalty/",
+      "xinyi-rongli/src/main/resources/mapper/rongli/penalty/",
+      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/penalty/",
+      "xinyi-ui/src/views/rongli/penalty/",
+      "xinyi-ui/src/api/rongli/penalty.ts",
+      "xinyi-miniapp/src/features/penalty/"
+    ],
+    "test_class": "D07PenaltyIT",
+    "commands": [
+      "mvn -pl xinyi-admin -am -Pvi-it -Dit.test=D07PenaltyIT verify",
+      "npm --prefix xinyi-ui run build:prod",
+      "npm --prefix xinyi-miniapp run build:mp-weixin"
+    ],
+    "done_when": [
+      "源接口/页面/表/用例均有明确实现文件与关联测试；不能以目录存在当完成",
+      "本任务真实集成与负向场景实际通过且保存原始报告；无测试/跳过不能通过",
+      "提交独立复核记录；标注测试第三方替身，不声称真实渠道通过"
+    ],
+    "blocker_policy": {
+      "credential": "只阻L01或具体真实渠道验证，通用代码可继续",
+      "policy": "生产配置待批准；测试使用明示fixture",
+      "environment": "具体命令与错误落盘；不能假装已验收",
+      "access": "不得绕过限制；保存恢复点",
+      "contract": "局部冲突登记并修订同源契约，独立任务继续"
+    },
+    "evidence": [],
+    "implementation": null,
+    "review": null,
+    "blocker": null
+  },
+  {
+    "id": "F01",
+    "phase": "M1",
+    "title": "私有文件全生命周期",
+    "domain": "file",
+    "depends_on": [
+      "I01",
+      "I06",
+      "E07"
+    ],
+    "deliverables": [
+      "签上传、实际字节存储、元数据核验、短期读取、敏感访问审计"
+    ],
+    "negative_checks": [
+      "伪造文件ID/对象路径/未上传/过期签名拒绝",
+      "生产非公开profile目录"
+    ],
+    "api_ids": [
+      "API_157_post",
+      "API_158_post",
+      "API_159_get",
+      "API_160_post"
+    ],
+    "page_ids": [],
+    "tables": [
+      "vi_file"
+    ],
+    "case_ids": [],
+    "scope": "DEVELOPMENT",
+    "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
+    "status": "NOT_ASSESSED",
+    "code_paths": [
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/file/",
+      "xinyi-rongli/src/main/resources/mapper/rongli/file/",
+      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/file/",
+      "xinyi-ui/src/views/rongli/file/",
+      "xinyi-ui/src/api/rongli/file.ts",
+      "xinyi-miniapp/src/features/file/"
+    ],
+    "test_class": "F01FileIT",
+    "commands": [
+      "mvn -pl xinyi-admin -am -Pvi-it -Dit.test=F01FileIT verify",
+      "npm --prefix xinyi-ui run build:prod",
+      "npm --prefix xinyi-miniapp run build:mp-weixin"
+    ],
+    "done_when": [
+      "源接口/页面/表/用例均有明确实现文件与关联测试；不能以目录存在当完成",
+      "本任务真实集成与负向场景实际通过且保存原始报告；无测试/跳过不能通过",
+      "提交独立复核记录；标注测试第三方替身，不声称真实渠道通过"
+    ],
+    "blocker_policy": {
+      "credential": "只阻L01或具体真实渠道验证，通用代码可继续",
+      "policy": "生产配置待批准；测试使用明示fixture",
+      "environment": "具体命令与错误落盘；不能假装已验收",
+      "access": "不得绕过限制；保存恢复点",
+      "contract": "局部冲突登记并修订同源契约，独立任务继续"
+    },
+    "evidence": [],
+    "implementation": null,
+    "review": null,
+    "blocker": null
+  },
+  {
+    "id": "F02",
+    "phase": "M3",
+    "title": "四节点照片与里程证据",
+    "domain": "evidence",
+    "depends_on": [
+      "F01",
+      "D05"
+    ],
+    "deliverables": [
+      "创建证据组、六类照片、替换留版本、接车归还里程必填/异常说明"
+    ],
+    "negative_checks": [
+      "缺一照片或倒退里程不ready",
+      "ready不等于交接成功"
+    ],
+    "api_ids": [
+      "API_041_get",
+      "API_063_post",
+      "API_064_get",
+      "API_065_post",
+      "API_066_put",
+      "API_067_post"
+    ],
+    "page_ids": [
+      "O16",
+      "D12",
+      "D12-low-ocr",
+      "D12-missing",
+      "D12-upload-failed",
+      "D15",
+      "D19",
+      "D22",
+      "D22-missing"
+    ],
+    "tables": [
+      "vi_evidence_group",
+      "vi_photo"
+    ],
+    "case_ids": [],
+    "scope": "DEVELOPMENT",
+    "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
+    "status": "NOT_ASSESSED",
+    "code_paths": [
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/evidence/",
+      "xinyi-rongli/src/main/resources/mapper/rongli/evidence/",
+      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/evidence/",
+      "xinyi-ui/src/views/rongli/evidence/",
+      "xinyi-ui/src/api/rongli/evidence.ts",
+      "xinyi-miniapp/src/features/evidence/"
+    ],
+    "test_class": "F02EvidenceIT",
+    "commands": [
+      "mvn -pl xinyi-admin -am -Pvi-it -Dit.test=F02EvidenceIT verify",
+      "npm --prefix xinyi-ui run build:prod",
+      "npm --prefix xinyi-miniapp run build:mp-weixin"
+    ],
+    "done_when": [
+      "源接口/页面/表/用例均有明确实现文件与关联测试；不能以目录存在当完成",
+      "本任务真实集成与负向场景实际通过且保存原始报告；无测试/跳过不能通过",
+      "提交独立复核记录；标注测试第三方替身，不声称真实渠道通过"
+    ],
+    "blocker_policy": {
+      "credential": "只阻L01或具体真实渠道验证，通用代码可继续",
+      "policy": "生产配置待批准；测试使用明示fixture",
+      "environment": "具体命令与错误落盘；不能假装已验收",
+      "access": "不得绕过限制；保存恢复点",
+      "contract": "局部冲突登记并修订同源契约，独立任务继续"
+    },
+    "evidence": [],
+    "implementation": null,
+    "review": null,
+    "blocker": null
+  },
+  {
+    "id": "F03",
+    "phase": "M3",
+    "title": "四次交接的主体核验",
+    "domain": "handover",
+    "depends_on": [
+      "F02",
+      "I06"
+    ],
+    "deliverables": [
+      "类型/保管方/持码方/核验方/验证码/错误计数/一次性交接"
+    ],
+    "negative_checks": [
+      "自己拿码自己验证拒绝",
+      "错码计数即使业务回滚也持久",
+      "同码不可跨单"
+    ],
+    "api_ids": [
+      "API_068_post",
+      "API_069_get",
+      "API_070_get",
+      "API_071_post"
+    ],
+    "page_ids": [
+      "O35",
+      "O35-receipt",
+      "O35-return",
+      "D13",
+      "D13-code-error",
+      "D13-locked",
+      "D20",
+      "D20-cancel",
+      "D23",
+      "D23-cancel",
+      "S07",
+      "S07-code-error",
+      "S13",
+      "S13-cancel",
+      "S13-released"
+    ],
+    "tables": [
+      "vi_handover",
+      "vi_handover_attempt_guard"
+    ],
+    "case_ids": [],
+    "scope": "DEVELOPMENT",
+    "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
+    "status": "NOT_ASSESSED",
+    "code_paths": [
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/handover/",
+      "xinyi-rongli/src/main/resources/mapper/rongli/handover/",
+      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/handover/",
+      "xinyi-ui/src/views/rongli/handover/",
+      "xinyi-ui/src/api/rongli/handover.ts",
+      "xinyi-miniapp/src/features/handover/"
+    ],
+    "test_class": "F03HandoverIT",
+    "commands": [
+      "mvn -pl xinyi-admin -am -Pvi-it -Dit.test=F03HandoverIT verify",
+      "npm --prefix xinyi-ui run build:prod",
+      "npm --prefix xinyi-miniapp run build:mp-weixin"
+    ],
+    "done_when": [
+      "源接口/页面/表/用例均有明确实现文件与关联测试；不能以目录存在当完成",
+      "本任务真实集成与负向场景实际通过且保存原始报告；无测试/跳过不能通过",
+      "提交独立复核记录；标注测试第三方替身，不声称真实渠道通过"
+    ],
+    "blocker_policy": {
+      "credential": "只阻L01或具体真实渠道验证，通用代码可继续",
+      "policy": "生产配置待批准；测试使用明示fixture",
+      "environment": "具体命令与错误落盘；不能假装已验收",
+      "access": "不得绕过限制；保存恢复点",
+      "contract": "局部冲突登记并修订同源契约，独立任务继续"
+    },
+    "evidence": [],
+    "implementation": null,
+    "review": null,
+    "blocker": null
+  },
+  {
+    "id": "F04",
+    "phase": "M3",
+    "title": "行驶证OCR和人工复核",
+    "domain": "inspection",
+    "depends_on": [
+      "F01",
+      "F03"
+    ],
+    "deliverables": [
+      "行驶证文件、字段置信度、人工复核",
+      "后台与小程序共用入口"
+    ],
+    "negative_checks": [
+      "低置信度标示",
+      "原图需单独授权",
+      "通知/OCR失败不伪造已核验"
+    ],
+    "api_ids": [
+      "API_074_get",
+      "API_075_put",
+      "API_085_get",
+      "API_086_put"
+    ],
+    "page_ids": [
+      "S08",
+      "S08-manual",
+      "B07",
+      "B07-confirm",
+      "B08"
+    ],
+    "tables": [
+      "vi_vehicle_license"
+    ],
+    "case_ids": [
+      "TC-145",
+      "TC-146",
+      "TC-147"
+    ],
+    "scope": "DEVELOPMENT",
+    "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
+    "status": "NOT_ASSESSED",
+    "code_paths": [
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/inspection/",
+      "xinyi-rongli/src/main/resources/mapper/rongli/inspection/",
+      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/inspection/",
+      "xinyi-ui/src/views/rongli/inspection/",
+      "xinyi-ui/src/api/rongli/inspection.ts",
+      "xinyi-miniapp/src/features/inspection/"
+    ],
+    "test_class": "F04InspectionIT",
+    "commands": [
+      "mvn -pl xinyi-admin -am -Pvi-it -Dit.test=F04InspectionIT verify",
+      "npm --prefix xinyi-ui run build:prod",
+      "npm --prefix xinyi-miniapp run build:mp-weixin"
+    ],
+    "done_when": [
+      "源接口/页面/表/用例均有明确实现文件与关联测试；不能以目录存在当完成",
+      "本任务真实集成与负向场景实际通过且保存原始报告；无测试/跳过不能通过",
+      "提交独立复核记录；标注测试第三方替身，不声称真实渠道通过"
+    ],
+    "blocker_policy": {
+      "credential": "只阻L01或具体真实渠道验证，通用代码可继续",
+      "policy": "生产配置待批准；测试使用明示fixture",
+      "environment": "具体命令与错误落盘；不能假装已验收",
+      "access": "不得绕过限制；保存恢复点",
+      "contract": "局部冲突登记并修订同源契约，独立任务继续"
+    },
+    "evidence": [],
+    "implementation": null,
+    "review": null,
+    "blocker": null
+  },
+  {
+    "id": "F05",
+    "phase": "M3",
+    "title": "最终检测结果与更正",
+    "domain": "inspection",
+    "depends_on": [
+      "F04"
+    ],
+    "deliverables": [
+      "收车后检测中，仅登记最终结果",
+      "不合格凭证、两端CAS、更正版本"
+    ],
+    "negative_checks": [
+      "不增加开始暂停子进度",
+      "并发双端只一结果",
+      "失败保留草稿"
+    ],
+    "api_ids": [
+      "API_040_get",
+      "API_076_post",
+      "API_077_get",
+      "API_078_post",
+      "API_079_post",
+      "API_087_post",
+      "API_088_get",
+      "API_089_post",
+      "API_090_post",
+      "API_139_get",
+      "API_140_post"
+    ],
+    "page_ids": [
+      "O17",
+      "O18",
+      "O18-corrected",
+      "O18-pass",
+      "D17",
+      "D18",
+      "D18-unsafe",
+      "S10",
+      "S11",
+      "S11-conflict",
+      "S11-pass",
+      "S12",
+      "S12-notify-failed",
+      "S23",
+      "B11",
+      "B11-conflict",
+      "B30",
+      "B30-review"
+    ],
+    "tables": [
+      "vi_inspection_result",
+      "vi_result_correction"
+    ],
+    "case_ids": [
+      "TC-067",
+      "TC-068",
+      "TC-069",
+      "TC-070",
+      "TC-071",
+      "TC-072",
+      "TC-073",
+      "TC-074",
+      "TC-075",
+      "TC-076",
+      "TC-077",
+      "TC-078",
+      "TC-079",
+      "TC-080",
+      "TC-081",
+      "TC-082",
+      "TC-083",
+      "TC-084",
+      "TC-085",
+      "TC-086",
+      "TC-087",
+      "TC-088",
+      "TC-089"
+    ],
+    "scope": "DEVELOPMENT",
+    "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
+    "status": "NOT_ASSESSED",
+    "code_paths": [
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/inspection/",
+      "xinyi-rongli/src/main/resources/mapper/rongli/inspection/",
+      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/inspection/",
+      "xinyi-ui/src/views/rongli/inspection/",
+      "xinyi-ui/src/api/rongli/inspection.ts",
+      "xinyi-miniapp/src/features/inspection/"
+    ],
+    "test_class": "F05InspectionIT",
+    "commands": [
+      "mvn -pl xinyi-admin -am -Pvi-it -Dit.test=F05InspectionIT verify",
+      "npm --prefix xinyi-ui run build:prod",
+      "npm --prefix xinyi-miniapp run build:mp-weixin"
+    ],
+    "done_when": [
+      "源接口/页面/表/用例均有明确实现文件与关联测试；不能以目录存在当完成",
+      "本任务真实集成与负向场景实际通过且保存原始报告；无测试/跳过不能通过",
+      "提交独立复核记录；标注测试第三方替身，不声称真实渠道通过"
+    ],
+    "blocker_policy": {
+      "credential": "只阻L01或具体真实渠道验证，通用代码可继续",
+      "policy": "生产配置待批准；测试使用明示fixture",
+      "environment": "具体命令与错误落盘；不能假装已验收",
+      "access": "不得绕过限制；保存恢复点",
+      "contract": "局部冲突登记并修订同源契约，独立任务继续"
+    },
+    "evidence": [],
+    "implementation": null,
+    "review": null,
+    "blocker": null
+  },
+  {
+    "id": "F06",
+    "phase": "M3",
+    "title": "取车、归还与司机释放",
+    "domain": "handover",
+    "depends_on": [
+      "F03",
+      "F05"
+    ],
+    "deliverables": [
+      "站点放行和实际归还事务，结束指定assignment后WAIT_CONFIRM"
+    ],
+    "negative_checks": [
+      "旧A订单事件不能释放B任务",
+      "费用失败不回锁司机",
+      "不合格仍返还"
+    ],
+    "api_ids": [],
+    "page_ids": [],
+    "tables": [],
+    "case_ids": [
+      "TC-105",
+      "TC-106",
+      "TC-107",
+      "TC-108",
+      "TC-109",
+      "TC-110",
+      "TC-111",
+      "TC-112",
+      "TC-113",
+      "TC-114"
+    ],
+    "scope": "DEVELOPMENT",
+    "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
+    "status": "NOT_ASSESSED",
+    "code_paths": [
+      "docs/implementation/vehicle/F06/"
+    ],
+    "test_class": "F06HandoverIT",
+    "commands": [
+      "mvn -pl xinyi-admin -am -Pvi-it -Dit.test=F06HandoverIT verify",
+      "npm --prefix xinyi-ui run build:prod",
+      "npm --prefix xinyi-miniapp run build:mp-weixin"
+    ],
+    "done_when": [
+      "源接口/页面/表/用例均有明确实现文件与关联测试；不能以目录存在当完成",
+      "本任务真实集成与负向场景实际通过且保存原始报告；无测试/跳过不能通过",
+      "提交独立复核记录；标注测试第三方替身，不声称真实渠道通过"
+    ],
+    "blocker_policy": {
+      "credential": "只阻L01或具体真实渠道验证，通用代码可继续",
+      "policy": "生产配置待批准；测试使用明示fixture",
+      "environment": "具体命令与错误落盘；不能假装已验收",
+      "access": "不得绕过限制；保存恢复点",
+      "contract": "局部冲突登记并修订同源契约，独立任务继续"
+    },
+    "evidence": [],
+    "implementation": null,
+    "review": null,
+    "blocker": null
+  },
+  {
+    "id": "S01",
+    "phase": "M2",
+    "title": "统一售后申请和进度",
+    "domain": "aftersale",
+    "depends_on": [
+      "B04",
+      "P02"
+    ],
+    "deliverables": [
+      "车主取消并退款/仅退款一次申请、草稿理由金额凭证、重复入口"
+    ],
+    "negative_checks": [
+      "已支付未接车也人工审核",
+      "退款申请不直接REFUNDING"
+    ],
+    "api_ids": [
+      "V4_post_api_app_owner_orders__orderNo__after_sales",
+      "V4_get_api_app_owner_orders__orderNo__after_sales",
+      "V4_get_api_app_owner_after_sales",
+      "V4_get_api_app_owner_after_sales__caseId",
+      "V4_post_api_app_owner_after_sales__caseId__notes"
+    ],
+    "page_ids": [
+      "O19",
+      "O19-duplicate",
+      "O19-picked",
+      "O19-refund",
+      "O21",
+      "O21-abnormal",
+      "O21-return",
+      "O21-success"
+    ],
+    "tables": [
+      "vi_aftersale_case"
+    ],
+    "case_ids": [],
+    "scope": "DEVELOPMENT",
+    "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
+    "status": "NOT_ASSESSED",
+    "code_paths": [
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/aftersale/",
+      "xinyi-rongli/src/main/resources/mapper/rongli/aftersale/",
+      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/aftersale/",
+      "xinyi-ui/src/views/rongli/aftersale/",
+      "xinyi-ui/src/api/rongli/aftersale.ts",
+      "xinyi-miniapp/src/features/aftersale/"
+    ],
+    "test_class": "S01AftersaleIT",
+    "commands": [
+      "mvn -pl xinyi-admin -am -Pvi-it -Dit.test=S01AftersaleIT verify",
+      "npm --prefix xinyi-ui run build:prod",
+      "npm --prefix xinyi-miniapp run build:mp-weixin"
+    ],
+    "done_when": [
+      "源接口/页面/表/用例均有明确实现文件与关联测试；不能以目录存在当完成",
+      "本任务真实集成与负向场景实际通过且保存原始报告；无测试/跳过不能通过",
+      "提交独立复核记录；标注测试第三方替身，不声称真实渠道通过"
+    ],
+    "blocker_policy": {
+      "credential": "只阻L01或具体真实渠道验证，通用代码可继续",
+      "policy": "生产配置待批准；测试使用明示fixture",
+      "environment": "具体命令与错误落盘；不能假装已验收",
+      "access": "不得绕过限制；保存恢复点",
+      "contract": "局部冲突登记并修订同源契约，独立任务继续"
+    },
+    "evidence": [],
+    "implementation": null,
+    "review": null,
+    "blocker": null
+  },
+  {
+    "id": "S02",
+    "phase": "M2",
+    "title": "一次审核及退款预留",
+    "domain": "aftersale",
+    "depends_on": [
+      "S01",
+      "I06"
+    ],
+    "deliverables": [
+      "当前保管事实+可退额预览、批准/驳回",
+      "已接车WAIT_RETURN"
+    ],
+    "negative_checks": [
+      "取消批准不释放持车司机",
+      "仅退款不改履约",
+      "审核并发只一次"
+    ],
+    "api_ids": [
+      "V4_post_api_admin_orders__orderNo__after_sales",
+      "V4_get_api_admin_orders__orderNo__after_sales",
+      "V4_get_api_admin_after_sales",
+      "V4_get_api_admin_after_sales__caseId",
+      "V4_post_api_admin_after_sales__caseId__notes",
+      "V4_post_api_admin_after_sales__caseId__review_preview",
+      "V4_post_api_admin_after_sales__caseId__review",
+      "V4_get_api_admin_owners__ownerId__after_sales"
+    ],
+    "page_ids": [
+      "B13",
+      "B13-return",
+      "B14",
+      "B14-before",
+      "B14-complete",
+      "B14-conflict",
+      "B14-processing",
+      "B14-refund",
+      "B14-rejected",
+      "B14-return",
+      "B14-unknown"
+    ],
+    "tables": [
+      "vi_aftersale_review"
+    ],
+    "case_ids": [
+      "TC-163",
+      "TC-164",
+      "TC-165",
+      "TC-166",
+      "TC-167",
+      "TC-168",
+      "TC-171",
+      "TC-172",
+      "TC-173",
+      "TC-174",
+      "TC-175",
+      "TC-176",
+      "TC-177"
+    ],
+    "scope": "DEVELOPMENT",
+    "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
+    "status": "NOT_ASSESSED",
+    "code_paths": [
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/aftersale/",
+      "xinyi-rongli/src/main/resources/mapper/rongli/aftersale/",
+      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/aftersale/",
+      "xinyi-ui/src/views/rongli/aftersale/",
+      "xinyi-ui/src/api/rongli/aftersale.ts",
+      "xinyi-miniapp/src/features/aftersale/"
+    ],
+    "test_class": "S02AftersaleIT",
+    "commands": [
+      "mvn -pl xinyi-admin -am -Pvi-it -Dit.test=S02AftersaleIT verify",
+      "npm --prefix xinyi-ui run build:prod",
+      "npm --prefix xinyi-miniapp run build:mp-weixin"
+    ],
+    "done_when": [
+      "源接口/页面/表/用例均有明确实现文件与关联测试；不能以目录存在当完成",
+      "本任务真实集成与负向场景实际通过且保存原始报告；无测试/跳过不能通过",
+      "提交独立复核记录；标注测试第三方替身，不声称真实渠道通过"
+    ],
+    "blocker_policy": {
+      "credential": "只阻L01或具体真实渠道验证，通用代码可继续",
+      "policy": "生产配置待批准；测试使用明示fixture",
+      "environment": "具体命令与错误落盘；不能假装已验收",
+      "access": "不得绕过限制；保存恢复点",
+      "contract": "局部冲突登记并修订同源契约，独立任务继续"
+    },
+    "evidence": [],
+    "implementation": null,
+    "review": null,
+    "blocker": null
+  },
+  {
+    "id": "S03",
+    "phase": "M4",
+    "title": "返还后退款执行与差错",
+    "domain": "refund",
+    "depends_on": [
+      "P04",
+      "F06"
+    ],
+    "deliverables": [
+      "无需第二次审核，返还后按批准决定退",
+      "查单、重试和异常台账"
+    ],
+    "negative_checks": [
+      "UNKNOWN保留预留",
+      "相同退款号重试",
+      "不超实付余额、不自动扣司机费用"
+    ],
+    "api_ids": [],
+    "page_ids": [],
+    "tables": [],
+    "case_ids": [],
+    "scope": "DEVELOPMENT",
+    "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
+    "status": "NOT_ASSESSED",
+    "code_paths": [
+      "docs/implementation/vehicle/S03/"
+    ],
+    "test_class": "S03RefundIT",
+    "commands": [
+      "mvn -pl xinyi-admin -am -Pvi-it -Dit.test=S03RefundIT verify",
+      "npm --prefix xinyi-ui run build:prod",
+      "npm --prefix xinyi-miniapp run build:mp-weixin"
+    ],
+    "done_when": [
+      "源接口/页面/表/用例均有明确实现文件与关联测试；不能以目录存在当完成",
+      "本任务真实集成与负向场景实际通过且保存原始报告；无测试/跳过不能通过",
+      "提交独立复核记录；标注测试第三方替身，不声称真实渠道通过"
+    ],
+    "blocker_policy": {
+      "credential": "只阻L01或具体真实渠道验证，通用代码可继续",
+      "policy": "生产配置待批准；测试使用明示fixture",
+      "environment": "具体命令与错误落盘；不能假装已验收",
+      "access": "不得绕过限制；保存恢复点",
+      "contract": "局部冲突登记并修订同源契约，独立任务继续"
+    },
+    "evidence": [],
+    "implementation": null,
+    "review": null,
+    "blocker": null
+  },
+  {
+    "id": "S04",
+    "phase": "M4",
+    "title": "普通异常与争议处置",
+    "domain": "support",
+    "depends_on": [
+      "F06",
+      "I06"
+    ],
+    "deliverables": [
+      "普通异常、服务争议、人工接管与结论、暂停自动确认"
+    ],
+    "negative_checks": [
+      "不恢复事故理赔系统",
+      "通知失败不撤销已保存事实",
+      "保管责任始终明确"
+    ],
+    "api_ids": [
+      "API_037_post",
+      "API_038_get",
+      "API_062_post",
+      "API_080_post",
+      "API_091_post",
+      "API_116_get",
+      "API_117_get",
+      "API_118_post",
+      "API_119_get",
+      "API_120_post"
+    ],
+    "page_ids": [
+      "O23",
+      "O23-progress",
+      "D24",
+      "S14",
+      "B15",
+      "B15-detail"
+    ],
+    "tables": [
+      "vi_dispute",
+      "vi_service_exception"
+    ],
+    "case_ids": [],
+    "scope": "DEVELOPMENT",
+    "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
+    "status": "NOT_ASSESSED",
+    "code_paths": [
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/support/",
+      "xinyi-rongli/src/main/resources/mapper/rongli/support/",
+      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/support/",
+      "xinyi-ui/src/views/rongli/support/",
+      "xinyi-ui/src/api/rongli/support.ts",
+      "xinyi-miniapp/src/features/support/"
+    ],
+    "test_class": "S04SupportIT",
+    "commands": [
+      "mvn -pl xinyi-admin -am -Pvi-it -Dit.test=S04SupportIT verify",
+      "npm --prefix xinyi-ui run build:prod",
+      "npm --prefix xinyi-miniapp run build:mp-weixin"
+    ],
+    "done_when": [
+      "源接口/页面/表/用例均有明确实现文件与关联测试；不能以目录存在当完成",
+      "本任务真实集成与负向场景实际通过且保存原始报告；无测试/跳过不能通过",
+      "提交独立复核记录；标注测试第三方替身，不声称真实渠道通过"
+    ],
+    "blocker_policy": {
+      "credential": "只阻L01或具体真实渠道验证，通用代码可继续",
+      "policy": "生产配置待批准；测试使用明示fixture",
+      "environment": "具体命令与错误落盘；不能假装已验收",
+      "access": "不得绕过限制；保存恢复点",
+      "contract": "局部冲突登记并修订同源契约，独立任务继续"
+    },
+    "evidence": [],
+    "implementation": null,
+    "review": null,
+    "blocker": null
+  },
+  {
+    "id": "S05",
+    "phase": "M4",
+    "title": "服务确认与评价",
+    "domain": "review",
+    "depends_on": [
+      "F06",
+      "S04"
+    ],
+    "deliverables": [
+      "实际归还后24h无争议自动完成，车主确认/评价和评分来源"
+    ],
+    "negative_checks": [
+      "司机已释放不受后续评价影响",
+      "一单一次评价和防重"
+    ],
+    "api_ids": [
+      "API_034_post",
+      "API_039_post"
+    ],
+    "page_ids": [
+      "O22",
+      "O22-review"
+    ],
+    "tables": [
+      "vi_review"
+    ],
+    "case_ids": [
+      "TC-115",
+      "TC-116",
+      "TC-117",
+      "TC-118",
+      "TC-119",
+      "TC-120",
+      "TC-121",
+      "TC-122",
+      "TC-123",
+      "TC-124",
+      "TC-125",
+      "TC-126",
+      "TC-143",
+      "TC-144",
+      "TC-148",
+      "TC-149",
+      "TC-150",
+      "TC-151",
+      "TC-152",
+      "TC-153",
+      "TC-154",
+      "TC-196"
+    ],
+    "scope": "DEVELOPMENT",
+    "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
+    "status": "NOT_ASSESSED",
+    "code_paths": [
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/review/",
+      "xinyi-rongli/src/main/resources/mapper/rongli/review/",
+      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/review/",
+      "xinyi-ui/src/views/rongli/review/",
+      "xinyi-ui/src/api/rongli/review.ts",
+      "xinyi-miniapp/src/features/review/"
+    ],
+    "test_class": "S05ReviewIT",
+    "commands": [
+      "mvn -pl xinyi-admin -am -Pvi-it -Dit.test=S05ReviewIT verify",
+      "npm --prefix xinyi-ui run build:prod",
+      "npm --prefix xinyi-miniapp run build:mp-weixin"
+    ],
+    "done_when": [
+      "源接口/页面/表/用例均有明确实现文件与关联测试；不能以目录存在当完成",
+      "本任务真实集成与负向场景实际通过且保存原始报告；无测试/跳过不能通过",
+      "提交独立复核记录；标注测试第三方替身，不声称真实渠道通过"
+    ],
+    "blocker_policy": {
+      "credential": "只阻L01或具体真实渠道验证，通用代码可继续",
+      "policy": "生产配置待批准；测试使用明示fixture",
+      "environment": "具体命令与错误落盘；不能假装已验收",
+      "access": "不得绕过限制；保存恢复点",
+      "contract": "局部冲突登记并修订同源契约，独立任务继续"
+    },
+    "evidence": [],
+    "implementation": null,
+    "review": null,
+    "blocker": null
+  },
+  {
+    "id": "N01",
+    "phase": "M4",
+    "title": "站内消息、订阅与重试",
+    "domain": "notification",
+    "depends_on": [
+      "E06",
+      "I04"
+    ],
+    "deliverables": [
+      "按角色/站点的待办和未读、订阅适配、通知模板与任务退避"
+    ],
+    "negative_checks": [
+      "用户拒绝订阅不阻业务",
+      "推送提示只做恢复查询不当事实"
+    ],
+    "api_ids": [
+      "API_149_get",
+      "API_150_put",
+      "API_161_get",
+      "API_162_post"
+    ],
+    "page_ids": [
+      "U04",
+      "S19",
+      "B23",
+      "B35"
+    ],
+    "tables": [
+      "vi_notification"
+    ],
+    "case_ids": [
+      "TC-127",
+      "TC-128",
+      "TC-129",
+      "TC-130",
+      "TC-131",
+      "TC-132",
+      "TC-133",
+      "TC-134",
+      "TC-135",
+      "TC-136",
+      "TC-137",
+      "TC-138",
+      "TC-139",
+      "TC-140",
+      "TC-141",
+      "TC-142"
+    ],
+    "scope": "DEVELOPMENT",
+    "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
+    "status": "NOT_ASSESSED",
+    "code_paths": [
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/notification/",
+      "xinyi-rongli/src/main/resources/mapper/rongli/notification/",
+      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/notification/",
+      "xinyi-ui/src/views/rongli/notification/",
+      "xinyi-ui/src/api/rongli/notification.ts",
+      "xinyi-miniapp/src/features/notification/"
+    ],
+    "test_class": "N01NotificationIT",
+    "commands": [
+      "mvn -pl xinyi-admin -am -Pvi-it -Dit.test=N01NotificationIT verify",
+      "npm --prefix xinyi-ui run build:prod",
+      "npm --prefix xinyi-miniapp run build:mp-weixin"
+    ],
+    "done_when": [
+      "源接口/页面/表/用例均有明确实现文件与关联测试；不能以目录存在当完成",
+      "本任务真实集成与负向场景实际通过且保存原始报告；无测试/跳过不能通过",
+      "提交独立复核记录；标注测试第三方替身，不声称真实渠道通过"
+    ],
+    "blocker_policy": {
+      "credential": "只阻L01或具体真实渠道验证，通用代码可继续",
+      "policy": "生产配置待批准；测试使用明示fixture",
+      "environment": "具体命令与错误落盘；不能假装已验收",
+      "access": "不得绕过限制；保存恢复点",
+      "contract": "局部冲突登记并修订同源契约，独立任务继续"
+    },
+    "evidence": [],
+    "implementation": null,
+    "review": null,
+    "blocker": null
+  },
+  {
+    "id": "N02",
+    "phase": "M4",
+    "title": "隐私、公开内容和设置",
+    "domain": "privacy",
+    "depends_on": [
+      "C01",
+      "I01"
+    ],
+    "deliverables": [
+      "公开企业条款、版本授权、显示偏好、隐私请求进度"
+    ],
+    "negative_checks": [
+      "旧保险钱包文案不回流",
+      "不物理删资金交接证据",
+      "权限撤回不抹历史"
+    ],
+    "api_ids": [
+      "API_153_get",
+      "API_154_post",
+      "API_163_post",
+      "API_164_get"
+    ],
+    "page_ids": [
+      "U03",
+      "U03-progress",
+      "U05",
+      "U06",
+      "O09",
+      "O24",
+      "O28",
+      "D26",
+      "D30",
+      "S20",
+      "B34"
+    ],
+    "tables": [],
+    "case_ids": [
+      "TC-193",
+      "TC-194"
+    ],
+    "scope": "DEVELOPMENT",
+    "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
+    "status": "NOT_ASSESSED",
+    "code_paths": [
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/privacy/",
+      "xinyi-rongli/src/main/resources/mapper/rongli/privacy/",
+      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/privacy/",
+      "xinyi-ui/src/views/rongli/privacy/",
+      "xinyi-ui/src/api/rongli/privacy.ts",
+      "xinyi-miniapp/src/features/privacy/"
+    ],
+    "test_class": "N02PrivacyIT",
+    "commands": [
+      "mvn -pl xinyi-admin -am -Pvi-it -Dit.test=N02PrivacyIT verify",
+      "npm --prefix xinyi-ui run build:prod",
+      "npm --prefix xinyi-miniapp run build:mp-weixin"
+    ],
+    "done_when": [
+      "源接口/页面/表/用例均有明确实现文件与关联测试；不能以目录存在当完成",
+      "本任务真实集成与负向场景实际通过且保存原始报告；无测试/跳过不能通过",
+      "提交独立复核记录；标注测试第三方替身，不声称真实渠道通过"
+    ],
+    "blocker_policy": {
+      "credential": "只阻L01或具体真实渠道验证，通用代码可继续",
+      "policy": "生产配置待批准；测试使用明示fixture",
+      "environment": "具体命令与错误落盘；不能假装已验收",
+      "access": "不得绕过限制；保存恢复点",
+      "contract": "局部冲突登记并修订同源契约，独立任务继续"
+    },
+    "evidence": [],
+    "implementation": null,
+    "review": null,
+    "blocker": null
+  },
+  {
+    "id": "N03",
+    "phase": "M4",
+    "title": "导出、敏感访问和治理",
+    "domain": "governance",
+    "depends_on": [
+      "I06",
+      "F01",
+      "E06"
+    ],
+    "deliverables": [
+      "异步导出申请审批下载、证据访问授权、治理工单字段规则"
+    ],
+    "negative_checks": [
+      "导出时与下载时双鉴权",
+      "CSV公式注入防护",
+      "无权限不泄数量"
+    ],
+    "api_ids": [
+      "API_144_post",
+      "API_145_post",
+      "API_146_get"
+    ],
+    "page_ids": [],
+    "tables": [
+      "vi_governance_case"
+    ],
+    "case_ids": [
+      "TC-155",
+      "TC-156",
+      "TC-157",
+      "TC-158",
+      "TC-159",
+      "TC-160",
+      "TC-161",
+      "TC-190",
+      "TC-191",
+      "TC-192",
+      "TC-195"
+    ],
+    "scope": "DEVELOPMENT",
+    "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
+    "status": "NOT_ASSESSED",
+    "code_paths": [
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/governance/",
+      "xinyi-rongli/src/main/resources/mapper/rongli/governance/",
+      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/governance/",
+      "xinyi-ui/src/views/rongli/governance/",
+      "xinyi-ui/src/api/rongli/governance.ts",
+      "xinyi-miniapp/src/features/governance/"
+    ],
+    "test_class": "N03GovernanceIT",
+    "commands": [
+      "mvn -pl xinyi-admin -am -Pvi-it -Dit.test=N03GovernanceIT verify",
+      "npm --prefix xinyi-ui run build:prod",
+      "npm --prefix xinyi-miniapp run build:mp-weixin"
+    ],
+    "done_when": [
+      "源接口/页面/表/用例均有明确实现文件与关联测试；不能以目录存在当完成",
+      "本任务真实集成与负向场景实际通过且保存原始报告；无测试/跳过不能通过",
+      "提交独立复核记录；标注测试第三方替身，不声称真实渠道通过"
+    ],
+    "blocker_policy": {
+      "credential": "只阻L01或具体真实渠道验证，通用代码可继续",
+      "policy": "生产配置待批准；测试使用明示fixture",
+      "environment": "具体命令与错误落盘；不能假装已验收",
+      "access": "不得绕过限制；保存恢复点",
+      "contract": "局部冲突登记并修订同源契约，独立任务继续"
+    },
+    "evidence": [],
+    "implementation": null,
+    "review": null,
+    "blocker": null
+  },
+  {
+    "id": "R01",
+    "phase": "M5",
+    "title": "承接结束费用事件与台账",
+    "domain": "driverfee",
+    "depends_on": [
+      "C05",
+      "D06",
+      "F06"
+    ],
+    "deliverables": [
+      "真实结束事件唯一入账、规则快照、待核价NULL和后续差额结转"
+    ],
+    "negative_checks": [
+      "同event不可重复",
+      "前司机与后司机不重复满额",
+      "客户退款不自动扣报酬"
+    ],
+    "api_ids": [
+      "V4_get_api_admin_drivers__driverId__fee_ledger"
+    ],
+    "page_ids": [],
+    "tables": [
+      "vi_driver_fee_ledger"
+    ],
+    "case_ids": [],
+    "scope": "DEVELOPMENT",
+    "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
+    "status": "NOT_ASSESSED",
+    "code_paths": [
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/driverfee/",
+      "xinyi-rongli/src/main/resources/mapper/rongli/driverfee/",
+      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/driverfee/",
+      "xinyi-ui/src/views/rongli/driverfee/",
+      "xinyi-ui/src/api/rongli/driverfee.ts",
+      "xinyi-miniapp/src/features/driverfee/"
+    ],
+    "test_class": "R01DriverfeeIT",
+    "commands": [
+      "mvn -pl xinyi-admin -am -Pvi-it -Dit.test=R01DriverfeeIT verify",
+      "npm --prefix xinyi-ui run build:prod",
+      "npm --prefix xinyi-miniapp run build:mp-weixin"
+    ],
+    "done_when": [
+      "源接口/页面/表/用例均有明确实现文件与关联测试；不能以目录存在当完成",
+      "本任务真实集成与负向场景实际通过且保存原始报告；无测试/跳过不能通过",
+      "提交独立复核记录；标注测试第三方替身，不声称真实渠道通过"
+    ],
+    "blocker_policy": {
+      "credential": "只阻L01或具体真实渠道验证，通用代码可继续",
+      "policy": "生产配置待批准；测试使用明示fixture",
+      "environment": "具体命令与错误落盘；不能假装已验收",
+      "access": "不得绕过限制；保存恢复点",
+      "contract": "局部冲突登记并修订同源契约，独立任务继续"
+    },
+    "evidence": [],
+    "implementation": null,
+    "review": null,
+    "blocker": null
+  },
+  {
+    "id": "R02",
+    "phase": "M5",
+    "title": "个人汇总与明确勾选组单",
+    "domain": "statement",
+    "depends_on": [
+      "R01",
+      "I06"
+    ],
+    "deliverables": [
+      "未结清/全部账单/付款三标签，跨页选择，按selectedEntries建草稿"
+    ],
+    "negative_checks": [
+      "同人主体币种，任一选择冲突整体回滚",
+      "日期非成员",
+      "已有单未付仍未结清"
+    ],
+    "api_ids": [
+      "V4_post_api_admin_driver_statements_preview",
+      "V4_post_api_admin_driver_statements",
+      "V4_get_api_admin_driver_statements",
+      "V4_get_api_admin_driver_statements__statementId",
+      "V4_post_api_admin_driver_statements__statementId__void",
+      "V42_get_api_admin_drivers__driverId__reconciliation_overview",
+      "V42_get_api_admin_drivers__driverId__reconciliation_entries",
+      "V42_get_api_app_driver_reconciliation_entries"
+    ],
+    "page_ids": [
+      "B37",
+      "B42",
+      "B42-select",
+      "B42-selected",
+      "B42-generate",
+      "B42-conflict",
+      "B42-bills",
+      "B42-bills-partial",
+      "B42-payments",
+      "B42-empty",
+      "B42-forbidden"
+    ],
+    "tables": [
+      "vi_driver_statement",
+      "vi_driver_statement_line",
+      "vi_driver_ledger_allocation"
+    ],
+    "case_ids": [
+      "TC-R42-001",
+      "TC-R42-002",
+      "TC-R42-003",
+      "TC-R42-004",
+      "TC-R42-005",
+      "TC-R42-006",
+      "TC-R42-007",
+      "TC-R42-008",
+      "TC-R42-009",
+      "TC-R42-010",
+      "TC-R42-011",
+      "TC-R42-012",
+      "TC-R42-013",
+      "TC-R42-014",
+      "TC-R42-015",
+      "TC-R42-016",
+      "TC-R42-017",
+      "TC-R42-018",
+      "TC-R42-019",
+      "TC-R42-020",
+      "TC-R42-023",
+      "TC-R42-024",
+      "TC-R42-035",
+      "TC-R42-039",
+      "TC-R42-040",
+      "TC-R50-029",
+      "TC-R50-030"
+    ],
+    "scope": "DEVELOPMENT",
+    "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
+    "status": "NOT_ASSESSED",
+    "code_paths": [
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/statement/",
+      "xinyi-rongli/src/main/resources/mapper/rongli/statement/",
+      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/statement/",
+      "xinyi-ui/src/views/rongli/statement/",
+      "xinyi-ui/src/api/rongli/statement.ts",
+      "xinyi-miniapp/src/features/statement/"
+    ],
+    "test_class": "R02StatementIT",
+    "commands": [
+      "mvn -pl xinyi-admin -am -Pvi-it -Dit.test=R02StatementIT verify",
+      "npm --prefix xinyi-ui run build:prod",
+      "npm --prefix xinyi-miniapp run build:mp-weixin"
+    ],
+    "done_when": [
+      "源接口/页面/表/用例均有明确实现文件与关联测试；不能以目录存在当完成",
+      "本任务真实集成与负向场景实际通过且保存原始报告；无测试/跳过不能通过",
+      "提交独立复核记录；标注测试第三方替身，不声称真实渠道通过"
+    ],
+    "blocker_policy": {
+      "credential": "只阻L01或具体真实渠道验证，通用代码可继续",
+      "policy": "生产配置待批准；测试使用明示fixture",
+      "environment": "具体命令与错误落盘；不能假装已验收",
+      "access": "不得绕过限制；保存恢复点",
+      "contract": "局部冲突登记并修订同源契约，独立任务继续"
+    },
+    "evidence": [],
+    "implementation": null,
+    "review": null,
+    "blocker": null
+  },
+  {
+    "id": "R03",
+    "phase": "M5",
+    "title": "草稿成员、行内核价与整单复核",
+    "domain": "statement",
+    "depends_on": [
+      "R02"
+    ],
+    "deliverables": [
+      "添加/移出留痕、最终拟价、改价原因、独立复核、撤回"
+    ],
+    "negative_checks": [
+      "60→70→65非累加",
+      "集合变化也使旧hash失效",
+      "同人不能切角色复核自己"
+    ],
+    "api_ids": [
+      "V41_put_api_admin_driver_statements_statementId_lines_lineId_price",
+      "V41_get_api_admin_driver_statements_statementId_lines_lineId_price_history",
+      "V41_post_api_admin_driver_statements_statementId_submit_review",
+      "V41_post_api_admin_driver_statements_statementId_review",
+      "V41_get_api_admin_driver_statements_statementId_reviews",
+      "V41_post_api_admin_driver_statements_statementId_withdraw",
+      "V42_post_api_admin_driver_statements__statementId__lines_add",
+      "V42_post_api_admin_driver_statements__statementId__lines__lineId__remove",
+      "V42_get_api_admin_driver_statements__statementId__membership_history"
+    ],
+    "page_ids": [
+      "B38",
+      "B38-confirmed",
+      "B38-difference",
+      "B38-empty",
+      "B38-generate",
+      "B38-sent",
+      "B38-unpriced",
+      "B38-price",
+      "B38-price-empty",
+      "B38-price-conflict",
+      "B38-review",
+      "B38-self-review",
+      "B38-review-rejected",
+      "B38-history",
+      "B38-withdraw",
+      "B38-adjust",
+      "B38-readonly",
+      "B38-forbidden",
+      "B38-add",
+      "B38-partial",
+      "B38-paid",
+      "B38-zero"
+    ],
+    "tables": [
+      "vi_driver_price_change",
+      "vi_driver_statement_review",
+      "vi_driver_statement_membership_change"
+    ],
+    "case_ids": [
+      "TC-R41-001",
+      "TC-R41-002",
+      "TC-R41-003",
+      "TC-R41-004",
+      "TC-R41-005",
+      "TC-R41-006",
+      "TC-R41-007",
+      "TC-R41-008",
+      "TC-R41-009",
+      "TC-R41-010",
+      "TC-R41-011",
+      "TC-R41-012",
+      "TC-R41-013",
+      "TC-R41-014",
+      "TC-R41-015",
+      "TC-R41-016",
+      "TC-R41-017",
+      "TC-R41-018",
+      "TC-R41-019",
+      "TC-R41-020",
+      "TC-R41-021",
+      "TC-R41-022",
+      "TC-R41-023",
+      "TC-R41-024",
+      "TC-R41-025",
+      "TC-R41-026",
+      "TC-R41-027",
+      "TC-R41-028",
+      "TC-R41-029",
+      "TC-R41-030"
+    ],
+    "scope": "DEVELOPMENT",
+    "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
+    "status": "NOT_ASSESSED",
+    "code_paths": [
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/statement/",
+      "xinyi-rongli/src/main/resources/mapper/rongli/statement/",
+      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/statement/",
+      "xinyi-ui/src/views/rongli/statement/",
+      "xinyi-ui/src/api/rongli/statement.ts",
+      "xinyi-miniapp/src/features/statement/"
+    ],
+    "test_class": "R03StatementIT",
+    "commands": [
+      "mvn -pl xinyi-admin -am -Pvi-it -Dit.test=R03StatementIT verify",
+      "npm --prefix xinyi-ui run build:prod",
+      "npm --prefix xinyi-miniapp run build:mp-weixin"
+    ],
+    "done_when": [
+      "源接口/页面/表/用例均有明确实现文件与关联测试；不能以目录存在当完成",
+      "本任务真实集成与负向场景实际通过且保存原始报告；无测试/跳过不能通过",
+      "提交独立复核记录；标注测试第三方替身，不声称真实渠道通过"
+    ],
+    "blocker_policy": {
+      "credential": "只阻L01或具体真实渠道验证，通用代码可继续",
+      "policy": "生产配置待批准；测试使用明示fixture",
+      "environment": "具体命令与错误落盘；不能假装已验收",
+      "access": "不得绕过限制；保存恢复点",
+      "contract": "局部冲突登记并修订同源契约，独立任务继续"
+    },
+    "evidence": [],
+    "implementation": null,
+    "review": null,
+    "blocker": null
+  },
+  {
+    "id": "R04",
+    "phase": "M5",
+    "title": "发布快照与本人确认差异",
+    "domain": "statement",
+    "depends_on": [
+      "R03",
+      "I04"
+    ],
+    "deliverables": [
+      "公开快照hash、SENT本人确认、差异说明、版本重发"
+    ],
+    "negative_checks": [
+      "MINI不得内部投影",
+      "撤回与确认互斥",
+      "确认后工作行只读"
+    ],
+    "api_ids": [
+      "V4_get_api_app_driver_statements",
+      "V4_get_api_app_driver_statements__statementId",
+      "V4_post_api_admin_driver_statements__statementId__send",
+      "V4_post_api_app_driver_statements__statementId__confirm",
+      "V4_post_api_app_driver_statements__statementId__differences",
+      "V4_get_api_admin_statement_differences",
+      "V4_post_api_admin_statement_differences__differenceId__resolve",
+      "V41_get_api_admin_driver_statements_statementId_revisions_revision"
+    ],
+    "page_ids": [
+      "D37",
+      "D38",
+      "D38-confirmed",
+      "D38-difference",
+      "D37-services",
+      "D37-payments",
+      "D38-partial"
+    ],
+    "tables": [
+      "vi_driver_statement_difference",
+      "vi_driver_statement_snapshot"
+    ],
+    "case_ids": [
+      "TC-178",
+      "TC-179",
+      "TC-180",
+      "TC-181",
+      "TC-182"
+    ],
+    "scope": "DEVELOPMENT",
+    "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
+    "status": "NOT_ASSESSED",
+    "code_paths": [
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/statement/",
+      "xinyi-rongli/src/main/resources/mapper/rongli/statement/",
+      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/statement/",
+      "xinyi-ui/src/views/rongli/statement/",
+      "xinyi-ui/src/api/rongli/statement.ts",
+      "xinyi-miniapp/src/features/statement/"
+    ],
+    "test_class": "R04StatementIT",
+    "commands": [
+      "mvn -pl xinyi-admin -am -Pvi-it -Dit.test=R04StatementIT verify",
+      "npm --prefix xinyi-ui run build:prod",
+      "npm --prefix xinyi-miniapp run build:mp-weixin"
+    ],
+    "done_when": [
+      "源接口/页面/表/用例均有明确实现文件与关联测试；不能以目录存在当完成",
+      "本任务真实集成与负向场景实际通过且保存原始报告；无测试/跳过不能通过",
+      "提交独立复核记录；标注测试第三方替身，不声称真实渠道通过"
+    ],
+    "blocker_policy": {
+      "credential": "只阻L01或具体真实渠道验证，通用代码可继续",
+      "policy": "生产配置待批准；测试使用明示fixture",
+      "environment": "具体命令与错误落盘；不能假装已验收",
+      "access": "不得绕过限制；保存恢复点",
+      "contract": "局部冲突登记并修订同源契约，独立任务继续"
+    },
+    "evidence": [],
+    "implementation": null,
+    "review": null,
+    "blocker": null
+  },
+  {
+    "id": "R05",
+    "phase": "M5",
+    "title": "已确认账单调差",
+    "domain": "adjustment",
+    "depends_on": [
+      "R04"
+    ],
+    "deliverables": [
+      "原行申请差额、审批后新台账/后续账单，原记录不可覆盖"
+    ],
+    "negative_checks": [
+      "客户退款不自动改价",
+      "负净额不自动追收",
+      "重复确认不重结转"
+    ],
+    "api_ids": [
+      "V4_get_api_admin_driver_fee_adjustments",
+      "V4_post_api_admin_driver_fee_adjustments",
+      "V4_post_api_admin_driver_fee_adjustments__adjustmentId__audit"
+    ],
+    "page_ids": [
+      "B41",
+      "B41-create"
+    ],
+    "tables": [
+      "vi_driver_fee_adjustment"
+    ],
+    "case_ids": [],
+    "scope": "DEVELOPMENT",
+    "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
+    "status": "NOT_ASSESSED",
+    "code_paths": [
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/adjustment/",
+      "xinyi-rongli/src/main/resources/mapper/rongli/adjustment/",
+      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/adjustment/",
+      "xinyi-ui/src/views/rongli/adjustment/",
+      "xinyi-ui/src/api/rongli/adjustment.ts",
+      "xinyi-miniapp/src/features/adjustment/"
+    ],
+    "test_class": "R05AdjustmentIT",
+    "commands": [
+      "mvn -pl xinyi-admin -am -Pvi-it -Dit.test=R05AdjustmentIT verify",
+      "npm --prefix xinyi-ui run build:prod",
+      "npm --prefix xinyi-miniapp run build:mp-weixin"
+    ],
+    "done_when": [
+      "源接口/页面/表/用例均有明确实现文件与关联测试；不能以目录存在当完成",
+      "本任务真实集成与负向场景实际通过且保存原始报告；无测试/跳过不能通过",
+      "提交独立复核记录；标注测试第三方替身，不声称真实渠道通过"
+    ],
+    "blocker_policy": {
+      "credential": "只阻L01或具体真实渠道验证，通用代码可继续",
+      "policy": "生产配置待批准；测试使用明示fixture",
+      "environment": "具体命令与错误落盘；不能假装已验收",
+      "access": "不得绕过限制；保存恢复点",
+      "contract": "局部冲突登记并修订同源契约，独立任务继续"
+    },
+    "evidence": [],
+    "implementation": null,
+    "review": null,
+    "blocker": null
+  },
+  {
+    "id": "R06",
+    "phase": "M5",
+    "title": "付款凭证登记与独立核实",
+    "domain": "externalpayment",
+    "depends_on": [
+      "R04"
+    ],
+    "deliverables": [
+      "账单确认后关联真实付款凭证、流水、部分付款和0元无需付款"
+    ],
+    "negative_checks": [
+      "待核实暂占余额但不计已付",
+      "同主体流水唯一",
+      "不能按行随意分摊"
+    ],
+    "api_ids": [
+      "V4_get_api_admin_driver_payment_records",
+      "V4_post_api_admin_driver_payment_records",
+      "V4_post_api_admin_driver_payment_records__recordId__verify",
+      "V42_get_api_admin_driver_payment_records__recordId",
+      "V42_get_api_app_driver_payment_records"
+    ],
+    "page_ids": [
+      "B40",
+      "B40-record",
+      "B40-verify",
+      "B40-detail"
+    ],
+    "tables": [
+      "vi_driver_external_payment"
+    ],
+    "case_ids": [
+      "TC-183",
+      "TC-184",
+      "TC-185",
+      "TC-186",
+      "TC-187",
+      "TC-188",
+      "TC-189",
+      "TC-R42-021",
+      "TC-R42-022",
+      "TC-R42-025",
+      "TC-R42-026",
+      "TC-R42-027",
+      "TC-R42-028",
+      "TC-R42-029",
+      "TC-R42-030",
+      "TC-R42-031",
+      "TC-R42-032",
+      "TC-R42-033",
+      "TC-R42-034",
+      "TC-R42-036",
+      "TC-R42-037",
+      "TC-R42-038"
+    ],
+    "scope": "DEVELOPMENT",
+    "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
+    "status": "NOT_ASSESSED",
+    "code_paths": [
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/externalpayment/",
+      "xinyi-rongli/src/main/resources/mapper/rongli/externalpayment/",
+      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/externalpayment/",
+      "xinyi-ui/src/views/rongli/externalpayment/",
+      "xinyi-ui/src/api/rongli/externalpayment.ts",
+      "xinyi-miniapp/src/features/externalpayment/"
+    ],
+    "test_class": "R06ExternalpaymentIT",
+    "commands": [
+      "mvn -pl xinyi-admin -am -Pvi-it -Dit.test=R06ExternalpaymentIT verify",
+      "npm --prefix xinyi-ui run build:prod",
+      "npm --prefix xinyi-miniapp run build:mp-weixin"
+    ],
+    "done_when": [
+      "源接口/页面/表/用例均有明确实现文件与关联测试；不能以目录存在当完成",
+      "本任务真实集成与负向场景实际通过且保存原始报告；无测试/跳过不能通过",
+      "提交独立复核记录；标注测试第三方替身，不声称真实渠道通过"
+    ],
+    "blocker_policy": {
+      "credential": "只阻L01或具体真实渠道验证，通用代码可继续",
+      "policy": "生产配置待批准；测试使用明示fixture",
+      "environment": "具体命令与错误落盘；不能假装已验收",
+      "access": "不得绕过限制；保存恢复点",
+      "contract": "局部冲突登记并修订同源契约，独立任务继续"
+    },
+    "evidence": [],
+    "implementation": null,
+    "review": null,
+    "blocker": null
+  },
+  {
+    "id": "O01",
+    "phase": "M6",
+    "title": "工作台、统计与审计",
+    "domain": "operations",
+    "depends_on": [
+      "B04",
+      "N01",
+      "R06"
+    ],
+    "deliverables": [
+      "授权汇总、待处理列表、时延与金额口径、事件审计检索"
+    ],
+    "negative_checks": [
+      "先聚合后join防SUM重复",
+      "内部审计按主体且不记录敏感凭据"
+    ],
+    "api_ids": [
+      "API_097_get",
+      "API_147_get",
+      "API_148_get"
+    ],
+    "page_ids": [
+      "B02",
+      "B22",
+      "B32",
+      "B32-request"
+    ],
+    "tables": [],
+    "case_ids": [],
+    "scope": "DEVELOPMENT",
+    "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
+    "status": "NOT_ASSESSED",
+    "code_paths": [
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/operations/",
+      "xinyi-rongli/src/main/resources/mapper/rongli/operations/",
+      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/operations/",
+      "xinyi-ui/src/views/rongli/operations/",
+      "xinyi-ui/src/api/rongli/operations.ts",
+      "xinyi-miniapp/src/features/operations/"
+    ],
+    "test_class": "O01OperationsIT",
+    "commands": [
+      "mvn -pl xinyi-admin -am -Pvi-it -Dit.test=O01OperationsIT verify",
+      "npm --prefix xinyi-ui run build:prod",
+      "npm --prefix xinyi-miniapp run build:mp-weixin"
+    ],
+    "done_when": [
+      "源接口/页面/表/用例均有明确实现文件与关联测试；不能以目录存在当完成",
+      "本任务真实集成与负向场景实际通过且保存原始报告；无测试/跳过不能通过",
+      "提交独立复核记录；标注测试第三方替身，不声称真实渠道通过"
+    ],
+    "blocker_policy": {
+      "credential": "只阻L01或具体真实渠道验证，通用代码可继续",
+      "policy": "生产配置待批准；测试使用明示fixture",
+      "environment": "具体命令与错误落盘；不能假装已验收",
+      "access": "不得绕过限制；保存恢复点",
+      "contract": "局部冲突登记并修订同源契约，独立任务继续"
+    },
+    "evidence": [],
+    "implementation": null,
+    "review": null,
+    "blocker": null
+  },
+  {
+    "id": "O02",
+    "phase": "M6",
+    "title": "后台任务控制和故障恢复",
+    "domain": "jobs",
+    "depends_on": [
+      "P03",
+      "N01",
+      "N03",
+      "S03"
+    ],
+    "deliverables": [
+      "失败任务队列、受控重试、告警、租约恢复"
+    ],
+    "negative_checks": [
+      "重试仍走统一Service权限",
+      "不能后台任意改终态或清空审计"
+    ],
+    "api_ids": [
+      "API_151_get",
+      "API_152_post"
+    ],
+    "page_ids": [],
+    "tables": [],
+    "case_ids": [],
+    "scope": "DEVELOPMENT",
+    "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
+    "status": "NOT_ASSESSED",
+    "code_paths": [
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/jobs/",
+      "xinyi-rongli/src/main/resources/mapper/rongli/jobs/",
+      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/jobs/",
+      "xinyi-ui/src/views/rongli/jobs/",
+      "xinyi-ui/src/api/rongli/jobs.ts",
+      "xinyi-miniapp/src/features/jobs/"
+    ],
+    "test_class": "O02JobsIT",
+    "commands": [
+      "mvn -pl xinyi-admin -am -Pvi-it -Dit.test=O02JobsIT verify",
+      "npm --prefix xinyi-ui run build:prod",
+      "npm --prefix xinyi-miniapp run build:mp-weixin"
+    ],
+    "done_when": [
+      "源接口/页面/表/用例均有明确实现文件与关联测试；不能以目录存在当完成",
+      "本任务真实集成与负向场景实际通过且保存原始报告；无测试/跳过不能通过",
+      "提交独立复核记录；标注测试第三方替身，不声称真实渠道通过"
+    ],
+    "blocker_policy": {
+      "credential": "只阻L01或具体真实渠道验证，通用代码可继续",
+      "policy": "生产配置待批准；测试使用明示fixture",
+      "environment": "具体命令与错误落盘；不能假装已验收",
+      "access": "不得绕过限制；保存恢复点",
+      "contract": "局部冲突登记并修订同源契约，独立任务继续"
+    },
+    "evidence": [],
+    "implementation": null,
+    "review": null,
+    "blocker": null
+  },
+  {
+    "id": "T01",
+    "phase": "M1",
+    "title": "身份与资料真实集成切片",
+    "domain": "testing",
+    "depends_on": [
+      "I01",
+      "I02",
+      "I03",
+      "I04",
+      "I05",
+      "I06",
+      "A01",
+      "A02",
+      "A03",
+      "A04",
+      "E04",
+      "E05"
+    ],
+    "deliverables": [
+      "真实HTTP→Service→MyBatis→MySQL，退出重登/重启后持久化，PC受限查看"
+    ],
+    "negative_checks": [
+      "不能用MockMvc代替HTTP全链，不能只测原型",
+      "两个用户交叉越权"
+    ],
+    "api_ids": [],
+    "page_ids": [],
+    "tables": [],
+    "case_ids": [],
+    "scope": "DEVELOPMENT",
+    "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
+    "status": "NOT_ASSESSED",
+    "code_paths": [
+      "docs/implementation/vehicle/T01/"
+    ],
+    "test_class": "T01TestingIT",
+    "commands": [
+      "mvn -pl xinyi-admin -am -Pvi-it -Dit.test=T01TestingIT verify",
+      "npm --prefix xinyi-ui run build:prod",
+      "npm --prefix xinyi-miniapp run build:mp-weixin"
+    ],
+    "done_when": [
+      "源接口/页面/表/用例均有明确实现文件与关联测试；不能以目录存在当完成",
+      "本任务真实集成与负向场景实际通过且保存原始报告；无测试/跳过不能通过",
+      "提交独立复核记录；标注测试第三方替身，不声称真实渠道通过"
+    ],
+    "blocker_policy": {
+      "credential": "只阻L01或具体真实渠道验证，通用代码可继续",
+      "policy": "生产配置待批准；测试使用明示fixture",
+      "environment": "具体命令与错误落盘；不能假装已验收",
+      "access": "不得绕过限制；保存恢复点",
+      "contract": "局部冲突登记并修订同源契约，独立任务继续"
+    },
+    "evidence": [],
+    "implementation": null,
+    "review": null,
+    "blocker": null
+  },
+  {
+    "id": "T02",
+    "phase": "M2",
+    "title": "预约支付售后真实集成",
+    "domain": "testing",
+    "depends_on": [
+      "B01",
+      "B02",
+      "B03",
+      "B04",
+      "P01",
+      "P02",
+      "P04",
+      "S01",
+      "S02"
+    ],
+    "deliverables": [
+      "四组合首单报价→占额建单→测试渠道回调→查询→未接车审核取消退款"
+    ],
+    "negative_checks": [
+      "同键异体、支付关单竞争、通知晚到、未配置费用错误"
+    ],
+    "api_ids": [],
+    "page_ids": [],
+    "tables": [],
+    "case_ids": [],
+    "scope": "DEVELOPMENT",
+    "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
+    "status": "NOT_ASSESSED",
+    "code_paths": [
+      "docs/implementation/vehicle/T02/"
+    ],
+    "test_class": "T02TestingIT",
+    "commands": [
+      "mvn -pl xinyi-admin -am -Pvi-it -Dit.test=T02TestingIT verify",
+      "npm --prefix xinyi-ui run build:prod",
+      "npm --prefix xinyi-miniapp run build:mp-weixin"
+    ],
+    "done_when": [
+      "源接口/页面/表/用例均有明确实现文件与关联测试；不能以目录存在当完成",
+      "本任务真实集成与负向场景实际通过且保存原始报告；无测试/跳过不能通过",
+      "提交独立复核记录；标注测试第三方替身，不声称真实渠道通过"
+    ],
+    "blocker_policy": {
+      "credential": "只阻L01或具体真实渠道验证，通用代码可继续",
+      "policy": "生产配置待批准；测试使用明示fixture",
+      "environment": "具体命令与错误落盘；不能假装已验收",
+      "access": "不得绕过限制；保存恢复点",
+      "contract": "局部冲突登记并修订同源契约，独立任务继续"
+    },
+    "evidence": [],
+    "implementation": null,
+    "review": null,
+    "blocker": null
+  },
+  {
+    "id": "T03",
+    "phase": "M3",
+    "title": "派单交接并发集成",
+    "domain": "testing",
+    "depends_on": [
+      "D01",
+      "D02",
+      "D03",
+      "D04",
+      "D05",
+      "D06",
+      "F01",
+      "F02",
+      "F03",
+      "F04",
+      "F05",
+      "F06"
+    ],
+    "deliverables": [
+      "真实四次交接、物品/码/照片、先A后B任务、并发接受/归还"
+    ],
+    "negative_checks": [
+      "证据就绪不算交接",
+      "后台不足权限亦拒绝",
+      "未检测取消不造结果"
+    ],
+    "api_ids": [],
+    "page_ids": [],
+    "tables": [],
+    "case_ids": [],
+    "scope": "DEVELOPMENT",
+    "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
+    "status": "NOT_ASSESSED",
+    "code_paths": [
+      "docs/implementation/vehicle/T03/"
+    ],
+    "test_class": "T03TestingIT",
+    "commands": [
+      "mvn -pl xinyi-admin -am -Pvi-it -Dit.test=T03TestingIT verify",
+      "npm --prefix xinyi-ui run build:prod",
+      "npm --prefix xinyi-miniapp run build:mp-weixin"
+    ],
+    "done_when": [
+      "源接口/页面/表/用例均有明确实现文件与关联测试；不能以目录存在当完成",
+      "本任务真实集成与负向场景实际通过且保存原始报告；无测试/跳过不能通过",
+      "提交独立复核记录；标注测试第三方替身，不声称真实渠道通过"
+    ],
+    "blocker_policy": {
+      "credential": "只阻L01或具体真实渠道验证，通用代码可继续",
+      "policy": "生产配置待批准；测试使用明示fixture",
+      "environment": "具体命令与错误落盘；不能假装已验收",
+      "access": "不得绕过限制；保存恢复点",
+      "contract": "局部冲突登记并修订同源契约，独立任务继续"
+    },
+    "evidence": [],
+    "implementation": null,
+    "review": null,
+    "blocker": null
+  },
+  {
+    "id": "T04",
+    "phase": "M5",
+    "title": "对账核价和凭证集成",
+    "domain": "testing",
+    "depends_on": [
+      "R01",
+      "R02",
+      "R03",
+      "R04",
+      "R05",
+      "R06"
+    ],
+    "deliverables": [
+      "跨月明确选择→改价/复核→本人确认→部分/足额凭证核实"
+    ],
+    "negative_checks": [
+      "重叠集合一胜一409",
+      "同期间不重叠均成功",
+      "同人自审和public hash"
+    ],
+    "api_ids": [],
+    "page_ids": [],
+    "tables": [],
+    "case_ids": [],
+    "scope": "DEVELOPMENT",
+    "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
+    "status": "NOT_ASSESSED",
+    "code_paths": [
+      "docs/implementation/vehicle/T04/"
+    ],
+    "test_class": "T04TestingIT",
+    "commands": [
+      "mvn -pl xinyi-admin -am -Pvi-it -Dit.test=T04TestingIT verify",
+      "npm --prefix xinyi-ui run build:prod",
+      "npm --prefix xinyi-miniapp run build:mp-weixin"
+    ],
+    "done_when": [
+      "源接口/页面/表/用例均有明确实现文件与关联测试；不能以目录存在当完成",
+      "本任务真实集成与负向场景实际通过且保存原始报告；无测试/跳过不能通过",
+      "提交独立复核记录；标注测试第三方替身，不声称真实渠道通过"
+    ],
+    "blocker_policy": {
+      "credential": "只阻L01或具体真实渠道验证，通用代码可继续",
+      "policy": "生产配置待批准；测试使用明示fixture",
+      "environment": "具体命令与错误落盘；不能假装已验收",
+      "access": "不得绕过限制；保存恢复点",
+      "contract": "局部冲突登记并修订同源契约，独立任务继续"
+    },
+    "evidence": [],
+    "implementation": null,
+    "review": null,
+    "blocker": null
+  },
+  {
+    "id": "T05",
+    "phase": "M6",
+    "title": "全域授权和字段负向集成",
+    "domain": "testing",
+    "depends_on": [
+      "T01",
+      "T02",
+      "T03",
+      "T04",
+      "N03"
+    ],
+    "deliverables": [
+      "全部Mini/Admin端点按权限矩阵，序列化嵌套白名单，敏感访问"
+    ],
+    "negative_checks": [
+      "缓存删除失败仍撤权",
+      "未授权站点/主体/文件/培训答案不泄漏"
+    ],
+    "api_ids": [],
+    "page_ids": [],
+    "tables": [],
+    "case_ids": [
+      "TC-162",
+      "TC-R50-001",
+      "TC-R50-002",
+      "TC-R50-003",
+      "TC-R50-004",
+      "TC-R50-005",
+      "TC-R50-006",
+      "TC-R50-009",
+      "TC-R50-010",
+      "TC-R50-011",
+      "TC-R50-013",
+      "TC-R50-014",
+      "TC-R50-015",
+      "TC-R50-016",
+      "TC-R50-021",
+      "TC-R50-022",
+      "TC-R50-023",
+      "TC-R50-024",
+      "TC-R50-025",
+      "TC-R50-026",
+      "TC-R50-027",
+      "TC-R50-028",
+      "TC-R50-031"
+    ],
+    "scope": "DEVELOPMENT",
+    "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
+    "status": "NOT_ASSESSED",
+    "code_paths": [
+      "docs/implementation/vehicle/T05/"
+    ],
+    "test_class": "T05TestingIT",
+    "commands": [
+      "mvn -pl xinyi-admin -am -Pvi-it -Dit.test=T05TestingIT verify",
+      "npm --prefix xinyi-ui run build:prod",
+      "npm --prefix xinyi-miniapp run build:mp-weixin"
+    ],
+    "done_when": [
+      "源接口/页面/表/用例均有明确实现文件与关联测试；不能以目录存在当完成",
+      "本任务真实集成与负向场景实际通过且保存原始报告；无测试/跳过不能通过",
+      "提交独立复核记录；标注测试第三方替身，不声称真实渠道通过"
+    ],
+    "blocker_policy": {
+      "credential": "只阻L01或具体真实渠道验证，通用代码可继续",
+      "policy": "生产配置待批准；测试使用明示fixture",
+      "environment": "具体命令与错误落盘；不能假装已验收",
+      "access": "不得绕过限制；保存恢复点",
+      "contract": "局部冲突登记并修订同源契约，独立任务继续"
+    },
+    "evidence": [],
+    "implementation": null,
+    "review": null,
+    "blocker": null
+  },
+  {
+    "id": "T06",
+    "phase": "M0",
+    "title": "结构、Mapper生成列和升级一致性",
+    "domain": "testing",
+    "depends_on": [
+      "E03",
+      "E06"
+    ],
+    "deliverables": [
+      "真实MySQL执行66表、主键/索引/CHECK/UTC/自增/生成列",
+      "初装与M0适配目标一致"
+    ],
+    "negative_checks": [
+      "H2/SQLite不能替代此门禁",
+      "SQL可解析不等于可执行"
+    ],
+    "api_ids": [],
+    "page_ids": [],
+    "tables": [],
+    "case_ids": [],
+    "scope": "DEVELOPMENT",
+    "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
+    "status": "NOT_ASSESSED",
+    "code_paths": [
+      "docs/implementation/vehicle/T06/"
+    ],
+    "test_class": "T06TestingIT",
+    "commands": [
+      "mvn -pl xinyi-admin -am -Pvi-it -Dit.test=T06TestingIT verify",
+      "npm --prefix xinyi-ui run build:prod",
+      "npm --prefix xinyi-miniapp run build:mp-weixin"
+    ],
+    "done_when": [
+      "源接口/页面/表/用例均有明确实现文件与关联测试；不能以目录存在当完成",
+      "本任务真实集成与负向场景实际通过且保存原始报告；无测试/跳过不能通过",
+      "提交独立复核记录；标注测试第三方替身，不声称真实渠道通过"
+    ],
+    "blocker_policy": {
+      "credential": "只阻L01或具体真实渠道验证，通用代码可继续",
+      "policy": "生产配置待批准；测试使用明示fixture",
+      "environment": "具体命令与错误落盘；不能假装已验收",
+      "access": "不得绕过限制；保存恢复点",
+      "contract": "局部冲突登记并修订同源契约，独立任务继续"
+    },
+    "starting_condition": "USER_CONFIRMED_NOT_STARTED",
+    "evidence": [],
+    "implementation": null,
+    "review": null,
+    "blocker": null
+  },
+  {
+    "id": "T07",
+    "phase": "M6",
+    "title": "重启、故障、任务补偿和备份恢复",
+    "domain": "testing",
+    "depends_on": [
+      "T03",
+      "T04",
+      "O02"
+    ],
+    "deliverables": [
+      "进程终止重启/Redis不可用/通知失败/超时网络/数据库回滚、隔离恢复"
+    ],
+    "negative_checks": [
+      "不删除已发生资金和交接事实",
+      "不靠TTL通知驱动关单"
+    ],
+    "api_ids": [],
+    "page_ids": [],
+    "tables": [],
+    "case_ids": [],
+    "scope": "DEVELOPMENT",
+    "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
+    "status": "NOT_ASSESSED",
+    "code_paths": [
+      "docs/implementation/vehicle/T07/"
+    ],
+    "test_class": "T07TestingIT",
+    "commands": [
+      "mvn -pl xinyi-admin -am -Pvi-it -Dit.test=T07TestingIT verify",
+      "npm --prefix xinyi-ui run build:prod",
+      "npm --prefix xinyi-miniapp run build:mp-weixin"
+    ],
+    "done_when": [
+      "源接口/页面/表/用例均有明确实现文件与关联测试；不能以目录存在当完成",
+      "本任务真实集成与负向场景实际通过且保存原始报告；无测试/跳过不能通过",
+      "提交独立复核记录；标注测试第三方替身，不声称真实渠道通过"
+    ],
+    "blocker_policy": {
+      "credential": "只阻L01或具体真实渠道验证，通用代码可继续",
+      "policy": "生产配置待批准；测试使用明示fixture",
+      "environment": "具体命令与错误落盘；不能假装已验收",
+      "access": "不得绕过限制；保存恢复点",
+      "contract": "局部冲突登记并修订同源契约，独立任务继续"
+    },
+    "evidence": [],
+    "implementation": null,
+    "review": null,
+    "blocker": null
+  },
+  {
+    "id": "T08",
+    "phase": "M6",
+    "title": "全量前端实现与可用性验收",
+    "domain": "testing",
+    "depends_on": [
+      "T01",
+      "T02",
+      "T03",
+      "T04",
+      "N02",
+      "O01",
+      "E04",
+      "E05"
+    ],
+    "deliverables": [
+      "按287画板/有效主视图逐项验收路由、字段、状态、错误恢复、留存和键盘"
+    ],
+    "negative_checks": [
+      "不是每个画板单独路由",
+      "H5不得假称微信真机",
+      "不得localStorage存订单当后端"
+    ],
+    "api_ids": [],
+    "page_ids": [],
+    "tables": [],
+    "case_ids": [],
+    "scope": "DEVELOPMENT",
+    "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
+    "status": "NOT_ASSESSED",
+    "code_paths": [
+      "docs/implementation/vehicle/T08/"
+    ],
+    "test_class": "T08TestingIT",
+    "commands": [
+      "mvn -pl xinyi-admin -am -Pvi-it -Dit.test=T08TestingIT verify",
+      "npm --prefix xinyi-ui run build:prod",
+      "npm --prefix xinyi-miniapp run build:mp-weixin"
+    ],
+    "done_when": [
+      "源接口/页面/表/用例均有明确实现文件与关联测试；不能以目录存在当完成",
+      "本任务真实集成与负向场景实际通过且保存原始报告；无测试/跳过不能通过",
+      "提交独立复核记录；标注测试第三方替身，不声称真实渠道通过"
+    ],
+    "blocker_policy": {
+      "credential": "只阻L01或具体真实渠道验证，通用代码可继续",
+      "policy": "生产配置待批准；测试使用明示fixture",
+      "environment": "具体命令与错误落盘；不能假装已验收",
+      "access": "不得绕过限制；保存恢复点",
+      "contract": "局部冲突登记并修订同源契约，独立任务继续"
+    },
+    "evidence": [],
+    "implementation": null,
+    "review": null,
+    "blocker": null
+  },
+  {
+    "id": "L01",
+    "phase": "L",
+    "title": "真实供应商联调和凭据验收",
+    "domain": "release",
+    "depends_on": [
+      "T02",
+      "T03",
+      "Q04",
+      "N01"
+    ],
+    "deliverables": [
+      "指定AppID商户下微信/地图/文件/OCR/活体/短信按开通能力联调"
+    ],
+    "negative_checks": [
+      "缺某供应商只阻该渠道",
+      "不影响已授权DEV任务",
+      "无真实密钥标CREDENTIAL"
+    ],
+    "api_ids": [],
+    "page_ids": [],
+    "tables": [],
+    "case_ids": [],
+    "scope": "RELEASE",
+    "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
+    "status": "NOT_ASSESSED",
+    "code_paths": [
+      "docs/implementation/vehicle/L01/"
+    ],
+    "test_class": "L01ReleaseIT",
+    "commands": [
+      "mvn -pl xinyi-admin -am -Pvi-it -Dit.test=L01ReleaseIT verify",
+      "npm --prefix xinyi-ui run build:prod",
+      "npm --prefix xinyi-miniapp run build:mp-weixin"
+    ],
+    "done_when": [
+      "指定真实环境/设备/主体的测试通过",
+      "负责人员批准，凭证保存在受控目录且对报告脱敏"
+    ],
+    "blocker_policy": {
+      "credential": "只阻L01或具体真实渠道验证，通用代码可继续",
+      "policy": "生产配置待批准；测试使用明示fixture",
+      "environment": "具体命令与错误落盘；不能假装已验收",
+      "access": "不得绕过限制；保存恢复点",
+      "contract": "局部冲突登记并修订同源契约，独立任务继续"
+    },
+    "evidence": [],
+    "implementation": null,
+    "review": null,
+    "blocker": null
+  },
+  {
+    "id": "L02",
+    "phase": "L",
+    "title": "微信真机和提交审核",
+    "domain": "release",
+    "depends_on": [
+      "T08",
+      "L01"
+    ],
+    "deliverables": [
+      "iOS/Android登录相机定位导航切后台锁屏重连支付，隐私域名配置"
+    ],
+    "negative_checks": [
+      "不能只凭开发者工具/浏览器通过",
+      "不承诺连续后台定位"
+    ],
+    "api_ids": [],
+    "page_ids": [],
+    "tables": [],
+    "case_ids": [],
+    "scope": "RELEASE",
+    "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
+    "status": "NOT_ASSESSED",
+    "code_paths": [
+      "docs/implementation/vehicle/L02/"
+    ],
+    "test_class": "L02ReleaseIT",
+    "commands": [
+      "mvn -pl xinyi-admin -am -Pvi-it -Dit.test=L02ReleaseIT verify",
+      "npm --prefix xinyi-ui run build:prod",
+      "npm --prefix xinyi-miniapp run build:mp-weixin"
+    ],
+    "done_when": [
+      "指定真实环境/设备/主体的测试通过",
+      "负责人员批准，凭证保存在受控目录且对报告脱敏"
+    ],
+    "blocker_policy": {
+      "credential": "只阻L01或具体真实渠道验证，通用代码可继续",
+      "policy": "生产配置待批准；测试使用明示fixture",
+      "environment": "具体命令与错误落盘；不能假装已验收",
+      "access": "不得绕过限制；保存恢复点",
+      "contract": "局部冲突登记并修订同源契约，独立任务继续"
+    },
+    "evidence": [],
+    "implementation": null,
+    "review": null,
+    "blocker": null
+  },
+  {
+    "id": "L03",
+    "phase": "L",
+    "title": "生产部署、恢复与值班演练",
+    "domain": "release",
+    "depends_on": [
+      "T05",
+      "T06",
+      "T07",
+      "T08"
+    ],
+    "deliverables": [
+      "Linux容器/Nginx/RDS或MySQL/Redis/私有OSS，灰度健康探针备份回滚"
+    ],
+    "negative_checks": [
+      "未知业务政策禁止开放收费",
+      "公网不暴露管理/测试/Swagger/Druid"
+    ],
+    "api_ids": [],
+    "page_ids": [],
+    "tables": [],
+    "case_ids": [],
+    "scope": "RELEASE",
+    "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
+    "status": "NOT_ASSESSED",
+    "code_paths": [
+      "docs/implementation/vehicle/L03/"
+    ],
+    "test_class": "L03ReleaseIT",
+    "commands": [
+      "mvn -pl xinyi-admin -am -Pvi-it -Dit.test=L03ReleaseIT verify",
+      "npm --prefix xinyi-ui run build:prod",
+      "npm --prefix xinyi-miniapp run build:mp-weixin"
+    ],
+    "done_when": [
+      "指定真实环境/设备/主体的测试通过",
+      "负责人员批准，凭证保存在受控目录且对报告脱敏"
+    ],
+    "blocker_policy": {
+      "credential": "只阻L01或具体真实渠道验证，通用代码可继续",
+      "policy": "生产配置待批准；测试使用明示fixture",
+      "environment": "具体命令与错误落盘；不能假装已验收",
+      "access": "不得绕过限制；保存恢复点",
+      "contract": "局部冲突登记并修订同源契约，独立任务继续"
+    },
+    "evidence": [],
+    "implementation": null,
+    "review": null,
+    "blocker": null
+  },
+  {
+    "id": "G01",
+    "phase": "M6",
+    "title": "全功能代码交付审计",
+    "domain": "testing",
+    "depends_on": [
+      "T01",
+      "T02",
+      "T03",
+      "T04",
+      "T05",
+      "T06",
+      "T07",
+      "T08"
+    ],
+    "deliverables": [
+      "核对所有活动API、页面、表、用例的实现、集成和独立复核证据",
+      "真实渠道另计",
+      "先以--preflight检查除G01自身外的全部交付，再独立审查G01证据并标REVIEWED，最后不带--preflight运行最终完成门禁；避免审计任务自依赖死锁。"
+    ],
+    "negative_checks": [
+      "接口数量/截图数/空类/固定Ack不计完成",
+      "禁止借MVP删除已确认功能"
+    ],
+    "api_ids": [],
+    "page_ids": [],
+    "tables": [],
+    "case_ids": [],
+    "scope": "DEVELOPMENT",
+    "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
+    "status": "NOT_ASSESSED",
+    "code_paths": [
+      "docs/implementation/vehicle/G01/"
+    ],
+    "test_class": "G01TestingIT",
+    "commands": [
+      "python docs/vehicle/V6.1/12_工程执行/completion_gate.py --repo . --preflight",
+      "python docs/vehicle/V6.1/12_工程执行/taskctl.py summary --repo ."
+    ],
+    "done_when": [
+      "源接口/页面/表/用例均有明确实现文件与关联测试；不能以目录存在当完成",
+      "本任务真实集成与负向场景实际通过且保存原始报告；无测试/跳过不能通过",
+      "提交独立复核记录；标注测试第三方替身，不声称真实渠道通过"
+    ],
+    "blocker_policy": {
+      "credential": "只阻L01或具体真实渠道验证，通用代码可继续",
+      "policy": "生产配置待批准；测试使用明示fixture",
+      "environment": "具体命令与错误落盘；不能假装已验收",
+      "access": "不得绕过限制；保存恢复点",
+      "contract": "局部冲突登记并修订同源契约，独立任务继续"
+    },
+    "evidence": [],
+    "implementation": null,
+    "review": null,
+    "blocker": null
+  }
+]

@@ -1,0 +1,20 @@
+digraph F14 {
+graph [rankdir=TB, bgcolor="white", pad="0.35", nodesep="0.3", ranksep="0.38", fontname="Noto Sans CJK SC", fontsize=18, labelloc=t, label="F14 车主向代驾接车交接"];
+node [shape=box, style="rounded,filled", fillcolor="#F3F6FA", color="#CFD6E0", fontname="Noto Sans CJK SC", fontsize=12, margin="0.15,0.10"];
+edge [color="#74849A", fontname="Noto Sans CJK SC", fontsize=10];
+"n1" [label="代驾按接单→出发→到达顺序履约"];
+"n2" [label="核对车牌、联系人、钥匙及随车物品"];
+"n3" [label="完成节点1六类照片与接车里程"];
+"n4" [label="车主现场准备好交付后提供专用交接码"];
+"n5" [label="代驾提交码和接车确认动作"];
+"n6" [label="服务端资格、占用、状态、证据、码均合法？",shape=diamond,fillcolor="#EEF4FF"];
+"n7" [label="事务写交接记录，保管方变代驾，进入已接车"];
+"n8" [label="失败说明原因，错误码限次锁定，人工核验另留痕"];
+"n1" -> "n2" [label=""];
+"n2" -> "n3" [label=""];
+"n3" -> "n4" [label=""];
+"n4" -> "n5" [label=""];
+"n5" -> "n6" [label=""];
+"n6" -> "n7" [label="是"];
+"n6" -> "n8" [label="否"];
+}

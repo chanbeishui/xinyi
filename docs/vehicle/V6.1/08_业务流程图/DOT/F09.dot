@@ -1,0 +1,19 @@
+digraph F09 {
+graph [rankdir=TB, bgcolor="white", pad="0.35", nodesep="0.3", ranksep="0.38", fontname="Noto Sans CJK SC", fontsize=18, labelloc=t, label="F09 未来预约计划派单与参数修改"];
+node [shape=box, style="rounded,filled", fillcolor="#F3F6FA", color="#CFD6E0", fontname="Noto Sans CJK SC", fontsize=12, margin="0.15,0.10"];
+edge [color="#74849A", fontname="Noto Sans CJK SC", fontsize=10];
+"n1" [label="已付订单保存上门时段快照"];
+"n2" [label="计算dispatchAt=时段开始-N分钟"];
+"n3" [label="当前时间达到dispatchAt？",shape=diamond,fillcolor="#EEF4FF"];
+"n4" [label="保持预约成功、待安排，不占司机"];
+"n5" [label="检查支付、取消、名额及已有分配"];
+"n6" [label="幂等创建自动派单批次"];
+"n7" [label="后台修改N，只影响新单；可明确重算未派单订单"];
+"n1" -> "n2" [label=""];
+"n2" -> "n3" [label=""];
+"n3" -> "n4" [label="否"];
+"n4" -> "n3" [label="任务扫描"];
+"n3" -> "n5" [label="是"];
+"n5" -> "n6" [label="仍有效"];
+"n7" -> "n2" [label="重算需预览+审计"];
+}

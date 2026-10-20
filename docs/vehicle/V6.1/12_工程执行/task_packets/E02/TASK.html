@@ -1,0 +1,31 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TASK</title><style>body{font:16px/1.75 -apple-system,BlinkMacSystemFont,"Microsoft YaHei",sans-serif;color:#202632;margin:0;background:#f6f7f9}header{padding:14px 24px;background:white;border-bottom:1px solid #ddd}main{max-width:1120px;margin:24px auto;padding:30px;background:white}h1{font-size:30px}h2{margin-top:36px}a{color:#0661bd}table{border-collapse:collapse;width:100%;display:block;overflow:auto;font-size:14px}td,th{border:1px solid #dde2ea;padding:10px;vertical-align:top}th{background:#f1f5fb}pre{padding:15px;background:#f2f4f7;overflow:auto}img{max-width:100%;height:auto}blockquote{padding:10px 20px;border-left:3px solid #2571be;background:#f4f8fc}@media(max-width:700px){main{padding:15px;margin:8px}h1{font-size:25px}}</style></head><body><header><a href="../../../00_开始.html">V6.1 完整资料</a>　<a href="../../../02_UI/index.html">交互原型</a>　T3.1</header><main><h1>E02 · 隔离运行环境与依赖锁定</h1>
+<p>阶段：M0；当前用户未实施M0。前置：E00。</p>
+<h2>本任务交付</h2>
+<ul>
+<li>独立MySQL/Redis/文件目录/模拟供应商</li>
+<li>JDK21运行release17</li>
+<li>锁定包与镜像版本</li>
+</ul>
+<h2>代码落位</h2>
+<p><code>docs/implementation/vehicle/E02/</code></p>
+<h2>失败与边界</h2>
+<ul>
+<li>生产URL和凭据不加载</li>
+<li>镜像未就绪不得算启动成功</li>
+<li>Docker不可用有独立测试实例路径</li>
+</ul>
+<h2>验证命令</h2>
+<pre><code class="language-text">python docs/vehicle/V6.1/12_工程执行/engineer.py env --repo . --apply
+python docs/vehicle/V6.1/12_工程执行/engineer.py run --repo . --kind infra
+python docs/vehicle/V6.1/12_工程执行/engineer.py run --repo . --kind infra-status
+</code></pre>
+<p>初次无小程序lockfile先npm install并提交生成结果，之后npm ci。部署/供应商凭据缺失不替代构建或资料证据。</p>
+<h2>完成判据</h2>
+<ul>
+<li>隔离环境配置、随机本地密钥与端口不干扰原库</li>
+<li>真实工具版本/拉取/健康检查有证据；失败部分保持VERIFICATION阻塞</li>
+<li>不要求未开发的身份/报价/付款提前通过</li>
+</ul>
+<h2>持续执行</h2>
+<p>完成后更新真实任务账本和证据，继续taskctl next；不得把本任务完成写成M0整体完成。用户没有做M0，不要求用户先补M0。中止时保留恢复点，不清空工作区。</p>
+</main></body></html>

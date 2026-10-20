@@ -1,0 +1,180 @@
+[
+  {
+    "name": "vi_aftersale_review",
+    "comment": "统一审核的追加式决定凭证",
+    "cols": [
+      [
+        "id",
+        "BIGINT NOT NULL AUTO_INCREMENT",
+        "数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串"
+      ],
+      [
+        "case_id",
+        "BIGINT NOT NULL",
+        "申请"
+      ],
+      [
+        "revision",
+        "INT NOT NULL",
+        "唯一决定版本"
+      ],
+      [
+        "decision",
+        "VARCHAR(16) NOT NULL",
+        "APPROVE/REJECT"
+      ],
+      [
+        "approved_fen",
+        "BIGINT NOT NULL",
+        "本决定金额"
+      ],
+      [
+        "observed_order_version",
+        "BIGINT NOT NULL",
+        "审批时重新读取订单版本"
+      ],
+      [
+        "custody_at_review",
+        "VARCHAR(16) NOT NULL",
+        "实际保管方快照"
+      ],
+      [
+        "return_required",
+        "TINYINT NOT NULL",
+        "由服务端产生"
+      ],
+      [
+        "reviewer_user_id",
+        "BIGINT NOT NULL",
+        "不能与申请人为同一真实身份"
+      ],
+      [
+        "opinion",
+        "VARCHAR(1000) NOT NULL",
+        "审核意见"
+      ],
+      [
+        "reviewed_at",
+        "DATETIME(3) NOT NULL",
+        "UTC"
+      ],
+      [
+        "created_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "UTC"
+      ],
+      [
+        "updated_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "UTC更新时间；Mapper每次修改显式SET updated_at=UTC_TIMESTAMP(3)，不依赖连接时区"
+      ],
+      [
+        "version",
+        "BIGINT NOT NULL DEFAULT 0",
+        "乐观锁"
+      ]
+    ],
+    "indexes": [
+      "UNIQUE KEY uk_case_revision (case_id,revision)",
+      "CONSTRAINT ck_review_fen CHECK (approved_fen>=0)"
+    ],
+    "rule": "一个决定同时覆盖取消及批准金额；批准与退款预留同事务。",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "engine": "InnoDB",
+    "collation": "utf8mb4_0900_ai_ci",
+    "columnRules": {
+      "id": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "case_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "revision": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "decision": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "approved_fen": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "observed_order_version": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "custody_at_review": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "return_required": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "reviewer_user_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "opinion": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "reviewed_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "created_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "updated_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "version": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      }
+    },
+    "checks": [
+      "CONSTRAINT ck_ver_aftersale_review CHECK (version >= 0)"
+    ]
+  }
+]

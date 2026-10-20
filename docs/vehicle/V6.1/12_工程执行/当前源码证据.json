@@ -1,0 +1,66 @@
+{
+  "observed_at": "2026-10-20",
+  "scope": "read-only GitHub source inspection, not local runtime or database",
+  "repository": "chanbeishui/xinyi",
+  "branch": "rongli-wx",
+  "commit": "890cfbbfc5e0db404a932ab5ef8b449d07c7f444",
+  "root_tree": "eb116c064648139216bc9a7d581e4e548ecb618a",
+  "user_statement": "没有做M0；当前为若依前后端分离改版后的xinyi框架",
+  "observations": [
+    {
+      "source": "https://api.github.com/repos/chanbeishui/xinyi/branches/rongli-wx",
+      "result": "HEAD 890cfbbfc5e0db404a932ab5ef8b449d07c7f444",
+      "kind": "SOURCE_FACT"
+    },
+    {
+      "source": "https://api.github.com/repos/chanbeishui/xinyi/git/trees/eb116c064648139216bc9a7d581e4e548ecb618a",
+      "result": "root tree not truncated; framework modules and xinyi-ui present; business modules and miniapp absent",
+      "kind": "SOURCE_FACT"
+    },
+    {
+      "source": "https://api.github.com/repos/chanbeishui/xinyi/git/trees/3f55eea89a143d6753c1f04ab7bbf98ff039bf30",
+      "result": "sql tree has 5 framework scripts; no vehicle_identity_session migration",
+      "kind": "SOURCE_FACT"
+    },
+    {
+      "source": "https://github.com/chanbeishui/xinyi/blob/890cfbbfc5e0db404a932ab5ef8b449d07c7f444/pom.xml",
+      "blob_sha": "b07468753da31337b2a55caf006fc8d835376256",
+      "kind": "READ_SOURCE_FILE"
+    },
+    {
+      "source": "https://github.com/chanbeishui/xinyi/blob/890cfbbfc5e0db404a932ab5ef8b449d07c7f444/AGENTS.md",
+      "blob_sha": "7b1a3864e4fc77f4690d8a7faf0ec1dbd7494490",
+      "kind": "READ_SOURCE_FILE"
+    },
+    {
+      "source": "https://github.com/chanbeishui/xinyi/blob/890cfbbfc5e0db404a932ab5ef8b449d07c7f444/xinyi-ui/package.json",
+      "blob_sha": "1335f0a3af4ac5816f261d8428a71092b9c5fddd",
+      "kind": "READ_SOURCE_FILE"
+    },
+    {
+      "source": "https://github.com/chanbeishui/xinyi/blob/890cfbbfc5e0db404a932ab5ef8b449d07c7f444/xinyi-framework/src/main/java/com/xinyi/framework/config/SecurityConfig.java",
+      "blob_sha": "cbb669845087861ebfde9ba4955560554e8a2a80",
+      "kind": "READ_SOURCE_FILE"
+    },
+    {
+      "source": "https://github.com/chanbeishui/xinyi/blob/890cfbbfc5e0db404a932ab5ef8b449d07c7f444/xinyi-framework/src/main/java/com/xinyi/framework/security/filter/JwtAuthenticationTokenFilter.java",
+      "blob_sha": "8c66b190f38a6f8f3e9a3e3815c667edc08981e6",
+      "kind": "READ_SOURCE_FILE"
+    }
+  ],
+  "not_tested": [
+    "local worktree",
+    "local database",
+    "Maven build",
+    "uni-app build",
+    "MySQL execution",
+    "WeChat devices",
+    "real providers"
+  ],
+  "no_inference": [
+    "commit title does not establish implemented functions",
+    "framework auth_version is not miniapp authentication",
+    "repository SQL does not prove database applied",
+    "M0 SDK sample does not prove M0 completion"
+  ]
+}

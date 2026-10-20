@@ -1,0 +1,37 @@
+digraph F32 {
+graph [rankdir=TB, bgcolor="white", pad="0.35", nodesep="0.3", ranksep="0.38", fontname="Noto Sans CJK SC", fontsize=18, labelloc=t, label="F32 个人对账内核价与整单复核"];
+node [shape=box, style="rounded,filled", fillcolor="#F3F6FA", color="#CFD6E0", fontname="Noto Sans CJK SC", fontsize=12, margin="0.15,0.10"];
+edge [color="#74849A", fontname="Noto Sans CJK SC", fontsize=10];
+"n1" [label="真实承接结束，司机按交接事实释放"];
+"n2" [label="保存费用源及规则金额；无规则保留NULL"];
+"n3" [label="选主体、代驾，明确勾选本次服务\n日期只是查询条件"];
+"n4" [label="建立可含待核价的对账草稿"];
+"n5" [label="对应行填写或修改本次拟应付价格"];
+"n6" [label="价格是否全部确定？",shape=diamond,fillcolor="#EEF4FF"];
+"n7" [label="有人工填写或改价？",shape=diamond,fillcolor="#EEF4FF"];
+"n8" [label="经办提交整单复核"];
+"n9" [label="独立人员核对整个版本"];
+"n10" [label="复核通过并发送"];
+"n11" [label="规则价账单直接发送"];
+"n12" [label="代驾核对本版本"];
+"n13" [label="确认无误并锁定原账；不等于付款"];
+"n14" [label="提出差异，回同页处理"];
+"n1" -> "n2" [label=""];
+"n2" -> "n3" [label=""];
+"n3" -> "n4" [label=""];
+"n4" -> "n5" [label="需要填写/修改"];
+"n4" -> "n6" [label="规则已算"];
+"n5" -> "n6" [label=""];
+"n6" -> "n5" [label="否"];
+"n6" -> "n7" [label="是"];
+"n7" -> "n8" [label="是"];
+"n7" -> "n11" [label="否"];
+"n8" -> "n9" [label=""];
+"n9" -> "n10" [label="通过"];
+"n9" -> "n5" [label="退回"];
+"n10" -> "n12" [label=""];
+"n11" -> "n12" [label=""];
+"n12" -> "n13" [label="无误"];
+"n12" -> "n14" [label="有差异"];
+"n14" -> "n5" [label="需要改价"];
+}

@@ -1,0 +1,2093 @@
+[
+  {
+    "table": "vi_account",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "generatedColumns": [],
+    "insertColumns": [
+      "app_id",
+      "open_id",
+      "union_id",
+      "phone_cipher",
+      "phone_lookup",
+      "nickname",
+      "status",
+      "privacy_version",
+      "avatar_file_id"
+    ],
+    "updateColumns": [
+      "app_id",
+      "open_id",
+      "union_id",
+      "phone_cipher",
+      "phone_lookup",
+      "nickname",
+      "status",
+      "privacy_version",
+      "avatar_file_id"
+    ],
+    "notes": "这是Mapper候选列白名单，不是客户端DTO白名单；权限/归属/金额/status等由特定Service设置，禁止批量绑定实体。",
+    "writeClass": "CONTROLLED_LIFECYCLE"
+  },
+  {
+    "table": "vi_employee_binding",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "generatedColumns": [
+      "active_account",
+      "active_user"
+    ],
+    "insertColumns": [
+      "account_id",
+      "sys_user_id",
+      "bound_by",
+      "bound_at",
+      "revoked_at",
+      "permission_version"
+    ],
+    "updateColumns": [
+      "account_id",
+      "sys_user_id",
+      "bound_by",
+      "bound_at",
+      "revoked_at",
+      "permission_version"
+    ],
+    "notes": "这是Mapper候选列白名单，不是客户端DTO白名单；权限/归属/金额/status等由特定Service设置，禁止批量绑定实体。",
+    "writeClass": "CONTROLLED_LIFECYCLE"
+  },
+  {
+    "table": "vi_driver_profile",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "generatedColumns": [],
+    "insertColumns": [
+      "account_id",
+      "qualification_status",
+      "new_assignment_enabled",
+      "listening_enabled",
+      "review_due_at",
+      "license_class",
+      "license_valid_to",
+      "license_long_term",
+      "qualification_revision",
+      "internal_remark"
+    ],
+    "updateColumns": [
+      "account_id",
+      "qualification_status",
+      "new_assignment_enabled",
+      "listening_enabled",
+      "review_due_at",
+      "license_class",
+      "license_valid_to",
+      "license_long_term",
+      "qualification_revision",
+      "internal_remark"
+    ],
+    "notes": "这是Mapper候选列白名单，不是客户端DTO白名单；权限/归属/金额/status等由特定Service设置，禁止批量绑定实体。",
+    "writeClass": "EDITABLE_DRAFT"
+  },
+  {
+    "table": "vi_driver_application",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "generatedColumns": [],
+    "insertColumns": [
+      "driver_id",
+      "status",
+      "sensitive_payload_cipher",
+      "evidence_file_ids",
+      "provider_result_ids",
+      "submitted_at",
+      "reviewer_user_id",
+      "reviewed_at",
+      "review_opinion"
+    ],
+    "updateColumns": [
+      "driver_id",
+      "status",
+      "sensitive_payload_cipher",
+      "evidence_file_ids",
+      "provider_result_ids",
+      "submitted_at",
+      "reviewer_user_id",
+      "reviewed_at",
+      "review_opinion"
+    ],
+    "notes": "这是Mapper候选列白名单，不是客户端DTO白名单；权限/归属/金额/status等由特定Service设置，禁止批量绑定实体。",
+    "writeClass": "CONTROLLED_LIFECYCLE"
+  },
+  {
+    "table": "vi_provider_verification",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "generatedColumns": [],
+    "insertColumns": [
+      "application_id",
+      "provider",
+      "task_type",
+      "provider_task_id",
+      "status",
+      "result_digest",
+      "verified_at"
+    ],
+    "updateColumns": [
+      "application_id",
+      "provider",
+      "task_type",
+      "provider_task_id",
+      "status",
+      "result_digest",
+      "verified_at"
+    ],
+    "notes": "这是Mapper候选列白名单，不是客户端DTO白名单；权限/归属/金额/status等由特定Service设置，禁止批量绑定实体。",
+    "writeClass": "CONTROLLED_LIFECYCLE"
+  },
+  {
+    "table": "vi_station",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "generatedColumns": [],
+    "insertColumns": [
+      "name",
+      "dept_id",
+      "address",
+      "lng",
+      "lat",
+      "service_radius_meter",
+      "supported_vehicle_codes",
+      "business_hours",
+      "enabled"
+    ],
+    "updateColumns": [
+      "name",
+      "dept_id",
+      "address",
+      "lng",
+      "lat",
+      "service_radius_meter",
+      "supported_vehicle_codes",
+      "business_hours",
+      "enabled"
+    ],
+    "notes": "这是Mapper候选列白名单，不是客户端DTO白名单；权限/归属/金额/status等由特定Service设置，禁止批量绑定实体。",
+    "writeClass": "EDITABLE_DRAFT"
+  },
+  {
+    "table": "vi_station_grant",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "generatedColumns": [],
+    "insertColumns": [
+      "sys_user_id",
+      "station_id",
+      "enabled",
+      "granted_by",
+      "reason"
+    ],
+    "updateColumns": [
+      "sys_user_id",
+      "station_id",
+      "enabled",
+      "granted_by",
+      "reason"
+    ],
+    "notes": "这是Mapper候选列白名单，不是客户端DTO白名单；权限/归属/金额/status等由特定Service设置，禁止批量绑定实体。",
+    "writeClass": "CONTROLLED_LIFECYCLE"
+  },
+  {
+    "table": "vi_vehicle",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "generatedColumns": [
+      "active_plate"
+    ],
+    "insertColumns": [
+      "owner_account_id",
+      "plate_no",
+      "vehicle_type_code",
+      "brand_model",
+      "vin_last4",
+      "registered_on",
+      "use_type",
+      "verification_status",
+      "internal_remark",
+      "is_default",
+      "deleted_at"
+    ],
+    "updateColumns": [
+      "owner_account_id",
+      "plate_no",
+      "vehicle_type_code",
+      "brand_model",
+      "vin_last4",
+      "registered_on",
+      "use_type",
+      "verification_status",
+      "internal_remark",
+      "is_default",
+      "deleted_at"
+    ],
+    "notes": "这是Mapper候选列白名单，不是客户端DTO白名单；权限/归属/金额/status等由特定Service设置，禁止批量绑定实体。",
+    "writeClass": "EDITABLE_DRAFT"
+  },
+  {
+    "table": "vi_address",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "generatedColumns": [],
+    "insertColumns": [
+      "owner_account_id",
+      "label",
+      "address_cipher",
+      "location_cipher",
+      "is_default",
+      "deleted_at"
+    ],
+    "updateColumns": [
+      "owner_account_id",
+      "label",
+      "address_cipher",
+      "location_cipher",
+      "is_default",
+      "deleted_at"
+    ],
+    "notes": "这是Mapper候选列白名单，不是客户端DTO白名单；权限/归属/金额/status等由特定Service设置，禁止批量绑定实体。",
+    "writeClass": "EDITABLE_DRAFT"
+  },
+  {
+    "table": "vi_price_rule",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "generatedColumns": [],
+    "insertColumns": [
+      "rule_key",
+      "revision",
+      "vehicle_type_code",
+      "inspection_type_code",
+      "status",
+      "config_json",
+      "effective_from",
+      "effective_to",
+      "submitted_by",
+      "approved_by"
+    ],
+    "updateColumns": [
+      "rule_key",
+      "revision",
+      "vehicle_type_code",
+      "inspection_type_code",
+      "status",
+      "config_json",
+      "effective_from",
+      "effective_to",
+      "submitted_by",
+      "approved_by"
+    ],
+    "notes": "这是Mapper候选列白名单，不是客户端DTO白名单；权限/归属/金额/status等由特定Service设置，禁止批量绑定实体。",
+    "writeClass": "EDITABLE_DRAFT"
+  },
+  {
+    "table": "vi_quota_slot",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "generatedColumns": [],
+    "insertColumns": [
+      "quota_type",
+      "scope_key",
+      "station_id",
+      "starts_at",
+      "ends_at",
+      "total_quota",
+      "held_quota",
+      "confirmed_quota",
+      "consumed_quota",
+      "enabled"
+    ],
+    "updateColumns": [
+      "quota_type",
+      "scope_key",
+      "station_id",
+      "starts_at",
+      "ends_at",
+      "total_quota",
+      "held_quota",
+      "confirmed_quota",
+      "consumed_quota",
+      "enabled"
+    ],
+    "notes": "这是Mapper候选列白名单，不是客户端DTO白名单；权限/归属/金额/status等由特定Service设置，禁止批量绑定实体。",
+    "writeClass": "EDITABLE_DRAFT"
+  },
+  {
+    "table": "vi_quote",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "generatedColumns": [],
+    "insertColumns": [
+      "owner_account_id",
+      "station_id",
+      "vehicle_snapshot",
+      "address_snapshot_cipher",
+      "pickup_slot_id",
+      "receive_slot_id",
+      "rule_id",
+      "route_snapshot",
+      "amount_fen",
+      "items_json",
+      "expires_at",
+      "used_order_id"
+    ],
+    "updateColumns": [
+      "owner_account_id",
+      "station_id",
+      "vehicle_snapshot",
+      "address_snapshot_cipher",
+      "pickup_slot_id",
+      "receive_slot_id",
+      "rule_id",
+      "route_snapshot",
+      "amount_fen",
+      "items_json",
+      "expires_at",
+      "used_order_id"
+    ],
+    "notes": "这是Mapper候选列白名单，不是客户端DTO白名单；权限/归属/金额/status等由特定Service设置，禁止批量绑定实体。",
+    "writeClass": "CONTROLLED_LIFECYCLE"
+  },
+  {
+    "table": "vi_order",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "generatedColumns": [],
+    "insertColumns": [
+      "order_no",
+      "owner_account_id",
+      "vehicle_id",
+      "station_id",
+      "dept_id",
+      "quote_id",
+      "vehicle_snapshot",
+      "fulfillment_status",
+      "cancel_status",
+      "custody_type",
+      "custody_ref_id",
+      "active_assignment_id",
+      "pickup_starts_at",
+      "pickup_ends_at",
+      "pay_expires_at",
+      "dispatch_at",
+      "dispatch_config_version",
+      "returned_at",
+      "auto_confirm_at",
+      "completed_at",
+      "cancelled_at",
+      "total_fen",
+      "terms_version"
+    ],
+    "updateColumns": [
+      "order_no",
+      "owner_account_id",
+      "vehicle_id",
+      "station_id",
+      "dept_id",
+      "quote_id",
+      "vehicle_snapshot",
+      "fulfillment_status",
+      "cancel_status",
+      "custody_type",
+      "custody_ref_id",
+      "active_assignment_id",
+      "pickup_starts_at",
+      "pickup_ends_at",
+      "pay_expires_at",
+      "dispatch_at",
+      "dispatch_config_version",
+      "returned_at",
+      "auto_confirm_at",
+      "completed_at",
+      "cancelled_at",
+      "total_fen",
+      "terms_version"
+    ],
+    "notes": "这是Mapper候选列白名单，不是客户端DTO白名单；权限/归属/金额/status等由特定Service设置，禁止批量绑定实体。",
+    "writeClass": "CONTROLLED_LIFECYCLE"
+  },
+  {
+    "table": "vi_quota_reservation",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "generatedColumns": [],
+    "insertColumns": [
+      "order_id",
+      "slot_id",
+      "status",
+      "quantity",
+      "expires_at",
+      "released_at"
+    ],
+    "updateColumns": [
+      "order_id",
+      "slot_id",
+      "status",
+      "quantity",
+      "expires_at",
+      "released_at"
+    ],
+    "notes": "这是Mapper候选列白名单，不是客户端DTO白名单；权限/归属/金额/status等由特定Service设置，禁止批量绑定实体。",
+    "writeClass": "CONTROLLED_LIFECYCLE"
+  },
+  {
+    "table": "vi_dispatch_invite",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "generatedColumns": [
+      "active_order"
+    ],
+    "insertColumns": [
+      "order_id",
+      "driver_id",
+      "status",
+      "source",
+      "round_key",
+      "issued_at",
+      "expires_at",
+      "responded_at"
+    ],
+    "updateColumns": [
+      "order_id",
+      "driver_id",
+      "status",
+      "source",
+      "round_key",
+      "issued_at",
+      "expires_at",
+      "responded_at"
+    ],
+    "notes": "这是Mapper候选列白名单，不是客户端DTO白名单；权限/归属/金额/status等由特定Service设置，禁止批量绑定实体。",
+    "writeClass": "CONTROLLED_LIFECYCLE"
+  },
+  {
+    "table": "vi_driver_assignment",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "generatedColumns": [
+      "active_order",
+      "active_driver"
+    ],
+    "insertColumns": [
+      "order_id",
+      "driver_id",
+      "invite_id",
+      "accepted_at",
+      "ended_at",
+      "end_reason"
+    ],
+    "updateColumns": [
+      "order_id",
+      "driver_id",
+      "invite_id",
+      "accepted_at",
+      "ended_at",
+      "end_reason"
+    ],
+    "notes": "这是Mapper候选列白名单，不是客户端DTO白名单；权限/归属/金额/status等由特定Service设置，禁止批量绑定实体。",
+    "writeClass": "CONTROLLED_LIFECYCLE"
+  },
+  {
+    "table": "vi_driver_occupancy",
+    "primaryKey": [
+      "driver_id"
+    ],
+    "idStrategy": "BUSINESS_KEY",
+    "generatedColumns": [],
+    "insertColumns": [
+      "driver_id",
+      "holder_type",
+      "holder_id",
+      "order_id",
+      "expires_at"
+    ],
+    "updateColumns": [
+      "holder_type",
+      "holder_id",
+      "order_id",
+      "expires_at"
+    ],
+    "notes": "这是Mapper候选列白名单，不是客户端DTO白名单；权限/归属/金额/status等由特定Service设置，禁止批量绑定实体。",
+    "writeClass": "CONTROLLED_LIFECYCLE"
+  },
+  {
+    "table": "vi_dispatch_cursor",
+    "primaryKey": [
+      "scope_key"
+    ],
+    "idStrategy": "BUSINESS_KEY",
+    "generatedColumns": [],
+    "insertColumns": [
+      "scope_key",
+      "last_driver_id",
+      "round_no"
+    ],
+    "updateColumns": [
+      "last_driver_id",
+      "round_no"
+    ],
+    "notes": "这是Mapper候选列白名单，不是客户端DTO白名单；权限/归属/金额/status等由特定Service设置，禁止批量绑定实体。",
+    "writeClass": "CONTROLLED_LIFECYCLE"
+  },
+  {
+    "table": "vi_driver_location",
+    "primaryKey": [
+      "driver_id"
+    ],
+    "idStrategy": "BUSINESS_KEY",
+    "generatedColumns": [],
+    "insertColumns": [
+      "driver_id",
+      "location_cipher",
+      "captured_at",
+      "received_at"
+    ],
+    "updateColumns": [
+      "location_cipher",
+      "captured_at",
+      "received_at"
+    ],
+    "notes": "这是Mapper候选列白名单，不是客户端DTO白名单；权限/归属/金额/status等由特定Service设置，禁止批量绑定实体。",
+    "writeClass": "CONTROLLED_LIFECYCLE"
+  },
+  {
+    "table": "vi_handover",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "generatedColumns": [
+      "active_key"
+    ],
+    "insertColumns": [
+      "order_id",
+      "assignment_id",
+      "handover_type",
+      "holder_account_id",
+      "verifier_account_id",
+      "code_mac",
+      "code_cipher",
+      "generation_no",
+      "status",
+      "expires_at",
+      "confirmed_at",
+      "evidence_group_id"
+    ],
+    "updateColumns": [
+      "order_id",
+      "assignment_id",
+      "handover_type",
+      "holder_account_id",
+      "verifier_account_id",
+      "code_mac",
+      "code_cipher",
+      "generation_no",
+      "status",
+      "expires_at",
+      "confirmed_at",
+      "evidence_group_id"
+    ],
+    "notes": "这是Mapper候选列白名单，不是客户端DTO白名单；权限/归属/金额/status等由特定Service设置，禁止批量绑定实体。",
+    "writeClass": "CONTROLLED_LIFECYCLE"
+  },
+  {
+    "table": "vi_handover_attempt_guard",
+    "primaryKey": [
+      "guard_key"
+    ],
+    "idStrategy": "BUSINESS_KEY",
+    "generatedColumns": [],
+    "insertColumns": [
+      "guard_key",
+      "failed_attempts",
+      "locked_at",
+      "unlocked_by"
+    ],
+    "updateColumns": [
+      "failed_attempts",
+      "locked_at",
+      "unlocked_by"
+    ],
+    "notes": "这是Mapper候选列白名单，不是客户端DTO白名单；权限/归属/金额/status等由特定Service设置，禁止批量绑定实体。",
+    "writeClass": "CONTROLLED_LIFECYCLE"
+  },
+  {
+    "table": "vi_evidence_group",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "generatedColumns": [],
+    "insertColumns": [
+      "order_id",
+      "assignment_id",
+      "node_no",
+      "status",
+      "mileage_km",
+      "mileage_source",
+      "mileage_reason",
+      "sealed_at"
+    ],
+    "updateColumns": [
+      "order_id",
+      "assignment_id",
+      "node_no",
+      "status",
+      "mileage_km",
+      "mileage_source",
+      "mileage_reason",
+      "sealed_at"
+    ],
+    "notes": "这是Mapper候选列白名单，不是客户端DTO白名单；权限/归属/金额/status等由特定Service设置，禁止批量绑定实体。",
+    "writeClass": "CONTROLLED_LIFECYCLE"
+  },
+  {
+    "table": "vi_photo",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "generatedColumns": [
+      "active_type"
+    ],
+    "insertColumns": [
+      "group_id",
+      "photo_type",
+      "file_id",
+      "client_capture_id",
+      "revision",
+      "superseded_at",
+      "captured_at",
+      "received_at",
+      "location_cipher",
+      "watermark_file_id"
+    ],
+    "updateColumns": [
+      "group_id",
+      "photo_type",
+      "file_id",
+      "client_capture_id",
+      "revision",
+      "superseded_at",
+      "captured_at",
+      "received_at",
+      "location_cipher",
+      "watermark_file_id"
+    ],
+    "notes": "这是Mapper候选列白名单，不是客户端DTO白名单；权限/归属/金额/status等由特定Service设置，禁止批量绑定实体。",
+    "writeClass": "CONTROLLED_LIFECYCLE"
+  },
+  {
+    "table": "vi_file",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "generatedColumns": [],
+    "insertColumns": [
+      "uploader_account_id",
+      "purpose",
+      "order_id",
+      "application_id",
+      "object_key",
+      "status",
+      "mime_type",
+      "server_size",
+      "server_sha256",
+      "retain_until",
+      "legal_hold"
+    ],
+    "updateColumns": [
+      "uploader_account_id",
+      "purpose",
+      "order_id",
+      "application_id",
+      "object_key",
+      "status",
+      "mime_type",
+      "server_size",
+      "server_sha256",
+      "retain_until",
+      "legal_hold"
+    ],
+    "notes": "这是Mapper候选列白名单，不是客户端DTO白名单；权限/归属/金额/status等由特定Service设置，禁止批量绑定实体。",
+    "writeClass": "CONTROLLED_LIFECYCLE"
+  },
+  {
+    "table": "vi_vehicle_license",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "generatedColumns": [],
+    "insertColumns": [
+      "order_id",
+      "sensitive_payload_cipher",
+      "main_file_id",
+      "sub_file_id",
+      "ocr_task_id",
+      "review_status",
+      "reviewer_user_id",
+      "reviewed_at"
+    ],
+    "updateColumns": [
+      "order_id",
+      "sensitive_payload_cipher",
+      "main_file_id",
+      "sub_file_id",
+      "ocr_task_id",
+      "review_status",
+      "reviewer_user_id",
+      "reviewed_at"
+    ],
+    "notes": "这是Mapper候选列白名单，不是客户端DTO白名单；权限/归属/金额/status等由特定Service设置，禁止批量绑定实体。",
+    "writeClass": "CONTROLLED_LIFECYCLE"
+  },
+  {
+    "table": "vi_inspection_result",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "generatedColumns": [
+      "active_order"
+    ],
+    "insertColumns": [
+      "order_id",
+      "revision",
+      "conclusion",
+      "items_json",
+      "inspector_user_id",
+      "submitted_by",
+      "source",
+      "inspected_at",
+      "submitted_at",
+      "superseded_at"
+    ],
+    "updateColumns": [
+      "order_id",
+      "revision",
+      "conclusion",
+      "items_json",
+      "inspector_user_id",
+      "submitted_by",
+      "source",
+      "inspected_at",
+      "submitted_at",
+      "superseded_at"
+    ],
+    "notes": "这是Mapper候选列白名单，不是客户端DTO白名单；权限/归属/金额/status等由特定Service设置，禁止批量绑定实体。",
+    "writeClass": "CONTROLLED_LIFECYCLE"
+  },
+  {
+    "table": "vi_result_correction",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "generatedColumns": [],
+    "insertColumns": [
+      "order_id",
+      "base_result_id",
+      "replacement_json",
+      "status",
+      "reason",
+      "applicant_id",
+      "reviewer_id",
+      "opinion"
+    ],
+    "updateColumns": [
+      "order_id",
+      "base_result_id",
+      "replacement_json",
+      "status",
+      "reason",
+      "applicant_id",
+      "reviewer_id",
+      "opinion"
+    ],
+    "notes": "这是Mapper候选列白名单，不是客户端DTO白名单；权限/归属/金额/status等由特定Service设置，禁止批量绑定实体。",
+    "writeClass": "CONTROLLED_LIFECYCLE"
+  },
+  {
+    "table": "vi_payment_order",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "generatedColumns": [],
+    "insertColumns": [
+      "order_id",
+      "out_trade_no",
+      "transaction_id",
+      "status",
+      "total_fen",
+      "paid_fen",
+      "refund_reserved_fen",
+      "refunded_fen",
+      "paid_at",
+      "expires_at"
+    ],
+    "updateColumns": [
+      "order_id",
+      "out_trade_no",
+      "transaction_id",
+      "status",
+      "total_fen",
+      "paid_fen",
+      "refund_reserved_fen",
+      "refunded_fen",
+      "paid_at",
+      "expires_at"
+    ],
+    "notes": "这是Mapper候选列白名单，不是客户端DTO白名单；权限/归属/金额/status等由特定Service设置，禁止批量绑定实体。",
+    "writeClass": "CONTROLLED_LIFECYCLE"
+  },
+  {
+    "table": "vi_refund_order",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "generatedColumns": [],
+    "insertColumns": [
+      "case_id",
+      "review_revision",
+      "payment_id",
+      "out_refund_no",
+      "channel_refund_id",
+      "amount_fen",
+      "status",
+      "success_at",
+      "last_query_at",
+      "next_query_at"
+    ],
+    "updateColumns": [
+      "case_id",
+      "review_revision",
+      "payment_id",
+      "out_refund_no",
+      "channel_refund_id",
+      "amount_fen",
+      "status",
+      "success_at",
+      "last_query_at",
+      "next_query_at"
+    ],
+    "notes": "这是Mapper候选列白名单，不是客户端DTO白名单；权限/归属/金额/status等由特定Service设置，禁止批量绑定实体。",
+    "writeClass": "CONTROLLED_LIFECYCLE"
+  },
+  {
+    "table": "vi_channel_event",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "generatedColumns": [],
+    "insertColumns": [
+      "provider",
+      "event_key",
+      "trade_no",
+      "event_type",
+      "verified_digest",
+      "processed_at"
+    ],
+    "updateColumns": [],
+    "notes": "这是Mapper候选列白名单，不是客户端DTO白名单；权限/归属/金额/status等由特定Service设置，禁止批量绑定实体。 ｜R3:不可变历史，insert-only，updateColumns置空；更正/状态变化以追加新行表达。",
+    "writeClass": "IMMUTABLE_HISTORY"
+  },
+  {
+    "table": "vi_dispute",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "generatedColumns": [],
+    "insertColumns": [
+      "order_id",
+      "type",
+      "status",
+      "description",
+      "file_ids",
+      "handler_id",
+      "conclusion",
+      "resolved_at"
+    ],
+    "updateColumns": [
+      "order_id",
+      "type",
+      "status",
+      "description",
+      "file_ids",
+      "handler_id",
+      "conclusion",
+      "resolved_at"
+    ],
+    "notes": "这是Mapper候选列白名单，不是客户端DTO白名单；权限/归属/金额/status等由特定Service设置，禁止批量绑定实体。",
+    "writeClass": "CONTROLLED_LIFECYCLE"
+  },
+  {
+    "table": "vi_service_exception",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "generatedColumns": [],
+    "insertColumns": [
+      "order_id",
+      "type",
+      "status",
+      "description",
+      "file_ids",
+      "handler_id",
+      "resolution"
+    ],
+    "updateColumns": [
+      "order_id",
+      "type",
+      "status",
+      "description",
+      "file_ids",
+      "handler_id",
+      "resolution"
+    ],
+    "notes": "这是Mapper候选列白名单，不是客户端DTO白名单；权限/归属/金额/status等由特定Service设置，禁止批量绑定实体。",
+    "writeClass": "CONTROLLED_LIFECYCLE"
+  },
+  {
+    "table": "vi_review",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "generatedColumns": [],
+    "insertColumns": [
+      "order_id",
+      "owner_account_id",
+      "score",
+      "tags",
+      "content"
+    ],
+    "updateColumns": [
+      "order_id",
+      "owner_account_id",
+      "score",
+      "tags",
+      "content"
+    ],
+    "notes": "这是Mapper候选列白名单，不是客户端DTO白名单；权限/归属/金额/status等由特定Service设置，禁止批量绑定实体。",
+    "writeClass": "CONTROLLED_LIFECYCLE"
+  },
+  {
+    "table": "vi_penalty",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "generatedColumns": [],
+    "insertColumns": [
+      "driver_id",
+      "assignment_id",
+      "business_date",
+      "counted",
+      "round_key",
+      "penalty_type",
+      "status",
+      "reason",
+      "rule_version",
+      "effective_until",
+      "revoked_at"
+    ],
+    "updateColumns": [
+      "driver_id",
+      "assignment_id",
+      "business_date",
+      "counted",
+      "round_key",
+      "penalty_type",
+      "status",
+      "reason",
+      "rule_version",
+      "effective_until",
+      "revoked_at"
+    ],
+    "notes": "这是Mapper候选列白名单，不是客户端DTO白名单；权限/归属/金额/status等由特定Service设置，禁止批量绑定实体。",
+    "writeClass": "CONTROLLED_LIFECYCLE"
+  },
+  {
+    "table": "vi_event_log",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "generatedColumns": [],
+    "insertColumns": [
+      "order_id",
+      "aggregate_type",
+      "aggregate_id",
+      "action",
+      "actor_account_id",
+      "actor_user_id",
+      "acting_role",
+      "station_id",
+      "before_summary",
+      "after_summary",
+      "reason",
+      "actor_realm",
+      "session_id",
+      "context_version"
+    ],
+    "updateColumns": [],
+    "notes": "这是Mapper候选列白名单，不是客户端DTO白名单；权限/归属/金额/status等由特定Service设置，禁止批量绑定实体。 ｜R3:不可变历史，insert-only，updateColumns置空；更正/状态变化以追加新行表达。",
+    "writeClass": "IMMUTABLE_HISTORY"
+  },
+  {
+    "table": "vi_outbox",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "generatedColumns": [],
+    "insertColumns": [
+      "event_key",
+      "aggregate_type",
+      "aggregate_id",
+      "event_type",
+      "payload",
+      "status",
+      "attempts",
+      "next_attempt_at",
+      "lease_until"
+    ],
+    "updateColumns": [
+      "event_key",
+      "aggregate_type",
+      "aggregate_id",
+      "event_type",
+      "payload",
+      "status",
+      "attempts",
+      "next_attempt_at",
+      "lease_until"
+    ],
+    "notes": "这是Mapper候选列白名单，不是客户端DTO白名单；权限/归属/金额/status等由特定Service设置，禁止批量绑定实体。",
+    "writeClass": "CONTROLLED_LIFECYCLE"
+  },
+  {
+    "table": "vi_notification",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "generatedColumns": [],
+    "insertColumns": [
+      "account_id",
+      "role",
+      "order_id",
+      "scene",
+      "outbox_id",
+      "send_status",
+      "content",
+      "read_at"
+    ],
+    "updateColumns": [
+      "account_id",
+      "role",
+      "order_id",
+      "scene",
+      "outbox_id",
+      "send_status",
+      "content",
+      "read_at"
+    ],
+    "notes": "这是Mapper候选列白名单，不是客户端DTO白名单；权限/归属/金额/status等由特定Service设置，禁止批量绑定实体。",
+    "writeClass": "CONTROLLED_LIFECYCLE"
+  },
+  {
+    "table": "vi_idempotency",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "generatedColumns": [],
+    "insertColumns": [
+      "subject_key",
+      "action_key",
+      "request_key",
+      "request_mac",
+      "result_json",
+      "status",
+      "expires_at"
+    ],
+    "updateColumns": [
+      "subject_key",
+      "action_key",
+      "request_key",
+      "request_mac",
+      "result_json",
+      "status",
+      "expires_at"
+    ],
+    "notes": "这是Mapper候选列白名单，不是客户端DTO白名单；权限/归属/金额/status等由特定Service设置，禁止批量绑定实体。",
+    "writeClass": "CONTROLLED_LIFECYCLE"
+  },
+  {
+    "table": "vi_governance_case",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "generatedColumns": [],
+    "insertColumns": [
+      "case_type",
+      "order_id",
+      "requester_account_id",
+      "requester_user_id",
+      "status",
+      "payload_cipher",
+      "reason",
+      "reviewer_id",
+      "expires_at"
+    ],
+    "updateColumns": [
+      "case_type",
+      "order_id",
+      "requester_account_id",
+      "requester_user_id",
+      "status",
+      "payload_cipher",
+      "reason",
+      "reviewer_id",
+      "expires_at"
+    ],
+    "notes": "这是Mapper候选列白名单，不是客户端DTO白名单；权限/归属/金额/status等由特定Service设置，禁止批量绑定实体。",
+    "writeClass": "CONTROLLED_LIFECYCLE"
+  },
+  {
+    "table": "vi_owner_profile",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "generatedColumns": [],
+    "insertColumns": [
+      "account_id",
+      "service_name",
+      "service_flag",
+      "internal_remark",
+      "maintained_by"
+    ],
+    "updateColumns": [
+      "account_id",
+      "service_name",
+      "service_flag",
+      "internal_remark",
+      "maintained_by"
+    ],
+    "notes": "这是Mapper候选列白名单，不是客户端DTO白名单；权限/归属/金额/status等由特定Service设置，禁止批量绑定实体。",
+    "writeClass": "EDITABLE_DRAFT"
+  },
+  {
+    "table": "vi_aftersale_case",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "generatedColumns": [
+      "active_order"
+    ],
+    "insertColumns": [
+      "case_no",
+      "order_id",
+      "payment_id",
+      "kind",
+      "case_status",
+      "review_status",
+      "review_revision",
+      "requested_fen",
+      "approved_fen",
+      "return_state",
+      "refund_state",
+      "applicant_type",
+      "applicant_id",
+      "reason",
+      "evidence_ids",
+      "resolved_at"
+    ],
+    "updateColumns": [
+      "case_no",
+      "order_id",
+      "payment_id",
+      "kind",
+      "case_status",
+      "review_status",
+      "review_revision",
+      "requested_fen",
+      "approved_fen",
+      "return_state",
+      "refund_state",
+      "applicant_type",
+      "applicant_id",
+      "reason",
+      "evidence_ids",
+      "resolved_at"
+    ],
+    "notes": "这是Mapper候选列白名单，不是客户端DTO白名单；权限/归属/金额/status等由特定Service设置，禁止批量绑定实体。",
+    "writeClass": "CONTROLLED_LIFECYCLE"
+  },
+  {
+    "table": "vi_aftersale_review",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "generatedColumns": [],
+    "insertColumns": [
+      "case_id",
+      "revision",
+      "decision",
+      "approved_fen",
+      "observed_order_version",
+      "custody_at_review",
+      "return_required",
+      "reviewer_user_id",
+      "opinion",
+      "reviewed_at"
+    ],
+    "updateColumns": [],
+    "notes": "这是Mapper候选列白名单，不是客户端DTO白名单；权限/归属/金额/status等由特定Service设置，禁止批量绑定实体。 ｜R3:不可变历史，insert-only，updateColumns置空；更正/状态变化以追加新行表达。",
+    "writeClass": "IMMUTABLE_HISTORY"
+  },
+  {
+    "table": "vi_driver_fee_rule",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "generatedColumns": [],
+    "insertColumns": [
+      "payor_entity_id",
+      "rule_code",
+      "revision",
+      "currency",
+      "scenario",
+      "scope_json",
+      "pricing_json",
+      "status",
+      "effective_from",
+      "effective_to",
+      "created_by",
+      "approved_by",
+      "approved_at"
+    ],
+    "updateColumns": [
+      "payor_entity_id",
+      "rule_code",
+      "revision",
+      "currency",
+      "scenario",
+      "scope_json",
+      "pricing_json",
+      "status",
+      "effective_from",
+      "effective_to",
+      "created_by",
+      "approved_by",
+      "approved_at"
+    ],
+    "notes": "这是Mapper候选列白名单，不是客户端DTO白名单；权限/归属/金额/status等由特定Service设置，禁止批量绑定实体。",
+    "writeClass": "EDITABLE_DRAFT"
+  },
+  {
+    "table": "vi_driver_fee_ledger",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "generatedColumns": [],
+    "insertColumns": [
+      "driver_id",
+      "payor_entity_id",
+      "currency",
+      "assignment_id",
+      "order_id",
+      "source_event_key",
+      "entry_kind",
+      "service_ended_at",
+      "pricing_status",
+      "fee_rule_id",
+      "rule_snapshot",
+      "amount_fen",
+      "fee_breakdown",
+      "source_entry_id",
+      "verified_by",
+      "included_statement_id"
+    ],
+    "updateColumns": [],
+    "notes": "这是Mapper候选列白名单，不是客户端DTO白名单；权限/归属/金额/status等由特定Service设置，禁止批量绑定实体。 ｜R3:不可变历史，insert-only，updateColumns置空；更正/状态变化以追加新行表达。",
+    "writeClass": "IMMUTABLE_HISTORY"
+  },
+  {
+    "table": "vi_driver_statement",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "generatedColumns": [],
+    "insertColumns": [
+      "statement_no",
+      "driver_id",
+      "payor_entity_id",
+      "currency",
+      "service_range_start",
+      "service_range_end_exclusive",
+      "cutoff_at",
+      "status",
+      "revision",
+      "amount_fen",
+      "snapshot_hash",
+      "issued_by",
+      "sent_at",
+      "confirmed_account_id",
+      "confirmed_at",
+      "confirmation_revision",
+      "voided_at",
+      "known_amount_fen",
+      "unpriced_count",
+      "manual_price_count",
+      "review_status",
+      "review_revision",
+      "published_revision",
+      "published_hash",
+      "submitted_by",
+      "selection_mode",
+      "filter_snapshot",
+      "active_entry_count"
+    ],
+    "updateColumns": [
+      "statement_no",
+      "driver_id",
+      "payor_entity_id",
+      "currency",
+      "service_range_start",
+      "service_range_end_exclusive",
+      "cutoff_at",
+      "status",
+      "revision",
+      "amount_fen",
+      "snapshot_hash",
+      "issued_by",
+      "sent_at",
+      "confirmed_account_id",
+      "confirmed_at",
+      "confirmation_revision",
+      "voided_at",
+      "known_amount_fen",
+      "unpriced_count",
+      "manual_price_count",
+      "review_status",
+      "review_revision",
+      "published_revision",
+      "published_hash",
+      "submitted_by",
+      "selection_mode",
+      "filter_snapshot",
+      "active_entry_count"
+    ],
+    "notes": "这是Mapper候选列白名单，不是客户端DTO白名单；权限/归属/金额/status等由特定Service设置，禁止批量绑定实体。",
+    "writeClass": "CONTROLLED_LIFECYCLE"
+  },
+  {
+    "table": "vi_driver_statement_line",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "generatedColumns": [],
+    "insertColumns": [
+      "statement_id",
+      "statement_revision",
+      "ledger_id",
+      "assignment_id",
+      "amount_fen",
+      "snapshot",
+      "line_hash",
+      "reference_amount_fen",
+      "pricing_source",
+      "manual_changed",
+      "price_reason",
+      "last_editor_user_id",
+      "source_version",
+      "is_active",
+      "removed_at",
+      "removed_by",
+      "remove_reason"
+    ],
+    "updateColumns": [
+      "statement_id",
+      "statement_revision",
+      "ledger_id",
+      "assignment_id",
+      "amount_fen",
+      "snapshot",
+      "line_hash",
+      "reference_amount_fen",
+      "pricing_source",
+      "manual_changed",
+      "price_reason",
+      "last_editor_user_id",
+      "source_version",
+      "is_active",
+      "removed_at",
+      "removed_by",
+      "remove_reason"
+    ],
+    "notes": "这是Mapper候选列白名单，不是客户端DTO白名单；权限/归属/金额/status等由特定Service设置，禁止批量绑定实体。",
+    "writeClass": "CONTROLLED_LIFECYCLE"
+  },
+  {
+    "table": "vi_driver_ledger_allocation",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "generatedColumns": [
+      "active_ledger"
+    ],
+    "insertColumns": [
+      "ledger_id",
+      "statement_id",
+      "released_at",
+      "release_reason",
+      "released_by"
+    ],
+    "updateColumns": [
+      "ledger_id",
+      "statement_id",
+      "released_at",
+      "release_reason",
+      "released_by"
+    ],
+    "notes": "这是Mapper候选列白名单，不是客户端DTO白名单；权限/归属/金额/status等由特定Service设置，禁止批量绑定实体。",
+    "writeClass": "CONTROLLED_LIFECYCLE"
+  },
+  {
+    "table": "vi_driver_statement_difference",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "generatedColumns": [],
+    "insertColumns": [
+      "statement_id",
+      "statement_revision",
+      "driver_account_id",
+      "entry_ids",
+      "description",
+      "evidence_ids",
+      "status",
+      "resolution",
+      "approved_adjustment_ids",
+      "resolved_by",
+      "resolved_at"
+    ],
+    "updateColumns": [
+      "statement_id",
+      "statement_revision",
+      "driver_account_id",
+      "entry_ids",
+      "description",
+      "evidence_ids",
+      "status",
+      "resolution",
+      "approved_adjustment_ids",
+      "resolved_by",
+      "resolved_at"
+    ],
+    "notes": "这是Mapper候选列白名单，不是客户端DTO白名单；权限/归属/金额/status等由特定Service设置，禁止批量绑定实体。",
+    "writeClass": "CONTROLLED_LIFECYCLE"
+  },
+  {
+    "table": "vi_driver_fee_adjustment",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "generatedColumns": [],
+    "insertColumns": [
+      "source_entry_id",
+      "driver_id",
+      "payor_entity_id",
+      "amount_fen",
+      "reason",
+      "evidence_ids",
+      "status",
+      "created_by",
+      "reviewer_id",
+      "opinion",
+      "generated_ledger_id"
+    ],
+    "updateColumns": [
+      "source_entry_id",
+      "driver_id",
+      "payor_entity_id",
+      "amount_fen",
+      "reason",
+      "evidence_ids",
+      "status",
+      "created_by",
+      "reviewer_id",
+      "opinion",
+      "generated_ledger_id"
+    ],
+    "notes": "这是Mapper候选列白名单，不是客户端DTO白名单；权限/归属/金额/status等由特定Service设置，禁止批量绑定实体。",
+    "writeClass": "CONTROLLED_LIFECYCLE"
+  },
+  {
+    "table": "vi_driver_external_payment",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "generatedColumns": [],
+    "insertColumns": [
+      "statement_id",
+      "driver_id",
+      "payor_entity_id",
+      "amount_fen",
+      "external_reference_cipher",
+      "reference_lookup",
+      "paid_at",
+      "evidence_ids",
+      "status",
+      "registered_by",
+      "verified_by",
+      "verified_at",
+      "reason",
+      "reversal_of",
+      "statement_revision"
+    ],
+    "updateColumns": [
+      "statement_id",
+      "driver_id",
+      "payor_entity_id",
+      "amount_fen",
+      "external_reference_cipher",
+      "reference_lookup",
+      "paid_at",
+      "evidence_ids",
+      "status",
+      "registered_by",
+      "verified_by",
+      "verified_at",
+      "reason",
+      "reversal_of",
+      "statement_revision"
+    ],
+    "notes": "这是Mapper候选列白名单，不是客户端DTO白名单；权限/归属/金额/status等由特定Service设置，禁止批量绑定实体。",
+    "writeClass": "CONTROLLED_LIFECYCLE"
+  },
+  {
+    "table": "vi_account_security",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "generatedColumns": [],
+    "insertColumns": [
+      "account_id",
+      "session_epoch",
+      "permission_version",
+      "security_status",
+      "changed_at"
+    ],
+    "updateColumns": [
+      "session_epoch",
+      "permission_version",
+      "security_status",
+      "changed_at"
+    ],
+    "notes": "这是Mapper候选列白名单，不是客户端DTO白名单；权限/归属/金额/status等由特定Service设置，禁止批量绑定实体。 ｜R3:受控生命周期，仅允许受控更新列(角色切换/消费/撤销/轮换/代际)，非全列可写。",
+    "writeClass": "CONTROLLED_LIFECYCLE"
+  },
+  {
+    "table": "vi_session",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "generatedColumns": [],
+    "insertColumns": [
+      "account_id",
+      "app_id",
+      "status",
+      "session_epoch",
+      "context_version",
+      "active_role",
+      "station_id",
+      "linked_sys_user_id",
+      "absolute_expires_at",
+      "revoked_at",
+      "device_label"
+    ],
+    "updateColumns": [
+      "status",
+      "context_version",
+      "active_role",
+      "station_id",
+      "revoked_at",
+      "linked_sys_user_id"
+    ],
+    "notes": "这是Mapper候选列白名单，不是客户端DTO白名单；权限/归属/金额/status等由特定Service设置，禁止批量绑定实体。 ｜R3:受控生命周期，仅允许受控更新列(角色切换/消费/撤销/轮换/代际)，非全列可写。",
+    "writeClass": "CONTROLLED_LIFECYCLE"
+  },
+  {
+    "table": "vi_session_token",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "generatedColumns": [],
+    "insertColumns": [
+      "session_id",
+      "token_hash",
+      "token_type",
+      "generation",
+      "context_version",
+      "parent_token_id",
+      "replaced_by_token_id",
+      "expires_at",
+      "consumed_at",
+      "revoked_at"
+    ],
+    "updateColumns": [
+      "consumed_at",
+      "revoked_at",
+      "replaced_by_token_id"
+    ],
+    "notes": "这是Mapper候选列白名单，不是客户端DTO白名单；权限/归属/金额/status等由特定Service设置，禁止批量绑定实体。 ｜R3:受控生命周期，仅允许受控更新列(角色切换/消费/撤销/轮换/代际)，非全列可写。",
+    "writeClass": "CONTROLLED_LIFECYCLE"
+  },
+  {
+    "table": "vi_driver_price_change",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "generatedColumns": [],
+    "insertColumns": [
+      "statement_id",
+      "statement_line_id",
+      "ledger_id",
+      "revision",
+      "old_amount_fen",
+      "new_amount_fen",
+      "reason",
+      "evidence_file_ids",
+      "actor_user_id",
+      "actor_account_id",
+      "idempotency_key"
+    ],
+    "updateColumns": [],
+    "notes": "这是Mapper候选列白名单，不是客户端DTO白名单；权限/归属/金额/status等由特定Service设置，禁止批量绑定实体。 ｜R3:不可变历史，insert-only，updateColumns置空；更正/状态变化以追加新行表达。",
+    "writeClass": "IMMUTABLE_HISTORY"
+  },
+  {
+    "table": "vi_driver_statement_review",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "generatedColumns": [
+      "active_statement"
+    ],
+    "insertColumns": [
+      "statement_id",
+      "revision",
+      "snapshot_hash",
+      "snapshot_json",
+      "contributor_ids",
+      "submitted_by",
+      "reviewed_by",
+      "status",
+      "opinion",
+      "decided_at"
+    ],
+    "updateColumns": [
+      "statement_id",
+      "revision",
+      "snapshot_hash",
+      "snapshot_json",
+      "contributor_ids",
+      "submitted_by",
+      "reviewed_by",
+      "status",
+      "opinion",
+      "decided_at"
+    ],
+    "notes": "这是Mapper候选列白名单，不是客户端DTO白名单；权限/归属/金额/status等由特定Service设置，禁止批量绑定实体。",
+    "writeClass": "CONTROLLED_LIFECYCLE"
+  },
+  {
+    "table": "vi_driver_statement_snapshot",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "generatedColumns": [],
+    "insertColumns": [
+      "statement_id",
+      "revision",
+      "snapshot_hash",
+      "snapshot_json",
+      "amount_fen",
+      "published_by",
+      "public_snapshot_json",
+      "public_snapshot_hash",
+      "published_at"
+    ],
+    "updateColumns": [],
+    "notes": "这是Mapper候选列白名单，不是客户端DTO白名单；权限/归属/金额/status等由特定Service设置，禁止批量绑定实体。 ｜R3:不可变历史，insert-only，updateColumns置空；更正/状态变化以追加新行表达。",
+    "writeClass": "IMMUTABLE_HISTORY"
+  },
+  {
+    "table": "vi_driver_statement_membership_change",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "generatedColumns": [],
+    "insertColumns": [
+      "statement_id",
+      "ledger_id",
+      "line_id",
+      "action",
+      "revision_before",
+      "revision_after",
+      "actor_user_id",
+      "reason",
+      "snapshot_json"
+    ],
+    "updateColumns": [],
+    "notes": "这是Mapper候选列白名单，不是客户端DTO白名单；权限/归属/金额/status等由特定Service设置，禁止批量绑定实体。 ｜R3:不可变历史，insert-only，updateColumns置空；更正/状态变化以追加新行表达。",
+    "writeClass": "IMMUTABLE_HISTORY"
+  },
+  {
+    "table": "vi_penalty_appeal",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "generatedColumns": [
+      "active_penalty"
+    ],
+    "insertColumns": [
+      "penalty_id",
+      "driver_id",
+      "status",
+      "reason",
+      "evidence_file_ids",
+      "submitted_at",
+      "reviewer_user_id",
+      "reviewed_at",
+      "public_opinion"
+    ],
+    "updateColumns": [
+      "penalty_id",
+      "driver_id",
+      "status",
+      "reason",
+      "evidence_file_ids",
+      "submitted_at",
+      "reviewer_user_id",
+      "reviewed_at",
+      "public_opinion"
+    ],
+    "notes": "这是Mapper候选列白名单，不是客户端DTO白名单；权限/归属/金额/status等由特定Service设置，禁止批量绑定实体。",
+    "writeClass": "CONTROLLED_LIFECYCLE"
+  },
+  {
+    "table": "vi_employee_binding_request",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "generatedColumns": [],
+    "insertColumns": [
+      "account_id",
+      "request_code",
+      "status",
+      "request_reason",
+      "expires_at"
+    ],
+    "updateColumns": [
+      "account_id",
+      "request_code",
+      "status",
+      "request_reason",
+      "expires_at"
+    ],
+    "notes": "这是Mapper候选列白名单，不是客户端DTO白名单；权限/归属/金额/status等由特定Service设置，禁止批量绑定实体。",
+    "writeClass": "CONTROLLED_LIFECYCLE"
+  },
+  {
+    "table": "vi_employee_binding_credential",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "generatedColumns": [],
+    "insertColumns": [
+      "request_id",
+      "target_account_id",
+      "target_sys_user_id",
+      "token_hash",
+      "status",
+      "issued_by_user_id",
+      "expires_at",
+      "consumed_at",
+      "reason"
+    ],
+    "updateColumns": [
+      "request_id",
+      "target_account_id",
+      "target_sys_user_id",
+      "token_hash",
+      "status",
+      "issued_by_user_id",
+      "expires_at",
+      "consumed_at",
+      "reason"
+    ],
+    "notes": "这是Mapper候选列白名单，不是客户端DTO白名单；权限/归属/金额/status等由特定Service设置，禁止批量绑定实体。",
+    "writeClass": "CONTROLLED_LIFECYCLE"
+  },
+  {
+    "table": "vi_training_course",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "generatedColumns": [],
+    "insertColumns": [
+      "course_key",
+      "course_version",
+      "title",
+      "description",
+      "media_file_id",
+      "required_duration_seconds",
+      "pass_score",
+      "attempt_time_limit_seconds",
+      "status",
+      "published_at",
+      "published_by_user_id"
+    ],
+    "updateColumns": [
+      "course_key",
+      "course_version",
+      "title",
+      "description",
+      "media_file_id",
+      "required_duration_seconds",
+      "pass_score",
+      "attempt_time_limit_seconds",
+      "status",
+      "published_at",
+      "published_by_user_id"
+    ],
+    "notes": "这是Mapper候选列白名单，不是客户端DTO白名单；权限/归属/金额/status等由特定Service设置，禁止批量绑定实体。",
+    "writeClass": "CONTROLLED_LIFECYCLE"
+  },
+  {
+    "table": "vi_training_question",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "generatedColumns": [],
+    "insertColumns": [
+      "training_id",
+      "question_code",
+      "question_type",
+      "prompt",
+      "options_json",
+      "correct_option_codes",
+      "sort_no"
+    ],
+    "updateColumns": [
+      "training_id",
+      "question_code",
+      "question_type",
+      "prompt",
+      "options_json",
+      "correct_option_codes",
+      "sort_no"
+    ],
+    "notes": "这是Mapper候选列白名单，不是客户端DTO白名单；权限/归属/金额/status等由特定Service设置，禁止批量绑定实体。",
+    "writeClass": "CONTROLLED_LIFECYCLE"
+  },
+  {
+    "table": "vi_training_progress",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "generatedColumns": [],
+    "insertColumns": [
+      "application_id",
+      "driver_id",
+      "training_id",
+      "verified_duration_seconds",
+      "status",
+      "last_position_seconds"
+    ],
+    "updateColumns": [
+      "application_id",
+      "driver_id",
+      "training_id",
+      "verified_duration_seconds",
+      "status",
+      "last_position_seconds"
+    ],
+    "notes": "这是Mapper候选列白名单，不是客户端DTO白名单；权限/归属/金额/status等由特定Service设置，禁止批量绑定实体。",
+    "writeClass": "CONTROLLED_LIFECYCLE"
+  },
+  {
+    "table": "vi_training_playback",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "generatedColumns": [],
+    "insertColumns": [
+      "progress_id",
+      "session_id",
+      "started_at",
+      "expires_at",
+      "last_reported_at",
+      "last_sequence"
+    ],
+    "updateColumns": [
+      "progress_id",
+      "session_id",
+      "started_at",
+      "expires_at",
+      "last_reported_at",
+      "last_sequence"
+    ],
+    "notes": "这是Mapper候选列白名单，不是客户端DTO白名单；权限/归属/金额/status等由特定Service设置，禁止批量绑定实体。",
+    "writeClass": "CONTROLLED_LIFECYCLE"
+  },
+  {
+    "table": "vi_training_attempt",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "generatedColumns": [
+      "active_attempt"
+    ],
+    "insertColumns": [
+      "application_id",
+      "driver_id",
+      "training_id",
+      "attempt_no",
+      "status",
+      "question_snapshot",
+      "answer_snapshot",
+      "score",
+      "started_at",
+      "expires_at",
+      "submitted_at"
+    ],
+    "updateColumns": [
+      "application_id",
+      "driver_id",
+      "training_id",
+      "attempt_no",
+      "status",
+      "question_snapshot",
+      "answer_snapshot",
+      "score",
+      "started_at",
+      "expires_at",
+      "submitted_at"
+    ],
+    "notes": "这是Mapper候选列白名单，不是客户端DTO白名单；权限/归属/金额/status等由特定Service设置，禁止批量绑定实体。",
+    "writeClass": "CONTROLLED_LIFECYCLE"
+  },
+  {
+    "table": "vi_face_session",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "generatedColumns": [],
+    "insertColumns": [
+      "application_id",
+      "verification_id",
+      "account_id",
+      "status",
+      "launch_mode",
+      "launch_payload_cipher",
+      "consent_version",
+      "expires_at",
+      "result_available",
+      "failure_code"
+    ],
+    "updateColumns": [
+      "application_id",
+      "verification_id",
+      "account_id",
+      "status",
+      "launch_mode",
+      "launch_payload_cipher",
+      "consent_version",
+      "expires_at",
+      "result_available",
+      "failure_code"
+    ],
+    "notes": "这是Mapper候选列白名单，不是客户端DTO白名单；权限/归属/金额/status等由特定Service设置，禁止批量绑定实体。",
+    "writeClass": "CONTROLLED_LIFECYCLE"
+  }
+]

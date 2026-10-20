@@ -1,0 +1,39 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TASK</title><style>body{font:16px/1.75 -apple-system,BlinkMacSystemFont,"Microsoft YaHei",sans-serif;color:#202632;margin:0;background:#f6f7f9}header{padding:14px 24px;background:white;border-bottom:1px solid #ddd}main{max-width:1120px;margin:24px auto;padding:30px;background:white}h1{font-size:30px}h2{margin-top:36px}a{color:#0661bd}table{border-collapse:collapse;width:100%;display:block;overflow:auto;font-size:14px}td,th{border:1px solid #dde2ea;padding:10px;vertical-align:top}th{background:#f1f5fb}pre{padding:15px;background:#f2f4f7;overflow:auto}img{max-width:100%;height:auto}blockquote{padding:10px 20px;border-left:3px solid #2571be;background:#f4f8fc}@media(max-width:700px){main{padding:15px;margin:8px}h1{font-size:25px}}</style></head><body><header><a href="../../../00_开始.html">V6.1 完整资料</a>　<a href="../../../02_UI/index.html">交互原型</a>　T3.1</header><main><h1>N01 · 站内消息、订阅与重试</h1>
+<p>阶段：M4；主责任域：notification；前置：E06, I04。</p>
+<h2>本任务交付</h2>
+<ul>
+<li>按角色/站点的待办和未读、订阅适配、通知模板与任务退避</li>
+</ul>
+<h2>必测失败与并发</h2>
+<ul>
+<li>用户拒绝订阅不阻业务</li>
+<li>推送提示只做恢复查询不当事实</li>
+</ul>
+<h2>精确输入</h2>
+<p>主契约：<code>04_接口/openapi_V6.0.yaml</code>；本目录切片是自动派生，不单独修改。</p>
+<p>接口：API_149_get, API_150_put, API_161_get, API_162_post</p>
+<p>画板：U04, S19, B23, B35</p>
+<p>建模对象：vi_notification</p>
+<p>源验收：TC-127, TC-128, TC-129, TC-130, TC-131, TC-132, TC-133, TC-134, TC-135, TC-136, TC-137, TC-138, TC-139, TC-140, TC-141, TC-142</p>
+<h2>代码落位</h2>
+<p><code>xinyi-rongli/src/main/java/com/xinyi/rongli/notification/</code><br />
+<code>xinyi-rongli/src/main/resources/mapper/rongli/notification/</code><br />
+<code>xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/notification/</code><br />
+<code>xinyi-ui/src/views/rongli/notification/</code><br />
+<code>xinyi-ui/src/api/rongli/notification.ts</code><br />
+<code>xinyi-miniapp/src/features/notification/</code></p>
+<p>实际模块如已存在其他路径，以E00记录为准；不得并行建第二套vehicle/rongli模块。每一个涉及视图均实现PC或uni-app真实接口，不复制原型内存模型。</p>
+<h2>验证</h2>
+<pre><code class="language-text">mvn -pl xinyi-admin -am -Pvi-it -Dit.test=N01NotificationIT verify
+npm --prefix xinyi-ui run build:prod
+npm --prefix xinyi-miniapp run build:mp-weixin
+</code></pre>
+<p>上述任务级IT类由本任务实现；不得创建空类/忽略失败来通过。执行前加载 .env.vi.local 和 vi-it 配置，公共启动方式见13_真实集成测试。</p>
+<ul>
+<li>后端业务必须真实HTTP→Service→Mapper→MySQL，并验证持久化、失败与权限边界。</li>
+<li>无测试、跳过、固定Ack、原型内存交互均不能作为业务完成。</li>
+<li>保存具体代码路径、原始报告、测试数与独立复核；依赖缺失只阻塞相应验证。</li>
+</ul>
+<h2>完成后的执行</h2>
+<p>把状态和证据写入工作区任务账本；调用taskctl next选择依赖就绪项，不停留于“建议下一步”。运行预算耗尽时更新RESUME.md，不丢弃修改。</p>
+</main></body></html>

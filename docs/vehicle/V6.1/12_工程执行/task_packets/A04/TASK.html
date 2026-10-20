@@ -1,0 +1,40 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TASK</title><style>body{font:16px/1.75 -apple-system,BlinkMacSystemFont,"Microsoft YaHei",sans-serif;color:#202632;margin:0;background:#f6f7f9}header{padding:14px 24px;background:white;border-bottom:1px solid #ddd}main{max-width:1120px;margin:24px auto;padding:30px;background:white}h1{font-size:30px}h2{margin-top:36px}a{color:#0661bd}table{border-collapse:collapse;width:100%;display:block;overflow:auto;font-size:14px}td,th{border:1px solid #dde2ea;padding:10px;vertical-align:top}th{background:#f1f5fb}pre{padding:15px;background:#f2f4f7;overflow:auto}img{max-width:100%;height:auto}blockquote{padding:10px 20px;border-left:3px solid #2571be;background:#f4f8fc}@media(max-width:700px){main{padding:15px;margin:8px}h1{font-size:25px}}</style></head><body><header><a href="../../../00_开始.html">V6.1 完整资料</a>　<a href="../../../02_UI/index.html">交互原型</a>　T3.1</header><main><h1>A04 · 代驾员档案与接单控制</h1>
+<p>阶段：M1；主责任域：driver；前置：I06, E05。</p>
+<h2>本任务交付</h2>
+<ul>
+<li>代驾列表/资格/承接记录/备注/暂停新邀约</li>
+<li>个人对账入口</li>
+</ul>
+<h2>必测失败与并发</h2>
+<ul>
+<li>关闭新增承接不解除持车责任</li>
+<li>自身费用不可自审</li>
+</ul>
+<h2>精确输入</h2>
+<p>主契约：<code>04_接口/openapi_V6.0.yaml</code>；本目录切片是自动派生，不单独修改。</p>
+<p>接口：V4_get_api_admin_drivers, API_126_post, V4_get_api_admin_drivers__driverId, V4_patch_api_admin_drivers__driverId, V4_get_api_admin_drivers__driverId__assignments</p>
+<p>画板：D27, S15, B28, B28-detail, B28-edit, B28-empty, B28-error, B28-forbidden</p>
+<p>建模对象：复用前置任务表；不因此新增无用表</p>
+<p>源验收：工程验收见本卡负向项与done_when</p>
+<h2>代码落位</h2>
+<p><code>xinyi-rongli/src/main/java/com/xinyi/rongli/driver/</code><br />
+<code>xinyi-rongli/src/main/resources/mapper/rongli/driver/</code><br />
+<code>xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/driver/</code><br />
+<code>xinyi-ui/src/views/rongli/driver/</code><br />
+<code>xinyi-ui/src/api/rongli/driver.ts</code><br />
+<code>xinyi-miniapp/src/features/driver/</code></p>
+<p>实际模块如已存在其他路径，以E00记录为准；不得并行建第二套vehicle/rongli模块。每一个涉及视图均实现PC或uni-app真实接口，不复制原型内存模型。</p>
+<h2>验证</h2>
+<pre><code class="language-text">mvn -pl xinyi-admin -am -Pvi-it -Dit.test=A04DriverIT verify
+npm --prefix xinyi-ui run build:prod
+npm --prefix xinyi-miniapp run build:mp-weixin
+</code></pre>
+<p>上述任务级IT类由本任务实现；不得创建空类/忽略失败来通过。执行前加载 .env.vi.local 和 vi-it 配置，公共启动方式见13_真实集成测试。</p>
+<ul>
+<li>后端业务必须真实HTTP→Service→Mapper→MySQL，并验证持久化、失败与权限边界。</li>
+<li>无测试、跳过、固定Ack、原型内存交互均不能作为业务完成。</li>
+<li>保存具体代码路径、原始报告、测试数与独立复核；依赖缺失只阻塞相应验证。</li>
+</ul>
+<h2>完成后的执行</h2>
+<p>把状态和证据写入工作区任务账本；调用taskctl next选择依赖就绪项，不停留于“建议下一步”。运行预算耗尽时更新RESUME.md，不丢弃修改。</p>
+</main></body></html>

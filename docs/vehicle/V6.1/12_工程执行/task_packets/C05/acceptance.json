@@ -1,0 +1,28 @@
+[
+  {
+    "id": "TC-169",
+    "priority": "P0",
+    "module": "代驾费用",
+    "flow": "F34",
+    "title": "规则版本不追改",
+    "given": "V2费用已形成",
+    "when": "发布V3",
+    "then": "旧条目仍V2；缺价逐条核价有依据",
+    "status": "NOT_RUN",
+    "evidence": "",
+    "origin": "V6.0新业务完整验收规格；未绑定真实Step实现前不是自动化测试结果"
+  },
+  {
+    "id": "TC-170",
+    "priority": "P0",
+    "module": "代驾费用",
+    "flow": "F34",
+    "title": "路线与仪表分开",
+    "given": "仪表增加异常",
+    "when": "计费",
+    "then": "使用约定路线快照，不自动报酬加价",
+    "status": "NOT_RUN",
+    "evidence": "",
+    "origin": "V6.0新业务完整验收规格；未绑定真实Step实现前不是自动化测试结果"
+  }
+]

@@ -1,0 +1,184 @@
+[
+  {
+    "name": "vi_refund_order",
+    "comment": "稳定退款单及渠道执行",
+    "cols": [
+      [
+        "id",
+        "BIGINT NOT NULL AUTO_INCREMENT",
+        "数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串"
+      ],
+      [
+        "case_id",
+        "BIGINT NOT NULL",
+        "关联唯一统一售后申请"
+      ],
+      [
+        "review_revision",
+        "INT NOT NULL",
+        "批准决定版本，金额变更必须新版本审核"
+      ],
+      [
+        "payment_id",
+        "BIGINT NOT NULL",
+        "支付单"
+      ],
+      [
+        "out_refund_no",
+        "VARCHAR(64) NOT NULL",
+        "幂等商户退款号"
+      ],
+      [
+        "channel_refund_id",
+        "VARCHAR(64)",
+        "渠道退款ID"
+      ],
+      [
+        "amount_fen",
+        "BIGINT NOT NULL",
+        "金额分"
+      ],
+      [
+        "status",
+        "VARCHAR(24) NOT NULL",
+        "ChannelRefundStatus: CREATED,PROCESSING,SUCCESS,CLOSED,ABNORMAL,UNKNOWN"
+      ],
+      [
+        "success_at",
+        "DATETIME(3)",
+        "只有SUCCESS存在"
+      ],
+      [
+        "last_query_at",
+        "DATETIME(3)",
+        "查单"
+      ],
+      [
+        "next_query_at",
+        "DATETIME(3)",
+        "退避后查单"
+      ],
+      [
+        "created_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "创建时间，统一UTC"
+      ],
+      [
+        "updated_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "UTC更新时间；Mapper每次修改显式SET updated_at=UTC_TIMESTAMP(3)，不依赖连接时区"
+      ],
+      [
+        "version",
+        "BIGINT NOT NULL DEFAULT 0",
+        "乐观锁版本"
+      ]
+    ],
+    "indexes": [
+      "UNIQUE KEY uk_case_review (case_id,review_revision)",
+      "UNIQUE KEY uk_refund_no (out_refund_no)",
+      "KEY ix_query (status,next_query_at)",
+      "CONSTRAINT ck_refund_amount CHECK (amount_fen>0)"
+    ],
+    "rule": "受理≠成功；UNKNOWN先查，不换号盲重试",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "engine": "InnoDB",
+    "collation": "utf8mb4_0900_ai_ci",
+    "columnRules": {
+      "id": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "case_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "review_revision": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "payment_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "out_refund_no": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "channel_refund_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "amount_fen": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "status": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false,
+        "enumRef": "ChannelRefundStatus"
+      },
+      "success_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "last_query_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "next_query_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "created_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "updated_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "version": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      }
+    },
+    "checks": [
+      "CONSTRAINT ck_66_8132f268f5fd CHECK (`status` IN ('CREATED','PROCESSING','SUCCESS','CLOSED','ABNORMAL','UNKNOWN'))",
+      "CONSTRAINT ck_ver_refund_order CHECK (version >= 0)"
+    ]
+  }
+]

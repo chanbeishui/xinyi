@@ -1,0 +1,15 @@
+// Apply ONLY to explicit vi DATETIME fields in resultMap/parameter mapping.
+// This snippet requires MyBatis and the target JDBC driver; NOT compiled in this package validation.
+import java.sql.*;
+import java.time.*;
+import org.apache.ibatis.type.BaseTypeHandler;
+import org.apache.ibatis.type.JdbcType;
+public final class ViUtcInstantTypeHandler extends BaseTypeHandler<Instant> {
+    @Override public void setNonNullParameter(PreparedStatement ps,int i,Instant value,JdbcType jdbcType) throws SQLException {
+        ps.setObject(i,LocalDateTime.ofInstant(value,ZoneOffset.UTC),Types.TIMESTAMP);
+    }
+    @Override public Instant getNullableResult(ResultSet rs,String name) throws SQLException { return convert(rs.getObject(name,LocalDateTime.class)); }
+    @Override public Instant getNullableResult(ResultSet rs,int index) throws SQLException { return convert(rs.getObject(index,LocalDateTime.class)); }
+    @Override public Instant getNullableResult(CallableStatement cs,int index) throws SQLException { return convert(cs.getObject(index,LocalDateTime.class)); }
+    private Instant convert(LocalDateTime value) { return value==null?null:value.toInstant(ZoneOffset.UTC); }
+}

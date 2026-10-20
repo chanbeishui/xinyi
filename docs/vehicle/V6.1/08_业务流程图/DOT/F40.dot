@@ -1,0 +1,29 @@
+digraph F40 {
+graph [rankdir=TB, bgcolor="white", pad="0.35", nodesep="0.3", ranksep="0.38", fontname="Noto Sans CJK SC", fontsize=18, labelloc=t, label="F40 个人未结清、历史账单与付款投影"];
+node [shape=box, style="rounded,filled", fillcolor="#F3F6FA", color="#CFD6E0", fontname="Noto Sans CJK SC", fontsize=12, margin="0.15,0.10"];
+edge [color="#74849A", fontname="Noto Sans CJK SC", fontsize=10];
+"n1" [label="授权主体下的真实服务与费用"];
+"n2" [label="已有有效账单分配？",shape=diamond,fillcolor="#EEF4FF"];
+"n3" [label="待对账｜可以勾选\n未定价另显示待核价"];
+"n4" [label="显示关联账单与当前核对阶段"];
+"n5" [label="账单已确认？",shape=diamond,fillcolor="#EEF4FF"];
+"n6" [label="整理中/待内部复核/待代驾确认\n不可重复组单"];
+"n7" [label="读取已核实付款与待核实预留"];
+"n8" [label="0元或全部已核实付清？",shape=diamond,fillcolor="#EEF4FF"];
+"n9" [label="保留未结清｜待付款/部分付款\n不按服务行分摊"];
+"n10" [label="默认未结清列表隐藏\n历史账单和付款记录仍可查"];
+"n11" [label="小程序只投影本人服务/已发布金额\n不暴露草稿或银行敏感凭证"];
+"n1" -> "n2" [label=""];
+"n2" -> "n3" [label="否"];
+"n2" -> "n4" [label="是"];
+"n4" -> "n5" [label=""];
+"n5" -> "n6" [label="否"];
+"n5" -> "n7" [label="是"];
+"n7" -> "n8" [label=""];
+"n8" -> "n9" [label="否"];
+"n8" -> "n10" [label="是"];
+"n3" -> "n11" [label="本人视角"];
+"n6" -> "n11" [label="仅摘要"];
+"n9" -> "n11" [label="本人视角"];
+"n10" -> "n11" [label="历史"];
+}

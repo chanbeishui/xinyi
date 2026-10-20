@@ -1,0 +1,375 @@
+[
+  {
+    "name": "vi_penalty",
+    "comment": "普通取消计次与轮转处罚",
+    "cols": [
+      [
+        "id",
+        "BIGINT NOT NULL AUTO_INCREMENT",
+        "数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串"
+      ],
+      [
+        "driver_id",
+        "BIGINT NOT NULL",
+        "司机"
+      ],
+      [
+        "assignment_id",
+        "BIGINT NOT NULL",
+        "取消承接"
+      ],
+      [
+        "business_date",
+        "DATE NOT NULL",
+        "北京时间自然日"
+      ],
+      [
+        "counted",
+        "TINYINT NOT NULL DEFAULT 1",
+        "审核后是否计入"
+      ],
+      [
+        "round_key",
+        "VARCHAR(64)",
+        "恢复轮次：P01评审"
+      ],
+      [
+        "penalty_type",
+        "VARCHAR(24) NOT NULL",
+        "PenaltyType: SKIP_ROUND,STOP_TODAY"
+      ],
+      [
+        "status",
+        "VARCHAR(24) NOT NULL DEFAULT 'ACTIVE'",
+        "PenaltyStatus: ACTIVE,EXPIRED,REVOKED"
+      ],
+      [
+        "reason",
+        "VARCHAR(1000) NOT NULL",
+        "处罚依据，对本人可读"
+      ],
+      [
+        "rule_version",
+        "VARCHAR(64) NOT NULL",
+        "实际适用轮转及计次规则版本"
+      ],
+      [
+        "effective_until",
+        "DATETIME(3) NULL",
+        "明确时刻；轮转型另用round_key"
+      ],
+      [
+        "revoked_at",
+        "DATETIME(3) NULL",
+        "通过申诉撤销时刻"
+      ],
+      [
+        "created_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "创建时间，统一UTC"
+      ],
+      [
+        "updated_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "UTC更新时间；Mapper每次修改显式SET updated_at=UTC_TIMESTAMP(3)，不依赖连接时区"
+      ],
+      [
+        "version",
+        "BIGINT NOT NULL DEFAULT 0",
+        "乐观锁版本"
+      ]
+    ],
+    "indexes": [
+      "UNIQUE KEY uk_assignment (assignment_id)",
+      "KEY ix_day (driver_id,business_date,counted)"
+    ],
+    "rule": "普通规则不使用事故7/30天处罚",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "engine": "InnoDB",
+    "collation": "utf8mb4_0900_ai_ci",
+    "columnRules": {
+      "id": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "driver_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "assignment_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "business_date": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "counted": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "round_key": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "penalty_type": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false,
+        "enumRef": "PenaltyType"
+      },
+      "status": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false,
+        "enumRef": "PenaltyStatus"
+      },
+      "reason": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "rule_version": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "effective_until": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "revoked_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "created_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "updated_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "version": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      }
+    },
+    "checks": [
+      "CONSTRAINT ck_66_04646c41d887 CHECK (`penalty_type` IN ('SKIP_ROUND','STOP_TODAY'))",
+      "CONSTRAINT ck_66_cdebbbec3ff7 CHECK (`status` IN ('ACTIVE','EXPIRED','REVOKED'))",
+      "CONSTRAINT ck_ver_penalty CHECK (version >= 0)"
+    ]
+  },
+  {
+    "name": "vi_penalty_appeal",
+    "comment": "普通取消处罚申诉记录",
+    "cols": [
+      [
+        "id",
+        "BIGINT NOT NULL AUTO_INCREMENT",
+        "数据库生成业务主键；插入不提供id"
+      ],
+      [
+        "penalty_id",
+        "BIGINT NOT NULL",
+        "处罚主键"
+      ],
+      [
+        "driver_id",
+        "BIGINT NOT NULL",
+        "本人司机档案"
+      ],
+      [
+        "status",
+        "VARCHAR(24) NOT NULL DEFAULT 'SUBMITTED'",
+        "AppealRecordStatus: SUBMITTED,APPROVED,REJECTED"
+      ],
+      [
+        "reason",
+        "VARCHAR(1000) NOT NULL",
+        "本人说明"
+      ],
+      [
+        "evidence_file_ids",
+        "JSON NULL",
+        "通过文件权限检查的证据引用"
+      ],
+      [
+        "submitted_at",
+        "DATETIME(3) NOT NULL",
+        "UTC提交时刻"
+      ],
+      [
+        "reviewer_user_id",
+        "BIGINT NULL",
+        "独立后台审核人"
+      ],
+      [
+        "reviewed_at",
+        "DATETIME(3) NULL",
+        "UTC审核时刻"
+      ],
+      [
+        "public_opinion",
+        "VARCHAR(1000) NULL",
+        "对本人公开结论"
+      ],
+      [
+        "active_penalty",
+        "BIGINT GENERATED ALWAYS AS (IF(status='SUBMITTED',penalty_id,NULL)) STORED",
+        "同一处罚只允许一项待审申诉"
+      ],
+      [
+        "created_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "创建时刻UTC"
+      ],
+      [
+        "updated_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "更新时间UTC；更新必须显式设置UTC_TIMESTAMP(3)"
+      ],
+      [
+        "version",
+        "BIGINT NOT NULL DEFAULT 0",
+        "手写CAS版本"
+      ]
+    ],
+    "indexes": [
+      "UNIQUE KEY uk_pending_penalty_appeal (active_penalty)",
+      "KEY ix_driver_appeal (driver_id,created_at)"
+    ],
+    "rule": "审批与处罚撤销/计次重新计算/权限版本/outbox同事务；不是事故处罚模块",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "engine": "InnoDB",
+    "collation": "utf8mb4_0900_ai_ci",
+    "columnRules": {
+      "id": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "penalty_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "driver_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "status": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false,
+        "enumRef": "AppealRecordStatus"
+      },
+      "reason": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "evidence_file_ids": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "submitted_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "reviewer_user_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "reviewed_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "public_opinion": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "active_penalty": {
+        "generated": true,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "created_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "updated_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "version": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      }
+    },
+    "checks": [
+      "CONSTRAINT ck_66_623fb1878076 CHECK (`status` IN ('SUBMITTED','APPROVED','REJECTED'))",
+      "CONSTRAINT ck_ver_penalty_appeal CHECK (version >= 0)"
+    ]
+  }
+]

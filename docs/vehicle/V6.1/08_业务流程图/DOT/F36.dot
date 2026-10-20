@@ -1,0 +1,27 @@
+digraph F36 {
+graph [rankdir=TB, bgcolor="white", pad="0.35", nodesep="0.3", ranksep="0.38", fontname="Noto Sans CJK SC", fontsize=18, labelloc=t, label="F36 工作副本、发布快照与确认结转"];
+node [shape=box, style="rounded,filled", fillcolor="#F3F6FA", color="#CFD6E0", fontname="Noto Sans CJK SC", fontsize=12, margin="0.15,0.10"];
+edge [color="#74849A", fontname="Noto Sans CJK SC", fontsize=10];
+"n1" [label="不可变源费用和真实承接记录"];
+"n2" [label="明确所选ID建立草稿与唯一分配\n工作行保存proposedAmount"];
+"n3" [label="改价/增删成员均追加历史\n父revision/version递增"];
+"n4" [label="人工变更冻结整单待审快照和贡献者"];
+"n5" [label="独立批准并SENT，保存不可变发布快照"];
+"n6" [label="本人以version/revision/hash确认"];
+"n7" [label="与撤回锁同一账单，是否仍有效？",shape=diamond,fillcolor="#EEF4FF"];
+"n8" [label="拒绝旧确认，刷新重新核对"];
+"n9" [label="事务写确认与唯一结转事件"];
+"n10" [label="源NULL初次核价；已知源只记最终差额"];
+"n11" [label="派生费用分配本单，不能再次入未来账单"];
+"n1" -> "n2" [label=""];
+"n2" -> "n3" [label="有改价"];
+"n3" -> "n4" [label=""];
+"n4" -> "n5" [label="复核通过"];
+"n2" -> "n5" [label="全规则价可直接发"];
+"n5" -> "n6" [label=""];
+"n6" -> "n7" [label=""];
+"n7" -> "n8" [label="否"];
+"n7" -> "n9" [label="是"];
+"n9" -> "n10" [label=""];
+"n10" -> "n11" [label="同事务"];
+}

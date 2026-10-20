@@ -1,0 +1,203 @@
+[
+  {
+    "name": "vi_quote",
+    "comment": "短期报价快照",
+    "cols": [
+      [
+        "id",
+        "BIGINT NOT NULL AUTO_INCREMENT",
+        "数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串"
+      ],
+      [
+        "owner_account_id",
+        "BIGINT NOT NULL",
+        "报价人"
+      ],
+      [
+        "station_id",
+        "BIGINT NOT NULL",
+        "匹配站点"
+      ],
+      [
+        "vehicle_snapshot",
+        "JSON NOT NULL",
+        "车牌、车型编码与名称快照"
+      ],
+      [
+        "address_snapshot_cipher",
+        "LONGBLOB NOT NULL",
+        "加密接车地址快照"
+      ],
+      [
+        "pickup_slot_id",
+        "BIGINT NOT NULL",
+        "上门时段"
+      ],
+      [
+        "receive_slot_id",
+        "BIGINT",
+        "内部接收排期"
+      ],
+      [
+        "rule_id",
+        "BIGINT NOT NULL",
+        "计价版本ID"
+      ],
+      [
+        "route_snapshot",
+        "JSON NOT NULL",
+        "供应商路线距离、方向、时效"
+      ],
+      [
+        "amount_fen",
+        "BIGINT NOT NULL",
+        "总费用分"
+      ],
+      [
+        "items_json",
+        "JSON NOT NULL",
+        "逐项明细及计算依据"
+      ],
+      [
+        "expires_at",
+        "DATETIME(3) NOT NULL",
+        "报价失效时间"
+      ],
+      [
+        "used_order_id",
+        "BIGINT",
+        "已用于建单的订单"
+      ],
+      [
+        "created_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "创建时间，统一UTC"
+      ],
+      [
+        "updated_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "UTC更新时间；Mapper每次修改显式SET updated_at=UTC_TIMESTAMP(3)，不依赖连接时区"
+      ],
+      [
+        "version",
+        "BIGINT NOT NULL DEFAULT 0",
+        "乐观锁版本"
+      ]
+    ],
+    "indexes": [
+      "KEY ix_owner_expire (owner_account_id,expires_at)",
+      "UNIQUE KEY uk_used_order (used_order_id)",
+      "CONSTRAINT ck_quote_amount CHECK (amount_fen>=0)"
+    ],
+    "rule": "",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "engine": "InnoDB",
+    "collation": "utf8mb4_0900_ai_ci",
+    "columnRules": {
+      "id": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "owner_account_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "station_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "vehicle_snapshot": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "address_snapshot_cipher": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "pickup_slot_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "receive_slot_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "rule_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "route_snapshot": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "amount_fen": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "items_json": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "expires_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "used_order_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "created_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "updated_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "version": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      }
+    },
+    "checks": [
+      "CONSTRAINT ck_ver_quote CHECK (version >= 0)"
+    ]
+  }
+]

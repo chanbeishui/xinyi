@@ -1,0 +1,24 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>04_原型操作手册</title><style>body{font:16px/1.75 -apple-system,BlinkMacSystemFont,"Microsoft YaHei",sans-serif;color:#202632;margin:0;background:#f6f7f9}header{padding:14px 24px;background:white;border-bottom:1px solid #ddd}main{max-width:1120px;margin:24px auto;padding:30px;background:white}h1{font-size:30px}h2{margin-top:36px}a{color:#0661bd}table{border-collapse:collapse;width:100%;display:block;overflow:auto;font-size:14px}td,th{border:1px solid #dde2ea;padding:10px;vertical-align:top}th{background:#f1f5fb}pre{padding:15px;background:#f2f4f7;overflow:auto}img{max-width:100%;height:auto}blockquote{padding:10px 20px;border-left:3px solid #2571be;background:#f4f8fc}@media(max-width:700px){main{padding:15px;margin:8px}h1{font-size:25px}}</style></head><body><header><a href="../00_开始.html">V6.1 完整资料</a>　<a href="../02_UI/index.html">交互原型</a>　T3.1</header><main><h1>V6.0 原型操作手册</h1>
+<p>打开02_UI/index.html。数据是离线样本，刷新/重置恢复初始状态；不会真实登录、支付、上传、核验或打款。所有其他预约/交接/售后流程继续保留。</p>
+<h2>1. 自由勾选生成账单</h2>
+<p>B28“林晓”→对账，进入B42个人汇总。三个标签分别查询未结清服务、历次账单、付款记录。默认不限定日期，已入草稿/待确认/部分付款服务仍在未结清列表中，但复选框禁用。</p>
+<p>点击“选择服务组单”只筛选可组单项目。在第一页勾选一条，下一页继续勾选；底部选择数保留。日期筛选不会改变已选集合。“查看已选”显示跨页完整清单，可以移出选择。点击生成，确认后只建立所选草稿，不纳入同日期其他记录。</p>
+<p>样本可选LE-H01（上月）和LE-H02（待核价）验证跨期与NULL。B42-conflict是独立冲突样本，模拟其中一条已被其他账单占用，操作全部未保存；这是前端模型验证，非数据库并发测试。</p>
+<h2>2. 草稿核价与成员编辑</h2>
+<p>B38逐行填写/修改价格，输入最终拟付金额与原因。60→70→65最终65。保存后保留原规则值和修改记录。待核价可保存，但不能发出。添加服务只加入所选条目，移出服务释放该草稿占用且保留历史；空草稿不能发送。作废只允许未确认无付款的整理中草稿。</p>
+<p>人工填/改价点击提交整单复核。外层“演示操作者”可切换经办ADMIN01/复核ADMIN02；这是评审工具，不是小程序权限。本人修改后自己复核会拒绝。无人工变化、全规则价可直接发送。</p>
+<h2>3. 代驾确认与修改</h2>
+<p>外层画板导航进入D37/D38演示另一参与方；不是管理员在业务界面代替司机。本人核对全部所选条目及金额后确认，或说明差异。SENT/INTERNAL_REVIEW先撤回才可修改成员或价格；旧确认失效。已确认原账只读，原行申请调差，不覆盖旧金额。</p>
+<h2>4. 历史和付款</h2>
+<p>B42“对账单记录”列出全部演示账单，点击具体编号对应的查看。DS-HISTORY-002为部分付款样本：120元确认、50元已核实、20元凭证待核实、剩余待付70元、可继续登记50元。它的各服务均显示所在账单部分付款，不假定某一条已经付清。</p>
+<p>已确认且有可登记余额的B38点击录入付款凭证，自动带入账单主体和代驾。填写金额、日期、流水并从电脑选择一个文件；只保留浏览器本地引用，不发生上传。提交后是待核实。到付款记录点击该条“核实”，切换独立复核人、填写意见并核实，才计入已付。可退回不符凭证；记录不会删除。</p>
+<p>0元示例B38-zero确认后显示无需付款；不会要求凭证。B42-payments和D37-payments分别为后台付款详情与司机本人摘要，司机端没有原始银行凭证地址。</p>
+<h2>5. 编号与开发边界</h2>
+<p>B37仍为代驾对账列表；新增B42是个人汇总；B38仍为单张账单的核价/版本详情，避免打乱原页面ID。B38-generate是同一组单操作的画板别名（仅评审导航，不实现旧HTTP接口），不允许按日期自动组单。D37是本人三标签，D38是指定已发布账单。B39规则、B41调差继续保留。</p>
+<p>演示的身份、金额、日期、主体及历史账单仅为样本；不带入生产。实际接口、主体授权、唯一分配、事务、文件READY、凭证真假、微信真机与数据库并发均须真实开发后验收。</p>
+<h2>6. 本轮补全能力</h2>
+<p>培训：D04→D39→D40，点击演示已阅读，再创建答题尝试，选择答案提交到D42。该示例不代表真实培训内容或及格规则。B43/B44配置只在ADMIN显示标准答案。</p>
+<p>员工绑定：U02填写说明并提交请求，切B36选择演示员工、填写核对依据并签发；回U02填写<code>DEMO-ONLY-123456</code>消费。这个固定值只用于原型；实际凭证为服务端随机一次性、限时且绑定目标，不能从本文件复制到生产。B36撤销后U02不能消费。</p>
+<p>申诉：D43→D44→D45提交原因，到B45填写公开处理意见审核，再回D44看结果。不创建事故处罚或钱包扣款。</p>
+<p>活体：D46创建演示业务会话，再模拟返回查询；不会采集真实人脸、调用供应商或向后台传passed=true证明通过。</p>
+</main></body></html>

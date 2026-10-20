@@ -1,0 +1,171 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>02_全功能联调场景</title><style>body{font:16px/1.75 -apple-system,BlinkMacSystemFont,"Microsoft YaHei",sans-serif;color:#202632;margin:0;background:#f6f7f9}header{padding:14px 24px;background:white;border-bottom:1px solid #ddd}main{max-width:1120px;margin:24px auto;padding:30px;background:white}h1{font-size:30px}h2{margin-top:36px}a{color:#0661bd}table{border-collapse:collapse;width:100%;display:block;overflow:auto;font-size:14px}td,th{border:1px solid #dde2ea;padding:10px;vertical-align:top}th{background:#f1f5fb}pre{padding:15px;background:#f2f4f7;overflow:auto}img{max-width:100%;height:auto}blockquote{padding:10px 20px;border-left:3px solid #2571be;background:#f4f8fc}@media(max-width:700px){main{padding:15px;margin:8px}h1{font-size:25px}}</style></head><body><header><a href="../00_开始.html">V6.1 完整资料</a>　<a href="../02_UI/index.html">交互原型</a>　T3.1</header><main><h1>全功能真实联调：场景、前置、输出及数据库断言</h1>
+<p>每条场景由真实业务API串联，使用上一步返回的ID/version/hash/金额。基础夹具不直接构造终态订单。下面是必须实现的测试清单，执行责任在T01–T08，不是本轮已运行结果。</p>
+<table>
+<thead>
+<tr>
+  <th>场景</th>
+  <th>参与者/前置</th>
+  <th>实际链路</th>
+  <th>核心数据库及否定断言</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>IT01 身份资料持久化</td>
+  <td>ownerA/B、基础站点字典</td>
+  <td>微信code→登录→绑手机→建车/地址→退出→重新登录→读取</td>
+  <td>唯一account、安全状态和token摘要；密文字段不等于明文；B无法读取或修改A</td>
+</tr>
+<tr>
+  <td>IT02 多设备与员工绑定</td>
+  <td>两个设备、员工A</td>
+  <td>本人申请→管理员签凭证→本人消费→切站→撤权→切回OWNER</td>
+  <td>旧凭据不能重放；context与auth_version权威；ACCOUNT1非超管</td>
+</tr>
+<tr>
+  <td>IT03 首次预约四组合</td>
+  <td>车/地址可以已有或草稿</td>
+  <td>先时段→新地址→车型→quote→条款→order</td>
+  <td>4组合均合法；双传/缺组/null/伪造金额拒绝；草稿不自动写地址簿</td>
+</tr>
+<tr>
+  <td>IT04 报价失效与容量竞争</td>
+  <td>同一最后名额、两个车主</td>
+  <td>两报价→并发建单</td>
+  <td>一成功一冲突；失败无占额、无支付单；同键同体返回同订单</td>
+</tr>
+<tr>
+  <td>IT05 支付与关单竞争</td>
+  <td>待支付订单</td>
+  <td>prepay→可信支付回调/查单与30分钟关单同时</td>
+  <td>只一个可信方向；UNKNOWN不误释放；金额/商户错误拒绝；重复通知不多派</td>
+</tr>
+<tr>
+  <td>IT06 未来计划派单</td>
+  <td>预约明日、配置提前N分</td>
+  <td>付款→未到dispatchAt→推进Clock→扫描</td>
+  <td>提前时不邀约，到点一个派单任务；重启不丢；多worker不双发</td>
+</tr>
+<tr>
+  <td>IT07 自动/人工邀约</td>
+  <td>合格司机A/B、旧定位司机C</td>
+  <td>队列→邀约→拒绝/超时→扩圈→人工→接受</td>
+  <td>游标/占用原子；C无资格；超时接受只一方成功；人工不免资格</td>
+</tr>
+<tr>
+  <td>IT08 未接车解除</td>
+  <td>司机A接单未取车</td>
+  <td>取消承接→释放A→邀请B→B接受</td>
+  <td>同orderNo和原paid记录；A新任务不被旧事件清除；无重复满额报酬</td>
+</tr>
+<tr>
+  <td>IT09 四次交接</td>
+  <td>真实承接</td>
+  <td>发车/到达→6类上传/里程→owner持码driver核验→到站照片→station收车→结果→站点放行→归还</td>
+  <td>4handover唯一；wrong code计数持久；ready!=handover；保管方连续</td>
+</tr>
+<tr>
+  <td>IT10 检测双端并发</td>
+  <td>车在站、资料复核完成</td>
+  <td>PC和station同时登记结果→另一方冲突→更正申请/审核</td>
+  <td>有效结果唯一；不合格也可返还；未检测取消不造PASS结果</td>
+</tr>
+<tr>
+  <td>IT11 归还与旧事件</td>
+  <td>A实际归还后接B</td>
+  <td>归还A→释放→接B→A服务自动完成/退款回调</td>
+  <td>B占用保持；A费用异步失败不回锁；照片完成但未交车不释放</td>
+</tr>
+<tr>
+  <td>IT12 已支付未接车取消</td>
+  <td>付款成功未接车</td>
+  <td>统一申请→一次审核→退款受理→回调/查询</td>
+  <td>同申请审核一次；可退余额含预留；重试同refundNo；客户钱不改司机报酬</td>
+</tr>
+<tr>
+  <td>IT13 已接车取消</td>
+  <td>driver或station持车</td>
+  <td>申请→批准WAIT_RETURN→现场返还→正式取消→退款</td>
+  <td>批准不释放；未还不假终态；返还后不再二审；无需伪造未发生照片节点</td>
+</tr>
+<tr>
+  <td>IT14 正常异常与服务确认</td>
+  <td>归还后/履约中</td>
+  <td>异常上报/争议→处理→24h完成/服务确认/评价</td>
+  <td>不恢复事故保险；争议暂停autoComplete但不占已释放司机；日志完整</td>
+</tr>
+<tr>
+  <td>IT15 明确勾选组单</td>
+  <td>多日期结束任务与NULL费用</td>
+  <td>跨页选1/3/5→预览→生成draft</td>
+  <td>未选仍待对账；每entry一有效allocation；重叠集合整批409；同日期不重叠两单均可</td>
+</tr>
+<tr>
+  <td>IT16 核价与复核</td>
+  <td>草稿含待价</td>
+  <td>填写/修改60→70→65→独立复核→send</td>
+  <td>最终65，非叠加；同人不能复核；移出/增加使旧hash失效；空价不发送</td>
+</tr>
+<tr>
+  <td>IT17 确认版本竞争</td>
+  <td>已发送</td>
+  <td>撤回与本人确认同时→差异/重发</td>
+  <td>只一成功；旧public hash不能确认；MINI不返回内部拟价与复核字段</td>
+</tr>
+<tr>
+  <td>IT18 付款凭证</td>
+  <td>已确认账单</td>
+  <td>录入部分凭证→另人核实→第二次足额</td>
+  <td>待核实预留不计已付；同主体流水唯一；超额拒绝；0元无需凭证；不分摊行付款</td>
+</tr>
+<tr>
+  <td>IT19 已确认调差</td>
+  <td>账单已确认/已付</td>
+  <td>原行调差→独立审批→后续账单</td>
+  <td>原账不覆盖；差额来源永久去重；负额不自动追收</td>
+</tr>
+<tr>
+  <td>IT20 隐私与导出</td>
+  <td>有权限/撤权两用户</td>
+  <td>申请访问→审批→生成导出→撤权→下载</td>
+  <td>生成与下载二次鉴权；未授权数量不泄露；CSV公式注入防护</td>
+</tr>
+<tr>
+  <td>IT21 文件/OCR与失败恢复</td>
+  <td>文件真字节存储</td>
+  <td>签名上传→元数据核验→OCR低置信→人工复核</td>
+  <td>错误类型/大小/归属/过期拒绝；失败可重传不覆盖已封存证据</td>
+</tr>
+<tr>
+  <td>IT22 培训活体处罚</td>
+  <td>普通申请人</td>
+  <td>课程版本→playback→attempt→submit→face-session→审批→处罚→申诉</td>
+  <td>不发标准答案；墙钟进度约束；本人能获得penaltyId；供应商回报未知非通过</td>
+</tr>
+<tr>
+  <td>IT23 任务恢复与审计</td>
+  <td>两个worker、outbox失败</td>
+  <td>领取→终止worker→租约过期→重领→业务幂等</td>
+  <td>不双退款、双释放、重复入账；审计不含Token/证件原文</td>
+</tr>
+<tr>
+  <td>IT24 全量界面与复用</td>
+  <td>PC/miniapp真实后端</td>
+  <td>249接口、287画板对应路由/状态，真实数据刷新、错误恢复</td>
+  <td>无未处理按钮/空壳Ack；状态变体可复现；iOS/Android真机另L02</td>
+</tr>
+</tbody>
+</table>
+<h2>负向请求与SQL证据</h2>
+<p>常用断言查询只在隔离DB按已授权测试ID执行，下面不替代完整测试实现：</p>
+<pre><code class="language-sql">SELECT COUNT(*) FROM vi_driver_occupancy WHERE driver_id=?;
+SELECT holder_type,holder_id,order_id FROM vi_driver_occupancy WHERE driver_id=?;
+SELECT version,fulfillment_status,cancel_status FROM vi_order WHERE id=?;
+SELECT status,revision,amount_fen,unpriced_count,published_hash FROM vi_driver_statement WHERE id=?;
+SELECT table_name,column_name,extra FROM information_schema.columns
+ WHERE table_schema=DATABASE() AND generation_expression&lt;&gt;'';
+</code></pre>
+<p>财务实际字段和约束以主模型为准，禁止把测试查询拼接客户端字符串。所有关键写失败再读确认无副作用。事务性失败与验证码错误次数应有不同持久化边界，避免回滚业务时把攻击计数回滚。</p>
+<h2>逐条覆盖</h2>
+<p><code>case-test-plan.json</code>为298原用例指定责任任务、实现测试类/方法目标和综合场景；当前state=SPEC_NOT_IMPLEMENTED，Codex逐条落地并更新为实际文件路径。<code>live</code>是已经给出的早期真实HTTP测试程序，需应用实现后运行；它没有替代全量298条。验收门禁禁止把SPEC_ONLY或skip记为通过。</p>
+</main></body></html>

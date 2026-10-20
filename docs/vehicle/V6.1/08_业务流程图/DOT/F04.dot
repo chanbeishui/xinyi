@@ -1,0 +1,21 @@
+digraph F04 {
+graph [rankdir=TB, bgcolor="white", pad="0.35", nodesep="0.3", ranksep="0.38", fontname="Noto Sans CJK SC", fontsize=18, labelloc=t, label="F04 代驾资格申请、审核与复审"];
+node [shape=box, style="rounded,filled", fillcolor="#F3F6FA", color="#CFD6E0", fontname="Noto Sans CJK SC", fontsize=12, margin="0.15,0.10"];
+edge [color="#74849A", fontname="Noto Sans CJK SC", fontsize=10];
+"n1" [label="保存实名、驾驶证等申请草稿"];
+"n2" [label="完成已有范围的活体／培训／背景核验"];
+"n3" [label="完整提交，进入待审核"];
+"n4" [label="后台核对资料及供应商真实结果"];
+"n5" [label="审核通过？",shape=diamond,fillcolor="#EEF4FF"];
+"n6" [label="授予代驾资格，检查有效期"];
+"n7" [label="驳回指定项，申请人修正重提"];
+"n8" [label="到期提醒；过期移出新派单候选池"];
+"n1" -> "n2" [label=""];
+"n2" -> "n3" [label=""];
+"n3" -> "n4" [label=""];
+"n4" -> "n5" [label=""];
+"n5" -> "n6" [label="是"];
+"n5" -> "n7" [label="否"];
+"n7" -> "n1" [label=""];
+"n6" -> "n8" [label="复审"];
+}

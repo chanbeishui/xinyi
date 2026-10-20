@@ -1,0 +1,44 @@
+{
+  "taskId": "E01",
+  "implementer": "Qoder-Agent",
+  "codeCommit": "未提交（提交在本步之后）；改动集中在 docs/vehicle/V6.1 契约/模型与 docs/implementation/vehicle/E01",
+  "codeFiles": [
+    "docs/vehicle/V6.1/05_数据设计/枚举字典_V6.0.json",
+    "docs/vehicle/V6.1/05_数据设计/data_model_V6.0.json",
+    "docs/vehicle/V6.1/05_数据设计/001_vi业务表_初始化_V6.0.sql",
+    "docs/vehicle/V6.1/05_数据设计/生成列与写入白名单.json",
+    "docs/vehicle/V6.1/04_接口/openapi_V6.0.yaml",
+    "docs/vehicle/V6.1/04_接口/权限与能力注册表.json",
+    "docs/vehicle/V6.1/04_接口/接口全量清单.md",
+    "docs/vehicle/V6.1/04_接口/接口枚举清单.json",
+    "docs/vehicle/V6.1/04_接口/认证_权限_错误与路由.md",
+    "docs/vehicle/V6.1/10_技术架构_T3.1/参考代码/ViRecord.java",
+    "docs/implementation/vehicle/E01/apply_r1_r2.py",
+    "docs/implementation/vehicle/E01/apply_r3_to_r7.py",
+    "docs/implementation/vehicle/E01/R1-unbound-enum-columns.md",
+    "docs/implementation/vehicle/E01/verification.md"
+  ],
+  "runs": [
+    {"command": "python -m pytest docs/vehicle/V6.1/12_工程执行/tests/ docs/vehicle/V6.1/11_工具/ -q", "exitCode": 0, "layer": "TOOLS_OR_COMPONENT", "testsRun": 72, "skipped": 0, "reportPath": "docs/implementation/vehicle/E01/verification.md"},
+    {"command": "python docs/vehicle/V6.1/11_工具/check_package.py", "exitCode": 0, "layer": "WORKSPACE_OBSERVATION", "checksRun": 42, "skipped": 0, "reportPath": "docs/implementation/vehicle/E01/verification.md"},
+    {"command": "python docs/vehicle/V6.1/12_工程执行/engineer.py check --repo .", "exitCode": 0, "layer": "WORKSPACE_OBSERVATION", "checksRun": 34, "skipped": 0, "reportPath": "docs/implementation/vehicle/E01/verification.md"},
+    {"command": "python -m pytest docs/vehicle/V6.1/12_工程执行/tests/test_contract_regression.py -q", "exitCode": 0, "layer": "TOOLS_OR_COMPONENT", "testsRun": 14, "skipped": 0, "reportPath": "docs/implementation/vehicle/E01/verification.md"}
+  ],
+  "review": {
+    "reviewer": null,
+    "approved": false,
+    "reportPath": null,
+    "note": "REVIEWED 需独立复核人≠实现者；本 Agent 不自审。E01 为契约/模型静态修正，VERIFIED 基于静态一致性与契约回归，不含真实API/MySQL。"
+  },
+  "corrections": {
+    "R1": "15列绑定枚举(字典/data_model/openapi/SQL四处同步)；6列有意不硬约束",
+    "R2": "refund_state(RefundStatus9值)与vi_refund_order.status(ChannelRefundStatus6值)分开+映射，不取并集",
+    "R3": "写白名单66表分三层(IMMUTABLE7/CONTROLLED51/EDITABLE8)；session/token/account_security收窄受控更新列",
+    "R4": "唯一权威ViRecord=工程模板版(含id)；T3.1参考版标注非权威",
+    "R5": "service-config补录注册表(248→249)+清单",
+    "R6": "共享common端点四要素授权章节(能力/功能权限+数据范围+状态+认证域全成立才放行)",
+    "R7": "术语统一x-authorization.scope，x-data-scope残留0",
+    "R8": "接口枚举清单72→84；dto-types/样本/task_packets核对无需改"
+  },
+  "warning": "STATIC_DOCUMENT_CHECK。未实现真实API、未连MySQL、未构建后端；不推断业务功能通过。"
+}

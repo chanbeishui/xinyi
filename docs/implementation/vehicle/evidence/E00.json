@@ -1,0 +1,48 @@
+{
+  "taskId": "E00",
+  "implementer": "Qoder-Agent",
+  "codeCommit": "未提交（用户要求不自动 commit）；工作区差异：M AGENTS.md（install 受管区段）、?? docs/（规范副本+账本+E00报告）",
+  "codeFiles": [
+    "docs/implementation/vehicle/E00/observation-report.md",
+    "docs/implementation/vehicle/workspace.json"
+  ],
+  "runs": [
+    {
+      "command": "python3 docs/vehicle/V6.1/12_工程执行/engineer.py doctor --repo .",
+      "exitCode": 0,
+      "layer": "WORKSPACE_OBSERVATION",
+      "checksRun": 9,
+      "skipped": 0,
+      "reportPath": "docs/implementation/vehicle/E00/observation-report.md",
+      "note": "doctor 实勘 gitHead/gitBranch/gitStatus/java/node/npm/maven/docker/compose 共9项；docker/compose exitCode=127(不可用)已如实记录，不计为通过项。"
+    },
+    {
+      "command": "git rev-parse HEAD; git branch --show-current; git status --short; git hash-object <5 baseline files>",
+      "exitCode": 0,
+      "layer": "WORKSPACE_OBSERVATION",
+      "checksRun": 5,
+      "skipped": 0,
+      "reportPath": "docs/implementation/vehicle/E00/observation-report.md",
+      "note": "HEAD=18b5ce4、branch=rongli-wx-home、5指纹核对（3一致/2预期变化），见报告§2-§3。"
+    }
+  ],
+  "review": {
+    "reviewer": null,
+    "approved": false,
+    "reportPath": null,
+    "note": "REVIEWED 需独立复核人≠实现人；本 Agent 不自审，留待用户/独立复核者。E00 为只读实勘，IMPLEMENTED/VERIFIED 不依赖复核即可解锁下游编码。"
+  },
+  "environment": {
+    "java_runtime": "21.0.8",
+    "maven": "3.9.14",
+    "maven_bound_jdk": "Homebrew openjdk 25.0.2（与运行JDK21不一致，E04/E05构建前统一）",
+    "node": "v22.16.0（满足 uni-app >=22 <23）",
+    "npm": "10.9.2",
+    "python": "3.11.15",
+    "mysql_server": "本机 mysqld 运行中(3306)，服务端版本待E02/E03连库确认(需>=8.0.22)",
+    "docker": "UNAVAILABLE(exitCode 127)",
+    "redis": "未探测(E02)"
+  },
+  "residualsRegistered": "R1-R12 见 docs/implementation/vehicle/DECISIONS.md，映射 E01(R1-R8)/E03(R9-R12)",
+  "warning": "E00 仅框架基线只读实勘。未执行 MySQL 初装、未构建、未联调；不推断 M0/构建/业务测试通过。"
+}

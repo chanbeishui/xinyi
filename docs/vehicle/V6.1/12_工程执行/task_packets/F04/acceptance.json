@@ -1,0 +1,41 @@
+[
+  {
+    "id": "TC-145",
+    "priority": "P0",
+    "module": "统一售后",
+    "flow": "F13",
+    "title": "有车先返还",
+    "given": "已接车且车在站点",
+    "when": "统一审核通过",
+    "then": "待返还，司机占用保留；退款金额已预留",
+    "status": "NOT_RUN",
+    "evidence": "",
+    "origin": "V6.0新业务完整验收规格；未绑定真实Step实现前不是自动化测试结果"
+  },
+  {
+    "id": "TC-146",
+    "priority": "P0",
+    "module": "统一售后",
+    "flow": "F13",
+    "title": "归还后无需二次审核",
+    "given": "取消已通过且退款预留",
+    "when": "真实返还",
+    "then": "正式取消、释放匹配承接，执行同一批准退款",
+    "status": "NOT_RUN",
+    "evidence": "",
+    "origin": "V6.0新业务完整验收规格；未绑定真实Step实现前不是自动化测试结果"
+  },
+  {
+    "id": "TC-147",
+    "priority": "P0",
+    "module": "统一售后",
+    "flow": "F13",
+    "title": "零元取消仍需返还",
+    "given": "已接车申请取消",
+    "when": "批准金额0",
+    "then": "无渠道退款单，但返还完成前不能取消办结",
+    "status": "NOT_RUN",
+    "evidence": "",
+    "origin": "V6.0新业务完整验收规格；未绑定真实Step实现前不是自动化测试结果"
+  }
+]
