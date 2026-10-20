@@ -4,11 +4,10 @@
 
 ## ENVIRONMENT
 
-- BLK-ENV-1 · Docker/compose 不可用（`docker version` exitCode 127, FileNotFoundError）
-  - 影响：E02 规定的 `compose.yaml` 隔离 MySQL8.4 + Redis7.4 容器路径无法运行；E03 的 db-test、E07 的 live-test/integration-suite 原设计依赖容器。
-  - 处置（依用户指示 II.2 + DECISIONS D-ENV-1）：适配为本机运行中的 MySQL（3306）建独立库 `xinyi_vi_dev` + 本机 Redis 独立实例/命名空间；仍执行 CHECK/生成列/唯一约束/UTC 真实探针。不连、不写、不删用户原 xinyi 库。
-  - 恢复条件：若后续需要严格容器隔离或 MySQL8.4 精确版本，安装 Docker 后按原 compose 路径复跑；当前以本机独立库满足"独立开发数据库"要求。
-  - 状态：E02/E03 可在此适配下推进实现与探针；涉及"容器化隔离"的验收项在 Docker 恢复前记 VERIFICATION 阻塞，不标 VERIFIED。
+- BLK-ENV-1 · Docker/compose 不可用（`docker version` exitCode 127, FileNotFoundError）— **已解除（2026-10-21）**
+  - 影响：E02 规定的 `compose.yaml` 隔离 MySQL8.4 + Redis7.4 容器路径无法运行。
+  - 处置（用户决定，见 DECISIONS D-ENV-1）：复用现有本机服务——MySQL 3306 的 `xinyi` 库 + Redis 6379，不另建实例。已删除误建的 xinyi_vi_dev/vi_dev、停止误起的 Redis 36379。E02 健康检查通过（MySQL 可连、Redis PONG、JDK21 maven OK）。
+  - 残留：MySQL 服务端 9.6.0 与生产目标 8.4 偏差→记 RELEASE 门槛，生产 8.4 须复跑 SQL/CAS（非 E02 阻塞）。
 
 - BLK-ENV-2 · Maven 绑定 JDK 与运行 JDK 不一致（mvn 跑在 Homebrew openjdk 25.0.2，java 运行时 21.0.8）
   - 影响：E04/E05 后端构建若直接用 mvn，编译落在 JDK25，与"运行21/编译release17"计划组合未验证。
