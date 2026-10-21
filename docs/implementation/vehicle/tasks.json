@@ -453,7 +453,7 @@
     "case_ids": [],
     "scope": "DEVELOPMENT",
     "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
-    "status": "NOT_ASSESSED",
+    "status": "VERIFIED",
     "code_paths": [
       "docs/implementation/vehicle/E07/"
     ],
@@ -475,10 +475,16 @@
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
     "starting_condition": "USER_CONFIRMED_NOT_STARTED",
-    "evidence": [],
+    "evidence": [
+      {
+        "path": "docs/implementation/vehicle/evidence/E07.json",
+        "sha256": "e8dd95e7d6252cbcd5c93db76dbc6bfb632670b90cfb55ccc1b87b2dcca36491"
+      }
+    ],
     "implementation": null,
     "review": null,
-    "blocker": null
+    "blocker": null,
+    "updatedAt": "2026-10-21T16:37:07.368452+00:00"
   },
   {
     "id": "E08",
