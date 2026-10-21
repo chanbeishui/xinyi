@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xinyi.rongli.platform.mapper.ViOutboxMapper">
+
+    <resultMap id="ViOutboxMap" type="com.xinyi.rongli.platform.domain.ViOutbox">
+        <id property="id" column="id"/>
+        <result property="eventKey" column="event_key"/>
+        <result property="aggregateType" column="aggregate_type"/>
+        <result property="aggregateId" column="aggregate_id"/>
+        <result property="eventType" column="event_type"/>
+        <result property="payload" column="payload"/>
+        <result property="status" column="status"
+                typeHandler="org.apache.ibatis.type.EnumTypeHandler"
+                javaType="com.xinyi.rongli.platform.domain.OutboxStatus"/>
+        <result property="attempts" column="attempts"/>
+        <result property="nextAttemptAt" column="next_attempt_at"
+                typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+        <result property="leaseUntil" column="lease_until"
+                typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+        <result property="createdAt" column="created_at"
+                typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+        <result property="updatedAt" column="updated_at"
+                typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+        <result property="version" column="version"/>
+    </resultMap>
+
+    <sql id="cols">
+        id, event_key, aggregate_type, aggregate_id, event_type, payload, status,
+        attempts, next_attempt_at, lease_until, created_at, updated_at, version
+    </sql>
+
+    <insert id="insert" parameterType="com.xinyi.rongli.platform.domain.ViOutbox"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO vi_outbox
+            (event_key, aggregate_type, aggregate_id, event_type, payload, status,
+             attempts, next_attempt_at, lease_until)
+        VALUES
+            (#{eventKey}, #{aggregateType}, #{aggregateId}, #{eventType}, #{payload},
+             #{status,typeHandler=org.apache.ibatis.type.EnumTypeHandler},
+             #{attempts},
+             #{nextAttemptAt,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler},
+             #{leaseUntil,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler})
+    </insert>
+
+    <select id="selectByEventKey" resultMap="ViOutboxMap">
+        SELECT <include refid="cols"/> FROM vi_outbox WHERE event_key = #{eventKey}
+    </select>
+
+    <select id="selectDueForUpdate" resultMap="ViOutboxMap">
+        SELECT <include refid="cols"/> FROM vi_outbox
+        WHERE status = 'READY'
+          AND next_attempt_at &lt;= #{now,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler}
+        ORDER BY next_attempt_at, id
+        LIMIT #{limit}
+        FOR UPDATE SKIP LOCKED
+    </select>
+
+    <update id="claim">
+        UPDATE vi_outbox
+        SET status = 'PROCESSING', lease_until = #{leaseUntil,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler},
+            version = version + 1, updated_at = UTC_TIMESTAMP(3)
+        WHERE id = #{id} AND version = #{expectedVersion} AND status = 'READY'
+    </update>
+
+    <update id="markDone">
+        UPDATE vi_outbox
+        SET status = 'DONE', lease_until = NULL, version = version + 1, updated_at = UTC_TIMESTAMP(3)
+        WHERE id = #{id} AND version = #{expectedVersion} AND status = 'PROCESSING'
+    </update>
+
+    <update id="markFailed">
+        UPDATE vi_outbox
+        SET status = CASE WHEN #{terminal} THEN 'FAILED' ELSE 'READY' END,
+            attempts = #{attempts},
+            next_attempt_at = #{nextAttemptAt,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler},
+            lease_until = NULL,
+            version = version + 1, updated_at = UTC_TIMESTAMP(3)
+        WHERE id = #{id} AND version = #{expectedVersion} AND status = 'PROCESSING'
+    </update>
+
+    <update id="recoverExpiredLeases">
+        UPDATE vi_outbox
+        SET status = 'READY', lease_until = NULL, version = version + 1, updated_at = UTC_TIMESTAMP(3)
+        WHERE status = 'PROCESSING'
+          AND lease_until IS NOT NULL
+          AND lease_until &lt; #{now,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler}
+    </update>
+
+</mapper>

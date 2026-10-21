@@ -1,0 +1,97 @@
+{
+  "taskId": "E06",
+  "implementer": "Qoder-Agent",
+  "codeCommit": "提交在本步之后；新增 xinyi-rongli/.../platform/ 平台基座与 xinyi-admin IT，仅附加修改 xinyi-admin/pom.xml，未改任何框架 .java",
+  "codeFiles": [
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/platform/error/ViErrorCode.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/platform/error/ViException.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/platform/actor/ActorRealm.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/platform/actor/Actor.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/platform/actor/MiniPrincipal.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/platform/actor/BusinessActorResolver.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/platform/mybatis/ViUtcInstantTypeHandler.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/platform/json/ViJson.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/platform/config/ViPlatformProperties.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/platform/domain/IdempotencyStatus.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/platform/domain/OutboxStatus.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/platform/domain/ViIdempotency.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/platform/domain/ViOutbox.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/platform/domain/ViEventLog.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/platform/mapper/ViIdempotencyMapper.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/platform/mapper/ViOutboxMapper.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/platform/mapper/ViEventLogMapper.java",
+    "xinyi-rongli/src/main/resources/mapper/rongli/ViIdempotencyMapper.xml",
+    "xinyi-rongli/src/main/resources/mapper/rongli/ViOutboxMapper.xml",
+    "xinyi-rongli/src/main/resources/mapper/rongli/ViEventLogMapper.xml",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/platform/service/SecretGuard.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/platform/service/IdempotencyService.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/platform/service/OutboxDispatcher.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/platform/service/OutboxService.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/platform/service/ViOutboxRelay.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/platform/service/AuditService.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/platform/service/OrderLocks.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/platform/service/DeadlockRetry.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/platform/web/HttpMethodOverrideFilter.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/platform/web/ViWebConfig.java",
+    "xinyi-rongli/src/test/java/com/xinyi/rongli/platform/SecretGuardTest.java",
+    "xinyi-rongli/src/test/java/com/xinyi/rongli/platform/PlatformPrimitivesTest.java",
+    "xinyi-rongli/src/test/java/com/xinyi/rongli/platform/IdempotencyMacTest.java",
+    "xinyi-admin/src/test/java/com/xinyi/web/viit/E06PlatformIT.java",
+    "xinyi-admin/pom.xml",
+    "docs/implementation/vehicle/E06/report.md"
+  ],
+  "runs": [
+    {
+      "command": "mvn -pl xinyi-admin -am test",
+      "exitCode": 0,
+      "layer": "TOOLS_OR_COMPONENT",
+      "testsRun": 22,
+      "skipped": 0,
+      "reportPath": "docs/implementation/vehicle/E06/report.md",
+      "note": "BUILD SUCCESS；surefire 22 用例全过=E06 新增16(SecretGuardTest5+PlatformPrimitivesTest6+IdempotencyMacTest5)+既存6(DeptScopeServiceImplTest5+TokenServiceTest1)。纯单元，无DB。修正：spring-boot-starter-test 移入 xinyi-admin 主 test 依赖，使 viit 骨架在普通 mvn test 下可 testCompile（解 D-E04-2 潜在编译失败）。"
+    },
+    {
+      "command": "mvn -pl xinyi-admin -am -Pvi-it -Dit.test=E06PlatformIT verify",
+      "exitCode": 0,
+      "layer": "LIVE_HTTP_MYSQL",
+      "testsRun": 10,
+      "skipped": 0,
+      "reportPath": "docs/implementation/vehicle/E06/report.md",
+      "note": "BUILD SUCCESS；E06PlatformIT 10 用例 0失败0错误0跳过。真实 MySQL(xinyi,9.6.0)+真实 MyBatis+真实 Service+真实事务，webEnvironment=MOCK（服务层集成，尚无 vi Controller 故无外部 HTTP；HTTP 层断言待 E07/业务任务）。修正：failsafe classesDirectory 指向 target/classes，避开 spring-boot repackage 后 fat jar(BOOT-INF/classes) 导致主类 TypeNotPresentException。"
+    },
+    {
+      "command": "pymysql 探针：IT 后 vi_idempotency/vi_outbox/vi_event_log 残留与总行数",
+      "exitCode": 0,
+      "layer": "MYSQL_PROBES",
+      "testsRun": 6,
+      "skipped": 0,
+      "reportPath": "docs/implementation/vehicle/E06/report.md",
+      "note": "E06_IT 标记残留=0/0/0；三表总行数=0/0/0。@BeforeEach+@AfterEach 经 JdbcTemplate 清理，真实 xinyi 库零污染（vi_event_log 业务 append-only，此处 DELETE 仅测试卫生）。"
+    },
+    {
+      "command": "python check_engineering.py --repo .",
+      "exitCode": 0,
+      "layer": "WORKSPACE_OBSERVATION",
+      "checksRun": 34,
+      "skipped": 0,
+      "reportPath": "docs/implementation/vehicle/E06/report.md",
+      "note": "工程结构静态检查 pass=34 fail=0；notCovered 项（真实构建/MySQL/npm/live backend/providers/WeChat）由上述实跑覆盖。"
+    }
+  ],
+  "review": {
+    "reviewer": null,
+    "approved": false,
+    "reportPath": null,
+    "note": "REVIEWED 需独立复核人≠实现者；本 Agent 不自审。"
+  },
+  "negativeChecks": {
+    "登录刷新不缓存明文": "IdempotencyService cacheResult=false 分支不写 result_json；SecretGuard 按 JSON 字段名递归拒绝 token/refreshToken/credential/launchUrl/password/secret/authorization，命中抛 VI_DATA_INVALID 不落库；IT 用例『含明文令牌结果_拒绝缓存』验证回滚后零落库",
+    "重复键不同体409": "request_mac=HMAC-SHA256(lookupKey,body) 常量时间比较；不同体→VI_IDEMPOTENCY_CONFLICT(409)；IT 用例『重复键不同体_409幂等冲突』验证",
+    "失败不写成功日志": "成功审计 recordSuccess 随业务同事务(REQUIRED)，业务抛错则整事务回滚不留成功流水；失败审计 recordFailure 用 REQUIRES_NEW 独立持久化；IT 用例『成功审计同事务回滚_失败审计独立持久化』验证 aggregate_id=200 成功流水缺失、201 失败流水存在",
+    "不注册第二个SessionInvalidator": "xinyi-rongli 无 SessionInvalidator 实现/Bean；ViOutboxRelay 为独立 Bean，与框架 SecurityOutboxProcessor 各自分发，未触碰 sys_security_outbox",
+    "未改框架既有.java": "git diff 仅 xinyi-admin/pom.xml（附加 test 依赖+failsafe classesDirectory）；无框架 .java 改动",
+    "有序锁固定顺序": "OrderLocks 去重升序给出规范加锁顺序；DeadlockRetry 仅对 PessimisticLockingFailureException(死锁1213/锁等待1205)有限重试、其余异常原样抛出；中继 selectDueForUpdate 用 FOR UPDATE SKIP LOCKED 真实行锁"
+  },
+  "deferredNote": "MiniPrincipal 仅定义只读契约，令牌签发/刷新轮换/会话持久化(vi_session*)由 I01/I03 实现并填充；@RestControllerAdvice 的 V6 ApiError 信封渲染留待首个 vi Controller 任务（E06 服务层直接抛 ViException，IT 断言其 errorCode/HTTP 状态）；具体 OutboxDispatcher（通知/支付查单/补偿）由对应业务任务注册，E06 仅提供基座+中继+SPI；table_implementation_map.json 沿用 M0 既有模式（全 66 表 NOT_ASSESSED，G01 期统一对账），本任务不逐条改写。",
+  "warning": "平台基座（幂等/双主体审计/outbox/有序锁/死锁重试/方法覆写过滤器）真实集成与负向场景通过；但尚无业务 Controller/Service 调用本基座，未连真实 HTTP 与真实供应商。构建/集成通过≠业务联调通过。MySQL 9.6.0 与目标 8.4 偏差仍为 RELEASE 门禁（生产 8.4 须复跑 SQL/CAS）。"
+}
