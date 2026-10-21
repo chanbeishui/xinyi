@@ -1,0 +1,56 @@
+{
+  "taskId": "E07",
+  "implementer": "Qoder-Agent",
+  "codeCommit": "提交在本步之后；新增 FixtureProvisioner/E07TestingIT 与 IT 库引导脚本，修改 ViIntegrationTestConfiguration(加 FixturePort bean)、ViHttpSuiteIT(V6.0→V6.1 路径)；均在 src/test，未改任何 src/main 框架代码",
+  "codeFiles": [
+    "xinyi-admin/src/test/java/com/xinyi/web/viit/FixtureProvisioner.java",
+    "xinyi-admin/src/test/java/com/xinyi/web/viit/E07TestingIT.java",
+    "xinyi-admin/src/test/java/com/xinyi/web/viit/ViIntegrationTestConfiguration.java",
+    "xinyi-admin/src/test/java/com/xinyi/web/viit/ViHttpSuiteIT.java",
+    "docs/implementation/vehicle/E07/test_fixture_run.sql",
+    "docs/implementation/vehicle/E07/bootstrap_it_db.sh",
+    "docs/implementation/vehicle/E07/report.md"
+  ],
+  "runs": [
+    {
+      "command": "mvn -pl xinyi-admin -am -DskipTests package",
+      "exitCode": 0,
+      "layer": "BUILD",
+      "checksRun": 1,
+      "skipped": 0,
+      "reportPath": "docs/implementation/vehicle/E07/report.md",
+      "note": "BUILD SUCCESS；生产 fat jar target/xinyi-admin.jar(90MB) 打包成功。unzip -l 扫描确认 jar 内无 com/xinyi/web/viit/、无 __integration（测试控制面只在 src/test，不进生产包）。"
+    },
+    {
+      "command": "mvn -pl xinyi-admin -am -Pvi-it -Dit.test=E07TestingIT verify",
+      "exitCode": 0,
+      "layer": "LIVE_HTTP_MYSQL",
+      "testsRun": 5,
+      "skipped": 0,
+      "reportPath": "docs/implementation/vehicle/E07/report.md",
+      "note": "BUILD SUCCESS；E07TestingIT 5 用例 0失败0错误0跳过。真实启动嵌入式服务器(RANDOM_PORT,仅127.0.0.1)连隔离库 xinyi_vi_it_e07，经真实 HTTP→SpringSecurity(TestGuard)→ControlApi→FixtureProvisioner→真实框架 ISysDictDataService/ISysUserService→MyBatis→MySQL。控制密钥经环境变量 VI_TEST_CONTROL_KEY 注入(不硬编码)。"
+    },
+    {
+      "command": "mysql 探针：IT 库夹具产物 vs 业务库 xinyi 隔离性",
+      "exitCode": 0,
+      "layer": "MYSQL_PROBES",
+      "testsRun": 7,
+      "skipped": 0,
+      "reportPath": "docs/implementation/vehicle/E07/report.md",
+      "note": "IT库 xinyi_vi_it_e07：TEST_CAR字典=1、TEST_INSPECTION字典=1、test_fixture_run=2、vi_account=0(未造业务账号)、vi_idempotency=0(未造终态)。业务库 xinyi：TEST_CAR=0(夹具零触碰)、无 test_fixture_run 表、vi_三平台表仍0/0/0。证明控制面/夹具仅在隔离库运行。"
+    }
+  ],
+  "review": {
+    "reviewer": null,
+    "approved": false,
+    "reportPath": null,
+    "note": "REVIEWED 需独立复核人≠实现者；本 Agent 不自审。"
+  },
+  "negativeChecks": {
+    "生产jar无__integration": "unzip -l target/xinyi-admin.jar 无 com/xinyi/web/viit/、无 __integration；E07TestingIT『生产jar不含测试控制面类』用例扫描 jar entries 断言通过；控制面 @Profile(vi-it)+src/test，不被 main 组件扫描/打包",
+    "控制密钥和DB guard双校验": "TestGuard 同时校验 X-Test-Control-Key(常量时间 MessageDigest.isEqual)+loopback+vi.environment=integration+SIMULATOR+DATABASE() 匹配 xinyi_vi_(dev|it_*)+test_environment_guard(kind=XINYI_VEHICLE_ISOLATED,key_hash=SHA256(key))。E07TestingIT：正确密钥→/runtime 200 返回守卫信息；错误密钥→安全层拒绝(请求不达 ControlApi)，本框架 AuthenticationEntryPoint 以 HTTP200+{code:401} 表达拒绝，断言 body.code∈{401,403} 且不含 databaseGuard",
+    "禁止设任意订单目标状态": "FixturePort 接口仅 create/advanceClock/runDue/applyProviderEvent，无任何『设订单目标状态』方法；IDENTITY 夹具只建测试字典+run登记，vi_account/vi_idempotency=0(不造业务/终态)；BOOKING 诚实抛 UnsupportedOperationException(经 GlobalExceptionHandler→body.code=500)，E07TestingIT 断言其不返回 runId/vehicleTypeCode、非固定成功"
+  },
+  "deferredNote": "E07 分步落地 FixturePort：仅 IDENTITY(基础测试字典 TEST_CAR/TEST_INSPECTION + run 登记 + 严格契约响应)与守卫已实现并经真实 HTTP 验证；BOOKING(站点/价格/时段,依赖 C02/C03/C04)、advanceClock(注入 Clock+真实任务到期扫描)、runDue(生产 TaskProcessor 到期逻辑)、applyProviderEvent(可信事件应用服务+测试 ProviderVerifier) 均诚实抛 UnsupportedOperationException 标明延后，绝不返回固定成功、不造 PAID/RETURNED/CONFIRMED 终态。ViHttpSuiteIT(跑 pytest live 身份/报价用例)因 owner/address/quote 业务端点尚未实现，非 E07 验证命令目标(E07 只跑 E07TestingIT)，其 V6.0→V6.1 路径已修(D-E04-5)，待业务端点就绪后由对应任务驱动。ci-stage 仍 FOUNDATION，未进入 IDENTITY/BOOKING 业务验收阶段。",
+  "warning": "测试控制面+IDENTITY 基础夹具+双校验守卫经真实 HTTP/MySQL 验证通过；但仅外部供应商/未实现业务分发为替身或延后，未声称任何真实微信/支付/地图/OCR/活体渠道通过，未声称业务端点(owner/address/quote/booking)已实现。隔离库 xinyi_vi_it_e07 为一次性测试库(含夹具残留 TEST_CAR 字典+2条run登记)，可弃可经 bootstrap_it_db.sh 重建；业务库 xinyi 全程零改动。"
+}

@@ -1,4 +1,7 @@
 package com.xinyi.web.viit;
+import com.xinyi.system.service.ISysDictDataService;
+import com.xinyi.system.service.ISysDictTypeService;
+import com.xinyi.system.service.ISysUserService;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.util.HexFormat;
@@ -25,6 +28,9 @@ import org.springframework.http.HttpStatus;
 @Import(ViIntegrationTestConfiguration.ControlApi.class)
 public class ViIntegrationTestConfiguration {
  @Bean TestGuard viTestGuard(Environment env,JdbcTemplate jdbc){return new TestGuard(env,jdbc);}
+ /** E07：真实夹具供给（调用框架 Service，不 mock）；缺此 Bean 则 ControlApi 无法构造、上下文启动失败。 */
+ @Bean FixturePort fixturePort(ISysDictDataService dictDataService,ISysDictTypeService dictTypeService,
+   ISysUserService userService,JdbcTemplate jdbc){return new FixtureProvisioner(dictDataService,dictTypeService,userService,jdbc);}
  @Bean @Order(-100)
  SecurityFilterChain integrationOnly(HttpSecurity http,TestGuard guard) throws Exception {
   return http.securityMatcher("/__integration/**")

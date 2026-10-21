@@ -21,7 +21,7 @@ public class ViHttpSuiteIT {
  @LocalServerPort int port;
  @Test void realHttpAndDatabaseSuite() throws Exception {
   Path repo=Path.of(System.getenv().getOrDefault("VI_REPO_ROOT",".." )).toAbsolutePath().normalize();
-  Path tests=repo.resolve("docs/vehicle/V6.0/13_真实集成测试/live");
+  Path tests=repo.resolve("docs/vehicle/V6.1/13_真实集成测试/live");
   assertTrue(Files.isDirectory(tests),"缺真实测试程序路径");
   Path report=repo.resolve("docs/implementation/vehicle/evidence/live-junit.xml");Files.createDirectories(report.getParent());
   String python=System.getenv().getOrDefault("VI_PYTHON","python");
