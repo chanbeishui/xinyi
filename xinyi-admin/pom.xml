@@ -56,6 +56,14 @@
 
     
         <dependency><groupId>com.xinyi</groupId><artifactId>xinyi-rongli</artifactId><version>${project.version}</version></dependency>
+
+        <!-- 测试依赖常驻 test 作用域：使 viit 测试骨架与 *IT 在普通 `mvn test` 下也能通过 testCompile；
+             vi-it profile 仅负责 failsafe 的 IT 执行，不再单独门控测试依赖（修正 D-E04-2 潜在编译失败）。 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -89,9 +97,13 @@
 
 <profiles><!-- 合并到xinyi-admin的profiles，依赖/插件存在则复用；不是独立可执行pom -->
 <profile><id>vi-it</id>
- <dependencies><dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-test</artifactId><scope>test</scope></dependency></dependencies>
  <build><plugins><plugin><groupId>org.apache.maven.plugins</groupId><artifactId>maven-failsafe-plugin</artifactId><version>3.5.4</version>
-  <configuration><includes><include>**/*IT.java</include></includes><failIfNoTests>true</failIfNoTests></configuration>
+  <configuration><includes><include>**/*IT.java</include></includes><failIfNoTests>true</failIfNoTests>
+   <!-- spring-boot:repackage 会把 xinyi-admin.jar 变成 BOOT-INF/classes 结构的 fat jar；
+        failsafe 默认把项目 artifact 当 classpath 会导致主类 TypeNotPresentException。
+        显式用 target/classes 作为类目录，IT 才能加载 RuoYiApplication 与业务类。 -->
+   <classesDirectory>${project.build.outputDirectory}</classesDirectory>
+  </configuration>
   <executions><execution><goals><goal>integration-test</goal><goal>verify</goal></goals></execution></executions>
  </plugin></plugins></build>
 </profile>

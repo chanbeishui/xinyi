@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xinyi.rongli.platform.mapper.ViEventLogMapper">
+
+    <resultMap id="ViEventLogMap" type="com.xinyi.rongli.platform.domain.ViEventLog">
+        <id property="id" column="id"/>
+        <result property="orderId" column="order_id"/>
+        <result property="aggregateType" column="aggregate_type"/>
+        <result property="aggregateId" column="aggregate_id"/>
+        <result property="action" column="action"/>
+        <result property="actorAccountId" column="actor_account_id"/>
+        <result property="actorUserId" column="actor_user_id"/>
+        <result property="actingRole" column="acting_role"/>
+        <result property="stationId" column="station_id"/>
+        <result property="beforeSummary" column="before_summary"/>
+        <result property="afterSummary" column="after_summary"/>
+        <result property="reason" column="reason"/>
+        <result property="actorRealm" column="actor_realm"/>
+        <result property="sessionId" column="session_id"/>
+        <result property="contextVersion" column="context_version"/>
+        <result property="createdAt" column="created_at"
+                typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+        <result property="updatedAt" column="updated_at"
+                typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+        <result property="version" column="version"/>
+    </resultMap>
+
+    <sql id="cols">
+        id, order_id, aggregate_type, aggregate_id, action, actor_account_id, actor_user_id,
+        acting_role, station_id, before_summary, after_summary, reason, actor_realm,
+        session_id, context_version, created_at, updated_at, version
+    </sql>
+
+    <insert id="insert" parameterType="com.xinyi.rongli.platform.domain.ViEventLog"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO vi_event_log
+            (order_id, aggregate_type, aggregate_id, action, actor_account_id, actor_user_id,
+             acting_role, station_id, before_summary, after_summary, reason, actor_realm,
+             session_id, context_version)
+        VALUES
+            (#{orderId}, #{aggregateType}, #{aggregateId}, #{action}, #{actorAccountId}, #{actorUserId},
+             #{actingRole}, #{stationId}, #{beforeSummary}, #{afterSummary}, #{reason}, #{actorRealm},
+             #{sessionId}, #{contextVersion})
+    </insert>
+
+    <select id="selectByAggregate" resultMap="ViEventLogMap">
+        SELECT <include refid="cols"/> FROM vi_event_log
+        WHERE aggregate_type = #{aggregateType} AND aggregate_id = #{aggregateId}
+        ORDER BY created_at, id
+    </select>
+
+</mapper>

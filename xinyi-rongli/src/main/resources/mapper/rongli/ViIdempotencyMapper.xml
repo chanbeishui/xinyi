@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xinyi.rongli.platform.mapper.ViIdempotencyMapper">
+
+    <resultMap id="ViIdempotencyMap" type="com.xinyi.rongli.platform.domain.ViIdempotency">
+        <id property="id" column="id"/>
+        <result property="subjectKey" column="subject_key"/>
+        <result property="actionKey" column="action_key"/>
+        <result property="requestKey" column="request_key"/>
+        <result property="requestMac" column="request_mac" jdbcType="BINARY"/>
+        <result property="resultJson" column="result_json"/>
+        <result property="status" column="status"
+                typeHandler="org.apache.ibatis.type.EnumTypeHandler"
+                javaType="com.xinyi.rongli.platform.domain.IdempotencyStatus"/>
+        <result property="expiresAt" column="expires_at"
+                typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+        <result property="createdAt" column="created_at"
+                typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+        <result property="updatedAt" column="updated_at"
+                typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+        <result property="version" column="version"/>
+    </resultMap>
+
+    <sql id="cols">
+        id, subject_key, action_key, request_key, request_mac, result_json, status,
+        expires_at, created_at, updated_at, version
+    </sql>
+
+    <insert id="insertProcessing" parameterType="com.xinyi.rongli.platform.domain.ViIdempotency"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO vi_idempotency
+            (subject_key, action_key, request_key, request_mac, result_json, status, expires_at)
+        VALUES
+            (#{subjectKey}, #{actionKey}, #{requestKey}, #{requestMac,jdbcType=BINARY},
+             #{resultJson}, #{status,typeHandler=org.apache.ibatis.type.EnumTypeHandler},
+             #{expiresAt,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler})
+    </insert>
+
+    <select id="selectByKey" resultMap="ViIdempotencyMap">
+        SELECT <include refid="cols"/>
+        FROM vi_idempotency
+        WHERE subject_key = #{subjectKey} AND action_key = #{actionKey} AND request_key = #{requestKey}
+    </select>
+
+    <update id="markDone">
+        UPDATE vi_idempotency
+        SET status = 'DONE', result_json = #{resultJson}, version = version + 1,
+            updated_at = UTC_TIMESTAMP(3)
+        WHERE id = #{id} AND version = #{expectedVersion} AND status = 'PROCESSING'
+    </update>
+
+    <update id="markDoneNoResult">
+        UPDATE vi_idempotency
+        SET status = 'DONE', version = version + 1, updated_at = UTC_TIMESTAMP(3)
+        WHERE id = #{id} AND version = #{expectedVersion} AND status = 'PROCESSING'
+    </update>
+
+    <delete id="deleteExpired">
+        DELETE FROM vi_idempotency
+        WHERE expires_at &lt; #{now,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler}
+    </delete>
+
+</mapper>
