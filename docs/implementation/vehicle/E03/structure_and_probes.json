@@ -1,0 +1,51 @@
+{
+  "database": "xinyi",
+  "checkedAt": "2026-10-21T14:03:07.394599+00:00",
+  "structure": {
+    "actualViTables": 66,
+    "targetTables": 66,
+    "missing": [],
+    "unexpected": [],
+    "columnMismatch": [],
+    "pkMismatch": [],
+    "generatedMismatch": [],
+    "tablesWithChecksButNoneInDB": [],
+    "totalChecksInDB": 158
+  },
+  "probes": [
+    {
+      "probe": "CHECK拒绝非法枚举",
+      "pass": true,
+      "detail": "errno=3819 (期望3819 CHECK 违反)"
+    },
+    {
+      "probe": "生成列禁止手动写入",
+      "pass": true,
+      "detail": "errno=3105 (期望3105 生成列不可写)"
+    },
+    {
+      "probe": "自然键唯一(主键)",
+      "pass": true,
+      "detail": "errno=1062 (期望1062 主键/唯一冲突)"
+    },
+    {
+      "probe": "唯一约束uk_app_open",
+      "pass": true,
+      "detail": "errno=1062 (期望1062 唯一约束)"
+    },
+    {
+      "probe": "UTC默认值(不依赖连接时区)",
+      "pass": true,
+      "detail": "created_at=2026-10-21 14:03:07.509000 vs UTC_TIMESTAMP=2026-10-21 14:03:07.509000 差0.00s, session_tz=SYSTEM (默认应为UTC,差<5s)"
+    },
+    {
+      "probe": "乐观锁version默认0",
+      "pass": true,
+      "detail": "乐观锁 version 默认=0 (期望0)"
+    }
+  ],
+  "serverVersion": "9.6.0",
+  "structurePass": true,
+  "probesPass": true,
+  "overallPass": true
+}
