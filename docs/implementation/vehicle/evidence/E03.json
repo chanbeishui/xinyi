@@ -1,0 +1,29 @@
+{
+  "taskId": "E03",
+  "implementer": "Qoder-Agent",
+  "codeCommit": "提交在本步之后；改动 sql/ 迁移脚本+ry同步、docs/implementation/vehicle/E03",
+  "codeFiles": [
+    "sql/migration_20261021_vehicle_initial.sql",
+    "sql/migration_20261021_vehicle_dict.sql",
+    "sql/ry_20260417.sql",
+    "docs/implementation/vehicle/E03/verify_structure_and_probes.py",
+    "docs/implementation/vehicle/E03/structure_and_probes.json",
+    "docs/implementation/vehicle/E03/report.md"
+  ],
+  "runs": [
+    {"command": "mysql xinyi < sql/migration_20261021_vehicle_initial.sql; 同步 ry_20260417.sql; 重建vi_account守卫测试", "exitCode": 0, "layer": "ENGINEERING_ENVIRONMENT", "checksRun": 4, "skipped": 0, "reportPath": "docs/implementation/vehicle/E03/report.md", "note": "66 vi表建成、总表102、sys_23未变、ry两路径CREATE集合一致、重复建表报1050守卫有效"},
+    {"command": "python verify_structure_and_probes.py (结构核验)", "exitCode": 0, "layer": "ENGINEERING_ENVIRONMENT", "checksRun": 5, "skipped": 0, "reportPath": "docs/implementation/vehicle/E03/report.md", "note": "66表/0缺失/0多余/列0不符/主键0不符/生成列0不符/158 CHECK；structurePass=true"},
+    {"command": "6项MySQL探针(事务ROLLBACK)", "exitCode": 0, "layer": "MYSQL_PROBES", "testsRun": 6, "skipped": 0, "reportPath": "docs/implementation/vehicle/E03/report.md", "note": "CHECK拒非法枚举3819/生成列禁写3105/自然键唯一1062/唯一约束1062/UTC默认/乐观锁version=0 全PASS"},
+    {"command": "mysql xinyi < sql/migration_20261021_vehicle_dict.sql (×2 可重复执行测试)", "exitCode": 0, "layer": "ENGINEERING_ENVIRONMENT", "checksRun": 2, "skipped": 0, "reportPath": "docs/implementation/vehicle/E03/report.md", "note": "vehicle_type=3/inspection_type=2，二次执行无重复"}
+  ],
+  "review": {"reviewer": null, "approved": false, "reportPath": null, "note": "REVIEWED 需独立复核人≠实现者；本 Agent 不自审。"},
+  "targetDatabase": "xinyi（现有框架库，用户决定；非资料包默认隔离 xinyi_vi_dev）",
+  "backup": ".vi-local/backup/xinyi_pre_vi_<ts>.sql（gitignore，写库前 mysqldump）",
+  "deviations": [
+    "database.py bootstrap 硬性只允许 xinyi_vi_dev/空库→对 xinyi 不适用；改手动 mysql 执行+自写 pymysql 核验，备份兜底",
+    "verify_mysql.py 在 MySQL9.6 输出格式下解包报错→改用自写 verify_structure_and_probes.py",
+    "MySQL 9.6.0 vs 生产目标 8.4：满足≥8.0.22，生产8.4须复跑（RELEASE门槛）",
+    "菜单/权限种子延后 E05（与后台路由强耦合）；字典种子已补"
+  ],
+  "warning": "真实 MySQL 结构核验+探针通过；未实现业务 Service/API、未连真实供应商。不推断业务功能通过。"
+}

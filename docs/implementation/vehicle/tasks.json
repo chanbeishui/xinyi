@@ -201,7 +201,7 @@
     "case_ids": [],
     "scope": "DEVELOPMENT",
     "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
-    "status": "NOT_ASSESSED",
+    "status": "VERIFIED",
     "code_paths": [
       "sql/migration_YYYYMMDD_vehicle_initial.sql",
       "sql/ry_20260417.sql",
@@ -226,10 +226,20 @@
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
     "starting_condition": "USER_CONFIRMED_NOT_STARTED",
-    "evidence": [],
+    "evidence": [
+      {
+        "path": "docs/implementation/vehicle/evidence/E03.json",
+        "sha256": "20a9f0fc45a2bd9485ae460205d1b2a8a5e59d23d96f0f6564b31ba7470220e1"
+      },
+      {
+        "path": "docs/implementation/vehicle/evidence/E03.json",
+        "sha256": "20a9f0fc45a2bd9485ae460205d1b2a8a5e59d23d96f0f6564b31ba7470220e1"
+      }
+    ],
     "implementation": null,
     "review": null,
-    "blocker": null
+    "blocker": null,
+    "updatedAt": "2026-10-21T14:09:30.892958+00:00"
   },
   {
     "id": "E04",
