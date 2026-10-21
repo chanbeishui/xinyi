@@ -54,6 +54,13 @@
             <artifactId>xinyi-generator</artifactId>
         </dependency>
 
+        <!-- 荣利机动车检测预约业务模块 -->
+        <dependency>
+            <groupId>com.xinyi</groupId>
+            <artifactId>xinyi-rongli</artifactId>
+            <version>${xinyi.version}</version>
+        </dependency>
+
     </dependencies>
 
     <build>

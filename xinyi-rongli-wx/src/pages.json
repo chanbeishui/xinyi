@@ -1,0 +1,114 @@
+{
+  "pages": [
+    {
+      "path": "pages/login/index",
+      "style": { "navigationStyle": "custom", "navigationBarTitleText": "登录" }
+    },
+    {
+      "path": "pages/role/index",
+      "style": { "navigationBarTitleText": "切换视角" }
+    },
+    {
+      "path": "pages/messages/index",
+      "style": { "navigationBarTitleText": "消息中心" }
+    },
+    {
+      "path": "pages/settings/index",
+      "style": { "navigationBarTitleText": "设置与隐私" }
+    },
+    {
+      "path": "pages/owner/home/index",
+      "style": { "navigationBarTitleText": "预约" }
+    },
+    {
+      "path": "pages/owner/orders/index",
+      "style": { "navigationBarTitleText": "预约记录" }
+    },
+    {
+      "path": "pages/owner/mine/index",
+      "style": { "navigationBarTitleText": "我的" }
+    },
+    {
+      "path": "pages/owner/vehicle/list",
+      "style": { "navigationBarTitleText": "我的车辆" }
+    },
+    {
+      "path": "pages/owner/vehicle/edit",
+      "style": { "navigationBarTitleText": "车辆信息" }
+    },
+    {
+      "path": "pages/owner/booking/slot",
+      "style": { "navigationBarTitleText": "选择上门时段" }
+    },
+    {
+      "path": "pages/owner/booking/confirm",
+      "style": { "navigationBarTitleText": "确认预约" }
+    },
+    {
+      "path": "pages/owner/pay/index",
+      "style": { "navigationBarTitleText": "支付" }
+    },
+    {
+      "path": "pages/owner/order/detail",
+      "style": { "navigationBarTitleText": "订单详情" }
+    },
+    {
+      "path": "pages/owner/after-sales/list",
+      "style": { "navigationBarTitleText": "售后与退款" }
+    },
+    {
+      "path": "pages/owner/after-sales/detail",
+      "style": { "navigationBarTitleText": "售后详情" }
+    },
+    {
+      "path": "pages/driver/home/index",
+      "style": { "navigationBarTitleText": "听单工作台" }
+    },
+    {
+      "path": "pages/driver/qualification/index",
+      "style": { "navigationBarTitleText": "代驾认证" }
+    },
+    {
+      "path": "pages/driver/invite/index",
+      "style": { "navigationBarTitleText": "派单邀约" }
+    },
+    {
+      "path": "pages/driver/task/index",
+      "style": { "navigationBarTitleText": "接送任务" }
+    },
+    {
+      "path": "pages/driver/statement/index",
+      "style": { "navigationBarTitleText": "我的对账" }
+    },
+    {
+      "path": "pages/driver/ledger/index",
+      "style": { "navigationBarTitleText": "收支流水" }
+    },
+    {
+      "path": "pages/driver/training/index",
+      "style": { "navigationBarTitleText": "服务培训" }
+    },
+    {
+      "path": "pages/driver/penalty/index",
+      "style": { "navigationBarTitleText": "处罚与申诉" }
+    },
+    {
+      "path": "pages/driver/mine/index",
+      "style": { "navigationBarTitleText": "我的" }
+    },
+    {
+      "path": "pages/station/home/index",
+      "style": { "navigationBarTitleText": "检测工作台" }
+    },
+    {
+      "path": "pages/station/order/index",
+      "style": { "navigationBarTitleText": "订单处理" }
+    }
+  ],
+  "globalStyle": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "荣利机动车检测预约",
+    "navigationBarBackgroundColor": "#FFFFFF",
+    "backgroundColor": "#F5F6F8"
+  }
+}

@@ -1,0 +1,21 @@
+/**
+ * 全局样式变量。小程序端使用 scss 变量 + CSS 自定义属性双轨，
+ * 便于在页面内直接写 var(--brand) 而不必 import。
+ */
+
+$brand: #1f6feb;
+$brand-dark: #1758c4;
+$brand-soft: #eaf1ff;
+$bg: #f5f6f8;
+$card: #ffffff;
+$text: #1a1d24;
+$sub: #6b7280;
+$muted: #9aa1ac;
+$line: #edeff3;
+$ok: #12b76a;
+$warn: #f79009;
+$danger: #e5484d;
+
+$radius-lg: 24rpx;
+$radius-md: 16rpx;
+$radius-sm: 10rpx;
