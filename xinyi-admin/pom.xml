@@ -54,6 +54,8 @@
             <artifactId>xinyi-generator</artifactId>
         </dependency>
 
+    
+        <dependency><groupId>com.xinyi</groupId><artifactId>xinyi-rongli</artifactId><version>${project.version}</version></dependency>
     </dependencies>
 
     <build>
@@ -85,4 +87,13 @@
         <finalName>${project.artifactId}</finalName>
     </build>
 
+<profiles><!-- 合并到xinyi-admin的profiles，依赖/插件存在则复用；不是独立可执行pom -->
+<profile><id>vi-it</id>
+ <dependencies><dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-test</artifactId><scope>test</scope></dependency></dependencies>
+ <build><plugins><plugin><groupId>org.apache.maven.plugins</groupId><artifactId>maven-failsafe-plugin</artifactId><version>3.5.4</version>
+  <configuration><includes><include>**/*IT.java</include></includes><failIfNoTests>true</failIfNoTests></configuration>
+  <executions><execution><goals><goal>integration-test</goal><goal>verify</goal></goals></execution></executions>
+ </plugin></plugins></build>
+</profile>
+</profiles>
 </project>

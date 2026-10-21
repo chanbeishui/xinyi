@@ -32,3 +32,11 @@
 - D-ENV-1 Docker 不可用（exitCode 127）：E02 的 compose 隔离 MySQL8.4+Redis 路径不可用。**用户最终决定（2026-10-21，覆盖此前"本机独立库 xinyi_vi_dev"方案）：vi 表初装到现有 `xinyi` 库（与框架 sys_ 表同库，RuoYi 单数据源），Redis 复用现有 6379，不另建任何实例。** 已删除误建的 `xinyi_vi_dev` 库+`vi_dev` 用户、停止误起的 Redis 36379；用户原库/原 Redis 未受影响。实测 `xinyi` 库排序规则 utf8mb4_0900_ai_ci 与 vi 表一致→R11 collation 混用风险消除。MySQL 服务端 9.6.0（vs 目标 8.4）：满足 ≥8.0.22，M0 开发可用，生产 8.4 须复跑 SQL/CAS（RELEASE 门槛）。E03 在 `xinyi` 库增量建 66 张 vi_ 表（IF NOT EXISTS 防护、绝不动 sys_ 及其他既有表）。
 - D-ENV-2 Maven 绑定 JDK25 与运行 JDK21 不一致：E04/E05 构建前统一（JAVA_HOME 指向 21 或配置 maven toolchain release17），避免 release17 编译落在 JDK25 上的未验证组合。
 - D-ENV-3 Node v22.16.0 满足 uni-app 模板 engines，无需 nvm 切换、不放宽 engines。
+
+## E04 裁决（工程基座构建引出）
+
+- D-E04-1 微信 wx.request 不支持 PATCH：miniapp http.ts 用 POST + `X-HTTP-Method-Override: PATCH` 表达契约的 PATCH 端点（owner/profile、driver/listening 等）。**后端（xinyi-rongli/admin）须启用方法覆盖过滤器**识别该头还原为 PATCH，否则 @PatchMapping 路由不到；E05/E06 落实，或后续契约把 MINI 的 PATCH 改 PUT/POST（二选一，倾向后端加过滤器，改动小）。
+- D-E04-2 backend-build 须激活 vi-it profile：admin 的 spring-boot-starter-test 仅在 vi-it profile，`mvn ... -DskipTests package` 不带 -Pvi-it 会因 viit 测试骨架编译失败。E04 用 `-Pvi-it` 构建成功。建议把 engineer.py 的 backend-build kind 补 -Pvi-it，或将 spring-boot-starter-test 移到 admin 主 test 依赖。
+- D-E04-3 @dcloudio/types 对齐 3.4.31（uni-app peer 要求），非 --legacy-peer-deps 掩盖；package-lock.json 来自真实 npm install（8063 行）已入库，后续 npm ci。
+- D-E04-4 微信 AppID = wx22f41349e671b362 配入 manifest.json mp-weixin（AppID 为公开标识，可入库）；DCloud uni统计 appid 未配（可选，构建告警可忽略）。
+- D-E04-5 待修：ViHttpSuiteIT.java line24 路径 `docs/vehicle/V6.0/...` 应为 V6.1（模板残留），E07 绑真实 IT 前修正。

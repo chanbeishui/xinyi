@@ -265,7 +265,7 @@
     "case_ids": [],
     "scope": "DEVELOPMENT",
     "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
-    "status": "NOT_ASSESSED",
+    "status": "VERIFIED",
     "code_paths": [
       "pom.xml",
       "xinyi-admin/pom.xml",
@@ -295,10 +295,20 @@
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
     "starting_condition": "USER_CONFIRMED_NOT_STARTED",
-    "evidence": [],
+    "evidence": [
+      {
+        "path": "docs/implementation/vehicle/evidence/E04.json",
+        "sha256": "3a7926ad5219f559ec7211e1923ba19faf10dba1322842755a33c4680ec6f6fc"
+      },
+      {
+        "path": "docs/implementation/vehicle/evidence/E04.json",
+        "sha256": "3a7926ad5219f559ec7211e1923ba19faf10dba1322842755a33c4680ec6f6fc"
+      }
+    ],
     "implementation": null,
     "review": null,
-    "blocker": null
+    "blocker": null,
+    "updatedAt": "2026-10-21T14:46:06.667968+00:00"
   },
   {
     "id": "E05",
