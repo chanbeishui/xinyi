@@ -40,3 +40,9 @@
 - D-E04-3 @dcloudio/types 对齐 3.4.31（uni-app peer 要求），非 --legacy-peer-deps 掩盖；package-lock.json 来自真实 npm install（8063 行）已入库，后续 npm ci。
 - D-E04-4 微信 AppID = wx22f41349e671b362 配入 manifest.json mp-weixin（AppID 为公开标识，可入库）；DCloud uni统计 appid 未配（可选，构建告警可忽略）。
 - D-E04-5 待修：ViHttpSuiteIT.java line24 路径 `docs/vehicle/V6.0/...` 应为 V6.1（模板残留），E07 绑真实 IT 前修正。
+
+## E05 裁决（PC 接入）
+
+- D-E05-1 vi PC 客户端 = 独立 axios 实例 `xinyi-ui/src/api/rongli/`（viError 映射 + request 适配器），复用框架 sys_user JWT（ADMIN 域），**不改 utils/request.ts 与 errorCode.ts**；/api 经 VITE_APP_BASE_API 代理只出现一次。
+- D-E05-2 前端测试框架：xinyi-ui 无 test 框架，按根 AGENTS「先约定再引入」**未擅自加 vitest**；E05 用 Node22 原生 `--experimental-strip-types` 跑纯逻辑单测（viError 11 断言）。完整组件/E2E 框架选型留待与用户约定后单列任务。
+- D-E05-3 既存技术债（非本项目引入）：`vue-tsc --noEmit` 全项目 26 个 `Module 'vue' has no exported member App/createApp` 类错误（main.ts/plugins/directive/vue-cropper），vite build 不受影响。建议单列技术债任务评估，不在机动车任务内顺带改（避免无关改动）。
