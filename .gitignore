@@ -59,3 +59,13 @@ docs/implementation/vehicle/E01/backup_pre_r3_r7/
 **/.env.local
 **/node_modules/
 **/.pytest_cache/
+
+# Python 构建产物
+__pycache__/
+*.pyc
+
+# E08 CI harness 生成的易变证据产物（含机器 hostname / 每次运行重写）：
+# 权威证据在 evidence/E08.json 与 E08/report.md；原始 JUnit XML/聚合报告可经命令重生成，不入库。
+docs/implementation/vehicle/evidence/*-junit.xml
+docs/implementation/vehicle/evidence/ci-report.json
+docs/implementation/vehicle/evidence/ci-run-*.json
