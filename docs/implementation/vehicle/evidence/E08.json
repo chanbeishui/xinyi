@@ -1,0 +1,62 @@
+{
+  "taskId": "E08",
+  "implementer": "Qoder-Agent",
+  "codeCommit": "提交在本步之后；新增仓库侧 CI harness docs/implementation/vehicle/E08/ci_run.py + 受控自测 test_ci_run.py + E08PlatformIT(JUnit)；未改任何框架/业务源码",
+  "codeFiles": [
+    "docs/implementation/vehicle/E08/ci_run.py",
+    "docs/implementation/vehicle/E08/test_ci_run.py",
+    "xinyi-admin/src/test/java/com/xinyi/web/viit/E08PlatformIT.java",
+    "docs/implementation/vehicle/E08/report.md"
+  ],
+  "runs": [
+    {
+      "command": "python -m pytest docs/vehicle/V6.1/12_工程执行/tests -q --junitxml=docs/implementation/vehicle/evidence/pkg-suite-junit.xml",
+      "exitCode": 0,
+      "layer": "TOOLS_OR_COMPONENT",
+      "testsRun": 72,
+      "skipped": 0,
+      "reportPath": "docs/implementation/vehicle/E08/report.md",
+      "note": "资料包契约/框架起点/模拟器/工具套件 72 passed（contract_regression/framework_start/simulator/tools）；JUnit XML 落 evidence/pkg-suite-junit.xml(10178B)。"
+    },
+    {
+      "command": "python docs/vehicle/V6.1/12_工程执行/engineer.py check --repo .",
+      "exitCode": 0,
+      "layer": "WORKSPACE_OBSERVATION",
+      "checksRun": 34,
+      "skipped": 0,
+      "reportPath": "docs/implementation/vehicle/E08/report.md",
+      "note": "工程结构静态检查 pass=34 fail=0；notCovered（真实构建/MySQL/npm/live backend/providers/WeChat）由 E06/E07 实跑覆盖，本任务不虚报。"
+    },
+    {
+      "command": "python -m pytest docs/implementation/vehicle/E08/test_ci_run.py -q --junitxml=docs/implementation/vehicle/evidence/e08-selftest-junit.xml",
+      "exitCode": 0,
+      "layer": "TOOLS_OR_COMPONENT",
+      "testsRun": 6,
+      "skipped": 0,
+      "reportPath": "docs/implementation/vehicle/E08/report.md",
+      "note": "CI harness 受控测试工作区自测 6 passed：run 模式通过命令 exit0/失败命令 exit3 原样传播、未知任务 exit2、resolve_argv 跨平台(python→当前解释器,shell=False)、report 模式覆盖对账+未实跑层 NOT_RUN+ci-stage 透传、NOT_RUN/无实现不算完成。JUnit XML 落 evidence/e08-selftest-junit.xml。"
+    },
+    {
+      "command": "mvn -pl xinyi-admin -am -Pvi-it -Dit.test=E08PlatformIT verify",
+      "exitCode": 0,
+      "layer": "TOOLS_OR_COMPONENT",
+      "testsRun": 1,
+      "skipped": 0,
+      "reportPath": "docs/implementation/vehicle/E08/report.md",
+      "note": "E08PlatformIT 1 用例 0失败0错误0跳过：驱动 ci_run.py report 对真实工作区聚合，断言 ci-stage=FOUNDATION、E00-E07 verifiedWithEvidence、api 覆盖总数249/case298、业务 implemented=0（不虚报完成）、L01真实渠道/L02真机/L03部署 NOT_RUN。BUILD SUCCESS。"
+    }
+  ],
+  "review": {
+    "reviewer": null,
+    "approved": false,
+    "reportPath": null,
+    "note": "REVIEWED 需独立复核人≠实现者；本 Agent 不自审。"
+  },
+  "negativeChecks": {
+    "不允许NOT_RUN/skip算通过": "ci_run.py report 将 L01_REAL_CHANNEL/L02_DEVICE/L03_DEPLOY 明确标 NOT_RUN；case 覆盖 298 全 NOT_RUN、passed=0；test_ci_run.py『report_does_not_count_pending_as_pending』与 E08PlatformIT 断言 NOT_RUN 层不被当通过；run 模式失败命令 exit3 原样传播（不吞成 0）",
+    "无测试/无实体行为不得标DONE": "report 的 verifiedWithEvidence 仅纳入 status∈{VERIFIED,REVIEWED} 且 evidence 文件真实存在者（当前 E00-E07）；api implemented 以 controllerFile/serviceFile 真实存在计数（当前 0）；ci-stage 诚实停 FOUNDATION，不用基座绿色代替全功能",
+    "未实跑DB/HTTP/真机明确NOT_RUN": "layers 中 L01/L02/L03=NOT_RUN，LIVE_HTTP_MYSQL=PARTIAL（E06 服务层+E07 控制面真实 HTTP/MySQL，业务端点未建）；不虚报真实渠道/真机/部署"
+  },
+  "deferredNote": "E08 建立仓库侧 CI/任务/证据 harness（ci_run.py run/report）并诚实定格 ci-stage=FOUNDATION。跨平台命令执行经 subprocess 列表参数+shutil.which（不经平台 shell）；JUnit 收集覆盖 mvn surefire/failsafe + pytest --junitxml。接口/页面/表/用例覆盖对账读四个 implementation_map（当前业务实现 0，随后续切片前移）。ci-stage 前移到 IDENTITY/BOOKING/FULL 需对应业务端点+真实集成，由后续任务按实际能力升级，不在 M0 虚报。engineer.py 已提供 run --kind 的 backend-build/db-test/live-test/integration-* 命令集与 JUnit 落盘，ci_run.py 与之互补（ci_run 侧重 tasks.json 台账聚合+覆盖对账+NOT_RUN 诚实分层）。",
+  "warning": "CI/任务/证据工具在受控测试工作区验证通过（自测 6 + E08PlatformIT 1）+ 资料包套件 72 + 工程检查 34；但 ci-stage=FOUNDATION 仅表示 M0 基座，接口/页面/用例业务覆盖为 0，真实渠道/真机/部署 NOT_RUN。工具绿色≠完整功能交付。"
+}

@@ -69,3 +69,11 @@
 - D-E07-5 **控制面错误经框架“恒 200+body.code”**：`/__integration/*` 在 RuoYi 应用内，安全拒绝经 `AuthenticationEntryPointImpl`→HTTP200+{code:401}，控制器异常经 `GlobalExceptionHandler`→HTTP200+{code:500,msg}。故 E07TestingIT 对拒绝/延后**断言 body.code 而非 HTTP 状态**（守卫确已拒绝、请求不达 ControlApi；BOOKING 确已诚实失败）。这是测试控制面（非 vi 业务 API）；vi 业务 API 仍按 ADR-04 用真实 HTTP 状态（E06 ViErrorCode/ViException 已备，待首个 vi Controller 的 @RestControllerAdvice 渲染）。
 - D-E07-6 E07TestingIT 用 `RestTemplate`（配 no-throw ErrorHandler 断言状态/体），因 Spring Boot 4.0.6 测试模块无 `TestRestTemplate`（org.springframework.boot.test.web.client 包不存在）。数据源经 `@SpringBootTest(properties)` 覆盖 `spring.datasource.druid.master.url` 指向 xinyi_vi_it_e07（复用 root 凭据、不硬编码密码）；控制密钥经 OS 环境 `VI_TEST_CONTROL_KEY` 注入（TestGuard 用 env.getRequiredProperty 解析）。
 - D-E07-7 修 D-E04-5：ViHttpSuiteIT 路径 V6.0→V6.1。ViHttpSuiteIT 跑 pytest live（owner/address/quote），依赖未实现业务端点，**非 E07 验证命令目标**（E07 只跑 E07TestingIT），待业务端点就绪由对应任务驱动；ci-stage 仍 FOUNDATION。
+
+## E08 裁决（CI/任务台账/证据）
+
+- D-E08-1 新增仓库侧 CI harness `docs/implementation/vehicle/E08/ci_run.py`（仅标准库），与资料包 `engineer.py` **互补不重复**：engineer.py 跑预置 kind 命令集（backend-build/db-test/live-test/integration-*，JUnit 落 evidence/），ci_run.py 侧重 **tasks.json 台账聚合 + 四图覆盖对账（api249/page287/table66/case298）+ 分层 NOT_RUN 诚实**。
+- D-E08-2 **跨平台命令执行**：`shlex.split`（posix 按平台）+ `shutil.which` 解析可执行（Windows 命中 mvn.cmd/python.exe）、`python`→`sys.executable`、`subprocess(shell=False)`——不经平台 shell，避免差异与命令注入。**失败退出码原样传播**（失败命令 exit3→整体 exit3；未知任务/无命令→exit2）。
+- D-E08-3 **诚实分层，不用 FOUNDATION 绿色代替全功能**：report 将 L01_REAL_CHANNEL/L02_DEVICE/L03_DEPLOY 明确 NOT_RUN、LIVE_HTTP_MYSQL=PARTIAL（E06 服务层+E07 控制面真实 HTTP/MySQL，业务端点未建）；verifiedWithEvidence 仅纳 status∈{VERIFIED,REVIEWED} 且 evidence 文件真实存在者（当前 E00-E07）；api implemented 以 controllerFile/serviceFile 真实存在计数（当前 0）；case passed 以 status=PASS+testMethod 真实计数（当前 0）。ci-stage 停 FOUNDATION，前移需业务端点+真实集成由后续任务升级。
+- D-E08-4 验证分两层：`test_ci_run.py`（pytest，tmp **受控测试工作区**驱动 ci_run，6 用例：退出码传播/跨平台/覆盖/NOT_RUN 不算完成）+ `E08PlatformIT`（轻量 JUnit IT，**不启 Spring**，shell 到 ci_run.py report 对真实仓库聚合断言）。E08PlatformIT 经 `mvn -Pvi-it -Dit.test=E08PlatformIT verify` 跑（1/1）。资料包套件 72 + engineer.py check 34/0 为 E08 两条列名命令。
+- D-E08-5 JUnit 报告统一归集 evidence/：mvn surefire/failsafe XML + pytest --junitxml（pkg-suite-junit.xml、e08-selftest-junit.xml）；ci_run.py collect_junit 汇总，report 列 junitReports（当前 8 个）。
