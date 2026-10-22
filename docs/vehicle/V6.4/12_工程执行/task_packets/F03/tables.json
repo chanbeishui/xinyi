@@ -1,0 +1,315 @@
+[
+  {
+    "name": "vi_handover",
+    "comment": "一次实物交接事务凭证",
+    "cols": [
+      [
+        "id",
+        "BIGINT NOT NULL AUTO_INCREMENT",
+        "数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串"
+      ],
+      [
+        "order_id",
+        "BIGINT NOT NULL",
+        "订单"
+      ],
+      [
+        "assignment_id",
+        "BIGINT NOT NULL",
+        "当前承接"
+      ],
+      [
+        "handover_type",
+        "VARCHAR(32) NOT NULL",
+        "HandoverType: OWNER_TO_DRIVER,DRIVER_TO_STATION,STATION_TO_DRIVER,DRIVER_TO_OWNER"
+      ],
+      [
+        "holder_account_id",
+        "BIGINT NOT NULL",
+        "持码基础账号"
+      ],
+      [
+        "verifier_account_id",
+        "BIGINT NOT NULL",
+        "核验基础账号"
+      ],
+      [
+        "code_mac",
+        "BINARY(32) NOT NULL",
+        "含订单/类型/代次随机盐的服务端带密钥MAC；4位码不能只裸哈希"
+      ],
+      [
+        "code_cipher",
+        "VARBINARY(512) NOT NULL",
+        "仅持码方短期读取所需的加密值，使用后销毁可读密文"
+      ],
+      [
+        "generation_no",
+        "INT NOT NULL",
+        "码代次"
+      ],
+      [
+        "status",
+        "VARCHAR(24) NOT NULL",
+        "HandoverStatus: PENDING,CONFIRMED,LOCKED,EXPIRED"
+      ],
+      [
+        "expires_at",
+        "DATETIME(3) NOT NULL",
+        "时效"
+      ],
+      [
+        "confirmed_at",
+        "DATETIME(3)",
+        "实物交接成功"
+      ],
+      [
+        "evidence_group_id",
+        "BIGINT",
+        "已经封存证据组"
+      ],
+      [
+        "active_key",
+        "VARCHAR(160) GENERATED ALWAYS AS (IF(status='PENDING',CONCAT(order_id,':',assignment_id,':',handover_type),NULL)) STORED",
+        "同时仅一个有效码"
+      ],
+      [
+        "created_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "创建时间，统一UTC"
+      ],
+      [
+        "updated_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "UTC更新时间；Mapper每次修改显式SET updated_at=UTC_TIMESTAMP(3)，不依赖连接时区"
+      ],
+      [
+        "version",
+        "BIGINT NOT NULL DEFAULT 0",
+        "乐观锁版本"
+      ]
+    ],
+    "indexes": [
+      "UNIQUE KEY uk_active_handover (active_key)",
+      "KEY ix_order_type (order_id,handover_type,confirmed_at)"
+    ],
+    "rule": "核验方不得读取密文解码接口；码消费/保管转移/封存/释放同一事务",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "engine": "InnoDB",
+    "collation": "utf8mb4_0900_ai_ci",
+    "columnRules": {
+      "id": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "order_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "assignment_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "handover_type": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false,
+        "enumRef": "HandoverType"
+      },
+      "holder_account_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "verifier_account_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "code_mac": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "code_cipher": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "generation_no": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "status": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false,
+        "enumRef": "HandoverStatus"
+      },
+      "expires_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "confirmed_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "evidence_group_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "active_key": {
+        "generated": true,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "created_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "updated_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "version": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      }
+    },
+    "checks": [
+      "CONSTRAINT ck_66_73b760054eb8 CHECK (`handover_type` IN ('OWNER_TO_DRIVER','DRIVER_TO_STATION','STATION_TO_DRIVER','DRIVER_TO_OWNER'))",
+      "CONSTRAINT ck_66_87e8157e4010 CHECK (`status` IN ('PENDING','CONFIRMED','LOCKED','EXPIRED'))",
+      "CONSTRAINT ck_ver_handover CHECK (version >= 0)"
+    ]
+  },
+  {
+    "name": "vi_handover_attempt_guard",
+    "comment": "跨重发的交接错误次数",
+    "cols": [
+      [
+        "guard_key",
+        "VARCHAR(160) NOT NULL",
+        "订单+承接+交接类型"
+      ],
+      [
+        "failed_attempts",
+        "INT NOT NULL DEFAULT 0",
+        "累计错误次数"
+      ],
+      [
+        "locked_at",
+        "DATETIME(3)",
+        "错3次锁定"
+      ],
+      [
+        "unlocked_by",
+        "BIGINT",
+        "人工复核授权人"
+      ],
+      [
+        "created_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "创建时间，统一UTC"
+      ],
+      [
+        "updated_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "UTC更新时间；Mapper每次修改显式SET updated_at=UTC_TIMESTAMP(3)，不依赖连接时区"
+      ],
+      [
+        "version",
+        "BIGINT NOT NULL DEFAULT 0",
+        "乐观锁版本"
+      ]
+    ],
+    "indexes": [],
+    "rule": "新生成验证码不能将失败计数清零；错误计数独立持久化，不能随失败事务全部回滚",
+    "primaryKey": [
+      "guard_key"
+    ],
+    "idStrategy": "BUSINESS_KEY",
+    "engine": "InnoDB",
+    "collation": "utf8mb4_0900_ai_ci",
+    "columnRules": {
+      "guard_key": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "failed_attempts": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "locked_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "unlocked_by": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "created_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "updated_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "version": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      }
+    },
+    "checks": [
+      "CONSTRAINT ck_ver_handover_attempt_guard CHECK (version >= 0)"
+    ]
+  }
+]

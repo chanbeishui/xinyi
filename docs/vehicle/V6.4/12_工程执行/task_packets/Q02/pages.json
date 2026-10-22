@@ -1,0 +1,30 @@
+[
+  {
+    "id": "B43",
+    "base": "B43",
+    "state": "default",
+    "name": "培训课程管理",
+    "kind": "page",
+    "parent": "B43",
+    "status": "有效·V6.4",
+    "fields": "课程、版本、发布状态",
+    "actions": "新建、编辑、发布",
+    "guards": "本人/授权范围、状态及expectedVersion；真实供应商和正式政策未配置不得返回生产通过",
+    "flows": "F41",
+    "source": "V4.2既有资格/培训/申诉能力缺失合同的本轮补全；不新增保险事故或钱包"
+  },
+  {
+    "id": "B44",
+    "base": "B44",
+    "state": "default",
+    "name": "课程与题库编辑",
+    "kind": "page",
+    "parent": "B44",
+    "status": "有效·V6.4",
+    "fields": "教材、必学时长、通过分数、题目与答案",
+    "actions": "保存、发布",
+    "guards": "本人/授权范围、状态及expectedVersion；真实供应商和正式政策未配置不得返回生产通过",
+    "flows": "F41",
+    "source": "V4.2既有资格/培训/申诉能力缺失合同的本轮补全；不新增保险事故或钱包"
+  }
+]

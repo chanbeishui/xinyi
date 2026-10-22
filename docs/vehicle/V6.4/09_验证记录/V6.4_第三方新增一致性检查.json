@@ -1,0 +1,80 @@
+{
+  "kind": "V6.4_NEW_SCOPE_CROSS_ARTIFACT_CHECK",
+  "checks": [
+    {
+      "name": "01 main PRD contains config, independent payment and old payment/notice integration",
+      "result": "PASS"
+    },
+    {
+      "name": "02 four vendor configuration shapes exist",
+      "result": "PASS"
+    },
+    {
+      "name": "03 payment switches are separate booleans",
+      "result": "PASS"
+    },
+    {
+      "name": "04 current UI catalog has all eight new admin pages",
+      "result": "PASS"
+    },
+    {
+      "name": "05 all legacy B21 editing removes supplier template input",
+      "result": "PASS"
+    },
+    {
+      "name": "06 actual offline page remains pending not paid",
+      "result": "PASS"
+    },
+    {
+      "name": "07 current operator sheets include supplier-specific fields",
+      "result": "PASS"
+    },
+    {
+      "name": "08 current instructions synchronize all copies",
+      "result": "PASS"
+    },
+    {
+      "name": "09 new seven task IDs exist and G01 depends on X07",
+      "result": "PASS"
+    },
+    {
+      "name": "10 every operation has exact one main owner task",
+      "result": "PASS"
+    },
+    {
+      "name": "11 every board has exact one main owner task",
+      "result": "PASS"
+    },
+    {
+      "name": "12 every table has database primary key source",
+      "result": "PASS"
+    },
+    {
+      "name": "13 configuration history is not ordinary mutable record",
+      "result": "PASS"
+    },
+    {
+      "name": "14 62 new cases present and all business cases NOT_RUN",
+      "result": "PASS"
+    },
+    {
+      "name": "15 standalone UI includes actual latest integration script",
+      "result": "PASS"
+    },
+    {
+      "name": "16 710 current PNG exports exist",
+      "result": "PASS"
+    },
+    {
+      "name": "17 actual 41 config UI tests passed without errors",
+      "result": "PASS"
+    },
+    {
+      "name": "18 no draft assignment written as production success",
+      "result": "PASS"
+    }
+  ],
+  "passed": 18,
+  "failed": 0,
+  "scope": "current documents, captured visible UI and machine models only"
+}

@@ -1,0 +1,448 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>业务动作与状态事务矩阵_V6.4</title><style>body{font:16px/1.75 -apple-system,BlinkMacSystemFont,"Microsoft YaHei",sans-serif;color:#202632;margin:0;background:#f6f7f9}header{padding:14px 24px;background:white;border-bottom:1px solid #ddd}main{max-width:1120px;margin:24px auto;padding:30px;background:white}h1{font-size:30px}h2{margin-top:36px}a{color:#0661bd}table{border-collapse:collapse;width:100%;display:block;overflow:auto;font-size:14px}td,th{border:1px solid #dde2ea;padding:10px;vertical-align:top}th{background:#f1f5fb}pre{padding:15px;background:#f2f4f7;overflow:auto}img{max-width:100%;height:auto}blockquote{padding:10px 20px;border-left:3px solid #2571be;background:#f4f8fc}@media(max-width:700px){main{padding:15px;margin:8px}h1{font-size:25px}}</style></head><body><header><a href="../00_开始.html">V6.4 完整资料</a>　<a href="../02_UI/index.html">交互原型</a>　T3.4</header><main><h1>业务动作与状态事务矩阵 V6.4 / T3.4</h1>
+<p>外部支付/文件/消息调用在事务外。服务端从会话解析实际操作人；客户端不能提交目标状态替代动作。</p>
+<table>
+<thead>
+<tr>
+  <th>ID</th>
+  <th>动作</th>
+  <th>前置条件</th>
+  <th>同事务产物</th>
+  <th>并发/幂等边界</th>
+  <th>领域</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>TX01</td>
+  <td>建单</td>
+  <td>报价/名额有效</td>
+  <td>订单、报价快照、两类预占、outbox</td>
+  <td>同幂等键唯一订单；额度条件更新</td>
+  <td>支付前</td>
+</tr>
+<tr>
+  <td>TX02</td>
+  <td>支付确认</td>
+  <td>可信渠道回调/查询</td>
+  <td>支付唯一入账、预占转正式、计划派单</td>
+  <td>永久渠道事件唯一；不重复派单</td>
+  <td>支付</td>
+</tr>
+<tr>
+  <td>TX03</td>
+  <td>关未付单</td>
+  <td>已确认渠道未支付且关闭</td>
+  <td>本地关闭、释放该单未用预占</td>
+  <td>不重售已支付额度</td>
+  <td>支付</td>
+</tr>
+<tr>
+  <td>TX04</td>
+  <td>接受邀约</td>
+  <td>资格/时限/无占用</td>
+  <td>接受、承接、唯一占用、订单流水</td>
+  <td>司机/订单唯一生效承接</td>
+  <td>代驾</td>
+</tr>
+<tr>
+  <td>TX05</td>
+  <td>接车交接</td>
+  <td>阶段/6类照片/里程/专用码/物品</td>
+  <td>交接、保管转代驾、流水、通知</td>
+  <td>与取消互斥；核验不能提前消费</td>
+  <td>交接</td>
+</tr>
+<tr>
+  <td>TX06</td>
+  <td>站点收车</td>
+  <td>授权站点/真实订单/到站证据/码</td>
+  <td>保管转站点、正常检测中、流水</td>
+  <td>到站不是收车；不释放司机</td>
+  <td>交接</td>
+</tr>
+<tr>
+  <td>TX07</td>
+  <td>登记结果</td>
+  <td>资料已核验、实测结论与凭证</td>
+  <td>唯一结果版本、履约、取车通知</td>
+  <td>PC和小程序不同内容并发409</td>
+  <td>检测</td>
+</tr>
+<tr>
+  <td>TX08</td>
+  <td>站点放行及取车</td>
+  <td>正常已登记结果或取消批准、专用码</td>
+  <td>交接、保管转司机、原订单事实</td>
+  <td>同人自证禁绕过；取消不造假结果</td>
+  <td>交接</td>
+</tr>
+<tr>
+  <td>TX09</td>
+  <td>实际归还</td>
+  <td>归还证据/里程/专用码/物品、真实交还</td>
+  <td>交接、保管转车主、结束匹配承接、释放占用、售后返还完成、outbox</td>
+  <td>旧事件不能释放新任务；不等待通知/核价</td>
+  <td>交接</td>
+</tr>
+<tr>
+  <td>TX10</td>
+  <td>解除未接车承接</td>
+  <td>尚未接车且与接车条件更新互斥</td>
+  <td>结束旧承接、精确释放、原单重派、计次</td>
+  <td>原订单与付款继续；费用由结束事件独立核定</td>
+  <td>派单</td>
+</tr>
+<tr>
+  <td>TX11</td>
+  <td>创建统一售后</td>
+  <td>本人或受权代办、订单未办结申请唯一</td>
+  <td>一份售后请求、证据引用、审计</td>
+  <td>旧取消/退款入口不得各建一份</td>
+  <td>售后</td>
+</tr>
+<tr>
+  <td>TX12</td>
+  <td>统一审核</td>
+  <td>不可自审、同时具备相应金额权限、实时版本余额</td>
+  <td>一条决定、金额预留、取消或待返还、退款任务/outbox</td>
+  <td>相同决定不再次审批；有车不释放</td>
+  <td>售后</td>
+</tr>
+<tr>
+  <td>TX13</td>
+  <td>执行退款</td>
+  <td>已批且满足返还条件，金额&gt;0</td>
+  <td>稳定refundNo绑定case+reviewRevision</td>
+  <td>外部调用在事务外；未知先查询原号</td>
+  <td>售后</td>
+</tr>
+<tr>
+  <td>TX14</td>
+  <td>确认退款成功</td>
+  <td>可信渠道验证</td>
+  <td>退款成功唯一记账、减少预留、售后办结判断</td>
+  <td>不重复退款，不更改已释放司机</td>
+  <td>售后</td>
+</tr>
+<tr>
+  <td>TX15</td>
+  <td>结束事件生成费用</td>
+  <td>真实承接已结束</td>
+  <td>按主体/代驾/事件唯一追加费用或待核价台账</td>
+  <td>失败异步重试，不阻断归还释放；客户退费不自动扣司机</td>
+  <td>对账</td>
+</tr>
+<tr>
+  <td>TX16</td>
+  <td>生成对账草稿</td>
+  <td>主体/司机/币种一致，显式ID集均可见、同人主体币种、源版本当前且无分配，允许待核价</td>
+  <td>工作行、分配、NULL总额或明确总额、小计、hash</td>
+  <td>按ID升序锁源明细；任一冲突整批回滚；日期不补选</td>
+  <td>对账</td>
+</tr>
+<tr>
+  <td>TX17</td>
+  <td>发送规则价账单</td>
+  <td>草稿完整，无未审核人工拟价</td>
+  <td>SENT、当前发布修订、不可变发送快照、outbox</td>
+  <td>人工改价不能绕过内部复核直接send</td>
+  <td>对账</td>
+</tr>
+<tr>
+  <td>TX18</td>
+  <td>本人确认当前版本</td>
+  <td>本人、SENT、revision/hash/version一致，必要复核有效</td>
+  <td>CONFIRMED、本人确认、唯一核价/差额结转及本单分配</td>
+  <td>与撤回互斥；重复确认不重复入账；派生金额不再入未来单</td>
+  <td>对账</td>
+</tr>
+<tr>
+  <td>TX19</td>
+  <td>处理差异</td>
+  <td>当前可处理的本人差异</td>
+  <td>说明与记录；改价另在本工作行执行</td>
+  <td>不能隐式发送或改已确认原账</td>
+  <td>对账</td>
+</tr>
+<tr>
+  <td>TX20</td>
+  <td>批准确认后调差</td>
+  <td>独立复核，原确认/付款账单只读，依据完整</td>
+  <td>唯一调整台账与源引用</td>
+  <td>不覆盖原账/付款，后续单纳入；不因客户退款自动扣费</td>
+  <td>对账</td>
+</tr>
+<tr>
+  <td>TX21</td>
+  <td>外部付款登记</td>
+  <td>已确认单、凭证、引用唯一、金额合法</td>
+  <td>PENDING证据及可登记预算预留</td>
+  <td>不发起转账、不计已付；减去其他待核实金额</td>
+  <td>付款核对</td>
+</tr>
+<tr>
+  <td>TX22</td>
+  <td>独立复核付款</td>
+  <td>不同登记人、再次核对余额和外部事实</td>
+  <td>VERIFIED、净核实付款、账单级付款投影、审计</td>
+  <td>锁同账单防并发超记；超额走差错</td>
+  <td>付款核对</td>
+</tr>
+<tr>
+  <td>TX23</td>
+  <td>资料维护</td>
+  <td>字段白名单/组织范围/核对依据</td>
+  <td>档案版本、操作审计</td>
+  <td>不改实名手机，不覆盖历史订单</td>
+  <td>资料</td>
+</tr>
+<tr>
+  <td>TX24</td>
+  <td>站点授权撤回</td>
+  <td>框架与业务范围合法</td>
+  <td>授权版本和审计</td>
+  <td>0授权禁后续写；未归还车辆仍有运营接管</td>
+  <td>权限</td>
+</tr>
+<tr>
+  <td>TX25</td>
+  <td>结果更正</td>
+  <td>原新版本、独立审批、真实依据</td>
+  <td>结果新版本、历史保留、通知</td>
+  <td>不重做交接、不二次释放</td>
+  <td>检测</td>
+</tr>
+<tr>
+  <td>TX26</td>
+  <td>服务确认/自动完成</td>
+  <td>已真实归还且无冻结争议</td>
+  <td>服务完成/评价入口</td>
+  <td>不触碰司机新任务</td>
+  <td>售后</td>
+</tr>
+<tr>
+  <td>TX27</td>
+  <td>敏感导出</td>
+  <td>审核范围/用途/时效</td>
+  <td>导出任务、字段裁剪、审计</td>
+  <td>下载时再鉴权；CSV公式注入防护</td>
+  <td>权限</td>
+</tr>
+<tr>
+  <td>TX28</td>
+  <td>保存行内拟价</td>
+  <td>DRAFT/DISPUTED，无付款记录，双版本合法</td>
+  <td>工作行拟金额、不可变price_change、父revision/version、审计</td>
+  <td>服务端算差额；不改源台账；不由客户端给原值</td>
+  <td>核价</td>
+</tr>
+<tr>
+  <td>TX29</td>
+  <td>提交整单复核</td>
+  <td>全部价格填写且有人工参与</td>
+  <td>待审快照、贡献者集、INTERNAL_REVIEW</td>
+  <td>每账单最多一个待审；前次复核不用于新revision</td>
+  <td>核价</td>
+</tr>
+<tr>
+  <td>TX30</td>
+  <td>复核通过并发送</td>
+  <td>实时权限、独立人员、同待审版本与hash</td>
+  <td>审核决定、发布快照、SENT、outbox</td>
+  <td>批准与发送同事务；通知失败不重审</td>
+  <td>核价</td>
+</tr>
+<tr>
+  <td>TX31</td>
+  <td>复核退回</td>
+  <td>待审且版本一致，有意见</td>
+  <td>拒绝记录、DRAFT</td>
+  <td>保留拟价与旧待审快照</td>
+  <td>核价</td>
+</tr>
+<tr>
+  <td>TX32</td>
+  <td>撤回待审或已发出</td>
+  <td>INTERNAL_REVIEW/SENT，无确认或付款记录</td>
+  <td>撤回记录、DRAFT、旧发布失效、内容与状态版本</td>
+  <td>锁同statement与司机确认竞争；不可两边都成功</td>
+  <td>核价</td>
+</tr>
+<tr>
+  <td>TX33</td>
+  <td>小程序登录/刷新</td>
+  <td>可信微信code或未消费刷新摘要</td>
+  <td>会话/令牌摘要、代际/轮换记录</td>
+  <td>令牌明文不进业务幂等表；换代原子</td>
+  <td>会话</td>
+</tr>
+<tr>
+  <td>TX34</td>
+  <td>切角色/站点</td>
+  <td>基础会话有效，目标能力及部门站点范围允许</td>
+  <td>本会话contextVersion、新访问令牌、审计</td>
+  <td>不同设备隔离，撤销工作权限仍可切OWNER</td>
+  <td>会话</td>
+</tr>
+<tr>
+  <td>TX35</td>
+  <td>小程序退出/撤权</td>
+  <td>真实主体和安全版本门禁</td>
+  <td>会话撤销或session_epoch/permission_version、outbox</td>
+  <td>Redis清理失败不恢复旧权限</td>
+  <td>会话</td>
+</tr>
+</tbody>
+</table>
+<p>|TX36|添加所选服务|可编辑草稿/差异状态，父版本合法，所有selectedEntries可用|工作行新增/复用、allocation、成员历史、父revision/hash与合计|任何源冲突全部回滚，不追加其他日期条目|组单|
+|TX37|从草稿移出服务|真实父账单未锁定，版本与理由有效|行is_active=0、成员历史、释放本单精确allocation、合计/范围更新|不物理删除；空草稿不得发送；旧复核失效|组单|
+|TX38|作废草稿|DRAFT、无确认、无任何付款记录|VOID与审计，释放当前活跃分配|撤回不等于释放；已确认未付不允许作废重开|组单|
+|TX39|未结清与历史查询|真实主体范围及本人约束|无业务写入；按费用、活跃分配、账单和付款投影查询|账单付款先分组聚合，连接服务不能重复SUM|查询|
+|TX40|付款凭证退回/核实|锁账单再锁指定record，独立人、余额版本一致|核实或退回记录；VERIFIED才计已付，待核实预留按结果更新|部分付款不分配到服务行；事件重复不二次加总|付款|</p>
+<h2>核价结转口径</h2>
+<p>草稿修改只更新工作副本；确认时把与源组成的最终差额一次性结转并分配到本账单。未核价源保持NULL，初始核价单独记录。原金额和最终金额不二次相加。会话/权限→账单→明细/源记录采用统一锁顺序，实际死锁恢复须在测试库验证。</p>
+<h2>V6.4 补齐生产与读取链路的事务</h2>
+<table>
+<thead>
+<tr>
+  <th>ID</th>
+  <th>动作</th>
+  <th>前置条件</th>
+  <th>同事务产物</th>
+  <th>并发/幂等边界</th>
+  <th>领域</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>TX41</td>
+  <td>微信手机号验证回执</td>
+  <td>本人会话；code摘要+requestId一致；未完成不重放外部code</td>
+  <td>领取receipt，外部调用在锁外；保存可信手机号事实</td>
+  <td>超时UNKNOWN先查回执/重新授权；不得把员工匹配失败改成登录失败</td>
+  <td>身份</td>
+</tr>
+<tr>
+  <td>TX42</td>
+  <td>手机号自动关联员工</td>
+  <td>唯一有效员工、双方无冲突、未阻止重绑</td>
+  <td>目录guard→sys用户→账号→关联；版本/唯一/审计/outbox同事务</td>
+  <td>目录变更同锁序；无员工/重号保留OWNER；手机号证明不授ADMIN</td>
+  <td>身份</td>
+</tr>
+<tr>
+  <td>TX43</td>
+  <td>发布培训课程</td>
+  <td>管理员有权、题目/选项/答案一致、版本正确</td>
+  <td>不可变发布版本、题库、审计</td>
+  <td>已发布不覆盖，修改创建新版本；attempt固定原版本</td>
+  <td>培训</td>
+</tr>
+<tr>
+  <td>TX44</td>
+  <td>创建/提交考试尝试</td>
+  <td>本人课程学习满足、未到期且版本匹配</td>
+  <td>题目快照、attemptId/截止；一次答案/成绩</td>
+  <td>未完成不创建；同attempt重复提交不得再次判分或改答案</td>
+  <td>培训</td>
+</tr>
+<tr>
+  <td>TX45</td>
+  <td>创建/核验活体会话</td>
+  <td>真实申请及供应商已配置，取得必要授权</td>
+  <td>业务sessionId/限时调用信息；可信结果版本与审计</td>
+  <td>外部调用不在DB长事务；只信回调/主动查询，客户端passed不可信</td>
+  <td>准入</td>
+</tr>
+<tr>
+  <td>TX46</td>
+  <td>提交/审核限制申诉</td>
+  <td>本人真实penalty，未办结重复复用；审核有权且非本人</td>
+  <td>申诉事实、公开意见、撤销/保留事件</td>
+  <td>pending罚单唯一，审核CAS；不删除原处罚和承接</td>
+  <td>申诉</td>
+</tr>
+</tbody>
+</table>
+<p>ProfilePatch与地址默认修改以vi_account行作为本人资料聚合门禁；读version=account.version。地址行另有自身version，删除/编辑须两方事务一致；所有设默认路径先锁account行，避免产生多个默认。Config多键修改使用业务配置中的受保护版本锚行作为聚合CAS（不对客户端开放该锚key），不误把各键独立row.version当作统一版本。</p>
+<p>|TX43|后台站点集合保存|sys_user与目标站点管理范围、expectedVersion|grant_set及全部子关系、框架auth_version、MINI权限版本、审计/outbox|空集合有版本；无OpenID也允许；任一越权整体拒绝|授权|
+|TX44|暂停/解除员工微信关系|合法管理权限、版本和原因|修改生命周期与阻止重绑标记、安全版本、审计/outbox|不删客户历史，不释放在手司机；重新登录不自动复活|身份|
+|TX45|允许本人重新核验|对应关联版本、管理权限、原因|只清自动重核阻止并审计，不直接授工作角色|本人新微信手机号证明后再核唯一关系；不可前端指定OpenID|身份|</p>
+<h2>V6.4 第三方配置与客户线下资金事务（新增）</h2>
+<table>
+<thead>
+<tr>
+  <th>动作</th>
+  <th>锁与前置</th>
+  <th>同事务写入</th>
+  <th>事务外</th>
+  <th>失败语义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>保存配置草稿</td>
+  <td>profile.version、作用域；凭据输入专用过滤</td>
+  <td>secret密文、新revision、draft指针、审计</td>
+  <td>无真实发送/扣款</td>
+  <td>旧active不变</td>
+</tr>
+<tr>
+  <td>发布/回滚</td>
+  <td>profile或template父锁、expectedVersion、哈希、check版本/有效期、依赖版本与启用条件</td>
+  <td>发布流水、active指针、版本、outbox</td>
+  <td>缓存通知；不是唯一权威</td>
+  <td>校验失败全不变；不能半生效</td>
+</tr>
+<tr>
+  <td>选择支付意图</td>
+  <td>订单与payment锁、当前政策、到期、方法互斥</td>
+  <td>支付方法锁和原收款身份快照</td>
+  <td>微信预支付在可恢复任务中执行</td>
+  <td>未知不转线下；同单号查询恢复</td>
+</tr>
+<tr>
+  <td>登记客户线下凭证</td>
+  <td>支付/退款与当前证明占用、全额、同主体、私有文件</td>
+  <td>SUBMITTED证明、REVIEW_PENDING、审计</td>
+  <td>待复核通知</td>
+  <td>未verified不计已付、不得派单</td>
+</tr>
+<tr>
+  <td>核实线下收款</td>
+  <td>支付锁、证明CAS、复核人不同、资金未重复</td>
+  <td>资金SUCCESS、证明VERIFIED、容量处置、履约事件/冲突待办、outbox</td>
+  <td>通知与计划派单</td>
+  <td>到期不盲复活名额；容量不足仍保留资金事实</td>
+</tr>
+<tr>
+  <td>核实线下退款</td>
+  <td>原退款已批准可执行、支付退款余额预留、不同复核人</td>
+  <td>证明VERIFIED、退款SUCCESS、支付余额变更、审计</td>
+  <td>结果通知</td>
+  <td>不再次审批取消、不重复付款、不调微信</td>
+</tr>
+<tr>
+  <td>创建消息任务</td>
+  <td>真实业务事件、当前已发布路由、收件人授权/订阅意向</td>
+  <td>唯一delivery、冻结模板/配置版、outbox</td>
+  <td>供应商调用与回执</td>
+  <td>提交成功不代表发送成功；UNKNOWN不自动重发</td>
+</tr>
+<tr>
+  <td>回执与备用</td>
+  <td>原delivery锁、可信供应商结果/查询、配置开关、业务时效</td>
+  <td>状态单向推进、审计</td>
+  <td>仅明确未发的失败可受控备用</td>
+  <td>供应商accepted不表示delivered/read</td>
+</tr>
+<tr>
+  <td>订阅结果报告</td>
+  <td>本人/app/prompt/nonce/模板集合/有效期</td>
+  <td>一次结果与哈希</td>
+  <td>后续实际事件才发送</td>
+  <td>拒绝不阻断业务；报告不是可信剩余配额</td>
+</tr>
+</tbody>
+</table>
+</main></body></html>

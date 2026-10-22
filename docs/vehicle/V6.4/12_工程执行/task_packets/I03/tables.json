@@ -1,0 +1,352 @@
+[
+  {
+    "name": "vi_session",
+    "comment": "小程序独立设备会话",
+    "cols": [
+      [
+        "id",
+        "BIGINT NOT NULL AUTO_INCREMENT",
+        "数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串"
+      ],
+      [
+        "account_id",
+        "BIGINT NOT NULL",
+        "基础账号"
+      ],
+      [
+        "app_id",
+        "VARCHAR(64) CHARACTER SET ascii COLLATE ascii_bin NOT NULL",
+        "微信应用"
+      ],
+      [
+        "status",
+        "VARCHAR(24) NOT NULL DEFAULT 'ACTIVE'",
+        "SessionStatus: ACTIVE,REVOKED,EXPIRED"
+      ],
+      [
+        "session_epoch",
+        "BIGINT NOT NULL",
+        "签发时代际"
+      ],
+      [
+        "context_version",
+        "BIGINT NOT NULL DEFAULT 1",
+        "当前设备角色/站点切换版本"
+      ],
+      [
+        "active_role",
+        "VARCHAR(24) NOT NULL DEFAULT 'OWNER'",
+        "OWNER/DRIVER/STATION；不是授权来源"
+      ],
+      [
+        "station_id",
+        "BIGINT",
+        "只存获授权当前站点上下文"
+      ],
+      [
+        "linked_sys_user_id",
+        "BIGINT",
+        "可信受控绑定快照；每次工作操作再查实时状态"
+      ],
+      [
+        "absolute_expires_at",
+        "DATETIME(3) NOT NULL",
+        "会话绝对截止，不无限滑动"
+      ],
+      [
+        "revoked_at",
+        "DATETIME(3)",
+        "退出或安全撤销"
+      ],
+      [
+        "device_label",
+        "VARCHAR(120)",
+        "最小必要设备标识摘要，不作为授权凭据"
+      ],
+      [
+        "created_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "UTC"
+      ],
+      [
+        "version",
+        "BIGINT NOT NULL DEFAULT 0",
+        "并发控制；不可变行不更新内容"
+      ]
+    ],
+    "indexes": [
+      "KEY ix_session_account (account_id,status)",
+      "KEY ix_session_expiry (status,absolute_expires_at)"
+    ],
+    "rule": "两设备隔离；当前工作能力失效仍允许经过基础会话验证切回OWNER。",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "engine": "InnoDB",
+    "collation": "utf8mb4_0900_ai_ci",
+    "columnRules": {
+      "id": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "account_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "app_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "status": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false,
+        "enumRef": "SessionStatus"
+      },
+      "session_epoch": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "context_version": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "active_role": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "station_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "linked_sys_user_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "absolute_expires_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "revoked_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "device_label": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "created_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "version": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      }
+    },
+    "checks": [
+      "CONSTRAINT ck_66_b41d9706dfcd CHECK (`status` IN ('ACTIVE','REVOKED','EXPIRED'))",
+      "CONSTRAINT ck_ver_session CHECK (version >= 0)"
+    ],
+    "writeMode": "CONTROLLED_LIFECYCLE"
+  },
+  {
+    "name": "vi_session_token",
+    "comment": "访问与刷新令牌摘要",
+    "cols": [
+      [
+        "id",
+        "BIGINT NOT NULL AUTO_INCREMENT",
+        "数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串"
+      ],
+      [
+        "session_id",
+        "BIGINT NOT NULL",
+        "vi_session"
+      ],
+      [
+        "token_hash",
+        "BINARY(32) NOT NULL",
+        "安全随机令牌的摘要；不存明文"
+      ],
+      [
+        "token_type",
+        "VARCHAR(16) NOT NULL",
+        "SessionTokenType: ACCESS,REFRESH"
+      ],
+      [
+        "generation",
+        "BIGINT NOT NULL",
+        "刷新令牌代际"
+      ],
+      [
+        "context_version",
+        "BIGINT",
+        "ACCESS绑定上下文"
+      ],
+      [
+        "parent_token_id",
+        "BIGINT",
+        "刷新祖先关系"
+      ],
+      [
+        "replaced_by_token_id",
+        "BIGINT",
+        "轮换后的令牌引用"
+      ],
+      [
+        "expires_at",
+        "DATETIME(3) NOT NULL",
+        "到期"
+      ],
+      [
+        "consumed_at",
+        "DATETIME(3)",
+        "刷新原子消费时间"
+      ],
+      [
+        "revoked_at",
+        "DATETIME(3)",
+        "撤销时间"
+      ],
+      [
+        "created_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "UTC"
+      ],
+      [
+        "version",
+        "BIGINT NOT NULL DEFAULT 0",
+        "并发控制；不可变行不更新内容"
+      ]
+    ],
+    "indexes": [
+      "UNIQUE KEY uk_token_hash (token_hash)",
+      "KEY ix_token_session (session_id,token_type,generation)",
+      "KEY ix_token_expiry (expires_at)"
+    ],
+    "rule": "仅TLS返回明文一次；刷新重用检测有保留窗口；登录刷新/切角色不进入通用幂等响应缓存。",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "engine": "InnoDB",
+    "collation": "utf8mb4_0900_ai_ci",
+    "columnRules": {
+      "id": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "session_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "token_hash": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "token_type": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false,
+        "enumRef": "SessionTokenType"
+      },
+      "generation": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "context_version": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "parent_token_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "replaced_by_token_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "expires_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "consumed_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "revoked_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "created_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "version": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      }
+    },
+    "checks": [
+      "CONSTRAINT ck_66_dafe3b97503e CHECK (`token_type` IN ('ACCESS','REFRESH'))",
+      "CONSTRAINT ck_ver_session_token CHECK (version >= 0)"
+    ],
+    "writeMode": "CONTROLLED_LIFECYCLE"
+  }
+]

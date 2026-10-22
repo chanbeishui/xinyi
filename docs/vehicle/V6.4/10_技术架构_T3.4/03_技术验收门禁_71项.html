@@ -1,0 +1,411 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>03_技术验收门禁_71项</title><style>body{font:16px/1.75 -apple-system,BlinkMacSystemFont,"Microsoft YaHei",sans-serif;color:#202632;margin:0;background:#f6f7f9}header{padding:14px 24px;background:white;border-bottom:1px solid #ddd}main{max-width:1120px;margin:24px auto;padding:30px;background:white}h1{font-size:30px}h2{margin-top:36px}a{color:#0661bd}table{border-collapse:collapse;width:100%;display:block;overflow:auto;font-size:14px}td,th{border:1px solid #dde2ea;padding:10px;vertical-align:top}th{background:#f1f5fb}pre{padding:15px;background:#f2f4f7;overflow:auto}img{max-width:100%;height:auto}blockquote{padding:10px 20px;border-left:3px solid #2571be;background:#f4f8fc}@media(max-width:700px){main{padding:15px;margin:8px}h1{font-size:25px}}</style></head><body><header><a href="../00_开始.html">V6.4 完整资料</a>　<a href="../02_UI/index.html">交互原型</a>　T3.4</header><main><h1>技术验收门禁 T3.4（71项，真实系统全部NOT_RUN）</h1>
+<p>全部状态为 NOT_RUN。本表是验收规格，不是本次已经执行通过的测试。每项执行后填写：环境、commit、命令、实际结果、证据路径、复核人、遗留项。真实供应商凭据缺失应填 BLOCKED_CREDENTIAL，不填 PASS。</p>
+<table>
+<thead>
+<tr>
+  <th>编号</th>
+  <th>验收场景</th>
+  <th>通过标准</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>G01</td>
+  <td>原后台登录与菜单回归</td>
+  <td>原认证、部门权限、退出不被新增小程序链破坏</td>
+</tr>
+<tr>
+  <td>G02</td>
+  <td>小程序token调用后台接口</td>
+  <td>拒绝，不能到达后台写服务</td>
+</tr>
+<tr>
+  <td>G03</td>
+  <td>后台token调用小程序个人接口</td>
+  <td>不自动充当任何车主或司机；需专门受控代办</td>
+</tr>
+<tr>
+  <td>G04</td>
+  <td>vi_account.id与sys_user超管id数值相同</td>
+  <td>不获得框架超管权限；两个realm区分</td>
+</tr>
+<tr>
+  <td>G05</td>
+  <td>重复微信登录/并发建档</td>
+  <td>同app_id/open_id仅一个账户；code使用及响应重试有明确策略</td>
+</tr>
+<tr>
+  <td>G06</td>
+  <td>伪造role或X-Client-Type</td>
+  <td>没有真实资格不能接单或切检测工作</td>
+</tr>
+<tr>
+  <td>G07</td>
+  <td>代驾未审核申请资料</td>
+  <td>可以提交与查看申请，不因尚无正式DRIVER权限陷入死循环</td>
+</tr>
+<tr>
+  <td>G08</td>
+  <td>双设备切身份</td>
+  <td>只改变当前session；旧上下文请求不覆盖新视角</td>
+</tr>
+<tr>
+  <td>G09</td>
+  <td>双请求同时切换角色</td>
+  <td>contextVersion只允许明确的一个提交顺序，冲突可恢复</td>
+</tr>
+<tr>
+  <td>G10</td>
+  <td>撤销员工绑定后切回车主</td>
+  <td>检测写入拒绝，基础OWNER仍可使用</td>
+</tr>
+<tr>
+  <td>G11</td>
+  <td>停用sys_user或auth_version变化</td>
+  <td>下一受保护工作请求读取权威状态并拒绝旧能力</td>
+</tr>
+<tr>
+  <td>G12</td>
+  <td>角色失效且Redis清理失败</td>
+  <td>数据库门禁仍阻止旧权限</td>
+</tr>
+<tr>
+  <td>G13</td>
+  <td>权威数据库不可用</td>
+  <td>安全失败关闭/503，无陈旧缓存越权</td>
+</tr>
+<tr>
+  <td>G14</td>
+  <td>刷新轮换并发与已消费token重用</td>
+  <td>不产生多个可独立扩权会话，有重用检测与恢复路径</td>
+</tr>
+<tr>
+  <td>G15</td>
+  <td>登录、刷新、切角色的日志和幂等响应</td>
+  <td>不存在明文token、微信code、session_key或密钥持久泄露</td>
+</tr>
+<tr>
+  <td>G16</td>
+  <td>原/new过滤器注册</td>
+  <td>只在对应SecurityFilterChain执行，不在Servlet容器重复注册</td>
+</tr>
+<tr>
+  <td>G17</td>
+  <td>部门范围A且只授B站</td>
+  <td>运行拒绝；授权界面展示范围冲突，不能保存假有效授权</td>
+</tr>
+<tr>
+  <td>G18</td>
+  <td>NONE/空授权与SELF范围</td>
+  <td>不返回全表；SELF不隐式扩大为全站</td>
+</tr>
+<tr>
+  <td>G19</td>
+  <td>伪造订单stationId/修改body归属</td>
+  <td>按数据库真实记录检查；不采信客户端伪造</td>
+</tr>
+<tr>
+  <td>G20</td>
+  <td>批量混入一个越权对象</td>
+  <td>整体拒绝并回滚，不部分写成功</td>
+</tr>
+<tr>
+  <td>G21</td>
+  <td>导出申请后撤权再下载</td>
+  <td>再次鉴权拒绝；统计总数也不泄露越权数据</td>
+</tr>
+<tr>
+  <td>G22</td>
+  <td>角色切换或sys_user绑定的同人审核</td>
+  <td>按可信主体关系阻止自审，不仅比较数值ID</td>
+</tr>
+<tr>
+  <td>G23</td>
+  <td>C端操作与内部任务审计</td>
+  <td>明确account/sysUser/realm；任务有系统来源，不冒充管理员</td>
+</tr>
+<tr>
+  <td>G24</td>
+  <td>超过2^53的ID与金额序列化</td>
+  <td>ID字符串无损；整数分未被全局Long序列化误改；sys接口回归</td>
+</tr>
+<tr>
+  <td>G25</td>
+  <td>定价小数、0.01元、边界和NULL</td>
+  <td>精确舍入和溢出检查；待核价不等于0；负调整不扩展到退款</td>
+</tr>
+<tr>
+  <td>G26</td>
+  <td>实际xinyi依赖引入与可执行jar</td>
+  <td>锁定组合构建/启动通过，留dependency tree和JDK/commit</td>
+</tr>
+<tr>
+  <td>G27</td>
+  <td>支付回调原始body与篡改测试</td>
+  <td>原文验签解密；改一个字节拒绝，不经JSON/XSS重写</td>
+</tr>
+<tr>
+  <td>G28</td>
+  <td>支付/退款重复与网络未知</td>
+  <td>唯一请求/渠道编号，不重复产生钱款副作用，不假成功</td>
+</tr>
+<tr>
+  <td>G29</td>
+  <td>Redis和应用重启、双实例任务领取</td>
+  <td>恢复数据库任务、租约有界，事件重放不重复授权/入账</td>
+</tr>
+<tr>
+  <td>G30</td>
+  <td>真实依赖启用与Mock隔离</td>
+  <td>生产成功替身不可装配；缺资质/凭据关闭对应业务；真实证据独立记录</td>
+</tr>
+</tbody>
+</table>
+<h2>首批提交建议</h2>
+<p>PR-A：技术ADR、V4契约差异、依赖验证工程。只合入验证结构，不改变生产路由。</p>
+<p>PR-B：小程序会话、令牌、认证链、ActorContext，附G01–G16。</p>
+<p>PR-C：员工桥接、VehicleScopeService、站点授权配置与审计，附G17–G23。</p>
+<p>PR-D：统一ID/金额DTO规范与依赖真实适配，附G24–G30；无凭据的真实测试仍保持阻塞。</p>
+<p>身份、站点授权通过后，才扩大预约支付闭环。每个PR只由指定安全负责人合并公共认证/权限类，其他Agent不能顺手改同一核心文件。</p>
+<h2>对账基础门禁（全部NOT_RUN）</h2>
+<table>
+<thead>
+<tr>
+  <th>编号</th>
+  <th>验收场景</th>
+  <th>通过标准</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>G31</td>
+  <td>NULL费用可进草稿</td>
+  <td>草稿可生成，amount=NULL，小计非最终；发送拒绝</td>
+</tr>
+<tr>
+  <td>G32</td>
+  <td>连续改价不重复加钱</td>
+  <td>60→70→65最后确认65，结转+5一次</td>
+</tr>
+<tr>
+  <td>G33</td>
+  <td>最初未知首次核价</td>
+  <td>NULL→30记录初始核价，原NULL保留，不伪装成0</td>
+</tr>
+<tr>
+  <td>G34</td>
+  <td>改价历史与原账分离</td>
+  <td>更新拟价同时追加历史，源ledger不可覆盖</td>
+</tr>
+<tr>
+  <td>G35</td>
+  <td>整单复核全部贡献者</td>
+  <td>任何人工改价参与者/提交人/司机本人不得复核</td>
+</tr>
+<tr>
+  <td>G36</td>
+  <td>审批与发送原子</td>
+  <td>待审快照同版本hash，批准并发出同事务，消息失败不重复审批</td>
+</tr>
+<tr>
+  <td>G37</td>
+  <td>确认与撤回竞争</td>
+  <td>只一个先成功，旧确认/撤回409，不改新版</td>
+</tr>
+<tr>
+  <td>G38</td>
+  <td>确认后及付款锁定</td>
+  <td>原账不可改，调差入后续记录，不删除付款事实解锁</td>
+</tr>
+<tr>
+  <td>G39</td>
+  <td>重复确认与结转重试</td>
+  <td>唯一确认事件，派生差额不再入其他账单</td>
+</tr>
+<tr>
+  <td>G40</td>
+  <td>未审核改价绕send</td>
+  <td>服务端拒绝，不能依赖隐藏按钮</td>
+</tr>
+<tr>
+  <td>G41</td>
+  <td>跨主体账单授权</td>
+  <td>能看站点订单不等于能改其他主体司机费</td>
+</tr>
+<tr>
+  <td>G42</td>
+  <td>导出版本与隐私</td>
+  <td>导出明确草稿/已发出/确认版本，长ID文本、金额单位、再次鉴权</td>
+</tr>
+</tbody>
+</table>
+<h2>V6.4 / T3.4 新增门禁（全部NOT_RUN）</h2>
+<table>
+<thead>
+<tr>
+  <th>编号</th>
+  <th>验收场景</th>
+  <th>通过标准</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>G43</td>
+  <td>明确集合契约</td>
+  <td>生成必须携带非空唯一entryId/sourceVersion集合；日期单独请求不得自动兜底</td>
+</tr>
+<tr>
+  <td>G44</td>
+  <td>原子占用</td>
+  <td>创建草稿、成员、唯一分配、审计、outbox在本地事务；任一明细冲突全回滚</td>
+</tr>
+<tr>
+  <td>G45</td>
+  <td>固定锁顺序</td>
+  <td>费用ID排序领取，校验主体/司机/版本；不以Redis过期释放事实</td>
+</tr>
+<tr>
+  <td>G46</td>
+  <td>成员工作行与历史</td>
+  <td>同稿移出再加复用工作行、保留历史；移出/作废只释放对应owner占用</td>
+</tr>
+<tr>
+  <td>G47</td>
+  <td>复核内容范围</td>
+  <td>新增/移出成员与改价都递增revision/hash，旧审批和本人确认无效</td>
+</tr>
+<tr>
+  <td>G48</td>
+  <td>确定性摘要</td>
+  <td>canonical哈希包含主体、代驾、币种、排序成员、拟价、版本，不含无关筛选条件</td>
+</tr>
+<tr>
+  <td>G49</td>
+  <td>读取模型</td>
+  <td>未结清、可组单、对账状态、付款状态分开；不得重复累计明细和账单余额</td>
+</tr>
+<tr>
+  <td>G50</td>
+  <td>付款登记预留</td>
+  <td>同一账单串行校验净应付减已核实减有效待核实；超额部分不记成功</td>
+</tr>
+<tr>
+  <td>G51</td>
+  <td>付款核实去重</td>
+  <td>单笔记录ID/CAS/流水唯一；重复批准无新增已付、无行级分摊</td>
+</tr>
+<tr>
+  <td>G52</td>
+  <td>隐私与授权</td>
+  <td>后台数据范围/全账费用主体与小程序本人投影分别验证，敏感凭证再鉴权</td>
+</tr>
+<tr>
+  <td>G53</td>
+  <td>初次初始化</td>
+  <td>已有sys保持；已有vi表预检中止，不重建资金/交接事实</td>
+</tr>
+<tr>
+  <td>G54</td>
+  <td>全链路故障</td>
+  <td>生成响应丢失/提交竞态/付款未知/撤权/进程重启均不重复组单或付清</td>
+</tr>
+</tbody>
+</table>
+<h2>V6.4审查修复门禁（全部NOT_RUN；静态证明另见09）</h2>
+<table>
+<thead>
+<tr>
+  <th>编号</th>
+  <th>目标</th>
+  <th>真实验收要求</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>G55</td>
+  <td>四视角嵌套DTO</td>
+  <td>执行对应TC-R50及基础场景，提供真实环境证据；NOT_RUN</td>
+</tr>
+<tr>
+  <td>G56</td>
+  <td>MINI确认公开回包</td>
+  <td>执行对应TC-R50及基础场景，提供真实环境证据；NOT_RUN</td>
+</tr>
+<tr>
+  <td>G57</td>
+  <td>唯一小程序logout</td>
+  <td>执行对应TC-R50及基础场景，提供真实环境证据；NOT_RUN</td>
+</tr>
+<tr>
+  <td>G58</td>
+  <td>直连代理/api路径</td>
+  <td>执行对应TC-R50及基础场景，提供真实环境证据；NOT_RUN</td>
+</tr>
+<tr>
+  <td>G59</td>
+  <td>全错误体与429</td>
+  <td>执行对应TC-R50及基础场景，提供真实环境证据；NOT_RUN</td>
+</tr>
+<tr>
+  <td>G60</td>
+  <td>处罚培训活体闭环</td>
+  <td>执行对应TC-R50及基础场景，提供真实环境证据；NOT_RUN</td>
+</tr>
+<tr>
+  <td>G61</td>
+  <td>注册权限及读写分离</td>
+  <td>执行对应TC-R50及基础场景，提供真实环境证据；NOT_RUN</td>
+</tr>
+<tr>
+  <td>G62</td>
+  <td>资料读取/更新版本</td>
+  <td>执行对应TC-R50及基础场景，提供真实环境证据；NOT_RUN</td>
+</tr>
+<tr>
+  <td>G63</td>
+  <td>手机号自动关联及后台撤销重核</td>
+  <td>执行对应TC-R50及基础场景，提供真实环境证据；NOT_RUN</td>
+</tr>
+<tr>
+  <td>G64</td>
+  <td>4自然表主键</td>
+  <td>执行对应TC-R50及基础场景，提供真实环境证据；NOT_RUN</td>
+</tr>
+<tr>
+  <td>G65</td>
+  <td>普通表自增策略</td>
+  <td>执行对应TC-R50及基础场景，提供真实环境证据；NOT_RUN</td>
+</tr>
+<tr>
+  <td>G66</td>
+  <td>枚举与治理组合</td>
+  <td>执行对应TC-R50及基础场景，提供真实环境证据；NOT_RUN</td>
+</tr>
+<tr>
+  <td>G67</td>
+  <td>独立ViRecord</td>
+  <td>执行对应TC-R50及基础场景，提供真实环境证据；NOT_RUN</td>
+</tr>
+<tr>
+  <td>G68</td>
+  <td>UTC与sys时间边界</td>
+  <td>执行对应TC-R50及基础场景，提供真实环境证据；NOT_RUN</td>
+</tr>
+<tr>
+  <td>G69</td>
+  <td>生成列写排除</td>
+  <td>执行对应TC-R50及基础场景，提供真实环境证据；NOT_RUN</td>
+</tr>
+<tr>
+  <td>G70</td>
+  <td>复合CAS与唯一结转</td>
+  <td>执行对应TC-R50及基础场景，提供真实环境证据；NOT_RUN</td>
+</tr>
+<tr>
+  <td>G71</td>
+  <td>feature逐条语义一致</td>
+  <td>执行对应TC-R50及基础场景，提供真实环境证据；NOT_RUN</td>
+</tr>
+</tbody>
+</table>
+</main></body></html>

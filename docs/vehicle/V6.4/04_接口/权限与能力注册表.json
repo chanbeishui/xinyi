@@ -1,0 +1,6413 @@
+{
+  "version": "V6.4",
+  "permissions": [
+    {
+      "code": "biz:aftersale:create",
+      "resource": "aftersale",
+      "action": "create",
+      "description": "创建统一取消与退款申请",
+      "operations": [
+        "POST /api/admin/orders/{orderNo}/after-sales",
+        "POST /api/admin/after-sales/{caseId}/notes"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:aftersale:list",
+      "resource": "aftersale",
+      "action": "list",
+      "description": "查看本订单售后记录",
+      "operations": [
+        "GET /api/admin/orders/{orderNo}/after-sales",
+        "GET /api/admin/after-sales",
+        "GET /api/admin/owners/{ownerId}/after-sales"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:aftersale:query",
+      "resource": "aftersale",
+      "action": "query",
+      "description": "统一售后详情",
+      "operations": [
+        "GET /api/admin/after-sales/{caseId}"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:aftersale:review",
+      "resource": "aftersale",
+      "action": "review",
+      "description": "提交一次统一审核",
+      "operations": [
+        "POST /api/admin/after-sales/{caseId}/review"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:aftersale:reviewpreview",
+      "resource": "aftersale",
+      "action": "reviewpreview",
+      "description": "预览当前取消及退款后果",
+      "operations": [
+        "POST /api/admin/after-sales/{caseId}/review-preview"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:assignment:list",
+      "resource": "assignment",
+      "action": "list",
+      "description": "代驾承接服务记录",
+      "operations": [
+        "GET /api/admin/drivers/{driverId}/assignments"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:audit:list",
+      "resource": "audit",
+      "action": "list",
+      "description": "审计事件",
+      "operations": [
+        "GET /api/admin/audit-events"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:capacity:edit",
+      "resource": "capacity",
+      "action": "edit",
+      "description": "修改未来容量",
+      "operations": [
+        "PUT /api/app/station/capacity/{slotId}",
+        "PUT /api/admin/capacity/{slotId}"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:capacity:list",
+      "resource": "capacity",
+      "action": "list",
+      "description": "查询容量",
+      "operations": [
+        "GET /api/app/station/capacity",
+        "GET /api/admin/capacity"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:config:edit",
+      "resource": "config",
+      "action": "edit",
+      "description": "配置保存",
+      "operations": [
+        "PUT /api/admin/config"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:config:query",
+      "resource": "config",
+      "action": "query",
+      "description": "业务配置",
+      "operations": [
+        "GET /api/admin/config"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:dashboard:list",
+      "resource": "dashboard",
+      "action": "list",
+      "description": "工作台指标",
+      "operations": [
+        "GET /api/admin/dashboard"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:delivery:query",
+      "resource": "delivery",
+      "action": "query",
+      "description": "脱敏发送结果查询",
+      "operations": [
+        "GET /api/admin/integrations/deliveries",
+        "POST /api/admin/integrations/deliveries/{deliveryId}/query"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:delivery:retry",
+      "resource": "delivery",
+      "action": "retry",
+      "description": "仅确定失败后重试",
+      "operations": [
+        "POST /api/admin/integrations/deliveries/{deliveryId}/retry"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:dispatch:create",
+      "resource": "dispatch",
+      "action": "create",
+      "description": "人工发出邀约",
+      "operations": [
+        "POST /api/admin/dispatch/manual-invites",
+        "POST /api/admin/dispatch/plans/{taskId}/apply"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:dispatch:edit",
+      "resource": "dispatch",
+      "action": "edit",
+      "description": "保存派单配置",
+      "operations": [
+        "PUT /api/admin/dispatch/config"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:dispatch:list",
+      "resource": "dispatch",
+      "action": "list",
+      "description": "调度队列",
+      "operations": [
+        "GET /api/admin/dispatch/queue",
+        "GET /api/admin/dispatch/candidates",
+        "GET /api/admin/dispatch/invites"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:dispatch:preview",
+      "resource": "dispatch",
+      "action": "preview",
+      "description": "计划变更影响预览",
+      "operations": [
+        "POST /api/admin/dispatch/plans/preview"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:dispatch:query",
+      "resource": "dispatch",
+      "action": "query",
+      "description": "派单配置",
+      "operations": [
+        "GET /api/admin/dispatch/config"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:dispute:list",
+      "resource": "dispute",
+      "action": "list",
+      "description": "争议列表",
+      "operations": [
+        "GET /api/admin/disputes"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:dispute:query",
+      "resource": "dispute",
+      "action": "query",
+      "description": "争议详情",
+      "operations": [
+        "GET /api/admin/disputes/{disputeId}"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:dispute:resolve",
+      "resource": "dispute",
+      "action": "resolve",
+      "description": "处理争议",
+      "operations": [
+        "POST /api/admin/disputes/{disputeId}/resolve"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:driver:disablenewassignments",
+      "resource": "driver",
+      "action": "disablenewassignments",
+      "description": "禁止新增承接",
+      "operations": [
+        "POST /api/admin/drivers/{driverId}/disable-new-assignments"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:driver:edit",
+      "resource": "driver",
+      "action": "edit",
+      "description": "维护档案备注及允许字段",
+      "operations": [
+        "PATCH /api/admin/drivers/{driverId}"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:driver:list",
+      "resource": "driver",
+      "action": "list",
+      "description": "代驾员列表",
+      "operations": [
+        "GET /api/admin/drivers"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:driver:query",
+      "resource": "driver",
+      "action": "query",
+      "description": "查看独立档案详情",
+      "operations": [
+        "GET /api/admin/drivers/{driverId}"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:driveradjust:audit",
+      "resource": "driveradjust",
+      "action": "audit",
+      "description": "独立审核费用调整",
+      "operations": [
+        "POST /api/admin/driver-fee-adjustments/{adjustmentId}/audit"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:driveradjust:create",
+      "resource": "driveradjust",
+      "action": "create",
+      "description": "提出有依据的费用调整",
+      "operations": [
+        "POST /api/admin/driver-fee-adjustments"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:driveradjust:list",
+      "resource": "driveradjust",
+      "action": "list",
+      "description": "费用调整列表",
+      "operations": [
+        "GET /api/admin/driver-fee-adjustments"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:driverfeerule:create",
+      "resource": "driverfeerule",
+      "action": "create",
+      "description": "创建代驾费用规则草稿",
+      "operations": [
+        "POST /api/admin/driver-fee-rules"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:driverfeerule:edit",
+      "resource": "driverfeerule",
+      "action": "edit",
+      "description": "编辑未发布代驾费用草稿",
+      "operations": [
+        "PUT /api/admin/driver-fee-rules/{ruleId}"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:driverfeerule:list",
+      "resource": "driverfeerule",
+      "action": "list",
+      "description": "代驾费用规则列表",
+      "operations": [
+        "GET /api/admin/driver-fee-rules"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:driverfeerule:publish",
+      "resource": "driverfeerule",
+      "action": "publish",
+      "description": "独立审核后发布费用版本",
+      "operations": [
+        "POST /api/admin/driver-fee-rules/{ruleId}/publish"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:driverfeerule:query",
+      "resource": "driverfeerule",
+      "action": "query",
+      "description": "查看代驾费用版本",
+      "operations": [
+        "GET /api/admin/driver-fee-rules/{ruleId}"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:driverfeerule:trial",
+      "resource": "driverfeerule",
+      "action": "trial",
+      "description": "试算代驾费用，不入账",
+      "operations": [
+        "POST /api/admin/driver-fee-rules/trial"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:driverledger:list",
+      "resource": "driverledger",
+      "action": "list",
+      "description": "个人服务费用台账",
+      "operations": [
+        "GET /api/admin/drivers/{driverId}/fee-ledger"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:driverpayment:create",
+      "resource": "driverpayment",
+      "action": "create",
+      "description": "登记已有外部付款证据",
+      "operations": [
+        "POST /api/admin/driver-payment-records"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:driverpayment:list",
+      "resource": "driverpayment",
+      "action": "list",
+      "description": "外部付款证据列表",
+      "operations": [
+        "GET /api/admin/driver-payment-records"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:driverpayment:query",
+      "resource": "driverpayment",
+      "action": "query",
+      "description": "查看指定付款凭证及核实记录",
+      "operations": [
+        "GET /api/admin/driver-payment-records/{recordId}"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:driverpayment:verify",
+      "resource": "driverpayment",
+      "action": "verify",
+      "description": "独立复核外部付款证据",
+      "operations": [
+        "POST /api/admin/driver-payment-records/{recordId}/verify"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:driverqualification:audit",
+      "resource": "driverqualification",
+      "action": "audit",
+      "description": "批准或驳回资格",
+      "operations": [
+        "POST /api/admin/driver-qualifications/{applicationId}/audit"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:driverqualification:list",
+      "resource": "driverqualification",
+      "action": "list",
+      "description": "资格审核列表",
+      "operations": [
+        "GET /api/admin/driver-qualifications"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:driverqualification:query",
+      "resource": "driverqualification",
+      "action": "query",
+      "description": "资格审核详情",
+      "operations": [
+        "GET /api/admin/driver-qualifications/{applicationId}"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:driverstatement:add",
+      "resource": "driverstatement",
+      "action": "add",
+      "description": "向草稿添加明确选择的服务",
+      "operations": [
+        "POST /api/admin/driver-statements/{statementId}/lines/add"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:driverstatement:create",
+      "resource": "driverstatement",
+      "action": "create",
+      "description": "仅按勾选服务建立对账草稿",
+      "operations": [
+        "POST /api/admin/driver-statements"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:driverstatement:list",
+      "resource": "driverstatement",
+      "action": "list",
+      "description": "对账单列表",
+      "operations": [
+        "GET /api/admin/driver-statements",
+        "GET /api/admin/driver-statements/{statementId}/lines/{lineId}/price-history",
+        "GET /api/admin/driver-statements/{statementId}/reviews",
+        "GET /api/admin/drivers/{driverId}/reconciliation-overview",
+        "GET /api/admin/drivers/{driverId}/reconciliation-entries",
+        "GET /api/admin/driver-statements/{statementId}/membership-history"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:driverstatement:preview",
+      "resource": "driverstatement",
+      "action": "preview",
+      "description": "预览明确勾选的服务（不占用）",
+      "operations": [
+        "POST /api/admin/driver-statements/preview"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:driverstatement:price",
+      "resource": "driverstatement",
+      "action": "price",
+      "description": "对账行填写或修改拟价格",
+      "operations": [
+        "PUT /api/admin/driver-statements/{statementId}/lines/{lineId}/price"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:driverstatement:query",
+      "resource": "driverstatement",
+      "action": "query",
+      "description": "查看对账单与快照",
+      "operations": [
+        "GET /api/admin/driver-statements/{statementId}",
+        "GET /api/admin/driver-statements/{statementId}/revisions/{revision}"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:driverstatement:remove",
+      "resource": "driverstatement",
+      "action": "remove",
+      "description": "移出草稿服务并释放精确占用",
+      "operations": [
+        "POST /api/admin/driver-statements/{statementId}/lines/{lineId}/remove"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:driverstatement:review",
+      "resource": "driverstatement",
+      "action": "review",
+      "description": "整单复核通过并发送或退回",
+      "operations": [
+        "POST /api/admin/driver-statements/{statementId}/review"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:driverstatement:send",
+      "resource": "driverstatement",
+      "action": "send",
+      "description": "发给代驾确认",
+      "operations": [
+        "POST /api/admin/driver-statements/{statementId}/send"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:driverstatement:submitreview",
+      "resource": "driverstatement",
+      "action": "submitreview",
+      "description": "提交整单内部复核",
+      "operations": [
+        "POST /api/admin/driver-statements/{statementId}/submit-review"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:driverstatement:void",
+      "resource": "driverstatement",
+      "action": "void",
+      "description": "作废未确认对账单",
+      "operations": [
+        "POST /api/admin/driver-statements/{statementId}/void"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:driverstatement:withdraw",
+      "resource": "driverstatement",
+      "action": "withdraw",
+      "description": "撤回待复核或已发出的账单",
+      "operations": [
+        "POST /api/admin/driver-statements/{statementId}/withdraw"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:employeebinding:list",
+      "resource": "employeebinding",
+      "action": "list",
+      "description": "员工微信关联管理列表",
+      "operations": [
+        "GET /api/admin/employee-links"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:employeebinding:query",
+      "resource": "employeebinding",
+      "action": "query",
+      "description": "员工微信关联详情",
+      "operations": [
+        "GET /api/admin/employee-links/{bindingId}"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:employeebinding:rematch",
+      "resource": "employeebinding",
+      "action": "rematch",
+      "description": "允许本人重新核验关联",
+      "operations": [
+        "POST /api/admin/employee-links/{bindingId}/allow-rematch"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:employeebinding:revoke",
+      "resource": "employeebinding",
+      "action": "revoke",
+      "description": "解除关联并禁止自动重绑",
+      "operations": [
+        "POST /api/admin/employee-links/{bindingId}/revoke"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:employeebinding:suspend",
+      "resource": "employeebinding",
+      "action": "suspend",
+      "description": "暂停员工微信工作关联",
+      "operations": [
+        "POST /api/admin/employee-links/{bindingId}/suspend"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:exception:list",
+      "resource": "exception",
+      "action": "list",
+      "description": "普通异常列表",
+      "operations": [
+        "GET /api/admin/exceptions"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:exception:resolve",
+      "resource": "exception",
+      "action": "resolve",
+      "description": "登记异常处理",
+      "operations": [
+        "POST /api/admin/exceptions/{exceptionId}/resolve"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:export:audit",
+      "resource": "export",
+      "action": "audit",
+      "description": "导出审批",
+      "operations": [
+        "POST /api/admin/exports/{taskId}/audit"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:export:query",
+      "resource": "export",
+      "action": "query",
+      "description": "导出任务",
+      "operations": [
+        "GET /api/admin/exports/{taskId}"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:files:access",
+      "resource": "files",
+      "action": "access",
+      "description": "按权限申请短期文件访问",
+      "operations": [
+        "POST /api/common/files/{fileId}/access"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:files:query",
+      "resource": "files",
+      "action": "query",
+      "description": "文件验证状态",
+      "operations": [
+        "GET /api/common/files/{fileId}"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:handover:confirm",
+      "resource": "handover",
+      "action": "confirm",
+      "description": "核验并完成实物交接",
+      "operations": [
+        "POST /api/common/orders/{orderNo}/handovers/{handoverId}/confirm"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:handover:create",
+      "resource": "handover",
+      "action": "create",
+      "description": "发起交接",
+      "operations": [
+        "POST /api/common/orders/{orderNo}/handovers"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:handover:query",
+      "resource": "handover",
+      "action": "query",
+      "description": "交接状态",
+      "operations": [
+        "GET /api/common/orders/{orderNo}/handovers/{handoverId}"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:handover:secret",
+      "resource": "handover",
+      "action": "secret",
+      "description": "持码方专用交接码",
+      "operations": [
+        "GET /api/common/orders/{orderNo}/handovers/{handoverId}/secret"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:integration:check",
+      "resource": "integration",
+      "action": "check",
+      "description": "校验指定配置版本",
+      "operations": [
+        "POST /api/admin/integrations/profiles/{profileId}/checks"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:integration:create",
+      "resource": "integration",
+      "action": "create",
+      "description": "新建配置档案",
+      "operations": [
+        "POST /api/admin/integrations/profiles"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:integration:edit",
+      "resource": "integration",
+      "action": "edit",
+      "description": "保存不生效草稿",
+      "operations": [
+        "PUT /api/admin/integrations/profiles/{profileId}/draft"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:integration:publish",
+      "resource": "integration",
+      "action": "publish",
+      "description": "发布配置并原子切换生效指针",
+      "operations": [
+        "POST /api/admin/integrations/profiles/{profileId}/publish",
+        "POST /api/admin/integrations/profiles/{profileId}/rollback"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:integration:query",
+      "resource": "integration",
+      "action": "query",
+      "description": "第三方配置列表",
+      "operations": [
+        "GET /api/admin/integrations/profiles",
+        "GET /api/admin/integrations/profiles/{profileId}",
+        "GET /api/admin/integrations/profiles/{profileId}/publications",
+        "GET /api/admin/integrations/profiles/{profileId}/revisions",
+        "GET /api/admin/integrations/test-recipients"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:integration:test",
+      "resource": "integration",
+      "action": "test",
+      "description": "白名单确认后真实测试发送",
+      "operations": [
+        "POST /api/admin/integrations/templates/{templateId}/test"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:integration:testrecipient",
+      "resource": "integration",
+      "action": "testrecipient",
+      "description": "登记受控测试收件人",
+      "operations": [
+        "POST /api/admin/integrations/test-recipients",
+        "POST /api/admin/integrations/test-recipients/{recipientId}/revoke"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:job:list",
+      "resource": "job",
+      "action": "list",
+      "description": "补偿任务队列",
+      "operations": [
+        "GET /api/admin/jobs"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:job:retry",
+      "resource": "job",
+      "action": "retry",
+      "description": "受控补偿重试",
+      "operations": [
+        "POST /api/admin/jobs/{taskId}/retry"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:license:edit",
+      "resource": "license",
+      "action": "edit",
+      "description": "登记并复核行驶证",
+      "operations": [
+        "PUT /api/app/station/orders/{orderNo}/license",
+        "PUT /api/admin/orders/{orderNo}/license"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:license:list",
+      "resource": "license",
+      "action": "list",
+      "description": "行驶证复核状态",
+      "operations": [
+        "GET /api/app/station/orders/{orderNo}/license",
+        "GET /api/admin/orders/{orderNo}/license"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:messageroute:edit",
+      "resource": "messageroute",
+      "action": "edit",
+      "description": "创建已校验生效的路由",
+      "operations": [
+        "POST /api/admin/integrations/routes",
+        "PUT /api/admin/integrations/routes/{routeId}"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:messageroute:query",
+      "resource": "messageroute",
+      "action": "query",
+      "description": "场景路由与备用策略",
+      "operations": [
+        "GET /api/admin/integrations/routes"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:messagetemplate:check",
+      "resource": "messagetemplate",
+      "action": "check",
+      "description": "校验字段映射和官方审批",
+      "operations": [
+        "POST /api/admin/integrations/templates/{templateId}/checks"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:messagetemplate:create",
+      "resource": "messagetemplate",
+      "action": "create",
+      "description": "创建场景模板",
+      "operations": [
+        "POST /api/admin/integrations/templates"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:messagetemplate:edit",
+      "resource": "messagetemplate",
+      "action": "edit",
+      "description": "保存模板草稿",
+      "operations": [
+        "PUT /api/admin/integrations/templates/{templateId}/draft"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:messagetemplate:publish",
+      "resource": "messagetemplate",
+      "action": "publish",
+      "description": "发布模板新版本",
+      "operations": [
+        "POST /api/admin/integrations/templates/{templateId}/publish"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:messagetemplate:query",
+      "resource": "messagetemplate",
+      "action": "query",
+      "description": "短信与订阅模板列表",
+      "operations": [
+        "GET /api/admin/integrations/templates",
+        "GET /api/admin/integrations/templates/{templateId}",
+        "POST /api/admin/integrations/templates/{templateId}/preview",
+        "GET /api/admin/integrations/templates/{templateId}/publications"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:notificationtemplate:edit",
+      "resource": "notificationtemplate",
+      "action": "edit",
+      "description": "修改消息模板",
+      "operations": [
+        "PUT /api/admin/notification-templates/{templateId}"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:notificationtemplate:list",
+      "resource": "notificationtemplate",
+      "action": "list",
+      "description": "通知模板",
+      "operations": [
+        "GET /api/admin/notification-templates"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:offlinepayment:create",
+      "resource": "offlinepayment",
+      "action": "create",
+      "description": "登记真实线下收款或已批准退款凭证",
+      "operations": [
+        "POST /api/admin/offline-payments"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:offlinepayment:query",
+      "resource": "offlinepayment",
+      "action": "query",
+      "description": "客户线下收退款凭证列表",
+      "operations": [
+        "GET /api/admin/offline-payments",
+        "GET /api/admin/offline-payments/{proofId}"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:offlinepayment:verify",
+      "resource": "offlinepayment",
+      "action": "verify",
+      "description": "不同人员核实线下资金",
+      "operations": [
+        "POST /api/admin/offline-payments/{proofId}/verify"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:order:contact",
+      "resource": "order",
+      "action": "contact",
+      "description": "按履约及当前视角获取短期联系通道",
+      "operations": [
+        "POST /api/common/orders/{orderNo}/contact-access"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:order:create",
+      "resource": "order",
+      "action": "create",
+      "description": "重发取车通知",
+      "operations": [
+        "POST /api/app/station/orders/{orderNo}/pickup-notification",
+        "POST /api/app/station/orders/{orderNo}/exceptions",
+        "POST /api/admin/orders/{orderNo}/pickup-notification",
+        "POST /api/admin/orders/{orderNo}/exceptions"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:order:export",
+      "resource": "order",
+      "action": "export",
+      "description": "申请脱敏订单导出",
+      "operations": [
+        "POST /api/admin/orders/export"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:order:list",
+      "resource": "order",
+      "action": "list",
+      "description": "工作订单列表",
+      "operations": [
+        "GET /api/app/station/orders",
+        "GET /api/admin/orders"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:order:query",
+      "resource": "order",
+      "action": "query",
+      "description": "工作订单详情",
+      "operations": [
+        "GET /api/app/station/orders/{orderNo}",
+        "GET /api/admin/orders/{orderNo}"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:owner:edit",
+      "resource": "owner",
+      "action": "edit",
+      "description": "维护档案备注及允许字段",
+      "operations": [
+        "PATCH /api/admin/owners/{ownerId}"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:owner:list",
+      "resource": "owner",
+      "action": "list",
+      "description": "车主列表",
+      "operations": [
+        "GET /api/admin/owners",
+        "GET /api/admin/owners/{ownerId}/vehicles",
+        "GET /api/admin/owners/{ownerId}/orders"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:owner:query",
+      "resource": "owner",
+      "action": "query",
+      "description": "查看独立档案详情",
+      "operations": [
+        "GET /api/admin/owners/{ownerId}"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:paymentreconciliation:list",
+      "resource": "paymentreconciliation",
+      "action": "list",
+      "description": "对账异常",
+      "operations": [
+        "GET /api/admin/reconciliation"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:paymentreconciliation:query",
+      "resource": "paymentreconciliation",
+      "action": "query",
+      "description": "重查可信渠道状态",
+      "operations": [
+        "POST /api/admin/reconciliation/{caseId}/query"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:paymentreconciliation:resolve",
+      "resource": "paymentreconciliation",
+      "action": "resolve",
+      "description": "基于证据登记对账结论",
+      "operations": [
+        "POST /api/admin/reconciliation/{caseId}/resolve"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:penalty:list",
+      "resource": "penalty",
+      "action": "list",
+      "description": "授权范围内取消处罚",
+      "operations": [
+        "GET /api/admin/penalties"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:penalty:query",
+      "resource": "penalty",
+      "action": "query",
+      "description": "处罚详情及申诉入口",
+      "operations": [
+        "GET /api/admin/penalties/{penaltyId}"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:penaltyappeal:audit",
+      "resource": "penaltyappeal",
+      "action": "audit",
+      "description": "取消处罚申诉审核",
+      "operations": [
+        "POST /api/admin/penalty-appeals/{appealId}/audit"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:penaltyappeal:list",
+      "resource": "penaltyappeal",
+      "action": "list",
+      "description": "申诉记录列表",
+      "operations": [
+        "GET /api/admin/penalty-appeals"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:penaltyappeal:query",
+      "resource": "penaltyappeal",
+      "action": "query",
+      "description": "申诉详情与公开处理结论",
+      "operations": [
+        "GET /api/admin/penalty-appeals/{appealId}"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:price:audit",
+      "resource": "price",
+      "action": "audit",
+      "description": "价格审核",
+      "operations": [
+        "POST /api/admin/prices/{ruleId}/audit"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:price:create",
+      "resource": "price",
+      "action": "create",
+      "description": "计价草稿",
+      "operations": [
+        "POST /api/admin/prices"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:price:edit",
+      "resource": "price",
+      "action": "edit",
+      "description": "修改计价草稿",
+      "operations": [
+        "PUT /api/admin/prices/{ruleId}"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:price:list",
+      "resource": "price",
+      "action": "list",
+      "description": "计价规则列表",
+      "operations": [
+        "GET /api/admin/prices"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:price:publish",
+      "resource": "price",
+      "action": "publish",
+      "description": "发布计价版本",
+      "operations": [
+        "POST /api/admin/prices/{ruleId}/publish"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:price:submit",
+      "resource": "price",
+      "action": "submit",
+      "description": "提交价格审核",
+      "operations": [
+        "POST /api/admin/prices/{ruleId}/submit"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:privacycase:list",
+      "resource": "privacycase",
+      "action": "list",
+      "description": "隐私请求列表",
+      "operations": [
+        "GET /api/admin/privacy-cases"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:privacycase:resolve",
+      "resource": "privacycase",
+      "action": "resolve",
+      "description": "隐私处理结论",
+      "operations": [
+        "POST /api/admin/privacy-cases/{caseId}/resolve"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:refund:query",
+      "resource": "refund",
+      "action": "query",
+      "description": "渠道退款详情",
+      "operations": [
+        "GET /api/admin/refunds/{refundNo}",
+        "POST /api/admin/refunds/{refundNo}/query"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:refund:retry",
+      "resource": "refund",
+      "action": "retry",
+      "description": "安全重试渠道请求",
+      "operations": [
+        "POST /api/admin/refunds/{refundNo}/retry"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:result:create",
+      "resource": "result",
+      "action": "create",
+      "description": "登记最终检测结果",
+      "operations": [
+        "POST /api/app/station/orders/{orderNo}/results",
+        "POST /api/admin/orders/{orderNo}/results"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:result:list",
+      "resource": "result",
+      "action": "list",
+      "description": "查询结果版本",
+      "operations": [
+        "GET /api/app/station/orders/{orderNo}/results",
+        "GET /api/admin/orders/{orderNo}/results",
+        "GET /api/admin/vehicles/{vehicleId}/inspection-results"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:resultcorrection:audit",
+      "resource": "resultcorrection",
+      "action": "audit",
+      "description": "更正审核",
+      "operations": [
+        "POST /api/admin/result-corrections/{correctionId}/audit"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:resultcorrection:create",
+      "resource": "resultcorrection",
+      "action": "create",
+      "description": "申请结果更正",
+      "operations": [
+        "POST /api/app/station/orders/{orderNo}/result-corrections",
+        "POST /api/admin/orders/{orderNo}/result-corrections"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:resultcorrection:list",
+      "resource": "resultcorrection",
+      "action": "list",
+      "description": "结果更正列表",
+      "operations": [
+        "GET /api/admin/result-corrections"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:statementdifference:list",
+      "resource": "statementdifference",
+      "action": "list",
+      "description": "对账差异列表",
+      "operations": [
+        "GET /api/admin/statement-differences"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:statementdifference:resolve",
+      "resource": "statementdifference",
+      "action": "resolve",
+      "description": "处理差异并按需重新发出",
+      "operations": [
+        "POST /api/admin/statement-differences/{differenceId}/resolve"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:station:create",
+      "resource": "station",
+      "action": "create",
+      "description": "创建检测点",
+      "operations": [
+        "POST /api/admin/stations"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:station:edit",
+      "resource": "station",
+      "action": "edit",
+      "description": "维护当前站点资料",
+      "operations": [
+        "PUT /api/app/station/info",
+        "PUT /api/admin/stations/{stationId}"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:station:list",
+      "resource": "station",
+      "action": "list",
+      "description": "员工获授权站点",
+      "operations": [
+        "GET /api/app/station/authorized-stations",
+        "GET /api/admin/stations"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:station:query",
+      "resource": "station",
+      "action": "query",
+      "description": "当前站点资料",
+      "operations": [
+        "GET /api/app/station/info"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:stationgrant:edit",
+      "resource": "stationgrant",
+      "action": "edit",
+      "description": "修改跨站授权",
+      "operations": [
+        "PUT /api/admin/station-grants/{employeeUserId}"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:stationgrant:list",
+      "resource": "stationgrant",
+      "action": "list",
+      "description": "员工站点授权",
+      "operations": [
+        "GET /api/admin/station-grants",
+        "GET /api/admin/station-grants/{employeeUserId}"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:statistics:list",
+      "resource": "statistics",
+      "action": "list",
+      "description": "统计口径",
+      "operations": [
+        "GET /api/admin/statistics"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:trainingcourse:create",
+      "resource": "trainingcourse",
+      "action": "create",
+      "description": "创建培训课程草稿",
+      "operations": [
+        "POST /api/admin/training-courses"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:trainingcourse:edit",
+      "resource": "trainingcourse",
+      "action": "edit",
+      "description": "编辑未发布培训课程",
+      "operations": [
+        "PUT /api/admin/training-courses/{trainingId}"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:trainingcourse:list",
+      "resource": "trainingcourse",
+      "action": "list",
+      "description": "培训课程管理列表",
+      "operations": [
+        "GET /api/admin/training-courses"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:trainingcourse:publish",
+      "resource": "trainingcourse",
+      "action": "publish",
+      "description": "发布不可变培训课程版本",
+      "operations": [
+        "POST /api/admin/training-courses/{trainingId}/publish"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:trainingcourse:query",
+      "resource": "trainingcourse",
+      "action": "query",
+      "description": "培训课程管理详情",
+      "operations": [
+        "GET /api/admin/training-courses/{trainingId}"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:uploads:complete",
+      "resource": "uploads",
+      "action": "complete",
+      "description": "服务器核验上传完成",
+      "operations": [
+        "POST /api/common/uploads/{uploadId}/complete"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:uploads:create",
+      "resource": "uploads",
+      "action": "create",
+      "description": "申请限定用途上传",
+      "operations": [
+        "POST /api/common/uploads"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:vehicle:edit",
+      "resource": "vehicle",
+      "action": "edit",
+      "description": "维护档案备注及允许字段",
+      "operations": [
+        "PATCH /api/admin/vehicles/{vehicleId}"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:vehicle:list",
+      "resource": "vehicle",
+      "action": "list",
+      "description": "车辆列表",
+      "operations": [
+        "GET /api/admin/vehicles",
+        "GET /api/admin/vehicles/{vehicleId}/orders"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:vehicle:query",
+      "resource": "vehicle",
+      "action": "query",
+      "description": "查看独立档案详情",
+      "operations": [
+        "GET /api/admin/vehicles/{vehicleId}"
+      ],
+      "usage": "OPERATION"
+    }
+  ],
+  "capabilities": [
+    {
+      "code": "COMMON_DICT_QUERY",
+      "description": "业务字典查询",
+      "scope": "SERVER_COMPUTED_SESSION_AND_REAL_OBJECT",
+      "qualificationGate": "NOT_REQUIRED",
+      "operations": [
+        "GET /api/common/dict/{dictType}"
+      ]
+    },
+    {
+      "code": "COMMON_FILES_ACCESS",
+      "description": "按权限申请短期文件访问",
+      "scope": "SERVER_COMPUTED_SESSION_AND_REAL_OBJECT",
+      "qualificationGate": "NOT_REQUIRED",
+      "operations": [
+        "POST /api/common/files/{fileId}/access"
+      ]
+    },
+    {
+      "code": "COMMON_FILES_QUERY",
+      "description": "文件验证状态",
+      "scope": "SERVER_COMPUTED_SESSION_AND_REAL_OBJECT",
+      "qualificationGate": "NOT_REQUIRED",
+      "operations": [
+        "GET /api/common/files/{fileId}"
+      ]
+    },
+    {
+      "code": "COMMON_MESSAGES_LIST",
+      "description": "当前角色站内消息",
+      "scope": "SERVER_COMPUTED_SESSION_AND_REAL_OBJECT",
+      "qualificationGate": "NOT_REQUIRED",
+      "operations": [
+        "GET /api/common/messages"
+      ]
+    },
+    {
+      "code": "COMMON_MESSAGES_READ",
+      "description": "标记本人消息已读",
+      "scope": "SERVER_COMPUTED_SESSION_AND_REAL_OBJECT",
+      "qualificationGate": "NOT_REQUIRED",
+      "operations": [
+        "POST /api/common/messages/{messageId}/read"
+      ]
+    },
+    {
+      "code": "COMMON_ORDERS_CONFIRM",
+      "description": "核验并完成实物交接",
+      "scope": "SERVER_COMPUTED_SESSION_AND_REAL_OBJECT",
+      "qualificationGate": "NOT_REQUIRED",
+      "operations": [
+        "POST /api/common/orders/{orderNo}/handovers/{handoverId}/confirm"
+      ]
+    },
+    {
+      "code": "COMMON_ORDERS_CONTACTACCESS",
+      "description": "按履约及当前视角获取短期联系通道",
+      "scope": "SERVER_COMPUTED_SESSION_AND_REAL_OBJECT",
+      "qualificationGate": "NOT_REQUIRED",
+      "operations": [
+        "POST /api/common/orders/{orderNo}/contact-access"
+      ]
+    },
+    {
+      "code": "COMMON_ORDERS_CREATE",
+      "description": "发起交接",
+      "scope": "SERVER_COMPUTED_SESSION_AND_REAL_OBJECT",
+      "qualificationGate": "NOT_REQUIRED",
+      "operations": [
+        "POST /api/common/orders/{orderNo}/handovers"
+      ]
+    },
+    {
+      "code": "COMMON_ORDERS_LIST",
+      "description": "持码方专用交接码",
+      "scope": "SERVER_COMPUTED_SESSION_AND_REAL_OBJECT",
+      "qualificationGate": "NOT_REQUIRED",
+      "operations": [
+        "GET /api/common/orders/{orderNo}/handovers/{handoverId}/secret"
+      ]
+    },
+    {
+      "code": "COMMON_ORDERS_QUERY",
+      "description": "交接状态",
+      "scope": "SERVER_COMPUTED_SESSION_AND_REAL_OBJECT",
+      "qualificationGate": "NOT_REQUIRED",
+      "operations": [
+        "GET /api/common/orders/{orderNo}/handovers/{handoverId}"
+      ]
+    },
+    {
+      "code": "COMMON_PHONE_CREATE",
+      "description": "绑定经微信核验手机号",
+      "scope": "SERVER_COMPUTED_SESSION_AND_REAL_OBJECT",
+      "qualificationGate": "NOT_REQUIRED",
+      "operations": [
+        "POST /api/common/phone/bind",
+        "GET /api/common/phone/verifications/{verificationRequestId}"
+      ]
+    },
+    {
+      "code": "COMMON_PHONE_SEND",
+      "description": "短信兜底发送",
+      "scope": "SERVER_COMPUTED_SESSION_AND_REAL_OBJECT",
+      "qualificationGate": "NOT_REQUIRED",
+      "operations": [
+        "POST /api/common/phone/sms/send"
+      ]
+    },
+    {
+      "code": "COMMON_PHONE_VERIFY",
+      "description": "短信兜底核验",
+      "scope": "SERVER_COMPUTED_SESSION_AND_REAL_OBJECT",
+      "qualificationGate": "NOT_REQUIRED",
+      "operations": [
+        "POST /api/common/phone/sms/verify"
+      ]
+    },
+    {
+      "code": "COMMON_PRIVACYCASES_CREATE",
+      "description": "发起隐私请求",
+      "scope": "SERVER_COMPUTED_SESSION_AND_REAL_OBJECT",
+      "qualificationGate": "NOT_REQUIRED",
+      "operations": [
+        "POST /api/common/privacy-cases"
+      ]
+    },
+    {
+      "code": "COMMON_PRIVACYCASES_LIST",
+      "description": "本人隐私请求",
+      "scope": "SERVER_COMPUTED_SESSION_AND_REAL_OBJECT",
+      "qualificationGate": "NOT_REQUIRED",
+      "operations": [
+        "GET /api/common/privacy-cases"
+      ]
+    },
+    {
+      "code": "COMMON_STATIONS_LIST",
+      "description": "可见站点目录",
+      "scope": "SERVER_COMPUTED_SESSION_AND_REAL_OBJECT",
+      "qualificationGate": "NOT_REQUIRED",
+      "operations": [
+        "GET /api/common/stations"
+      ]
+    },
+    {
+      "code": "COMMON_SUBSCRIPTION_REPORT",
+      "description": "报告本次用户订阅选择",
+      "operations": [
+        "POST /api/common/subscriptions/prompts/{promptId}/report"
+      ]
+    },
+    {
+      "code": "COMMON_SUBSCRIPTION_REQUEST",
+      "description": "按真实场景获取本人的可请求模板",
+      "operations": [
+        "POST /api/common/subscriptions/prompts"
+      ]
+    },
+    {
+      "code": "COMMON_UPLOADS_COMPLETE",
+      "description": "服务器核验上传完成",
+      "scope": "SERVER_COMPUTED_SESSION_AND_REAL_OBJECT",
+      "qualificationGate": "NOT_REQUIRED",
+      "operations": [
+        "POST /api/common/uploads/{uploadId}/complete"
+      ]
+    },
+    {
+      "code": "COMMON_UPLOADS_CREATE",
+      "description": "申请限定用途上传",
+      "scope": "SERVER_COMPUTED_SESSION_AND_REAL_OBJECT",
+      "qualificationGate": "NOT_REQUIRED",
+      "operations": [
+        "POST /api/common/uploads"
+      ]
+    },
+    {
+      "code": "DRIVER_ASSIGNMENT_QUERY",
+      "description": "当前在手任务",
+      "scope": "SERVER_COMPUTED_SESSION_AND_REAL_OBJECT",
+      "qualificationGate": "ACTION_SPECIFIC_NO_ABANDONMENT",
+      "operations": [
+        "GET /api/app/driver/assignments/current"
+      ]
+    },
+    {
+      "code": "DRIVER_AVAILABILITY_EDIT",
+      "description": "听单开关",
+      "scope": "SERVER_COMPUTED_SESSION_AND_REAL_OBJECT",
+      "qualificationGate": "ACTION_SPECIFIC_NO_ABANDONMENT",
+      "operations": [
+        "PATCH /api/app/driver/listening"
+      ]
+    },
+    {
+      "code": "DRIVER_AVAILABILITY_QUERY",
+      "description": "可接单状态",
+      "scope": "SERVER_COMPUTED_SESSION_AND_REAL_OBJECT",
+      "qualificationGate": "ACTION_SPECIFIC_NO_ABANDONMENT",
+      "operations": [
+        "GET /api/app/driver/availability"
+      ]
+    },
+    {
+      "code": "DRIVER_DRIVERPAYMENT_LIST",
+      "description": "本人付款记录摘要",
+      "scope": "SERVER_COMPUTED_SESSION_AND_REAL_OBJECT",
+      "qualificationGate": "HISTORY_ALLOWED_AFTER_EXPIRY",
+      "operations": [
+        "GET /api/app/driver/payment-records"
+      ]
+    },
+    {
+      "code": "DRIVER_DRIVERSTATEMENT_CONFIRM",
+      "description": "代驾本人确认账单",
+      "scope": "SERVER_COMPUTED_SESSION_AND_REAL_OBJECT",
+      "qualificationGate": "ACTION_SPECIFIC_NO_ABANDONMENT",
+      "operations": [
+        "POST /api/app/driver/statements/{statementId}/confirm"
+      ]
+    },
+    {
+      "code": "DRIVER_DRIVERSTATEMENT_CREATE",
+      "description": "代驾提交账单差异",
+      "scope": "SERVER_COMPUTED_SESSION_AND_REAL_OBJECT",
+      "qualificationGate": "ACTION_SPECIFIC_NO_ABANDONMENT",
+      "operations": [
+        "POST /api/app/driver/statements/{statementId}/differences"
+      ]
+    },
+    {
+      "code": "DRIVER_DRIVERSTATEMENT_LIST",
+      "description": "本人未结清服务（不暴露内部草稿）",
+      "scope": "SERVER_COMPUTED_SESSION_AND_REAL_OBJECT",
+      "qualificationGate": "HISTORY_ALLOWED_AFTER_EXPIRY",
+      "operations": [
+        "GET /api/app/driver/statements",
+        "GET /api/app/driver/reconciliation-entries"
+      ]
+    },
+    {
+      "code": "DRIVER_DRIVERSTATEMENT_QUERY",
+      "description": "查看对账单与快照",
+      "scope": "SERVER_COMPUTED_SESSION_AND_REAL_OBJECT",
+      "qualificationGate": "HISTORY_ALLOWED_AFTER_EXPIRY",
+      "operations": [
+        "GET /api/app/driver/statements/{statementId}"
+      ]
+    },
+    {
+      "code": "DRIVER_INVITE_LIST",
+      "description": "本人有效邀约",
+      "scope": "SERVER_COMPUTED_SESSION_AND_REAL_OBJECT",
+      "qualificationGate": "ACTION_SPECIFIC_NO_ABANDONMENT",
+      "operations": [
+        "GET /api/app/driver/invites"
+      ]
+    },
+    {
+      "code": "DRIVER_INVITE_QUERY",
+      "description": "邀约详情",
+      "scope": "SERVER_COMPUTED_SESSION_AND_REAL_OBJECT",
+      "qualificationGate": "ACTION_SPECIFIC_NO_ABANDONMENT",
+      "operations": [
+        "GET /api/app/driver/invites/{inviteId}"
+      ]
+    },
+    {
+      "code": "DRIVER_INVITE_RESPONSE",
+      "description": "响应邀约",
+      "scope": "SERVER_COMPUTED_SESSION_AND_REAL_OBJECT",
+      "qualificationGate": "ACTION_SPECIFIC_NO_ABANDONMENT",
+      "operations": [
+        "POST /api/app/driver/invites/{inviteId}/response"
+      ]
+    },
+    {
+      "code": "DRIVER_LOCATION_CREATE",
+      "description": "前台位置打点",
+      "scope": "SERVER_COMPUTED_SESSION_AND_REAL_OBJECT",
+      "qualificationGate": "ACTION_SPECIFIC_NO_ABANDONMENT",
+      "operations": [
+        "POST /api/app/driver/location"
+      ]
+    },
+    {
+      "code": "DRIVER_ORDER_ARRIVEPICKUP",
+      "description": "到达接车点",
+      "scope": "SERVER_COMPUTED_SESSION_AND_REAL_OBJECT",
+      "qualificationGate": "ACTION_SPECIFIC_NO_ABANDONMENT",
+      "operations": [
+        "POST /api/app/driver/orders/{orderNo}/arrive-pickup"
+      ]
+    },
+    {
+      "code": "DRIVER_ORDER_ARRIVESTATION",
+      "description": "到达检测点",
+      "scope": "SERVER_COMPUTED_SESSION_AND_REAL_OBJECT",
+      "qualificationGate": "ACTION_SPECIFIC_NO_ABANDONMENT",
+      "operations": [
+        "POST /api/app/driver/orders/{orderNo}/arrive-station"
+      ]
+    },
+    {
+      "code": "DRIVER_ORDER_ASSIGNMENTCANCELLATION",
+      "description": "未接车取消承接",
+      "scope": "SERVER_COMPUTED_SESSION_AND_REAL_OBJECT",
+      "qualificationGate": "ACTION_SPECIFIC_NO_ABANDONMENT",
+      "operations": [
+        "POST /api/app/driver/orders/{orderNo}/assignment-cancellation"
+      ]
+    },
+    {
+      "code": "DRIVER_ORDER_CREATE",
+      "description": "关联已验证照片",
+      "scope": "SERVER_COMPUTED_SESSION_AND_REAL_OBJECT",
+      "qualificationGate": "ACTION_SPECIFIC_NO_ABANDONMENT",
+      "operations": [
+        "POST /api/app/driver/orders/{orderNo}/exceptions",
+        "POST /api/app/driver/orders/{orderNo}/evidence",
+        "POST /api/app/driver/orders/{orderNo}/evidence/{groupId}/photos"
+      ]
+    },
+    {
+      "code": "DRIVER_ORDER_DEPART",
+      "description": "出发前往接车",
+      "scope": "SERVER_COMPUTED_SESSION_AND_REAL_OBJECT",
+      "qualificationGate": "ACTION_SPECIFIC_NO_ABANDONMENT",
+      "operations": [
+        "POST /api/app/driver/orders/{orderNo}/depart"
+      ]
+    },
+    {
+      "code": "DRIVER_ORDER_EDIT",
+      "description": "提交人工复核里程",
+      "scope": "SERVER_COMPUTED_SESSION_AND_REAL_OBJECT",
+      "qualificationGate": "ACTION_SPECIFIC_NO_ABANDONMENT",
+      "operations": [
+        "PUT /api/app/driver/orders/{orderNo}/evidence/{groupId}/mileage"
+      ]
+    },
+    {
+      "code": "DRIVER_ORDER_LIST",
+      "description": "查询证据组",
+      "scope": "SERVER_COMPUTED_SESSION_AND_REAL_OBJECT",
+      "qualificationGate": "HISTORY_ALLOWED_AFTER_EXPIRY",
+      "operations": [
+        "GET /api/app/driver/orders",
+        "GET /api/app/driver/orders/{orderNo}/evidence"
+      ]
+    },
+    {
+      "code": "DRIVER_ORDER_QUERY",
+      "description": "本人受限订单详情",
+      "scope": "SERVER_COMPUTED_SESSION_AND_REAL_OBJECT",
+      "qualificationGate": "HISTORY_ALLOWED_AFTER_EXPIRY",
+      "operations": [
+        "GET /api/app/driver/orders/{orderNo}"
+      ]
+    },
+    {
+      "code": "DRIVER_ORDER_READY",
+      "description": "检查照片完整性",
+      "scope": "SERVER_COMPUTED_SESSION_AND_REAL_OBJECT",
+      "qualificationGate": "ACTION_SPECIFIC_NO_ABANDONMENT",
+      "operations": [
+        "POST /api/app/driver/orders/{orderNo}/evidence/{groupId}/ready"
+      ]
+    },
+    {
+      "code": "DRIVER_PENALTYAPPEAL_LIST",
+      "description": "申诉记录列表",
+      "scope": "SERVER_COMPUTED_SESSION_AND_REAL_OBJECT",
+      "qualificationGate": "HISTORY_ALLOWED_AFTER_EXPIRY",
+      "operations": [
+        "GET /api/app/driver/penalty-appeals"
+      ]
+    },
+    {
+      "code": "DRIVER_PENALTYAPPEAL_QUERY",
+      "description": "申诉详情与公开处理结论",
+      "scope": "SERVER_COMPUTED_SESSION_AND_REAL_OBJECT",
+      "qualificationGate": "HISTORY_ALLOWED_AFTER_EXPIRY",
+      "operations": [
+        "GET /api/app/driver/penalty-appeals/{appealId}"
+      ]
+    },
+    {
+      "code": "DRIVER_PENALTY_CREATE",
+      "description": "停单申诉",
+      "scope": "SERVER_COMPUTED_SESSION_AND_REAL_OBJECT",
+      "qualificationGate": "ACTION_SPECIFIC_NO_ABANDONMENT",
+      "operations": [
+        "POST /api/app/driver/penalties/{penaltyId}/appeals"
+      ]
+    },
+    {
+      "code": "DRIVER_PENALTY_LIST",
+      "description": "本人处罚记录",
+      "scope": "SERVER_COMPUTED_SESSION_AND_REAL_OBJECT",
+      "qualificationGate": "HISTORY_ALLOWED_AFTER_EXPIRY",
+      "operations": [
+        "GET /api/app/driver/penalties"
+      ]
+    },
+    {
+      "code": "DRIVER_PENALTY_QUERY",
+      "description": "处罚详情及申诉入口",
+      "scope": "SERVER_COMPUTED_SESSION_AND_REAL_OBJECT",
+      "qualificationGate": "HISTORY_ALLOWED_AFTER_EXPIRY",
+      "operations": [
+        "GET /api/app/driver/penalties/{penaltyId}"
+      ]
+    },
+    {
+      "code": "DRIVER_QUALIFICATION_ATTEMPTS",
+      "description": "建立本人的考试尝试",
+      "scope": "SERVER_COMPUTED_SESSION_AND_REAL_OBJECT",
+      "qualificationGate": "NOT_REQUIRED",
+      "operations": [
+        "POST /api/app/driver/qualification/training/{trainingId}/attempts"
+      ]
+    },
+    {
+      "code": "DRIVER_QUALIFICATION_CREATE",
+      "description": "创建实名活体核验会话",
+      "scope": "SERVER_COMPUTED_SESSION_AND_REAL_OBJECT",
+      "qualificationGate": "NOT_REQUIRED",
+      "operations": [
+        "POST /api/app/driver/qualification",
+        "POST /api/app/driver/qualification/face-session"
+      ]
+    },
+    {
+      "code": "DRIVER_QUALIFICATION_EDIT",
+      "description": "保存资格草稿",
+      "scope": "SERVER_COMPUTED_SESSION_AND_REAL_OBJECT",
+      "qualificationGate": "NOT_REQUIRED",
+      "operations": [
+        "PUT /api/app/driver/qualification"
+      ]
+    },
+    {
+      "code": "DRIVER_QUALIFICATION_LIST",
+      "description": "培训与考试任务",
+      "scope": "SERVER_COMPUTED_SESSION_AND_REAL_OBJECT",
+      "qualificationGate": "NOT_REQUIRED",
+      "operations": [
+        "GET /api/app/driver/qualification",
+        "GET /api/app/driver/qualification/training"
+      ]
+    },
+    {
+      "code": "DRIVER_QUALIFICATION_PLAYBACK",
+      "description": "开始受控学习会话",
+      "scope": "SERVER_COMPUTED_SESSION_AND_REAL_OBJECT",
+      "qualificationGate": "NOT_REQUIRED",
+      "operations": [
+        "POST /api/app/driver/qualification/training/{trainingId}/playback"
+      ]
+    },
+    {
+      "code": "DRIVER_QUALIFICATION_PROGRESS",
+      "description": "记录本人学习进度",
+      "scope": "SERVER_COMPUTED_SESSION_AND_REAL_OBJECT",
+      "qualificationGate": "NOT_REQUIRED",
+      "operations": [
+        "POST /api/app/driver/qualification/training/{trainingId}/progress"
+      ]
+    },
+    {
+      "code": "DRIVER_QUALIFICATION_QUERY",
+      "description": "查询本人活体核验结果（服务端查询供应商）",
+      "scope": "SERVER_COMPUTED_SESSION_AND_REAL_OBJECT",
+      "qualificationGate": "NOT_REQUIRED",
+      "operations": [
+        "GET /api/app/driver/qualification/training/{trainingId}",
+        "GET /api/app/driver/qualification/training/attempts/{attemptId}",
+        "GET /api/app/driver/qualification/face-sessions/{verificationSessionId}"
+      ]
+    },
+    {
+      "code": "DRIVER_QUALIFICATION_SUBMIT",
+      "description": "提交考试答案",
+      "scope": "SERVER_COMPUTED_SESSION_AND_REAL_OBJECT",
+      "qualificationGate": "NOT_REQUIRED",
+      "operations": [
+        "POST /api/app/driver/qualification/submit",
+        "POST /api/app/driver/qualification/training/submit"
+      ]
+    },
+    {
+      "code": "EMPLOYEE_LINK_READ",
+      "description": "查询本人自动关联状态",
+      "scope": "SERVER_COMPUTED_SESSION_AND_REAL_OBJECT",
+      "qualificationGate": "NOT_REQUIRED",
+      "operations": [
+        "GET /api/common/employee-link"
+      ]
+    },
+    {
+      "code": "EMPLOYEE_LINK_RECONCILE",
+      "description": "重试最近核验的员工自动关联",
+      "scope": "SERVER_COMPUTED_SESSION_AND_REAL_OBJECT",
+      "qualificationGate": "NOT_REQUIRED",
+      "operations": [
+        "POST /api/common/employee-link/reconcile"
+      ]
+    },
+    {
+      "code": "OWNER_ADDRESSES_CREATE",
+      "description": "新增addresses",
+      "scope": "SERVER_COMPUTED_SESSION_AND_REAL_OBJECT",
+      "qualificationGate": "NOT_REQUIRED",
+      "operations": [
+        "POST /api/app/owner/addresses"
+      ]
+    },
+    {
+      "code": "OWNER_ADDRESSES_DEFAULT",
+      "description": "设为常用addresses",
+      "scope": "SERVER_COMPUTED_SESSION_AND_REAL_OBJECT",
+      "qualificationGate": "NOT_REQUIRED",
+      "operations": [
+        "POST /api/app/owner/addresses/{id}/default"
+      ]
+    },
+    {
+      "code": "OWNER_ADDRESSES_EDIT",
+      "description": "修改addresses",
+      "scope": "SERVER_COMPUTED_SESSION_AND_REAL_OBJECT",
+      "qualificationGate": "NOT_REQUIRED",
+      "operations": [
+        "PUT /api/app/owner/addresses/{id}"
+      ]
+    },
+    {
+      "code": "OWNER_ADDRESSES_LIST",
+      "description": "本人addresses列表",
+      "scope": "SERVER_COMPUTED_SESSION_AND_REAL_OBJECT",
+      "qualificationGate": "NOT_REQUIRED",
+      "operations": [
+        "GET /api/app/owner/addresses"
+      ]
+    },
+    {
+      "code": "OWNER_ADDRESSES_REMOVE",
+      "description": "软删除addresses",
+      "scope": "SERVER_COMPUTED_SESSION_AND_REAL_OBJECT",
+      "qualificationGate": "NOT_REQUIRED",
+      "operations": [
+        "DELETE /api/app/owner/addresses/{id}"
+      ]
+    },
+    {
+      "code": "OWNER_AFTERSALE_CREATE",
+      "description": "补充售后说明",
+      "scope": "SERVER_COMPUTED_SESSION_AND_REAL_OBJECT",
+      "qualificationGate": "NOT_REQUIRED",
+      "operations": [
+        "POST /api/app/owner/orders/{orderNo}/after-sales",
+        "POST /api/app/owner/after-sales/{caseId}/notes"
+      ]
+    },
+    {
+      "code": "OWNER_AFTERSALE_LIST",
+      "description": "统一售后申请列表",
+      "scope": "SERVER_COMPUTED_SESSION_AND_REAL_OBJECT",
+      "qualificationGate": "NOT_REQUIRED",
+      "operations": [
+        "GET /api/app/owner/orders/{orderNo}/after-sales",
+        "GET /api/app/owner/after-sales"
+      ]
+    },
+    {
+      "code": "OWNER_AFTERSALE_QUERY",
+      "description": "统一售后详情",
+      "scope": "SERVER_COMPUTED_SESSION_AND_REAL_OBJECT",
+      "qualificationGate": "NOT_REQUIRED",
+      "operations": [
+        "GET /api/app/owner/after-sales/{caseId}"
+      ]
+    },
+    {
+      "code": "OWNER_OFFLINE_INTENT",
+      "description": "选择线下方式不标记已付款",
+      "operations": [
+        "POST /api/app/owner/orders/{orderNo}/offline-payment"
+      ]
+    },
+    {
+      "code": "OWNER_ORDER_CLOSEUNPAID",
+      "description": "未支付主动关闭",
+      "scope": "SERVER_COMPUTED_SESSION_AND_REAL_OBJECT",
+      "qualificationGate": "NOT_REQUIRED",
+      "operations": [
+        "POST /api/app/owner/orders/{orderNo}/close-unpaid"
+      ]
+    },
+    {
+      "code": "OWNER_ORDER_CREATE",
+      "description": "服务评价",
+      "scope": "SERVER_COMPUTED_SESSION_AND_REAL_OBJECT",
+      "qualificationGate": "NOT_REQUIRED",
+      "operations": [
+        "POST /api/app/owner/orders/quote",
+        "POST /api/app/owner/orders",
+        "POST /api/app/owner/orders/{orderNo}/prepay",
+        "POST /api/app/owner/orders/{orderNo}/disputes",
+        "POST /api/app/owner/orders/{orderNo}/reviews"
+      ]
+    },
+    {
+      "code": "OWNER_ORDER_LIST",
+      "description": "本人订单证据组",
+      "scope": "SERVER_COMPUTED_SESSION_AND_REAL_OBJECT",
+      "qualificationGate": "NOT_REQUIRED",
+      "operations": [
+        "GET /api/app/owner/orders",
+        "GET /api/app/owner/orders/{orderNo}/timeline",
+        "GET /api/app/owner/orders/{orderNo}/payment",
+        "GET /api/app/owner/orders/{orderNo}/disputes",
+        "GET /api/app/owner/orders/{orderNo}/result",
+        "GET /api/app/owner/orders/{orderNo}/evidence"
+      ]
+    },
+    {
+      "code": "OWNER_ORDER_QUERY",
+      "description": "本人订单详情",
+      "scope": "SERVER_COMPUTED_SESSION_AND_REAL_OBJECT",
+      "qualificationGate": "NOT_REQUIRED",
+      "operations": [
+        "GET /api/app/owner/orders/{orderNo}"
+      ]
+    },
+    {
+      "code": "OWNER_ORDER_SERVICECONFIRMATION",
+      "description": "实际归还后的服务确认",
+      "scope": "SERVER_COMPUTED_SESSION_AND_REAL_OBJECT",
+      "qualificationGate": "NOT_REQUIRED",
+      "operations": [
+        "POST /api/app/owner/orders/{orderNo}/service-confirmation"
+      ]
+    },
+    {
+      "code": "OWNER_PAYMENT_OPTIONS",
+      "description": "本人订单可用支付方式",
+      "operations": [
+        "GET /api/app/owner/orders/{orderNo}/payment-options"
+      ]
+    },
+    {
+      "code": "OWNER_PROFILE_EDIT",
+      "description": "修改选填档案",
+      "scope": "SERVER_COMPUTED_SESSION_AND_REAL_OBJECT",
+      "qualificationGate": "NOT_REQUIRED",
+      "operations": [
+        "PATCH /api/app/owner/profile"
+      ]
+    },
+    {
+      "code": "OWNER_SCHEDULE_LIST",
+      "description": "先选上门候选时段",
+      "scope": "SERVER_COMPUTED_SESSION_AND_REAL_OBJECT",
+      "qualificationGate": "NOT_REQUIRED",
+      "operations": [
+        "GET /api/app/owner/schedule/slots"
+      ]
+    },
+    {
+      "code": "OWNER_VEHICLE_CREATE",
+      "description": "新增vehicles",
+      "scope": "SERVER_COMPUTED_SESSION_AND_REAL_OBJECT",
+      "qualificationGate": "NOT_REQUIRED",
+      "operations": [
+        "POST /api/app/owner/vehicles"
+      ]
+    },
+    {
+      "code": "OWNER_VEHICLE_DEFAULT",
+      "description": "设为常用vehicles",
+      "scope": "SERVER_COMPUTED_SESSION_AND_REAL_OBJECT",
+      "qualificationGate": "NOT_REQUIRED",
+      "operations": [
+        "POST /api/app/owner/vehicles/{id}/default"
+      ]
+    },
+    {
+      "code": "OWNER_VEHICLE_EDIT",
+      "description": "修改vehicles",
+      "scope": "SERVER_COMPUTED_SESSION_AND_REAL_OBJECT",
+      "qualificationGate": "NOT_REQUIRED",
+      "operations": [
+        "PUT /api/app/owner/vehicles/{id}"
+      ]
+    },
+    {
+      "code": "OWNER_VEHICLE_LIST",
+      "description": "本人vehicles列表",
+      "scope": "SERVER_COMPUTED_SESSION_AND_REAL_OBJECT",
+      "qualificationGate": "NOT_REQUIRED",
+      "operations": [
+        "GET /api/app/owner/vehicles"
+      ]
+    },
+    {
+      "code": "OWNER_VEHICLE_REMOVE",
+      "description": "软删除vehicles",
+      "scope": "SERVER_COMPUTED_SESSION_AND_REAL_OBJECT",
+      "qualificationGate": "NOT_REQUIRED",
+      "operations": [
+        "DELETE /api/app/owner/vehicles/{id}"
+      ]
+    },
+    {
+      "code": "PHONE_BIND",
+      "description": "查询本人手机号授权处理结果",
+      "scope": "SERVER_COMPUTED_SESSION_AND_REAL_OBJECT",
+      "qualificationGate": "NOT_REQUIRED",
+      "operations": [
+        "GET /api/common/phone/verifications/{verificationRequestId}"
+      ]
+    },
+    {
+      "code": "PROFILE_READ",
+      "description": "当前统一档案",
+      "scope": "SERVER_COMPUTED_SESSION_AND_REAL_OBJECT",
+      "qualificationGate": "BY_OPERATION",
+      "operations": [
+        "GET /api/common/profile"
+      ]
+    },
+    {
+      "code": "SESSION_LOGOUT",
+      "description": "退出当前或全部小程序会话",
+      "scope": "SERVER_COMPUTED_SESSION_AND_REAL_OBJECT",
+      "qualificationGate": "BY_OPERATION",
+      "operations": [
+        "POST /api/common/session/logout"
+      ]
+    },
+    {
+      "code": "SESSION_READ",
+      "description": "恢复当前小程序基础会话",
+      "scope": "SERVER_COMPUTED_SESSION_AND_REAL_OBJECT",
+      "qualificationGate": "BY_OPERATION",
+      "operations": [
+        "GET /api/common/session"
+      ]
+    },
+    {
+      "code": "SESSION_SWITCH_ROLE",
+      "description": "切换角色",
+      "scope": "SERVER_COMPUTED_SESSION_AND_REAL_OBJECT",
+      "qualificationGate": "BY_OPERATION",
+      "operations": [
+        "POST /api/common/session/role"
+      ]
+    },
+    {
+      "code": "SESSION_SWITCH_STATION",
+      "description": "切换站点",
+      "scope": "SERVER_COMPUTED_SESSION_AND_REAL_OBJECT",
+      "qualificationGate": "BY_OPERATION",
+      "operations": [
+        "POST /api/common/session/station"
+      ]
+    }
+  ],
+  "allowedActions": [
+    "ADD_REVIEW",
+    "ADD_TO_DRAFT",
+    "APPEAL_PENALTY",
+    "APPLY_ADJUSTMENT",
+    "APPLY_CANCEL_REFUND",
+    "APPLY_REFUND_ONLY",
+    "APPROVE_AND_SEND",
+    "ARRIVE_PICKUP",
+    "ARRIVE_STATION",
+    "CANCEL_ASSIGNMENT",
+    "CLOSE_UNPAID",
+    "CONFIRM_HANDOVER",
+    "CONFIRM_STATEMENT",
+    "CONTACT_DRIVER",
+    "CONTACT_OWNER",
+    "CONTACT_STATION",
+    "CREATE_HANDOVER",
+    "DEPART",
+    "EDIT_PRICE",
+    "EXPORT",
+    "FILL_MILEAGE",
+    "FILL_PRICE",
+    "MANUAL_INVITE",
+    "MARK_EVIDENCE_READY",
+    "OPEN_DISPUTE",
+    "PAY",
+    "RECORD_PAYMENT",
+    "REGISTER_RESULT",
+    "REJECT_REVIEW",
+    "REMOVE_FROM_DRAFT",
+    "RENOTIFY_PICKUP",
+    "REPORT_DIFFERENCE",
+    "REPORT_EXCEPTION",
+    "REQUEST_RESULT_CORRECTION",
+    "REVIEW_AFTERSALE",
+    "REVIEW_LICENSE",
+    "SEND_STATEMENT",
+    "SERVICE_CONFIRM",
+    "SUBMIT_REVIEW",
+    "UPLOAD_PHOTO",
+    "VERIFY_PAYMENT",
+    "VIEW_APPEAL",
+    "VIEW_DETAIL",
+    "VIEW_EVIDENCE",
+    "VIEW_HANDOVER_SECRET",
+    "VIEW_PAYMENT",
+    "VIEW_PRICE_HISTORY",
+    "VIEW_PRICING",
+    "VIEW_RESULT",
+    "VOID_STATEMENT",
+    "WITHDRAW_STATEMENT"
+  ],
+  "operations": [
+    {
+      "operationId": "API_001_post",
+      "method": "POST",
+      "path": "/api/common/login/wechat",
+      "permission": null,
+      "capability": null,
+      "authorization": {
+        "realm": "PUBLIC",
+        "scope": "VALID_WECHAT_CODE",
+        "rateLimit": true
+      },
+      "summary": "统一微信登录：新用户默认车主"
+    },
+    {
+      "operationId": "API_002_post",
+      "method": "POST",
+      "path": "/api/common/phone/bind",
+      "permission": null,
+      "capability": "COMMON_PHONE_CREATE",
+      "authorization": {
+        "realm": "MINI",
+        "scope": "AUTHENTICATED_SELF_ALLOW_PHONE_UNBOUND",
+        "capability": "COMMON_PHONE_CREATE"
+      },
+      "summary": "核验手机号并自动识别已有员工"
+    },
+    {
+      "operationId": "API_003_post",
+      "method": "POST",
+      "path": "/api/common/phone/sms/send",
+      "permission": null,
+      "capability": "COMMON_PHONE_SEND",
+      "authorization": {
+        "realm": "MINI",
+        "scope": "SESSION_OR_EXPLICIT_OBJECT_POLICY",
+        "capability": "COMMON_PHONE_SEND"
+      },
+      "summary": "短信兜底发送"
+    },
+    {
+      "operationId": "API_004_post",
+      "method": "POST",
+      "path": "/api/common/phone/sms/verify",
+      "permission": null,
+      "capability": "COMMON_PHONE_VERIFY",
+      "authorization": {
+        "realm": "MINI",
+        "scope": "SESSION_OR_EXPLICIT_OBJECT_POLICY",
+        "capability": "COMMON_PHONE_VERIFY"
+      },
+      "summary": "短信兜底核验"
+    },
+    {
+      "operationId": "API_005_get",
+      "method": "GET",
+      "path": "/api/common/profile",
+      "permission": null,
+      "capability": "PROFILE_READ",
+      "authorization": {
+        "realm": "MINI",
+        "scope": "SESSION_OR_EXPLICIT_OBJECT_POLICY",
+        "capability": "PROFILE_READ"
+      },
+      "summary": "当前统一档案"
+    },
+    {
+      "operationId": "API_006_post",
+      "method": "POST",
+      "path": "/api/common/session/role",
+      "permission": null,
+      "capability": "SESSION_SWITCH_ROLE",
+      "authorization": {
+        "realm": "MINI",
+        "scope": "SESSION_OR_EXPLICIT_OBJECT_POLICY",
+        "capability": "SESSION_SWITCH_ROLE"
+      },
+      "summary": "切换角色"
+    },
+    {
+      "operationId": "API_007_post",
+      "method": "POST",
+      "path": "/api/common/session/station",
+      "permission": null,
+      "capability": "SESSION_SWITCH_STATION",
+      "authorization": {
+        "realm": "MINI",
+        "scope": "SESSION_OR_EXPLICIT_OBJECT_POLICY",
+        "capability": "SESSION_SWITCH_STATION"
+      },
+      "summary": "切换站点"
+    },
+    {
+      "operationId": "API_010_get",
+      "method": "GET",
+      "path": "/api/common/dict/{dictType}",
+      "permission": null,
+      "capability": "COMMON_DICT_QUERY",
+      "authorization": {
+        "realm": "MINI",
+        "scope": "SESSION_OR_EXPLICIT_OBJECT_POLICY",
+        "capability": "COMMON_DICT_QUERY"
+      },
+      "summary": "业务字典查询"
+    },
+    {
+      "operationId": "API_011_get",
+      "method": "GET",
+      "path": "/api/common/stations",
+      "permission": null,
+      "capability": "COMMON_STATIONS_LIST",
+      "authorization": {
+        "realm": "MINI",
+        "scope": "SESSION_OR_EXPLICIT_OBJECT_POLICY",
+        "capability": "COMMON_STATIONS_LIST"
+      },
+      "summary": "可见站点目录"
+    },
+    {
+      "operationId": "API_012_patch",
+      "method": "PATCH",
+      "path": "/api/app/owner/profile",
+      "permission": null,
+      "capability": "OWNER_PROFILE_EDIT",
+      "authorization": {
+        "realm": "MINI",
+        "scope": "OWN_ACCOUNT_RESOURCE",
+        "activeRole": "OWNER",
+        "capability": "OWNER_PROFILE_EDIT"
+      },
+      "summary": "修改选填档案"
+    },
+    {
+      "operationId": "API_013_get",
+      "method": "GET",
+      "path": "/api/app/owner/vehicles",
+      "permission": null,
+      "capability": "OWNER_VEHICLE_LIST",
+      "authorization": {
+        "realm": "MINI",
+        "scope": "OWN_ACCOUNT_RESOURCE",
+        "activeRole": "OWNER",
+        "capability": "OWNER_VEHICLE_LIST"
+      },
+      "summary": "本人vehicles列表"
+    },
+    {
+      "operationId": "API_014_post",
+      "method": "POST",
+      "path": "/api/app/owner/vehicles",
+      "permission": null,
+      "capability": "OWNER_VEHICLE_CREATE",
+      "authorization": {
+        "realm": "MINI",
+        "scope": "OWN_ACCOUNT_RESOURCE",
+        "activeRole": "OWNER",
+        "capability": "OWNER_VEHICLE_CREATE"
+      },
+      "summary": "新增vehicles"
+    },
+    {
+      "operationId": "API_015_put",
+      "method": "PUT",
+      "path": "/api/app/owner/vehicles/{id}",
+      "permission": null,
+      "capability": "OWNER_VEHICLE_EDIT",
+      "authorization": {
+        "realm": "MINI",
+        "scope": "OWN_ACCOUNT_RESOURCE",
+        "activeRole": "OWNER",
+        "capability": "OWNER_VEHICLE_EDIT"
+      },
+      "summary": "修改vehicles"
+    },
+    {
+      "operationId": "API_016_delete",
+      "method": "DELETE",
+      "path": "/api/app/owner/vehicles/{id}",
+      "permission": null,
+      "capability": "OWNER_VEHICLE_REMOVE",
+      "authorization": {
+        "realm": "MINI",
+        "scope": "OWN_ACCOUNT_RESOURCE",
+        "activeRole": "OWNER",
+        "capability": "OWNER_VEHICLE_REMOVE"
+      },
+      "summary": "软删除vehicles"
+    },
+    {
+      "operationId": "API_017_post",
+      "method": "POST",
+      "path": "/api/app/owner/vehicles/{id}/default",
+      "permission": null,
+      "capability": "OWNER_VEHICLE_DEFAULT",
+      "authorization": {
+        "realm": "MINI",
+        "scope": "OWN_ACCOUNT_RESOURCE",
+        "activeRole": "OWNER",
+        "capability": "OWNER_VEHICLE_DEFAULT"
+      },
+      "summary": "设为常用vehicles"
+    },
+    {
+      "operationId": "API_018_get",
+      "method": "GET",
+      "path": "/api/app/owner/addresses",
+      "permission": null,
+      "capability": "OWNER_ADDRESSES_LIST",
+      "authorization": {
+        "realm": "MINI",
+        "scope": "OWN_ACCOUNT_RESOURCE",
+        "activeRole": "OWNER",
+        "capability": "OWNER_ADDRESSES_LIST"
+      },
+      "summary": "本人addresses列表"
+    },
+    {
+      "operationId": "API_019_post",
+      "method": "POST",
+      "path": "/api/app/owner/addresses",
+      "permission": null,
+      "capability": "OWNER_ADDRESSES_CREATE",
+      "authorization": {
+        "realm": "MINI",
+        "scope": "OWN_ACCOUNT_RESOURCE",
+        "activeRole": "OWNER",
+        "capability": "OWNER_ADDRESSES_CREATE"
+      },
+      "summary": "新增addresses"
+    },
+    {
+      "operationId": "API_020_put",
+      "method": "PUT",
+      "path": "/api/app/owner/addresses/{id}",
+      "permission": null,
+      "capability": "OWNER_ADDRESSES_EDIT",
+      "authorization": {
+        "realm": "MINI",
+        "scope": "OWN_ACCOUNT_RESOURCE",
+        "activeRole": "OWNER",
+        "capability": "OWNER_ADDRESSES_EDIT"
+      },
+      "summary": "修改addresses"
+    },
+    {
+      "operationId": "API_021_delete",
+      "method": "DELETE",
+      "path": "/api/app/owner/addresses/{id}",
+      "permission": null,
+      "capability": "OWNER_ADDRESSES_REMOVE",
+      "authorization": {
+        "realm": "MINI",
+        "scope": "OWN_ACCOUNT_RESOURCE",
+        "activeRole": "OWNER",
+        "capability": "OWNER_ADDRESSES_REMOVE"
+      },
+      "summary": "软删除addresses"
+    },
+    {
+      "operationId": "API_022_post",
+      "method": "POST",
+      "path": "/api/app/owner/addresses/{id}/default",
+      "permission": null,
+      "capability": "OWNER_ADDRESSES_DEFAULT",
+      "authorization": {
+        "realm": "MINI",
+        "scope": "OWN_ACCOUNT_RESOURCE",
+        "activeRole": "OWNER",
+        "capability": "OWNER_ADDRESSES_DEFAULT"
+      },
+      "summary": "设为常用addresses"
+    },
+    {
+      "operationId": "API_023_get",
+      "method": "GET",
+      "path": "/api/app/owner/schedule/slots",
+      "permission": null,
+      "capability": "OWNER_SCHEDULE_LIST",
+      "authorization": {
+        "realm": "MINI",
+        "scope": "OWN_ACCOUNT_RESOURCE",
+        "activeRole": "OWNER",
+        "capability": "OWNER_SCHEDULE_LIST"
+      },
+      "summary": "先选上门候选时段"
+    },
+    {
+      "operationId": "API_024_post",
+      "method": "POST",
+      "path": "/api/app/owner/orders/quote",
+      "permission": null,
+      "capability": "OWNER_ORDER_CREATE",
+      "authorization": {
+        "realm": "MINI",
+        "scope": "OWN_ACCOUNT_RESOURCE",
+        "activeRole": "OWNER",
+        "capability": "OWNER_ORDER_CREATE"
+      },
+      "summary": "校验服务并报价"
+    },
+    {
+      "operationId": "API_025_post",
+      "method": "POST",
+      "path": "/api/app/owner/orders",
+      "permission": null,
+      "capability": "OWNER_ORDER_CREATE",
+      "authorization": {
+        "realm": "MINI",
+        "scope": "OWN_ACCOUNT_RESOURCE",
+        "activeRole": "OWNER",
+        "capability": "OWNER_ORDER_CREATE"
+      },
+      "summary": "创建订单与预占"
+    },
+    {
+      "operationId": "API_026_get",
+      "method": "GET",
+      "path": "/api/app/owner/orders",
+      "permission": null,
+      "capability": "OWNER_ORDER_LIST",
+      "authorization": {
+        "realm": "MINI",
+        "scope": "OWN_ACCOUNT_RESOURCE",
+        "activeRole": "OWNER",
+        "capability": "OWNER_ORDER_LIST"
+      },
+      "summary": "本人订单列表"
+    },
+    {
+      "operationId": "API_027_get",
+      "method": "GET",
+      "path": "/api/app/owner/orders/{orderNo}",
+      "permission": null,
+      "capability": "OWNER_ORDER_QUERY",
+      "authorization": {
+        "realm": "MINI",
+        "scope": "OWN_ACCOUNT_RESOURCE",
+        "activeRole": "OWNER",
+        "capability": "OWNER_ORDER_QUERY"
+      },
+      "summary": "本人订单详情"
+    },
+    {
+      "operationId": "API_028_get",
+      "method": "GET",
+      "path": "/api/app/owner/orders/{orderNo}/timeline",
+      "permission": null,
+      "capability": "OWNER_ORDER_LIST",
+      "authorization": {
+        "realm": "MINI",
+        "scope": "OWN_ACCOUNT_RESOURCE",
+        "activeRole": "OWNER",
+        "capability": "OWNER_ORDER_LIST"
+      },
+      "summary": "订单时间轴"
+    },
+    {
+      "operationId": "API_029_post",
+      "method": "POST",
+      "path": "/api/app/owner/orders/{orderNo}/prepay",
+      "permission": null,
+      "capability": "OWNER_ORDER_CREATE",
+      "authorization": {
+        "realm": "MINI",
+        "scope": "OWN_ACCOUNT_RESOURCE",
+        "activeRole": "OWNER",
+        "capability": "OWNER_ORDER_CREATE"
+      },
+      "summary": "微信预支付"
+    },
+    {
+      "operationId": "API_030_get",
+      "method": "GET",
+      "path": "/api/app/owner/orders/{orderNo}/payment",
+      "permission": null,
+      "capability": "OWNER_ORDER_LIST",
+      "authorization": {
+        "realm": "MINI",
+        "scope": "OWN_ACCOUNT_RESOURCE",
+        "activeRole": "OWNER",
+        "capability": "OWNER_ORDER_LIST"
+      },
+      "summary": "可信支付结果"
+    },
+    {
+      "operationId": "API_031_post",
+      "method": "POST",
+      "path": "/api/app/owner/orders/{orderNo}/close-unpaid",
+      "permission": null,
+      "capability": "OWNER_ORDER_CLOSEUNPAID",
+      "authorization": {
+        "realm": "MINI",
+        "scope": "OWN_ACCOUNT_RESOURCE",
+        "activeRole": "OWNER",
+        "capability": "OWNER_ORDER_CLOSEUNPAID"
+      },
+      "summary": "未支付主动关闭"
+    },
+    {
+      "operationId": "API_034_post",
+      "method": "POST",
+      "path": "/api/app/owner/orders/{orderNo}/service-confirmation",
+      "permission": null,
+      "capability": "OWNER_ORDER_SERVICECONFIRMATION",
+      "authorization": {
+        "realm": "MINI",
+        "scope": "OWN_ACCOUNT_RESOURCE",
+        "activeRole": "OWNER",
+        "capability": "OWNER_ORDER_SERVICECONFIRMATION"
+      },
+      "summary": "实际归还后的服务确认"
+    },
+    {
+      "operationId": "API_037_post",
+      "method": "POST",
+      "path": "/api/app/owner/orders/{orderNo}/disputes",
+      "permission": null,
+      "capability": "OWNER_ORDER_CREATE",
+      "authorization": {
+        "realm": "MINI",
+        "scope": "OWN_ACCOUNT_RESOURCE",
+        "activeRole": "OWNER",
+        "capability": "OWNER_ORDER_CREATE"
+      },
+      "summary": "发起服务争议"
+    },
+    {
+      "operationId": "API_038_get",
+      "method": "GET",
+      "path": "/api/app/owner/orders/{orderNo}/disputes",
+      "permission": null,
+      "capability": "OWNER_ORDER_LIST",
+      "authorization": {
+        "realm": "MINI",
+        "scope": "OWN_ACCOUNT_RESOURCE",
+        "activeRole": "OWNER",
+        "capability": "OWNER_ORDER_LIST"
+      },
+      "summary": "查看服务争议"
+    },
+    {
+      "operationId": "API_039_post",
+      "method": "POST",
+      "path": "/api/app/owner/orders/{orderNo}/reviews",
+      "permission": null,
+      "capability": "OWNER_ORDER_CREATE",
+      "authorization": {
+        "realm": "MINI",
+        "scope": "OWN_ACCOUNT_RESOURCE",
+        "activeRole": "OWNER",
+        "capability": "OWNER_ORDER_CREATE"
+      },
+      "summary": "服务评价"
+    },
+    {
+      "operationId": "API_040_get",
+      "method": "GET",
+      "path": "/api/app/owner/orders/{orderNo}/result",
+      "permission": null,
+      "capability": "OWNER_ORDER_LIST",
+      "authorization": {
+        "realm": "MINI",
+        "scope": "OWN_ACCOUNT_RESOURCE",
+        "activeRole": "OWNER",
+        "capability": "OWNER_ORDER_LIST"
+      },
+      "summary": "结构化结果"
+    },
+    {
+      "operationId": "API_041_get",
+      "method": "GET",
+      "path": "/api/app/owner/orders/{orderNo}/evidence",
+      "permission": null,
+      "capability": "OWNER_ORDER_LIST",
+      "authorization": {
+        "realm": "MINI",
+        "scope": "OWN_ACCOUNT_RESOURCE",
+        "activeRole": "OWNER",
+        "capability": "OWNER_ORDER_LIST"
+      },
+      "summary": "本人订单证据组"
+    },
+    {
+      "operationId": "API_042_get",
+      "method": "GET",
+      "path": "/api/app/driver/qualification",
+      "permission": null,
+      "capability": "DRIVER_QUALIFICATION_LIST",
+      "authorization": {
+        "realm": "MINI",
+        "scope": "SELF_QUALIFICATION",
+        "capability": "DRIVER_QUALIFICATION_LIST",
+        "qualificationRequired": false,
+        "principal": "MINI_ACCOUNT",
+        "roleRequirement": "NONE",
+        "requiredAccountConditions": [
+          "ACTIVE",
+          "PHONE_VERIFIED"
+        ]
+      },
+      "summary": "我的申请"
+    },
+    {
+      "operationId": "API_043_put",
+      "method": "PUT",
+      "path": "/api/app/driver/qualification",
+      "permission": null,
+      "capability": "DRIVER_QUALIFICATION_EDIT",
+      "authorization": {
+        "realm": "MINI",
+        "scope": "SELF_QUALIFICATION",
+        "capability": "DRIVER_QUALIFICATION_EDIT",
+        "qualificationRequired": false,
+        "principal": "MINI_ACCOUNT",
+        "roleRequirement": "NONE",
+        "requiredAccountConditions": [
+          "ACTIVE",
+          "PHONE_VERIFIED"
+        ]
+      },
+      "summary": "保存资格草稿"
+    },
+    {
+      "operationId": "v5_post_api_app_driver_qualification",
+      "method": "POST",
+      "path": "/api/app/driver/qualification",
+      "permission": null,
+      "capability": "DRIVER_QUALIFICATION_CREATE",
+      "authorization": {
+        "realm": "MINI",
+        "scope": "SELF_QUALIFICATION",
+        "capability": "DRIVER_QUALIFICATION_CREATE",
+        "qualificationRequired": false,
+        "principal": "MINI_ACCOUNT",
+        "roleRequirement": "NONE",
+        "requiredAccountConditions": [
+          "ACTIVE",
+          "PHONE_VERIFIED"
+        ]
+      },
+      "summary": "建立本人代驾资格草稿"
+    },
+    {
+      "operationId": "API_044_post",
+      "method": "POST",
+      "path": "/api/app/driver/qualification/submit",
+      "permission": null,
+      "capability": "DRIVER_QUALIFICATION_SUBMIT",
+      "authorization": {
+        "realm": "MINI",
+        "scope": "SELF_QUALIFICATION",
+        "capability": "DRIVER_QUALIFICATION_SUBMIT",
+        "qualificationRequired": false,
+        "principal": "MINI_ACCOUNT",
+        "roleRequirement": "NONE",
+        "requiredAccountConditions": [
+          "ACTIVE",
+          "PHONE_VERIFIED"
+        ]
+      },
+      "summary": "提交资格审核"
+    },
+    {
+      "operationId": "API_045_post",
+      "method": "POST",
+      "path": "/api/app/driver/qualification/face-session",
+      "permission": null,
+      "capability": "DRIVER_QUALIFICATION_CREATE",
+      "authorization": {
+        "realm": "MINI",
+        "scope": "SELF_QUALIFICATION",
+        "capability": "DRIVER_QUALIFICATION_CREATE",
+        "qualificationRequired": false,
+        "principal": "MINI_ACCOUNT",
+        "roleRequirement": "NONE",
+        "requiredAccountConditions": [
+          "ACTIVE",
+          "PHONE_VERIFIED"
+        ]
+      },
+      "summary": "创建实名活体核验会话"
+    },
+    {
+      "operationId": "API_046_get",
+      "method": "GET",
+      "path": "/api/app/driver/qualification/training",
+      "permission": null,
+      "capability": "DRIVER_QUALIFICATION_LIST",
+      "authorization": {
+        "realm": "MINI",
+        "scope": "SELF_QUALIFICATION",
+        "capability": "DRIVER_QUALIFICATION_LIST",
+        "qualificationRequired": false,
+        "principal": "MINI_ACCOUNT",
+        "roleRequirement": "NONE",
+        "requiredAccountConditions": [
+          "ACTIVE",
+          "PHONE_VERIFIED"
+        ]
+      },
+      "summary": "培训与考试任务"
+    },
+    {
+      "operationId": "API_047_post",
+      "method": "POST",
+      "path": "/api/app/driver/qualification/training/submit",
+      "permission": null,
+      "capability": "DRIVER_QUALIFICATION_SUBMIT",
+      "authorization": {
+        "realm": "MINI",
+        "scope": "SELF_QUALIFICATION",
+        "capability": "DRIVER_QUALIFICATION_SUBMIT",
+        "qualificationRequired": false,
+        "principal": "MINI_ACCOUNT",
+        "roleRequirement": "NONE",
+        "requiredAccountConditions": [
+          "ACTIVE",
+          "PHONE_VERIFIED"
+        ]
+      },
+      "summary": "提交考试答案"
+    },
+    {
+      "operationId": "API_048_get",
+      "method": "GET",
+      "path": "/api/app/driver/availability",
+      "permission": null,
+      "capability": "DRIVER_AVAILABILITY_QUERY",
+      "authorization": {
+        "realm": "MINI",
+        "scope": "OWN_DRIVER_RECORD",
+        "capability": "DRIVER_AVAILABILITY_QUERY"
+      },
+      "summary": "可接单状态"
+    },
+    {
+      "operationId": "API_049_patch",
+      "method": "PATCH",
+      "path": "/api/app/driver/listening",
+      "permission": null,
+      "capability": "DRIVER_AVAILABILITY_EDIT",
+      "authorization": {
+        "realm": "MINI",
+        "scope": "OWN_DRIVER_RECORD",
+        "capability": "DRIVER_AVAILABILITY_EDIT"
+      },
+      "summary": "听单开关"
+    },
+    {
+      "operationId": "API_050_post",
+      "method": "POST",
+      "path": "/api/app/driver/location",
+      "permission": null,
+      "capability": "DRIVER_LOCATION_CREATE",
+      "authorization": {
+        "realm": "MINI",
+        "scope": "OWN_DRIVER_RECORD",
+        "capability": "DRIVER_LOCATION_CREATE"
+      },
+      "summary": "前台位置打点"
+    },
+    {
+      "operationId": "API_051_get",
+      "method": "GET",
+      "path": "/api/app/driver/invites",
+      "permission": null,
+      "capability": "DRIVER_INVITE_LIST",
+      "authorization": {
+        "realm": "MINI",
+        "scope": "OWN_DRIVER_RECORD",
+        "capability": "DRIVER_INVITE_LIST"
+      },
+      "summary": "本人有效邀约"
+    },
+    {
+      "operationId": "API_052_get",
+      "method": "GET",
+      "path": "/api/app/driver/invites/{inviteId}",
+      "permission": null,
+      "capability": "DRIVER_INVITE_QUERY",
+      "authorization": {
+        "realm": "MINI",
+        "scope": "OWN_DRIVER_RECORD",
+        "capability": "DRIVER_INVITE_QUERY"
+      },
+      "summary": "邀约详情"
+    },
+    {
+      "operationId": "API_053_post",
+      "method": "POST",
+      "path": "/api/app/driver/invites/{inviteId}/response",
+      "permission": null,
+      "capability": "DRIVER_INVITE_RESPONSE",
+      "authorization": {
+        "realm": "MINI",
+        "scope": "OWN_DRIVER_RECORD",
+        "capability": "DRIVER_INVITE_RESPONSE"
+      },
+      "summary": "响应邀约"
+    },
+    {
+      "operationId": "API_054_get",
+      "method": "GET",
+      "path": "/api/app/driver/assignments/current",
+      "permission": null,
+      "capability": "DRIVER_ASSIGNMENT_QUERY",
+      "authorization": {
+        "realm": "MINI",
+        "scope": "OWN_DRIVER_RECORD",
+        "capability": "DRIVER_ASSIGNMENT_QUERY"
+      },
+      "summary": "当前在手任务"
+    },
+    {
+      "operationId": "API_055_get",
+      "method": "GET",
+      "path": "/api/app/driver/orders",
+      "permission": null,
+      "capability": "DRIVER_ORDER_LIST",
+      "authorization": {
+        "realm": "MINI",
+        "scope": "OWN_DRIVER_RECORD",
+        "capability": "DRIVER_ORDER_LIST"
+      },
+      "summary": "历史服务订单"
+    },
+    {
+      "operationId": "API_056_get",
+      "method": "GET",
+      "path": "/api/app/driver/orders/{orderNo}",
+      "permission": null,
+      "capability": "DRIVER_ORDER_QUERY",
+      "authorization": {
+        "realm": "MINI",
+        "scope": "OWN_DRIVER_RECORD",
+        "capability": "DRIVER_ORDER_QUERY"
+      },
+      "summary": "本人受限订单详情"
+    },
+    {
+      "operationId": "API_057_post",
+      "method": "POST",
+      "path": "/api/app/driver/orders/{orderNo}/depart",
+      "permission": null,
+      "capability": "DRIVER_ORDER_DEPART",
+      "authorization": {
+        "realm": "MINI",
+        "scope": "OWN_DRIVER_RECORD",
+        "capability": "DRIVER_ORDER_DEPART"
+      },
+      "summary": "出发前往接车"
+    },
+    {
+      "operationId": "API_058_post",
+      "method": "POST",
+      "path": "/api/app/driver/orders/{orderNo}/arrive-pickup",
+      "permission": null,
+      "capability": "DRIVER_ORDER_ARRIVEPICKUP",
+      "authorization": {
+        "realm": "MINI",
+        "scope": "OWN_DRIVER_RECORD",
+        "capability": "DRIVER_ORDER_ARRIVEPICKUP"
+      },
+      "summary": "到达接车点"
+    },
+    {
+      "operationId": "API_059_post",
+      "method": "POST",
+      "path": "/api/app/driver/orders/{orderNo}/arrive-station",
+      "permission": null,
+      "capability": "DRIVER_ORDER_ARRIVESTATION",
+      "authorization": {
+        "realm": "MINI",
+        "scope": "OWN_DRIVER_RECORD",
+        "capability": "DRIVER_ORDER_ARRIVESTATION"
+      },
+      "summary": "到达检测点"
+    },
+    {
+      "operationId": "API_060_post",
+      "method": "POST",
+      "path": "/api/app/driver/orders/{orderNo}/assignment-cancellation",
+      "permission": null,
+      "capability": "DRIVER_ORDER_ASSIGNMENTCANCELLATION",
+      "authorization": {
+        "realm": "MINI",
+        "scope": "OWN_DRIVER_RECORD",
+        "capability": "DRIVER_ORDER_ASSIGNMENTCANCELLATION"
+      },
+      "summary": "未接车取消承接"
+    },
+    {
+      "operationId": "API_061_post",
+      "method": "POST",
+      "path": "/api/app/driver/penalties/{penaltyId}/appeals",
+      "permission": null,
+      "capability": "DRIVER_PENALTY_CREATE",
+      "authorization": {
+        "realm": "MINI",
+        "scope": "OWN_DRIVER_RECORD",
+        "capability": "DRIVER_PENALTY_CREATE"
+      },
+      "summary": "停单申诉"
+    },
+    {
+      "operationId": "API_062_post",
+      "method": "POST",
+      "path": "/api/app/driver/orders/{orderNo}/exceptions",
+      "permission": null,
+      "capability": "DRIVER_ORDER_CREATE",
+      "authorization": {
+        "realm": "MINI",
+        "scope": "OWN_DRIVER_RECORD",
+        "capability": "DRIVER_ORDER_CREATE"
+      },
+      "summary": "普通履约异常"
+    },
+    {
+      "operationId": "API_063_post",
+      "method": "POST",
+      "path": "/api/app/driver/orders/{orderNo}/evidence",
+      "permission": null,
+      "capability": "DRIVER_ORDER_CREATE",
+      "authorization": {
+        "realm": "MINI",
+        "scope": "OWN_DRIVER_RECORD",
+        "capability": "DRIVER_ORDER_CREATE"
+      },
+      "summary": "创建本节点证据组"
+    },
+    {
+      "operationId": "API_064_get",
+      "method": "GET",
+      "path": "/api/app/driver/orders/{orderNo}/evidence",
+      "permission": null,
+      "capability": "DRIVER_ORDER_LIST",
+      "authorization": {
+        "realm": "MINI",
+        "scope": "OWN_DRIVER_RECORD",
+        "capability": "DRIVER_ORDER_LIST"
+      },
+      "summary": "查询证据组"
+    },
+    {
+      "operationId": "API_065_post",
+      "method": "POST",
+      "path": "/api/app/driver/orders/{orderNo}/evidence/{groupId}/photos",
+      "permission": null,
+      "capability": "DRIVER_ORDER_CREATE",
+      "authorization": {
+        "realm": "MINI",
+        "scope": "OWN_DRIVER_RECORD",
+        "capability": "DRIVER_ORDER_CREATE"
+      },
+      "summary": "关联已验证照片"
+    },
+    {
+      "operationId": "API_066_put",
+      "method": "PUT",
+      "path": "/api/app/driver/orders/{orderNo}/evidence/{groupId}/mileage",
+      "permission": null,
+      "capability": "DRIVER_ORDER_EDIT",
+      "authorization": {
+        "realm": "MINI",
+        "scope": "OWN_DRIVER_RECORD",
+        "capability": "DRIVER_ORDER_EDIT"
+      },
+      "summary": "提交人工复核里程"
+    },
+    {
+      "operationId": "API_067_post",
+      "method": "POST",
+      "path": "/api/app/driver/orders/{orderNo}/evidence/{groupId}/ready",
+      "permission": null,
+      "capability": "DRIVER_ORDER_READY",
+      "authorization": {
+        "realm": "MINI",
+        "scope": "OWN_DRIVER_RECORD",
+        "capability": "DRIVER_ORDER_READY"
+      },
+      "summary": "检查照片完整性"
+    },
+    {
+      "operationId": "API_068_post",
+      "method": "POST",
+      "path": "/api/common/orders/{orderNo}/handovers",
+      "permission": "biz:handover:create",
+      "capability": "COMMON_ORDERS_CREATE",
+      "authorization": {
+        "anyOf": [
+          {
+            "realm": "MINI",
+            "scope": "SESSION_OR_EXPLICIT_OBJECT_POLICY",
+            "capability": "COMMON_ORDERS_CREATE"
+          },
+          {
+            "realm": "ADMIN",
+            "permission": "biz:handover:create",
+            "scope": "ORG_DEPT_STATION_AND_PURPOSE"
+          }
+        ],
+        "mode": "REALM_SPECIFIC_ALL_CONDITIONS",
+        "rules": [
+          {
+            "realm": "MINI",
+            "capability": "COMMON_ORDERS_CREATE",
+            "scope": "SELF_OR_OWN_ASSIGNMENT_OR_EMPLOYEE_STATION_INTERSECTION",
+            "requireObjectOwnership": true
+          },
+          {
+            "realm": "ADMIN",
+            "permission": "biz:handover:create",
+            "scope": "ORG_DEPT_STATION_AND_EXPLICIT_OBJECT_POLICY",
+            "requireObjectOwnership": true
+          }
+        ],
+        "note": "按已认证realm选一条规则；不能把能力码和后台权限用OR混成通行证。员工MINI另查框架功能权限/部门/站点。"
+      },
+      "summary": "发起交接"
+    },
+    {
+      "operationId": "API_069_get",
+      "method": "GET",
+      "path": "/api/common/orders/{orderNo}/handovers/{handoverId}",
+      "permission": "biz:handover:query",
+      "capability": "COMMON_ORDERS_QUERY",
+      "authorization": {
+        "anyOf": [
+          {
+            "realm": "MINI",
+            "scope": "SESSION_OR_EXPLICIT_OBJECT_POLICY",
+            "capability": "COMMON_ORDERS_QUERY"
+          },
+          {
+            "realm": "ADMIN",
+            "permission": "biz:handover:query",
+            "scope": "ORG_DEPT_STATION_AND_PURPOSE"
+          }
+        ],
+        "mode": "REALM_SPECIFIC_ALL_CONDITIONS",
+        "rules": [
+          {
+            "realm": "MINI",
+            "capability": "COMMON_ORDERS_QUERY",
+            "scope": "SELF_OR_OWN_ASSIGNMENT_OR_EMPLOYEE_STATION_INTERSECTION",
+            "requireObjectOwnership": true
+          },
+          {
+            "realm": "ADMIN",
+            "permission": "biz:handover:query",
+            "scope": "ORG_DEPT_STATION_AND_EXPLICIT_OBJECT_POLICY",
+            "requireObjectOwnership": true
+          }
+        ],
+        "note": "按已认证realm选一条规则；不能把能力码和后台权限用OR混成通行证。员工MINI另查框架功能权限/部门/站点。"
+      },
+      "summary": "交接状态"
+    },
+    {
+      "operationId": "API_070_get",
+      "method": "GET",
+      "path": "/api/common/orders/{orderNo}/handovers/{handoverId}/secret",
+      "permission": "biz:handover:secret",
+      "capability": "COMMON_ORDERS_LIST",
+      "authorization": {
+        "anyOf": [
+          {
+            "realm": "MINI",
+            "scope": "SESSION_OR_EXPLICIT_OBJECT_POLICY",
+            "capability": "COMMON_ORDERS_LIST"
+          },
+          {
+            "realm": "ADMIN",
+            "permission": "biz:handover:secret",
+            "scope": "ORG_DEPT_STATION_AND_PURPOSE"
+          }
+        ],
+        "extraPolicy": "HOLDER_ONLY",
+        "mode": "REALM_SPECIFIC_ALL_CONDITIONS",
+        "rules": [
+          {
+            "realm": "MINI",
+            "capability": "COMMON_ORDERS_LIST",
+            "scope": "SELF_OR_OWN_ASSIGNMENT_OR_EMPLOYEE_STATION_INTERSECTION",
+            "requireObjectOwnership": true
+          },
+          {
+            "realm": "ADMIN",
+            "permission": "biz:handover:secret",
+            "scope": "ORG_DEPT_STATION_AND_EXPLICIT_OBJECT_POLICY",
+            "requireObjectOwnership": true
+          }
+        ],
+        "note": "按已认证realm选一条规则；不能把能力码和后台权限用OR混成通行证。员工MINI另查框架功能权限/部门/站点。"
+      },
+      "summary": "持码方专用交接码"
+    },
+    {
+      "operationId": "API_071_post",
+      "method": "POST",
+      "path": "/api/common/orders/{orderNo}/handovers/{handoverId}/confirm",
+      "permission": "biz:handover:confirm",
+      "capability": "COMMON_ORDERS_CONFIRM",
+      "authorization": {
+        "anyOf": [
+          {
+            "realm": "MINI",
+            "scope": "SESSION_OR_EXPLICIT_OBJECT_POLICY",
+            "capability": "COMMON_ORDERS_CONFIRM"
+          },
+          {
+            "realm": "ADMIN",
+            "permission": "biz:handover:confirm",
+            "scope": "ORG_DEPT_STATION_AND_PURPOSE"
+          }
+        ],
+        "extraPolicy": "VERIFIER_ONLY",
+        "mode": "REALM_SPECIFIC_ALL_CONDITIONS",
+        "rules": [
+          {
+            "realm": "MINI",
+            "capability": "COMMON_ORDERS_CONFIRM",
+            "scope": "SELF_OR_OWN_ASSIGNMENT_OR_EMPLOYEE_STATION_INTERSECTION",
+            "requireObjectOwnership": true
+          },
+          {
+            "realm": "ADMIN",
+            "permission": "biz:handover:confirm",
+            "scope": "ORG_DEPT_STATION_AND_EXPLICIT_OBJECT_POLICY",
+            "requireObjectOwnership": true
+          }
+        ],
+        "note": "按已认证realm选一条规则；不能把能力码和后台权限用OR混成通行证。员工MINI另查框架功能权限/部门/站点。"
+      },
+      "summary": "核验并完成实物交接"
+    },
+    {
+      "operationId": "API_072_get",
+      "method": "GET",
+      "path": "/api/app/station/orders",
+      "permission": "biz:order:list",
+      "capability": null,
+      "authorization": {
+        "realm": "MINI",
+        "scope": "ORG_DEPT_STATION",
+        "permission": "biz:order:list",
+        "activeRole": "STATION",
+        "miniActionAllowlist": true
+      },
+      "summary": "工作订单列表"
+    },
+    {
+      "operationId": "API_073_get",
+      "method": "GET",
+      "path": "/api/app/station/orders/{orderNo}",
+      "permission": "biz:order:query",
+      "capability": null,
+      "authorization": {
+        "realm": "MINI",
+        "scope": "ORG_DEPT_STATION",
+        "permission": "biz:order:query",
+        "activeRole": "STATION",
+        "miniActionAllowlist": true
+      },
+      "summary": "工作订单详情"
+    },
+    {
+      "operationId": "API_074_get",
+      "method": "GET",
+      "path": "/api/app/station/orders/{orderNo}/license",
+      "permission": "biz:license:list",
+      "capability": null,
+      "authorization": {
+        "realm": "MINI",
+        "scope": "ORG_DEPT_STATION",
+        "permission": "biz:license:list",
+        "activeRole": "STATION",
+        "miniActionAllowlist": true
+      },
+      "summary": "行驶证复核状态"
+    },
+    {
+      "operationId": "API_075_put",
+      "method": "PUT",
+      "path": "/api/app/station/orders/{orderNo}/license",
+      "permission": "biz:license:edit",
+      "capability": null,
+      "authorization": {
+        "realm": "MINI",
+        "scope": "ORG_DEPT_STATION",
+        "permission": "biz:license:edit",
+        "activeRole": "STATION",
+        "miniActionAllowlist": true
+      },
+      "summary": "登记并复核行驶证"
+    },
+    {
+      "operationId": "API_076_post",
+      "method": "POST",
+      "path": "/api/app/station/orders/{orderNo}/results",
+      "permission": "biz:result:create",
+      "capability": null,
+      "authorization": {
+        "realm": "MINI",
+        "scope": "ORG_DEPT_STATION",
+        "permission": "biz:result:create",
+        "activeRole": "STATION",
+        "miniActionAllowlist": true
+      },
+      "summary": "登记最终检测结果"
+    },
+    {
+      "operationId": "API_077_get",
+      "method": "GET",
+      "path": "/api/app/station/orders/{orderNo}/results",
+      "permission": "biz:result:list",
+      "capability": null,
+      "authorization": {
+        "realm": "MINI",
+        "scope": "ORG_DEPT_STATION",
+        "permission": "biz:result:list",
+        "activeRole": "STATION",
+        "miniActionAllowlist": true
+      },
+      "summary": "查询结果版本"
+    },
+    {
+      "operationId": "API_078_post",
+      "method": "POST",
+      "path": "/api/app/station/orders/{orderNo}/result-corrections",
+      "permission": "biz:resultcorrection:create",
+      "capability": null,
+      "authorization": {
+        "realm": "MINI",
+        "scope": "ORG_DEPT_STATION",
+        "permission": "biz:resultcorrection:create",
+        "activeRole": "STATION",
+        "miniActionAllowlist": true
+      },
+      "summary": "申请结果更正"
+    },
+    {
+      "operationId": "API_079_post",
+      "method": "POST",
+      "path": "/api/app/station/orders/{orderNo}/pickup-notification",
+      "permission": "biz:order:create",
+      "capability": null,
+      "authorization": {
+        "realm": "MINI",
+        "scope": "ORG_DEPT_STATION",
+        "permission": "biz:order:create",
+        "activeRole": "STATION",
+        "miniActionAllowlist": true
+      },
+      "summary": "重发取车通知"
+    },
+    {
+      "operationId": "API_080_post",
+      "method": "POST",
+      "path": "/api/app/station/orders/{orderNo}/exceptions",
+      "permission": "biz:order:create",
+      "capability": null,
+      "authorization": {
+        "realm": "MINI",
+        "scope": "ORG_DEPT_STATION",
+        "permission": "biz:order:create",
+        "activeRole": "STATION",
+        "miniActionAllowlist": true
+      },
+      "summary": "上报拒收等普通异常"
+    },
+    {
+      "operationId": "API_081_get",
+      "method": "GET",
+      "path": "/api/app/station/capacity",
+      "permission": "biz:capacity:list",
+      "capability": null,
+      "authorization": {
+        "realm": "MINI",
+        "scope": "ORG_DEPT_STATION",
+        "permission": "biz:capacity:list",
+        "activeRole": "STATION",
+        "miniActionAllowlist": true
+      },
+      "summary": "查询容量"
+    },
+    {
+      "operationId": "API_082_put",
+      "method": "PUT",
+      "path": "/api/app/station/capacity/{slotId}",
+      "permission": "biz:capacity:edit",
+      "capability": null,
+      "authorization": {
+        "realm": "MINI",
+        "scope": "ORG_DEPT_STATION",
+        "permission": "biz:capacity:edit",
+        "activeRole": "STATION",
+        "miniActionAllowlist": true
+      },
+      "summary": "修改未来容量"
+    },
+    {
+      "operationId": "API_083_get",
+      "method": "GET",
+      "path": "/api/admin/orders",
+      "permission": "biz:order:list",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION",
+        "permission": "biz:order:list"
+      },
+      "summary": "工作订单列表"
+    },
+    {
+      "operationId": "API_084_get",
+      "method": "GET",
+      "path": "/api/admin/orders/{orderNo}",
+      "permission": "biz:order:query",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION",
+        "permission": "biz:order:query"
+      },
+      "summary": "工作订单详情"
+    },
+    {
+      "operationId": "API_085_get",
+      "method": "GET",
+      "path": "/api/admin/orders/{orderNo}/license",
+      "permission": "biz:license:list",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION",
+        "permission": "biz:license:list"
+      },
+      "summary": "行驶证复核状态"
+    },
+    {
+      "operationId": "API_086_put",
+      "method": "PUT",
+      "path": "/api/admin/orders/{orderNo}/license",
+      "permission": "biz:license:edit",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION",
+        "permission": "biz:license:edit"
+      },
+      "summary": "登记并复核行驶证"
+    },
+    {
+      "operationId": "API_087_post",
+      "method": "POST",
+      "path": "/api/admin/orders/{orderNo}/results",
+      "permission": "biz:result:create",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION",
+        "permission": "biz:result:create"
+      },
+      "summary": "登记最终检测结果"
+    },
+    {
+      "operationId": "API_088_get",
+      "method": "GET",
+      "path": "/api/admin/orders/{orderNo}/results",
+      "permission": "biz:result:list",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION",
+        "permission": "biz:result:list"
+      },
+      "summary": "查询结果版本"
+    },
+    {
+      "operationId": "API_089_post",
+      "method": "POST",
+      "path": "/api/admin/orders/{orderNo}/result-corrections",
+      "permission": "biz:resultcorrection:create",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION",
+        "permission": "biz:resultcorrection:create"
+      },
+      "summary": "申请结果更正"
+    },
+    {
+      "operationId": "API_090_post",
+      "method": "POST",
+      "path": "/api/admin/orders/{orderNo}/pickup-notification",
+      "permission": "biz:order:create",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION",
+        "permission": "biz:order:create"
+      },
+      "summary": "重发取车通知"
+    },
+    {
+      "operationId": "API_091_post",
+      "method": "POST",
+      "path": "/api/admin/orders/{orderNo}/exceptions",
+      "permission": "biz:order:create",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION",
+        "permission": "biz:order:create"
+      },
+      "summary": "上报拒收等普通异常"
+    },
+    {
+      "operationId": "API_092_get",
+      "method": "GET",
+      "path": "/api/admin/capacity",
+      "permission": "biz:capacity:list",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION",
+        "permission": "biz:capacity:list"
+      },
+      "summary": "查询容量"
+    },
+    {
+      "operationId": "API_093_put",
+      "method": "PUT",
+      "path": "/api/admin/capacity/{slotId}",
+      "permission": "biz:capacity:edit",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION",
+        "permission": "biz:capacity:edit"
+      },
+      "summary": "修改未来容量"
+    },
+    {
+      "operationId": "API_094_get",
+      "method": "GET",
+      "path": "/api/app/station/authorized-stations",
+      "permission": "biz:station:list",
+      "capability": null,
+      "authorization": {
+        "realm": "MINI",
+        "scope": "ORG_DEPT_STATION",
+        "permission": "biz:station:list",
+        "activeRole": "STATION",
+        "miniActionAllowlist": true
+      },
+      "summary": "员工获授权站点"
+    },
+    {
+      "operationId": "API_095_get",
+      "method": "GET",
+      "path": "/api/app/station/info",
+      "permission": "biz:station:query",
+      "capability": null,
+      "authorization": {
+        "realm": "MINI",
+        "scope": "ORG_DEPT_STATION",
+        "permission": "biz:station:query",
+        "activeRole": "STATION",
+        "miniActionAllowlist": true
+      },
+      "summary": "当前站点资料"
+    },
+    {
+      "operationId": "API_096_put",
+      "method": "PUT",
+      "path": "/api/app/station/info",
+      "permission": "biz:station:edit",
+      "capability": null,
+      "authorization": {
+        "realm": "MINI",
+        "scope": "ORG_DEPT_STATION",
+        "permission": "biz:station:edit",
+        "activeRole": "STATION",
+        "miniActionAllowlist": true
+      },
+      "summary": "维护当前站点资料"
+    },
+    {
+      "operationId": "API_097_get",
+      "method": "GET",
+      "path": "/api/admin/dashboard",
+      "permission": "biz:dashboard:list",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION",
+        "permission": "biz:dashboard:list"
+      },
+      "summary": "工作台指标"
+    },
+    {
+      "operationId": "API_098_get",
+      "method": "GET",
+      "path": "/api/admin/dispatch/queue",
+      "permission": "biz:dispatch:list",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION",
+        "permission": "biz:dispatch:list"
+      },
+      "summary": "调度队列"
+    },
+    {
+      "operationId": "API_099_get",
+      "method": "GET",
+      "path": "/api/admin/dispatch/candidates",
+      "permission": "biz:dispatch:list",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION",
+        "permission": "biz:dispatch:list"
+      },
+      "summary": "候选司机"
+    },
+    {
+      "operationId": "API_100_post",
+      "method": "POST",
+      "path": "/api/admin/dispatch/manual-invites",
+      "permission": "biz:dispatch:create",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION",
+        "permission": "biz:dispatch:create"
+      },
+      "summary": "人工发出邀约"
+    },
+    {
+      "operationId": "API_101_get",
+      "method": "GET",
+      "path": "/api/admin/dispatch/invites",
+      "permission": "biz:dispatch:list",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION",
+        "permission": "biz:dispatch:list"
+      },
+      "summary": "派单邀约记录"
+    },
+    {
+      "operationId": "API_102_get",
+      "method": "GET",
+      "path": "/api/admin/dispatch/config",
+      "permission": "biz:dispatch:query",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION",
+        "permission": "biz:dispatch:query"
+      },
+      "summary": "派单配置"
+    },
+    {
+      "operationId": "API_103_put",
+      "method": "PUT",
+      "path": "/api/admin/dispatch/config",
+      "permission": "biz:dispatch:edit",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION",
+        "permission": "biz:dispatch:edit"
+      },
+      "summary": "保存派单配置"
+    },
+    {
+      "operationId": "API_104_post",
+      "method": "POST",
+      "path": "/api/admin/dispatch/plans/preview",
+      "permission": "biz:dispatch:preview",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION",
+        "permission": "biz:dispatch:preview"
+      },
+      "summary": "计划变更影响预览"
+    },
+    {
+      "operationId": "API_105_post",
+      "method": "POST",
+      "path": "/api/admin/dispatch/plans/{taskId}/apply",
+      "permission": "biz:dispatch:create",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION",
+        "permission": "biz:dispatch:create"
+      },
+      "summary": "确认更新未派单计划"
+    },
+    {
+      "operationId": "API_113_get",
+      "method": "GET",
+      "path": "/api/admin/refunds/{refundNo}",
+      "permission": "biz:refund:query",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION",
+        "permission": "biz:refund:query"
+      },
+      "summary": "渠道退款详情"
+    },
+    {
+      "operationId": "API_114_post",
+      "method": "POST",
+      "path": "/api/admin/refunds/{refundNo}/query",
+      "permission": "biz:refund:query",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION",
+        "permission": "biz:refund:query"
+      },
+      "summary": "主动查退款"
+    },
+    {
+      "operationId": "API_115_post",
+      "method": "POST",
+      "path": "/api/admin/refunds/{refundNo}/retry",
+      "permission": "biz:refund:retry",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION",
+        "permission": "biz:refund:retry"
+      },
+      "summary": "安全重试渠道请求"
+    },
+    {
+      "operationId": "API_116_get",
+      "method": "GET",
+      "path": "/api/admin/disputes",
+      "permission": "biz:dispute:list",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION",
+        "permission": "biz:dispute:list"
+      },
+      "summary": "争议列表"
+    },
+    {
+      "operationId": "API_117_get",
+      "method": "GET",
+      "path": "/api/admin/disputes/{disputeId}",
+      "permission": "biz:dispute:query",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION",
+        "permission": "biz:dispute:query"
+      },
+      "summary": "争议详情"
+    },
+    {
+      "operationId": "API_118_post",
+      "method": "POST",
+      "path": "/api/admin/disputes/{disputeId}/resolve",
+      "permission": "biz:dispute:resolve",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION",
+        "permission": "biz:dispute:resolve"
+      },
+      "summary": "处理争议"
+    },
+    {
+      "operationId": "API_119_get",
+      "method": "GET",
+      "path": "/api/admin/exceptions",
+      "permission": "biz:exception:list",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION",
+        "permission": "biz:exception:list"
+      },
+      "summary": "普通异常列表"
+    },
+    {
+      "operationId": "API_120_post",
+      "method": "POST",
+      "path": "/api/admin/exceptions/{exceptionId}/resolve",
+      "permission": "biz:exception:resolve",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION",
+        "permission": "biz:exception:resolve"
+      },
+      "summary": "登记异常处理"
+    },
+    {
+      "operationId": "API_121_get",
+      "method": "GET",
+      "path": "/api/admin/driver-qualifications",
+      "permission": "biz:driverqualification:list",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION",
+        "permission": "biz:driverqualification:list"
+      },
+      "summary": "资格审核列表"
+    },
+    {
+      "operationId": "API_122_get",
+      "method": "GET",
+      "path": "/api/admin/driver-qualifications/{applicationId}",
+      "permission": "biz:driverqualification:query",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION",
+        "permission": "biz:driverqualification:query"
+      },
+      "summary": "资格审核详情"
+    },
+    {
+      "operationId": "API_123_post",
+      "method": "POST",
+      "path": "/api/admin/driver-qualifications/{applicationId}/audit",
+      "permission": "biz:driverqualification:audit",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION",
+        "permission": "biz:driverqualification:audit"
+      },
+      "summary": "批准或驳回资格"
+    },
+    {
+      "operationId": "V4_get_api_admin_owners",
+      "method": "GET",
+      "path": "/api/admin/owners",
+      "permission": "biz:owner:list",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION",
+        "permission": "biz:owner:list"
+      },
+      "summary": "车主列表"
+    },
+    {
+      "operationId": "V4_get_api_admin_drivers",
+      "method": "GET",
+      "path": "/api/admin/drivers",
+      "permission": "biz:driver:list",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION",
+        "permission": "biz:driver:list"
+      },
+      "summary": "代驾员列表"
+    },
+    {
+      "operationId": "API_126_post",
+      "method": "POST",
+      "path": "/api/admin/drivers/{driverId}/disable-new-assignments",
+      "permission": "biz:driver:disablenewassignments",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION",
+        "permission": "biz:driver:disablenewassignments"
+      },
+      "summary": "禁止新增承接"
+    },
+    {
+      "operationId": "API_127_post",
+      "method": "POST",
+      "path": "/api/admin/penalty-appeals/{appealId}/audit",
+      "permission": "biz:penaltyappeal:audit",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION",
+        "permission": "biz:penaltyappeal:audit"
+      },
+      "summary": "取消处罚申诉审核"
+    },
+    {
+      "operationId": "API_128_get",
+      "method": "GET",
+      "path": "/api/admin/stations",
+      "permission": "biz:station:list",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION",
+        "permission": "biz:station:list"
+      },
+      "summary": "检测点列表"
+    },
+    {
+      "operationId": "API_129_post",
+      "method": "POST",
+      "path": "/api/admin/stations",
+      "permission": "biz:station:create",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION",
+        "permission": "biz:station:create"
+      },
+      "summary": "创建检测点"
+    },
+    {
+      "operationId": "API_130_put",
+      "method": "PUT",
+      "path": "/api/admin/stations/{stationId}",
+      "permission": "biz:station:edit",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION",
+        "permission": "biz:station:edit"
+      },
+      "summary": "修改检测点"
+    },
+    {
+      "operationId": "API_131_get",
+      "method": "GET",
+      "path": "/api/admin/station-grants",
+      "permission": "biz:stationgrant:list",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION",
+        "permission": "biz:stationgrant:list"
+      },
+      "summary": "员工站点授权"
+    },
+    {
+      "operationId": "API_132_put",
+      "method": "PUT",
+      "path": "/api/admin/station-grants/{employeeUserId}",
+      "permission": "biz:stationgrant:edit",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION",
+        "permission": "biz:stationgrant:edit"
+      },
+      "summary": "修改跨站授权"
+    },
+    {
+      "operationId": "v62_get_station_grant",
+      "method": "GET",
+      "path": "/api/admin/station-grants/{employeeUserId}",
+      "permission": "biz:stationgrant:list",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "EMPLOYEE_ALL_DEPTS",
+        "permission": "biz:stationgrant:list"
+      },
+      "summary": "查询员工站点配置（可未登录微信）"
+    },
+    {
+      "operationId": "API_133_get",
+      "method": "GET",
+      "path": "/api/admin/prices",
+      "permission": "biz:price:list",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION",
+        "permission": "biz:price:list"
+      },
+      "summary": "计价规则列表"
+    },
+    {
+      "operationId": "API_134_post",
+      "method": "POST",
+      "path": "/api/admin/prices",
+      "permission": "biz:price:create",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION",
+        "permission": "biz:price:create"
+      },
+      "summary": "计价草稿"
+    },
+    {
+      "operationId": "API_135_put",
+      "method": "PUT",
+      "path": "/api/admin/prices/{ruleId}",
+      "permission": "biz:price:edit",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION",
+        "permission": "biz:price:edit"
+      },
+      "summary": "修改计价草稿"
+    },
+    {
+      "operationId": "API_136_post",
+      "method": "POST",
+      "path": "/api/admin/prices/{ruleId}/submit",
+      "permission": "biz:price:submit",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION",
+        "permission": "biz:price:submit"
+      },
+      "summary": "提交价格审核"
+    },
+    {
+      "operationId": "API_137_post",
+      "method": "POST",
+      "path": "/api/admin/prices/{ruleId}/audit",
+      "permission": "biz:price:audit",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION",
+        "permission": "biz:price:audit"
+      },
+      "summary": "价格审核"
+    },
+    {
+      "operationId": "API_138_post",
+      "method": "POST",
+      "path": "/api/admin/prices/{ruleId}/publish",
+      "permission": "biz:price:publish",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION",
+        "permission": "biz:price:publish"
+      },
+      "summary": "发布计价版本"
+    },
+    {
+      "operationId": "API_139_get",
+      "method": "GET",
+      "path": "/api/admin/result-corrections",
+      "permission": "biz:resultcorrection:list",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION",
+        "permission": "biz:resultcorrection:list"
+      },
+      "summary": "结果更正列表"
+    },
+    {
+      "operationId": "API_140_post",
+      "method": "POST",
+      "path": "/api/admin/result-corrections/{correctionId}/audit",
+      "permission": "biz:resultcorrection:audit",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION",
+        "permission": "biz:resultcorrection:audit"
+      },
+      "summary": "更正审核"
+    },
+    {
+      "operationId": "API_141_get",
+      "method": "GET",
+      "path": "/api/admin/reconciliation",
+      "permission": "biz:paymentreconciliation:list",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION",
+        "permission": "biz:paymentreconciliation:list"
+      },
+      "summary": "对账异常"
+    },
+    {
+      "operationId": "API_142_post",
+      "method": "POST",
+      "path": "/api/admin/reconciliation/{caseId}/query",
+      "permission": "biz:paymentreconciliation:query",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION",
+        "permission": "biz:paymentreconciliation:query"
+      },
+      "summary": "重查可信渠道状态"
+    },
+    {
+      "operationId": "API_143_post",
+      "method": "POST",
+      "path": "/api/admin/reconciliation/{caseId}/resolve",
+      "permission": "biz:paymentreconciliation:resolve",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION",
+        "permission": "biz:paymentreconciliation:resolve"
+      },
+      "summary": "基于证据登记对账结论"
+    },
+    {
+      "operationId": "API_144_post",
+      "method": "POST",
+      "path": "/api/admin/orders/export",
+      "permission": "biz:order:export",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION",
+        "permission": "biz:order:export"
+      },
+      "summary": "申请脱敏订单导出"
+    },
+    {
+      "operationId": "API_145_post",
+      "method": "POST",
+      "path": "/api/admin/exports/{taskId}/audit",
+      "permission": "biz:export:audit",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION",
+        "permission": "biz:export:audit"
+      },
+      "summary": "导出审批"
+    },
+    {
+      "operationId": "API_146_get",
+      "method": "GET",
+      "path": "/api/admin/exports/{taskId}",
+      "permission": "biz:export:query",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION",
+        "permission": "biz:export:query"
+      },
+      "summary": "导出任务"
+    },
+    {
+      "operationId": "API_147_get",
+      "method": "GET",
+      "path": "/api/admin/audit-events",
+      "permission": "biz:audit:list",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION",
+        "permission": "biz:audit:list"
+      },
+      "summary": "审计事件"
+    },
+    {
+      "operationId": "API_148_get",
+      "method": "GET",
+      "path": "/api/admin/statistics",
+      "permission": "biz:statistics:list",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION",
+        "permission": "biz:statistics:list"
+      },
+      "summary": "统计口径"
+    },
+    {
+      "operationId": "API_149_get",
+      "method": "GET",
+      "path": "/api/admin/notification-templates",
+      "permission": "biz:notificationtemplate:list",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION",
+        "permission": "biz:notificationtemplate:list"
+      },
+      "summary": "通知模板"
+    },
+    {
+      "operationId": "API_150_put",
+      "method": "PUT",
+      "path": "/api/admin/notification-templates/{templateId}",
+      "permission": "biz:notificationtemplate:edit",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION",
+        "permission": "biz:notificationtemplate:edit"
+      },
+      "summary": "修改消息模板"
+    },
+    {
+      "operationId": "API_151_get",
+      "method": "GET",
+      "path": "/api/admin/jobs",
+      "permission": "biz:job:list",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION",
+        "permission": "biz:job:list"
+      },
+      "summary": "补偿任务队列"
+    },
+    {
+      "operationId": "API_152_post",
+      "method": "POST",
+      "path": "/api/admin/jobs/{taskId}/retry",
+      "permission": "biz:job:retry",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION",
+        "permission": "biz:job:retry"
+      },
+      "summary": "受控补偿重试"
+    },
+    {
+      "operationId": "API_153_get",
+      "method": "GET",
+      "path": "/api/admin/privacy-cases",
+      "permission": "biz:privacycase:list",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION",
+        "permission": "biz:privacycase:list"
+      },
+      "summary": "隐私请求列表"
+    },
+    {
+      "operationId": "API_154_post",
+      "method": "POST",
+      "path": "/api/admin/privacy-cases/{caseId}/resolve",
+      "permission": "biz:privacycase:resolve",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION",
+        "permission": "biz:privacycase:resolve"
+      },
+      "summary": "隐私处理结论"
+    },
+    {
+      "operationId": "API_155_get",
+      "method": "GET",
+      "path": "/api/admin/config",
+      "permission": "biz:config:query",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION",
+        "permission": "biz:config:query"
+      },
+      "summary": "业务配置"
+    },
+    {
+      "operationId": "API_156_put",
+      "method": "PUT",
+      "path": "/api/admin/config",
+      "permission": "biz:config:edit",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION",
+        "permission": "biz:config:edit"
+      },
+      "summary": "配置保存"
+    },
+    {
+      "operationId": "API_157_post",
+      "method": "POST",
+      "path": "/api/common/uploads",
+      "permission": "biz:uploads:create",
+      "capability": "COMMON_UPLOADS_CREATE",
+      "authorization": {
+        "anyOf": [
+          {
+            "realm": "MINI",
+            "scope": "SESSION_OR_EXPLICIT_OBJECT_POLICY",
+            "capability": "COMMON_UPLOADS_CREATE"
+          },
+          {
+            "realm": "ADMIN",
+            "permission": "biz:uploads:create",
+            "scope": "ORG_DEPT_STATION_AND_PURPOSE"
+          }
+        ],
+        "mode": "REALM_SPECIFIC_ALL_CONDITIONS",
+        "rules": [
+          {
+            "realm": "MINI",
+            "capability": "COMMON_UPLOADS_CREATE",
+            "scope": "SELF_OR_OWN_ASSIGNMENT_OR_EMPLOYEE_STATION_INTERSECTION",
+            "requireObjectOwnership": true
+          },
+          {
+            "realm": "ADMIN",
+            "permission": "biz:uploads:create",
+            "scope": "ORG_DEPT_STATION_AND_EXPLICIT_OBJECT_POLICY",
+            "requireObjectOwnership": true
+          }
+        ],
+        "note": "按已认证realm选一条规则；不能把能力码和后台权限用OR混成通行证。员工MINI另查框架功能权限/部门/站点。"
+      },
+      "summary": "申请限定用途上传"
+    },
+    {
+      "operationId": "API_158_post",
+      "method": "POST",
+      "path": "/api/common/uploads/{uploadId}/complete",
+      "permission": "biz:uploads:complete",
+      "capability": "COMMON_UPLOADS_COMPLETE",
+      "authorization": {
+        "anyOf": [
+          {
+            "realm": "MINI",
+            "scope": "SESSION_OR_EXPLICIT_OBJECT_POLICY",
+            "capability": "COMMON_UPLOADS_COMPLETE"
+          },
+          {
+            "realm": "ADMIN",
+            "permission": "biz:uploads:complete",
+            "scope": "ORG_DEPT_STATION_AND_PURPOSE"
+          }
+        ],
+        "mode": "REALM_SPECIFIC_ALL_CONDITIONS",
+        "rules": [
+          {
+            "realm": "MINI",
+            "capability": "COMMON_UPLOADS_COMPLETE",
+            "scope": "SELF_OR_OWN_ASSIGNMENT_OR_EMPLOYEE_STATION_INTERSECTION",
+            "requireObjectOwnership": true
+          },
+          {
+            "realm": "ADMIN",
+            "permission": "biz:uploads:complete",
+            "scope": "ORG_DEPT_STATION_AND_EXPLICIT_OBJECT_POLICY",
+            "requireObjectOwnership": true
+          }
+        ],
+        "note": "按已认证realm选一条规则；不能把能力码和后台权限用OR混成通行证。员工MINI另查框架功能权限/部门/站点。"
+      },
+      "summary": "服务器核验上传完成"
+    },
+    {
+      "operationId": "API_159_get",
+      "method": "GET",
+      "path": "/api/common/files/{fileId}",
+      "permission": "biz:files:query",
+      "capability": "COMMON_FILES_QUERY",
+      "authorization": {
+        "anyOf": [
+          {
+            "realm": "MINI",
+            "scope": "SESSION_OR_EXPLICIT_OBJECT_POLICY",
+            "capability": "COMMON_FILES_QUERY"
+          },
+          {
+            "realm": "ADMIN",
+            "permission": "biz:files:query",
+            "scope": "ORG_DEPT_STATION_AND_PURPOSE"
+          }
+        ],
+        "mode": "REALM_SPECIFIC_ALL_CONDITIONS",
+        "rules": [
+          {
+            "realm": "MINI",
+            "capability": "COMMON_FILES_QUERY",
+            "scope": "SELF_OR_OWN_ASSIGNMENT_OR_EMPLOYEE_STATION_INTERSECTION",
+            "requireObjectOwnership": true
+          },
+          {
+            "realm": "ADMIN",
+            "permission": "biz:files:query",
+            "scope": "ORG_DEPT_STATION_AND_EXPLICIT_OBJECT_POLICY",
+            "requireObjectOwnership": true
+          }
+        ],
+        "note": "按已认证realm选一条规则；不能把能力码和后台权限用OR混成通行证。员工MINI另查框架功能权限/部门/站点。"
+      },
+      "summary": "文件验证状态"
+    },
+    {
+      "operationId": "API_160_post",
+      "method": "POST",
+      "path": "/api/common/files/{fileId}/access",
+      "permission": "biz:files:access",
+      "capability": "COMMON_FILES_ACCESS",
+      "authorization": {
+        "anyOf": [
+          {
+            "realm": "MINI",
+            "scope": "SESSION_OR_EXPLICIT_OBJECT_POLICY",
+            "capability": "COMMON_FILES_ACCESS"
+          },
+          {
+            "realm": "ADMIN",
+            "permission": "biz:files:access",
+            "scope": "ORG_DEPT_STATION_AND_PURPOSE"
+          }
+        ],
+        "mode": "REALM_SPECIFIC_ALL_CONDITIONS",
+        "rules": [
+          {
+            "realm": "MINI",
+            "capability": "COMMON_FILES_ACCESS",
+            "scope": "SELF_OR_OWN_ASSIGNMENT_OR_EMPLOYEE_STATION_INTERSECTION",
+            "requireObjectOwnership": true
+          },
+          {
+            "realm": "ADMIN",
+            "permission": "biz:files:access",
+            "scope": "ORG_DEPT_STATION_AND_EXPLICIT_OBJECT_POLICY",
+            "requireObjectOwnership": true
+          }
+        ],
+        "note": "按已认证realm选一条规则；不能把能力码和后台权限用OR混成通行证。员工MINI另查框架功能权限/部门/站点。"
+      },
+      "summary": "按权限申请短期文件访问"
+    },
+    {
+      "operationId": "API_161_get",
+      "method": "GET",
+      "path": "/api/common/messages",
+      "permission": null,
+      "capability": "COMMON_MESSAGES_LIST",
+      "authorization": {
+        "realm": "MINI",
+        "scope": "SESSION_OR_EXPLICIT_OBJECT_POLICY",
+        "capability": "COMMON_MESSAGES_LIST"
+      },
+      "summary": "当前角色站内消息"
+    },
+    {
+      "operationId": "API_162_post",
+      "method": "POST",
+      "path": "/api/common/messages/{messageId}/read",
+      "permission": null,
+      "capability": "COMMON_MESSAGES_READ",
+      "authorization": {
+        "realm": "MINI",
+        "scope": "SESSION_OR_EXPLICIT_OBJECT_POLICY",
+        "capability": "COMMON_MESSAGES_READ"
+      },
+      "summary": "标记本人消息已读"
+    },
+    {
+      "operationId": "API_163_post",
+      "method": "POST",
+      "path": "/api/common/privacy-cases",
+      "permission": null,
+      "capability": "COMMON_PRIVACYCASES_CREATE",
+      "authorization": {
+        "realm": "MINI",
+        "scope": "SESSION_OR_EXPLICIT_OBJECT_POLICY",
+        "capability": "COMMON_PRIVACYCASES_CREATE"
+      },
+      "summary": "发起隐私请求"
+    },
+    {
+      "operationId": "API_164_get",
+      "method": "GET",
+      "path": "/api/common/privacy-cases",
+      "permission": null,
+      "capability": "COMMON_PRIVACYCASES_LIST",
+      "authorization": {
+        "realm": "MINI",
+        "scope": "SESSION_OR_EXPLICIT_OBJECT_POLICY",
+        "capability": "COMMON_PRIVACYCASES_LIST"
+      },
+      "summary": "本人隐私请求"
+    },
+    {
+      "operationId": "API_165_post",
+      "method": "POST",
+      "path": "/api/notify/wechat/pay",
+      "permission": null,
+      "capability": null,
+      "authorization": {
+        "realm": "CALLBACK",
+        "signatureRequired": true,
+        "scope": "VERIFIED_PROVIDER_EVENT"
+      },
+      "summary": "微信支付通知"
+    },
+    {
+      "operationId": "API_166_post",
+      "method": "POST",
+      "path": "/api/notify/wechat/refund",
+      "permission": null,
+      "capability": null,
+      "authorization": {
+        "realm": "CALLBACK",
+        "signatureRequired": true,
+        "scope": "VERIFIED_PROVIDER_EVENT"
+      },
+      "summary": "微信退款通知"
+    },
+    {
+      "operationId": "V4_post_api_app_owner_orders__orderNo__after_sales",
+      "method": "POST",
+      "path": "/api/app/owner/orders/{orderNo}/after-sales",
+      "permission": null,
+      "capability": "OWNER_AFTERSALE_CREATE",
+      "authorization": {
+        "realm": "MINI",
+        "scope": "OWN_ACCOUNT_RESOURCE",
+        "activeRole": "OWNER",
+        "capability": "OWNER_AFTERSALE_CREATE"
+      },
+      "summary": "创建统一取消与退款申请"
+    },
+    {
+      "operationId": "V4_get_api_app_owner_orders__orderNo__after_sales",
+      "method": "GET",
+      "path": "/api/app/owner/orders/{orderNo}/after-sales",
+      "permission": null,
+      "capability": "OWNER_AFTERSALE_LIST",
+      "authorization": {
+        "realm": "MINI",
+        "scope": "OWN_ACCOUNT_RESOURCE",
+        "activeRole": "OWNER",
+        "capability": "OWNER_AFTERSALE_LIST"
+      },
+      "summary": "查看本订单售后记录"
+    },
+    {
+      "operationId": "V4_post_api_admin_orders__orderNo__after_sales",
+      "method": "POST",
+      "path": "/api/admin/orders/{orderNo}/after-sales",
+      "permission": "biz:aftersale:create",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION",
+        "permission": "biz:aftersale:create"
+      },
+      "summary": "创建统一取消与退款申请"
+    },
+    {
+      "operationId": "V4_get_api_admin_orders__orderNo__after_sales",
+      "method": "GET",
+      "path": "/api/admin/orders/{orderNo}/after-sales",
+      "permission": "biz:aftersale:list",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION",
+        "permission": "biz:aftersale:list"
+      },
+      "summary": "查看本订单售后记录"
+    },
+    {
+      "operationId": "V4_get_api_app_owner_after_sales",
+      "method": "GET",
+      "path": "/api/app/owner/after-sales",
+      "permission": null,
+      "capability": "OWNER_AFTERSALE_LIST",
+      "authorization": {
+        "realm": "MINI",
+        "scope": "OWN_ACCOUNT_RESOURCE",
+        "activeRole": "OWNER",
+        "capability": "OWNER_AFTERSALE_LIST"
+      },
+      "summary": "统一售后申请列表"
+    },
+    {
+      "operationId": "V4_get_api_app_owner_after_sales__caseId",
+      "method": "GET",
+      "path": "/api/app/owner/after-sales/{caseId}",
+      "permission": null,
+      "capability": "OWNER_AFTERSALE_QUERY",
+      "authorization": {
+        "realm": "MINI",
+        "scope": "OWN_ACCOUNT_RESOURCE",
+        "activeRole": "OWNER",
+        "capability": "OWNER_AFTERSALE_QUERY"
+      },
+      "summary": "统一售后详情"
+    },
+    {
+      "operationId": "V4_post_api_app_owner_after_sales__caseId__notes",
+      "method": "POST",
+      "path": "/api/app/owner/after-sales/{caseId}/notes",
+      "permission": null,
+      "capability": "OWNER_AFTERSALE_CREATE",
+      "authorization": {
+        "realm": "MINI",
+        "scope": "OWN_ACCOUNT_RESOURCE",
+        "activeRole": "OWNER",
+        "capability": "OWNER_AFTERSALE_CREATE"
+      },
+      "summary": "补充售后说明"
+    },
+    {
+      "operationId": "V4_get_api_admin_after_sales",
+      "method": "GET",
+      "path": "/api/admin/after-sales",
+      "permission": "biz:aftersale:list",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION",
+        "permission": "biz:aftersale:list"
+      },
+      "summary": "统一售后申请列表"
+    },
+    {
+      "operationId": "V4_get_api_admin_after_sales__caseId",
+      "method": "GET",
+      "path": "/api/admin/after-sales/{caseId}",
+      "permission": "biz:aftersale:query",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION",
+        "permission": "biz:aftersale:query"
+      },
+      "summary": "统一售后详情"
+    },
+    {
+      "operationId": "V4_post_api_admin_after_sales__caseId__notes",
+      "method": "POST",
+      "path": "/api/admin/after-sales/{caseId}/notes",
+      "permission": "biz:aftersale:create",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION",
+        "permission": "biz:aftersale:create"
+      },
+      "summary": "补充售后说明"
+    },
+    {
+      "operationId": "V4_post_api_admin_after_sales__caseId__review_preview",
+      "method": "POST",
+      "path": "/api/admin/after-sales/{caseId}/review-preview",
+      "permission": "biz:aftersale:reviewpreview",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION",
+        "permission": "biz:aftersale:reviewpreview"
+      },
+      "summary": "预览当前取消及退款后果"
+    },
+    {
+      "operationId": "V4_post_api_admin_after_sales__caseId__review",
+      "method": "POST",
+      "path": "/api/admin/after-sales/{caseId}/review",
+      "permission": "biz:aftersale:review",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION",
+        "permission": "biz:aftersale:review"
+      },
+      "summary": "提交一次统一审核"
+    },
+    {
+      "operationId": "V4_get_api_admin_vehicles",
+      "method": "GET",
+      "path": "/api/admin/vehicles",
+      "permission": "biz:vehicle:list",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION",
+        "permission": "biz:vehicle:list"
+      },
+      "summary": "车辆列表"
+    },
+    {
+      "operationId": "V4_get_api_admin_vehicles__vehicleId",
+      "method": "GET",
+      "path": "/api/admin/vehicles/{vehicleId}",
+      "permission": "biz:vehicle:query",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION",
+        "permission": "biz:vehicle:query"
+      },
+      "summary": "查看独立档案详情"
+    },
+    {
+      "operationId": "V4_patch_api_admin_vehicles__vehicleId",
+      "method": "PATCH",
+      "path": "/api/admin/vehicles/{vehicleId}",
+      "permission": "biz:vehicle:edit",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION",
+        "permission": "biz:vehicle:edit"
+      },
+      "summary": "维护档案备注及允许字段"
+    },
+    {
+      "operationId": "V4_get_api_admin_owners__ownerId",
+      "method": "GET",
+      "path": "/api/admin/owners/{ownerId}",
+      "permission": "biz:owner:query",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION",
+        "permission": "biz:owner:query"
+      },
+      "summary": "查看独立档案详情"
+    },
+    {
+      "operationId": "V4_patch_api_admin_owners__ownerId",
+      "method": "PATCH",
+      "path": "/api/admin/owners/{ownerId}",
+      "permission": "biz:owner:edit",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION",
+        "permission": "biz:owner:edit"
+      },
+      "summary": "维护档案备注及允许字段"
+    },
+    {
+      "operationId": "V4_get_api_admin_drivers__driverId",
+      "method": "GET",
+      "path": "/api/admin/drivers/{driverId}",
+      "permission": "biz:driver:query",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION",
+        "permission": "biz:driver:query"
+      },
+      "summary": "查看独立档案详情"
+    },
+    {
+      "operationId": "V4_patch_api_admin_drivers__driverId",
+      "method": "PATCH",
+      "path": "/api/admin/drivers/{driverId}",
+      "permission": "biz:driver:edit",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION",
+        "permission": "biz:driver:edit"
+      },
+      "summary": "维护档案备注及允许字段"
+    },
+    {
+      "operationId": "V4_get_api_admin_vehicles__vehicleId__orders",
+      "method": "GET",
+      "path": "/api/admin/vehicles/{vehicleId}/orders",
+      "permission": "biz:vehicle:list",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION",
+        "permission": "biz:vehicle:list"
+      },
+      "summary": "车辆关联orders"
+    },
+    {
+      "operationId": "V4_get_api_admin_vehicles__vehicleId__inspection_results",
+      "method": "GET",
+      "path": "/api/admin/vehicles/{vehicleId}/inspection-results",
+      "permission": "biz:result:list",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION",
+        "permission": "biz:result:list"
+      },
+      "summary": "车辆关联inspection-results"
+    },
+    {
+      "operationId": "V4_get_api_admin_owners__ownerId__vehicles",
+      "method": "GET",
+      "path": "/api/admin/owners/{ownerId}/vehicles",
+      "permission": "biz:owner:list",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION",
+        "permission": "biz:owner:list"
+      },
+      "summary": "车主关联vehicles"
+    },
+    {
+      "operationId": "V4_get_api_admin_owners__ownerId__orders",
+      "method": "GET",
+      "path": "/api/admin/owners/{ownerId}/orders",
+      "permission": "biz:owner:list",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION",
+        "permission": "biz:owner:list"
+      },
+      "summary": "车主关联orders"
+    },
+    {
+      "operationId": "V4_get_api_admin_owners__ownerId__after_sales",
+      "method": "GET",
+      "path": "/api/admin/owners/{ownerId}/after-sales",
+      "permission": "biz:aftersale:list",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION",
+        "permission": "biz:aftersale:list"
+      },
+      "summary": "车主关联after-sales"
+    },
+    {
+      "operationId": "V4_get_api_admin_drivers__driverId__assignments",
+      "method": "GET",
+      "path": "/api/admin/drivers/{driverId}/assignments",
+      "permission": "biz:assignment:list",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION",
+        "permission": "biz:assignment:list"
+      },
+      "summary": "代驾承接服务记录"
+    },
+    {
+      "operationId": "V4_get_api_admin_drivers__driverId__fee_ledger",
+      "method": "GET",
+      "path": "/api/admin/drivers/{driverId}/fee-ledger",
+      "permission": "biz:driverledger:list",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION_AND_PAYOR",
+        "permission": "biz:driverledger:list"
+      },
+      "summary": "个人服务费用台账"
+    },
+    {
+      "operationId": "V4_get_api_admin_driver_fee_rules",
+      "method": "GET",
+      "path": "/api/admin/driver-fee-rules",
+      "permission": "biz:driverfeerule:list",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION_AND_PAYOR",
+        "permission": "biz:driverfeerule:list"
+      },
+      "summary": "代驾费用规则列表"
+    },
+    {
+      "operationId": "V4_post_api_admin_driver_fee_rules",
+      "method": "POST",
+      "path": "/api/admin/driver-fee-rules",
+      "permission": "biz:driverfeerule:create",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION_AND_PAYOR",
+        "permission": "biz:driverfeerule:create"
+      },
+      "summary": "创建代驾费用规则草稿"
+    },
+    {
+      "operationId": "V4_get_api_admin_driver_fee_rules__ruleId",
+      "method": "GET",
+      "path": "/api/admin/driver-fee-rules/{ruleId}",
+      "permission": "biz:driverfeerule:query",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION_AND_PAYOR",
+        "permission": "biz:driverfeerule:query"
+      },
+      "summary": "查看代驾费用版本"
+    },
+    {
+      "operationId": "V4_put_api_admin_driver_fee_rules__ruleId",
+      "method": "PUT",
+      "path": "/api/admin/driver-fee-rules/{ruleId}",
+      "permission": "biz:driverfeerule:edit",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION_AND_PAYOR",
+        "permission": "biz:driverfeerule:edit"
+      },
+      "summary": "编辑未发布代驾费用草稿"
+    },
+    {
+      "operationId": "V4_post_api_admin_driver_fee_rules__ruleId__publish",
+      "method": "POST",
+      "path": "/api/admin/driver-fee-rules/{ruleId}/publish",
+      "permission": "biz:driverfeerule:publish",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION_AND_PAYOR",
+        "permission": "biz:driverfeerule:publish"
+      },
+      "summary": "独立审核后发布费用版本"
+    },
+    {
+      "operationId": "V4_post_api_admin_driver_fee_rules_trial",
+      "method": "POST",
+      "path": "/api/admin/driver-fee-rules/trial",
+      "permission": "biz:driverfeerule:trial",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION_AND_PAYOR",
+        "permission": "biz:driverfeerule:trial"
+      },
+      "summary": "试算代驾费用，不入账"
+    },
+    {
+      "operationId": "V4_post_api_admin_driver_statements_preview",
+      "method": "POST",
+      "path": "/api/admin/driver-statements/preview",
+      "permission": "biz:driverstatement:preview",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION_AND_PAYOR",
+        "permission": "biz:driverstatement:preview"
+      },
+      "summary": "预览明确勾选的服务（不占用）"
+    },
+    {
+      "operationId": "V4_post_api_admin_driver_statements",
+      "method": "POST",
+      "path": "/api/admin/driver-statements",
+      "permission": "biz:driverstatement:create",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION_AND_PAYOR",
+        "permission": "biz:driverstatement:create"
+      },
+      "summary": "仅按勾选服务建立对账草稿"
+    },
+    {
+      "operationId": "V4_get_api_admin_driver_statements",
+      "method": "GET",
+      "path": "/api/admin/driver-statements",
+      "permission": "biz:driverstatement:list",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION_AND_PAYOR",
+        "permission": "biz:driverstatement:list"
+      },
+      "summary": "对账单列表"
+    },
+    {
+      "operationId": "V4_get_api_admin_driver_statements__statementId",
+      "method": "GET",
+      "path": "/api/admin/driver-statements/{statementId}",
+      "permission": "biz:driverstatement:query",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION_AND_PAYOR",
+        "permission": "biz:driverstatement:query"
+      },
+      "summary": "查看对账单与快照"
+    },
+    {
+      "operationId": "V4_get_api_app_driver_statements",
+      "method": "GET",
+      "path": "/api/app/driver/statements",
+      "permission": null,
+      "capability": "DRIVER_DRIVERSTATEMENT_LIST",
+      "authorization": {
+        "realm": "MINI",
+        "scope": "OWN_DRIVER_RECORD",
+        "capability": "DRIVER_DRIVERSTATEMENT_LIST"
+      },
+      "summary": "对账单列表"
+    },
+    {
+      "operationId": "V4_get_api_app_driver_statements__statementId",
+      "method": "GET",
+      "path": "/api/app/driver/statements/{statementId}",
+      "permission": null,
+      "capability": "DRIVER_DRIVERSTATEMENT_QUERY",
+      "authorization": {
+        "realm": "MINI",
+        "scope": "OWN_DRIVER_RECORD",
+        "capability": "DRIVER_DRIVERSTATEMENT_QUERY"
+      },
+      "summary": "查看对账单与快照"
+    },
+    {
+      "operationId": "V4_post_api_admin_driver_statements__statementId__send",
+      "method": "POST",
+      "path": "/api/admin/driver-statements/{statementId}/send",
+      "permission": "biz:driverstatement:send",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION_AND_PAYOR",
+        "permission": "biz:driverstatement:send"
+      },
+      "summary": "发给代驾确认"
+    },
+    {
+      "operationId": "V4_post_api_admin_driver_statements__statementId__void",
+      "method": "POST",
+      "path": "/api/admin/driver-statements/{statementId}/void",
+      "permission": "biz:driverstatement:void",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION_AND_PAYOR",
+        "permission": "biz:driverstatement:void"
+      },
+      "summary": "作废未确认对账单"
+    },
+    {
+      "operationId": "V4_post_api_app_driver_statements__statementId__confirm",
+      "method": "POST",
+      "path": "/api/app/driver/statements/{statementId}/confirm",
+      "permission": null,
+      "capability": "DRIVER_DRIVERSTATEMENT_CONFIRM",
+      "authorization": {
+        "realm": "MINI",
+        "scope": "OWN_DRIVER_RECORD",
+        "capability": "DRIVER_DRIVERSTATEMENT_CONFIRM"
+      },
+      "summary": "代驾本人确认账单"
+    },
+    {
+      "operationId": "V4_post_api_app_driver_statements__statementId__differences",
+      "method": "POST",
+      "path": "/api/app/driver/statements/{statementId}/differences",
+      "permission": null,
+      "capability": "DRIVER_DRIVERSTATEMENT_CREATE",
+      "authorization": {
+        "realm": "MINI",
+        "scope": "OWN_DRIVER_RECORD",
+        "capability": "DRIVER_DRIVERSTATEMENT_CREATE"
+      },
+      "summary": "代驾提交账单差异"
+    },
+    {
+      "operationId": "V4_get_api_admin_statement_differences",
+      "method": "GET",
+      "path": "/api/admin/statement-differences",
+      "permission": "biz:statementdifference:list",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION_AND_PAYOR",
+        "permission": "biz:statementdifference:list"
+      },
+      "summary": "对账差异列表"
+    },
+    {
+      "operationId": "V4_post_api_admin_statement_differences__differenceId__resolve",
+      "method": "POST",
+      "path": "/api/admin/statement-differences/{differenceId}/resolve",
+      "permission": "biz:statementdifference:resolve",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION_AND_PAYOR",
+        "permission": "biz:statementdifference:resolve"
+      },
+      "summary": "处理差异并按需重新发出"
+    },
+    {
+      "operationId": "V4_get_api_admin_driver_fee_adjustments",
+      "method": "GET",
+      "path": "/api/admin/driver-fee-adjustments",
+      "permission": "biz:driveradjust:list",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION_AND_PAYOR",
+        "permission": "biz:driveradjust:list"
+      },
+      "summary": "费用调整列表"
+    },
+    {
+      "operationId": "V4_post_api_admin_driver_fee_adjustments",
+      "method": "POST",
+      "path": "/api/admin/driver-fee-adjustments",
+      "permission": "biz:driveradjust:create",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION_AND_PAYOR",
+        "permission": "biz:driveradjust:create"
+      },
+      "summary": "提出有依据的费用调整"
+    },
+    {
+      "operationId": "V4_post_api_admin_driver_fee_adjustments__adjustmentId__audit",
+      "method": "POST",
+      "path": "/api/admin/driver-fee-adjustments/{adjustmentId}/audit",
+      "permission": "biz:driveradjust:audit",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION_AND_PAYOR",
+        "permission": "biz:driveradjust:audit"
+      },
+      "summary": "独立审核费用调整"
+    },
+    {
+      "operationId": "V4_get_api_admin_driver_payment_records",
+      "method": "GET",
+      "path": "/api/admin/driver-payment-records",
+      "permission": "biz:driverpayment:list",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION_AND_PAYOR",
+        "permission": "biz:driverpayment:list"
+      },
+      "summary": "外部付款证据列表"
+    },
+    {
+      "operationId": "V4_post_api_admin_driver_payment_records",
+      "method": "POST",
+      "path": "/api/admin/driver-payment-records",
+      "permission": "biz:driverpayment:create",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION_AND_PAYOR",
+        "permission": "biz:driverpayment:create"
+      },
+      "summary": "登记已有外部付款证据"
+    },
+    {
+      "operationId": "V4_post_api_admin_driver_payment_records__recordId__verify",
+      "method": "POST",
+      "path": "/api/admin/driver-payment-records/{recordId}/verify",
+      "permission": "biz:driverpayment:verify",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION_AND_PAYOR",
+        "permission": "biz:driverpayment:verify"
+      },
+      "summary": "独立复核外部付款证据"
+    },
+    {
+      "operationId": "V41_post_api_common_token_refresh",
+      "method": "POST",
+      "path": "/api/common/token/refresh",
+      "permission": null,
+      "capability": null,
+      "authorization": {
+        "realm": "REFRESH",
+        "scope": "VALID_ROTATING_REFRESH_TOKEN",
+        "rateLimit": true
+      },
+      "summary": "轮换小程序访问与刷新令牌"
+    },
+    {
+      "operationId": "V41_get_api_common_session",
+      "method": "GET",
+      "path": "/api/common/session",
+      "permission": null,
+      "capability": "SESSION_READ",
+      "authorization": {
+        "realm": "MINI",
+        "scope": "SESSION_OR_EXPLICIT_OBJECT_POLICY",
+        "capability": "SESSION_READ"
+      },
+      "summary": "恢复当前小程序基础会话"
+    },
+    {
+      "operationId": "V41_post_api_common_session_logout",
+      "method": "POST",
+      "path": "/api/common/session/logout",
+      "permission": null,
+      "capability": "SESSION_LOGOUT",
+      "authorization": {
+        "realm": "MINI",
+        "scope": "SESSION_OR_EXPLICIT_OBJECT_POLICY",
+        "capability": "SESSION_LOGOUT"
+      },
+      "summary": "退出当前或全部小程序会话"
+    },
+    {
+      "operationId": "V41_put_api_admin_driver_statements_statementId_lines_lineId_price",
+      "method": "PUT",
+      "path": "/api/admin/driver-statements/{statementId}/lines/{lineId}/price",
+      "permission": "biz:driverstatement:price",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION_AND_PAYOR",
+        "permission": "biz:driverstatement:price"
+      },
+      "summary": "对账行填写或修改拟价格"
+    },
+    {
+      "operationId": "V41_get_api_admin_driver_statements_statementId_lines_lineId_price_history",
+      "method": "GET",
+      "path": "/api/admin/driver-statements/{statementId}/lines/{lineId}/price-history",
+      "permission": "biz:driverstatement:list",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION_AND_PAYOR",
+        "permission": "biz:driverstatement:list"
+      },
+      "summary": "查看本行修改记录"
+    },
+    {
+      "operationId": "V41_post_api_admin_driver_statements_statementId_submit_review",
+      "method": "POST",
+      "path": "/api/admin/driver-statements/{statementId}/submit-review",
+      "permission": "biz:driverstatement:submitreview",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION_AND_PAYOR",
+        "permission": "biz:driverstatement:submitreview"
+      },
+      "summary": "提交整单内部复核"
+    },
+    {
+      "operationId": "V41_post_api_admin_driver_statements_statementId_review",
+      "method": "POST",
+      "path": "/api/admin/driver-statements/{statementId}/review",
+      "permission": "biz:driverstatement:review",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION_AND_PAYOR",
+        "permission": "biz:driverstatement:review"
+      },
+      "summary": "整单复核通过并发送或退回"
+    },
+    {
+      "operationId": "V41_get_api_admin_driver_statements_statementId_reviews",
+      "method": "GET",
+      "path": "/api/admin/driver-statements/{statementId}/reviews",
+      "permission": "biz:driverstatement:list",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION_AND_PAYOR",
+        "permission": "biz:driverstatement:list"
+      },
+      "summary": "查看整单复核历史"
+    },
+    {
+      "operationId": "V41_post_api_admin_driver_statements_statementId_withdraw",
+      "method": "POST",
+      "path": "/api/admin/driver-statements/{statementId}/withdraw",
+      "permission": "biz:driverstatement:withdraw",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION_AND_PAYOR",
+        "permission": "biz:driverstatement:withdraw"
+      },
+      "summary": "撤回待复核或已发出的账单"
+    },
+    {
+      "operationId": "V41_get_api_admin_driver_statements_statementId_revisions_revision",
+      "method": "GET",
+      "path": "/api/admin/driver-statements/{statementId}/revisions/{revision}",
+      "permission": "biz:driverstatement:query",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION_AND_PAYOR",
+        "permission": "biz:driverstatement:query"
+      },
+      "summary": "查看曾发布的账单版本"
+    },
+    {
+      "operationId": "V42_get_api_admin_drivers__driverId__reconciliation_overview",
+      "method": "GET",
+      "path": "/api/admin/drivers/{driverId}/reconciliation-overview",
+      "permission": "biz:driverstatement:list",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION_AND_PAYOR",
+        "permission": "biz:driverstatement:list"
+      },
+      "summary": "个人对账汇总指标"
+    },
+    {
+      "operationId": "V42_get_api_admin_drivers__driverId__reconciliation_entries",
+      "method": "GET",
+      "path": "/api/admin/drivers/{driverId}/reconciliation-entries",
+      "permission": "biz:driverstatement:list",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION_AND_PAYOR",
+        "permission": "biz:driverstatement:list"
+      },
+      "summary": "未结清与全部服务明细"
+    },
+    {
+      "operationId": "V42_post_api_admin_driver_statements__statementId__lines_add",
+      "method": "POST",
+      "path": "/api/admin/driver-statements/{statementId}/lines/add",
+      "permission": "biz:driverstatement:add",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION_AND_PAYOR",
+        "permission": "biz:driverstatement:add"
+      },
+      "summary": "向草稿添加明确选择的服务"
+    },
+    {
+      "operationId": "V42_post_api_admin_driver_statements__statementId__lines__lineId__remove",
+      "method": "POST",
+      "path": "/api/admin/driver-statements/{statementId}/lines/{lineId}/remove",
+      "permission": "biz:driverstatement:remove",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION_AND_PAYOR",
+        "permission": "biz:driverstatement:remove"
+      },
+      "summary": "移出草稿服务并释放精确占用"
+    },
+    {
+      "operationId": "V42_get_api_admin_driver_statements__statementId__membership_history",
+      "method": "GET",
+      "path": "/api/admin/driver-statements/{statementId}/membership-history",
+      "permission": "biz:driverstatement:list",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION_AND_PAYOR",
+        "permission": "biz:driverstatement:list"
+      },
+      "summary": "查看组单/添加/移出/作废历史"
+    },
+    {
+      "operationId": "V42_get_api_admin_driver_payment_records__recordId",
+      "method": "GET",
+      "path": "/api/admin/driver-payment-records/{recordId}",
+      "permission": "biz:driverpayment:query",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION_AND_PAYOR",
+        "permission": "biz:driverpayment:query"
+      },
+      "summary": "查看指定付款凭证及核实记录"
+    },
+    {
+      "operationId": "V42_get_api_app_driver_reconciliation_entries",
+      "method": "GET",
+      "path": "/api/app/driver/reconciliation-entries",
+      "permission": null,
+      "capability": "DRIVER_DRIVERSTATEMENT_LIST",
+      "authorization": {
+        "realm": "MINI",
+        "scope": "OWN_DRIVER_RECORD",
+        "capability": "DRIVER_DRIVERSTATEMENT_LIST"
+      },
+      "summary": "本人未结清服务（不暴露内部草稿）"
+    },
+    {
+      "operationId": "V42_get_api_app_driver_payment_records",
+      "method": "GET",
+      "path": "/api/app/driver/payment-records",
+      "permission": null,
+      "capability": "DRIVER_DRIVERPAYMENT_LIST",
+      "authorization": {
+        "realm": "MINI",
+        "scope": "OWN_DRIVER_RECORD",
+        "capability": "DRIVER_DRIVERPAYMENT_LIST"
+      },
+      "summary": "本人付款记录摘要"
+    },
+    {
+      "operationId": "v5_get_api_app_driver_penalties",
+      "method": "GET",
+      "path": "/api/app/driver/penalties",
+      "permission": null,
+      "capability": "DRIVER_PENALTY_LIST",
+      "authorization": {
+        "realm": "MINI",
+        "scope": "OWN_DRIVER_RECORD",
+        "capability": "DRIVER_PENALTY_LIST"
+      },
+      "summary": "本人处罚记录"
+    },
+    {
+      "operationId": "v5_get_api_app_driver_penalties_penaltyId",
+      "method": "GET",
+      "path": "/api/app/driver/penalties/{penaltyId}",
+      "permission": null,
+      "capability": "DRIVER_PENALTY_QUERY",
+      "authorization": {
+        "realm": "MINI",
+        "scope": "OWN_DRIVER_RECORD",
+        "capability": "DRIVER_PENALTY_QUERY"
+      },
+      "summary": "处罚详情及申诉入口"
+    },
+    {
+      "operationId": "v5_get_api_app_driver_penalty_appeals",
+      "method": "GET",
+      "path": "/api/app/driver/penalty-appeals",
+      "permission": null,
+      "capability": "DRIVER_PENALTYAPPEAL_LIST",
+      "authorization": {
+        "realm": "MINI",
+        "scope": "OWN_DRIVER_RECORD",
+        "capability": "DRIVER_PENALTYAPPEAL_LIST"
+      },
+      "summary": "申诉记录列表"
+    },
+    {
+      "operationId": "v5_get_api_app_driver_penalty_appeals_appealId",
+      "method": "GET",
+      "path": "/api/app/driver/penalty-appeals/{appealId}",
+      "permission": null,
+      "capability": "DRIVER_PENALTYAPPEAL_QUERY",
+      "authorization": {
+        "realm": "MINI",
+        "scope": "OWN_DRIVER_RECORD",
+        "capability": "DRIVER_PENALTYAPPEAL_QUERY"
+      },
+      "summary": "申诉详情与公开处理结论"
+    },
+    {
+      "operationId": "v5_get_api_admin_penalties",
+      "method": "GET",
+      "path": "/api/admin/penalties",
+      "permission": "biz:penalty:list",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION",
+        "permission": "biz:penalty:list"
+      },
+      "summary": "授权范围内取消处罚"
+    },
+    {
+      "operationId": "v5_get_api_admin_penalties_penaltyId",
+      "method": "GET",
+      "path": "/api/admin/penalties/{penaltyId}",
+      "permission": "biz:penalty:query",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION",
+        "permission": "biz:penalty:query"
+      },
+      "summary": "处罚详情及申诉入口"
+    },
+    {
+      "operationId": "v5_get_api_admin_penalty_appeals",
+      "method": "GET",
+      "path": "/api/admin/penalty-appeals",
+      "permission": "biz:penaltyappeal:list",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION",
+        "permission": "biz:penaltyappeal:list"
+      },
+      "summary": "申诉记录列表"
+    },
+    {
+      "operationId": "v5_get_api_admin_penalty_appeals_appealId",
+      "method": "GET",
+      "path": "/api/admin/penalty-appeals/{appealId}",
+      "permission": "biz:penaltyappeal:query",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION",
+        "permission": "biz:penaltyappeal:query"
+      },
+      "summary": "申诉详情与公开处理结论"
+    },
+    {
+      "operationId": "v5_get_api_app_driver_qualification_training_trainingId",
+      "method": "GET",
+      "path": "/api/app/driver/qualification/training/{trainingId}",
+      "permission": null,
+      "capability": "DRIVER_QUALIFICATION_QUERY",
+      "authorization": {
+        "realm": "MINI",
+        "scope": "SELF_QUALIFICATION",
+        "capability": "DRIVER_QUALIFICATION_QUERY",
+        "qualificationRequired": false,
+        "principal": "MINI_ACCOUNT",
+        "roleRequirement": "NONE",
+        "requiredAccountConditions": [
+          "ACTIVE",
+          "PHONE_VERIFIED"
+        ]
+      },
+      "summary": "查看课程与本人进度"
+    },
+    {
+      "operationId": "v5_post_api_app_driver_qualification_training_trainingId_playback",
+      "method": "POST",
+      "path": "/api/app/driver/qualification/training/{trainingId}/playback",
+      "permission": null,
+      "capability": "DRIVER_QUALIFICATION_PLAYBACK",
+      "authorization": {
+        "realm": "MINI",
+        "scope": "SELF_QUALIFICATION",
+        "capability": "DRIVER_QUALIFICATION_PLAYBACK",
+        "qualificationRequired": false,
+        "principal": "MINI_ACCOUNT",
+        "roleRequirement": "NONE",
+        "requiredAccountConditions": [
+          "ACTIVE",
+          "PHONE_VERIFIED"
+        ]
+      },
+      "summary": "开始受控学习会话"
+    },
+    {
+      "operationId": "v5_post_api_app_driver_qualification_training_trainingId_progress",
+      "method": "POST",
+      "path": "/api/app/driver/qualification/training/{trainingId}/progress",
+      "permission": null,
+      "capability": "DRIVER_QUALIFICATION_PROGRESS",
+      "authorization": {
+        "realm": "MINI",
+        "scope": "SELF_QUALIFICATION",
+        "capability": "DRIVER_QUALIFICATION_PROGRESS",
+        "qualificationRequired": false,
+        "principal": "MINI_ACCOUNT",
+        "roleRequirement": "NONE",
+        "requiredAccountConditions": [
+          "ACTIVE",
+          "PHONE_VERIFIED"
+        ]
+      },
+      "summary": "记录本人学习进度"
+    },
+    {
+      "operationId": "v5_post_api_app_driver_qualification_training_trainingId_attempts",
+      "method": "POST",
+      "path": "/api/app/driver/qualification/training/{trainingId}/attempts",
+      "permission": null,
+      "capability": "DRIVER_QUALIFICATION_ATTEMPTS",
+      "authorization": {
+        "realm": "MINI",
+        "scope": "SELF_QUALIFICATION",
+        "capability": "DRIVER_QUALIFICATION_ATTEMPTS",
+        "qualificationRequired": false,
+        "principal": "MINI_ACCOUNT",
+        "roleRequirement": "NONE",
+        "requiredAccountConditions": [
+          "ACTIVE",
+          "PHONE_VERIFIED"
+        ]
+      },
+      "summary": "建立本人的考试尝试"
+    },
+    {
+      "operationId": "v5_get_api_app_driver_qualification_training_attempts_attemptId",
+      "method": "GET",
+      "path": "/api/app/driver/qualification/training/attempts/{attemptId}",
+      "permission": null,
+      "capability": "DRIVER_QUALIFICATION_QUERY",
+      "authorization": {
+        "realm": "MINI",
+        "scope": "SELF_QUALIFICATION",
+        "capability": "DRIVER_QUALIFICATION_QUERY",
+        "qualificationRequired": false,
+        "principal": "MINI_ACCOUNT",
+        "roleRequirement": "NONE",
+        "requiredAccountConditions": [
+          "ACTIVE",
+          "PHONE_VERIFIED"
+        ]
+      },
+      "summary": "读取本人考试尝试"
+    },
+    {
+      "operationId": "v5_get_api_admin_training_courses",
+      "method": "GET",
+      "path": "/api/admin/training-courses",
+      "permission": "biz:trainingcourse:list",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION",
+        "permission": "biz:trainingcourse:list"
+      },
+      "summary": "培训课程管理列表"
+    },
+    {
+      "operationId": "v5_post_api_admin_training_courses",
+      "method": "POST",
+      "path": "/api/admin/training-courses",
+      "permission": "biz:trainingcourse:create",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION",
+        "permission": "biz:trainingcourse:create"
+      },
+      "summary": "创建培训课程草稿"
+    },
+    {
+      "operationId": "v5_get_api_admin_training_courses_trainingId",
+      "method": "GET",
+      "path": "/api/admin/training-courses/{trainingId}",
+      "permission": "biz:trainingcourse:query",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION",
+        "permission": "biz:trainingcourse:query"
+      },
+      "summary": "培训课程管理详情"
+    },
+    {
+      "operationId": "v5_put_api_admin_training_courses_trainingId",
+      "method": "PUT",
+      "path": "/api/admin/training-courses/{trainingId}",
+      "permission": "biz:trainingcourse:edit",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION",
+        "permission": "biz:trainingcourse:edit"
+      },
+      "summary": "编辑未发布培训课程"
+    },
+    {
+      "operationId": "v5_post_api_admin_training_courses_trainingId_publish",
+      "method": "POST",
+      "path": "/api/admin/training-courses/{trainingId}/publish",
+      "permission": "biz:trainingcourse:publish",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_STATION",
+        "permission": "biz:trainingcourse:publish"
+      },
+      "summary": "发布不可变培训课程版本"
+    },
+    {
+      "operationId": "v5_get_api_app_driver_qualification_face_sessions_verificationSessionId",
+      "method": "GET",
+      "path": "/api/app/driver/qualification/face-sessions/{verificationSessionId}",
+      "permission": null,
+      "capability": "DRIVER_QUALIFICATION_QUERY",
+      "authorization": {
+        "realm": "MINI",
+        "scope": "SELF_QUALIFICATION",
+        "capability": "DRIVER_QUALIFICATION_QUERY",
+        "qualificationRequired": false,
+        "principal": "MINI_ACCOUNT",
+        "roleRequirement": "NONE",
+        "requiredAccountConditions": [
+          "ACTIVE",
+          "PHONE_VERIFIED"
+        ]
+      },
+      "summary": "查询本人活体核验结果（服务端查询供应商）"
+    },
+    {
+      "operationId": "v5_post_api_common_orders_orderNo_contact_access",
+      "method": "POST",
+      "path": "/api/common/orders/{orderNo}/contact-access",
+      "permission": "biz:order:contact",
+      "capability": "COMMON_ORDERS_CONTACTACCESS",
+      "authorization": {
+        "anyOf": [
+          {
+            "realm": "MINI",
+            "scope": "SESSION_OR_EXPLICIT_OBJECT_POLICY",
+            "capability": "COMMON_ORDERS_CONTACTACCESS"
+          },
+          {
+            "realm": "ADMIN",
+            "permission": "biz:order:contact",
+            "scope": "ORG_DEPT_STATION_AND_PURPOSE"
+          }
+        ],
+        "mode": "REALM_SPECIFIC_ALL_CONDITIONS",
+        "rules": [
+          {
+            "realm": "MINI",
+            "capability": "COMMON_ORDERS_CONTACTACCESS",
+            "scope": "SELF_OR_OWN_ASSIGNMENT_OR_EMPLOYEE_STATION_INTERSECTION",
+            "requireObjectOwnership": true
+          },
+          {
+            "realm": "ADMIN",
+            "permission": "biz:order:contact",
+            "scope": "ORG_DEPT_STATION_AND_EXPLICIT_OBJECT_POLICY",
+            "requireObjectOwnership": true
+          }
+        ],
+        "note": "按已认证realm选一条规则；不能把能力码和后台权限用OR混成通行证。员工MINI另查框架功能权限/部门/站点。"
+      },
+      "summary": "按履约及当前视角获取短期联系通道"
+    },
+    {
+      "operationId": "V6_get_public_service_config",
+      "method": "GET",
+      "path": "/api/public/service-config",
+      "permission": null,
+      "capability": null,
+      "authorization": {
+        "realm": "PUBLIC",
+        "scope": "PUBLIC_WHITELIST"
+      },
+      "summary": "首页及登录前公开服务说明与已发布协议"
+    },
+    {
+      "operationId": "v62_get_employee_link",
+      "method": "GET",
+      "path": "/api/common/employee-link",
+      "permission": null,
+      "capability": "EMPLOYEE_LINK_READ",
+      "authorization": {
+        "realm": "MINI",
+        "scope": "SELF",
+        "capability": "EMPLOYEE_LINK_READ"
+      },
+      "summary": "查询本人自动关联状态"
+    },
+    {
+      "operationId": "v62_post_employee_link_reconcile",
+      "method": "POST",
+      "path": "/api/common/employee-link/reconcile",
+      "permission": null,
+      "capability": "EMPLOYEE_LINK_RECONCILE",
+      "authorization": {
+        "realm": "MINI",
+        "scope": "SELF",
+        "capability": "EMPLOYEE_LINK_RECONCILE"
+      },
+      "summary": "重试最近核验的员工自动关联"
+    },
+    {
+      "operationId": "v62_get_phone_verification",
+      "method": "GET",
+      "path": "/api/common/phone/verifications/{verificationRequestId}",
+      "permission": null,
+      "capability": "COMMON_PHONE_CREATE",
+      "authorization": {
+        "realm": "MINI",
+        "scope": "SELF",
+        "capability": "COMMON_PHONE_CREATE"
+      },
+      "summary": "查询本人手机号授权处理结果"
+    },
+    {
+      "operationId": "v62_get_employee_links",
+      "method": "GET",
+      "path": "/api/admin/employee-links",
+      "permission": "biz:employeebinding:list",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "EMPLOYEE_ALL_DEPTS",
+        "permission": "biz:employeebinding:list"
+      },
+      "summary": "员工微信关联管理列表"
+    },
+    {
+      "operationId": "v62_get_employee_link_detail",
+      "method": "GET",
+      "path": "/api/admin/employee-links/{bindingId}",
+      "permission": "biz:employeebinding:query",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "EMPLOYEE_ALL_DEPTS",
+        "permission": "biz:employeebinding:query"
+      },
+      "summary": "员工微信关联详情"
+    },
+    {
+      "operationId": "v62_suspend_employee_link",
+      "method": "POST",
+      "path": "/api/admin/employee-links/{bindingId}/suspend",
+      "permission": "biz:employeebinding:suspend",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "EMPLOYEE_ALL_DEPTS",
+        "permission": "biz:employeebinding:suspend"
+      },
+      "summary": "暂停员工微信工作关联"
+    },
+    {
+      "operationId": "v62_revoke_employee_link",
+      "method": "POST",
+      "path": "/api/admin/employee-links/{bindingId}/revoke",
+      "permission": "biz:employeebinding:revoke",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "EMPLOYEE_ALL_DEPTS",
+        "permission": "biz:employeebinding:revoke"
+      },
+      "summary": "解除关联并禁止自动重绑"
+    },
+    {
+      "operationId": "v62_allow_employee_rematch",
+      "method": "POST",
+      "path": "/api/admin/employee-links/{bindingId}/allow-rematch",
+      "permission": "biz:employeebinding:rematch",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "EMPLOYEE_ALL_DEPTS",
+        "permission": "biz:employeebinding:rematch"
+      },
+      "summary": "允许本人重新核验关联"
+    },
+    {
+      "operationId": "V64_get_api_admin_integrations_profiles",
+      "method": "GET",
+      "path": "/api/admin/integrations/profiles",
+      "permission": "biz:integration:query",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_CONFIG",
+        "permission": "biz:integration:query"
+      },
+      "summary": "第三方配置列表"
+    },
+    {
+      "operationId": "V64_post_api_admin_integrations_profiles",
+      "method": "POST",
+      "path": "/api/admin/integrations/profiles",
+      "permission": "biz:integration:create",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_CONFIG",
+        "permission": "biz:integration:create"
+      },
+      "summary": "新建配置档案"
+    },
+    {
+      "operationId": "V64_get_api_admin_integrations_profiles_profileId",
+      "method": "GET",
+      "path": "/api/admin/integrations/profiles/{profileId}",
+      "permission": "biz:integration:query",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_CONFIG",
+        "permission": "biz:integration:query"
+      },
+      "summary": "读取脱敏配置与生效版本"
+    },
+    {
+      "operationId": "V64_put_api_admin_integrations_profiles_profileId_draft",
+      "method": "PUT",
+      "path": "/api/admin/integrations/profiles/{profileId}/draft",
+      "permission": "biz:integration:edit",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_CONFIG",
+        "permission": "biz:integration:edit"
+      },
+      "summary": "保存不生效草稿"
+    },
+    {
+      "operationId": "V64_post_api_admin_integrations_profiles_profileId_checks",
+      "method": "POST",
+      "path": "/api/admin/integrations/profiles/{profileId}/checks",
+      "permission": "biz:integration:check",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_CONFIG",
+        "permission": "biz:integration:check"
+      },
+      "summary": "校验指定配置版本"
+    },
+    {
+      "operationId": "V64_post_api_admin_integrations_profiles_profileId_publish",
+      "method": "POST",
+      "path": "/api/admin/integrations/profiles/{profileId}/publish",
+      "permission": "biz:integration:publish",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_CONFIG",
+        "permission": "biz:integration:publish"
+      },
+      "summary": "发布配置并原子切换生效指针"
+    },
+    {
+      "operationId": "V64_get_api_admin_integrations_profiles_profileId_publications",
+      "method": "GET",
+      "path": "/api/admin/integrations/profiles/{profileId}/publications",
+      "permission": "biz:integration:query",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_CONFIG",
+        "permission": "biz:integration:query"
+      },
+      "summary": "配置发布审计"
+    },
+    {
+      "operationId": "V64_post_api_admin_integrations_profiles_profileId_rollback",
+      "method": "POST",
+      "path": "/api/admin/integrations/profiles/{profileId}/rollback",
+      "permission": "biz:integration:publish",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_CONFIG",
+        "permission": "biz:integration:publish"
+      },
+      "summary": "重新验证并发布历史版本"
+    },
+    {
+      "operationId": "V64_get_api_admin_integrations_profiles_profileId_revisions",
+      "method": "GET",
+      "path": "/api/admin/integrations/profiles/{profileId}/revisions",
+      "permission": "biz:integration:query",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_CONFIG",
+        "permission": "biz:integration:query"
+      },
+      "summary": "脱敏配置版本记录"
+    },
+    {
+      "operationId": "V64_get_api_admin_integrations_templates",
+      "method": "GET",
+      "path": "/api/admin/integrations/templates",
+      "permission": "biz:messagetemplate:query",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_CONFIG",
+        "permission": "biz:messagetemplate:query"
+      },
+      "summary": "短信与订阅模板列表"
+    },
+    {
+      "operationId": "V64_post_api_admin_integrations_templates",
+      "method": "POST",
+      "path": "/api/admin/integrations/templates",
+      "permission": "biz:messagetemplate:create",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_CONFIG",
+        "permission": "biz:messagetemplate:create"
+      },
+      "summary": "创建场景模板"
+    },
+    {
+      "operationId": "V64_get_api_admin_integrations_templates_templateId",
+      "method": "GET",
+      "path": "/api/admin/integrations/templates/{templateId}",
+      "permission": "biz:messagetemplate:query",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_CONFIG",
+        "permission": "biz:messagetemplate:query"
+      },
+      "summary": "模板详情和版本"
+    },
+    {
+      "operationId": "V64_put_api_admin_integrations_templates_templateId_draft",
+      "method": "PUT",
+      "path": "/api/admin/integrations/templates/{templateId}/draft",
+      "permission": "biz:messagetemplate:edit",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_CONFIG",
+        "permission": "biz:messagetemplate:edit"
+      },
+      "summary": "保存模板草稿"
+    },
+    {
+      "operationId": "V64_post_api_admin_integrations_templates_templateId_checks",
+      "method": "POST",
+      "path": "/api/admin/integrations/templates/{templateId}/checks",
+      "permission": "biz:messagetemplate:check",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_CONFIG",
+        "permission": "biz:messagetemplate:check"
+      },
+      "summary": "校验字段映射和官方审批"
+    },
+    {
+      "operationId": "V64_post_api_admin_integrations_templates_templateId_preview",
+      "method": "POST",
+      "path": "/api/admin/integrations/templates/{templateId}/preview",
+      "permission": "biz:messagetemplate:query",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_CONFIG",
+        "permission": "biz:messagetemplate:query"
+      },
+      "summary": "仅渲染模板预览不发送"
+    },
+    {
+      "operationId": "V64_post_api_admin_integrations_templates_templateId_publish",
+      "method": "POST",
+      "path": "/api/admin/integrations/templates/{templateId}/publish",
+      "permission": "biz:messagetemplate:publish",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_CONFIG",
+        "permission": "biz:messagetemplate:publish"
+      },
+      "summary": "发布模板新版本"
+    },
+    {
+      "operationId": "V64_get_api_admin_integrations_templates_templateId_publications",
+      "method": "GET",
+      "path": "/api/admin/integrations/templates/{templateId}/publications",
+      "permission": "biz:messagetemplate:query",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_CONFIG",
+        "permission": "biz:messagetemplate:query"
+      },
+      "summary": "模板发布历史"
+    },
+    {
+      "operationId": "V64_post_api_admin_integrations_templates_templateId_test",
+      "method": "POST",
+      "path": "/api/admin/integrations/templates/{templateId}/test",
+      "permission": "biz:integration:test",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_CONFIG",
+        "permission": "biz:integration:test"
+      },
+      "summary": "白名单确认后真实测试发送"
+    },
+    {
+      "operationId": "V64_get_api_admin_integrations_routes",
+      "method": "GET",
+      "path": "/api/admin/integrations/routes",
+      "permission": "biz:messageroute:query",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_CONFIG",
+        "permission": "biz:messageroute:query"
+      },
+      "summary": "场景路由与备用策略"
+    },
+    {
+      "operationId": "V64_post_api_admin_integrations_routes",
+      "method": "POST",
+      "path": "/api/admin/integrations/routes",
+      "permission": "biz:messageroute:edit",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_CONFIG",
+        "permission": "biz:messageroute:edit"
+      },
+      "summary": "创建已校验生效的路由"
+    },
+    {
+      "operationId": "V64_put_api_admin_integrations_routes_routeId",
+      "method": "PUT",
+      "path": "/api/admin/integrations/routes/{routeId}",
+      "permission": "biz:messageroute:edit",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_CONFIG",
+        "permission": "biz:messageroute:edit"
+      },
+      "summary": "原子保存生效场景路由"
+    },
+    {
+      "operationId": "V64_get_api_admin_integrations_deliveries",
+      "method": "GET",
+      "path": "/api/admin/integrations/deliveries",
+      "permission": "biz:delivery:query",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_CONFIG",
+        "permission": "biz:delivery:query"
+      },
+      "summary": "脱敏发送结果查询"
+    },
+    {
+      "operationId": "V64_post_api_admin_integrations_deliveries_deliveryId_query",
+      "method": "POST",
+      "path": "/api/admin/integrations/deliveries/{deliveryId}/query",
+      "permission": "biz:delivery:query",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_CONFIG",
+        "permission": "biz:delivery:query"
+      },
+      "summary": "查询原发送回执不重发"
+    },
+    {
+      "operationId": "V64_post_api_admin_integrations_deliveries_deliveryId_retry",
+      "method": "POST",
+      "path": "/api/admin/integrations/deliveries/{deliveryId}/retry",
+      "permission": "biz:delivery:retry",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_CONFIG",
+        "permission": "biz:delivery:retry"
+      },
+      "summary": "仅确定失败后重试"
+    },
+    {
+      "operationId": "V64_get_api_app_owner_orders_orderNo_payment_options",
+      "method": "GET",
+      "path": "/api/app/owner/orders/{orderNo}/payment-options",
+      "permission": null,
+      "capability": "OWNER_PAYMENT_OPTIONS",
+      "authorization": {
+        "realm": "MINI",
+        "scope": "OWNER_ORDER",
+        "capability": "OWNER_PAYMENT_OPTIONS"
+      },
+      "summary": "本人订单可用支付方式"
+    },
+    {
+      "operationId": "V64_post_api_app_owner_orders_orderNo_offline_payment",
+      "method": "POST",
+      "path": "/api/app/owner/orders/{orderNo}/offline-payment",
+      "permission": null,
+      "capability": "OWNER_OFFLINE_INTENT",
+      "authorization": {
+        "realm": "MINI",
+        "scope": "OWNER_ORDER",
+        "capability": "OWNER_OFFLINE_INTENT"
+      },
+      "summary": "选择线下方式不标记已付款"
+    },
+    {
+      "operationId": "V64_get_api_admin_offline_payments",
+      "method": "GET",
+      "path": "/api/admin/offline-payments",
+      "permission": "biz:offlinepayment:query",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "PAYMENT_OWNER_SCOPE",
+        "permission": "biz:offlinepayment:query"
+      },
+      "summary": "客户线下收退款凭证列表"
+    },
+    {
+      "operationId": "V64_post_api_admin_offline_payments",
+      "method": "POST",
+      "path": "/api/admin/offline-payments",
+      "permission": "biz:offlinepayment:create",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "PAYMENT_OWNER_SCOPE",
+        "permission": "biz:offlinepayment:create"
+      },
+      "summary": "登记真实线下收款或已批准退款凭证"
+    },
+    {
+      "operationId": "V64_get_api_admin_offline_payments_proofId",
+      "method": "GET",
+      "path": "/api/admin/offline-payments/{proofId}",
+      "permission": "biz:offlinepayment:query",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "PAYMENT_OWNER_SCOPE",
+        "permission": "biz:offlinepayment:query"
+      },
+      "summary": "线下凭证只读详情"
+    },
+    {
+      "operationId": "V64_post_api_admin_offline_payments_proofId_verify",
+      "method": "POST",
+      "path": "/api/admin/offline-payments/{proofId}/verify",
+      "permission": "biz:offlinepayment:verify",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "PAYMENT_OWNER_SCOPE",
+        "permission": "biz:offlinepayment:verify",
+        "notSelfReview": true
+      },
+      "summary": "不同人员核实线下资金"
+    },
+    {
+      "operationId": "V64_post_api_common_subscriptions_prompts",
+      "method": "POST",
+      "path": "/api/common/subscriptions/prompts",
+      "permission": null,
+      "capability": "COMMON_SUBSCRIPTION_REQUEST",
+      "authorization": {
+        "realm": "MINI",
+        "scope": "OWN_BUSINESS_CONTEXT",
+        "capability": "COMMON_SUBSCRIPTION_REQUEST"
+      },
+      "summary": "按真实场景获取本人的可请求模板"
+    },
+    {
+      "operationId": "V64_post_api_common_subscriptions_prompts_promptId_report",
+      "method": "POST",
+      "path": "/api/common/subscriptions/prompts/{promptId}/report",
+      "permission": null,
+      "capability": "COMMON_SUBSCRIPTION_REPORT",
+      "authorization": {
+        "realm": "MINI",
+        "scope": "OWN_SUBSCRIPTION_PROMPT",
+        "capability": "COMMON_SUBSCRIPTION_REPORT"
+      },
+      "summary": "报告本次用户订阅选择"
+    },
+    {
+      "operationId": "V64_get_api_admin_integrations_test_recipients",
+      "method": "GET",
+      "path": "/api/admin/integrations/test-recipients",
+      "permission": "biz:integration:query",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_CONFIG",
+        "permission": "biz:integration:query"
+      },
+      "summary": "受控测试收件人白名单"
+    },
+    {
+      "operationId": "V64_post_api_admin_integrations_test_recipients",
+      "method": "POST",
+      "path": "/api/admin/integrations/test-recipients",
+      "permission": "biz:integration:testrecipient",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_CONFIG",
+        "permission": "biz:integration:testrecipient"
+      },
+      "summary": "登记受控测试收件人"
+    },
+    {
+      "operationId": "V64_post_api_admin_integrations_test_recipients_recipientId_revoke",
+      "method": "POST",
+      "path": "/api/admin/integrations/test-recipients/{recipientId}/revoke",
+      "permission": "biz:integration:testrecipient",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORG_DEPT_CONFIG",
+        "permission": "biz:integration:testrecipient"
+      },
+      "summary": "撤销测试收件人"
+    }
+  ]
+}

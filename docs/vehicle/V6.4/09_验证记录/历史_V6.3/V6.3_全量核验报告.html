@@ -1,0 +1,129 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>V6.3_全量核验报告</title><style>body{font:16px/1.75 -apple-system,BlinkMacSystemFont,"Microsoft YaHei",sans-serif;color:#202632;margin:0;background:#f6f7f9}header{padding:14px 24px;background:white;border-bottom:1px solid #ddd}main{max-width:1120px;margin:24px auto;padding:30px;background:white}h1{font-size:30px}h2{margin-top:36px}a{color:#0661bd}table{border-collapse:collapse;width:100%;display:block;overflow:auto;font-size:14px}td,th{border:1px solid #dde2ea;padding:10px;vertical-align:top}th{background:#f1f5fb}pre{padding:15px;background:#f2f4f7;overflow:auto}img{max-width:100%;height:auto}blockquote{padding:10px 20px;border-left:3px solid #2571be;background:#f4f8fc}@media(max-width:700px){main{padding:15px;margin:8px}h1{font-size:25px}}</style></head><body><header><a href="../00_开始.html">V6.3 完整资料</a>　<a href="../02_UI/index.html">交互原型</a>　T3.3</header><main><h1>V6.3 全量核验与修复报告</h1>
+<h2>结论与责任</h2>
+<p>V6.2并非所有内容完全未修改：主PRD身份章节、新身份接口和部分页面已有新规则。但本轮实际发现主PRD附录、交互规范、联调场景、B25操作和多个身份演示状态没有同步，造成用户看到的PRD与UI仍互相矛盾。上一轮“已经整合”的表述超过实际交付质量。V6.3直接修正活动主文件和界面，不再用附加说明替代修复。</p>
+<p>本轮只以实际交付的V6.2 ZIP与单文件原型、用户已确认业务为依据；没有使用更早上传的V1/V2 PRD或旧pages_o/d/s.js作为本版缺陷证据。源ZIP SHA-256为 <code>4a98f07d2614f798b4e1c7805d3161593784f89f6151875831803fe5667fdb94</code>，原件保持不变。</p>
+<h2>核查层次</h2>
+<p>全量目录与文件引用检查；252操作/284Schema/67表/317画板/350用例/78任务的集合与派生一致性；所有317个画板重置独立状态实际渲染并导出首屏和完整内容；身份、预约、取消返还、核价、勾选对账、培训申诉的本地交互回归。</p>
+<p>“全量”指以上资产集合和检查层覆盖，不是声称测试了每个用户输入、每种权限组合或真实服务的全部执行路径。人工视觉复核集中在本次改动的登录、身份、本人资料、后台员工和站点页面，并辅以全部画板缩略总览；其余通过全量自动渲染和回归覆盖，不以图片张数证明生产功能。</p>
+<h2>实际漏改与修复位置</h2>
+<table>
+<thead>
+<tr>
+  <th>编号</th>
+  <th>V6.2发现</th>
+  <th>原始位置</th>
+  <th>V6.3处理</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>F01</td>
+  <td>主PRD正文与F03图注冲突</td>
+  <td><code>01_PRD/机动车检测预约_PRD_V6.2_完整整合版.md</code> 第633行</td>
+  <td>重写主PRD第2章；F03图注明确微信核验手机号唯一匹配自动关联、后台预配置站点。</td>
+</tr>
+<tr>
+  <td>F02</td>
+  <td>UI重建说明仍指导旧绑定链</td>
+  <td><code>02_UI/开发与重建说明.md</code> 第7行</td>
+  <td>替换为U02本人关联状态、B25/B26后台直接配置、B36异常管理。</td>
+</tr>
+<tr>
+  <td>F03</td>
+  <td>交互规则INT73与INT79互相冲突</td>
+  <td><code>03_交互与设计规范/02_交互设计规范.md</code> 第106行</td>
+  <td>INT73统一新流程；不再让员工申请或领取凭证。</td>
+</tr>
+<tr>
+  <td>F04</td>
+  <td>IT02真实联调规格仍用旧链</td>
+  <td><code>13_真实集成测试/02_全功能联调场景.md</code> 第8行</td>
+  <td>联调入口改成可信手机号自动关联、后台预授权、暂停撤权；不是在本轮执行真实接口。</td>
+</tr>
+<tr>
+  <td>F05</td>
+  <td>B25仍有绑定申请和确认绑定</td>
+  <td><code>02_UI/src/desktop.js</code> 第31行</td>
+  <td>B25重建为员工列表、微信关联状态、站点配置和关联详情；未关联微信也可配置。</td>
+</tr>
+<tr>
+  <td>F06</td>
+  <td>原型浏览器标题/说明仍标V5或V4</td>
+  <td><code>02_UI/src/shell.html</code> 第2行</td>
+  <td>单文件标题、导航、说明、当前来源统一V6.3；历史模块文件名只表示代码沿革。</td>
+</tr>
+<tr>
+  <td>F07</td>
+  <td>已关联画板却显示手机号未核验</td>
+  <td><code>02_UI/src/v62_identity.js</code> 第61行</td>
+  <td>关联状态、手机号核验、工作权限使用同一演示状态；不再只改标题造成功能矛盾。</td>
+</tr>
+<tr>
+  <td>F08</td>
+  <td>B26换员工后表单未同步</td>
+  <td><code>02_UI/src/v62_identity.js</code> 第83行</td>
+  <td>切换目标立即重载该员工站点和版本，清除旧目标输入；新增冲突态。</td>
+</tr>
+<tr>
+  <td>F09</td>
+  <td>暂停后再次授权可能重建关联</td>
+  <td><code>02_UI/src/v62_identity.js</code> 第40行</td>
+  <td>暂停/解除保存至员工与账号状态；允许重核不恢复权限，本人重新核验才恢复。</td>
+</tr>
+<tr>
+  <td>F10</td>
+  <td>我的和申请进度不是同一个资格状态</td>
+  <td><code>02_UI/src/mobile_owner.js</code> 第28行</td>
+  <td>我的、身份切换、申请草稿/审核中/驳回/通过页面与后端审核演示联动。</td>
+</tr>
+<tr>
+  <td>F11</td>
+  <td>退出只是跳转登录，没有退出演示会话</td>
+  <td><code>02_UI/src/app.js</code> 第77行</td>
+  <td>退出真正清除当前演示登录和工作范围，但保留资格与在手任务。</td>
+</tr>
+<tr>
+  <td>F12</td>
+  <td>本人工作页固定其他演示人姓名</td>
+  <td><code>02_UI/src/mobile_driver.js</code> 第31行</td>
+  <td>代驾/检测“我的”读取当前演示账号；保留服务、培训、申诉、对账入口。</td>
+</tr>
+<tr>
+  <td>F13</td>
+  <td>主PRD仍断言旧M0五张表真实存在</td>
+  <td><code>01_PRD/机动车检测预约_PRD_V6.2_完整整合版.md</code> 第369行</td>
+  <td>改为实际工作区和数据库条件判断；本轮不读取远程或推定已实施。</td>
+</tr>
+<tr>
+  <td>F14</td>
+  <td>只检查结构未发现上述跨文件/可见状态错误</td>
+  <td><code>11_工具/check_package.py</code> 第189行</td>
+  <td>新增30项跨文件/可见内容检查和30项身份交互检查；历史通过不继承为本轮结论。</td>
+</tr>
+</tbody>
+</table>
+<h2>这次用户能看到的变化</h2>
+<p>主PRD第2章重新完整描述“统一登录→默认车主→手机号自动匹配→后台站点授权→按资格切换”，并直接嵌入本轮实际页面图；F03图注、INT73和IT02全部采用相同规则。</p>
+<p>B25不再有“员工绑定申请”和“确认绑定”。B26可以先给未微信登录的员工配置站点，切员工会重新加载对应集合，保存检查版本。B36只管已有关联的查询与异常；未关联时不允许暂停或解除不存在的关系。</p>
+<p>小程序的我的、申请进度、身份切换和员工工作页共用一个演示状态。未审核不会出现可用代驾；员工暂停后登录仍不能工作；管理员“允许重核”不直接开权限；退出清会话、不清任务。后台后补站点后仅刷新即可，无需再次申请。</p>
+<h2>当前验证结果</h2>
+<ul>
+<li>317画板：全部实际渲染；634张当前UI图片覆盖每一画板的首屏和完整内容。渲染报告检查跳转目标、可见动作名、重复控件ID、页面异常和移动横向溢出。</li>
+<li>身份本地交互：30项，通过；关键路径使用点击、填写、切换选择框；部分前置由明确的本地演示模型构造。</li>
+<li>既有业务本地回归：基础30项、核价22项、勾选组单33项、培训申诉8项，通过。培训脚本另有一次file入口检查被环境阻止，不记为通过。</li>
+<li>工具/契约参考策略：pytest 99项通过，有15条jsonschema.RefResolver弃用警告；契约样本51项通过。这些不访问生产后端。</li>
+<li>新增跨文件和可见文本检查30项通过；原资料深度检查和工程检查结果另见同目录的当前JSON报告。</li>
+</ul>
+<p>历史测试记录在明确的“历史”目录，不将其作为本轮通过。源业务350条用例、71项技术门禁仍为NOT_RUN。</p>
+<h2>环境限制与未执行项</h2>
+<p>Browser连接器只有读标签能力，无页面控制运行时；本轮使用本地Chromium/Playwright。直接file://导航被当前环境策略阻止（ERR_BLOCKED_BY_ADMINISTRATOR），实际原型通过set_content加载完整单文件HTML及同一脚本执行。未将双击本地文件导航、微信浏览器或真机判为已通过。</p>
+<p>本轮没有读取你的当前GitHub分支，没有写入用户仓库，没有构建xinyi，没有运行MySQL、真实HTTP业务服务、微信手机号授权、支付/OCR等供应商。截图、账号、号码、费用与审核状态均为虚构演示；不构成真实资格和资金证据。剩余真实集成仍由任务和门禁执行。</p>
+<h2>修复前后对照</h2>
+<p>下面前图来自原V6.2交付截图；后图来自当前原型重导。原图只在“修复前证据”中用于说明问题，不能作为当前开发依据。</p>
+<p><img src="B25_%E4%BF%AE%E6%94%B9%E5%89%8D%E5%90%8E%E5%AF%B9%E7%85%A7.png" alt="B25修改前后" /></p>
+<p><img src="%E8%BA%AB%E4%BB%BD%E4%B8%BB%E6%B5%81%E7%A8%8B_%E5%AE%9E%E5%9B%BE.png" alt="当前身份主流程" /></p>
+<p><img src="%E5%90%8E%E5%8F%B0%E5%91%98%E5%B7%A5%E6%8E%88%E6%9D%83_%E5%AE%9E%E5%9B%BE.png" alt="后台直接配置" /></p>
+<h2>重建与复查</h2>
+<p>在完整包内先运行 <code>python 11_工具/rebuild_derived_artifacts.py</code>，然后 <code>python 02_UI/build.py</code>、<code>python 11_工具/rebuild_markdown_html.py</code>。使用 <code>python 02_UI/test_identity_consistency.py</code> 和原有回归脚本验证交互，使用 <code>python 11_工具/audit_current.py</code> 核对全部可见文本与来源。</p>
+<p><code>python 02_UI/export_screens.py</code> 重导全部画板；支持 <code>--start/--stop</code> 分段。再运行 <code>check_package.py</code>、<code>check_engineering.py</code>、契约测试。任何失败需修正实际主源，不能删断言或把NOT_RUN改成PASS。</p>
+</main></body></html>

@@ -1,0 +1,349 @@
+openapi: 3.0.3
+info:
+  title: Test-classpath control plane (NOT production)
+  version: 6.4.0
+servers:
+- url: http://127.0.0.1:18080
+security:
+- TestControlKey: []
+paths:
+  /__integration/runtime:
+    get:
+      operationId: IT_runtime
+      summary: 确认真实测试应用与数据库guard
+      responses:
+        '200':
+          description: 真实测试应用执行结果
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - environment
+                - databaseGuard
+                - providerMode
+                - contractVersion
+                properties:
+                  environment:
+                    type: string
+                    enum:
+                    - integration
+                  databaseGuard:
+                    type: string
+                    enum:
+                    - XINYI_VEHICLE_ISOLATED
+                  providerMode:
+                    type: string
+                    enum:
+                    - SIMULATOR
+                  contractVersion:
+                    type: string
+                    enum:
+                    - 6.4.0
+                  buildCommit:
+                    type: string
+        '403':
+          description: 控制密钥/网络/库guard不符拒绝
+        '409':
+          description: fixture版本或任务状态冲突
+        '503':
+          description: 真实依赖不可用；禁止假成功
+  /__integration/fixtures:
+    post:
+      operationId: IT_fixtures
+      summary: 仅基础夹具，不造业务终态
+      responses:
+        '201':
+          description: 真实测试应用执行结果
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - type: object
+                  additionalProperties: false
+                  required:
+                  - providerRunId
+                  - runId
+                  - vehicleTypeCode
+                  - vehiclePlate
+                  - privacyVersion
+                  properties:
+                    providerRunId:
+                      type: string
+                    runId:
+                      type: string
+                    vehicleTypeCode:
+                      type: string
+                      enum:
+                      - TEST_CAR
+                    vehiclePlate:
+                      type: string
+                    privacyVersion:
+                      type: string
+                      enum:
+                      - TEST_PRIVACY_V1
+                - type: object
+                  additionalProperties: false
+                  required:
+                  - providerRunId
+                  - runId
+                  - slotId
+                  - vehicleTypeCode
+                  - inspectionTypeCode
+                  - vehiclePlate
+                  - expectedQuoteFen
+                  - termsVersion
+                  - privacyVersion
+                  - businessDate
+                  properties:
+                    providerRunId:
+                      type: string
+                    runId:
+                      type: string
+                    slotId:
+                      type: string
+                      pattern: ^[1-9][0-9]*$
+                    vehicleTypeCode:
+                      type: string
+                      enum:
+                      - TEST_CAR
+                    inspectionTypeCode:
+                      type: string
+                      enum:
+                      - TEST_INSPECTION
+                    vehiclePlate:
+                      type: string
+                    expectedQuoteFen:
+                      type: integer
+                      enum:
+                      - 34000
+                    termsVersion:
+                      type: string
+                      enum:
+                      - TEST_TERMS_V1
+                    privacyVersion:
+                      type: string
+                      enum:
+                      - TEST_PRIVACY_V1
+                    businessDate:
+                      type: string
+                      format: date
+                - type: object
+                  additionalProperties: false
+                  required:
+                  - providerRunId
+                  - runId
+                  - vehicleTypeCode
+                  - vehiclePlate
+                  - privacyVersion
+                  - employeeUserId
+                  - authorizedStationId
+                  properties:
+                    providerRunId:
+                      type: string
+                    runId:
+                      type: string
+                    vehicleTypeCode:
+                      type: string
+                      enum:
+                      - TEST_CAR
+                    vehiclePlate:
+                      type: string
+                    privacyVersion:
+                      type: string
+                      enum:
+                      - TEST_PRIVACY_V1
+                    employeeUserId:
+                      type: string
+                      pattern: ^[1-9][0-9]{0,18}$
+                      maxLength: 19
+                      description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+                    authorizedStationId:
+                      type: string
+                      pattern: ^[1-9][0-9]{0,18}$
+                      maxLength: 19
+                      description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+                - type: object
+                  additionalProperties: false
+                  required:
+                  - providerRunId
+                  - runId
+                  - ownerDeptId
+                  - adminToken
+                  - reviewerToken
+                  - readOnlyToken
+                  properties:
+                    providerRunId:
+                      type: string
+                    runId:
+                      type: string
+                    ownerDeptId:
+                      type: string
+                    adminToken:
+                      type: string
+                    reviewerToken:
+                      type: string
+                    readOnlyToken:
+                      type: string
+        '403':
+          description: 控制密钥/网络/库guard不符拒绝
+        '409':
+          description: fixture版本或任务状态冲突
+        '503':
+          description: 真实依赖不可用；禁止假成功
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required:
+              - fixture
+              - providerRunId
+              properties:
+                fixture:
+                  type: string
+                  enum:
+                  - IDENTITY
+                  - BOOKING
+                  - EMPLOYEE_IDENTITY
+                  - INTEGRATION_CONFIG
+                providerRunId:
+                  type: string
+  /__integration/clock/advance:
+    post:
+      operationId: IT_clock_advance
+      summary: 推进注入的业务Clock
+      responses:
+        '200':
+          description: 真实测试应用执行结果
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - now
+                properties:
+                  now:
+                    type: string
+                    format: date-time
+        '403':
+          description: 控制密钥/网络/库guard不符拒绝
+        '409':
+          description: fixture版本或任务状态冲突
+        '503':
+          description: 真实依赖不可用；禁止假成功
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required:
+              - runId
+              - advanceSeconds
+              properties:
+                runId:
+                  type: string
+                advanceSeconds:
+                  type: integer
+                  minimum: 0
+                  maximum: 604800
+  /__integration/jobs/run-due:
+    post:
+      operationId: IT_jobs_run-due
+      summary: 触发真实任务领取器
+      responses:
+        '200':
+          description: 真实测试应用执行结果
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - processed
+                properties:
+                  processed:
+                    type: integer
+                    minimum: 0
+        '403':
+          description: 控制密钥/网络/库guard不符拒绝
+        '409':
+          description: fixture版本或任务状态冲突
+        '503':
+          description: 真实依赖不可用；禁止假成功
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required:
+              - runId
+              - jobKind
+              properties:
+                runId:
+                  type: string
+                jobKind:
+                  type: string
+                  enum:
+                  - PAY_CLOSE
+                  - DISPATCH
+                  - INVITE_EXPIRE
+                  - SERVICE_CONFIRM
+                  - OUTBOX
+                  - REFUND_QUERY
+  /__integration/provider-events:
+    post:
+      operationId: IT_provider-events
+      summary: 验证模拟通道后调同一可信业务事件服务
+      responses:
+        '200':
+          description: 真实测试应用执行结果
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - accepted
+                properties:
+                  accepted:
+                    type: boolean
+        '403':
+          description: 控制密钥/网络/库guard不符拒绝
+        '409':
+          description: fixture版本或任务状态冲突
+        '503':
+          description: 真实依赖不可用；禁止假成功
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required:
+              - runId
+              - rawBody
+              - signature
+              - algorithm
+              properties:
+                runId:
+                  type: string
+                rawBody:
+                  type: string
+                signature:
+                  type: string
+                algorithm:
+                  type: string
+                  enum:
+                  - TEST_HMAC_SHA256
+components:
+  securitySchemes:
+    TestControlKey:
+      type: apiKey
+      in: header
+      name: X-Test-Control-Key

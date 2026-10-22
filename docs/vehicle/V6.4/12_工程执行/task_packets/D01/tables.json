@@ -1,0 +1,100 @@
+[
+  {
+    "name": "vi_driver_location",
+    "comment": "代驾最近前台定位",
+    "cols": [
+      [
+        "driver_id",
+        "BIGINT NOT NULL",
+        "主键"
+      ],
+      [
+        "location_cipher",
+        "VARBINARY(1024) NOT NULL",
+        "加密位置"
+      ],
+      [
+        "captured_at",
+        "DATETIME(3) NOT NULL",
+        "设备采集时间"
+      ],
+      [
+        "received_at",
+        "DATETIME(3) NOT NULL",
+        "服务器接收时间"
+      ],
+      [
+        "created_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "创建时间，统一UTC"
+      ],
+      [
+        "updated_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "UTC更新时间；Mapper每次修改显式SET updated_at=UTC_TIMESTAMP(3)，不依赖连接时区"
+      ],
+      [
+        "version",
+        "BIGINT NOT NULL DEFAULT 0",
+        "乐观锁版本"
+      ]
+    ],
+    "indexes": [],
+    "rule": "位置过期不参与候选；不是持续后台实时轨迹库",
+    "primaryKey": [
+      "driver_id"
+    ],
+    "idStrategy": "BUSINESS_KEY",
+    "engine": "InnoDB",
+    "collation": "utf8mb4_0900_ai_ci",
+    "columnRules": {
+      "driver_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "location_cipher": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "captured_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "received_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "created_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "updated_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "version": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      }
+    },
+    "checks": [
+      "CONSTRAINT ck_ver_driver_location CHECK (version >= 0)"
+    ]
+  }
+]

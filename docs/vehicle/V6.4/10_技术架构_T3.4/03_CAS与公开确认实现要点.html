@@ -1,0 +1,28 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>03_CAS与公开确认实现要点</title><style>body{font:16px/1.75 -apple-system,BlinkMacSystemFont,"Microsoft YaHei",sans-serif;color:#202632;margin:0;background:#f6f7f9}header{padding:14px 24px;background:white;border-bottom:1px solid #ddd}main{max-width:1120px;margin:24px auto;padding:30px;background:white}h1{font-size:30px}h2{margin-top:36px}a{color:#0661bd}table{border-collapse:collapse;width:100%;display:block;overflow:auto;font-size:14px}td,th{border:1px solid #dde2ea;padding:10px;vertical-align:top}th{background:#f1f5fb}pre{padding:15px;background:#f2f4f7;overflow:auto}img{max-width:100%;height:auto}blockquote{padding:10px 20px;border-left:3px solid #2571be;background:#f4f8fc}@media(max-width:700px){main{padding:15px;margin:8px}h1{font-size:25px}}</style></head><body><header><a href="../00_开始.html">V6.4 完整资料</a>　<a href="../02_UI/index.html">交互原型</a>　T3.4</header><main><h1>CAS、公开快照与同事务副作用</h1>
+<h2>司机账单确认（伪代码，须落在真实MyBatis事务）</h2>
+<pre><code class="language-text">authenticate MINI; resolve actual driver; validate Idempotency-Key/body digest
+SELECT statement FOR UPDATE
+assert driver ownership/payor visibility; state SENT; no withdrawal
+assert version == expectedVersion; published_revision == expectedRevision
+SELECT immutable snapshot by (statement_id,revision)
+assert public_snapshot_hash == decoded snapshotHash
+assert snapshot public amount == statement amount; no pending manual pricing
+UPDATE statement SET status=CONFIRMED,confirmed_account_id=:actor,
+ confirmed_at=UTC_TIMESTAMP(3),confirmation_revision=:rev,
+ version=version+1,updated_at=UTC_TIMESTAMP(3)
+ WHERE id=:id AND status='SENT' AND version=:version
+ AND published_revision=:rev AND published_hash=:publicHash
+assert affectedRows==1
+insert unique confirmation fact; generate only final difference/initial price once
+allocate generated ledger to this statement (not future selectable set)
+insert audit/outbox; commit
+return DriverStatementPublic from confirmed immutable public snapshot
+</code></pre>
+<p>published_hash是公开摘要；snapshot_hash是内部工作摘要，review用后者；两个不能混为一个。列类型BINARY(32)按hex解码比较，不把hex文本当32字节存储。snapshot JSON按公开规范签名，付款额变化不使已确认服务版本过时。</p>
+<h2>归还释放</h2>
+<p>先锁订单和承接、验证当前保管/码/证据版本。释放占用必须driver_id、holder_type和assignmentId同时匹配；旧单事件不匹配新占用则不删除。物理交接、承接结束、司机占用释放、订单阶段、领域流水、outbox同事务。异步核价/消息在提交后，失败可恢复，不重新占司机。</p>
+<h2>选择组单</h2>
+<p>按source fee entry ID稳定顺序锁行；验证sourceVersion和有效allocation；同driver/payor/currency。先全量校验再写工作行，任何冲突整单409。相同幂等键同体返回原账单；不同键部分重叠一份失败；同期间不重叠两份均成功。只读预览不持有长期锁，不以日期再选一次。</p>
+<h2>失败处理</h2>
+<p>更新0行返回VERSION_CONFLICT或STATE_CONFLICT，事务不得继续插成功事件。数据库唯一异常映射具体错误，不把所有SQL异常当并发冲突。权限撤销与写入要使用共享权威版本条件或受控锁顺序，不能指望Redis删除使已经执行中的请求消失。</p>
+</main></body></html>

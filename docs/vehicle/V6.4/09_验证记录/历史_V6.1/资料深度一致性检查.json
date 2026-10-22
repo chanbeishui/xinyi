@@ -1,0 +1,304 @@
+{
+  "kind": "STATIC_DOCUMENT_CHECK",
+  "checkedAt": "2026-10-20",
+  "pass": 42,
+  "fail": 0,
+  "counts": {
+    "operations": 249,
+    "schemas": 278,
+    "tables": 66,
+    "generatedColumns": 14,
+    "screens": 287,
+    "cases": 298,
+    "flows": 42
+  },
+  "checks": [
+    {
+      "name": "01 所有内部ref可解析",
+      "result": "PASS",
+      "detail": [
+        true
+      ]
+    },
+    {
+      "name": "02 operationId唯一",
+      "result": "PASS",
+      "detail": null
+    },
+    {
+      "name": "03 路径参数声明完整",
+      "result": "PASS",
+      "detail": null
+    },
+    {
+      "name": "04 Schema必填字段存在",
+      "result": "PASS",
+      "detail": null
+    },
+    {
+      "name": "05 不再存在泛型Order",
+      "result": "PASS",
+      "detail": null
+    },
+    {
+      "name": "06 MINI响应递归无内部账单/管理员投影",
+      "result": "PASS",
+      "detail": null
+    },
+    {
+      "name": "07 MINI确认使用Public",
+      "result": "PASS",
+      "detail": null
+    },
+    {
+      "name": "08 旧双域logout已删除",
+      "result": "PASS",
+      "detail": null
+    },
+    {
+      "name": "09 根上下文明确/api不重写",
+      "result": "PASS",
+      "detail": null
+    },
+    {
+      "name": "10 业务所有错误体及429统一引用",
+      "result": "PASS",
+      "detail": null
+    },
+    {
+      "name": "11 权限注册与查询写权限分离",
+      "result": "PASS",
+      "detail": null
+    },
+    {
+      "name": "12 无biz:orders复数混用",
+      "result": "PASS",
+      "detail": null
+    },
+    {
+      "name": "13 能力/动作有稳定字典",
+      "result": "PASS",
+      "detail": null
+    },
+    {
+      "name": "14 Profile地址更新必填版本",
+      "result": "PASS",
+      "detail": null
+    },
+    {
+      "name": "15 创建DTO不要求旧版本",
+      "result": "PASS",
+      "detail": null
+    },
+    {
+      "name": "16 地址Profile读取有version",
+      "result": "PASS",
+      "detail": null
+    },
+    {
+      "name": "17 处罚申诉生产读取DTO",
+      "result": "PASS",
+      "detail": null
+    },
+    {
+      "name": "18 培训及尝试不是JobTask",
+      "result": "PASS",
+      "detail": null
+    },
+    {
+      "name": "19 活体会话不再Ack",
+      "result": "PASS",
+      "detail": null
+    },
+    {
+      "name": "20 员工绑定签发和消费完整",
+      "result": "PASS",
+      "detail": null
+    },
+    {
+      "name": "21 SQL与模型全表相同",
+      "result": "PASS",
+      "detail": null
+    },
+    {
+      "name": "22 每张表PRIMARY KEY对应结构源",
+      "result": "PASS",
+      "detail": null
+    },
+    {
+      "name": "23 四热点业务键正确",
+      "result": "PASS",
+      "detail": null
+    },
+    {
+      "name": "24 普通id自增与自然键策略冻结",
+      "result": "PASS",
+      "detail": null
+    },
+    {
+      "name": "25 所有生成列排除Mapper写清单",
+      "result": "PASS",
+      "detail": null
+    },
+    {
+      "name": "26 枚举源/Schema/字段/CHECK对应",
+      "result": "PASS",
+      "detail": null
+    },
+    {
+      "name": "27 UTC默认表达式无本地CURRENT_TIMESTAMP",
+      "result": "PASS",
+      "detail": null
+    },
+    {
+      "name": "28 初始化无sys写/破坏命令",
+      "result": "PASS",
+      "detail": null
+    },
+    {
+      "name": "29 不用IF NOT EXISTS掩盖结构差异",
+      "result": "PASS",
+      "detail": null
+    },
+    {
+      "name": "30 数据列与SQL列集合精确相同",
+      "result": "PASS",
+      "detail": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "name": "31 画板ID唯一",
+      "result": "PASS",
+      "detail": null
+    },
+    {
+      "name": "32 全量Gherkin与JSON逐条内容相同",
+      "result": "PASS",
+      "detail": null
+    },
+    {
+      "name": "33 核价30场景一一具备TC-R41标签",
+      "result": "PASS",
+      "detail": null
+    },
+    {
+      "name": "34 旧期间语义不再作为并发唯一",
+      "result": "PASS",
+      "detail": null
+    },
+    {
+      "name": "35 真实业务全部标NOT_RUN",
+      "result": "PASS",
+      "detail": null
+    },
+    {
+      "name": "36 流程节点/导出/规范页面别名",
+      "result": "PASS",
+      "detail": null
+    },
+    {
+      "name": "37 无旧V4交易迁移执行脚本",
+      "result": "PASS",
+      "detail": null
+    },
+    {
+      "name": "38 新视觉规范标题与交互计数",
+      "result": "PASS",
+      "detail": null
+    },
+    {
+      "name": "39 全部JS语法检查",
+      "result": "PASS",
+      "detail": null
+    },
+    {
+      "name": "40 活动HTML本地链接可解析",
+      "result": "PASS",
+      "detail": null
+    },
+    {
+      "name": "41 每画板首屏与完整图存在",
+      "result": "PASS",
+      "detail": null
+    },
+    {
+      "name": "42 四视角所有嵌套字段都有矩阵行",
+      "result": "PASS",
+      "detail": null
+    }
+  ],
+  "notCovered": [
+    "MySQL execution",
+    "xinyi build",
+    "runtime authorization",
+    "real payment/vendors",
+    "WeChat devices",
+    "full formal OpenAPI meta-schema validation"
+  ]
+}

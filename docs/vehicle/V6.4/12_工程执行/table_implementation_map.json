@@ -1,0 +1,634 @@
+[
+  {
+    "status": "NOT_ASSESSED",
+    "entityFile": null,
+    "mapperFile": null,
+    "evidence": [],
+    "table": "vi_account",
+    "taskId": "I01"
+  },
+  {
+    "status": "NOT_ASSESSED",
+    "entityFile": null,
+    "mapperFile": null,
+    "evidence": [],
+    "table": "vi_employee_binding",
+    "taskId": "I05"
+  },
+  {
+    "status": "NOT_ASSESSED",
+    "entityFile": null,
+    "mapperFile": null,
+    "evidence": [],
+    "table": "vi_driver_profile",
+    "taskId": "Q01"
+  },
+  {
+    "status": "NOT_ASSESSED",
+    "entityFile": null,
+    "mapperFile": null,
+    "evidence": [],
+    "table": "vi_driver_application",
+    "taskId": "Q01"
+  },
+  {
+    "status": "NOT_ASSESSED",
+    "entityFile": null,
+    "mapperFile": null,
+    "evidence": [],
+    "table": "vi_provider_verification",
+    "taskId": "Q04"
+  },
+  {
+    "status": "NOT_ASSESSED",
+    "entityFile": null,
+    "mapperFile": null,
+    "evidence": [],
+    "table": "vi_station",
+    "taskId": "C02"
+  },
+  {
+    "status": "NOT_ASSESSED",
+    "entityFile": null,
+    "mapperFile": null,
+    "evidence": [],
+    "table": "vi_station_grant",
+    "taskId": "I06"
+  },
+  {
+    "status": "NOT_ASSESSED",
+    "entityFile": null,
+    "mapperFile": null,
+    "evidence": [],
+    "table": "vi_vehicle",
+    "taskId": "A01"
+  },
+  {
+    "status": "NOT_ASSESSED",
+    "entityFile": null,
+    "mapperFile": null,
+    "evidence": [],
+    "table": "vi_address",
+    "taskId": "A02"
+  },
+  {
+    "status": "NOT_ASSESSED",
+    "entityFile": null,
+    "mapperFile": null,
+    "evidence": [],
+    "table": "vi_price_rule",
+    "taskId": "C04"
+  },
+  {
+    "status": "NOT_ASSESSED",
+    "entityFile": null,
+    "mapperFile": null,
+    "evidence": [],
+    "table": "vi_quota_slot",
+    "taskId": "C03"
+  },
+  {
+    "status": "NOT_ASSESSED",
+    "entityFile": null,
+    "mapperFile": null,
+    "evidence": [],
+    "table": "vi_quote",
+    "taskId": "B02"
+  },
+  {
+    "status": "NOT_ASSESSED",
+    "entityFile": null,
+    "mapperFile": null,
+    "evidence": [],
+    "table": "vi_order",
+    "taskId": "B03"
+  },
+  {
+    "status": "NOT_ASSESSED",
+    "entityFile": null,
+    "mapperFile": null,
+    "evidence": [],
+    "table": "vi_quota_reservation",
+    "taskId": "B03"
+  },
+  {
+    "status": "NOT_ASSESSED",
+    "entityFile": null,
+    "mapperFile": null,
+    "evidence": [],
+    "table": "vi_dispatch_invite",
+    "taskId": "D02"
+  },
+  {
+    "status": "NOT_ASSESSED",
+    "entityFile": null,
+    "mapperFile": null,
+    "evidence": [],
+    "table": "vi_driver_assignment",
+    "taskId": "D04"
+  },
+  {
+    "status": "NOT_ASSESSED",
+    "entityFile": null,
+    "mapperFile": null,
+    "evidence": [],
+    "table": "vi_driver_occupancy",
+    "taskId": "D02"
+  },
+  {
+    "status": "NOT_ASSESSED",
+    "entityFile": null,
+    "mapperFile": null,
+    "evidence": [],
+    "table": "vi_dispatch_cursor",
+    "taskId": "D02"
+  },
+  {
+    "status": "NOT_ASSESSED",
+    "entityFile": null,
+    "mapperFile": null,
+    "evidence": [],
+    "table": "vi_driver_location",
+    "taskId": "D01"
+  },
+  {
+    "status": "NOT_ASSESSED",
+    "entityFile": null,
+    "mapperFile": null,
+    "evidence": [],
+    "table": "vi_handover",
+    "taskId": "F03"
+  },
+  {
+    "status": "NOT_ASSESSED",
+    "entityFile": null,
+    "mapperFile": null,
+    "evidence": [],
+    "table": "vi_handover_attempt_guard",
+    "taskId": "F03"
+  },
+  {
+    "status": "NOT_ASSESSED",
+    "entityFile": null,
+    "mapperFile": null,
+    "evidence": [],
+    "table": "vi_evidence_group",
+    "taskId": "F02"
+  },
+  {
+    "status": "NOT_ASSESSED",
+    "entityFile": null,
+    "mapperFile": null,
+    "evidence": [],
+    "table": "vi_photo",
+    "taskId": "F02"
+  },
+  {
+    "status": "NOT_ASSESSED",
+    "entityFile": null,
+    "mapperFile": null,
+    "evidence": [],
+    "table": "vi_file",
+    "taskId": "F01"
+  },
+  {
+    "status": "NOT_ASSESSED",
+    "entityFile": null,
+    "mapperFile": null,
+    "evidence": [],
+    "table": "vi_vehicle_license",
+    "taskId": "F04"
+  },
+  {
+    "status": "NOT_ASSESSED",
+    "entityFile": null,
+    "mapperFile": null,
+    "evidence": [],
+    "table": "vi_inspection_result",
+    "taskId": "F05"
+  },
+  {
+    "status": "NOT_ASSESSED",
+    "entityFile": null,
+    "mapperFile": null,
+    "evidence": [],
+    "table": "vi_result_correction",
+    "taskId": "F05"
+  },
+  {
+    "status": "NOT_ASSESSED",
+    "entityFile": null,
+    "mapperFile": null,
+    "evidence": [],
+    "table": "vi_payment_order",
+    "taskId": "P01"
+  },
+  {
+    "status": "NOT_ASSESSED",
+    "entityFile": null,
+    "mapperFile": null,
+    "evidence": [],
+    "table": "vi_refund_order",
+    "taskId": "P04"
+  },
+  {
+    "status": "NOT_ASSESSED",
+    "entityFile": null,
+    "mapperFile": null,
+    "evidence": [],
+    "table": "vi_channel_event",
+    "taskId": "P02"
+  },
+  {
+    "status": "NOT_ASSESSED",
+    "entityFile": null,
+    "mapperFile": null,
+    "evidence": [],
+    "table": "vi_dispute",
+    "taskId": "S04"
+  },
+  {
+    "status": "NOT_ASSESSED",
+    "entityFile": null,
+    "mapperFile": null,
+    "evidence": [],
+    "table": "vi_service_exception",
+    "taskId": "S04"
+  },
+  {
+    "status": "NOT_ASSESSED",
+    "entityFile": null,
+    "mapperFile": null,
+    "evidence": [],
+    "table": "vi_review",
+    "taskId": "S05"
+  },
+  {
+    "status": "NOT_ASSESSED",
+    "entityFile": null,
+    "mapperFile": null,
+    "evidence": [],
+    "table": "vi_penalty",
+    "taskId": "D07"
+  },
+  {
+    "status": "NOT_ASSESSED",
+    "entityFile": null,
+    "mapperFile": null,
+    "evidence": [],
+    "table": "vi_event_log",
+    "taskId": "E06"
+  },
+  {
+    "status": "NOT_ASSESSED",
+    "entityFile": null,
+    "mapperFile": null,
+    "evidence": [],
+    "table": "vi_outbox",
+    "taskId": "E06"
+  },
+  {
+    "status": "NOT_ASSESSED",
+    "entityFile": null,
+    "mapperFile": null,
+    "evidence": [],
+    "table": "vi_notification",
+    "taskId": "N01"
+  },
+  {
+    "status": "NOT_ASSESSED",
+    "entityFile": null,
+    "mapperFile": null,
+    "evidence": [],
+    "table": "vi_idempotency",
+    "taskId": "E06"
+  },
+  {
+    "status": "NOT_ASSESSED",
+    "entityFile": null,
+    "mapperFile": null,
+    "evidence": [],
+    "table": "vi_governance_case",
+    "taskId": "N03"
+  },
+  {
+    "status": "NOT_ASSESSED",
+    "entityFile": null,
+    "mapperFile": null,
+    "evidence": [],
+    "table": "vi_owner_profile",
+    "taskId": "A03"
+  },
+  {
+    "status": "NOT_ASSESSED",
+    "entityFile": null,
+    "mapperFile": null,
+    "evidence": [],
+    "table": "vi_aftersale_case",
+    "taskId": "S01"
+  },
+  {
+    "status": "NOT_ASSESSED",
+    "entityFile": null,
+    "mapperFile": null,
+    "evidence": [],
+    "table": "vi_aftersale_review",
+    "taskId": "S02"
+  },
+  {
+    "status": "NOT_ASSESSED",
+    "entityFile": null,
+    "mapperFile": null,
+    "evidence": [],
+    "table": "vi_driver_fee_rule",
+    "taskId": "C05"
+  },
+  {
+    "status": "NOT_ASSESSED",
+    "entityFile": null,
+    "mapperFile": null,
+    "evidence": [],
+    "table": "vi_driver_fee_ledger",
+    "taskId": "R01"
+  },
+  {
+    "status": "NOT_ASSESSED",
+    "entityFile": null,
+    "mapperFile": null,
+    "evidence": [],
+    "table": "vi_driver_statement",
+    "taskId": "R02"
+  },
+  {
+    "status": "NOT_ASSESSED",
+    "entityFile": null,
+    "mapperFile": null,
+    "evidence": [],
+    "table": "vi_driver_statement_line",
+    "taskId": "R02"
+  },
+  {
+    "status": "NOT_ASSESSED",
+    "entityFile": null,
+    "mapperFile": null,
+    "evidence": [],
+    "table": "vi_driver_ledger_allocation",
+    "taskId": "R02"
+  },
+  {
+    "status": "NOT_ASSESSED",
+    "entityFile": null,
+    "mapperFile": null,
+    "evidence": [],
+    "table": "vi_driver_statement_difference",
+    "taskId": "R04"
+  },
+  {
+    "status": "NOT_ASSESSED",
+    "entityFile": null,
+    "mapperFile": null,
+    "evidence": [],
+    "table": "vi_driver_fee_adjustment",
+    "taskId": "R05"
+  },
+  {
+    "status": "NOT_ASSESSED",
+    "entityFile": null,
+    "mapperFile": null,
+    "evidence": [],
+    "table": "vi_driver_external_payment",
+    "taskId": "R06"
+  },
+  {
+    "status": "NOT_ASSESSED",
+    "entityFile": null,
+    "mapperFile": null,
+    "evidence": [],
+    "table": "vi_account_security",
+    "taskId": "I01"
+  },
+  {
+    "status": "NOT_ASSESSED",
+    "entityFile": null,
+    "mapperFile": null,
+    "evidence": [],
+    "table": "vi_session",
+    "taskId": "I03"
+  },
+  {
+    "status": "NOT_ASSESSED",
+    "entityFile": null,
+    "mapperFile": null,
+    "evidence": [],
+    "table": "vi_session_token",
+    "taskId": "I03"
+  },
+  {
+    "status": "NOT_ASSESSED",
+    "entityFile": null,
+    "mapperFile": null,
+    "evidence": [],
+    "table": "vi_driver_price_change",
+    "taskId": "R03"
+  },
+  {
+    "status": "NOT_ASSESSED",
+    "entityFile": null,
+    "mapperFile": null,
+    "evidence": [],
+    "table": "vi_driver_statement_review",
+    "taskId": "R03"
+  },
+  {
+    "status": "NOT_ASSESSED",
+    "entityFile": null,
+    "mapperFile": null,
+    "evidence": [],
+    "table": "vi_driver_statement_snapshot",
+    "taskId": "R04"
+  },
+  {
+    "status": "NOT_ASSESSED",
+    "entityFile": null,
+    "mapperFile": null,
+    "evidence": [],
+    "table": "vi_driver_statement_membership_change",
+    "taskId": "R03"
+  },
+  {
+    "status": "NOT_ASSESSED",
+    "entityFile": null,
+    "mapperFile": null,
+    "evidence": [],
+    "table": "vi_penalty_appeal",
+    "taskId": "D07"
+  },
+  {
+    "status": "NOT_ASSESSED",
+    "entityFile": null,
+    "mapperFile": null,
+    "evidence": [],
+    "table": "vi_training_course",
+    "taskId": "Q02"
+  },
+  {
+    "status": "NOT_ASSESSED",
+    "entityFile": null,
+    "mapperFile": null,
+    "evidence": [],
+    "table": "vi_training_question",
+    "taskId": "Q02"
+  },
+  {
+    "status": "NOT_ASSESSED",
+    "entityFile": null,
+    "mapperFile": null,
+    "evidence": [],
+    "table": "vi_training_progress",
+    "taskId": "Q03"
+  },
+  {
+    "status": "NOT_ASSESSED",
+    "entityFile": null,
+    "mapperFile": null,
+    "evidence": [],
+    "table": "vi_training_playback",
+    "taskId": "Q03"
+  },
+  {
+    "status": "NOT_ASSESSED",
+    "entityFile": null,
+    "mapperFile": null,
+    "evidence": [],
+    "table": "vi_training_attempt",
+    "taskId": "Q03"
+  },
+  {
+    "status": "NOT_ASSESSED",
+    "entityFile": null,
+    "mapperFile": null,
+    "evidence": [],
+    "table": "vi_face_session",
+    "taskId": "Q04"
+  },
+  {
+    "status": "NOT_ASSESSED",
+    "entityFile": null,
+    "mapperFile": null,
+    "evidence": [],
+    "table": "vi_phone_verification_receipt",
+    "taskId": "I02"
+  },
+  {
+    "status": "NOT_ASSESSED",
+    "entityFile": null,
+    "mapperFile": null,
+    "evidence": [],
+    "table": "vi_station_grant_set",
+    "taskId": "I06"
+  },
+  {
+    "status": "NOT_ASSESSED",
+    "entityFile": null,
+    "mapperFile": null,
+    "evidence": [],
+    "table": "vi_employee_directory_guard",
+    "taskId": "I05"
+  },
+  {
+    "status": "NOT_ASSESSED",
+    "entityFile": null,
+    "mapperFile": null,
+    "evidence": [],
+    "table": "vi_integration_profile",
+    "taskId": "X01"
+  },
+  {
+    "status": "NOT_ASSESSED",
+    "entityFile": null,
+    "mapperFile": null,
+    "evidence": [],
+    "table": "vi_integration_revision",
+    "taskId": "X01"
+  },
+  {
+    "status": "NOT_ASSESSED",
+    "entityFile": null,
+    "mapperFile": null,
+    "evidence": [],
+    "table": "vi_integration_secret",
+    "taskId": "X01"
+  },
+  {
+    "status": "NOT_ASSESSED",
+    "entityFile": null,
+    "mapperFile": null,
+    "evidence": [],
+    "table": "vi_integration_check",
+    "taskId": "X01"
+  },
+  {
+    "status": "NOT_ASSESSED",
+    "entityFile": null,
+    "mapperFile": null,
+    "evidence": [],
+    "table": "vi_integration_publication",
+    "taskId": "X01"
+  },
+  {
+    "status": "NOT_ASSESSED",
+    "entityFile": null,
+    "mapperFile": null,
+    "evidence": [],
+    "table": "vi_message_template",
+    "taskId": "X04"
+  },
+  {
+    "status": "NOT_ASSESSED",
+    "entityFile": null,
+    "mapperFile": null,
+    "evidence": [],
+    "table": "vi_message_template_revision",
+    "taskId": "X04"
+  },
+  {
+    "status": "NOT_ASSESSED",
+    "entityFile": null,
+    "mapperFile": null,
+    "evidence": [],
+    "table": "vi_notification_route",
+    "taskId": "X04"
+  },
+  {
+    "status": "NOT_ASSESSED",
+    "entityFile": null,
+    "mapperFile": null,
+    "evidence": [],
+    "table": "vi_notification_delivery",
+    "taskId": "X04"
+  },
+  {
+    "status": "NOT_ASSESSED",
+    "entityFile": null,
+    "mapperFile": null,
+    "evidence": [],
+    "table": "vi_subscription_prompt",
+    "taskId": "X05"
+  },
+  {
+    "status": "NOT_ASSESSED",
+    "entityFile": null,
+    "mapperFile": null,
+    "evidence": [],
+    "table": "vi_offline_payment_record",
+    "taskId": "X03"
+  },
+  {
+    "status": "NOT_ASSESSED",
+    "entityFile": null,
+    "mapperFile": null,
+    "evidence": [],
+    "table": "vi_integration_test_recipient",
+    "taskId": "X01"
+  }
+]

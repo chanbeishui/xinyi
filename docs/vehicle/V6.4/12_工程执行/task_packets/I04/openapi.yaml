@@ -1,0 +1,932 @@
+openapi: 3.0.3
+info:
+  title: I04 角色与站点上下文切换
+  version: 6.4.0
+servers:
+- url: http://localhost:8080
+  description: 本地Java直连；paths已包含/api，不再次追加
+- url: https://{host}
+  description: 发布域名仅作部署变量；由环境设置真实已备案域名，代理保留/api
+  variables:
+    host:
+      default: api.example.invalid
+      description: 占位不可用于真实支付或发布
+paths:
+  /api/common/session/role:
+    post:
+      operationId: API_006_post
+      summary: 切换角色
+      tags:
+      - ACCOUNT
+      description: T3.4专用会话协议；不套业务幂等缓存，不存token明文。登录校验微信临时code；切换原子校验expectedContextVersion，仅变更本设备，重发旧上下文返回冲突。
+      x-flow-ids:
+      - F02
+      security:
+      - MiniBearerAuth: []
+      responses:
+        '200':
+          description: 操作成功；领域校验后返回真实结果
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    enum:
+                    - 200
+                  msg:
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/AccessSession'
+                additionalProperties: false
+                required:
+                - code
+                - msg
+                - data
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+                enum:
+                - no-store
+              description: 身份/交易/个人业务响应不缓存
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalError'
+        '503':
+          $ref: '#/components/responses/Unavailable'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+      parameters:
+      - name: X-Client-Type
+        in: header
+        required: true
+        schema:
+          type: string
+          enum:
+          - owner
+          - driver
+          - station
+          - admin
+        description: 仅审计来源，不作为授权；须匹配服务端会话视角
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RoleSwitch'
+      x-sensitive-response: true
+      x-capability: SESSION_SWITCH_ROLE
+      x-authorization:
+        realm: MINI
+        scope: SESSION_OR_EXPLICIT_OBJECT_POLICY
+        capability: SESSION_SWITCH_ROLE
+      x-error-codes:
+      - VI_REQUEST_INVALID
+      - VI_AUTH_REQUIRED
+      - VI_TOKEN_REALM_MISMATCH
+      - VI_REFRESH_REUSED
+      - VI_FORBIDDEN
+      - VI_SELF_REVIEW_DENIED
+      - VI_VERSION_CONFLICT
+      - VI_STATE_CONFLICT
+      - VI_IDEMPOTENCY_CONFLICT
+      - VI_SELECTION_CONFLICT
+      - VI_CONTEXT_CHANGED
+      - VI_SNAPSHOT_CHANGED
+      - VI_DATA_INVALID
+      - VI_EVIDENCE_INCOMPLETE
+      - VI_HANDOVER_CODE_INVALID
+      - VI_HANDOVER_LOCKED
+      - VI_UNPRICED_LINES
+      - VI_REFUND_LIMIT
+      - VI_PAYMENT_LIMIT
+      - VI_SERVICE_UNAVAILABLE
+      - VI_CAPABILITY_NOT_CONFIGURED
+      - VI_TRAINING_NOT_READY
+      - VI_RATE_LIMITED
+      - VI_INTERNAL_ERROR
+      - VI_AUTHORITY_UNAVAILABLE
+      - VI_UPSTREAM_UNAVAILABLE
+      x-error-policy: GLOBAL_FAILURES_NO_RESOURCE_404
+      x-idempotency: NO_PLAINTEXT_RESPONSE_CACHE; domain dedupe only; on lost credential
+        response reissue/refresh through controlled protocol
+      x-contract-baseline: V6.4
+  /api/common/session/station:
+    post:
+      operationId: API_007_post
+      summary: 切换站点
+      tags:
+      - STATION
+      description: T3.4专用会话协议；不套业务幂等缓存，不存token明文。登录校验微信临时code；切换原子校验expectedContextVersion，仅变更本设备，重发旧上下文返回冲突。
+      x-flow-ids:
+      - F03
+      security:
+      - MiniBearerAuth: []
+      responses:
+        '200':
+          description: 操作成功；领域校验后返回真实结果
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    enum:
+                    - 200
+                  msg:
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/AccessSession'
+                additionalProperties: false
+                required:
+                - code
+                - msg
+                - data
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+                enum:
+                - no-store
+              description: 身份/交易/个人业务响应不缓存
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalError'
+        '503':
+          $ref: '#/components/responses/Unavailable'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+      parameters:
+      - name: X-Client-Type
+        in: header
+        required: true
+        schema:
+          type: string
+          enum:
+          - owner
+          - driver
+          - station
+          - admin
+        description: 仅审计来源，不作为授权；须匹配服务端会话视角
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StationSwitch'
+      x-sensitive-response: true
+      x-capability: SESSION_SWITCH_STATION
+      x-authorization:
+        realm: MINI
+        scope: SESSION_OR_EXPLICIT_OBJECT_POLICY
+        capability: SESSION_SWITCH_STATION
+      x-error-codes:
+      - VI_REQUEST_INVALID
+      - VI_AUTH_REQUIRED
+      - VI_TOKEN_REALM_MISMATCH
+      - VI_REFRESH_REUSED
+      - VI_FORBIDDEN
+      - VI_SELF_REVIEW_DENIED
+      - VI_VERSION_CONFLICT
+      - VI_STATE_CONFLICT
+      - VI_IDEMPOTENCY_CONFLICT
+      - VI_SELECTION_CONFLICT
+      - VI_CONTEXT_CHANGED
+      - VI_SNAPSHOT_CHANGED
+      - VI_DATA_INVALID
+      - VI_EVIDENCE_INCOMPLETE
+      - VI_HANDOVER_CODE_INVALID
+      - VI_HANDOVER_LOCKED
+      - VI_UNPRICED_LINES
+      - VI_REFUND_LIMIT
+      - VI_PAYMENT_LIMIT
+      - VI_SERVICE_UNAVAILABLE
+      - VI_CAPABILITY_NOT_CONFIGURED
+      - VI_TRAINING_NOT_READY
+      - VI_RATE_LIMITED
+      - VI_INTERNAL_ERROR
+      - VI_AUTHORITY_UNAVAILABLE
+      - VI_UPSTREAM_UNAVAILABLE
+      x-error-policy: GLOBAL_FAILURES_NO_RESOURCE_404
+      x-idempotency: NO_PLAINTEXT_RESPONSE_CACHE; domain dedupe only; on lost credential
+        response reissue/refresh through controlled protocol
+      x-contract-baseline: V6.4
+components:
+  schemas:
+    StationSwitch:
+      type: object
+      properties:
+        stationId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+        expectedContextVersion:
+          type: integer
+          minimum: 0
+          description: 客户端最后读取的版本；服务端条件更新，冲突返回409
+      additionalProperties: false
+      required:
+      - stationId
+      - expectedContextVersion
+    ApiError:
+      type: object
+      additionalProperties: false
+      properties:
+        code:
+          type: integer
+          description: 等于HTTP状态
+          enum:
+          - 400
+          - 401
+          - 403
+          - 404
+          - 409
+          - 422
+          - 429
+          - 500
+          - 503
+        errorCode:
+          type: string
+          enum:
+          - VI_REQUEST_INVALID
+          - VI_AUTH_REQUIRED
+          - VI_TOKEN_REALM_MISMATCH
+          - VI_REFRESH_REUSED
+          - VI_FORBIDDEN
+          - VI_SELF_REVIEW_DENIED
+          - VI_RESOURCE_NOT_VISIBLE
+          - VI_VERSION_CONFLICT
+          - VI_STATE_CONFLICT
+          - VI_IDEMPOTENCY_CONFLICT
+          - VI_SELECTION_CONFLICT
+          - VI_CONTEXT_CHANGED
+          - VI_SNAPSHOT_CHANGED
+          - VI_DATA_INVALID
+          - VI_EVIDENCE_INCOMPLETE
+          - VI_HANDOVER_CODE_INVALID
+          - VI_HANDOVER_LOCKED
+          - VI_UNPRICED_LINES
+          - VI_REFUND_LIMIT
+          - VI_PAYMENT_LIMIT
+          - VI_SERVICE_UNAVAILABLE
+          - VI_CAPABILITY_NOT_CONFIGURED
+          - VI_TRAINING_NOT_READY
+          - VI_RATE_LIMITED
+          - VI_INTERNAL_ERROR
+          - VI_AUTHORITY_UNAVAILABLE
+          - VI_UPSTREAM_UNAVAILABLE
+          - VI_PHONE_PROOF_REQUIRED
+          - VI_PHONE_PROOF_REUSED
+          - VI_EMPLOYEE_LINK_CONFLICT
+          - VI_EMPLOYEE_LINK_BLOCKED
+          - VI_CONFIG_INVALID
+          - VI_CONFIG_CHANGED
+          - VI_SECRET_UNAVAILABLE
+          - VI_PAYMENT_METHOD_DISABLED
+          - VI_PAYMENT_METHOD_LOCKED
+          - VI_SEND_RESULT_UNKNOWN
+          - VI_SUBSCRIPTION_UNAVAILABLE
+          - VI_OFFLINE_PROOF_CONFLICT
+        msg:
+          type: string
+          description: 服务端安全人类文案，前端逻辑按errorCode而非此文本
+        requestId:
+          type: string
+        retryable:
+          type: boolean
+        retryAfterSeconds:
+          type: integer
+          minimum: 0
+          nullable: true
+        data:
+          $ref: '#/components/schemas/ApiErrorDetails'
+      required:
+      - code
+      - errorCode
+      - msg
+      - requestId
+      - retryable
+      - retryAfterSeconds
+      - data
+    ApiErrorDetails:
+      type: object
+      additionalProperties: false
+      properties:
+        fieldErrors:
+          type: array
+          items:
+            $ref: '#/components/schemas/FieldViolation'
+        conflicts:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConflictItem'
+        missingPhotoTypes:
+          type: array
+          items:
+            $ref: '#/components/schemas/PhotoType'
+        remainingAttempts:
+          type: integer
+          minimum: 0
+          nullable: true
+        currentVersion:
+          type: integer
+          format: int64
+          minimum: 0
+          maximum: 9007199254740991
+          description: 最后读取的非负版本；更新CAS，冲突409
+          nullable: true
+      description: 错误详情固定白名单；无明文Token/凭证/交接码/SQL
+    PhotoType:
+      type: string
+      enum:
+      - FRONT
+      - BACK
+      - LEFT
+      - RIGHT
+      - DASHBOARD
+      - INTERIOR
+      - EXTRA
+    ConflictItem:
+      type: object
+      additionalProperties: false
+      properties:
+        resourceType:
+          type: string
+        resourceId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+        reasonCode:
+          type: string
+        currentVersion:
+          type: integer
+          format: int64
+          minimum: 0
+          maximum: 9007199254740991
+          description: 最后读取的非负版本；更新CAS，冲突409
+          nullable: true
+      required:
+      - resourceType
+      - resourceId
+      - reasonCode
+      - currentVersion
+      description: 仅返回调用者已获权对象，禁止泄露其他账单成员
+    FieldViolation:
+      type: object
+      additionalProperties: false
+      properties:
+        field:
+          type: string
+        reasonCode:
+          type: string
+        message:
+          type: string
+      required:
+      - field
+      - reasonCode
+      - message
+    AccessSession:
+      type: object
+      additionalProperties: false
+      properties:
+        sessionId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+        accountId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+        activeRole:
+          $ref: '#/components/schemas/MiniRole'
+        availableRoles:
+          type: array
+          items:
+            $ref: '#/components/schemas/MiniRole'
+          uniqueItems: true
+        contextVersion:
+          type: integer
+          format: int64
+          minimum: 0
+          description: 最后读取版本；服务端CAS，冲突409且保留用户输入
+        phoneBound:
+          type: boolean
+        permissions:
+          type: array
+          items:
+            $ref: '#/components/schemas/PermissionCode'
+          uniqueItems: true
+        capabilities:
+          type: array
+          items:
+            $ref: '#/components/schemas/CapabilityCode'
+          uniqueItems: true
+        stationIds:
+          type: array
+          items:
+            type: string
+            pattern: ^[1-9][0-9]{0,18}$
+            description: 内部BIGINT/Java Long；新API主键十进制字符串，服务端检查Long上界。业务单号不适用此格式。
+        stationId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+          nullable: true
+        workAccessDisabled:
+          type: boolean
+        driverQualification:
+          type: string
+          allOf:
+          - $ref: '#/components/schemas/QualificationStatus'
+          nullable: true
+        token:
+          type: string
+          writeOnly: false
+          description: 新访问令牌，仅返回此处；不写日志/缓存幂等响应
+        expiresIn:
+          type: integer
+          minimum: 1
+        employeeLink:
+          $ref: '#/components/schemas/EmployeeLinkPublic'
+        accountVersion:
+          type: integer
+          format: int64
+          minimum: 0
+          maximum: 9007199254740991
+          description: 最后读取的非负版本；更新CAS，冲突409
+      required:
+      - sessionId
+      - accountId
+      - activeRole
+      - availableRoles
+      - contextVersion
+      - capabilities
+      - token
+      - expiresIn
+      - employeeLink
+      - accountVersion
+      - phoneBound
+      - driverQualification
+      description: 切角色/站点仅轮换访问令牌，刷新令牌继续绑定本会话；丢响应用受控刷新恢复。；新会话默认OWNER，恢复已审核身份但不重新授予；STATION不自动包含DRIVER。检测角色来自可信手机号关联+后台站点+功能/部门交集。
+    EmployeeLinkPublic:
+      type: object
+      additionalProperties: false
+      properties:
+        status:
+          $ref: '#/components/schemas/EmployeeLinkStatus'
+        workAccessEnabled:
+          type: boolean
+        authorizedStationCount:
+          type: integer
+          minimum: 0
+        messageKey:
+          type: string
+          enum:
+          - NO_EMPLOYEE_MATCH
+          - EMPLOYEE_LINKED
+          - WAIT_ADMIN_CONFIGURATION
+          - CONTACT_ADMIN
+          - PHONE_REVERIFY_REQUIRED
+          - LINK_REVOKED
+        canReverifyPhone:
+          type: boolean
+      required:
+      - status
+      - workAccessEnabled
+      - authorizedStationCount
+      - messageKey
+      - canReverifyPhone
+      description: 仅当前小程序账号公开投影；无sysUserId、员工名单、其他手机号、完整OpenID或后台权限。
+    EmployeeLinkStatus:
+      type: string
+      enum:
+      - UNLINKED
+      - LINKED
+      - NEEDS_ADMIN
+      - SUSPENDED
+      - REVOKED
+      description: 小程序只返回本人关联粗粒度结果；重号/冲突不透露其他员工或账号
+    QualificationStatus:
+      type: string
+      enum:
+      - DRAFT
+      - SUBMITTED
+      - APPROVED
+      - REJECTED
+      - EXPIRED
+      - SUSPENDED
+    CapabilityCode:
+      type: string
+      description: 会话能力注册表；资格申请及本人历史不要求已获正式接单资格
+      enum:
+      - COMMON_DICT_QUERY
+      - COMMON_FILES_ACCESS
+      - COMMON_FILES_QUERY
+      - COMMON_MESSAGES_LIST
+      - COMMON_MESSAGES_READ
+      - COMMON_ORDERS_CONFIRM
+      - COMMON_ORDERS_CONTACTACCESS
+      - COMMON_ORDERS_CREATE
+      - COMMON_ORDERS_LIST
+      - COMMON_ORDERS_QUERY
+      - COMMON_PHONE_CREATE
+      - COMMON_PHONE_SEND
+      - COMMON_PHONE_VERIFY
+      - COMMON_PRIVACYCASES_CREATE
+      - COMMON_PRIVACYCASES_LIST
+      - COMMON_STATIONS_LIST
+      - COMMON_SUBSCRIPTION_REPORT
+      - COMMON_SUBSCRIPTION_REQUEST
+      - COMMON_UPLOADS_COMPLETE
+      - COMMON_UPLOADS_CREATE
+      - DRIVER_ASSIGNMENT_QUERY
+      - DRIVER_AVAILABILITY_EDIT
+      - DRIVER_AVAILABILITY_QUERY
+      - DRIVER_DRIVERPAYMENT_LIST
+      - DRIVER_DRIVERSTATEMENT_CONFIRM
+      - DRIVER_DRIVERSTATEMENT_CREATE
+      - DRIVER_DRIVERSTATEMENT_LIST
+      - DRIVER_DRIVERSTATEMENT_QUERY
+      - DRIVER_INVITE_LIST
+      - DRIVER_INVITE_QUERY
+      - DRIVER_INVITE_RESPONSE
+      - DRIVER_LOCATION_CREATE
+      - DRIVER_ORDER_ARRIVEPICKUP
+      - DRIVER_ORDER_ARRIVESTATION
+      - DRIVER_ORDER_ASSIGNMENTCANCELLATION
+      - DRIVER_ORDER_CREATE
+      - DRIVER_ORDER_DEPART
+      - DRIVER_ORDER_EDIT
+      - DRIVER_ORDER_LIST
+      - DRIVER_ORDER_QUERY
+      - DRIVER_ORDER_READY
+      - DRIVER_PENALTYAPPEAL_LIST
+      - DRIVER_PENALTYAPPEAL_QUERY
+      - DRIVER_PENALTY_CREATE
+      - DRIVER_PENALTY_LIST
+      - DRIVER_PENALTY_QUERY
+      - DRIVER_QUALIFICATION_ATTEMPTS
+      - DRIVER_QUALIFICATION_CREATE
+      - DRIVER_QUALIFICATION_EDIT
+      - DRIVER_QUALIFICATION_LIST
+      - DRIVER_QUALIFICATION_PLAYBACK
+      - DRIVER_QUALIFICATION_PROGRESS
+      - DRIVER_QUALIFICATION_QUERY
+      - DRIVER_QUALIFICATION_SUBMIT
+      - EMPLOYEE_LINK_READ
+      - EMPLOYEE_LINK_RECONCILE
+      - OWNER_ADDRESSES_CREATE
+      - OWNER_ADDRESSES_DEFAULT
+      - OWNER_ADDRESSES_EDIT
+      - OWNER_ADDRESSES_LIST
+      - OWNER_ADDRESSES_REMOVE
+      - OWNER_AFTERSALE_CREATE
+      - OWNER_AFTERSALE_LIST
+      - OWNER_AFTERSALE_QUERY
+      - OWNER_OFFLINE_INTENT
+      - OWNER_ORDER_CLOSEUNPAID
+      - OWNER_ORDER_CREATE
+      - OWNER_ORDER_LIST
+      - OWNER_ORDER_QUERY
+      - OWNER_ORDER_SERVICECONFIRMATION
+      - OWNER_PAYMENT_OPTIONS
+      - OWNER_PROFILE_EDIT
+      - OWNER_SCHEDULE_LIST
+      - OWNER_VEHICLE_CREATE
+      - OWNER_VEHICLE_DEFAULT
+      - OWNER_VEHICLE_EDIT
+      - OWNER_VEHICLE_LIST
+      - OWNER_VEHICLE_REMOVE
+      - PHONE_BIND
+      - PROFILE_READ
+      - SESSION_LOGOUT
+      - SESSION_READ
+      - SESSION_SWITCH_ROLE
+      - SESSION_SWITCH_STATION
+    PermissionCode:
+      type: string
+      description: 注册表04_接口/权限与能力注册表.json；新权限先登记后发布。UI仅提示，后端每次鉴权
+      pattern: ^biz:[a-z][a-z0-9]*:[a-z][a-z0-9]*$
+      enum:
+      - biz:aftersale:create
+      - biz:aftersale:list
+      - biz:aftersale:query
+      - biz:aftersale:review
+      - biz:aftersale:reviewpreview
+      - biz:assignment:list
+      - biz:audit:list
+      - biz:capacity:edit
+      - biz:capacity:list
+      - biz:config:edit
+      - biz:config:query
+      - biz:dashboard:list
+      - biz:delivery:query
+      - biz:delivery:retry
+      - biz:dispatch:create
+      - biz:dispatch:edit
+      - biz:dispatch:list
+      - biz:dispatch:preview
+      - biz:dispatch:query
+      - biz:dispute:list
+      - biz:dispute:query
+      - biz:dispute:resolve
+      - biz:driver:disablenewassignments
+      - biz:driver:edit
+      - biz:driver:list
+      - biz:driver:query
+      - biz:driveradjust:audit
+      - biz:driveradjust:create
+      - biz:driveradjust:list
+      - biz:driverfeerule:create
+      - biz:driverfeerule:edit
+      - biz:driverfeerule:list
+      - biz:driverfeerule:publish
+      - biz:driverfeerule:query
+      - biz:driverfeerule:trial
+      - biz:driverledger:list
+      - biz:driverpayment:create
+      - biz:driverpayment:list
+      - biz:driverpayment:query
+      - biz:driverpayment:verify
+      - biz:driverqualification:audit
+      - biz:driverqualification:list
+      - biz:driverqualification:query
+      - biz:driverstatement:add
+      - biz:driverstatement:create
+      - biz:driverstatement:list
+      - biz:driverstatement:preview
+      - biz:driverstatement:price
+      - biz:driverstatement:query
+      - biz:driverstatement:remove
+      - biz:driverstatement:review
+      - biz:driverstatement:send
+      - biz:driverstatement:submitreview
+      - biz:driverstatement:void
+      - biz:driverstatement:withdraw
+      - biz:employeebinding:list
+      - biz:employeebinding:query
+      - biz:employeebinding:rematch
+      - biz:employeebinding:revoke
+      - biz:employeebinding:suspend
+      - biz:exception:list
+      - biz:exception:resolve
+      - biz:export:audit
+      - biz:export:query
+      - biz:files:access
+      - biz:files:query
+      - biz:handover:confirm
+      - biz:handover:create
+      - biz:handover:query
+      - biz:handover:secret
+      - biz:integration:check
+      - biz:integration:create
+      - biz:integration:edit
+      - biz:integration:publish
+      - biz:integration:query
+      - biz:integration:test
+      - biz:integration:testrecipient
+      - biz:job:list
+      - biz:job:retry
+      - biz:license:edit
+      - biz:license:list
+      - biz:messageroute:edit
+      - biz:messageroute:query
+      - biz:messagetemplate:check
+      - biz:messagetemplate:create
+      - biz:messagetemplate:edit
+      - biz:messagetemplate:publish
+      - biz:messagetemplate:query
+      - biz:notificationtemplate:edit
+      - biz:notificationtemplate:list
+      - biz:offlinepayment:create
+      - biz:offlinepayment:query
+      - biz:offlinepayment:verify
+      - biz:order:contact
+      - biz:order:create
+      - biz:order:export
+      - biz:order:list
+      - biz:order:query
+      - biz:owner:edit
+      - biz:owner:list
+      - biz:owner:query
+      - biz:paymentreconciliation:list
+      - biz:paymentreconciliation:query
+      - biz:paymentreconciliation:resolve
+      - biz:penalty:list
+      - biz:penalty:query
+      - biz:penaltyappeal:audit
+      - biz:penaltyappeal:list
+      - biz:penaltyappeal:query
+      - biz:price:audit
+      - biz:price:create
+      - biz:price:edit
+      - biz:price:list
+      - biz:price:publish
+      - biz:price:submit
+      - biz:privacycase:list
+      - biz:privacycase:resolve
+      - biz:refund:query
+      - biz:refund:retry
+      - biz:result:create
+      - biz:result:list
+      - biz:resultcorrection:audit
+      - biz:resultcorrection:create
+      - biz:resultcorrection:list
+      - biz:statementdifference:list
+      - biz:statementdifference:resolve
+      - biz:station:create
+      - biz:station:edit
+      - biz:station:list
+      - biz:station:query
+      - biz:stationgrant:edit
+      - biz:stationgrant:list
+      - biz:statistics:list
+      - biz:trainingcourse:create
+      - biz:trainingcourse:edit
+      - biz:trainingcourse:list
+      - biz:trainingcourse:publish
+      - biz:trainingcourse:query
+      - biz:uploads:complete
+      - biz:uploads:create
+      - biz:vehicle:edit
+      - biz:vehicle:list
+      - biz:vehicle:query
+    MiniRole:
+      type: string
+      enum:
+      - OWNER
+      - DRIVER
+      - STATION
+    RoleSwitch:
+      type: object
+      properties:
+        role:
+          type: string
+          enum:
+          - OWNER
+          - DRIVER
+          - STATION
+        expectedContextVersion:
+          type: integer
+          minimum: 0
+          description: 客户端最后读取的版本；服务端条件更新，冲突返回409
+      additionalProperties: false
+      required:
+      - role
+      - expectedContextVersion
+  responses:
+    UnprocessableEntity:
+      description: 填写内容不符合要求。参见errorCode注册表；HTTP状态与code一致。
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+          example:
+            code: 422
+            errorCode: VI_DATA_INVALID
+            msg: 填写内容不符合要求
+            requestId: req-example
+            retryable: false
+            retryAfterSeconds: null
+            data: {}
+    Conflict:
+      description: 记录已变化，请刷新后重试。参见errorCode注册表；HTTP状态与code一致。
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+          example:
+            code: 409
+            errorCode: VI_VERSION_CONFLICT
+            msg: 记录已变化，请刷新后重试
+            requestId: req-example
+            retryable: false
+            retryAfterSeconds: null
+            data: {}
+    Unavailable:
+      description: 权限权威状态暂不可读取。参见errorCode注册表；HTTP状态与code一致。
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+          example:
+            code: 503
+            errorCode: VI_AUTHORITY_UNAVAILABLE
+            msg: 权限权威状态暂不可读取
+            requestId: req-example
+            retryable: true
+            retryAfterSeconds: null
+            data: {}
+      headers:
+        Retry-After:
+          description: 建议等待秒数；429必带，503仅在可估计时返回
+          schema:
+            type: integer
+            minimum: 1
+    InternalError:
+      description: 处理失败，请联系服务人员。参见errorCode注册表；HTTP状态与code一致。
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+          example:
+            code: 500
+            errorCode: VI_INTERNAL_ERROR
+            msg: 处理失败，请联系服务人员
+            requestId: req-example
+            retryable: false
+            retryAfterSeconds: null
+            data: {}
+    TooManyRequests:
+      description: 操作过于频繁，请稍后重试。参见errorCode注册表；HTTP状态与code一致。
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+          example:
+            code: 429
+            errorCode: VI_RATE_LIMITED
+            msg: 操作过于频繁，请稍后重试
+            requestId: req-example
+            retryable: true
+            retryAfterSeconds: 10
+            data: {}
+      headers:
+        Retry-After:
+          description: 建议等待秒数；429必带，503仅在可估计时返回
+          schema:
+            type: integer
+            minimum: 1
+    Forbidden:
+      description: 没有执行此操作的权限。参见errorCode注册表；HTTP状态与code一致。
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+          example:
+            code: 403
+            errorCode: VI_FORBIDDEN
+            msg: 没有执行此操作的权限
+            requestId: req-example
+            retryable: false
+            retryAfterSeconds: null
+            data: {}
+    Unauthorized:
+      description: 登录已失效，请重新登录。参见errorCode注册表；HTTP状态与code一致。
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+          example:
+            code: 401
+            errorCode: VI_AUTH_REQUIRED
+            msg: 登录已失效，请重新登录
+            requestId: req-example
+            retryable: false
+            retryAfterSeconds: null
+            data: {}
+      headers:
+        WWW-Authenticate:
+          schema:
+            type: string
+          description: Bearer realm="mini" 或 "admin"；不泄露令牌细节
+    BadRequest:
+      description: 请求格式不正确。参见errorCode注册表；HTTP状态与code一致。
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+          example:
+            code: 400
+            errorCode: VI_REQUEST_INVALID
+            msg: 请求格式不正确
+            requestId: req-example
+            retryable: false
+            retryAfterSeconds: null
+            data: {}

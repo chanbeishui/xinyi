@@ -1,0 +1,21 @@
+digraph G {
+graph [rankdir=TB,bgcolor="white",pad="0.3",nodesep="0.3",ranksep="0.45",fontname="Noto Sans CJK SC",label="F05 · 低门槛预约与车辆地址复用",labelloc=t,fontsize=20];
+node [shape=box,style="rounded,filled",fillcolor="#F2F6FC",color="#B5C9E5",fontname="Noto Sans CJK SC",fontsize=12,margin=".15,.12"];
+edge [color="#607A9C",fontname="Noto Sans CJK SC",fontsize=10];
+n1 [label="登录后进入预约首页，不强制补姓名证件"];
+n2 [label="先选候选上门时段"];
+n3 [label="再填接车地址，可复用常用地址"];
+n4 [label="补齐或复用车牌、车型"];
+n5 [label="地址与车辆符合服务规则？",shape=diamond];
+n6 [label="报价并显示匹配检测点"];
+n7 [label="保留全部已填项，修改时间／地址／车型"];
+n8 [label="确认报价及协议后创建订单"];
+n1 -> n2 [label=""];
+n2 -> n3 [label=""];
+n3 -> n4 [label=""];
+n4 -> n5 [label=""];
+n5 -> n6 [label="是"];
+n5 -> n7 [label="否"];
+n7 -> n2 [label="按需修改"];
+n6 -> n8 [label=""];
+}

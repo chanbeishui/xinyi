@@ -1,0 +1,54 @@
+[
+  {
+    "id": "TC-CFG-055",
+    "priority": "P1",
+    "module": "第三方接入与双支付",
+    "flow": "F44 F45 F46 F47",
+    "title": "实际UI联动",
+    "given": "B46有未发布草稿",
+    "when": "切到O10",
+    "then": "只显示已发布方式，不看草稿开关",
+    "status": "NOT_RUN",
+    "evidence": "",
+    "origin": "V6.4本轮需求与明确实施决策；原型/参考测试不替代真实业务测试"
+  },
+  {
+    "id": "TC-CFG-056",
+    "priority": "P1",
+    "module": "第三方接入与双支付",
+    "flow": "F44 F45 F46 F47",
+    "title": "秘密离开不泄漏",
+    "given": "输入替换秘密但未保存",
+    "when": "退出弹窗/返回列表/导出",
+    "then": "清理短时输入，不写本地存储",
+    "status": "NOT_RUN",
+    "evidence": "",
+    "origin": "V6.4本轮需求与明确实施决策；原型/参考测试不替代真实业务测试"
+  },
+  {
+    "id": "TC-CFG-057",
+    "priority": "P1",
+    "module": "第三方接入与双支付",
+    "flow": "F44 F45 F46 F47",
+    "title": "同人多主体",
+    "given": "管理员操作某主体配置",
+    "when": "切主体后保存旧页面",
+    "then": "CAS/归属拒绝，不把旧表单覆盖新主体",
+    "status": "NOT_RUN",
+    "evidence": "",
+    "origin": "V6.4本轮需求与明确实施决策；原型/参考测试不替代真实业务测试"
+  },
+  {
+    "id": "TC-CFG-058",
+    "priority": "P1",
+    "module": "第三方接入与双支付",
+    "flow": "F44 F45 F46 F47",
+    "title": "所有派生资料同源",
+    "given": "主PRD/API/model更新",
+    "when": "构建文档任务片段及截图",
+    "then": "主入口、页面、片段、表、用例无遗漏",
+    "status": "NOT_RUN",
+    "evidence": "",
+    "origin": "V6.4本轮需求与明确实施决策；原型/参考测试不替代真实业务测试"
+  }
+]

@@ -1,0 +1,347 @@
+[
+  {
+    "name": "vi_driver_statement_difference",
+    "comment": "本人对账差异与处理记录",
+    "cols": [
+      [
+        "id",
+        "BIGINT NOT NULL AUTO_INCREMENT",
+        "数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串"
+      ],
+      [
+        "statement_id",
+        "BIGINT NOT NULL",
+        "账单"
+      ],
+      [
+        "statement_revision",
+        "INT NOT NULL",
+        "被质疑版本"
+      ],
+      [
+        "driver_account_id",
+        "BIGINT NOT NULL",
+        "本人"
+      ],
+      [
+        "entry_ids",
+        "JSON",
+        "相关条目"
+      ],
+      [
+        "description",
+        "VARCHAR(2000) NOT NULL",
+        "差异说明"
+      ],
+      [
+        "evidence_ids",
+        "JSON",
+        "凭证引用"
+      ],
+      [
+        "status",
+        "VARCHAR(24) NOT NULL",
+        "StatementDifferenceStatus: OPEN,RESOLVED"
+      ],
+      [
+        "resolution",
+        "VARCHAR(2000)",
+        "处理说明"
+      ],
+      [
+        "approved_adjustment_ids",
+        "JSON",
+        "金额变更引用已审核调整"
+      ],
+      [
+        "resolved_by",
+        "BIGINT",
+        "处理人"
+      ],
+      [
+        "resolved_at",
+        "DATETIME(3)",
+        "UTC"
+      ],
+      [
+        "created_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "UTC"
+      ],
+      [
+        "updated_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "UTC更新时间；Mapper每次修改显式SET updated_at=UTC_TIMESTAMP(3)，不依赖连接时区"
+      ],
+      [
+        "version",
+        "BIGINT NOT NULL DEFAULT 0",
+        "乐观锁"
+      ]
+    ],
+    "indexes": [
+      "KEY ix_difference_queue (status,created_at)"
+    ],
+    "rule": "差异本身不改应付；改额必须独立审核调整，重发新快照由本人确认。",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "engine": "InnoDB",
+    "collation": "utf8mb4_0900_ai_ci",
+    "columnRules": {
+      "id": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "statement_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "statement_revision": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "driver_account_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "entry_ids": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "description": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "evidence_ids": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "status": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false,
+        "enumRef": "StatementDifferenceStatus"
+      },
+      "resolution": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "approved_adjustment_ids": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "resolved_by": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "resolved_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "created_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "updated_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "version": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      }
+    },
+    "checks": [
+      "CONSTRAINT ck_66_c02249164615 CHECK (`status` IN ('OPEN','RESOLVED'))",
+      "CONSTRAINT ck_ver_driver_statement_difference CHECK (version >= 0)"
+    ]
+  },
+  {
+    "name": "vi_driver_statement_snapshot",
+    "comment": "已发送与确认的不可变版本快照",
+    "cols": [
+      [
+        "id",
+        "BIGINT NOT NULL AUTO_INCREMENT",
+        "数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串"
+      ],
+      [
+        "statement_id",
+        "BIGINT NOT NULL",
+        "账单"
+      ],
+      [
+        "revision",
+        "INT NOT NULL",
+        "内容版本"
+      ],
+      [
+        "snapshot_hash",
+        "BINARY(32) NOT NULL",
+        "规范化SHA-256，包含主体司机币种和明细"
+      ],
+      [
+        "snapshot_json",
+        "JSON NOT NULL",
+        "完整明细、理由、总额与审核来源"
+      ],
+      [
+        "amount_fen",
+        "BIGINT NOT NULL",
+        "此版明确净应付"
+      ],
+      [
+        "published_by",
+        "BIGINT NOT NULL",
+        "发送或复核人"
+      ],
+      [
+        "public_snapshot_json",
+        "JSON NOT NULL",
+        "仅对本人发布的规范化字段，不含内部理由/改价者/复核者"
+      ],
+      [
+        "public_snapshot_hash",
+        "BINARY(32) NOT NULL",
+        "SHA256公开快照；MINI snapshotHash与此匹配，不用内部snapshot_hash"
+      ],
+      [
+        "published_at",
+        "DATETIME(3) NOT NULL",
+        "版本发出时间"
+      ],
+      [
+        "created_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "UTC"
+      ],
+      [
+        "version",
+        "BIGINT NOT NULL DEFAULT 0",
+        "并发控制；不可变行不更新内容"
+      ]
+    ],
+    "indexes": [
+      "UNIQUE KEY uk_statement_snapshot (statement_id,revision)"
+    ],
+    "rule": "只追加；同版本同内容重发复用快照，改内容递增版本。撤回不删快照，司机确认只接受当前有效版本。",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "engine": "InnoDB",
+    "collation": "utf8mb4_0900_ai_ci",
+    "columnRules": {
+      "id": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "statement_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "revision": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "snapshot_hash": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "snapshot_json": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "amount_fen": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "published_by": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "public_snapshot_json": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "public_snapshot_hash": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "published_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "created_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "version": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      }
+    },
+    "checks": [
+      "CONSTRAINT ck_ver_driver_statement_snapshot CHECK (version >= 0)"
+    ],
+    "writeMode": "INSERT_ONLY"
+  }
+]

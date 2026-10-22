@@ -1,0 +1,80 @@
+[
+  {
+    "operationId": "API_008_post",
+    "method": "POST",
+    "path": "/api/common/employee-binding",
+    "summary": "员工受控绑定",
+    "taskId": "I05",
+    "implementationStatus": "NOT_ASSESSED",
+    "controllerFile": null,
+    "serviceFile": null,
+    "mapperFile": null,
+    "testFiles": [],
+    "reviewEvidence": null
+  },
+  {
+    "operationId": "v5_post_api_common_employee_binding_requests",
+    "method": "POST",
+    "path": "/api/common/employee-binding-requests",
+    "summary": "本人发起员工绑定申请",
+    "taskId": "I05",
+    "implementationStatus": "NOT_ASSESSED",
+    "controllerFile": null,
+    "serviceFile": null,
+    "mapperFile": null,
+    "testFiles": [],
+    "reviewEvidence": null
+  },
+  {
+    "operationId": "v5_get_api_common_employee_binding_requests",
+    "method": "GET",
+    "path": "/api/common/employee-binding-requests",
+    "summary": "本人绑定申请记录",
+    "taskId": "I05",
+    "implementationStatus": "NOT_ASSESSED",
+    "controllerFile": null,
+    "serviceFile": null,
+    "mapperFile": null,
+    "testFiles": [],
+    "reviewEvidence": null
+  },
+  {
+    "operationId": "v5_get_api_admin_employee_binding_requests",
+    "method": "GET",
+    "path": "/api/admin/employee-binding-requests",
+    "summary": "待处理员工绑定申请",
+    "taskId": "I05",
+    "implementationStatus": "NOT_ASSESSED",
+    "controllerFile": null,
+    "serviceFile": null,
+    "mapperFile": null,
+    "testFiles": [],
+    "reviewEvidence": null
+  },
+  {
+    "operationId": "v5_post_api_admin_employee_binding_credentials",
+    "method": "POST",
+    "path": "/api/admin/employee-binding-credentials",
+    "summary": "签发绑定到特定申请人和员工的凭证",
+    "taskId": "I05",
+    "implementationStatus": "NOT_ASSESSED",
+    "controllerFile": null,
+    "serviceFile": null,
+    "mapperFile": null,
+    "testFiles": [],
+    "reviewEvidence": null
+  },
+  {
+    "operationId": "v5_post_api_admin_employee_binding_credentials_credentialId_revoke",
+    "method": "POST",
+    "path": "/api/admin/employee-binding-credentials/{credentialId}/revoke",
+    "summary": "撤销未消费员工绑定凭证",
+    "taskId": "I05",
+    "implementationStatus": "NOT_ASSESSED",
+    "controllerFile": null,
+    "serviceFile": null,
+    "mapperFile": null,
+    "testFiles": [],
+    "reviewEvidence": null
+  }
+]

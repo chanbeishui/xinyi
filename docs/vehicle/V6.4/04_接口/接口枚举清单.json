@@ -1,0 +1,930 @@
+{
+  "version": "V6.4",
+  "enums": {
+    "FulfillmentStatus": [
+      "PENDING_PAY",
+      "SCHEDULED",
+      "PENDING_DISPATCH",
+      "DISPATCHING",
+      "MANUAL_DISPATCH",
+      "ACCEPTED",
+      "GOING_PICKUP",
+      "ARRIVED_PICKUP",
+      "PICKED_UP",
+      "ARRIVED_STATION",
+      "INSPECTING",
+      "INSPECTED",
+      "CAR_TAKEN",
+      "WAIT_CONFIRM",
+      "COMPLETED",
+      "CANCELLED",
+      "CLOSED"
+    ],
+    "CancelStatus": [
+      "NONE",
+      "APPLIED",
+      "REJECTED",
+      "APPROVED_WAIT_RETURN",
+      "COMPLETED"
+    ],
+    "CustodyType": [
+      "OWNER",
+      "DRIVER",
+      "STATION"
+    ],
+    "PaymentStatus": [
+      "PENDING",
+      "REVIEW_PENDING",
+      "SUCCESS",
+      "CLOSED",
+      "UNKNOWN"
+    ],
+    "RefundStatus": [
+      "NONE",
+      "NOT_REQUIRED",
+      "WAIT_RETURN",
+      "READY",
+      "PROCESSING",
+      "SUCCESS",
+      "UNKNOWN",
+      "ABNORMAL",
+      "CLOSED"
+    ],
+    "DisputeStatus": [
+      "NONE",
+      "OPEN",
+      "PROCESSING",
+      "RESOLVED"
+    ],
+    "MiniRole": [
+      "OWNER",
+      "DRIVER",
+      "STATION"
+    ],
+    "QualificationStatus": [
+      "DRAFT",
+      "SUBMITTED",
+      "APPROVED",
+      "REJECTED",
+      "EXPIRED",
+      "SUSPENDED"
+    ],
+    "HandoverType": [
+      "OWNER_TO_DRIVER",
+      "DRIVER_TO_STATION",
+      "STATION_TO_DRIVER",
+      "DRIVER_TO_OWNER"
+    ],
+    "HandoverStatus": [
+      "PENDING",
+      "CONFIRMED",
+      "LOCKED",
+      "EXPIRED"
+    ],
+    "PhotoType": [
+      "FRONT",
+      "BACK",
+      "LEFT",
+      "RIGHT",
+      "DASHBOARD",
+      "INTERIOR",
+      "EXTRA"
+    ],
+    "InviteStatus": [
+      "WAIT_RESPONSE",
+      "ACCEPTED",
+      "REJECTED",
+      "EXPIRED",
+      "REVOKED"
+    ],
+    "PenaltyStatus": [
+      "ACTIVE",
+      "EXPIRED",
+      "REVOKED"
+    ],
+    "PenaltyAppealStatus": [
+      "NONE",
+      "SUBMITTED",
+      "APPROVED",
+      "REJECTED"
+    ],
+    "PenaltyType": [
+      "SKIP_ROUND",
+      "STOP_TODAY"
+    ],
+    "TrainingStatus": [
+      "NOT_STARTED",
+      "IN_PROGRESS",
+      "READY_FOR_EXAM",
+      "PASSED",
+      "FAILED"
+    ],
+    "AttemptStatus": [
+      "OPEN",
+      "SUBMITTED",
+      "PASSED",
+      "FAILED",
+      "EXPIRED"
+    ],
+    "FaceSessionStatus": [
+      "CREATED",
+      "PROCESSING",
+      "PASSED",
+      "FAILED",
+      "EXPIRED"
+    ],
+    "OccupationType": [
+      "NONE",
+      "INVITE",
+      "ASSIGNMENT"
+    ],
+    "PrivacyCaseStatus": [
+      "APPLIED",
+      "PROCESSING",
+      "COMPLETED",
+      "REJECTED"
+    ],
+    "ExportTaskStatus": [
+      "APPLIED",
+      "APPROVED",
+      "REJECTED",
+      "PROCESSING",
+      "READY",
+      "FAILED",
+      "EXPIRED"
+    ],
+    "SensitiveAccessStatus": [
+      "APPLIED",
+      "APPROVED",
+      "REJECTED",
+      "EXPIRED",
+      "REVOKED"
+    ],
+    "ReconcileStatus": [
+      "OPEN",
+      "CHECKING",
+      "RESOLVED"
+    ],
+    "PermissionCode": [
+      "biz:aftersale:create",
+      "biz:aftersale:list",
+      "biz:aftersale:query",
+      "biz:aftersale:review",
+      "biz:aftersale:reviewpreview",
+      "biz:assignment:list",
+      "biz:audit:list",
+      "biz:capacity:edit",
+      "biz:capacity:list",
+      "biz:config:edit",
+      "biz:config:query",
+      "biz:dashboard:list",
+      "biz:delivery:query",
+      "biz:delivery:retry",
+      "biz:dispatch:create",
+      "biz:dispatch:edit",
+      "biz:dispatch:list",
+      "biz:dispatch:preview",
+      "biz:dispatch:query",
+      "biz:dispute:list",
+      "biz:dispute:query",
+      "biz:dispute:resolve",
+      "biz:driver:disablenewassignments",
+      "biz:driver:edit",
+      "biz:driver:list",
+      "biz:driver:query",
+      "biz:driveradjust:audit",
+      "biz:driveradjust:create",
+      "biz:driveradjust:list",
+      "biz:driverfeerule:create",
+      "biz:driverfeerule:edit",
+      "biz:driverfeerule:list",
+      "biz:driverfeerule:publish",
+      "biz:driverfeerule:query",
+      "biz:driverfeerule:trial",
+      "biz:driverledger:list",
+      "biz:driverpayment:create",
+      "biz:driverpayment:list",
+      "biz:driverpayment:query",
+      "biz:driverpayment:verify",
+      "biz:driverqualification:audit",
+      "biz:driverqualification:list",
+      "biz:driverqualification:query",
+      "biz:driverstatement:add",
+      "biz:driverstatement:create",
+      "biz:driverstatement:list",
+      "biz:driverstatement:preview",
+      "biz:driverstatement:price",
+      "biz:driverstatement:query",
+      "biz:driverstatement:remove",
+      "biz:driverstatement:review",
+      "biz:driverstatement:send",
+      "biz:driverstatement:submitreview",
+      "biz:driverstatement:void",
+      "biz:driverstatement:withdraw",
+      "biz:employeebinding:list",
+      "biz:employeebinding:query",
+      "biz:employeebinding:rematch",
+      "biz:employeebinding:revoke",
+      "biz:employeebinding:suspend",
+      "biz:exception:list",
+      "biz:exception:resolve",
+      "biz:export:audit",
+      "biz:export:query",
+      "biz:files:access",
+      "biz:files:query",
+      "biz:handover:confirm",
+      "biz:handover:create",
+      "biz:handover:query",
+      "biz:handover:secret",
+      "biz:integration:check",
+      "biz:integration:create",
+      "biz:integration:edit",
+      "biz:integration:publish",
+      "biz:integration:query",
+      "biz:integration:test",
+      "biz:integration:testrecipient",
+      "biz:job:list",
+      "biz:job:retry",
+      "biz:license:edit",
+      "biz:license:list",
+      "biz:messageroute:edit",
+      "biz:messageroute:query",
+      "biz:messagetemplate:check",
+      "biz:messagetemplate:create",
+      "biz:messagetemplate:edit",
+      "biz:messagetemplate:publish",
+      "biz:messagetemplate:query",
+      "biz:notificationtemplate:edit",
+      "biz:notificationtemplate:list",
+      "biz:offlinepayment:create",
+      "biz:offlinepayment:query",
+      "biz:offlinepayment:verify",
+      "biz:order:contact",
+      "biz:order:create",
+      "biz:order:export",
+      "biz:order:list",
+      "biz:order:query",
+      "biz:owner:edit",
+      "biz:owner:list",
+      "biz:owner:query",
+      "biz:paymentreconciliation:list",
+      "biz:paymentreconciliation:query",
+      "biz:paymentreconciliation:resolve",
+      "biz:penalty:list",
+      "biz:penalty:query",
+      "biz:penaltyappeal:audit",
+      "biz:penaltyappeal:list",
+      "biz:penaltyappeal:query",
+      "biz:price:audit",
+      "biz:price:create",
+      "biz:price:edit",
+      "biz:price:list",
+      "biz:price:publish",
+      "biz:price:submit",
+      "biz:privacycase:list",
+      "biz:privacycase:resolve",
+      "biz:refund:query",
+      "biz:refund:retry",
+      "biz:result:create",
+      "biz:result:list",
+      "biz:resultcorrection:audit",
+      "biz:resultcorrection:create",
+      "biz:resultcorrection:list",
+      "biz:statementdifference:list",
+      "biz:statementdifference:resolve",
+      "biz:station:create",
+      "biz:station:edit",
+      "biz:station:list",
+      "biz:station:query",
+      "biz:stationgrant:edit",
+      "biz:stationgrant:list",
+      "biz:statistics:list",
+      "biz:trainingcourse:create",
+      "biz:trainingcourse:edit",
+      "biz:trainingcourse:list",
+      "biz:trainingcourse:publish",
+      "biz:trainingcourse:query",
+      "biz:uploads:complete",
+      "biz:uploads:create",
+      "biz:vehicle:edit",
+      "biz:vehicle:list",
+      "biz:vehicle:query"
+    ],
+    "CapabilityCode": [
+      "COMMON_DICT_QUERY",
+      "COMMON_FILES_ACCESS",
+      "COMMON_FILES_QUERY",
+      "COMMON_MESSAGES_LIST",
+      "COMMON_MESSAGES_READ",
+      "COMMON_ORDERS_CONFIRM",
+      "COMMON_ORDERS_CONTACTACCESS",
+      "COMMON_ORDERS_CREATE",
+      "COMMON_ORDERS_LIST",
+      "COMMON_ORDERS_QUERY",
+      "COMMON_PHONE_CREATE",
+      "COMMON_PHONE_SEND",
+      "COMMON_PHONE_VERIFY",
+      "COMMON_PRIVACYCASES_CREATE",
+      "COMMON_PRIVACYCASES_LIST",
+      "COMMON_STATIONS_LIST",
+      "COMMON_SUBSCRIPTION_REPORT",
+      "COMMON_SUBSCRIPTION_REQUEST",
+      "COMMON_UPLOADS_COMPLETE",
+      "COMMON_UPLOADS_CREATE",
+      "DRIVER_ASSIGNMENT_QUERY",
+      "DRIVER_AVAILABILITY_EDIT",
+      "DRIVER_AVAILABILITY_QUERY",
+      "DRIVER_DRIVERPAYMENT_LIST",
+      "DRIVER_DRIVERSTATEMENT_CONFIRM",
+      "DRIVER_DRIVERSTATEMENT_CREATE",
+      "DRIVER_DRIVERSTATEMENT_LIST",
+      "DRIVER_DRIVERSTATEMENT_QUERY",
+      "DRIVER_INVITE_LIST",
+      "DRIVER_INVITE_QUERY",
+      "DRIVER_INVITE_RESPONSE",
+      "DRIVER_LOCATION_CREATE",
+      "DRIVER_ORDER_ARRIVEPICKUP",
+      "DRIVER_ORDER_ARRIVESTATION",
+      "DRIVER_ORDER_ASSIGNMENTCANCELLATION",
+      "DRIVER_ORDER_CREATE",
+      "DRIVER_ORDER_DEPART",
+      "DRIVER_ORDER_EDIT",
+      "DRIVER_ORDER_LIST",
+      "DRIVER_ORDER_QUERY",
+      "DRIVER_ORDER_READY",
+      "DRIVER_PENALTYAPPEAL_LIST",
+      "DRIVER_PENALTYAPPEAL_QUERY",
+      "DRIVER_PENALTY_CREATE",
+      "DRIVER_PENALTY_LIST",
+      "DRIVER_PENALTY_QUERY",
+      "DRIVER_QUALIFICATION_ATTEMPTS",
+      "DRIVER_QUALIFICATION_CREATE",
+      "DRIVER_QUALIFICATION_EDIT",
+      "DRIVER_QUALIFICATION_LIST",
+      "DRIVER_QUALIFICATION_PLAYBACK",
+      "DRIVER_QUALIFICATION_PROGRESS",
+      "DRIVER_QUALIFICATION_QUERY",
+      "DRIVER_QUALIFICATION_SUBMIT",
+      "EMPLOYEE_LINK_READ",
+      "EMPLOYEE_LINK_RECONCILE",
+      "OWNER_ADDRESSES_CREATE",
+      "OWNER_ADDRESSES_DEFAULT",
+      "OWNER_ADDRESSES_EDIT",
+      "OWNER_ADDRESSES_LIST",
+      "OWNER_ADDRESSES_REMOVE",
+      "OWNER_AFTERSALE_CREATE",
+      "OWNER_AFTERSALE_LIST",
+      "OWNER_AFTERSALE_QUERY",
+      "OWNER_OFFLINE_INTENT",
+      "OWNER_ORDER_CLOSEUNPAID",
+      "OWNER_ORDER_CREATE",
+      "OWNER_ORDER_LIST",
+      "OWNER_ORDER_QUERY",
+      "OWNER_ORDER_SERVICECONFIRMATION",
+      "OWNER_PAYMENT_OPTIONS",
+      "OWNER_PROFILE_EDIT",
+      "OWNER_SCHEDULE_LIST",
+      "OWNER_VEHICLE_CREATE",
+      "OWNER_VEHICLE_DEFAULT",
+      "OWNER_VEHICLE_EDIT",
+      "OWNER_VEHICLE_LIST",
+      "OWNER_VEHICLE_REMOVE",
+      "PHONE_BIND",
+      "PROFILE_READ",
+      "SESSION_LOGOUT",
+      "SESSION_READ",
+      "SESSION_SWITCH_ROLE",
+      "SESSION_SWITCH_STATION"
+    ],
+    "AllowedAction": [
+      "ADD_REVIEW",
+      "ADD_TO_DRAFT",
+      "APPEAL_PENALTY",
+      "APPLY_ADJUSTMENT",
+      "APPLY_CANCEL_REFUND",
+      "APPLY_REFUND_ONLY",
+      "APPROVE_AND_SEND",
+      "ARRIVE_PICKUP",
+      "ARRIVE_STATION",
+      "CANCEL_ASSIGNMENT",
+      "CLOSE_UNPAID",
+      "CONFIRM_HANDOVER",
+      "CONFIRM_STATEMENT",
+      "CONTACT_DRIVER",
+      "CONTACT_OWNER",
+      "CONTACT_STATION",
+      "CREATE_HANDOVER",
+      "DEPART",
+      "EDIT_PRICE",
+      "EXPORT",
+      "FILL_MILEAGE",
+      "FILL_PRICE",
+      "MANUAL_INVITE",
+      "MARK_EVIDENCE_READY",
+      "OPEN_DISPUTE",
+      "PAY",
+      "RECORD_PAYMENT",
+      "REGISTER_RESULT",
+      "REJECT_REVIEW",
+      "REMOVE_FROM_DRAFT",
+      "RENOTIFY_PICKUP",
+      "REPORT_DIFFERENCE",
+      "REPORT_EXCEPTION",
+      "REQUEST_RESULT_CORRECTION",
+      "REVIEW_AFTERSALE",
+      "REVIEW_LICENSE",
+      "SEND_STATEMENT",
+      "SERVICE_CONFIRM",
+      "SUBMIT_REVIEW",
+      "UPLOAD_PHOTO",
+      "VERIFY_PAYMENT",
+      "VIEW_APPEAL",
+      "VIEW_DETAIL",
+      "VIEW_EVIDENCE",
+      "VIEW_HANDOVER_SECRET",
+      "VIEW_PAYMENT",
+      "VIEW_PRICE_HISTORY",
+      "VIEW_PRICING",
+      "VIEW_RESULT",
+      "VOID_STATEMENT",
+      "WITHDRAW_STATEMENT"
+    ],
+    "AccountStatus": [
+      "ACTIVE",
+      "LOCKED"
+    ],
+    "VerificationType": [
+      "REALNAME",
+      "FACE",
+      "BACKGROUND",
+      "LICENSE",
+      "TRAINING"
+    ],
+    "VerificationStatus": [
+      "CREATED",
+      "PROCESSING",
+      "PASSED",
+      "FAILED",
+      "EXPIRED",
+      "UNAVAILABLE"
+    ],
+    "VehicleVerificationStatus": [
+      "PENDING",
+      "VERIFIED",
+      "REJECTED"
+    ],
+    "PriceRuleStatus": [
+      "DRAFT",
+      "IN_REVIEW",
+      "APPROVED",
+      "PUBLISHED",
+      "DISABLED"
+    ],
+    "QuotaType": [
+      "PICKUP",
+      "STATION_RECEIVE"
+    ],
+    "ReservationStatus": [
+      "HELD",
+      "CONFIRMED",
+      "CONSUMED",
+      "RELEASED"
+    ],
+    "AssignmentEndReason": [
+      "RETURNED",
+      "CANCELLED",
+      "DRIVER_CANCEL"
+    ],
+    "OccupancyHolderType": [
+      "INVITE",
+      "ASSIGNMENT"
+    ],
+    "EvidenceStatus": [
+      "DRAFT",
+      "READY",
+      "SEALED"
+    ],
+    "FileStatus": [
+      "UPLOADING",
+      "VERIFYING",
+      "READY",
+      "REJECTED"
+    ],
+    "LicenseReviewStatus": [
+      "MISSING",
+      "PENDING",
+      "VERIFIED"
+    ],
+    "CorrectionStatus": [
+      "APPLIED",
+      "APPROVED",
+      "REJECTED"
+    ],
+    "ChannelRefundStatus": [
+      "CREATED",
+      "PROCESSING",
+      "SUCCESS",
+      "CLOSED",
+      "ABNORMAL",
+      "UNKNOWN"
+    ],
+    "ServiceCaseStatus": [
+      "OPEN",
+      "PROCESSING",
+      "RESOLVED"
+    ],
+    "OutboxStatus": [
+      "READY",
+      "PROCESSING",
+      "DONE",
+      "FAILED"
+    ],
+    "NotificationSendStatus": [
+      "PENDING",
+      "ACCEPTED",
+      "FAILED",
+      "DISCARDED"
+    ],
+    "IdempotencyStatus": [
+      "PROCESSING",
+      "DONE"
+    ],
+    "GovernanceType": [
+      "PRIVACY",
+      "EXPORT",
+      "SENSITIVE_ACCESS",
+      "RECONCILE"
+    ],
+    "OwnerServiceFlag": [
+      "NORMAL",
+      "VERIFY_AGAIN"
+    ],
+    "AfterSaleStatus": [
+      "PENDING_REVIEW",
+      "EXECUTING",
+      "CLOSED",
+      "REJECTED"
+    ],
+    "AfterSaleReviewStatus": [
+      "PENDING",
+      "APPROVED",
+      "REJECTED"
+    ],
+    "ApplicantType": [
+      "ACCOUNT",
+      "SYS_USER"
+    ],
+    "DriverFeeRuleStatus": [
+      "DRAFT",
+      "PENDING_REVIEW",
+      "PUBLISHED",
+      "DISABLED"
+    ],
+    "LedgerPricingStatus": [
+      "PENDING_PRICING",
+      "READY"
+    ],
+    "StatementStatus": [
+      "DRAFT",
+      "INTERNAL_REVIEW",
+      "SENT",
+      "DISPUTED",
+      "CONFIRMED",
+      "VOID"
+    ],
+    "StatementReviewStatus": [
+      "NOT_REQUIRED",
+      "REQUIRED",
+      "PENDING",
+      "APPROVED",
+      "REJECTED"
+    ],
+    "SelectionMode": [
+      "EXPLICIT"
+    ],
+    "PricingSource": [
+      "RULE",
+      "UNPRICED",
+      "MANUAL_FILLED",
+      "MANUAL_CHANGED",
+      "APPROVED_ADJUSTMENT"
+    ],
+    "StatementDifferenceStatus": [
+      "OPEN",
+      "RESOLVED"
+    ],
+    "AdjustmentStatus": [
+      "PENDING",
+      "APPROVED",
+      "REJECTED"
+    ],
+    "ExternalPaymentStatus": [
+      "PENDING",
+      "VERIFIED",
+      "REJECTED",
+      "REVERSED"
+    ],
+    "SessionStatus": [
+      "ACTIVE",
+      "REVOKED",
+      "EXPIRED"
+    ],
+    "SessionTokenType": [
+      "ACCESS",
+      "REFRESH"
+    ],
+    "InternalReviewRecordStatus": [
+      "PENDING",
+      "APPROVED",
+      "REJECTED",
+      "WITHDRAWN"
+    ],
+    "TrainingCourseStatus": [
+      "DRAFT",
+      "PUBLISHED",
+      "DISABLED"
+    ],
+    "QuestionType": [
+      "SINGLE",
+      "MULTIPLE",
+      "TRUE_FALSE"
+    ],
+    "FaceLaunchMode": [
+      "WEBVIEW_URL"
+    ],
+    "GovernanceStatus": [
+      "APPLIED",
+      "APPROVED",
+      "CHECKING",
+      "COMPLETED",
+      "EXPIRED",
+      "FAILED",
+      "OPEN",
+      "PROCESSING",
+      "READY",
+      "REJECTED",
+      "RESOLVED",
+      "REVOKED"
+    ],
+    "AppealRecordStatus": [
+      "SUBMITTED",
+      "APPROVED",
+      "REJECTED"
+    ],
+    "OwnerOrderAction": [
+      "PAY",
+      "CLOSE_UNPAID",
+      "APPLY_CANCEL_REFUND",
+      "APPLY_REFUND_ONLY",
+      "SERVICE_CONFIRM",
+      "OPEN_DISPUTE",
+      "ADD_REVIEW",
+      "CONTACT_DRIVER",
+      "CONTACT_STATION",
+      "VIEW_DETAIL",
+      "VIEW_EVIDENCE",
+      "VIEW_RESULT",
+      "VIEW_HANDOVER_SECRET"
+    ],
+    "DriverOrderAction": [
+      "DEPART",
+      "ARRIVE_PICKUP",
+      "ARRIVE_STATION",
+      "CANCEL_ASSIGNMENT",
+      "CONTACT_OWNER",
+      "CONTACT_STATION",
+      "CREATE_HANDOVER",
+      "CONFIRM_HANDOVER",
+      "MARK_EVIDENCE_READY",
+      "UPLOAD_PHOTO",
+      "FILL_MILEAGE",
+      "REPORT_EXCEPTION",
+      "VIEW_DETAIL",
+      "VIEW_RESULT",
+      "VIEW_EVIDENCE",
+      "VIEW_HANDOVER_SECRET"
+    ],
+    "StationOrderAction": [
+      "CONTACT_DRIVER",
+      "CREATE_HANDOVER",
+      "CONFIRM_HANDOVER",
+      "REVIEW_LICENSE",
+      "REGISTER_RESULT",
+      "REQUEST_RESULT_CORRECTION",
+      "RENOTIFY_PICKUP",
+      "REPORT_EXCEPTION",
+      "VIEW_DETAIL",
+      "VIEW_EVIDENCE",
+      "VIEW_RESULT",
+      "VIEW_HANDOVER_SECRET"
+    ],
+    "AdminOrderAction": [
+      "MANUAL_INVITE",
+      "REVIEW_AFTERSALE",
+      "REVIEW_LICENSE",
+      "REGISTER_RESULT",
+      "REQUEST_RESULT_CORRECTION",
+      "CONTACT_OWNER",
+      "CONTACT_DRIVER",
+      "CONTACT_STATION",
+      "EXPORT",
+      "VIEW_DETAIL",
+      "VIEW_EVIDENCE",
+      "VIEW_RESULT",
+      "VIEW_PAYMENT"
+    ],
+    "EmployeeLinkStatus": [
+      "UNLINKED",
+      "LINKED",
+      "NEEDS_ADMIN",
+      "SUSPENDED",
+      "REVOKED"
+    ],
+    "EmployeeBindingLifecycle": [
+      "ACTIVE",
+      "SUSPENDED",
+      "REVOKED"
+    ],
+    "PhoneVerificationStatus": [
+      "PROCESSING",
+      "VERIFIED",
+      "UNKNOWN",
+      "FAILED"
+    ],
+    "EmployeeLinkOutcome": [
+      "NOT_ATTEMPTED",
+      "NO_MATCH",
+      "LINKED",
+      "EXISTING_LINK",
+      "AMBIGUOUS_PHONE",
+      "EMPLOYEE_UNAVAILABLE",
+      "USER_ALREADY_LINKED",
+      "ACCOUNT_ALREADY_LINKED",
+      "REBIND_BLOCKED",
+      "PHONE_CHANGED",
+      "DIRECTORY_UNAVAILABLE"
+    ],
+    "EmployeeLinkSource": [
+      "WECHAT_PHONE_MATCH"
+    ],
+    "PhoneProofSource": [
+      "WECHAT",
+      "SMS"
+    ],
+    "IntegrationKind": [
+      "PAYMENT_POLICY",
+      "WECHAT_PAY",
+      "TENCENT_SMS",
+      "ALIYUN_SMS",
+      "WECHAT_APP"
+    ],
+    "IntegrationEnvironment": [
+      "TEST",
+      "LIVE"
+    ],
+    "IntegrationLifecycle": [
+      "DRAFT",
+      "ACTIVE",
+      "RETIRED"
+    ],
+    "IntegrationCheckStatus": [
+      "NOT_RUN",
+      "PASS",
+      "FAIL",
+      "PARTIAL"
+    ],
+    "IntegrationCheckLevel": [
+      "LOCAL",
+      "READ_ONLY",
+      "LIVE_EVIDENCE"
+    ],
+    "PaymentMethod": [
+      "UNSELECTED",
+      "WECHAT",
+      "OFFLINE"
+    ],
+    "OfflineProofDirection": [
+      "COLLECTION",
+      "REFUND"
+    ],
+    "OfflineProofStatus": [
+      "SUBMITTED",
+      "VERIFIED",
+      "REJECTED"
+    ],
+    "ExternalDeliveryStatus": [
+      "PENDING",
+      "SENDING",
+      "ACCEPTED",
+      "DELIVERED",
+      "FAILED",
+      "UNKNOWN",
+      "SKIPPED"
+    ],
+    "ExternalMessageProvider": [
+      "TENCENT_SMS",
+      "ALIYUN_SMS",
+      "WECHAT_SUBSCRIBE"
+    ],
+    "NotificationScene": [
+      "LOGIN_OTP",
+      "PHONE_VERIFY",
+      "BOOKING_CONFIRMED",
+      "DRIVER_ASSIGNED",
+      "PICKUP_ARRIVED",
+      "INSPECTION_FINISHED",
+      "RETURN_COMPLETED",
+      "AFTERSALE_DECIDED",
+      "REFUND_CHANGED",
+      "DRIVER_INVITE",
+      "STATEMENT_READY"
+    ],
+    "NotificationAudience": [
+      "OWNER",
+      "DRIVER",
+      "STATION"
+    ],
+    "TemplateVariable": [
+      "code",
+      "ttlMinutes",
+      "orderNo",
+      "plateNo",
+      "pickupWindow",
+      "stationName",
+      "driverDisplayName",
+      "statusText",
+      "resultText",
+      "amountYuan",
+      "statementNo",
+      "serviceDate",
+      "supportPhone"
+    ],
+    "CredentialMutation": [
+      "KEEP",
+      "REPLACE",
+      "CLEAR"
+    ],
+    "IntegrationCredentialKind": [
+      "PRIVATE_KEY",
+      "API_V3_KEY",
+      "CLOUD_SECRET",
+      "APP_SECRET",
+      "BANK_ACCOUNT"
+    ],
+    "IntegrationSecretLifecycle": [
+      "ACTIVE",
+      "RETIRED",
+      "REVOKED"
+    ],
+    "IntegrationTargetType": [
+      "PROFILE",
+      "TEMPLATE"
+    ],
+    "IntegrationPublishAction": [
+      "PUBLISH",
+      "ROLLBACK"
+    ],
+    "TemplateApprovalStatus": [
+      "UNKNOWN",
+      "APPROVED",
+      "REJECTED"
+    ],
+    "MessageFallbackPolicy": [
+      "NONE",
+      "DEFINITELY_NOT_SENT_ONLY"
+    ],
+    "SubscriptionObjectType": [
+      "ORDER",
+      "ASSIGNMENT",
+      "STATEMENT",
+      "DRIVER_APPLICATION"
+    ],
+    "SubscriptionPromptStatus": [
+      "CREATED",
+      "REPORTED",
+      "EXPIRED"
+    ],
+    "OfflineProofMethod": [
+      "CASH",
+      "BANK_TRANSFER"
+    ],
+    "IntegrationRecipientKind": [
+      "PHONE",
+      "MINI_ACCOUNT"
+    ],
+    "PaymentCapacityResolution": [
+      "HELD",
+      "RELEASED",
+      "REACQUIRED",
+      "MANUAL_CONFLICT"
+    ],
+    "RefundPaymentMethod": [
+      "WECHAT",
+      "OFFLINE"
+    ],
+    "RefundExecutionMode": [
+      "WECHAT_API",
+      "MANUAL_OFFLINE"
+    ]
+  }
+}

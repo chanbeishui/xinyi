@@ -1,0 +1,67 @@
+[
+  {
+    "id": "D31",
+    "name": "取消承接确认弹窗",
+    "status": "有效·V6.4",
+    "fields": "订单、阶段、原因、普通取消计数和后果",
+    "actions": "确认取消/继续履约",
+    "guards": "仅未接车；二次确认不代替服务端并发检查",
+    "flows": "F11",
+    "source": "V2原页 D31",
+    "base": "D31",
+    "state": "default",
+    "kind": "page"
+  },
+  {
+    "id": "D32",
+    "name": "停单一轮提示",
+    "status": "有效·V6.4",
+    "fields": "处罚规则、已取消次数、轮次信息、申诉入口",
+    "actions": "申诉、返回车主视角",
+    "guards": "轮次定义见P01，不能虚构恢复钟点；停单不重新占用已经解除的任务",
+    "flows": "F11",
+    "source": "V2原页 D32",
+    "base": "D32",
+    "state": "default",
+    "kind": "page"
+  },
+  {
+    "id": "D33",
+    "name": "当日停止新接单",
+    "status": "有效·V6.4",
+    "fields": "今日累计次数、自然日恢复时间、申诉",
+    "actions": "申诉、查看历史",
+    "guards": "沿用V2建议3次/北京时间0点，运营确认后生效；不是事故停7–30天",
+    "flows": "F11",
+    "source": "V2原页 D33",
+    "base": "D33",
+    "state": "default",
+    "kind": "page"
+  },
+  {
+    "id": "D34",
+    "name": "更多操作",
+    "status": "有效·V6.4",
+    "fields": "当前履约阶段、取消接单、联系、普通异常、客服",
+    "actions": "打开相关操作",
+    "guards": "接车之后不显示可执行取消承接；快捷入口也要服务端鉴权",
+    "flows": "F11/F21",
+    "source": "本版补充",
+    "base": "D34",
+    "state": "default",
+    "kind": "page"
+  },
+  {
+    "id": "D35",
+    "name": "已接车不可自助解除",
+    "status": "有效·V6.4",
+    "fields": "不能丢弃保管责任说明、联系运营入口",
+    "actions": "联系客服/服务异常",
+    "guards": "不创建事故处理流程；不得返回一个后台可无证据强制完成的暗门",
+    "flows": "F13/F21",
+    "source": "本版补充",
+    "base": "D35",
+    "state": "default",
+    "kind": "page"
+  }
+]

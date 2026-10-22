@@ -1,17 +1,17 @@
 {
   "baselineObservation": {
     "sourceBranch": "rongli-wx",
-    "observedSourceCommit": "890cfbbfc5e0db404a932ab5ef8b449d07c7f444",
-    "actualHead": "18b5ce4e424211dc9711dffcf428fd4125f341cf",
+    "observedSourceCommit": "b91ef7689e9a48f269eefd9e3b95c71cb15558c5",
+    "actualHead": "340ad01a2e60971ab7a0506c4fb8b97c0ac02ead",
     "headMatchesObservation": false,
-    "userConfirmedStage": "FRAMEWORK_ONLY_M0_NOT_STARTED",
+    "userConfirmedStage": "CURRENT_WORKTREE_REQUIRES_ASSESSMENT",
     "m0Completion": "NOT_INFERRED_REQUIRES_CURRENT_TASK_EVIDENCE",
-    "businessModuleAction": "CREATE_NEW",
-    "databasePlan": "FRESH_ISOLATED_DATABASE",
+    "businessModuleAction": "INSPECT_PRESENT_MODULE_NO_COMPLETION_INFERENCE",
+    "databasePlan": "FRESH_ISOLATED_OR_INSPECTED_FORWARD_ADAPTATION",
     "existingDatabaseStatus": "NOT_INSPECTED",
-    "note": "用户未做M0；SHA仅是本轮源快照，正常开发产生新HEAD不自动失败/回退。意外模块先核查，不覆盖。"
+    "note": "历史框架起点不代表当前进度；读取真实工作区，SHA差异不自动回退。已有模块/表和dirty保留，不推定阶段完成。"
   },
-  "observedAt": "2026-10-20T15:28:17.032675+00:00",
+  "observedAt": "2026-10-22T14:48:23.194636+00:00",
   "repoRoot": "/Users/chenbeishui/Downloads/code_project/xinyi",
   "checks": {
     "gitHead": {
@@ -21,7 +21,7 @@
         "HEAD"
       ],
       "exitCode": 0,
-      "stdout": "18b5ce4e424211dc9711dffcf428fd4125f341cf\n",
+      "stdout": "340ad01a2e60971ab7a0506c4fb8b97c0ac02ead\n",
       "stderr": ""
     },
     "gitBranch": {
@@ -41,7 +41,7 @@
         "--short"
       ],
       "exitCode": 0,
-      "stdout": "?? docs/\n",
+      "stdout": " M .gitignore\n?? docs/vehicle/V6.4/\n",
       "stderr": ""
     },
     "java": {
@@ -101,7 +101,7 @@
   "guidance": [
     {
       "path": "AGENTS.md",
-      "sha256": "9a618cb4c3448de5e31139c64b6b008fcb7d045bc28a7d3a6d62e629a7885628"
+      "sha256": "88643c7c5a9bfd2b33d69daba38415a0f93b290b37a7960597748ac455a89947"
     }
   ],
   "modules": [
@@ -109,12 +109,13 @@
     "xinyi-system",
     "xinyi-common",
     "xinyi-generator",
+    "xinyi-rongli",
     "xinyi-quartz",
     "xinyi-framework"
   ],
   "suggestedBusinessModule": "xinyi-rongli",
   "moduleConflict": false,
-  "miniappExists": false,
+  "miniappExists": true,
   "databaseStatus": "NOT_INSPECTED",
   "note": "只记录工具版本/路径/Git；不读取输出application*.yml或环境变量秘密；存在代码不自动判完成。"
 }

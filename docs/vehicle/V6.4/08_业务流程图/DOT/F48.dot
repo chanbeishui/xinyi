@@ -1,0 +1,23 @@
+digraph G {
+graph [rankdir=TB,bgcolor="white",pad="0.3",nodesep="0.3",ranksep="0.45",fontname="Noto Sans CJK SC",label="F48 · 订阅模板发布、本人授权与发送",labelloc=t,fontsize=20];
+node [shape=box,style="rounded,filled",fillcolor="#F2F6FC",color="#B5C9E5",fontname="Noto Sans CJK SC",fontsize=12,margin=".15,.12"];
+edge [color="#607A9C",fontname="Noto Sans CJK SC",fontsize=10];
+n1 [label="后台｜真实模板ID及字段定义/映射"];
+n2 [label="校验AppID、模板、路由并发布版本"];
+n3 [label="用户主动点击｜获取短时prompt"];
+n4 [label="微信弹窗｜本人报告结果"];
+n5 [label="同意且有真实业务事件？",shape=diamond];
+n6 [label="校验本人/app/版本/时效并发送"];
+n7 [label="拒绝或无权限｜跳过外部发送"];
+n8 [label="微信结果｜成功/拒绝/未知分开"];
+n9 [label="站内消息保留｜不阻断预约与交接"];
+n1 -> n2 [label=""];
+n2 -> n3 [label=""];
+n3 -> n4 [label=""];
+n4 -> n5 [label=""];
+n5 -> n6 [label="是"];
+n5 -> n7 [label="否"];
+n6 -> n8 [label=""];
+n7 -> n9 [label=""];
+n8 -> n9 [label="业务继续"];
+}

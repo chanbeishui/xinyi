@@ -1,0 +1,54 @@
+[
+  {
+    "id": "B02",
+    "name": "运营工作台",
+    "status": "有效·V6.4",
+    "fields": "预约、派单待办、取消待审、待返还、退款异常",
+    "actions": "进入待办",
+    "guards": "不做设备离线实时监控；待返还优先提示当前保管方",
+    "flows": "F21/F30",
+    "source": "V2原页 B02",
+    "base": "B02",
+    "state": "default",
+    "kind": "page"
+  },
+  {
+    "id": "B22",
+    "name": "安全审计",
+    "status": "有效·V6.4",
+    "fields": "时间、主体、操作、对象、来源、前后值摘要",
+    "actions": "查询、审批导出",
+    "guards": "日志不含密钥/完整证件/交接码；关联业务流水而不是替代它",
+    "flows": "F25",
+    "source": "V2原页 B22",
+    "base": "B22",
+    "state": "default",
+    "kind": "page"
+  },
+  {
+    "id": "B32",
+    "name": "敏感访问与导出审批",
+    "status": "有效·V6.4",
+    "fields": "理由、目的、范围、有效期、审批与下载记录",
+    "actions": "批准/驳回、撤回",
+    "guards": "与已有框架可复用；权限变化后下载再次拒绝",
+    "flows": "F25",
+    "source": "本版补充",
+    "base": "B32",
+    "state": "default",
+    "kind": "page"
+  },
+  {
+    "id": "B32-request",
+    "name": "敏感访问与导出申请",
+    "status": "有效·V6.4",
+    "fields": "理由、目的、范围、有效期、审批与下载记录",
+    "actions": "批准/驳回、撤回",
+    "guards": "与已有框架可复用；权限变化后下载再次拒绝",
+    "flows": "F25",
+    "source": "PRD B32 的状态/弹窗展开；不新增业务范围",
+    "base": "B32",
+    "state": "request",
+    "kind": "state"
+  }
+]

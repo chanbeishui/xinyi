@@ -1,0 +1,12 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>公开快照哈希规范</title><style>body{font:16px/1.75 -apple-system,BlinkMacSystemFont,"Microsoft YaHei",sans-serif;color:#202632;margin:0;background:#f6f7f9}header{padding:14px 24px;background:white;border-bottom:1px solid #ddd}main{max-width:1120px;margin:24px auto;padding:30px;background:white}h1{font-size:30px}h2{margin-top:36px}a{color:#0661bd}table{border-collapse:collapse;width:100%;display:block;overflow:auto;font-size:14px}td,th{border:1px solid #dde2ea;padding:10px;vertical-align:top}th{background:#f1f5fb}pre{padding:15px;background:#f2f4f7;overflow:auto}img{max-width:100%;height:auto}blockquote{padding:10px 20px;border-left:3px solid #2571be;background:#f4f8fc}@media(max-width:700px){main{padding:15px;margin:8px}h1{font-size:25px}}</style></head><body><header><a href="../00_开始.html">V6.4 完整资料</a>　<a href="../02_UI/index.html">交互原型</a>　T3.4</header><main><h1>司机确认的公开快照哈希 V6.4</h1>
+<p>snapshotHash并非秘密。它必须证明司机实际看到的服务和金额版本，不得覆盖内部草稿拟价、复核意见或银行原始凭证。</p>
+<ol>
+<li>构造数组 <code>[&quot;VI-STATEMENT-PUBLIC-1&quot;, statementId, statementNo, driverId, payorEntityId, currency, revisionText, lines]</code>。</li>
+<li>每行数组为 <code>[lineId, entryId, assignmentId, orderNo, plateNo, serviceEndedAtUTC, amountFenText, pricingExplanation]</code>。ID、版本和金额均十进制字符串；非负ID无前导0；金额允许已批准负调差。时刻固定<code>YYYY-MM-DDTHH:mm:ss.SSSZ</code>。所有必需文本按原Unicode保存，不trim、不本地化、不NFC改写；若业务要归一化，在发布前完成。</li>
+<li>lines按十进制lineId的数值升序排序，不按字典序。只包括当次明确选中并发布的成员。</li>
+<li>JSON紧凑编码UTF-8；无BOM、无多余空格。非ASCII不转义；必须转义引号、反斜线和控制字符，不转义斜杠；限制输入不含未配对UTF-16代理项。数组顺序固定，避免对象键排序差异。</li>
+<li>对上述字节做SHA-256，输出小写hex。测试夹具给出原字节及摘要。服务器生成；客户端只回传，不要求前端自行哈希证明可信。</li>
+<li>paymentSummary、当前状态、确认时间及行version不在内容hash中；付款变化不改内容。revision与成员/金额一起递增；请求同时携带expectedVersion、expectedRevision、snapshotHash。内部快照单独保存internal hash，不得混用。</li>
+<li>确认事务加载SENT公开快照，核对本人、版本及hash，CAS/父行锁成功后记确认与唯一费用结转。后台同时撤回只能一个提交成功。哈希不是鉴权令牌，知道他人hash仍不能访问或确认。</li>
+</ol>
+</main></body></html>

@@ -1,0 +1,82 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>V6.2_本轮验证范围</title><style>body{font:16px/1.75 -apple-system,BlinkMacSystemFont,"Microsoft YaHei",sans-serif;color:#202632;margin:0;background:#f6f7f9}header{padding:14px 24px;background:white;border-bottom:1px solid #ddd}main{max-width:1120px;margin:24px auto;padding:30px;background:white}h1{font-size:30px}h2{margin-top:36px}a{color:#0661bd}table{border-collapse:collapse;width:100%;display:block;overflow:auto;font-size:14px}td,th{border:1px solid #dde2ea;padding:10px;vertical-align:top}th{background:#f1f5fb}pre{padding:15px;background:#f2f4f7;overflow:auto}img{max-width:100%;height:auto}blockquote{padding:10px 20px;border-left:3px solid #2571be;background:#f4f8fc}@media(max-width:700px){main{padding:15px;margin:8px}h1{font-size:25px}}</style></head><body><header><a href="../00_开始.html">V6.2 完整资料</a>　<a href="../02_UI/index.html">交互原型</a>　T3.2</header><main><h1>V6.2 本轮验证范围与未执行边界</h1>
+<p>日期：2026-10-22。对象：基于V6.1生成的完整V6.2身份流程整合包。没有修改用户GitHub仓库或数据库。</p>
+<h2>已实际执行</h2>
+<table>
+<thead>
+<tr>
+  <th>检查</th>
+  <th>本轮结果</th>
+  <th>解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>工程工具、身份参考策略、契约及模拟供应商单元测试</td>
+  <td>99通过，15条jsonschema弃用警告</td>
+  <td>本地Python工具测试，不是xinyi生产测试</td>
+</tr>
+<tr>
+  <td>契约样本/负向字段参考策略</td>
+  <td>51通过</td>
+  <td>离线Schema与参考模型，不发送真实业务HTTP</td>
+</tr>
+<tr>
+  <td>新增身份原型交互</td>
+  <td>13通过</td>
+  <td>Chromium、模拟演示状态，不是微信授权</td>
+</tr>
+<tr>
+  <td>既有资料、售后、对账基础交互</td>
+  <td>30通过</td>
+  <td>当前原型回归，含模型状态验证</td>
+</tr>
+<tr>
+  <td>行内核价回归</td>
+  <td>22通过</td>
+  <td>原型改价、独立复核、撤回与确认</td>
+</tr>
+<tr>
+  <td>明确勾选服务组单回归</td>
+  <td>33通过</td>
+  <td>原型选择、历史账单、付款凭证与隔离展示</td>
+</tr>
+<tr>
+  <td>培训/申诉/核验原型回归</td>
+  <td>8通过，1环境阻塞</td>
+  <td>本地file://导航被环境策略阻止；内存加载可检查</td>
+</tr>
+<tr>
+  <td>全量画板渲染</td>
+  <td>299画板、598截图导出，无记录的页面异常/无效目标/缺动作/重复表单ID</td>
+  <td>每张首屏与完整内容；不是全操作组合穷举</td>
+</tr>
+<tr>
+  <td>手机预览</td>
+  <td>375/390/428px指定页面检查通过</td>
+  <td>不是微信真机认证</td>
+</tr>
+<tr>
+  <td>真实HTTP测试收集</td>
+  <td>25个测试可发现</td>
+  <td>只执行collect-only，未连接真实后端/数据库</td>
+</tr>
+</tbody>
+</table>
+<p>当前目录JSON/XML是本轮报告；历史目录仅用于追溯。回归脚本文件名中的V4/V5为脚本来源，运行对象是V6.2同源HTML。</p>
+<h2>最终静态与构建辅助检查</h2>
+<p>资料深度一致性42项通过；工程任务/覆盖/执行一致性34项通过；当前UI模块JavaScript语法检查无错误；生成API TypeScript类型文件<code>tsc --noEmit --skipLibCheck --target ES2020</code>通过。文档目录搜索与操作的结果见V6.2_文档浏览验证.json。
+这些不是完整xinyi/uni-app构建。测试发现的自然键更新白名单、静态目录链接和文档测试定位问题均已修正并复跑；没有通过删业务断言来忽略失败。</p>
+<h2>明确没有执行</h2>
+<ul>
+<li>当前xinyi Maven编译、Service/Mapper运行和数据库事务；</li>
+<li>MySQL建表、生成列、CHECK、UTC、并发或实际迁移；</li>
+<li>uni-app完整构建与微信真机；</li>
+<li>微信手机号、真实支付退款、OCR/短信/活体/私有存储供应商联调；</li>
+<li>生产上线、真实资金、真实个人信息和用户岗位政策批准。</li>
+</ul>
+<p>334条真实业务用例、71项技术门禁全部保持NOT_RUN。25个真实HTTP与6个MySQL测试是提供的待运行程序，不能因为被pytest发现就计为通过。</p>
+<h2>浏览器与环境</h2>
+<p>Browser连接仅有读取标签页工具，无控制运行时/skill；使用本地Playwright＋Chromium。直接file://导航被当前策略拒绝，改为载入原始同源HTML内存检查；这不证明用户电脑双击入口已经实测。页面截图、界面操作与DB/微信安全测试严格区分。</p>
+<h2>工具依赖提醒</h2>
+<p>jsonschema.RefResolver弃用警告不影响本轮断言结果，但后续工程应按锁定版本安排迁移，不靠关闭断言消除警告。当前包不包含任何生成的业务密钥、生产凭据或虚假锁文件。</p>
+</main></body></html>

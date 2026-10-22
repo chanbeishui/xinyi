@@ -1,0 +1,67 @@
+[
+  {
+    "id": "TC-R62-024",
+    "priority": "P0",
+    "module": "身份与员工自动关联",
+    "flow": "F02 F03 F04 F43",
+    "title": "切角色或退出",
+    "given": "司机有在手承接",
+    "when": "切OWNER/STATION或退出会话后查occupancy",
+    "then": "不清空在手任务占用、不改变车辆保管责任",
+    "status": "NOT_RUN",
+    "evidence": "",
+    "origin": "用户确认的登录方案及R1防错边界整合；需真实HTTP/MySQL验收"
+  },
+  {
+    "id": "TC-R63-001",
+    "priority": "P0",
+    "module": "身份一致性",
+    "flow": "F02 F03 F04 F43",
+    "title": "本人工作状态同源",
+    "given": "员工已自动关联且拥有站点",
+    "when": "读取会话、关联页和身份切换",
+    "then": "手机号已核验、关联已完成、可用站点与身份一致，不互相矛盾",
+    "status": "NOT_RUN",
+    "evidence": "",
+    "origin": "V6.4全量核对新增真实系统验收规格；浏览器演示不替代本条验证"
+  },
+  {
+    "id": "TC-R63-009",
+    "priority": "P0",
+    "module": "身份一致性",
+    "flow": "F02 F03 F04 F43",
+    "title": "已审核代驾我的入口",
+    "given": "账号已有批准资格",
+    "when": "登录后打开我的与角色切换",
+    "then": "显示查看资格/代驾身份，不重复引导首次申请",
+    "status": "NOT_RUN",
+    "evidence": "",
+    "origin": "V6.4全量核对新增真实系统验收规格；浏览器演示不替代本条验证"
+  },
+  {
+    "id": "TC-R63-010",
+    "priority": "P0",
+    "module": "身份一致性",
+    "flow": "F02 F03 F04 F43",
+    "title": "待审账号不提前开通",
+    "given": "只有OWNER且完整申请待审",
+    "when": "刷新审核与直接调用切代驾",
+    "then": "仍无DRIVER，刷新不会审批，切换拒绝",
+    "status": "NOT_RUN",
+    "evidence": "",
+    "origin": "V6.4全量核对新增真实系统验收规格；浏览器演示不替代本条验证"
+  },
+  {
+    "id": "TC-R63-016",
+    "priority": "P0",
+    "module": "身份一致性",
+    "flow": "F02 F03 F04 F43",
+    "title": "评审图不构成生产资格",
+    "given": "只在UI查看审核通过状态图",
+    "when": "尝试依靠前端状态获得真实接单资格",
+    "then": "生产后端仍校验已批准资格；不能由画板或请求role授予",
+    "status": "NOT_RUN",
+    "evidence": "",
+    "origin": "V6.4全量核对新增真实系统验收规格；浏览器演示不替代本条验证"
+  }
+]

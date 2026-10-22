@@ -1,0 +1,16 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>第三方配置实施与种子</title><style>body{font:16px/1.75 -apple-system,BlinkMacSystemFont,"Microsoft YaHei",sans-serif;color:#202632;margin:0;background:#f6f7f9}header{padding:14px 24px;background:white;border-bottom:1px solid #ddd}main{max-width:1120px;margin:24px auto;padding:30px;background:white}h1{font-size:30px}h2{margin-top:36px}a{color:#0661bd}table{border-collapse:collapse;width:100%;display:block;overflow:auto;font-size:14px}td,th{border:1px solid #dde2ea;padding:10px;vertical-align:top}th{background:#f1f5fb}pre{padding:15px;background:#f2f4f7;overflow:auto}img{max-width:100%;height:auto}blockquote{padding:10px 20px;border-left:3px solid #2571be;background:#f4f8fc}@media(max-width:700px){main{padding:15px;margin:8px}h1{font-size:25px}}</style></head><body><header><a href="../00_开始.html">V6.4 完整资料</a>　<a href="../02_UI/index.html">交互原型</a>　T3.4</header><main><h1>V6.4 本轮实施接入</h1>
+<p>X01–X07是当前78项任务的追加，合计85项，不得重置已有任务。优先将原P01/P02/N01/I02/C01的第三方常量接入配置服务；原业务Service仍为唯一真相。</p>
+<h2>基础数据</h2>
+<ul>
+<li>后台“第三方服务”菜单：B46支付设置、B47微信商户、B48短信通道、B49短信模板、B50订阅模板、B51发送诊断、B52客户线下资金、B53小程序凭据。</li>
+<li>权限种子从主权限注册表新增biz:integration:<em>、biz:messagetemplate:</em>、biz:messageroute:<em>、biz:delivery:</em>、biz:offlinepayment:*，使用现有框架菜单唯一规则分配ID，不假定1/100为某管理员。</li>
+<li>不给普通员工/财务自动授予全部配置权限，编辑、发布、测试、线下登记和复核分开。真银行凭证不可通过一般站点账号获取。</li>
+<li>空库创建PAYMENT_POLICY为双关闭；无真实密钥/正式收款主体时不启用。短信/订阅初始停用。示例商户、签名、模板、价格只进入隔离fixture。</li>
+<li>供应商API端点与版本是受控代码枚举，不提供任意URL输入；回调域名来自部署可信白名单。</li>
+</ul>
+<h2>环境与安全</h2>
+<p>增加服务端 VI_INTEGRATION_MASTER_KEY 或KMS引用、可信回调origin与配置环境选择。根密钥不得保存在sys_config普通文本、数据库或前端。仅本地测试可用随机生成的测试密钥，代码仓库不提交。</p>
+<p>SDK普通客户端由运行时factory按当前版本生成；旧请求使用冻结身份和仍有效的同主体密钥环。必要依赖须通过现有Spring Boot兼容性验证，不引入未知第三方starter绕过M0。</p>
+<h2>完成条件</h2>
+<p>UI配置-&gt;真实HTTP-&gt;Service校验和密文-&gt;MySQL版本-&gt;发布-&gt;业务adapter调用链闭合。仅外部网络可模拟，不能用UI内存替代后端。L01真实支付退款/SMS/订阅与L02真机仍单独通过。</p>
+</main></body></html>

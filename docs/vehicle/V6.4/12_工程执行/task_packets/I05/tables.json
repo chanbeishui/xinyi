@@ -1,0 +1,356 @@
+[
+  {
+    "name": "vi_employee_binding",
+    "comment": "微信账户与框架员工受控绑定",
+    "cols": [
+      [
+        "id",
+        "BIGINT NOT NULL AUTO_INCREMENT",
+        "数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串"
+      ],
+      [
+        "account_id",
+        "BIGINT NOT NULL",
+        "关联vi_account"
+      ],
+      [
+        "sys_user_id",
+        "BIGINT NOT NULL",
+        "引用现有sys_user，不重建员工"
+      ],
+      [
+        "bound_by",
+        "BIGINT NULL",
+        "自动关联为NULL，操作者为系统；管理员后续操作单独审计，绝不填假管理员"
+      ],
+      [
+        "bound_at",
+        "DATETIME(3) NOT NULL",
+        "绑定时间"
+      ],
+      [
+        "revoked_at",
+        "DATETIME(3)",
+        "解除时间"
+      ],
+      [
+        "active_account",
+        "BIGINT GENERATED ALWAYS AS (IF(revoked_at IS NULL, account_id, NULL)) STORED",
+        "有效或暂停关联占用；只读生成列"
+      ],
+      [
+        "active_user",
+        "BIGINT GENERATED ALWAYS AS (IF(revoked_at IS NULL, sys_user_id, NULL)) STORED",
+        "有效或暂停关联占用；与app_id联合唯一"
+      ],
+      [
+        "permission_version",
+        "BIGINT NOT NULL DEFAULT 0",
+        "员工关联权限版本；撤权事务更新"
+      ],
+      [
+        "app_id",
+        "VARCHAR(64) CHARACTER SET ascii COLLATE ascii_bin NOT NULL",
+        "关联应用命名空间"
+      ],
+      [
+        "source",
+        "VARCHAR(32) NOT NULL DEFAULT 'WECHAT_PHONE_MATCH'",
+        "EmployeeLinkSource: WECHAT_PHONE_MATCH"
+      ],
+      [
+        "status",
+        "VARCHAR(24) NOT NULL DEFAULT 'ACTIVE'",
+        "EmployeeBindingLifecycle: ACTIVE,SUSPENDED,REVOKED"
+      ],
+      [
+        "phone_lookup",
+        "BINARY(32) NOT NULL",
+        "关联时一致的规范化手机号HMAC；不是可还原裸手机号"
+      ],
+      [
+        "last_phone_verified_at",
+        "DATETIME(3) NOT NULL",
+        "最近本人微信手机号核验时间"
+      ],
+      [
+        "employee_auth_version",
+        "BIGINT NOT NULL",
+        "建立关联时的框架授权版本快照；每次工作请求仍检查当前员工状态和权限"
+      ],
+      [
+        "auto_rebind_blocked",
+        "TINYINT NOT NULL DEFAULT 0",
+        "管理员撤销后拦截同应用同员工新自动关联；明确allow-rematch才解除"
+      ],
+      [
+        "suspended_reason",
+        "VARCHAR(64) NULL",
+        "手机号变更、账号停用等失效原因；不泄漏其他账号"
+      ],
+      [
+        "revoked_by",
+        "BIGINT NULL",
+        "后台受控撤销操作者"
+      ],
+      [
+        "revoked_reason",
+        "VARCHAR(500) NULL",
+        "解除依据"
+      ],
+      [
+        "created_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "创建时间，统一UTC"
+      ],
+      [
+        "updated_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "UTC更新时间；Mapper每次修改显式SET updated_at=UTC_TIMESTAMP(3)，不依赖连接时区"
+      ],
+      [
+        "version",
+        "BIGINT NOT NULL DEFAULT 0",
+        "乐观锁版本"
+      ]
+    ],
+    "indexes": [
+      "UNIQUE KEY uk_active_account (active_account)",
+      "UNIQUE KEY uk_active_user (app_id,active_user)",
+      "KEY ix_employee_link_phone (phone_lookup)",
+      "KEY ix_employee_link_block (app_id,sys_user_id,auto_rebind_blocked)"
+    ],
+    "rule": "可信微信手机号唯一匹配有效sys_user自动建立，无员工申请；同应用每账号/每员工至多一个未撤销关联。暂停仍占唯一关系；撤销写永久留痕及防重绑标记；复核修复后须本人新手机号核验，不允许后台直接填openid。关联、权限版本、audit/outbox同事务。",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "engine": "InnoDB",
+    "collation": "utf8mb4_0900_ai_ci",
+    "columnRules": {
+      "id": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "account_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "sys_user_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "bound_by": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "bound_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "revoked_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "active_account": {
+        "generated": true,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "active_user": {
+        "generated": true,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "permission_version": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "app_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "source": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false,
+        "enumRef": "EmployeeLinkSource"
+      },
+      "status": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false,
+        "enumRef": "EmployeeBindingLifecycle"
+      },
+      "phone_lookup": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "last_phone_verified_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "employee_auth_version": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "auto_rebind_blocked": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "suspended_reason": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "revoked_by": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "revoked_reason": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "created_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "updated_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "version": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      }
+    },
+    "checks": [
+      "CONSTRAINT ck_ver_employee_binding CHECK (version >= 0)",
+      "CONSTRAINT ck_0322202dab CHECK (`source` IN ('WECHAT_PHONE_MATCH'))",
+      "CONSTRAINT ck_3c0e2a701f CHECK (`status` IN ('ACTIVE','SUSPENDED','REVOKED'))",
+      "CONSTRAINT ck_employee_link_revoke CHECK ((status='REVOKED' AND revoked_at IS NOT NULL) OR (status IN ('ACTIVE','SUSPENDED') AND revoked_at IS NULL))",
+      "CONSTRAINT ck_employee_link_source_actor CHECK (source='WECHAT_PHONE_MATCH' AND bound_by IS NULL)"
+    ],
+    "writeMode": "CONTROLLED_LIFECYCLE"
+  },
+  {
+    "name": "vi_employee_directory_guard",
+    "comment": "员工手机号匹配与目录变更串行防护",
+    "cols": [
+      [
+        "id",
+        "BIGINT NOT NULL AUTO_INCREMENT",
+        "数据库生成内部Long，API字符串"
+      ],
+      [
+        "guard_key",
+        "VARCHAR(64) CHARACTER SET ascii COLLATE ascii_bin NOT NULL",
+        "首期唯一GLOBAL_DIRECTORY；同库轻量互斥，不是用户权限"
+      ],
+      [
+        "created_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "UTC创建时间"
+      ],
+      [
+        "updated_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "更新显式UTC_TIMESTAMP(3)"
+      ],
+      [
+        "version",
+        "BIGINT NOT NULL DEFAULT 0",
+        "受控CAS版本"
+      ]
+    ],
+    "indexes": [
+      "UNIQUE KEY uk_employee_directory_guard (guard_key)"
+    ],
+    "rule": "首次以唯一guard_key初始化后SELECT FOR UPDATE；员工首次自动绑定与框架手机号/账号状态/新增删除导入变更均经统一服务先锁本行，再锁员工与关联。供应商调用在锁外。首期低频串行，禁止把整个登录业务外部调用放进锁。",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "engine": "InnoDB",
+    "collation": "utf8mb4_0900_ai_ci",
+    "columnRules": {
+      "id": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "guard_key": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "created_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "updated_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "version": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      }
+    },
+    "checks": [
+      "CONSTRAINT ck_ver_employee_directory_guard CHECK (version >= 0)"
+    ],
+    "writeMode": "LOCK_ONLY"
+  }
+]

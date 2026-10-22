@@ -1,0 +1,135 @@
+{
+  "scope": "PROTOTYPE_DOM_AND_LOCAL_STATE_ONLY",
+  "environment": "Playwright/Chromium; self-contained HTML set_content; Browser connector read-only, no control runtime",
+  "checks": [
+    {
+      "name": "01 首次打开为统一登录且浏览器版本为V6.4",
+      "result": "PASS"
+    },
+    {
+      "name": "02 登录协议未同意不可触发授权",
+      "result": "PASS"
+    },
+    {
+      "name": "03 新账号只获得车主且主动进入车主首页",
+      "result": "PASS"
+    },
+    {
+      "name": "04 我的申请入口可进入资料填写但不授予代驾",
+      "result": "PASS"
+    },
+    {
+      "name": "05 审核中的我的页面与审核进度一致，刷新不能批准",
+      "result": "PASS"
+    },
+    {
+      "name": "06 后台审核后本人的进度/我的/身份切换同步",
+      "result": "PASS"
+    },
+    {
+      "name": "07 已批准代驾退出再登录保留资格，新会话默认车主",
+      "result": "PASS"
+    },
+    {
+      "name": "08 员工唯一匹配自动关联，不免代驾审核",
+      "result": "PASS"
+    },
+    {
+      "name": "09 已关联但无站点只需后台配置和刷新，不要求重绑",
+      "result": "PASS"
+    },
+    {
+      "name": "10 B26切换员工时真实刷新对应站点选项",
+      "result": "PASS"
+    },
+    {
+      "name": "11 B25仅配置站点/关联详情，点击携带对应员工",
+      "result": "PASS"
+    },
+    {
+      "name": "12 未微信登录员工先配置站点，首次授权后即可切工作",
+      "result": "PASS"
+    },
+    {
+      "name": "13 后台后补站点后刷新生效，不用重新申请或授权手机",
+      "result": "PASS"
+    },
+    {
+      "name": "14 重号不泄候选员工，不阻断正常车主登录",
+      "result": "PASS"
+    },
+    {
+      "name": "15 关联冲突不授予检测身份",
+      "result": "PASS"
+    },
+    {
+      "name": "16 暂停后重新手机号授权不能恢复工作能力",
+      "result": "PASS"
+    },
+    {
+      "name": "17 解除不能自动重绑，后台允许重核不直接恢复，须本人新授权",
+      "result": "PASS"
+    },
+    {
+      "name": "18 B36切换员工同步状态和禁用动作，不处理其他员工",
+      "result": "PASS"
+    },
+    {
+      "name": "19 未关联员工不能执行暂停/解除/重核",
+      "result": "PASS"
+    },
+    {
+      "name": "20 站点授权版本冲突拒绝覆盖，保留原授权",
+      "result": "PASS"
+    },
+    {
+      "name": "21 撤回全部站点立即失去工作范围，仍有车主",
+      "result": "PASS"
+    },
+    {
+      "name": "22 处理中/失败/未知各有状态，不伪造身份成功",
+      "result": "PASS"
+    },
+    {
+      "name": "23 拒绝手机号授权不假成功",
+      "result": "PASS"
+    },
+    {
+      "name": "24 独立状态画板文字、按钮与演示模型一致",
+      "result": "PASS"
+    },
+    {
+      "name": "25 旧凭证动作无法再建立关联",
+      "result": "PASS"
+    },
+    {
+      "name": "26 切角色和退出不修改订单/释放司机，退出清空会话工作范围",
+      "result": "PASS"
+    },
+    {
+      "name": "27 未审核直接调用切代驾动作被拒绝",
+      "result": "PASS"
+    },
+    {
+      "name": "28 B25查询与关联详情定位同一员工",
+      "result": "PASS"
+    },
+    {
+      "name": "29 两工作身份的我的页读取同一账号，不固定他人姓名和身份",
+      "result": "PASS"
+    },
+    {
+      "name": "30 修改后关键页面取证截图",
+      "result": "PASS"
+    }
+  ],
+  "passed": 30,
+  "failed": 0,
+  "pageErrors": [],
+  "notRun": [
+    "real xinyi",
+    "MySQL",
+    "WeChat phone authorization",
+    "production auth and concurrent transactions"
+  ]
+}

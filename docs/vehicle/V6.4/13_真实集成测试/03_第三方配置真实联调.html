@@ -1,0 +1,8 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>03_第三方配置真实联调</title><style>body{font:16px/1.75 -apple-system,BlinkMacSystemFont,"Microsoft YaHei",sans-serif;color:#202632;margin:0;background:#f6f7f9}header{padding:14px 24px;background:white;border-bottom:1px solid #ddd}main{max-width:1120px;margin:24px auto;padding:30px;background:white}h1{font-size:30px}h2{margin-top:36px}a{color:#0661bd}table{border-collapse:collapse;width:100%;display:block;overflow:auto;font-size:14px}td,th{border:1px solid #dde2ea;padding:10px;vertical-align:top}th{background:#f1f5fb}pre{padding:15px;background:#f2f4f7;overflow:auto}img{max-width:100%;height:auto}blockquote{padding:10px 20px;border-left:3px solid #2571be;background:#f4f8fc}@media(max-width:700px){main{padding:15px;margin:8px}h1{font-size:25px}}</style></head><body><header><a href="../00_开始.html">V6.4 完整资料</a>　<a href="../02_UI/index.html">交互原型</a>　T3.4</header><main><h1>V6.4 第三方配置真实集成执行</h1>
+<p>新增8项HTTP/数据库测试位于live/test_integration_config.py，必须启动真正xinyi的vi-it入口和MySQL后执行。当前交付只编写与收集，<strong>NOT_RUN</strong>。缺环境应失败，不回退到原型或跳过通过。</p>
+<pre><code class="language-bash">python -m pytest docs/vehicle/V6.4/13_真实集成测试/live/test_integration_config.py -q
+</code></pre>
+<p>E07先实现INTEGRATION_CONFIG test-classpath夹具，参数与令牌严格按fixtures-contract；生产JAR不得包含测试控制器。运行时contractVersion读取主OpenAPI info.version（当前6.4.0），不沿用旧固定6.2.0。</p>
+<p>测试只有8项基础接口/存储断言，<strong>并不覆盖全部62条CFG业务验收</strong>。X01–X07仍须按case-test-plan逐项实现支付双关、关闭后退款、密钥轮换、多实例版本、线下并发核实、消息UNKNOWN、订阅授权等集成测试。</p>
+<p>真实供应商另在L01经授权使用实际商户、已审核短信模板、白名单和本人订阅环境验证。连接检测不是付款退款闭环证据。测试必须记录原始命令、环境版本及脱敏结果，不输出真实密钥、完整手机号或Token。</p>
+</main></body></html>

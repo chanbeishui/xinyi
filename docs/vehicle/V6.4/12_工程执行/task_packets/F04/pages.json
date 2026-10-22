@@ -1,0 +1,67 @@
+[
+  {
+    "id": "S08",
+    "name": "行驶证登记与复核",
+    "status": "有效·V6.4",
+    "fields": "正副页、车牌、车主、VIN、用途、注册日期、核验状态",
+    "actions": "OCR、人工修改、确认复核",
+    "guards": "低置信度必须核实；OCR不可用有人工录入出口；完整敏感原图单独授权",
+    "flows": "F15",
+    "source": "V2原页 S08",
+    "base": "S08",
+    "state": "default",
+    "kind": "page"
+  },
+  {
+    "id": "S08-manual",
+    "name": "识别不可用 · 人工登记",
+    "status": "有效·V6.4",
+    "fields": "正副页、车牌、车主、VIN、用途、注册日期、核验状态",
+    "actions": "OCR、人工修改、确认复核",
+    "guards": "低置信度必须核实；OCR不可用有人工录入出口；完整敏感原图单独授权",
+    "flows": "F15",
+    "source": "PRD S08 的状态/弹窗展开；不新增业务范围",
+    "base": "S08",
+    "state": "manual",
+    "kind": "state"
+  },
+  {
+    "id": "B07",
+    "name": "站点收车登记",
+    "status": "有效·V6.4",
+    "fields": "当前站点、司机、车辆、节点2证据、专用码",
+    "actions": "确认收车",
+    "guards": "复用S07应用服务；记录ADMIN来源；不得少一套交接核验",
+    "flows": "F15",
+    "source": "V2原页 B07",
+    "base": "B07",
+    "state": "default",
+    "kind": "page"
+  },
+  {
+    "id": "B07-confirm",
+    "name": "后台收车核验抽屉",
+    "status": "有效·V6.4",
+    "fields": "当前站点、司机、车辆、节点2证据、专用码",
+    "actions": "确认收车",
+    "guards": "复用S07应用服务；记录ADMIN来源；不得少一套交接核验",
+    "flows": "F15",
+    "source": "PRD B07 的状态/弹窗展开；不新增业务范围",
+    "base": "B07",
+    "state": "confirm",
+    "kind": "state"
+  },
+  {
+    "id": "B08",
+    "name": "行驶证核验",
+    "status": "有效·V6.4",
+    "fields": "OCR任务、敏感字段、低置信度、人工确认",
+    "actions": "查看、复核",
+    "guards": "与S08同规则；查看证件原图单独授权",
+    "flows": "F15",
+    "source": "V2原页 B08",
+    "base": "B08",
+    "state": "default",
+    "kind": "page"
+  }
+]

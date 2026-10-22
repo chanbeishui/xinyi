@@ -1,0 +1,58 @@
+[
+  {
+    "id": "D43",
+    "base": "D43",
+    "state": "default",
+    "name": "接单限制记录",
+    "kind": "page",
+    "parent": "D43",
+    "status": "有效·V6.4",
+    "fields": "penaltyId、服务、限制类型、状态",
+    "actions": "查看详情",
+    "guards": "本人/授权范围、状态及expectedVersion；真实供应商和正式政策未配置不得返回生产通过",
+    "flows": "F42",
+    "source": "V4.2既有资格/培训/申诉能力缺失合同的本轮补全；不新增保险事故或钱包"
+  },
+  {
+    "id": "D44",
+    "base": "D44",
+    "state": "default",
+    "name": "限制记录详情",
+    "kind": "page",
+    "parent": "D44",
+    "status": "有效·V6.4",
+    "fields": "处罚依据、申诉ID、公开意见",
+    "actions": "提出或查看申诉",
+    "guards": "本人/授权范围、状态及expectedVersion；真实供应商和正式政策未配置不得返回生产通过",
+    "flows": "F42",
+    "source": "V4.2既有资格/培训/申诉能力缺失合同的本轮补全；不新增保险事故或钱包"
+  },
+  {
+    "id": "D45",
+    "base": "D45",
+    "state": "default",
+    "name": "限制申诉",
+    "kind": "page",
+    "parent": "D45",
+    "status": "有效·V6.4",
+    "fields": "原因、凭证引用、待审状态",
+    "actions": "提交申诉",
+    "guards": "本人/授权范围、状态及expectedVersion；真实供应商和正式政策未配置不得返回生产通过",
+    "flows": "F42",
+    "source": "V4.2既有资格/培训/申诉能力缺失合同的本轮补全；不新增保险事故或钱包"
+  },
+  {
+    "id": "B45",
+    "base": "B45",
+    "state": "default",
+    "name": "代驾限制申诉管理",
+    "kind": "page",
+    "parent": "B45",
+    "status": "有效·V6.4",
+    "fields": "申诉列表、代驾、处罚、处理说明",
+    "actions": "查看、审核",
+    "guards": "本人/授权范围、状态及expectedVersion；真实供应商和正式政策未配置不得返回生产通过",
+    "flows": "F42",
+    "source": "V4.2既有资格/培训/申诉能力缺失合同的本轮补全；不新增保险事故或钱包"
+  }
+]

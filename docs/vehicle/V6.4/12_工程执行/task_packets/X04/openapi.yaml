@@ -1,0 +1,2777 @@
+openapi: 3.0.3
+info:
+  title: X04 腾讯云和阿里云短信及场景路由
+  version: 6.4.0
+servers:
+- url: http://localhost:8080
+  description: 本地Java直连；paths已包含/api，不再次追加
+- url: https://{host}
+  description: 发布域名仅作部署变量；由环境设置真实已备案域名，代理保留/api
+  variables:
+    host:
+      default: api.example.invalid
+      description: 占位不可用于真实支付或发布
+paths:
+  /api/admin/integrations/templates:
+    get:
+      operationId: V64_get_api_admin_integrations_templates
+      summary: 短信与订阅模板列表
+      tags:
+      - ADMIN
+      - INTEGRATION_V64
+      description: 主PRD第23章。服务端校验真实主体、环境、权限、对象归属、状态和版本；密钥不回显、不入日志；所有副作用幂等。
+      security:
+      - AdminBearerAuth: []
+      x-contract-baseline: V6.4
+      x-flow-ids:
+      - F44
+      x-authorization:
+        realm: ADMIN
+        scope: ORG_DEPT_CONFIG
+        permission: biz:messagetemplate:query
+      parameters:
+      - name: X-Client-Type
+        in: header
+        required: true
+        schema:
+          type: string
+          enum:
+          - owner
+          - driver
+          - station
+          - admin
+        description: 仅审计来源，不作为授权；须匹配服务端会话视角
+      - name: provider
+        in: query
+        required: false
+        schema:
+          $ref: '#/components/schemas/ExternalMessageProvider'
+      - name: scene
+        in: query
+        required: false
+        schema:
+          $ref: '#/components/schemas/NotificationScene'
+      - name: ownerDeptId
+        in: query
+        required: false
+        schema: &id001
+          type: string
+          description: 内部Long对外十进制字符串
+          pattern: ^[1-9][0-9]{0,18}$
+      - name: pageNum
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+          default: 1
+      - name: pageSize
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 100
+          default: 20
+      responses:
+        '200':
+          description: 真实处理后的公开/脱敏结果，不返回占位Ack
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+                enum:
+                - no-store
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                properties:
+                  code:
+                    type: integer
+                    enum:
+                    - 200
+                  msg:
+                    type: string
+                  rows:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ExternalTemplateView'
+                  total:
+                    type: integer
+                    format: int64
+                    minimum: 0
+                required:
+                - code
+                - msg
+                - rows
+                - total
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalError'
+        '503':
+          $ref: '#/components/responses/Unavailable'
+      x-permission: biz:messagetemplate:query
+      x-error-policy: UNIFORM_RESOURCE_ERRORS
+      x-error-codes:
+      - VI_REQUEST_INVALID
+      - VI_AUTH_REQUIRED
+      - VI_FORBIDDEN
+      - VI_RESOURCE_NOT_VISIBLE
+      - VI_VERSION_CONFLICT
+      - VI_STATE_CONFLICT
+      - VI_CONFIG_INVALID
+      - VI_CONFIG_CHANGED
+      - VI_SECRET_UNAVAILABLE
+      - VI_RATE_LIMITED
+      - VI_INTERNAL_ERROR
+      - VI_UPSTREAM_UNAVAILABLE
+    post:
+      operationId: V64_post_api_admin_integrations_templates
+      summary: 创建场景模板
+      tags:
+      - ADMIN
+      - INTEGRATION_V64
+      description: 主PRD第23章。服务端校验真实主体、环境、权限、对象归属、状态和版本；密钥不回显、不入日志；所有副作用幂等。
+      security:
+      - AdminBearerAuth: []
+      x-contract-baseline: V6.4
+      x-flow-ids:
+      - F44
+      x-authorization:
+        realm: ADMIN
+        scope: ORG_DEPT_CONFIG
+        permission: biz:messagetemplate:create
+      parameters:
+      - name: Idempotency-Key
+        in: header
+        required: true
+        schema:
+          type: string
+          description: UUID；按主体+动作+资源+键及请求摘要保存首次结果；同键不同体409，至少24h，资金/交接另有永久业务去重
+      - name: X-Client-Type
+        in: header
+        required: true
+        schema:
+          type: string
+          enum:
+          - owner
+          - driver
+          - station
+          - admin
+        description: 仅审计来源，不作为授权；须匹配服务端会话视角
+      responses:
+        '200':
+          description: 真实处理后的公开/脱敏结果，不返回占位Ack
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+                enum:
+                - no-store
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                properties:
+                  code:
+                    type: integer
+                    enum:
+                    - 200
+                  msg:
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/ExternalTemplateView'
+                required:
+                - code
+                - msg
+                - data
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalError'
+        '503':
+          $ref: '#/components/responses/Unavailable'
+      x-permission: biz:messagetemplate:create
+      x-error-policy: UNIFORM_RESOURCE_ERRORS
+      x-error-codes:
+      - VI_REQUEST_INVALID
+      - VI_AUTH_REQUIRED
+      - VI_FORBIDDEN
+      - VI_RESOURCE_NOT_VISIBLE
+      - VI_VERSION_CONFLICT
+      - VI_STATE_CONFLICT
+      - VI_CONFIG_INVALID
+      - VI_CONFIG_CHANGED
+      - VI_SECRET_UNAVAILABLE
+      - VI_RATE_LIMITED
+      - VI_INTERNAL_ERROR
+      - VI_UPSTREAM_UNAVAILABLE
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MessageTemplateCreate'
+  /api/admin/integrations/templates/{templateId}:
+    get:
+      operationId: V64_get_api_admin_integrations_templates_templateId
+      summary: 模板详情和版本
+      tags:
+      - ADMIN
+      - INTEGRATION_V64
+      description: 主PRD第23章。服务端校验真实主体、环境、权限、对象归属、状态和版本；密钥不回显、不入日志；所有副作用幂等。
+      security:
+      - AdminBearerAuth: []
+      x-contract-baseline: V6.4
+      x-flow-ids:
+      - F44
+      x-authorization:
+        realm: ADMIN
+        scope: ORG_DEPT_CONFIG
+        permission: biz:messagetemplate:query
+      parameters:
+      - name: X-Client-Type
+        in: header
+        required: true
+        schema:
+          type: string
+          enum:
+          - owner
+          - driver
+          - station
+          - admin
+        description: 仅审计来源，不作为授权；须匹配服务端会话视角
+      - name: templateId
+        in: path
+        required: true
+        schema: *id001
+      responses:
+        '200':
+          description: 真实处理后的公开/脱敏结果，不返回占位Ack
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+                enum:
+                - no-store
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                properties:
+                  code:
+                    type: integer
+                    enum:
+                    - 200
+                  msg:
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/ExternalTemplateView'
+                required:
+                - code
+                - msg
+                - data
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalError'
+        '503':
+          $ref: '#/components/responses/Unavailable'
+      x-permission: biz:messagetemplate:query
+      x-error-policy: UNIFORM_RESOURCE_ERRORS
+      x-error-codes:
+      - VI_REQUEST_INVALID
+      - VI_AUTH_REQUIRED
+      - VI_FORBIDDEN
+      - VI_RESOURCE_NOT_VISIBLE
+      - VI_VERSION_CONFLICT
+      - VI_STATE_CONFLICT
+      - VI_CONFIG_INVALID
+      - VI_CONFIG_CHANGED
+      - VI_SECRET_UNAVAILABLE
+      - VI_RATE_LIMITED
+      - VI_INTERNAL_ERROR
+      - VI_UPSTREAM_UNAVAILABLE
+  /api/admin/integrations/templates/{templateId}/draft:
+    put:
+      operationId: V64_put_api_admin_integrations_templates_templateId_draft
+      summary: 保存模板草稿
+      tags:
+      - ADMIN
+      - INTEGRATION_V64
+      description: 主PRD第23章。服务端校验真实主体、环境、权限、对象归属、状态和版本；密钥不回显、不入日志；所有副作用幂等。
+      security:
+      - AdminBearerAuth: []
+      x-contract-baseline: V6.4
+      x-flow-ids:
+      - F44
+      x-authorization:
+        realm: ADMIN
+        scope: ORG_DEPT_CONFIG
+        permission: biz:messagetemplate:edit
+      parameters:
+      - name: Idempotency-Key
+        in: header
+        required: true
+        schema:
+          type: string
+          description: UUID；按主体+动作+资源+键及请求摘要保存首次结果；同键不同体409，至少24h，资金/交接另有永久业务去重
+      - name: X-Client-Type
+        in: header
+        required: true
+        schema:
+          type: string
+          enum:
+          - owner
+          - driver
+          - station
+          - admin
+        description: 仅审计来源，不作为授权；须匹配服务端会话视角
+      - name: templateId
+        in: path
+        required: true
+        schema: *id001
+      responses:
+        '200':
+          description: 真实处理后的公开/脱敏结果，不返回占位Ack
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+                enum:
+                - no-store
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                properties:
+                  code:
+                    type: integer
+                    enum:
+                    - 200
+                  msg:
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/ExternalTemplateView'
+                required:
+                - code
+                - msg
+                - data
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalError'
+        '503':
+          $ref: '#/components/responses/Unavailable'
+      x-permission: biz:messagetemplate:edit
+      x-error-policy: UNIFORM_RESOURCE_ERRORS
+      x-error-codes:
+      - VI_REQUEST_INVALID
+      - VI_AUTH_REQUIRED
+      - VI_FORBIDDEN
+      - VI_RESOURCE_NOT_VISIBLE
+      - VI_VERSION_CONFLICT
+      - VI_STATE_CONFLICT
+      - VI_CONFIG_INVALID
+      - VI_CONFIG_CHANGED
+      - VI_SECRET_UNAVAILABLE
+      - VI_RATE_LIMITED
+      - VI_INTERNAL_ERROR
+      - VI_UPSTREAM_UNAVAILABLE
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExternalTemplateDraftRequest'
+  /api/admin/integrations/templates/{templateId}/checks:
+    post:
+      operationId: V64_post_api_admin_integrations_templates_templateId_checks
+      summary: 校验字段映射和官方审批
+      tags:
+      - ADMIN
+      - INTEGRATION_V64
+      description: 主PRD第23章。服务端校验真实主体、环境、权限、对象归属、状态和版本；密钥不回显、不入日志；所有副作用幂等。
+      security:
+      - AdminBearerAuth: []
+      x-contract-baseline: V6.4
+      x-flow-ids:
+      - F47
+      x-authorization:
+        realm: ADMIN
+        scope: ORG_DEPT_CONFIG
+        permission: biz:messagetemplate:check
+      parameters:
+      - name: Idempotency-Key
+        in: header
+        required: true
+        schema:
+          type: string
+          description: UUID；按主体+动作+资源+键及请求摘要保存首次结果；同键不同体409，至少24h，资金/交接另有永久业务去重
+      - name: X-Client-Type
+        in: header
+        required: true
+        schema:
+          type: string
+          enum:
+          - owner
+          - driver
+          - station
+          - admin
+        description: 仅审计来源，不作为授权；须匹配服务端会话视角
+      - name: templateId
+        in: path
+        required: true
+        schema: *id001
+      responses:
+        '200':
+          description: 真实处理后的公开/脱敏结果，不返回占位Ack
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+                enum:
+                - no-store
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                properties:
+                  code:
+                    type: integer
+                    enum:
+                    - 200
+                  msg:
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/TemplateCheckView'
+                required:
+                - code
+                - msg
+                - data
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalError'
+        '503':
+          $ref: '#/components/responses/Unavailable'
+      x-permission: biz:messagetemplate:check
+      x-error-policy: UNIFORM_RESOURCE_ERRORS
+      x-error-codes:
+      - VI_REQUEST_INVALID
+      - VI_AUTH_REQUIRED
+      - VI_FORBIDDEN
+      - VI_RESOURCE_NOT_VISIBLE
+      - VI_VERSION_CONFLICT
+      - VI_STATE_CONFLICT
+      - VI_CONFIG_INVALID
+      - VI_CONFIG_CHANGED
+      - VI_SECRET_UNAVAILABLE
+      - VI_RATE_LIMITED
+      - VI_INTERNAL_ERROR
+      - VI_UPSTREAM_UNAVAILABLE
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IntegrationCheckRequest'
+  /api/admin/integrations/templates/{templateId}/preview:
+    post:
+      operationId: V64_post_api_admin_integrations_templates_templateId_preview
+      summary: 仅渲染模板预览不发送
+      tags:
+      - ADMIN
+      - INTEGRATION_V64
+      description: 主PRD第23章。服务端校验真实主体、环境、权限、对象归属、状态和版本；密钥不回显、不入日志；所有副作用幂等。
+      security:
+      - AdminBearerAuth: []
+      x-contract-baseline: V6.4
+      x-flow-ids:
+      - F47
+      x-authorization:
+        realm: ADMIN
+        scope: ORG_DEPT_CONFIG
+        permission: biz:messagetemplate:query
+      parameters:
+      - name: Idempotency-Key
+        in: header
+        required: true
+        schema:
+          type: string
+          description: UUID；按主体+动作+资源+键及请求摘要保存首次结果；同键不同体409，至少24h，资金/交接另有永久业务去重
+      - name: X-Client-Type
+        in: header
+        required: true
+        schema:
+          type: string
+          enum:
+          - owner
+          - driver
+          - station
+          - admin
+        description: 仅审计来源，不作为授权；须匹配服务端会话视角
+      - name: templateId
+        in: path
+        required: true
+        schema: *id001
+      responses:
+        '200':
+          description: 真实处理后的公开/脱敏结果，不返回占位Ack
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+                enum:
+                - no-store
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                properties:
+                  code:
+                    type: integer
+                    enum:
+                    - 200
+                  msg:
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/TemplatePreviewView'
+                required:
+                - code
+                - msg
+                - data
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalError'
+        '503':
+          $ref: '#/components/responses/Unavailable'
+      x-permission: biz:messagetemplate:query
+      x-error-policy: UNIFORM_RESOURCE_ERRORS
+      x-error-codes:
+      - VI_REQUEST_INVALID
+      - VI_AUTH_REQUIRED
+      - VI_FORBIDDEN
+      - VI_RESOURCE_NOT_VISIBLE
+      - VI_VERSION_CONFLICT
+      - VI_STATE_CONFLICT
+      - VI_CONFIG_INVALID
+      - VI_CONFIG_CHANGED
+      - VI_SECRET_UNAVAILABLE
+      - VI_RATE_LIMITED
+      - VI_INTERNAL_ERROR
+      - VI_UPSTREAM_UNAVAILABLE
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TemplatePreviewRequest'
+  /api/admin/integrations/templates/{templateId}/publish:
+    post:
+      operationId: V64_post_api_admin_integrations_templates_templateId_publish
+      summary: 发布模板新版本
+      tags:
+      - ADMIN
+      - INTEGRATION_V64
+      description: 主PRD第23章。服务端校验真实主体、环境、权限、对象归属、状态和版本；密钥不回显、不入日志；所有副作用幂等。
+      security:
+      - AdminBearerAuth: []
+      x-contract-baseline: V6.4
+      x-flow-ids:
+      - F47
+      x-authorization:
+        realm: ADMIN
+        scope: ORG_DEPT_CONFIG
+        permission: biz:messagetemplate:publish
+      parameters:
+      - name: Idempotency-Key
+        in: header
+        required: true
+        schema:
+          type: string
+          description: UUID；按主体+动作+资源+键及请求摘要保存首次结果；同键不同体409，至少24h，资金/交接另有永久业务去重
+      - name: X-Client-Type
+        in: header
+        required: true
+        schema:
+          type: string
+          enum:
+          - owner
+          - driver
+          - station
+          - admin
+        description: 仅审计来源，不作为授权；须匹配服务端会话视角
+      - name: templateId
+        in: path
+        required: true
+        schema: *id001
+      responses:
+        '200':
+          description: 真实处理后的公开/脱敏结果，不返回占位Ack
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+                enum:
+                - no-store
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                properties:
+                  code:
+                    type: integer
+                    enum:
+                    - 200
+                  msg:
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/TemplatePublicationView'
+                required:
+                - code
+                - msg
+                - data
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalError'
+        '503':
+          $ref: '#/components/responses/Unavailable'
+      x-permission: biz:messagetemplate:publish
+      x-error-policy: UNIFORM_RESOURCE_ERRORS
+      x-error-codes:
+      - VI_REQUEST_INVALID
+      - VI_AUTH_REQUIRED
+      - VI_FORBIDDEN
+      - VI_RESOURCE_NOT_VISIBLE
+      - VI_VERSION_CONFLICT
+      - VI_STATE_CONFLICT
+      - VI_CONFIG_INVALID
+      - VI_CONFIG_CHANGED
+      - VI_SECRET_UNAVAILABLE
+      - VI_RATE_LIMITED
+      - VI_INTERNAL_ERROR
+      - VI_UPSTREAM_UNAVAILABLE
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IntegrationPublishRequest'
+  /api/admin/integrations/templates/{templateId}/publications:
+    get:
+      operationId: V64_get_api_admin_integrations_templates_templateId_publications
+      summary: 模板发布历史
+      tags:
+      - ADMIN
+      - INTEGRATION_V64
+      description: 主PRD第23章。服务端校验真实主体、环境、权限、对象归属、状态和版本；密钥不回显、不入日志；所有副作用幂等。
+      security:
+      - AdminBearerAuth: []
+      x-contract-baseline: V6.4
+      x-flow-ids:
+      - F44
+      x-authorization:
+        realm: ADMIN
+        scope: ORG_DEPT_CONFIG
+        permission: biz:messagetemplate:query
+      parameters:
+      - name: X-Client-Type
+        in: header
+        required: true
+        schema:
+          type: string
+          enum:
+          - owner
+          - driver
+          - station
+          - admin
+        description: 仅审计来源，不作为授权；须匹配服务端会话视角
+      - name: templateId
+        in: path
+        required: true
+        schema: *id001
+      - name: pageNum
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+          default: 1
+      - name: pageSize
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 100
+          default: 20
+      responses:
+        '200':
+          description: 真实处理后的公开/脱敏结果，不返回占位Ack
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+                enum:
+                - no-store
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                properties:
+                  code:
+                    type: integer
+                    enum:
+                    - 200
+                  msg:
+                    type: string
+                  rows:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/TemplatePublicationView'
+                  total:
+                    type: integer
+                    format: int64
+                    minimum: 0
+                required:
+                - code
+                - msg
+                - rows
+                - total
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalError'
+        '503':
+          $ref: '#/components/responses/Unavailable'
+      x-permission: biz:messagetemplate:query
+      x-error-policy: UNIFORM_RESOURCE_ERRORS
+      x-error-codes:
+      - VI_REQUEST_INVALID
+      - VI_AUTH_REQUIRED
+      - VI_FORBIDDEN
+      - VI_RESOURCE_NOT_VISIBLE
+      - VI_VERSION_CONFLICT
+      - VI_STATE_CONFLICT
+      - VI_CONFIG_INVALID
+      - VI_CONFIG_CHANGED
+      - VI_SECRET_UNAVAILABLE
+      - VI_RATE_LIMITED
+      - VI_INTERNAL_ERROR
+      - VI_UPSTREAM_UNAVAILABLE
+  /api/admin/integrations/templates/{templateId}/test:
+    post:
+      operationId: V64_post_api_admin_integrations_templates_templateId_test
+      summary: 白名单确认后真实测试发送
+      tags:
+      - ADMIN
+      - INTEGRATION_V64
+      description: 主PRD第23章。服务端校验真实主体、环境、权限、对象归属、状态和版本；密钥不回显、不入日志；所有副作用幂等。
+      security:
+      - AdminBearerAuth: []
+      x-contract-baseline: V6.4
+      x-flow-ids:
+      - F46
+      x-authorization:
+        realm: ADMIN
+        scope: ORG_DEPT_CONFIG
+        permission: biz:integration:test
+      parameters:
+      - name: Idempotency-Key
+        in: header
+        required: true
+        schema:
+          type: string
+          description: UUID；按主体+动作+资源+键及请求摘要保存首次结果；同键不同体409，至少24h，资金/交接另有永久业务去重
+      - name: X-Client-Type
+        in: header
+        required: true
+        schema:
+          type: string
+          enum:
+          - owner
+          - driver
+          - station
+          - admin
+        description: 仅审计来源，不作为授权；须匹配服务端会话视角
+      - name: templateId
+        in: path
+        required: true
+        schema: *id001
+      responses:
+        '200':
+          description: 真实处理后的公开/脱敏结果，不返回占位Ack
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+                enum:
+                - no-store
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                properties:
+                  code:
+                    type: integer
+                    enum:
+                    - 200
+                  msg:
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/NotificationDeliveryView'
+                required:
+                - code
+                - msg
+                - data
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalError'
+        '503':
+          $ref: '#/components/responses/Unavailable'
+      x-permission: biz:integration:test
+      x-error-policy: UNIFORM_RESOURCE_ERRORS
+      x-error-codes:
+      - VI_REQUEST_INVALID
+      - VI_AUTH_REQUIRED
+      - VI_FORBIDDEN
+      - VI_RESOURCE_NOT_VISIBLE
+      - VI_VERSION_CONFLICT
+      - VI_STATE_CONFLICT
+      - VI_CONFIG_INVALID
+      - VI_CONFIG_CHANGED
+      - VI_SECRET_UNAVAILABLE
+      - VI_RATE_LIMITED
+      - VI_INTERNAL_ERROR
+      - VI_UPSTREAM_UNAVAILABLE
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExternalTestRequest'
+  /api/admin/integrations/routes:
+    get:
+      operationId: V64_get_api_admin_integrations_routes
+      summary: 场景路由与备用策略
+      tags:
+      - ADMIN
+      - INTEGRATION_V64
+      description: 主PRD第23章。服务端校验真实主体、环境、权限、对象归属、状态和版本；密钥不回显、不入日志；所有副作用幂等。
+      security:
+      - AdminBearerAuth: []
+      x-contract-baseline: V6.4
+      x-flow-ids:
+      - F44
+      x-authorization:
+        realm: ADMIN
+        scope: ORG_DEPT_CONFIG
+        permission: biz:messageroute:query
+      parameters:
+      - name: X-Client-Type
+        in: header
+        required: true
+        schema:
+          type: string
+          enum:
+          - owner
+          - driver
+          - station
+          - admin
+        description: 仅审计来源，不作为授权；须匹配服务端会话视角
+      - name: pageNum
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+          default: 1
+      - name: pageSize
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 100
+          default: 20
+      responses:
+        '200':
+          description: 真实处理后的公开/脱敏结果，不返回占位Ack
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+                enum:
+                - no-store
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                properties:
+                  code:
+                    type: integer
+                    enum:
+                    - 200
+                  msg:
+                    type: string
+                  rows:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/MessageRouteView'
+                  total:
+                    type: integer
+                    format: int64
+                    minimum: 0
+                required:
+                - code
+                - msg
+                - rows
+                - total
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalError'
+        '503':
+          $ref: '#/components/responses/Unavailable'
+      x-permission: biz:messageroute:query
+      x-error-policy: UNIFORM_RESOURCE_ERRORS
+      x-error-codes:
+      - VI_REQUEST_INVALID
+      - VI_AUTH_REQUIRED
+      - VI_FORBIDDEN
+      - VI_RESOURCE_NOT_VISIBLE
+      - VI_VERSION_CONFLICT
+      - VI_STATE_CONFLICT
+      - VI_CONFIG_INVALID
+      - VI_CONFIG_CHANGED
+      - VI_SECRET_UNAVAILABLE
+      - VI_RATE_LIMITED
+      - VI_INTERNAL_ERROR
+      - VI_UPSTREAM_UNAVAILABLE
+    post:
+      operationId: V64_post_api_admin_integrations_routes
+      summary: 创建已校验生效的路由
+      tags:
+      - ADMIN
+      - INTEGRATION_V64
+      description: 主PRD第23章。服务端校验真实主体、环境、权限、对象归属、状态和版本；密钥不回显、不入日志；所有副作用幂等。
+      security:
+      - AdminBearerAuth: []
+      x-contract-baseline: V6.4
+      x-flow-ids:
+      - F46
+      x-authorization:
+        realm: ADMIN
+        scope: ORG_DEPT_CONFIG
+        permission: biz:messageroute:edit
+      parameters:
+      - name: Idempotency-Key
+        in: header
+        required: true
+        schema:
+          type: string
+          description: UUID；按主体+动作+资源+键及请求摘要保存首次结果；同键不同体409，至少24h，资金/交接另有永久业务去重
+      - name: X-Client-Type
+        in: header
+        required: true
+        schema:
+          type: string
+          enum:
+          - owner
+          - driver
+          - station
+          - admin
+        description: 仅审计来源，不作为授权；须匹配服务端会话视角
+      responses:
+        '200':
+          description: 真实处理后的公开/脱敏结果，不返回占位Ack
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+                enum:
+                - no-store
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                properties:
+                  code:
+                    type: integer
+                    enum:
+                    - 200
+                  msg:
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/MessageRouteView'
+                required:
+                - code
+                - msg
+                - data
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalError'
+        '503':
+          $ref: '#/components/responses/Unavailable'
+      x-permission: biz:messageroute:edit
+      x-error-policy: UNIFORM_RESOURCE_ERRORS
+      x-error-codes:
+      - VI_REQUEST_INVALID
+      - VI_AUTH_REQUIRED
+      - VI_FORBIDDEN
+      - VI_RESOURCE_NOT_VISIBLE
+      - VI_VERSION_CONFLICT
+      - VI_STATE_CONFLICT
+      - VI_CONFIG_INVALID
+      - VI_CONFIG_CHANGED
+      - VI_SECRET_UNAVAILABLE
+      - VI_RATE_LIMITED
+      - VI_INTERNAL_ERROR
+      - VI_UPSTREAM_UNAVAILABLE
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MessageRouteCreate'
+  /api/admin/integrations/routes/{routeId}:
+    put:
+      operationId: V64_put_api_admin_integrations_routes_routeId
+      summary: 原子保存生效场景路由
+      tags:
+      - ADMIN
+      - INTEGRATION_V64
+      description: 主PRD第23章。服务端校验真实主体、环境、权限、对象归属、状态和版本；密钥不回显、不入日志；所有副作用幂等。
+      security:
+      - AdminBearerAuth: []
+      x-contract-baseline: V6.4
+      x-flow-ids:
+      - F46
+      x-authorization:
+        realm: ADMIN
+        scope: ORG_DEPT_CONFIG
+        permission: biz:messageroute:edit
+      parameters:
+      - name: Idempotency-Key
+        in: header
+        required: true
+        schema:
+          type: string
+          description: UUID；按主体+动作+资源+键及请求摘要保存首次结果；同键不同体409，至少24h，资金/交接另有永久业务去重
+      - name: X-Client-Type
+        in: header
+        required: true
+        schema:
+          type: string
+          enum:
+          - owner
+          - driver
+          - station
+          - admin
+        description: 仅审计来源，不作为授权；须匹配服务端会话视角
+      - name: routeId
+        in: path
+        required: true
+        schema: *id001
+      responses:
+        '200':
+          description: 真实处理后的公开/脱敏结果，不返回占位Ack
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+                enum:
+                - no-store
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                properties:
+                  code:
+                    type: integer
+                    enum:
+                    - 200
+                  msg:
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/MessageRouteView'
+                required:
+                - code
+                - msg
+                - data
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalError'
+        '503':
+          $ref: '#/components/responses/Unavailable'
+      x-permission: biz:messageroute:edit
+      x-error-policy: UNIFORM_RESOURCE_ERRORS
+      x-error-codes:
+      - VI_REQUEST_INVALID
+      - VI_AUTH_REQUIRED
+      - VI_FORBIDDEN
+      - VI_RESOURCE_NOT_VISIBLE
+      - VI_VERSION_CONFLICT
+      - VI_STATE_CONFLICT
+      - VI_CONFIG_INVALID
+      - VI_CONFIG_CHANGED
+      - VI_SECRET_UNAVAILABLE
+      - VI_RATE_LIMITED
+      - VI_INTERNAL_ERROR
+      - VI_UPSTREAM_UNAVAILABLE
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MessageRouteRequest'
+  /api/admin/integrations/deliveries:
+    get:
+      operationId: V64_get_api_admin_integrations_deliveries
+      summary: 脱敏发送结果查询
+      tags:
+      - ADMIN
+      - INTEGRATION_V64
+      description: 主PRD第23章。服务端校验真实主体、环境、权限、对象归属、状态和版本；密钥不回显、不入日志；所有副作用幂等。
+      security:
+      - AdminBearerAuth: []
+      x-contract-baseline: V6.4
+      x-flow-ids:
+      - F44
+      x-authorization:
+        realm: ADMIN
+        scope: ORG_DEPT_CONFIG
+        permission: biz:delivery:query
+      parameters:
+      - name: X-Client-Type
+        in: header
+        required: true
+        schema:
+          type: string
+          enum:
+          - owner
+          - driver
+          - station
+          - admin
+        description: 仅审计来源，不作为授权；须匹配服务端会话视角
+      - name: scene
+        in: query
+        required: false
+        schema:
+          $ref: '#/components/schemas/NotificationScene'
+      - name: status
+        in: query
+        required: false
+        schema:
+          $ref: '#/components/schemas/ExternalDeliveryStatus'
+      - name: ownerDeptId
+        in: query
+        required: false
+        schema: *id001
+      - name: pageNum
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+          default: 1
+      - name: pageSize
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 100
+          default: 20
+      responses:
+        '200':
+          description: 真实处理后的公开/脱敏结果，不返回占位Ack
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+                enum:
+                - no-store
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                properties:
+                  code:
+                    type: integer
+                    enum:
+                    - 200
+                  msg:
+                    type: string
+                  rows:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/NotificationDeliveryView'
+                  total:
+                    type: integer
+                    format: int64
+                    minimum: 0
+                required:
+                - code
+                - msg
+                - rows
+                - total
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalError'
+        '503':
+          $ref: '#/components/responses/Unavailable'
+      x-permission: biz:delivery:query
+      x-error-policy: UNIFORM_RESOURCE_ERRORS
+      x-error-codes:
+      - VI_REQUEST_INVALID
+      - VI_AUTH_REQUIRED
+      - VI_FORBIDDEN
+      - VI_RESOURCE_NOT_VISIBLE
+      - VI_VERSION_CONFLICT
+      - VI_STATE_CONFLICT
+      - VI_CONFIG_INVALID
+      - VI_CONFIG_CHANGED
+      - VI_SECRET_UNAVAILABLE
+      - VI_RATE_LIMITED
+      - VI_INTERNAL_ERROR
+      - VI_UPSTREAM_UNAVAILABLE
+  /api/admin/integrations/deliveries/{deliveryId}/query:
+    post:
+      operationId: V64_post_api_admin_integrations_deliveries_deliveryId_query
+      summary: 查询原发送回执不重发
+      tags:
+      - ADMIN
+      - INTEGRATION_V64
+      description: 主PRD第23章。服务端校验真实主体、环境、权限、对象归属、状态和版本；密钥不回显、不入日志；所有副作用幂等。
+      security:
+      - AdminBearerAuth: []
+      x-contract-baseline: V6.4
+      x-flow-ids:
+      - F46
+      x-authorization:
+        realm: ADMIN
+        scope: ORG_DEPT_CONFIG
+        permission: biz:delivery:query
+      parameters:
+      - name: Idempotency-Key
+        in: header
+        required: true
+        schema:
+          type: string
+          description: UUID；按主体+动作+资源+键及请求摘要保存首次结果；同键不同体409，至少24h，资金/交接另有永久业务去重
+      - name: X-Client-Type
+        in: header
+        required: true
+        schema:
+          type: string
+          enum:
+          - owner
+          - driver
+          - station
+          - admin
+        description: 仅审计来源，不作为授权；须匹配服务端会话视角
+      - name: deliveryId
+        in: path
+        required: true
+        schema: *id001
+      responses:
+        '200':
+          description: 真实处理后的公开/脱敏结果，不返回占位Ack
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+                enum:
+                - no-store
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                properties:
+                  code:
+                    type: integer
+                    enum:
+                    - 200
+                  msg:
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/NotificationDeliveryView'
+                required:
+                - code
+                - msg
+                - data
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalError'
+        '503':
+          $ref: '#/components/responses/Unavailable'
+      x-permission: biz:delivery:query
+      x-error-policy: UNIFORM_RESOURCE_ERRORS
+      x-error-codes:
+      - VI_REQUEST_INVALID
+      - VI_AUTH_REQUIRED
+      - VI_FORBIDDEN
+      - VI_RESOURCE_NOT_VISIBLE
+      - VI_VERSION_CONFLICT
+      - VI_STATE_CONFLICT
+      - VI_CONFIG_INVALID
+      - VI_CONFIG_CHANGED
+      - VI_SECRET_UNAVAILABLE
+      - VI_RATE_LIMITED
+      - VI_INTERNAL_ERROR
+      - VI_UPSTREAM_UNAVAILABLE
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeliveryAction'
+  /api/admin/integrations/deliveries/{deliveryId}/retry:
+    post:
+      operationId: V64_post_api_admin_integrations_deliveries_deliveryId_retry
+      summary: 仅确定失败后重试
+      tags:
+      - ADMIN
+      - INTEGRATION_V64
+      description: 主PRD第23章。服务端校验真实主体、环境、权限、对象归属、状态和版本；密钥不回显、不入日志；所有副作用幂等。 UNKNOWN与ACCEPTED不得重试/切通道；业务过期或配置停用只可跳过。
+      security:
+      - AdminBearerAuth: []
+      x-contract-baseline: V6.4
+      x-flow-ids:
+      - F46
+      x-authorization:
+        realm: ADMIN
+        scope: ORG_DEPT_CONFIG
+        permission: biz:delivery:retry
+      parameters:
+      - name: Idempotency-Key
+        in: header
+        required: true
+        schema:
+          type: string
+          description: UUID；按主体+动作+资源+键及请求摘要保存首次结果；同键不同体409，至少24h，资金/交接另有永久业务去重
+      - name: X-Client-Type
+        in: header
+        required: true
+        schema:
+          type: string
+          enum:
+          - owner
+          - driver
+          - station
+          - admin
+        description: 仅审计来源，不作为授权；须匹配服务端会话视角
+      - name: deliveryId
+        in: path
+        required: true
+        schema: *id001
+      responses:
+        '200':
+          description: 真实处理后的公开/脱敏结果，不返回占位Ack
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+                enum:
+                - no-store
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                properties:
+                  code:
+                    type: integer
+                    enum:
+                    - 200
+                  msg:
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/NotificationDeliveryView'
+                required:
+                - code
+                - msg
+                - data
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalError'
+        '503':
+          $ref: '#/components/responses/Unavailable'
+      x-permission: biz:delivery:retry
+      x-error-policy: UNIFORM_RESOURCE_ERRORS
+      x-error-codes:
+      - VI_REQUEST_INVALID
+      - VI_AUTH_REQUIRED
+      - VI_FORBIDDEN
+      - VI_RESOURCE_NOT_VISIBLE
+      - VI_VERSION_CONFLICT
+      - VI_STATE_CONFLICT
+      - VI_CONFIG_INVALID
+      - VI_CONFIG_CHANGED
+      - VI_SECRET_UNAVAILABLE
+      - VI_RATE_LIMITED
+      - VI_INTERNAL_ERROR
+      - VI_UPSTREAM_UNAVAILABLE
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeliveryAction'
+components:
+  schemas:
+    DeliveryAction:
+      type: object
+      additionalProperties: false
+      properties:
+        expectedVersion:
+          type: integer
+          format: int64
+          minimum: 0
+        reason: &id003
+          type: string
+          minLength: 2
+          maxLength: 500
+      required:
+      - expectedVersion
+      - reason
+    ApiError:
+      type: object
+      additionalProperties: false
+      properties:
+        code:
+          type: integer
+          description: 等于HTTP状态
+          enum:
+          - 400
+          - 401
+          - 403
+          - 404
+          - 409
+          - 422
+          - 429
+          - 500
+          - 503
+        errorCode:
+          type: string
+          enum:
+          - VI_REQUEST_INVALID
+          - VI_AUTH_REQUIRED
+          - VI_TOKEN_REALM_MISMATCH
+          - VI_REFRESH_REUSED
+          - VI_FORBIDDEN
+          - VI_SELF_REVIEW_DENIED
+          - VI_RESOURCE_NOT_VISIBLE
+          - VI_VERSION_CONFLICT
+          - VI_STATE_CONFLICT
+          - VI_IDEMPOTENCY_CONFLICT
+          - VI_SELECTION_CONFLICT
+          - VI_CONTEXT_CHANGED
+          - VI_SNAPSHOT_CHANGED
+          - VI_DATA_INVALID
+          - VI_EVIDENCE_INCOMPLETE
+          - VI_HANDOVER_CODE_INVALID
+          - VI_HANDOVER_LOCKED
+          - VI_UNPRICED_LINES
+          - VI_REFUND_LIMIT
+          - VI_PAYMENT_LIMIT
+          - VI_SERVICE_UNAVAILABLE
+          - VI_CAPABILITY_NOT_CONFIGURED
+          - VI_TRAINING_NOT_READY
+          - VI_RATE_LIMITED
+          - VI_INTERNAL_ERROR
+          - VI_AUTHORITY_UNAVAILABLE
+          - VI_UPSTREAM_UNAVAILABLE
+          - VI_PHONE_PROOF_REQUIRED
+          - VI_PHONE_PROOF_REUSED
+          - VI_EMPLOYEE_LINK_CONFLICT
+          - VI_EMPLOYEE_LINK_BLOCKED
+          - VI_CONFIG_INVALID
+          - VI_CONFIG_CHANGED
+          - VI_SECRET_UNAVAILABLE
+          - VI_PAYMENT_METHOD_DISABLED
+          - VI_PAYMENT_METHOD_LOCKED
+          - VI_SEND_RESULT_UNKNOWN
+          - VI_SUBSCRIPTION_UNAVAILABLE
+          - VI_OFFLINE_PROOF_CONFLICT
+        msg:
+          type: string
+          description: 服务端安全人类文案，前端逻辑按errorCode而非此文本
+        requestId:
+          type: string
+        retryable:
+          type: boolean
+        retryAfterSeconds:
+          type: integer
+          minimum: 0
+          nullable: true
+        data:
+          $ref: '#/components/schemas/ApiErrorDetails'
+      required:
+      - code
+      - errorCode
+      - msg
+      - requestId
+      - retryable
+      - retryAfterSeconds
+      - data
+    ApiErrorDetails:
+      type: object
+      additionalProperties: false
+      properties:
+        fieldErrors:
+          type: array
+          items:
+            $ref: '#/components/schemas/FieldViolation'
+        conflicts:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConflictItem'
+        missingPhotoTypes:
+          type: array
+          items:
+            $ref: '#/components/schemas/PhotoType'
+        remainingAttempts:
+          type: integer
+          minimum: 0
+          nullable: true
+        currentVersion:
+          type: integer
+          format: int64
+          minimum: 0
+          maximum: 9007199254740991
+          description: 最后读取的非负版本；更新CAS，冲突409
+          nullable: true
+      description: 错误详情固定白名单；无明文Token/凭证/交接码/SQL
+    PhotoType:
+      type: string
+      enum:
+      - FRONT
+      - BACK
+      - LEFT
+      - RIGHT
+      - DASHBOARD
+      - INTERIOR
+      - EXTRA
+    ConflictItem:
+      type: object
+      additionalProperties: false
+      properties:
+        resourceType:
+          type: string
+        resourceId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+        reasonCode:
+          type: string
+        currentVersion:
+          type: integer
+          format: int64
+          minimum: 0
+          maximum: 9007199254740991
+          description: 最后读取的非负版本；更新CAS，冲突409
+          nullable: true
+      required:
+      - resourceType
+      - resourceId
+      - reasonCode
+      - currentVersion
+      description: 仅返回调用者已获权对象，禁止泄露其他账单成员
+    FieldViolation:
+      type: object
+      additionalProperties: false
+      properties:
+        field:
+          type: string
+        reasonCode:
+          type: string
+        message:
+          type: string
+      required:
+      - field
+      - reasonCode
+      - message
+    NotificationDeliveryView:
+      type: object
+      additionalProperties: false
+      properties:
+        deliveryId: *id001
+        eventId: *id001
+        scene:
+          $ref: '#/components/schemas/NotificationScene'
+        provider:
+          $ref: '#/components/schemas/ExternalMessageProvider'
+        recipientMask:
+          type: string
+        templateId: *id001
+        templateRevisionId: *id001
+        profileRevisionId: *id001
+        status:
+          $ref: '#/components/schemas/ExternalDeliveryStatus'
+        vendorRequestId:
+          type: string
+        vendorBizId:
+          type: string
+        safeErrorCode:
+          type: string
+        safeErrorMessage:
+          type: string
+        attemptCount:
+          type: integer
+          format: int64
+          minimum: 0
+        createdAt: &id002
+          type: string
+          format: date-time
+        updatedAt: *id002
+        allowedActions:
+          type: array
+          items:
+            type: string
+            enum:
+            - QUERY_RECEIPT
+            - RETRY_DEFINITE_FAILURE
+        version:
+          type: integer
+          format: int64
+          minimum: 0
+      required:
+      - deliveryId
+      - scene
+      - provider
+      - recipientMask
+      - status
+      - attemptCount
+      - createdAt
+      - updatedAt
+      - allowedActions
+      - version
+      description: 不记录完整手机/验证码/AccessToken/密钥；ACCEPTED不是DELIVERED，更不是已读。UNKNOWN禁止自动重发。
+    ExternalDeliveryStatus:
+      type: string
+      enum:
+      - PENDING
+      - SENDING
+      - ACCEPTED
+      - DELIVERED
+      - FAILED
+      - UNKNOWN
+      - SKIPPED
+    ExternalMessageProvider:
+      type: string
+      enum:
+      - TENCENT_SMS
+      - ALIYUN_SMS
+      - WECHAT_SUBSCRIBE
+    NotificationScene:
+      type: string
+      enum:
+      - LOGIN_OTP
+      - PHONE_VERIFY
+      - BOOKING_CONFIRMED
+      - DRIVER_ASSIGNED
+      - PICKUP_ARRIVED
+      - INSPECTION_FINISHED
+      - RETURN_COMPLETED
+      - AFTERSALE_DECIDED
+      - REFUND_CHANGED
+      - DRIVER_INVITE
+      - STATEMENT_READY
+    MessageRouteRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        expectedVersion:
+          type: integer
+          format: int64
+          minimum: 0
+        scene: &id004
+          $ref: '#/components/schemas/NotificationScene'
+        audience: &id005
+          $ref: '#/components/schemas/NotificationAudience'
+        ownerDeptId: *id001
+        environment: &id006
+          $ref: '#/components/schemas/IntegrationEnvironment'
+        primaryTemplateId: *id001
+        fallbackTemplateId: *id001
+        fallbackPolicy: &id007
+          type: string
+          enum:
+          - NONE
+          - DEFINITELY_NOT_SENT_ONLY
+        enabled: &id008
+          type: boolean
+        reason: *id003
+      required:
+      - expectedVersion
+      - scene
+      - audience
+      - ownerDeptId
+      - environment
+      - primaryTemplateId
+      - fallbackPolicy
+      - enabled
+      - reason
+      description: 只指向已发布且兼容场景的模板；同事件不得同时广播腾讯云与阿里云。改路由不改已受理发送。
+    IntegrationEnvironment:
+      type: string
+      enum:
+      - TEST
+      - LIVE
+    NotificationAudience:
+      type: string
+      enum:
+      - OWNER
+      - DRIVER
+      - STATION
+    MessageRouteView:
+      type: object
+      additionalProperties: false
+      properties:
+        scene: *id004
+        audience: *id005
+        ownerDeptId: *id001
+        environment: *id006
+        primaryTemplateId: *id001
+        fallbackTemplateId: *id001
+        fallbackPolicy: *id007
+        enabled: *id008
+        routeId: *id001
+        version:
+          type: integer
+          format: int64
+          minimum: 0
+        effectiveAt: *id002
+      required:
+      - routeId
+      - version
+      - scene
+      - audience
+      - ownerDeptId
+      - environment
+      - primaryTemplateId
+      - fallbackPolicy
+      - enabled
+      - effectiveAt
+    MessageRouteCreate:
+      type: object
+      additionalProperties: false
+      properties:
+        scene:
+          $ref: '#/components/schemas/NotificationScene'
+        audience:
+          $ref: '#/components/schemas/NotificationAudience'
+        ownerDeptId: &id009
+          type: string
+          description: 内部Long对外十进制字符串
+          pattern: ^[1-9][0-9]{0,18}$
+        environment:
+          $ref: '#/components/schemas/IntegrationEnvironment'
+        primaryTemplateId: *id009
+        fallbackTemplateId: *id009
+        fallbackPolicy:
+          type: string
+          enum:
+          - NONE
+          - DEFINITELY_NOT_SENT_ONLY
+        enabled:
+          type: boolean
+        reason:
+          type: string
+          minLength: 2
+          maxLength: 500
+      required:
+      - scene
+      - audience
+      - ownerDeptId
+      - environment
+      - primaryTemplateId
+      - fallbackPolicy
+      - enabled
+      - reason
+      description: 只指向已发布且兼容场景的模板；同事件不得同时广播腾讯云与阿里云。改路由不改已受理发送。
+    ExternalTestRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        revisionId: *id001
+        testRecipientId: *id001
+        purpose: *id003
+        acknowledgeRealSendAndCost:
+          type: boolean
+          enum:
+          - true
+        sampleValues:
+          type: object
+          additionalProperties: false
+          properties:
+            code:
+              type: string
+              maxLength: 500
+            ttlMinutes:
+              type: string
+              maxLength: 500
+            orderNo:
+              type: string
+              maxLength: 500
+            plateNo:
+              type: string
+              maxLength: 500
+            pickupWindow:
+              type: string
+              maxLength: 500
+            stationName:
+              type: string
+              maxLength: 500
+            driverDisplayName:
+              type: string
+              maxLength: 500
+            statusText:
+              type: string
+              maxLength: 500
+            resultText:
+              type: string
+              maxLength: 500
+            amountYuan:
+              type: string
+              maxLength: 500
+            statementNo:
+              type: string
+              maxLength: 500
+            serviceDate:
+              type: string
+              maxLength: 500
+            supportPhone:
+              type: string
+              maxLength: 500
+      required:
+      - revisionId
+      - testRecipientId
+      - purpose
+      - acknowledgeRealSendAndCost
+      description: 白名单测试联系人ID，不接任意号码/OpenID；订阅测试仍需本人有效授权；不生成真实订单事件。
+    TemplatePublicationView:
+      type: object
+      additionalProperties: false
+      properties:
+        publicationId: &id010
+          type: string
+          description: 内部Long对外十进制字符串
+          pattern: ^[1-9][0-9]{0,18}$
+        revisionId: *id010
+        previousRevisionId:
+          type: string
+          description: 内部Long对外十进制字符串
+          pattern: ^[1-9][0-9]{0,18}$
+          nullable: true
+        version:
+          type: integer
+          format: int64
+          minimum: 0
+        action:
+          type: string
+          enum:
+          - PUBLISH
+          - ROLLBACK
+        reason:
+          type: string
+        publishedAt:
+          type: string
+          format: date-time
+        publishedBy: *id010
+        effectiveFor:
+          type: string
+          enum:
+          - NEW_OPERATIONS
+        historicalHandling:
+          type: string
+        templateId: *id001
+      required:
+      - publicationId
+      - templateId
+      - revisionId
+      - version
+      - action
+      - publishedAt
+      - effectiveFor
+    IntegrationPublishRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        revisionId: *id001
+        expectedVersion:
+          type: integer
+          format: int64
+          minimum: 0
+        contentHash: &id018
+          type: string
+          pattern: ^[a-f0-9]{64}$
+        checkId: *id001
+        reason: *id003
+        acknowledgeNoPaymentMethods:
+          type: boolean
+        expectedDependencyVersions:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConfigReference'
+      required:
+      - revisionId
+      - expectedVersion
+      - contentHash
+      - checkId
+      - reason
+      description: 完整性与依赖版本服务端再次校验；两个开关都关需明确确认。失效的check不得发布。
+    ConfigReference:
+      type: object
+      additionalProperties: false
+      properties:
+        profileId: *id001
+        revisionId: *id001
+      required:
+      - profileId
+      - revisionId
+      description: 引用已发布版本；服务端验证同环境/公司/应用和用途。
+    TemplatePreviewRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        revisionId: *id001
+        sampleValues:
+          type: object
+          additionalProperties: false
+          properties:
+            code:
+              type: string
+              maxLength: 500
+            ttlMinutes:
+              type: string
+              maxLength: 500
+            orderNo:
+              type: string
+              maxLength: 500
+            plateNo:
+              type: string
+              maxLength: 500
+            pickupWindow:
+              type: string
+              maxLength: 500
+            stationName:
+              type: string
+              maxLength: 500
+            driverDisplayName:
+              type: string
+              maxLength: 500
+            statusText:
+              type: string
+              maxLength: 500
+            resultText:
+              type: string
+              maxLength: 500
+            amountYuan:
+              type: string
+              maxLength: 500
+            statementNo:
+              type: string
+              maxLength: 500
+            serviceDate:
+              type: string
+              maxLength: 500
+            supportPhone:
+              type: string
+              maxLength: 500
+      required:
+      - revisionId
+      - sampleValues
+      description: 仅白名单演示值；不真正发送，不接收脚本。
+    TemplatePreviewView:
+      type: object
+      additionalProperties: false
+      properties:
+        renderedText:
+          type: string
+        mappedFields:
+          type: array
+          items:
+            type: object
+            additionalProperties: false
+            properties:
+              key:
+                type: string
+              value:
+                type: string
+            required:
+            - key
+            - value
+        issues:
+          type: array
+          items:
+            $ref: '#/components/schemas/IntegrationValidationIssue'
+        willSend:
+          type: boolean
+          enum:
+          - false
+      required:
+      - renderedText
+      - mappedFields
+      - issues
+      - willSend
+    IntegrationValidationIssue:
+      type: object
+      additionalProperties: false
+      properties:
+        field:
+          type: string
+        code:
+          type: string
+        message:
+          type: string
+        severity:
+          type: string
+          enum:
+          - ERROR
+          - WARNING
+        recovery:
+          type: string
+      required:
+      - field
+      - code
+      - message
+      - severity
+    IntegrationCheckRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        revisionId: *id001
+        expectedVersion:
+          type: integer
+          format: int64
+          minimum: 0
+        level:
+          $ref: '#/components/schemas/IntegrationCheckLevel'
+      required:
+      - revisionId
+      - expectedVersion
+      - level
+    IntegrationCheckLevel:
+      type: string
+      enum:
+      - LOCAL
+      - READ_ONLY
+      - LIVE_EVIDENCE
+    TemplateCheckView:
+      type: object
+      additionalProperties: false
+      properties:
+        checkId: &id011
+          type: string
+          description: 内部Long对外十进制字符串
+          pattern: ^[1-9][0-9]{0,18}$
+        revisionId: *id011
+        contentHash:
+          type: string
+          pattern: ^[a-f0-9]{64}$
+        level:
+          $ref: '#/components/schemas/IntegrationCheckLevel'
+        status:
+          $ref: '#/components/schemas/IntegrationCheckStatus'
+        issues:
+          type: array
+          items:
+            $ref: '#/components/schemas/IntegrationValidationIssue'
+        checkedAt: &id012
+          type: string
+          format: date-time
+        expiresAt: *id012
+        realPaymentVerified:
+          type: boolean
+        templateId: *id001
+      required:
+      - checkId
+      - templateId
+      - revisionId
+      - contentHash
+      - level
+      - status
+      - issues
+      - checkedAt
+      - realPaymentVerified
+      description: READ_ONLY不扣款不发信；本地通过不代表真实联调，按字段列明不能验证的项。
+    IntegrationCheckStatus:
+      type: string
+      enum:
+      - NOT_RUN
+      - PASS
+      - FAIL
+      - PARTIAL
+    ExternalTemplateDraftRequest:
+      oneOf:
+      - $ref: '#/components/schemas/SmsTemplateDraftRequest'
+      - $ref: '#/components/schemas/SubscribeTemplateDraftRequest'
+      discriminator:
+        propertyName: provider
+    SubscribeTemplateDraftRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        expectedVersion: &id013
+          type: integer
+          format: int64
+          minimum: 0
+        profile: &id014
+          $ref: '#/components/schemas/ConfigReference'
+        vendorTemplateId: &id015
+          type: string
+          minLength: 1
+          maxLength: 256
+        approvedContent: &id016
+          type: string
+          maxLength: 2000
+        enabled: &id017
+          type: boolean
+        reason: *id003
+        provider:
+          type: string
+          enum:
+          - WECHAT_SUBSCRIBE
+        parameters:
+          type: array
+          items:
+            $ref: '#/components/schemas/SubscribeParameterBinding'
+          maxItems: 20
+        pageRoute:
+          type: string
+          maxLength: 256
+        pageParameterKeys:
+          type: array
+          items:
+            type: string
+            enum:
+            - orderNo
+            - statementId
+            - taskId
+          maxItems: 3
+          uniqueItems: true
+        miniProgramState:
+          type: string
+          enum:
+          - formal
+          - trial
+          - developer
+        lang:
+          type: string
+          enum:
+          - zh_CN
+          - zh_TW
+          - en_US
+        subscriptionType:
+          type: string
+          enum:
+          - ONCE
+          - LONG
+        longTermQualificationEvidenceId: *id001
+      required:
+      - expectedVersion
+      - profile
+      - provider
+      - enabled
+      - reason
+      description: LIVE只能formal；模板由相同AppID取得。普通业务默认ONCE，LONG不得无资格开启。页面白名单不接受外部URL/任意模板执行。
+    SubscribeParameterBinding:
+      type: object
+      additionalProperties: false
+      properties:
+        keyword:
+          type: string
+          description: 实际模板key如thing1/time2；不预设固定模板字段
+          pattern: ^[a-zA-Z]+[0-9]+$
+        valueType:
+          type: string
+          enum:
+          - THING
+          - NUMBER
+          - LETTER
+          - DATE
+          - TIME
+          - AMOUNT
+          - PHONE_NUMBER
+          - CAR_NUMBER
+          - CHARACTER_STRING
+          - NAME
+          - PHRASE
+        variable:
+          $ref: '#/components/schemas/TemplateVariable'
+        maxLength:
+          type: integer
+          format: int64
+          minimum: 1
+          maximum: 500
+      required:
+      - keyword
+      - valueType
+      - variable
+      - maxLength
+    TemplateVariable:
+      type: string
+      enum:
+      - code
+      - ttlMinutes
+      - orderNo
+      - plateNo
+      - pickupWindow
+      - stationName
+      - driverDisplayName
+      - statusText
+      - resultText
+      - amountYuan
+      - statementNo
+      - serviceDate
+      - supportPhone
+    SmsTemplateDraftRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        expectedVersion: *id013
+        profile: *id014
+        vendorTemplateId: *id015
+        approvedContent: *id016
+        enabled: *id017
+        reason: *id003
+        provider:
+          type: string
+          enum:
+          - TENCENT_SMS
+          - ALIYUN_SMS
+        signName:
+          type: string
+          maxLength: 100
+        parameters:
+          type: array
+          items:
+            $ref: '#/components/schemas/SmsParameterBinding'
+          maxItems: 20
+      required:
+      - expectedVersion
+      - profile
+      - provider
+      - enabled
+      - reason
+      description: 腾讯云变量按顺序，阿里云按名绑定；可以暂存不完整草稿，发布必填模板/签名/映射并核验官方审批状态。
+    SmsParameterBinding:
+      type: object
+      additionalProperties: false
+      properties:
+        parameterKey:
+          type: string
+          description: 腾讯云用1、2顺序键，阿里云使用模板变量名
+        variable:
+          $ref: '#/components/schemas/TemplateVariable'
+        maxLength:
+          type: integer
+          format: int64
+          minimum: 1
+          maximum: 500
+      required:
+      - parameterKey
+      - variable
+      - maxLength
+    ExternalTemplateView:
+      type: object
+      additionalProperties: false
+      properties:
+        templateId: *id001
+        name:
+          type: string
+        provider:
+          $ref: '#/components/schemas/ExternalMessageProvider'
+        scope:
+          $ref: '#/components/schemas/IntegrationScope'
+        scene:
+          $ref: '#/components/schemas/NotificationScene'
+        audience:
+          $ref: '#/components/schemas/NotificationAudience'
+        version:
+          type: integer
+          format: int64
+          minimum: 0
+        activeRevisionId:
+          type: string
+          description: 内部Long对外十进制字符串
+          pattern: ^[1-9][0-9]{0,18}$
+          nullable: true
+        draftRevisionId:
+          type: string
+          description: 内部Long对外十进制字符串
+          pattern: ^[1-9][0-9]{0,18}$
+          nullable: true
+        active:
+          allOf:
+          - $ref: '#/components/schemas/ExternalTemplateRevisionView'
+          nullable: true
+        draft:
+          allOf:
+          - $ref: '#/components/schemas/ExternalTemplateRevisionView'
+          nullable: true
+      required:
+      - templateId
+      - name
+      - provider
+      - scope
+      - scene
+      - audience
+      - version
+      - activeRevisionId
+      - draftRevisionId
+    ExternalTemplateRevisionView:
+      type: object
+      additionalProperties: false
+      properties:
+        revisionId: *id001
+        revision:
+          type: integer
+          format: int64
+          minimum: 0
+        contentHash: *id018
+        provider:
+          $ref: '#/components/schemas/ExternalMessageProvider'
+        profile:
+          $ref: '#/components/schemas/ConfigReference'
+        vendorTemplateId:
+          type: string
+        approvedContent:
+          type: string
+        enabled:
+          type: boolean
+        signName:
+          type: string
+        smsParameters:
+          type: array
+          items:
+            $ref: '#/components/schemas/SmsParameterBinding'
+        subscribeParameters:
+          type: array
+          items:
+            $ref: '#/components/schemas/SubscribeParameterBinding'
+        pageRoute:
+          type: string
+        pageParameterKeys:
+          type: array
+          items:
+            type: string
+        miniProgramState:
+          type: string
+          enum:
+          - formal
+          - trial
+          - developer
+        lang:
+          type: string
+          enum:
+          - zh_CN
+          - zh_TW
+          - en_US
+        subscriptionType:
+          type: string
+          enum:
+          - ONCE
+          - LONG
+        vendorApproval:
+          type: string
+          enum:
+          - UNKNOWN
+          - APPROVED
+          - REJECTED
+        createdAt: *id002
+      required:
+      - revisionId
+      - revision
+      - contentHash
+      - provider
+      - profile
+      - enabled
+      - vendorApproval
+      description: 返回的是已存字段元信息；无任何发送密钥或收件人私密资料。vendorApproval由服务端或受控证据确认，不能相信客户端标记。
+    IntegrationScope:
+      type: object
+      additionalProperties: false
+      properties:
+        ownerDeptId: *id001
+        environment:
+          $ref: '#/components/schemas/IntegrationEnvironment'
+      required:
+      - ownerDeptId
+      - environment
+      description: 配置归属使用服务器校验的公司/收款主体对应部门，不取客户端role为依据。
+    MessageTemplateCreate:
+      type: object
+      additionalProperties: false
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 100
+        provider:
+          $ref: '#/components/schemas/ExternalMessageProvider'
+        scope:
+          $ref: '#/components/schemas/IntegrationScope'
+        scene:
+          $ref: '#/components/schemas/NotificationScene'
+        audience:
+          $ref: '#/components/schemas/NotificationAudience'
+      required:
+      - name
+      - provider
+      - scope
+      - scene
+      - audience
+  responses:
+    Unavailable:
+      description: 权限权威状态暂不可读取。参见errorCode注册表；HTTP状态与code一致。
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+          example:
+            code: 503
+            errorCode: VI_AUTHORITY_UNAVAILABLE
+            msg: 权限权威状态暂不可读取
+            requestId: req-example
+            retryable: true
+            retryAfterSeconds: null
+            data: {}
+      headers:
+        Retry-After:
+          description: 建议等待秒数；429必带，503仅在可估计时返回
+          schema:
+            type: integer
+            minimum: 1
+    InternalError:
+      description: 处理失败，请联系服务人员。参见errorCode注册表；HTTP状态与code一致。
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+          example:
+            code: 500
+            errorCode: VI_INTERNAL_ERROR
+            msg: 处理失败，请联系服务人员
+            requestId: req-example
+            retryable: false
+            retryAfterSeconds: null
+            data: {}
+    TooManyRequests:
+      description: 操作过于频繁，请稍后重试。参见errorCode注册表；HTTP状态与code一致。
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+          example:
+            code: 429
+            errorCode: VI_RATE_LIMITED
+            msg: 操作过于频繁，请稍后重试
+            requestId: req-example
+            retryable: true
+            retryAfterSeconds: 10
+            data: {}
+      headers:
+        Retry-After:
+          description: 建议等待秒数；429必带，503仅在可估计时返回
+          schema:
+            type: integer
+            minimum: 1
+    UnprocessableEntity:
+      description: 填写内容不符合要求。参见errorCode注册表；HTTP状态与code一致。
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+          example:
+            code: 422
+            errorCode: VI_DATA_INVALID
+            msg: 填写内容不符合要求
+            requestId: req-example
+            retryable: false
+            retryAfterSeconds: null
+            data: {}
+    Conflict:
+      description: 记录已变化，请刷新后重试。参见errorCode注册表；HTTP状态与code一致。
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+          example:
+            code: 409
+            errorCode: VI_VERSION_CONFLICT
+            msg: 记录已变化，请刷新后重试
+            requestId: req-example
+            retryable: false
+            retryAfterSeconds: null
+            data: {}
+    NotFound:
+      description: 记录不存在或不可访问。参见errorCode注册表；HTTP状态与code一致。
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+          example:
+            code: 404
+            errorCode: VI_RESOURCE_NOT_VISIBLE
+            msg: 记录不存在或不可访问
+            requestId: req-example
+            retryable: false
+            retryAfterSeconds: null
+            data: {}
+    Forbidden:
+      description: 没有执行此操作的权限。参见errorCode注册表；HTTP状态与code一致。
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+          example:
+            code: 403
+            errorCode: VI_FORBIDDEN
+            msg: 没有执行此操作的权限
+            requestId: req-example
+            retryable: false
+            retryAfterSeconds: null
+            data: {}
+    Unauthorized:
+      description: 登录已失效，请重新登录。参见errorCode注册表；HTTP状态与code一致。
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+          example:
+            code: 401
+            errorCode: VI_AUTH_REQUIRED
+            msg: 登录已失效，请重新登录
+            requestId: req-example
+            retryable: false
+            retryAfterSeconds: null
+            data: {}
+      headers:
+        WWW-Authenticate:
+          schema:
+            type: string
+          description: Bearer realm="mini" 或 "admin"；不泄露令牌细节
+    BadRequest:
+      description: 请求格式不正确。参见errorCode注册表；HTTP状态与code一致。
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+          example:
+            code: 400
+            errorCode: VI_REQUEST_INVALID
+            msg: 请求格式不正确
+            requestId: req-example
+            retryable: false
+            retryAfterSeconds: null
+            data: {}

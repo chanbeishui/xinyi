@@ -1,0 +1,12 @@
+[
+  {
+    "table": "vi_employee_binding_request",
+    "newInstall": "NOT_CREATED",
+    "existingDatabase": "保留历史，停写旧接口；逐项前向适配，不DROP"
+  },
+  {
+    "table": "vi_employee_binding_credential",
+    "newInstall": "NOT_CREATED",
+    "existingDatabase": "保留历史，停写旧接口；逐项前向适配，不DROP"
+  }
+]

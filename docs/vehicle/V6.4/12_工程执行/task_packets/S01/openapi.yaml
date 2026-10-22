@@ -1,0 +1,1073 @@
+openapi: 3.0.3
+info:
+  title: S01 统一售后申请和进度
+  version: 6.4.0
+servers:
+- url: http://localhost:8080
+  description: 本地Java直连；paths已包含/api，不再次追加
+- url: https://{host}
+  description: 发布域名仅作部署变量；由环境设置真实已备案域名，代理保留/api
+  variables:
+    host:
+      default: api.example.invalid
+      description: 占位不可用于真实支付或发布
+paths:
+  /api/app/owner/orders/{orderNo}/after-sales:
+    post:
+      operationId: V4_post_api_app_owner_orders__orderNo__after_sales
+      summary: 创建统一取消与退款申请
+      tags:
+      - OWNER
+      security:
+      - MiniBearerAuth: []
+      x-flow-ids:
+      - F12
+      - F13
+      - F20
+      description: 执行前校验当前真实身份、功能权限与对象所属范围。所有金额来自服务端核对，不因UI显示可点而放行。
+      parameters:
+      - name: orderNo
+        in: path
+        required: true
+        schema:
+          type: string
+          description: 服务端不透明主键，以字符串传输
+      - name: Idempotency-Key
+        in: header
+        required: true
+        schema:
+          type: string
+          description: UUID；同主体+动作+资源+键，同体重放，不同体409；领域唯一性额外永久去重
+      responses:
+        '200':
+          description: 成功，返回当前业务事实
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                properties:
+                  code:
+                    type: integer
+                    enum:
+                    - 200
+                  msg:
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/AfterSalePublic'
+                required:
+                - code
+                - msg
+                - data
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+                enum:
+                - no-store
+              description: 身份/交易/个人业务响应不缓存
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalError'
+        '503':
+          $ref: '#/components/responses/Unavailable'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AfterSaleApply'
+      x-capability: OWNER_AFTERSALE_CREATE
+      x-authorization:
+        realm: MINI
+        scope: OWN_ACCOUNT_RESOURCE
+        activeRole: OWNER
+        capability: OWNER_AFTERSALE_CREATE
+      x-error-codes:
+      - VI_REQUEST_INVALID
+      - VI_AUTH_REQUIRED
+      - VI_TOKEN_REALM_MISMATCH
+      - VI_REFRESH_REUSED
+      - VI_FORBIDDEN
+      - VI_SELF_REVIEW_DENIED
+      - VI_RESOURCE_NOT_VISIBLE
+      - VI_VERSION_CONFLICT
+      - VI_STATE_CONFLICT
+      - VI_IDEMPOTENCY_CONFLICT
+      - VI_SELECTION_CONFLICT
+      - VI_CONTEXT_CHANGED
+      - VI_SNAPSHOT_CHANGED
+      - VI_DATA_INVALID
+      - VI_EVIDENCE_INCOMPLETE
+      - VI_HANDOVER_CODE_INVALID
+      - VI_HANDOVER_LOCKED
+      - VI_UNPRICED_LINES
+      - VI_REFUND_LIMIT
+      - VI_PAYMENT_LIMIT
+      - VI_SERVICE_UNAVAILABLE
+      - VI_CAPABILITY_NOT_CONFIGURED
+      - VI_TRAINING_NOT_READY
+      - VI_RATE_LIMITED
+      - VI_INTERNAL_ERROR
+      - VI_AUTHORITY_UNAVAILABLE
+      - VI_UPSTREAM_UNAVAILABLE
+      x-error-policy: OBJECT_404_HIDES_EXISTENCE
+      x-contract-baseline: V6.4
+    get:
+      operationId: V4_get_api_app_owner_orders__orderNo__after_sales
+      summary: 查看本订单售后记录
+      tags:
+      - OWNER
+      security:
+      - MiniBearerAuth: []
+      x-flow-ids:
+      - F12
+      - F13
+      - F20
+      description: 执行前校验当前真实身份、功能权限与对象所属范围。所有金额来自服务端核对，不因UI显示可点而放行。
+      parameters:
+      - name: orderNo
+        in: path
+        required: true
+        schema:
+          type: string
+          description: 服务端不透明主键，以字符串传输
+      - name: pageNum
+        in: query
+        schema:
+          type: integer
+          minimum: 1
+          default: 1
+      - name: pageSize
+        in: query
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 100
+          default: 20
+      - name: keyword
+        in: query
+        schema:
+          type: string
+      - name: status
+        in: query
+        schema:
+          type: string
+      - name: sort
+        in: query
+        schema:
+          type: string
+          description: 白名单字段，不允许原样SQL拼接
+      responses:
+        '200':
+          description: 成功，返回当前业务事实
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                properties:
+                  code:
+                    type: integer
+                    enum:
+                    - 200
+                  msg:
+                    type: string
+                  rows:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/AfterSalePublic'
+                  total:
+                    type: integer
+                    format: int64
+                    minimum: 0
+                    description: 符合授权条件的总数
+                required:
+                - code
+                - msg
+                - rows
+                - total
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+                enum:
+                - no-store
+              description: 身份/交易/个人业务响应不缓存
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalError'
+        '503':
+          $ref: '#/components/responses/Unavailable'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      x-capability: OWNER_AFTERSALE_LIST
+      x-authorization:
+        realm: MINI
+        scope: OWN_ACCOUNT_RESOURCE
+        activeRole: OWNER
+        capability: OWNER_AFTERSALE_LIST
+      x-error-codes:
+      - VI_REQUEST_INVALID
+      - VI_AUTH_REQUIRED
+      - VI_TOKEN_REALM_MISMATCH
+      - VI_REFRESH_REUSED
+      - VI_FORBIDDEN
+      - VI_SELF_REVIEW_DENIED
+      - VI_RESOURCE_NOT_VISIBLE
+      - VI_RATE_LIMITED
+      - VI_INTERNAL_ERROR
+      - VI_AUTHORITY_UNAVAILABLE
+      - VI_UPSTREAM_UNAVAILABLE
+      x-error-policy: OBJECT_404_HIDES_EXISTENCE
+      x-contract-baseline: V6.4
+  /api/app/owner/after-sales:
+    get:
+      operationId: V4_get_api_app_owner_after_sales
+      summary: 统一售后申请列表
+      tags:
+      - OWNER
+      security:
+      - MiniBearerAuth: []
+      x-flow-ids:
+      - F20
+      description: 执行前校验当前真实身份、功能权限与对象所属范围。所有金额来自服务端核对，不因UI显示可点而放行。
+      parameters:
+      - name: pageNum
+        in: query
+        schema:
+          type: integer
+          minimum: 1
+          default: 1
+      - name: pageSize
+        in: query
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 100
+          default: 20
+      - name: keyword
+        in: query
+        schema:
+          type: string
+      - name: status
+        in: query
+        schema:
+          type: string
+      - name: sort
+        in: query
+        schema:
+          type: string
+          description: 白名单字段，不允许原样SQL拼接
+      - name: kind
+        in: query
+        schema:
+          type: string
+          enum:
+          - CANCEL_REFUND
+          - REFUND_ONLY
+      - name: returnState
+        in: query
+        schema:
+          type: string
+      - name: refundState
+        in: query
+        schema:
+          type: string
+      responses:
+        '200':
+          description: 成功，返回当前业务事实
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                properties:
+                  code:
+                    type: integer
+                    enum:
+                    - 200
+                  msg:
+                    type: string
+                  rows:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/AfterSalePublic'
+                  total:
+                    type: integer
+                    format: int64
+                    minimum: 0
+                    description: 符合授权条件的总数
+                required:
+                - code
+                - msg
+                - rows
+                - total
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+                enum:
+                - no-store
+              description: 身份/交易/个人业务响应不缓存
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalError'
+        '503':
+          $ref: '#/components/responses/Unavailable'
+      x-capability: OWNER_AFTERSALE_LIST
+      x-authorization:
+        realm: MINI
+        scope: OWN_ACCOUNT_RESOURCE
+        activeRole: OWNER
+        capability: OWNER_AFTERSALE_LIST
+      x-error-codes:
+      - VI_REQUEST_INVALID
+      - VI_AUTH_REQUIRED
+      - VI_TOKEN_REALM_MISMATCH
+      - VI_REFRESH_REUSED
+      - VI_FORBIDDEN
+      - VI_SELF_REVIEW_DENIED
+      - VI_RATE_LIMITED
+      - VI_INTERNAL_ERROR
+      - VI_AUTHORITY_UNAVAILABLE
+      - VI_UPSTREAM_UNAVAILABLE
+      x-error-policy: GLOBAL_FAILURES_NO_RESOURCE_404
+      x-contract-baseline: V6.4
+  /api/app/owner/after-sales/{caseId}:
+    get:
+      operationId: V4_get_api_app_owner_after_sales__caseId
+      summary: 统一售后详情
+      tags:
+      - OWNER
+      security:
+      - MiniBearerAuth: []
+      x-flow-ids:
+      - F20
+      description: 执行前校验当前真实身份、功能权限与对象所属范围。所有金额来自服务端核对，不因UI显示可点而放行。
+      parameters:
+      - name: caseId
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+      responses:
+        '200':
+          description: 成功，返回当前业务事实
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                properties:
+                  code:
+                    type: integer
+                    enum:
+                    - 200
+                  msg:
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/AfterSalePublic'
+                required:
+                - code
+                - msg
+                - data
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+                enum:
+                - no-store
+              description: 身份/交易/个人业务响应不缓存
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalError'
+        '503':
+          $ref: '#/components/responses/Unavailable'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      x-capability: OWNER_AFTERSALE_QUERY
+      x-authorization:
+        realm: MINI
+        scope: OWN_ACCOUNT_RESOURCE
+        activeRole: OWNER
+        capability: OWNER_AFTERSALE_QUERY
+      x-error-codes:
+      - VI_REQUEST_INVALID
+      - VI_AUTH_REQUIRED
+      - VI_TOKEN_REALM_MISMATCH
+      - VI_REFRESH_REUSED
+      - VI_FORBIDDEN
+      - VI_SELF_REVIEW_DENIED
+      - VI_RESOURCE_NOT_VISIBLE
+      - VI_RATE_LIMITED
+      - VI_INTERNAL_ERROR
+      - VI_AUTHORITY_UNAVAILABLE
+      - VI_UPSTREAM_UNAVAILABLE
+      x-error-policy: OBJECT_404_HIDES_EXISTENCE
+      x-contract-baseline: V6.4
+  /api/app/owner/after-sales/{caseId}/notes:
+    post:
+      operationId: V4_post_api_app_owner_after_sales__caseId__notes
+      summary: 补充售后说明
+      tags:
+      - OWNER
+      security:
+      - MiniBearerAuth: []
+      x-flow-ids:
+      - F20
+      description: 执行前校验当前真实身份、功能权限与对象所属范围。所有金额来自服务端核对，不因UI显示可点而放行。
+      parameters:
+      - name: caseId
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+      - name: Idempotency-Key
+        in: header
+        required: true
+        schema:
+          type: string
+          description: UUID；同主体+动作+资源+键，同体重放，不同体409；领域唯一性额外永久去重
+      responses:
+        '200':
+          description: 成功，返回当前业务事实
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                properties:
+                  code:
+                    type: integer
+                    enum:
+                    - 200
+                  msg:
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/AfterSalePublic'
+                required:
+                - code
+                - msg
+                - data
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+                enum:
+                - no-store
+              description: 身份/交易/个人业务响应不缓存
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalError'
+        '503':
+          $ref: '#/components/responses/Unavailable'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AfterSaleNote'
+      x-capability: OWNER_AFTERSALE_CREATE
+      x-authorization:
+        realm: MINI
+        scope: OWN_ACCOUNT_RESOURCE
+        activeRole: OWNER
+        capability: OWNER_AFTERSALE_CREATE
+      x-error-codes:
+      - VI_REQUEST_INVALID
+      - VI_AUTH_REQUIRED
+      - VI_TOKEN_REALM_MISMATCH
+      - VI_REFRESH_REUSED
+      - VI_FORBIDDEN
+      - VI_SELF_REVIEW_DENIED
+      - VI_RESOURCE_NOT_VISIBLE
+      - VI_VERSION_CONFLICT
+      - VI_STATE_CONFLICT
+      - VI_IDEMPOTENCY_CONFLICT
+      - VI_SELECTION_CONFLICT
+      - VI_CONTEXT_CHANGED
+      - VI_SNAPSHOT_CHANGED
+      - VI_DATA_INVALID
+      - VI_EVIDENCE_INCOMPLETE
+      - VI_HANDOVER_CODE_INVALID
+      - VI_HANDOVER_LOCKED
+      - VI_UNPRICED_LINES
+      - VI_REFUND_LIMIT
+      - VI_PAYMENT_LIMIT
+      - VI_SERVICE_UNAVAILABLE
+      - VI_CAPABILITY_NOT_CONFIGURED
+      - VI_TRAINING_NOT_READY
+      - VI_RATE_LIMITED
+      - VI_INTERNAL_ERROR
+      - VI_AUTHORITY_UNAVAILABLE
+      - VI_UPSTREAM_UNAVAILABLE
+      x-error-policy: OBJECT_404_HIDES_EXISTENCE
+      x-contract-baseline: V6.4
+components:
+  schemas:
+    AfterSaleNote:
+      type: object
+      additionalProperties: false
+      properties:
+        expectedVersion:
+          type: integer
+          format: int64
+          description: 最后读取版本，用于条件更新；409必须重新获取，不静默覆盖
+        note:
+          type: string
+        voucherFileIds:
+          type: array
+          items:
+            type: string
+            description: 服务端不透明主键，以字符串传输
+      required:
+      - expectedVersion
+      - note
+      description: 补充资料不覆盖原申请及已批金额。
+    ApiError:
+      type: object
+      additionalProperties: false
+      properties:
+        code:
+          type: integer
+          description: 等于HTTP状态
+          enum:
+          - 400
+          - 401
+          - 403
+          - 404
+          - 409
+          - 422
+          - 429
+          - 500
+          - 503
+        errorCode:
+          type: string
+          enum:
+          - VI_REQUEST_INVALID
+          - VI_AUTH_REQUIRED
+          - VI_TOKEN_REALM_MISMATCH
+          - VI_REFRESH_REUSED
+          - VI_FORBIDDEN
+          - VI_SELF_REVIEW_DENIED
+          - VI_RESOURCE_NOT_VISIBLE
+          - VI_VERSION_CONFLICT
+          - VI_STATE_CONFLICT
+          - VI_IDEMPOTENCY_CONFLICT
+          - VI_SELECTION_CONFLICT
+          - VI_CONTEXT_CHANGED
+          - VI_SNAPSHOT_CHANGED
+          - VI_DATA_INVALID
+          - VI_EVIDENCE_INCOMPLETE
+          - VI_HANDOVER_CODE_INVALID
+          - VI_HANDOVER_LOCKED
+          - VI_UNPRICED_LINES
+          - VI_REFUND_LIMIT
+          - VI_PAYMENT_LIMIT
+          - VI_SERVICE_UNAVAILABLE
+          - VI_CAPABILITY_NOT_CONFIGURED
+          - VI_TRAINING_NOT_READY
+          - VI_RATE_LIMITED
+          - VI_INTERNAL_ERROR
+          - VI_AUTHORITY_UNAVAILABLE
+          - VI_UPSTREAM_UNAVAILABLE
+          - VI_PHONE_PROOF_REQUIRED
+          - VI_PHONE_PROOF_REUSED
+          - VI_EMPLOYEE_LINK_CONFLICT
+          - VI_EMPLOYEE_LINK_BLOCKED
+          - VI_CONFIG_INVALID
+          - VI_CONFIG_CHANGED
+          - VI_SECRET_UNAVAILABLE
+          - VI_PAYMENT_METHOD_DISABLED
+          - VI_PAYMENT_METHOD_LOCKED
+          - VI_SEND_RESULT_UNKNOWN
+          - VI_SUBSCRIPTION_UNAVAILABLE
+          - VI_OFFLINE_PROOF_CONFLICT
+        msg:
+          type: string
+          description: 服务端安全人类文案，前端逻辑按errorCode而非此文本
+        requestId:
+          type: string
+        retryable:
+          type: boolean
+        retryAfterSeconds:
+          type: integer
+          minimum: 0
+          nullable: true
+        data:
+          $ref: '#/components/schemas/ApiErrorDetails'
+      required:
+      - code
+      - errorCode
+      - msg
+      - requestId
+      - retryable
+      - retryAfterSeconds
+      - data
+    ApiErrorDetails:
+      type: object
+      additionalProperties: false
+      properties:
+        fieldErrors:
+          type: array
+          items:
+            $ref: '#/components/schemas/FieldViolation'
+        conflicts:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConflictItem'
+        missingPhotoTypes:
+          type: array
+          items:
+            $ref: '#/components/schemas/PhotoType'
+        remainingAttempts:
+          type: integer
+          minimum: 0
+          nullable: true
+        currentVersion:
+          type: integer
+          format: int64
+          minimum: 0
+          maximum: 9007199254740991
+          description: 最后读取的非负版本；更新CAS，冲突409
+          nullable: true
+      description: 错误详情固定白名单；无明文Token/凭证/交接码/SQL
+    PhotoType:
+      type: string
+      enum:
+      - FRONT
+      - BACK
+      - LEFT
+      - RIGHT
+      - DASHBOARD
+      - INTERIOR
+      - EXTRA
+    ConflictItem:
+      type: object
+      additionalProperties: false
+      properties:
+        resourceType:
+          type: string
+        resourceId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+        reasonCode:
+          type: string
+        currentVersion:
+          type: integer
+          format: int64
+          minimum: 0
+          maximum: 9007199254740991
+          description: 最后读取的非负版本；更新CAS，冲突409
+          nullable: true
+      required:
+      - resourceType
+      - resourceId
+      - reasonCode
+      - currentVersion
+      description: 仅返回调用者已获权对象，禁止泄露其他账单成员
+    FieldViolation:
+      type: object
+      additionalProperties: false
+      properties:
+        field:
+          type: string
+        reasonCode:
+          type: string
+        message:
+          type: string
+      required:
+      - field
+      - reasonCode
+      - message
+    AfterSalePublic:
+      type: object
+      additionalProperties: false
+      properties:
+        caseId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+        orderNo:
+          type: string
+          description: 服务端不透明主键，以字符串传输
+        kind:
+          type: string
+          enum:
+          - CANCEL_REFUND
+          - REFUND_ONLY
+        caseStatus:
+          type: string
+          enum:
+          - PENDING_REVIEW
+          - EXECUTING
+          - CLOSED
+          - REJECTED
+        reviewStatus:
+          type: string
+          enum:
+          - PENDING
+          - APPROVED
+          - REJECTED
+        approvedAmount:
+          type: integer
+          format: int64
+          minimum: 0
+          description: 人民币分
+        requestedAmount:
+          type: integer
+          format: int64
+          minimum: 0
+          description: 人民币分
+        returnState:
+          type: string
+          enum:
+          - UNDETERMINED
+          - NOT_REQUIRED
+          - WAIT_RETURN
+          - RETURNED
+        refundState:
+          type: string
+          enum:
+          - NONE
+          - NOT_REQUIRED
+          - WAIT_RETURN
+          - READY
+          - PROCESSING
+          - SUCCESS
+          - UNKNOWN
+          - ABNORMAL
+          - CLOSED
+        custody:
+          type: string
+          enum:
+          - OWNER
+          - DRIVER
+          - STATION
+        fulfillmentStatus:
+          type: string
+        refundNo:
+          type: string
+          description: 服务端不透明主键，以字符串传输
+        version:
+          type: integer
+          format: int64
+          description: 最后读取版本，用于条件更新；409必须重新获取，不静默覆盖
+        createdAt:
+          type: string
+          format: date-time
+          description: ISO8601 UTC时刻，必须Z结尾；显示与业务日期Asia/Shanghai
+          pattern: Z$
+        updatedAt:
+          type: string
+          format: date-time
+          description: ISO8601 UTC时刻，必须Z结尾；显示与业务日期Asia/Shanghai
+          pattern: Z$
+        allowedActions:
+          type: array
+          items:
+            $ref: '#/components/schemas/AllowedAction'
+          uniqueItems: true
+        publicOpinion:
+          type: string
+          nullable: true
+      required:
+      - caseId
+      - orderNo
+      - kind
+      - caseStatus
+      - reviewStatus
+      - returnState
+      - refundState
+      - version
+      description: 车主本人售后，publicOpinion为对客户公开结论；内部审核意见另存，绝不盲映射
+    AllowedAction:
+      type: string
+      description: 服务端按当前角色、对象状态、版本和实时授权计算的可执行动作集合；不能由客户端授予
+      enum:
+      - ADD_REVIEW
+      - ADD_TO_DRAFT
+      - APPEAL_PENALTY
+      - APPLY_ADJUSTMENT
+      - APPLY_CANCEL_REFUND
+      - APPLY_REFUND_ONLY
+      - APPROVE_AND_SEND
+      - ARRIVE_PICKUP
+      - ARRIVE_STATION
+      - CANCEL_ASSIGNMENT
+      - CLOSE_UNPAID
+      - CONFIRM_HANDOVER
+      - CONFIRM_STATEMENT
+      - CONTACT_DRIVER
+      - CONTACT_OWNER
+      - CONTACT_STATION
+      - CREATE_HANDOVER
+      - DEPART
+      - EDIT_PRICE
+      - EXPORT
+      - FILL_MILEAGE
+      - FILL_PRICE
+      - MANUAL_INVITE
+      - MARK_EVIDENCE_READY
+      - OPEN_DISPUTE
+      - PAY
+      - RECORD_PAYMENT
+      - REGISTER_RESULT
+      - REJECT_REVIEW
+      - REMOVE_FROM_DRAFT
+      - RENOTIFY_PICKUP
+      - REPORT_DIFFERENCE
+      - REPORT_EXCEPTION
+      - REQUEST_RESULT_CORRECTION
+      - REVIEW_AFTERSALE
+      - REVIEW_LICENSE
+      - SEND_STATEMENT
+      - SERVICE_CONFIRM
+      - SUBMIT_REVIEW
+      - UPLOAD_PHOTO
+      - VERIFY_PAYMENT
+      - VIEW_APPEAL
+      - VIEW_DETAIL
+      - VIEW_EVIDENCE
+      - VIEW_HANDOVER_SECRET
+      - VIEW_PAYMENT
+      - VIEW_PRICE_HISTORY
+      - VIEW_PRICING
+      - VIEW_RESULT
+      - VOID_STATEMENT
+      - WITHDRAW_STATEMENT
+    AfterSaleApply:
+      type: object
+      additionalProperties: false
+      properties:
+        kind:
+          type: string
+          enum:
+          - CANCEL_REFUND
+          - REFUND_ONLY
+        reasonCode:
+          type: string
+        reason:
+          type: string
+          description: 1–1000字符
+        requestedAmount:
+          type: integer
+          format: int64
+          minimum: 0
+          description: 人民币分
+        voucherFileIds:
+          type: array
+          items:
+            type: string
+            description: 服务端不透明主键，以字符串传输
+        expectedOrderVersion:
+          type: integer
+          format: int64
+          description: 最后读取版本，用于条件更新；409必须重新获取，不静默覆盖
+      required:
+      - kind
+      - reason
+      - requestedAmount
+      - expectedOrderVersion
+      description: 以当前登录车主创建一次售后请求。同订单仅一个未办结申请，其他金额仍须资金锁与预留校验。
+  responses:
+    UnprocessableEntity:
+      description: 填写内容不符合要求。参见errorCode注册表；HTTP状态与code一致。
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+          example:
+            code: 422
+            errorCode: VI_DATA_INVALID
+            msg: 填写内容不符合要求
+            requestId: req-example
+            retryable: false
+            retryAfterSeconds: null
+            data: {}
+    Conflict:
+      description: 记录已变化，请刷新后重试。参见errorCode注册表；HTTP状态与code一致。
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+          example:
+            code: 409
+            errorCode: VI_VERSION_CONFLICT
+            msg: 记录已变化，请刷新后重试
+            requestId: req-example
+            retryable: false
+            retryAfterSeconds: null
+            data: {}
+    NotFound:
+      description: 记录不存在或不可访问。参见errorCode注册表；HTTP状态与code一致。
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+          example:
+            code: 404
+            errorCode: VI_RESOURCE_NOT_VISIBLE
+            msg: 记录不存在或不可访问
+            requestId: req-example
+            retryable: false
+            retryAfterSeconds: null
+            data: {}
+    Unavailable:
+      description: 权限权威状态暂不可读取。参见errorCode注册表；HTTP状态与code一致。
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+          example:
+            code: 503
+            errorCode: VI_AUTHORITY_UNAVAILABLE
+            msg: 权限权威状态暂不可读取
+            requestId: req-example
+            retryable: true
+            retryAfterSeconds: null
+            data: {}
+      headers:
+        Retry-After:
+          description: 建议等待秒数；429必带，503仅在可估计时返回
+          schema:
+            type: integer
+            minimum: 1
+    InternalError:
+      description: 处理失败，请联系服务人员。参见errorCode注册表；HTTP状态与code一致。
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+          example:
+            code: 500
+            errorCode: VI_INTERNAL_ERROR
+            msg: 处理失败，请联系服务人员
+            requestId: req-example
+            retryable: false
+            retryAfterSeconds: null
+            data: {}
+    TooManyRequests:
+      description: 操作过于频繁，请稍后重试。参见errorCode注册表；HTTP状态与code一致。
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+          example:
+            code: 429
+            errorCode: VI_RATE_LIMITED
+            msg: 操作过于频繁，请稍后重试
+            requestId: req-example
+            retryable: true
+            retryAfterSeconds: 10
+            data: {}
+      headers:
+        Retry-After:
+          description: 建议等待秒数；429必带，503仅在可估计时返回
+          schema:
+            type: integer
+            minimum: 1
+    Forbidden:
+      description: 没有执行此操作的权限。参见errorCode注册表；HTTP状态与code一致。
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+          example:
+            code: 403
+            errorCode: VI_FORBIDDEN
+            msg: 没有执行此操作的权限
+            requestId: req-example
+            retryable: false
+            retryAfterSeconds: null
+            data: {}
+    Unauthorized:
+      description: 登录已失效，请重新登录。参见errorCode注册表；HTTP状态与code一致。
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+          example:
+            code: 401
+            errorCode: VI_AUTH_REQUIRED
+            msg: 登录已失效，请重新登录
+            requestId: req-example
+            retryable: false
+            retryAfterSeconds: null
+            data: {}
+      headers:
+        WWW-Authenticate:
+          schema:
+            type: string
+          description: Bearer realm="mini" 或 "admin"；不泄露令牌细节
+    BadRequest:
+      description: 请求格式不正确。参见errorCode注册表；HTTP状态与code一致。
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+          example:
+            code: 400
+            errorCode: VI_REQUEST_INVALID
+            msg: 请求格式不正确
+            requestId: req-example
+            retryable: false
+            retryAfterSeconds: null
+            data: {}

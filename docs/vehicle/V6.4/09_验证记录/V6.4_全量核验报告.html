@@ -1,0 +1,32 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>V6.4_全量核验报告</title><style>body{font:16px/1.75 -apple-system,BlinkMacSystemFont,"Microsoft YaHei",sans-serif;color:#202632;margin:0;background:#f6f7f9}header{padding:14px 24px;background:white;border-bottom:1px solid #ddd}main{max-width:1120px;margin:24px auto;padding:30px;background:white}h1{font-size:30px}h2{margin-top:36px}a{color:#0661bd}table{border-collapse:collapse;width:100%;display:block;overflow:auto;font-size:14px}td,th{border:1px solid #dde2ea;padding:10px;vertical-align:top}th{background:#f1f5fb}pre{padding:15px;background:#f2f4f7;overflow:auto}img{max-width:100%;height:auto}blockquote{padding:10px 20px;border-left:3px solid #2571be;background:#f4f8fc}@media(max-width:700px){main{padding:15px;margin:8px}h1{font-size:25px}}</style></head><body><header><a href="../00_开始.html">V6.4 完整资料</a>　<a href="../02_UI/index.html">交互原型</a>　T3.4</header><main><h1>V6.4 第三方接入配置整合：全量核验报告</h1>
+<p>日期：2026-10-22；基线：用户上传V6.3；本轮：V6.4/T3.4。</p>
+<h2>本轮真实修改</h2>
+<p>本轮不是新增一份孤立补充稿。主PRD第3/5/8章与新增第23章已同时修改；配置字段表、独立支付开关矩阵、线下收退款、运行时发布与历史交易路径已进入主文件。B46–B53新主视图与状态已并入同一原型；O10/O14/O21/O28/O34、B21/B24同步联动。主OpenAPI、主模型、初始化SQL、权限/错误/枚举注册、画板/接口/数据/用例责任映射、85项任务输入同源更新。</p>
+<p>沿用已有业务及已确认界面，不清空工作区。商户、云账号和费率均为演示，不替用户确定真实主体和政策。</p>
+<h2>新增设计决定（区别于用户原话）</h2>
+<ol>
+<li>用户明确要求独立开关与后台维护参数；本版为闭合原“先付款后派单”流程，将线下定义为企业预收款，后台登记、独立核实后才计已付。不是货到付款、赊账、个人代收或司机费用结算。</li>
+<li>配置采用草稿/校验/显式发布，不在输入过程立即影响运行。生产初始双关，通道和模板停用。双关暂停新付费预约，不产生免费订单。</li>
+<li>停新支付不停止历史查询、回调、退款。历史商户身份固定，密钥轮换使用同身份有效凭据环，不永久钉死过期密钥。</li>
+<li>短信供应商启用与业务场景选主通道分开；启用阿里云不自动迁走全部腾讯云场景。未知受理结果先查回执，不能盲切备用双发。</li>
+<li>订阅需用户点击同意及真实事件；客户端accept不是永久额度证明。无授权不阻断正常业务。</li>
+</ol>
+<h2>当前资料范围</h2>
+<p>287个操作、373个具名Schema；79张参考业务表（16生成列）；355画板及710张截图；412条真实业务规格；71项技术门禁；85项任务（82开发、3上线）；48张流程图；交互规范INT01–INT99。</p>
+<h2>实际执行的检查</h2>
+<ul>
+<li>全部355画板由最终单文件原型渲染并导出首屏/完整图。路由目标、动作名称、控件ID、JS异常与横向溢出检查见《全量画板导出与核验.json》。移动预览覆盖375/390/428px。全量渲染不等于全部操作组合人工验收。</li>
+<li>新增第三方配置DOM/内存交互41项；测试脚本<code>02_UI/test_v64_integrations.py</code>，结果见同名JSON。覆盖草稿不生效、双开关、缺必填、密钥掩码、条件字段、供应商/场景分离、未知回执、订阅授权及线下独立核实。</li>
+<li>既有基础30项、核价22项、勾选33项、身份30项、培训申诉8项本轮实际重跑；培训脚本另有1项file://直开检查被环境策略阻止，不计通过。以上与新41项合计164项本地交互通过（以各实际报告为准）。</li>
+<li>支持工具99项pytest、契约样本51项、配置参考策略/实际Schema检查51项。参考算法不是生产Service、KMS或财务实现。</li>
+<li>42项资料检查、34项工程检查、30项原有跨文件/可见语义检查及18项新增交付检查：由随包脚本验证，并保留本轮JSON。未通过项必须修复或明确列为未验证，不能隐藏。</li>
+<li>TypeScript机器类型文件实际执行<code>tsc --noEmit --target ES2020 --skipLibCheck</code>；退出0。主接口引用与样本检查不等于已用目标框架完成代码生成。</li>
+<li>实际运行pytest <code>--collect-only</code>发现33项真实HTTP测试（含新增8项配置接口测试），未连接真实后端；不是33项通过。</li>
+</ul>
+<h2>未执行与环境限制</h2>
+<p>本轮没有读取/修改当前实际xinyi工作区，没有构建Java服务、执行MySQL初始化/约束/并发、完整uni-app构建、微信手机号授权、真实支付退款、短信发信、订阅推送或部署。412条业务用例、71项技术门禁、33项真实HTTP测试、6项MySQL探针保持NOT_RUN。SDK/API官方资料只支撑参数设计，不证明具体商户/模板/账号已可用。</p>
+<p>Browser连接器仅提供标签读取，没有浏览器控制运行时；本轮用本地Chromium/Playwright。自包含原型用set_content加载相同原始HTML；直接file导航尝试及结果单独记录。未执行的生产能力不使用模拟结果替代。</p>
+<h2>关键文件与如何复查</h2>
+<p>主PRD：<code>01_PRD/机动车检测预约_PRD_V6.4_完整整合版.md/.html</code>；UI：<code>02_UI/index.html</code>。新字段：<code>04_接口/第三方字段注册表.json</code>；主契约：<code>04_接口/openapi_V6.4.yaml</code>；模型：<code>05_数据设计/data_model_V6.4.json</code>；技术：<code>10_技术架构_T3.4/05_第三方配置与运行时/</code>；实施：X01–X07任务；真实联调：<code>13_真实集成测试/03_第三方配置真实联调.md</code>。</p>
+<p>首次入口START-CODEX；有代码进度只做受影响前向适配。旧图片或历史报告不作为当前功能依据。重建主索引后须重建HTML、UI与截图，再运行资料检查。</p>
+</main></body></html>

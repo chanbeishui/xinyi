@@ -1,0 +1,49 @@
+{
+  "kind": "DOCUMENT_BROWSER_QA",
+  "at": "2026-10-20T04:47:44.451277+00:00",
+  "browser": "Chromium/PythonPlaywright",
+  "availability": "Browser skill/runtime not listed",
+  "transport": "original HTML set_content, about:blank",
+  "limitation": "Attempted localhost navigation failed with net::ERR_BLOCKED_BY_ADMINISTRATOR; no policy changes. Direct navigation/click-through not verified. Source link resolution checked separately.",
+  "scope": "new documentation only, not business UI",
+  "checks": [
+    {
+      "name": "landing title/content/desktop screenshot",
+      "status": "PASS",
+      "viewport": [
+        1440,
+        1050
+      ],
+      "url": "about:blank"
+    },
+    {
+      "name": "78 tasks search narrows to B02",
+      "status": "PASS"
+    },
+    {
+      "name": "task href resolves to actual packet file, memory rendering",
+      "status": "PASS",
+      "nativeNavigation": "NOT_VERIFIED"
+    },
+    {
+      "name": "249 API entries filter/expand",
+      "status": "PASS"
+    },
+    {
+      "name": "mobile390 no document horizontal overflow",
+      "status": "PASS",
+      "viewport": [
+        390,
+        844
+      ]
+    },
+    {
+      "name": "page runtime errors",
+      "status": "PASS",
+      "errors": []
+    }
+  ],
+  "passed": 6,
+  "failed": 0,
+  "environmentBlocked": 1
+}

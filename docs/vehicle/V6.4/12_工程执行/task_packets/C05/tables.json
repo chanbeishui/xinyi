@@ -1,0 +1,215 @@
+[
+  {
+    "name": "vi_driver_fee_rule",
+    "comment": "代驾报酬规则独立版本",
+    "cols": [
+      [
+        "id",
+        "BIGINT NOT NULL AUTO_INCREMENT",
+        "数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串"
+      ],
+      [
+        "payor_entity_id",
+        "BIGINT NOT NULL",
+        "承担应付的主体"
+      ],
+      [
+        "rule_code",
+        "VARCHAR(64) NOT NULL",
+        "稳定规则标识"
+      ],
+      [
+        "revision",
+        "INT NOT NULL",
+        "版本"
+      ],
+      [
+        "currency",
+        "CHAR(3) NOT NULL DEFAULT 'CNY'",
+        "币种"
+      ],
+      [
+        "scenario",
+        "VARCHAR(32) NOT NULL",
+        "正常归还/取消返还/接车前解除"
+      ],
+      [
+        "scope_json",
+        "JSON NOT NULL",
+        "车型/代驾/服务范围条件"
+      ],
+      [
+        "pricing_json",
+        "JSON NOT NULL",
+        "固定费、含路线米、计费单位、单价及进位"
+      ],
+      [
+        "status",
+        "VARCHAR(24) NOT NULL",
+        "DriverFeeRuleStatus: DRAFT,PENDING_REVIEW,PUBLISHED,DISABLED"
+      ],
+      [
+        "effective_from",
+        "DATETIME(3) NOT NULL",
+        "生效起点UTC"
+      ],
+      [
+        "effective_to",
+        "DATETIME(3)",
+        "不含截止"
+      ],
+      [
+        "created_by",
+        "BIGINT NOT NULL",
+        "规则编辑人"
+      ],
+      [
+        "approved_by",
+        "BIGINT",
+        "独立审核人"
+      ],
+      [
+        "approved_at",
+        "DATETIME(3)",
+        "发布确认时间"
+      ],
+      [
+        "created_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "UTC"
+      ],
+      [
+        "updated_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "UTC更新时间；Mapper每次修改显式SET updated_at=UTC_TIMESTAMP(3)，不依赖连接时区"
+      ],
+      [
+        "version",
+        "BIGINT NOT NULL DEFAULT 0",
+        "乐观锁"
+      ]
+    ],
+    "indexes": [
+      "UNIQUE KEY uk_fee_rule_revision (payor_entity_id,rule_code,revision)",
+      "KEY ix_fee_effective (payor_entity_id,scenario,status,effective_from)"
+    ],
+    "rule": "服务端禁止重叠同优先范围规则；实际适用事件时间与版本在源服务快照中确定。",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "engine": "InnoDB",
+    "collation": "utf8mb4_0900_ai_ci",
+    "columnRules": {
+      "id": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "payor_entity_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "rule_code": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "revision": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "currency": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "scenario": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "scope_json": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "pricing_json": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "status": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false,
+        "enumRef": "DriverFeeRuleStatus"
+      },
+      "effective_from": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "effective_to": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "created_by": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "approved_by": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "approved_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "created_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "updated_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "version": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      }
+    },
+    "checks": [
+      "CONSTRAINT ck_66_78d970a2e61f CHECK (`status` IN ('DRAFT','PENDING_REVIEW','PUBLISHED','DISABLED'))",
+      "CONSTRAINT ck_ver_driver_fee_rule CHECK (version >= 0)"
+    ]
+  }
+]

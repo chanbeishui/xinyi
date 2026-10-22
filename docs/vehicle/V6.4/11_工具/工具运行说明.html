@@ -1,0 +1,12 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>工具运行说明</title><style>body{font:16px/1.75 -apple-system,BlinkMacSystemFont,"Microsoft YaHei",sans-serif;color:#202632;margin:0;background:#f6f7f9}header{padding:14px 24px;background:white;border-bottom:1px solid #ddd}main{max-width:1120px;margin:24px auto;padding:30px;background:white}h1{font-size:30px}h2{margin-top:36px}a{color:#0661bd}table{border-collapse:collapse;width:100%;display:block;overflow:auto;font-size:14px}td,th{border:1px solid #dde2ea;padding:10px;vertical-align:top}th{background:#f1f5fb}pre{padding:15px;background:#f2f4f7;overflow:auto}img{max-width:100%;height:auto}blockquote{padding:10px 20px;border-left:3px solid #2571be;background:#f4f8fc}@media(max-width:700px){main{padding:15px;margin:8px}h1{font-size:25px}}</style></head><body><header><a href="../00_开始.html">V6.4 完整资料</a>　<a href="../02_UI/index.html">交互原型</a>　T3.4</header><main><h1>工具说明</h1>
+<ul>
+<li>check_package.py：只读语义与结构一致性检查（输出本包09结果）；不能替代数据库执行。</li>
+<li>contract_tests.py：用JSON Schema转换后的OAS模型与公开快照夹具做正负样本/参考投影策略测试；不是实际HTTP调用。</li>
+<li>verify_mysql.py：用户提供mysql客户端/明确测试库/受控defaults文件后，只读比较information_schema；本轮未执行。</li>
+<li>rebuild_markdown_html.py：Markdown重新渲染离线HTML；UI和流程图另外生成。</li>
+<li>02_UI/build.py/export_screens.py：源码拼接与实际浏览器截图；导出会覆盖同名图。</li>
+<li>02_UI/test_v42_*.py：沿用的回归脚本文件名，本轮读的是本包V6.4/index.html，不调用旧zip。</li>
+<li>02_UI/test_v5_flows.py：新增培训/申诉/凭证/活体演示流程验证。</li>
+</ul>
+<p>依赖环境应固定在CI中：Python PyYAML/jsonschema/mistune，浏览器测试Playwright＋Chromium，TypeScript tsc，纯Java例子JDK17+。工具不安装依赖，不自动升级框架。外部资料与参数的有效性仍需真实供应商核验。</p>
+</main></body></html>

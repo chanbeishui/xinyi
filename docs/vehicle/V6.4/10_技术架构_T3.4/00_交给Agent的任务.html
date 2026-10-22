@@ -1,0 +1,50 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>00_交给Agent的任务</title><style>body{font:16px/1.75 -apple-system,BlinkMacSystemFont,"Microsoft YaHei",sans-serif;color:#202632;margin:0;background:#f6f7f9}header{padding:14px 24px;background:white;border-bottom:1px solid #ddd}main{max-width:1120px;margin:24px auto;padding:30px;background:white}h1{font-size:30px}h2{margin-top:36px}a{color:#0661bd}table{border-collapse:collapse;width:100%;display:block;overflow:auto;font-size:14px}td,th{border:1px solid #dde2ea;padding:10px;vertical-align:top}th{background:#f1f5fb}pre{padding:15px;background:#f2f4f7;overflow:auto}img{max-width:100%;height:auto}blockquote{padding:10px 20px;border-left:3px solid #2571be;background:#f4f8fc}@media(max-width:700px){main{padding:15px;margin:8px}h1{font-size:25px}}</style></head><body><header><a href="../00_开始.html">V6.4 完整资料</a>　<a href="../02_UI/index.html">交互原型</a>　T3.4</header><main><h1>START-CODEX · V6.4 / T3.4 第三方接入配置完整包</h1>
+<h2>目标与当前起点</h2>
+<p>在用户指定的xinyi/rongli-wx实际工作区实现全部已确认功能至G01，不停在评估或第一条切片。L01-L03是实际供应商、微信真机、生产启用门槛。
+V6.1时用户说明未做M0，但现在不得把历史判断当当前事实。先读实际HEAD/branch/dirty、作用域AGENTS、已有实现和任务账本；保留工作与已有进度，不自动checkout/merge/reset/clean，不因历史快照强制回退。
+默认业务模块xinyi-rongli、小程序xinyi-miniapp（uni-app Vue3/TS），已有有效路径先映射复用；不得生成两套。</p>
+<h2>本轮明确业务规则</h2>
+<ol>
+<li>微信新账号基础身份只有OWNER，新会话默认落车主页。老用户恢复真实已通过资格，不重新注册。</li>
+<li>DRIVER只有申请审核通过后才开通；未过审OWNER仍可申请/看进度，员工不免审。</li>
+<li>服务端微信授权手机号唯一匹配框架有效sys_user时自动关联。AppID/OpenID/手机号均从可信服务端上下文取，不信任前端裸号、role、employeeId。</li>
+<li>不再有员工小程序绑定申请、绑定凭证、选择站点提交申请。后台直接配置sys_user—站点，员工未微信登录也能预配置。</li>
+<li>自动关联不等于后台登录，不发ADMIN Token。MINI员工功能取原角色权限与小程序允许能力、部门/公司、站点范围交集。</li>
+<li>重号、冲突、停用、换号和主动解绑保护见PRD第2章及T3.4/04；不覆盖、不泄其他员工。恢复重核不是直接恢复工作。</li>
+<li>已确认其他业务保持：实际归还立即释放指定承接；取消已接车先审批待返还；未接车原单重派；自由勾选服务组单、行内核价、独立复核、确认后已有付款凭证核实。无保险/事故/钱包/自动打款。</li>
+</ol>
+<h2>本轮新增，必须真正接入运行时</h2>
+<ol>
+<li>主PRD第23章是当前第三方配置规则，X01–X07合计新增7任务（全包85项）。按依赖接续，不删除原有78项任务定义及已有实现证据。</li>
+<li>B46线下/微信开关独立；默认生产双关。WeChat启用必须完整匹配商户及小程序、签名/解密/验签材料。保存草稿不生效，当前版本校验后显式发布；不可只把密钥存进sys_config。</li>
+<li>B47/B48/B49/B50/B53分别负责微信商户、两家云短信、场景路由、订阅模板、小程序公共凭据。密钥只写入密文存储，根主密钥在部署环境/KMS，不进Git、日志、GET或前端缓存。</li>
+<li>新交易读取权威activeRevision；历史微信交易关单/退款/回调持续按原身份与有效轮换凭据执行。不能简单if(!wechatEnabled)拦掉全部微信adapter调用。</li>
+<li>线下是企业预收核实，不是货到付款或个人代收。选择仍未付；全额实际凭证由不同人核实后才计已付；迟到证据不能静默复活已释放名额。退款沿统一决定，线下实际退款凭证另核实。</li>
+<li>腾讯顺序参数、阿里命名参数分别渲染。同事件不重复双发；超时UNKNOWN先查回执，不自动切备用。订阅需要用户主动授权及真实事件，客户端accept不是永久授权；拒绝不阻断核心业务。</li>
+<li>更新旧P01/P02/N01/I02/B21/B24/O10/O14/O21的实际代码，不另建一套孤立配置演示。运行X07真实HTTP/DB和并发测试；L01真实支付短信与L02真机另行授权。</li>
+<li>仅允许测试白名单和明确受控环境发信。未经本次实际用户批准不发送真实短信、不扣款、不部署生产。原型模拟不是SDK可用证据。</li>
+</ol>
+<h2>文件与授权</h2>
+<p>规范目录 docs/vehicle/V6.4/；可更新状态 docs/implementation/vehicle/。根AGENTS与作用域约束继续生效；安装器仅更新本包管理入口，不覆盖原规则。
+允许项目内相关代码/测试/文档/隔离环境修改及必需依赖安装；不授权生产写库、真实付款/发信、删除既有数据或绕过工具审批。
+空隔离库按框架基础+本版vi初始化；已有业务表先inventory并生成前向适配，旧员工申请/凭证表不直接DROP。</p>
+<h2>开始命令（仓库根，Windows可用py -3）</h2>
+<pre><code class="language-bash">python &quot;PACKAGE_PATH/12_工程执行/engineer.py&quot; doctor --repo .
+python &quot;PACKAGE_PATH/12_工程执行/engineer.py&quot; install --repo . --apply
+python -m pip install -r docs/vehicle/V6.4/12_工程执行/requirements.txt
+python docs/vehicle/V6.4/12_工程执行/engineer.py check --repo .
+python docs/vehicle/V6.4/12_工程执行/taskctl.py next --repo .
+</code></pre>
+<p>PACKAGE_PATH为完整包解压目录。新项目从E00；有进度时安装器合并新任务定义，保留已有证据，并将第三方配置变更受影响任务标为需适配/重验；不是重置全项目。
+不要再引用旧bindingCredential生产消费链。主契约、types、SQL、任务切片是当前规则；不得从历史目录实现废弃接口。</p>
+<h2>持续实现与真实验证</h2>
+<p>读取next -&gt; 实现已就绪任务 -&gt; 构建/真实测试 -&gt; 修失败 -&gt; 更新证据/独立复核 -&gt; 继续。
+开发依赖IMPLEMENTED可继续编码，VERIFIED必须真实证据；needsAdaptation任务不能以旧通过状态满足依赖，完成新范围后再清除标记。
+每任务使用task_packets/<ID>的API引用闭包/模型/验收，不要求反复读全量契约。
+同源修改主API/模型时重新生成切片、类型、登记表和测试。具体scopeRevision随证据提交，不能引用旧版本“通过”掩盖配置范围变化。
+环境不可用记录VERIFICATION阻塞，不假装通过；真正业务歧义只阻受影响动作。没有凭据不阻测试边界内开发，也不能宣布供应商真实联调通过。
+每次结束写RESUME/BLOCKERS/下一taskId，工具不自动启动后台Codex会话。</p>
+<h2>完成标准</h2>
+<p>G01要求全接口/画板/表/用例对应真实代码、持久化和测试，以及独立复核；固定Ack、内存UI、空Mapper不算完成。
+代码完整、真实供应商验证、生产批准分别记录。测试控制器只在test源码，外部模拟不得替代业务Service/鉴权。</p>
+</main></body></html>

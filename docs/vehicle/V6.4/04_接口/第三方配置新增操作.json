@@ -1,0 +1,247 @@
+[
+  {
+    "operationId": "V64_get_api_admin_integrations_profiles",
+    "method": "GET",
+    "path": "/api/admin/integrations/profiles",
+    "summary": "第三方配置列表",
+    "domain": "integration"
+  },
+  {
+    "operationId": "V64_post_api_admin_integrations_profiles",
+    "method": "POST",
+    "path": "/api/admin/integrations/profiles",
+    "summary": "新建配置档案",
+    "domain": "integration"
+  },
+  {
+    "operationId": "V64_get_api_admin_integrations_profiles_profileId",
+    "method": "GET",
+    "path": "/api/admin/integrations/profiles/{profileId}",
+    "summary": "读取脱敏配置与生效版本",
+    "domain": "integration"
+  },
+  {
+    "operationId": "V64_put_api_admin_integrations_profiles_profileId_draft",
+    "method": "PUT",
+    "path": "/api/admin/integrations/profiles/{profileId}/draft",
+    "summary": "保存不生效草稿",
+    "domain": "integration"
+  },
+  {
+    "operationId": "V64_post_api_admin_integrations_profiles_profileId_checks",
+    "method": "POST",
+    "path": "/api/admin/integrations/profiles/{profileId}/checks",
+    "summary": "校验指定配置版本",
+    "domain": "integration"
+  },
+  {
+    "operationId": "V64_post_api_admin_integrations_profiles_profileId_publish",
+    "method": "POST",
+    "path": "/api/admin/integrations/profiles/{profileId}/publish",
+    "summary": "发布配置并原子切换生效指针",
+    "domain": "integration"
+  },
+  {
+    "operationId": "V64_get_api_admin_integrations_profiles_profileId_publications",
+    "method": "GET",
+    "path": "/api/admin/integrations/profiles/{profileId}/publications",
+    "summary": "配置发布审计",
+    "domain": "integration"
+  },
+  {
+    "operationId": "V64_post_api_admin_integrations_profiles_profileId_rollback",
+    "method": "POST",
+    "path": "/api/admin/integrations/profiles/{profileId}/rollback",
+    "summary": "重新验证并发布历史版本",
+    "domain": "integration"
+  },
+  {
+    "operationId": "V64_get_api_admin_integrations_profiles_profileId_revisions",
+    "method": "GET",
+    "path": "/api/admin/integrations/profiles/{profileId}/revisions",
+    "summary": "脱敏配置版本记录",
+    "domain": "integration"
+  },
+  {
+    "operationId": "V64_get_api_admin_integrations_templates",
+    "method": "GET",
+    "path": "/api/admin/integrations/templates",
+    "summary": "短信与订阅模板列表",
+    "domain": "notification"
+  },
+  {
+    "operationId": "V64_post_api_admin_integrations_templates",
+    "method": "POST",
+    "path": "/api/admin/integrations/templates",
+    "summary": "创建场景模板",
+    "domain": "notification"
+  },
+  {
+    "operationId": "V64_get_api_admin_integrations_templates_templateId",
+    "method": "GET",
+    "path": "/api/admin/integrations/templates/{templateId}",
+    "summary": "模板详情和版本",
+    "domain": "notification"
+  },
+  {
+    "operationId": "V64_put_api_admin_integrations_templates_templateId_draft",
+    "method": "PUT",
+    "path": "/api/admin/integrations/templates/{templateId}/draft",
+    "summary": "保存模板草稿",
+    "domain": "notification"
+  },
+  {
+    "operationId": "V64_post_api_admin_integrations_templates_templateId_checks",
+    "method": "POST",
+    "path": "/api/admin/integrations/templates/{templateId}/checks",
+    "summary": "校验字段映射和官方审批",
+    "domain": "notification"
+  },
+  {
+    "operationId": "V64_post_api_admin_integrations_templates_templateId_preview",
+    "method": "POST",
+    "path": "/api/admin/integrations/templates/{templateId}/preview",
+    "summary": "仅渲染模板预览不发送",
+    "domain": "notification"
+  },
+  {
+    "operationId": "V64_post_api_admin_integrations_templates_templateId_publish",
+    "method": "POST",
+    "path": "/api/admin/integrations/templates/{templateId}/publish",
+    "summary": "发布模板新版本",
+    "domain": "notification"
+  },
+  {
+    "operationId": "V64_get_api_admin_integrations_templates_templateId_publications",
+    "method": "GET",
+    "path": "/api/admin/integrations/templates/{templateId}/publications",
+    "summary": "模板发布历史",
+    "domain": "notification"
+  },
+  {
+    "operationId": "V64_post_api_admin_integrations_templates_templateId_test",
+    "method": "POST",
+    "path": "/api/admin/integrations/templates/{templateId}/test",
+    "summary": "白名单确认后真实测试发送",
+    "domain": "notification"
+  },
+  {
+    "operationId": "V64_get_api_admin_integrations_routes",
+    "method": "GET",
+    "path": "/api/admin/integrations/routes",
+    "summary": "场景路由与备用策略",
+    "domain": "notification"
+  },
+  {
+    "operationId": "V64_put_api_admin_integrations_routes_routeId",
+    "method": "PUT",
+    "path": "/api/admin/integrations/routes/{routeId}",
+    "summary": "原子保存生效场景路由",
+    "domain": "notification"
+  },
+  {
+    "operationId": "V64_post_api_admin_integrations_routes",
+    "method": "POST",
+    "path": "/api/admin/integrations/routes",
+    "summary": "创建已校验生效的路由",
+    "domain": "notification"
+  },
+  {
+    "operationId": "V64_get_api_admin_integrations_deliveries",
+    "method": "GET",
+    "path": "/api/admin/integrations/deliveries",
+    "summary": "脱敏发送结果查询",
+    "domain": "integration"
+  },
+  {
+    "operationId": "V64_post_api_admin_integrations_deliveries_deliveryId_query",
+    "method": "POST",
+    "path": "/api/admin/integrations/deliveries/{deliveryId}/query",
+    "summary": "查询原发送回执不重发",
+    "domain": "notification"
+  },
+  {
+    "operationId": "V64_post_api_admin_integrations_deliveries_deliveryId_retry",
+    "method": "POST",
+    "path": "/api/admin/integrations/deliveries/{deliveryId}/retry",
+    "summary": "仅确定失败后重试",
+    "domain": "notification"
+  },
+  {
+    "operationId": "V64_get_api_app_owner_orders_orderNo_payment_options",
+    "method": "GET",
+    "path": "/api/app/owner/orders/{orderNo}/payment-options",
+    "summary": "本人订单可用支付方式",
+    "domain": "payment"
+  },
+  {
+    "operationId": "V64_post_api_app_owner_orders_orderNo_offline_payment",
+    "method": "POST",
+    "path": "/api/app/owner/orders/{orderNo}/offline-payment",
+    "summary": "选择线下方式不标记已付款",
+    "domain": "payment"
+  },
+  {
+    "operationId": "V64_get_api_admin_offline_payments",
+    "method": "GET",
+    "path": "/api/admin/offline-payments",
+    "summary": "客户线下收退款凭证列表",
+    "domain": "payment"
+  },
+  {
+    "operationId": "V64_post_api_admin_offline_payments",
+    "method": "POST",
+    "path": "/api/admin/offline-payments",
+    "summary": "登记真实线下收款或已批准退款凭证",
+    "domain": "payment"
+  },
+  {
+    "operationId": "V64_get_api_admin_offline_payments_proofId",
+    "method": "GET",
+    "path": "/api/admin/offline-payments/{proofId}",
+    "summary": "线下凭证只读详情",
+    "domain": "payment"
+  },
+  {
+    "operationId": "V64_post_api_admin_offline_payments_proofId_verify",
+    "method": "POST",
+    "path": "/api/admin/offline-payments/{proofId}/verify",
+    "summary": "不同人员核实线下资金",
+    "domain": "payment"
+  },
+  {
+    "operationId": "V64_post_api_common_subscriptions_prompts",
+    "method": "POST",
+    "path": "/api/common/subscriptions/prompts",
+    "summary": "按真实场景获取本人的可请求模板",
+    "domain": "notification"
+  },
+  {
+    "operationId": "V64_post_api_common_subscriptions_prompts_promptId_report",
+    "method": "POST",
+    "path": "/api/common/subscriptions/prompts/{promptId}/report",
+    "summary": "报告本次用户订阅选择",
+    "domain": "notification"
+  },
+  {
+    "operationId": "V64_get_api_admin_integrations_test_recipients",
+    "method": "GET",
+    "path": "/api/admin/integrations/test-recipients",
+    "summary": "受控测试收件人白名单",
+    "domain": "integration"
+  },
+  {
+    "operationId": "V64_post_api_admin_integrations_test_recipients",
+    "method": "POST",
+    "path": "/api/admin/integrations/test-recipients",
+    "summary": "登记受控测试收件人",
+    "domain": "integration"
+  },
+  {
+    "operationId": "V64_post_api_admin_integrations_test_recipients_recipientId_revoke",
+    "method": "POST",
+    "path": "/api/admin/integrations/test-recipients/{recipientId}/revoke",
+    "summary": "撤销测试收件人",
+    "domain": "integration"
+  }
+]

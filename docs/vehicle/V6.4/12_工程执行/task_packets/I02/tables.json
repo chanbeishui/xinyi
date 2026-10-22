@@ -1,0 +1,219 @@
+[
+  {
+    "name": "vi_phone_verification_receipt",
+    "comment": "手机号授权处理与重试回执",
+    "cols": [
+      [
+        "id",
+        "BIGINT NOT NULL AUTO_INCREMENT",
+        "数据库生成内部Long，API字符串"
+      ],
+      [
+        "request_id",
+        "CHAR(36) CHARACTER SET ascii COLLATE ascii_bin NOT NULL",
+        "客户端一次流程UUID，绑定当前账号"
+      ],
+      [
+        "app_id",
+        "VARCHAR(64) CHARACTER SET ascii COLLATE ascii_bin NOT NULL",
+        "服务端应用标识"
+      ],
+      [
+        "account_id",
+        "BIGINT NOT NULL",
+        "已认证MINI账号；不从请求接收"
+      ],
+      [
+        "session_id",
+        "BIGINT NOT NULL",
+        "发起的基础会话"
+      ],
+      [
+        "code_hash",
+        "BINARY(32) NOT NULL",
+        "微信phoneCode摘要，防跨账号重放；绝不保存原始code"
+      ],
+      [
+        "status",
+        "VARCHAR(24) NOT NULL DEFAULT 'PROCESSING'",
+        "PhoneVerificationStatus: PROCESSING,VERIFIED,UNKNOWN,FAILED"
+      ],
+      [
+        "phone_lookup",
+        "BINARY(32) NULL",
+        "成功后可信手机号HMAC"
+      ],
+      [
+        "phone_cipher",
+        "VARBINARY(512) NULL",
+        "成功结果恢复所需加密号码；敏感回执到期按留存规则清理，审计不记录原文"
+      ],
+      [
+        "verified_at",
+        "DATETIME(3) NULL",
+        "微信已成功核验的UTC时间"
+      ],
+      [
+        "expires_at",
+        "DATETIME(3) NOT NULL",
+        "关联重试窗口截至时间；默认10分钟是技术值，不是微信code有效期"
+      ],
+      [
+        "employee_link_outcome",
+        "VARCHAR(40) NOT NULL DEFAULT 'NOT_ATTEMPTED'",
+        "EmployeeLinkOutcome；内部原因不直接下发小程序"
+      ],
+      [
+        "lease_until",
+        "DATETIME(3) NULL",
+        "处理租约；处理中未知不盲目重复消费供应商凭据"
+      ],
+      [
+        "finished_at",
+        "DATETIME(3) NULL",
+        "最终处理时间"
+      ],
+      [
+        "created_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "UTC创建时间"
+      ],
+      [
+        "updated_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "更新显式UTC_TIMESTAMP(3)"
+      ],
+      [
+        "version",
+        "BIGINT NOT NULL DEFAULT 0",
+        "受控CAS版本"
+      ]
+    ],
+    "indexes": [
+      "UNIQUE KEY uk_phone_request (account_id,request_id)",
+      "UNIQUE KEY uk_phone_code (app_id,code_hash)",
+      "KEY ix_phone_receipt_status (status,lease_until)"
+    ],
+    "rule": "先登记请求及摘要并获得领取权，供应商调用在短事务外，成功后原子保存手机号验证事实；自动关联单独安全重试。结果不明查询回执，不把未知当成功；不缓存token。仅使用最近微信证明，SMS不能产生员工关联。",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "engine": "InnoDB",
+    "collation": "utf8mb4_0900_ai_ci",
+    "columnRules": {
+      "id": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "request_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "app_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "account_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "session_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "code_hash": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "status": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false,
+        "enumRef": "PhoneVerificationStatus"
+      },
+      "phone_lookup": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "phone_cipher": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "verified_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "expires_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "employee_link_outcome": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false,
+        "enumRef": "EmployeeLinkOutcome"
+      },
+      "lease_until": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "finished_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "created_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "updated_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "version": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      }
+    },
+    "checks": [
+      "CONSTRAINT ck_cbadb1ceb7 CHECK (`status` IN ('PROCESSING','VERIFIED','UNKNOWN','FAILED'))",
+      "CONSTRAINT ck_b584437700 CHECK (`employee_link_outcome` IN ('NOT_ATTEMPTED','NO_MATCH','LINKED','EXISTING_LINK','AMBIGUOUS_PHONE','EMPLOYEE_UNAVAILABLE','USER_ALREADY_LINKED','ACCOUNT_ALREADY_LINKED','REBIND_BLOCKED','PHONE_CHANGED','DIRECTORY_UNAVAILABLE'))",
+      "CONSTRAINT ck_ver_phone_verification_receipt CHECK (version >= 0)"
+    ],
+    "writeMode": "CONTROLLED_LIFECYCLE"
+  }
+]

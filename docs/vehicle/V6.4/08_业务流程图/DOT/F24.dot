@@ -1,0 +1,19 @@
+digraph G {
+graph [rankdir=TB,bgcolor="white",pad="0.3",nodesep="0.3",ranksep="0.45",fontname="Noto Sans CJK SC",label="F24 · 营业时间、容量、停约与配置变更",labelloc=t,fontsize=20];
+node [shape=box,style="rounded,filled",fillcolor="#F2F6FC",color="#B5C9E5",fontname="Noto Sans CJK SC",fontsize=12,margin=".15,.12"];
+edge [color="#607A9C",fontname="Noto Sans CJK SC",fontsize=10];
+n1 [label="维护营业时间、上门额度、站点接收容量"];
+n2 [label="新配置先校验与已占用/已预占的关系"];
+n3 [label="变更是否影响已有订单？",shape=diamond];
+n4 [label="新单按新配置校验，历史快照不变"];
+n5 [label="列出受影响订单，停止新增并通知运营"];
+n6 [label="按确认方案协调改约或取消退款"];
+n7 [label="参数版本、生效时间、操作者及原因入审计"];
+n1 -> n2 [label=""];
+n2 -> n3 [label=""];
+n3 -> n4 [label="否"];
+n3 -> n5 [label="是"];
+n5 -> n6 [label=""];
+n4 -> n7 [label=""];
+n6 -> n7 [label=""];
+}

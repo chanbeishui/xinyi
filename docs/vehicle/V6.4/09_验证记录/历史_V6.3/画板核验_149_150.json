@@ -1,0 +1,52 @@
+{
+  "environment": "Chromium with Playwright; V6.3 self-contained HTML loaded via set_content; product routes driven by same original JS renderer",
+  "browserPlugin": "Browser connector exists but browser runtime skill is not listed; local Playwright used per validation skill",
+  "screenCount": 1,
+  "catalogCount": 317,
+  "range": [
+    149,
+    150
+  ],
+  "screens": [
+    {
+      "id": "S21",
+      "kind": "page",
+      "base": "S21",
+      "passed": true,
+      "textLength": 145,
+      "mobileHorizontalOverflow": 0,
+      "firstImage": "全量页面图/首屏/S21.png",
+      "fullImage": "全量页面图/完整内容/S21.png"
+    }
+  ],
+  "pageErrors": [],
+  "unresolvedRoutes": [],
+  "unhandledActions": [],
+  "duplicateControlIds": [],
+  "horizontalOverflow": [],
+  "responsive": [
+    {
+      "width": 375,
+      "viewport": 375,
+      "document": 375,
+      "device": 375,
+      "passed": true
+    },
+    {
+      "width": 390,
+      "viewport": 390,
+      "document": 390,
+      "device": 390,
+      "passed": true
+    },
+    {
+      "width": 428,
+      "viewport": 428,
+      "document": 428,
+      "device": 428,
+      "passed": true
+    }
+  ],
+  "allScreenshotsRegenerated": true,
+  "scope": "All catalog views rendered; not a test of every interaction or production service"
+}

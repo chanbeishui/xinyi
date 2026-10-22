@@ -2,13 +2,13 @@
   {
     "id": "E00",
     "phase": "M0",
-    "title": "框架基线核对：M0尚未开始",
+    "title": "当前工作区与框架基线实勘（保留进度）",
     "domain": "platform",
     "depends_on": [],
     "deliverables": [
-      "记录当前rongli-wx工作区HEAD、branch、dirty、有效AGENTS与源码指纹；用户未做M0",
-      "确认框架模块并记录将新建xinyi-rongli与xinyi-miniapp；不从旧日志推断完成",
-      "保留sys和其他框架业务；不checkout/reset/clean，不重启或改写原数据库"
+      "记录实际HEAD/branch/dirty、规范版本、已实现模块和实际数据库情况",
+      "历史框架指纹仅作参考；不重置已开发内容",
+      "识别第三方配置和线下支付范围变更；保留已有身份流程与实现，受影响任务重新适配验证"
     ],
     "negative_checks": [
       "commit标题/目录存在/SQL文件不构成M0通过",
@@ -21,14 +21,14 @@
     "case_ids": [],
     "scope": "DEVELOPMENT",
     "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
-    "status": "VERIFIED",
+    "status": "PLANNED",
     "code_paths": [
       "docs/implementation/vehicle/E00/"
     ],
     "test_class": "E00PlatformIT",
     "commands": [
-      "python docs/vehicle/V6.1/12_工程执行/engineer.py doctor --repo .",
-      "python docs/vehicle/V6.1/12_工程执行/taskctl.py summary --repo ."
+      "python docs/vehicle/V6.4/12_工程执行/engineer.py doctor --repo .",
+      "python docs/vehicle/V6.4/12_工程执行/taskctl.py summary --repo ."
     ],
     "done_when": [
       "当前工作区观察报告有真实命令、HEAD与差异；无密钥和个人数据",
@@ -42,7 +42,8 @@
       "access": "不得绕过限制；保存恢复点",
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
-    "starting_condition": "USER_CONFIRMED_NOT_STARTED",
+    "scopeRevision": "V6.4-CONFIG-20261022",
+    "definitionHash": "1879e0d7e890bbe8cad59725ea1ec0d78cd3820b876c37d08a633993743fe1e9",
     "evidence": [
       {
         "path": "docs/implementation/vehicle/evidence/E00.json",
@@ -56,7 +57,27 @@
     "implementation": null,
     "review": null,
     "blocker": null,
-    "updatedAt": "2026-10-20T15:34:20.162283+00:00"
+    "updatedAt": "2026-10-20T15:34:20.162283+00:00",
+    "scopeHistory": [
+      {
+        "fromScope": "V6.1",
+        "toScope": "V6.4-CONFIG-20261022",
+        "priorStatus": "VERIFIED",
+        "priorEvidence": [
+          {
+            "path": "docs/implementation/vehicle/evidence/E00.json",
+            "sha256": "ff2a8956af49fe78fcbdc4d6ca1e553148f7145f9bd0f3b10f141bcb55f9e62b"
+          },
+          {
+            "path": "docs/implementation/vehicle/evidence/E00.json",
+            "sha256": "ff2a8956af49fe78fcbdc4d6ca1e553148f7145f9bd0f3b10f141bcb55f9e62b"
+          }
+        ],
+        "reason": "用户确认身份流程变更，保留代码和旧证据但需适配新范围",
+        "at": "2026-10-22T14:48:23.198388+00:00"
+      }
+    ],
+    "needsAdaptation": true
   },
   {
     "id": "E01",
@@ -68,7 +89,9 @@
     ],
     "deliverables": [
       "验证新/旧车辆与新/旧地址四组合报价，XOR、同意协议约束",
-      "生成切片契约和类型"
+      "生成切片契约和类型",
+      "审查身份相关枚举/权限清单/公开配置登记；旧凭证接口彻底退役",
+      "相关修订由主源重新派生，检查全部引用及正常/冲突样本"
     ],
     "negative_checks": [
       "缺组、双传、null、ID溢出、伪造金额与站点必须拒绝"
@@ -79,14 +102,14 @@
     "case_ids": [],
     "scope": "DEVELOPMENT",
     "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
-    "status": "VERIFIED",
+    "status": "PLANNED",
     "code_paths": [
       "docs/implementation/vehicle/E01/"
     ],
     "test_class": "E01ContractIT",
     "commands": [
-      "python docs/vehicle/V6.1/12_工程执行/engineer.py check --repo .",
-      "python -m pytest docs/vehicle/V6.1/12_工程执行/tests/test_contract_regression.py -q"
+      "python docs/vehicle/V6.4/12_工程执行/engineer.py check --repo .",
+      "python -m pytest docs/vehicle/V6.4/12_工程执行/tests/test_contract_regression.py -q"
     ],
     "done_when": [
       "执行本包契约与报价回归，保存实际断言记录",
@@ -100,7 +123,8 @@
       "access": "不得绕过限制；保存恢复点",
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
-    "starting_condition": "USER_CONFIRMED_NOT_STARTED",
+    "scopeRevision": "V6.4-CONFIG-20261022",
+    "definitionHash": "af3f11a8f76f785a371d036f356e36e0ba1391df975e1d2ff6227ce3c81d1f99",
     "evidence": [
       {
         "path": "docs/implementation/vehicle/evidence/E01.json",
@@ -114,7 +138,27 @@
     "implementation": null,
     "review": null,
     "blocker": null,
-    "updatedAt": "2026-10-20T16:13:48.395699+00:00"
+    "updatedAt": "2026-10-20T16:13:48.395699+00:00",
+    "scopeHistory": [
+      {
+        "fromScope": "V6.1",
+        "toScope": "V6.4-CONFIG-20261022",
+        "priorStatus": "VERIFIED",
+        "priorEvidence": [
+          {
+            "path": "docs/implementation/vehicle/evidence/E01.json",
+            "sha256": "aa9ce8f9133aef60671e99efd59c442a1a3be333ce77b44fd2114ce4523f5b7c"
+          },
+          {
+            "path": "docs/implementation/vehicle/evidence/E01.json",
+            "sha256": "aa9ce8f9133aef60671e99efd59c442a1a3be333ce77b44fd2114ce4523f5b7c"
+          }
+        ],
+        "reason": "用户确认身份流程变更，保留代码和旧证据但需适配新范围",
+        "at": "2026-10-22T14:48:23.198397+00:00"
+      }
+    ],
+    "needsAdaptation": true
   },
   {
     "id": "E02",
@@ -146,9 +190,9 @@
     ],
     "test_class": "E02PlatformIT",
     "commands": [
-      "python docs/vehicle/V6.1/12_工程执行/engineer.py env --repo . --apply",
-      "python docs/vehicle/V6.1/12_工程执行/engineer.py run --repo . --kind infra",
-      "python docs/vehicle/V6.1/12_工程执行/engineer.py run --repo . --kind infra-status"
+      "python docs/vehicle/V6.4/12_工程执行/engineer.py env --repo . --apply",
+      "python docs/vehicle/V6.4/12_工程执行/engineer.py run --repo . --kind infra",
+      "python docs/vehicle/V6.4/12_工程执行/engineer.py run --repo . --kind infra-status"
     ],
     "done_when": [
       "隔离环境配置、随机本地密钥与端口不干扰原库",
@@ -162,7 +206,8 @@
       "access": "不得绕过限制；保存恢复点",
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
-    "starting_condition": "USER_CONFIRMED_NOT_STARTED",
+    "scopeRevision": "V6.1-UNCHANGED",
+    "definitionHash": "10409ba525f5bbe5efab70aafb706d4b09f144d7dfb750c7d89b2ae7cdd078de",
     "evidence": [
       {
         "path": "docs/implementation/vehicle/evidence/E02.json",
@@ -188,9 +233,9 @@
       "E02"
     ],
     "deliverables": [
-      "新隔离空库先导入框架基础，再初建本版66vi表与guard；不默认执行旧M0迁移",
-      "在仓库sql/生成首次新增vi的受控增量并更新完整初始化；以实际结构对比验证一致性",
-      "已有sys库保留；意外同名vi表停止相关写入并只读记录"
+      "隔离新库首次创建本版业务模型；已有库先inventory再前向适配",
+      "旧申请/凭证流程停写留历史，不自动DROP",
+      "字段/PK/CHECK/生成列/UTC和初始化两路径真实一致性验证"
     ],
     "negative_checks": [
       "存在未知业务表/真实交易中止写入，不以IF NOT EXISTS隐藏结构差异"
@@ -201,7 +246,7 @@
     "case_ids": [],
     "scope": "DEVELOPMENT",
     "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
-    "status": "VERIFIED",
+    "status": "PLANNED",
     "code_paths": [
       "sql/migration_YYYYMMDD_vehicle_initial.sql",
       "sql/ry_20260417.sql",
@@ -209,9 +254,9 @@
     ],
     "test_class": "E03DatabaseIT",
     "commands": [
-      "python docs/vehicle/V6.1/12_工程执行/database.py inventory --repo .",
-      "python docs/vehicle/V6.1/12_工程执行/database.py bootstrap --repo . --confirm-db xinyi_vi_dev",
-      "python docs/vehicle/V6.1/12_工程执行/engineer.py run --repo . --kind db-test"
+      "python docs/vehicle/V6.4/12_工程执行/database.py inventory --repo .",
+      "python docs/vehicle/V6.4/12_工程执行/database.py bootstrap --repo . --confirm-db xinyi_vi_dev",
+      "python docs/vehicle/V6.4/12_工程执行/engineer.py run --repo . --kind db-test"
     ],
     "done_when": [
       "在本包新建空隔离库实际执行初装及6项MySQL探针，并留报告",
@@ -225,7 +270,8 @@
       "access": "不得绕过限制；保存恢复点",
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
-    "starting_condition": "USER_CONFIRMED_NOT_STARTED",
+    "scopeRevision": "V6.4-CONFIG-20261022",
+    "definitionHash": "814654eb2d4e2dc9cbf26966871a9fa9734017b7613b1e9c89689f9761fd1e22",
     "evidence": [
       {
         "path": "docs/implementation/vehicle/evidence/E03.json",
@@ -239,7 +285,27 @@
     "implementation": null,
     "review": null,
     "blocker": null,
-    "updatedAt": "2026-10-21T14:09:30.892958+00:00"
+    "updatedAt": "2026-10-21T14:09:30.892958+00:00",
+    "scopeHistory": [
+      {
+        "fromScope": "V6.1",
+        "toScope": "V6.4-CONFIG-20261022",
+        "priorStatus": "VERIFIED",
+        "priorEvidence": [
+          {
+            "path": "docs/implementation/vehicle/evidence/E03.json",
+            "sha256": "20a9f0fc45a2bd9485ae460205d1b2a8a5e59d23d96f0f6564b31ba7470220e1"
+          },
+          {
+            "path": "docs/implementation/vehicle/evidence/E03.json",
+            "sha256": "20a9f0fc45a2bd9485ae460205d1b2a8a5e59d23d96f0f6564b31ba7470220e1"
+          }
+        ],
+        "reason": "用户确认身份流程变更，保留代码和旧证据但需适配新范围",
+        "at": "2026-10-22T14:48:23.198401+00:00"
+      }
+    ],
+    "needsAdaptation": true
   },
   {
     "id": "E04",
@@ -250,9 +316,9 @@
       "E01"
     ],
     "deliverables": [
-      "新建xinyi-rongli模块并接入根POM/admin依赖；保留现有六个框架模块",
-      "新建xinyi-miniapp Vue3/TS并实际生成lockfile，编译微信产物",
-      "请求、单在途刷新、视角上下文和错误处理基础；后续业务实现另走任务"
+      "先检查并复用已有业务模块和小程序；不存在才新建并接根POM",
+      "保持Node22项目范围和真实lockfile；不得覆写本地改名",
+      "新身份默认OWNER与服务端返回能力联动"
     ],
     "negative_checks": [
       "无DOM移植",
@@ -265,7 +331,7 @@
     "case_ids": [],
     "scope": "DEVELOPMENT",
     "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
-    "status": "VERIFIED",
+    "status": "PLANNED",
     "code_paths": [
       "pom.xml",
       "xinyi-admin/pom.xml",
@@ -275,12 +341,12 @@
     ],
     "test_class": "E04MobileIT",
     "commands": [
-      "python docs/vehicle/V6.1/12_工程执行/scaffold.py --repo .",
-      "python docs/vehicle/V6.1/12_工程执行/scaffold.py --repo . --apply",
+      "python docs/vehicle/V6.4/12_工程执行/scaffold.py --repo .",
+      "python docs/vehicle/V6.4/12_工程执行/scaffold.py --repo . --apply",
       "npm --prefix xinyi-miniapp install",
       "npm --prefix xinyi-miniapp run type-check",
       "npm --prefix xinyi-miniapp run build:mp-weixin",
-      "python docs/vehicle/V6.1/12_工程执行/engineer.py run --repo . --kind backend-build"
+      "python docs/vehicle/V6.4/12_工程执行/engineer.py run --repo . --kind backend-build"
     ],
     "done_when": [
       "新模块与小程序实际编译；lockfile来自真实安装而非猜测",
@@ -294,7 +360,8 @@
       "access": "不得绕过限制；保存恢复点",
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
-    "starting_condition": "USER_CONFIRMED_NOT_STARTED",
+    "scopeRevision": "V6.4-IDENTITY-20261022",
+    "definitionHash": "740a2401e00295b94a693a7466a1caeea554bfd68bfbf6633366d26af0123fef",
     "evidence": [
       {
         "path": "docs/implementation/vehicle/evidence/E04.json",
@@ -308,7 +375,27 @@
     "implementation": null,
     "review": null,
     "blocker": null,
-    "updatedAt": "2026-10-21T14:46:06.667968+00:00"
+    "updatedAt": "2026-10-21T14:46:06.667968+00:00",
+    "scopeHistory": [
+      {
+        "fromScope": "V6.1",
+        "toScope": "V6.4-IDENTITY-20261022",
+        "priorStatus": "VERIFIED",
+        "priorEvidence": [
+          {
+            "path": "docs/implementation/vehicle/evidence/E04.json",
+            "sha256": "3a7926ad5219f559ec7211e1923ba19faf10dba1322842755a33c4680ec6f6fc"
+          },
+          {
+            "path": "docs/implementation/vehicle/evidence/E04.json",
+            "sha256": "3a7926ad5219f559ec7211e1923ba19faf10dba1322842755a33c4680ec6f6fc"
+          }
+        ],
+        "reason": "用户确认身份流程变更，保留代码和旧证据但需适配新范围",
+        "at": "2026-10-22T14:48:23.198428+00:00"
+      }
+    ],
+    "needsAdaptation": true
   },
   {
     "id": "E05",
@@ -352,7 +439,8 @@
       "access": "不得绕过限制；保存恢复点",
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
-    "starting_condition": "USER_CONFIRMED_NOT_STARTED",
+    "scopeRevision": "V6.1-UNCHANGED",
+    "definitionHash": "e7983fb6fee4fcd46a7ddc0cd8d731eb50f50d254d3775e976b1bb18b223bc43",
     "evidence": [
       {
         "path": "docs/implementation/vehicle/evidence/E05.json",
@@ -393,7 +481,7 @@
     "case_ids": [],
     "scope": "DEVELOPMENT",
     "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
-    "status": "VERIFIED",
+    "status": "PLANNED",
     "code_paths": [
       "docs/implementation/vehicle/E06/"
     ],
@@ -414,7 +502,8 @@
       "access": "不得绕过限制；保存恢复点",
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
-    "starting_condition": "USER_CONFIRMED_NOT_STARTED",
+    "scopeRevision": "V6.4-IDENTITY-20261022",
+    "definitionHash": "4121f3c5b3314d9c1b90d6b0b1073e0797109f3e9d542c24a5955b4ca74b8089",
     "evidence": [
       {
         "path": "docs/implementation/vehicle/evidence/E06.json",
@@ -424,7 +513,23 @@
     "implementation": null,
     "review": null,
     "blocker": null,
-    "updatedAt": "2026-10-21T16:04:36.028523+00:00"
+    "updatedAt": "2026-10-21T16:04:36.028523+00:00",
+    "scopeHistory": [
+      {
+        "fromScope": "V6.1",
+        "toScope": "V6.4-IDENTITY-20261022",
+        "priorStatus": "VERIFIED",
+        "priorEvidence": [
+          {
+            "path": "docs/implementation/vehicle/evidence/E06.json",
+            "sha256": "4639f59d720d4f570124954b1cafad5c85e6edb2746a941ed957c85a8f4a40d0"
+          }
+        ],
+        "reason": "用户确认身份流程变更，保留代码和旧证据但需适配新范围",
+        "at": "2026-10-22T14:48:23.198431+00:00"
+      }
+    ],
+    "needsAdaptation": true
   },
   {
     "id": "E07",
@@ -440,7 +545,10 @@
     "deliverables": [
       "只在测试classpath建立fixtures/runtime/provider-event",
       "真实会话授权和业务Service不mock",
-      "分步接入FixturePort：仅创建隔离测试的前置组织/用户/站点/配置；未开发服务可先建立接口和纯基础夹具，禁止生成任意支付/交接完成状态；随对应业务任务扩展，T01使用IDENTITY，T02使用BOOKING。"
+      "分步接入FixturePort：仅创建隔离测试的前置组织/用户/站点/配置；未开发服务可先建立接口和纯基础夹具，禁止生成任意支付/交接完成状态；随对应业务任务扩展，T01使用IDENTITY，T02使用BOOKING。",
+      "增加自动关联fixture：未登录员工预授权、重号、停用、冲突、解绑阻止、换号竞态",
+      "身份阶段先跑独立身份测试，不以缺支付商户锁住基础实现",
+      "INTEGRATION_CONFIG夹具及6.4.0运行时版本；真实认证路径签发隔离管理员令牌，禁止伪装超管或预造资金成功"
     ],
     "negative_checks": [
       "生产jar无__integration",
@@ -453,7 +561,7 @@
     "case_ids": [],
     "scope": "DEVELOPMENT",
     "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
-    "status": "VERIFIED",
+    "status": "PLANNED",
     "code_paths": [
       "docs/implementation/vehicle/E07/"
     ],
@@ -474,7 +582,8 @@
       "access": "不得绕过限制；保存恢复点",
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
-    "starting_condition": "USER_CONFIRMED_NOT_STARTED",
+    "scopeRevision": "V6.4-CONFIG-20261022",
+    "definitionHash": "34ce9a9f3848da5541fde6b2baa090712e4762e1fbedb728c8f185e832ca23fb",
     "evidence": [
       {
         "path": "docs/implementation/vehicle/evidence/E07.json",
@@ -484,7 +593,23 @@
     "implementation": null,
     "review": null,
     "blocker": null,
-    "updatedAt": "2026-10-21T16:37:07.368452+00:00"
+    "updatedAt": "2026-10-21T16:37:07.368452+00:00",
+    "scopeHistory": [
+      {
+        "fromScope": "V6.1",
+        "toScope": "V6.4-CONFIG-20261022",
+        "priorStatus": "VERIFIED",
+        "priorEvidence": [
+          {
+            "path": "docs/implementation/vehicle/evidence/E07.json",
+            "sha256": "e8dd95e7d6252cbcd5c93db76dbc6bfb632670b90cfb55ccc1b87b2dcca36491"
+          }
+        ],
+        "reason": "用户确认身份流程变更，保留代码和旧证据但需适配新范围",
+        "at": "2026-10-22T14:48:23.198435+00:00"
+      }
+    ],
+    "needsAdaptation": true
   },
   {
     "id": "E08",
@@ -513,8 +638,8 @@
     ],
     "test_class": "E08PlatformIT",
     "commands": [
-      "python -m pytest docs/vehicle/V6.1/12_工程执行/tests -q",
-      "python docs/vehicle/V6.1/12_工程执行/engineer.py check --repo ."
+      "python -m pytest docs/vehicle/V6.4/12_工程执行/tests -q",
+      "python docs/vehicle/V6.4/12_工程执行/engineer.py check --repo ."
     ],
     "done_when": [
       "CI/任务/证据工具在受控测试工作区验证，阶段从FOUNDATION开始",
@@ -528,7 +653,8 @@
       "access": "不得绕过限制；保存恢复点",
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
-    "starting_condition": "USER_CONFIRMED_NOT_STARTED",
+    "scopeRevision": "V6.1-UNCHANGED",
+    "definitionHash": "db8eb6256d8dd894ca3f992aa695048adc006227df1c792cec239d39a3a27fd4",
     "evidence": [
       {
         "path": "docs/implementation/vehicle/evidence/E08.json",
@@ -543,16 +669,16 @@
   {
     "id": "I01",
     "phase": "M1",
-    "title": "微信登录与基础账号",
+    "title": "统一微信登录与默认车主",
     "domain": "identity",
     "depends_on": [
       "E06",
       "E07"
     ],
     "deliverables": [
-      "可信openid创建唯一vi_account及安全状态",
-      "不透明token持久化",
-      "本人profile"
+      "可信AppID/OpenID创建或恢复唯一账号；新会话OWNER",
+      "不接受客户端角色；恢复老账号真实资格，不创建重复sys_user",
+      "返回accountVersion、资格、公开员工关联状态"
     ],
     "negative_checks": [
       "同openid并发只一账号",
@@ -567,7 +693,21 @@
       "O29",
       "D01",
       "S01",
-      "B01"
+      "B01",
+      "O29-staff",
+      "O29-driver",
+      "O29-unconfigured",
+      "O29-duplicate",
+      "O29-conflict",
+      "O29-denied",
+      "O29-processing",
+      "O29-error",
+      "S01-ready",
+      "S01-unconfigured",
+      "D01-draft",
+      "D01-pending",
+      "D01-rejected",
+      "D01-approved"
     ],
     "tables": [
       "vi_account",
@@ -595,7 +735,12 @@
       "TC-R50-007",
       "TC-R50-008",
       "TC-R50-012",
-      "TC-R50-032"
+      "TC-R50-032",
+      "TC-R62-001",
+      "TC-R62-002",
+      "TC-R62-018",
+      "TC-R62-035",
+      "TC-R63-014"
     ],
     "scope": "DEVELOPMENT",
     "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
@@ -617,7 +762,8 @@
     "done_when": [
       "源接口/页面/表/用例均有明确实现文件与关联测试；不能以目录存在当完成",
       "本任务真实集成与负向场景实际通过且保存原始报告；无测试/跳过不能通过",
-      "提交独立复核记录；标注测试第三方替身，不声称真实渠道通过"
+      "提交独立复核记录；标注测试第三方替身，不声称真实渠道通过",
+      "本版主PRD/逐页规格/当前UI实图一致；不得复用已退役员工申请页面"
     ],
     "blocker_policy": {
       "credential": "只阻L01或具体真实渠道验证，通用代码可继续",
@@ -626,38 +772,69 @@
       "access": "不得绕过限制；保存恢复点",
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
+    "scopeRevision": "V6.4-IDENTITY-CONSISTENCY-20261022",
+    "definitionHash": "8f5384482995ab7da94bc62c4dc6dfac6e494cd7a0bd435c82fc8da8db8ef2f5",
     "evidence": [],
     "implementation": null,
     "review": null,
-    "blocker": null
+    "blocker": null,
+    "scopeHistory": [
+      {
+        "fromScope": "V6.1",
+        "toScope": "V6.4-IDENTITY-CONSISTENCY-20261022",
+        "priorStatus": "NOT_ASSESSED",
+        "priorEvidence": [],
+        "reason": "用户确认身份流程变更，保留代码和旧证据但需适配新范围",
+        "at": "2026-10-22T14:48:23.198439+00:00"
+      }
+    ]
   },
   {
     "id": "I02",
     "phase": "M1",
-    "title": "手机号、档案与短信兜底",
+    "title": "手机号验证回执与自动关联触发",
     "domain": "identity",
     "depends_on": [
       "I01"
     ],
     "deliverables": [
-      "微信手机凭据、受控短信验证、选填档案CAS、头像归属"
+      "分开wx.login code与phoneCode",
+      "服务端手机号验证、专用verificationRequestId回执和结果查询",
+      "SMS不新增员工关联；换号暂停旧工作能力",
+      "验证成功与员工匹配结果分开；不因重号取消OWNER",
+      "V6.4同步范围：第三方配置/支付method/外部路由/消息模板以主PRD23和X01–X07为准；旧静态配置不能形成旁路"
     ],
     "negative_checks": [
-      "不接受客户端手机号冒充验证",
-      "修改版本冲突、空白姓名不阻止低门槛预约"
+      "同code跨账号/同requestId异体拒绝；处理中不重复消费",
+      "外部未知查回执或重新授权，不假成功",
+      "预约联系人电话不成为身份依据"
     ],
     "api_ids": [
       "API_002_post",
       "API_003_post",
       "API_004_post",
-      "API_012_patch"
+      "API_012_patch",
+      "v62_get_phone_verification"
     ],
     "page_ids": [
       "O02",
-      "O25"
+      "O25",
+      "O25-pending",
+      "O25-approved"
     ],
-    "tables": [],
-    "case_ids": [],
+    "tables": [
+      "vi_phone_verification_receipt"
+    ],
+    "case_ids": [
+      "TC-R62-008",
+      "TC-R62-014",
+      "TC-R62-021",
+      "TC-R62-025",
+      "TC-R62-029",
+      "TC-R62-030",
+      "TC-R62-031",
+      "TC-R63-012"
+    ],
     "scope": "DEVELOPMENT",
     "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
     "status": "NOT_ASSESSED",
@@ -678,7 +855,8 @@
     "done_when": [
       "源接口/页面/表/用例均有明确实现文件与关联测试；不能以目录存在当完成",
       "本任务真实集成与负向场景实际通过且保存原始报告；无测试/跳过不能通过",
-      "提交独立复核记录；标注测试第三方替身，不声称真实渠道通过"
+      "提交独立复核记录；标注测试第三方替身，不声称真实渠道通过",
+      "本版主PRD/逐页规格/当前UI实图一致；不得复用已退役员工申请页面"
     ],
     "blocker_policy": {
       "credential": "只阻L01或具体真实渠道验证，通用代码可继续",
@@ -687,10 +865,22 @@
       "access": "不得绕过限制；保存恢复点",
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
+    "scopeRevision": "V6.4-CONFIG-20261022",
+    "definitionHash": "c59fe293c8b449f69baaecbddbd3d5b2a8c9cdd4c5361d902577548a2de06207",
     "evidence": [],
     "implementation": null,
     "review": null,
-    "blocker": null
+    "blocker": null,
+    "scopeHistory": [
+      {
+        "fromScope": "V6.1",
+        "toScope": "V6.4-CONFIG-20261022",
+        "priorStatus": "NOT_ASSESSED",
+        "priorEvidence": [],
+        "reason": "用户确认身份流程变更，保留代码和旧证据但需适配新范围",
+        "at": "2026-10-22T14:48:23.198441+00:00"
+      }
+    ]
   },
   {
     "id": "I03",
@@ -718,7 +908,9 @@
       "vi_session",
       "vi_session_token"
     ],
-    "case_ids": [],
+    "case_ids": [
+      "TC-R63-008"
+    ],
     "scope": "DEVELOPMENT",
     "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
     "status": "NOT_ASSESSED",
@@ -739,7 +931,8 @@
     "done_when": [
       "源接口/页面/表/用例均有明确实现文件与关联测试；不能以目录存在当完成",
       "本任务真实集成与负向场景实际通过且保存原始报告；无测试/跳过不能通过",
-      "提交独立复核记录；标注测试第三方替身，不声称真实渠道通过"
+      "提交独立复核记录；标注测试第三方替身，不声称真实渠道通过",
+      "本版主PRD/逐页规格/当前UI实图一致；不得复用已退役员工申请页面"
     ],
     "blocker_policy": {
       "credential": "只阻L01或具体真实渠道验证，通用代码可继续",
@@ -748,10 +941,22 @@
       "access": "不得绕过限制；保存恢复点",
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
+    "scopeRevision": "V6.4-IDENTITY-CONSISTENCY-20261022",
+    "definitionHash": "ed5d4bdd1ca7bca5f7da85e0c001c8fd0e12f89ce4f8fe4930ba2eaba1ae9d48",
     "evidence": [],
     "implementation": null,
     "review": null,
-    "blocker": null
+    "blocker": null,
+    "scopeHistory": [
+      {
+        "fromScope": "V6.1",
+        "toScope": "V6.4-IDENTITY-CONSISTENCY-20261022",
+        "priorStatus": "NOT_ASSESSED",
+        "priorEvidence": [],
+        "reason": "用户确认身份流程变更，保留代码和旧证据但需适配新范围",
+        "at": "2026-10-22T14:48:23.198443+00:00"
+      }
+    ]
   },
   {
     "id": "I04",
@@ -762,8 +967,9 @@
       "I03"
     ],
     "deliverables": [
-      "角色资格和contextVersion",
-      "返回新会话token，前端丢弃迟到响应"
+      "只切换availableRoles；OWNER可申请代驾，未批准无DRIVER",
+      "STATION需有效员工及站点/功能交集，首次仍OWNER",
+      "权限刷新不改变司机任务；撤权回安全视角"
     ],
     "negative_checks": [
       "旧检测权限失效仍可切回OWNER",
@@ -777,10 +983,19 @@
       "U01",
       "U01-unqualified",
       "S21",
-      "S22"
+      "S22",
+      "U01-driver",
+      "U01-staff",
+      "U01-all"
     ],
     "tables": [],
-    "case_ids": [],
+    "case_ids": [
+      "TC-R62-024",
+      "TC-R63-001",
+      "TC-R63-009",
+      "TC-R63-010",
+      "TC-R63-016"
+    ],
     "scope": "DEVELOPMENT",
     "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
     "status": "NOT_ASSESSED",
@@ -801,7 +1016,8 @@
     "done_when": [
       "源接口/页面/表/用例均有明确实现文件与关联测试；不能以目录存在当完成",
       "本任务真实集成与负向场景实际通过且保存原始报告；无测试/跳过不能通过",
-      "提交独立复核记录；标注测试第三方替身，不声称真实渠道通过"
+      "提交独立复核记录；标注测试第三方替身，不声称真实渠道通过",
+      "本版主PRD/逐页规格/当前UI实图一致；不得复用已退役员工申请页面"
     ],
     "blocker_policy": {
       "credential": "只阻L01或具体真实渠道验证，通用代码可继续",
@@ -810,49 +1026,96 @@
       "access": "不得绕过限制；保存恢复点",
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
+    "scopeRevision": "V6.4-IDENTITY-CONSISTENCY-20261022",
+    "definitionHash": "07b22a0fbb43670c5dacbdeb132b2ac45894a394bc592cdaf10f861715f6b372",
     "evidence": [],
     "implementation": null,
     "review": null,
-    "blocker": null
+    "blocker": null,
+    "scopeHistory": [
+      {
+        "fromScope": "V6.1",
+        "toScope": "V6.4-IDENTITY-CONSISTENCY-20261022",
+        "priorStatus": "NOT_ASSESSED",
+        "priorEvidence": [],
+        "reason": "用户确认身份流程变更，保留代码和旧证据但需适配新范围",
+        "at": "2026-10-22T14:48:23.198445+00:00"
+      }
+    ]
   },
   {
     "id": "I05",
     "phase": "M1",
-    "title": "员工绑定完整生产消费链",
+    "title": "手机号自动关联员工与后台异常管理",
     "domain": "identity",
     "depends_on": [
+      "I02",
       "I03"
     ],
     "deliverables": [
-      "本人请求→后台核实名单→一次性凭证签发/撤销→本人消费"
+      "唯一有效sys_user手机号自动关联；无申请/凭证",
+      "框架目录保护行与人员创建/导入/手机号/状态变更钩子",
+      "后台查询、暂停、解除、允许本人重新核验；不直接覆盖不同关联",
+      "解绑阻止自动复绑、换号安全失效、审计与权限版本同事务"
     ],
     "negative_checks": [
-      "跨账户/重复/过期凭证拒绝",
-      "员工失效后OWNER仍可使用"
+      "重号按distinct人员计数，无名单泄露",
+      "并发手机号变更/绑定唯一性保护",
+      "未验证号/SMS/假openid不绑定",
+      "既有关系不可抢占；主动解绑下一次不恢复",
+      "后台账号匹配不签ADMIN Token"
     ],
     "api_ids": [
-      "API_008_post",
-      "v5_post_api_common_employee_binding_requests",
-      "v5_get_api_common_employee_binding_requests",
-      "v5_get_api_admin_employee_binding_requests",
-      "v5_post_api_admin_employee_binding_credentials",
-      "v5_post_api_admin_employee_binding_credentials_credentialId_revoke"
+      "v62_get_employee_link",
+      "v62_post_employee_link_reconcile",
+      "v62_get_employee_links",
+      "v62_get_employee_link_detail",
+      "v62_suspend_employee_link",
+      "v62_revoke_employee_link",
+      "v62_allow_employee_rematch"
     ],
     "page_ids": [
       "U02",
-      "U02-expired",
-      "U02-pending",
-      "B36"
+      "B36",
+      "U02-revoked",
+      "U02-unconfigured",
+      "U02-conflict",
+      "U02-linked",
+      "B36-suspend",
+      "B36-revoke",
+      "B36-rematch",
+      "U02-suspended",
+      "U02-verifying",
+      "U02-unknown",
+      "B36-unlinked"
     ],
     "tables": [
       "vi_employee_binding",
-      "vi_employee_binding_request",
-      "vi_employee_binding_credential"
+      "vi_employee_directory_guard"
     ],
     "case_ids": [
-      "TC-R50-017",
-      "TC-R50-018",
-      "TC-R50-019"
+      "TC-R50-016",
+      "TC-R62-007",
+      "TC-R62-009",
+      "TC-R62-010",
+      "TC-R62-011",
+      "TC-R62-012",
+      "TC-R62-013",
+      "TC-R62-015",
+      "TC-R62-019",
+      "TC-R62-020",
+      "TC-R62-022",
+      "TC-R62-026",
+      "TC-R62-027",
+      "TC-R62-028",
+      "TC-R62-032",
+      "TC-R62-033",
+      "TC-R62-036",
+      "TC-R63-003",
+      "TC-R63-004",
+      "TC-R63-005",
+      "TC-R63-011",
+      "TC-R63-015"
     ],
     "scope": "DEVELOPMENT",
     "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
@@ -874,7 +1137,8 @@
     "done_when": [
       "源接口/页面/表/用例均有明确实现文件与关联测试；不能以目录存在当完成",
       "本任务真实集成与负向场景实际通过且保存原始报告；无测试/跳过不能通过",
-      "提交独立复核记录；标注测试第三方替身，不声称真实渠道通过"
+      "提交独立复核记录；标注测试第三方替身，不声称真实渠道通过",
+      "本版主PRD/逐页规格/当前UI实图一致；不得复用已退役员工申请页面"
     ],
     "blocker_policy": {
       "credential": "只阻L01或具体真实渠道验证，通用代码可继续",
@@ -883,45 +1147,71 @@
       "access": "不得绕过限制；保存恢复点",
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
+    "scopeRevision": "V6.4-IDENTITY-CONSISTENCY-20261022",
+    "definitionHash": "dc343dd4c0ce51809df061b045e2372ee95de2d15b65e3ad3abff68e7ea7e8cf",
     "evidence": [],
     "implementation": null,
     "review": null,
-    "blocker": null
+    "blocker": null,
+    "scopeHistory": [
+      {
+        "fromScope": "V6.1",
+        "toScope": "V6.4-IDENTITY-CONSISTENCY-20261022",
+        "priorStatus": "NOT_ASSESSED",
+        "priorEvidence": [],
+        "reason": "用户确认身份流程变更，保留代码和旧证据但需适配新范围",
+        "at": "2026-10-22T14:48:23.198447+00:00"
+      }
+    ]
   },
   {
     "id": "I06",
     "phase": "M1",
-    "title": "部门、站点、主体组合权限",
+    "title": "后台员工站点预配置与组合权限",
     "domain": "scope",
     "depends_on": [
       "I04",
       "I05"
     ],
     "deliverables": [
-      "对接真实DeptScope",
-      "查询/详情/批量写/下载二次授权",
-      "空范围拒绝"
+      "直接按sys_user配置站点，员工未微信登录也能保存",
+      "grant_set集合版本含空集合；原角色功能与组织/部门/站点交集",
+      "后台新增/撤销授权刷新生效，旧会话实时拒绝已撤权操作"
     ],
     "negative_checks": [
-      "站点不以OR绕部门边界",
-      "ALL部门不自动全站",
-      "财务不泄跨付款主体"
+      "零站点可保存并撤权，不自动回行政站点",
+      "批量越权全拒绝；旧集合version冲突",
+      "未登录员工配置不要求accountId/openid"
     ],
     "api_ids": [
       "API_094_get",
       "API_131_get",
-      "API_132_put"
+      "API_132_put",
+      "v62_get_station_grant"
     ],
     "page_ids": [
       "S18",
       "B25",
       "B26",
-      "B26-revoke"
+      "B26-revoke",
+      "B26-unlinked",
+      "B26-conflict"
     ],
     "tables": [
-      "vi_station_grant"
+      "vi_station_grant",
+      "vi_station_grant_set"
     ],
-    "case_ids": [],
+    "case_ids": [
+      "TC-R62-006",
+      "TC-R62-016",
+      "TC-R62-017",
+      "TC-R62-023",
+      "TC-R62-034",
+      "TC-R63-002",
+      "TC-R63-006",
+      "TC-R63-007",
+      "TC-R63-013"
+    ],
     "scope": "DEVELOPMENT",
     "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
     "status": "NOT_ASSESSED",
@@ -942,7 +1232,8 @@
     "done_when": [
       "源接口/页面/表/用例均有明确实现文件与关联测试；不能以目录存在当完成",
       "本任务真实集成与负向场景实际通过且保存原始报告；无测试/跳过不能通过",
-      "提交独立复核记录；标注测试第三方替身，不声称真实渠道通过"
+      "提交独立复核记录；标注测试第三方替身，不声称真实渠道通过",
+      "本版主PRD/逐页规格/当前UI实图一致；不得复用已退役员工申请页面"
     ],
     "blocker_policy": {
       "credential": "只阻L01或具体真实渠道验证，通用代码可继续",
@@ -951,10 +1242,22 @@
       "access": "不得绕过限制；保存恢复点",
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
+    "scopeRevision": "V6.4-IDENTITY-CONSISTENCY-20261022",
+    "definitionHash": "28b5bc61b5922e1ec6507eb96588f6f3b4ae96ddab1ecb67e8a25d892cc2485c",
     "evidence": [],
     "implementation": null,
     "review": null,
-    "blocker": null
+    "blocker": null,
+    "scopeHistory": [
+      {
+        "fromScope": "V6.1",
+        "toScope": "V6.4-IDENTITY-CONSISTENCY-20261022",
+        "priorStatus": "NOT_ASSESSED",
+        "priorEvidence": [],
+        "reason": "用户确认身份流程变更，保留代码和旧证据但需适配新范围",
+        "at": "2026-10-22T14:48:23.198449+00:00"
+      }
+    ]
   },
   {
     "id": "A01",
@@ -1030,6 +1333,8 @@
       "access": "不得绕过限制；保存恢复点",
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
+    "scopeRevision": "V6.1-UNCHANGED",
+    "definitionHash": "ecd093ceb77b406549659d945c8275d079bc8513e8cf15e27050c90b4bb576fe",
     "evidence": [],
     "implementation": null,
     "review": null,
@@ -1093,6 +1398,8 @@
       "access": "不得绕过限制；保存恢复点",
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
+    "scopeRevision": "V6.1-UNCHANGED",
+    "definitionHash": "4222768afc1371407a992bad6af72f73a79c8a398b0432c65aefeceec9fb4b56",
     "evidence": [],
     "implementation": null,
     "review": null,
@@ -1163,6 +1470,8 @@
       "access": "不得绕过限制；保存恢复点",
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
+    "scopeRevision": "V6.1-UNCHANGED",
+    "definitionHash": "21b395d8f6e06eb43e55b5218aa52deaa16d4aec4375bd0b175bddba3715df20",
     "evidence": [],
     "implementation": null,
     "review": null,
@@ -1233,6 +1542,8 @@
       "access": "不得绕过限制；保存恢复点",
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
+    "scopeRevision": "V6.1-UNCHANGED",
+    "definitionHash": "a1db049bdd104f1f054627a4b5863095502d59ce3dd417e42079247ae6830a77",
     "evidence": [],
     "implementation": null,
     "review": null,
@@ -1248,7 +1559,8 @@
       "E05"
     ],
     "deliverables": [
-      "车型字典、检测类型、协议版本、客服资料、权限注册、默认安全配置"
+      "车型字典、检测类型、协议版本、客服资料、权限注册、默认安全配置",
+      "V6.4同步范围：第三方配置/支付method/外部路由/消息模板以主PRD23和X01–X07为准；旧静态配置不能形成旁路"
     ],
     "negative_checks": [
       "新车型无价格不能0元下单",
@@ -1297,10 +1609,22 @@
       "access": "不得绕过限制；保存恢复点",
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
+    "scopeRevision": "V6.4-CONFIG-20261022",
+    "definitionHash": "34fdec19a3aa332bcb0844401002eab67e16db2e41319274f969d66ded1b51d4",
     "evidence": [],
     "implementation": null,
     "review": null,
-    "blocker": null
+    "blocker": null,
+    "scopeHistory": [
+      {
+        "fromScope": "V6.1",
+        "toScope": "V6.4-CONFIG-20261022",
+        "priorStatus": "NOT_ASSESSED",
+        "priorEvidence": [],
+        "reason": "用户确认身份流程变更，保留代码和旧证据但需适配新范围",
+        "at": "2026-10-22T14:48:23.198453+00:00"
+      }
+    ]
   },
   {
     "id": "C02",
@@ -1366,6 +1690,8 @@
       "access": "不得绕过限制；保存恢复点",
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
+    "scopeRevision": "V6.1-UNCHANGED",
+    "definitionHash": "7d9b24a673ff457d2fc901a6069693f8e849d396fdfcbe5852fda7b36fe91c0b",
     "evidence": [],
     "implementation": null,
     "review": null,
@@ -1433,6 +1759,8 @@
       "access": "不得绕过限制；保存恢复点",
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
+    "scopeRevision": "V6.1-UNCHANGED",
+    "definitionHash": "76db2364911e2c70953bd798e643df7722acc9d00fd761aa55f858f010fd87ac",
     "evidence": [],
     "implementation": null,
     "review": null,
@@ -1501,6 +1829,8 @@
       "access": "不得绕过限制；保存恢复点",
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
+    "scopeRevision": "V6.1-UNCHANGED",
+    "definitionHash": "6cd9f7a562da146ef3fca3a6a782f9b4e46185bc6498df4132a265df6866e4d5",
     "evidence": [],
     "implementation": null,
     "review": null,
@@ -1572,6 +1902,8 @@
       "access": "不得绕过限制；保存恢复点",
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
+    "scopeRevision": "V6.1-UNCHANGED",
+    "definitionHash": "3f56a5618bd98c541a1804cda6695fc5e08ea3242c24ad2c6524d4d741630ae3",
     "evidence": [],
     "implementation": null,
     "review": null,
@@ -1588,7 +1920,8 @@
       "F01"
     ],
     "deliverables": [
-      "本人认证档案、证件归属、提交校验、驳回只补相关项"
+      "本人认证档案、证件归属、提交校验、驳回只补相关项",
+      "已验证OWNER可以申请，STATION不自动授DRIVER；拒绝/审核中不进入接单工作台"
     ],
     "negative_checks": [
       "员工和普通人同审核",
@@ -1613,7 +1946,11 @@
       "vi_driver_profile",
       "vi_driver_application"
     ],
-    "case_ids": [],
+    "case_ids": [
+      "TC-R62-003",
+      "TC-R62-004",
+      "TC-R62-005"
+    ],
     "scope": "DEVELOPMENT",
     "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
     "status": "NOT_ASSESSED",
@@ -1643,10 +1980,22 @@
       "access": "不得绕过限制；保存恢复点",
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
+    "scopeRevision": "V6.4-IDENTITY-20261022",
+    "definitionHash": "04b17bf20dd9d4c21920cb191b53da7308f0a2e63bb5e7f2b3b80cdb432cc64f",
     "evidence": [],
     "implementation": null,
     "review": null,
-    "blocker": null
+    "blocker": null,
+    "scopeHistory": [
+      {
+        "fromScope": "V6.1",
+        "toScope": "V6.4-IDENTITY-20261022",
+        "priorStatus": "NOT_ASSESSED",
+        "priorEvidence": [],
+        "reason": "用户确认身份流程变更，保留代码和旧证据但需适配新范围",
+        "at": "2026-10-22T14:48:23.198460+00:00"
+      }
+    ]
   },
   {
     "id": "Q02",
@@ -1709,6 +2058,8 @@
       "access": "不得绕过限制；保存恢复点",
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
+    "scopeRevision": "V6.1-UNCHANGED",
+    "definitionHash": "82de4984663880db1afe235894ac8ad65e9f18879e77d0777c4ba54fdd23f96e",
     "evidence": [],
     "implementation": null,
     "review": null,
@@ -1752,6 +2103,9 @@
       "vi_training_attempt"
     ],
     "case_ids": [
+      "TC-R50-017",
+      "TC-R50-018",
+      "TC-R50-019",
       "TC-R50-020"
     ],
     "scope": "DEVELOPMENT",
@@ -1783,6 +2137,8 @@
       "access": "不得绕过限制；保存恢复点",
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
+    "scopeRevision": "V6.1-UNCHANGED",
+    "definitionHash": "5bc191f7020657e66d9074fee545dd71cf7b05e7a4224fe76f81dac167ea95f4",
     "evidence": [],
     "implementation": null,
     "review": null,
@@ -1846,6 +2202,8 @@
       "access": "不得绕过限制；保存恢复点",
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
+    "scopeRevision": "V6.1-UNCHANGED",
+    "definitionHash": "224a140022a98539496da67c116a8888fd84cab386176a6d7c7c1e65e3870f81",
     "evidence": [],
     "implementation": null,
     "review": null,
@@ -1910,6 +2268,8 @@
       "access": "不得绕过限制；保存恢复点",
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
+    "scopeRevision": "V6.1-UNCHANGED",
+    "definitionHash": "c2180563939e2d2361d93e1876f7240b7f548f84e55e65fb687fe1ada9cc88e0",
     "evidence": [],
     "implementation": null,
     "review": null,
@@ -2000,6 +2360,8 @@
       "access": "不得绕过限制；保存恢复点",
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
+    "scopeRevision": "V6.1-UNCHANGED",
+    "definitionHash": "bdb3ee7f1054a9f0261d90beaa98e2dc58bbedf4101bf5db859e9c264f4991d1",
     "evidence": [],
     "implementation": null,
     "review": null,
@@ -2061,6 +2423,8 @@
       "access": "不得绕过限制；保存恢复点",
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
+    "scopeRevision": "V6.1-UNCHANGED",
+    "definitionHash": "52828b00ec96ea7d114994dac4fa41d48107821cdd74ebe3262cd52c404b5106",
     "evidence": [],
     "implementation": null,
     "review": null,
@@ -2122,6 +2486,8 @@
       "access": "不得绕过限制；保存恢复点",
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
+    "scopeRevision": "V6.1-UNCHANGED",
+    "definitionHash": "35e1c7094b5ce27e35bd40e9ce565a7c61782f76d1c8aee4ae328747a2134d1d",
     "evidence": [],
     "implementation": null,
     "review": null,
@@ -2218,6 +2584,8 @@
       "access": "不得绕过限制；保存恢复点",
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
+    "scopeRevision": "V6.1-UNCHANGED",
+    "definitionHash": "9e8617a0adea4ac76053ac1c9aa95c5ae754199c4f2e5cfc2bd7f6fd2c1a4681",
     "evidence": [],
     "implementation": null,
     "review": null,
@@ -2230,10 +2598,12 @@
     "domain": "payment",
     "depends_on": [
       "B03",
-      "E07"
+      "E07",
+      "X01"
     ],
     "deliverables": [
-      "微信APIv3 SDK适配+测试网关，支付单商户快照和预支付状态"
+      "微信APIv3 SDK适配+测试网关，支付单商户快照和预支付状态",
+      "V6.4同步范围：第三方配置/支付method/外部路由/消息模板以主PRD23和X01–X07为准；旧静态配置不能形成旁路"
     ],
     "negative_checks": [
       "本地Mock不能上生产",
@@ -2283,10 +2653,22 @@
       "access": "不得绕过限制；保存恢复点",
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
+    "scopeRevision": "V6.4-CONFIG-20261022",
+    "definitionHash": "671dab6604be5bce96eb2ca5f200d2965a084ff729488d3acbca8c5de46bc305",
     "evidence": [],
     "implementation": null,
     "review": null,
-    "blocker": null
+    "blocker": null,
+    "scopeHistory": [
+      {
+        "fromScope": "V6.1",
+        "toScope": "V6.4-CONFIG-20261022",
+        "priorStatus": "NOT_ASSESSED",
+        "priorEvidence": [],
+        "reason": "用户确认身份流程变更，保留代码和旧证据但需适配新范围",
+        "at": "2026-10-22T14:48:23.198469+00:00"
+      }
+    ]
   },
   {
     "id": "P02",
@@ -2298,7 +2680,8 @@
       "E06"
     ],
     "deliverables": [
-      "原始body验签/解密/金额商户一致、查单补偿、30分钟可信关单"
+      "原始body验签/解密/金额商户一致、查单补偿、30分钟可信关单",
+      "V6.4同步范围：第三方配置/支付method/外部路由/消息模板以主PRD23和X01–X07为准；旧静态配置不能形成旁路"
     ],
     "negative_checks": [
       "回调与关单竞争",
@@ -2363,10 +2746,22 @@
       "access": "不得绕过限制；保存恢复点",
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
+    "scopeRevision": "V6.4-CONFIG-20261022",
+    "definitionHash": "db2ef1a5925d5397c48dc793b910ba249a2acb7ba30747511258c73a16a3bcb2",
     "evidence": [],
     "implementation": null,
     "review": null,
-    "blocker": null
+    "blocker": null,
+    "scopeHistory": [
+      {
+        "fromScope": "V6.1",
+        "toScope": "V6.4-CONFIG-20261022",
+        "priorStatus": "NOT_ASSESSED",
+        "priorEvidence": [],
+        "reason": "用户确认身份流程变更，保留代码和旧证据但需适配新范围",
+        "at": "2026-10-22T14:48:23.198472+00:00"
+      }
+    ]
   },
   {
     "id": "P04",
@@ -2379,7 +2774,8 @@
     ],
     "deliverables": [
       "审核批准后退款单与渠道调用，复用原退款号查询及重试",
-      "为真实付款准备取消出口"
+      "为真实付款准备取消出口",
+      "V6.4同步范围：第三方配置/支付method/外部路由/消息模板以主PRD23和X01–X07为准；旧静态配置不能形成旁路"
     ],
     "negative_checks": [
       "未知结果不重复扣款",
@@ -2427,10 +2823,22 @@
       "access": "不得绕过限制；保存恢复点",
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
+    "scopeRevision": "V6.4-CONFIG-20261022",
+    "definitionHash": "efe17e756bb198138fc1d96ae4f02ceb61142afdab068eca09c337c6e797ab6e",
     "evidence": [],
     "implementation": null,
     "review": null,
-    "blocker": null
+    "blocker": null,
+    "scopeHistory": [
+      {
+        "fromScope": "V6.1",
+        "toScope": "V6.4-CONFIG-20261022",
+        "priorStatus": "NOT_ASSESSED",
+        "priorEvidence": [],
+        "reason": "用户确认身份流程变更，保留代码和旧证据但需适配新范围",
+        "at": "2026-10-22T14:48:23.198473+00:00"
+      }
+    ]
   },
   {
     "id": "P03",
@@ -2478,6 +2886,8 @@
       "access": "不得绕过限制；保存恢复点",
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
+    "scopeRevision": "V6.1-UNCHANGED",
+    "definitionHash": "76bee9ed8e68821b5572e1aeee89fc61ed243df5e96c6cf34fc195e79f39918f",
     "evidence": [],
     "implementation": null,
     "review": null,
@@ -2542,6 +2952,8 @@
       "access": "不得绕过限制；保存恢复点",
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
+    "scopeRevision": "V6.1-UNCHANGED",
+    "definitionHash": "09e5d040924dfb502dba01837c213c02697d0731a21c17f1a34ef5d30dd28147",
     "evidence": [],
     "implementation": null,
     "review": null,
@@ -2614,6 +3026,8 @@
       "access": "不得绕过限制；保存恢复点",
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
+    "scopeRevision": "V6.1-UNCHANGED",
+    "definitionHash": "d6fcd551cc7600326ebbe5fd6afff8bc7c434d697ed785e0d9fae0da6b2a15c1",
     "evidence": [],
     "implementation": null,
     "review": null,
@@ -2684,6 +3098,8 @@
       "access": "不得绕过限制；保存恢复点",
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
+    "scopeRevision": "V6.1-UNCHANGED",
+    "definitionHash": "9881ddca29d8d5d4caf2aaf19877db9b8a8cb96500fd37f9b12fe47c39a05a79",
     "evidence": [],
     "implementation": null,
     "review": null,
@@ -2749,6 +3165,8 @@
       "access": "不得绕过限制；保存恢复点",
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
+    "scopeRevision": "V6.1-UNCHANGED",
+    "definitionHash": "69fd9e6103260c9eeb92c17a1fe81ec2339478ced5cfb1daa3fd6c8a1653a4e9",
     "evidence": [],
     "implementation": null,
     "review": null,
@@ -2816,6 +3234,8 @@
       "access": "不得绕过限制；保存恢复点",
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
+    "scopeRevision": "V6.1-UNCHANGED",
+    "definitionHash": "4c7baf42f104b49e0454eee51bde20abd4edfffd9835c14f5760d37b4ae216f3",
     "evidence": [],
     "implementation": null,
     "review": null,
@@ -2896,6 +3316,8 @@
       "access": "不得绕过限制；保存恢复点",
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
+    "scopeRevision": "V6.1-UNCHANGED",
+    "definitionHash": "e8627703e9f2f6619e0db15891d149909a1a59f041f6bcb1b137a7860052cbfe",
     "evidence": [],
     "implementation": null,
     "review": null,
@@ -2970,6 +3392,8 @@
       "access": "不得绕过限制；保存恢复点",
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
+    "scopeRevision": "V6.1-UNCHANGED",
+    "definitionHash": "610d7675a966a7da96faabd068cd640b56b66d4acca4b8a415ae4b92c70396a0",
     "evidence": [],
     "implementation": null,
     "review": null,
@@ -3032,6 +3456,8 @@
       "access": "不得绕过限制；保存恢复点",
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
+    "scopeRevision": "V6.1-UNCHANGED",
+    "definitionHash": "cfdc25b0e8e82e7ff12f02af6f435bef2c5ae04fe3dcab5aa1e1f2b2b78fa9b9",
     "evidence": [],
     "implementation": null,
     "review": null,
@@ -3106,6 +3532,8 @@
       "access": "不得绕过限制；保存恢复点",
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
+    "scopeRevision": "V6.1-UNCHANGED",
+    "definitionHash": "a00e5f51a25951c2fdc9436201857f7f164b78f0a60e731bcf0a9b3be9775bd6",
     "evidence": [],
     "implementation": null,
     "review": null,
@@ -3185,6 +3613,8 @@
       "access": "不得绕过限制；保存恢复点",
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
+    "scopeRevision": "V6.1-UNCHANGED",
+    "definitionHash": "99322aae001bfc7df5cbbf83fc3ae7793fa3b51e25186324efb9f6d91edee630",
     "evidence": [],
     "implementation": null,
     "review": null,
@@ -3258,6 +3688,8 @@
       "access": "不得绕过限制；保存恢复点",
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
+    "scopeRevision": "V6.1-UNCHANGED",
+    "definitionHash": "fc521d74706ff596d9c96dafb1b50bb50a52c2f75b45796a94a7617df9e07014",
     "evidence": [],
     "implementation": null,
     "review": null,
@@ -3371,6 +3803,8 @@
       "access": "不得绕过限制；保存恢复点",
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
+    "scopeRevision": "V6.1-UNCHANGED",
+    "definitionHash": "b8e7751be17c51743caac6f5019b25acd18f4c7e9c9daafd67b9240f66c71012",
     "evidence": [],
     "implementation": null,
     "review": null,
@@ -3432,6 +3866,8 @@
       "access": "不得绕过限制；保存恢复点",
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
+    "scopeRevision": "V6.1-UNCHANGED",
+    "definitionHash": "657fcbab057adcb4f112dede9dcb95684bd792949bb3065dcd8ac2c830726b6e",
     "evidence": [],
     "implementation": null,
     "review": null,
@@ -3503,6 +3939,8 @@
       "access": "不得绕过限制；保存恢复点",
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
+    "scopeRevision": "V6.1-UNCHANGED",
+    "definitionHash": "1239370e0a0a0e8c0ffaf87b6c8751a9987be3f9110470dec1f746eacfda9ebd",
     "evidence": [],
     "implementation": null,
     "review": null,
@@ -3519,7 +3957,8 @@
     ],
     "deliverables": [
       "当前保管事实+可退额预览、批准/驳回",
-      "已接车WAIT_RETURN"
+      "已接车WAIT_RETURN",
+      "V6.4同步范围：第三方配置/支付method/外部路由/消息模板以主PRD23和X01–X07为准；旧静态配置不能形成旁路"
     ],
     "negative_checks": [
       "取消批准不释放持车司机",
@@ -3596,10 +4035,22 @@
       "access": "不得绕过限制；保存恢复点",
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
+    "scopeRevision": "V6.4-CONFIG-20261022",
+    "definitionHash": "6a697f99a82cb1afde32222416c500d90f89fda9a1879f761ac78f920b91728e",
     "evidence": [],
     "implementation": null,
     "review": null,
-    "blocker": null
+    "blocker": null,
+    "scopeHistory": [
+      {
+        "fromScope": "V6.1",
+        "toScope": "V6.4-CONFIG-20261022",
+        "priorStatus": "NOT_ASSESSED",
+        "priorEvidence": [],
+        "reason": "用户确认身份流程变更，保留代码和旧证据但需适配新范围",
+        "at": "2026-10-22T14:48:23.198485+00:00"
+      }
+    ]
   },
   {
     "id": "S03",
@@ -3612,7 +4063,8 @@
     ],
     "deliverables": [
       "无需第二次审核，返还后按批准决定退",
-      "查单、重试和异常台账"
+      "查单、重试和异常台账",
+      "V6.4同步范围：第三方配置/支付method/外部路由/消息模板以主PRD23和X01–X07为准；旧静态配置不能形成旁路"
     ],
     "negative_checks": [
       "UNKNOWN保留预留",
@@ -3647,10 +4099,22 @@
       "access": "不得绕过限制；保存恢复点",
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
+    "scopeRevision": "V6.4-CONFIG-20261022",
+    "definitionHash": "53dcffc4f612a14b6451f00ef72015d920a9eec26e45d6261a50f96c42cb7076",
     "evidence": [],
     "implementation": null,
     "review": null,
-    "blocker": null
+    "blocker": null,
+    "scopeHistory": [
+      {
+        "fromScope": "V6.1",
+        "toScope": "V6.4-CONFIG-20261022",
+        "priorStatus": "NOT_ASSESSED",
+        "priorEvidence": [],
+        "reason": "用户确认身份流程变更，保留代码和旧证据但需适配新范围",
+        "at": "2026-10-22T14:48:23.198487+00:00"
+      }
+    ]
   },
   {
     "id": "S04",
@@ -3723,6 +4187,8 @@
       "access": "不得绕过限制；保存恢复点",
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
+    "scopeRevision": "V6.1-UNCHANGED",
+    "definitionHash": "8a30752a1f0884c9ca778788a682b7f128a0041ad442228d550391046991d9f8",
     "evidence": [],
     "implementation": null,
     "review": null,
@@ -3808,6 +4274,8 @@
       "access": "不得绕过限制；保存恢复点",
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
+    "scopeRevision": "V6.1-UNCHANGED",
+    "definitionHash": "6c2634b1ef955a8f1720bc519cc45a477a2c59e0dcbce6bbf921e220707c3dd8",
     "evidence": [],
     "implementation": null,
     "review": null,
@@ -3823,7 +4291,8 @@
       "I04"
     ],
     "deliverables": [
-      "按角色/站点的待办和未读、订阅适配、通知模板与任务退避"
+      "按角色/站点的待办和未读、订阅适配、通知模板与任务退避",
+      "V6.4同步范围：第三方配置/支付method/外部路由/消息模板以主PRD23和X01–X07为准；旧静态配置不能形成旁路"
     ],
     "negative_checks": [
       "用户拒绝订阅不阻业务",
@@ -3891,10 +4360,22 @@
       "access": "不得绕过限制；保存恢复点",
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
+    "scopeRevision": "V6.4-CONFIG-20261022",
+    "definitionHash": "ed37d5efa627684fb26c769a044f7c807b8b93f793c5011e741496d8a12fcc65",
     "evidence": [],
     "implementation": null,
     "review": null,
-    "blocker": null
+    "blocker": null,
+    "scopeHistory": [
+      {
+        "fromScope": "V6.1",
+        "toScope": "V6.4-CONFIG-20261022",
+        "priorStatus": "NOT_ASSESSED",
+        "priorEvidence": [],
+        "reason": "用户确认身份流程变更，保留代码和旧证据但需适配新范围",
+        "at": "2026-10-22T14:48:23.198491+00:00"
+      }
+    ]
   },
   {
     "id": "N02",
@@ -3966,6 +4447,8 @@
       "access": "不得绕过限制；保存恢复点",
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
+    "scopeRevision": "V6.1-UNCHANGED",
+    "definitionHash": "332c5cb7c45953354a4b56cd5edcf0b6ded59288d9594e0d0283b10afe952b03",
     "evidence": [],
     "implementation": null,
     "review": null,
@@ -4040,6 +4523,8 @@
       "access": "不得绕过限制；保存恢复点",
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
+    "scopeRevision": "V6.1-UNCHANGED",
+    "definitionHash": "421db6f465c2360566ab72faf45dd27848b9efa4a713f43963132e3f9f4831a4",
     "evidence": [],
     "implementation": null,
     "review": null,
@@ -4100,6 +4585,8 @@
       "access": "不得绕过限制；保存恢复点",
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
+    "scopeRevision": "V6.1-UNCHANGED",
+    "definitionHash": "2b6cf7f8d47273b86f6bc1cca762dd03269bee15f854b78334a9ec40770faf9b",
     "evidence": [],
     "implementation": null,
     "review": null,
@@ -4208,6 +4695,8 @@
       "access": "不得绕过限制；保存恢复点",
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
+    "scopeRevision": "V6.1-UNCHANGED",
+    "definitionHash": "24cf053f7cda0d3a22c1cddd779496d59a217448b61c05ab16b14fdc2ff938bf",
     "evidence": [],
     "implementation": null,
     "review": null,
@@ -4330,6 +4819,8 @@
       "access": "不得绕过限制；保存恢复点",
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
+    "scopeRevision": "V6.1-UNCHANGED",
+    "definitionHash": "6c9607b31ae708cf5e8f953c40bb907c138c75cd6e9457c1510c4223ad311408",
     "evidence": [],
     "implementation": null,
     "review": null,
@@ -4411,6 +4902,8 @@
       "access": "不得绕过限制；保存恢复点",
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
+    "scopeRevision": "V6.1-UNCHANGED",
+    "definitionHash": "86b3eddf7f5646828f630dbd3af8bc64ca780e6b736d1b6ef3098af69c09a9ba",
     "evidence": [],
     "implementation": null,
     "review": null,
@@ -4474,6 +4967,8 @@
       "access": "不得绕过限制；保存恢复点",
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
+    "scopeRevision": "V6.1-UNCHANGED",
+    "definitionHash": "d465d3cafc0141595fc785f3a04095fb17919013af90b2974cd927ffe4307377",
     "evidence": [],
     "implementation": null,
     "review": null,
@@ -4564,6 +5059,8 @@
       "access": "不得绕过限制；保存恢复点",
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
+    "scopeRevision": "V6.1-UNCHANGED",
+    "definitionHash": "acfe7d38b25e4740fb9d3f3c2128d88950502cd8a8bf310d87a497a585961f60",
     "evidence": [],
     "implementation": null,
     "review": null,
@@ -4628,6 +5125,8 @@
       "access": "不得绕过限制；保存恢复点",
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
+    "scopeRevision": "V6.1-UNCHANGED",
+    "definitionHash": "c09c5799fb525bc891bc0dfed89495af044c5ab5f2284ae981ea4bfbe4549be7",
     "evidence": [],
     "implementation": null,
     "review": null,
@@ -4687,6 +5186,8 @@
       "access": "不得绕过限制；保存恢复点",
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
+    "scopeRevision": "V6.1-UNCHANGED",
+    "definitionHash": "9e3b7ed03c4207e24bad8ac63920837c06e760ff3d3451ba70f90a2031f84923",
     "evidence": [],
     "implementation": null,
     "review": null,
@@ -4746,10 +5247,22 @@
       "access": "不得绕过限制；保存恢复点",
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
+    "scopeRevision": "V6.4-IDENTITY-20261022",
+    "definitionHash": "111ab15e01259157ce47633ac8823c567d88c6e16fe7ebbb7c8b607df46cb64b",
     "evidence": [],
     "implementation": null,
     "review": null,
-    "blocker": null
+    "blocker": null,
+    "scopeHistory": [
+      {
+        "fromScope": "V6.1",
+        "toScope": "V6.4-IDENTITY-20261022",
+        "priorStatus": "NOT_ASSESSED",
+        "priorEvidence": [],
+        "reason": "用户确认身份流程变更，保留代码和旧证据但需适配新范围",
+        "at": "2026-10-22T14:48:23.198499+00:00"
+      }
+    ]
   },
   {
     "id": "T02",
@@ -4768,7 +5281,8 @@
       "S02"
     ],
     "deliverables": [
-      "四组合首单报价→占额建单→测试渠道回调→查询→未接车审核取消退款"
+      "四组合首单报价→占额建单→测试渠道回调→查询→未接车审核取消退款",
+      "V6.4同步范围：第三方配置/支付method/外部路由/消息模板以主PRD23和X01–X07为准；旧静态配置不能形成旁路"
     ],
     "negative_checks": [
       "同键异体、支付关单竞争、通知晚到、未配置费用错误"
@@ -4801,10 +5315,22 @@
       "access": "不得绕过限制；保存恢复点",
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
+    "scopeRevision": "V6.4-CONFIG-20261022",
+    "definitionHash": "591fca91d56c0aabb3151990825695d3da85a8f281718279995bee0b76ef6bb5",
     "evidence": [],
     "implementation": null,
     "review": null,
-    "blocker": null
+    "blocker": null,
+    "scopeHistory": [
+      {
+        "fromScope": "V6.1",
+        "toScope": "V6.4-CONFIG-20261022",
+        "priorStatus": "NOT_ASSESSED",
+        "priorEvidence": [],
+        "reason": "用户确认身份流程变更，保留代码和旧证据但需适配新范围",
+        "at": "2026-10-22T14:48:23.198502+00:00"
+      }
+    ]
   },
   {
     "id": "T03",
@@ -4861,6 +5387,8 @@
       "access": "不得绕过限制；保存恢复点",
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
+    "scopeRevision": "V6.1-UNCHANGED",
+    "definitionHash": "5c88a9d828960a8af174f05dc6a74c3313ba1633fca642768ce1caf7f5d0b194",
     "evidence": [],
     "implementation": null,
     "review": null,
@@ -4915,6 +5443,8 @@
       "access": "不得绕过限制；保存恢复点",
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
+    "scopeRevision": "V6.1-UNCHANGED",
+    "definitionHash": "6953a27ca06056c5bc48dc7ce2cad70e441421ab449e8024e53f7f27e9f68749",
     "evidence": [],
     "implementation": null,
     "review": null,
@@ -4956,7 +5486,6 @@
       "TC-R50-013",
       "TC-R50-014",
       "TC-R50-015",
-      "TC-R50-016",
       "TC-R50-021",
       "TC-R50-022",
       "TC-R50-023",
@@ -4991,10 +5520,22 @@
       "access": "不得绕过限制；保存恢复点",
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
+    "scopeRevision": "V6.4-IDENTITY-20261022",
+    "definitionHash": "32025807f653a93e69e54713fb0d3b00e0c73c3d273f92b80893206a3f6f8476",
     "evidence": [],
     "implementation": null,
     "review": null,
-    "blocker": null
+    "blocker": null,
+    "scopeHistory": [
+      {
+        "fromScope": "V6.1",
+        "toScope": "V6.4-IDENTITY-20261022",
+        "priorStatus": "NOT_ASSESSED",
+        "priorEvidence": [],
+        "reason": "用户确认身份流程变更，保留代码和旧证据但需适配新范围",
+        "at": "2026-10-22T14:48:23.198506+00:00"
+      }
+    ]
   },
   {
     "id": "T06",
@@ -5006,7 +5547,7 @@
       "E06"
     ],
     "deliverables": [
-      "真实MySQL执行66表、主键/索引/CHECK/UTC/自增/生成列",
+      "真实MySQL执行79表、主键/索引/CHECK/UTC/自增/生成列",
       "初装与M0适配目标一致"
     ],
     "negative_checks": [
@@ -5041,11 +5582,22 @@
       "access": "不得绕过限制；保存恢复点",
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
-    "starting_condition": "USER_CONFIRMED_NOT_STARTED",
+    "scopeRevision": "V6.4-IDENTITY-20261022",
+    "definitionHash": "d2f726ba641cefc427525718ce4e9f97460d4fb6ec2752e6d3eedec7ee859220",
     "evidence": [],
     "implementation": null,
     "review": null,
-    "blocker": null
+    "blocker": null,
+    "scopeHistory": [
+      {
+        "fromScope": "V6.1",
+        "toScope": "V6.4-IDENTITY-20261022",
+        "priorStatus": "NOT_ASSESSED",
+        "priorEvidence": [],
+        "reason": "用户确认身份流程变更，保留代码和旧证据但需适配新范围",
+        "at": "2026-10-22T14:48:23.198508+00:00"
+      }
+    ]
   },
   {
     "id": "T07",
@@ -5092,6 +5644,8 @@
       "access": "不得绕过限制；保存恢复点",
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
+    "scopeRevision": "V6.1-UNCHANGED",
+    "definitionHash": "a69d516497cd2e9d5f3914cfd8dc98320cdd32f36988fd165cfc7f1e6d633841",
     "evidence": [],
     "implementation": null,
     "review": null,
@@ -5113,7 +5667,8 @@
       "E05"
     ],
     "deliverables": [
-      "按287画板/有效主视图逐项验收路由、字段、状态、错误恢复、留存和键盘"
+      "按355画板/有效主视图逐项验收路由、字段、状态、错误恢复、留存和键盘",
+      "V6.4同步范围：第三方配置/支付method/外部路由/消息模板以主PRD23和X01–X07为准；旧静态配置不能形成旁路"
     ],
     "negative_checks": [
       "不是每个画板单独路由",
@@ -5148,10 +5703,22 @@
       "access": "不得绕过限制；保存恢复点",
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
+    "scopeRevision": "V6.4-CONFIG-20261022",
+    "definitionHash": "ad14800db6de06f35ca43cb43a11d47b5a5f07348cb10c37ddc1c587952aeb8d",
     "evidence": [],
     "implementation": null,
     "review": null,
-    "blocker": null
+    "blocker": null,
+    "scopeHistory": [
+      {
+        "fromScope": "V6.1",
+        "toScope": "V6.4-CONFIG-20261022",
+        "priorStatus": "NOT_ASSESSED",
+        "priorEvidence": [],
+        "reason": "用户确认身份流程变更，保留代码和旧证据但需适配新范围",
+        "at": "2026-10-22T14:48:23.198511+00:00"
+      }
+    ]
   },
   {
     "id": "L01",
@@ -5199,10 +5766,22 @@
       "access": "不得绕过限制；保存恢复点",
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
+    "scopeRevision": "V6.4-CONFIG-20261022",
+    "definitionHash": "79ea4215d6460559b4981b1d6fa91dab2182303fb84725df58ca1322825404da",
     "evidence": [],
     "implementation": null,
     "review": null,
-    "blocker": null
+    "blocker": null,
+    "scopeHistory": [
+      {
+        "fromScope": "V6.1",
+        "toScope": "V6.4-CONFIG-20261022",
+        "priorStatus": "NOT_ASSESSED",
+        "priorEvidence": [],
+        "reason": "用户确认身份流程变更，保留代码和旧证据但需适配新范围",
+        "at": "2026-10-22T14:48:23.198513+00:00"
+      }
+    ]
   },
   {
     "id": "L02",
@@ -5247,10 +5826,22 @@
       "access": "不得绕过限制；保存恢复点",
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
+    "scopeRevision": "V6.4-CONFIG-20261022",
+    "definitionHash": "0f1cb894637c9978cd059d8324b23fed4b73e0df2196f54072f67bdf5d065cc5",
     "evidence": [],
     "implementation": null,
     "review": null,
-    "blocker": null
+    "blocker": null,
+    "scopeHistory": [
+      {
+        "fromScope": "V6.1",
+        "toScope": "V6.4-CONFIG-20261022",
+        "priorStatus": "NOT_ASSESSED",
+        "priorEvidence": [],
+        "reason": "用户确认身份流程变更，保留代码和旧证据但需适配新范围",
+        "at": "2026-10-22T14:48:23.198514+00:00"
+      }
+    ]
   },
   {
     "id": "L03",
@@ -5297,6 +5888,596 @@
       "access": "不得绕过限制；保存恢复点",
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
+    "scopeRevision": "V6.4-CONFIG-20261022",
+    "definitionHash": "550cb7f42b74f73f6c121623dff22824ccec7e959618f116e470cda26ea2dec6",
+    "evidence": [],
+    "implementation": null,
+    "review": null,
+    "blocker": null,
+    "scopeHistory": [
+      {
+        "fromScope": "V6.1",
+        "toScope": "V6.4-CONFIG-20261022",
+        "priorStatus": "NOT_ASSESSED",
+        "priorEvidence": [],
+        "reason": "用户确认身份流程变更，保留代码和旧证据但需适配新范围",
+        "at": "2026-10-22T14:48:23.198516+00:00"
+      }
+    ]
+  },
+  {
+    "id": "X01",
+    "phase": "M2",
+    "title": "配置版本、密钥保管与发布事务",
+    "domain": "integration",
+    "depends_on": [
+      "E06",
+      "E07"
+    ],
+    "deliverables": [
+      "实现五类配置专用DTO、秘密KEEP/REPLACE/CLEAR、只读脱敏",
+      "不可变版本与check哈希绑定；父锁CAS发布/回滚，主库生效指针权威",
+      "权限/主体/环境分离，真实测试白名单、日志/幂等记录清洗"
+    ],
+    "negative_checks": [
+      "secret回显/日志/对象存储泄漏",
+      "草稿生效、旧check发布、跨主体更新、KMS故障明文降级"
+    ],
+    "api_ids": [
+      "V64_get_api_admin_integrations_profiles",
+      "V64_post_api_admin_integrations_profiles",
+      "V64_get_api_admin_integrations_profiles_profileId",
+      "V64_put_api_admin_integrations_profiles_profileId_draft",
+      "V64_post_api_admin_integrations_profiles_profileId_checks",
+      "V64_post_api_admin_integrations_profiles_profileId_publish",
+      "V64_get_api_admin_integrations_profiles_profileId_publications",
+      "V64_post_api_admin_integrations_profiles_profileId_rollback",
+      "V64_get_api_admin_integrations_profiles_profileId_revisions",
+      "V64_get_api_admin_integrations_test_recipients",
+      "V64_post_api_admin_integrations_test_recipients",
+      "V64_post_api_admin_integrations_test_recipients_recipientId_revoke"
+    ],
+    "page_ids": [],
+    "tables": [
+      "vi_integration_profile",
+      "vi_integration_revision",
+      "vi_integration_secret",
+      "vi_integration_check",
+      "vi_integration_publication",
+      "vi_integration_test_recipient"
+    ],
+    "case_ids": [
+      "TC-CFG-001",
+      "TC-CFG-002",
+      "TC-CFG-003",
+      "TC-CFG-004",
+      "TC-CFG-005",
+      "TC-CFG-006",
+      "TC-CFG-007",
+      "TC-CFG-008",
+      "TC-CFG-009",
+      "TC-CFG-010"
+    ],
+    "scope": "DEVELOPMENT",
+    "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
+    "status": "NOT_ASSESSED",
+    "code_paths": [
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/integration/",
+      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/",
+      "xinyi-ui/src/views/rongli/integrations/",
+      "xinyi-miniapp/src/",
+      "sql/migration_YYYYMMDD_integration_config.sql"
+    ],
+    "test_class": "X01IntegrationIT",
+    "commands": [
+      "mvn -pl xinyi-admin -am test",
+      "python docs/vehicle/V6.4/11_工具/test_integration_policy.py",
+      "python -m pytest docs/vehicle/V6.4/13_真实集成测试/live/test_integration_config_live.py -q"
+    ],
+    "done_when": [
+      "主契约与状态机所有本任务分支实现，无固定Ack/假成功",
+      "实际MySQL与真实HTTP证据齐全；仅外部供应商可用隔离测试替身",
+      "变更秘密不进入日志、源码和通用响应；副作用/权限/并发测试通过",
+      "独立复核证据和覆盖表更新；未执行的真实供应商/真机项保持NOT_RUN"
+    ],
+    "blocker_policy": {
+      "credential": "只阻L01或具体真实渠道验证，通用代码可继续",
+      "policy": "生产配置待批准；测试使用明示fixture",
+      "environment": "具体命令与错误落盘；不能假装已验收",
+      "access": "不得绕过限制；保存恢复点",
+      "contract": "局部冲突登记并修订同源契约，独立任务继续"
+    },
+    "scopeRevision": "V6.4-CONFIG-20261022",
+    "definitionHash": "d645e4a1406930527637e4456ef6987327d51d7005b8876d8fd1e65b38883546",
+    "evidence": [],
+    "implementation": null,
+    "review": null,
+    "blocker": null
+  },
+  {
+    "id": "X02",
+    "phase": "M2",
+    "title": "支付方式与微信商户运行时接入",
+    "domain": "payment",
+    "depends_on": [
+      "X01",
+      "P01"
+    ],
+    "deliverables": [
+      "接入独立开关、mchid/appId/签名/验签配置及必填提示",
+      "新交易读取已发布配置；历史交易仍原商户查单/退款/回调",
+      "同商户凭据轮换、原付款配置快照、关闭微信后的在途处理"
+    ],
+    "negative_checks": [
+      "双关闭被当免费",
+      "关闭开关误断退款、改商户追改旧单、预支付与线下竞态"
+    ],
+    "api_ids": [
+      "V64_get_api_app_owner_orders_orderNo_payment_options",
+      "V64_post_api_app_owner_orders_orderNo_offline_payment"
+    ],
+    "page_ids": [],
+    "tables": [],
+    "case_ids": [
+      "TC-CFG-011",
+      "TC-CFG-012",
+      "TC-CFG-013",
+      "TC-CFG-014",
+      "TC-CFG-015",
+      "TC-CFG-016",
+      "TC-CFG-017",
+      "TC-CFG-018",
+      "TC-CFG-019",
+      "TC-CFG-020",
+      "TC-CFG-021",
+      "TC-CFG-022"
+    ],
+    "scope": "DEVELOPMENT",
+    "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
+    "status": "NOT_ASSESSED",
+    "code_paths": [
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/integration/",
+      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/",
+      "xinyi-ui/src/views/rongli/integrations/",
+      "xinyi-miniapp/src/",
+      "sql/migration_YYYYMMDD_integration_config.sql"
+    ],
+    "test_class": "X02IntegrationIT",
+    "commands": [
+      "mvn -pl xinyi-admin -am test",
+      "python docs/vehicle/V6.4/11_工具/test_integration_policy.py",
+      "python -m pytest docs/vehicle/V6.4/13_真实集成测试/live/test_integration_config_live.py -q"
+    ],
+    "done_when": [
+      "主契约与状态机所有本任务分支实现，无固定Ack/假成功",
+      "实际MySQL与真实HTTP证据齐全；仅外部供应商可用隔离测试替身",
+      "变更秘密不进入日志、源码和通用响应；副作用/权限/并发测试通过",
+      "独立复核证据和覆盖表更新；未执行的真实供应商/真机项保持NOT_RUN"
+    ],
+    "blocker_policy": {
+      "credential": "只阻L01或具体真实渠道验证，通用代码可继续",
+      "policy": "生产配置待批准；测试使用明示fixture",
+      "environment": "具体命令与错误落盘；不能假装已验收",
+      "access": "不得绕过限制；保存恢复点",
+      "contract": "局部冲突登记并修订同源契约，独立任务继续"
+    },
+    "scopeRevision": "V6.4-CONFIG-20261022",
+    "definitionHash": "b9ba71ab92f05ff295ee8fe1b40952c854b85f120df3f1022690e52e5ba123df",
+    "evidence": [],
+    "implementation": null,
+    "review": null,
+    "blocker": null
+  },
+  {
+    "id": "X03",
+    "phase": "M2",
+    "title": "客户线下收退款与人工资金核实",
+    "domain": "payment",
+    "depends_on": [
+      "X02",
+      "P02",
+      "S02"
+    ],
+    "deliverables": [
+      "实现OFFLINE意图、全额证明登记、不同人员核实；独立于司机付款",
+      "30分钟超时/证明待审/容量释放与重获、资金事实与预约冲突分开",
+      "同一售后审核产生线下退款任务，凭证核实更新资金不再审核取消"
+    ],
+    "negative_checks": [
+      "自己核实/双通道重复付款/超额/重复流水",
+      "晚到钱不认账或强行复活名额、线下退款误调用微信"
+    ],
+    "api_ids": [
+      "V64_get_api_admin_offline_payments",
+      "V64_post_api_admin_offline_payments",
+      "V64_get_api_admin_offline_payments_proofId",
+      "V64_post_api_admin_offline_payments_proofId_verify"
+    ],
+    "page_ids": [],
+    "tables": [
+      "vi_offline_payment_record"
+    ],
+    "case_ids": [
+      "TC-CFG-023",
+      "TC-CFG-024",
+      "TC-CFG-025",
+      "TC-CFG-026",
+      "TC-CFG-027",
+      "TC-CFG-028",
+      "TC-CFG-029",
+      "TC-CFG-030",
+      "TC-CFG-031",
+      "TC-CFG-032",
+      "TC-CFG-033",
+      "TC-CFG-034",
+      "TC-CFG-035"
+    ],
+    "scope": "DEVELOPMENT",
+    "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
+    "status": "NOT_ASSESSED",
+    "code_paths": [
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/integration/",
+      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/",
+      "xinyi-ui/src/views/rongli/integrations/",
+      "xinyi-miniapp/src/",
+      "sql/migration_YYYYMMDD_integration_config.sql"
+    ],
+    "test_class": "X03IntegrationIT",
+    "commands": [
+      "mvn -pl xinyi-admin -am test",
+      "python docs/vehicle/V6.4/11_工具/test_integration_policy.py",
+      "python -m pytest docs/vehicle/V6.4/13_真实集成测试/live/test_integration_config_live.py -q"
+    ],
+    "done_when": [
+      "主契约与状态机所有本任务分支实现，无固定Ack/假成功",
+      "实际MySQL与真实HTTP证据齐全；仅外部供应商可用隔离测试替身",
+      "变更秘密不进入日志、源码和通用响应；副作用/权限/并发测试通过",
+      "独立复核证据和覆盖表更新；未执行的真实供应商/真机项保持NOT_RUN"
+    ],
+    "blocker_policy": {
+      "credential": "只阻L01或具体真实渠道验证，通用代码可继续",
+      "policy": "生产配置待批准；测试使用明示fixture",
+      "environment": "具体命令与错误落盘；不能假装已验收",
+      "access": "不得绕过限制；保存恢复点",
+      "contract": "局部冲突登记并修订同源契约，独立任务继续"
+    },
+    "scopeRevision": "V6.4-CONFIG-20261022",
+    "definitionHash": "7cc3266ac1aaf24883458e48ea65385a0a41b6050e2da57b31337bc7a1409189",
+    "evidence": [],
+    "implementation": null,
+    "review": null,
+    "blocker": null
+  },
+  {
+    "id": "X04",
+    "phase": "M4",
+    "title": "腾讯云和阿里云短信及场景路由",
+    "domain": "notification",
+    "depends_on": [
+      "X01",
+      "N01"
+    ],
+    "deliverables": [
+      "真实官方SDK/HTTP适配器和独立参数，模板顺序/命名映射",
+      "按业务事件唯一主通道；白名单测试、回执查询、限频和OTP保护",
+      "UNKNOWN不自动重发；仅确定未发送才受控备用"
+    ],
+    "negative_checks": [
+      "缺签名/模板、跨供应商参数混用",
+      "接收超时双发、accepted假装delivered、日志含OTP"
+    ],
+    "api_ids": [
+      "V64_get_api_admin_integrations_templates",
+      "V64_post_api_admin_integrations_templates",
+      "V64_get_api_admin_integrations_templates_templateId",
+      "V64_put_api_admin_integrations_templates_templateId_draft",
+      "V64_post_api_admin_integrations_templates_templateId_checks",
+      "V64_post_api_admin_integrations_templates_templateId_preview",
+      "V64_post_api_admin_integrations_templates_templateId_publish",
+      "V64_get_api_admin_integrations_templates_templateId_publications",
+      "V64_post_api_admin_integrations_templates_templateId_test",
+      "V64_get_api_admin_integrations_routes",
+      "V64_put_api_admin_integrations_routes_routeId",
+      "V64_post_api_admin_integrations_routes",
+      "V64_get_api_admin_integrations_deliveries",
+      "V64_post_api_admin_integrations_deliveries_deliveryId_query",
+      "V64_post_api_admin_integrations_deliveries_deliveryId_retry"
+    ],
+    "page_ids": [],
+    "tables": [
+      "vi_message_template",
+      "vi_message_template_revision",
+      "vi_notification_route",
+      "vi_notification_delivery"
+    ],
+    "case_ids": [
+      "TC-CFG-036",
+      "TC-CFG-037",
+      "TC-CFG-038",
+      "TC-CFG-039",
+      "TC-CFG-040",
+      "TC-CFG-041",
+      "TC-CFG-042",
+      "TC-CFG-043",
+      "TC-CFG-044",
+      "TC-CFG-045"
+    ],
+    "scope": "DEVELOPMENT",
+    "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
+    "status": "NOT_ASSESSED",
+    "code_paths": [
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/integration/",
+      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/",
+      "xinyi-ui/src/views/rongli/integrations/",
+      "xinyi-miniapp/src/",
+      "sql/migration_YYYYMMDD_integration_config.sql"
+    ],
+    "test_class": "X04IntegrationIT",
+    "commands": [
+      "mvn -pl xinyi-admin -am test",
+      "python docs/vehicle/V6.4/11_工具/test_integration_policy.py",
+      "python -m pytest docs/vehicle/V6.4/13_真实集成测试/live/test_integration_config_live.py -q"
+    ],
+    "done_when": [
+      "主契约与状态机所有本任务分支实现，无固定Ack/假成功",
+      "实际MySQL与真实HTTP证据齐全；仅外部供应商可用隔离测试替身",
+      "变更秘密不进入日志、源码和通用响应；副作用/权限/并发测试通过",
+      "独立复核证据和覆盖表更新；未执行的真实供应商/真机项保持NOT_RUN"
+    ],
+    "blocker_policy": {
+      "credential": "只阻L01或具体真实渠道验证，通用代码可继续",
+      "policy": "生产配置待批准；测试使用明示fixture",
+      "environment": "具体命令与错误落盘；不能假装已验收",
+      "access": "不得绕过限制；保存恢复点",
+      "contract": "局部冲突登记并修订同源契约，独立任务继续"
+    },
+    "scopeRevision": "V6.4-CONFIG-20261022",
+    "definitionHash": "11e4a427d4d8b65e4f4e9d916f5b4e3b39ad85b92e7d315bd629cddbd8f2232c",
+    "evidence": [],
+    "implementation": null,
+    "review": null,
+    "blocker": null
+  },
+  {
+    "id": "X05",
+    "phase": "M4",
+    "title": "订阅模板与用户授权事件链",
+    "domain": "notification",
+    "depends_on": [
+      "X01",
+      "N01",
+      "I01"
+    ],
+    "deliverables": [
+      "AppSecret公共凭据服务、AccessToken分应用版本单飞缓存",
+      "真实模板key类型长度/页面白名单/环境校验；发布选项供客户端",
+      "本人prompt nonce和结果，业务事件发送，拒绝不阻断业务"
+    ],
+    "negative_checks": [
+      "伪造accept无限发送、复用旧模板授权",
+      "未登录自动弹窗、任意page注入、长期无资格"
+    ],
+    "api_ids": [
+      "V64_post_api_common_subscriptions_prompts",
+      "V64_post_api_common_subscriptions_prompts_promptId_report"
+    ],
+    "page_ids": [],
+    "tables": [
+      "vi_subscription_prompt"
+    ],
+    "case_ids": [
+      "TC-CFG-046",
+      "TC-CFG-047",
+      "TC-CFG-048",
+      "TC-CFG-049",
+      "TC-CFG-050",
+      "TC-CFG-051",
+      "TC-CFG-052",
+      "TC-CFG-053",
+      "TC-CFG-054"
+    ],
+    "scope": "DEVELOPMENT",
+    "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
+    "status": "NOT_ASSESSED",
+    "code_paths": [
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/integration/",
+      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/",
+      "xinyi-ui/src/views/rongli/integrations/",
+      "xinyi-miniapp/src/",
+      "sql/migration_YYYYMMDD_integration_config.sql"
+    ],
+    "test_class": "X05IntegrationIT",
+    "commands": [
+      "mvn -pl xinyi-admin -am test",
+      "python docs/vehicle/V6.4/11_工具/test_integration_policy.py",
+      "python -m pytest docs/vehicle/V6.4/13_真实集成测试/live/test_integration_config_live.py -q"
+    ],
+    "done_when": [
+      "主契约与状态机所有本任务分支实现，无固定Ack/假成功",
+      "实际MySQL与真实HTTP证据齐全；仅外部供应商可用隔离测试替身",
+      "变更秘密不进入日志、源码和通用响应；副作用/权限/并发测试通过",
+      "独立复核证据和覆盖表更新；未执行的真实供应商/真机项保持NOT_RUN"
+    ],
+    "blocker_policy": {
+      "credential": "只阻L01或具体真实渠道验证，通用代码可继续",
+      "policy": "生产配置待批准；测试使用明示fixture",
+      "environment": "具体命令与错误落盘；不能假装已验收",
+      "access": "不得绕过限制；保存恢复点",
+      "contract": "局部冲突登记并修订同源契约，独立任务继续"
+    },
+    "scopeRevision": "V6.4-CONFIG-20261022",
+    "definitionHash": "a75905a80c9c7795dfedd0c2a99a9e6e99428c7f6651db2bf44b43aea3f094f2",
+    "evidence": [],
+    "implementation": null,
+    "review": null,
+    "blocker": null
+  },
+  {
+    "id": "X06",
+    "phase": "M4",
+    "title": "第三方配置与支付页全量落地",
+    "domain": "frontend",
+    "depends_on": [
+      "X02",
+      "X03",
+      "X04",
+      "X05",
+      "E05"
+    ],
+    "deliverables": [
+      "实现B46–B53、原B21/B24导航与O10实际支付选择",
+      "主PRD、API类型、字段清单、配置状态/失败恢复/权限不足同步",
+      "关键动作保存/校验/发布分开，未保存离开、敏感输入清理"
+    ],
+    "negative_checks": [
+      "仅静态画板/保存即生效/两开关联动关闭",
+      "密钥暴露、跨主体旧表单、未知发送盲目重试"
+    ],
+    "api_ids": [],
+    "page_ids": [
+      "B46",
+      "B47",
+      "B48",
+      "B49",
+      "B50",
+      "B51",
+      "B52",
+      "B53",
+      "B46-both",
+      "B46-offline",
+      "B46-paused",
+      "B46-invalid",
+      "B46-draft",
+      "B46-conflict",
+      "B47-empty",
+      "B47-certificate",
+      "B47-rotating",
+      "B48-aliyun",
+      "B48-disabled",
+      "B48-failed",
+      "B49-aliyun",
+      "B49-invalid",
+      "B49-test",
+      "B50-invalid",
+      "B50-no-consent",
+      "B50-disabled",
+      "B51-unknown",
+      "B51-failed",
+      "B52-review",
+      "B52-verified",
+      "B52-refund",
+      "B52-late",
+      "B53-empty",
+      "O10-both",
+      "O10-offline",
+      "O10-disabled",
+      "O10-review",
+      "O10-offline-paid"
+    ],
+    "tables": [],
+    "case_ids": [
+      "TC-CFG-055",
+      "TC-CFG-056",
+      "TC-CFG-057",
+      "TC-CFG-058"
+    ],
+    "scope": "DEVELOPMENT",
+    "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
+    "status": "NOT_ASSESSED",
+    "code_paths": [
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/integration/",
+      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/",
+      "xinyi-ui/src/views/rongli/integrations/",
+      "xinyi-miniapp/src/",
+      "sql/migration_YYYYMMDD_integration_config.sql"
+    ],
+    "test_class": "X06IntegrationIT",
+    "commands": [
+      "mvn -pl xinyi-admin -am test",
+      "python docs/vehicle/V6.4/11_工具/test_integration_policy.py",
+      "python -m pytest docs/vehicle/V6.4/13_真实集成测试/live/test_integration_config_live.py -q"
+    ],
+    "done_when": [
+      "主契约与状态机所有本任务分支实现，无固定Ack/假成功",
+      "实际MySQL与真实HTTP证据齐全；仅外部供应商可用隔离测试替身",
+      "变更秘密不进入日志、源码和通用响应；副作用/权限/并发测试通过",
+      "独立复核证据和覆盖表更新；未执行的真实供应商/真机项保持NOT_RUN"
+    ],
+    "blocker_policy": {
+      "credential": "只阻L01或具体真实渠道验证，通用代码可继续",
+      "policy": "生产配置待批准；测试使用明示fixture",
+      "environment": "具体命令与错误落盘；不能假装已验收",
+      "access": "不得绕过限制；保存恢复点",
+      "contract": "局部冲突登记并修订同源契约，独立任务继续"
+    },
+    "scopeRevision": "V6.4-CONFIG-20261022",
+    "definitionHash": "da33bc22b1c3cd6e275a0d982414eef829afa0ef7ba45d3dd6fa4b15ea5df5a6",
+    "evidence": [],
+    "implementation": null,
+    "review": null,
+    "blocker": null
+  },
+  {
+    "id": "X07",
+    "phase": "M6",
+    "title": "第三方配置真实链路与回归证据",
+    "domain": "integration",
+    "depends_on": [
+      "X06",
+      "T02",
+      "T05",
+      "T07"
+    ],
+    "deliverables": [
+      "通过真实xinyi HTTP/Service/MyBatis/MySQL完成配置发布至支付/发送",
+      "故障恢复、并发版本、秘密扫描、跨主体负向、双支付各状态",
+      "更新全量API/页面/表/用例覆盖、L01与L02真实门槛，不重置已有进度"
+    ],
+    "negative_checks": [
+      "只用内存原型冒充后端测试",
+      "测试控制器入生产Jar、日志/源码含真实凭据"
+    ],
+    "api_ids": [],
+    "page_ids": [],
+    "tables": [],
+    "case_ids": [
+      "TC-CFG-059",
+      "TC-CFG-060",
+      "TC-CFG-061",
+      "TC-CFG-062"
+    ],
+    "scope": "DEVELOPMENT",
+    "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
+    "status": "NOT_ASSESSED",
+    "code_paths": [
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/integration/",
+      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/",
+      "xinyi-ui/src/views/rongli/integrations/",
+      "xinyi-miniapp/src/",
+      "sql/migration_YYYYMMDD_integration_config.sql"
+    ],
+    "test_class": "X07IntegrationIT",
+    "commands": [
+      "mvn -pl xinyi-admin -am test",
+      "python docs/vehicle/V6.4/11_工具/test_integration_policy.py",
+      "python -m pytest docs/vehicle/V6.4/13_真实集成测试/live/test_integration_config_live.py -q",
+      "python -m pytest docs/vehicle/V6.4/13_真实集成测试/live/test_integration_config.py -q"
+    ],
+    "done_when": [
+      "主契约与状态机所有本任务分支实现，无固定Ack/假成功",
+      "实际MySQL与真实HTTP证据齐全；仅外部供应商可用隔离测试替身",
+      "变更秘密不进入日志、源码和通用响应；副作用/权限/并发测试通过",
+      "独立复核证据和覆盖表更新；未执行的真实供应商/真机项保持NOT_RUN"
+    ],
+    "blocker_policy": {
+      "credential": "只阻L01或具体真实渠道验证，通用代码可继续",
+      "policy": "生产配置待批准；测试使用明示fixture",
+      "environment": "具体命令与错误落盘；不能假装已验收",
+      "access": "不得绕过限制；保存恢复点",
+      "contract": "局部冲突登记并修订同源契约，独立任务继续"
+    },
+    "scopeRevision": "V6.4-CONFIG-20261022",
+    "definitionHash": "fa7efff4831007063571aa9bf0f9282cfce0f743c6516039f2a6062c403d31c3",
     "evidence": [],
     "implementation": null,
     "review": null,
@@ -5315,12 +6496,14 @@
       "T05",
       "T06",
       "T07",
-      "T08"
+      "T08",
+      "X07"
     ],
     "deliverables": [
       "核对所有活动API、页面、表、用例的实现、集成和独立复核证据",
       "真实渠道另计",
-      "先以--preflight检查除G01自身外的全部交付，再独立审查G01证据并标REVIEWED，最后不带--preflight运行最终完成门禁；避免审计任务自依赖死锁。"
+      "先以--preflight检查除G01自身外的全部交付，再独立审查G01证据并标REVIEWED，最后不带--preflight运行最终完成门禁；避免审计任务自依赖死锁。",
+      "V6.4新增配置、线下资金及两云短信/订阅接口页面用例一并完成，不能把第三方配置留在代码常量或配置文件待做"
     ],
     "negative_checks": [
       "接口数量/截图数/空类/固定Ack不计完成",
@@ -5338,8 +6521,8 @@
     ],
     "test_class": "G01TestingIT",
     "commands": [
-      "python docs/vehicle/V6.1/12_工程执行/completion_gate.py --repo . --preflight",
-      "python docs/vehicle/V6.1/12_工程执行/taskctl.py summary --repo ."
+      "python docs/vehicle/V6.4/12_工程执行/completion_gate.py --repo . --preflight",
+      "python docs/vehicle/V6.4/12_工程执行/taskctl.py summary --repo ."
     ],
     "done_when": [
       "源接口/页面/表/用例均有明确实现文件与关联测试；不能以目录存在当完成",
@@ -5353,9 +6536,21 @@
       "access": "不得绕过限制；保存恢复点",
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
+    "scopeRevision": "V6.4-CONFIG-20261022",
+    "definitionHash": "85840ac1d4aa3bad464396e6953cef52eb25acceac241816549d827f9260f440",
     "evidence": [],
     "implementation": null,
     "review": null,
-    "blocker": null
+    "blocker": null,
+    "scopeHistory": [
+      {
+        "fromScope": "V6.1",
+        "toScope": "V6.4-CONFIG-20261022",
+        "priorStatus": "NOT_ASSESSED",
+        "priorEvidence": [],
+        "reason": "用户确认身份流程变更，保留代码和旧证据但需适配新范围",
+        "at": "2026-10-22T14:48:23.198523+00:00"
+      }
+    ]
   }
 ]

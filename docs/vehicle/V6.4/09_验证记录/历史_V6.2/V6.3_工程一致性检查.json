@@ -1,0 +1,186 @@
+{
+  "kind": "ENGINEERING_STATIC_CHECK",
+  "at": "2026-10-22T09:14:50.046835+00:00",
+  "pass": 34,
+  "fail": 0,
+  "checks": [
+    {
+      "name": "01 78任务ID无重复",
+      "result": "PASS",
+      "detail": "None"
+    },
+    {
+      "name": "02 DAG无缺失前置或环",
+      "result": "PASS",
+      "detail": "True"
+    },
+    {
+      "name": "03 开发与发布边界分离",
+      "result": "PASS",
+      "detail": "None"
+    },
+    {
+      "name": "API全量唯一责任覆盖",
+      "result": "PASS",
+      "detail": "None"
+    },
+    {
+      "name": "画板全量唯一责任覆盖",
+      "result": "PASS",
+      "detail": "None"
+    },
+    {
+      "name": "表全量唯一责任覆盖",
+      "result": "PASS",
+      "detail": "None"
+    },
+    {
+      "name": "用例全量唯一责任覆盖",
+      "result": "PASS",
+      "detail": "None"
+    },
+    {
+      "name": "08 每任务输入闭包可读取",
+      "result": "PASS",
+      "detail": "None"
+    },
+    {
+      "name": "09 Quote地址草稿不是查询DTO",
+      "result": "PASS",
+      "detail": "None"
+    },
+    {
+      "name": "10 Quote两组oneOf机器约束",
+      "result": "PASS",
+      "detail": "None"
+    },
+    {
+      "name": "11 接受条款只能true",
+      "result": "PASS",
+      "detail": "None"
+    },
+    {
+      "name": "12 公开配置只读无认证且单独Schema",
+      "result": "PASS",
+      "detail": "None"
+    },
+    {
+      "name": "13 当前画板与两类截图逐一覆盖",
+      "result": "PASS",
+      "detail": "None"
+    },
+    {
+      "name": "14 主包与状态映射",
+      "result": "PASS",
+      "detail": "None"
+    },
+    {
+      "name": "15 全量源用例映射实际目标测试",
+      "result": "PASS",
+      "detail": "None"
+    },
+    {
+      "name": "16 实际工作区仍须核对且不可默认清空",
+      "result": "PASS",
+      "detail": "None"
+    },
+    {
+      "name": "17 私有文件与公开目录隔离",
+      "result": "PASS",
+      "detail": "None"
+    },
+    {
+      "name": "18 环境无明文固定密码",
+      "result": "PASS",
+      "detail": "None"
+    },
+    {
+      "name": "19 真实HTTP无原型后备",
+      "result": "PASS",
+      "detail": "None"
+    },
+    {
+      "name": "20 测试控制只在test源码",
+      "result": "PASS",
+      "detail": "None"
+    },
+    {
+      "name": "21 模拟供应商不提供业务订单API",
+      "result": "PASS",
+      "detail": "None"
+    },
+    {
+      "name": "22 初装拒绝非空库",
+      "result": "PASS",
+      "detail": "None"
+    },
+    {
+      "name": "23 并发状态与不自证复核检查存在",
+      "result": "PASS",
+      "detail": "None"
+    },
+    {
+      "name": "24 CI真实测试不得跳过",
+      "result": "PASS",
+      "detail": "None"
+    },
+    {
+      "name": "25 生产入口拒绝测试控制",
+      "result": "PASS",
+      "detail": "None"
+    },
+    {
+      "name": "26 源验收状态未冒充运行",
+      "result": "PASS",
+      "detail": "None"
+    },
+    {
+      "name": "27 全功能完成检查覆盖四类台账",
+      "result": "PASS",
+      "detail": "None"
+    },
+    {
+      "name": "28 主启动入口副本一致",
+      "result": "PASS",
+      "detail": "None"
+    },
+    {
+      "name": "29 当前阶段实勘与历史指纹分开",
+      "result": "PASS",
+      "detail": "None"
+    },
+    {
+      "name": "30 首次任务无完成推定",
+      "result": "PASS",
+      "detail": "None"
+    },
+    {
+      "name": "31 模块新建有任务和前置",
+      "result": "PASS",
+      "detail": "None"
+    },
+    {
+      "name": "32 新库初装既有库前向保护",
+      "result": "PASS",
+      "detail": "None"
+    },
+    {
+      "name": "33 当前来源仅为指定分支",
+      "result": "PASS",
+      "detail": "None"
+    },
+    {
+      "name": "34 旧引用不在活动启动和适配文档",
+      "result": "PASS",
+      "detail": "None"
+    }
+  ],
+  "notCovered": [
+    "target repository build",
+    "MySQL execution",
+    "npm resolution",
+    "live backend test execution",
+    "real providers",
+    "WeChat devices"
+  ]
+}

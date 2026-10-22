@@ -1,0 +1,41 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TASK</title><style>body{font:16px/1.75 -apple-system,BlinkMacSystemFont,"Microsoft YaHei",sans-serif;color:#202632;margin:0;background:#f6f7f9}header{padding:14px 24px;background:white;border-bottom:1px solid #ddd}main{max-width:1120px;margin:24px auto;padding:30px;background:white}h1{font-size:30px}h2{margin-top:36px}a{color:#0661bd}table{border-collapse:collapse;width:100%;display:block;overflow:auto;font-size:14px}td,th{border:1px solid #dde2ea;padding:10px;vertical-align:top}th{background:#f1f5fb}pre{padding:15px;background:#f2f4f7;overflow:auto}img{max-width:100%;height:auto}blockquote{padding:10px 20px;border-left:3px solid #2571be;background:#f4f8fc}@media(max-width:700px){main{padding:15px;margin:8px}h1{font-size:25px}}</style></head><body><header><a href="../../../00_开始.html">V6.4 完整资料</a>　<a href="../../../02_UI/index.html">交互原型</a>　T3.4</header><main><h1>P04 · 未接车退款执行与渠道基础</h1>
+<p>阶段：M2；责任域：refund；前置：S02, P02。
+范围版本：<code>V6.4-CONFIG-20261022</code>；definitionHash：<code>efe17e756bb198138fc1d96ae4f02ceb61142afdab068eca09c337c6e797ab6e</code>。</p>
+<h2>本任务交付</h2>
+<ul>
+<li>审核批准后退款单与渠道调用，复用原退款号查询及重试</li>
+<li>为真实付款准备取消出口</li>
+<li>V6.4同步范围：第三方配置/支付method/外部路由/消息模板以主PRD23和X01–X07为准；旧静态配置不能形成旁路</li>
+</ul>
+<h2>必测失败与并发</h2>
+<ul>
+<li>未知结果不重复扣款</li>
+<li>允许退额=实付减已退减预留，拒绝超额</li>
+</ul>
+<h2>精确输入</h2>
+<p>主源：04_接口/openapi_V6.4.yaml、05_数据设计/data_model_V6.4.json、06_验收/test_cases_V6.4.json。本目录派生，不独立维护。
+接口：API_113_get, API_114_post, API_115_post, API_141_get, API_142_post, API_143_post
+画板：无
+主责任表：vi_refund_order
+验收：无</p>
+<h2>代码落位</h2>
+<p><code>xinyi-rongli/src/main/java/com/xinyi/rongli/refund/</code>
+<code>xinyi-rongli/src/main/resources/mapper/rongli/refund/</code>
+<code>xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/refund/</code>
+<code>xinyi-ui/src/views/rongli/refund/</code>
+<code>xinyi-ui/src/api/rongli/refund.ts</code>
+<code>xinyi-miniapp/src/features/refund/</code></p>
+<h2>验证命令</h2>
+<pre><code class="language-bash">mvn -pl xinyi-admin -am -Pvi-it -Dit.test=P04RefundIT verify
+npm --prefix xinyi-ui run build:prod
+npm --prefix xinyi-miniapp run build:mp-weixin
+</code></pre>
+<h2>完成标准</h2>
+<ul>
+<li>源接口/页面/表/用例均有明确实现文件与关联测试；不能以目录存在当完成</li>
+<li>本任务真实集成与负向场景实际通过且保存原始报告；无测试/跳过不能通过</li>
+<li>提交独立复核记录；标注测试第三方替身，不声称真实渠道通过</li>
+</ul>
+<h2>执行边界</h2>
+<p>已有实现先核查适配，不清空重来。NOT_RUN与NOT_ASSESSED不表示生产已验证。缺真实凭据只阻对应真实联调；环境阻塞如实记录，不改测试期望凑通过。修改主源后重新生成派生文件和当前截图。</p>
+</main></body></html>

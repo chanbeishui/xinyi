@@ -1,0 +1,22 @@
+digraph G {
+graph [rankdir=TB,bgcolor="white",pad="0.3",nodesep="0.3",ranksep="0.45",fontname="Noto Sans CJK SC",label="F04 · 后台预分配员工站点与权限刷新",labelloc=t,fontsize=20];
+node [shape=box,style="rounded,filled",fillcolor="#F2F6FC",color="#B5C9E5",fontname="Noto Sans CJK SC",fontsize=12,margin=".15,.12"];
+edge [color="#607A9C",fontname="Noto Sans CJK SC",fontsize=10];
+n1 [label="管理员选择原框架sys_user（可未微信登录）"];
+n2 [label="读取空或已有站点集合版本"];
+n3 [label="功能/部门/公司/站点管理权限通过？",shape=diamond];
+n4 [label="选择站点，填写原因；可撤销到0"];
+n5 [label="锁集合版本、批量验证并更新全部关系"];
+n6 [label="同事务框架auth_version、MINI版本、审计/outbox"];
+n7 [label="员工手机号自动关联后安全刷新"];
+n8 [label="仅在授权站点工作；切换不产生新授权"];
+n9 [label="拒绝越权/版本冲突，不部分保存"];
+n1 -> n2 [label=""];
+n2 -> n3 [label=""];
+n3 -> n4 [label="是"];
+n3 -> n9 [label="否"];
+n4 -> n5 [label=""];
+n5 -> n6 [label=""];
+n6 -> n7 [label=""];
+n7 -> n8 [label=""];
+}

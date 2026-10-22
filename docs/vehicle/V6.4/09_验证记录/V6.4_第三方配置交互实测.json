@@ -1,0 +1,180 @@
+{
+  "scope": "PROTOTYPE_DOM_AND_LOCAL_STATE_ONLY",
+  "environment": "Playwright/Chromium set_content; Browser connector only supports read tabs, no browser control runtime",
+  "checks": [
+    {
+      "name": "01 独立开关不互斥且未发布不改变线上",
+      "result": "PASS"
+    },
+    {
+      "name": "02 保存草稿不改变支付方式",
+      "result": "PASS"
+    },
+    {
+      "name": "03 当前草稿未校验不能发布",
+      "result": "PASS"
+    },
+    {
+      "name": "04 校验发布后客户端显示两种方式",
+      "result": "PASS"
+    },
+    {
+      "name": "05 双关闭须警告且禁止新付款，不默认为免费",
+      "result": "PASS"
+    },
+    {
+      "name": "06 微信启用但商户不完整拒绝发布",
+      "result": "PASS"
+    },
+    {
+      "name": "07 仅线下支付无需微信商户配置",
+      "result": "PASS"
+    },
+    {
+      "name": "08 商户允许不完整草稿，校验逐项提示必填",
+      "result": "PASS"
+    },
+    {
+      "name": "09 平台证书模式显示并校验对应字段",
+      "result": "PASS"
+    },
+    {
+      "name": "10 拒绝掩码与错误长度API密钥",
+      "result": "PASS"
+    },
+    {
+      "name": "11 密钥演示只存配置标记，不留输入原文",
+      "result": "PASS"
+    },
+    {
+      "name": "12 更换密钥须重新校验，不沿用旧校验",
+      "result": "PASS"
+    },
+    {
+      "name": "13 字段编辑失效此前校验",
+      "result": "PASS"
+    },
+    {
+      "name": "14 配置并发版本冲突拒绝覆盖",
+      "result": "PASS"
+    },
+    {
+      "name": "15 腾讯云/阿里云字段分支真实切换",
+      "result": "PASS"
+    },
+    {
+      "name": "16 通道发布不擅自切场景路由，两个供应商可并存",
+      "result": "PASS"
+    },
+    {
+      "name": "38 场景模板发布才切该场景主通道",
+      "result": "PASS"
+    },
+    {
+      "name": "39 场景不得发布到未启用供应商",
+      "result": "PASS"
+    },
+    {
+      "name": "40 备用策略必须关联备用模板且未知结果不能使用",
+      "result": "PASS"
+    },
+    {
+      "name": "17 腾讯顺序参数与阿里命名参数不得混用",
+      "result": "PASS"
+    },
+    {
+      "name": "18 消息预览无发送副作用",
+      "result": "PASS"
+    },
+    {
+      "name": "19 白名单测试需要费用确认且受理不等于送达",
+      "result": "PASS"
+    },
+    {
+      "name": "20 发送未知只能查询，不自动切通道重发",
+      "result": "PASS"
+    },
+    {
+      "name": "21 确认未发送失败可演示重试，回执另行更新",
+      "result": "PASS"
+    },
+    {
+      "name": "22 关闭新支付仍有历史查单维护入口",
+      "result": "PASS"
+    },
+    {
+      "name": "23 订阅目标拒绝外部URL和敏感参数",
+      "result": "PASS"
+    },
+    {
+      "name": "24 无资格不得启用长期订阅",
+      "result": "PASS"
+    },
+    {
+      "name": "25 正式配置不发送体验版页面",
+      "result": "PASS"
+    },
+    {
+      "name": "26 订阅测试没有授权不发送",
+      "result": "PASS"
+    },
+    {
+      "name": "27 拒绝订阅不改变订单履约",
+      "result": "PASS"
+    },
+    {
+      "name": "28 选择线下不标记支付成功、不派单",
+      "result": "PASS"
+    },
+    {
+      "name": "29 登记线下凭证仍待独立核实",
+      "result": "PASS"
+    },
+    {
+      "name": "30 不等额凭证不直接确认足额",
+      "result": "PASS"
+    },
+    {
+      "name": "31 收款登记人不能自核",
+      "result": "PASS"
+    },
+    {
+      "name": "32 独立核实后才更新资金与计划安排",
+      "result": "PASS"
+    },
+    {
+      "name": "33 迟到收款保留资金事实但不静默恢复容量",
+      "result": "PASS"
+    },
+    {
+      "name": "34 线下退款独立核实，不走微信或改原实付",
+      "result": "PASS"
+    },
+    {
+      "name": "35 驳回收款证明不计入已付",
+      "result": "PASS"
+    },
+    {
+      "name": "36 小程序公共凭据不完整不能发布",
+      "result": "PASS"
+    },
+    {
+      "name": "41 只读连接检查明确未联网，不产生付款发信副作用",
+      "result": "PASS"
+    },
+    {
+      "name": "37 新页面实图与运行时无异常检查",
+      "result": "PASS"
+    }
+  ],
+  "passed": 41,
+  "failed": 0,
+  "pageErrors": [],
+  "NOT_RUN": [
+    "real xinyi",
+    "MySQL",
+    "WeChat pay",
+    "SMS",
+    "subscription delivery"
+  ]
+}

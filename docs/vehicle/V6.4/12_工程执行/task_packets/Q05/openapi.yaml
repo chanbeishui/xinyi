@@ -1,0 +1,715 @@
+openapi: 3.0.3
+info:
+  title: Q05 资格审批与到期复审
+  version: 6.4.0
+servers:
+- url: http://localhost:8080
+  description: 本地Java直连；paths已包含/api，不再次追加
+- url: https://{host}
+  description: 发布域名仅作部署变量；由环境设置真实已备案域名，代理保留/api
+  variables:
+    host:
+      default: api.example.invalid
+      description: 占位不可用于真实支付或发布
+paths:
+  /api/admin/driver-qualifications:
+    get:
+      operationId: API_121_get
+      summary: 资格审核列表
+      tags:
+      - ADMIN
+      description: '流程：F04。权限码为建议，须映射实际仓库；非全局角色必须有站点范围；审核不允许自己审批自己的申请
+
+        参数校验、真实归属、服务端当前状态/版本先于写入；不接受主体伪造。'
+      x-flow-ids:
+      - F04
+      security:
+      - AdminBearerAuth: []
+      responses:
+        '200':
+          description: 操作成功；领域校验后返回真实结果
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    enum:
+                    - 200
+                  msg:
+                    type: string
+                  rows:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Qualification'
+                  total:
+                    type: integer
+                    minimum: 0
+                additionalProperties: false
+                required:
+                - code
+                - msg
+                - rows
+                - total
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+                enum:
+                - no-store
+              description: 身份/交易/个人业务响应不缓存
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalError'
+        '503':
+          $ref: '#/components/responses/Unavailable'
+      parameters:
+      - name: X-Client-Type
+        in: header
+        required: true
+        schema:
+          type: string
+          enum:
+          - owner
+          - driver
+          - station
+          - admin
+        description: 仅审计来源，不作为授权；须匹配服务端会话视角
+      - name: pageNum
+        in: query
+        schema:
+          type: integer
+          minimum: 1
+          default: 1
+      - name: pageSize
+        in: query
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 100
+          default: 10
+      x-permission: biz:driverqualification:list
+      x-authorization:
+        realm: ADMIN
+        scope: ORG_DEPT_STATION
+        permission: biz:driverqualification:list
+      x-error-codes:
+      - VI_REQUEST_INVALID
+      - VI_AUTH_REQUIRED
+      - VI_TOKEN_REALM_MISMATCH
+      - VI_REFRESH_REUSED
+      - VI_FORBIDDEN
+      - VI_SELF_REVIEW_DENIED
+      - VI_RATE_LIMITED
+      - VI_INTERNAL_ERROR
+      - VI_AUTHORITY_UNAVAILABLE
+      - VI_UPSTREAM_UNAVAILABLE
+      x-error-policy: GLOBAL_FAILURES_NO_RESOURCE_404
+      x-contract-baseline: V6.4
+  /api/admin/driver-qualifications/{applicationId}:
+    get:
+      operationId: API_122_get
+      summary: 资格审核详情
+      tags:
+      - ADMIN
+      description: '流程：F04。权限码为建议，须映射实际仓库；非全局角色必须有站点范围；审核不允许自己审批自己的申请
+
+        参数校验、真实归属、服务端当前状态/版本先于写入；不接受主体伪造。'
+      x-flow-ids:
+      - F04
+      security:
+      - AdminBearerAuth: []
+      responses:
+        '200':
+          description: 操作成功；领域校验后返回真实结果
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    enum:
+                    - 200
+                  msg:
+                    type: string
+                  data:
+                    allOf:
+                    - $ref: '#/components/schemas/Qualification'
+                    nullable: true
+                    type: object
+                additionalProperties: false
+                required:
+                - code
+                - msg
+                - data
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+                enum:
+                - no-store
+              description: 身份/交易/个人业务响应不缓存
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalError'
+        '503':
+          $ref: '#/components/responses/Unavailable'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      parameters:
+      - name: applicationId
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+      - name: X-Client-Type
+        in: header
+        required: true
+        schema:
+          type: string
+          enum:
+          - owner
+          - driver
+          - station
+          - admin
+        description: 仅审计来源，不作为授权；须匹配服务端会话视角
+      x-permission: biz:driverqualification:query
+      x-authorization:
+        realm: ADMIN
+        scope: ORG_DEPT_STATION
+        permission: biz:driverqualification:query
+      x-error-codes:
+      - VI_REQUEST_INVALID
+      - VI_AUTH_REQUIRED
+      - VI_TOKEN_REALM_MISMATCH
+      - VI_REFRESH_REUSED
+      - VI_FORBIDDEN
+      - VI_SELF_REVIEW_DENIED
+      - VI_RESOURCE_NOT_VISIBLE
+      - VI_RATE_LIMITED
+      - VI_INTERNAL_ERROR
+      - VI_AUTHORITY_UNAVAILABLE
+      - VI_UPSTREAM_UNAVAILABLE
+      x-error-policy: OBJECT_404_HIDES_EXISTENCE
+      x-contract-baseline: V6.4
+  /api/admin/driver-qualifications/{applicationId}/audit:
+    post:
+      operationId: API_123_post
+      summary: 批准或驳回资格
+      tags:
+      - ADMIN
+      description: '流程：F04。权限码为建议，须映射实际仓库；非全局角色必须有站点范围；审核不允许自己审批自己的申请
+
+        参数校验、真实归属、服务端当前状态/版本先于写入；不接受主体伪造。'
+      x-flow-ids:
+      - F04
+      security:
+      - AdminBearerAuth: []
+      responses:
+        '200':
+          description: 操作成功；领域校验后返回真实结果
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    enum:
+                    - 200
+                  msg:
+                    type: string
+                  data:
+                    allOf:
+                    - $ref: '#/components/schemas/Qualification'
+                    nullable: true
+                    type: object
+                additionalProperties: false
+                required:
+                - code
+                - msg
+                - data
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+                enum:
+                - no-store
+              description: 身份/交易/个人业务响应不缓存
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalError'
+        '503':
+          $ref: '#/components/responses/Unavailable'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+      parameters:
+      - name: applicationId
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+      - name: Idempotency-Key
+        in: header
+        required: true
+        schema:
+          type: string
+          description: UUID；按主体+动作+资源+键及请求摘要保存首次结果；同键不同体409，至少24h，资金/交接另有永久业务去重
+      - name: X-Client-Type
+        in: header
+        required: true
+        schema:
+          type: string
+          enum:
+          - owner
+          - driver
+          - station
+          - admin
+        description: 仅审计来源，不作为授权；须匹配服务端会话视角
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/QualificationAudit'
+      x-permission: biz:driverqualification:audit
+      x-authorization:
+        realm: ADMIN
+        scope: ORG_DEPT_STATION
+        permission: biz:driverqualification:audit
+      x-error-codes:
+      - VI_REQUEST_INVALID
+      - VI_AUTH_REQUIRED
+      - VI_TOKEN_REALM_MISMATCH
+      - VI_REFRESH_REUSED
+      - VI_FORBIDDEN
+      - VI_SELF_REVIEW_DENIED
+      - VI_RESOURCE_NOT_VISIBLE
+      - VI_VERSION_CONFLICT
+      - VI_STATE_CONFLICT
+      - VI_IDEMPOTENCY_CONFLICT
+      - VI_SELECTION_CONFLICT
+      - VI_CONTEXT_CHANGED
+      - VI_SNAPSHOT_CHANGED
+      - VI_DATA_INVALID
+      - VI_EVIDENCE_INCOMPLETE
+      - VI_HANDOVER_CODE_INVALID
+      - VI_HANDOVER_LOCKED
+      - VI_UNPRICED_LINES
+      - VI_REFUND_LIMIT
+      - VI_PAYMENT_LIMIT
+      - VI_SERVICE_UNAVAILABLE
+      - VI_CAPABILITY_NOT_CONFIGURED
+      - VI_TRAINING_NOT_READY
+      - VI_RATE_LIMITED
+      - VI_INTERNAL_ERROR
+      - VI_AUTHORITY_UNAVAILABLE
+      - VI_UPSTREAM_UNAVAILABLE
+      x-error-policy: OBJECT_404_HIDES_EXISTENCE
+      x-contract-baseline: V6.4
+components:
+  schemas:
+    QualificationAudit:
+      type: object
+      properties:
+        expectedVersion:
+          type: integer
+          minimum: 0
+          description: 客户端最后读取的版本；服务端条件更新，冲突返回409
+        decision:
+          type: string
+          enum:
+          - APPROVE
+          - REJECT
+        opinion:
+          type: string
+        reviewDueAt:
+          type: string
+          format: date-time
+          pattern: Z$
+          description: ISO8601 UTC时刻，必须Z结尾；显示与业务日期Asia/Shanghai
+      additionalProperties: false
+      required:
+      - expectedVersion
+      - decision
+      - opinion
+    ApiError:
+      type: object
+      additionalProperties: false
+      properties:
+        code:
+          type: integer
+          description: 等于HTTP状态
+          enum:
+          - 400
+          - 401
+          - 403
+          - 404
+          - 409
+          - 422
+          - 429
+          - 500
+          - 503
+        errorCode:
+          type: string
+          enum:
+          - VI_REQUEST_INVALID
+          - VI_AUTH_REQUIRED
+          - VI_TOKEN_REALM_MISMATCH
+          - VI_REFRESH_REUSED
+          - VI_FORBIDDEN
+          - VI_SELF_REVIEW_DENIED
+          - VI_RESOURCE_NOT_VISIBLE
+          - VI_VERSION_CONFLICT
+          - VI_STATE_CONFLICT
+          - VI_IDEMPOTENCY_CONFLICT
+          - VI_SELECTION_CONFLICT
+          - VI_CONTEXT_CHANGED
+          - VI_SNAPSHOT_CHANGED
+          - VI_DATA_INVALID
+          - VI_EVIDENCE_INCOMPLETE
+          - VI_HANDOVER_CODE_INVALID
+          - VI_HANDOVER_LOCKED
+          - VI_UNPRICED_LINES
+          - VI_REFUND_LIMIT
+          - VI_PAYMENT_LIMIT
+          - VI_SERVICE_UNAVAILABLE
+          - VI_CAPABILITY_NOT_CONFIGURED
+          - VI_TRAINING_NOT_READY
+          - VI_RATE_LIMITED
+          - VI_INTERNAL_ERROR
+          - VI_AUTHORITY_UNAVAILABLE
+          - VI_UPSTREAM_UNAVAILABLE
+          - VI_PHONE_PROOF_REQUIRED
+          - VI_PHONE_PROOF_REUSED
+          - VI_EMPLOYEE_LINK_CONFLICT
+          - VI_EMPLOYEE_LINK_BLOCKED
+          - VI_CONFIG_INVALID
+          - VI_CONFIG_CHANGED
+          - VI_SECRET_UNAVAILABLE
+          - VI_PAYMENT_METHOD_DISABLED
+          - VI_PAYMENT_METHOD_LOCKED
+          - VI_SEND_RESULT_UNKNOWN
+          - VI_SUBSCRIPTION_UNAVAILABLE
+          - VI_OFFLINE_PROOF_CONFLICT
+        msg:
+          type: string
+          description: 服务端安全人类文案，前端逻辑按errorCode而非此文本
+        requestId:
+          type: string
+        retryable:
+          type: boolean
+        retryAfterSeconds:
+          type: integer
+          minimum: 0
+          nullable: true
+        data:
+          $ref: '#/components/schemas/ApiErrorDetails'
+      required:
+      - code
+      - errorCode
+      - msg
+      - requestId
+      - retryable
+      - retryAfterSeconds
+      - data
+    ApiErrorDetails:
+      type: object
+      additionalProperties: false
+      properties:
+        fieldErrors:
+          type: array
+          items:
+            $ref: '#/components/schemas/FieldViolation'
+        conflicts:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConflictItem'
+        missingPhotoTypes:
+          type: array
+          items:
+            $ref: '#/components/schemas/PhotoType'
+        remainingAttempts:
+          type: integer
+          minimum: 0
+          nullable: true
+        currentVersion:
+          type: integer
+          format: int64
+          minimum: 0
+          maximum: 9007199254740991
+          description: 最后读取的非负版本；更新CAS，冲突409
+          nullable: true
+      description: 错误详情固定白名单；无明文Token/凭证/交接码/SQL
+    PhotoType:
+      type: string
+      enum:
+      - FRONT
+      - BACK
+      - LEFT
+      - RIGHT
+      - DASHBOARD
+      - INTERIOR
+      - EXTRA
+    ConflictItem:
+      type: object
+      additionalProperties: false
+      properties:
+        resourceType:
+          type: string
+        resourceId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+        reasonCode:
+          type: string
+        currentVersion:
+          type: integer
+          format: int64
+          minimum: 0
+          maximum: 9007199254740991
+          description: 最后读取的非负版本；更新CAS，冲突409
+          nullable: true
+      required:
+      - resourceType
+      - resourceId
+      - reasonCode
+      - currentVersion
+      description: 仅返回调用者已获权对象，禁止泄露其他账单成员
+    FieldViolation:
+      type: object
+      additionalProperties: false
+      properties:
+        field:
+          type: string
+        reasonCode:
+          type: string
+        message:
+          type: string
+      required:
+      - field
+      - reasonCode
+      - message
+    Qualification:
+      type: object
+      properties:
+        applicationId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+        status:
+          $ref: '#/components/schemas/QualificationStatus'
+        items:
+          type: array
+          items:
+            type: string
+        rejectReasons:
+          type: array
+          items:
+            type: string
+        reviewDueAt:
+          type: string
+          format: date-time
+          pattern: Z$
+          description: ISO8601 UTC时刻，必须Z结尾；显示与业务日期Asia/Shanghai
+        canAcceptOrder:
+          type: boolean
+        version:
+          type: integer
+          minimum: 0
+          description: 客户端最后读取的版本；服务端条件更新，冲突返回409
+      additionalProperties: false
+      required:
+      - applicationId
+      - status
+      - items
+      - rejectReasons
+      - version
+    QualificationStatus:
+      type: string
+      enum:
+      - DRAFT
+      - SUBMITTED
+      - APPROVED
+      - REJECTED
+      - EXPIRED
+      - SUSPENDED
+  responses:
+    UnprocessableEntity:
+      description: 填写内容不符合要求。参见errorCode注册表；HTTP状态与code一致。
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+          example:
+            code: 422
+            errorCode: VI_DATA_INVALID
+            msg: 填写内容不符合要求
+            requestId: req-example
+            retryable: false
+            retryAfterSeconds: null
+            data: {}
+    Conflict:
+      description: 记录已变化，请刷新后重试。参见errorCode注册表；HTTP状态与code一致。
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+          example:
+            code: 409
+            errorCode: VI_VERSION_CONFLICT
+            msg: 记录已变化，请刷新后重试
+            requestId: req-example
+            retryable: false
+            retryAfterSeconds: null
+            data: {}
+    NotFound:
+      description: 记录不存在或不可访问。参见errorCode注册表；HTTP状态与code一致。
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+          example:
+            code: 404
+            errorCode: VI_RESOURCE_NOT_VISIBLE
+            msg: 记录不存在或不可访问
+            requestId: req-example
+            retryable: false
+            retryAfterSeconds: null
+            data: {}
+    Unavailable:
+      description: 权限权威状态暂不可读取。参见errorCode注册表；HTTP状态与code一致。
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+          example:
+            code: 503
+            errorCode: VI_AUTHORITY_UNAVAILABLE
+            msg: 权限权威状态暂不可读取
+            requestId: req-example
+            retryable: true
+            retryAfterSeconds: null
+            data: {}
+      headers:
+        Retry-After:
+          description: 建议等待秒数；429必带，503仅在可估计时返回
+          schema:
+            type: integer
+            minimum: 1
+    InternalError:
+      description: 处理失败，请联系服务人员。参见errorCode注册表；HTTP状态与code一致。
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+          example:
+            code: 500
+            errorCode: VI_INTERNAL_ERROR
+            msg: 处理失败，请联系服务人员
+            requestId: req-example
+            retryable: false
+            retryAfterSeconds: null
+            data: {}
+    TooManyRequests:
+      description: 操作过于频繁，请稍后重试。参见errorCode注册表；HTTP状态与code一致。
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+          example:
+            code: 429
+            errorCode: VI_RATE_LIMITED
+            msg: 操作过于频繁，请稍后重试
+            requestId: req-example
+            retryable: true
+            retryAfterSeconds: 10
+            data: {}
+      headers:
+        Retry-After:
+          description: 建议等待秒数；429必带，503仅在可估计时返回
+          schema:
+            type: integer
+            minimum: 1
+    Forbidden:
+      description: 没有执行此操作的权限。参见errorCode注册表；HTTP状态与code一致。
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+          example:
+            code: 403
+            errorCode: VI_FORBIDDEN
+            msg: 没有执行此操作的权限
+            requestId: req-example
+            retryable: false
+            retryAfterSeconds: null
+            data: {}
+    Unauthorized:
+      description: 登录已失效，请重新登录。参见errorCode注册表；HTTP状态与code一致。
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+          example:
+            code: 401
+            errorCode: VI_AUTH_REQUIRED
+            msg: 登录已失效，请重新登录
+            requestId: req-example
+            retryable: false
+            retryAfterSeconds: null
+            data: {}
+      headers:
+        WWW-Authenticate:
+          schema:
+            type: string
+          description: Bearer realm="mini" 或 "admin"；不泄露令牌细节
+    BadRequest:
+      description: 请求格式不正确。参见errorCode注册表；HTTP状态与code一致。
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+          example:
+            code: 400
+            errorCode: VI_REQUEST_INVALID
+            msg: 请求格式不正确
+            requestId: req-example
+            retryable: false
+            retryAfterSeconds: null
+            data: {}

@@ -1,0 +1,168 @@
+[
+  {
+    "name": "vi_station",
+    "comment": "检测点与可服务设置",
+    "cols": [
+      [
+        "id",
+        "BIGINT NOT NULL AUTO_INCREMENT",
+        "数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串"
+      ],
+      [
+        "name",
+        "VARCHAR(128) NOT NULL",
+        "名称"
+      ],
+      [
+        "dept_id",
+        "BIGINT NOT NULL",
+        "框架部门归属"
+      ],
+      [
+        "address",
+        "VARCHAR(255) NOT NULL",
+        "检测点公开地址"
+      ],
+      [
+        "lng",
+        "DECIMAL(10,6) NOT NULL",
+        "GCJ02经度"
+      ],
+      [
+        "lat",
+        "DECIMAL(10,6) NOT NULL",
+        "GCJ02纬度"
+      ],
+      [
+        "service_radius_meter",
+        "INT NOT NULL",
+        "服务半径"
+      ],
+      [
+        "supported_vehicle_codes",
+        "JSON NOT NULL",
+        "引用现有vehicle_type数据字典"
+      ],
+      [
+        "business_hours",
+        "JSON NOT NULL",
+        "营业日和接收边界"
+      ],
+      [
+        "enabled",
+        "TINYINT NOT NULL DEFAULT 0",
+        "配置完成后启用"
+      ],
+      [
+        "created_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "创建时间，统一UTC"
+      ],
+      [
+        "updated_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "UTC更新时间；Mapper每次修改显式SET updated_at=UTC_TIMESTAMP(3)，不依赖连接时区"
+      ],
+      [
+        "version",
+        "BIGINT NOT NULL DEFAULT 0",
+        "乐观锁版本"
+      ]
+    ],
+    "indexes": [
+      "KEY ix_dept_enabled (dept_id,enabled)"
+    ],
+    "rule": "",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "engine": "InnoDB",
+    "collation": "utf8mb4_0900_ai_ci",
+    "columnRules": {
+      "id": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "name": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "dept_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "address": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "lng": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "lat": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "service_radius_meter": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "supported_vehicle_codes": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "business_hours": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "enabled": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "created_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "updated_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "version": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      }
+    },
+    "checks": [
+      "CONSTRAINT ck_ver_station CHECK (version >= 0)"
+    ]
+  }
+]

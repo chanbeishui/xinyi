@@ -1,0 +1,21 @@
+{
+  "http": {
+    "collected": 25,
+    "run": "NOT_RUN",
+    "command": "python -m pytest 13_真实集成测试/live --collect-only -q",
+    "exitCode": 0,
+    "meaning": "tests discoverable only; no application or database call executed"
+  },
+  "mysql": {
+    "provided": 6,
+    "run": "NOT_RUN"
+  },
+  "businessAcceptance": {
+    "count": 334,
+    "status": "NOT_RUN"
+  },
+  "technicalGates": {
+    "count": 71,
+    "status": "NOT_RUN"
+  }
+}

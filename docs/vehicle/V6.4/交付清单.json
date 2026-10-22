@@ -1,0 +1,28 @@
+{
+  "version": "V6.4",
+  "architecture": "T3.4",
+  "date": "2026-10-22",
+  "sourcePackage": "V6.3",
+  "scope": "第三方接入配置整合，所有前序业务保留",
+  "counts": {
+    "tasks": 85,
+    "operations": 287,
+    "schemas": 373,
+    "tables": 79,
+    "boards": 355,
+    "screenshots": 710,
+    "testCases": 412,
+    "flows": 48,
+    "interactionRules": 99,
+    "realTestsStatus": "NOT_RUN"
+  },
+  "currentRepoReadThisTurn": false,
+  "sourceRepositorySnapshot": "historical only; use actual worktree",
+  "notRun": [
+    "xinyi build",
+    "actual MySQL DDL and concurrency",
+    "WeChat/SMS/subscription vendors",
+    "WeChat device",
+    "production"
+  ]
+}

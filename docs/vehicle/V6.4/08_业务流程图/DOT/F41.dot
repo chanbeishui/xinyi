@@ -1,0 +1,27 @@
+digraph G {
+graph [rankdir=TB,bgcolor="white",pad="0.3",nodesep="0.3",ranksep="0.45",fontname="Noto Sans CJK SC",label="F41 · 培训课程、学习与考试尝试闭环",labelloc=t,fontsize=20];
+node [shape=box,style="rounded,filled",fillcolor="#F2F6FC",color="#B5C9E5",fontname="Noto Sans CJK SC",fontsize=12,margin=".15,.12"];
+edge [color="#607A9C",fontname="Noto Sans CJK SC",fontsize=10];
+n1 [label="ADMIN创建课程和题库\n正式内容/通过门槛另配置"];
+n2 [label="发布不可变课程版本"];
+n3 [label="本人读取Training任务与课程"];
+n4 [label="创建受控播放会话\n服务端校验连续进度/序号"];
+n5 [label="达到必学条件？",shape=diamond];
+n6 [label="创建attempt\n冻结题目版本/截止时间，无标准答案下发"];
+n7 [label="本人提交答案+expectedVersion"];
+n8 [label="服务端检查时限/身份/提交唯一并判分"];
+n9 [label="通过？",shape=diamond];
+n10 [label="记录已通过结果\n其他准入条件仍需完成"];
+n11 [label="记录未通过/过期\n按政策允许新尝试，不覆盖历史"];
+n1 -> n2 [label=""];
+n2 -> n3 [label=""];
+n3 -> n4 [label=""];
+n4 -> n5 [label=""];
+n5 -> n4 [label="否"];
+n5 -> n6 [label="是"];
+n6 -> n7 [label=""];
+n7 -> n8 [label=""];
+n8 -> n9 [label=""];
+n9 -> n10 [label="是"];
+n9 -> n11 [label="否"];
+}

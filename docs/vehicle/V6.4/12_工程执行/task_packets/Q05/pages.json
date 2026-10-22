@@ -1,0 +1,28 @@
+[
+  {
+    "id": "B16",
+    "name": "代驾认证审核",
+    "status": "有效·V6.4",
+    "fields": "完整申请、核验状态、驳回项、有效期",
+    "actions": "审核、复审、证件查看",
+    "guards": "员工与普通人同规则；通过前不给接单资格；保险不是审核项",
+    "flows": "F04",
+    "source": "V2原页 B16",
+    "base": "B16",
+    "state": "default",
+    "kind": "page"
+  },
+  {
+    "id": "B16-review",
+    "name": "代驾认证审核抽屉",
+    "status": "有效·V6.4",
+    "fields": "完整申请、核验状态、驳回项、有效期",
+    "actions": "审核、复审、证件查看",
+    "guards": "员工与普通人同规则；通过前不给接单资格；保险不是审核项",
+    "flows": "F04",
+    "source": "PRD B16 的状态/弹窗展开；不新增业务范围",
+    "base": "B16",
+    "state": "review",
+    "kind": "state"
+  }
+]

@@ -1,0 +1,60 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>00_README</title><style>body{font:16px/1.75 -apple-system,BlinkMacSystemFont,"Microsoft YaHei",sans-serif;color:#202632;margin:0;background:#f6f7f9}header{padding:14px 24px;background:white;border-bottom:1px solid #ddd}main{max-width:1120px;margin:24px auto;padding:30px;background:white}h1{font-size:30px}h2{margin-top:36px}a{color:#0661bd}table{border-collapse:collapse;width:100%;display:block;overflow:auto;font-size:14px}td,th{border:1px solid #dde2ea;padding:10px;vertical-align:top}th{background:#f1f5fb}pre{padding:15px;background:#f2f4f7;overflow:auto}img{max-width:100%;height:auto}blockquote{padding:10px 20px;border-left:3px solid #2571be;background:#f4f8fc}@media(max-width:700px){main{padding:15px;margin:8px}h1{font-size:25px}}</style></head><body><header><a href="00_开始.html">V6.4 完整资料</a>　<a href="02_UI/index.html">交互原型</a>　T3.4</header><main><h1>机动车检测预约｜完整开发资料包 V6.4 · 第三方接入配置版</h1>
+<p><strong>打开 <code>00_开始.html</code>；开发使用 <code>START-CODEX.md</code>。</strong>本包以V6.3为基础直接合并主PRD、UI、契约、数据、任务和验收，不需要叠加旧包。技术架构T3.4已完整包含。</p>
+<h2>本轮核心</h2>
+<p>后台直接维护微信商户、腾讯云和阿里云短信、小程序公共凭据、订阅模板；线下/微信独立开关。草稿不生效，校验与显式发布才变更运行配置。新订单按有效版本选择；关新支付不能停历史退款、回调、查单。短信受理不等于送达，未知结果不盲重发。</p>
+<p>线下支付按本版明确设计为企业预收款：选择不等于支付，实际凭证登记与独立核实后才算支付成功并按时派单。不做代驾个人收款或服务后赊账。客户收退款凭证与司机报酬付款分离。该定义是本轮实施设计，不冒充用户原话已经批准的历史规则。</p>
+<h2>前序业务保留</h2>
+<p>新账号OWNER；代驾审核才DRIVER；可信微信手机号唯一匹配员工自动关联；后台直接预授站点，无员工申请凭证链。实际归还释放指定承接，接车取消先返还，原单重派；勾选服务组账单、行内核价、独立复核和付款凭证核实保留。</p>
+<h2>工程起点和安全</h2>
+<p>本轮读取的是已交付V6.3压缩包，未重新读取当前GitHub、本机或数据库。历史指纹不代表今天的进度。Codex先实勘实际HEAD/branch/dirty和已有实现；安装合并新任务，不清空旧进度。已有业务表先inventory并生成前向适配，禁止再次直接运行全量初始化；不自动reset/clean/DROP。默认使用已有xinyi-rongli及xinyi-miniapp，缺失才创建。</p>
+<h2>当前覆盖</h2>
+<table>
+<thead>
+<tr>
+  <th>内容</th>
+  <th>数量或位置</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>完整PRD</td>
+  <td>01_PRD主正文第23章及原支付/通知章节已改</td>
+</tr>
+<tr>
+  <td>UI</td>
+  <td>355画板，710张PNG，02_UI/index.html</td>
+</tr>
+<tr>
+  <td>接口</td>
+  <td>287操作／373具名结构，04_接口</td>
+</tr>
+<tr>
+  <td>数据</td>
+  <td>79参考表，05_数据设计；不是已执行的SQL</td>
+</tr>
+<tr>
+  <td>流程</td>
+  <td>48张，08_业务流程图</td>
+</tr>
+<tr>
+  <td>任务</td>
+  <td>85项，其中X01–X07为本轮扩展</td>
+</tr>
+<tr>
+  <td>业务用例</td>
+  <td>412条，真实执行状态NOT_RUN</td>
+</tr>
+<tr>
+  <td>技术门禁</td>
+  <td>保留71项；本轮扩展验收由CFG用例与X任务承担</td>
+</tr>
+<tr>
+  <td>技术架构</td>
+  <td>10_技术架构_T3.4/05_第三方配置与运行时</td>
+</tr>
+</tbody>
+</table>
+<h2>使用</h2>
+<p>在实际xinyi工作区向Codex提供START-CODEX.md。无需向本聊天或原型粘贴任何真实私钥。配置产品页是演示；真实加密、校验、发布与供应商调用由X01–X07在工程内实现和验收。</p>
+<p><code>09_验证记录/V6.4_验证范围说明.md</code>区分本轮实际检查、历史记录和未执行的真实联调。配置页填写完整不等于真实服务已开通；L01/L02/L03仍按实际凭据、真机和上线条件批准。</p>
+</main></body></html>

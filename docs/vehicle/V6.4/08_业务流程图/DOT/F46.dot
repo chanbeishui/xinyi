@@ -1,0 +1,27 @@
+digraph G {
+graph [rankdir=TB,bgcolor="white",pad="0.3",nodesep="0.3",ranksep="0.45",fontname="Noto Sans CJK SC",label="F46 · 客户线下收付款核实",labelloc=t,fontsize=20];
+node [shape=box,style="rounded,filled",fillcolor="#F2F6FC",color="#B5C9E5",fontname="Noto Sans CJK SC",fontsize=12,margin=".15,.12"];
+edge [color="#607A9C",fontname="Noto Sans CJK SC",fontsize=10];
+n1 [label="车主｜选择线下，仍待付款"];
+n2 [label="企业｜实际收到款项"];
+n3 [label="后台登记｜完整金额/时间/流水/私有凭证"];
+n4 [label="不同人员｜核实真实资金"];
+n5 [label="全额、唯一、归属及版本正确？",shape=diamond];
+n6 [label="记账SUCCESS｜写事件、重新核对容量"];
+n7 [label="容量仍可用？",shape=diamond];
+n8 [label="按计划安排服务"];
+n9 [label="已收款但预约冲突｜人工售后"];
+n10 [label="驳回或差错｜不宣称成功"];
+n11 [label="退款｜统一批准后实际退回、登记并独立核实"];
+n1 -> n2 [label=""];
+n2 -> n3 [label=""];
+n3 -> n4 [label=""];
+n4 -> n5 [label=""];
+n5 -> n6 [label="是"];
+n5 -> n10 [label="否"];
+n6 -> n7 [label=""];
+n7 -> n8 [label="是"];
+n7 -> n9 [label="否"];
+n9 -> n11 [label="批准退款"];
+n8 -> n11 [label="售后退款"];
+}

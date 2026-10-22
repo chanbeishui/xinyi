@@ -1,0 +1,193 @@
+[
+  {
+    "name": "vi_file",
+    "comment": "私有文件登记与校验",
+    "cols": [
+      [
+        "id",
+        "BIGINT NOT NULL AUTO_INCREMENT",
+        "数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串"
+      ],
+      [
+        "uploader_account_id",
+        "BIGINT NOT NULL",
+        "上传者"
+      ],
+      [
+        "purpose",
+        "VARCHAR(32) NOT NULL",
+        "限定用途"
+      ],
+      [
+        "order_id",
+        "BIGINT",
+        "订单归属"
+      ],
+      [
+        "application_id",
+        "BIGINT",
+        "认证等申请归属"
+      ],
+      [
+        "object_key",
+        "VARCHAR(255) NOT NULL",
+        "服务端生成不可猜键"
+      ],
+      [
+        "status",
+        "VARCHAR(24) NOT NULL",
+        "FileStatus: UPLOADING,VERIFYING,READY,REJECTED"
+      ],
+      [
+        "mime_type",
+        "VARCHAR(64)",
+        "内容识别类型"
+      ],
+      [
+        "server_size",
+        "BIGINT",
+        "实际大小"
+      ],
+      [
+        "server_sha256",
+        "BINARY(32)",
+        "服务器复核摘要"
+      ],
+      [
+        "retain_until",
+        "DATETIME(3)",
+        "按已审批保留政策"
+      ],
+      [
+        "legal_hold",
+        "TINYINT NOT NULL DEFAULT 0",
+        "争议等必要留存"
+      ],
+      [
+        "created_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "创建时间，统一UTC"
+      ],
+      [
+        "updated_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "UTC更新时间；Mapper每次修改显式SET updated_at=UTC_TIMESTAMP(3)，不依赖连接时区"
+      ],
+      [
+        "version",
+        "BIGINT NOT NULL DEFAULT 0",
+        "乐观锁版本"
+      ]
+    ],
+    "indexes": [
+      "UNIQUE KEY uk_object_key (object_key)",
+      "KEY ix_order_purpose (order_id,purpose)"
+    ],
+    "rule": "访问签名不进明文长期表，不接受客户端READY/摘要即可信",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "engine": "InnoDB",
+    "collation": "utf8mb4_0900_ai_ci",
+    "columnRules": {
+      "id": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "uploader_account_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "purpose": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "order_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "application_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "object_key": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "status": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false,
+        "enumRef": "FileStatus"
+      },
+      "mime_type": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "server_size": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "server_sha256": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "retain_until": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "legal_hold": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "created_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "updated_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "version": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      }
+    },
+    "checks": [
+      "CONSTRAINT ck_66_c1389ba0baeb CHECK (`status` IN ('UPLOADING','VERIFYING','READY','REJECTED'))",
+      "CONSTRAINT ck_ver_file CHECK (version >= 0)"
+    ]
+  }
+]

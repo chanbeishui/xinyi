@@ -1,0 +1,195 @@
+[
+  {
+    "name": "vi_subscription_prompt",
+    "comment": "一次用户触发订阅请求与结果",
+    "cols": [
+      [
+        "id",
+        "BIGINT NOT NULL AUTO_INCREMENT",
+        "内部自增Long；API十进制字符串"
+      ],
+      [
+        "account_id",
+        "BIGINT NOT NULL",
+        ""
+      ],
+      [
+        "app_id",
+        "VARCHAR(64) NOT NULL",
+        ""
+      ],
+      [
+        "nonce_hash",
+        "VARCHAR(64) NOT NULL",
+        "一次性nonce摘要"
+      ],
+      [
+        "template_versions",
+        "JSON NOT NULL",
+        "模板ID、公开版本及场景"
+      ],
+      [
+        "business_object_type",
+        "VARCHAR(32) NOT NULL",
+        "SubscriptionObjectType: ORDER,ASSIGNMENT,STATEMENT,DRIVER_APPLICATION；"
+      ],
+      [
+        "business_object_id",
+        "BIGINT NOT NULL",
+        ""
+      ],
+      [
+        "status",
+        "VARCHAR(16) NOT NULL",
+        "SubscriptionPromptStatus: CREATED,REPORTED,EXPIRED；"
+      ],
+      [
+        "expires_at",
+        "DATETIME(3) NOT NULL",
+        ""
+      ],
+      [
+        "reported_at",
+        "DATETIME(3) NULL",
+        ""
+      ],
+      [
+        "client_report",
+        "JSON NULL",
+        "微信前端结果不等于服务端真实剩余额度"
+      ],
+      [
+        "report_hash",
+        "VARCHAR(64) NULL",
+        ""
+      ],
+      [
+        "created_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "UTC创建时间"
+      ],
+      [
+        "updated_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "Mapper显式UTC更新时间"
+      ],
+      [
+        "version",
+        "BIGINT NOT NULL DEFAULT 0",
+        "显式CAS；不是注解自动生效"
+      ]
+    ],
+    "indexes": [
+      "UNIQUE KEY uk_prompt_nonce (nonce_hash)",
+      "KEY ix_prompt_account (account_id,created_at)"
+    ],
+    "rule": "限定本人/同app/过期/单次结果；重复同体幂等，异体拒绝；真实发信需供应商接受。拒绝不阻断业务。不根据客户端报告无限增加次数。",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "engine": "InnoDB",
+    "collation": "utf8mb4_0900_ai_ci",
+    "columnRules": {
+      "id": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "account_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "app_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "nonce_hash": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "template_versions": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "business_object_type": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false,
+        "enumRef": "SubscriptionObjectType"
+      },
+      "business_object_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "status": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false,
+        "enumRef": "SubscriptionPromptStatus"
+      },
+      "expires_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "reported_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "client_report": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "report_hash": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "created_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "updated_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "version": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      }
+    },
+    "checks": [
+      "CONSTRAINT ck_ver_subscription_prompt CHECK (version >= 0)",
+      "CONSTRAINT ck_31c0259441de72 CHECK (`business_object_type` IN ('ORDER','ASSIGNMENT','STATEMENT','DRIVER_APPLICATION'))",
+      "CONSTRAINT ck_dfa4511a54a323 CHECK (`status` IN ('CREATED','REPORTED','EXPIRED'))"
+    ]
+  }
+]

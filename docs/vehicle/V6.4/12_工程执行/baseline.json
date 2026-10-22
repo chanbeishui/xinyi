@@ -1,0 +1,62 @@
+{
+  "edition": "V6.4",
+  "architecture": "T3.4",
+  "contract_component_version": "V6.4",
+  "product_component_version": "V6.4",
+  "ui_component_version": "V6.4 identity workflow; remaining confirmed V5 views retained",
+  "source_package": "机动车检测预约_完整开发资料包_V6.1_框架起点版.zip",
+  "source_sha256": "4a98f07d2614f798b4e1c7805d3161593784f89f6151875831803fe5667fdb94",
+  "repo": "chanbeishui/xinyi",
+  "source_branch": "rongli-wx",
+  "observed_refs": {
+    "rongli-wx": "b91ef7689e9a48f269eefd9e3b95c71cb15558c5"
+  },
+  "observed_at": "2026-10-22",
+  "user_confirmed_stage": "CURRENT_WORKTREE_REQUIRES_ASSESSMENT",
+  "m0_completed": null,
+  "initial_task": "E00",
+  "initial_task_status": "NOT_ASSESSED",
+  "actual_user_worktree": "NOT_ASSESSED",
+  "actual_user_database": "NOT_INSPECTED",
+  "runtime_jdk_major": 21,
+  "java_release": 17,
+  "runtime_jdk_basis": "existing engineering plan; actual runtime must be recorded by doctor",
+  "module_default": "xinyi-rongli",
+  "module_action": "INSPECT_AND_REUSE_IF_PRESENT_OTHERWISE_CREATE",
+  "miniapp_default": "xinyi-miniapp",
+  "initialization_strategy": "FRESH_ISOLATED_OR_INSPECTED_FORWARD_ADAPTATION",
+  "existing_vi_policy": "inventory existing source/schema; preserve and adapt; no automatic DROP/reset",
+  "build_strategy": "preserve framework and current progress; change identity scope only where impacted",
+  "completion_policy": "No stage completion inferred from commit messages, documents, SQL, SDK tests or directory existence",
+  "source_fingerprints": {
+    "pom.xml": "b07468753da31337b2a55caf006fc8d835376256",
+    "AGENTS.md": "7b1a3864e4fc77f4690d8a7faf0ec1dbd7494490",
+    "xinyi-ui/package.json": "1335f0a3af4ac5816f261d8428a71092b9c5fddd",
+    "xinyi-framework/src/main/java/com/xinyi/framework/config/SecurityConfig.java": "cbb669845087861ebfde9ba4955560554e8a2a80",
+    "xinyi-framework/src/main/java/com/xinyi/framework/security/filter/JwtAuthenticationTokenFilter.java": "8c66b190f38a6f8f3e9a3e3815c667edc08981e6"
+  },
+  "fingerprint_snapshot_commit": "890cfbbfc5e0db404a932ab5ef8b449d07c7f444",
+  "historical_user_confirmed_stage": "FRAMEWORK_ONLY_M0_NOT_STARTED_AT_V6.1",
+  "fingerprint_scope": "historical original framework; not claimed to equal current HEAD",
+  "change": "OWNER initial; approved DRIVER; verified phone automatic employee link; admin station pregrant",
+  "historical_observed_maven_modules": [
+    "xinyi-admin",
+    "xinyi-framework",
+    "xinyi-system",
+    "xinyi-quartz",
+    "xinyi-generator",
+    "xinyi-common"
+  ],
+  "historical_absent_at_framework_snapshot": [
+    "xinyi-rongli/",
+    "xinyi-vehicle/",
+    "xinyi-miniapp/",
+    "sql/migration_20261015_vehicle_identity_session.sql"
+  ],
+  "current_modules_inspected": false,
+  "current_remote_read_scope": "branch metadata only; no current full tree or runtime audit in this deliverable",
+  "currentPackage": "V6.4",
+  "sourcePackage": "V6.2",
+  "remoteSnapshotRecheckedThisRun": false,
+  "review_scope": "本轮审查本地V6.2资料，不推定当前工作区实现或远程HEAD"
+}

@@ -1,0 +1,20 @@
+{
+  "checks": [
+    {
+      "file": "机动车检测预约_PRD_V6.3_完整整合版.html",
+      "embeddedImages": 45,
+      "title": "机动车检测预约_PRD_V6.3_完整整合版",
+      "result": "PASS",
+      "load": "set_content; not direct file navigation"
+    },
+    {
+      "file": "机动车检测预约_V6.3_全量核验与修复报告.html",
+      "embeddedImages": 3,
+      "title": "V6.3_全量核验报告",
+      "result": "PASS",
+      "load": "set_content; not direct file navigation"
+    }
+  ],
+  "consoleErrors": [],
+  "directFileNavigation": "BLOCKED_ENVIRONMENT; see main report"
+}

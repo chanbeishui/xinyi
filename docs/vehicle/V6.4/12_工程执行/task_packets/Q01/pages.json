@@ -1,0 +1,93 @@
+[
+  {
+    "id": "D02",
+    "name": "实名资料",
+    "status": "有效·V6.4",
+    "fields": "姓名、身份证、正反面文件",
+    "actions": "保存草稿",
+    "guards": "文件归属和敏感数据权限校验；保存草稿不锁定为已审核",
+    "flows": "F04",
+    "source": "V2原页 D02",
+    "base": "D02",
+    "state": "default",
+    "kind": "page"
+  },
+  {
+    "id": "D03",
+    "name": "驾驶证资料",
+    "status": "有效·V6.4",
+    "fields": "准驾车型、初领日期、有效期、证件文件",
+    "actions": "识别、复核、保存",
+    "guards": "以实际车型兼容规则校验，不能对字母编号简单比较大小；过期不进入候选",
+    "flows": "F04",
+    "source": "V2原页 D03",
+    "base": "D03",
+    "state": "default",
+    "kind": "page"
+  },
+  {
+    "id": "D05",
+    "name": "代驾审核进度",
+    "status": "有效·V6.4",
+    "fields": "实际审核状态、驳回原因、复审日期、是否开通正式身份",
+    "actions": "刷新、补正、通过后切换代驾",
+    "guards": "刷新不批准；同一资格状态驱动文案和按钮，不用画板名替代实际审核",
+    "flows": "F04",
+    "source": "用户已确认身份方案；V6.4全量核对修订",
+    "base": "D05",
+    "state": "default",
+    "kind": "page"
+  },
+  {
+    "id": "D05-passed",
+    "name": "认证审核通过",
+    "status": "有效·V6.4",
+    "fields": "实际审核状态、驳回原因、复审日期、是否开通正式身份",
+    "actions": "刷新、补正、通过后切换代驾",
+    "guards": "刷新不批准；同一资格状态驱动文案和按钮，不用画板名替代实际审核",
+    "flows": "F04",
+    "source": "用户已确认身份方案；V6.4全量核对修订",
+    "base": "D05",
+    "state": "passed",
+    "kind": "state"
+  },
+  {
+    "id": "D05-rejected",
+    "name": "认证审核驳回",
+    "status": "有效·V6.4",
+    "fields": "实际审核状态、驳回原因、复审日期、是否开通正式身份",
+    "actions": "刷新、补正、通过后切换代驾",
+    "guards": "刷新不批准；同一资格状态驱动文案和按钮，不用画板名替代实际审核",
+    "flows": "F04",
+    "source": "用户已确认身份方案；V6.4全量核对修订",
+    "base": "D05",
+    "state": "rejected",
+    "kind": "state"
+  },
+  {
+    "id": "D28",
+    "name": "认证中心/复审",
+    "status": "有效·V6.4",
+    "fields": "资料有效期、复审状态、真实核验项",
+    "actions": "更新、提交复审",
+    "guards": "有在手任务时资格异常通知运营；不能以过期为由直接把车无人保管",
+    "flows": "F04",
+    "source": "V2原页 D28",
+    "base": "D28",
+    "state": "default",
+    "kind": "page"
+  },
+  {
+    "id": "D28-expired",
+    "name": "复审到期 · 禁止新接单",
+    "status": "有效·V6.4",
+    "fields": "资料有效期、复审状态、真实核验项",
+    "actions": "更新、提交复审",
+    "guards": "有在手任务时资格异常通知运营；不能以过期为由直接把车无人保管",
+    "flows": "F04",
+    "source": "PRD D28 的状态/弹窗展开；不新增业务范围",
+    "base": "D28",
+    "state": "expired",
+    "kind": "state"
+  }
+]

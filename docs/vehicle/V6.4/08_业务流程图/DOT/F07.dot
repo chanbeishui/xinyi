@@ -1,0 +1,20 @@
+digraph G {
+graph [rankdir=TB,bgcolor="white",pad="0.3",nodesep="0.3",ranksep="0.45",fontname="Noto Sans CJK SC",label="F07 · 可服务校验与双名额预占",labelloc=t,fontsize=20];
+node [shape=box,style="rounded,filled",fillcolor="#F2F6FC",color="#B5C9E5",fontname="Noto Sans CJK SC",fontsize=12,margin=".15,.12"];
+edge [color="#607A9C",fontname="Noto Sans CJK SC",fontsize=10];
+n1 [label="读取候选上门时段与接车地址、车型"];
+n2 [label="计算可服务站点和可信行车时间"];
+n3 [label="核验上门名额及站点接收排期"];
+n4 [label="仍有名额且未到下单截止？",shape=diamond];
+n5 [label="同一事务建单并预占两类名额"];
+n6 [label="成功返回30分钟付款截止时间"];
+n7 [label="告知无名额，保留填写内容"];
+n8 [label="支付成功转正式占用；关单仅释放对应预占"];
+n1 -> n2 [label=""];
+n2 -> n3 [label=""];
+n3 -> n4 [label=""];
+n4 -> n5 [label="是"];
+n4 -> n7 [label="否"];
+n5 -> n6 [label=""];
+n6 -> n8 [label=""];
+}

@@ -1,0 +1,4458 @@
+{
+  "note": "字节变化含版本/标题同步，不等于每个文件业务语义都改变。具体14类问题见主报告。历史移入另记；原ZIP不变。",
+  "files": [
+    {
+      "source": "CLAUDE.html",
+      "current": "CLAUDE.html",
+      "result": "CHANGED",
+      "sourceSha256": "2fe9ca84a532276bd98fb80e1483a6ad47a3dfe0df1dc53c1223ef79ae26bd1a",
+      "currentSha256": "1e69f27a71516af4bc30f3e7ae2d06d0541e9ff8e2b7e5876f3b69754ccad314"
+    },
+    {
+      "source": "00_README.html",
+      "current": "00_README.html",
+      "result": "CHANGED",
+      "sourceSha256": "bf27523be74aba56f393a763f4dc977d7a443d22438b6985e2bf87c8c90b48ea",
+      "currentSha256": "3f5b60bd719518e7e5dce4300b8a4209c6b8c85ad3f8fae0278ef3c261041520"
+    },
+    {
+      "source": "SHA256SUMS.txt",
+      "result": "REMOVED_OR_ARCHIVED"
+    },
+    {
+      "source": "交付清单.json",
+      "current": "交付清单.json",
+      "result": "CHANGED",
+      "sourceSha256": "71cf4e90e22f2aaf5c24c9cb1fa282f39fc510747a16632ce00e0b84abd86398",
+      "currentSha256": "a8bbca70b02a7ec90ba3143d69528f102b9c3d464b12f879c1d540ca9394c83b"
+    },
+    {
+      "source": "AGENTS.html",
+      "current": "AGENTS.html",
+      "result": "CHANGED",
+      "sourceSha256": "5b8e7a449dd48f2acc1deda1b711a7fe83fceec534ab9d2695530476a2aa9037",
+      "currentSha256": "a4f31668a605b70c2076a672bdf0b00ac03d98724d875374233f50278e4745a2"
+    },
+    {
+      "source": "MANIFEST.sha256.json",
+      "result": "REMOVED_OR_ARCHIVED"
+    },
+    {
+      "source": "START-CODEX.html",
+      "current": "START-CODEX.html",
+      "result": "CHANGED",
+      "sourceSha256": "0798591104996c7ab85283a2ade4bfd962f551ab81fc83e5e3c845c3d99d51e8",
+      "currentSha256": "4feffb2bb9b205cd5ed4ee98e659c77e7900061c57f1bc333c7254267aae51d3"
+    },
+    {
+      "source": "00_README.md",
+      "current": "00_README.md",
+      "result": "CHANGED",
+      "sourceSha256": "18f9d61cad8e42cab2de134de06a3ab66af0018a42a15781b81dedad34aa668e",
+      "currentSha256": "9abe8aa2a83678343e1a056abba5e8cf0bdfa75227a49caad440b93c5f0f88c2"
+    },
+    {
+      "source": "V6.2_起点修正与使用说明.md",
+      "current": "V6.3_起点修正与使用说明.md",
+      "result": "CHANGED",
+      "sourceSha256": "badf8e203d93e29ede3a641d7394f92cce8a605b1a49caf820ce0b0c9c9ceea7",
+      "currentSha256": "75760aaa8bb39fbe3caae05fb09c16433ca5c541b09adb6b1056bd7f47c6214c"
+    },
+    {
+      "source": "START-CODEX.md",
+      "current": "START-CODEX.md",
+      "result": "CHANGED",
+      "sourceSha256": "53a42032b317fba0df6501cc739aab3d5e0192fb8e25a0408305a987482e2ab6",
+      "currentSha256": "ee27a892ff126a323a38ef9daf59bccc1dbd3bdaa7493669bda6eff2c1cc949d"
+    },
+    {
+      "source": "00_开始.html",
+      "current": "00_开始.html",
+      "result": "CHANGED",
+      "sourceSha256": "a85ff7a0b6bcddad0924b052d2716791dc373415c657c4fb09cbf2d3fac4429d",
+      "currentSha256": "e804ef7f95722a9b5f5c4c2908ae7a2725f1217a9a8bfb5da7d9ea58c711b30b"
+    },
+    {
+      "source": "V6.2_起点修正与使用说明.html",
+      "current": "V6.3_起点修正与使用说明.html",
+      "result": "CHANGED",
+      "sourceSha256": "d5b1120c603b27562647b5edaaa930646f0bc1cdb80c187010ef2d4368a588d2",
+      "currentSha256": "aded350c07cf5cc40972201ae079310273c9295c6531dd7b112201856e7f0e2f"
+    },
+    {
+      "source": "07_Agent/开发任务计划.html",
+      "current": "07_Agent/开发任务计划.html",
+      "result": "CHANGED",
+      "sourceSha256": "949b2596a1576b87887950055705c1afec71740e24a7994957bed64c292ba2b7",
+      "currentSha256": "31de4399057cafda7dad611fee7fcfee80a11c4cad8c88122b044caca3812106"
+    },
+    {
+      "source": "07_Agent/开发任务计划.md",
+      "current": "07_Agent/开发任务计划.md",
+      "result": "CHANGED",
+      "sourceSha256": "497417462c98fe339aeeadaacf10bfca12a6c3f9418cc7683c7dc0cf4cf3c122",
+      "currentSha256": "a460517e9a05d065c1738b578274369f60645fd3e28be2617634a0bdac272eae"
+    },
+    {
+      "source": "07_Agent/首次交给Agent的提示词.md",
+      "current": "07_Agent/首次交给Agent的提示词.md",
+      "result": "CHANGED",
+      "sourceSha256": "53a42032b317fba0df6501cc739aab3d5e0192fb8e25a0408305a987482e2ab6",
+      "currentSha256": "ee27a892ff126a323a38ef9daf59bccc1dbd3bdaa7493669bda6eff2c1cc949d"
+    },
+    {
+      "source": "07_Agent/首次交给Agent的提示词.html",
+      "current": "07_Agent/首次交给Agent的提示词.html",
+      "result": "CHANGED",
+      "sourceSha256": "f90e3e1d8c8383f14bbea9c4d7776dc1cc4fe682ca035b9e932a0c7ce9c7d552",
+      "currentSha256": "520391baa1188abc0573c056ace15bc5a716db92a6964cf8062820822e6e06ec"
+    },
+    {
+      "source": "04_接口/公开快照哈希规范.md",
+      "current": "04_接口/公开快照哈希规范.md",
+      "result": "CHANGED",
+      "sourceSha256": "fd26ebbdaacd2dad8282db0fb03350787ce467314d4f44f93ff7b85150c4aabd",
+      "currentSha256": "8b3019d30ad2f8080a70c9309772d6b89092086c94a38b98cf8c92e735e92ffd"
+    },
+    {
+      "source": "04_接口/认证_权限_错误与路由.html",
+      "current": "04_接口/认证_权限_错误与路由.html",
+      "result": "CHANGED",
+      "sourceSha256": "5cfd5733729e25ef65a7b87f9d884c932f1eba4419978ea85ab640eaa96cc6e3",
+      "currentSha256": "b4439469ebc533c0584ff23a73d0748b2363e68b0eede6aec91ebc8f1fe5f073"
+    },
+    {
+      "source": "04_接口/接口浏览器_V6.2.html",
+      "current": "04_接口/接口浏览器_V6.3.html",
+      "result": "CHANGED",
+      "sourceSha256": "f81c1a2774aa9f6a7f0fb37dcadc9c5adea8a2cf4d53fbf87f70d96adbcb9df2",
+      "currentSha256": "c03922d6ae52dcfc0ee789dccc85f73cd087a800a18d36672284c79b4fcc6ce8"
+    },
+    {
+      "source": "04_接口/接口全量清单.html",
+      "current": "04_接口/接口全量清单.html",
+      "result": "CHANGED",
+      "sourceSha256": "da0ef589a455a9208611ff016e8f104eac391e32083777100bc22e0c2d679ed4",
+      "currentSha256": "c1ba7f8cc09834150c2deb08e6703e32e1e4befe4010fcce9c62a17af98ebaf1"
+    },
+    {
+      "source": "04_接口/openapi_V6.2.yaml",
+      "current": "04_接口/openapi_V6.3.yaml",
+      "result": "CHANGED",
+      "sourceSha256": "f69ade56a1f88c8b02fabd9b1b26e1920648f683e938e10785b15e678bb992e8",
+      "currentSha256": "924d3715d01b1f3cf5b6060ad706adfca4bfc396d0250285afe9954c1c734754"
+    },
+    {
+      "source": "04_接口/公开快照哈希规范.html",
+      "current": "04_接口/公开快照哈希规范.html",
+      "result": "CHANGED",
+      "sourceSha256": "ad121c37a84f57fd764cf0b0385f495928320e57747fd25ce8efe59fbf47bc75",
+      "currentSha256": "6d8fb0158409c4d8103be315c77014cf4bf8aca7b25c18a85003c1d021240827"
+    },
+    {
+      "source": "04_接口/dto-types.ts",
+      "current": "04_接口/dto-types.ts",
+      "result": "CHANGED",
+      "sourceSha256": "7c1bea326b9bd0b7e490b32b2f0832b61c87c98d2874adecca571021024cd161",
+      "currentSha256": "79441794f38aee76acd0d75fe73afd592ecd74318673aa5fface774b1b492d50"
+    },
+    {
+      "source": "04_接口/接口全量清单.csv",
+      "current": "04_接口/接口全量清单.csv",
+      "result": "CHANGED",
+      "sourceSha256": "ed6b629751289079092fb5135c671acf2265ec79725c62a7a26cbe50fb88d0ba",
+      "currentSha256": "713e479d8ca71c51b7c8d190293d4fa9762d07cc70bad7806e327fe7110eae57"
+    },
+    {
+      "source": "04_接口/动作与数据范围判定.html",
+      "current": "04_接口/动作与数据范围判定.html",
+      "result": "CHANGED",
+      "sourceSha256": "3351419e86f0c29e7a744e8afef81855fa933e4cb87631f091534fd822782d7f",
+      "currentSha256": "82c3ff3eddcbd9997763e8779338ca3065bcd8d4d0f69dd3d23db89b31d4b5a5"
+    },
+    {
+      "source": "04_接口/契约浏览器.html",
+      "current": "04_接口/契约浏览器.html",
+      "result": "CHANGED",
+      "sourceSha256": "f81c1a2774aa9f6a7f0fb37dcadc9c5adea8a2cf4d53fbf87f70d96adbcb9df2",
+      "currentSha256": "c03922d6ae52dcfc0ee789dccc85f73cd087a800a18d36672284c79b4fcc6ce8"
+    },
+    {
+      "source": "04_接口/认证_权限_错误与路由.md",
+      "current": "04_接口/认证_权限_错误与路由.md",
+      "result": "CHANGED",
+      "sourceSha256": "5af69dbdf9dcae45edc0fe8d72d52ff16dbd0535b342f8ca1c04e81d3c692b0f",
+      "currentSha256": "ee5238f97b2ada111db04de87fd6e81e942224ba5cf8039d6b3c53f6f86495b0"
+    },
+    {
+      "source": "04_接口/四视角字段可见矩阵.html",
+      "current": "04_接口/四视角字段可见矩阵.html",
+      "result": "CHANGED",
+      "sourceSha256": "a9dfd3482cd206ea56974c948d2ebb74a11e99d0d529a1b82106f6dfeefb3771",
+      "currentSha256": "f1701ca62a667984670e71fae2372217cd4b9ea3facef2e9302b52a33b0760f2"
+    },
+    {
+      "source": "04_接口/四视角字段可见矩阵.md",
+      "current": "04_接口/四视角字段可见矩阵.md",
+      "result": "CHANGED",
+      "sourceSha256": "b794ad0532d0c7484e1048e9b6774fe8fb04dfd35004e4a3c2240f62b01dfdfe",
+      "currentSha256": "c00e357f21535ecb8db14c015d7535cd163054ffa6565f3a3b30c8918d71e08d"
+    },
+    {
+      "source": "04_接口/权限与能力注册表.json",
+      "current": "04_接口/权限与能力注册表.json",
+      "result": "CHANGED",
+      "sourceSha256": "69be84a081943e9c9b7d47224f3203511f27cca4c9138321d9c73b0f2563e585",
+      "currentSha256": "8d351d4bc7c0312adddffae34f1050c121898800f1cf2bc3453298d5474757c8"
+    },
+    {
+      "source": "04_接口/动作与数据范围判定.md",
+      "current": "04_接口/动作与数据范围判定.md",
+      "result": "CHANGED",
+      "sourceSha256": "6fb55bf9896b816591ffafcdb1a7649716c62a9b818a8cf8665bb2d6033b3f32",
+      "currentSha256": "31d6381d87a2831c3637fd0f87b5f2bd73ce898712f69e4faf2de69cd95b4167"
+    },
+    {
+      "source": "04_接口/接口全量清单.md",
+      "current": "04_接口/接口全量清单.md",
+      "result": "CHANGED",
+      "sourceSha256": "5b572cb69c95da4ad8b449b81d1ea8f55be5eaa9ac11c5616b0bbd7bd256c786",
+      "currentSha256": "9a6e093844f45d625df97105a8edc838a577609ca9e3ac7671a813ab1de650ef"
+    },
+    {
+      "source": "01_PRD/身份流程_员工自动关联_V6.2.md",
+      "current": "01_PRD/身份流程_员工自动关联_V6.3.md",
+      "result": "CHANGED",
+      "sourceSha256": "b6b50ba18847de5d6f85ffba6a424cc59d1b2deee13dc42bd9c511a1fd2fc7a6",
+      "currentSha256": "b0a43446ebc75a991f563dc75fbc85d0b5ed7b49b5f94cc2abaca3f2d174b691"
+    },
+    {
+      "source": "01_PRD/本轮变更与决策.md",
+      "current": "01_PRD/本轮变更与决策.md",
+      "result": "CHANGED",
+      "sourceSha256": "c590da8d50f5dc4b4693ec529d580d8ce86dcc13362ec02b838d498265acb612",
+      "currentSha256": "09c1a1822821e24dc76f2357095cddeaffca174b73b08be9864ee1ea10b15c54"
+    },
+    {
+      "source": "01_PRD/身份流程_员工自动关联_V6.2.html",
+      "current": "01_PRD/身份流程_员工自动关联_V6.3.html",
+      "result": "CHANGED",
+      "sourceSha256": "d5ca7b0535c6a5c27574d33bef0767e4ce98b5628e458dcaa5d1f84ccf032aa9",
+      "currentSha256": "6f2aeefaba2041abea7509d6bd7a4681f2cc5cbafcb2618af4cea5261ea89d22"
+    },
+    {
+      "source": "01_PRD/本轮变更与决策.html",
+      "current": "01_PRD/本轮变更与决策.html",
+      "result": "CHANGED",
+      "sourceSha256": "5a7d811846b50a18f678f22e254ce0c1bca133676abe1855a007cfdd0b8001f2",
+      "currentSha256": "d9fceba049d7f4bd1179a5c9fa461f348e6cbc5b985ba88b9e825bdbeb6ff032"
+    },
+    {
+      "source": "01_PRD/全量页面与交互规格_V6.2.md",
+      "current": "01_PRD/全量页面与交互规格_V6.3.md",
+      "result": "CHANGED",
+      "sourceSha256": "703f26decdfd3e8fc8de9d5fec0c6d563aadcdfa1f90e5bf5479f9c90568263f",
+      "currentSha256": "687a2435283de06b2f9fa80c7d688a1a9faa2d50e92faca366e552c09cb9dd3f"
+    },
+    {
+      "source": "01_PRD/机动车检测预约_PRD_V6.2_完整整合版.html",
+      "current": "01_PRD/机动车检测预约_PRD_V6.3_完整整合版.html",
+      "result": "CHANGED",
+      "sourceSha256": "e16768fa469ec7863e96e88716423b32943ea98810ffb407bdb232fd647cde28",
+      "currentSha256": "1d6cde9e97d3025b2f7e7f572b44f25a97b8abd7b1efb61f8820895589ca9338"
+    },
+    {
+      "source": "01_PRD/全量页面与交互规格_V6.2.html",
+      "current": "01_PRD/全量页面与交互规格_V6.3.html",
+      "result": "CHANGED",
+      "sourceSha256": "59a3f2e0e771fee5b3cb4e8b66bf0604435f5d269cb9f46736b6dec902a5288c",
+      "currentSha256": "fb8581d58fe0ae41f3bbf5ed550124550234a3b57532ef35b56a750d0123d20f"
+    },
+    {
+      "source": "01_PRD/机动车检测预约_PRD_V6.2_完整整合版.md",
+      "current": "01_PRD/机动车检测预约_PRD_V6.3_完整整合版.md",
+      "result": "CHANGED",
+      "sourceSha256": "ab0478f7b5f517a387943b783679c29cb090ae88ce092b4301635a3fbf6572c7",
+      "currentSha256": "bda46550bb874cb652f911ae295687258925af510f039b3c33055dfcfbfa11c7"
+    },
+    {
+      "source": "01_PRD/页面编号覆盖表.csv",
+      "current": "01_PRD/页面编号覆盖表.csv",
+      "result": "CHANGED",
+      "sourceSha256": "7a0d8c1ace2f6d8c83ed3fc3ac0ff3f2fbd7fc79eeffd738f2d2765221805ccf",
+      "currentSha256": "455f8884e33f429d37de899386986db73bc9a1a5adbe3f1218e5a72d66e7bda3"
+    },
+    {
+      "source": "01_PRD/page_specs_V6.2.json",
+      "current": "01_PRD/page_specs_V6.3.json",
+      "result": "CHANGED",
+      "sourceSha256": "a0f3df28e19a0829a53bdc74d60e5cfbac5ca98c5051969dbddfa8f64f46807b",
+      "currentSha256": "96cc5f18a34d666f148adafc849c0ecc86092f118291d3fd03dc280650ee3da8"
+    },
+    {
+      "source": "02_UI/test_v42_pricing.py",
+      "current": "02_UI/test_v42_pricing.py",
+      "result": "CHANGED",
+      "sourceSha256": "e08bf8aa343296352bfee37c10c69f751e6ad872f0573f33b45e58bf5d8caaf0",
+      "currentSha256": "205f95966013e4a5dcb4856f7a505eabbc20b6b011c4487236d4fe9d90195005"
+    },
+    {
+      "source": "02_UI/全量画板总览.html",
+      "current": "02_UI/全量画板总览.html",
+      "result": "CHANGED",
+      "sourceSha256": "111cc118a36e61ad304f0a04c0865b5071e81093f8c60328fe89be443daf4780",
+      "currentSha256": "7c07b8d4d40e30cc6d866b2605753c959ff4290744d7692af93865ab87036c94"
+    },
+    {
+      "source": "02_UI/build.py",
+      "current": "02_UI/build.py",
+      "result": "CHANGED",
+      "sourceSha256": "52511478dcf41c66c716e97582e2f41e94793db954954128983148ed599aca34",
+      "currentSha256": "81c15a37cc69c3342d18b820682c27ee8348a5f0e4f7af1dc0b0438b5f9782df"
+    },
+    {
+      "source": "02_UI/V6_适用说明.html",
+      "current": "02_UI/V6_适用说明.html",
+      "result": "CHANGED",
+      "sourceSha256": "0727d244c4ae9fbe2a6a96cb8374c3fd6ed611ca597f38e3dfaee5ca529d3d05",
+      "currentSha256": "bf7ce2e2846336e4512dfe3a86474c8e3bc82146446f2d55bc70f2be05d98026"
+    },
+    {
+      "source": "02_UI/export_screens.py",
+      "current": "02_UI/export_screens.py",
+      "result": "CHANGED",
+      "sourceSha256": "fa6a305d2575d075ba903d59baa31eadb185273c31ad2bc8fe7c64efd26a5dc2",
+      "currentSha256": "60e739d9c7119911ab606b4437a801b725fb2694b29ae2cdc5ff52184921b4e7"
+    },
+    {
+      "source": "02_UI/开发与重建说明.html",
+      "current": "02_UI/开发与重建说明.html",
+      "result": "CHANGED",
+      "sourceSha256": "1ec9b70fff24809d2252b1a8698d440c103f84429a600e8c4bcf663e090d41ed",
+      "currentSha256": "64817674facebf8f514b409bbd655dacc95c053837043e4d01e65e6c125a3fd1"
+    },
+    {
+      "source": "02_UI/test_v42_regression.py",
+      "current": "02_UI/test_v42_regression.py",
+      "result": "CHANGED",
+      "sourceSha256": "96dfd10454534dc2f58e69786b279f1cfa61b7bdba4f1dc565f04d76688fff99",
+      "currentSha256": "0319d81d50431b54861a0cef67abd5294172febe0e9588db5b8dc29671749df8"
+    },
+    {
+      "source": "02_UI/V6_适用说明.md",
+      "current": "02_UI/V6_适用说明.md",
+      "result": "CHANGED",
+      "sourceSha256": "0fb9331fbf7c3d570aa5589f59f3e22523777487dab841079dbee730f7bb98ca",
+      "currentSha256": "1d6671f6157d269a120cb3a22b8279195dd80adc4055701d1d7cf399b0f7c960"
+    },
+    {
+      "source": "02_UI/test_v5_flows.py",
+      "current": "02_UI/test_v5_flows.py",
+      "result": "CHANGED",
+      "sourceSha256": "cdf4e72f8b89fdfa0a8f489089b01e55bd9e42b4fa467c0ba714de75e8b4907d",
+      "currentSha256": "412b914fff345b2f22026f8d8cc0c9a67ba4913d86ffbb7e57d37c1dfd848786"
+    },
+    {
+      "source": "02_UI/index.html",
+      "current": "02_UI/index.html",
+      "result": "CHANGED",
+      "sourceSha256": "278df6d4ea126674498bbe906ee45aaf3098fb7794ef9ec183076dfa6d51435a",
+      "currentSha256": "2a76bb0d4b5022fdebfc1b642f46ec070bcfb5832debba553171f566f367dc28"
+    },
+    {
+      "source": "02_UI/test_v42_selection.py",
+      "current": "02_UI/test_v42_selection.py",
+      "result": "CHANGED",
+      "sourceSha256": "91d91b642656aed68f19155a86283088b290691581c34ee728046bca71fbef24",
+      "currentSha256": "b396c7c0470566b99e390338f8291916085136f80708f5ac11916710229b87cf"
+    },
+    {
+      "source": "02_UI/test_v62_identity.py",
+      "result": "REMOVED_OR_ARCHIVED"
+    },
+    {
+      "source": "02_UI/开发与重建说明.md",
+      "current": "02_UI/开发与重建说明.md",
+      "result": "CHANGED",
+      "sourceSha256": "e34150c137f3a85edcc4cec93ac19967267ce53d514523d7f3369e0480147c50",
+      "currentSha256": "5d644b42d9327f62dfe67f9da4cb0b78b270f7caef8b9e445254b2a772f2255a"
+    },
+    {
+      "source": "13_真实集成测试/02_全功能联调场景.html",
+      "current": "13_真实集成测试/02_全功能联调场景.html",
+      "result": "CHANGED",
+      "sourceSha256": "cdb0de1435e9bb83754aae701aeda5737b3d0f8f9597e388ddf2543eedc92e9a",
+      "currentSha256": "d96c3e4e2d5ad07f31e262408d24d81df53c6e38a39bc8bb557310a235856c4f"
+    },
+    {
+      "source": "13_真实集成测试/01_测试架构与控制面.md",
+      "current": "13_真实集成测试/01_测试架构与控制面.md",
+      "result": "CHANGED",
+      "sourceSha256": "3d2024c64ba9903161b5f0722611f176c9bf978722a88b9dda1768769c4c98a5",
+      "currentSha256": "706963486ca7683cc54cd67a82315f852929832f16009f2edd4821fa8d2b3e34"
+    },
+    {
+      "source": "13_真实集成测试/case-test-plan.json",
+      "current": "13_真实集成测试/case-test-plan.json",
+      "result": "CHANGED",
+      "sourceSha256": "2c338f5e84fa65c23379f1a1eeee8b3cfce03958593de1b28fd5f6eac5332133",
+      "currentSha256": "10579a74173c9865f6529744dea12fb0093383e2e552bdda22bc77ceb5895675"
+    },
+    {
+      "source": "13_真实集成测试/02_全功能联调场景.md",
+      "current": "13_真实集成测试/02_全功能联调场景.md",
+      "result": "CHANGED",
+      "sourceSha256": "00fca5bd45c7ec4f5be052993884bdb384429aed4089b678d879c3e7fa149293",
+      "currentSha256": "4f6b939fcb0c386c2f31e115aeb68e72517ee316a7fdba554f83a12eed185160"
+    },
+    {
+      "source": "13_真实集成测试/01_测试架构与控制面.html",
+      "current": "13_真实集成测试/01_测试架构与控制面.html",
+      "result": "CHANGED",
+      "sourceSha256": "950d9f35e8a4db6c713d3e6ce4779cf763a9b71d90b2df9eea64bb7fb72fb384",
+      "currentSha256": "fa85946fccea30ec187263c95027a9d430681e2bfb1516f18c75021a57b238f5"
+    },
+    {
+      "source": "06_验收/全量业务验收_V6.2.feature",
+      "current": "06_验收/全量业务验收_V6.3.feature",
+      "result": "CHANGED",
+      "sourceSha256": "e0192ad88e8f461d7d1b05dd7391fd44430c9d5999faeaa0b0e76049ecf9fbb7",
+      "currentSha256": "ac0aa6f92fa0083107bfd37786b4f65b3f1fb0401dde5de9bdadb7be794051f5"
+    },
+    {
+      "source": "06_验收/全量验收用例_V6.2.html",
+      "current": "06_验收/全量验收用例_V6.3.html",
+      "result": "CHANGED",
+      "sourceSha256": "e4b7a31579f7aff3902446009b81c63ce26ee098288236390cf73a823d674710",
+      "currentSha256": "3f1784da806c0e7544d2f226db17d33aea169fdba6b3afba3021dd2d2c0b960c"
+    },
+    {
+      "source": "06_验收/00_验收分层说明.html",
+      "current": "06_验收/00_验收分层说明.html",
+      "result": "CHANGED",
+      "sourceSha256": "43a08231bb68ffd9e0305a72d18292abb838beea00101c25fe205a08c53af419",
+      "currentSha256": "6f532a3fc6794c0e13b25d95af8fd7bc9498b0bd2aac9026ded90cfbe7692c47"
+    },
+    {
+      "source": "06_验收/00_验收分层说明.md",
+      "current": "06_验收/00_验收分层说明.md",
+      "result": "CHANGED",
+      "sourceSha256": "443a01b619e711c638ba358537a81cc2b3f7dc7ef670d6a7f024cf970851dccd",
+      "currentSha256": "f6f10b0ed2b6faeeb41f00526dec971275a99fb2e7e95e228487f0a05fe8a0ab"
+    },
+    {
+      "source": "06_验收/全量验收用例_V6.2.csv",
+      "current": "06_验收/全量验收用例_V6.3.csv",
+      "result": "CHANGED",
+      "sourceSha256": "59db17372572f339ecd7e940f68e76db68a85615278c924fb544767d06fd5fad",
+      "currentSha256": "1717487817bff5c2dedee5094ec8a0a23409132a92fa561a55162accba168481"
+    },
+    {
+      "source": "06_验收/test_cases_V6.2.json",
+      "current": "06_验收/test_cases_V6.3.json",
+      "result": "CHANGED",
+      "sourceSha256": "ba291fb9eaaecd858ed6eda313f3685f35c1d6ad95f622711a30993b31069f49",
+      "currentSha256": "d6efa0e750b6a5e5519fca6c68e62b7eee0c670fef26899da8cfe1dd5600f1ee"
+    },
+    {
+      "source": "06_验收/全量验收用例_V6.2.md",
+      "current": "06_验收/全量验收用例_V6.3.md",
+      "result": "CHANGED",
+      "sourceSha256": "b9d684f05c0f44d36cf37b5c7837c0356196a0751ab762c633f718586a2127d9",
+      "currentSha256": "81fb11d8a005c2a945d398c5a1795e275d0697192809bf8fc28d63d81cbb75e7"
+    },
+    {
+      "source": "15_部署与运维/01_部署与发布流水线.html",
+      "current": "15_部署与运维/01_部署与发布流水线.html",
+      "result": "CHANGED",
+      "sourceSha256": "f0e8518f319ef118cefdf2115e0a3f73e144e4f60ad65311482519270cf3a3d1",
+      "currentSha256": "2ac76949ceba2bda9394166bfd2c73d1199cc4cdec78263a1872b990897b8db8"
+    },
+    {
+      "source": "15_部署与运维/ci-vehicle.yml",
+      "current": "15_部署与运维/ci-vehicle.yml",
+      "result": "CHANGED",
+      "sourceSha256": "3d343f79e39a13a41ba2fa15262f8a7201ca986297ef1a57afaec75ca6d77e0c",
+      "currentSha256": "eb93319c298dabbf0dce03fa3eb751437ffca829a4df1f6b8ff5d32e758e1f01"
+    },
+    {
+      "source": "09_验证记录/培训_答题移动端.png",
+      "current": "09_验证记录/培训_答题移动端.png",
+      "result": "CHANGED",
+      "sourceSha256": "14b6e37fbe5350d84e6a9bd3ec72b8c7f1582b85770c780efdaea51b1530bab2",
+      "currentSha256": "8dae1883496a04113dcff530472fc6923248071ce40734a3f85b61f537ee068b"
+    },
+    {
+      "source": "09_验证记录/V6.2_文档浏览验证.json",
+      "current": "09_验证记录/V6.3_文档浏览验证.json",
+      "result": "CHANGED",
+      "sourceSha256": "6a67f9dbface19b58e0550d714cbd959d5d1b6ffe3ef48369658483b8664356e",
+      "currentSha256": "a662df06d612e3a1e4286cda25c2121b1cce3b7cc3f079f7d1b1e8a93ee295d3"
+    },
+    {
+      "source": "09_验证记录/V6.2_基础交互回归结果.json",
+      "current": "09_验证记录/V6.3_基础交互回归结果.json",
+      "result": "CHANGED",
+      "sourceSha256": "8601b7f4eef8e1ee0d2b03e67b43be0afe1b809ff0395776761624fe1d5f3a8a",
+      "currentSha256": "91f1548fc4531b05ed69f817c78d93e51466739eb6dce51b04fbf790f7b277c0"
+    },
+    {
+      "source": "09_验证记录/V6.2_工具契约单元测试.xml",
+      "result": "REMOVED_OR_ARCHIVED"
+    },
+    {
+      "source": "09_验证记录/资料深度一致性检查.json",
+      "current": "09_验证记录/资料深度一致性检查.json",
+      "result": "CHANGED",
+      "sourceSha256": "fc75a98f0be6d5433bb5a4827462ba721b695d188c9bc3268b9599433142b774",
+      "currentSha256": "4ae8f24ef1d09f01bb7f837a221ef3f21f61ae17d906842cd3a2a13a57230f82"
+    },
+    {
+      "source": "09_验证记录/培训_结果.png",
+      "current": "09_验证记录/培训_结果.png",
+      "result": "CHANGED",
+      "sourceSha256": "55f518ea0da0075e63536a288067c68725f861c5344ad1ed1dba491053ef4e97",
+      "currentSha256": "6ed3ad2c7a9c1375824dbf3bdeb6dd762a3878604be26fb228f949441dbfa449"
+    },
+    {
+      "source": "09_验证记录/V6.2_真实测试收集_未执行.json",
+      "result": "REMOVED_OR_ARCHIVED"
+    },
+    {
+      "source": "09_验证记录/V6.2_本轮验证范围.html",
+      "current": "09_验证记录/V6.3_本轮验证范围.html",
+      "result": "CHANGED",
+      "sourceSha256": "5e9b936ec6c2bf650d9e1489c2c960b569b3fbb434b00af26239308e46ca7c2a",
+      "currentSha256": "374e36bf74ee8fc722c4e2ea2e8c49b671eb5562f0c106763cf04012ced0f7dc"
+    },
+    {
+      "source": "09_验证记录/V6.2_本轮验证范围.md",
+      "current": "09_验证记录/V6.3_本轮验证范围.md",
+      "result": "CHANGED",
+      "sourceSha256": "ee7d4c4dc79fbc40e6c5afea7d4459672768fa67e5b9f63a84de16868d934d78",
+      "currentSha256": "b4bcd1b9b8848ff4673dfdb35426b3142592ea56545aabb5297f8656b290fec5"
+    },
+    {
+      "source": "09_验证记录/V6.2_统一登录_清洁预览.png",
+      "result": "REMOVED_OR_ARCHIVED"
+    },
+    {
+      "source": "09_验证记录/V6.2_统一登录.png",
+      "result": "REMOVED_OR_ARCHIVED"
+    },
+    {
+      "source": "09_验证记录/V6.2_勾选组单回归结果.json",
+      "current": "09_验证记录/V6.3_勾选组单回归结果.json",
+      "result": "CHANGED",
+      "sourceSha256": "3e59a3ce8af8bb3e8bcc9c3d13b2e85be0e1b3853d6439a44681b0ce8e8e5d99",
+      "currentSha256": "5d9154d4f873cbc075df3c0f486b17eff73eb485ab2a2e45d6f521c614a210b3"
+    },
+    {
+      "source": "09_验证记录/V6.2_完整包入口.png",
+      "current": "09_验证记录/V6.3_完整包入口.png",
+      "result": "CHANGED",
+      "sourceSha256": "b029bf2484b7f34038c47aadd05989893d1720b49c76cfb60ed3aabeb4a851ec",
+      "currentSha256": "5fb3c12537ceb68f2db7003d3eb7c35f8740997f3e7b55347d5e3b5ab22dcccb"
+    },
+    {
+      "source": "09_验证记录/全量画板导出与核验.json",
+      "current": "09_验证记录/全量画板导出与核验.json",
+      "result": "CHANGED",
+      "sourceSha256": "95195898af8393561ef69f623a819860b4adfc163cec57f8198c766d67a6a5a5",
+      "currentSha256": "89a2372cf371732229700aa74517fa15c3a46589ad7fba540adb813a139d9107"
+    },
+    {
+      "source": "09_验证记录/V6.2_JS语法.json",
+      "result": "REMOVED_OR_ARCHIVED"
+    },
+    {
+      "source": "09_验证记录/V6.2_员工工作身份.png",
+      "result": "REMOVED_OR_ARCHIVED"
+    },
+    {
+      "source": "09_验证记录/V6.2_TypeScript类型检查.json",
+      "result": "REMOVED_OR_ARCHIVED"
+    },
+    {
+      "source": "09_验证记录/V6.2_培训申诉能力回归.json",
+      "current": "09_验证记录/V6.3_培训申诉能力回归.json",
+      "result": "CHANGED",
+      "sourceSha256": "e446b357d0b4c7c05c97d8762f1b354e3932957c0c4fc615355f6377c90b5d01",
+      "currentSha256": "016afac15452f0ed20852a9d8bccb8c54cc5c316ae28da4072637b87f5e3e810"
+    },
+    {
+      "source": "09_验证记录/V6.2_未登录员工预授权.png",
+      "result": "REMOVED_OR_ARCHIVED"
+    },
+    {
+      "source": "09_验证记录/V6.2_工程一致性检查.json",
+      "current": "09_验证记录/V6.3_工程一致性检查.json",
+      "result": "CHANGED",
+      "sourceSha256": "002c15799b9545d500e45198a5895f143a77bf9ebad3da6f0370e5706a452ae8",
+      "currentSha256": "f78d8b139354f081a76275bdc2c7325eb443eec048420ccc1d0a032291d02735"
+    },
+    {
+      "source": "09_验证记录/V6.2_身份交互实测.json",
+      "result": "REMOVED_OR_ARCHIVED"
+    },
+    {
+      "source": "09_验证记录/mobile_428.png",
+      "current": "09_验证记录/mobile_428.png",
+      "result": "CHANGED",
+      "sourceSha256": "d447431a4470cf621971cda923dd508fa77291fc7c89fc00dfabee06aa62c3ef",
+      "currentSha256": "3bfc5d7d22b63428f1fe1a6f14edcc78e1ff255380928efdef0cbae0371ec42d"
+    },
+    {
+      "source": "09_验证记录/V6.2_后台先配站点_清洁预览.png",
+      "result": "REMOVED_OR_ARCHIVED"
+    },
+    {
+      "source": "09_验证记录/V6.2_核价回归结果.json",
+      "current": "09_验证记录/V6.3_核价回归结果.json",
+      "result": "CHANGED",
+      "sourceSha256": "2d4b25ca3f68a6111ecd22503f8454ba26a1d9f8104bd5776a9a62e0debaafa7",
+      "currentSha256": "fe4185cb14bff462456e24cbf6905019c07b1167fa10171af12233cf3c58359b"
+    },
+    {
+      "source": "09_验证记录/mobile_390.png",
+      "current": "09_验证记录/mobile_390.png",
+      "result": "CHANGED",
+      "sourceSha256": "303c2a0e61279b29e8728172960710213a956600daf6e435bc3f068a5e422b2a",
+      "currentSha256": "adc23a22d13b120acce8cb640e7587b93c6a3f9b9b3ac3821260226d57da51f8"
+    },
+    {
+      "source": "09_验证记录/mobile_375.png",
+      "current": "09_验证记录/mobile_375.png",
+      "result": "CHANGED",
+      "sourceSha256": "178f2f5d4793b608244f4e04073021085e5b3a721ecbba1da5ec2d90366d4cb1",
+      "currentSha256": "69177920cff4f84efc30a2c7548d2bc14aed5018eaf0ee1bdacfaa056206cf37"
+    },
+    {
+      "source": "03_交互与设计规范/01_视觉规范_AppleHIG映射.md",
+      "current": "03_交互与设计规范/01_视觉规范_AppleHIG映射.md",
+      "result": "CHANGED",
+      "sourceSha256": "45ea5a0dfe6bc52519233b165f42792cae3841f89e029e294bac4d06913ee307",
+      "currentSha256": "ff2c3cbf0371d5acf122d61e091c479998e6a7042003283eab32460e21ca23ee"
+    },
+    {
+      "source": "03_交互与设计规范/04_原型操作手册.md",
+      "current": "03_交互与设计规范/04_原型操作手册.md",
+      "result": "CHANGED",
+      "sourceSha256": "ab6012430b28c46419ef042b7c8baf2a7ca40cbf7b4bf5da9cf4bfc6425031fc",
+      "currentSha256": "67bff781578b21fa2fa7ba041b12cf9d29e8a21389cbb1f122140f606b78dd8a"
+    },
+    {
+      "source": "03_交互与设计规范/03_逐画板交互说明.md",
+      "current": "03_交互与设计规范/03_逐画板交互说明.md",
+      "result": "CHANGED",
+      "sourceSha256": "1cef80d85c9e52cbc0548c93e463859c30affdb5cedd1689af35af3ccc27e384",
+      "currentSha256": "67a74949095698652c724871345cea6a28d07601ffbeee6d6ea169791623a521"
+    },
+    {
+      "source": "03_交互与设计规范/03_逐画板交互说明.html",
+      "current": "03_交互与设计规范/03_逐画板交互说明.html",
+      "result": "CHANGED",
+      "sourceSha256": "d3140066131fec86a6aa9af2f46144f63e74cb730ceb3d9671505f1a2f5a0090",
+      "currentSha256": "ea2c87d4273bbe7c2a5f59aba28d854ef12f78e6e9aac94e6abf131441df2429"
+    },
+    {
+      "source": "03_交互与设计规范/01_视觉规范_AppleHIG映射.html",
+      "current": "03_交互与设计规范/01_视觉规范_AppleHIG映射.html",
+      "result": "CHANGED",
+      "sourceSha256": "817e6326d2e5910c0895fbc08e96654b8f3fa3abd48ad6bae52d25a3a3e3652a",
+      "currentSha256": "4f2a7c064bf978c0d8738c2be23fecf1b909632b6e0991dbcc61267134d44df1"
+    },
+    {
+      "source": "03_交互与设计规范/画板索引.json",
+      "current": "03_交互与设计规范/画板索引.json",
+      "result": "CHANGED",
+      "sourceSha256": "ab11cc852f51af9cdc7d79888fec1294eab9318c0272130971b4586a664dbdd7",
+      "currentSha256": "54b293b39575aa2a2f2295d3df8f32ae82b82c84495c3e873856e81b70492e2b"
+    },
+    {
+      "source": "03_交互与设计规范/02_交互设计规范.md",
+      "current": "03_交互与设计规范/02_交互设计规范.md",
+      "result": "CHANGED",
+      "sourceSha256": "1b78fdc967d84c6d0ec148b253cd0c6f532e9484e34a4b374eb1681d6cfa06b4",
+      "currentSha256": "1615623f75395c36fc1ac68b22a9f9e9ef759bfca2ec12ff1fc1d4fc47c46524"
+    },
+    {
+      "source": "03_交互与设计规范/02_交互设计规范.html",
+      "current": "03_交互与设计规范/02_交互设计规范.html",
+      "result": "CHANGED",
+      "sourceSha256": "5cc9fbb63e0c2b6240b703962cbe677380c70ccfc3674632d02f619e6d4cde5c",
+      "currentSha256": "6eaa680b9ed8e5c035c0308f467e3ffe78d7c0bee4a7d1b47156c306af9d79eb"
+    },
+    {
+      "source": "03_交互与设计规范/04_原型操作手册.html",
+      "current": "03_交互与设计规范/04_原型操作手册.html",
+      "result": "CHANGED",
+      "sourceSha256": "d608e90a4455ff80836b19df14bb380ee130f655b79a8b88e26f97a62eb8be87",
+      "currentSha256": "0e8516168a6aa8e38a5e99d32602aef4edfc584cdb833f245d427c20646c861c"
+    },
+    {
+      "source": "08_业务流程图/flows_V6.2.json",
+      "current": "08_业务流程图/flows_V6.3.json",
+      "result": "CHANGED",
+      "sourceSha256": "3aa4b2e6268888e95a74e56cf6c5cc69983d3941f6a9355a4ce15dbe6f92182d",
+      "currentSha256": "223516bd91458330116c4fda7fca2cb59a3737691636525fbc1d9ff29edb5197"
+    },
+    {
+      "source": "08_业务流程图/流程总览.html",
+      "current": "08_业务流程图/流程总览.html",
+      "result": "CHANGED",
+      "sourceSha256": "eb873750583c44b92866b3d0380bb4d2446adb6083253a46238ed06dc4d44eb2",
+      "currentSha256": "b029536b39bf9549d7baf33ebf22a726fb65ca0ae864ade051be4d168732d92e"
+    },
+    {
+      "source": "11_工具/工具运行说明.html",
+      "current": "11_工具/工具运行说明.html",
+      "result": "CHANGED",
+      "sourceSha256": "66ea1023566766725f37f420149bb34eac943bed4f7e6b1363dcdc0514d5d6af",
+      "currentSha256": "877606413b815c6ebdd70bf22e14c333ec3525de21ba67dfa543e44b6065230a"
+    },
+    {
+      "source": "11_工具/check_package.py",
+      "current": "11_工具/check_package.py",
+      "result": "CHANGED",
+      "sourceSha256": "1fd5341da83ade2b7e55838fc658626afd06d571071713ff77fdbdaa3aaf082c",
+      "currentSha256": "6e67f8ef66e46387c54c6361f7aa63c23ec7adff75b8881850d2e306b6d3906e"
+    },
+    {
+      "source": "11_工具/contract_tests.py",
+      "current": "11_工具/contract_tests.py",
+      "result": "CHANGED",
+      "sourceSha256": "ad667d03e3358b38f64d1984cbc3fcae9a364e88f6b1ab1b70812faaad592c28",
+      "currentSha256": "f9fddef5fac69cbe1d5789e9295c33648d72c57a5989ed17c69322eb6839cd11"
+    },
+    {
+      "source": "11_工具/verify_document_browser.py",
+      "current": "11_工具/verify_document_browser.py",
+      "result": "CHANGED",
+      "sourceSha256": "e92a4a4ee35ee323d5d4c7713d49dcca60021f9b0a03bf154fe32e96ea2f38a4",
+      "currentSha256": "1042f3b4392a363a2c688247df48ffe66bda960bfed6b346ae1460c0f3cff78d"
+    },
+    {
+      "source": "11_工具/工具运行说明.md",
+      "current": "11_工具/工具运行说明.md",
+      "result": "CHANGED",
+      "sourceSha256": "db7abf6976553043e43e4ad3806bd5571a33d7147a33d2a7d63b619565f76c84",
+      "currentSha256": "53e57e564913f81a8ba8660160a8fe066a247b4ef4a1cf9d4d50562e5a94eb1a"
+    },
+    {
+      "source": "11_工具/rebuild_markdown_html.py",
+      "current": "11_工具/rebuild_markdown_html.py",
+      "result": "CHANGED",
+      "sourceSha256": "b825a02d841fdb5e6ad3c910051504d5f2d6ded764158199e8a0b112b8de5729",
+      "currentSha256": "16d133fed8586949416416d9d7831a667ffcb88204bea1216511677e37975cac"
+    },
+    {
+      "source": "11_工具/参考来源.html",
+      "current": "11_工具/参考来源.html",
+      "result": "CHANGED",
+      "sourceSha256": "62dc99a9a07160ad35f5d6f67d57607cc9656304167490bb0e4baba94a8e121f",
+      "currentSha256": "9f8542d904ed3f5e048924b7a939a17e6861ca001b7d3197dfdd7063e42eee75"
+    },
+    {
+      "source": "11_工具/参考来源.md",
+      "current": "11_工具/参考来源.md",
+      "result": "CHANGED",
+      "sourceSha256": "c8e9f9ae1473e2fb5e464138ceb9c795574dca8b5cf268042a4d6356549ba15d",
+      "currentSha256": "f052b31a27d14356becf881a9fcb07b5c7e830d98a9008173e4842c436a4adde"
+    },
+    {
+      "source": "11_工具/verify_mysql.py",
+      "current": "11_工具/verify_mysql.py",
+      "result": "CHANGED",
+      "sourceSha256": "0889cd074eee13fee6ab6175e3814d645e3ad5ced7b894a38ec0147efa5b8f04",
+      "currentSha256": "0926ec3dace5d99730d9e7cb6696271f3736a9ba5227cda6630cca97de6e1da1"
+    },
+    {
+      "source": "05_数据设计/业务动作与状态事务矩阵_V6.2.md",
+      "current": "05_数据设计/业务动作与状态事务矩阵_V6.3.md",
+      "result": "CHANGED",
+      "sourceSha256": "4ecc795cd0544bf0d8bdf5d1a04ddf128e012ce8659276eaf2b5bae2f12446c0",
+      "currentSha256": "2092157e2d33d74035f19a7900acfb36df617e3d5560c2c8ea51c91c195f454d"
+    },
+    {
+      "source": "05_数据设计/枚举字典_V6.2.json",
+      "current": "05_数据设计/枚举字典_V6.3.json",
+      "result": "CHANGED",
+      "sourceSha256": "0b8c68703a566db43269ad149839c264275215264b4631009b3e2b01c027665c",
+      "currentSha256": "5137cc037d40e227b2d28d4cac643333432018bcbe0840da931b23eb738e44ee"
+    },
+    {
+      "source": "05_数据设计/数据模型与字段字典_V6.2.md",
+      "current": "05_数据设计/数据模型与字段字典_V6.3.md",
+      "result": "CHANGED",
+      "sourceSha256": "950ef7b79674c59504e7757e4ce62602c86433aaeb87f7b18df4ee1bfa7b6f9c",
+      "currentSha256": "e79a623096b1c3f241de6fe91e3e9753a0ff8bc11caf999f347d7c54c5551597"
+    },
+    {
+      "source": "05_数据设计/业务动作与状态事务矩阵_V6.2.html",
+      "current": "05_数据设计/业务动作与状态事务矩阵_V6.3.html",
+      "result": "CHANGED",
+      "sourceSha256": "1ba9d4e5f40a8784daa3233ee3dd4fe4b2c80e49ebd5c631a39fcaebb8c434b7",
+      "currentSha256": "ea18994168783c74b5d89a60be25805c652d574f16a6565a68ce69eabfaae2c7"
+    },
+    {
+      "source": "05_数据设计/001_vi业务表_初始化_V6.2.sql",
+      "current": "05_数据设计/001_vi业务表_初始化_V6.3.sql",
+      "result": "CHANGED",
+      "sourceSha256": "01a75d7bcfa39cb669832953c860120b2ed850851c55f510a7394ff96a36f600",
+      "currentSha256": "357c417b7fd7e4521a947dda9acdb47b88b72fea54b602bc9538926152805373"
+    },
+    {
+      "source": "05_数据设计/数据模型与字段字典_V6.2.html",
+      "current": "05_数据设计/数据模型与字段字典_V6.3.html",
+      "result": "CHANGED",
+      "sourceSha256": "ead5178b738e7812c04acaf03eaed4106b96ecbf555d887ce3bf44e3828c24db",
+      "currentSha256": "67fef34b7e426327428da539ae66115e128be1464ca93ce0dd9ba6f9ddb223a4"
+    },
+    {
+      "source": "变更记录/本轮来源与适用性.json",
+      "current": "变更记录/本轮来源与适用性.json",
+      "result": "CHANGED",
+      "sourceSha256": "ab808add26c0750cb0122ae89f875cd67054f577b460be2619dd5298029e90e4",
+      "currentSha256": "bb1cabf2395eb5558dd88d33d968d6959b66e7c22d14427475a9fe5dc4605767"
+    },
+    {
+      "source": "变更记录/V6.2_整合范围.md",
+      "current": "变更记录/V6.3_整合范围.md",
+      "result": "CHANGED",
+      "sourceSha256": "e372909f01881e8447a79c859c4ff926ae84015a379fd8c72691d6db6d2b3c1d",
+      "currentSha256": "4be7eb97ba6804cdb6ef8bcd7b47eb297b579ff9f5538db8a16a78fceeba1b81"
+    },
+    {
+      "source": "变更记录/V6.2_整合范围.html",
+      "current": "变更记录/V6.3_整合范围.html",
+      "result": "CHANGED",
+      "sourceSha256": "35e7aa0ad1eb35d3b94d36507cfd2bc953f6d72e7a9b25db0ee8cfd670ab5671",
+      "currentSha256": "4b12fdad5022aa3fc279319ed1c61c9d100d655c6615105e57f4bc90f423f65d"
+    },
+    {
+      "source": "12_工程执行/03_当前框架与M0初建.md",
+      "current": "12_工程执行/03_当前框架与M0初建.md",
+      "result": "CHANGED",
+      "sourceSha256": "e573a5da67a26429bd69e65f02c85fdbdf870915bcffd1050db18976c8e14f3c",
+      "currentSha256": "03ac67c9f2c9130ccaee2bd3162a78f49891df179911549f3f8ad7b7026e5107"
+    },
+    {
+      "source": "12_工程执行/当前源码证据.json",
+      "current": "12_工程执行/当前源码证据.json",
+      "result": "CHANGED",
+      "sourceSha256": "ac6fe0da1de3a407ad0215641b2b1235c19eab8dded02c344e907de2a01d51f2",
+      "currentSha256": "2cb155cfd2c99ff3e568e9b2893b3e30c8d7d3125b1cdecdd7a4793c01c31408"
+    },
+    {
+      "source": "12_工程执行/01_执行总设计.html",
+      "current": "12_工程执行/01_执行总设计.html",
+      "result": "CHANGED",
+      "sourceSha256": "58c02899c833636924fff29cad1c3a04fcb311d22b1c706ee06eb275c582594a",
+      "currentSha256": "e0d7cceb403c793e1cb15a3d772c2aff1bc3871531543b3bba69a0ec6af04b85"
+    },
+    {
+      "source": "12_工程执行/04_任务执行与完成判据.html",
+      "current": "12_工程执行/04_任务执行与完成判据.html",
+      "result": "CHANGED",
+      "sourceSha256": "9c192022a21011bdd06af95389e5fc76b80e7df8ea17c6fe46cf38ab773ab624",
+      "currentSha256": "17a79f103d7584a70e8d82d27daacbf71e20932b161dc73b4606355be2e5ad04"
+    },
+    {
+      "source": "12_工程执行/database.py",
+      "current": "12_工程执行/database.py",
+      "result": "CHANGED",
+      "sourceSha256": "70606bea8157d9ab54d6fc98a256fa9a94cede575760830cd52a44359fa8b3ce",
+      "currentSha256": "d93b81822b022fcb645b7c1cc03263924bb550e3cdbcd8febe7d66cce2deeb23"
+    },
+    {
+      "source": "12_工程执行/taskctl.py",
+      "current": "12_工程执行/taskctl.py",
+      "result": "CHANGED",
+      "sourceSha256": "5002924d59e2519604fe0b4e4790a588c0e5c7826bf191fd596e8d988f3f0993",
+      "currentSha256": "238986931c207bc7883c629b83d2a880753665e247e36e9db84f9164d7c021dd"
+    },
+    {
+      "source": "12_工程执行/check_engineering.py",
+      "current": "12_工程执行/check_engineering.py",
+      "result": "CHANGED",
+      "sourceSha256": "24b2cea201da8ebdf2bc0a7205b3ea4f763544899fe3c6576211b722bd3d2f76",
+      "currentSha256": "7ebf2e5d0edce6b2d154a032b2597588f492078637a46c7a93f7144326e7e0f6"
+    },
+    {
+      "source": "12_工程执行/case_implementation_map.json",
+      "current": "12_工程执行/case_implementation_map.json",
+      "result": "CHANGED",
+      "sourceSha256": "979617f3fbfb31ad61d27f8d0efe35259f5b7b423866c8d7b1e4cc0d8133e974",
+      "currentSha256": "0061d348dc392724ff1f4702ca52e49021d92f3c07d480d595d3c42cc35391b0"
+    },
+    {
+      "source": "12_工程执行/engineer.py",
+      "current": "12_工程执行/engineer.py",
+      "result": "CHANGED",
+      "sourceSha256": "d94d3b6a94c257a38f93275ebd8dc2205e31836073e43f74c9afabcd7c8f108a",
+      "currentSha256": "3c7264af072b71eb833dd6cdf0be74f1016a91a4383ad474f8a11e3b9991bd8b"
+    },
+    {
+      "source": "12_工程执行/05_报价与公开配置修订.html",
+      "current": "12_工程执行/05_报价与公开配置修订.html",
+      "result": "CHANGED",
+      "sourceSha256": "541bbdabd44b63e2ce523992be5c333d926a2eb386305ef313a85007190ba97e",
+      "currentSha256": "f057ed1f4149a76e01e570b8118f15cf9e62c3cf6e496967c8c072878563fc25"
+    },
+    {
+      "source": "12_工程执行/05_报价与公开配置修订.md",
+      "current": "12_工程执行/05_报价与公开配置修订.md",
+      "result": "CHANGED",
+      "sourceSha256": "36fe1edb6c6695b18353f7d6f64fe5378c6a272a371e845ba98c26b0d8f96353",
+      "currentSha256": "f70a62ef07b46ca7a7596eb49ae328b84f8ccbcb3f21d6f783e5b7c686f32f2a"
+    },
+    {
+      "source": "12_工程执行/route-plan.json",
+      "current": "12_工程执行/route-plan.json",
+      "result": "CHANGED",
+      "sourceSha256": "ee1da4fe35dfe510cc9deac72de417b008ecc2344d7ae364b3aaa0094b58dcd4",
+      "currentSha256": "991c13752b20f951af6be54306c3c0c245cb9b5104335250db4503e0701cf44d"
+    },
+    {
+      "source": "12_工程执行/来源与边界.html",
+      "current": "12_工程执行/来源与边界.html",
+      "result": "CHANGED",
+      "sourceSha256": "b1ca9c7bf1cc8654518cc2e647af85a54c85dfdf0aee331a0daa6ff70df78812",
+      "currentSha256": "190dfb34885a20158e987a682d5c1a2981a4bbfe767cf6342a260e087182362d"
+    },
+    {
+      "source": "12_工程执行/来源与边界.md",
+      "current": "12_工程执行/来源与边界.md",
+      "result": "CHANGED",
+      "sourceSha256": "38dfd05f64ccb361d67ac73355dbe67eb8af5134f1f35acb88f8b81de689d4e1",
+      "currentSha256": "f6bcf90c6a4d76980f7ba6b19363d0f37ceb9081fcd7a6fe78946118df5039a2"
+    },
+    {
+      "source": "12_工程执行/任务导航.html",
+      "current": "12_工程执行/任务导航.html",
+      "result": "CHANGED",
+      "sourceSha256": "931c682271b6523a9a64f1aecbf2f8523d9cdd10909035fef60eb35607b408fc",
+      "currentSha256": "7b7cff90a5451a372d5d51adce38363089babf5f2c585473471260acc4fdb398"
+    },
+    {
+      "source": "12_工程执行/04_任务执行与完成判据.md",
+      "current": "12_工程执行/04_任务执行与完成判据.md",
+      "result": "CHANGED",
+      "sourceSha256": "a75999efa547d5d9e82e3b889bd22d770841accdf6203fbb49115b3a00b15337",
+      "currentSha256": "b30ccf562b244fe5ff4135d6cc33bfad1a75e63f06685f4c72ece3fd720ad0f2"
+    },
+    {
+      "source": "12_工程执行/tasks.json",
+      "current": "12_工程执行/tasks.json",
+      "result": "CHANGED",
+      "sourceSha256": "6e233f1afd57d956275b8a5433805b7fbd8cb2f8799bc6b1af710ba03577e7f9",
+      "currentSha256": "7e133e87331df1ce434abb9dbb01c544304229f6d19acee0aea5b302dff4f30e"
+    },
+    {
+      "source": "12_工程执行/02_环境与首次运行手册.html",
+      "current": "12_工程执行/02_环境与首次运行手册.html",
+      "result": "CHANGED",
+      "sourceSha256": "496579a09d643d2a9ab6ee08d43c0488d932cf32cdf2b28d8eb87a055af91c8e",
+      "currentSha256": "eef421af2c092a450c1dd36af3af195af70db2a3d72b83d9f2ee806339834bce"
+    },
+    {
+      "source": "12_工程执行/identity_policy_reference.py",
+      "current": "12_工程执行/identity_policy_reference.py",
+      "result": "CHANGED",
+      "sourceSha256": "192e1e6570038103fcbf7bba8fbb1b830f98a506bbd15cddf74c295ee2d65e3e",
+      "currentSha256": "f13670e236f613a80891e11fa512e11c8d9c96c0867f78dda53a45e6bee654ce"
+    },
+    {
+      "source": "12_工程执行/07_已提供与需实现清单.html",
+      "current": "12_工程执行/07_已提供与需实现清单.html",
+      "result": "CHANGED",
+      "sourceSha256": "c7d0602d33f8a9bb7dd553034775c8c926513bac99d9e07d9aafb043d8514a73",
+      "currentSha256": "16391440fe27320a11f12fdc879a96493554331191d34f54d7b6e613c7acc086"
+    },
+    {
+      "source": "12_工程执行/01_执行总设计.md",
+      "current": "12_工程执行/01_执行总设计.md",
+      "result": "CHANGED",
+      "sourceSha256": "e89837c70b21a1dc4dfb5508bdf37659ec5e94aedd92e3bb8c91cdc05828bdee",
+      "currentSha256": "e7cd99f63c841de1f6e1a4382e08773d7e95258ead7f1f1ee326b42b3aedcd84"
+    },
+    {
+      "source": "12_工程执行/03_当前框架与M0初建.html",
+      "current": "12_工程执行/03_当前框架与M0初建.html",
+      "result": "CHANGED",
+      "sourceSha256": "97c432379211d6b15a986c61a9946452da78f75d6bd86ce5827e2ca0ac3c632f",
+      "currentSha256": "7fb9a0be0375515d4502fd1745effc3500f1458f035abf18a5450a861aa2c23c"
+    },
+    {
+      "source": "12_工程执行/07_已提供与需实现清单.md",
+      "current": "12_工程执行/07_已提供与需实现清单.md",
+      "result": "CHANGED",
+      "sourceSha256": "ed32a0e8cc806890e05b4bf2c4c5e17144bf47969bca1245cc5b01c3e36c594e",
+      "currentSha256": "11d5d58adcf6f4aec5091c21161e5b96a18ef14a70427606f22883f2e9f27c5a"
+    },
+    {
+      "source": "12_工程执行/page_implementation_map.json",
+      "current": "12_工程执行/page_implementation_map.json",
+      "result": "CHANGED",
+      "sourceSha256": "61bec0045133f6819c05a1a0eeb29716a8d50b112c50bdab0b5525788b2b1262",
+      "currentSha256": "5f962a7c1711b6015e551dc2d3fb247a2b70ce782260c96cc371cabbc015bfe2"
+    },
+    {
+      "source": "12_工程执行/06_生产参数与阻塞分类.html",
+      "current": "12_工程执行/06_生产参数与阻塞分类.html",
+      "result": "CHANGED",
+      "sourceSha256": "34d7b612f4208e14e2f8a94f9790536169229eef67b0747b29644e8df2b26292",
+      "currentSha256": "3e67d38329a6339c182b50139e8eb4640ddfebd31dd00cd2c70b1321a91a3a74"
+    },
+    {
+      "source": "12_工程执行/baseline.json",
+      "current": "12_工程执行/baseline.json",
+      "result": "CHANGED",
+      "sourceSha256": "c18242c5f40e3e6b1d4702ef443a1ba7f49b1bef735252710fe2e7f3911cd745",
+      "currentSha256": "48b72eab068b104ff67620fa327484a64538e2d8bfffd42232a65712fa38e251"
+    },
+    {
+      "source": "12_工程执行/02_环境与首次运行手册.md",
+      "current": "12_工程执行/02_环境与首次运行手册.md",
+      "result": "CHANGED",
+      "sourceSha256": "e6e469a2c67360fd626c30b998c85342a97746a185bcff2d2cad9bf235874d1a",
+      "currentSha256": "d8fe9729b2e5fe769881402f705e79e7ab33994e2b57930365d85b9b132cf5ec"
+    },
+    {
+      "source": "10_技术架构_T3.2/00_技术包使用说明.html",
+      "current": "10_技术架构_T3.3/00_技术包使用说明.html",
+      "result": "CHANGED",
+      "sourceSha256": "907e1af6872905780d9a79c044e86d1cc5a4f4957a8bd79c98035b503b773b7a",
+      "currentSha256": "28d84df404495d7ea097e1b66d5f3930bc32c780080cd0d912788af4ea90b0cc"
+    },
+    {
+      "source": "10_技术架构_T3.2/00_技术包使用说明.md",
+      "current": "10_技术架构_T3.3/00_技术包使用说明.md",
+      "result": "CHANGED",
+      "sourceSha256": "b4b643822274904855ba00eafeb36afc129274efa547698083abf4f2816f54b8",
+      "currentSha256": "4e1030d23b3dd713aaf25b47a347a5249b9598de27547c48254a56cd1b39c9ba"
+    },
+    {
+      "source": "10_技术架构_T3.2/02_初始化与框架接入.md",
+      "current": "10_技术架构_T3.3/02_初始化与框架接入.md",
+      "result": "CHANGED",
+      "sourceSha256": "1ef6d6a0cc91c04d61885e9fdc656afb2f3d75ce3877df187f6c4a8558b7c208",
+      "currentSha256": "4c303900943ae077e678b8c2703f419d33d9a6945e3ebd7a6987577d96fcb57f"
+    },
+    {
+      "source": "10_技术架构_T3.2/03_技术验收门禁_71项.md",
+      "current": "10_技术架构_T3.3/03_技术验收门禁_71项.md",
+      "result": "CHANGED",
+      "sourceSha256": "43ec1a6d21dff96dbb2990be626dc073842d0496912a2c9b3a4949fcbbf8c65e",
+      "currentSha256": "9f8407c0df3243d356fa98949f717787071f8202ad4a19cadbcb17cd05d90486"
+    },
+    {
+      "source": "10_技术架构_T3.2/00_交给Agent的任务.md",
+      "current": "10_技术架构_T3.3/00_交给Agent的任务.md",
+      "result": "CHANGED",
+      "sourceSha256": "53a42032b317fba0df6501cc739aab3d5e0192fb8e25a0408305a987482e2ab6",
+      "currentSha256": "ee27a892ff126a323a38ef9daf59bccc1dbd3bdaa7493669bda6eff2c1cc949d"
+    },
+    {
+      "source": "10_技术架构_T3.2/00_交给Agent的任务.html",
+      "current": "10_技术架构_T3.3/00_交给Agent的任务.html",
+      "result": "CHANGED",
+      "sourceSha256": "3bde8c7ffa12e9147e1c69b2499390f8499b2363476bfbf765e126d123c43f3c",
+      "currentSha256": "8a50252a3055c630b924e4c376feebb37c8825db9150d91ea7dc38dd6217ef3e"
+    },
+    {
+      "source": "10_技术架构_T3.2/04_手机号自动关联与框架钩子.md",
+      "current": "10_技术架构_T3.3/04_手机号自动关联与框架钩子.md",
+      "result": "CHANGED",
+      "sourceSha256": "b6b50ba18847de5d6f85ffba6a424cc59d1b2deee13dc42bd9c511a1fd2fc7a6",
+      "currentSha256": "b0a43446ebc75a991f563dc75fbc85d0b5ed7b49b5f94cc2abaca3f2d174b691"
+    },
+    {
+      "source": "10_技术架构_T3.2/01_技术架构整合方案_T3.2.md",
+      "current": "10_技术架构_T3.3/01_技术架构整合方案_T3.3.md",
+      "result": "CHANGED",
+      "sourceSha256": "69ca712e3e990d3e249c6e3403a26cc4a21ce0193171af48338e4ef26abe02a4",
+      "currentSha256": "e376461f553043aa52a99782d4218682904b8af3efb142cab7db58ba290589ca"
+    },
+    {
+      "source": "10_技术架构_T3.2/01_技术架构整合方案_T3.2.html",
+      "current": "10_技术架构_T3.3/01_技术架构整合方案_T3.3.html",
+      "result": "CHANGED",
+      "sourceSha256": "aba61b3745c835fbe1a3e3a76c8b4f493d77ed7bf94af23d963ae1bc85f017a4",
+      "currentSha256": "48ec1557d6e483aa2d34710d7e200022f8be4c8c7d0fc35dd31acc4e34e29afb"
+    },
+    {
+      "source": "10_技术架构_T3.2/02_初始化与框架接入.html",
+      "current": "10_技术架构_T3.3/02_初始化与框架接入.html",
+      "result": "CHANGED",
+      "sourceSha256": "8d9693cd60816e896bdeaa5311ce1b2732c1a1b54c6bd99b8c81b8221b085e8e",
+      "currentSha256": "9a2ecb13d4aa7a0841f32a17cc539dc2e67b12414e7197740298a3f2702c3ca7"
+    },
+    {
+      "source": "10_技术架构_T3.2/03_技术验收门禁_71项.html",
+      "current": "10_技术架构_T3.3/03_技术验收门禁_71项.html",
+      "result": "CHANGED",
+      "sourceSha256": "30e938d3d0acef77bb3e6d0c1503de7a9c1fedeb86372b1a9e4691f7fbec9ef0",
+      "currentSha256": "66b19d57d1cf7291d904fd04a8c5d2d95e31a17b105c7dd3a3395850e8921e63"
+    },
+    {
+      "source": "10_技术架构_T3.2/03_CAS与公开确认实现要点.html",
+      "current": "10_技术架构_T3.3/03_CAS与公开确认实现要点.html",
+      "result": "CHANGED",
+      "sourceSha256": "b794461401f23a44cc2d6be015a9c756ff101e669ab54db205456931bc25aa5d",
+      "currentSha256": "212d3bb1633f83489b25b605de57bd14545a377a2f89dfc06844052f63ce54ee"
+    },
+    {
+      "source": "10_技术架构_T3.2/04_手机号自动关联与框架钩子.html",
+      "current": "10_技术架构_T3.3/04_手机号自动关联与框架钩子.html",
+      "result": "CHANGED",
+      "sourceSha256": "75eea98710dce84de9567a0c129e7c631d7834745dd16e535e32c95863fda5a5",
+      "currentSha256": "97f7a32a2baaa1ae5529c00565db7930fdf60be251ebd133ecb0c31b7bac28b2"
+    },
+    {
+      "source": "10_技术架构_T3.2/参考代码/README.html",
+      "current": "10_技术架构_T3.3/参考代码/README.html",
+      "result": "CHANGED",
+      "sourceSha256": "1118c8f4d90beba9ac045ae75afc73e03de6dce7a1b323728551488f6380c855",
+      "currentSha256": "8ee4e6074d31a7fe08fd1d7bbda984b3b31e286f3f998da65c4b8661a999cd9b"
+    },
+    {
+      "source": "12_工程执行/tests/test_framework_start.py",
+      "current": "12_工程执行/tests/test_framework_start.py",
+      "result": "CHANGED",
+      "sourceSha256": "ee21c04fa9efd6c271ea2acc5c734c70e9019c66a70f3dbc39f737aa248de6af",
+      "currentSha256": "4ae04cafe3b8d307e2d7d6358f748036cf80cb5c6071dac65319468cd858a67b"
+    },
+    {
+      "source": "12_工程执行/tests/test_identity_v62.py",
+      "current": "12_工程执行/tests/test_identity_v62.py",
+      "result": "CHANGED",
+      "sourceSha256": "b2baa663067b54199de55c9ffa2a1c72485abaef6498e38432128d8e9d78f1a2",
+      "currentSha256": "149bb86e418af2a299b4aaf7bda7d747dc654b962299ce4a04f37152de307a78"
+    },
+    {
+      "source": "12_工程执行/tests/test_contract_regression.py",
+      "current": "12_工程执行/tests/test_contract_regression.py",
+      "result": "CHANGED",
+      "sourceSha256": "1c4ad2a4cd733550f3cc26a2898875da63f3772375778a681a35d9ee74225bc6",
+      "currentSha256": "a5b60829f101576a08cec323eed57a600bba85c254c89c29e8e1c6576034d732"
+    },
+    {
+      "source": "12_工程执行/task_packets/N03/acceptance.json",
+      "current": "12_工程执行/task_packets/N03/acceptance.json",
+      "result": "CHANGED",
+      "sourceSha256": "fbd64afff72693d07c18eb182923113cda32d34cd802b24d8b029ae351ee059e",
+      "currentSha256": "35de185e04f9619d7491f202a649882494db035dcba50f553c08023264a115d7"
+    },
+    {
+      "source": "12_工程执行/task_packets/N03/TASK.html",
+      "current": "12_工程执行/task_packets/N03/TASK.html",
+      "result": "CHANGED",
+      "sourceSha256": "edf2efb12e74623441f03eb95a76a78c083f86900f99f6f7dd4b88c678cfd146",
+      "currentSha256": "6274769c411b0ddcb06ff915d645719175c36f85be098cccdf0ab3be26d8549f"
+    },
+    {
+      "source": "12_工程执行/task_packets/N03/openapi.yaml",
+      "current": "12_工程执行/task_packets/N03/openapi.yaml",
+      "result": "CHANGED",
+      "sourceSha256": "4bb58c2a50e87e7fb0d392330a6c433dc07a42dc29386cb487e9878e74060e4d",
+      "currentSha256": "ebfe38911f15ecaf1a421708df7b76b140ff0a8951c1ef379d13f3063218a16d"
+    },
+    {
+      "source": "12_工程执行/task_packets/N03/TASK.md",
+      "current": "12_工程执行/task_packets/N03/TASK.md",
+      "result": "CHANGED",
+      "sourceSha256": "342c4ad1c8a39a33a586da5ab32cf258aaf22dcc148cc85c873584367c5c61c1",
+      "currentSha256": "eb26b471734da2583befe14665673709042ea128d64e08b7e9313d1af829884e"
+    },
+    {
+      "source": "12_工程执行/task_packets/D05/acceptance.json",
+      "current": "12_工程执行/task_packets/D05/acceptance.json",
+      "result": "CHANGED",
+      "sourceSha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "currentSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "source": "12_工程执行/task_packets/D05/TASK.html",
+      "current": "12_工程执行/task_packets/D05/TASK.html",
+      "result": "CHANGED",
+      "sourceSha256": "c9a48c387a3ef8cd1bbd2f7f6851a42fd753f0004b2f38f44798da71ef53b0d2",
+      "currentSha256": "002f432c3a7b75f3d42d61e1d065b89292d3b33f6f6b1e68c260dd96697ccce9"
+    },
+    {
+      "source": "12_工程执行/task_packets/D05/openapi.yaml",
+      "current": "12_工程执行/task_packets/D05/openapi.yaml",
+      "result": "CHANGED",
+      "sourceSha256": "02a457b8da913978681accf90d6fcc00f23cd20ab3a8ca1e4d37c0aff3c1d11e",
+      "currentSha256": "4338e10da7b8f61bfec5fcc46d173996f9b024f2a3d2ae9598e03ca0c002ddd9"
+    },
+    {
+      "source": "12_工程执行/task_packets/D05/TASK.md",
+      "current": "12_工程执行/task_packets/D05/TASK.md",
+      "result": "CHANGED",
+      "sourceSha256": "5f0ae3abdbd5a6e276a92f946e49c6e442120c8897bbe3a34f067c252a01f418",
+      "currentSha256": "54677ae8995426aac43c05f579fbd9e13ccca8d8ea8786608dc8223687dc6e67"
+    },
+    {
+      "source": "12_工程执行/task_packets/T03/acceptance.json",
+      "current": "12_工程执行/task_packets/T03/acceptance.json",
+      "result": "CHANGED",
+      "sourceSha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "currentSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "source": "12_工程执行/task_packets/T03/TASK.html",
+      "current": "12_工程执行/task_packets/T03/TASK.html",
+      "result": "CHANGED",
+      "sourceSha256": "2503e335409bd787d43ef5b06bafd710408c67469e33a748c69140be677065af",
+      "currentSha256": "112c04ea0b09227d37271a2937eeb5143518c85c5faf5dfd51ebe99b1e7f75fa"
+    },
+    {
+      "source": "12_工程执行/task_packets/T03/openapi.yaml",
+      "current": "12_工程执行/task_packets/T03/openapi.yaml",
+      "result": "CHANGED",
+      "sourceSha256": "23effd6130766c2d7d45378d1d8a647c7051a9688fd87f78ea481797f066cb47",
+      "currentSha256": "028a412991cb9671f2ee470e107a4410c4dbf3ccad0433645e30cc5b44894ec8"
+    },
+    {
+      "source": "12_工程执行/task_packets/T03/TASK.md",
+      "current": "12_工程执行/task_packets/T03/TASK.md",
+      "result": "CHANGED",
+      "sourceSha256": "3301d096fd3a6896209426ebbdb7245c23cb80f563232593cd604fd521c18013",
+      "currentSha256": "49053ee0df2f9ec64a9a30aba4bd707ab3e8e2b5c8c8261ee356b3f7657e9a22"
+    },
+    {
+      "source": "12_工程执行/task_packets/F06/acceptance.json",
+      "current": "12_工程执行/task_packets/F06/acceptance.json",
+      "result": "CHANGED",
+      "sourceSha256": "293ed040a8544889d548434be22c39bddbd28626a3016dace9fb4bc6bbc1548e",
+      "currentSha256": "8d2e5942cd683da344dd371bc6d4a2ee2ba10ae3851f94a4da788196d771d3b9"
+    },
+    {
+      "source": "12_工程执行/task_packets/F06/TASK.html",
+      "current": "12_工程执行/task_packets/F06/TASK.html",
+      "result": "CHANGED",
+      "sourceSha256": "79fa1ebbedb959516f87331fd4b61f290ba880d9f25b0ba9cc91bcf8183462bd",
+      "currentSha256": "cc06ad7672bba00ba9b676eebb04614b6889f34e9c8e6826d6251a149feab0f7"
+    },
+    {
+      "source": "12_工程执行/task_packets/F06/openapi.yaml",
+      "current": "12_工程执行/task_packets/F06/openapi.yaml",
+      "result": "CHANGED",
+      "sourceSha256": "23effd6130766c2d7d45378d1d8a647c7051a9688fd87f78ea481797f066cb47",
+      "currentSha256": "028a412991cb9671f2ee470e107a4410c4dbf3ccad0433645e30cc5b44894ec8"
+    },
+    {
+      "source": "12_工程执行/task_packets/F06/TASK.md",
+      "current": "12_工程执行/task_packets/F06/TASK.md",
+      "result": "CHANGED",
+      "sourceSha256": "bb6a9f89ef3398b8800ffbfef862cfd9dd7931849bb46c587a87040b6a435ebe",
+      "currentSha256": "d3699dcda554d961c575c67fe97a9b1736c50cf7cf919b563f4a2288a6ff7877"
+    },
+    {
+      "source": "12_工程执行/task_packets/P04/acceptance.json",
+      "current": "12_工程执行/task_packets/P04/acceptance.json",
+      "result": "CHANGED",
+      "sourceSha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "currentSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "source": "12_工程执行/task_packets/P04/TASK.html",
+      "current": "12_工程执行/task_packets/P04/TASK.html",
+      "result": "CHANGED",
+      "sourceSha256": "e396cb0c10bbf75dd16ed016a04e5ee71f80e8c7350cbc2b64a345fea0b9b6d0",
+      "currentSha256": "e3ef2d4ac82f07c646f5b54f524debccf1be6a5178120b7e64832880efbf5089"
+    },
+    {
+      "source": "12_工程执行/task_packets/P04/openapi.yaml",
+      "current": "12_工程执行/task_packets/P04/openapi.yaml",
+      "result": "CHANGED",
+      "sourceSha256": "a8bd5e75d320d9944861bb39fc273517ea68b91ccb343890c4bc0d99462bed5e",
+      "currentSha256": "af9b9aa1072519cc8499b78ab79dc8be403d6fc0f5401381d8b9dce23f711adb"
+    },
+    {
+      "source": "12_工程执行/task_packets/P04/TASK.md",
+      "current": "12_工程执行/task_packets/P04/TASK.md",
+      "result": "CHANGED",
+      "sourceSha256": "20cfe633e57b96faffc5eb4780a6f02345be4d77a2676002ad9ad2e1f3977b6b",
+      "currentSha256": "1530531bed7937057704804b424d38047b67576763a613192dede4ceafd57693"
+    },
+    {
+      "source": "12_工程执行/task_packets/Q02/acceptance.json",
+      "current": "12_工程执行/task_packets/Q02/acceptance.json",
+      "result": "CHANGED",
+      "sourceSha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "currentSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "source": "12_工程执行/task_packets/Q02/TASK.html",
+      "current": "12_工程执行/task_packets/Q02/TASK.html",
+      "result": "CHANGED",
+      "sourceSha256": "b1763753aeed34c9f6073fdb5e1ea6e5e2f82f4428be7ce7494677c720134dfa",
+      "currentSha256": "0e6a229e9bed5f353b09adcc911a9fdc734972459d4febca13e7819ece4992a8"
+    },
+    {
+      "source": "12_工程执行/task_packets/Q02/openapi.yaml",
+      "current": "12_工程执行/task_packets/Q02/openapi.yaml",
+      "result": "CHANGED",
+      "sourceSha256": "cdb6486852b6d2758e42edf76e146c73078e7ac1a0f28b31bfd3f12c4a68bd4e",
+      "currentSha256": "571ec0b8b1c0cfc316b06189193a6153a0c5641af4880313ed528667c0a98ecd"
+    },
+    {
+      "source": "12_工程执行/task_packets/Q02/TASK.md",
+      "current": "12_工程执行/task_packets/Q02/TASK.md",
+      "result": "CHANGED",
+      "sourceSha256": "104754b03ecc88e06186852af2c9dcf33ff72af86861cea83f30a262b10990e7",
+      "currentSha256": "eb361defdde1deed77cc341ab3663e23cbb30776725c6a2620ab414c81a83a8a"
+    },
+    {
+      "source": "12_工程执行/task_packets/P03/acceptance.json",
+      "current": "12_工程执行/task_packets/P03/acceptance.json",
+      "result": "CHANGED",
+      "sourceSha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "currentSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "source": "12_工程执行/task_packets/P03/TASK.html",
+      "current": "12_工程执行/task_packets/P03/TASK.html",
+      "result": "CHANGED",
+      "sourceSha256": "68b6267cd26353a1d49469a93cc763983720453eb383f98dc74bd19988f259e7",
+      "currentSha256": "bceebeca3cc7589aafdf448368c7a883a0b23f2566de1b0061ce6a854bde2715"
+    },
+    {
+      "source": "12_工程执行/task_packets/P03/openapi.yaml",
+      "current": "12_工程执行/task_packets/P03/openapi.yaml",
+      "result": "CHANGED",
+      "sourceSha256": "23effd6130766c2d7d45378d1d8a647c7051a9688fd87f78ea481797f066cb47",
+      "currentSha256": "028a412991cb9671f2ee470e107a4410c4dbf3ccad0433645e30cc5b44894ec8"
+    },
+    {
+      "source": "12_工程执行/task_packets/P03/TASK.md",
+      "current": "12_工程执行/task_packets/P03/TASK.md",
+      "result": "CHANGED",
+      "sourceSha256": "0b266c7c290c303dcb236bd1dfcd16569255ccfe794f15791b2f2a72037a7181",
+      "currentSha256": "05c173f0359d82e681fa598f8983103ab89f0d06cebd3f32cca0bffb409dabd3"
+    },
+    {
+      "source": "12_工程执行/task_packets/T07/acceptance.json",
+      "current": "12_工程执行/task_packets/T07/acceptance.json",
+      "result": "CHANGED",
+      "sourceSha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "currentSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "source": "12_工程执行/task_packets/T07/TASK.html",
+      "current": "12_工程执行/task_packets/T07/TASK.html",
+      "result": "CHANGED",
+      "sourceSha256": "6e7a9b5322e28fd1753c1cb1a642e3d6aa7ba6e30785e10bdfb8e775c72704c4",
+      "currentSha256": "c83f938e0a3f7580008ec1b079f8685716ed8c41bbf9f5014754335e6e2fe901"
+    },
+    {
+      "source": "12_工程执行/task_packets/T07/openapi.yaml",
+      "current": "12_工程执行/task_packets/T07/openapi.yaml",
+      "result": "CHANGED",
+      "sourceSha256": "23effd6130766c2d7d45378d1d8a647c7051a9688fd87f78ea481797f066cb47",
+      "currentSha256": "028a412991cb9671f2ee470e107a4410c4dbf3ccad0433645e30cc5b44894ec8"
+    },
+    {
+      "source": "12_工程执行/task_packets/T07/TASK.md",
+      "current": "12_工程执行/task_packets/T07/TASK.md",
+      "result": "CHANGED",
+      "sourceSha256": "486fbef6492b04dfe69d75aae6610e7c669e6cc445f15ec30ed69e2ae7f99253",
+      "currentSha256": "4d1fae11aba70f395ac4472e5a80ca8a0093dba3257510bea3f30c0e3bb0a56d"
+    },
+    {
+      "source": "12_工程执行/task_packets/T08/acceptance.json",
+      "current": "12_工程执行/task_packets/T08/acceptance.json",
+      "result": "CHANGED",
+      "sourceSha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "currentSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "source": "12_工程执行/task_packets/T08/TASK.html",
+      "current": "12_工程执行/task_packets/T08/TASK.html",
+      "result": "CHANGED",
+      "sourceSha256": "5af44f9f98fad3eebfcc8c59bf7d9ec6215085985b49cd1fcebfa67f477b04cb",
+      "currentSha256": "5b0197c0db667a24aa0db714f0cc06f0bebb3d73fcec425d14468ea1119ddbcf"
+    },
+    {
+      "source": "12_工程执行/task_packets/T08/openapi.yaml",
+      "current": "12_工程执行/task_packets/T08/openapi.yaml",
+      "result": "CHANGED",
+      "sourceSha256": "91ad3fc933278aa7ddf5eaefe4a5a8a50f08f0c2b1450ee46c59eee1772b758f",
+      "currentSha256": "4308f2ed41cb638967e57045d4b948cc3d3ba4fcd64e7073f649c81cd6935be4"
+    },
+    {
+      "source": "12_工程执行/task_packets/T08/TASK.md",
+      "current": "12_工程执行/task_packets/T08/TASK.md",
+      "result": "CHANGED",
+      "sourceSha256": "681c381d051dff2cadf8af06265133592ad944be80b2441ccfb615ddaf72f67b",
+      "currentSha256": "ec9828f766003ce538e298aee74bcf627c7349b043f728243b0de03ec9d605aa"
+    },
+    {
+      "source": "12_工程执行/task_packets/D04/acceptance.json",
+      "current": "12_工程执行/task_packets/D04/acceptance.json",
+      "result": "CHANGED",
+      "sourceSha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "currentSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "source": "12_工程执行/task_packets/D04/TASK.html",
+      "current": "12_工程执行/task_packets/D04/TASK.html",
+      "result": "CHANGED",
+      "sourceSha256": "6e75f5e3b64684e882c9e0b4653fa90dbb62dee6f94bdd14abc3d137169cb654",
+      "currentSha256": "78998f0b84e73dd74a3029772802fb061336f27912768e053a356e97cafb003e"
+    },
+    {
+      "source": "12_工程执行/task_packets/D04/openapi.yaml",
+      "current": "12_工程执行/task_packets/D04/openapi.yaml",
+      "result": "CHANGED",
+      "sourceSha256": "26b40db362dd017b39cead22e2fb3e280bea367f4d0d7cd870859ccd570dd5e0",
+      "currentSha256": "b954a5386cdca558062e0a5e1d9a24bc111371b0a82e962553374865266aae60"
+    },
+    {
+      "source": "12_工程执行/task_packets/D04/TASK.md",
+      "current": "12_工程执行/task_packets/D04/TASK.md",
+      "result": "CHANGED",
+      "sourceSha256": "0da48f7d4b457516bceda6c2c8319a8eb94d7b6a17624de89726e315822c9d39",
+      "currentSha256": "d89a2ffc6a60c3bda4b3d218482605de324bdadc016783c9673dc475fd9d9110"
+    },
+    {
+      "source": "12_工程执行/task_packets/F01/acceptance.json",
+      "current": "12_工程执行/task_packets/F01/acceptance.json",
+      "result": "CHANGED",
+      "sourceSha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "currentSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "source": "12_工程执行/task_packets/F01/TASK.html",
+      "current": "12_工程执行/task_packets/F01/TASK.html",
+      "result": "CHANGED",
+      "sourceSha256": "3e90648cf09cd0d4248535d4ab3f4999c633f4e2d88a256db5010a696ce0d12b",
+      "currentSha256": "60f4c3cbb927ccde37bae636da26d88e97b908acff316d7d06c4b040e7080834"
+    },
+    {
+      "source": "12_工程执行/task_packets/F01/openapi.yaml",
+      "current": "12_工程执行/task_packets/F01/openapi.yaml",
+      "result": "CHANGED",
+      "sourceSha256": "96a8cd3ee1636e75f55ed68a6393451c4c97898ef71bfe1e841d585360ef9999",
+      "currentSha256": "14f026ae4f9ab21c041642d4fe956123bd59ad24787b860047e63ccbdf9bd376"
+    },
+    {
+      "source": "12_工程执行/task_packets/F01/TASK.md",
+      "current": "12_工程执行/task_packets/F01/TASK.md",
+      "result": "CHANGED",
+      "sourceSha256": "4f2fddf56022cf07eb309e1dc317e4dcf55dc024cb4893ce5c174213803add07",
+      "currentSha256": "f488dbbec005e62ba50694ee594e037dc6d71304faead89d0b4373c0948207e6"
+    },
+    {
+      "source": "12_工程执行/task_packets/Q03/acceptance.json",
+      "current": "12_工程执行/task_packets/Q03/acceptance.json",
+      "result": "CHANGED",
+      "sourceSha256": "0bfbfdfdb61265ff0b6b1913eb6a1941840db042e1ae67507f7f74f931d67076",
+      "currentSha256": "f22e20ff48b1925f864788a1a1acee2f063efb253371eebc20da1b1a2e202342"
+    },
+    {
+      "source": "12_工程执行/task_packets/Q03/TASK.html",
+      "current": "12_工程执行/task_packets/Q03/TASK.html",
+      "result": "CHANGED",
+      "sourceSha256": "cff9927891ef68c41bcd755110d8b466efdfa3c0d9fbcb6e9a9a8a477c3762fc",
+      "currentSha256": "e47bc906ad2acc50a911b23b3c37596769c9b999898e5a9ebdc7bd6da016fb44"
+    },
+    {
+      "source": "12_工程执行/task_packets/Q03/openapi.yaml",
+      "current": "12_工程执行/task_packets/Q03/openapi.yaml",
+      "result": "CHANGED",
+      "sourceSha256": "311227495539d675266a333fa1132009ca541b0dcc7a69bbf77318b307c45985",
+      "currentSha256": "d8d8ca0fc6205daa063589baeb52366239dc6d236e54258ec75e34f434d92de4"
+    },
+    {
+      "source": "12_工程执行/task_packets/Q03/TASK.md",
+      "current": "12_工程执行/task_packets/Q03/TASK.md",
+      "result": "CHANGED",
+      "sourceSha256": "cfcbfb235811eec132849a1c0eb8fccb559e0a562ef533792ac8aeb5be5bb503",
+      "currentSha256": "352248b3634b414fb0eae89797269c678e28d85530f681c2b873ee185f26b42b"
+    },
+    {
+      "source": "12_工程执行/task_packets/N01/acceptance.json",
+      "current": "12_工程执行/task_packets/N01/acceptance.json",
+      "result": "CHANGED",
+      "sourceSha256": "58fcf36c7c73a5eb10bd84fdc135ba8e2d35079c3779c02a72748d5a003bd958",
+      "currentSha256": "2c2cecaa2555c9ad92cb6a612147ea92553c0f51fa9b53fa4b034cdd9efad3ba"
+    },
+    {
+      "source": "12_工程执行/task_packets/N01/TASK.html",
+      "current": "12_工程执行/task_packets/N01/TASK.html",
+      "result": "CHANGED",
+      "sourceSha256": "6a2e9996de828a90908c6f313e17c4074b0a7b53e9dd95cff2cc0b19e4e751df",
+      "currentSha256": "5c3abd34d3ae0279195f9f692635587f40e2a706e075a041740e86b9dbcd1fcf"
+    },
+    {
+      "source": "12_工程执行/task_packets/N01/openapi.yaml",
+      "current": "12_工程执行/task_packets/N01/openapi.yaml",
+      "result": "CHANGED",
+      "sourceSha256": "96d80f0e263a52713709c05d8e430703cdec0ec1769807a6cfb863163972dfde",
+      "currentSha256": "2e3b5fabe77cad95b247d9119d7524f3718e5669956f156f7b7c44d80effd9ae"
+    },
+    {
+      "source": "12_工程执行/task_packets/N01/TASK.md",
+      "current": "12_工程执行/task_packets/N01/TASK.md",
+      "result": "CHANGED",
+      "sourceSha256": "7887b3931573150056b70b78919e8baeb077731f796355bc8c2e8a6b1be90bc3",
+      "currentSha256": "8587f3d288c37767a61f9f9e08303539c6d163891a82aa124577fe9197503e2d"
+    },
+    {
+      "source": "12_工程执行/task_packets/R01/acceptance.json",
+      "current": "12_工程执行/task_packets/R01/acceptance.json",
+      "result": "CHANGED",
+      "sourceSha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "currentSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "source": "12_工程执行/task_packets/R01/TASK.html",
+      "current": "12_工程执行/task_packets/R01/TASK.html",
+      "result": "CHANGED",
+      "sourceSha256": "f876fdb76e62ba7c057fa50155c2d15ed0b859929ed26c9795f91e9e99577a2d",
+      "currentSha256": "645502ff6c73f3432cf146c3e4285935378082ca7279551e14840f6d409b3836"
+    },
+    {
+      "source": "12_工程执行/task_packets/R01/openapi.yaml",
+      "current": "12_工程执行/task_packets/R01/openapi.yaml",
+      "result": "CHANGED",
+      "sourceSha256": "e21df1e0f9bbbf7990462ca9884ebe8fc2523db795a00153306b51640f338606",
+      "currentSha256": "f96520b7ee484e75288fa54fec21bd59e9fe2cca1c91106c7f5a4a44c045ba53"
+    },
+    {
+      "source": "12_工程执行/task_packets/R01/TASK.md",
+      "current": "12_工程执行/task_packets/R01/TASK.md",
+      "result": "CHANGED",
+      "sourceSha256": "27a527075c492f803f3b4db5fbc74967112876fbc1cfaa1ecbe5b84bfd67e6ad",
+      "currentSha256": "9a0a2b225a76b87cc6117eb732b995c994d908a8de5784330e098bdebf447c47"
+    },
+    {
+      "source": "12_工程执行/task_packets/C03/acceptance.json",
+      "current": "12_工程执行/task_packets/C03/acceptance.json",
+      "result": "CHANGED",
+      "sourceSha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "currentSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "source": "12_工程执行/task_packets/C03/TASK.html",
+      "current": "12_工程执行/task_packets/C03/TASK.html",
+      "result": "CHANGED",
+      "sourceSha256": "5bd55f327ab56d57f0e4a05d27907b9ef0544201d83cdc375a1ec5ca31b7b85c",
+      "currentSha256": "8501fafcd4daa68eb9b26d8b1b8f74eeefade38f99f4691b965183c76ce3387e"
+    },
+    {
+      "source": "12_工程执行/task_packets/C03/openapi.yaml",
+      "current": "12_工程执行/task_packets/C03/openapi.yaml",
+      "result": "CHANGED",
+      "sourceSha256": "5ef3ff8217b998cce0517e7cc5c95297ed34e7f5518d76b9c7c2b2f0d904699e",
+      "currentSha256": "3ef48bae0d0cfede05103103c17181e47e09e657256000f757b9d238ded34a07"
+    },
+    {
+      "source": "12_工程执行/task_packets/C03/TASK.md",
+      "current": "12_工程执行/task_packets/C03/TASK.md",
+      "result": "CHANGED",
+      "sourceSha256": "03cc69b95ccfd6cf7b92f57567c9bd389bb01b2d40a11b90aa3baa1eb16f2c6f",
+      "currentSha256": "75c42470ac9082d12d0daf22259952f014625b4aae6fa3d12b411eaf46dac470"
+    },
+    {
+      "source": "12_工程执行/task_packets/E05/acceptance.json",
+      "current": "12_工程执行/task_packets/E05/acceptance.json",
+      "result": "CHANGED",
+      "sourceSha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "currentSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "source": "12_工程执行/task_packets/E05/TASK.html",
+      "current": "12_工程执行/task_packets/E05/TASK.html",
+      "result": "CHANGED",
+      "sourceSha256": "9449824f048ba0fcecfcffd6ce74fcf77f6aedbcd98ce2f463e04f4e08023199",
+      "currentSha256": "28c272e39727d937c444ff6312e80dfa762ded6d8a3dbe25dab269afd1ea78da"
+    },
+    {
+      "source": "12_工程执行/task_packets/E05/openapi.yaml",
+      "current": "12_工程执行/task_packets/E05/openapi.yaml",
+      "result": "CHANGED",
+      "sourceSha256": "23effd6130766c2d7d45378d1d8a647c7051a9688fd87f78ea481797f066cb47",
+      "currentSha256": "028a412991cb9671f2ee470e107a4410c4dbf3ccad0433645e30cc5b44894ec8"
+    },
+    {
+      "source": "12_工程执行/task_packets/E05/TASK.md",
+      "current": "12_工程执行/task_packets/E05/TASK.md",
+      "result": "CHANGED",
+      "sourceSha256": "0ecf1f5b92c246a5a40287f5e0de837307b4544d6af904991d4da80e400b5673",
+      "currentSha256": "26776172683d715d2fd88069708dc569c055ead449d5dc2e56e361246cd47716"
+    },
+    {
+      "source": "12_工程执行/task_packets/T02/acceptance.json",
+      "current": "12_工程执行/task_packets/T02/acceptance.json",
+      "result": "CHANGED",
+      "sourceSha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "currentSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "source": "12_工程执行/task_packets/T02/TASK.html",
+      "current": "12_工程执行/task_packets/T02/TASK.html",
+      "result": "CHANGED",
+      "sourceSha256": "a7644270138f314753070f75ebd337ec98ccef84e8da511504165d226f6c7c31",
+      "currentSha256": "9781cf05250d030bd8efae02c462f7cd6674f52d83e9263d8e4da25725451257"
+    },
+    {
+      "source": "12_工程执行/task_packets/T02/openapi.yaml",
+      "current": "12_工程执行/task_packets/T02/openapi.yaml",
+      "result": "CHANGED",
+      "sourceSha256": "23effd6130766c2d7d45378d1d8a647c7051a9688fd87f78ea481797f066cb47",
+      "currentSha256": "028a412991cb9671f2ee470e107a4410c4dbf3ccad0433645e30cc5b44894ec8"
+    },
+    {
+      "source": "12_工程执行/task_packets/T02/TASK.md",
+      "current": "12_工程执行/task_packets/T02/TASK.md",
+      "result": "CHANGED",
+      "sourceSha256": "1fafb50c394811c1098385804bfdd2714d6a77f30ff016359152657bf437f82f",
+      "currentSha256": "3685d42fa2a307de539207e5d0c6598a841c39e8db32447a4643795ebdb02f2c"
+    },
+    {
+      "source": "12_工程执行/task_packets/T01/acceptance.json",
+      "current": "12_工程执行/task_packets/T01/acceptance.json",
+      "result": "CHANGED",
+      "sourceSha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "currentSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "source": "12_工程执行/task_packets/T01/TASK.html",
+      "current": "12_工程执行/task_packets/T01/TASK.html",
+      "result": "CHANGED",
+      "sourceSha256": "d1c0db63f5b4bee4c2ceee3a038c44828fffd25ad8a8132e840ccb6ebc0cf09b",
+      "currentSha256": "b867fc0ee44c6689db79ed397d709bfddca610045163cdd02c88a980fd985088"
+    },
+    {
+      "source": "12_工程执行/task_packets/T01/openapi.yaml",
+      "current": "12_工程执行/task_packets/T01/openapi.yaml",
+      "result": "CHANGED",
+      "sourceSha256": "91ad3fc933278aa7ddf5eaefe4a5a8a50f08f0c2b1450ee46c59eee1772b758f",
+      "currentSha256": "4308f2ed41cb638967e57045d4b948cc3d3ba4fcd64e7073f649c81cd6935be4"
+    },
+    {
+      "source": "12_工程执行/task_packets/T01/TASK.md",
+      "current": "12_工程执行/task_packets/T01/TASK.md",
+      "result": "CHANGED",
+      "sourceSha256": "f0a3a1a14d1379ec41b5903d8d6f92bf0fe84db07031b5f3734b55a636c40ab7",
+      "currentSha256": "b22f82f56e71edad273ab4ff4367d72a8c94d19b0ae8d79ac6e973635a3f8ae3"
+    },
+    {
+      "source": "12_工程执行/task_packets/B04/acceptance.json",
+      "current": "12_工程执行/task_packets/B04/acceptance.json",
+      "result": "CHANGED",
+      "sourceSha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "currentSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "source": "12_工程执行/task_packets/B04/TASK.html",
+      "current": "12_工程执行/task_packets/B04/TASK.html",
+      "result": "CHANGED",
+      "sourceSha256": "03a94bae15224f6af642d26111ec14aeb68e7039dc6978efed5296bb88151f53",
+      "currentSha256": "8828bc1b8fd13057de8d068dc82ff4a81ee9f7f30d5a6dd5e954476d53305fd7"
+    },
+    {
+      "source": "12_工程执行/task_packets/B04/openapi.yaml",
+      "current": "12_工程执行/task_packets/B04/openapi.yaml",
+      "result": "CHANGED",
+      "sourceSha256": "f87b0e2c0fca3efec388f4f3d7c6994e628b2264e3d07b80cdbf49f931abaf06",
+      "currentSha256": "0c184d95b3b3e1412dc8d3c80ce4d179b350e07941e60a2a2e4582cbb50d456e"
+    },
+    {
+      "source": "12_工程执行/task_packets/B04/TASK.md",
+      "current": "12_工程执行/task_packets/B04/TASK.md",
+      "result": "CHANGED",
+      "sourceSha256": "9bfb7362c7d64e781a5d604e7637fe913997f7d2554779dc57c9ab22579faaf0",
+      "currentSha256": "10bb3868720c0150c9e2204d15e50ccb5760b61541efc1341cfb62c304b0beaf"
+    },
+    {
+      "source": "12_工程执行/task_packets/E01/acceptance.json",
+      "current": "12_工程执行/task_packets/E01/acceptance.json",
+      "result": "CHANGED",
+      "sourceSha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "currentSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "source": "12_工程执行/task_packets/E01/TASK.html",
+      "current": "12_工程执行/task_packets/E01/TASK.html",
+      "result": "CHANGED",
+      "sourceSha256": "086b2cf3cafe993a12eb8a2ddd8f9ba9edc1b8788fdb06f672815e0735d3877c",
+      "currentSha256": "af0ab276b4f518d62b02f65e0da9479abb31282a90373d0b37718f0902b363e9"
+    },
+    {
+      "source": "12_工程执行/task_packets/E01/openapi.yaml",
+      "current": "12_工程执行/task_packets/E01/openapi.yaml",
+      "result": "CHANGED",
+      "sourceSha256": "91ad3fc933278aa7ddf5eaefe4a5a8a50f08f0c2b1450ee46c59eee1772b758f",
+      "currentSha256": "4308f2ed41cb638967e57045d4b948cc3d3ba4fcd64e7073f649c81cd6935be4"
+    },
+    {
+      "source": "12_工程执行/task_packets/E01/TASK.md",
+      "current": "12_工程执行/task_packets/E01/TASK.md",
+      "result": "CHANGED",
+      "sourceSha256": "9c499219413349a9f945767a465326bf442e0b6582d9a42383ae350c8aa1360d",
+      "currentSha256": "425a2e4fd42f27b24f41310438b9467a43ecc67653fd947b5354393c3ca0b99b"
+    },
+    {
+      "source": "12_工程执行/task_packets/L01/acceptance.json",
+      "current": "12_工程执行/task_packets/L01/acceptance.json",
+      "result": "CHANGED",
+      "sourceSha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "currentSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "source": "12_工程执行/task_packets/L01/TASK.html",
+      "current": "12_工程执行/task_packets/L01/TASK.html",
+      "result": "CHANGED",
+      "sourceSha256": "4a70ec0e2eee33d81c7a2ccc16df337a542086e8c5b3d9d154a95e476b60e765",
+      "currentSha256": "a40e52c186962a9e654e23e56ea7f8b5e31dabfefb42df03e152e612b8dcb629"
+    },
+    {
+      "source": "12_工程执行/task_packets/L01/openapi.yaml",
+      "current": "12_工程执行/task_packets/L01/openapi.yaml",
+      "result": "CHANGED",
+      "sourceSha256": "23effd6130766c2d7d45378d1d8a647c7051a9688fd87f78ea481797f066cb47",
+      "currentSha256": "028a412991cb9671f2ee470e107a4410c4dbf3ccad0433645e30cc5b44894ec8"
+    },
+    {
+      "source": "12_工程执行/task_packets/L01/TASK.md",
+      "current": "12_工程执行/task_packets/L01/TASK.md",
+      "result": "CHANGED",
+      "sourceSha256": "e711a2993c53e80ce9c9adf4771e2b6ad2f0a6a593f4cfeb86c85692c4178ea6",
+      "currentSha256": "f5e374b4cdd063f9a24da443948e488b34cf4a8f1a208ff94f0ec35250c44afc"
+    },
+    {
+      "source": "12_工程执行/task_packets/I04/acceptance.json",
+      "current": "12_工程执行/task_packets/I04/acceptance.json",
+      "result": "CHANGED",
+      "sourceSha256": "42f79cf9baa0975742dccec4b095dd25f7257baf2ab6d1f91465fe839335a626",
+      "currentSha256": "67c5d0ccb7f6255b99f245378f6dca79f81a6e0b952805465a8db4c4ab5019fb"
+    },
+    {
+      "source": "12_工程执行/task_packets/I04/TASK.html",
+      "current": "12_工程执行/task_packets/I04/TASK.html",
+      "result": "CHANGED",
+      "sourceSha256": "29f694fd46ff412c7a516f72a3c17329a3238beaec57a4952ce5381682d0a263",
+      "currentSha256": "77f4ee1bfa0d791b624fa3010c15dde7830c87eede6c9039af0579a9b79ce10b"
+    },
+    {
+      "source": "12_工程执行/task_packets/I04/openapi.yaml",
+      "current": "12_工程执行/task_packets/I04/openapi.yaml",
+      "result": "CHANGED",
+      "sourceSha256": "ac50d97d16b35092cca53066aaf80bc1385e44889681548b9673446fec6c1d88",
+      "currentSha256": "33743ed8327b28ba75f3cdc55ac2d0d6c95130361aa71bebcf1666cbc925ab72"
+    },
+    {
+      "source": "12_工程执行/task_packets/I04/TASK.md",
+      "current": "12_工程执行/task_packets/I04/TASK.md",
+      "result": "CHANGED",
+      "sourceSha256": "055fbaea85dac2bf78f0b7faa2e1e429da17e56de5c1cd579e9ce831c8d00a36",
+      "currentSha256": "68590b9b27673012ab7073e3ecdda3f44a1061315e30bef0c7a43cb8a2f72ea6"
+    },
+    {
+      "source": "12_工程执行/task_packets/P01/acceptance.json",
+      "current": "12_工程执行/task_packets/P01/acceptance.json",
+      "result": "CHANGED",
+      "sourceSha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "currentSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "source": "12_工程执行/task_packets/P01/TASK.html",
+      "current": "12_工程执行/task_packets/P01/TASK.html",
+      "result": "CHANGED",
+      "sourceSha256": "4250d96b2a44369c31e277609efced9c3a3472a6a6c60cf9ca8f07ad7ec7fd21",
+      "currentSha256": "2fa13dbecfa7efe5d5970605b70eb58bbd94312c1525d930cb24b15d5b0b3bfa"
+    },
+    {
+      "source": "12_工程执行/task_packets/P01/openapi.yaml",
+      "current": "12_工程执行/task_packets/P01/openapi.yaml",
+      "result": "CHANGED",
+      "sourceSha256": "aa4aeef87892219bed2ae35a864fecdc82bbc23c56dfa6d0c30ed1e2938d4a25",
+      "currentSha256": "542dfe78e9cf1950400eb8b319597303652f28e2a6f3eee2f4606111a0ab5a0a"
+    },
+    {
+      "source": "12_工程执行/task_packets/P01/TASK.md",
+      "current": "12_工程执行/task_packets/P01/TASK.md",
+      "result": "CHANGED",
+      "sourceSha256": "43f99b2526fab24d8101a9943e12969f0042e80d05bc9c8d9a6ccfb53bc206b0",
+      "currentSha256": "5e168adac836dbedd384cbb807cb1314a6ad81d5c9748abae228dbcfddac81d0"
+    },
+    {
+      "source": "12_工程执行/task_packets/L03/acceptance.json",
+      "current": "12_工程执行/task_packets/L03/acceptance.json",
+      "result": "CHANGED",
+      "sourceSha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "currentSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "source": "12_工程执行/task_packets/L03/TASK.html",
+      "current": "12_工程执行/task_packets/L03/TASK.html",
+      "result": "CHANGED",
+      "sourceSha256": "678c646bb3c5238cd6ecc5f7ee1fdbd25442d2953ae47ca57618302d3fe9639e",
+      "currentSha256": "5c9096ee412a8fb21ad19ad664e8dcf63ceca873fa3e3458fb84db6a54473d15"
+    },
+    {
+      "source": "12_工程执行/task_packets/L03/openapi.yaml",
+      "current": "12_工程执行/task_packets/L03/openapi.yaml",
+      "result": "CHANGED",
+      "sourceSha256": "23effd6130766c2d7d45378d1d8a647c7051a9688fd87f78ea481797f066cb47",
+      "currentSha256": "028a412991cb9671f2ee470e107a4410c4dbf3ccad0433645e30cc5b44894ec8"
+    },
+    {
+      "source": "12_工程执行/task_packets/L03/TASK.md",
+      "current": "12_工程执行/task_packets/L03/TASK.md",
+      "result": "CHANGED",
+      "sourceSha256": "159f8b7fa0d14046652d4b19ae10caa629a960f774ea3002e624d19ef932a90d",
+      "currentSha256": "0f0fb37cfb8ac2af6bf7b2bf6d8fdaf62bad28016fc8405d4431122299e1ef1b"
+    },
+    {
+      "source": "12_工程执行/task_packets/A01/acceptance.json",
+      "current": "12_工程执行/task_packets/A01/acceptance.json",
+      "result": "CHANGED",
+      "sourceSha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "currentSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "source": "12_工程执行/task_packets/A01/TASK.html",
+      "current": "12_工程执行/task_packets/A01/TASK.html",
+      "result": "CHANGED",
+      "sourceSha256": "7381672367f58f95303ea3d22d65d13e6b66a909b6cdd0efc7bf8facc3966553",
+      "currentSha256": "f72cb809fa239d779d976199a93132914c436829158c02ec205833c436173e31"
+    },
+    {
+      "source": "12_工程执行/task_packets/A01/openapi.yaml",
+      "current": "12_工程执行/task_packets/A01/openapi.yaml",
+      "result": "CHANGED",
+      "sourceSha256": "d3462186e23f4cbd3fe2ce9e34187388d5ba2d275fca08000a21712ec725908f",
+      "currentSha256": "bec8fb5810ce2d37276118661434d95cc86823bc7fe9f39359d1702cc200e82e"
+    },
+    {
+      "source": "12_工程执行/task_packets/A01/TASK.md",
+      "current": "12_工程执行/task_packets/A01/TASK.md",
+      "result": "CHANGED",
+      "sourceSha256": "eb4b7e22037f6415b526cfbfbbf02cd028049018af8d9c9ab8c733c390fb5379",
+      "currentSha256": "9e7503df69123c875211738a960bc479519ea36db5771d96ea63d7f079d1db5d"
+    },
+    {
+      "source": "12_工程执行/task_packets/E07/acceptance.json",
+      "current": "12_工程执行/task_packets/E07/acceptance.json",
+      "result": "CHANGED",
+      "sourceSha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "currentSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "source": "12_工程执行/task_packets/E07/TASK.html",
+      "current": "12_工程执行/task_packets/E07/TASK.html",
+      "result": "CHANGED",
+      "sourceSha256": "c9e57845138f4adf69fc8f1c941760782d313b63e87c9f2a6b12e95aaa4ae447",
+      "currentSha256": "4a310894b175e834257252cac9407150cff69d1e285fb48d0f676c6a53f48682"
+    },
+    {
+      "source": "12_工程执行/task_packets/E07/openapi.yaml",
+      "current": "12_工程执行/task_packets/E07/openapi.yaml",
+      "result": "CHANGED",
+      "sourceSha256": "91ad3fc933278aa7ddf5eaefe4a5a8a50f08f0c2b1450ee46c59eee1772b758f",
+      "currentSha256": "4308f2ed41cb638967e57045d4b948cc3d3ba4fcd64e7073f649c81cd6935be4"
+    },
+    {
+      "source": "12_工程执行/task_packets/E07/TASK.md",
+      "current": "12_工程执行/task_packets/E07/TASK.md",
+      "result": "CHANGED",
+      "sourceSha256": "ae4ad2f74898d0e018ca6cb7f1383b04ce75e1d8fdcafd0398b9be1713290183",
+      "currentSha256": "892e786c8929b8bc57f0ebf29565c0619dd277ea7b349ac129a16a6d868a4ae3"
+    },
+    {
+      "source": "12_工程执行/task_packets/P02/acceptance.json",
+      "current": "12_工程执行/task_packets/P02/acceptance.json",
+      "result": "CHANGED",
+      "sourceSha256": "c4fc0af1a5bf6ff26d1ff197e4c89dc491aa6d924b9ebfb9f13c3cd085edea07",
+      "currentSha256": "d5fe6b48ac61b881efa26535ea3061b9a8c5b82e433b53f7154c4ca7b0d03ed5"
+    },
+    {
+      "source": "12_工程执行/task_packets/P02/TASK.html",
+      "current": "12_工程执行/task_packets/P02/TASK.html",
+      "result": "CHANGED",
+      "sourceSha256": "7b4a9fcc395c6c22990f35746c5ee976693b7e23a6b56f890bd49a1c2dac1fe9",
+      "currentSha256": "e86ef842d5b241a71940cc93d9c7ee8947b85780f9b04999fb540592230f6c16"
+    },
+    {
+      "source": "12_工程执行/task_packets/P02/openapi.yaml",
+      "current": "12_工程执行/task_packets/P02/openapi.yaml",
+      "result": "CHANGED",
+      "sourceSha256": "b1af3f4bb3ea1393df742705590f280da3dbb73d1bb5bb0c4fa70e4bfb1cabb8",
+      "currentSha256": "8fa0e73ff50fef9b5d250514d8f6e12005977c6bddea0f3571433f376bb050ec"
+    },
+    {
+      "source": "12_工程执行/task_packets/P02/TASK.md",
+      "current": "12_工程执行/task_packets/P02/TASK.md",
+      "result": "CHANGED",
+      "sourceSha256": "a7bbebd14cd194c363402c497f8d1570c6052f8cae07f7862d3b1c559be727a9",
+      "currentSha256": "ef42f7d4cc4adb1d269916f523899d906456cef8b1cb5749259d6acd5ce59bf3"
+    },
+    {
+      "source": "12_工程执行/task_packets/R05/acceptance.json",
+      "current": "12_工程执行/task_packets/R05/acceptance.json",
+      "result": "CHANGED",
+      "sourceSha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "currentSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "source": "12_工程执行/task_packets/R05/TASK.html",
+      "current": "12_工程执行/task_packets/R05/TASK.html",
+      "result": "CHANGED",
+      "sourceSha256": "7d9b68f8322569f3af455bcf8656f47830e208e986d33a7e13097f5e98709ed3",
+      "currentSha256": "99ce82764a5d50e3e5e85f6f7a24c229d000190c969d0e89933b59eb4c6eb463"
+    },
+    {
+      "source": "12_工程执行/task_packets/R05/openapi.yaml",
+      "current": "12_工程执行/task_packets/R05/openapi.yaml",
+      "result": "CHANGED",
+      "sourceSha256": "c64cae13ed53c4f6bab30437fc18fc645a8aa1827b082804bb2854afa631d27e",
+      "currentSha256": "9fe2541638a78045120e810308903f759d00acf582441b682a847344cce3224d"
+    },
+    {
+      "source": "12_工程执行/task_packets/R05/TASK.md",
+      "current": "12_工程执行/task_packets/R05/TASK.md",
+      "result": "CHANGED",
+      "sourceSha256": "4a57424e3de8feec4b34b4c2c9147c5f6b1ead702b31cc686b55660eab98b399",
+      "currentSha256": "9cda1b22b800fd6c0d1f259363e7ab81efb8f6d2b17c536d1bda6b235772472e"
+    },
+    {
+      "source": "12_工程执行/task_packets/O01/acceptance.json",
+      "current": "12_工程执行/task_packets/O01/acceptance.json",
+      "result": "CHANGED",
+      "sourceSha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "currentSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "source": "12_工程执行/task_packets/O01/TASK.html",
+      "current": "12_工程执行/task_packets/O01/TASK.html",
+      "result": "CHANGED",
+      "sourceSha256": "70d8e147f3a4bfafe214850ec60c9830881905718dc5d7da0d4be08c56121899",
+      "currentSha256": "bbb4da73b61681683a93610704ba61e451d6d4b4de2556a63014ea64df89f12a"
+    },
+    {
+      "source": "12_工程执行/task_packets/O01/openapi.yaml",
+      "current": "12_工程执行/task_packets/O01/openapi.yaml",
+      "result": "CHANGED",
+      "sourceSha256": "770cc5a59a0c1ab06d99e60981b3be34333b19f8f2c554a328a2868aaa7f25e1",
+      "currentSha256": "c8666053af056b0bf3f89460dec0cdbda7b0e7cd8e71e69f823d6e94edb85fce"
+    },
+    {
+      "source": "12_工程执行/task_packets/O01/TASK.md",
+      "current": "12_工程执行/task_packets/O01/TASK.md",
+      "result": "CHANGED",
+      "sourceSha256": "75afe76627edf92b796251b4f42df3933826ef5986f167d25489d6eb02cf06c6",
+      "currentSha256": "40095d39347305f84a43a246ac921591df0d08d1b758c3c8efc3d2539162e626"
+    },
+    {
+      "source": "12_工程执行/task_packets/F03/acceptance.json",
+      "current": "12_工程执行/task_packets/F03/acceptance.json",
+      "result": "CHANGED",
+      "sourceSha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "currentSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "source": "12_工程执行/task_packets/F03/TASK.html",
+      "current": "12_工程执行/task_packets/F03/TASK.html",
+      "result": "CHANGED",
+      "sourceSha256": "2b91be38354069c3892d4df58484e3b5d40abccc864087ea3be74030e3876833",
+      "currentSha256": "36eb7f498120ac68653a460c62d9bc2b1dd9d852f06d1e226dee53bfd585ece8"
+    },
+    {
+      "source": "12_工程执行/task_packets/F03/openapi.yaml",
+      "current": "12_工程执行/task_packets/F03/openapi.yaml",
+      "result": "CHANGED",
+      "sourceSha256": "6b07a99ae2fcbb0955f0be42d35037e391b3581728e2f9790ccd5daa8f8f45fb",
+      "currentSha256": "c322fca056503732eac5ebe5dce259974fe6c8ffeebdb40e99e7a998308071ab"
+    },
+    {
+      "source": "12_工程执行/task_packets/F03/TASK.md",
+      "current": "12_工程执行/task_packets/F03/TASK.md",
+      "result": "CHANGED",
+      "sourceSha256": "19cbd0a54613ea5ee456f7497e0cf552ea731e074f9fb1e0b6e7e193bbed6522",
+      "currentSha256": "5e7b610326b9970375e86d10397d78d3972f8d096e702ea34a3747e6d393b611"
+    },
+    {
+      "source": "12_工程执行/task_packets/B01/acceptance.json",
+      "current": "12_工程执行/task_packets/B01/acceptance.json",
+      "result": "CHANGED",
+      "sourceSha256": "6a36f8468af3a4d246d1d25e3b4d0acc0e49409d260a93cd04a16d065c5ae0bb",
+      "currentSha256": "0518fd4f5f82dea35cf196675d73afece7e1e2eda01ff88195fb8fc5cabfde2c"
+    },
+    {
+      "source": "12_工程执行/task_packets/B01/TASK.html",
+      "current": "12_工程执行/task_packets/B01/TASK.html",
+      "result": "CHANGED",
+      "sourceSha256": "f964d726b02f8f0cd7192815ccd6a029bbde8dea192a1464ccc7723115ea1f60",
+      "currentSha256": "8858f152929c0ee6467561f6468f79f4b0aa4f594f96c811fceb49a96dad55fc"
+    },
+    {
+      "source": "12_工程执行/task_packets/B01/openapi.yaml",
+      "current": "12_工程执行/task_packets/B01/openapi.yaml",
+      "result": "CHANGED",
+      "sourceSha256": "d3d864eed30a21d1bc7bf7c3ea8fc7fab7a589410f4d5bae51cd6a8f8fb2af81",
+      "currentSha256": "359889506ae90216dd1014800ea964b42ec6b6f0114fce2632338c3fae05d0ed"
+    },
+    {
+      "source": "12_工程执行/task_packets/B01/TASK.md",
+      "current": "12_工程执行/task_packets/B01/TASK.md",
+      "result": "CHANGED",
+      "sourceSha256": "32a37f9fd6c5d9a97508ea9e2a861790fe3b1a307134683ede5799b7cd95b776",
+      "currentSha256": "01745aaeb17fe348bc761caae126a58fb5dcd2b1f8ec7041ffa77d9775b0e855"
+    },
+    {
+      "source": "12_工程执行/task_packets/D01/acceptance.json",
+      "current": "12_工程执行/task_packets/D01/acceptance.json",
+      "result": "CHANGED",
+      "sourceSha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "currentSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "source": "12_工程执行/task_packets/D01/TASK.html",
+      "current": "12_工程执行/task_packets/D01/TASK.html",
+      "result": "CHANGED",
+      "sourceSha256": "4950b6d24add26b85c1705f569df9a9b07bf935601a6c210d5ba846adabc6f1d",
+      "currentSha256": "0d7dfe2baca4de7af5a3142680241854213cf990da512a0184bf822f7d52c961"
+    },
+    {
+      "source": "12_工程执行/task_packets/D01/openapi.yaml",
+      "current": "12_工程执行/task_packets/D01/openapi.yaml",
+      "result": "CHANGED",
+      "sourceSha256": "c7bc6340556e5ca478b890c3fa80890c7f66c92e29e4c29c4f0b47010115856d",
+      "currentSha256": "f7e070688c6cc525659cf31073e0dca47446c13f8abfe8ecec9ef7781f2268cf"
+    },
+    {
+      "source": "12_工程执行/task_packets/D01/TASK.md",
+      "current": "12_工程执行/task_packets/D01/TASK.md",
+      "result": "CHANGED",
+      "sourceSha256": "f319865bd2dd8b98e000c2e5e16c3f56797be717e4a02ead322538fd6fb02ba6",
+      "currentSha256": "b945c1c3f1ab810e724ea8fdc1fdf3646e95dc1901b4970597e4b1ced71d9183"
+    },
+    {
+      "source": "12_工程执行/task_packets/I01/acceptance.json",
+      "current": "12_工程执行/task_packets/I01/acceptance.json",
+      "result": "CHANGED",
+      "sourceSha256": "2b72574e777adff9107411510dafd589f20cbcd5ec062f9ad8e71632a7e09003",
+      "currentSha256": "b9737bae4b4eaaa20e336783fab69f6f069a8c0fb1778627180b1373a7277fc5"
+    },
+    {
+      "source": "12_工程执行/task_packets/I01/TASK.html",
+      "current": "12_工程执行/task_packets/I01/TASK.html",
+      "result": "CHANGED",
+      "sourceSha256": "88536cce25e3d5b011581e5034f4f33454ad186f85d9c949fa7820b9444aa5ee",
+      "currentSha256": "e3ed1fabe9163a86bd527818472c068cffaedebb3b15256e9e4f5bda77b07e13"
+    },
+    {
+      "source": "12_工程执行/task_packets/I01/openapi.yaml",
+      "current": "12_工程执行/task_packets/I01/openapi.yaml",
+      "result": "CHANGED",
+      "sourceSha256": "e9aee4779c387483061211b7ebb19d285ef2309dc0f8a81c8269e9330099ace0",
+      "currentSha256": "7a793d24ca4d39386d230566d005083d1736af72e2a8d1058eb3aa4e79016115"
+    },
+    {
+      "source": "12_工程执行/task_packets/I01/TASK.md",
+      "current": "12_工程执行/task_packets/I01/TASK.md",
+      "result": "CHANGED",
+      "sourceSha256": "98421aa748f1c68a1a55bd8ffef872aa6df73ba3f4a01cc24f6820350b825dc5",
+      "currentSha256": "993f07ecb2c99329fcc9597539cef6d0e27436a10a9ba38d945d6f2895dbe6a3"
+    },
+    {
+      "source": "12_工程执行/task_packets/I02/acceptance.json",
+      "current": "12_工程执行/task_packets/I02/acceptance.json",
+      "result": "CHANGED",
+      "sourceSha256": "b9313a50737d57c59e567131e40a6743bb7f65c6648ddca01c9ade133a137cb9",
+      "currentSha256": "dbb690933ef645765d53f3cd232c45e3276f5d21e00bce332c4fc4a2817d279d"
+    },
+    {
+      "source": "12_工程执行/task_packets/I02/TASK.html",
+      "current": "12_工程执行/task_packets/I02/TASK.html",
+      "result": "CHANGED",
+      "sourceSha256": "22d10589ee50d1913cca5bf38666c8477dc7bbfaa6519748aca344ddac76e75a",
+      "currentSha256": "14634b6bef5b1c5364a6d31a2f3f0d5529331fc6cddbc9ceb288775c61b10422"
+    },
+    {
+      "source": "12_工程执行/task_packets/I02/openapi.yaml",
+      "current": "12_工程执行/task_packets/I02/openapi.yaml",
+      "result": "CHANGED",
+      "sourceSha256": "c42881ecf7e0e48535b616a0494f7219a95f33afec6b2c5437e6b229cca5f342",
+      "currentSha256": "7e1b76c9dee926f14ddd73fea48856067a67d3dc127b0d864d137194df2f0b9c"
+    },
+    {
+      "source": "12_工程执行/task_packets/I02/TASK.md",
+      "current": "12_工程执行/task_packets/I02/TASK.md",
+      "result": "CHANGED",
+      "sourceSha256": "58bd77fd45c02c85dd3261f2262bf6a711ed693a80134c0f7228af158026c377",
+      "currentSha256": "0112b91e7c89940509c5c174bf19246288f275f046f156512437fa5a13d6f9d9"
+    },
+    {
+      "source": "12_工程执行/task_packets/D03/acceptance.json",
+      "current": "12_工程执行/task_packets/D03/acceptance.json",
+      "result": "CHANGED",
+      "sourceSha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "currentSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "source": "12_工程执行/task_packets/D03/TASK.html",
+      "current": "12_工程执行/task_packets/D03/TASK.html",
+      "result": "CHANGED",
+      "sourceSha256": "0733df84aafb791e4b14322a8dbf0af70a68e0b165b8e46efb67c9f746dbb2a5",
+      "currentSha256": "82ce2126fdd034c1846554f4c16fc28293b84181035e628691dc1d0b787fd089"
+    },
+    {
+      "source": "12_工程执行/task_packets/D03/openapi.yaml",
+      "current": "12_工程执行/task_packets/D03/openapi.yaml",
+      "result": "CHANGED",
+      "sourceSha256": "5293b42f93ec59f8fdf791faf730b43c3d1bfc154b240134042daed5fd385021",
+      "currentSha256": "a465b58570a00158271b3103042510c9638ff0fdaa141002e2d8b80572674ffc"
+    },
+    {
+      "source": "12_工程执行/task_packets/D03/TASK.md",
+      "current": "12_工程执行/task_packets/D03/TASK.md",
+      "result": "CHANGED",
+      "sourceSha256": "71ee7fbcf252d89e8ab267ed0a8e62f133adbc2f7b021f2aff9558dea8f8d64e",
+      "currentSha256": "f257499a086b4d11b901eab3966bde5ccafbaec5b92c2cdc81f301fc00e43da0"
+    },
+    {
+      "source": "12_工程执行/task_packets/S02/acceptance.json",
+      "current": "12_工程执行/task_packets/S02/acceptance.json",
+      "result": "CHANGED",
+      "sourceSha256": "df027177e72197af3cb283caf736d962df3ff4ba07b98247c6b2da3967fac748",
+      "currentSha256": "c9e4209ab4d4df8c23546f83446f23ae20b6a32f5fb9b98d0ff62ecc47fd681e"
+    },
+    {
+      "source": "12_工程执行/task_packets/S02/TASK.html",
+      "current": "12_工程执行/task_packets/S02/TASK.html",
+      "result": "CHANGED",
+      "sourceSha256": "9fcfb84091a443a97922d418b418512a776e536461106e2bed74ff642d2199f1",
+      "currentSha256": "64ded2aa0ec6bc456e955015c81237b8c94c21f0f5043d88b2c263d494f334c4"
+    },
+    {
+      "source": "12_工程执行/task_packets/S02/openapi.yaml",
+      "current": "12_工程执行/task_packets/S02/openapi.yaml",
+      "result": "CHANGED",
+      "sourceSha256": "465c4601f714d925d1790a4c89ec6139b51555d34c3853ecba1a8036a86a15cc",
+      "currentSha256": "847aa135a6faf8304baf1c504f614a2de51f5f2db92eb90bad181475b89fb18b"
+    },
+    {
+      "source": "12_工程执行/task_packets/S02/TASK.md",
+      "current": "12_工程执行/task_packets/S02/TASK.md",
+      "result": "CHANGED",
+      "sourceSha256": "edaa3c73c699091cc986a3ed13b7b7538527ab6a2a70028c862948b4dc0f1536",
+      "currentSha256": "dbe150af900caab236893085ec0a5b7edeac46a4b0297673fa6a46116a20952c"
+    },
+    {
+      "source": "12_工程执行/task_packets/Q04/acceptance.json",
+      "current": "12_工程执行/task_packets/Q04/acceptance.json",
+      "result": "CHANGED",
+      "sourceSha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "currentSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "source": "12_工程执行/task_packets/Q04/TASK.html",
+      "current": "12_工程执行/task_packets/Q04/TASK.html",
+      "result": "CHANGED",
+      "sourceSha256": "b5d43f9d4daf2fbef15c6d49bfb676b5afad025292c8b806c8a6163d5aaacb76",
+      "currentSha256": "166cbf9713f429090d0aba0bc5c342387b76e6b47715302a1611637523ffaa56"
+    },
+    {
+      "source": "12_工程执行/task_packets/Q04/openapi.yaml",
+      "current": "12_工程执行/task_packets/Q04/openapi.yaml",
+      "result": "CHANGED",
+      "sourceSha256": "3815bf159541ef8e8b22341d6c2c3ee8b21c4e8c999ec097d9304e3c089f93d2",
+      "currentSha256": "7e5317bf28d4d9713ad36bfb906e2d99a020202d7930915109d3275fd0ae5944"
+    },
+    {
+      "source": "12_工程执行/task_packets/Q04/TASK.md",
+      "current": "12_工程执行/task_packets/Q04/TASK.md",
+      "result": "CHANGED",
+      "sourceSha256": "a8f1b9d576cc46112a03410de048dc473b4d257e302a06c7819434aa13cb7165",
+      "currentSha256": "3fd717d93284dd13e91a3882e4f18b076ce621de59a11e1441a5451dbb259da5"
+    },
+    {
+      "source": "12_工程执行/task_packets/Q05/acceptance.json",
+      "current": "12_工程执行/task_packets/Q05/acceptance.json",
+      "result": "CHANGED",
+      "sourceSha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "currentSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "source": "12_工程执行/task_packets/Q05/TASK.html",
+      "current": "12_工程执行/task_packets/Q05/TASK.html",
+      "result": "CHANGED",
+      "sourceSha256": "f9ea97b6a1a209bb47fa8a055c4a3e05963d2aed7d2eeb10039764db93111ccb",
+      "currentSha256": "c43d4107bbdd95a1ba20f8f7b7db5ab505d4f18a80c2bf192a693527ebd1deda"
+    },
+    {
+      "source": "12_工程执行/task_packets/Q05/openapi.yaml",
+      "current": "12_工程执行/task_packets/Q05/openapi.yaml",
+      "result": "CHANGED",
+      "sourceSha256": "dd2e4c21485b3fa3ec13e05edd61197c7c8617c35f09214adf68b0fd5d5072c5",
+      "currentSha256": "ad18af186afaea665e7529ce4883e2b7eb36fd8dd04331a0b6a8ed9940f2c74a"
+    },
+    {
+      "source": "12_工程执行/task_packets/Q05/TASK.md",
+      "current": "12_工程执行/task_packets/Q05/TASK.md",
+      "result": "CHANGED",
+      "sourceSha256": "f98949fa931e7e4f908c15f6a0e88635fc8bb752a388515cc33298047d42f03e",
+      "currentSha256": "a7ee925f0fb0bacbc4423980b3696eb6cc329714ce9b354ad82c4b03a0abfb9f"
+    },
+    {
+      "source": "12_工程执行/task_packets/E08/acceptance.json",
+      "current": "12_工程执行/task_packets/E08/acceptance.json",
+      "result": "CHANGED",
+      "sourceSha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "currentSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "source": "12_工程执行/task_packets/E08/TASK.html",
+      "current": "12_工程执行/task_packets/E08/TASK.html",
+      "result": "CHANGED",
+      "sourceSha256": "bd1e10f890310e10ef824f3f041423eaba8374fb1595d16a4d7bbf473e6b86fa",
+      "currentSha256": "b1f98af2c2625615d848d990a1319a059660f40de83c453af938843545e7e369"
+    },
+    {
+      "source": "12_工程执行/task_packets/E08/openapi.yaml",
+      "current": "12_工程执行/task_packets/E08/openapi.yaml",
+      "result": "CHANGED",
+      "sourceSha256": "23effd6130766c2d7d45378d1d8a647c7051a9688fd87f78ea481797f066cb47",
+      "currentSha256": "028a412991cb9671f2ee470e107a4410c4dbf3ccad0433645e30cc5b44894ec8"
+    },
+    {
+      "source": "12_工程执行/task_packets/E08/TASK.md",
+      "current": "12_工程执行/task_packets/E08/TASK.md",
+      "result": "CHANGED",
+      "sourceSha256": "523b0308b1d1ec5b266244d9b3375280a6e0f10a2b08935edb779dc2e4db5359",
+      "currentSha256": "f56ce328a67f54e1732ec48ee369ff6df86660c5051800af76dbdb8b25a98864"
+    },
+    {
+      "source": "12_工程执行/task_packets/E00/acceptance.json",
+      "current": "12_工程执行/task_packets/E00/acceptance.json",
+      "result": "CHANGED",
+      "sourceSha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "currentSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "source": "12_工程执行/task_packets/E00/TASK.html",
+      "current": "12_工程执行/task_packets/E00/TASK.html",
+      "result": "CHANGED",
+      "sourceSha256": "77930b8f95388fb5974927b6b02a2aef267436f9fc14e0636504298e65c0137e",
+      "currentSha256": "2f76b127c55dec7b08f9a2e2dbda53dc3fdf4729c7d3090db2b8fc2afd13b964"
+    },
+    {
+      "source": "12_工程执行/task_packets/E00/openapi.yaml",
+      "current": "12_工程执行/task_packets/E00/openapi.yaml",
+      "result": "CHANGED",
+      "sourceSha256": "91ad3fc933278aa7ddf5eaefe4a5a8a50f08f0c2b1450ee46c59eee1772b758f",
+      "currentSha256": "4308f2ed41cb638967e57045d4b948cc3d3ba4fcd64e7073f649c81cd6935be4"
+    },
+    {
+      "source": "12_工程执行/task_packets/E00/TASK.md",
+      "current": "12_工程执行/task_packets/E00/TASK.md",
+      "result": "CHANGED",
+      "sourceSha256": "72b39047ca48fd429de64cb1de24056a58e0471aee728311269328234d649681",
+      "currentSha256": "26193354c50c19c5af0fd6522c7c93aa8755b57b57fddd086f81d193de6a5a9e"
+    },
+    {
+      "source": "12_工程执行/task_packets/R06/acceptance.json",
+      "current": "12_工程执行/task_packets/R06/acceptance.json",
+      "result": "CHANGED",
+      "sourceSha256": "48d7150621c86f9a9e797b443031f1aab02e7e47c2a7416edda1a3d919c85329",
+      "currentSha256": "d49c00bab0747e26a13a9ca3331f79aaf85e6db7a146643b8c758fa6bddd5bf3"
+    },
+    {
+      "source": "12_工程执行/task_packets/R06/TASK.html",
+      "current": "12_工程执行/task_packets/R06/TASK.html",
+      "result": "CHANGED",
+      "sourceSha256": "336b5cb99358551b16a96f1fbd2580a5ab1c35c0036c3e90bd36fe6c8c53e9de",
+      "currentSha256": "e2b07d1ab6cb013d996612f851b1006e8db21e8f5de82852d00a7a1ce1b7a067"
+    },
+    {
+      "source": "12_工程执行/task_packets/R06/openapi.yaml",
+      "current": "12_工程执行/task_packets/R06/openapi.yaml",
+      "result": "CHANGED",
+      "sourceSha256": "8d93fe2706029dd0f04c2c43ce11ce090a63052286393ee62541191258eb30b3",
+      "currentSha256": "33516e6c523fac6fe0d22d9869ea2c2c916e1dc1fc02d0d67bebabebc928a82f"
+    },
+    {
+      "source": "12_工程执行/task_packets/R06/TASK.md",
+      "current": "12_工程执行/task_packets/R06/TASK.md",
+      "result": "CHANGED",
+      "sourceSha256": "68a898992748a27c5cdedbbf46596fb64ed0711b62cd2a3e316611c289abbfb2",
+      "currentSha256": "2b1545dfc5820c85fe4f7ee7441274bf5f2b69524ae1ffeff249d2ae5023cb38"
+    },
+    {
+      "source": "12_工程执行/task_packets/A02/acceptance.json",
+      "current": "12_工程执行/task_packets/A02/acceptance.json",
+      "result": "CHANGED",
+      "sourceSha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "currentSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "source": "12_工程执行/task_packets/A02/TASK.html",
+      "current": "12_工程执行/task_packets/A02/TASK.html",
+      "result": "CHANGED",
+      "sourceSha256": "b6447295a365dee86a66cebe4ada22211f9f57efcbe294fb6d063b8abcd1b982",
+      "currentSha256": "ceecf94015d909ea0b9c7ebbc4312291bf61cac6f3722cf6e87e64ca572f6215"
+    },
+    {
+      "source": "12_工程执行/task_packets/A02/openapi.yaml",
+      "current": "12_工程执行/task_packets/A02/openapi.yaml",
+      "result": "CHANGED",
+      "sourceSha256": "c774cb3a82af881303adfe18e6c2aab70e19cb1c1fa75073f1f504ca641f9f0d",
+      "currentSha256": "112594e50705f658c06147662a5f57fa09bd2352c5c6829173d5314a56aeb0a8"
+    },
+    {
+      "source": "12_工程执行/task_packets/A02/TASK.md",
+      "current": "12_工程执行/task_packets/A02/TASK.md",
+      "result": "CHANGED",
+      "sourceSha256": "91ed0e4473a74dc69401df8ac98b62b2776d83db18e197351a278baa7d182c21",
+      "currentSha256": "a01a731c6b9a25e9e89ee2d10501cdd6c0454313a25fc82e5db3b7d2a9da5a1e"
+    },
+    {
+      "source": "12_工程执行/task_packets/S03/acceptance.json",
+      "current": "12_工程执行/task_packets/S03/acceptance.json",
+      "result": "CHANGED",
+      "sourceSha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "currentSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "source": "12_工程执行/task_packets/S03/TASK.html",
+      "current": "12_工程执行/task_packets/S03/TASK.html",
+      "result": "CHANGED",
+      "sourceSha256": "44770e293e998478490b864d0443f1c6562ea28e540e864898e6383d995250bc",
+      "currentSha256": "09418dd673f76661ca72c67cf374ba9e33a1a2b0a50df0634e1b6dff17b374c3"
+    },
+    {
+      "source": "12_工程执行/task_packets/S03/openapi.yaml",
+      "current": "12_工程执行/task_packets/S03/openapi.yaml",
+      "result": "CHANGED",
+      "sourceSha256": "23effd6130766c2d7d45378d1d8a647c7051a9688fd87f78ea481797f066cb47",
+      "currentSha256": "028a412991cb9671f2ee470e107a4410c4dbf3ccad0433645e30cc5b44894ec8"
+    },
+    {
+      "source": "12_工程执行/task_packets/S03/TASK.md",
+      "current": "12_工程执行/task_packets/S03/TASK.md",
+      "result": "CHANGED",
+      "sourceSha256": "57f73e4d7adb2d4a86175ac65d5e3ef4e1b5b1eeea414bd7a03d6b1ce9f35654",
+      "currentSha256": "a8c1165e855549dcd90516dd0b591c0eff5e5110b324bee364e2a84d046e2e0e"
+    },
+    {
+      "source": "12_工程执行/task_packets/R02/acceptance.json",
+      "current": "12_工程执行/task_packets/R02/acceptance.json",
+      "result": "CHANGED",
+      "sourceSha256": "1e2835441dcfaf578deed36af326824ed6d6f024ad95fff68c51c575d2c960c9",
+      "currentSha256": "a31b156defd7eac9ce32daba4980be0d8ab50dcc8a8859ee330c428de5cbd54f"
+    },
+    {
+      "source": "12_工程执行/task_packets/R02/TASK.html",
+      "current": "12_工程执行/task_packets/R02/TASK.html",
+      "result": "CHANGED",
+      "sourceSha256": "03096b92c568df44881e65515582760e43c06b8aefbfe84c35271e8b9aad0002",
+      "currentSha256": "c97d2de9c2ee63814c9b88582104ed6204ad3fc3f0ef2788325949aca63043c3"
+    },
+    {
+      "source": "12_工程执行/task_packets/R02/openapi.yaml",
+      "current": "12_工程执行/task_packets/R02/openapi.yaml",
+      "result": "CHANGED",
+      "sourceSha256": "8c92584afae7701fcedc10b9263561ea891109500169b24e471c1f3925a94a3d",
+      "currentSha256": "c84e0cc6035384b9cba943cb8624f5f628a47cd3f0d5766bfb136446196de138"
+    },
+    {
+      "source": "12_工程执行/task_packets/R02/TASK.md",
+      "current": "12_工程执行/task_packets/R02/TASK.md",
+      "result": "CHANGED",
+      "sourceSha256": "8721dec6e7fd4adb6801cf481fde5f9be7eed8c23b335403928fd34fa69a2ed4",
+      "currentSha256": "c8706ffbc72c961051fa193f32730639d0af63b4f9f6e3611dcf82ecbc75b788"
+    },
+    {
+      "source": "12_工程执行/task_packets/T06/acceptance.json",
+      "current": "12_工程执行/task_packets/T06/acceptance.json",
+      "result": "CHANGED",
+      "sourceSha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "currentSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "source": "12_工程执行/task_packets/T06/TASK.html",
+      "current": "12_工程执行/task_packets/T06/TASK.html",
+      "result": "CHANGED",
+      "sourceSha256": "3639cc3b12c9cc8809c766c3688401ec68e28dbec1bfa3bfdae04d95664114cb",
+      "currentSha256": "d00d1d3194e4530e9a5e8b0f4a47e98b2c711319cac91d9f5c9afc2310a913eb"
+    },
+    {
+      "source": "12_工程执行/task_packets/T06/openapi.yaml",
+      "current": "12_工程执行/task_packets/T06/openapi.yaml",
+      "result": "CHANGED",
+      "sourceSha256": "91ad3fc933278aa7ddf5eaefe4a5a8a50f08f0c2b1450ee46c59eee1772b758f",
+      "currentSha256": "4308f2ed41cb638967e57045d4b948cc3d3ba4fcd64e7073f649c81cd6935be4"
+    },
+    {
+      "source": "12_工程执行/task_packets/T06/TASK.md",
+      "current": "12_工程执行/task_packets/T06/TASK.md",
+      "result": "CHANGED",
+      "sourceSha256": "cd05ebc30285fe7c6b726169291d946e26366595870759fa592d7edabc84f2f0",
+      "currentSha256": "b50e858304e49feb0e8f5853cf316fa605add2d9df86c1dd55fa3d8593981c83"
+    },
+    {
+      "source": "12_工程执行/task_packets/R03/acceptance.json",
+      "current": "12_工程执行/task_packets/R03/acceptance.json",
+      "result": "CHANGED",
+      "sourceSha256": "7edbdb03c97231b5d638d5bd840951e60d8380d7cc83922a7622c5cfe90ca497",
+      "currentSha256": "cc7dc9363fd09b661439b19bad34a2fbf26451d55ca54f54a7fe3d4c64f89f9d"
+    },
+    {
+      "source": "12_工程执行/task_packets/R03/TASK.html",
+      "current": "12_工程执行/task_packets/R03/TASK.html",
+      "result": "CHANGED",
+      "sourceSha256": "916dd769add9175b008af7d7b2963bded1e8c1b6dfe8413ff0121914f59325fe",
+      "currentSha256": "ac4345d28bd1e4b101526e7064a10b821be32408158bb78e2e707c2e6456b894"
+    },
+    {
+      "source": "12_工程执行/task_packets/R03/openapi.yaml",
+      "current": "12_工程执行/task_packets/R03/openapi.yaml",
+      "result": "CHANGED",
+      "sourceSha256": "4aaeb2581067bdcef68ebb6cf312ee81ff541d8cfe22d2e2767f4c35060667e0",
+      "currentSha256": "f92bb1f6288a6546c8ba0b204e3a1788be768212879b16d9acf82eb4618d1f5d"
+    },
+    {
+      "source": "12_工程执行/task_packets/R03/TASK.md",
+      "current": "12_工程执行/task_packets/R03/TASK.md",
+      "result": "CHANGED",
+      "sourceSha256": "cd348f6b77033e5b7fcab2ae8351df7af754383dd824dc0128840e1fd74f1f90",
+      "currentSha256": "227dccaf3c81e0c0b6209502fece2934757fa31aaa18663ba6c1023bf0449652"
+    },
+    {
+      "source": "12_工程执行/task_packets/T04/acceptance.json",
+      "current": "12_工程执行/task_packets/T04/acceptance.json",
+      "result": "CHANGED",
+      "sourceSha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "currentSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "source": "12_工程执行/task_packets/T04/TASK.html",
+      "current": "12_工程执行/task_packets/T04/TASK.html",
+      "result": "CHANGED",
+      "sourceSha256": "709760ea2a3d8835b15cddeef19aef59480b035765b689f8323359ef338f7104",
+      "currentSha256": "a182efa1e06cc4488cf23919accfde792418dc0be8ff52f805414a4ee96bf032"
+    },
+    {
+      "source": "12_工程执行/task_packets/T04/openapi.yaml",
+      "current": "12_工程执行/task_packets/T04/openapi.yaml",
+      "result": "CHANGED",
+      "sourceSha256": "23effd6130766c2d7d45378d1d8a647c7051a9688fd87f78ea481797f066cb47",
+      "currentSha256": "028a412991cb9671f2ee470e107a4410c4dbf3ccad0433645e30cc5b44894ec8"
+    },
+    {
+      "source": "12_工程执行/task_packets/T04/TASK.md",
+      "current": "12_工程执行/task_packets/T04/TASK.md",
+      "result": "CHANGED",
+      "sourceSha256": "a3555851d53c0f1a3dfc5c4d2f137e753f1a4c9f7d3350cbd1f193387c5c1f6a",
+      "currentSha256": "2b1f2b40a974c93903c951e6e1f63c310e45de982a879dc38096423458081b3d"
+    },
+    {
+      "source": "12_工程执行/task_packets/C01/acceptance.json",
+      "current": "12_工程执行/task_packets/C01/acceptance.json",
+      "result": "CHANGED",
+      "sourceSha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "currentSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "source": "12_工程执行/task_packets/C01/TASK.html",
+      "current": "12_工程执行/task_packets/C01/TASK.html",
+      "result": "CHANGED",
+      "sourceSha256": "022bb20a02581a2cee9a080aaa6c4d3786ed66269140a19017b5b7e696a5270a",
+      "currentSha256": "42561f1ca158346d02528a9c57fab8ad00668ee7bfa982bb5d54a4c302b8897f"
+    },
+    {
+      "source": "12_工程执行/task_packets/C01/openapi.yaml",
+      "current": "12_工程执行/task_packets/C01/openapi.yaml",
+      "result": "CHANGED",
+      "sourceSha256": "f429ce0e1acef25a4f252ff68e5943395ee6c21d6ce741760d6756c8fb70ed74",
+      "currentSha256": "555b9e3ad3a5f63211f24ef6cde37391ee935bd34169d397bba81e9a72891abe"
+    },
+    {
+      "source": "12_工程执行/task_packets/C01/TASK.md",
+      "current": "12_工程执行/task_packets/C01/TASK.md",
+      "result": "CHANGED",
+      "sourceSha256": "38b9f5c1554458f2985c0d57ae975b5ec91cdfaeaa8e2d299901aa823ef4b27a",
+      "currentSha256": "1e57454aacdc2619961bb38c4f2ecb9a3e2dda90a2512c3b3f6e8aff025661d8"
+    },
+    {
+      "source": "12_工程执行/task_packets/B02/acceptance.json",
+      "current": "12_工程执行/task_packets/B02/acceptance.json",
+      "result": "CHANGED",
+      "sourceSha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "currentSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "source": "12_工程执行/task_packets/B02/TASK.html",
+      "current": "12_工程执行/task_packets/B02/TASK.html",
+      "result": "CHANGED",
+      "sourceSha256": "304d7e142c41d6f8901cd67bc44b4d4a38aaa71f6768c94a1f5eda988d798ec6",
+      "currentSha256": "dd636f2024016004330e0572b28c82e8a55040481fcce509ec74d8e8c59388e5"
+    },
+    {
+      "source": "12_工程执行/task_packets/B02/openapi.yaml",
+      "current": "12_工程执行/task_packets/B02/openapi.yaml",
+      "result": "CHANGED",
+      "sourceSha256": "5dc0fbedb0a1f467573c8dea7a9b5ac6ea1e17a0cd757108b318d3bfd9cfa6e6",
+      "currentSha256": "752c0dd438014090a760721343ee463517c78c1643bf16d8fa279b018f0b1b33"
+    },
+    {
+      "source": "12_工程执行/task_packets/B02/TASK.md",
+      "current": "12_工程执行/task_packets/B02/TASK.md",
+      "result": "CHANGED",
+      "sourceSha256": "8c5482c1fdded4f6e10785f16e2eb576197aeddf77e9327841cbe8d27788052e",
+      "currentSha256": "ac54c206c4a060f5465347b4c06b4f18448db47de36b7e3ec608bfaf0c7e400c"
+    },
+    {
+      "source": "12_工程执行/task_packets/E03/acceptance.json",
+      "current": "12_工程执行/task_packets/E03/acceptance.json",
+      "result": "CHANGED",
+      "sourceSha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "currentSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "source": "12_工程执行/task_packets/E03/TASK.html",
+      "current": "12_工程执行/task_packets/E03/TASK.html",
+      "result": "CHANGED",
+      "sourceSha256": "db2b23ae7c319732388d5f20e7f7e351e6874cfc86e9459e28191e16cd376a37",
+      "currentSha256": "c013a1fc27cb3c69f38fe261f283e2ac98020820638836fc052518ceeb39bb0a"
+    },
+    {
+      "source": "12_工程执行/task_packets/E03/openapi.yaml",
+      "current": "12_工程执行/task_packets/E03/openapi.yaml",
+      "result": "CHANGED",
+      "sourceSha256": "91ad3fc933278aa7ddf5eaefe4a5a8a50f08f0c2b1450ee46c59eee1772b758f",
+      "currentSha256": "4308f2ed41cb638967e57045d4b948cc3d3ba4fcd64e7073f649c81cd6935be4"
+    },
+    {
+      "source": "12_工程执行/task_packets/E03/TASK.md",
+      "current": "12_工程执行/task_packets/E03/TASK.md",
+      "result": "CHANGED",
+      "sourceSha256": "28e65a4e2d967d9176e3c1ff2cf71ef678d46ec9465394d855e72d379578353f",
+      "currentSha256": "5848d76fe65f516faa1d713cc2e37bc45bd64a2bf7aca967efe8a8ba4fb4ddf8"
+    },
+    {
+      "source": "12_工程执行/task_packets/A04/acceptance.json",
+      "current": "12_工程执行/task_packets/A04/acceptance.json",
+      "result": "CHANGED",
+      "sourceSha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "currentSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "source": "12_工程执行/task_packets/A04/TASK.html",
+      "current": "12_工程执行/task_packets/A04/TASK.html",
+      "result": "CHANGED",
+      "sourceSha256": "1b84d51205153036248f65eec236a19bfb13e26cfd4183136ff6f4bc75a05f0d",
+      "currentSha256": "9a6310dd94cdddcd905123fb1ccc0e632c5e4976ca1fb7ecdbb6164aa9fc40e5"
+    },
+    {
+      "source": "12_工程执行/task_packets/A04/openapi.yaml",
+      "current": "12_工程执行/task_packets/A04/openapi.yaml",
+      "result": "CHANGED",
+      "sourceSha256": "45be58c91463e6be47e92f24fbc28541aa2fd7de9daee93bc52358b27674f71a",
+      "currentSha256": "ba01e60a5f5a79b0b7810c79204eb6713679e9db02d1ba7766953126928b0a1d"
+    },
+    {
+      "source": "12_工程执行/task_packets/A04/TASK.md",
+      "current": "12_工程执行/task_packets/A04/TASK.md",
+      "result": "CHANGED",
+      "sourceSha256": "5b121f1a083ada91cd4374ade52231f4a65aca8cbe8166435ffcd6bc07557e14",
+      "currentSha256": "58976642022492dae251e000abf6ab91f2e7aa6a39739bfb62293713e6253431"
+    },
+    {
+      "source": "12_工程执行/task_packets/E06/acceptance.json",
+      "current": "12_工程执行/task_packets/E06/acceptance.json",
+      "result": "CHANGED",
+      "sourceSha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "currentSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "source": "12_工程执行/task_packets/E06/TASK.html",
+      "current": "12_工程执行/task_packets/E06/TASK.html",
+      "result": "CHANGED",
+      "sourceSha256": "1c78f8f90873757e0e6beb636c1949e2c567c3241f06c30e6173ed1d880d377d",
+      "currentSha256": "b5e341dcefd3de42838cd629221c05503c368eca58094be6dd86cd90727ba56d"
+    },
+    {
+      "source": "12_工程执行/task_packets/E06/openapi.yaml",
+      "current": "12_工程执行/task_packets/E06/openapi.yaml",
+      "result": "CHANGED",
+      "sourceSha256": "91ad3fc933278aa7ddf5eaefe4a5a8a50f08f0c2b1450ee46c59eee1772b758f",
+      "currentSha256": "4308f2ed41cb638967e57045d4b948cc3d3ba4fcd64e7073f649c81cd6935be4"
+    },
+    {
+      "source": "12_工程执行/task_packets/E06/TASK.md",
+      "current": "12_工程执行/task_packets/E06/TASK.md",
+      "result": "CHANGED",
+      "sourceSha256": "82f5b0aa4ce86f7156ae40e283bfd612ac8ed0361e683593baf0b0ffcff55cc7",
+      "currentSha256": "5bff784f936a89daf90cce3f5e6f62de8a06c1d541aa82c770e6bc3e0d17dd2b"
+    },
+    {
+      "source": "12_工程执行/task_packets/D07/acceptance.json",
+      "current": "12_工程执行/task_packets/D07/acceptance.json",
+      "result": "CHANGED",
+      "sourceSha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "currentSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "source": "12_工程执行/task_packets/D07/TASK.html",
+      "current": "12_工程执行/task_packets/D07/TASK.html",
+      "result": "CHANGED",
+      "sourceSha256": "4f92a2f9d6791840e274d9cc618cb8c8fd200c79595d855ff9b6a6796438e5ee",
+      "currentSha256": "262a45d166d9fa388f1b5a61c704edf8d4334fff4f502ff252f880b0bad6d9c2"
+    },
+    {
+      "source": "12_工程执行/task_packets/D07/openapi.yaml",
+      "current": "12_工程执行/task_packets/D07/openapi.yaml",
+      "result": "CHANGED",
+      "sourceSha256": "e879ebdc730aca846f5693dffe8e7050f73914857ee6177e90ff9eb93486899e",
+      "currentSha256": "75f4b1a5c1f8032c0baed97a5ac56022fc215dd66606ba0127d87202e1665548"
+    },
+    {
+      "source": "12_工程执行/task_packets/D07/TASK.md",
+      "current": "12_工程执行/task_packets/D07/TASK.md",
+      "result": "CHANGED",
+      "sourceSha256": "f38566ec59cd19da6bd97c7a9427fb64b5eb4b581476e5726e95dae5390ea759",
+      "currentSha256": "89565cd5219d1d4d6c0be9936559045accf2794a9a736304d5f4a178f17558ca"
+    },
+    {
+      "source": "12_工程执行/task_packets/G01/acceptance.json",
+      "current": "12_工程执行/task_packets/G01/acceptance.json",
+      "result": "CHANGED",
+      "sourceSha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "currentSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "source": "12_工程执行/task_packets/G01/TASK.html",
+      "current": "12_工程执行/task_packets/G01/TASK.html",
+      "result": "CHANGED",
+      "sourceSha256": "c3c7879dc2e0daaf2bd6a50130cbcd0daeb880de654807b82a557651b4054e3c",
+      "currentSha256": "f523116a66ab363b0a0ce62023a53315b3aea5d0d8004af744913ef0123c4728"
+    },
+    {
+      "source": "12_工程执行/task_packets/G01/openapi.yaml",
+      "current": "12_工程执行/task_packets/G01/openapi.yaml",
+      "result": "CHANGED",
+      "sourceSha256": "91ad3fc933278aa7ddf5eaefe4a5a8a50f08f0c2b1450ee46c59eee1772b758f",
+      "currentSha256": "4308f2ed41cb638967e57045d4b948cc3d3ba4fcd64e7073f649c81cd6935be4"
+    },
+    {
+      "source": "12_工程执行/task_packets/G01/TASK.md",
+      "current": "12_工程执行/task_packets/G01/TASK.md",
+      "result": "CHANGED",
+      "sourceSha256": "9b9867da3946535603b9d43e893e0938476cd3640990685dc51004246ff96dbb",
+      "currentSha256": "bc33b8f11116ae8ce850fa201d89ca54450f8bfaf4cc124b1b736ae9e9f0535e"
+    },
+    {
+      "source": "12_工程执行/task_packets/T05/acceptance.json",
+      "current": "12_工程执行/task_packets/T05/acceptance.json",
+      "result": "CHANGED",
+      "sourceSha256": "369a0de265cf452f0ab450c860e3bdc76fa59e6333a26913a7f3309007628d53",
+      "currentSha256": "6746c4be214aeb5ded332aa68f3a51dd5343ed1daf498e8571b2625f7f3890a3"
+    },
+    {
+      "source": "12_工程执行/task_packets/T05/TASK.html",
+      "current": "12_工程执行/task_packets/T05/TASK.html",
+      "result": "CHANGED",
+      "sourceSha256": "24be3fd0fe976a9c209660c1f2f1b7ee5b39e7d40d7d3fe1e12e41da9b68ba91",
+      "currentSha256": "5b1be3b0118515c5dbebf289e6187ffc5abd9cffad4c663cf940c5c24bf582d3"
+    },
+    {
+      "source": "12_工程执行/task_packets/T05/openapi.yaml",
+      "current": "12_工程执行/task_packets/T05/openapi.yaml",
+      "result": "CHANGED",
+      "sourceSha256": "91ad3fc933278aa7ddf5eaefe4a5a8a50f08f0c2b1450ee46c59eee1772b758f",
+      "currentSha256": "4308f2ed41cb638967e57045d4b948cc3d3ba4fcd64e7073f649c81cd6935be4"
+    },
+    {
+      "source": "12_工程执行/task_packets/T05/TASK.md",
+      "current": "12_工程执行/task_packets/T05/TASK.md",
+      "result": "CHANGED",
+      "sourceSha256": "5ec7a2c0d2c297b44abc61f88357b57ccad08d677fdac035bcb7755ac22396ec",
+      "currentSha256": "67b42ffb0d470b30e95f2f194bdc2b60c8b796e3853e9237b0e39751acbc6083"
+    },
+    {
+      "source": "12_工程执行/task_packets/S04/acceptance.json",
+      "current": "12_工程执行/task_packets/S04/acceptance.json",
+      "result": "CHANGED",
+      "sourceSha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "currentSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "source": "12_工程执行/task_packets/S04/TASK.html",
+      "current": "12_工程执行/task_packets/S04/TASK.html",
+      "result": "CHANGED",
+      "sourceSha256": "f0071f71ede15c4c831474815702eee923dc7576d3fc9708824d0c101a5e3bb8",
+      "currentSha256": "d2004227cf10295dba0732cd2343446c21fba281cd5eff2d5d211ad247815749"
+    },
+    {
+      "source": "12_工程执行/task_packets/S04/openapi.yaml",
+      "current": "12_工程执行/task_packets/S04/openapi.yaml",
+      "result": "CHANGED",
+      "sourceSha256": "7ee9c58318735e72027b0f4eab458b9585d80ae9ac09a6914ba8eec581dd1ab9",
+      "currentSha256": "36e848dbe6b4aa69c8cda02f42db71ebb1d8cb7ab948fef4e6335cd5805e9e6b"
+    },
+    {
+      "source": "12_工程执行/task_packets/S04/TASK.md",
+      "current": "12_工程执行/task_packets/S04/TASK.md",
+      "result": "CHANGED",
+      "sourceSha256": "531fcf49fceceb9ebb108f3ddbbf2768088fd5b6cb5b353fb0d0eae67b139f02",
+      "currentSha256": "8d6c2e47be8d1bac715b31d2b01956a79eda0172716ad33d59dd07a857b0185b"
+    },
+    {
+      "source": "12_工程执行/task_packets/C05/acceptance.json",
+      "current": "12_工程执行/task_packets/C05/acceptance.json",
+      "result": "CHANGED",
+      "sourceSha256": "e778a743346a27e8731162feb7303382a251f571999d283db40ee1fa3e1da90e",
+      "currentSha256": "e9a1a9a349e16a5e0eda741150c9b453329cefbd4e00ba3e49b993ef74cc34ff"
+    },
+    {
+      "source": "12_工程执行/task_packets/C05/TASK.html",
+      "current": "12_工程执行/task_packets/C05/TASK.html",
+      "result": "CHANGED",
+      "sourceSha256": "b014850bfa14afaa7adaf7f516ea90ce4ab8d08f070a1a596c5f45a207134312",
+      "currentSha256": "e560c01b1e3d1aed84e3c30afcd9a91b3f0b066ed489a0264228e741a722b3e6"
+    },
+    {
+      "source": "12_工程执行/task_packets/C05/openapi.yaml",
+      "current": "12_工程执行/task_packets/C05/openapi.yaml",
+      "result": "CHANGED",
+      "sourceSha256": "987c8264a82dd3ff54d703db3d86a43d44164ccc6b7a806f14d20f16593d188a",
+      "currentSha256": "1a3054f560a195f5d56d2e0ea3ec82289cce97023d6ba99c0cf9be94c7210700"
+    },
+    {
+      "source": "12_工程执行/task_packets/C05/TASK.md",
+      "current": "12_工程执行/task_packets/C05/TASK.md",
+      "result": "CHANGED",
+      "sourceSha256": "783dd3493d8f6790d736a7a64516c7b75845e807f2a81f89303b626fcec39d36",
+      "currentSha256": "5eb04f65b4699ba3352cead5add36ece350899c116e2d4ab0c7fc0133e463978"
+    },
+    {
+      "source": "12_工程执行/task_packets/L02/acceptance.json",
+      "current": "12_工程执行/task_packets/L02/acceptance.json",
+      "result": "CHANGED",
+      "sourceSha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "currentSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "source": "12_工程执行/task_packets/L02/TASK.html",
+      "current": "12_工程执行/task_packets/L02/TASK.html",
+      "result": "CHANGED",
+      "sourceSha256": "bea35c453ec6b8e59c768d31b61b9bcc24c3303ba1e21e0b4ace73f4a72c4650",
+      "currentSha256": "05cf8cc4d103eb023d40643179988240ad4e115b4e3f1788715bf0adfb8d153f"
+    },
+    {
+      "source": "12_工程执行/task_packets/L02/openapi.yaml",
+      "current": "12_工程执行/task_packets/L02/openapi.yaml",
+      "result": "CHANGED",
+      "sourceSha256": "23effd6130766c2d7d45378d1d8a647c7051a9688fd87f78ea481797f066cb47",
+      "currentSha256": "028a412991cb9671f2ee470e107a4410c4dbf3ccad0433645e30cc5b44894ec8"
+    },
+    {
+      "source": "12_工程执行/task_packets/L02/TASK.md",
+      "current": "12_工程执行/task_packets/L02/TASK.md",
+      "result": "CHANGED",
+      "sourceSha256": "8cc1bf1891d3658de58eb26b197d93d28f62e057ae384a145a18be99d73c1976",
+      "currentSha256": "c83c1997212ffbcd4963b5d8813ffa49fddc86e35c105feeae0ce00a4dab07c2"
+    },
+    {
+      "source": "12_工程执行/task_packets/D02/acceptance.json",
+      "current": "12_工程执行/task_packets/D02/acceptance.json",
+      "result": "CHANGED",
+      "sourceSha256": "cf71a20e7cb11671bb50f124ed12b2abefafbe8016ea58b62dddaaf8e27fb9be",
+      "currentSha256": "f597899884f6a7ff0bad117dfd2be11a3d876de6573888102928877ddc1f0111"
+    },
+    {
+      "source": "12_工程执行/task_packets/D02/TASK.html",
+      "current": "12_工程执行/task_packets/D02/TASK.html",
+      "result": "CHANGED",
+      "sourceSha256": "d77fac753f1fb5eff056bdcf09929dbaf3d44934b1a357e63a05fc2e676bc128",
+      "currentSha256": "8fbd74cf08bec3eec03928a3bfa5532a062b204d9c6622699176f360949e25a9"
+    },
+    {
+      "source": "12_工程执行/task_packets/D02/openapi.yaml",
+      "current": "12_工程执行/task_packets/D02/openapi.yaml",
+      "result": "CHANGED",
+      "sourceSha256": "23effd6130766c2d7d45378d1d8a647c7051a9688fd87f78ea481797f066cb47",
+      "currentSha256": "028a412991cb9671f2ee470e107a4410c4dbf3ccad0433645e30cc5b44894ec8"
+    },
+    {
+      "source": "12_工程执行/task_packets/D02/TASK.md",
+      "current": "12_工程执行/task_packets/D02/TASK.md",
+      "result": "CHANGED",
+      "sourceSha256": "c243aa22c6d4767bed3b8eb126929d68d81af55d4887cfa9133481055f66913a",
+      "currentSha256": "05af77f63e7fccbde55de6667ee7a1cb878b34699065608d93a5304372ebd33d"
+    },
+    {
+      "source": "12_工程执行/task_packets/I06/acceptance.json",
+      "current": "12_工程执行/task_packets/I06/acceptance.json",
+      "result": "CHANGED",
+      "sourceSha256": "44b8386fa4dfac0c49ff46a0750fdb934c1416f6611269fd56a4e7bee40e3cf4",
+      "currentSha256": "061ffff36d26ff7eb23eccd57f4ca2b5cf1d2495314517aab48e01dfc5e59ae1"
+    },
+    {
+      "source": "12_工程执行/task_packets/I06/TASK.html",
+      "current": "12_工程执行/task_packets/I06/TASK.html",
+      "result": "CHANGED",
+      "sourceSha256": "6029654049e627c24a0309f85ef59fd986ee843ab16921e3b12c09bab49bd4fd",
+      "currentSha256": "b5a13394a009b4629d2e61dc3c11e7557a10c597b9f3a4ab9da630386c754da1"
+    },
+    {
+      "source": "12_工程执行/task_packets/I06/openapi.yaml",
+      "current": "12_工程执行/task_packets/I06/openapi.yaml",
+      "result": "CHANGED",
+      "sourceSha256": "41531bdfbd22d15936e3d477e3754a007d3de9104ff3b1d3d0113571ef48f2ec",
+      "currentSha256": "e77d3f328c94d3da0a569ad970e12c6afae883b92d0e626c8aa346a7e616a2ad"
+    },
+    {
+      "source": "12_工程执行/task_packets/I06/TASK.md",
+      "current": "12_工程执行/task_packets/I06/TASK.md",
+      "result": "CHANGED",
+      "sourceSha256": "ea89d63e302984656e6d72a1fb09fdc2d286edfad33d7a3423b37755259d5579",
+      "currentSha256": "d729412c41373baed9c2402fa658a68b9ebd2849df648d0349e41b28ea670e76"
+    },
+    {
+      "source": "12_工程执行/task_packets/Q01/acceptance.json",
+      "current": "12_工程执行/task_packets/Q01/acceptance.json",
+      "result": "CHANGED",
+      "sourceSha256": "7ddda740acc710252ba9a5d317d8215a7a5ca416e6084d13238524a1421efcd0",
+      "currentSha256": "f1476ea44f893192f6e64e1259847a16e78d30f706698224f1832755efbe2aec"
+    },
+    {
+      "source": "12_工程执行/task_packets/Q01/TASK.html",
+      "current": "12_工程执行/task_packets/Q01/TASK.html",
+      "result": "CHANGED",
+      "sourceSha256": "feacb9309f7ba191615a18448f42c38a2a94b342a6032896da54e4e0f18d8b19",
+      "currentSha256": "2fd6bb4c2e046bf24519d8d94655db58b1072784ea0ff23fd9909e0d76f96504"
+    },
+    {
+      "source": "12_工程执行/task_packets/Q01/openapi.yaml",
+      "current": "12_工程执行/task_packets/Q01/openapi.yaml",
+      "result": "CHANGED",
+      "sourceSha256": "8e74c60029acdd8cd1c12b2026785ee638065c8ed297e83e80f6599aefea6926",
+      "currentSha256": "c7ed1ad27e246b4eb3e5c4b6dfd265ab51846104c2cf07958dfd5b752b717d40"
+    },
+    {
+      "source": "12_工程执行/task_packets/Q01/TASK.md",
+      "current": "12_工程执行/task_packets/Q01/TASK.md",
+      "result": "CHANGED",
+      "sourceSha256": "0357923879c8f866c17b1bef770dcc72672765f39a52982027cfb7e281a7fda8",
+      "currentSha256": "0c87ccb091cd14c74650ba682bbc8fd67fae6fbe278ff59d4ae366df27a5cf13"
+    },
+    {
+      "source": "12_工程执行/task_packets/B03/acceptance.json",
+      "current": "12_工程执行/task_packets/B03/acceptance.json",
+      "result": "CHANGED",
+      "sourceSha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "currentSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "source": "12_工程执行/task_packets/B03/TASK.html",
+      "current": "12_工程执行/task_packets/B03/TASK.html",
+      "result": "CHANGED",
+      "sourceSha256": "9e6917cc54f88c16c3a40486c289cd23c3877c77b81fb5d36f932d362344f826",
+      "currentSha256": "0f51330c7a50073dc4b889425e09a3cfef90c8af3c493e3df85b12755dc3deae"
+    },
+    {
+      "source": "12_工程执行/task_packets/B03/openapi.yaml",
+      "current": "12_工程执行/task_packets/B03/openapi.yaml",
+      "result": "CHANGED",
+      "sourceSha256": "ad242bd40a52e3c3775b3ad120a51c1a18ed494015227820c9abf227e2766d08",
+      "currentSha256": "15b81393911397ded793f83b4823c696fb61547fa7a198f272609475c9698ca1"
+    },
+    {
+      "source": "12_工程执行/task_packets/B03/TASK.md",
+      "current": "12_工程执行/task_packets/B03/TASK.md",
+      "result": "CHANGED",
+      "sourceSha256": "a1ee80253dc256d6bda82fc28e76a308958c710c7dfe7326a32f0adb0d34cc47",
+      "currentSha256": "3bedde32ffb15c9047d79e713b27c310ed07decc88c931b215e1b98ea237ad9f"
+    },
+    {
+      "source": "12_工程执行/task_packets/R04/acceptance.json",
+      "current": "12_工程执行/task_packets/R04/acceptance.json",
+      "result": "CHANGED",
+      "sourceSha256": "80c149f11a06097fe7e29262f0d572b31667f192ba4b453456c9197a1e0afa72",
+      "currentSha256": "6af98db60e6a85f28d7fd2f95152d5567611d18657cc77464aa5b392f0a23d7c"
+    },
+    {
+      "source": "12_工程执行/task_packets/R04/TASK.html",
+      "current": "12_工程执行/task_packets/R04/TASK.html",
+      "result": "CHANGED",
+      "sourceSha256": "21048d14aef2d64168bf986f3c5af31ee44c86348b71ac2588d8783ae76a1572",
+      "currentSha256": "9f7c1180be4107cb10f19341376db4a0ab0cd70f8256d0cb0555885fa8b056ed"
+    },
+    {
+      "source": "12_工程执行/task_packets/R04/openapi.yaml",
+      "current": "12_工程执行/task_packets/R04/openapi.yaml",
+      "result": "CHANGED",
+      "sourceSha256": "735e02269b6af749a0e3cb5312b0d10e2608afba6f13aa2ae2e52a735800c6fa",
+      "currentSha256": "ca32a7b37d9c46c1cece581dd9ccd2dce57a2d41a097493dfe1078a63dac1544"
+    },
+    {
+      "source": "12_工程执行/task_packets/R04/TASK.md",
+      "current": "12_工程执行/task_packets/R04/TASK.md",
+      "result": "CHANGED",
+      "sourceSha256": "a607ac5ef832c6b63c666694638843c3f98aa71e941c794d3fbfc0960c205efb",
+      "currentSha256": "d0e297d07d60bd7c98629e7e9b9366246eee2cf4cb882976ed87e003c1ceafbf"
+    },
+    {
+      "source": "12_工程执行/task_packets/F05/acceptance.json",
+      "current": "12_工程执行/task_packets/F05/acceptance.json",
+      "result": "CHANGED",
+      "sourceSha256": "dac668638305546d1d666bde22805ed7375ad584b237c30dec3e6cc4ab68c207",
+      "currentSha256": "0a37b0de0a56ed0f51e29385c624d57772e491af7283351a24887db92a65fc34"
+    },
+    {
+      "source": "12_工程执行/task_packets/F05/TASK.html",
+      "current": "12_工程执行/task_packets/F05/TASK.html",
+      "result": "CHANGED",
+      "sourceSha256": "204b474f0a974cd544b166e9cae6e333875915c59272d96e864c4ccef49272cd",
+      "currentSha256": "2de0f59d2dcfff3d65c611ee7a404bafcf73b1148d772902500e9952fedf05bb"
+    },
+    {
+      "source": "12_工程执行/task_packets/F05/openapi.yaml",
+      "current": "12_工程执行/task_packets/F05/openapi.yaml",
+      "result": "CHANGED",
+      "sourceSha256": "95aff79e9df939ace0a8277fb08308b9d6171e5f1c5c85a21d296ea03da529d7",
+      "currentSha256": "2ca4f151adc421cab0efa22daa9405c31c164c9e44896e124f963de01bfe00f0"
+    },
+    {
+      "source": "12_工程执行/task_packets/F05/TASK.md",
+      "current": "12_工程执行/task_packets/F05/TASK.md",
+      "result": "CHANGED",
+      "sourceSha256": "37fca10cf731322fb1e0687df6a9bb4f3a7c54b3449ebb5e2e708ee15c808101",
+      "currentSha256": "4d2ba676606da22b34a35388e2cdbe0195182d7b289e450d9319c394019ab220"
+    },
+    {
+      "source": "12_工程执行/task_packets/S05/acceptance.json",
+      "current": "12_工程执行/task_packets/S05/acceptance.json",
+      "result": "CHANGED",
+      "sourceSha256": "07b1e11932a41900a6715cccfd7abfcf3609ab3b576e0cdf889fcde8c1eaafef",
+      "currentSha256": "e7e4109cb4d364f2c022dba19c445820bd4e8e0407c5b492008b8819672bc8e6"
+    },
+    {
+      "source": "12_工程执行/task_packets/S05/TASK.html",
+      "current": "12_工程执行/task_packets/S05/TASK.html",
+      "result": "CHANGED",
+      "sourceSha256": "6324f8100120a8c9f846667ef7564f83d23e8bc6d1c7569f57f26c0f4af3594a",
+      "currentSha256": "a897b135887dd5c59744becbef0e6bc9874ee4c5d443c55b4e93e94c3cc5a27a"
+    },
+    {
+      "source": "12_工程执行/task_packets/S05/openapi.yaml",
+      "current": "12_工程执行/task_packets/S05/openapi.yaml",
+      "result": "CHANGED",
+      "sourceSha256": "78dd60b984140fa8346d9c8bd14e28167620dcc1a4411238dde3f9fe533e1856",
+      "currentSha256": "8661d80cd14b3acd65d625e8395c4671aeb64581ab309b937d2b5f919bfd0e23"
+    },
+    {
+      "source": "12_工程执行/task_packets/S05/TASK.md",
+      "current": "12_工程执行/task_packets/S05/TASK.md",
+      "result": "CHANGED",
+      "sourceSha256": "f2a95eed643ecb5749a958dcde0e333794951da0b54d78361e818bbdb98b92dd",
+      "currentSha256": "356e1e29392dbbecff249354195a5587c022b8a4ab754b85be198fe01d4d8299"
+    },
+    {
+      "source": "12_工程执行/task_packets/C02/acceptance.json",
+      "current": "12_工程执行/task_packets/C02/acceptance.json",
+      "result": "CHANGED",
+      "sourceSha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "currentSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "source": "12_工程执行/task_packets/C02/TASK.html",
+      "current": "12_工程执行/task_packets/C02/TASK.html",
+      "result": "CHANGED",
+      "sourceSha256": "3108875b0dcdac5e44002832a7e6c792842fd55a94e1516b8b25ccd767526a0d",
+      "currentSha256": "32d52225046fa0d36c8b1a06dc619fda5039afab413fdf8d69b97fac8d092a8d"
+    },
+    {
+      "source": "12_工程执行/task_packets/C02/openapi.yaml",
+      "current": "12_工程执行/task_packets/C02/openapi.yaml",
+      "result": "CHANGED",
+      "sourceSha256": "3a7232267f2e8a563536a8440781052439cd16ba4f0b107e6ec1a43a49692435",
+      "currentSha256": "d74f2264a52f0f801b1ca4c3366c1668d379281559fc059e18b3fc2691664641"
+    },
+    {
+      "source": "12_工程执行/task_packets/C02/TASK.md",
+      "current": "12_工程执行/task_packets/C02/TASK.md",
+      "result": "CHANGED",
+      "sourceSha256": "9cfcc59699605613c3f46bad470f47a7affb83bf0c491b44d44bee317dcb0b9e",
+      "currentSha256": "4e6a53d537fa3463590fb43d17844bdd69dc2e19af237ba4379ecc73a57d2e12"
+    },
+    {
+      "source": "12_工程执行/task_packets/C04/acceptance.json",
+      "current": "12_工程执行/task_packets/C04/acceptance.json",
+      "result": "CHANGED",
+      "sourceSha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "currentSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "source": "12_工程执行/task_packets/C04/TASK.html",
+      "current": "12_工程执行/task_packets/C04/TASK.html",
+      "result": "CHANGED",
+      "sourceSha256": "5003766ccf3714acbc67ec21ac646995479fac8bbd31e53e6834d899823716ff",
+      "currentSha256": "010a8fdc7e2c9f614ebb01f84d34c1db6e1872052a7e48e1ba8f85670b762d0d"
+    },
+    {
+      "source": "12_工程执行/task_packets/C04/openapi.yaml",
+      "current": "12_工程执行/task_packets/C04/openapi.yaml",
+      "result": "CHANGED",
+      "sourceSha256": "847f7056b1708c145f1cb3ec8aa9e81f708c91c82a3f537bdc717464b485c4c9",
+      "currentSha256": "be4cfe89185a02c4076e3113bc44578bbf61d13022519c2982b18d4e34c6e860"
+    },
+    {
+      "source": "12_工程执行/task_packets/C04/TASK.md",
+      "current": "12_工程执行/task_packets/C04/TASK.md",
+      "result": "CHANGED",
+      "sourceSha256": "6e52978aa6c4f44215000f2ca9d28f4b9d18e8153f18dac6f0b7f116e3789ba5",
+      "currentSha256": "d3444db3918f9c97aa19397956cafeca863cd236862f012c324c53723c9da8f7"
+    },
+    {
+      "source": "12_工程执行/task_packets/N02/acceptance.json",
+      "current": "12_工程执行/task_packets/N02/acceptance.json",
+      "result": "CHANGED",
+      "sourceSha256": "b46a35f9ec5cf057758239a2a534aa6f5fc2403c08ec119411ff64715b0d8bca",
+      "currentSha256": "a06cfae52532eef376dc854ff541729e8f45523079f53eb21fb1efd5a192ef74"
+    },
+    {
+      "source": "12_工程执行/task_packets/N02/TASK.html",
+      "current": "12_工程执行/task_packets/N02/TASK.html",
+      "result": "CHANGED",
+      "sourceSha256": "c47824e37ee1b632d25500161e328ed8824828c785e3ef3d066fff8059852d6f",
+      "currentSha256": "f0fcc8eef3b8dc002311dae036578920083fa4303583e6025ef83790fe77c7b9"
+    },
+    {
+      "source": "12_工程执行/task_packets/N02/openapi.yaml",
+      "current": "12_工程执行/task_packets/N02/openapi.yaml",
+      "result": "CHANGED",
+      "sourceSha256": "0d6983f0661b78982eb62c0366086834501ae94fc7106bc0adf0830ade356109",
+      "currentSha256": "a42790f2c3081a55844ce9c18d134be42637b197aade9846d50658d389b8a12b"
+    },
+    {
+      "source": "12_工程执行/task_packets/N02/TASK.md",
+      "current": "12_工程执行/task_packets/N02/TASK.md",
+      "result": "CHANGED",
+      "sourceSha256": "d068ddcc09c1bb2efb58c9be88e881438f66909723818d6e254380b754a37233",
+      "currentSha256": "562ae75600a17b66df3d60d66089aa8b5e1f9805c2568188897fb64d27af599b"
+    },
+    {
+      "source": "12_工程执行/task_packets/E04/acceptance.json",
+      "current": "12_工程执行/task_packets/E04/acceptance.json",
+      "result": "CHANGED",
+      "sourceSha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "currentSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "source": "12_工程执行/task_packets/E04/TASK.html",
+      "current": "12_工程执行/task_packets/E04/TASK.html",
+      "result": "CHANGED",
+      "sourceSha256": "9eae435e3c289a09cf6e7746a6403a52f14bdc8d7d6203fe4e4610c56bf5b7d9",
+      "currentSha256": "ec3295d26c071ed562f4614156086b8bf1f5c1ec407a96f594435bb8b972a541"
+    },
+    {
+      "source": "12_工程执行/task_packets/E04/openapi.yaml",
+      "current": "12_工程执行/task_packets/E04/openapi.yaml",
+      "result": "CHANGED",
+      "sourceSha256": "91ad3fc933278aa7ddf5eaefe4a5a8a50f08f0c2b1450ee46c59eee1772b758f",
+      "currentSha256": "4308f2ed41cb638967e57045d4b948cc3d3ba4fcd64e7073f649c81cd6935be4"
+    },
+    {
+      "source": "12_工程执行/task_packets/E04/TASK.md",
+      "current": "12_工程执行/task_packets/E04/TASK.md",
+      "result": "CHANGED",
+      "sourceSha256": "cb7784322a0bf0c26b7847e272303f540691569f9199f815222e08c3f1f2e1db",
+      "currentSha256": "1668d62497ff8f4f5338dcecbb35b186861831d0e76373ad8a49c58b516e8332"
+    },
+    {
+      "source": "12_工程执行/task_packets/E02/acceptance.json",
+      "current": "12_工程执行/task_packets/E02/acceptance.json",
+      "result": "CHANGED",
+      "sourceSha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "currentSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "source": "12_工程执行/task_packets/E02/TASK.html",
+      "current": "12_工程执行/task_packets/E02/TASK.html",
+      "result": "CHANGED",
+      "sourceSha256": "594a666af6058e7de92b42e921d9cbd32bced2357af79dbc69461b555584fc52",
+      "currentSha256": "86cc58e03df1424b359c92a345361516b850ac18331dec9b2246c77617b2c033"
+    },
+    {
+      "source": "12_工程执行/task_packets/E02/openapi.yaml",
+      "current": "12_工程执行/task_packets/E02/openapi.yaml",
+      "result": "CHANGED",
+      "sourceSha256": "23effd6130766c2d7d45378d1d8a647c7051a9688fd87f78ea481797f066cb47",
+      "currentSha256": "028a412991cb9671f2ee470e107a4410c4dbf3ccad0433645e30cc5b44894ec8"
+    },
+    {
+      "source": "12_工程执行/task_packets/E02/TASK.md",
+      "current": "12_工程执行/task_packets/E02/TASK.md",
+      "result": "CHANGED",
+      "sourceSha256": "bd671334d5cc44522ff4b7b799ad2c246b2111ccda6eeedec7576501be2ccd0a",
+      "currentSha256": "756676b9d9878ccdc33f73ca81b4df2bd7ba5459e0e4260afe26b962f23b6ba8"
+    },
+    {
+      "source": "12_工程执行/task_packets/A03/acceptance.json",
+      "current": "12_工程执行/task_packets/A03/acceptance.json",
+      "result": "CHANGED",
+      "sourceSha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "currentSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "source": "12_工程执行/task_packets/A03/TASK.html",
+      "current": "12_工程执行/task_packets/A03/TASK.html",
+      "result": "CHANGED",
+      "sourceSha256": "af99fbc830b1f9cd49bde04e11770046e2658a45e153514d96ca681eaf361347",
+      "currentSha256": "8d81986a0af07e0d04f29e60af280f093575823b89d47a84fb1f4fb44ae784b4"
+    },
+    {
+      "source": "12_工程执行/task_packets/A03/openapi.yaml",
+      "current": "12_工程执行/task_packets/A03/openapi.yaml",
+      "result": "CHANGED",
+      "sourceSha256": "73669274e499186e2427b6133d6ee682b68586866c748d09f1a1ff8c03dd9f1e",
+      "currentSha256": "21f8326c11892a2bdfda1f982c4be7c8197f1c629b024a7d61fb01c81c0e3b51"
+    },
+    {
+      "source": "12_工程执行/task_packets/A03/TASK.md",
+      "current": "12_工程执行/task_packets/A03/TASK.md",
+      "result": "CHANGED",
+      "sourceSha256": "b3026476013ef5bee9087fdccfd6a5a9b80003cef48ade8669ebf87d2bf94dae",
+      "currentSha256": "a9ce7bb4942003b175d36f87dd256480c15f77af6099cf047c82accc97a2d1ba"
+    },
+    {
+      "source": "12_工程执行/task_packets/I03/acceptance.json",
+      "current": "12_工程执行/task_packets/I03/acceptance.json",
+      "result": "CHANGED",
+      "sourceSha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "currentSha256": "5385d20794e8f32eec3b5ff92c587579174326da996912ccc9bfde04897d2994"
+    },
+    {
+      "source": "12_工程执行/task_packets/I03/TASK.html",
+      "current": "12_工程执行/task_packets/I03/TASK.html",
+      "result": "CHANGED",
+      "sourceSha256": "6cf837aad5321c4cfd44f6203c94ad772d028c386016c46d566efba212285ce5",
+      "currentSha256": "1aa581ab46f40c06dfc00b059b783829706f7f5aa95c75c9cebb482433c0a83c"
+    },
+    {
+      "source": "12_工程执行/task_packets/I03/openapi.yaml",
+      "current": "12_工程执行/task_packets/I03/openapi.yaml",
+      "result": "CHANGED",
+      "sourceSha256": "666feea226a84b607eb91b7969cbb143000f04c4a0bf0f3ad04973bb9efe83c2",
+      "currentSha256": "3c2fb61c377047fd3afb5c23de45115c8a564bf3800fc680259f3cde20bcbb1b"
+    },
+    {
+      "source": "12_工程执行/task_packets/I03/TASK.md",
+      "current": "12_工程执行/task_packets/I03/TASK.md",
+      "result": "CHANGED",
+      "sourceSha256": "0381af768d7aa0c2393b7f2141e86c12a016550d2e065e1dcd33d5d74b455786",
+      "currentSha256": "9b0aeb17ed8bb7469eebc4c94677bfadb5fd102d063593061b970172e3d9c739"
+    },
+    {
+      "source": "12_工程执行/task_packets/S01/acceptance.json",
+      "current": "12_工程执行/task_packets/S01/acceptance.json",
+      "result": "CHANGED",
+      "sourceSha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "currentSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "source": "12_工程执行/task_packets/S01/TASK.html",
+      "current": "12_工程执行/task_packets/S01/TASK.html",
+      "result": "CHANGED",
+      "sourceSha256": "7c604a932bef45cdfc85d36277d874a5d7ec6767b505b375f1209394b6ccc529",
+      "currentSha256": "3631ed5badb4f0dabe293255ec15d1454a1937e0d46c3958eeb530f112f89f13"
+    },
+    {
+      "source": "12_工程执行/task_packets/S01/openapi.yaml",
+      "current": "12_工程执行/task_packets/S01/openapi.yaml",
+      "result": "CHANGED",
+      "sourceSha256": "52c2c4c8744e6d81d32cfd55cae15b179f5caf5838bf88d0d7e15a4747b73e7e",
+      "currentSha256": "fb11055f9c44bc4dc8f586a31110122d2af717e10227d6eb2d4a2c30bd24125e"
+    },
+    {
+      "source": "12_工程执行/task_packets/S01/TASK.md",
+      "current": "12_工程执行/task_packets/S01/TASK.md",
+      "result": "CHANGED",
+      "sourceSha256": "66b651b339f4531400c173a5307ee3383f7ebae9890c14ec2f81458c37ac22f1",
+      "currentSha256": "d3e8fb5b77f234fcf6ff36d0565d09f3ab333d4925a223c483471ab85bbd94f7"
+    },
+    {
+      "source": "12_工程执行/task_packets/I05/acceptance.json",
+      "current": "12_工程执行/task_packets/I05/acceptance.json",
+      "result": "CHANGED",
+      "sourceSha256": "da8cb0989e06f0aca51a9731df096e1af0c949819a04181bed702828bc08b5df",
+      "currentSha256": "18a58bb66e6eb54d6325d941072994e519178c27c4614c73706ceb8feab150a6"
+    },
+    {
+      "source": "12_工程执行/task_packets/I05/TASK.html",
+      "current": "12_工程执行/task_packets/I05/TASK.html",
+      "result": "CHANGED",
+      "sourceSha256": "f826cc314b241edc19d27f42e532e456401eb708003494ddbfdac655484d4cb9",
+      "currentSha256": "1a1beea4cd8631cc8d790223fe320e57a4957822b56a19432933d98398536bd4"
+    },
+    {
+      "source": "12_工程执行/task_packets/I05/openapi.yaml",
+      "current": "12_工程执行/task_packets/I05/openapi.yaml",
+      "result": "CHANGED",
+      "sourceSha256": "635f4e901ca8c2928cb58e791bb15d3b08527355b394ad567b97ff3f212cd438",
+      "currentSha256": "cd15a8c5c712ccc7df9fa1c77ae97bf0bc2926149d5afc8e80f97c91cce4e87d"
+    },
+    {
+      "source": "12_工程执行/task_packets/I05/TASK.md",
+      "current": "12_工程执行/task_packets/I05/TASK.md",
+      "result": "CHANGED",
+      "sourceSha256": "a31e605206818497427e7f10c6b4c7ce1fe60b37c929f7d4f6c3b5392f91b1f3",
+      "currentSha256": "89ebc5ac65325ffbe64e83dbdc35a307d5ca72dd3488f42a1717904a74f6054d"
+    },
+    {
+      "source": "12_工程执行/task_packets/O02/acceptance.json",
+      "current": "12_工程执行/task_packets/O02/acceptance.json",
+      "result": "CHANGED",
+      "sourceSha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "currentSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "source": "12_工程执行/task_packets/O02/TASK.html",
+      "current": "12_工程执行/task_packets/O02/TASK.html",
+      "result": "CHANGED",
+      "sourceSha256": "91af20ed931696343a120dfd2bb9e1427664564fe8f438e57d1e3ed224fafa89",
+      "currentSha256": "736fea2efdd12ed2cd87ee123c11437cd1ea54de6707a67ae9eeff04d4763a74"
+    },
+    {
+      "source": "12_工程执行/task_packets/O02/openapi.yaml",
+      "current": "12_工程执行/task_packets/O02/openapi.yaml",
+      "result": "CHANGED",
+      "sourceSha256": "81e52db88fdecb779cc1071c590ae12dfe6cb41824e516522793616ea7142442",
+      "currentSha256": "008415de56caa50d7fa814ead915681b4052e2943fa67655e1697a40e119ea3d"
+    },
+    {
+      "source": "12_工程执行/task_packets/O02/TASK.md",
+      "current": "12_工程执行/task_packets/O02/TASK.md",
+      "result": "CHANGED",
+      "sourceSha256": "ac0b87a435484ec8947f5c84f4b417566947a8a67dc2fee10bf75a1553659fcf",
+      "currentSha256": "e0900a1dd04753d4e8a31e7f75141f0b4f8f2815c293a91516ba21cde377d0b6"
+    },
+    {
+      "source": "12_工程执行/task_packets/D06/acceptance.json",
+      "current": "12_工程执行/task_packets/D06/acceptance.json",
+      "result": "CHANGED",
+      "sourceSha256": "a6d9b7126b25f89f659d4892b4132b3fb3431195eca429987f786bc1749f5b90",
+      "currentSha256": "95fa66e9c26726bb243f46a8774da661ded46be079f0f587ef9af0c17a279d5f"
+    },
+    {
+      "source": "12_工程执行/task_packets/D06/TASK.html",
+      "current": "12_工程执行/task_packets/D06/TASK.html",
+      "result": "CHANGED",
+      "sourceSha256": "693c01e85585eb1a4da04897d676a2f73eb427d8bf11b9604c2f2d3c3bd75869",
+      "currentSha256": "c175bab7cc44c41674115b42757f3e6c1c61faa9a9d6333be635df9bd25f4d1a"
+    },
+    {
+      "source": "12_工程执行/task_packets/D06/openapi.yaml",
+      "current": "12_工程执行/task_packets/D06/openapi.yaml",
+      "result": "CHANGED",
+      "sourceSha256": "4730e2d764f174b5dfe3e942cdb7d65df2a6d447ad5ce078b6bd986939939b3f",
+      "currentSha256": "9ca6f4d6466047a5b935b50ee2838639a737c44a2ece481cbc4bae83d48f5abb"
+    },
+    {
+      "source": "12_工程执行/task_packets/D06/TASK.md",
+      "current": "12_工程执行/task_packets/D06/TASK.md",
+      "result": "CHANGED",
+      "sourceSha256": "c0c32f703af617f79a5255cd65d6a58f76eb7f53d5ea7e67e15630e463ac5479",
+      "currentSha256": "197bcdf1a04a332a742340ba72032ebf327757d43dc7d8cd7033d4c4681d8f4d"
+    },
+    {
+      "source": "12_工程执行/task_packets/F02/acceptance.json",
+      "current": "12_工程执行/task_packets/F02/acceptance.json",
+      "result": "CHANGED",
+      "sourceSha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "currentSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "source": "12_工程执行/task_packets/F02/TASK.html",
+      "current": "12_工程执行/task_packets/F02/TASK.html",
+      "result": "CHANGED",
+      "sourceSha256": "aab1657deb4f8f596f2611d71bc78f689f767f4aa6025a2510cfa057cef94d60",
+      "currentSha256": "ae60352d86ab50492238c88d48bfbc7b8443fe584a392fa482870596afa6b8ed"
+    },
+    {
+      "source": "12_工程执行/task_packets/F02/openapi.yaml",
+      "current": "12_工程执行/task_packets/F02/openapi.yaml",
+      "result": "CHANGED",
+      "sourceSha256": "a61da8f9f4eb3206778d03cdc585c7a4cf0e10be1110026751593e03be3ea234",
+      "currentSha256": "83873b04ed5ac2eac8ac63e30fac4e9109fbca553ba8a29bbe2168f665552814"
+    },
+    {
+      "source": "12_工程执行/task_packets/F02/TASK.md",
+      "current": "12_工程执行/task_packets/F02/TASK.md",
+      "result": "CHANGED",
+      "sourceSha256": "ed04a0292d683e234d4ff066255bf07b75d2e7b887064106cf4a6d6e12e59bbd",
+      "currentSha256": "9fa5be488aaf72ae46ceae841cc4ce36705e483760bfa16971a8a05ac9bf01bb"
+    },
+    {
+      "source": "12_工程执行/task_packets/F04/acceptance.json",
+      "current": "12_工程执行/task_packets/F04/acceptance.json",
+      "result": "CHANGED",
+      "sourceSha256": "e177cdc47956206841e4c96828421a243f93c34d9a34011e0cd9cc1962987c88",
+      "currentSha256": "245ac6676617e3e2a89dc4fa310667746098a9bb94798bb775216eaf25e4f327"
+    },
+    {
+      "source": "12_工程执行/task_packets/F04/TASK.html",
+      "current": "12_工程执行/task_packets/F04/TASK.html",
+      "result": "CHANGED",
+      "sourceSha256": "c428350bfd8a614ca86889e2e6fd8ccfd25e0f710901adc51d443341e077b63f",
+      "currentSha256": "2626c31b0e42c37f89ddd471b9edba47161388fcad2d21d76754048eb6439ba7"
+    },
+    {
+      "source": "12_工程执行/task_packets/F04/openapi.yaml",
+      "current": "12_工程执行/task_packets/F04/openapi.yaml",
+      "result": "CHANGED",
+      "sourceSha256": "89fe6b73704e39c07e78e774c5cb202bbe6052fd94ccc231531da19b5ce91f60",
+      "currentSha256": "b6234f7ef12fe44ecdf2451737fbc1e0eca70a60e055b1d36f2d7a25572cb81a"
+    },
+    {
+      "source": "12_工程执行/task_packets/F04/TASK.md",
+      "current": "12_工程执行/task_packets/F04/TASK.md",
+      "result": "CHANGED",
+      "sourceSha256": "168ec62cbfbf3a8ad12f2d31472c0c6cf2683fd730ffae462db12c5a67a5621e",
+      "currentSha256": "68bfbe8286bb95e9756144a6606d29e57f34a5e59c3a3f08bd08fe88981e3e53"
+    },
+    {
+      "source": "14_工程模板/miniapp/src/services/phone-flow.ts",
+      "current": "14_工程模板/miniapp/src/services/phone-flow.ts",
+      "result": "CHANGED",
+      "sourceSha256": "33e8904fb31a861b0d7ba29b88111b18c8385f77fd5e39cf8aff7836c38266cb",
+      "currentSha256": "cf4fba002cc497aa74f3d06f44ebdaa2c9e37152a220f5cee393996f169bd11e"
+    },
+    {
+      "source": "14_工程模板/miniapp/src/api/types.ts",
+      "current": "14_工程模板/miniapp/src/api/types.ts",
+      "result": "CHANGED",
+      "sourceSha256": "7c1bea326b9bd0b7e490b32b2f0832b61c87c98d2874adecca571021024cd161",
+      "currentSha256": "79441794f38aee76acd0d75fe73afd592ecd74318673aa5fface774b1b492d50"
+    },
+    {
+      "source": "14_工程模板/integration-java/src/test/java/com/xinyi/web/viit/ViHttpSuiteIT.java",
+      "current": "14_工程模板/integration-java/src/test/java/com/xinyi/web/viit/ViHttpSuiteIT.java",
+      "result": "CHANGED",
+      "sourceSha256": "de3190a5fe9051f8bbe5d6acf846336e39b319f365763394081d7ee822f02de5",
+      "currentSha256": "d9c87b6051433abae84675becd2d650daa2a6f2a46183dc608bbf66728b0b5ec"
+    },
+    {
+      "source": "13_真实集成测试/provider_simulator/README.html",
+      "current": "13_真实集成测试/provider_simulator/README.html",
+      "result": "CHANGED",
+      "sourceSha256": "bef75355450bff11af6db7f9d82b4d5f2a6dbc4448b26cf8a8dba331594a6c56",
+      "currentSha256": "e777f83c4e6d0e7ebe77d5cf37ee741c6b55ff94e8ade8ff35c6bf0e239b4917"
+    },
+    {
+      "source": "13_真实集成测试/database/test_schema.py",
+      "current": "13_真实集成测试/database/test_schema.py",
+      "result": "CHANGED",
+      "sourceSha256": "4fbe2e6352dad08b7378b3694e806e910c8f2c2f9d91920856faa3b3f52a8bdb",
+      "currentSha256": "2481f0e7a8376b4afc01fddfacdde5636ee3f187de1d513b1da9c892a1173285"
+    },
+    {
+      "source": "13_真实集成测试/live/conftest.py",
+      "current": "13_真实集成测试/live/conftest.py",
+      "result": "CHANGED",
+      "sourceSha256": "abd8468144801ae6fb74ac2b94d88ac37574150ad5d436810c906f376b8f3f59",
+      "currentSha256": "7ca98e0c726e37e96d46214d1d1776bc59e13bad0f164979898fee5216bd1395"
+    },
+    {
+      "source": "13_真实集成测试/live/test_employee_identity.py",
+      "current": "13_真实集成测试/live/test_employee_identity.py",
+      "result": "CHANGED",
+      "sourceSha256": "e5b35a76a56c3a5a9424db968b241a2f5badf131a218449a4b05b6dc85c0bc05",
+      "currentSha256": "205cba6521550612e6bfc9406c6461efa768ce6b557942d2de26e5309f3d6189"
+    },
+    {
+      "source": "02_UI/src/v4_data.js",
+      "current": "02_UI/src/v4_data.js",
+      "result": "CHANGED",
+      "sourceSha256": "aca1a9afcfe1b55188c9264730467456aa8342296191bf53ce1f8ff3cfe6222b",
+      "currentSha256": "6aac1add1b9ead1557ac681abb71990d7c057af049abea813dd305b24af7a06f"
+    },
+    {
+      "source": "02_UI/src/shell.html",
+      "current": "02_UI/src/shell.html",
+      "result": "CHANGED",
+      "sourceSha256": "17ebb2f08c0fb733da3762d60c921cc5c97fbaac332a623276ac1dc70a83f0ff",
+      "currentSha256": "50b9737ff0f0470167647782b029d8607b7e8deeb79ff746f4bfbe7f96bf2d25"
+    },
+    {
+      "source": "02_UI/src/v62_identity.js",
+      "result": "REMOVED_OR_ARCHIVED"
+    },
+    {
+      "source": "02_UI/src/v62_interactions.js",
+      "result": "REMOVED_OR_ARCHIVED"
+    },
+    {
+      "source": "02_UI/src/icons.js",
+      "current": "02_UI/src/icons.js",
+      "result": "CHANGED",
+      "sourceSha256": "12a7ae351a6c0eec3cade0993edc890343733e4f9f43cc49c8b50364154782e2",
+      "currentSha256": "94906320084cf03d5f4e99ada67c7fb05267012a4db3823c8701005b672e1e83"
+    },
+    {
+      "source": "02_UI/src/v42_model.js",
+      "current": "02_UI/src/v42_model.js",
+      "result": "CHANGED",
+      "sourceSha256": "1fd61fe67f542804bbd217ef6edf6fe0fc35d92106d5a5433ff1adea04aa9e32",
+      "currentSha256": "4000d3be519c4da651cc3dadcb934185bd71c204977b5b0d2107ef19eaf86a57"
+    },
+    {
+      "source": "02_UI/src/mobile_station.js",
+      "current": "02_UI/src/mobile_station.js",
+      "result": "CHANGED",
+      "sourceSha256": "cedc5791dd14c9c6202df7e05bfb9cb317dd1937f8ff55d6c8722feb639ab1b4",
+      "currentSha256": "3f92753936c778a1ed346231b2842bfb11e7b335941e201c1c2daa4ed465576a"
+    },
+    {
+      "source": "02_UI/src/catalog.js",
+      "current": "02_UI/src/catalog.js",
+      "result": "CHANGED",
+      "sourceSha256": "6cead67b9bc981a9db403acc8ece90c19868420188c6dcb3838f7ef2bf7a898a",
+      "currentSha256": "fef2d9c341def5c522d4bccc08c67b5f4cd55606862e789b9aa479976df92204"
+    },
+    {
+      "source": "02_UI/src/prd_pages.json",
+      "current": "02_UI/src/prd_pages.json",
+      "result": "CHANGED",
+      "sourceSha256": "a0f3df28e19a0829a53bdc74d60e5cfbac5ca98c5051969dbddfa8f64f46807b",
+      "currentSha256": "96cc5f18a34d666f148adafc849c0ecc86092f118291d3fd03dc280650ee3da8"
+    },
+    {
+      "source": "02_UI/src/data.js",
+      "current": "02_UI/src/data.js",
+      "result": "CHANGED",
+      "sourceSha256": "de3adfbda910d49c4176389fa55eb78eda5ef5326d40432c89c439815710ece1",
+      "currentSha256": "0873fc4fa5b4bf07b07cb74310b2876fa472b5917748286b7643c4326b254916"
+    },
+    {
+      "source": "02_UI/src/v5_pages.js",
+      "current": "02_UI/src/v5_pages.js",
+      "result": "CHANGED",
+      "sourceSha256": "ea67492ea37c4225cde9df35f8b7a6f920f1bccfac093c3fd068487172321be3",
+      "currentSha256": "bd4fdbe2033bcaed86793eb3d212d6b0e82cd25a917cdb5749da80618de7666c"
+    },
+    {
+      "source": "02_UI/src/mobile_owner.js",
+      "current": "02_UI/src/mobile_owner.js",
+      "result": "CHANGED",
+      "sourceSha256": "2b48834c0fa508ef93a140eba443dde1a34a74c705e7957ed9e87284fce666f1",
+      "currentSha256": "3d2bff5ca1337ecdebc3680c38f9dc4fc86f816fe29e16c6c03d57afc08e723f"
+    },
+    {
+      "source": "02_UI/src/app.js",
+      "current": "02_UI/src/app.js",
+      "result": "CHANGED",
+      "sourceSha256": "cd2f33a6968112ab9b76429151e443229ded4e6010651d6229f8048e16824fae",
+      "currentSha256": "686a9eb5c2707491efdd113125fe134a0d9672bfc4d3edc45402fedde4ea80cd"
+    },
+    {
+      "source": "02_UI/src/mobile_driver.js",
+      "current": "02_UI/src/mobile_driver.js",
+      "result": "CHANGED",
+      "sourceSha256": "e8a2fc857c93ff7a5f736b90ae7568e9c8a0234d4575588342c5b48f9f5d5bbe",
+      "currentSha256": "2f55221a96c6d6cde1cc05d1496d84c771ab76f4895801b37c91880debebc94a"
+    },
+    {
+      "source": "02_UI/src/desktop.js",
+      "current": "02_UI/src/desktop.js",
+      "result": "CHANGED",
+      "sourceSha256": "5f35f82bd4b979741dde7486d3e478c8f83952d8789b4a3eb9e53d6cf6fc6bc6",
+      "currentSha256": "7c003fa4dd41ff72374bbc6fb41b45fda92ca480446767fcf62adfc7076c073d"
+    },
+    {
+      "source": "02_UI/src/v41_model.js",
+      "current": "02_UI/src/v41_model.js",
+      "result": "CHANGED",
+      "sourceSha256": "f8b300842df0567e6719f6db2cdebbb0098862f11ccb80ef5ac09ed8e48b014e",
+      "currentSha256": "0a683d2db339548d11ed4c546bb703077203dc4aee5943c60a3a8931183b2b8e"
+    },
+    {
+      "source": "02_UI/src/v4_pages.js",
+      "current": "02_UI/src/v4_pages.js",
+      "result": "CHANGED",
+      "sourceSha256": "72e0bb98b7f732182acc533f05f12ac1b36604561022f0dfaeff600ec76d0ff1",
+      "currentSha256": "050d93d1e53452a8262b938b25f11cf234fd994c2b3f75735e4a2ce430c118b9"
+    },
+    {
+      "source": "02_UI/全量页面图/首屏/D05-rejected.png",
+      "current": "02_UI/全量页面图/首屏/D05-rejected.png",
+      "result": "CHANGED",
+      "sourceSha256": "85d185c1f0b3eb91c7ae29c76729b9050098ae453753f407181cf77f9f7cfa85",
+      "currentSha256": "ec4a3901bb2396d1fa4403a2f56ebfa93f86729a134fbb1531d5f27a873465c9"
+    },
+    {
+      "source": "02_UI/全量页面图/首屏/B26.png",
+      "current": "02_UI/全量页面图/首屏/B26.png",
+      "result": "CHANGED",
+      "sourceSha256": "a9f4d14047434da128a5333b29a3ba4d64f4f37bb52c0f401e5cb046b6148369",
+      "currentSha256": "702b21baea6bc2314f7c2db5151685d9701c4f3c51a467ce7bd5d71db69eaa28"
+    },
+    {
+      "source": "02_UI/全量页面图/首屏/D05-passed.png",
+      "current": "02_UI/全量页面图/首屏/D05-passed.png",
+      "result": "CHANGED",
+      "sourceSha256": "79f26df34f9c108ceee02d6b3c9bf2060d37733b30a314d0bf99fc6da9533517",
+      "currentSha256": "325e804d237eb804810a51250a534a74999e92d1d1ceb2873e1d30ead3dae321"
+    },
+    {
+      "source": "02_UI/全量页面图/首屏/O29-conflict.png",
+      "current": "02_UI/全量页面图/首屏/O29-conflict.png",
+      "result": "CHANGED",
+      "sourceSha256": "8eea0a1a46d92d023f1a3041f4364048bd023d86eeec0533c76848acc778faac",
+      "currentSha256": "b1773f3ec91cd728e34121c663bb9d4f6d04bc2d0344e9ae8767e350a4364441"
+    },
+    {
+      "source": "02_UI/全量页面图/首屏/B38-zero.png",
+      "current": "02_UI/全量页面图/首屏/B38-zero.png",
+      "result": "CHANGED",
+      "sourceSha256": "e9bb3e4e14781247ba9e3f7fc307f21b3a78ea21d75af9f2ccf110dd0fa35a62",
+      "currentSha256": "c45222450b75ed86f65f337722040af097570deefcb2f0c7a81ce603ecd13b59"
+    },
+    {
+      "source": "02_UI/全量页面图/首屏/D05.png",
+      "current": "02_UI/全量页面图/首屏/D05.png",
+      "result": "CHANGED",
+      "sourceSha256": "fa71f00746109072cdac036ca2c8780bab6983f29ac79912f24c031cb1e16783",
+      "currentSha256": "b559f74a1f99ef2621dfcbdb97153f0ff5b737ce9dd50e9b8637ff150a0db34e"
+    },
+    {
+      "source": "02_UI/全量页面图/首屏/B36-rematch.png",
+      "current": "02_UI/全量页面图/首屏/B36-rematch.png",
+      "result": "CHANGED",
+      "sourceSha256": "e20b91a15624b55e9f7298e7ab62d2851003b9c7f7451bff2a4fac3d9ce33ad0",
+      "currentSha256": "75cb8c39a7f6e53857ab4590d7b31e4729c0ee5b16607fcc3035eb4ea28ed93f"
+    },
+    {
+      "source": "02_UI/全量页面图/首屏/B38-price.png",
+      "current": "02_UI/全量页面图/首屏/B38-price.png",
+      "result": "CHANGED",
+      "sourceSha256": "6b904c58cd9ecb260aa149c988875e0dd6c6b5528b321424dcb6252104fe36d3",
+      "currentSha256": "6b5bc94066fd6bcb222fbbbdedc0d0cad4a54317df29f44e2d87d7aec187b8eb"
+    },
+    {
+      "source": "02_UI/全量页面图/首屏/B26-unlinked.png",
+      "current": "02_UI/全量页面图/首屏/B26-unlinked.png",
+      "result": "CHANGED",
+      "sourceSha256": "61d2342e0d5ef9c42847b4f90106a13b79da472bd5cfecf7872c197158c7d71b",
+      "currentSha256": "0f98dcc928d39bf63ea4470d3b824ff597c6bf5fa42764ba099cfcf87358080e"
+    },
+    {
+      "source": "02_UI/全量页面图/首屏/O25.png",
+      "current": "02_UI/全量页面图/首屏/O25.png",
+      "result": "CHANGED",
+      "sourceSha256": "74ab1d6ff802471c41f6fc847e7dc1da275bbce6649b7267d5321cc12358d690",
+      "currentSha256": "8d72c61e9d90c0dc0e6b5294d1b53231d5a25f1d9d3ee767b0c705fb3e236db9"
+    },
+    {
+      "source": "02_UI/全量页面图/首屏/B26-revoke.png",
+      "current": "02_UI/全量页面图/首屏/B26-revoke.png",
+      "result": "CHANGED",
+      "sourceSha256": "a9f4d14047434da128a5333b29a3ba4d64f4f37bb52c0f401e5cb046b6148369",
+      "currentSha256": "03315fa197c5aae06f6b2cfec8f645ae2814bebafcd0863cf63e466bf03f6e8e"
+    },
+    {
+      "source": "02_UI/全量页面图/首屏/U02.png",
+      "current": "02_UI/全量页面图/首屏/U02.png",
+      "result": "CHANGED",
+      "sourceSha256": "b42394f43c05eb3333f68ed0060faf99c9b6ad19533842aa3a7d6a4f65438a13",
+      "currentSha256": "bc163418f328a12a029e256c053b05ca6d16cab89277f634f946160dc43996f5"
+    },
+    {
+      "source": "02_UI/全量页面图/首屏/O29-staff.png",
+      "current": "02_UI/全量页面图/首屏/O29-staff.png",
+      "result": "CHANGED",
+      "sourceSha256": "8eea0a1a46d92d023f1a3041f4364048bd023d86eeec0533c76848acc778faac",
+      "currentSha256": "b1773f3ec91cd728e34121c663bb9d4f6d04bc2d0344e9ae8767e350a4364441"
+    },
+    {
+      "source": "02_UI/全量页面图/首屏/B38-unpriced.png",
+      "current": "02_UI/全量页面图/首屏/B38-unpriced.png",
+      "result": "CHANGED",
+      "sourceSha256": "f8f5ef2fd5ffe26108d1951d29c07fefaeb2ce132ce999d23d11c36cf53f07d0",
+      "currentSha256": "9ebbe6a7e5a3c0e0d97f9995335ba740001cec1f249e476732df326df4659ff6"
+    },
+    {
+      "source": "02_UI/全量页面图/首屏/B38-price-empty.png",
+      "current": "02_UI/全量页面图/首屏/B38-price-empty.png",
+      "result": "CHANGED",
+      "sourceSha256": "51f6eb9dc3c9f10f8e5978515f6693f228c0d1b3cae112637107ad8f8321d6b9",
+      "currentSha256": "7391cdb7d05b4a25575a35f83be7648166da319e55ef16fb648f7c4c31d4e9cc"
+    },
+    {
+      "source": "02_UI/全量页面图/首屏/U02-unconfigured.png",
+      "current": "02_UI/全量页面图/首屏/U02-unconfigured.png",
+      "result": "CHANGED",
+      "sourceSha256": "01c65ccc84599a906466ade22e4af30df295289a428cbed1f74c0228d63d28d0",
+      "currentSha256": "50984ca99da474996016e1e26f16ef25866ad3ba9d89f5e45aa1a8f400e5a18c"
+    },
+    {
+      "source": "02_UI/全量页面图/首屏/D01.png",
+      "current": "02_UI/全量页面图/首屏/D01.png",
+      "result": "CHANGED",
+      "sourceSha256": "1c8fe8cc32146e2b4a7410455e6e18286d63b65723d0e1c531c59a21606fd13a",
+      "currentSha256": "9b97c8c35274721b2c3a4667a24cc8e64278a8ab16173406363b1fd95f9b0e55"
+    },
+    {
+      "source": "02_UI/全量页面图/首屏/B38-price-conflict.png",
+      "current": "02_UI/全量页面图/首屏/B38-price-conflict.png",
+      "result": "CHANGED",
+      "sourceSha256": "0c299f92fee90fe6a1893ed7ff36aec147e94cc5ae3c4bbf77a4bcf729806506",
+      "currentSha256": "dd920d43f6166ed3cb6f6e09426ed67c58297b76ecaaedc2156a592e6989d0dd"
+    },
+    {
+      "source": "02_UI/全量页面图/首屏/S01.png",
+      "current": "02_UI/全量页面图/首屏/S01.png",
+      "result": "CHANGED",
+      "sourceSha256": "cec440ec69e385848486d38dfbece3b54865a1465357b5427bd334a07a1aff51",
+      "currentSha256": "0ab36dce1c7236320785489a631e7067db2255cffef3bc6fc333a3afdfa6d293"
+    },
+    {
+      "source": "02_UI/全量页面图/首屏/O29-driver.png",
+      "current": "02_UI/全量页面图/首屏/O29-driver.png",
+      "result": "CHANGED",
+      "sourceSha256": "8eea0a1a46d92d023f1a3041f4364048bd023d86eeec0533c76848acc778faac",
+      "currentSha256": "b1773f3ec91cd728e34121c663bb9d4f6d04bc2d0344e9ae8767e350a4364441"
+    },
+    {
+      "source": "02_UI/全量页面图/首屏/O29.png",
+      "current": "02_UI/全量页面图/首屏/O29.png",
+      "result": "CHANGED",
+      "sourceSha256": "8eea0a1a46d92d023f1a3041f4364048bd023d86eeec0533c76848acc778faac",
+      "currentSha256": "b1773f3ec91cd728e34121c663bb9d4f6d04bc2d0344e9ae8767e350a4364441"
+    },
+    {
+      "source": "02_UI/全量页面图/首屏/S15.png",
+      "current": "02_UI/全量页面图/首屏/S15.png",
+      "result": "CHANGED",
+      "sourceSha256": "aa2b4ee596b0845f74bfd4ddc2f7c62cef9e667bd9308c35c66208b2c172fdea",
+      "currentSha256": "38a7c7064c8f966348c4dd037c26f314a11ced9c68b89c2772f66a2e5b8b9e37"
+    },
+    {
+      "source": "02_UI/全量页面图/首屏/O29-duplicate.png",
+      "current": "02_UI/全量页面图/首屏/O29-duplicate.png",
+      "result": "CHANGED",
+      "sourceSha256": "8eea0a1a46d92d023f1a3041f4364048bd023d86eeec0533c76848acc778faac",
+      "currentSha256": "b1773f3ec91cd728e34121c663bb9d4f6d04bc2d0344e9ae8767e350a4364441"
+    },
+    {
+      "source": "02_UI/全量页面图/首屏/S21.png",
+      "current": "02_UI/全量页面图/首屏/S21.png",
+      "result": "CHANGED",
+      "sourceSha256": "f47ce4a4f02390f0c00486a187cd279bafb041fbaff62b9ffd548b8bf1ae937b",
+      "currentSha256": "51e1e62cf98d9bc4ada9efaa78cd40a7b186fa7b86e83f463394319635826e46"
+    },
+    {
+      "source": "02_UI/全量页面图/首屏/U02-linked.png",
+      "current": "02_UI/全量页面图/首屏/U02-linked.png",
+      "result": "CHANGED",
+      "sourceSha256": "01c65ccc84599a906466ade22e4af30df295289a428cbed1f74c0228d63d28d0",
+      "currentSha256": "25a624cf4e63c8f68cec8a941792cdfc2236ec967b776a59680fb9c0b698c69a"
+    },
+    {
+      "source": "02_UI/全量页面图/首屏/B25.png",
+      "current": "02_UI/全量页面图/首屏/B25.png",
+      "result": "CHANGED",
+      "sourceSha256": "3a25f17f65f67a27d35f6a62b73f691ba7c712991516257f35eed3f6b301820b",
+      "currentSha256": "69aa9536cd984e704f63a3ce5b9ecf58aa6de328d3e638a5e4b83740f979ce4f"
+    },
+    {
+      "source": "02_UI/全量页面图/首屏/U01-unqualified.png",
+      "current": "02_UI/全量页面图/首屏/U01-unqualified.png",
+      "result": "CHANGED",
+      "sourceSha256": "239e075eb9b360248e932859fbbf89552a9840c6d48f385449ad8f450fa40da7",
+      "currentSha256": "3d178386edc810bebd6c524ef1c06f64e730dc16641fdd59ac14246c66ed3536"
+    },
+    {
+      "source": "02_UI/全量页面图/首屏/B36-revoke.png",
+      "current": "02_UI/全量页面图/首屏/B36-revoke.png",
+      "result": "CHANGED",
+      "sourceSha256": "779aba2f2ead2c0992c37441b857ccf8ed053a186f8fc7732d3fe0c83bca7115",
+      "currentSha256": "6cc2827dfa21c91deba45e0c3201b4950d7356a22aa5f94aaac2215425b22a85"
+    },
+    {
+      "source": "02_UI/全量页面图/首屏/U02-revoked.png",
+      "current": "02_UI/全量页面图/首屏/U02-revoked.png",
+      "result": "CHANGED",
+      "sourceSha256": "2733f2dff494f35d0725144c26ff142632a16531b18b7dada89697dc203679d7",
+      "currentSha256": "c873768430a000837f8af19d22b3e685e04fee4dc69c1e8caebe39788616d317"
+    },
+    {
+      "source": "02_UI/全量页面图/首屏/U01.png",
+      "current": "02_UI/全量页面图/首屏/U01.png",
+      "result": "CHANGED",
+      "sourceSha256": "239e075eb9b360248e932859fbbf89552a9840c6d48f385449ad8f450fa40da7",
+      "currentSha256": "3d178386edc810bebd6c524ef1c06f64e730dc16641fdd59ac14246c66ed3536"
+    },
+    {
+      "source": "02_UI/全量页面图/首屏/B36.png",
+      "current": "02_UI/全量页面图/首屏/B36.png",
+      "result": "CHANGED",
+      "sourceSha256": "d579e2207fed8a0ed9537a4fe69fb108a4c9a799478c485868c1bc6d41edef18",
+      "currentSha256": "01c690320a48a288222547422f7831de7502b4a4b52e7c9646581728aa22a213"
+    },
+    {
+      "source": "02_UI/全量页面图/首屏/B36-suspend.png",
+      "current": "02_UI/全量页面图/首屏/B36-suspend.png",
+      "result": "CHANGED",
+      "sourceSha256": "aea0c65d8df6d46476ee1d983081b69990543f06070c42346f999196f72122ce",
+      "currentSha256": "7222251697812710d89134b4e45317c0b462cfc544ee0497e643e55e05135051"
+    },
+    {
+      "source": "02_UI/全量页面图/首屏/O29-denied.png",
+      "current": "02_UI/全量页面图/首屏/O29-denied.png",
+      "result": "CHANGED",
+      "sourceSha256": "8eea0a1a46d92d023f1a3041f4364048bd023d86eeec0533c76848acc778faac",
+      "currentSha256": "b46992a3b5e537d2d5724a9dfd6f81a80dfc9c06751b0c07886c40c728b9fb21"
+    },
+    {
+      "source": "02_UI/全量页面图/首屏/B38-history.png",
+      "current": "02_UI/全量页面图/首屏/B38-history.png",
+      "result": "CHANGED",
+      "sourceSha256": "1033db51b31023725177ea1b59ae8dcb38d3281e014669b966e02dc82b01474f",
+      "currentSha256": "68df45dc9404996f5542d0f8105604eb86b8d41f95487ad4ea3319bfe8f3b2b4"
+    },
+    {
+      "source": "02_UI/全量页面图/首屏/U02-conflict.png",
+      "current": "02_UI/全量页面图/首屏/U02-conflict.png",
+      "result": "CHANGED",
+      "sourceSha256": "433927bf0f22bcfa2ab43db7ee40c82b99b8a1938f897a20f226f70e9876d68b",
+      "currentSha256": "29f1b15ea24a950b248f7a216f48bda36eb46049fbbfec0bd4f372e446cd3eac"
+    },
+    {
+      "source": "02_UI/全量页面图/首屏/D27.png",
+      "current": "02_UI/全量页面图/首屏/D27.png",
+      "result": "CHANGED",
+      "sourceSha256": "87eee96fb1fb977ffe6f8ff7ff3662592d4d31cee4b4c24df692633161372745",
+      "currentSha256": "9eaa09be586808ec2240d1fa1b20fb79f68bab04b477acb4ddf20e887b5675fb"
+    },
+    {
+      "source": "02_UI/全量页面图/首屏/O29-unconfigured.png",
+      "current": "02_UI/全量页面图/首屏/O29-unconfigured.png",
+      "result": "CHANGED",
+      "sourceSha256": "8eea0a1a46d92d023f1a3041f4364048bd023d86eeec0533c76848acc778faac",
+      "currentSha256": "b1773f3ec91cd728e34121c663bb9d4f6d04bc2d0344e9ae8767e350a4364441"
+    },
+    {
+      "source": "02_UI/全量页面图/完整内容/B38-self-review.png",
+      "current": "02_UI/全量页面图/完整内容/B38-self-review.png",
+      "result": "CHANGED",
+      "sourceSha256": "2b5cad00d10ef08c271bbeb8da05440939df851e6c9a45a0a783a6915b9e514d",
+      "currentSha256": "8ca1db4b426cfb7e0a355d2e0320d30419d0f03b11d8d2f7cc956f91a49f604d"
+    },
+    {
+      "source": "02_UI/全量页面图/完整内容/D05-rejected.png",
+      "current": "02_UI/全量页面图/完整内容/D05-rejected.png",
+      "result": "CHANGED",
+      "sourceSha256": "a31d08f79da327ee62553767c7ba015a2fec1e34b9fa21791429325fb1f1892a",
+      "currentSha256": "ec4a3901bb2396d1fa4403a2f56ebfa93f86729a134fbb1531d5f27a873465c9"
+    },
+    {
+      "source": "02_UI/全量页面图/完整内容/B26.png",
+      "current": "02_UI/全量页面图/完整内容/B26.png",
+      "result": "CHANGED",
+      "sourceSha256": "b03c96a08eb03d4aa520f33f95a062f225e4dade5f9aa571cf949afd41583c2f",
+      "currentSha256": "fd6653c1fcaf06b1f60dbdceb458a2d69496aae0b4d1b79c7ca1806e54c741d6"
+    },
+    {
+      "source": "02_UI/全量页面图/完整内容/B32-request.png",
+      "current": "02_UI/全量页面图/完整内容/B32-request.png",
+      "result": "CHANGED",
+      "sourceSha256": "9a2d86d5ba9c92a52d2df7be52266e60a0887a4c4201402c35987f6a7164469c",
+      "currentSha256": "816c980c1aa8cd8c8157f64e84531b53e33ec7b7054b9cc509accbc27c7caca6"
+    },
+    {
+      "source": "02_UI/全量页面图/完整内容/D05-passed.png",
+      "current": "02_UI/全量页面图/完整内容/D05-passed.png",
+      "result": "CHANGED",
+      "sourceSha256": "1fcd8ebddc2429854e4c0124b18dbd70eb87d56cc323743a0e7949092f9fb278",
+      "currentSha256": "325e804d237eb804810a51250a534a74999e92d1d1ceb2873e1d30ead3dae321"
+    },
+    {
+      "source": "02_UI/全量页面图/完整内容/B38-confirmed.png",
+      "current": "02_UI/全量页面图/完整内容/B38-confirmed.png",
+      "result": "CHANGED",
+      "sourceSha256": "c030b990efd8710e8be428032f928cbe9ae2e61a8da9154e72806592b433e729",
+      "currentSha256": "a7ad704db74dba1888f798246927586fa21e3b4dc023c341055e37ebd57d2570"
+    },
+    {
+      "source": "02_UI/全量页面图/完整内容/O29-conflict.png",
+      "current": "02_UI/全量页面图/完整内容/O29-conflict.png",
+      "result": "CHANGED",
+      "sourceSha256": "f65cec3e8bef4bad3c236640769422d7fa5976ae4aad6571585cb70644766b1e",
+      "currentSha256": "b1773f3ec91cd728e34121c663bb9d4f6d04bc2d0344e9ae8767e350a4364441"
+    },
+    {
+      "source": "02_UI/全量页面图/完整内容/B38-zero.png",
+      "current": "02_UI/全量页面图/完整内容/B38-zero.png",
+      "result": "CHANGED",
+      "sourceSha256": "93305a61ed7d4b2a55d29e8708fa75284d6e8d5ff9ef8ee751e05efeec16d77c",
+      "currentSha256": "d670db20c11125e5d2be6dfc6373d4168b360a305ac05dab8c36cb46bf4725b7"
+    },
+    {
+      "source": "02_UI/全量页面图/完整内容/D05.png",
+      "current": "02_UI/全量页面图/完整内容/D05.png",
+      "result": "CHANGED",
+      "sourceSha256": "5e46fa2d497240f3560357b64b5657b22b9ddc70550030274d9d3c8c60e0507e",
+      "currentSha256": "b559f74a1f99ef2621dfcbdb97153f0ff5b737ce9dd50e9b8637ff150a0db34e"
+    },
+    {
+      "source": "02_UI/全量页面图/完整内容/B38-adjust.png",
+      "current": "02_UI/全量页面图/完整内容/B38-adjust.png",
+      "result": "CHANGED",
+      "sourceSha256": "34f6e32963b820d10c50dfe2186195b742484c93ec43641420c793de524a7771",
+      "currentSha256": "2b52444f9943a32ae6d3022c7f31e1ad6bcc4e4f79fca121285781a47f764561"
+    },
+    {
+      "source": "02_UI/全量页面图/完整内容/B36-rematch.png",
+      "current": "02_UI/全量页面图/完整内容/B36-rematch.png",
+      "result": "CHANGED",
+      "sourceSha256": "d2b55a1c8cf9bcf7af4f2f49d2ba0be154fe18f8ba411e22b0f30643a55d4757",
+      "currentSha256": "a76c8f6ab5f0f950a48b0ea56c1c4cca01ddc883139d556ccec93d2a4ec2222e"
+    },
+    {
+      "source": "02_UI/全量页面图/完整内容/B38-readonly.png",
+      "current": "02_UI/全量页面图/完整内容/B38-readonly.png",
+      "result": "CHANGED",
+      "sourceSha256": "ea6523fdb36c4b2733bdddc189eca6f36a3e2d7d2c1c8bceb15ded43cf52332f",
+      "currentSha256": "b302a0b612997ed2c4fdf13b969af24803ba2f188806c3b2fb8150619d6a4607"
+    },
+    {
+      "source": "02_UI/全量页面图/完整内容/B38-price.png",
+      "current": "02_UI/全量页面图/完整内容/B38-price.png",
+      "result": "CHANGED",
+      "sourceSha256": "5facb148e0c402a080178ad30be00604381d978db585ee14c412cacdcc0bfd0a",
+      "currentSha256": "6eab15108913ae20678d2d5255fdb560362462381f22e91169fcaf13e5152040"
+    },
+    {
+      "source": "02_UI/全量页面图/完整内容/B26-unlinked.png",
+      "current": "02_UI/全量页面图/完整内容/B26-unlinked.png",
+      "result": "CHANGED",
+      "sourceSha256": "06f6a4c070fe93590d77ceb8a866809747ece2b95443d78dbc27f4bd190ac402",
+      "currentSha256": "f5f172f4f1e365acd17de00d3a54fb4f9a51c51fcfd910cea4e35ba0a651474d"
+    },
+    {
+      "source": "02_UI/全量页面图/完整内容/O25.png",
+      "current": "02_UI/全量页面图/完整内容/O25.png",
+      "result": "CHANGED",
+      "sourceSha256": "13b5c215b01d7e5b2a538003ac52f225de231a78bd688ccfa946f755ff42c2d9",
+      "currentSha256": "e1bfa8dc72de3f80d5d4b613e974d26dd02910b066bebc3b3f5208e8082275c1"
+    },
+    {
+      "source": "02_UI/全量页面图/完整内容/B26-revoke.png",
+      "current": "02_UI/全量页面图/完整内容/B26-revoke.png",
+      "result": "CHANGED",
+      "sourceSha256": "b03c96a08eb03d4aa520f33f95a062f225e4dade5f9aa571cf949afd41583c2f",
+      "currentSha256": "6cfa1f3b418410bfb738125d9bb3c65048adaeb6802abfe83514b8889643b60c"
+    },
+    {
+      "source": "02_UI/全量页面图/完整内容/U02.png",
+      "current": "02_UI/全量页面图/完整内容/U02.png",
+      "result": "CHANGED",
+      "sourceSha256": "b42394f43c05eb3333f68ed0060faf99c9b6ad19533842aa3a7d6a4f65438a13",
+      "currentSha256": "bc163418f328a12a029e256c053b05ca6d16cab89277f634f946160dc43996f5"
+    },
+    {
+      "source": "02_UI/全量页面图/完整内容/O29-staff.png",
+      "current": "02_UI/全量页面图/完整内容/O29-staff.png",
+      "result": "CHANGED",
+      "sourceSha256": "f65cec3e8bef4bad3c236640769422d7fa5976ae4aad6571585cb70644766b1e",
+      "currentSha256": "b1773f3ec91cd728e34121c663bb9d4f6d04bc2d0344e9ae8767e350a4364441"
+    },
+    {
+      "source": "02_UI/全量页面图/完整内容/B38-unpriced.png",
+      "current": "02_UI/全量页面图/完整内容/B38-unpriced.png",
+      "result": "CHANGED",
+      "sourceSha256": "a6be683ae4ea8b4d2b6c4bde938dcaf3e0876739c1dc8337075e6209975fb3d2",
+      "currentSha256": "5d57a5d5f70d2ac1fc0c419871450e0d096d99585986ca4e3fe17423703e21a1"
+    },
+    {
+      "source": "02_UI/全量页面图/完整内容/B38-price-empty.png",
+      "current": "02_UI/全量页面图/完整内容/B38-price-empty.png",
+      "result": "CHANGED",
+      "sourceSha256": "756da33816d751c14a0f5bbd365864751c969e11ae112a458572fbd489f7a479",
+      "currentSha256": "48bb940474cf34d7d41bd5331ee0975609b75a20b56272ca43e688a946438231"
+    },
+    {
+      "source": "02_UI/全量页面图/完整内容/U02-unconfigured.png",
+      "current": "02_UI/全量页面图/完整内容/U02-unconfigured.png",
+      "result": "CHANGED",
+      "sourceSha256": "01c65ccc84599a906466ade22e4af30df295289a428cbed1f74c0228d63d28d0",
+      "currentSha256": "50984ca99da474996016e1e26f16ef25866ad3ba9d89f5e45aa1a8f400e5a18c"
+    },
+    {
+      "source": "02_UI/全量页面图/完整内容/D01.png",
+      "current": "02_UI/全量页面图/完整内容/D01.png",
+      "result": "CHANGED",
+      "sourceSha256": "7a52a7bc6ca9f5023ab7b679efb2a7b912d8288795d0ca94d65ebfc0979db0de",
+      "currentSha256": "f7398e21772bd133547b0f95b7228efafda31166cc1d454d58542c9beb15e2eb"
+    },
+    {
+      "source": "02_UI/全量页面图/完整内容/B38-price-conflict.png",
+      "current": "02_UI/全量页面图/完整内容/B38-price-conflict.png",
+      "result": "CHANGED",
+      "sourceSha256": "6d73fc7838837f370d2e43070de29fb4ee68a23a9eedf91d9e3a53dece3b8d38",
+      "currentSha256": "040e9655685bc36685f85520ddf543ec9dfdb047534c73d848ba71548ac23f74"
+    },
+    {
+      "source": "02_UI/全量页面图/完整内容/B21-edit.png",
+      "current": "02_UI/全量页面图/完整内容/B21-edit.png",
+      "result": "CHANGED",
+      "sourceSha256": "00e24d8ff1429a9584fa84c0aa6563d055f72be04a8f609fc59e2e394fdaf373",
+      "currentSha256": "900721d6035718f873d152e1f8e22560fca72f9568115e767658284caa3aad37"
+    },
+    {
+      "source": "02_UI/全量页面图/完整内容/S01.png",
+      "current": "02_UI/全量页面图/完整内容/S01.png",
+      "result": "CHANGED",
+      "sourceSha256": "cec440ec69e385848486d38dfbece3b54865a1465357b5427bd334a07a1aff51",
+      "currentSha256": "0ab36dce1c7236320785489a631e7067db2255cffef3bc6fc333a3afdfa6d293"
+    },
+    {
+      "source": "02_UI/全量页面图/完整内容/O29-driver.png",
+      "current": "02_UI/全量页面图/完整内容/O29-driver.png",
+      "result": "CHANGED",
+      "sourceSha256": "f65cec3e8bef4bad3c236640769422d7fa5976ae4aad6571585cb70644766b1e",
+      "currentSha256": "b1773f3ec91cd728e34121c663bb9d4f6d04bc2d0344e9ae8767e350a4364441"
+    },
+    {
+      "source": "02_UI/全量页面图/完整内容/O29.png",
+      "current": "02_UI/全量页面图/完整内容/O29.png",
+      "result": "CHANGED",
+      "sourceSha256": "f65cec3e8bef4bad3c236640769422d7fa5976ae4aad6571585cb70644766b1e",
+      "currentSha256": "b1773f3ec91cd728e34121c663bb9d4f6d04bc2d0344e9ae8767e350a4364441"
+    },
+    {
+      "source": "02_UI/全量页面图/完整内容/B38-sent.png",
+      "current": "02_UI/全量页面图/完整内容/B38-sent.png",
+      "result": "CHANGED",
+      "sourceSha256": "509b09cd6fd83a0b77c0807b4748dc49aa12637e361e76477d2143b300379f72",
+      "currentSha256": "5640d88555646d7a34d6e799e9b9453b41ddbbc37841a70c71885d35876b63e3"
+    },
+    {
+      "source": "02_UI/全量页面图/完整内容/S15.png",
+      "current": "02_UI/全量页面图/完整内容/S15.png",
+      "result": "CHANGED",
+      "sourceSha256": "6148d65dd25207c3312a16648d78fbab00a4969be137d06327f582bbf15a8f29",
+      "currentSha256": "b935043a8ee125dc66a604a27fc6287d861d602a5261d5af381f1ebc6d6221d2"
+    },
+    {
+      "source": "02_UI/全量页面图/完整内容/O29-duplicate.png",
+      "current": "02_UI/全量页面图/完整内容/O29-duplicate.png",
+      "result": "CHANGED",
+      "sourceSha256": "f65cec3e8bef4bad3c236640769422d7fa5976ae4aad6571585cb70644766b1e",
+      "currentSha256": "b1773f3ec91cd728e34121c663bb9d4f6d04bc2d0344e9ae8767e350a4364441"
+    },
+    {
+      "source": "02_UI/全量页面图/完整内容/S21.png",
+      "current": "02_UI/全量页面图/完整内容/S21.png",
+      "result": "CHANGED",
+      "sourceSha256": "f47ce4a4f02390f0c00486a187cd279bafb041fbaff62b9ffd548b8bf1ae937b",
+      "currentSha256": "51e1e62cf98d9bc4ada9efaa78cd40a7b186fa7b86e83f463394319635826e46"
+    },
+    {
+      "source": "02_UI/全量页面图/完整内容/U02-linked.png",
+      "current": "02_UI/全量页面图/完整内容/U02-linked.png",
+      "result": "CHANGED",
+      "sourceSha256": "01c65ccc84599a906466ade22e4af30df295289a428cbed1f74c0228d63d28d0",
+      "currentSha256": "322b9a62c8e3235bcf4343a0c866d4a0509a772b8e4168b4a474c14120536cd6"
+    },
+    {
+      "source": "02_UI/全量页面图/完整内容/B25.png",
+      "current": "02_UI/全量页面图/完整内容/B25.png",
+      "result": "CHANGED",
+      "sourceSha256": "3b2867a88412c5f73dd2e0a858b4c441690a08e9cfbb1121b35956d7c5be60dc",
+      "currentSha256": "b54d5c1df704d8182369d153c58d823321b987af5e2eeeabb87ebd031c771d76"
+    },
+    {
+      "source": "02_UI/全量页面图/完整内容/U01-unqualified.png",
+      "current": "02_UI/全量页面图/完整内容/U01-unqualified.png",
+      "result": "CHANGED",
+      "sourceSha256": "239e075eb9b360248e932859fbbf89552a9840c6d48f385449ad8f450fa40da7",
+      "currentSha256": "3d178386edc810bebd6c524ef1c06f64e730dc16641fdd59ac14246c66ed3536"
+    },
+    {
+      "source": "02_UI/全量页面图/完整内容/B36-revoke.png",
+      "current": "02_UI/全量页面图/完整内容/B36-revoke.png",
+      "result": "CHANGED",
+      "sourceSha256": "419b11781793871349233b0d72e0bdb05f4c9fe77a2bb4dab4a5cc8c5a9bd890",
+      "currentSha256": "d440666a450bb7a792c733c7c02b54fb1411a44c7968ae9fd9d66d642e981062"
+    },
+    {
+      "source": "02_UI/全量页面图/完整内容/U02-revoked.png",
+      "current": "02_UI/全量页面图/完整内容/U02-revoked.png",
+      "result": "CHANGED",
+      "sourceSha256": "2733f2dff494f35d0725144c26ff142632a16531b18b7dada89697dc203679d7",
+      "currentSha256": "c873768430a000837f8af19d22b3e685e04fee4dc69c1e8caebe39788616d317"
+    },
+    {
+      "source": "02_UI/全量页面图/完整内容/U01.png",
+      "current": "02_UI/全量页面图/完整内容/U01.png",
+      "result": "CHANGED",
+      "sourceSha256": "239e075eb9b360248e932859fbbf89552a9840c6d48f385449ad8f450fa40da7",
+      "currentSha256": "3d178386edc810bebd6c524ef1c06f64e730dc16641fdd59ac14246c66ed3536"
+    },
+    {
+      "source": "02_UI/全量页面图/完整内容/B36.png",
+      "current": "02_UI/全量页面图/完整内容/B36.png",
+      "result": "CHANGED",
+      "sourceSha256": "4e684bbcb01c96cbd05a96574931e06845fa4c0613431a55ad3524d24112f060",
+      "currentSha256": "bcf5fe03f30c0eece90f71f2f52ee24246bd5b6945424e01f8a58b92de9e3388"
+    },
+    {
+      "source": "02_UI/全量页面图/完整内容/B38-difference.png",
+      "current": "02_UI/全量页面图/完整内容/B38-difference.png",
+      "result": "CHANGED",
+      "sourceSha256": "00d769883b8417f2c219ed9dec8b611afaa470dcfdbc3a622d50576a7338df69",
+      "currentSha256": "df114c099003af91665b4a5d9ad82cc5d380a36b29fbd18049eab158253a7577"
+    },
+    {
+      "source": "02_UI/全量页面图/完整内容/B38-withdraw.png",
+      "current": "02_UI/全量页面图/完整内容/B38-withdraw.png",
+      "result": "CHANGED",
+      "sourceSha256": "0936fcc47537a4ebadc96c94a2b5359b4ea18f17b7ae39eb6a359e5492b3cb95",
+      "currentSha256": "4cb32e94213600e29834c6c4e16b16f45cc561d21c37022bea4162b9acd9cfbe"
+    },
+    {
+      "source": "02_UI/全量页面图/完整内容/B38-review-rejected.png",
+      "current": "02_UI/全量页面图/完整内容/B38-review-rejected.png",
+      "result": "CHANGED",
+      "sourceSha256": "97160a40796d2c53662564766e88fcf839d10bae709f4c38b507d80804e0717f",
+      "currentSha256": "7c7a41d0df4c24bb5e284f1c3ec6d5e30e7d459524c92524984ba085ad4f8f69"
+    },
+    {
+      "source": "02_UI/全量页面图/完整内容/B36-suspend.png",
+      "current": "02_UI/全量页面图/完整内容/B36-suspend.png",
+      "result": "CHANGED",
+      "sourceSha256": "5e433cd2789b3ac2178fdc67b59d132dc9f625535b6482f734d77e749bc31860",
+      "currentSha256": "287115cf625c968bb9a536bed90c87d58eea0a9735575f20e486808524961911"
+    },
+    {
+      "source": "02_UI/全量页面图/完整内容/O29-denied.png",
+      "current": "02_UI/全量页面图/完整内容/O29-denied.png",
+      "result": "CHANGED",
+      "sourceSha256": "2647b54b87374cf09e1190d09f21ea281effcff2511b4e676cd6668141176dbe",
+      "currentSha256": "02ee7f4a095cde39e9ada7315eadd7a63791bc1918f44cfb5cadaa12cae0dcb0"
+    },
+    {
+      "source": "02_UI/全量页面图/完整内容/B38-history.png",
+      "current": "02_UI/全量页面图/完整内容/B38-history.png",
+      "result": "CHANGED",
+      "sourceSha256": "a5c075274cb1c7773e9eccbe05c66c2e6f88d206133d5aeecf9bb8bb28f21834",
+      "currentSha256": "41f90fb8d2378ad5535b683e46b79555ed7d5426c3e873a226c1ef358f8c340c"
+    },
+    {
+      "source": "02_UI/全量页面图/完整内容/U02-conflict.png",
+      "current": "02_UI/全量页面图/完整内容/U02-conflict.png",
+      "result": "CHANGED",
+      "sourceSha256": "433927bf0f22bcfa2ab43db7ee40c82b99b8a1938f897a20f226f70e9876d68b",
+      "currentSha256": "29f1b15ea24a950b248f7a216f48bda36eb46049fbbfec0bd4f372e446cd3eac"
+    },
+    {
+      "source": "02_UI/全量页面图/完整内容/B27-edit.png",
+      "current": "02_UI/全量页面图/完整内容/B27-edit.png",
+      "result": "CHANGED",
+      "sourceSha256": "1bbf25eba9fa00935aaa7afe23873f3e770f9acd6d5b6b5051f226df5b90149a",
+      "currentSha256": "e406b5bff2806dfa3824f500811be3377f263054bf722ebfd169127dd5ba11b9"
+    },
+    {
+      "source": "02_UI/全量页面图/完整内容/D27.png",
+      "current": "02_UI/全量页面图/完整内容/D27.png",
+      "result": "CHANGED",
+      "sourceSha256": "ef6e1700b15d9aa6c720cbf7991a7161873a177e6046d899e85460358488fef2",
+      "currentSha256": "cc033ba5d5a4dc9200f35e729321420b3c5b5eba7ce07335e39a4d23108c736c"
+    },
+    {
+      "source": "02_UI/全量页面图/完整内容/B38-review.png",
+      "current": "02_UI/全量页面图/完整内容/B38-review.png",
+      "result": "CHANGED",
+      "sourceSha256": "2b5cad00d10ef08c271bbeb8da05440939df851e6c9a45a0a783a6915b9e514d",
+      "currentSha256": "94eee674e25327abf2a8285eba972dbd5f19d8a0a8a00abe83353a4777759541"
+    },
+    {
+      "source": "02_UI/全量页面图/完整内容/O29-unconfigured.png",
+      "current": "02_UI/全量页面图/完整内容/O29-unconfigured.png",
+      "result": "CHANGED",
+      "sourceSha256": "f65cec3e8bef4bad3c236640769422d7fa5976ae4aad6571585cb70644766b1e",
+      "currentSha256": "b1773f3ec91cd728e34121c663bb9d4f6d04bc2d0344e9ae8767e350a4364441"
+    },
+    {
+      "current": "02_UI/test_identity_consistency.py",
+      "result": "ADDED"
+    },
+    {
+      "current": "09_验证记录/画板核验_0_110.json",
+      "result": "ADDED"
+    },
+    {
+      "current": "09_验证记录/身份实测_B26-unlinked.png",
+      "result": "ADDED"
+    },
+    {
+      "current": "09_验证记录/身份实测_O25.png",
+      "result": "ADDED"
+    },
+    {
+      "current": "09_验证记录/V6.3_全量核验报告.html",
+      "result": "ADDED"
+    },
+    {
+      "current": "09_验证记录/画板核验_108_109.json",
+      "result": "ADDED"
+    },
+    {
+      "current": "09_验证记录/画板核验_142_143.json",
+      "result": "ADDED"
+    },
+    {
+      "current": "09_验证记录/V6.3_全量核验报告.md",
+      "result": "ADDED"
+    },
+    {
+      "current": "09_验证记录/身份实测_D05-passed.png",
+      "result": "ADDED"
+    },
+    {
+      "current": "09_验证记录/V6.3_跨文件及可见内容核验.json",
+      "result": "ADDED"
+    },
+    {
+      "current": "09_验证记录/B25_修改前后对照.png",
+      "result": "ADDED"
+    },
+    {
+      "current": "09_验证记录/身份实测_B25.png",
+      "result": "ADDED"
+    },
+    {
+      "current": "09_验证记录/身份实测_U02-linked.png",
+      "result": "ADDED"
+    },
+    {
+      "current": "09_验证记录/身份主流程_实图.png",
+      "result": "ADDED"
+    },
+    {
+      "current": "09_验证记录/V6.3_身份一致性实测.json",
+      "result": "ADDED"
+    },
+    {
+      "current": "09_验证记录/画板核验_149_150.json",
+      "result": "ADDED"
+    },
+    {
+      "current": "09_验证记录/V6.2漏改定位与V6.3修复.json",
+      "result": "ADDED"
+    },
+    {
+      "current": "09_验证记录/身份实测_O29.png",
+      "result": "ADDED"
+    },
+    {
+      "current": "09_验证记录/身份实测_O25-pending.png",
+      "result": "ADDED"
+    },
+    {
+      "current": "09_验证记录/身份实测_U01-staff.png",
+      "result": "ADDED"
+    },
+    {
+      "current": "09_验证记录/身份实测_O25-approved.png",
+      "result": "ADDED"
+    },
+    {
+      "current": "09_验证记录/身份实测_U02-unconfigured.png",
+      "result": "ADDED"
+    },
+    {
+      "current": "09_验证记录/后台员工授权_实图.png",
+      "result": "ADDED"
+    },
+    {
+      "current": "09_验证记录/当前全量画板可见文本.json",
+      "result": "ADDED"
+    },
+    {
+      "current": "09_验证记录/身份实测_U01.png",
+      "result": "ADDED"
+    },
+    {
+      "current": "09_验证记录/画板核验_110_220.json",
+      "result": "ADDED"
+    },
+    {
+      "current": "09_验证记录/画板核验_220_317.json",
+      "result": "ADDED"
+    },
+    {
+      "current": "09_验证记录/身份实测_D01.png",
+      "result": "ADDED"
+    },
+    {
+      "current": "09_验证记录/身份实测_B36.png",
+      "result": "ADDED"
+    },
+    {
+      "current": "11_工具/rebuild_derived_artifacts.py",
+      "result": "ADDED"
+    },
+    {
+      "current": "11_工具/audit_current.py",
+      "result": "ADDED"
+    },
+    {
+      "current": "变更记录/V6.3_修复索引.html",
+      "result": "ADDED"
+    },
+    {
+      "current": "变更记录/打包校验说明.html",
+      "result": "ADDED"
+    },
+    {
+      "current": "变更记录/V6.3_修复索引.md",
+      "result": "ADDED"
+    },
+    {
+      "current": "09_验证记录/本轮工具日志/test_v42_pricing.py.log",
+      "result": "ADDED"
+    },
+    {
+      "current": "09_验证记录/本轮工具日志/identity-final.log",
+      "result": "ADDED"
+    },
+    {
+      "current": "09_验证记录/本轮工具日志/engineering-check-final.log",
+      "result": "ADDED"
+    },
+    {
+      "current": "09_验证记录/本轮工具日志/test_v5_flows.py.log",
+      "result": "ADDED"
+    },
+    {
+      "current": "09_验证记录/本轮工具日志/regression-final.log",
+      "result": "ADDED"
+    },
+    {
+      "current": "09_验证记录/本轮工具日志/test_v42_selection.py.log",
+      "result": "ADDED"
+    },
+    {
+      "current": "09_验证记录/本轮工具日志/doc-browser.log",
+      "result": "ADDED"
+    },
+    {
+      "current": "09_验证记录/本轮工具日志/deep-check-final.log",
+      "result": "ADDED"
+    },
+    {
+      "current": "09_验证记录/本轮工具日志/contracts.log",
+      "result": "ADDED"
+    },
+    {
+      "current": "09_验证记录/本轮工具日志/tooltests.log",
+      "result": "ADDED"
+    },
+    {
+      "current": "09_验证记录/全量缩略走查/B_全部画板缩略.jpg",
+      "result": "ADDED"
+    },
+    {
+      "current": "09_验证记录/全量缩略走查/U_全部画板缩略.jpg",
+      "result": "ADDED"
+    },
+    {
+      "current": "09_验证记录/全量缩略走查/O_全部画板缩略.jpg",
+      "result": "ADDED"
+    },
+    {
+      "current": "09_验证记录/全量缩略走查/D_全部画板缩略.jpg",
+      "result": "ADDED"
+    },
+    {
+      "current": "09_验证记录/全量缩略走查/S_全部画板缩略.jpg",
+      "result": "ADDED"
+    },
+    {
+      "current": "09_验证记录/修复前证据/V6.2_U02-linked.png",
+      "result": "ADDED"
+    },
+    {
+      "current": "09_验证记录/修复前证据/V6.2_O25.png",
+      "result": "ADDED"
+    },
+    {
+      "current": "09_验证记录/修复前证据/V6.2_D01.png",
+      "result": "ADDED"
+    },
+    {
+      "current": "09_验证记录/修复前证据/V6.2_B25.png",
+      "result": "ADDED"
+    },
+    {
+      "current": "02_UI/src/identity_model.js",
+      "result": "ADDED"
+    },
+    {
+      "current": "02_UI/src/identity_interactions.js",
+      "result": "ADDED"
+    },
+    {
+      "current": "02_UI/src/identity_pages.js",
+      "result": "ADDED"
+    },
+    {
+      "current": "02_UI/全量页面图/首屏/B26-conflict.png",
+      "result": "ADDED"
+    },
+    {
+      "current": "02_UI/全量页面图/首屏/O25-approved.png",
+      "result": "ADDED"
+    },
+    {
+      "current": "02_UI/全量页面图/首屏/U02-suspended.png",
+      "result": "ADDED"
+    },
+    {
+      "current": "02_UI/全量页面图/首屏/U01-all.png",
+      "result": "ADDED"
+    },
+    {
+      "current": "02_UI/全量页面图/首屏/S01-unconfigured.png",
+      "result": "ADDED"
+    },
+    {
+      "current": "02_UI/全量页面图/首屏/D01-draft.png",
+      "result": "ADDED"
+    },
+    {
+      "current": "02_UI/全量页面图/首屏/B36-unlinked.png",
+      "result": "ADDED"
+    },
+    {
+      "current": "02_UI/全量页面图/首屏/U02-verifying.png",
+      "result": "ADDED"
+    },
+    {
+      "current": "02_UI/全量页面图/首屏/D01-rejected.png",
+      "result": "ADDED"
+    },
+    {
+      "current": "02_UI/全量页面图/首屏/S01-ready.png",
+      "result": "ADDED"
+    },
+    {
+      "current": "02_UI/全量页面图/首屏/D01-pending.png",
+      "result": "ADDED"
+    },
+    {
+      "current": "02_UI/全量页面图/首屏/O29-processing.png",
+      "result": "ADDED"
+    },
+    {
+      "current": "02_UI/全量页面图/首屏/U01-staff.png",
+      "result": "ADDED"
+    },
+    {
+      "current": "02_UI/全量页面图/首屏/U01-driver.png",
+      "result": "ADDED"
+    },
+    {
+      "current": "02_UI/全量页面图/首屏/U02-unknown.png",
+      "result": "ADDED"
+    },
+    {
+      "current": "02_UI/全量页面图/首屏/O29-error.png",
+      "result": "ADDED"
+    },
+    {
+      "current": "02_UI/全量页面图/首屏/O25-pending.png",
+      "result": "ADDED"
+    },
+    {
+      "current": "02_UI/全量页面图/首屏/D01-approved.png",
+      "result": "ADDED"
+    },
+    {
+      "current": "02_UI/全量页面图/完整内容/B26-conflict.png",
+      "result": "ADDED"
+    },
+    {
+      "current": "02_UI/全量页面图/完整内容/O25-approved.png",
+      "result": "ADDED"
+    },
+    {
+      "current": "02_UI/全量页面图/完整内容/U02-suspended.png",
+      "result": "ADDED"
+    },
+    {
+      "current": "02_UI/全量页面图/完整内容/U01-all.png",
+      "result": "ADDED"
+    },
+    {
+      "current": "02_UI/全量页面图/完整内容/S01-unconfigured.png",
+      "result": "ADDED"
+    },
+    {
+      "current": "02_UI/全量页面图/完整内容/D01-draft.png",
+      "result": "ADDED"
+    },
+    {
+      "current": "02_UI/全量页面图/完整内容/B36-unlinked.png",
+      "result": "ADDED"
+    },
+    {
+      "current": "02_UI/全量页面图/完整内容/U02-verifying.png",
+      "result": "ADDED"
+    },
+    {
+      "current": "02_UI/全量页面图/完整内容/D01-rejected.png",
+      "result": "ADDED"
+    },
+    {
+      "current": "02_UI/全量页面图/完整内容/S01-ready.png",
+      "result": "ADDED"
+    },
+    {
+      "current": "02_UI/全量页面图/完整内容/D01-pending.png",
+      "result": "ADDED"
+    },
+    {
+      "current": "02_UI/全量页面图/完整内容/O29-processing.png",
+      "result": "ADDED"
+    },
+    {
+      "current": "02_UI/全量页面图/完整内容/U01-staff.png",
+      "result": "ADDED"
+    },
+    {
+      "current": "02_UI/全量页面图/完整内容/U01-driver.png",
+      "result": "ADDED"
+    },
+    {
+      "current": "02_UI/全量页面图/完整内容/U02-unknown.png",
+      "result": "ADDED"
+    },
+    {
+      "current": "02_UI/全量页面图/完整内容/O29-error.png",
+      "result": "ADDED"
+    },
+    {
+      "current": "02_UI/全量页面图/完整内容/O25-pending.png",
+      "result": "ADDED"
+    },
+    {
+      "current": "02_UI/全量页面图/完整内容/D01-approved.png",
+      "result": "ADDED"
+    }
+  ]
+}

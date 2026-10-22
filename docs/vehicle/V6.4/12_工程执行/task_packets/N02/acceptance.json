@@ -1,0 +1,28 @@
+[
+  {
+    "id": "TC-193",
+    "priority": "P1",
+    "module": "交互",
+    "flow": "F26",
+    "title": "减少动态与透明",
+    "given": "用户开启设置",
+    "when": "查看页面",
+    "then": "无不必要转场、导航不透明，状态文字仍可见",
+    "status": "NOT_RUN",
+    "evidence": "",
+    "origin": "V6.4新业务完整验收规格；未绑定真实Step实现前不是自动化测试结果"
+  },
+  {
+    "id": "TC-194",
+    "priority": "P1",
+    "module": "交互",
+    "flow": "F26",
+    "title": "大字与安全区",
+    "given": "小屏和大字体",
+    "when": "输入长地址/键盘弹起",
+    "then": "主操作可见可达，内容不横向溢出",
+    "status": "NOT_RUN",
+    "evidence": "",
+    "origin": "V6.4新业务完整验收规格；未绑定真实Step实现前不是自动化测试结果"
+  }
+]

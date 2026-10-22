@@ -1,0 +1,48 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>V6.1_本轮验证范围</title><style>body{font:16px/1.75 -apple-system,BlinkMacSystemFont,"Microsoft YaHei",sans-serif;color:#202632;margin:0;background:#f6f7f9}header{padding:14px 24px;background:white;border-bottom:1px solid #ddd}main{max-width:1120px;margin:24px auto;padding:30px;background:white}h1{font-size:30px}h2{margin-top:36px}a{color:#0661bd}table{border-collapse:collapse;width:100%;display:block;overflow:auto;font-size:14px}td,th{border:1px solid #dde2ea;padding:10px;vertical-align:top}th{background:#f1f5fb}pre{padding:15px;background:#f2f4f7;overflow:auto}img{max-width:100%;height:auto}blockquote{padding:10px 20px;border-left:3px solid #2571be;background:#f4f8fc}@media(max-width:700px){main{padding:15px;margin:8px}h1{font-size:25px}}</style></head><body><header><a href="../00_开始.html">V6.1 完整资料</a>　<a href="../02_UI/index.html">交互原型</a>　T3.1</header><main><h1>V6.1 本轮验证范围</h1>
+<h2>本轮改变</h2>
+<p>针对用户“没有做M0”的确认，重新读取指定rongli-wx分支，固定本轮源快照890cfbbfc5e0db404a932ab5ef8b449d07c7f444。默认初装、新模块创建、初始任务状态、工程入口与架构同步；不预标M0完成。</p>
+<h2>已实际执行</h2>
+<table>
+<thead>
+<tr>
+  <th>层次</th>
+  <th>结果</th>
+  <th>证明边界</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>工程支持工具、报价契约、供应商模拟与起点回归</td>
+  <td>72通过；12条jsonschema弃用警告</td>
+  <td>合成测试工作区与协议/契约，不是xinyi编译和真实供应商</td>
+</tr>
+<tr>
+  <td>工程资料一致性</td>
+  <td>34项；结果见同目录JSON</td>
+  <td>任务DAG、唯一覆盖、源码起点与启动副本，不验证业务代码</td>
+</tr>
+<tr>
+  <td>主契约样本</td>
+  <td>51通过</td>
+  <td>离线Schema/参考策略，不是真实HTTP</td>
+</tr>
+<tr>
+  <td>产品资料深度一致性</td>
+  <td>结果见资料深度一致性检查.json</td>
+  <td>文件、字段、SQL结构定义、引用与UI脚本语法，不是SQL执行</td>
+</tr>
+</tbody>
+</table>
+<p>14个本轮新增测试覆盖：指定分支与阶段、E00首任务、模块存在不等于M0完成、HEAD变化不回退、管理指令区段替换及格式错误拒绝、首次模块计划、数据部分结构不当作已完成、启动副本一致。原58项工具/契约/模拟回归一并执行。</p>
+<h2>未执行或不作本轮声明</h2>
+<ul>
+<li>未访问用户电脑、未确认本机未提交文件、数据库及云配置。</li>
+<li>未构建真实xinyi或uni-app；未执行真实MySQL建表/事务并发；未运行真实HTTP集成。</li>
+<li>未进行微信真机、真实支付/退款、OCR、活体、短信等联调。</li>
+<li>沿用原产品UI、574张截图、249接口和66数据模型，不声称本轮重新绘制或逐画板回归。</li>
+<li>整包内旧UI和前一版本测试记录均属历史证据。09_验证记录/历史_V6.0及历史_V5不算本轮测试。</li>
+</ul>
+<p>M0和全部工程任务初始仍为NOT_ASSESSED，298条业务验收仍为NOT_RUN。本轮资料和支持工具检查不改变其状态。</p>
+<h2>文档浏览检查</h2>
+<p>只检查新版离线入口和任务检索。运行环境与是否支持直接file导航见V6.1_文档浏览验证.json；未执行到的导航不能记为成功。业务页面不在本轮浏览检查范围内。</p>
+</main></body></html>

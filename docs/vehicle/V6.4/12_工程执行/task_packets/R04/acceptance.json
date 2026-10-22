@@ -1,0 +1,67 @@
+[
+  {
+    "id": "TC-178",
+    "priority": "P0",
+    "module": "代驾对账",
+    "flow": "F33",
+    "title": "差异不直接改额",
+    "given": "司机提交差异",
+    "when": "后台接收",
+    "then": "原金额保持，进入差异处理",
+    "status": "NOT_RUN",
+    "evidence": "",
+    "origin": "V6.4新业务完整验收规格；未绑定真实Step实现前不是自动化测试结果"
+  },
+  {
+    "id": "TC-179",
+    "priority": "P0",
+    "module": "代驾对账",
+    "flow": "F33",
+    "title": "调整不可自审",
+    "given": "A申请调整",
+    "when": "A切另一角色审核",
+    "then": "拒绝，需不同真实身份",
+    "status": "NOT_RUN",
+    "evidence": "",
+    "origin": "V6.4新业务完整验收规格；未绑定真实Step实现前不是自动化测试结果"
+  },
+  {
+    "id": "TC-180",
+    "priority": "P0",
+    "module": "代驾对账",
+    "flow": "F33",
+    "title": "已确认账单不可覆盖",
+    "given": "原单双方确认",
+    "when": "后续退费/资料更正/调整",
+    "then": "原快照不变，追加后续调整",
+    "status": "NOT_RUN",
+    "evidence": "",
+    "origin": "V6.4新业务完整验收规格；未绑定真实Step实现前不是自动化测试结果"
+  },
+  {
+    "id": "TC-181",
+    "priority": "P0",
+    "module": "代驾对账",
+    "flow": "F33",
+    "title": "客户退款不自动扣司机",
+    "given": "客户退款成功",
+    "when": "同步事件",
+    "then": "不修改报酬；有依据独立调整",
+    "status": "NOT_RUN",
+    "evidence": "",
+    "origin": "V6.4新业务完整验收规格；未绑定真实Step实现前不是自动化测试结果"
+  },
+  {
+    "id": "TC-182",
+    "priority": "P0",
+    "module": "代驾对账",
+    "flow": "F33",
+    "title": "负额不自动追收",
+    "given": "跨期调整导致负净额",
+    "when": "确认账单",
+    "then": "显示待核对冲抵，不发扣款/提现指令",
+    "status": "NOT_RUN",
+    "evidence": "",
+    "origin": "V6.4新业务完整验收规格；未绑定真实Step实现前不是自动化测试结果"
+  }
+]

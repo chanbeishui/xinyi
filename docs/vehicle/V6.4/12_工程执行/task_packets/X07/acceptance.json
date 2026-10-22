@@ -1,0 +1,54 @@
+[
+  {
+    "id": "TC-CFG-059",
+    "priority": "P0",
+    "module": "第三方接入与双支付",
+    "flow": "F44 F45 F46 F47 F48",
+    "title": "真实集成配置到发送",
+    "given": "真实xinyi服务+MySQL+隔离供应商",
+    "when": "保存校验发布后完成支付/发信",
+    "then": "请求经过Service/数据库；只外部边界模拟，调用记录可核对",
+    "status": "NOT_RUN",
+    "evidence": "",
+    "origin": "V6.4本轮需求与明确实施决策；原型/参考测试不替代真实业务测试"
+  },
+  {
+    "id": "TC-CFG-060",
+    "priority": "P0",
+    "module": "第三方接入与双支付",
+    "flow": "F44 F45 F46 F47 F48",
+    "title": "重启恢复配置和资金",
+    "given": "有已发布配置/待核实证明/UNKNOWN发送",
+    "when": "重启应用",
+    "then": "状态可恢复，旧金额不重记、未知不重发",
+    "status": "NOT_RUN",
+    "evidence": "",
+    "origin": "V6.4本轮需求与明确实施决策；原型/参考测试不替代真实业务测试"
+  },
+  {
+    "id": "TC-CFG-061",
+    "priority": "P0",
+    "module": "第三方接入与双支付",
+    "flow": "F44 F45 F46 F47 F48",
+    "title": "生产不装测试控制面",
+    "given": "生产构建与隔离测试资源共存",
+    "when": "检查最终Jar与路由",
+    "then": "无测试控制器、固定支付成功和测试私钥",
+    "status": "NOT_RUN",
+    "evidence": "",
+    "origin": "V6.4本轮需求与明确实施决策；原型/参考测试不替代真实业务测试"
+  },
+  {
+    "id": "TC-CFG-062",
+    "priority": "P0",
+    "module": "第三方接入与双支付",
+    "flow": "F44 F45 F46 F47 F48",
+    "title": "订单收款主体快照",
+    "given": "新支付配置改商户或公司",
+    "when": "处理旧支付/退款",
+    "then": "仍关联原商户主体，不从当前默认配置猜测",
+    "status": "NOT_RUN",
+    "evidence": "",
+    "origin": "V6.4本轮需求与明确实施决策；原型/参考测试不替代真实业务测试"
+  }
+]

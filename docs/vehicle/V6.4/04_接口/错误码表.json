@@ -1,0 +1,236 @@
+[
+  {
+    "errorCode": "VI_REQUEST_INVALID",
+    "httpStatus": 400,
+    "message": "请求格式不正确",
+    "recovery": "修正参数后再提交"
+  },
+  {
+    "errorCode": "VI_AUTH_REQUIRED",
+    "httpStatus": 401,
+    "message": "登录已失效，请重新登录",
+    "recovery": "重新认证"
+  },
+  {
+    "errorCode": "VI_TOKEN_REALM_MISMATCH",
+    "httpStatus": 401,
+    "message": "凭证不适用于当前入口",
+    "recovery": "使用相应认证域登录"
+  },
+  {
+    "errorCode": "VI_REFRESH_REUSED",
+    "httpStatus": 401,
+    "message": "登录凭证已失效，请重新登录",
+    "recovery": "撤销会话并重新微信登录"
+  },
+  {
+    "errorCode": "VI_FORBIDDEN",
+    "httpStatus": 403,
+    "message": "没有执行此操作的权限",
+    "recovery": "刷新权限或联系管理员"
+  },
+  {
+    "errorCode": "VI_SELF_REVIEW_DENIED",
+    "httpStatus": 403,
+    "message": "不能复核本人提交或改价的记录",
+    "recovery": "由另一位授权人员复核"
+  },
+  {
+    "errorCode": "VI_RESOURCE_NOT_VISIBLE",
+    "httpStatus": 404,
+    "message": "记录不存在或不可访问",
+    "recovery": "返回列表刷新；不泄露资源存在性"
+  },
+  {
+    "errorCode": "VI_VERSION_CONFLICT",
+    "httpStatus": 409,
+    "message": "记录已变化，请刷新后重试",
+    "recovery": "保留填写内容，重新读取版本"
+  },
+  {
+    "errorCode": "VI_STATE_CONFLICT",
+    "httpStatus": 409,
+    "message": "当前状态不允许此操作",
+    "recovery": "刷新业务状态"
+  },
+  {
+    "errorCode": "VI_IDEMPOTENCY_CONFLICT",
+    "httpStatus": 409,
+    "message": "相同请求编号对应了不同内容",
+    "recovery": "相同重试保持键和内容；新操作用新键"
+  },
+  {
+    "errorCode": "VI_SELECTION_CONFLICT",
+    "httpStatus": 409,
+    "message": "所选服务已变化或被其他账单占用",
+    "recovery": "查看授权范围内冲突项并重新确认整个集合"
+  },
+  {
+    "errorCode": "VI_CONTEXT_CHANGED",
+    "httpStatus": 409,
+    "message": "身份或站点已切换，请刷新",
+    "recovery": "丢弃旧视角回包"
+  },
+  {
+    "errorCode": "VI_SNAPSHOT_CHANGED",
+    "httpStatus": 409,
+    "message": "账单版本已变化，请重新核对",
+    "recovery": "读取最新公开快照"
+  },
+  {
+    "errorCode": "VI_DATA_INVALID",
+    "httpStatus": 422,
+    "message": "填写内容不符合要求",
+    "recovery": "显示字段级错误"
+  },
+  {
+    "errorCode": "VI_EVIDENCE_INCOMPLETE",
+    "httpStatus": 422,
+    "message": "请补齐照片、里程及交接条件",
+    "recovery": "显示缺少项目"
+  },
+  {
+    "errorCode": "VI_HANDOVER_CODE_INVALID",
+    "httpStatus": 422,
+    "message": "交接码不正确",
+    "recovery": "显示剩余次数，禁止记录明文码"
+  },
+  {
+    "errorCode": "VI_HANDOVER_LOCKED",
+    "httpStatus": 422,
+    "message": "交接核验已锁定",
+    "recovery": "按受控恢复流程处理，不返回secret"
+  },
+  {
+    "errorCode": "VI_UNPRICED_LINES",
+    "httpStatus": 422,
+    "message": "还有费用未填写，暂不能发送",
+    "recovery": "补齐并按需复核"
+  },
+  {
+    "errorCode": "VI_REFUND_LIMIT",
+    "httpStatus": 422,
+    "message": "批准退款超过当前可退金额",
+    "recovery": "重读余额并核对"
+  },
+  {
+    "errorCode": "VI_PAYMENT_LIMIT",
+    "httpStatus": 422,
+    "message": "付款记录超过可登记余额",
+    "recovery": "核查已付及待核实预留"
+  },
+  {
+    "errorCode": "VI_SERVICE_UNAVAILABLE",
+    "httpStatus": 422,
+    "message": "当前地址、车型或时段暂不可约",
+    "recovery": "修改条件；不伪造0元"
+  },
+  {
+    "errorCode": "VI_CAPABILITY_NOT_CONFIGURED",
+    "httpStatus": 422,
+    "message": "该功能尚未配置完成",
+    "recovery": "不启用相关生产操作"
+  },
+  {
+    "errorCode": "VI_TRAINING_NOT_READY",
+    "httpStatus": 422,
+    "message": "请先完成规定培训",
+    "recovery": "继续学习"
+  },
+  {
+    "errorCode": "VI_RATE_LIMITED",
+    "httpStatus": 429,
+    "message": "操作过于频繁，请稍后重试",
+    "recovery": "遵守Retry-After，不循环重试"
+  },
+  {
+    "errorCode": "VI_INTERNAL_ERROR",
+    "httpStatus": 500,
+    "message": "处理失败，请联系服务人员",
+    "recovery": "保留requestId；不输出SQL或堆栈"
+  },
+  {
+    "errorCode": "VI_AUTHORITY_UNAVAILABLE",
+    "httpStatus": 503,
+    "message": "权限权威状态暂不可读取",
+    "recovery": "禁止旧缓存放行；稍后重试"
+  },
+  {
+    "errorCode": "VI_UPSTREAM_UNAVAILABLE",
+    "httpStatus": 503,
+    "message": "外部服务暂不可用",
+    "recovery": "未知资金结果查询原交易，不重复创建"
+  },
+  {
+    "errorCode": "VI_PHONE_PROOF_REQUIRED",
+    "httpStatus": 422,
+    "message": "请重新进行微信手机号授权",
+    "recovery": "不使用裸手机号或旧凭据；重新主动授权"
+  },
+  {
+    "errorCode": "VI_PHONE_PROOF_REUSED",
+    "httpStatus": 409,
+    "message": "授权凭据已处理或不可重复使用",
+    "recovery": "查询本人verificationRequestId回执，未知时重新授权"
+  },
+  {
+    "errorCode": "VI_EMPLOYEE_LINK_CONFLICT",
+    "httpStatus": 409,
+    "message": "员工关联需管理员核实",
+    "recovery": "不展示其他员工名单；车主功能保持可用"
+  },
+  {
+    "errorCode": "VI_EMPLOYEE_LINK_BLOCKED",
+    "httpStatus": 403,
+    "message": "工作关联已暂停或解除",
+    "recovery": "仅有权后台允许重核；不得自动复绑"
+  },
+  {
+    "errorCode": "VI_CONFIG_INVALID",
+    "httpStatus": 422,
+    "message": "配置尚不完整或不匹配",
+    "recovery": "按字段提示修正草稿后重新校验"
+  },
+  {
+    "errorCode": "VI_CONFIG_CHANGED",
+    "httpStatus": 409,
+    "message": "配置版本已变化",
+    "recovery": "重新读取，不覆盖他人变更"
+  },
+  {
+    "errorCode": "VI_SECRET_UNAVAILABLE",
+    "httpStatus": 503,
+    "message": "安全凭据暂不可用",
+    "recovery": "联系管理员，禁止降级到明文或固定成功"
+  },
+  {
+    "errorCode": "VI_PAYMENT_METHOD_DISABLED",
+    "httpStatus": 422,
+    "message": "该支付方式已暂停",
+    "recovery": "刷新可用方式，不擅自改变已锁定交易"
+  },
+  {
+    "errorCode": "VI_PAYMENT_METHOD_LOCKED",
+    "httpStatus": 409,
+    "message": "已有支付意图，不能直接切换",
+    "recovery": "查询原交易，确认安全关闭后重新预约"
+  },
+  {
+    "errorCode": "VI_SEND_RESULT_UNKNOWN",
+    "httpStatus": 409,
+    "message": "发送结果尚未确定",
+    "recovery": "查询原回执，不重复发送"
+  },
+  {
+    "errorCode": "VI_SUBSCRIPTION_UNAVAILABLE",
+    "httpStatus": 422,
+    "message": "当前没有可用订阅授权或模板",
+    "recovery": "保留站内消息，不阻断业务"
+  },
+  {
+    "errorCode": "VI_OFFLINE_PROOF_CONFLICT",
+    "httpStatus": 409,
+    "message": "凭证或资金状态已变化",
+    "recovery": "读取最新支付和凭证，不重复核实"
+  }
+]

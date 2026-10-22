@@ -1,0 +1,155 @@
+[
+  {
+    "no": 1,
+    "finding": "四视角Order字段空洞",
+    "change": "独立4详情/4列表视图、嵌套白名单、字段阶段矩阵；不再引用Order",
+    "artifact": "04_接口/四视角字段可见矩阵.md",
+    "documentEvidence": "check05/06/42 + 契约字段负向测试",
+    "runtimePending": "真实Service投影与敏感访问",
+    "status": "DESIGN_REPAIRED_RUNTIME_NOT_RUN"
+  },
+  {
+    "no": 2,
+    "finding": "MINI确认返回内部账单",
+    "change": "确认GET/POST全为DriverStatementPublic，公开hash独立规范和夹具",
+    "artifact": "04_接口/公开快照哈希规范.md",
+    "documentEvidence": "check07 + Public负向测试",
+    "runtimePending": "真实确认事务及hash实现",
+    "status": "DESIGN_REPAIRED_RUNTIME_NOT_RUN"
+  },
+  {
+    "no": 3,
+    "finding": "双logout并存",
+    "change": "新业务无兼容需求，删除/api/common/logout，仅MINI session/logout；ADMIN沿用框架",
+    "artifact": "04_接口/认证_权限_错误与路由.md",
+    "documentEvidence": "check08",
+    "runtimePending": "真实双安全链与全部设备退出",
+    "status": "DESIGN_REPAIRED_RUNTIME_NOT_RUN"
+  },
+  {
+    "no": 4,
+    "finding": "servers与/api部署不明确",
+    "change": "servers明确；context-path=/，Controller/api，代理原样转发，不影响sys旧路径",
+    "artifact": "10_技术架构_T2.0/01_技术架构整合方案_T2.0.md",
+    "documentEvidence": "check09",
+    "runtimePending": "真实代理直连集成",
+    "status": "DESIGN_REPAIRED_RUNTIME_NOT_RUN"
+  },
+  {
+    "no": 5,
+    "finding": "错误响应空体/429缺失",
+    "change": "ApiError、稳定业务码、限定details、Retry-After；普通业务全错误复用；回调单列",
+    "artifact": "04_接口/错误码表.json",
+    "documentEvidence": "check10",
+    "runtimePending": "真实异常映射与网络兜底",
+    "status": "DESIGN_REPAIRED_RUNTIME_NOT_RUN"
+  },
+  {
+    "no": 6,
+    "finding": "处罚/培训/活体DTO断链",
+    "change": "补生产/读取端点、attempt、face-session、处罚申诉及对应页面；字典明示",
+    "artifact": "04_接口/openapi_V5.0.yaml",
+    "documentEvidence": "check17/18/19 + UI新增流程",
+    "runtimePending": "供应商、准入与真实判分",
+    "status": "DESIGN_REPAIRED_RUNTIME_NOT_RUN"
+  },
+  {
+    "no": 7,
+    "finding": "自由文本权限及读写混用",
+    "change": "注册功能/能力/动作，所有x-authorization明确；订单资源单数；查询不挂编辑码",
+    "artifact": "04_接口/权限与能力注册表.json",
+    "documentEvidence": "check11/12/13",
+    "runtimePending": "真实框架权限服务执行",
+    "status": "DESIGN_REPAIRED_RUNTIME_NOT_RUN"
+  },
+  {
+    "no": 8,
+    "finding": "资料乐观锁输入和输出缺失",
+    "change": "Profile/Address读version；Address/Vehicle/Station等Create/Update拆开",
+    "artifact": "04_接口/dto-types.ts",
+    "documentEvidence": "check14/15/16 + 字段负向测试",
+    "runtimePending": "真实Mapper affectedRows/并发",
+    "status": "DESIGN_REPAIRED_RUNTIME_NOT_RUN"
+  },
+  {
+    "no": 9,
+    "finding": "员工绑定凭证生产缺失",
+    "change": "本人请求号→后台精确检索/核对/签发→本人消费；限时一次性/撤销",
+    "artifact": "04_接口/动作与数据范围判定.md",
+    "documentEvidence": "check20 + UI签发消费验证",
+    "runtimePending": "真实同人和员工关系核验",
+    "status": "DESIGN_REPAIRED_RUNTIME_NOT_RUN"
+  },
+  {
+    "no": 10,
+    "finding": "4表没有PRIMARY KEY",
+    "change": "JSON结构新增机器primaryKey并同源生成SQL；driver/scope/guard天然键",
+    "artifact": "05_数据设计/001_vi业务表_初始化_V5.0.sql",
+    "documentEvidence": "check21/22/23",
+    "runtimePending": "目标MySQL唯一性实测",
+    "status": "DESIGN_REPAIRED_RUNTIME_NOT_RUN"
+  },
+  {
+    "no": 11,
+    "finding": "ID策略未定",
+    "change": "普通id自增Long，四天然键不虚增代理id；API字符串；不按表随机雪花",
+    "artifact": "05_数据设计/data_model_V5.0.json",
+    "documentEvidence": "check24 + TS/Java标量",
+    "runtimePending": "MySQL generatedKeys实际回填",
+    "status": "DESIGN_REPAIRED_RUNTIME_NOT_RUN"
+  },
+  {
+    "no": 12,
+    "finding": "数据枚举定义不齐",
+    "change": "单一列枚举绑定、有限字面量、治理type-status组合、DDL CHECK与API核对",
+    "artifact": "05_数据设计/枚举字典_V5.0.json",
+    "documentEvidence": "check26",
+    "runtimePending": "真实数据库和状态事务",
+    "status": "DESIGN_REPAIRED_RUNTIME_NOT_RUN"
+  },
+  {
+    "no": 13,
+    "finding": "盲继承BaseEntity风险",
+    "change": "独立ViRecord参考类、请求/查询/实体分离；sys字段不硬塞业务表",
+    "artifact": "10_技术架构_T2.0/参考代码/ViRecord.java",
+    "documentEvidence": "Java release17编译",
+    "runtimePending": "实际框架生成器/实体映射",
+    "status": "DESIGN_REPAIRED_RUNTIME_NOT_RUN"
+  },
+  {
+    "no": 14,
+    "finding": "UTC注释不保证UTC",
+    "change": "新vi显式UTC默认/更新和专用Handler，sys原值不动，业务日上海边界",
+    "artifact": "10_技术架构_T2.0/02_初始化与框架接入.md",
+    "documentEvidence": "check27 + Java日界线",
+    "runtimePending": "JDBC/MySQL及sys时间对照",
+    "status": "DESIGN_REPAIRED_RUNTIME_NOT_RUN"
+  },
+  {
+    "no": 15,
+    "finding": "生成列写保护不足",
+    "change": "14列（原12＋新增2）逐列列出，SQL/JSON和Mapper写列核对，DTO不接收",
+    "artifact": "05_数据设计/生成列与写入白名单.json",
+    "documentEvidence": "check25",
+    "runtimePending": "真实MyBatis/SQL非法写拒绝",
+    "status": "DESIGN_REPAIRED_RUNTIME_NOT_RUN"
+  },
+  {
+    "no": 16,
+    "finding": "复合CAS不能靠注解",
+    "change": "父行锁/CAS、状态/version/revision/publicHash、affectedRows与同事务结转明确",
+    "artifact": "10_技术架构_T2.0/03_CAS与公开确认实现要点.md",
+    "documentEvidence": "结构与参考合同检查",
+    "runtimePending": "真实并发、死锁和事务回滚",
+    "status": "DESIGN_REPAIRED_RUNTIME_NOT_RUN"
+  },
+  {
+    "no": 17,
+    "finding": "文档与feature不同步",
+    "change": "全量298用例逐条生成Gherkin；TC171/173改选中集合；核价30映射；别名规范/视觉V5",
+    "artifact": "06_验收/全量业务验收_V5.0.feature",
+    "documentEvidence": "check31–38",
+    "runtimePending": "真实step实现与全业务执行",
+    "status": "DESIGN_REPAIRED_RUNTIME_NOT_RUN"
+  }
+]

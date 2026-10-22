@@ -1,0 +1,44 @@
+[
+  {
+    "id": "B39",
+    "base": "B39",
+    "state": "default",
+    "name": "代驾费用规则",
+    "status": "有效·V6.4",
+    "fields": "适用代驾/车型/主体、正常与取消场景、固定/里程费用、生效版本",
+    "actions": "编辑、试算、发布",
+    "guards": "与车主收费配置分离；示例金额不作为生产默认",
+    "flows": "F34",
+    "source": "本轮用户要求；当前完整PRD；有建议项则在说明中标注",
+    "kind": "page",
+    "parent": "B39"
+  },
+  {
+    "id": "B39-edit",
+    "base": "B39",
+    "state": "edit",
+    "name": "编辑代驾费用规则",
+    "status": "有效·V6.4",
+    "fields": "规则适用范围、金额、版本、生效时间",
+    "actions": "保存、试算、发布",
+    "guards": "新版本不追改已生成费用台账",
+    "flows": "F34",
+    "source": "本轮用户要求；当前完整PRD；有建议项则在说明中标注",
+    "kind": "state",
+    "parent": "B39"
+  },
+  {
+    "id": "B39-review",
+    "base": "B39",
+    "state": "review",
+    "name": "代驾费用规则发布检查",
+    "status": "有效·V6.4",
+    "fields": "规则适用范围、金额、版本、生效时间",
+    "actions": "保存、试算、发布",
+    "guards": "新版本不追改已生成费用台账",
+    "flows": "F34",
+    "source": "本轮用户要求；当前完整PRD；有建议项则在说明中标注",
+    "kind": "state",
+    "parent": "B39"
+  }
+]

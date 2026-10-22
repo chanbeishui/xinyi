@@ -1,0 +1,159 @@
+[
+  {
+    "name": "vi_notification",
+    "comment": "站内消息与下发记录",
+    "cols": [
+      [
+        "id",
+        "BIGINT NOT NULL AUTO_INCREMENT",
+        "数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串"
+      ],
+      [
+        "account_id",
+        "BIGINT NOT NULL",
+        "接收人"
+      ],
+      [
+        "role",
+        "VARCHAR(64) NOT NULL",
+        "业务视角"
+      ],
+      [
+        "order_id",
+        "BIGINT",
+        "订单"
+      ],
+      [
+        "scene",
+        "VARCHAR(64) NOT NULL",
+        "场景"
+      ],
+      [
+        "outbox_id",
+        "BIGINT",
+        "触发事件"
+      ],
+      [
+        "send_status",
+        "VARCHAR(64)",
+        "NotificationSendStatus: PENDING,ACCEPTED,FAILED,DISCARDED"
+      ],
+      [
+        "content",
+        "VARCHAR(2000)",
+        "脱敏消息"
+      ],
+      [
+        "read_at",
+        "DATETIME(3)",
+        "站内显式已读"
+      ],
+      [
+        "created_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "创建时间，统一UTC"
+      ],
+      [
+        "updated_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "UTC更新时间；Mapper每次修改显式SET updated_at=UTC_TIMESTAMP(3)，不依赖连接时区"
+      ],
+      [
+        "version",
+        "BIGINT NOT NULL DEFAULT 0",
+        "乐观锁版本"
+      ]
+    ],
+    "indexes": [
+      "KEY ix_inbox (account_id,role,created_at,id)"
+    ],
+    "rule": "",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "engine": "InnoDB",
+    "collation": "utf8mb4_0900_ai_ci",
+    "columnRules": {
+      "id": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "account_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "role": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "order_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "scene": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "outbox_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "send_status": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false,
+        "enumRef": "NotificationSendStatus"
+      },
+      "content": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "read_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "created_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "updated_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "version": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      }
+    },
+    "checks": [
+      "CONSTRAINT ck_66_236222a99f9d CHECK (`send_status` IN ('PENDING','ACCEPTED','FAILED','DISCARDED'))",
+      "CONSTRAINT ck_ver_notification CHECK (version >= 0)"
+    ]
+  }
+]

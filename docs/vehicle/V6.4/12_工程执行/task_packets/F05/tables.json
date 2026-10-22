@@ -1,0 +1,348 @@
+[
+  {
+    "name": "vi_inspection_result",
+    "comment": "追加式结构化结果版本",
+    "cols": [
+      [
+        "id",
+        "BIGINT NOT NULL AUTO_INCREMENT",
+        "数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串"
+      ],
+      [
+        "order_id",
+        "BIGINT NOT NULL",
+        "订单"
+      ],
+      [
+        "revision",
+        "INT NOT NULL",
+        "结果版本"
+      ],
+      [
+        "conclusion",
+        "VARCHAR(8) NOT NULL",
+        "PASS/FAIL"
+      ],
+      [
+        "items_json",
+        "JSON NOT NULL",
+        "最终项目与凭证；没有实时阶段"
+      ],
+      [
+        "inspector_user_id",
+        "BIGINT NOT NULL",
+        "真实检测人，验证可操作站点"
+      ],
+      [
+        "submitted_by",
+        "BIGINT NOT NULL",
+        "记录人"
+      ],
+      [
+        "source",
+        "VARCHAR(16) NOT NULL",
+        "STATION/ADMIN服务端写入"
+      ],
+      [
+        "inspected_at",
+        "DATETIME(3) NOT NULL",
+        "实际检测完成时间"
+      ],
+      [
+        "submitted_at",
+        "DATETIME(3) NOT NULL",
+        "登记时间"
+      ],
+      [
+        "superseded_at",
+        "DATETIME(3)",
+        "被更正替换"
+      ],
+      [
+        "active_order",
+        "BIGINT GENERATED ALWAYS AS (IF(superseded_at IS NULL,order_id,NULL)) STORED",
+        "当前生效结果唯一"
+      ],
+      [
+        "created_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "创建时间，统一UTC"
+      ],
+      [
+        "updated_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "UTC更新时间；Mapper每次修改显式SET updated_at=UTC_TIMESTAMP(3)，不依赖连接时区"
+      ],
+      [
+        "version",
+        "BIGINT NOT NULL DEFAULT 0",
+        "乐观锁版本"
+      ]
+    ],
+    "indexes": [
+      "UNIQUE KEY uk_order_revision (order_id,revision)",
+      "UNIQUE KEY uk_current_order (active_order)"
+    ],
+    "rule": "更正事务结束原版生效标记并插入新版；原内容永不UPDATE",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "engine": "InnoDB",
+    "collation": "utf8mb4_0900_ai_ci",
+    "columnRules": {
+      "id": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "order_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "revision": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "conclusion": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "items_json": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "inspector_user_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "submitted_by": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "source": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "inspected_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "submitted_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "superseded_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "active_order": {
+        "generated": true,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "created_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "updated_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "version": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      }
+    },
+    "checks": [
+      "CONSTRAINT ck_ver_inspection_result CHECK (version >= 0)"
+    ]
+  },
+  {
+    "name": "vi_result_correction",
+    "comment": "检测结果更正审批",
+    "cols": [
+      [
+        "id",
+        "BIGINT NOT NULL AUTO_INCREMENT",
+        "数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串"
+      ],
+      [
+        "order_id",
+        "BIGINT NOT NULL",
+        "订单"
+      ],
+      [
+        "base_result_id",
+        "BIGINT NOT NULL",
+        "原版本"
+      ],
+      [
+        "replacement_json",
+        "JSON NOT NULL",
+        "拟更正内容"
+      ],
+      [
+        "status",
+        "VARCHAR(24) NOT NULL",
+        "CorrectionStatus: APPLIED,APPROVED,REJECTED"
+      ],
+      [
+        "reason",
+        "VARCHAR(1000) NOT NULL",
+        "原因"
+      ],
+      [
+        "applicant_id",
+        "BIGINT NOT NULL",
+        "申请人"
+      ],
+      [
+        "reviewer_id",
+        "BIGINT",
+        "审核人"
+      ],
+      [
+        "opinion",
+        "VARCHAR(1000)",
+        "意见"
+      ],
+      [
+        "created_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "创建时间，统一UTC"
+      ],
+      [
+        "updated_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "UTC更新时间；Mapper每次修改显式SET updated_at=UTC_TIMESTAMP(3)，不依赖连接时区"
+      ],
+      [
+        "version",
+        "BIGINT NOT NULL DEFAULT 0",
+        "乐观锁版本"
+      ]
+    ],
+    "indexes": [
+      "KEY ix_queue (status,created_at)"
+    ],
+    "rule": "",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "engine": "InnoDB",
+    "collation": "utf8mb4_0900_ai_ci",
+    "columnRules": {
+      "id": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "order_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "base_result_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "replacement_json": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "status": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false,
+        "enumRef": "CorrectionStatus"
+      },
+      "reason": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "applicant_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "reviewer_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "opinion": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "created_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "updated_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "version": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      }
+    },
+    "checks": [
+      "CONSTRAINT ck_66_875cb83b2599 CHECK (`status` IN ('APPLIED','APPROVED','REJECTED'))",
+      "CONSTRAINT ck_ver_result_correction CHECK (version >= 0)"
+    ]
+  }
+]

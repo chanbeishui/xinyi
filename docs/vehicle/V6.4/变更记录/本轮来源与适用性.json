@@ -1,0 +1,42 @@
+{
+  "package": "V6.4",
+  "date": "2026-10-22",
+  "original_package_sha256": "4a98f07d2614f798b4e1c7805d3161593784f89f6151875831803fe5667fdb94",
+  "sources": [
+    {
+      "kind": "user-confirmed-requirements",
+      "file": "机动车检测预约_登录身份与员工自动绑定_变更说明_R1.md",
+      "status": "merged; not parallel instructions"
+    },
+    {
+      "kind": "historical-repository-snapshot-from-V6.2",
+      "repository": "chanbeishui/xinyi",
+      "ref": "rongli-wx",
+      "sha": "b91ef7689e9a48f269eefd9e3b95c71cb15558c5",
+      "scope": "branch metadata only",
+      "fullAudit": false,
+      "readThisRun": false
+    }
+  ],
+  "notPerformed": [
+    "repository write",
+    "actual workspace build",
+    "database migration",
+    "WeChat or vendor integration"
+  ],
+  "implementation_choices": [
+    "MINI/ADMIN isolation",
+    "phone verification receipt/replay protection",
+    "admin tombstone/reverify controls",
+    "directory guard lock + sys-user change hooks"
+  ],
+  "user_rules": [
+    "OWNER first",
+    "DRIVER only after approval",
+    "verified WeChat phone auto employee association",
+    "PC sys_user station assignment without prior mini login"
+  ],
+  "source_package": "V6.2",
+  "target_package": "V6.4",
+  "source_basis": "实际交付V6.2压缩包、单文件原型、用户已确认身份流程；不以旧V1/V2附件替代"
+}

@@ -1,0 +1,36 @@
+{
+  "kind": "DOCUMENT_BROWSER_CHECK",
+  "checks": [
+    {
+      "name": "home title and current meaningful content",
+      "result": "PASS"
+    },
+    {
+      "name": "85-task catalog includes searchable X01",
+      "result": "PASS"
+    },
+    {
+      "name": "287-operation catalog filters integration endpoints",
+      "result": "PASS"
+    },
+    {
+      "name": "355-board gallery finds payment invalid state",
+      "result": "PASS"
+    },
+    {
+      "name": "390px home has no horizontal overflow",
+      "result": "PASS"
+    },
+    {
+      "name": "no document UI JavaScript errors",
+      "result": "PASS"
+    }
+  ],
+  "consoleErrors": [],
+  "directNavigation": "BLOCKED_ENVIRONMENT",
+  "scope": "current local files; no backend or vendor",
+  "browser": "Playwright/Chromium; Browser connector read-only",
+  "navigationError": "Page.goto: net::ERR_BLOCKED_BY_ADMINISTRATOR at file:///mnt/data/v64_work/%E6%9C%BA%E5%8A%A8%E8%BD%A6%E6%A3%80%E6%B5%8B%E9%A2%84%E7%BA%A6_%E5%AE%8C%E6%95%B4%E5%BC%80%E5%8F%91%E8%B5%84%E6%96%99%E5%8C%85_V6.4_%E7%AC%AC%E4%B8%89%E6%96%B9%E6%8E%A5%E5%85%A5%E9%85%8D%E7%BD%AE%E7%89%88/00_%E5%BC%80%E5%A7%8B.html\nCall log:\n  - navigating to \"file:///mnt/data/v64_work/%E6%9C%BA%E5%8A%A8%E8%BD%A6%E6%A3%80%E6%B5%8B%E9%A2%84%E7%BA%A6_%E5%AE%8C%E6%95%B4%E5%BC%80%E5%8F%91%E8%B5%84%E6%96%99%E5%8C%85_V6.4_%E7%A",
+  "passed": 6,
+  "failed": 0
+}

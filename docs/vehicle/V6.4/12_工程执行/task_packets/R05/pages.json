@@ -1,0 +1,30 @@
+[
+  {
+    "id": "B41",
+    "base": "B41",
+    "state": "default",
+    "name": "对账调整记录",
+    "status": "有效·V6.4",
+    "fields": "源任务、原费用、调整金额、原因、依据、审核记录",
+    "actions": "申请调整、复核、跨期更正",
+    "guards": "不因客户退款自动扣款；原账单只读、调整可追溯",
+    "flows": "F33",
+    "source": "本轮用户要求；当前完整PRD；有建议项则在说明中标注",
+    "kind": "page",
+    "parent": "B41"
+  },
+  {
+    "id": "B41-create",
+    "base": "B41",
+    "state": "create",
+    "name": "申请费用调整",
+    "status": "有效·V6.4",
+    "fields": "明细、正负调整、原因、依据",
+    "actions": "提交复核",
+    "guards": "只针对特定承接；未审核不影响应付",
+    "flows": "F33",
+    "source": "本轮用户要求；当前完整PRD；有建议项则在说明中标注",
+    "kind": "state",
+    "parent": "B41"
+  }
+]
