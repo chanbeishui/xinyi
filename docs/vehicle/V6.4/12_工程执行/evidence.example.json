@@ -1,0 +1,11 @@
+{
+  "taskId": "A02",
+  "implementer": "implementer-A",
+  "codeCommit": "填实际提交；未提交则记录工作区差异摘要",
+  "codeFiles": ["xinyi-rongli/src/main/java/com/xinyi/rongli/address/ViAddressService.java"],
+  "runs": [
+    {"command": "实际命令", "exitCode": 0, "layer": "LIVE_HTTP_MYSQL", "testsRun": 8, "skipped": 0, "reportPath": "docs/implementation/vehicle/evidence/A02/junit.xml"}
+  ],
+  "review": {"reviewer": "reviewer-B", "approved": false, "reportPath": "docs/implementation/vehicle/evidence/A02/review.md"},
+  "warning": "示例不是已执行记录。数值仅解释格式，必须替换为原始报告实测值。"
+}

@@ -1,0 +1,93 @@
+[
+  {
+    "id": "U01",
+    "name": "切换身份",
+    "status": "有效·V6.4",
+    "fields": "当前身份、可用身份、代驾申请状态、员工关联提示",
+    "actions": "切换已有身份、申请代驾、查看关联",
+    "guards": "新账号只OWNER；DRIVER需审核通过；STATION需手机号自动关联及后台权限；切换不释放任务",
+    "flows": "F02",
+    "source": "V6.4 用户确认登录流程",
+    "base": "U01",
+    "state": "default",
+    "kind": "page"
+  },
+  {
+    "id": "U01-unqualified",
+    "name": "代驾资格未通过",
+    "status": "有效·V6.4",
+    "fields": "当前身份、可用身份、代驾申请状态、员工关联提示",
+    "actions": "切换已有身份、申请代驾、查看关联",
+    "guards": "新账号只OWNER；DRIVER需审核通过；STATION需手机号自动关联及后台权限；切换不释放任务",
+    "flows": "F02",
+    "source": "V6.4 用户确认登录流程",
+    "base": "U01",
+    "state": "unqualified",
+    "kind": "state"
+  },
+  {
+    "id": "S21",
+    "name": "切换检测点",
+    "status": "有效·V6.4",
+    "fields": "当前站点、可操作站点、无权公开站点基础名称",
+    "actions": "切换",
+    "guards": "跨站读写授权立即生效；不得暴露无权限站点单量、司机或订单",
+    "flows": "F03",
+    "source": "V2原页 S21",
+    "base": "S21",
+    "state": "default",
+    "kind": "page"
+  },
+  {
+    "id": "S22",
+    "name": "无工作权限",
+    "status": "有效·V6.4",
+    "fields": "无可操作站点/已撤权原因、仍可进入的视角",
+    "actions": "联系管理员、切到授权站点/车主",
+    "guards": "允许0授权；不能自动回到已无权的所属站点",
+    "flows": "F03",
+    "source": "V2原页 S22",
+    "base": "S22",
+    "state": "default",
+    "kind": "page"
+  },
+  {
+    "id": "U01-driver",
+    "name": "可切换车主与代驾",
+    "fields": "当前身份、可用身份、代驾申请状态、员工关联提示",
+    "actions": "切换已有身份、申请代驾、查看关联",
+    "guards": "新账号只OWNER；DRIVER需审核通过；STATION需手机号自动关联及后台权限；切换不释放任务",
+    "flows": "F02",
+    "source": "V6.4 用户确认登录流程",
+    "status": "有效·V6.4",
+    "base": "U01",
+    "state": "driver",
+    "kind": "state"
+  },
+  {
+    "id": "U01-staff",
+    "name": "可切换车主与检测工作",
+    "fields": "当前身份、可用身份、代驾申请状态、员工关联提示",
+    "actions": "切换已有身份、申请代驾、查看关联",
+    "guards": "新账号只OWNER；DRIVER需审核通过；STATION需手机号自动关联及后台权限；切换不释放任务",
+    "flows": "F02",
+    "source": "V6.4 用户确认登录流程",
+    "status": "有效·V6.4",
+    "base": "U01",
+    "state": "staff",
+    "kind": "state"
+  },
+  {
+    "id": "U01-all",
+    "name": "三种有效身份",
+    "fields": "当前身份、可用身份、代驾申请状态、员工关联提示",
+    "actions": "切换已有身份、申请代驾、查看关联",
+    "guards": "新账号只OWNER；DRIVER需审核通过；STATION需手机号自动关联及后台权限；切换不释放任务",
+    "flows": "F02",
+    "source": "V6.4 用户确认登录流程",
+    "status": "有效·V6.4",
+    "base": "U01",
+    "state": "all",
+    "kind": "state"
+  }
+]

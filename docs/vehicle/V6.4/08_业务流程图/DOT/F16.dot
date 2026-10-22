@@ -1,0 +1,22 @@
+digraph G {
+graph [rankdir=TB,bgcolor="white",pad="0.3",nodesep="0.3",ranksep="0.45",fontname="Noto Sans CJK SC",label="F16 · 检测结果登记与更正",labelloc=t,fontsize=20];
+node [shape=box,style="rounded,filled",fillcolor="#F2F6FC",color="#B5C9E5",fontname="Noto Sans CJK SC",fontsize=12,margin=".15,.12"];
+edge [color="#607A9C",fontname="Noto Sans CJK SC",fontsize=10];
+n1 [label="检测人员完成线下检测"];
+n2 [label="PC B11或小程序S11填写结构化结果"];
+n3 [label="服务端核验权限、资料、一致性与版本"];
+n4 [label="首次结果已被另一端提交？",shape=diamond];
+n5 [label="同内容重试返回原结果；不同内容提示冲突"];
+n6 [label="保存结果版本，进入检测完成，通知车主和司机"];
+n7 [label="需要更正时提交新版本及原因"];
+n8 [label="另一获授权审核人批准更正"];
+n9 [label="保留旧版本，发布新结果并通知；不倒退已还车订单"];
+n1 -> n2 [label=""];
+n2 -> n3 [label=""];
+n3 -> n4 [label=""];
+n4 -> n5 [label="是"];
+n4 -> n6 [label="否"];
+n6 -> n7 [label="发现错误"];
+n7 -> n8 [label=""];
+n8 -> n9 [label="通过"];
+}

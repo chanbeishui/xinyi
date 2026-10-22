@@ -1,0 +1,266 @@
+[
+  {
+    "name": "vi_aftersale_case",
+    "comment": "取消与退款的唯一申请与处理记录",
+    "cols": [
+      [
+        "id",
+        "BIGINT NOT NULL AUTO_INCREMENT",
+        "数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串"
+      ],
+      [
+        "case_no",
+        "VARCHAR(64) NOT NULL",
+        "对外售后号"
+      ],
+      [
+        "order_id",
+        "BIGINT NOT NULL",
+        "订单"
+      ],
+      [
+        "payment_id",
+        "BIGINT NOT NULL",
+        "支付记录"
+      ],
+      [
+        "kind",
+        "VARCHAR(24) NOT NULL",
+        "CANCEL_REFUND/REFUND_ONLY"
+      ],
+      [
+        "case_status",
+        "VARCHAR(24) NOT NULL DEFAULT 'PENDING_REVIEW'",
+        "AfterSaleStatus: PENDING_REVIEW,EXECUTING,CLOSED,REJECTED"
+      ],
+      [
+        "review_status",
+        "VARCHAR(16) NOT NULL DEFAULT 'PENDING'",
+        "AfterSaleReviewStatus: PENDING,APPROVED,REJECTED"
+      ],
+      [
+        "review_revision",
+        "INT NOT NULL DEFAULT 1",
+        "审核修订号"
+      ],
+      [
+        "requested_fen",
+        "BIGINT NOT NULL",
+        "申请金额"
+      ],
+      [
+        "approved_fen",
+        "BIGINT",
+        "批准金额，未审为NULL"
+      ],
+      [
+        "return_state",
+        "VARCHAR(24) NOT NULL",
+        "UNDETERMINED/NOT_REQUIRED/WAIT_RETURN/RETURNED"
+      ],
+      [
+        "refund_state",
+        "VARCHAR(24) NOT NULL",
+        "NONE/NOT_REQUIRED/WAIT_RETURN/READY/PROCESSING/SUCCESS/UNKNOWN/ABNORMAL"
+      ],
+      [
+        "applicant_type",
+        "VARCHAR(16) NOT NULL",
+        "ApplicantType: ACCOUNT,SYS_USER"
+      ],
+      [
+        "applicant_id",
+        "BIGINT NOT NULL",
+        "实际申请身份"
+      ],
+      [
+        "reason",
+        "VARCHAR(1000) NOT NULL",
+        "原始申请说明"
+      ],
+      [
+        "evidence_ids",
+        "JSON",
+        "关联证据文件ID"
+      ],
+      [
+        "resolved_at",
+        "DATETIME(3)",
+        "业务及资金均已办结"
+      ],
+      [
+        "active_order",
+        "BIGINT GENERATED ALWAYS AS (IF(case_status IN ('PENDING_REVIEW','EXECUTING'),order_id,NULL)) STORED",
+        "一个未办结申请"
+      ],
+      [
+        "created_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "UTC"
+      ],
+      [
+        "updated_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "UTC更新时间；Mapper每次修改显式SET updated_at=UTC_TIMESTAMP(3)，不依赖连接时区"
+      ],
+      [
+        "version",
+        "BIGINT NOT NULL DEFAULT 0",
+        "乐观锁"
+      ]
+    ],
+    "indexes": [
+      "UNIQUE KEY uk_case_no (case_no)",
+      "UNIQUE KEY uk_active_order (active_order)",
+      "KEY ix_review (review_status,created_at)",
+      "KEY ix_return (return_state,updated_at)",
+      "CONSTRAINT ck_after_amount CHECK (requested_fen>=0 AND (approved_fen IS NULL OR approved_fen>=0))"
+    ],
+    "rule": "审核时锁订单/支付/申请，预留退款；实际返还后继续同一决定，无二次默认退款审核。",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "engine": "InnoDB",
+    "collation": "utf8mb4_0900_ai_ci",
+    "columnRules": {
+      "id": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "case_no": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "order_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "payment_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "kind": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "case_status": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false,
+        "enumRef": "AfterSaleStatus"
+      },
+      "review_status": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false,
+        "enumRef": "AfterSaleReviewStatus"
+      },
+      "review_revision": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "requested_fen": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "approved_fen": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "return_state": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "refund_state": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "applicant_type": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false,
+        "enumRef": "ApplicantType"
+      },
+      "applicant_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "reason": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "evidence_ids": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "resolved_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "active_order": {
+        "generated": true,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "created_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "updated_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "version": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      }
+    },
+    "checks": [
+      "CONSTRAINT ck_66_55e0ea12e908 CHECK (`case_status` IN ('PENDING_REVIEW','EXECUTING','CLOSED','REJECTED'))",
+      "CONSTRAINT ck_66_dc8bfeb94c93 CHECK (`review_status` IN ('PENDING','APPROVED','REJECTED'))",
+      "CONSTRAINT ck_66_c205c5c1a697 CHECK (`applicant_type` IN ('ACCOUNT','SYS_USER'))",
+      "CONSTRAINT ck_ver_aftersale_case CHECK (version >= 0)"
+    ]
+  }
+]

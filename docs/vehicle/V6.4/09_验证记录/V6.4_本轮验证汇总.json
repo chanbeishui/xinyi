@@ -1,0 +1,50 @@
+{
+  "version": "V6.4",
+  "architecture": "T3.4",
+  "date": "2026-10-22",
+  "source": "Uploaded V6.3 complete package; no repository writes",
+  "executed": {
+    "newPrototypeInteractionPass": 41,
+    "priorPrototypeInteractionPass": 123,
+    "prototypeTotalPass": 164,
+    "directFileNavigation": "BLOCKED_ENVIRONMENT",
+    "screenRenderCount": 355,
+    "screenExports": 710,
+    "supportUnitTests": 99,
+    "contractFixtureTests": 51,
+    "configurationReferenceTests": 51,
+    "staticPackageChecks": 42,
+    "engineeringChecks": 34,
+    "crossArtifactVisibleChecks": 30,
+    "newScopeChecks": 18,
+    "documentBrowserChecks": 6,
+    "typeScriptCheck": "PASS"
+  },
+  "notRun": [
+    "real xinyi Maven build",
+    "MySQL DDL and concurrency",
+    "uni-app target build",
+    "actual WeChat phone authorization",
+    "real payment/refund",
+    "Tencent/Aliyun SMS delivery",
+    "WeChat subscription delivery",
+    "production deployment"
+  ],
+  "realBusinessCases": {
+    "count": 412,
+    "status": "NOT_RUN"
+  },
+  "technicalGates": {
+    "count": 71,
+    "status": "NOT_RUN"
+  },
+  "realHttpTests": {
+    "collected": 33,
+    "status": "NOT_RUN"
+  },
+  "mysqlProbes": {
+    "count": 6,
+    "status": "NOT_RUN"
+  },
+  "assumption": "Offline means enterprise prepaid collection independently verified before dispatch; not COD or driver personal collection."
+}

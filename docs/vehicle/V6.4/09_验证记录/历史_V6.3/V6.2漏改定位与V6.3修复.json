@@ -1,0 +1,128 @@
+[
+  {
+    "id": "F01",
+    "finding": "主PRD正文与F03图注冲突",
+    "source": "01_PRD/机动车检测预约_PRD_V6.2_完整整合版.md",
+    "line": 633,
+    "excerpt": "关联页面：U02/B36/B25/B26/S21/S22。管理员签发不代表已经绑定；仅本人消费成功才建立关联。",
+    "fix": "重写主PRD第2章；F03图注明确微信核验手机号唯一匹配自动关联、后台预配置站点。",
+    "verificationLevel": "ARTIFACT_AND_LOCAL_PROTOTYPE_ONLY"
+  },
+  {
+    "id": "F02",
+    "finding": "UI重建说明仍指导旧绑定链",
+    "source": "02_UI/开发与重建说明.md",
+    "line": 7,
+    "excerpt": "主业务链、勾选组单、行内核价和付款演示继续保留；D39–D46/B43–B45补培训、考试、处罚申诉和活体会话；U02/B36为本人请求→后台签发→本人消费。供应商调用、身份、支付、照片内容全部模拟且有提示，不能用演示固定凭证上线。",
+    "fix": "替换为U02本人关联状态、B25/B26后台直接配置、B36异常管理。",
+    "verificationLevel": "ARTIFACT_AND_LOCAL_PROTOTYPE_ONLY"
+  },
+  {
+    "id": "F03",
+    "finding": "交互规则INT73与INT79互相冲突",
+    "source": "03_交互与设计规范/02_交互设计规范.md",
+    "line": 106,
+    "excerpt": "|INT73|员工绑定|先本人请求，再管理员签发，再本人消费；请求号与凭证分开，过期/撤销/已用给明确恢复入口。|",
+    "fix": "INT73统一新流程；不再让员工申请或领取凭证。",
+    "verificationLevel": "ARTIFACT_AND_LOCAL_PROTOTYPE_ONLY"
+  },
+  {
+    "id": "F04",
+    "finding": "IT02真实联调规格仍用旧链",
+    "source": "13_真实集成测试/02_全功能联调场景.md",
+    "line": 8,
+    "excerpt": "|IT02 多设备与员工绑定|两个设备、员工A|本人申请→管理员签凭证→本人消费→切站→撤权→切回OWNER|旧凭据不能重放；context与auth_version权威；ACCOUNT1非超管|",
+    "fix": "联调入口改成可信手机号自动关联、后台预授权、暂停撤权；不是在本轮执行真实接口。",
+    "verificationLevel": "ARTIFACT_AND_LOCAL_PROTOTYPE_ONLY"
+  },
+  {
+    "id": "F05",
+    "finding": "B25仍有绑定申请和确认绑定",
+    "source": "02_UI/src/desktop.js",
+    "line": 31,
+    "excerpt": "R.B25=()=>screen('员工检测点权限','复用框架员工账号；所属站点与可操作站点分别记录。',cardTable('员工与站点授权',['框架员工','账号绑定','行政所属','可操作站点','工作状态','操作'],[['林晓<small>E012</small>','已受控绑定','城东检测站',U.store.authorized.length?U.store.stations.filter(x=>U.store.authorized.includes(x.id)).map(x=>tag(x.name)).join(' '):tag('0个授权','orange'),tag(U.store.authorized.length?'可工作':'待开通',U.store.authorized.length?'green':'orange'),g('配置授权','B26','link')],['周工<small>E013</small>','已绑定','城北检测站','城北检测站',tag('可工作','green'),g('配置授权','B26','link')],['新员工<small>E014</small>','等待确认','城东检测站','无授权',tag('待绑定','gray'),g('确认绑定','B36','link')]],'employees'),toolbar(g('员工绑定申请','B36','secondary'),b('框架人员管理','framework-help','secondary')));",
+    "fix": "B25重建为员工列表、微信关联状态、站点配置和关联详情；未关联微信也可配置。",
+    "verificationLevel": "ARTIFACT_AND_LOCAL_PROTOTYPE_ONLY"
+  },
+  {
+    "id": "F06",
+    "finding": "原型浏览器标题/说明仍标V5或V4",
+    "source": "02_UI/src/shell.html",
+    "line": 2,
+    "excerpt": "<html lang=\"zh-CN\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><meta name=\"color-scheme\" content=\"light\"><title>集信车检 · 设计与交互工作区原型 V5.0</title><!--STYLE--></head><body>",
+    "fix": "单文件标题、导航、说明、当前来源统一V6.3；历史模块文件名只表示代码沿革。",
+    "verificationLevel": "ARTIFACT_AND_LOCAL_PROTOTYPE_ONLY"
+  },
+  {
+    "id": "F07",
+    "finding": "已关联画板却显示手机号未核验",
+    "source": "02_UI/src/v62_identity.js",
+    "line": 61,
+    "excerpt": "row('users','员工关联状态',label[a.link]||'尚未关联','','U02'))+note(),footer:g('返回我的','O25','secondary')};};",
+    "fix": "关联状态、手机号核验、工作权限使用同一演示状态；不再只改标题造成功能矛盾。",
+    "verificationLevel": "ARTIFACT_AND_LOCAL_PROTOTYPE_ONLY"
+  },
+  {
+    "id": "F08",
+    "finding": "B26换员工后表单未同步",
+    "source": "02_UI/src/v62_identity.js",
+    "line": 83,
+    "excerpt": "R.B26=v=>{const a=U.auth62();if(v.state==='unlinked'&&!U.get('auth62.employee'))U.set('auth62.employee','13');const id=U.get('auth62.employee','12'),emp=a.employees.find(x=>x.id===id)||a.employees[0];",
+    "fix": "切换目标立即重载该员工站点和版本，清除旧目标输入；新增冲突态。",
+    "verificationLevel": "ARTIFACT_AND_LOCAL_PROTOTYPE_ONLY"
+  },
+  {
+    "id": "F09",
+    "finding": "暂停后再次授权可能重建关联",
+    "source": "02_UI/src/v62_identity.js",
+    "line": 40,
+    "excerpt": "}else if(!emp.enabled){a.link='SUSPENDED';}",
+    "fix": "暂停/解除保存至员工与账号状态；允许重核不恢复权限，本人重新核验才恢复。",
+    "verificationLevel": "ARTIFACT_AND_LOCAL_PROTOTYPE_ONLY"
+  },
+  {
+    "id": "F10",
+    "finding": "我的和申请进度不是同一个资格状态",
+    "source": "02_UI/src/mobile_owner.js",
+    "line": 28,
+    "excerpt": "R.O25=()=>({title:'我的',tabs:'owner',active:3,body:identity()+rolebar()+U.summary([['待服务确认',1],['进行中',1],['待审核申请',1]])+p('我的服务',row('order','我的预约','预约记录、状态及服务资料','','O26')+row('doc','检测结果','查看最终结论与更正说明','','O18')+row('car','常用车辆与地址','管理个人常用信息','','O27'))+p('账号与帮助',row('user','个人资料','选填，不影响预约','','O02')+row('users','切换身份','车主 / 代驾 / 检测工作人员','','U01')+row('support','客服与设置','通知、隐私、大字模式','','O28'))});",
+    "fix": "我的、身份切换、申请草稿/审核中/驳回/通过页面与后端审核演示联动。",
+    "verificationLevel": "ARTIFACT_AND_LOCAL_PROTOTYPE_ONLY"
+  },
+  {
+    "id": "F11",
+    "finding": "退出只是跳转登录，没有退出演示会话",
+    "source": "02_UI/src/app.js",
+    "line": 77,
+    "excerpt": "case 'logout':U.dialog('退出当前演示账号？','<p>退出不取消预约，也不解除已有代驾承接或车辆保管责任。</p>',[b('取消','close-dialog','secondary'),g('退出到登录页','O29')]);return;",
+    "fix": "退出真正清除当前演示登录和工作范围，但保留资格与在手任务。",
+    "verificationLevel": "ARTIFACT_AND_LOCAL_PROTOTYPE_ONLY"
+  },
+  {
+    "id": "F12",
+    "finding": "本人工作页固定其他演示人姓名",
+    "source": "02_UI/src/mobile_driver.js",
+    "line": 31,
+    "excerpt": "R.D27=()=>({title:'我的代驾工作',tabs:'driver',active:2,body:`<div class=\"profile-head\"><div class=\"avatar\">林</div><div class=\"grow\"><h2>林晓</h2><p class=\"hint\">代驾资格已通过 · 139****6688</p></div>${tag('已审核','green')}</div>`+rolebar()+U.summary([['本月接送',18],['今日结束',3],['服务评分','4.9']])+p('工作与账号',row('idcard','认证中心与复审','证件有效期与复审申请','','D28')+row('users','切换身份','车主 / 代驾 / 检测工作','','U01')+row('support','客服与帮助','普通服务问题与联系入口','','D30'))+p('近期服务记录',U.orderCard({stage:'WAIT_CONFIRM',slot:'10-11 09:00–10:00'},'D25',g('任务已结束','D25','secondary small'))+U.orderCard({stage:'COMPLETED',slot:'10-10 14:00–15:00'},'D25',g('查看记录','D25','secondary small')))});",
+    "fix": "代驾/检测“我的”读取当前演示账号；保留服务、培训、申诉、对账入口。",
+    "verificationLevel": "ARTIFACT_AND_LOCAL_PROTOTYPE_ONLY"
+  },
+  {
+    "id": "F13",
+    "finding": "主PRD仍断言旧M0五张表真实存在",
+    "source": "01_PRD/机动车检测预约_PRD_V6.2_完整整合版.md",
+    "line": 369,
+    "excerpt": "旧V4.x业务规格已被替换，不要求保留未上线API兼容或重放旧订单/退款；已存在的M0代码和五张基座表则是真实工程产物，按E00/E03核查与前向适配。保留既有xinyi sys_user、部门、权限、菜单和基础配置。001只用于已确认空的隔离业务库；发现同名vi表转结构核对，不DROP、不用IF NOT EXISTS掩盖差异。",
+    "fix": "改为实际工作区和数据库条件判断；本轮不读取远程或推定已实施。",
+    "verificationLevel": "ARTIFACT_AND_LOCAL_PROTOTYPE_ONLY"
+  },
+  {
+    "id": "F14",
+    "finding": "只检查结构未发现上述跨文件/可见状态错误",
+    "source": "11_工具/check_package.py",
+    "line": 189,
+    "excerpt": "rep={'kind':'STATIC_DOCUMENT_CHECK','checkedAt':'2026-10-22','pass':sum(x['result']=='PASS'for x in checks),'fail':sum(x['result']=='FAIL'for x in checks),'counts':{'operations':len(O),'schemas':len(S),'tables':len(model),'generatedColumns':sum(len(x['generatedColumns'])for x in writecols),'screens':len(cat),'cases':len(cases),'flows':len(flows)},'checks':checks,'notCovered':['MySQL execution','xinyi build','runtime authorization','real payment/vendors','WeChat devices','full formal OpenAPI meta-schema validation']}",
+    "fix": "新增30项跨文件/可见内容检查和30项身份交互检查；历史通过不继承为本轮结论。",
+    "verificationLevel": "ARTIFACT_AND_LOCAL_PROTOTYPE_ONLY"
+  }
+]

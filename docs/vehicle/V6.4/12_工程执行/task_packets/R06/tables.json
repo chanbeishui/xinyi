@@ -1,0 +1,238 @@
+[
+  {
+    "name": "vi_driver_external_payment",
+    "comment": "外部已付款证据登记与核实，不发起转账",
+    "cols": [
+      [
+        "id",
+        "BIGINT NOT NULL AUTO_INCREMENT",
+        "数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串"
+      ],
+      [
+        "statement_id",
+        "BIGINT NOT NULL",
+        "已确认对账单"
+      ],
+      [
+        "driver_id",
+        "BIGINT NOT NULL",
+        "收款代驾"
+      ],
+      [
+        "payor_entity_id",
+        "BIGINT NOT NULL",
+        "付款主体"
+      ],
+      [
+        "amount_fen",
+        "BIGINT NOT NULL",
+        "正数已发生付款"
+      ],
+      [
+        "external_reference_cipher",
+        "VARBINARY(1024) NOT NULL",
+        "外部流水密文"
+      ],
+      [
+        "reference_lookup",
+        "BINARY(32) NOT NULL",
+        "带密钥查询摘要"
+      ],
+      [
+        "paid_at",
+        "DATETIME(3) NOT NULL",
+        "外部付款时间"
+      ],
+      [
+        "evidence_ids",
+        "JSON NOT NULL",
+        "凭证"
+      ],
+      [
+        "status",
+        "VARCHAR(24) NOT NULL",
+        "ExternalPaymentStatus: PENDING,VERIFIED,REJECTED,REVERSED"
+      ],
+      [
+        "registered_by",
+        "BIGINT NOT NULL",
+        "登记人"
+      ],
+      [
+        "verified_by",
+        "BIGINT",
+        "不可同一真实身份"
+      ],
+      [
+        "verified_at",
+        "DATETIME(3)",
+        "核对时间"
+      ],
+      [
+        "reason",
+        "VARCHAR(1000)",
+        "核对说明/冲正原因"
+      ],
+      [
+        "reversal_of",
+        "BIGINT",
+        "有错通过冲正记录处理"
+      ],
+      [
+        "statement_revision",
+        "INT NOT NULL",
+        "关联的已确认内容版本"
+      ],
+      [
+        "created_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "UTC"
+      ],
+      [
+        "updated_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "UTC更新时间；Mapper每次修改显式SET updated_at=UTC_TIMESTAMP(3)，不依赖连接时区"
+      ],
+      [
+        "version",
+        "BIGINT NOT NULL DEFAULT 0",
+        "乐观锁"
+      ]
+    ],
+    "indexes": [
+      "UNIQUE KEY uk_external_reference (payor_entity_id,reference_lookup)",
+      "KEY ix_statement_payment (statement_id,status)",
+      "CONSTRAINT ck_external_positive CHECK (amount_fen>0)"
+    ],
+    "rule": "登记和核实均锁父账单；仅CONFIRMED且正净额。PENDING预留可登记余额但不计已付；VERIFIED净金额才影响账单付款状态。拒绝/冲正保留原记录。首期一条正常外部付款记录关联一张账单，不将余额自动分到服务行；同主体流水不得重复记录。",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "engine": "InnoDB",
+    "collation": "utf8mb4_0900_ai_ci",
+    "columnRules": {
+      "id": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "statement_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "driver_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "payor_entity_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "amount_fen": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "external_reference_cipher": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "reference_lookup": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "paid_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "evidence_ids": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "status": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false,
+        "enumRef": "ExternalPaymentStatus"
+      },
+      "registered_by": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "verified_by": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "verified_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "reason": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "reversal_of": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "statement_revision": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "created_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "updated_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "version": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      }
+    },
+    "checks": [
+      "CONSTRAINT ck_66_cd7059501d32 CHECK (`status` IN ('PENDING','VERIFIED','REJECTED','REVERSED'))",
+      "CONSTRAINT ck_ver_driver_external_payment CHECK (version >= 0)"
+    ]
+  }
+]

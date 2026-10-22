@@ -1,0 +1,925 @@
+[
+  {
+    "name": "vi_message_template",
+    "comment": "外部短信与订阅模板档案",
+    "cols": [
+      [
+        "id",
+        "BIGINT NOT NULL AUTO_INCREMENT",
+        "内部自增Long；API十进制字符串"
+      ],
+      [
+        "name",
+        "VARCHAR(100) NOT NULL",
+        ""
+      ],
+      [
+        "provider",
+        "VARCHAR(32) NOT NULL",
+        "ExternalMessageProvider: TENCENT_SMS,ALIYUN_SMS,WECHAT_SUBSCRIBE；"
+      ],
+      [
+        "owner_dept_id",
+        "BIGINT NOT NULL",
+        ""
+      ],
+      [
+        "environment",
+        "VARCHAR(12) NOT NULL",
+        "IntegrationEnvironment: TEST,LIVE；"
+      ],
+      [
+        "scene",
+        "VARCHAR(40) NOT NULL",
+        "NotificationScene: LOGIN_OTP,PHONE_VERIFY,BOOKING_CONFIRMED,DRIVER_ASSIGNED,PICKUP_ARRIVED,INSPECTION_FINISHED,RETURN_COMPLETED,AFTERSALE_DECIDED,REFUND_CHANGED,DRIVER_INVITE,STATEMENT_READY；"
+      ],
+      [
+        "audience",
+        "VARCHAR(16) NOT NULL",
+        "NotificationAudience: OWNER,DRIVER,STATION；"
+      ],
+      [
+        "active_revision_id",
+        "BIGINT NULL",
+        "当前已发布模板"
+      ],
+      [
+        "draft_revision_id",
+        "BIGINT NULL",
+        "最新草稿"
+      ],
+      [
+        "revision_seq",
+        "BIGINT NOT NULL DEFAULT 0",
+        "模板版本分配计数"
+      ],
+      [
+        "created_by",
+        "BIGINT NOT NULL",
+        ""
+      ],
+      [
+        "created_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "UTC创建时间"
+      ],
+      [
+        "updated_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "Mapper显式UTC更新时间"
+      ],
+      [
+        "version",
+        "BIGINT NOT NULL DEFAULT 0",
+        "显式CAS；不是注解自动生效"
+      ]
+    ],
+    "indexes": [
+      "KEY ix_template_scene (owner_dept_id,environment,scene,audience,provider)"
+    ],
+    "rule": "多个模板可维护，实际发送由路由唯一主选；内部id和供应商templateId不得混淆。",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "engine": "InnoDB",
+    "collation": "utf8mb4_0900_ai_ci",
+    "columnRules": {
+      "id": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "name": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "provider": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false,
+        "enumRef": "ExternalMessageProvider"
+      },
+      "owner_dept_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "environment": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false,
+        "enumRef": "IntegrationEnvironment"
+      },
+      "scene": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false,
+        "enumRef": "NotificationScene"
+      },
+      "audience": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false,
+        "enumRef": "NotificationAudience"
+      },
+      "active_revision_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "draft_revision_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "revision_seq": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "created_by": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "created_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "updated_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "version": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      }
+    },
+    "checks": [
+      "CONSTRAINT ck_ver_message_template CHECK (version >= 0)",
+      "CONSTRAINT ck_d4792ebbf8b6a6 CHECK (`provider` IN ('TENCENT_SMS','ALIYUN_SMS','WECHAT_SUBSCRIBE'))",
+      "CONSTRAINT ck_fc161ac5a52b5d CHECK (`environment` IN ('TEST','LIVE'))",
+      "CONSTRAINT ck_a22fd0ee77b18a CHECK (`scene` IN ('LOGIN_OTP','PHONE_VERIFY','BOOKING_CONFIRMED','DRIVER_ASSIGNED','PICKUP_ARRIVED','INSPECTION_FINISHED','RETURN_COMPLETED','AFTERSALE_DECIDED','REFUND_CHANGED','DRIVER_INVITE','STATEMENT_READY'))",
+      "CONSTRAINT ck_992903d6097179 CHECK (`audience` IN ('OWNER','DRIVER','STATION'))"
+    ]
+  },
+  {
+    "name": "vi_message_template_revision",
+    "comment": "不可变外部模板版本",
+    "cols": [
+      [
+        "id",
+        "BIGINT NOT NULL AUTO_INCREMENT",
+        "内部自增Long；API十进制字符串"
+      ],
+      [
+        "template_id",
+        "BIGINT NOT NULL",
+        ""
+      ],
+      [
+        "revision_no",
+        "BIGINT NOT NULL",
+        ""
+      ],
+      [
+        "profile_id",
+        "BIGINT NOT NULL",
+        ""
+      ],
+      [
+        "profile_revision_id",
+        "BIGINT NOT NULL",
+        ""
+      ],
+      [
+        "vendor_template_id",
+        "VARCHAR(256) NULL",
+        "实际供应商审核通过的模板ID；草稿可空，发布时强制"
+      ],
+      [
+        "parameter_bindings",
+        "JSON NOT NULL",
+        "白名单变量、实际key/type/length；腾讯顺序/阿里命名"
+      ],
+      [
+        "options_json",
+        "JSON NOT NULL",
+        "签名/内容快照/小程序page/env/lang等非秘密"
+      ],
+      [
+        "enabled",
+        "TINYINT NOT NULL",
+        "发送开关"
+      ],
+      [
+        "approval_status",
+        "VARCHAR(16) NOT NULL",
+        "TemplateApprovalStatus: UNKNOWN,APPROVED,REJECTED；"
+      ],
+      [
+        "content_hash",
+        "VARCHAR(64) NOT NULL",
+        ""
+      ],
+      [
+        "created_by",
+        "BIGINT NOT NULL",
+        ""
+      ],
+      [
+        "reason",
+        "VARCHAR(500) NOT NULL",
+        ""
+      ],
+      [
+        "created_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "UTC创建时间"
+      ],
+      [
+        "updated_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "Mapper显式UTC更新时间"
+      ],
+      [
+        "version",
+        "BIGINT NOT NULL DEFAULT 0",
+        "显式CAS；不是注解自动生效"
+      ]
+    ],
+    "indexes": [
+      "UNIQUE KEY uk_template_revision (template_id,revision_no)"
+    ],
+    "rule": "只追加；模板检查记录不得回写修改不可变快照的官方审核结论。保存时未知则发布前check证明审批状态。",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "engine": "InnoDB",
+    "collation": "utf8mb4_0900_ai_ci",
+    "columnRules": {
+      "id": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "template_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "revision_no": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "profile_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "profile_revision_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "vendor_template_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "parameter_bindings": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "options_json": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "enabled": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "approval_status": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false,
+        "enumRef": "TemplateApprovalStatus"
+      },
+      "content_hash": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "created_by": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "reason": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "created_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "updated_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "version": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      }
+    },
+    "checks": [
+      "CONSTRAINT ck_ver_message_template_revision CHECK (version >= 0)",
+      "CONSTRAINT ck_b7dcf36d038099 CHECK (`approval_status` IN ('UNKNOWN','APPROVED','REJECTED'))"
+    ]
+  },
+  {
+    "name": "vi_notification_route",
+    "comment": "业务事件到唯一主通道的路由",
+    "cols": [
+      [
+        "id",
+        "BIGINT NOT NULL AUTO_INCREMENT",
+        "内部自增Long；API十进制字符串"
+      ],
+      [
+        "owner_dept_id",
+        "BIGINT NOT NULL",
+        ""
+      ],
+      [
+        "environment",
+        "VARCHAR(12) NOT NULL",
+        "IntegrationEnvironment: TEST,LIVE；"
+      ],
+      [
+        "scene",
+        "VARCHAR(40) NOT NULL",
+        "NotificationScene: LOGIN_OTP,PHONE_VERIFY,BOOKING_CONFIRMED,DRIVER_ASSIGNED,PICKUP_ARRIVED,INSPECTION_FINISHED,RETURN_COMPLETED,AFTERSALE_DECIDED,REFUND_CHANGED,DRIVER_INVITE,STATEMENT_READY；"
+      ],
+      [
+        "audience",
+        "VARCHAR(16) NOT NULL",
+        "NotificationAudience: OWNER,DRIVER,STATION；"
+      ],
+      [
+        "primary_template_id",
+        "BIGINT NOT NULL",
+        ""
+      ],
+      [
+        "fallback_template_id",
+        "BIGINT NULL",
+        "只允许明确未发送时按规则用备用"
+      ],
+      [
+        "fallback_policy",
+        "VARCHAR(32) NOT NULL",
+        "MessageFallbackPolicy: NONE,DEFINITELY_NOT_SENT_ONLY；"
+      ],
+      [
+        "enabled",
+        "TINYINT NOT NULL",
+        ""
+      ],
+      [
+        "updated_by",
+        "BIGINT NOT NULL",
+        ""
+      ],
+      [
+        "reason",
+        "VARCHAR(500) NOT NULL",
+        ""
+      ],
+      [
+        "created_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "UTC创建时间"
+      ],
+      [
+        "updated_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "Mapper显式UTC更新时间"
+      ],
+      [
+        "version",
+        "BIGINT NOT NULL DEFAULT 0",
+        "显式CAS；不是注解自动生效"
+      ]
+    ],
+    "indexes": [
+      "UNIQUE KEY uk_message_route (owner_dept_id,environment,scene,audience)"
+    ],
+    "rule": "每场景/收件身份/主体/环境仅一个主路由；事务性保存立即生效，所有依赖必须发布可用。历史delivery冻结快照；UNKNOWN不可备用重发。",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "engine": "InnoDB",
+    "collation": "utf8mb4_0900_ai_ci",
+    "columnRules": {
+      "id": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "owner_dept_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "environment": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false,
+        "enumRef": "IntegrationEnvironment"
+      },
+      "scene": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false,
+        "enumRef": "NotificationScene"
+      },
+      "audience": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false,
+        "enumRef": "NotificationAudience"
+      },
+      "primary_template_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "fallback_template_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "fallback_policy": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false,
+        "enumRef": "MessageFallbackPolicy"
+      },
+      "enabled": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "updated_by": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "reason": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "created_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "updated_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "version": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      }
+    },
+    "checks": [
+      "CONSTRAINT ck_ver_notification_route CHECK (version >= 0)",
+      "CONSTRAINT ck_545a6078080a6c CHECK (`environment` IN ('TEST','LIVE'))",
+      "CONSTRAINT ck_abb77f22beb38f CHECK (`scene` IN ('LOGIN_OTP','PHONE_VERIFY','BOOKING_CONFIRMED','DRIVER_ASSIGNED','PICKUP_ARRIVED','INSPECTION_FINISHED','RETURN_COMPLETED','AFTERSALE_DECIDED','REFUND_CHANGED','DRIVER_INVITE','STATEMENT_READY'))",
+      "CONSTRAINT ck_e031dc9c69e46e CHECK (`audience` IN ('OWNER','DRIVER','STATION'))",
+      "CONSTRAINT ck_fbf39632b0a6fb CHECK (`fallback_policy` IN ('NONE','DEFINITELY_NOT_SENT_ONLY'))"
+    ]
+  },
+  {
+    "name": "vi_notification_delivery",
+    "comment": "外部发送执行与回执",
+    "cols": [
+      [
+        "id",
+        "BIGINT NOT NULL AUTO_INCREMENT",
+        "内部自增Long；API十进制字符串"
+      ],
+      [
+        "notification_id",
+        "BIGINT NOT NULL",
+        "关联已有站内消息/OTP任务；OTP可使用内部通知目标记录"
+      ],
+      [
+        "event_key",
+        "VARCHAR(128) NOT NULL",
+        "逻辑事件业务键"
+      ],
+      [
+        "recipient_key",
+        "VARCHAR(128) NOT NULL",
+        "accountId或脱敏HMAC，禁止裸号"
+      ],
+      [
+        "recipient_cipher",
+        "VARBINARY(1024) NOT NULL",
+        "必要收件手机号/OpenID密文"
+      ],
+      [
+        "owner_dept_id",
+        "BIGINT NOT NULL",
+        ""
+      ],
+      [
+        "environment",
+        "VARCHAR(12) NOT NULL",
+        "IntegrationEnvironment: TEST,LIVE；"
+      ],
+      [
+        "route_id",
+        "BIGINT NOT NULL",
+        ""
+      ],
+      [
+        "scene",
+        "VARCHAR(40) NOT NULL",
+        "NotificationScene: LOGIN_OTP,PHONE_VERIFY,BOOKING_CONFIRMED,DRIVER_ASSIGNED,PICKUP_ARRIVED,INSPECTION_FINISHED,RETURN_COMPLETED,AFTERSALE_DECIDED,REFUND_CHANGED,DRIVER_INVITE,STATEMENT_READY；"
+      ],
+      [
+        "provider",
+        "VARCHAR(32) NOT NULL",
+        "ExternalMessageProvider: TENCENT_SMS,ALIYUN_SMS,WECHAT_SUBSCRIBE；"
+      ],
+      [
+        "template_id",
+        "BIGINT NOT NULL",
+        ""
+      ],
+      [
+        "template_revision_id",
+        "BIGINT NOT NULL",
+        ""
+      ],
+      [
+        "profile_id",
+        "BIGINT NOT NULL",
+        ""
+      ],
+      [
+        "profile_revision_id",
+        "BIGINT NOT NULL",
+        ""
+      ],
+      [
+        "payload_cipher_refs",
+        "JSON NOT NULL",
+        "消息内容加密引用/服务器事件引用，不含明文验证码"
+      ],
+      [
+        "status",
+        "VARCHAR(24) NOT NULL",
+        "ExternalDeliveryStatus: PENDING,SENDING,ACCEPTED,DELIVERED,FAILED,UNKNOWN,SKIPPED；"
+      ],
+      [
+        "vendor_request_id",
+        "VARCHAR(128) NULL",
+        ""
+      ],
+      [
+        "vendor_biz_id",
+        "VARCHAR(128) NULL",
+        ""
+      ],
+      [
+        "safe_error_code",
+        "VARCHAR(128) NULL",
+        ""
+      ],
+      [
+        "safe_error_message",
+        "VARCHAR(500) NULL",
+        ""
+      ],
+      [
+        "attempt_count",
+        "INT NOT NULL DEFAULT 0",
+        ""
+      ],
+      [
+        "next_attempt_at",
+        "DATETIME(3) NULL",
+        ""
+      ],
+      [
+        "lease_until",
+        "DATETIME(3) NULL",
+        ""
+      ],
+      [
+        "accepted_at",
+        "DATETIME(3) NULL",
+        ""
+      ],
+      [
+        "delivered_at",
+        "DATETIME(3) NULL",
+        ""
+      ],
+      [
+        "business_expires_at",
+        "DATETIME(3) NOT NULL",
+        ""
+      ],
+      [
+        "created_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "UTC创建时间"
+      ],
+      [
+        "updated_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "Mapper显式UTC更新时间"
+      ],
+      [
+        "version",
+        "BIGINT NOT NULL DEFAULT 0",
+        "显式CAS；不是注解自动生效"
+      ]
+    ],
+    "indexes": [
+      "UNIQUE KEY uk_delivery_event (event_key,recipient_key,scene)",
+      "KEY ix_delivery_retry (status,next_attempt_at)",
+      "KEY ix_vendor_message (provider,vendor_biz_id)"
+    ],
+    "rule": "内部业务幂等不等于供应商exactly-once。UNKNOWN先查；ACCEPTED不代表送达/已读；禁用阻止未发和重试，但回执继续。重试/备用同一delivery受控更新provider和冻结引用并追加审计，不生成并行双发。",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "engine": "InnoDB",
+    "collation": "utf8mb4_0900_ai_ci",
+    "columnRules": {
+      "id": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "notification_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "event_key": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "recipient_key": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "recipient_cipher": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "owner_dept_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "environment": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false,
+        "enumRef": "IntegrationEnvironment"
+      },
+      "route_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "scene": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false,
+        "enumRef": "NotificationScene"
+      },
+      "provider": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false,
+        "enumRef": "ExternalMessageProvider"
+      },
+      "template_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "template_revision_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "profile_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "profile_revision_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "payload_cipher_refs": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "status": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false,
+        "enumRef": "ExternalDeliveryStatus"
+      },
+      "vendor_request_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "vendor_biz_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "safe_error_code": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "safe_error_message": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "attempt_count": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "next_attempt_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "lease_until": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "accepted_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "delivered_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "business_expires_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "created_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "updated_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "version": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      }
+    },
+    "checks": [
+      "CONSTRAINT ck_ver_notification_delivery CHECK (version >= 0)",
+      "CONSTRAINT ck_3295c253da0860 CHECK (`environment` IN ('TEST','LIVE'))",
+      "CONSTRAINT ck_53d61b6a3a8ac2 CHECK (`scene` IN ('LOGIN_OTP','PHONE_VERIFY','BOOKING_CONFIRMED','DRIVER_ASSIGNED','PICKUP_ARRIVED','INSPECTION_FINISHED','RETURN_COMPLETED','AFTERSALE_DECIDED','REFUND_CHANGED','DRIVER_INVITE','STATEMENT_READY'))",
+      "CONSTRAINT ck_6066945178ca2a CHECK (`provider` IN ('TENCENT_SMS','ALIYUN_SMS','WECHAT_SUBSCRIBE'))",
+      "CONSTRAINT ck_9de57b85c185c7 CHECK (`status` IN ('PENDING','SENDING','ACCEPTED','DELIVERED','FAILED','UNKNOWN','SKIPPED'))"
+    ]
+  }
+]

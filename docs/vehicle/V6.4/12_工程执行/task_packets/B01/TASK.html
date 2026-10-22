@@ -1,0 +1,39 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TASK</title><style>body{font:16px/1.75 -apple-system,BlinkMacSystemFont,"Microsoft YaHei",sans-serif;color:#202632;margin:0;background:#f6f7f9}header{padding:14px 24px;background:white;border-bottom:1px solid #ddd}main{max-width:1120px;margin:24px auto;padding:30px;background:white}h1{font-size:30px}h2{margin-top:36px}a{color:#0661bd}table{border-collapse:collapse;width:100%;display:block;overflow:auto;font-size:14px}td,th{border:1px solid #dde2ea;padding:10px;vertical-align:top}th{background:#f1f5fb}pre{padding:15px;background:#f2f4f7;overflow:auto}img{max-width:100%;height:auto}blockquote{padding:10px 20px;border-left:3px solid #2571be;background:#f4f8fc}@media(max-width:700px){main{padding:15px;margin:8px}h1{font-size:25px}}</style></head><body><header><a href="../../../00_开始.html">V6.4 完整资料</a>　<a href="../../../02_UI/index.html">交互原型</a>　T3.4</header><main><h1>B01 · 先时段后地址的预约界面</h1>
+<p>阶段：M2；责任域：booking；前置：E04, A01, A02, C03。
+范围版本：<code>V6.1-UNCHANGED</code>；definitionHash：<code>bdb3ee7f1054a9f0261d90beaa98e2dc58bbedf4101bf5db859e9c264f4991d1</code>。</p>
+<h2>本任务交付</h2>
+<ul>
+<li>实现O32→O33→O31→O34，草稿/返回/修改失效，链接API而非内存订单</li>
+</ul>
+<h2>必测失败与并发</h2>
+<ul>
+<li>切换地址车型重报价</li>
+<li>已选时段不提前扣名额</li>
+</ul>
+<h2>精确输入</h2>
+<p>主源：04_接口/openapi_V6.4.yaml、05_数据设计/data_model_V6.4.json、06_验收/test_cases_V6.4.json。本目录派生，不独立维护。
+接口：API_023_get
+画板：O03, O03-empty, O31, O32, O32-unavailable, O33, O33-location-failed, O33-outside, O34, O34-full, O34-no-price, O34-price-changed
+主责任表：无
+验收：TC-019, TC-020, TC-021, TC-022, TC-023, TC-024, TC-025, TC-026, TC-027, TC-028, TC-029, TC-030, TC-031, TC-032, TC-033, TC-034, TC-035, TC-036</p>
+<h2>代码落位</h2>
+<p><code>xinyi-rongli/src/main/java/com/xinyi/rongli/booking/</code>
+<code>xinyi-rongli/src/main/resources/mapper/rongli/booking/</code>
+<code>xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/booking/</code>
+<code>xinyi-ui/src/views/rongli/booking/</code>
+<code>xinyi-ui/src/api/rongli/booking.ts</code>
+<code>xinyi-miniapp/src/features/booking/</code></p>
+<h2>验证命令</h2>
+<pre><code class="language-bash">mvn -pl xinyi-admin -am -Pvi-it -Dit.test=B01BookingIT verify
+npm --prefix xinyi-ui run build:prod
+npm --prefix xinyi-miniapp run build:mp-weixin
+</code></pre>
+<h2>完成标准</h2>
+<ul>
+<li>源接口/页面/表/用例均有明确实现文件与关联测试；不能以目录存在当完成</li>
+<li>本任务真实集成与负向场景实际通过且保存原始报告；无测试/跳过不能通过</li>
+<li>提交独立复核记录；标注测试第三方替身，不声称真实渠道通过</li>
+</ul>
+<h2>执行边界</h2>
+<p>已有实现先核查适配，不清空重来。NOT_RUN与NOT_ASSESSED不表示生产已验证。缺真实凭据只阻对应真实联调；环境阻塞如实记录，不改测试期望凑通过。修改主源后重新生成派生文件和当前截图。</p>
+</main></body></html>

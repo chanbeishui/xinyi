@@ -1,0 +1,1135 @@
+[
+  {
+    "name": "vi_integration_profile",
+    "comment": "第三方配置档案与生效指针",
+    "cols": [
+      [
+        "id",
+        "BIGINT NOT NULL AUTO_INCREMENT",
+        "内部自增Long；API十进制字符串"
+      ],
+      [
+        "kind",
+        "VARCHAR(32) NOT NULL",
+        "IntegrationKind: PAYMENT_POLICY,WECHAT_PAY,TENCENT_SMS,ALIYUN_SMS,WECHAT_APP；"
+      ],
+      [
+        "owner_dept_id",
+        "BIGINT NOT NULL",
+        "真实管理/收款主体，复用框架部门归属"
+      ],
+      [
+        "environment",
+        "VARCHAR(12) NOT NULL",
+        "IntegrationEnvironment: TEST,LIVE；"
+      ],
+      [
+        "config_key",
+        "VARCHAR(80) NOT NULL",
+        "PAYMENT_POLICY与WECHAT_APP用DEFAULT；其他由服务端生成，不由用户改身份"
+      ],
+      [
+        "display_name",
+        "VARCHAR(100) NOT NULL",
+        ""
+      ],
+      [
+        "lifecycle",
+        "VARCHAR(16) NOT NULL",
+        "IntegrationLifecycle: DRAFT,ACTIVE,RETIRED；"
+      ],
+      [
+        "active_revision_id",
+        "BIGINT NULL",
+        "当前发布版本"
+      ],
+      [
+        "draft_revision_id",
+        "BIGINT NULL",
+        "最新草稿版本"
+      ],
+      [
+        "revision_seq",
+        "BIGINT NOT NULL DEFAULT 0",
+        "分配版本号的CAS计数"
+      ],
+      [
+        "created_by",
+        "BIGINT NOT NULL",
+        "配置创建人"
+      ],
+      [
+        "last_published_by",
+        "BIGINT NULL",
+        "最近发布人"
+      ],
+      [
+        "created_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "UTC创建时间"
+      ],
+      [
+        "updated_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "Mapper显式UTC更新时间"
+      ],
+      [
+        "version",
+        "BIGINT NOT NULL DEFAULT 0",
+        "显式CAS；不是注解自动生效"
+      ]
+    ],
+    "indexes": [
+      "UNIQUE KEY uk_integration_scope (kind,owner_dept_id,environment,config_key)",
+      "KEY ix_integration_active (active_revision_id)"
+    ],
+    "rule": "权限与组织范围校验；AppID/mchid一旦有业务引用不得原位改主体；发布仅原子变更指针，版本不可变。",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "engine": "InnoDB",
+    "collation": "utf8mb4_0900_ai_ci",
+    "columnRules": {
+      "id": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "kind": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false,
+        "enumRef": "IntegrationKind"
+      },
+      "owner_dept_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "environment": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false,
+        "enumRef": "IntegrationEnvironment"
+      },
+      "config_key": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "display_name": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "lifecycle": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false,
+        "enumRef": "IntegrationLifecycle"
+      },
+      "active_revision_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "draft_revision_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "revision_seq": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "created_by": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "last_published_by": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "created_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "updated_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "version": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      }
+    },
+    "checks": [
+      "CONSTRAINT ck_ver_integration_profile CHECK (version >= 0)",
+      "CONSTRAINT ck_fdb65a8cb0d9d1 CHECK (`kind` IN ('PAYMENT_POLICY','WECHAT_PAY','TENCENT_SMS','ALIYUN_SMS','WECHAT_APP'))",
+      "CONSTRAINT ck_5d0e7efd82afb9 CHECK (`environment` IN ('TEST','LIVE'))",
+      "CONSTRAINT ck_7d6eefe158cca1 CHECK (`lifecycle` IN ('DRAFT','ACTIVE','RETIRED'))"
+    ]
+  },
+  {
+    "name": "vi_integration_revision",
+    "comment": "不可变第三方配置版本",
+    "cols": [
+      [
+        "id",
+        "BIGINT NOT NULL AUTO_INCREMENT",
+        "内部自增Long；API十进制字符串"
+      ],
+      [
+        "profile_id",
+        "BIGINT NOT NULL",
+        ""
+      ],
+      [
+        "revision_no",
+        "BIGINT NOT NULL",
+        ""
+      ],
+      [
+        "config_json",
+        "JSON NOT NULL",
+        "经kind专用DTO验证的非秘密配置"
+      ],
+      [
+        "secret_refs_json",
+        "JSON NOT NULL",
+        "本配置凭据槽位到secret id的内部映射，不下发"
+      ],
+      [
+        "content_hash",
+        "VARCHAR(64) NOT NULL",
+        "规范化内容与秘密引用版本摘要"
+      ],
+      [
+        "created_by",
+        "BIGINT NOT NULL",
+        ""
+      ],
+      [
+        "reason",
+        "VARCHAR(500) NOT NULL",
+        ""
+      ],
+      [
+        "created_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "UTC创建时间"
+      ],
+      [
+        "updated_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "Mapper显式UTC更新时间"
+      ],
+      [
+        "version",
+        "BIGINT NOT NULL DEFAULT 0",
+        "显式CAS；不是注解自动生效"
+      ]
+    ],
+    "indexes": [
+      "UNIQUE KEY uk_config_revision (profile_id,revision_no)",
+      "UNIQUE KEY uk_config_hash (profile_id,content_hash)"
+    ],
+    "rule": "保存创建新版本；发布、回滚均不能改写本行；没有私钥/APIv3/AK/AppSecret明文。",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "engine": "InnoDB",
+    "collation": "utf8mb4_0900_ai_ci",
+    "columnRules": {
+      "id": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "profile_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "revision_no": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "config_json": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "secret_refs_json": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "content_hash": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "created_by": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "reason": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "created_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "updated_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "version": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      }
+    },
+    "checks": [
+      "CONSTRAINT ck_ver_integration_revision CHECK (version >= 0)"
+    ]
+  },
+  {
+    "name": "vi_integration_secret",
+    "comment": "安全凭据密文与受控生命周期",
+    "cols": [
+      [
+        "id",
+        "BIGINT NOT NULL AUTO_INCREMENT",
+        "内部自增Long；API十进制字符串"
+      ],
+      [
+        "profile_id",
+        "BIGINT NOT NULL",
+        ""
+      ],
+      [
+        "slot_name",
+        "VARCHAR(64) NOT NULL",
+        "固定允许的凭据槽，禁止用户自造密钥用途"
+      ],
+      [
+        "credential_kind",
+        "VARCHAR(32) NOT NULL",
+        "IntegrationCredentialKind: PRIVATE_KEY,API_V3_KEY,CLOUD_SECRET,APP_SECRET,BANK_ACCOUNT；"
+      ],
+      [
+        "ciphertext",
+        "MEDIUMBLOB NOT NULL",
+        "AEAD密文或KMS加密数据键封装，绝非base64明文"
+      ],
+      [
+        "nonce",
+        "VARBINARY(32) NOT NULL",
+        "每密文独立随机nonce"
+      ],
+      [
+        "key_version",
+        "VARCHAR(128) NOT NULL",
+        "主密钥版本在服务端安全配置"
+      ],
+      [
+        "aad_context",
+        "VARCHAR(255) NOT NULL",
+        "绑定profile/slot/env的不可更改上下文"
+      ],
+      [
+        "fingerprint",
+        "VARCHAR(64) NOT NULL",
+        "安全标识不可逆；不显示明文末几位"
+      ],
+      [
+        "lifecycle",
+        "VARCHAR(16) NOT NULL",
+        "IntegrationSecretLifecycle: ACTIVE,RETIRED,REVOKED；"
+      ],
+      [
+        "expires_at",
+        "DATETIME(3) NULL",
+        ""
+      ],
+      [
+        "retired_at",
+        "DATETIME(3) NULL",
+        ""
+      ],
+      [
+        "created_by",
+        "BIGINT NOT NULL",
+        ""
+      ],
+      [
+        "retired_by",
+        "BIGINT NULL",
+        "受控撤销人"
+      ],
+      [
+        "retire_reason",
+        "VARCHAR(500) NULL",
+        ""
+      ],
+      [
+        "created_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "UTC创建时间"
+      ],
+      [
+        "updated_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "Mapper显式UTC更新时间"
+      ],
+      [
+        "version",
+        "BIGINT NOT NULL DEFAULT 0",
+        "显式CAS；不是注解自动生效"
+      ]
+    ],
+    "indexes": [
+      "KEY ix_secret_owner (profile_id,slot_name,lifecycle)"
+    ],
+    "rule": "密文与签发元数据不可编辑；替换是新secret。ACTIVE->RETIRED/REVOKED受控；被历史操作所需凭据不能简单清空；主密钥不在数据库。",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "engine": "InnoDB",
+    "collation": "utf8mb4_0900_ai_ci",
+    "columnRules": {
+      "id": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "profile_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "slot_name": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "credential_kind": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false,
+        "enumRef": "IntegrationCredentialKind"
+      },
+      "ciphertext": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "nonce": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "key_version": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "aad_context": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "fingerprint": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "lifecycle": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false,
+        "enumRef": "IntegrationSecretLifecycle"
+      },
+      "expires_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "retired_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "created_by": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "retired_by": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "retire_reason": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "created_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "updated_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "version": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      }
+    },
+    "checks": [
+      "CONSTRAINT ck_ver_integration_secret CHECK (version >= 0)",
+      "CONSTRAINT ck_db3f36fab3347a CHECK (`credential_kind` IN ('PRIVATE_KEY','API_V3_KEY','CLOUD_SECRET','APP_SECRET','BANK_ACCOUNT'))",
+      "CONSTRAINT ck_83aefc040222fa CHECK (`lifecycle` IN ('ACTIVE','RETIRED','REVOKED'))"
+    ]
+  },
+  {
+    "name": "vi_integration_check",
+    "comment": "指定配置版本校验记录",
+    "cols": [
+      [
+        "id",
+        "BIGINT NOT NULL AUTO_INCREMENT",
+        "内部自增Long；API十进制字符串"
+      ],
+      [
+        "target_type",
+        "VARCHAR(16) NOT NULL",
+        "IntegrationTargetType: PROFILE,TEMPLATE；"
+      ],
+      [
+        "target_id",
+        "BIGINT NOT NULL",
+        ""
+      ],
+      [
+        "revision_id",
+        "BIGINT NOT NULL",
+        ""
+      ],
+      [
+        "content_hash",
+        "VARCHAR(64) NOT NULL",
+        ""
+      ],
+      [
+        "check_level",
+        "VARCHAR(24) NOT NULL",
+        "IntegrationCheckLevel: LOCAL,READ_ONLY,LIVE_EVIDENCE；"
+      ],
+      [
+        "status",
+        "VARCHAR(16) NOT NULL",
+        "IntegrationCheckStatus: NOT_RUN,PASS,FAIL,PARTIAL；"
+      ],
+      [
+        "issues_json",
+        "JSON NOT NULL",
+        "脱敏逐字段错误/警告/未验证项"
+      ],
+      [
+        "checked_at",
+        "DATETIME(3) NOT NULL",
+        ""
+      ],
+      [
+        "expires_at",
+        "DATETIME(3) NOT NULL",
+        ""
+      ],
+      [
+        "checked_by",
+        "BIGINT NOT NULL",
+        ""
+      ],
+      [
+        "real_payment_verified",
+        "TINYINT NOT NULL DEFAULT 0",
+        "仅真实授权资金测试证据才能标记；只读连接不是支付成功"
+      ],
+      [
+        "created_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "UTC创建时间"
+      ],
+      [
+        "updated_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "Mapper显式UTC更新时间"
+      ],
+      [
+        "version",
+        "BIGINT NOT NULL DEFAULT 0",
+        "显式CAS；不是注解自动生效"
+      ]
+    ],
+    "indexes": [
+      "KEY ix_check_revision (target_type,target_id,revision_id,checked_at)"
+    ],
+    "rule": "校验针对不可变版本和哈希；用户改草稿即失配。离线/只读/真实联调分别记录；追加结果不覆盖。",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "engine": "InnoDB",
+    "collation": "utf8mb4_0900_ai_ci",
+    "columnRules": {
+      "id": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "target_type": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false,
+        "enumRef": "IntegrationTargetType"
+      },
+      "target_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "revision_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "content_hash": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "check_level": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false,
+        "enumRef": "IntegrationCheckLevel"
+      },
+      "status": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false,
+        "enumRef": "IntegrationCheckStatus"
+      },
+      "issues_json": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "checked_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "expires_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "checked_by": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "real_payment_verified": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "created_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "updated_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "version": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      }
+    },
+    "checks": [
+      "CONSTRAINT ck_ver_integration_check CHECK (version >= 0)",
+      "CONSTRAINT ck_88cd710155a461 CHECK (`target_type` IN ('PROFILE','TEMPLATE'))",
+      "CONSTRAINT ck_4c4d3c7687eba0 CHECK (`check_level` IN ('LOCAL','READ_ONLY','LIVE_EVIDENCE'))",
+      "CONSTRAINT ck_5bc059710176ef CHECK (`status` IN ('NOT_RUN','PASS','FAIL','PARTIAL'))"
+    ]
+  },
+  {
+    "name": "vi_integration_publication",
+    "comment": "配置发布与回滚审计",
+    "cols": [
+      [
+        "id",
+        "BIGINT NOT NULL AUTO_INCREMENT",
+        "内部自增Long；API十进制字符串"
+      ],
+      [
+        "target_type",
+        "VARCHAR(16) NOT NULL",
+        "IntegrationTargetType: PROFILE,TEMPLATE；"
+      ],
+      [
+        "target_id",
+        "BIGINT NOT NULL",
+        ""
+      ],
+      [
+        "revision_id",
+        "BIGINT NOT NULL",
+        ""
+      ],
+      [
+        "previous_revision_id",
+        "BIGINT NULL",
+        "旧生效版本"
+      ],
+      [
+        "check_id",
+        "BIGINT NOT NULL",
+        ""
+      ],
+      [
+        "action",
+        "VARCHAR(16) NOT NULL",
+        "IntegrationPublishAction: PUBLISH,ROLLBACK；"
+      ],
+      [
+        "published_by",
+        "BIGINT NOT NULL",
+        ""
+      ],
+      [
+        "published_at",
+        "DATETIME(3) NOT NULL",
+        ""
+      ],
+      [
+        "reason",
+        "VARCHAR(500) NOT NULL",
+        ""
+      ],
+      [
+        "dependency_versions",
+        "JSON NOT NULL",
+        "发布时依赖版本快照"
+      ],
+      [
+        "target_version",
+        "BIGINT NOT NULL",
+        "发布事务后的根版本"
+      ],
+      [
+        "created_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "UTC创建时间"
+      ],
+      [
+        "updated_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "Mapper显式UTC更新时间"
+      ],
+      [
+        "version",
+        "BIGINT NOT NULL DEFAULT 0",
+        "显式CAS；不是注解自动生效"
+      ]
+    ],
+    "indexes": [
+      "KEY ix_publication_target (target_type,target_id,published_at)"
+    ],
+    "rule": "与当前指针、审计、outbox同事务；只追加。回滚也有新记录，不删除发布历史。",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "engine": "InnoDB",
+    "collation": "utf8mb4_0900_ai_ci",
+    "columnRules": {
+      "id": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "target_type": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false,
+        "enumRef": "IntegrationTargetType"
+      },
+      "target_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "revision_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "previous_revision_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "check_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "action": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false,
+        "enumRef": "IntegrationPublishAction"
+      },
+      "published_by": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "published_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "reason": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "dependency_versions": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "target_version": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "created_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "updated_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "version": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      }
+    },
+    "checks": [
+      "CONSTRAINT ck_ver_integration_publication CHECK (version >= 0)",
+      "CONSTRAINT ck_1da14a68f349f2 CHECK (`target_type` IN ('PROFILE','TEMPLATE'))",
+      "CONSTRAINT ck_fc819ff643e13c CHECK (`action` IN ('PUBLISH','ROLLBACK'))"
+    ]
+  },
+  {
+    "name": "vi_integration_test_recipient",
+    "comment": "第三方测试收件人白名单",
+    "cols": [
+      [
+        "id",
+        "BIGINT NOT NULL AUTO_INCREMENT",
+        "内部自增Long；API十进制字符串"
+      ],
+      [
+        "name",
+        "VARCHAR(80) NOT NULL",
+        ""
+      ],
+      [
+        "kind",
+        "VARCHAR(16) NOT NULL",
+        "IntegrationRecipientKind: PHONE,MINI_ACCOUNT；"
+      ],
+      [
+        "owner_dept_id",
+        "BIGINT NOT NULL",
+        ""
+      ],
+      [
+        "environment",
+        "VARCHAR(12) NOT NULL",
+        "IntegrationEnvironment: TEST,LIVE；"
+      ],
+      [
+        "phone_cipher",
+        "VARBINARY(512) NULL",
+        "仅PHONE"
+      ],
+      [
+        "account_id",
+        "BIGINT NULL",
+        "仅MINI_ACCOUNT"
+      ],
+      [
+        "app_profile_id",
+        "BIGINT NULL",
+        "小程序白名单同应用"
+      ],
+      [
+        "enabled",
+        "TINYINT NOT NULL",
+        ""
+      ],
+      [
+        "created_by",
+        "BIGINT NOT NULL",
+        ""
+      ],
+      [
+        "reason",
+        "VARCHAR(500) NOT NULL",
+        ""
+      ],
+      [
+        "created_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "UTC创建时间"
+      ],
+      [
+        "updated_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "Mapper显式UTC更新时间"
+      ],
+      [
+        "version",
+        "BIGINT NOT NULL DEFAULT 0",
+        "显式CAS；不是注解自动生效"
+      ]
+    ],
+    "indexes": [
+      "KEY ix_test_recipient_scope (owner_dept_id,environment,enabled)"
+    ],
+    "rule": "真实测试先单独提示费用并明确确认；白名单不是订阅授权的替代。只给有test权限者使用。",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "engine": "InnoDB",
+    "collation": "utf8mb4_0900_ai_ci",
+    "columnRules": {
+      "id": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "name": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "kind": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false,
+        "enumRef": "IntegrationRecipientKind"
+      },
+      "owner_dept_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "environment": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false,
+        "enumRef": "IntegrationEnvironment"
+      },
+      "phone_cipher": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "account_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "app_profile_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "enabled": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "created_by": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "reason": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "created_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "updated_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "version": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      }
+    },
+    "checks": [
+      "CONSTRAINT ck_ver_integration_test_recipient CHECK (version >= 0)",
+      "CONSTRAINT ck_1117ecf2dcdc35 CHECK (`kind` IN ('PHONE','MINI_ACCOUNT'))",
+      "CONSTRAINT ck_95800f15c7f107 CHECK (`environment` IN ('TEST','LIVE'))",
+      "CONSTRAINT ck_recipient_shape CHECK ((kind='PHONE' AND phone_cipher IS NOT NULL AND account_id IS NULL) OR (kind='MINI_ACCOUNT' AND phone_cipher IS NULL AND account_id IS NOT NULL AND app_profile_id IS NOT NULL))"
+    ]
+  }
+]

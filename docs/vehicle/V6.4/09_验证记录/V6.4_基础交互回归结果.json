@@ -1,0 +1,130 @@
+{
+  "suite": "V5.0浏览器本地交互回归",
+  "environment": "Playwright + Chromium / set_content / no backend connections",
+  "scope": "真实DOM点击与输入；少量前置条件由本地样本注入，不代表数据库并发或微信联调",
+  "passed": 30,
+  "failed": 0,
+  "pageErrors": [],
+  "tests": [
+    {
+      "name": "T01 从代驾列表进入点击对象的详情",
+      "result": "PASS"
+    },
+    {
+      "name": "T02 车辆详情保留实体ID，不默认打开第一条",
+      "result": "PASS"
+    },
+    {
+      "name": "T03 车主查询与重置",
+      "result": "PASS"
+    },
+    {
+      "name": "T04 列表分页更新实际行",
+      "result": "PASS"
+    },
+    {
+      "name": "T05 车辆维护不追改历史订单快照",
+      "result": "PASS"
+    },
+    {
+      "name": "T06 离开编辑时提示，继续编辑保留草稿",
+      "result": "PASS"
+    },
+    {
+      "name": "T07 已接车取消一次审批，待返还期间仍占用司机",
+      "result": "PASS"
+    },
+    {
+      "name": "T08 重复统一审核不重复审批或预留",
+      "result": "PASS"
+    },
+    {
+      "name": "T09 超额退款阻止提交并提示字段",
+      "result": "PASS"
+    },
+    {
+      "name": "T10 零元退款的取消仍需实际返还",
+      "result": "PASS"
+    },
+    {
+      "name": "T11 仅退款不取消服务、不释放司机",
+      "result": "PASS"
+    },
+    {
+      "name": "T12 实际返还后正式取消并释放，退款无第二次审核",
+      "result": "PASS"
+    },
+    {
+      "name": "T13 模拟重复退款成功仅记账一次",
+      "result": "PASS"
+    },
+    {
+      "name": "T14 同单未办结申请不重复生成",
+      "result": "PASS"
+    },
+    {
+      "name": "T15 正常费用与明确0元明细合计生成",
+      "result": "PASS"
+    },
+    {
+      "name": "T16 同一费用已占用，不重复纳入其他账单",
+      "result": "PASS"
+    },
+    {
+      "name": "T17 待核价可进草稿，不能发出或当0元",
+      "result": "PASS"
+    },
+    {
+      "name": "T18 本人确认账单不产生付款",
+      "result": "PASS"
+    },
+    {
+      "name": "T19 差异提交不直接修改账单金额",
+      "result": "PASS"
+    },
+    {
+      "name": "T20 账单版本变化阻止确认旧版",
+      "result": "PASS"
+    },
+    {
+      "name": "T21 代驾仅查看本人账单",
+      "result": "PASS"
+    },
+    {
+      "name": "T22 外部部分付款登记及独立复核",
+      "result": "PASS"
+    },
+    {
+      "name": "T23 超过已确认应付不能正常计付",
+      "result": "PASS"
+    },
+    {
+      "name": "T24 相同外部付款流水不可重复登记",
+      "result": "PASS"
+    },
+    {
+      "name": "T25 外部付款不可自审",
+      "result": "PASS"
+    },
+    {
+      "name": "T26 客户退款不自动扣代驾台账",
+      "result": "PASS"
+    },
+    {
+      "name": "T27 跨期更正保留已确认账单并追加调整",
+      "result": "PASS"
+    },
+    {
+      "name": "T28 对账单可实际导出CSV",
+      "result": "PASS"
+    },
+    {
+      "name": "T29 减少透明和动态设置响应",
+      "result": "PASS"
+    },
+    {
+      "name": "T30 关闭离开确认弹窗不丢失输入",
+      "result": "PASS"
+    }
+  ]
+}

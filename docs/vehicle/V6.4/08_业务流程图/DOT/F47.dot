@@ -1,0 +1,24 @@
+digraph G {
+graph [rankdir=TB,bgcolor="white",pad="0.3",nodesep="0.3",ranksep="0.45",fontname="Noto Sans CJK SC",label="F47 · 短信通道及未知结果处理",labelloc=t,fontsize=20];
+node [shape=box,style="rounded,filled",fillcolor="#F2F6FC",color="#B5C9E5",fontname="Noto Sans CJK SC",fontsize=12,margin=".15,.12"];
+edge [color="#607A9C",fontname="Noto Sans CJK SC",fontsize=10];
+n1 [label="真实事件｜明确收件人和场景"];
+n2 [label="选择已发布主通道和模板"];
+n3 [label="校验频率/事件时效/字段映射/去重"];
+n4 [label="供应商响应明确？",shape=diamond];
+n5 [label="ACCEPTED｜记录回执ID，等待送达结果"];
+n6 [label="UNKNOWN｜查询/人工，不跨云重发"];
+n7 [label="明确未受理｜按已批准策略重试或备用"];
+n8 [label="可信回执｜DELIVERED或终态失败"];
+n9 [label="订单事务与站内消息不因通知失败回滚"];
+n1 -> n2 [label=""];
+n2 -> n3 [label=""];
+n3 -> n4 [label=""];
+n4 -> n5 [label="受理"];
+n4 -> n6 [label="超时未知"];
+n4 -> n7 [label="确定未发"];
+n5 -> n8 [label=""];
+n6 -> n8 [label="获取可信结果"];
+n7 -> n5 [label="一次受控执行"];
+n1 -> n9 [label="业务与通知分离"];
+}

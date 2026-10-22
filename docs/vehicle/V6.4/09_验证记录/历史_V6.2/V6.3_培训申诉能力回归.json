@@ -1,0 +1,48 @@
+{
+  "scope": "Local Chromium prototype interactions and model state; not real backend/DB/provider",
+  "environment": "Chromium/Playwright; Browser runtime skill not listed",
+  "pass": 8,
+  "fail": 0,
+  "blocked": 1,
+  "tests": [
+    {
+      "name": "N01 学习→尝试→答案→结果",
+      "result": "PASS"
+    },
+    {
+      "name": "N02 未学习不能创建尝试",
+      "result": "PASS"
+    },
+    {
+      "name": "N03 未通过保留尝试结果",
+      "result": "PASS"
+    },
+    {
+      "name": "N04 本人申诉→后台处理→本人读取",
+      "result": "PASS"
+    },
+    {
+      "name": "N05 同一待审申诉不重复创建",
+      "result": "PASS"
+    },
+    {
+      "name": "N09 人脸业务会话与恢复查询明确模拟",
+      "result": "PASS"
+    },
+    {
+      "name": "N10 管理课程草稿和发布反馈",
+      "result": "PASS"
+    },
+    {
+      "name": "N11 新答题界面375/390/428宽度",
+      "result": "PASS"
+    },
+    {
+      "name": "N12 file URI入口",
+      "result": "BLOCKED_ENVIRONMENT",
+      "reason": "Page.goto: net::ERR_BLOCKED_BY_ADMINISTRATOR at file:///mnt/data/v62_work/%E6%9C%BA%E5%8A%A8%E8%BD%A6%E6%A3%80%E6%B5%8B%E9%A2%84%E7%BA%A6_%E5%AE%8C%E6%95%B4%E5%BC%80%E5%8F%91%E8%B5%84%E6%96%99%E5%8C%85_V6.2_%E8%BA%AB%E4%BB%BD%E6%B5%81%E7%A8%8B%E6%95%B4%E5%90%88%E7%89%88/02_UI/index.html\nCall log:\n  - navigating to \"file:///mnt/data/v62_work/%E6%9C%"
+    }
+  ],
+  "pageErrors": [],
+  "runEdition": "V6.2"
+}

@@ -1,0 +1,49 @@
+services:
+  mysql:
+    image: ${VI_MYSQL_IMAGE:-mysql:8.4}
+    environment:
+      MYSQL_DATABASE: ${VI_DB_NAME:-xinyi_vi_dev}
+      MYSQL_USER: ${VI_DB_USER:-vi_dev}
+      MYSQL_PASSWORD: ${VI_DB_PASSWORD:?run engineer env first}
+      MYSQL_ROOT_PASSWORD: ${VI_DB_ROOT_PASSWORD:?run engineer env first}
+      TZ: UTC
+    ports: ["127.0.0.1:${VI_DB_PORT:-33306}:3306"]
+    command: ["--character-set-server=utf8mb4", "--collation-server=utf8mb4_0900_ai_ci", "--default-time-zone=+00:00"]
+    volumes: ["mysql_data:/var/lib/mysql"]
+    healthcheck:
+      test: ["CMD-SHELL", "MYSQL_PWD=\"$$MYSQL_PASSWORD\" mysql -u\"$$MYSQL_USER\" -D\"$$MYSQL_DATABASE\" -e 'SELECT 1' >/dev/null 2>&1"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 30s
+  redis:
+    image: ${VI_REDIS_IMAGE:-redis:7.4}
+    environment:
+      REDIS_PASSWORD: ${VI_REDIS_PASSWORD:?run engineer env first}
+    command: ["sh", "-c", "exec redis-server --appendonly yes --requirepass \"$$REDIS_PASSWORD\""]
+    ports: ["127.0.0.1:${VI_REDIS_PORT:-36379}:6379"]
+    volumes: ["redis_data:/data"]
+    healthcheck:
+      test: ["CMD-SHELL", "REDISCLI_AUTH=\"$$REDIS_PASSWORD\" redis-cli ping | grep -q PONG"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+  provider-simulator:
+    image: ${VI_PYTHON_IMAGE:-python:3.13-slim}
+    working_dir: /app
+    command: ["python", "simulator.py", "--host", "0.0.0.0", "--port", "9091", "--db", "/data/simulator.sqlite"]
+    environment:
+      VI_SIM_SECRET: ${VI_SIM_SECRET:?run engineer env first}
+    ports: ["127.0.0.1:${VI_SIM_PORT:-19091}:9091"]
+    volumes:
+      - ../../13_真实集成测试/provider_simulator:/app:ro
+      - simulator_data:/data
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request;urllib.request.urlopen('http://127.0.0.1:9091/health',timeout=2)"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+volumes:
+  mysql_data:
+  redis_data:
+  simulator_data:

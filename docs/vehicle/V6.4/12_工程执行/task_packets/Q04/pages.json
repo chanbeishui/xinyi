@@ -1,0 +1,29 @@
+[
+  {
+    "id": "D04",
+    "name": "认证补充",
+    "status": "有效·V6.4",
+    "fields": "既有范围中的活体/背景调查/培训及考试状态",
+    "actions": "完成真实核验、查看失败原因",
+    "guards": "各能力须有实际来源；未接入不得显示通过；统一标准也适用于检测员工",
+    "flows": "F04",
+    "source": "V2原页 D04",
+    "base": "D04",
+    "state": "default",
+    "kind": "page"
+  },
+  {
+    "id": "D46",
+    "base": "D46",
+    "state": "default",
+    "name": "人脸核验会话",
+    "kind": "page",
+    "parent": "D46",
+    "status": "有效·V6.4",
+    "fields": "verificationSessionId、expiresAt、launchUrl、状态",
+    "actions": "发起、恢复查询",
+    "guards": "本人/授权范围、状态及expectedVersion；真实供应商和正式政策未配置不得返回生产通过",
+    "flows": "F04",
+    "source": "V4.2既有资格/培训/申诉能力缺失合同的本轮补全；不新增保险事故或钱包"
+  }
+]

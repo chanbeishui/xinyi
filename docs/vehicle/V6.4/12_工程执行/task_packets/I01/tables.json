@@ -1,0 +1,319 @@
+[
+  {
+    "name": "vi_account",
+    "comment": "微信统一基础账户",
+    "cols": [
+      [
+        "id",
+        "BIGINT NOT NULL AUTO_INCREMENT",
+        "数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串"
+      ],
+      [
+        "app_id",
+        "VARCHAR(64) CHARACTER SET ascii COLLATE ascii_bin NOT NULL",
+        "微信应用标识"
+      ],
+      [
+        "open_id",
+        "VARCHAR(128) CHARACTER SET ascii COLLATE ascii_bin NOT NULL",
+        "同一小程序身份"
+      ],
+      [
+        "union_id",
+        "VARCHAR(128) CHARACTER SET ascii COLLATE ascii_bin NULL",
+        "仅供应商可信返回时记录"
+      ],
+      [
+        "phone_cipher",
+        "VARBINARY(512)",
+        "手机号密文"
+      ],
+      [
+        "phone_lookup",
+        "BINARY(32)",
+        "带密钥摘要，非裸哈希"
+      ],
+      [
+        "nickname",
+        "VARCHAR(100)",
+        "选填昵称"
+      ],
+      [
+        "status",
+        "VARCHAR(24) NOT NULL",
+        "AccountStatus: ACTIVE,LOCKED"
+      ],
+      [
+        "privacy_version",
+        "VARCHAR(64)",
+        "最近同意版本"
+      ],
+      [
+        "avatar_file_id",
+        "BIGINT NULL",
+        "本人已验证头像引用，不直接存URL"
+      ],
+      [
+        "phone_verified_at",
+        "DATETIME(3) NULL",
+        "服务端最后一次可信手机号验证UTC时刻"
+      ],
+      [
+        "phone_source",
+        "VARCHAR(24) NULL",
+        "PhoneProofSource: WECHAT,SMS；仅WECHAT可触发新员工关联"
+      ],
+      [
+        "employee_auto_link_blocked",
+        "TINYINT NOT NULL DEFAULT 0",
+        "管理员解除后阻止该账号自动换绑；仅后台明确恢复，可不影响车主"
+      ],
+      [
+        "created_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "创建时间，统一UTC"
+      ],
+      [
+        "updated_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "UTC更新时间；Mapper每次修改显式SET updated_at=UTC_TIMESTAMP(3)，不依赖连接时区"
+      ],
+      [
+        "version",
+        "BIGINT NOT NULL DEFAULT 0",
+        "乐观锁版本"
+      ]
+    ],
+    "indexes": [
+      "UNIQUE KEY uk_app_open (app_id,open_id)",
+      "KEY ix_phone_lookup (phone_lookup)"
+    ],
+    "rule": "角色是账户扩展资格，不按客户端role直接建高权身份；新号只有OWNER；AppID/OpenID不由客户端指定；普通联系人号码不是身份号码。",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "engine": "InnoDB",
+    "collation": "utf8mb4_0900_ai_ci",
+    "columnRules": {
+      "id": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "app_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "open_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "union_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "phone_cipher": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "phone_lookup": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "nickname": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "status": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false,
+        "enumRef": "AccountStatus"
+      },
+      "privacy_version": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "avatar_file_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "phone_verified_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "phone_source": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false,
+        "enumRef": "PhoneProofSource"
+      },
+      "employee_auto_link_blocked": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "created_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "updated_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "version": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      }
+    },
+    "checks": [
+      "CONSTRAINT ck_ver_account CHECK (version >= 0)",
+      "CONSTRAINT ck_592d8ece9c CHECK (`status` IN ('ACTIVE','LOCKED'))",
+      "CONSTRAINT ck_87f78b0fed CHECK (`phone_source` IN ('WECHAT','SMS'))"
+    ]
+  },
+  {
+    "name": "vi_account_security",
+    "comment": "小程序账号安全版本",
+    "cols": [
+      [
+        "id",
+        "BIGINT NOT NULL AUTO_INCREMENT",
+        "数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串"
+      ],
+      [
+        "account_id",
+        "BIGINT NOT NULL",
+        "vi_account"
+      ],
+      [
+        "session_epoch",
+        "BIGINT NOT NULL DEFAULT 0",
+        "全局退出/安全封禁代际"
+      ],
+      [
+        "permission_version",
+        "BIGINT NOT NULL DEFAULT 0",
+        "角色/能力变化版本，不等于资料version"
+      ],
+      [
+        "security_status",
+        "VARCHAR(24) NOT NULL DEFAULT 'ACTIVE'",
+        "AccountStatus: ACTIVE,LOCKED"
+      ],
+      [
+        "changed_at",
+        "DATETIME(3) NOT NULL",
+        "最近权限/安全变化时间"
+      ],
+      [
+        "created_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "UTC"
+      ],
+      [
+        "version",
+        "BIGINT NOT NULL DEFAULT 0",
+        "并发控制；不可变行不更新内容"
+      ]
+    ],
+    "indexes": [
+      "UNIQUE KEY uk_account_security (account_id)"
+    ],
+    "rule": "与普通资料版本分开；sys_user停用不自动注销车主。作为新域权限线性化门禁。",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "engine": "InnoDB",
+    "collation": "utf8mb4_0900_ai_ci",
+    "columnRules": {
+      "id": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "account_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "session_epoch": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "permission_version": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "security_status": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false,
+        "enumRef": "AccountStatus"
+      },
+      "changed_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "created_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "version": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      }
+    },
+    "checks": [
+      "CONSTRAINT ck_66_553d429ab631 CHECK (`security_status` IN ('ACTIVE','LOCKED'))",
+      "CONSTRAINT ck_ver_account_security CHECK (version >= 0)"
+    ],
+    "writeMode": "CONTROLLED_LIFECYCLE"
+  }
+]

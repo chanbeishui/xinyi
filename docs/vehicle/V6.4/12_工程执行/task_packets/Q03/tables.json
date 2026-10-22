@@ -1,0 +1,472 @@
+[
+  {
+    "name": "vi_training_progress",
+    "comment": "本人每个课程版本的学习进度",
+    "cols": [
+      [
+        "id",
+        "BIGINT NOT NULL AUTO_INCREMENT",
+        "数据库生成业务主键；插入不提供id"
+      ],
+      [
+        "application_id",
+        "BIGINT NOT NULL",
+        "资格申请"
+      ],
+      [
+        "driver_id",
+        "BIGINT NOT NULL",
+        "真正司机档案"
+      ],
+      [
+        "training_id",
+        "BIGINT NOT NULL",
+        "课程版本主键"
+      ],
+      [
+        "verified_duration_seconds",
+        "INT NOT NULL DEFAULT 0",
+        "服务端按会话时间限幅的有效学习时长"
+      ],
+      [
+        "status",
+        "VARCHAR(24) NOT NULL DEFAULT 'NOT_STARTED'",
+        "TrainingStatus: NOT_STARTED,IN_PROGRESS,READY_FOR_EXAM,PASSED,FAILED"
+      ],
+      [
+        "last_position_seconds",
+        "INT NOT NULL DEFAULT 0",
+        "仅恢复位置，不等于有效学习时长"
+      ],
+      [
+        "created_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "创建时刻UTC"
+      ],
+      [
+        "updated_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "更新时间UTC；更新必须显式设置UTC_TIMESTAMP(3)"
+      ],
+      [
+        "version",
+        "BIGINT NOT NULL DEFAULT 0",
+        "手写CAS版本"
+      ]
+    ],
+    "indexes": [
+      "UNIQUE KEY uk_training_progress (application_id,training_id)"
+    ],
+    "rule": "普通前端上报不证明观看完整；时长限幅、顺序检查、服务端阅卷共同决定培训完成；不宣称防作弊认证",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "engine": "InnoDB",
+    "collation": "utf8mb4_0900_ai_ci",
+    "columnRules": {
+      "id": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "application_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "driver_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "training_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "verified_duration_seconds": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "status": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false,
+        "enumRef": "TrainingStatus"
+      },
+      "last_position_seconds": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "created_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "updated_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "version": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      }
+    },
+    "checks": [
+      "CONSTRAINT ck_66_57bd05d422b1 CHECK (`status` IN ('NOT_STARTED','IN_PROGRESS','READY_FOR_EXAM','PASSED','FAILED'))",
+      "CONSTRAINT ck_ver_training_progress CHECK (version >= 0)"
+    ]
+  },
+  {
+    "name": "vi_training_playback",
+    "comment": "短期受控学习会话",
+    "cols": [
+      [
+        "id",
+        "BIGINT NOT NULL AUTO_INCREMENT",
+        "数据库生成业务主键；插入不提供id"
+      ],
+      [
+        "progress_id",
+        "BIGINT NOT NULL",
+        "本人进度"
+      ],
+      [
+        "session_id",
+        "BIGINT NOT NULL",
+        "小程序设备会话"
+      ],
+      [
+        "started_at",
+        "DATETIME(3) NOT NULL",
+        "服务端开始时间"
+      ],
+      [
+        "expires_at",
+        "DATETIME(3) NOT NULL",
+        "服务端结束边界"
+      ],
+      [
+        "last_reported_at",
+        "DATETIME(3) NULL",
+        "最近服务器接收时刻"
+      ],
+      [
+        "last_sequence",
+        "INT NOT NULL DEFAULT 0",
+        "乱序和重复不增加时长"
+      ],
+      [
+        "created_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "创建时刻UTC"
+      ],
+      [
+        "updated_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "更新时间UTC；更新必须显式设置UTC_TIMESTAMP(3)"
+      ],
+      [
+        "version",
+        "BIGINT NOT NULL DEFAULT 0",
+        "手写CAS版本"
+      ]
+    ],
+    "indexes": [
+      "KEY ix_playback_progress (progress_id,expires_at)"
+    ],
+    "rule": "按相邻报告服务端经过时长上限累加；多个并发播放会话不能重复计入时长",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "engine": "InnoDB",
+    "collation": "utf8mb4_0900_ai_ci",
+    "columnRules": {
+      "id": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "progress_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "session_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "started_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "expires_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "last_reported_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "last_sequence": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "created_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "updated_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "version": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      }
+    },
+    "checks": [
+      "CONSTRAINT ck_ver_training_playback CHECK (version >= 0)"
+    ]
+  },
+  {
+    "name": "vi_training_attempt",
+    "comment": "本人考试尝试及不可变题卷快照",
+    "cols": [
+      [
+        "id",
+        "BIGINT NOT NULL AUTO_INCREMENT",
+        "数据库生成业务主键；插入不提供id"
+      ],
+      [
+        "application_id",
+        "BIGINT NOT NULL",
+        "资格申请"
+      ],
+      [
+        "driver_id",
+        "BIGINT NOT NULL",
+        "本人"
+      ],
+      [
+        "training_id",
+        "BIGINT NOT NULL",
+        "确切课程版本"
+      ],
+      [
+        "attempt_no",
+        "INT NOT NULL",
+        "本课程尝试序号"
+      ],
+      [
+        "status",
+        "VARCHAR(24) NOT NULL DEFAULT 'OPEN'",
+        "AttemptStatus: OPEN,SUBMITTED,PASSED,FAILED,EXPIRED"
+      ],
+      [
+        "question_snapshot",
+        "JSON NOT NULL",
+        "确切题干/选项；无答案的对外投影单独构造"
+      ],
+      [
+        "answer_snapshot",
+        "JSON NULL",
+        "本人作答"
+      ],
+      [
+        "score",
+        "INT NULL",
+        "服务器阅卷0至100"
+      ],
+      [
+        "started_at",
+        "DATETIME(3) NOT NULL",
+        "UTC开始"
+      ],
+      [
+        "expires_at",
+        "DATETIME(3) NOT NULL",
+        "UTC失效"
+      ],
+      [
+        "submitted_at",
+        "DATETIME(3) NULL",
+        "UTC提交"
+      ],
+      [
+        "active_attempt",
+        "VARCHAR(128) GENERATED ALWAYS AS (IF(status='OPEN',CONCAT(application_id,':',training_id),NULL)) STORED",
+        "同申请同课程仅一个开放尝试"
+      ],
+      [
+        "created_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "创建时刻UTC"
+      ],
+      [
+        "updated_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "更新时间UTC；更新必须显式设置UTC_TIMESTAMP(3)"
+      ],
+      [
+        "version",
+        "BIGINT NOT NULL DEFAULT 0",
+        "手写CAS版本"
+      ]
+    ],
+    "indexes": [
+      "UNIQUE KEY uk_attempt_number (application_id,training_id,attempt_no)",
+      "UNIQUE KEY uk_open_training_attempt (active_attempt)"
+    ],
+    "rule": "作答绑定attemptId+expectedVersion；提交后不可重写；正确答案只在服务端按确切课程版本读取",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "engine": "InnoDB",
+    "collation": "utf8mb4_0900_ai_ci",
+    "columnRules": {
+      "id": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "application_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "driver_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "training_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "attempt_no": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "status": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false,
+        "enumRef": "AttemptStatus"
+      },
+      "question_snapshot": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "answer_snapshot": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "score": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "started_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "expires_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "submitted_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "active_attempt": {
+        "generated": true,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "created_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "updated_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "version": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      }
+    },
+    "checks": [
+      "CONSTRAINT ck_66_5b693ca15a96 CHECK (`status` IN ('OPEN','SUBMITTED','PASSED','FAILED','EXPIRED'))",
+      "CONSTRAINT ck_ver_training_attempt CHECK (version >= 0)"
+    ]
+  }
+]

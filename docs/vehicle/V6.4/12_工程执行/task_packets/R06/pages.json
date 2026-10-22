@@ -1,0 +1,58 @@
+[
+  {
+    "id": "B40",
+    "base": "B40",
+    "state": "default",
+    "name": "外部付款核对",
+    "status": "有效·V6.4",
+    "fields": "对账单、外部付款引用、金额、付款时间、凭证、核对人",
+    "actions": "登记付款证据、独立复核、查看记录",
+    "guards": "本系统不打款；已付仅计入有凭证且已复核记录",
+    "flows": "F35",
+    "source": "本轮用户要求；当前完整PRD；有建议项则在说明中标注",
+    "kind": "page",
+    "parent": "B40"
+  },
+  {
+    "id": "B40-record",
+    "base": "B40",
+    "state": "record",
+    "name": "登记外部付款记录",
+    "status": "有效·V6.4",
+    "fields": "付款引用、金额、凭证、理由",
+    "actions": "登记、复核",
+    "guards": "不可自审；不可超过已确认未付款额",
+    "flows": "F35",
+    "source": "本轮用户要求；当前完整PRD；有建议项则在说明中标注",
+    "kind": "state",
+    "parent": "B40"
+  },
+  {
+    "id": "B40-verify",
+    "base": "B40",
+    "state": "verify",
+    "name": "独立复核付款凭证",
+    "status": "有效·V6.4",
+    "fields": "付款引用、金额、凭证、理由",
+    "actions": "登记、复核",
+    "guards": "不可自审；不可超过已确认未付款额",
+    "flows": "F35",
+    "source": "本轮用户要求；当前完整PRD；有建议项则在说明中标注",
+    "kind": "state",
+    "parent": "B40"
+  },
+  {
+    "id": "B40-detail",
+    "base": "B40",
+    "state": "detail",
+    "name": "具体付款凭证详情",
+    "kind": "state",
+    "parent": "B40",
+    "status": "有效·V6.4",
+    "fields": "具体费用明细、勾选集合、费用主体、账单历史与独立付款状态",
+    "actions": "勾选、生成、核价、复核、确认、登记及核实付款",
+    "guards": "日期仅筛选；同人同主体同币种；禁止重复纳入；部分付款不分摊服务；核实前不计已付",
+    "flows": "F32/F35/F39/F40",
+    "source": "用户本轮确认；以V6.4对应详细规格为准"
+  }
+]

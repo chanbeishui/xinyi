@@ -1,0 +1,5093 @@
+[
+  {
+    "id": "F01",
+    "title": "端到端业务总览",
+    "scope": "正常主流程",
+    "nodes": [
+      {
+        "id": "n1",
+        "label": "车主｜选上门时段、地址、车辆",
+        "decision": false
+      },
+      {
+        "id": "n2",
+        "label": "系统｜匹配站点、报价、预占名额",
+        "decision": false
+      },
+      {
+        "id": "n3",
+        "label": "车主｜选择已开放支付方式；可信支付或线下核实",
+        "decision": false
+      },
+      {
+        "id": "n4",
+        "label": "系统｜到配置的时间启动派单",
+        "decision": false
+      },
+      {
+        "id": "n5",
+        "label": "代驾｜接单、出发、到达、接车交接",
+        "decision": false
+      },
+      {
+        "id": "n6",
+        "label": "检测点｜收车后进入检测中",
+        "decision": false
+      },
+      {
+        "id": "n7",
+        "label": "检测点｜完成检测并登记结果",
+        "decision": false
+      },
+      {
+        "id": "n8",
+        "label": "代驾｜站点取车、返程、归还交接",
+        "decision": false
+      },
+      {
+        "id": "n9",
+        "label": "系统｜实物交还完成，立即释放司机",
+        "decision": false
+      },
+      {
+        "id": "n10",
+        "label": "车主／系统｜服务确认或24小时自动完成",
+        "decision": false
+      }
+    ],
+    "edges": [
+      {
+        "from": "n1",
+        "to": "n2",
+        "label": ""
+      },
+      {
+        "from": "n2",
+        "to": "n3",
+        "label": ""
+      },
+      {
+        "from": "n3",
+        "to": "n4",
+        "label": ""
+      },
+      {
+        "from": "n4",
+        "to": "n5",
+        "label": ""
+      },
+      {
+        "from": "n5",
+        "to": "n6",
+        "label": ""
+      },
+      {
+        "from": "n6",
+        "to": "n7",
+        "label": ""
+      },
+      {
+        "from": "n7",
+        "to": "n8",
+        "label": ""
+      },
+      {
+        "from": "n8",
+        "to": "n9",
+        "label": ""
+      },
+      {
+        "from": "n9",
+        "to": "n10",
+        "label": ""
+      }
+    ],
+    "note": "此图按参与方标记职责，不将退款、争议等辅助状态挤入主链路；异常分支见后续流程。",
+    "pages": "O32/O33/O31/O34、D09–D23、S07/S11/S13",
+    "decision": "C01–C16"
+  },
+  {
+    "id": "F02",
+    "title": "统一登录与按资格开放身份",
+    "scope": "V6.4身份与授权",
+    "nodes": [
+      {
+        "id": "n1",
+        "label": "用户主动同意必要说明并微信登录",
+        "decision": false
+      },
+      {
+        "id": "n2",
+        "label": "服务端核验AppID/OpenID，创建或恢复账号",
+        "decision": false
+      },
+      {
+        "id": "n3",
+        "label": "新会话默认OWNER；老账号不清已有资格",
+        "decision": false
+      },
+      {
+        "id": "n4",
+        "label": "主动手机号授权，服务端核验",
+        "decision": false
+      },
+      {
+        "id": "n5",
+        "label": "按已核验手机号自动识别员工",
+        "decision": false
+      },
+      {
+        "id": "n6",
+        "label": "计算可用角色：OWNER＋过审DRIVER＋获授权STATION",
+        "decision": false
+      },
+      {
+        "id": "n7",
+        "label": "落到车主首页",
+        "decision": false
+      },
+      {
+        "id": "n8",
+        "label": "本人从“我的”切换已有身份",
+        "decision": false
+      },
+      {
+        "id": "n9",
+        "label": "无代驾资格可申请；无站点权限联系后台",
+        "decision": false
+      }
+    ],
+    "edges": [
+      {
+        "from": "n1",
+        "to": "n2",
+        "label": ""
+      },
+      {
+        "from": "n2",
+        "to": "n3",
+        "label": ""
+      },
+      {
+        "from": "n3",
+        "to": "n4",
+        "label": ""
+      },
+      {
+        "from": "n4",
+        "to": "n5",
+        "label": ""
+      },
+      {
+        "from": "n5",
+        "to": "n6",
+        "label": ""
+      },
+      {
+        "from": "n6",
+        "to": "n7",
+        "label": ""
+      },
+      {
+        "from": "n7",
+        "to": "n8",
+        "label": ""
+      },
+      {
+        "from": "n6",
+        "to": "n9",
+        "label": ""
+      }
+    ],
+    "pages": "O29、U01、D01、U02、S01",
+    "note": "不提供注册角色选择；员工身份不免代驾审核；任何切换不释放承接。",
+    "decision": "C02/C17 / 身份方案"
+  },
+  {
+    "id": "F03",
+    "title": "微信手机号唯一匹配员工",
+    "scope": "V6.4身份与授权",
+    "nodes": [
+      {
+        "id": "n1",
+        "label": "手机号凭据回执：核验并保存可信号码",
+        "decision": false
+      },
+      {
+        "id": "n2",
+        "label": "同一应用/账号是否已有有效关联？",
+        "decision": false
+      },
+      {
+        "id": "n3",
+        "label": "员工目录有效匹配数恰为1？",
+        "decision": true
+      },
+      {
+        "id": "n4",
+        "label": "双方无不同关联，且未被禁止重绑？",
+        "decision": true
+      },
+      {
+        "id": "n5",
+        "label": "在目录保护锁内重查人员版本与唯一关系",
+        "decision": false
+      },
+      {
+        "id": "n6",
+        "label": "写关联、权限版本、审计/outbox同事务",
+        "decision": false
+      },
+      {
+        "id": "n7",
+        "label": "返回最小员工状态；默认仍车主",
+        "decision": false
+      },
+      {
+        "id": "n8",
+        "label": "无匹配保留车主；重号/冲突联系后台",
+        "decision": false
+      },
+      {
+        "id": "n9",
+        "label": "已有同一关系重核状态，禁止静默转移",
+        "decision": false
+      }
+    ],
+    "edges": [
+      {
+        "from": "n1",
+        "to": "n2",
+        "label": ""
+      },
+      {
+        "from": "n2",
+        "to": "n3",
+        "label": "首次"
+      },
+      {
+        "from": "n2",
+        "to": "n9",
+        "label": "已有"
+      },
+      {
+        "from": "n3",
+        "to": "n4",
+        "label": "是"
+      },
+      {
+        "from": "n3",
+        "to": "n8",
+        "label": "否"
+      },
+      {
+        "from": "n4",
+        "to": "n5",
+        "label": "是"
+      },
+      {
+        "from": "n4",
+        "to": "n8",
+        "label": "否"
+      },
+      {
+        "from": "n5",
+        "to": "n6",
+        "label": ""
+      },
+      {
+        "from": "n6",
+        "to": "n7",
+        "label": ""
+      },
+      {
+        "from": "n9",
+        "to": "n7",
+        "label": ""
+      }
+    ],
+    "pages": "O29、U02、B36",
+    "note": "没有员工申请、签发凭证或消费凭证；手机号核验事实与员工结果分开。",
+    "decision": "C02/C17 / 身份方案"
+  },
+  {
+    "id": "F04",
+    "title": "后台预分配员工站点与权限刷新",
+    "scope": "V6.4身份与授权",
+    "nodes": [
+      {
+        "id": "n1",
+        "label": "管理员选择原框架sys_user（可未微信登录）",
+        "decision": false
+      },
+      {
+        "id": "n2",
+        "label": "读取空或已有站点集合版本",
+        "decision": false
+      },
+      {
+        "id": "n3",
+        "label": "功能/部门/公司/站点管理权限通过？",
+        "decision": true
+      },
+      {
+        "id": "n4",
+        "label": "选择站点，填写原因；可撤销到0",
+        "decision": false
+      },
+      {
+        "id": "n5",
+        "label": "锁集合版本、批量验证并更新全部关系",
+        "decision": false
+      },
+      {
+        "id": "n6",
+        "label": "同事务框架auth_version、MINI版本、审计/outbox",
+        "decision": false
+      },
+      {
+        "id": "n7",
+        "label": "员工手机号自动关联后安全刷新",
+        "decision": false
+      },
+      {
+        "id": "n8",
+        "label": "仅在授权站点工作；切换不产生新授权",
+        "decision": false
+      },
+      {
+        "id": "n9",
+        "label": "拒绝越权/版本冲突，不部分保存",
+        "decision": false
+      }
+    ],
+    "edges": [
+      {
+        "from": "n1",
+        "to": "n2",
+        "label": ""
+      },
+      {
+        "from": "n2",
+        "to": "n3",
+        "label": ""
+      },
+      {
+        "from": "n3",
+        "to": "n4",
+        "label": "是"
+      },
+      {
+        "from": "n3",
+        "to": "n9",
+        "label": "否"
+      },
+      {
+        "from": "n4",
+        "to": "n5",
+        "label": ""
+      },
+      {
+        "from": "n5",
+        "to": "n6",
+        "label": ""
+      },
+      {
+        "from": "n6",
+        "to": "n7",
+        "label": ""
+      },
+      {
+        "from": "n7",
+        "to": "n8",
+        "label": ""
+      }
+    ],
+    "pages": "B26、U01、S01、S21、S22",
+    "note": "站点配置以sys_user为对象，无OpenID/账号前置；与功能权限取交集。",
+    "decision": "C02/C17 / 身份方案"
+  },
+  {
+    "id": "F05",
+    "title": "低门槛预约与车辆地址复用",
+    "scope": "车主预约",
+    "nodes": [
+      {
+        "id": "n1",
+        "label": "登录后进入预约首页，不强制补姓名证件",
+        "decision": false
+      },
+      {
+        "id": "n2",
+        "label": "先选候选上门时段",
+        "decision": false
+      },
+      {
+        "id": "n3",
+        "label": "再填接车地址，可复用常用地址",
+        "decision": false
+      },
+      {
+        "id": "n4",
+        "label": "补齐或复用车牌、车型",
+        "decision": false
+      },
+      {
+        "id": "n5",
+        "label": "地址与车辆符合服务规则？",
+        "decision": true
+      },
+      {
+        "id": "n6",
+        "label": "报价并显示匹配检测点",
+        "decision": false
+      },
+      {
+        "id": "n7",
+        "label": "保留全部已填项，修改时间／地址／车型",
+        "decision": false
+      },
+      {
+        "id": "n8",
+        "label": "确认报价及协议后创建订单",
+        "decision": false
+      }
+    ],
+    "edges": [
+      {
+        "from": "n1",
+        "to": "n2",
+        "label": ""
+      },
+      {
+        "from": "n2",
+        "to": "n3",
+        "label": ""
+      },
+      {
+        "from": "n3",
+        "to": "n4",
+        "label": ""
+      },
+      {
+        "from": "n4",
+        "to": "n5",
+        "label": ""
+      },
+      {
+        "from": "n5",
+        "to": "n6",
+        "label": "是"
+      },
+      {
+        "from": "n5",
+        "to": "n7",
+        "label": "否"
+      },
+      {
+        "from": "n7",
+        "to": "n2",
+        "label": "按需修改"
+      },
+      {
+        "from": "n6",
+        "to": "n8",
+        "label": ""
+      }
+    ],
+    "note": "页面编号不是步骤顺序；O32→O33→O31→O34，已有车辆可预填。先选时段不保证名额。",
+    "pages": "O02/O04/O05/O32/O33/O34/O27/O29–O34",
+    "decision": "C03/C04"
+  },
+  {
+    "id": "F06",
+    "title": "车型字典与计价方案发布",
+    "scope": "后台配置与报价",
+    "nodes": [
+      {
+        "id": "n1",
+        "label": "维护车型字典，保留稳定编码",
+        "decision": false
+      },
+      {
+        "id": "n2",
+        "label": "配置站点支持车型与生效计价方案",
+        "decision": false
+      },
+      {
+        "id": "n3",
+        "label": "填写检测费、起步、里程口径和进位方式",
+        "decision": false
+      },
+      {
+        "id": "n4",
+        "label": "配置审核通过后版本化发布",
+        "decision": false
+      },
+      {
+        "id": "n5",
+        "label": "车型有效且存在唯一适用规则？",
+        "decision": true
+      },
+      {
+        "id": "n6",
+        "label": "按可信路线距离计算费用",
+        "decision": false
+      },
+      {
+        "id": "n7",
+        "label": "阻止报价，提示配置缺失／规则冲突",
+        "decision": false
+      },
+      {
+        "id": "n8",
+        "label": "确认订单时保存车型、规则和金额快照",
+        "decision": false
+      }
+    ],
+    "edges": [
+      {
+        "from": "n1",
+        "to": "n2",
+        "label": ""
+      },
+      {
+        "from": "n2",
+        "to": "n3",
+        "label": ""
+      },
+      {
+        "from": "n3",
+        "to": "n4",
+        "label": ""
+      },
+      {
+        "from": "n4",
+        "to": "n5",
+        "label": ""
+      },
+      {
+        "from": "n5",
+        "to": "n6",
+        "label": "是"
+      },
+      {
+        "from": "n5",
+        "to": "n7",
+        "label": "否"
+      },
+      {
+        "from": "n6",
+        "to": "n8",
+        "label": ""
+      }
+    ],
+    "note": "无价格不能默认0元；报价前可重算，已建单价格不因后台改价而改变。等待费启用见P02。",
+    "pages": "B20/B33、O31/O34",
+    "decision": "C04/C05/P02"
+  },
+  {
+    "id": "F07",
+    "title": "可服务校验与双名额预占",
+    "scope": "预约容量",
+    "nodes": [
+      {
+        "id": "n1",
+        "label": "读取候选上门时段与接车地址、车型",
+        "decision": false
+      },
+      {
+        "id": "n2",
+        "label": "计算可服务站点和可信行车时间",
+        "decision": false
+      },
+      {
+        "id": "n3",
+        "label": "核验上门名额及站点接收排期",
+        "decision": false
+      },
+      {
+        "id": "n4",
+        "label": "仍有名额且未到下单截止？",
+        "decision": true
+      },
+      {
+        "id": "n5",
+        "label": "同一事务建单并预占两类名额",
+        "decision": false
+      },
+      {
+        "id": "n6",
+        "label": "成功返回30分钟付款截止时间",
+        "decision": false
+      },
+      {
+        "id": "n7",
+        "label": "告知无名额，保留填写内容",
+        "decision": false
+      },
+      {
+        "id": "n8",
+        "label": "支付成功转正式占用；关单仅释放对应预占",
+        "decision": false
+      }
+    ],
+    "edges": [
+      {
+        "from": "n1",
+        "to": "n2",
+        "label": ""
+      },
+      {
+        "from": "n2",
+        "to": "n3",
+        "label": ""
+      },
+      {
+        "from": "n3",
+        "to": "n4",
+        "label": ""
+      },
+      {
+        "from": "n4",
+        "to": "n5",
+        "label": "是"
+      },
+      {
+        "from": "n4",
+        "to": "n7",
+        "label": "否"
+      },
+      {
+        "from": "n5",
+        "to": "n6",
+        "label": ""
+      },
+      {
+        "from": "n6",
+        "to": "n8",
+        "label": ""
+      }
+    ],
+    "note": "时段展示不锁额，报价不锁额；本图双名额设计属于P04，容量参数需实际运营配置。",
+    "pages": "O32/O32/O34、S17、B19",
+    "decision": "C03/C07/P04"
+  },
+  {
+    "id": "F08",
+    "title": "支付、30分钟关闭与晚到回调",
+    "scope": "微信支付与30分钟可信关单；线下分支见F46",
+    "nodes": [
+      {
+        "id": "n1",
+        "label": "创建订单，固定支付截止时间",
+        "decision": false
+      },
+      {
+        "id": "n2",
+        "label": "微信预支付；前端结果只作提示",
+        "decision": false
+      },
+      {
+        "id": "n3",
+        "label": "服务端可信支付通知／主动查询",
+        "decision": false
+      },
+      {
+        "id": "n4",
+        "label": "渠道已支付？",
+        "decision": true
+      },
+      {
+        "id": "n5",
+        "label": "原子记账、预占转正式、安排派单时间",
+        "decision": false
+      },
+      {
+        "id": "n6",
+        "label": "达到30分钟或申请主动关闭",
+        "decision": false
+      },
+      {
+        "id": "n7",
+        "label": "查单并关微信交易；未知则继续查证",
+        "decision": false
+      },
+      {
+        "id": "n8",
+        "label": "仅确认未支付已关单后释放预占",
+        "decision": false
+      },
+      {
+        "id": "n9",
+        "label": "已支付但无法履约／已关闭异常转人工退款",
+        "decision": false
+      }
+    ],
+    "edges": [
+      {
+        "from": "n1",
+        "to": "n2",
+        "label": ""
+      },
+      {
+        "from": "n2",
+        "to": "n3",
+        "label": ""
+      },
+      {
+        "from": "n3",
+        "to": "n4",
+        "label": ""
+      },
+      {
+        "from": "n4",
+        "to": "n5",
+        "label": "是且可履约"
+      },
+      {
+        "from": "n4",
+        "to": "n6",
+        "label": "否"
+      },
+      {
+        "from": "n6",
+        "to": "n7",
+        "label": ""
+      },
+      {
+        "from": "n7",
+        "to": "n8",
+        "label": "确认已关闭"
+      },
+      {
+        "from": "n7",
+        "to": "n3",
+        "label": "支付已发生/未知重查"
+      },
+      {
+        "from": "n4",
+        "to": "n9",
+        "label": "是但业务冲突"
+      }
+    ],
+    "note": "30分钟不延长；渠道未知不误称“未扣款”。晚通知按可信支付时间和名额实际状态处理。",
+    "pages": "O10–O13、S04、B31",
+    "decision": "C07/P06"
+  },
+  {
+    "id": "F09",
+    "title": "未来预约计划派单与参数修改",
+    "scope": "预约等待",
+    "nodes": [
+      {
+        "id": "n1",
+        "label": "已付订单保存上门时段快照",
+        "decision": false
+      },
+      {
+        "id": "n2",
+        "label": "计算dispatchAt=时段开始-N分钟",
+        "decision": false
+      },
+      {
+        "id": "n3",
+        "label": "当前时间达到dispatchAt？",
+        "decision": true
+      },
+      {
+        "id": "n4",
+        "label": "保持预约成功、待安排，不占司机",
+        "decision": false
+      },
+      {
+        "id": "n5",
+        "label": "检查支付、取消、名额及已有分配",
+        "decision": false
+      },
+      {
+        "id": "n6",
+        "label": "幂等创建自动派单批次",
+        "decision": false
+      },
+      {
+        "id": "n7",
+        "label": "后台修改N，只影响新单；可明确重算未派单订单",
+        "decision": false
+      }
+    ],
+    "edges": [
+      {
+        "from": "n1",
+        "to": "n2",
+        "label": ""
+      },
+      {
+        "from": "n2",
+        "to": "n3",
+        "label": ""
+      },
+      {
+        "from": "n3",
+        "to": "n4",
+        "label": "否"
+      },
+      {
+        "from": "n4",
+        "to": "n3",
+        "label": "任务扫描"
+      },
+      {
+        "from": "n3",
+        "to": "n5",
+        "label": "是"
+      },
+      {
+        "from": "n5",
+        "to": "n6",
+        "label": "仍有效"
+      },
+      {
+        "from": "n7",
+        "to": "n2",
+        "label": "重算需预览+审计"
+      }
+    ],
+    "note": "已接单和已接车订单不得被配置变更再次派单。重算既有单必须单独确认，不静默变动。",
+    "pages": "O12/O14、B05/B24",
+    "decision": "C06"
+  },
+  {
+    "id": "F10",
+    "title": "自动轮转、扩圈与人工兜底",
+    "scope": "派单",
+    "nodes": [
+      {
+        "id": "n1",
+        "label": "按资格、定位新鲜度、占用、半径筛候选",
+        "decision": false
+      },
+      {
+        "id": "n2",
+        "label": "按已确认策略选择下一位候选",
+        "decision": false
+      },
+      {
+        "id": "n3",
+        "label": "原子预占司机并发出单人邀约",
+        "decision": false
+      },
+      {
+        "id": "n4",
+        "label": "60秒内有效接受？",
+        "decision": true
+      },
+      {
+        "id": "n5",
+        "label": "原子建立承接记录，司机保持占用",
+        "decision": false
+      },
+      {
+        "id": "n6",
+        "label": "拒绝／超时：仅释放本邀约占用",
+        "decision": false
+      },
+      {
+        "id": "n7",
+        "label": "还有候选且未达总截止？",
+        "decision": true
+      },
+      {
+        "id": "n8",
+        "label": "扩圈或继续下一位",
+        "decision": false
+      },
+      {
+        "id": "n9",
+        "label": "撤销旧邀约，进入人工队列",
+        "decision": false
+      },
+      {
+        "id": "n10",
+        "label": "人工选择合格司机发邀约并等接受",
+        "decision": false
+      }
+    ],
+    "edges": [
+      {
+        "from": "n1",
+        "to": "n2",
+        "label": ""
+      },
+      {
+        "from": "n2",
+        "to": "n3",
+        "label": ""
+      },
+      {
+        "from": "n3",
+        "to": "n4",
+        "label": ""
+      },
+      {
+        "from": "n4",
+        "to": "n5",
+        "label": "是"
+      },
+      {
+        "from": "n4",
+        "to": "n6",
+        "label": "否"
+      },
+      {
+        "from": "n6",
+        "to": "n7",
+        "label": ""
+      },
+      {
+        "from": "n7",
+        "to": "n8",
+        "label": "是"
+      },
+      {
+        "from": "n8",
+        "to": "n1",
+        "label": ""
+      },
+      {
+        "from": "n7",
+        "to": "n9",
+        "label": "否"
+      },
+      {
+        "from": "n9",
+        "to": "n10",
+        "label": ""
+      },
+      {
+        "from": "n10",
+        "to": "n4",
+        "label": "接受仍需资格校验"
+      }
+    ],
+    "note": "5分钟总上限优先，不能等待50人各60秒再宣称5分钟兜底。人工不可绕过资格和占用。策略见P01。",
+    "pages": "D06–D08、B05/B06",
+    "decision": "P01/C06"
+  },
+  {
+    "id": "F11",
+    "title": "代驾取消承接与原单重派",
+    "scope": "非车主取消",
+    "nodes": [
+      {
+        "id": "n1",
+        "label": "代驾在履约详情申请取消接单",
+        "decision": false
+      },
+      {
+        "id": "n2",
+        "label": "车辆已接走？",
+        "decision": true
+      },
+      {
+        "id": "n3",
+        "label": "禁止自助解除，联系运营保持责任",
+        "decision": false
+      },
+      {
+        "id": "n4",
+        "label": "二次确认原因及取消后果",
+        "decision": false
+      },
+      {
+        "id": "n5",
+        "label": "原子结束本承接记录并释放对应占用",
+        "decision": false
+      },
+      {
+        "id": "n6",
+        "label": "原车主订单保持已付款和原预约",
+        "decision": false
+      },
+      {
+        "id": "n7",
+        "label": "更新普通取消计数；启动向其他代驾重派",
+        "decision": false
+      },
+      {
+        "id": "n8",
+        "label": "停单一轮／当日阈值，允许申诉复核",
+        "decision": false
+      }
+    ],
+    "edges": [
+      {
+        "from": "n1",
+        "to": "n2",
+        "label": ""
+      },
+      {
+        "from": "n2",
+        "to": "n3",
+        "label": "是"
+      },
+      {
+        "from": "n2",
+        "to": "n4",
+        "label": "否"
+      },
+      {
+        "from": "n4",
+        "to": "n5",
+        "label": ""
+      },
+      {
+        "from": "n5",
+        "to": "n6",
+        "label": ""
+      },
+      {
+        "from": "n6",
+        "to": "n7",
+        "label": ""
+      },
+      {
+        "from": "n7",
+        "to": "n8",
+        "label": ""
+      }
+    ],
+    "note": "取消的是司机任务，不是车主订单；不得产生退款或重新收费。取消与接车并发只能一个成功。",
+    "pages": "D09–D13/D31–D35、B05",
+    "decision": "C11/P01"
+  },
+  {
+    "id": "F12",
+    "title": "未接车取消与退款·一次审核",
+    "scope": "V4.0",
+    "nodes": [
+      {
+        "id": "n1",
+        "label": "车主提交取消并退款申请",
+        "decision": false
+      },
+      {
+        "id": "n2",
+        "label": "平台打开同一份售后单",
+        "decision": false
+      },
+      {
+        "id": "n3",
+        "label": "重读订单、车辆保管、可退余额",
+        "decision": false
+      },
+      {
+        "id": "n4",
+        "label": "是否批准？",
+        "decision": true
+      },
+      {
+        "id": "n5",
+        "label": "记录驳回原因，保持原履约事实",
+        "decision": false
+      },
+      {
+        "id": "n6",
+        "label": "一次决定取消与批准退款金额",
+        "decision": false
+      },
+      {
+        "id": "n7",
+        "label": "原子保存决定、金额预留、取消订单",
+        "decision": false
+      },
+      {
+        "id": "n8",
+        "label": "撤销对应邀约/承接，释放未用名额",
+        "decision": false
+      },
+      {
+        "id": "n9",
+        "label": "执行原批准退款，不再审核一次",
+        "decision": false
+      },
+      {
+        "id": "n10",
+        "label": "查询原退款，确认成功后办结",
+        "decision": false
+      }
+    ],
+    "edges": [
+      {
+        "from": "n1",
+        "to": "n2",
+        "label": ""
+      },
+      {
+        "from": "n2",
+        "to": "n3",
+        "label": ""
+      },
+      {
+        "from": "n3",
+        "to": "n4",
+        "label": ""
+      },
+      {
+        "from": "n4",
+        "to": "n5",
+        "label": "否"
+      },
+      {
+        "from": "n4",
+        "to": "n6",
+        "label": "是"
+      },
+      {
+        "from": "n6",
+        "to": "n7",
+        "label": ""
+      },
+      {
+        "from": "n7",
+        "to": "n8",
+        "label": ""
+      },
+      {
+        "from": "n8",
+        "to": "n9",
+        "label": ""
+      },
+      {
+        "from": "n9",
+        "to": "n10",
+        "label": ""
+      }
+    ],
+    "pages": "O19/O21、B13/B14",
+    "note": "若审批时车辆已经接走，切入F13或返回版本冲突，不按申请时快照释放司机。",
+    "decision": "V4本轮需求/明确标注实施设计"
+  },
+  {
+    "id": "F13",
+    "title": "已接车取消·先返还后办结",
+    "scope": "V4.0",
+    "nodes": [
+      {
+        "id": "n1",
+        "label": "车主提交取消并退款申请",
+        "decision": false
+      },
+      {
+        "id": "n2",
+        "label": "统一审核当前保管方与拟退款金额",
+        "decision": false
+      },
+      {
+        "id": "n3",
+        "label": "审核通过？",
+        "decision": true
+      },
+      {
+        "id": "n4",
+        "label": "驳回，保留既有车辆事实",
+        "decision": false
+      },
+      {
+        "id": "n5",
+        "label": "保存同一个取消与退款决定、预留金额",
+        "decision": false
+      },
+      {
+        "id": "n6",
+        "label": "显示取消已通过，待归还车辆",
+        "decision": false
+      },
+      {
+        "id": "n7",
+        "label": "车辆是否在检测点？",
+        "decision": true
+      },
+      {
+        "id": "n8",
+        "label": "授权员工确认放行，代驾接收",
+        "decision": false
+      },
+      {
+        "id": "n9",
+        "label": "代驾返还留证，车主准备现场交接",
+        "decision": false
+      },
+      {
+        "id": "n10",
+        "label": "实际返还交接核验成功",
+        "decision": false
+      },
+      {
+        "id": "n11",
+        "label": "同事务正式取消并释放匹配承接",
+        "decision": false
+      },
+      {
+        "id": "n12",
+        "label": "执行原已批准退款，无二次默认审核",
+        "decision": false
+      },
+      {
+        "id": "n13",
+        "label": "退款渠道确认后售后办结",
+        "decision": false
+      }
+    ],
+    "edges": [
+      {
+        "from": "n1",
+        "to": "n2",
+        "label": ""
+      },
+      {
+        "from": "n2",
+        "to": "n3",
+        "label": ""
+      },
+      {
+        "from": "n3",
+        "to": "n4",
+        "label": "否"
+      },
+      {
+        "from": "n3",
+        "to": "n5",
+        "label": "是"
+      },
+      {
+        "from": "n5",
+        "to": "n6",
+        "label": ""
+      },
+      {
+        "from": "n6",
+        "to": "n7",
+        "label": ""
+      },
+      {
+        "from": "n7",
+        "to": "n8",
+        "label": "是"
+      },
+      {
+        "from": "n7",
+        "to": "n9",
+        "label": "否"
+      },
+      {
+        "from": "n8",
+        "to": "n9",
+        "label": ""
+      },
+      {
+        "from": "n9",
+        "to": "n10",
+        "label": ""
+      },
+      {
+        "from": "n10",
+        "to": "n11",
+        "label": ""
+      },
+      {
+        "from": "n11",
+        "to": "n12",
+        "label": ""
+      },
+      {
+        "from": "n12",
+        "to": "n13",
+        "label": ""
+      }
+    ],
+    "pages": "O19/O21、B14、D19–D25、S13",
+    "note": "取消返还不要求虚假检测结果；司机释放不等待到账。返还后退款执行时点是本版实施默认，待模块评审。",
+    "decision": "V4本轮需求/明确标注实施设计"
+  },
+  {
+    "id": "F14",
+    "title": "车主向代驾接车交接",
+    "scope": "交接1",
+    "nodes": [
+      {
+        "id": "n1",
+        "label": "代驾按接单→出发→到达顺序履约",
+        "decision": false
+      },
+      {
+        "id": "n2",
+        "label": "核对车牌、联系人、钥匙及随车物品",
+        "decision": false
+      },
+      {
+        "id": "n3",
+        "label": "完成节点1六类照片与接车里程",
+        "decision": false
+      },
+      {
+        "id": "n4",
+        "label": "车主现场准备好交付后提供专用交接码",
+        "decision": false
+      },
+      {
+        "id": "n5",
+        "label": "代驾提交码和接车确认动作",
+        "decision": false
+      },
+      {
+        "id": "n6",
+        "label": "服务端资格、占用、状态、证据、码均合法？",
+        "decision": true
+      },
+      {
+        "id": "n7",
+        "label": "事务写交接记录，保管方变代驾，进入已接车",
+        "decision": false
+      },
+      {
+        "id": "n8",
+        "label": "失败说明原因，错误码限次锁定，人工核验另留痕",
+        "decision": false
+      }
+    ],
+    "edges": [
+      {
+        "from": "n1",
+        "to": "n2",
+        "label": ""
+      },
+      {
+        "from": "n2",
+        "to": "n3",
+        "label": ""
+      },
+      {
+        "from": "n3",
+        "to": "n4",
+        "label": ""
+      },
+      {
+        "from": "n4",
+        "to": "n5",
+        "label": ""
+      },
+      {
+        "from": "n5",
+        "to": "n6",
+        "label": ""
+      },
+      {
+        "from": "n6",
+        "to": "n7",
+        "label": "是"
+      },
+      {
+        "from": "n6",
+        "to": "n8",
+        "label": "否"
+      }
+    ],
+    "note": "“到达”不消耗接车码；司机详情不返回车主持有的码。码只有交接事务成功才被消费。",
+    "pages": "O35、D09–D13",
+    "decision": "C09/技术设计"
+  },
+  {
+    "id": "F15",
+    "title": "检测点收车与行驶证核验",
+    "scope": "交接2与检测入口",
+    "nodes": [
+      {
+        "id": "n1",
+        "label": "代驾到站，节点2六类照片齐备",
+        "decision": false
+      },
+      {
+        "id": "n2",
+        "label": "获授权员工核对车、司机、随车物品",
+        "decision": false
+      },
+      {
+        "id": "n3",
+        "label": "员工核验司机提供的站点收车专用码",
+        "decision": false
+      },
+      {
+        "id": "n4",
+        "label": "完成收车交接，保管方变检测点",
+        "decision": false
+      },
+      {
+        "id": "n5",
+        "label": "正常订单进入检测中；取消返还单不启动检测",
+        "decision": false
+      },
+      {
+        "id": "n6",
+        "label": "行驶证OCR或人工录入，保存核验记录",
+        "decision": false
+      },
+      {
+        "id": "n7",
+        "label": "证件和订单车辆一致且已复核？",
+        "decision": true
+      },
+      {
+        "id": "n8",
+        "label": "允许登记真实检测结果F16",
+        "decision": false
+      },
+      {
+        "id": "n9",
+        "label": "阻止结果提交，联系运营纠正资料／退回",
+        "decision": false
+      }
+    ],
+    "edges": [
+      {
+        "from": "n1",
+        "to": "n2",
+        "label": ""
+      },
+      {
+        "from": "n2",
+        "to": "n3",
+        "label": ""
+      },
+      {
+        "from": "n3",
+        "to": "n4",
+        "label": ""
+      },
+      {
+        "from": "n4",
+        "to": "n5",
+        "label": ""
+      },
+      {
+        "from": "n5",
+        "to": "n6",
+        "label": "正常检测"
+      },
+      {
+        "from": "n6",
+        "to": "n7",
+        "label": ""
+      },
+      {
+        "from": "n7",
+        "to": "n8",
+        "label": "是"
+      },
+      {
+        "from": "n7",
+        "to": "n9",
+        "label": "否"
+      }
+    ],
+    "note": "“检测中”是订单业务阶段，不等于已经执行某一机器测试。收车码不泄露给核验员工。",
+    "pages": "S07/S08/S10、B07/B08",
+    "decision": "C13"
+  },
+  {
+    "id": "F16",
+    "title": "检测结果登记与更正",
+    "scope": "只有结果，没有实时环节进度",
+    "nodes": [
+      {
+        "id": "n1",
+        "label": "检测人员完成线下检测",
+        "decision": false
+      },
+      {
+        "id": "n2",
+        "label": "PC B11或小程序S11填写结构化结果",
+        "decision": false
+      },
+      {
+        "id": "n3",
+        "label": "服务端核验权限、资料、一致性与版本",
+        "decision": false
+      },
+      {
+        "id": "n4",
+        "label": "首次结果已被另一端提交？",
+        "decision": true
+      },
+      {
+        "id": "n5",
+        "label": "同内容重试返回原结果；不同内容提示冲突",
+        "decision": false
+      },
+      {
+        "id": "n6",
+        "label": "保存结果版本，进入检测完成，通知车主和司机",
+        "decision": false
+      },
+      {
+        "id": "n7",
+        "label": "需要更正时提交新版本及原因",
+        "decision": false
+      },
+      {
+        "id": "n8",
+        "label": "另一获授权审核人批准更正",
+        "decision": false
+      },
+      {
+        "id": "n9",
+        "label": "保留旧版本，发布新结果并通知；不倒退已还车订单",
+        "decision": false
+      }
+    ],
+    "edges": [
+      {
+        "from": "n1",
+        "to": "n2",
+        "label": ""
+      },
+      {
+        "from": "n2",
+        "to": "n3",
+        "label": ""
+      },
+      {
+        "from": "n3",
+        "to": "n4",
+        "label": ""
+      },
+      {
+        "from": "n4",
+        "to": "n5",
+        "label": "是"
+      },
+      {
+        "from": "n4",
+        "to": "n6",
+        "label": "否"
+      },
+      {
+        "from": "n6",
+        "to": "n7",
+        "label": "发现错误"
+      },
+      {
+        "from": "n7",
+        "to": "n8",
+        "label": ""
+      },
+      {
+        "from": "n8",
+        "to": "n9",
+        "label": "通过"
+      }
+    ],
+    "note": "无独立开始/结束检测API；不提供报告PDF上传。未检测的取消单不能伪造PASS或FAIL。",
+    "pages": "S11/S12、B11/B30、O18",
+    "decision": "C13/C15"
+  },
+  {
+    "id": "F17",
+    "title": "检测点向代驾放行取车",
+    "scope": "交接3",
+    "nodes": [
+      {
+        "id": "n1",
+        "label": "代驾到取车处，核对当前承接记录",
+        "decision": false
+      },
+      {
+        "id": "n2",
+        "label": "正常完成检测或取消已获批待返还？",
+        "decision": true
+      },
+      {
+        "id": "n3",
+        "label": "不足条件则禁止放行并提示原因",
+        "decision": false
+      },
+      {
+        "id": "n4",
+        "label": "节点3照片、车况与物品清单齐备",
+        "decision": false
+      },
+      {
+        "id": "n5",
+        "label": "授权员工确认放行并提供专用码",
+        "decision": false
+      },
+      {
+        "id": "n6",
+        "label": "代驾核验并完成取车交接",
+        "decision": false
+      },
+      {
+        "id": "n7",
+        "label": "保管方变代驾；正常返程或取消返还",
+        "decision": false
+      }
+    ],
+    "edges": [
+      {
+        "from": "n1",
+        "to": "n2",
+        "label": ""
+      },
+      {
+        "from": "n2",
+        "to": "n3",
+        "label": "否"
+      },
+      {
+        "from": "n2",
+        "to": "n4",
+        "label": "是"
+      },
+      {
+        "from": "n4",
+        "to": "n5",
+        "label": ""
+      },
+      {
+        "from": "n5",
+        "to": "n6",
+        "label": ""
+      },
+      {
+        "from": "n6",
+        "to": "n7",
+        "label": ""
+      }
+    ],
+    "note": "同一交接不由一个账号双向自证，见P03。取消单不要求先写检测结果才能取回车辆。",
+    "pages": "D19/D20、S13",
+    "decision": "C10/P03"
+  },
+  {
+    "id": "F18",
+    "title": "实际归还、释放司机与后续确认分离",
+    "scope": "交接4",
+    "nodes": [
+      {
+        "id": "n1",
+        "label": "代驾到达约定归还处",
+        "decision": false
+      },
+      {
+        "id": "n2",
+        "label": "节点4六类照片、里程、钥匙物品齐备",
+        "decision": false
+      },
+      {
+        "id": "n3",
+        "label": "车主实际收车，提供归还专用码／确认",
+        "decision": false
+      },
+      {
+        "id": "n4",
+        "label": "服务端核验本次归还交接",
+        "decision": false
+      },
+      {
+        "id": "n5",
+        "label": "属于已批准取消返还？",
+        "decision": true
+      },
+      {
+        "id": "n6",
+        "label": "正式取消，记录实际归还时间",
+        "decision": false
+      },
+      {
+        "id": "n7",
+        "label": "进入待服务确认，起算24小时",
+        "decision": false
+      },
+      {
+        "id": "n8",
+        "label": "同一事务结束承接并释放本任务的司机占用",
+        "decision": false
+      },
+      {
+        "id": "n9",
+        "label": "司机可接下一单；原单售后继续可追溯",
+        "decision": false
+      }
+    ],
+    "edges": [
+      {
+        "from": "n1",
+        "to": "n2",
+        "label": ""
+      },
+      {
+        "from": "n2",
+        "to": "n3",
+        "label": ""
+      },
+      {
+        "from": "n3",
+        "to": "n4",
+        "label": ""
+      },
+      {
+        "from": "n4",
+        "to": "n5",
+        "label": ""
+      },
+      {
+        "from": "n5",
+        "to": "n6",
+        "label": "是"
+      },
+      {
+        "from": "n5",
+        "to": "n7",
+        "label": "否"
+      },
+      {
+        "from": "n6",
+        "to": "n8",
+        "label": ""
+      },
+      {
+        "from": "n7",
+        "to": "n8",
+        "label": ""
+      },
+      {
+        "from": "n8",
+        "to": "n9",
+        "label": ""
+      }
+    ],
+    "note": "上传照片、发送归还通知、后台审核通过，均不是实际交还。释放不抹掉历史司机关系。",
+    "pages": "D22/D23/D25、O22/O35",
+    "decision": "C09/C10/C16"
+  },
+  {
+    "id": "F19",
+    "title": "服务确认、争议与自动完成",
+    "scope": "车辆已归还后的订单管理",
+    "nodes": [
+      {
+        "id": "n1",
+        "label": "实际归还已完成，司机已经释放",
+        "decision": false
+      },
+      {
+        "id": "n2",
+        "label": "车主查看照片、结果及服务情况",
+        "decision": false
+      },
+      {
+        "id": "n3",
+        "label": "是否提出争议？",
+        "decision": true
+      },
+      {
+        "id": "n4",
+        "label": "建立争议，暂停自动完成，运营审查",
+        "decision": false
+      },
+      {
+        "id": "n5",
+        "label": "正常确认或满24小时且无争议",
+        "decision": false
+      },
+      {
+        "id": "n6",
+        "label": "订单完成，允许评价和售后查看",
+        "decision": false
+      },
+      {
+        "id": "n7",
+        "label": "争议结论记录，退款另走F20",
+        "decision": false
+      },
+      {
+        "id": "n8",
+        "label": "禁止旧单完成任务释放司机的新单占用",
+        "decision": false
+      }
+    ],
+    "edges": [
+      {
+        "from": "n1",
+        "to": "n2",
+        "label": ""
+      },
+      {
+        "from": "n2",
+        "to": "n3",
+        "label": ""
+      },
+      {
+        "from": "n3",
+        "to": "n4",
+        "label": "是"
+      },
+      {
+        "from": "n3",
+        "to": "n5",
+        "label": "否"
+      },
+      {
+        "from": "n5",
+        "to": "n6",
+        "label": ""
+      },
+      {
+        "from": "n4",
+        "to": "n7",
+        "label": ""
+      },
+      {
+        "from": "n7",
+        "to": "n6",
+        "label": "按结论办结"
+      },
+      {
+        "from": "n6",
+        "to": "n8",
+        "label": ""
+      }
+    ],
+    "note": "交还确认与认可服务质量分开；完成不自动推定免除一切责任。争议不重新锁司机。",
+    "pages": "O22/O23、B15",
+    "decision": "C09/C16"
+  },
+  {
+    "id": "F20",
+    "title": "统一售后申请与退款执行",
+    "scope": "统一退款决定；微信原商户执行，线下按F46登记实际退款",
+    "nodes": [
+      {
+        "id": "n1",
+        "label": "发起统一售后申请",
+        "decision": false
+      },
+      {
+        "id": "n2",
+        "label": "申请类型？",
+        "decision": true
+      },
+      {
+        "id": "n3",
+        "label": "取消并处理退款",
+        "decision": false
+      },
+      {
+        "id": "n4",
+        "label": "仅退款，保留服务",
+        "decision": false
+      },
+      {
+        "id": "n5",
+        "label": "一份售后单、一次审核",
+        "decision": false
+      },
+      {
+        "id": "n6",
+        "label": "校验本人/权限/版本/实时可退额",
+        "decision": false
+      },
+      {
+        "id": "n7",
+        "label": "审核批准？",
+        "decision": true
+      },
+      {
+        "id": "n8",
+        "label": "驳回说明，不改资金与保管事实",
+        "decision": false
+      },
+      {
+        "id": "n9",
+        "label": "原子记录决定并预留批准金额",
+        "decision": false
+      },
+      {
+        "id": "n10",
+        "label": "取消且车辆未返还？",
+        "decision": true
+      },
+      {
+        "id": "n11",
+        "label": "等待真实返还，不再生成第二个审核",
+        "decision": false
+      },
+      {
+        "id": "n12",
+        "label": "生成同一决定的稳定退款号",
+        "decision": false
+      },
+      {
+        "id": "n13",
+        "label": "异步请求渠道或查询原交易",
+        "decision": false
+      },
+      {
+        "id": "n14",
+        "label": "退款结果可信？",
+        "decision": true
+      },
+      {
+        "id": "n15",
+        "label": "成功记账，释放对应预留并办结",
+        "decision": false
+      },
+      {
+        "id": "n16",
+        "label": "结果未知/异常，保留预留和原号继续核实",
+        "decision": false
+      }
+    ],
+    "edges": [
+      {
+        "from": "n1",
+        "to": "n2",
+        "label": ""
+      },
+      {
+        "from": "n2",
+        "to": "n3",
+        "label": "取消"
+      },
+      {
+        "from": "n2",
+        "to": "n4",
+        "label": "仅退款"
+      },
+      {
+        "from": "n3",
+        "to": "n5",
+        "label": ""
+      },
+      {
+        "from": "n4",
+        "to": "n5",
+        "label": ""
+      },
+      {
+        "from": "n5",
+        "to": "n6",
+        "label": ""
+      },
+      {
+        "from": "n6",
+        "to": "n7",
+        "label": ""
+      },
+      {
+        "from": "n7",
+        "to": "n8",
+        "label": "否"
+      },
+      {
+        "from": "n7",
+        "to": "n9",
+        "label": "是"
+      },
+      {
+        "from": "n9",
+        "to": "n10",
+        "label": ""
+      },
+      {
+        "from": "n10",
+        "to": "n11",
+        "label": "是"
+      },
+      {
+        "from": "n11",
+        "to": "n12",
+        "label": "返还成功"
+      },
+      {
+        "from": "n10",
+        "to": "n12",
+        "label": "否/无需返还"
+      },
+      {
+        "from": "n12",
+        "to": "n13",
+        "label": ""
+      },
+      {
+        "from": "n13",
+        "to": "n14",
+        "label": ""
+      },
+      {
+        "from": "n14",
+        "to": "n15",
+        "label": "成功"
+      },
+      {
+        "from": "n14",
+        "to": "n16",
+        "label": "未知/异常"
+      },
+      {
+        "from": "n16",
+        "to": "n13",
+        "label": "查询重试"
+      }
+    ],
+    "pages": "O19/O21、B13/B14/B31",
+    "note": "批准金额为0时不创建退款单。仅退款不取消订单。渠道未知不是失败，不换号重退。",
+    "decision": "V4本轮需求/明确标注实施设计"
+  },
+  {
+    "id": "F21",
+    "title": "普通服务异常、拒收与失联",
+    "scope": "不含事故或理赔",
+    "nodes": [
+      {
+        "id": "n1",
+        "label": "上报联系不上、拒收、资料不符、无法继续等服务事实",
+        "decision": false
+      },
+      {
+        "id": "n2",
+        "label": "记录当前车辆保管方、位置、责任任务",
+        "decision": false
+      },
+      {
+        "id": "n3",
+        "label": "通知运营并保留必要证据",
+        "decision": false
+      },
+      {
+        "id": "n4",
+        "label": "可恢复原预约服务？",
+        "decision": true
+      },
+      {
+        "id": "n5",
+        "label": "协调后按真实节点恢复，不伪造完成",
+        "decision": false
+      },
+      {
+        "id": "n6",
+        "label": "需要取消则走审核及必要返还F12/F13",
+        "decision": false
+      },
+      {
+        "id": "n7",
+        "label": "归还对象联系不上：保持保管台账与人工处理",
+        "decision": false
+      },
+      {
+        "id": "n8",
+        "label": "禁止把车随意停下后点击释放；不自动归因为平台全责",
+        "decision": false
+      }
+    ],
+    "edges": [
+      {
+        "from": "n1",
+        "to": "n2",
+        "label": ""
+      },
+      {
+        "from": "n2",
+        "to": "n3",
+        "label": ""
+      },
+      {
+        "from": "n3",
+        "to": "n4",
+        "label": ""
+      },
+      {
+        "from": "n4",
+        "to": "n5",
+        "label": "是"
+      },
+      {
+        "from": "n4",
+        "to": "n6",
+        "label": "否"
+      },
+      {
+        "from": "n6",
+        "to": "n7",
+        "label": "无法实际交还"
+      },
+      {
+        "from": "n7",
+        "to": "n8",
+        "label": ""
+      },
+      {
+        "from": "n5",
+        "to": "n8",
+        "label": ""
+      }
+    ],
+    "note": "不设计事故上报、报警派遣、保险理赔、救援赔付。现实无法继续的处置由线下运营承担，系统不能把未知保管情况写成已还。",
+    "pages": "D24/D35、S14、B15",
+    "decision": "C14/既有异常范围"
+  },
+  {
+    "id": "F22",
+    "title": "照片上传、里程、封存与授权查看",
+    "scope": "证据管理",
+    "nodes": [
+      {
+        "id": "n1",
+        "label": "申请限定业务、节点、操作者的上传凭证",
+        "decision": false
+      },
+      {
+        "id": "n2",
+        "label": "上传真实文件，服务端核验对象及内容",
+        "decision": false
+      },
+      {
+        "id": "n3",
+        "label": "生成水印、计算哈希、绑定订单与版本",
+        "decision": false
+      },
+      {
+        "id": "n4",
+        "label": "六类必拍与该节点里程满足条件？",
+        "decision": true
+      },
+      {
+        "id": "n5",
+        "label": "完成节点交接时封存该证据版本",
+        "decision": false
+      },
+      {
+        "id": "n6",
+        "label": "提示缺少照片／上传失败，支持单张重传",
+        "decision": false
+      },
+      {
+        "id": "n7",
+        "label": "查看前再校验权限，返回短期地址并留审计",
+        "decision": false
+      },
+      {
+        "id": "n8",
+        "label": "封存后只能追加更正说明，不能覆盖历史",
+        "decision": false
+      }
+    ],
+    "edges": [
+      {
+        "from": "n1",
+        "to": "n2",
+        "label": ""
+      },
+      {
+        "from": "n2",
+        "to": "n3",
+        "label": ""
+      },
+      {
+        "from": "n3",
+        "to": "n4",
+        "label": ""
+      },
+      {
+        "from": "n4",
+        "to": "n5",
+        "label": "是"
+      },
+      {
+        "from": "n4",
+        "to": "n6",
+        "label": "否"
+      },
+      {
+        "from": "n6",
+        "to": "n1",
+        "label": "重试"
+      },
+      {
+        "from": "n5",
+        "to": "n7",
+        "label": ""
+      },
+      {
+        "from": "n7",
+        "to": "n8",
+        "label": ""
+      }
+    ],
+    "note": "水印可防随意修改，不证明GPS绝对真实；服务端记录采集时间和接收时间，不改写其含义。",
+    "pages": "O16、D12/D15/D19/D22、B04",
+    "decision": "既有证据规范"
+  },
+  {
+    "id": "F23",
+    "title": "通知、失败重试与人工待办",
+    "scope": "业务通知；未受理可重试，结果未知先查，不跨云重发",
+    "nodes": [
+      {
+        "id": "n1",
+        "label": "业务事务同时写outbox事件",
+        "decision": false
+      },
+      {
+        "id": "n2",
+        "label": "异步处理时核验事件仍相关",
+        "decision": false
+      },
+      {
+        "id": "n3",
+        "label": "按接收人权限和订阅授权选择渠道",
+        "decision": false
+      },
+      {
+        "id": "n4",
+        "label": "消息被渠道接受？",
+        "decision": true
+      },
+      {
+        "id": "n5",
+        "label": "记录渠道接受，不伪称用户已读",
+        "decision": false
+      },
+      {
+        "id": "n6",
+        "label": "确定未发才重试；未知先查｜不阻断业务",
+        "decision": false
+      },
+      {
+        "id": "n7",
+        "label": "重要事件保留站内/后台待办，必要时人工联系",
+        "decision": false
+      },
+      {
+        "id": "n8",
+        "label": "回到页面主动刷新订单真实状态",
+        "decision": false
+      }
+    ],
+    "edges": [
+      {
+        "from": "n1",
+        "to": "n2",
+        "label": ""
+      },
+      {
+        "from": "n2",
+        "to": "n3",
+        "label": ""
+      },
+      {
+        "from": "n3",
+        "to": "n4",
+        "label": ""
+      },
+      {
+        "from": "n4",
+        "to": "n5",
+        "label": "是"
+      },
+      {
+        "from": "n4",
+        "to": "n6",
+        "label": "否"
+      },
+      {
+        "from": "n6",
+        "to": "n7",
+        "label": ""
+      },
+      {
+        "from": "n5",
+        "to": "n8",
+        "label": ""
+      },
+      {
+        "from": "n7",
+        "to": "n8",
+        "label": ""
+      }
+    ],
+    "note": "支付和交接事务不因通知失败回滚；过期邀约不因消息重试重新有效。",
+    "pages": "S19、B21、各角色待办",
+    "decision": "V2 §8/§10.3"
+  },
+  {
+    "id": "F24",
+    "title": "营业时间、容量、停约与配置变更",
+    "scope": "运营配置",
+    "nodes": [
+      {
+        "id": "n1",
+        "label": "维护营业时间、上门额度、站点接收容量",
+        "decision": false
+      },
+      {
+        "id": "n2",
+        "label": "新配置先校验与已占用/已预占的关系",
+        "decision": false
+      },
+      {
+        "id": "n3",
+        "label": "变更是否影响已有订单？",
+        "decision": true
+      },
+      {
+        "id": "n4",
+        "label": "新单按新配置校验，历史快照不变",
+        "decision": false
+      },
+      {
+        "id": "n5",
+        "label": "列出受影响订单，停止新增并通知运营",
+        "decision": false
+      },
+      {
+        "id": "n6",
+        "label": "按确认方案协调改约或取消退款",
+        "decision": false
+      },
+      {
+        "id": "n7",
+        "label": "参数版本、生效时间、操作者及原因入审计",
+        "decision": false
+      }
+    ],
+    "edges": [
+      {
+        "from": "n1",
+        "to": "n2",
+        "label": ""
+      },
+      {
+        "from": "n2",
+        "to": "n3",
+        "label": ""
+      },
+      {
+        "from": "n3",
+        "to": "n4",
+        "label": "否"
+      },
+      {
+        "from": "n3",
+        "to": "n5",
+        "label": "是"
+      },
+      {
+        "from": "n5",
+        "to": "n6",
+        "label": ""
+      },
+      {
+        "from": "n4",
+        "to": "n7",
+        "label": ""
+      },
+      {
+        "from": "n6",
+        "to": "n7",
+        "label": ""
+      }
+    ],
+    "note": "不能把容量改小后抹掉已承诺预约；复杂设备实时监控不在本期，只保留人工停约与容量设置。",
+    "pages": "S16/S17、B17/B19/B24",
+    "decision": "C05/P04"
+  },
+  {
+    "id": "F25",
+    "title": "后台查询、敏感查看与导出",
+    "scope": "管理安全",
+    "nodes": [
+      {
+        "id": "n1",
+        "label": "框架登录，取得功能和数据范围",
+        "decision": false
+      },
+      {
+        "id": "n2",
+        "label": "查询时按授权站点及真实关联过滤",
+        "decision": false
+      },
+      {
+        "id": "n3",
+        "label": "请求敏感原文或批量导出？",
+        "decision": true
+      },
+      {
+        "id": "n4",
+        "label": "按原权限返回脱敏数据",
+        "decision": false
+      },
+      {
+        "id": "n5",
+        "label": "填写理由并通过二次授权／导出审批",
+        "decision": false
+      },
+      {
+        "id": "n6",
+        "label": "执行前再次校验权限与记录范围",
+        "decision": false
+      },
+      {
+        "id": "n7",
+        "label": "生成短期私有文件，下载再次校验",
+        "decision": false
+      },
+      {
+        "id": "n8",
+        "label": "操作、下载、授权和前后值入审计",
+        "decision": false
+      }
+    ],
+    "edges": [
+      {
+        "from": "n1",
+        "to": "n2",
+        "label": ""
+      },
+      {
+        "from": "n2",
+        "to": "n3",
+        "label": ""
+      },
+      {
+        "from": "n3",
+        "to": "n4",
+        "label": "否"
+      },
+      {
+        "from": "n3",
+        "to": "n5",
+        "label": "是"
+      },
+      {
+        "from": "n5",
+        "to": "n6",
+        "label": ""
+      },
+      {
+        "from": "n6",
+        "to": "n7",
+        "label": ""
+      },
+      {
+        "from": "n7",
+        "to": "n8",
+        "label": ""
+      },
+      {
+        "from": "n4",
+        "to": "n8",
+        "label": ""
+      }
+    ],
+    "note": "后台角色无站点授权时不可默认为全部；需要全平台范围必须显式授予。",
+    "pages": "B01/B03/B22/B27/B28",
+    "decision": "C12/C15"
+  },
+  {
+    "id": "F26",
+    "title": "隐私授权、账号退出与删除请求",
+    "scope": "资料保护",
+    "nodes": [
+      {
+        "id": "n1",
+        "label": "展示与场景相符的授权说明和协议版本",
+        "decision": false
+      },
+      {
+        "id": "n2",
+        "label": "用户允许后按最少必要范围采集",
+        "decision": false
+      },
+      {
+        "id": "n3",
+        "label": "用户查看/更正/撤回授权或提交删除请求",
+        "decision": false
+      },
+      {
+        "id": "n4",
+        "label": "存在在手车辆、资金待核对或必要留存？",
+        "decision": true
+      },
+      {
+        "id": "n5",
+        "label": "停止非必要用途，人工核实保留部分及理由",
+        "decision": false
+      },
+      {
+        "id": "n6",
+        "label": "按审批保留策略删除或匿名化相应资料",
+        "decision": false
+      },
+      {
+        "id": "n7",
+        "label": "反馈处理结果，记录审计",
+        "decision": false
+      },
+      {
+        "id": "n8",
+        "label": "退出登录清除本地敏感缓存，不伪装成服务已结束",
+        "decision": false
+      }
+    ],
+    "edges": [
+      {
+        "from": "n1",
+        "to": "n2",
+        "label": ""
+      },
+      {
+        "from": "n2",
+        "to": "n3",
+        "label": ""
+      },
+      {
+        "from": "n3",
+        "to": "n4",
+        "label": ""
+      },
+      {
+        "from": "n4",
+        "to": "n5",
+        "label": "是"
+      },
+      {
+        "from": "n4",
+        "to": "n6",
+        "label": "否"
+      },
+      {
+        "from": "n5",
+        "to": "n7",
+        "label": ""
+      },
+      {
+        "from": "n6",
+        "to": "n7",
+        "label": ""
+      },
+      {
+        "from": "n7",
+        "to": "n8",
+        "label": ""
+      }
+    ],
+    "note": "个人资料保留策略是上线核验事项，未批准不能宣称永久保存。退出不抹掉已成立的履约责任。",
+    "pages": "O28/U03、后台隐私请求入口",
+    "decision": "V2 §11/上线核验"
+  },
+  {
+    "id": "F27",
+    "title": "服务记录、评价与再次预约",
+    "scope": "非钱包",
+    "nodes": [
+      {
+        "id": "n1",
+        "label": "已归还的司机任务进入服务记录",
+        "decision": false
+      },
+      {
+        "id": "n2",
+        "label": "车主服务确认后可以评价",
+        "decision": false
+      },
+      {
+        "id": "n3",
+        "label": "服务端按订单校验评价主体与唯一性",
+        "decision": false
+      },
+      {
+        "id": "n4",
+        "label": "评分和完单数按定义计算，不人工改数",
+        "decision": false
+      },
+      {
+        "id": "n5",
+        "label": "历史详情按当时关系脱敏展示",
+        "decision": false
+      },
+      {
+        "id": "n6",
+        "label": "车主再次预约只复用车辆/地址，不复用旧价旧时段",
+        "decision": false
+      }
+    ],
+    "edges": [
+      {
+        "from": "n1",
+        "to": "n2",
+        "label": ""
+      },
+      {
+        "from": "n2",
+        "to": "n3",
+        "label": ""
+      },
+      {
+        "from": "n3",
+        "to": "n4",
+        "label": ""
+      },
+      {
+        "from": "n4",
+        "to": "n5",
+        "label": ""
+      },
+      {
+        "from": "n5",
+        "to": "n6",
+        "label": ""
+      }
+    ],
+    "note": "司机服务记录不显示可提现/待结算；“交还任务数”和“订单已完成数”必须分开统计。",
+    "pages": "D25/D27、O25/O26、B23/B28",
+    "decision": "C09/C14"
+  },
+  {
+    "id": "F28",
+    "title": "定时任务补偿与旧事件防护",
+    "scope": "可靠性",
+    "nodes": [
+      {
+        "id": "n1",
+        "label": "扫描到期未支付／计划派单／邀约超时／自动完成／退款查询任务",
+        "decision": false
+      },
+      {
+        "id": "n2",
+        "label": "按业务ID与执行键抢占任务",
+        "decision": false
+      },
+      {
+        "id": "n3",
+        "label": "加载最新订单、取消、占用及版本",
+        "decision": false
+      },
+      {
+        "id": "n4",
+        "label": "事件仍适用且未成功处理？",
+        "decision": true
+      },
+      {
+        "id": "n5",
+        "label": "执行条件更新、状态流水与outbox",
+        "decision": false
+      },
+      {
+        "id": "n6",
+        "label": "忽略已过期或已办结事件，记录结果",
+        "decision": false
+      },
+      {
+        "id": "n7",
+        "label": "失败按类型重试，超过阈值转人工",
+        "decision": false
+      },
+      {
+        "id": "n8",
+        "label": "旧单事件只释放匹配旧任务的资源，不能清空新任务",
+        "decision": false
+      }
+    ],
+    "edges": [
+      {
+        "from": "n1",
+        "to": "n2",
+        "label": ""
+      },
+      {
+        "from": "n2",
+        "to": "n3",
+        "label": ""
+      },
+      {
+        "from": "n3",
+        "to": "n4",
+        "label": ""
+      },
+      {
+        "from": "n4",
+        "to": "n5",
+        "label": "是"
+      },
+      {
+        "from": "n4",
+        "to": "n6",
+        "label": "否"
+      },
+      {
+        "from": "n5",
+        "to": "n7",
+        "label": "失败"
+      },
+      {
+        "from": "n5",
+        "to": "n8",
+        "label": "成功"
+      },
+      {
+        "from": "n6",
+        "to": "n8",
+        "label": ""
+      }
+    ],
+    "note": "Redis失效不能取消数据库唯一性；任务重跑不重复收款、派单、返还或退费。",
+    "pages": "B24/B31、研发监控",
+    "decision": "资金/资源不变量"
+  },
+  {
+    "id": "F29",
+    "title": "开发、联调、灰度与回滚",
+    "scope": "交付流程",
+    "nodes": [
+      {
+        "id": "n1",
+        "label": "只读核对实际仓库、框架认证及表结构",
+        "decision": false
+      },
+      {
+        "id": "n2",
+        "label": "确认本包设计建议和仓库适配差异",
+        "decision": false
+      },
+      {
+        "id": "n3",
+        "label": "按小任务实现并提交独立测试证据",
+        "decision": false
+      },
+      {
+        "id": "n4",
+        "label": "关键不变量、真机和真实通道验证通过？",
+        "decision": true
+      },
+      {
+        "id": "n5",
+        "label": "单站少量内部人员灰度",
+        "decision": false
+      },
+      {
+        "id": "n6",
+        "label": "修复问题后重新验证，不以模拟代替",
+        "decision": false
+      },
+      {
+        "id": "n7",
+        "label": "逐步扩量并核对履约供给",
+        "decision": false
+      },
+      {
+        "id": "n8",
+        "label": "异常停止新单/自动派单，已付和在手车辆继续处理",
+        "decision": false
+      }
+    ],
+    "edges": [
+      {
+        "from": "n1",
+        "to": "n2",
+        "label": ""
+      },
+      {
+        "from": "n2",
+        "to": "n3",
+        "label": ""
+      },
+      {
+        "from": "n3",
+        "to": "n4",
+        "label": ""
+      },
+      {
+        "from": "n4",
+        "to": "n5",
+        "label": "是"
+      },
+      {
+        "from": "n4",
+        "to": "n6",
+        "label": "否"
+      },
+      {
+        "from": "n6",
+        "to": "n3",
+        "label": ""
+      },
+      {
+        "from": "n5",
+        "to": "n7",
+        "label": ""
+      },
+      {
+        "from": "n7",
+        "to": "n8",
+        "label": "需要降级"
+      }
+    ],
+    "note": "未授权不操作生产数据库、不自动发送真实支付退款。SQL为参考设计，先完成新业务初始化演练。",
+    "pages": "研发与运营",
+    "decision": "交付规范"
+  },
+  {
+    "id": "F30",
+    "title": "运营指标与供给校准",
+    "scope": "第一性原则验证",
+    "nodes": [
+      {
+        "id": "n1",
+        "label": "采集接单、到达、交接、收车、结果和归还时间",
+        "decision": false
+      },
+      {
+        "id": "n2",
+        "label": "分别计算司机占用时长、站点时长、准时上门率",
+        "decision": false
+      },
+      {
+        "id": "n3",
+        "label": "按每时段可用人时与站点容量估算可接单量",
+        "decision": false
+      },
+      {
+        "id": "n4",
+        "label": "比较预约承诺、实际延误和取消原因",
+        "decision": false
+      },
+      {
+        "id": "n5",
+        "label": "供给足以支持当前开放名额？",
+        "decision": true
+      },
+      {
+        "id": "n6",
+        "label": "保持或谨慎放量",
+        "decision": false
+      },
+      {
+        "id": "n7",
+        "label": "缩减未来可约额度，补足人员并人工协调已有单",
+        "decision": false
+      },
+      {
+        "id": "n8",
+        "label": "统计服务费收退款，不制造司机结算数据",
+        "decision": false
+      }
+    ],
+    "edges": [
+      {
+        "from": "n1",
+        "to": "n2",
+        "label": ""
+      },
+      {
+        "from": "n2",
+        "to": "n3",
+        "label": ""
+      },
+      {
+        "from": "n3",
+        "to": "n4",
+        "label": ""
+      },
+      {
+        "from": "n4",
+        "to": "n5",
+        "label": ""
+      },
+      {
+        "from": "n5",
+        "to": "n6",
+        "label": "是"
+      },
+      {
+        "from": "n5",
+        "to": "n7",
+        "label": "否"
+      },
+      {
+        "from": "n6",
+        "to": "n8",
+        "label": ""
+      },
+      {
+        "from": "n7",
+        "to": "n8",
+        "label": ""
+      }
+    ],
+    "note": "500单/日可作为软件压测目标，不自动成为50名司机可实现的运营产能。",
+    "pages": "B02/B23/B19",
+    "decision": "第一性原则/配置建议"
+  },
+  {
+    "id": "F31",
+    "title": "司机占用状态与归还后再接单",
+    "scope": "核心资源状态图",
+    "nodes": [
+      {
+        "id": "n1",
+        "label": "司机空闲且资格有效",
+        "decision": false
+      },
+      {
+        "id": "n2",
+        "label": "单人邀约预占",
+        "decision": false
+      },
+      {
+        "id": "n3",
+        "label": "司机有效接受？",
+        "decision": true
+      },
+      {
+        "id": "n4",
+        "label": "已承接：持续占用至实际交还",
+        "decision": false
+      },
+      {
+        "id": "n5",
+        "label": "拒绝／超时：按邀约ID释放",
+        "decision": false
+      },
+      {
+        "id": "n6",
+        "label": "未接车取消承接或实际交还完成？",
+        "decision": true
+      },
+      {
+        "id": "n7",
+        "label": "按承接ID原子释放，保留历史记录",
+        "decision": false
+      },
+      {
+        "id": "n8",
+        "label": "接下一个订单；旧单仍可等待服务确认",
+        "decision": false
+      }
+    ],
+    "edges": [
+      {
+        "from": "n1",
+        "to": "n2",
+        "label": ""
+      },
+      {
+        "from": "n2",
+        "to": "n3",
+        "label": ""
+      },
+      {
+        "from": "n3",
+        "to": "n4",
+        "label": "是"
+      },
+      {
+        "from": "n3",
+        "to": "n5",
+        "label": "否"
+      },
+      {
+        "from": "n5",
+        "to": "n1",
+        "label": ""
+      },
+      {
+        "from": "n4",
+        "to": "n6",
+        "label": ""
+      },
+      {
+        "from": "n6",
+        "to": "n7",
+        "label": "是"
+      },
+      {
+        "from": "n7",
+        "to": "n8",
+        "label": ""
+      },
+      {
+        "from": "n8",
+        "to": "n2",
+        "label": "新邀约"
+      }
+    ],
+    "note": "并发与重试必须以occupancy.holderId精确匹配；旧订单自动完成不能误释放当前新订单。",
+    "pages": "D06/D23、调度服务",
+    "decision": "C09/C10/C11"
+  },
+  {
+    "id": "F32",
+    "title": "个人对账内核价与整单复核",
+    "scope": "V6.4 / T3.4",
+    "nodes": [
+      {
+        "id": "n1",
+        "label": "真实承接结束，司机按交接事实释放",
+        "decision": false
+      },
+      {
+        "id": "n2",
+        "label": "保存费用源及规则金额；无规则保留NULL",
+        "decision": false
+      },
+      {
+        "id": "n3",
+        "label": "选主体、代驾，明确勾选本次服务\n日期只是查询条件",
+        "decision": false
+      },
+      {
+        "id": "n4",
+        "label": "建立可含待核价的对账草稿",
+        "decision": false
+      },
+      {
+        "id": "n5",
+        "label": "对应行填写或修改本次拟应付价格",
+        "decision": false
+      },
+      {
+        "id": "n6",
+        "label": "价格是否全部确定？",
+        "decision": true
+      },
+      {
+        "id": "n7",
+        "label": "有人工填写或改价？",
+        "decision": true
+      },
+      {
+        "id": "n8",
+        "label": "经办提交整单复核",
+        "decision": false
+      },
+      {
+        "id": "n9",
+        "label": "独立人员核对整个版本",
+        "decision": false
+      },
+      {
+        "id": "n10",
+        "label": "复核通过并发送",
+        "decision": false
+      },
+      {
+        "id": "n11",
+        "label": "规则价账单直接发送",
+        "decision": false
+      },
+      {
+        "id": "n12",
+        "label": "代驾核对本版本",
+        "decision": false
+      },
+      {
+        "id": "n13",
+        "label": "确认无误并锁定原账；不等于付款",
+        "decision": false
+      },
+      {
+        "id": "n14",
+        "label": "提出差异，回同页处理",
+        "decision": false
+      }
+    ],
+    "edges": [
+      {
+        "from": "n1",
+        "to": "n2",
+        "label": ""
+      },
+      {
+        "from": "n2",
+        "to": "n3",
+        "label": ""
+      },
+      {
+        "from": "n3",
+        "to": "n4",
+        "label": ""
+      },
+      {
+        "from": "n4",
+        "to": "n5",
+        "label": "需要填写/修改"
+      },
+      {
+        "from": "n4",
+        "to": "n6",
+        "label": "规则已算"
+      },
+      {
+        "from": "n5",
+        "to": "n6",
+        "label": ""
+      },
+      {
+        "from": "n6",
+        "to": "n5",
+        "label": "否"
+      },
+      {
+        "from": "n6",
+        "to": "n7",
+        "label": "是"
+      },
+      {
+        "from": "n7",
+        "to": "n8",
+        "label": "是"
+      },
+      {
+        "from": "n7",
+        "to": "n11",
+        "label": "否"
+      },
+      {
+        "from": "n8",
+        "to": "n9",
+        "label": ""
+      },
+      {
+        "from": "n9",
+        "to": "n10",
+        "label": "通过"
+      },
+      {
+        "from": "n9",
+        "to": "n5",
+        "label": "退回"
+      },
+      {
+        "from": "n10",
+        "to": "n12",
+        "label": ""
+      },
+      {
+        "from": "n11",
+        "to": "n12",
+        "label": ""
+      },
+      {
+        "from": "n12",
+        "to": "n13",
+        "label": "无误"
+      },
+      {
+        "from": "n12",
+        "to": "n14",
+        "label": "有差异"
+      },
+      {
+        "from": "n14",
+        "to": "n5",
+        "label": "需要改价"
+      }
+    ],
+    "note": "NULL可进草稿，不可发出。多行改价一张账单复核；确认绑定版本，历史不覆盖。 明确成员集合组单，剩余服务保留待对账。",
+    "pages": "B28/B37/B42/B38、D37/D38",
+    "decision": "本轮核价交互已确认；技术实现设计需M0适配"
+  },
+  {
+    "id": "F33",
+    "title": "撤回、差异处理与确认后调差",
+    "scope": "V6.4 / T3.4",
+    "nodes": [
+      {
+        "id": "n1",
+        "label": "需要修改账单金额或成员范围",
+        "decision": false
+      },
+      {
+        "id": "n2",
+        "label": "已确认或已有付款记录？",
+        "decision": true
+      },
+      {
+        "id": "n3",
+        "label": "原账只读，原行申请正负调差",
+        "decision": false
+      },
+      {
+        "id": "n4",
+        "label": "其他授权人员独立复核",
+        "decision": false
+      },
+      {
+        "id": "n5",
+        "label": "追加差额，纳入后续/补充账单",
+        "decision": false
+      },
+      {
+        "id": "n6",
+        "label": "已发送或待内部复核？",
+        "decision": true
+      },
+      {
+        "id": "n7",
+        "label": "明确撤回当前版本，和本人确认互斥",
+        "decision": false
+      },
+      {
+        "id": "n8",
+        "label": "撤回成功？",
+        "decision": true
+      },
+      {
+        "id": "n9",
+        "label": "旧确认/复核失效，回草稿",
+        "decision": false
+      },
+      {
+        "id": "n10",
+        "label": "在草稿修改拟价或增减服务\n保留改价和成员变更历史",
+        "decision": false
+      },
+      {
+        "id": "n11",
+        "label": "更新内容版本；有人工改价整单复核\n全部规则价由授权人员重新发出",
+        "decision": false
+      },
+      {
+        "id": "n12",
+        "label": "司机确认当前有效版本",
+        "decision": false
+      }
+    ],
+    "edges": [
+      {
+        "from": "n1",
+        "to": "n2",
+        "label": ""
+      },
+      {
+        "from": "n2",
+        "to": "n3",
+        "label": "是"
+      },
+      {
+        "from": "n3",
+        "to": "n4",
+        "label": ""
+      },
+      {
+        "from": "n4",
+        "to": "n5",
+        "label": "通过"
+      },
+      {
+        "from": "n2",
+        "to": "n6",
+        "label": "否"
+      },
+      {
+        "from": "n6",
+        "to": "n7",
+        "label": "是"
+      },
+      {
+        "from": "n7",
+        "to": "n8",
+        "label": ""
+      },
+      {
+        "from": "n8",
+        "to": "n3",
+        "label": "确认已先成功"
+      },
+      {
+        "from": "n8",
+        "to": "n9",
+        "label": "是"
+      },
+      {
+        "from": "n6",
+        "to": "n10",
+        "label": "否：草稿/差异"
+      },
+      {
+        "from": "n9",
+        "to": "n10",
+        "label": ""
+      },
+      {
+        "from": "n10",
+        "to": "n11",
+        "label": ""
+      },
+      {
+        "from": "n11",
+        "to": "n12",
+        "label": "核对无误"
+      }
+    ],
+    "note": "原账金额/付款不被覆盖。差异说明不自动改钱；新版本未经必要复核不能发送。",
+    "pages": "B38/B41、D38",
+    "decision": "本轮核价交互已确认；技术实现设计需M0适配"
+  },
+  {
+    "id": "F34",
+    "title": "费用规则与行内核价关系",
+    "scope": "V6.4 / T3.4",
+    "nodes": [
+      {
+        "id": "n1",
+        "label": "按主体、车型、代驾和场景配置规则",
+        "decision": false
+      },
+      {
+        "id": "n2",
+        "label": "试算并独立审核发布规则版本",
+        "decision": false
+      },
+      {
+        "id": "n3",
+        "label": "真实结束事件匹配规则",
+        "decision": false
+      },
+      {
+        "id": "n4",
+        "label": "有匹配金额？",
+        "decision": true
+      },
+      {
+        "id": "n5",
+        "label": "保存规则金额与版本",
+        "decision": false
+      },
+      {
+        "id": "n6",
+        "label": "保留NULL待填写，不默认为0",
+        "decision": false
+      },
+      {
+        "id": "n7",
+        "label": "费用源进入本期对账草稿",
+        "decision": false
+      },
+      {
+        "id": "n8",
+        "label": "B38行内补填/修改，说明依据",
+        "decision": false
+      },
+      {
+        "id": "n9",
+        "label": "人工价格整单复核；规则价无需逐条核价",
+        "decision": false
+      },
+      {
+        "id": "n10",
+        "label": "发送当前账单给司机",
+        "decision": false
+      }
+    ],
+    "edges": [
+      {
+        "from": "n1",
+        "to": "n2",
+        "label": ""
+      },
+      {
+        "from": "n2",
+        "to": "n3",
+        "label": ""
+      },
+      {
+        "from": "n3",
+        "to": "n4",
+        "label": ""
+      },
+      {
+        "from": "n4",
+        "to": "n5",
+        "label": "是"
+      },
+      {
+        "from": "n4",
+        "to": "n6",
+        "label": "否"
+      },
+      {
+        "from": "n5",
+        "to": "n7",
+        "label": ""
+      },
+      {
+        "from": "n6",
+        "to": "n7",
+        "label": ""
+      },
+      {
+        "from": "n7",
+        "to": "n8",
+        "label": "需要补/改"
+      },
+      {
+        "from": "n7",
+        "to": "n9",
+        "label": "无需改"
+      },
+      {
+        "from": "n8",
+        "to": "n9",
+        "label": ""
+      },
+      {
+        "from": "n9",
+        "to": "n10",
+        "label": "符合条件"
+      }
+    ],
+    "note": "改本次拟价不改变全局规则和客户收费。真实费率、取消补偿仍需业务确定。",
+    "pages": "B39、B38",
+    "decision": "本轮核价交互已确认；技术实现设计需M0适配"
+  },
+  {
+    "id": "F35",
+    "title": "账单级付款凭证与部分付款",
+    "scope": "V6.4 / T3.4",
+    "nodes": [
+      {
+        "id": "n1",
+        "label": "代驾已确认当前账单",
+        "decision": false
+      },
+      {
+        "id": "n2",
+        "label": "已确认净额是否大于0？",
+        "decision": true
+      },
+      {
+        "id": "n3",
+        "label": "0元无需付款；负额人工核实\n不伪造付款凭证",
+        "decision": false
+      },
+      {
+        "id": "n4",
+        "label": "在系统外实际付款",
+        "decision": false
+      },
+      {
+        "id": "n5",
+        "label": "从本账单录入金额、日期、流水、凭证",
+        "decision": false
+      },
+      {
+        "id": "n6",
+        "label": "锁定账单校验已核实＋待核实预留\n唯一流水、主体与余额",
+        "decision": false
+      },
+      {
+        "id": "n7",
+        "label": "凭证待独立核实，不计已付",
+        "decision": false
+      },
+      {
+        "id": "n8",
+        "label": "独立人员核实是否相符？",
+        "decision": true
+      },
+      {
+        "id": "n9",
+        "label": "退回并释放预留，保留记录",
+        "decision": false
+      },
+      {
+        "id": "n10",
+        "label": "记录可信付款，按账单累加已付",
+        "decision": false
+      },
+      {
+        "id": "n11",
+        "label": "剩余金额为0？",
+        "decision": true
+      },
+      {
+        "id": "n12",
+        "label": "部分付款：所有行显示所在账单部分付款",
+        "decision": false
+      },
+      {
+        "id": "n13",
+        "label": "已付清：成员离开默认未结清列表\n历史可查",
+        "decision": false
+      }
+    ],
+    "edges": [
+      {
+        "from": "n1",
+        "to": "n2",
+        "label": ""
+      },
+      {
+        "from": "n2",
+        "to": "n3",
+        "label": "否"
+      },
+      {
+        "from": "n2",
+        "to": "n4",
+        "label": "是"
+      },
+      {
+        "from": "n4",
+        "to": "n5",
+        "label": ""
+      },
+      {
+        "from": "n5",
+        "to": "n6",
+        "label": ""
+      },
+      {
+        "from": "n6",
+        "to": "n7",
+        "label": "校验通过"
+      },
+      {
+        "from": "n7",
+        "to": "n8",
+        "label": ""
+      },
+      {
+        "from": "n8",
+        "to": "n9",
+        "label": "否"
+      },
+      {
+        "from": "n8",
+        "to": "n10",
+        "label": "是"
+      },
+      {
+        "from": "n10",
+        "to": "n11",
+        "label": ""
+      },
+      {
+        "from": "n11",
+        "to": "n12",
+        "label": "否"
+      },
+      {
+        "from": "n12",
+        "to": "n4",
+        "label": "后续实际支付"
+      },
+      {
+        "from": "n11",
+        "to": "n13",
+        "label": "是"
+      }
+    ],
+    "pages": "B42/B38/B40、D37/D38",
+    "note": "凭证登记不等于付款核实；不自动打款、不自动分摊至单次服务。",
+    "decision": "本轮用户确认交互；参考技术实现须适配真实仓库"
+  },
+  {
+    "id": "F36",
+    "title": "工作副本、发布快照与确认结转",
+    "scope": "V6.4 / T3.4",
+    "nodes": [
+      {
+        "id": "n1",
+        "label": "不可变源费用和真实承接记录",
+        "decision": false
+      },
+      {
+        "id": "n2",
+        "label": "明确所选ID建立草稿与唯一分配\n工作行保存proposedAmount",
+        "decision": false
+      },
+      {
+        "id": "n3",
+        "label": "改价/增删成员均追加历史\n父revision/version递增",
+        "decision": false
+      },
+      {
+        "id": "n4",
+        "label": "人工变更冻结整单待审快照和贡献者",
+        "decision": false
+      },
+      {
+        "id": "n5",
+        "label": "独立批准并SENT，保存不可变发布快照",
+        "decision": false
+      },
+      {
+        "id": "n6",
+        "label": "本人以version/revision/hash确认",
+        "decision": false
+      },
+      {
+        "id": "n7",
+        "label": "与撤回锁同一账单，是否仍有效？",
+        "decision": true
+      },
+      {
+        "id": "n8",
+        "label": "拒绝旧确认，刷新重新核对",
+        "decision": false
+      },
+      {
+        "id": "n9",
+        "label": "事务写确认与唯一结转事件",
+        "decision": false
+      },
+      {
+        "id": "n10",
+        "label": "源NULL初次核价；已知源只记最终差额",
+        "decision": false
+      },
+      {
+        "id": "n11",
+        "label": "派生费用分配本单，不能再次入未来账单",
+        "decision": false
+      }
+    ],
+    "edges": [
+      {
+        "from": "n1",
+        "to": "n2",
+        "label": ""
+      },
+      {
+        "from": "n2",
+        "to": "n3",
+        "label": "有改价"
+      },
+      {
+        "from": "n3",
+        "to": "n4",
+        "label": ""
+      },
+      {
+        "from": "n4",
+        "to": "n5",
+        "label": "复核通过"
+      },
+      {
+        "from": "n2",
+        "to": "n5",
+        "label": "全规则价可直接发"
+      },
+      {
+        "from": "n5",
+        "to": "n6",
+        "label": ""
+      },
+      {
+        "from": "n6",
+        "to": "n7",
+        "label": ""
+      },
+      {
+        "from": "n7",
+        "to": "n8",
+        "label": "否"
+      },
+      {
+        "from": "n7",
+        "to": "n9",
+        "label": "是"
+      },
+      {
+        "from": "n9",
+        "to": "n10",
+        "label": ""
+      },
+      {
+        "from": "n10",
+        "to": "n11",
+        "label": "同事务"
+      }
+    ],
+    "note": "技术实现设计：60→70→65最终只结转+5；草稿阶段不重复入账。",
+    "pages": "ADR-07 / TX28–32 / B38 / D38",
+    "decision": "本轮核价交互已确认；技术实现设计需M0适配"
+  },
+  {
+    "id": "F37",
+    "title": "双认证域与小程序会话切换",
+    "scope": "V6.4 / T3.4",
+    "nodes": [
+      {
+        "id": "n1",
+        "label": "PC管理员：sys_user + LoginUser + 原JWT",
+        "decision": false
+      },
+      {
+        "id": "n2",
+        "label": "小程序：微信code经服务端核验",
+        "decision": false
+      },
+      {
+        "id": "n3",
+        "label": "vi_account基础账号与独立设备session",
+        "decision": false
+      },
+      {
+        "id": "n4",
+        "label": "不透明访问令牌＋原子轮换刷新令牌",
+        "decision": false
+      },
+      {
+        "id": "n5",
+        "label": "请求匹配MINI或ADMIN安全链",
+        "decision": false
+      },
+      {
+        "id": "n6",
+        "label": "是否检测工作操作？",
+        "decision": true
+      },
+      {
+        "id": "n7",
+        "label": "核验员工绑定、sys_user实时状态和auth_version",
+        "decision": false
+      },
+      {
+        "id": "n8",
+        "label": "核验本人车主/承接/账单能力",
+        "decision": false
+      },
+      {
+        "id": "n9",
+        "label": "服务端构造ActorContext，进入统一业务服务",
+        "decision": false
+      },
+      {
+        "id": "n10",
+        "label": "角色/站点切换校验目标能力和上下文版本",
+        "decision": false
+      },
+      {
+        "id": "n11",
+        "label": "只变本session，contextVersion递增并换访问令牌",
+        "decision": false
+      }
+    ],
+    "edges": [
+      {
+        "from": "n1",
+        "to": "n5",
+        "label": "ADMIN"
+      },
+      {
+        "from": "n2",
+        "to": "n3",
+        "label": ""
+      },
+      {
+        "from": "n3",
+        "to": "n4",
+        "label": ""
+      },
+      {
+        "from": "n4",
+        "to": "n5",
+        "label": "MINI"
+      },
+      {
+        "from": "n5",
+        "to": "n6",
+        "label": "MINI工作请求"
+      },
+      {
+        "from": "n6",
+        "to": "n7",
+        "label": "是"
+      },
+      {
+        "from": "n6",
+        "to": "n8",
+        "label": "否"
+      },
+      {
+        "from": "n7",
+        "to": "n9",
+        "label": ""
+      },
+      {
+        "from": "n8",
+        "to": "n9",
+        "label": ""
+      },
+      {
+        "from": "n5",
+        "to": "n9",
+        "label": "ADMIN真实权限"
+      },
+      {
+        "from": "n4",
+        "to": "n10",
+        "label": "切换"
+      },
+      {
+        "from": "n10",
+        "to": "n11",
+        "label": ""
+      },
+      {
+        "from": "n11",
+        "to": "n5",
+        "label": "新上下文"
+      }
+    ],
+    "note": "不能把vi_account.id=1当框架超管。员工撤权不注销车主，基础会话仍可切回OWNER。",
+    "pages": "T3.4 ADR-01 / U01/U02/S21",
+    "decision": "本轮核价交互已确认；技术实现设计需M0适配"
+  },
+  {
+    "id": "F38",
+    "title": "部门、站点与费用主体组合授权",
+    "scope": "V6.4 / T3.4",
+    "nodes": [
+      {
+        "id": "n1",
+        "label": "请求认证域、实际操作者和动作",
+        "decision": false
+      },
+      {
+        "id": "n2",
+        "label": "加载数据库真实目标与归属",
+        "decision": false
+      },
+      {
+        "id": "n3",
+        "label": "是本人车主或代驾业务？",
+        "decision": true
+      },
+      {
+        "id": "n4",
+        "label": "校验本人订单/真实承接/本人账单",
+        "decision": false
+      },
+      {
+        "id": "n5",
+        "label": "员工/后台功能权限及组织边界",
+        "decision": false
+      },
+      {
+        "id": "n6",
+        "label": "本操作部门范围 ∩ 显式站点授权",
+        "decision": false
+      },
+      {
+        "id": "n7",
+        "label": "涉及司机对账还需整个费用主体权限",
+        "decision": false
+      },
+      {
+        "id": "n8",
+        "label": "范围及状态版本全部满足？",
+        "decision": true
+      },
+      {
+        "id": "n9",
+        "label": "拒绝并审计；空范围不能省略过滤",
+        "decision": false
+      },
+      {
+        "id": "n10",
+        "label": "事务写业务事实与脱敏审计",
+        "decision": false
+      },
+      {
+        "id": "n11",
+        "label": "导出下载与后续请求重新鉴权",
+        "decision": false
+      }
+    ],
+    "edges": [
+      {
+        "from": "n1",
+        "to": "n2",
+        "label": ""
+      },
+      {
+        "from": "n2",
+        "to": "n3",
+        "label": ""
+      },
+      {
+        "from": "n3",
+        "to": "n4",
+        "label": "是"
+      },
+      {
+        "from": "n3",
+        "to": "n5",
+        "label": "否"
+      },
+      {
+        "from": "n5",
+        "to": "n6",
+        "label": ""
+      },
+      {
+        "from": "n6",
+        "to": "n7",
+        "label": "费用业务"
+      },
+      {
+        "from": "n6",
+        "to": "n8",
+        "label": "其他站点业务"
+      },
+      {
+        "from": "n7",
+        "to": "n8",
+        "label": ""
+      },
+      {
+        "from": "n4",
+        "to": "n8",
+        "label": ""
+      },
+      {
+        "from": "n8",
+        "to": "n9",
+        "label": "否"
+      },
+      {
+        "from": "n8",
+        "to": "n10",
+        "label": "是"
+      },
+      {
+        "from": "n10",
+        "to": "n11",
+        "label": "后续"
+      }
+    ],
+    "note": "不使用部门OR站点的并集。能看一张站点订单不代表能看司机跨主体全部报酬。",
+    "pages": "T3.4 ADR-02/07 / B26/B38/B40",
+    "decision": "本轮核价交互已确认；技术实现设计需M0适配"
+  },
+  {
+    "id": "F39",
+    "title": "明确勾选组单与草稿成员管理",
+    "scope": "V6.4 / T3.4",
+    "nodes": [
+      {
+        "id": "n1",
+        "label": "个人对账｜查询未结清服务",
+        "decision": false
+      },
+      {
+        "id": "n2",
+        "label": "仅勾选可对账明细\n跨页跨月保留选择，不占用",
+        "decision": false
+      },
+      {
+        "id": "n3",
+        "label": "确认所选ID集合与源版本",
+        "decision": false
+      },
+      {
+        "id": "n4",
+        "label": "事务锁源费用，重新校验资格\n同司机/主体/币种/无重复占用",
+        "decision": false
+      },
+      {
+        "id": "n5",
+        "label": "所有所选明细均通过？",
+        "decision": true
+      },
+      {
+        "id": "n6",
+        "label": "全部回滚，返回可披露冲突\n保留选择，不静默跳过",
+        "decision": false
+      },
+      {
+        "id": "n7",
+        "label": "创建草稿＋工作行＋唯一分配\n审计和事件同事务",
+        "decision": false
+      },
+      {
+        "id": "n8",
+        "label": "草稿可填价、增减成员",
+        "decision": false
+      },
+      {
+        "id": "n9",
+        "label": "移出/作废：保留历史\n仅释放对应草稿占用",
+        "decision": false
+      },
+      {
+        "id": "n10",
+        "label": "发送/复核前冻结新内容版本\n确认后不再直接改成员",
+        "decision": false
+      }
+    ],
+    "edges": [
+      {
+        "from": "n1",
+        "to": "n2",
+        "label": ""
+      },
+      {
+        "from": "n2",
+        "to": "n3",
+        "label": ""
+      },
+      {
+        "from": "n3",
+        "to": "n4",
+        "label": ""
+      },
+      {
+        "from": "n4",
+        "to": "n5",
+        "label": ""
+      },
+      {
+        "from": "n5",
+        "to": "n6",
+        "label": "否"
+      },
+      {
+        "from": "n6",
+        "to": "n2",
+        "label": "重新确认"
+      },
+      {
+        "from": "n5",
+        "to": "n7",
+        "label": "是"
+      },
+      {
+        "from": "n7",
+        "to": "n8",
+        "label": ""
+      },
+      {
+        "from": "n8",
+        "to": "n9",
+        "label": "移出/作废"
+      },
+      {
+        "from": "n8",
+        "to": "n10",
+        "label": "整理完成"
+      },
+      {
+        "from": "n9",
+        "to": "n1",
+        "label": "恢复候选"
+      }
+    ],
+    "pages": "B42/B38、POST statements、TX16/TX36–38",
+    "note": "旧日期生成接口不得在后台默默补选。已确认未付款仍被分配，不可再次组单。",
+    "decision": "本轮用户确认交互；参考技术实现须适配真实仓库"
+  },
+  {
+    "id": "F40",
+    "title": "个人未结清、历史账单与付款投影",
+    "scope": "V6.4 / T3.4",
+    "nodes": [
+      {
+        "id": "n1",
+        "label": "授权主体下的真实服务与费用",
+        "decision": false
+      },
+      {
+        "id": "n2",
+        "label": "已有有效账单分配？",
+        "decision": true
+      },
+      {
+        "id": "n3",
+        "label": "待对账｜可以勾选\n未定价另显示待核价",
+        "decision": false
+      },
+      {
+        "id": "n4",
+        "label": "显示关联账单与当前核对阶段",
+        "decision": false
+      },
+      {
+        "id": "n5",
+        "label": "账单已确认？",
+        "decision": true
+      },
+      {
+        "id": "n6",
+        "label": "整理中/待内部复核/待代驾确认\n不可重复组单",
+        "decision": false
+      },
+      {
+        "id": "n7",
+        "label": "读取已核实付款与待核实预留",
+        "decision": false
+      },
+      {
+        "id": "n8",
+        "label": "0元或全部已核实付清？",
+        "decision": true
+      },
+      {
+        "id": "n9",
+        "label": "保留未结清｜待付款/部分付款\n不按服务行分摊",
+        "decision": false
+      },
+      {
+        "id": "n10",
+        "label": "默认未结清列表隐藏\n历史账单和付款记录仍可查",
+        "decision": false
+      },
+      {
+        "id": "n11",
+        "label": "小程序只投影本人服务/已发布金额\n不暴露草稿或银行敏感凭证",
+        "decision": false
+      }
+    ],
+    "edges": [
+      {
+        "from": "n1",
+        "to": "n2",
+        "label": ""
+      },
+      {
+        "from": "n2",
+        "to": "n3",
+        "label": "否"
+      },
+      {
+        "from": "n2",
+        "to": "n4",
+        "label": "是"
+      },
+      {
+        "from": "n4",
+        "to": "n5",
+        "label": ""
+      },
+      {
+        "from": "n5",
+        "to": "n6",
+        "label": "否"
+      },
+      {
+        "from": "n5",
+        "to": "n7",
+        "label": "是"
+      },
+      {
+        "from": "n7",
+        "to": "n8",
+        "label": ""
+      },
+      {
+        "from": "n8",
+        "to": "n9",
+        "label": "否"
+      },
+      {
+        "from": "n8",
+        "to": "n10",
+        "label": "是"
+      },
+      {
+        "from": "n3",
+        "to": "n11",
+        "label": "本人视角"
+      },
+      {
+        "from": "n6",
+        "to": "n11",
+        "label": "仅摘要"
+      },
+      {
+        "from": "n9",
+        "to": "n11",
+        "label": "本人视角"
+      },
+      {
+        "from": "n10",
+        "to": "n11",
+        "label": "历史"
+      }
+    ],
+    "pages": "B42、D37/D38、read model",
+    "note": "未结清不等于未组单；只按可信账单和付款事实派生，不能手工改一个已结算字段。",
+    "decision": "本轮用户确认交互；参考技术实现须适配真实仓库"
+  },
+  {
+    "id": "F41",
+    "title": "培训课程、学习与考试尝试闭环",
+    "scope": "V6.4 / T3.4",
+    "nodes": [
+      {
+        "id": "n1",
+        "label": "ADMIN创建课程和题库\n正式内容/通过门槛另配置",
+        "decision": false
+      },
+      {
+        "id": "n2",
+        "label": "发布不可变课程版本",
+        "decision": false
+      },
+      {
+        "id": "n3",
+        "label": "本人读取Training任务与课程",
+        "decision": false
+      },
+      {
+        "id": "n4",
+        "label": "创建受控播放会话\n服务端校验连续进度/序号",
+        "decision": false
+      },
+      {
+        "id": "n5",
+        "label": "达到必学条件？",
+        "decision": true
+      },
+      {
+        "id": "n6",
+        "label": "创建attempt\n冻结题目版本/截止时间，无标准答案下发",
+        "decision": false
+      },
+      {
+        "id": "n7",
+        "label": "本人提交答案+expectedVersion",
+        "decision": false
+      },
+      {
+        "id": "n8",
+        "label": "服务端检查时限/身份/提交唯一并判分",
+        "decision": false
+      },
+      {
+        "id": "n9",
+        "label": "通过？",
+        "decision": true
+      },
+      {
+        "id": "n10",
+        "label": "记录已通过结果\n其他准入条件仍需完成",
+        "decision": false
+      },
+      {
+        "id": "n11",
+        "label": "记录未通过/过期\n按政策允许新尝试，不覆盖历史",
+        "decision": false
+      }
+    ],
+    "edges": [
+      {
+        "from": "n1",
+        "to": "n2",
+        "label": ""
+      },
+      {
+        "from": "n2",
+        "to": "n3",
+        "label": ""
+      },
+      {
+        "from": "n3",
+        "to": "n4",
+        "label": ""
+      },
+      {
+        "from": "n4",
+        "to": "n5",
+        "label": ""
+      },
+      {
+        "from": "n5",
+        "to": "n4",
+        "label": "否"
+      },
+      {
+        "from": "n5",
+        "to": "n6",
+        "label": "是"
+      },
+      {
+        "from": "n6",
+        "to": "n7",
+        "label": ""
+      },
+      {
+        "from": "n7",
+        "to": "n8",
+        "label": ""
+      },
+      {
+        "from": "n8",
+        "to": "n9",
+        "label": ""
+      },
+      {
+        "from": "n9",
+        "to": "n10",
+        "label": "是"
+      },
+      {
+        "from": "n9",
+        "to": "n11",
+        "label": "否"
+      }
+    ],
+    "pages": "D04/D39/D40/D41/D42/B43/B44",
+    "note": "播放心跳不证明理解；演示完成不能用作真实资格通过。",
+    "decision": "本轮技术合同补全；供应商/培训内容和商业参数不由演示决定"
+  },
+  {
+    "id": "F42",
+    "title": "限制记录、申诉与公开结果",
+    "scope": "V6.4 / T3.4",
+    "nodes": [
+      {
+        "id": "n1",
+        "label": "合法承接解除触发既有规则判定",
+        "decision": false
+      },
+      {
+        "id": "n2",
+        "label": "生成处罚事实与penaltyId\n不删除承接记录",
+        "decision": false
+      },
+      {
+        "id": "n3",
+        "label": "司机查本人处罚列表/详情",
+        "decision": false
+      },
+      {
+        "id": "n4",
+        "label": "是否需要申诉？",
+        "decision": true
+      },
+      {
+        "id": "n5",
+        "label": "提交原因和私有凭证引用\n同一待审记录防重复",
+        "decision": false
+      },
+      {
+        "id": "n6",
+        "label": "管理员读取申诉和服务依据\n权限/同人/版本校验",
+        "decision": false
+      },
+      {
+        "id": "n7",
+        "label": "同意撤销？",
+        "decision": true
+      },
+      {
+        "id": "n8",
+        "label": "追加撤销与处理事实\n原处罚历史保留",
+        "decision": false
+      },
+      {
+        "id": "n9",
+        "label": "保留原限制与公开驳回说明",
+        "decision": false
+      },
+      {
+        "id": "n10",
+        "label": "司机查询申诉详情及公开意见",
+        "decision": false
+      }
+    ],
+    "edges": [
+      {
+        "from": "n1",
+        "to": "n2",
+        "label": ""
+      },
+      {
+        "from": "n2",
+        "to": "n3",
+        "label": ""
+      },
+      {
+        "from": "n3",
+        "to": "n4",
+        "label": ""
+      },
+      {
+        "from": "n4",
+        "to": "n5",
+        "label": "是"
+      },
+      {
+        "from": "n5",
+        "to": "n6",
+        "label": ""
+      },
+      {
+        "from": "n6",
+        "to": "n7",
+        "label": ""
+      },
+      {
+        "from": "n7",
+        "to": "n8",
+        "label": "是"
+      },
+      {
+        "from": "n7",
+        "to": "n9",
+        "label": "否"
+      },
+      {
+        "from": "n8",
+        "to": "n10",
+        "label": ""
+      },
+      {
+        "from": "n9",
+        "to": "n10",
+        "label": ""
+      }
+    ],
+    "pages": "D31/D32/D33/D43/D44/D45/B45",
+    "note": "原普通取消规则，不增加事故/保险或自动扣款处罚。",
+    "decision": "本轮技术合同补全；供应商/培训内容和商业参数不由演示决定"
+  },
+  {
+    "id": "F43",
+    "title": "员工关联暂停、解除与重新核验",
+    "scope": "V6.4身份与授权",
+    "nodes": [
+      {
+        "id": "n1",
+        "label": "后台核实异常并填写处理原因",
+        "decision": false
+      },
+      {
+        "id": "n2",
+        "label": "选择处理动作",
+        "decision": true
+      },
+      {
+        "id": "n3",
+        "label": "暂停：保留关系与唯一占用，拒绝工作",
+        "decision": false
+      },
+      {
+        "id": "n4",
+        "label": "解除：写撤销记录并阻止自动重绑",
+        "decision": false
+      },
+      {
+        "id": "n5",
+        "label": "允许重核：只清阻止，不直接恢复身份",
+        "decision": false
+      },
+      {
+        "id": "n6",
+        "label": "本人重新微信手机号授权",
+        "decision": false
+      },
+      {
+        "id": "n7",
+        "label": "重新核对唯一员工、账号关系与权限",
+        "decision": false
+      },
+      {
+        "id": "n8",
+        "label": "通过后恢复相同员工或新建合法关系",
+        "decision": false
+      },
+      {
+        "id": "n9",
+        "label": "有冲突保持拒绝；车主与在手任务不误删",
+        "decision": false
+      }
+    ],
+    "edges": [
+      {
+        "from": "n1",
+        "to": "n2",
+        "label": ""
+      },
+      {
+        "from": "n2",
+        "to": "n3",
+        "label": "暂停"
+      },
+      {
+        "from": "n2",
+        "to": "n4",
+        "label": "解除"
+      },
+      {
+        "from": "n2",
+        "to": "n5",
+        "label": "允许重核"
+      },
+      {
+        "from": "n5",
+        "to": "n6",
+        "label": ""
+      },
+      {
+        "from": "n6",
+        "to": "n7",
+        "label": ""
+      },
+      {
+        "from": "n7",
+        "to": "n8",
+        "label": "安全通过"
+      },
+      {
+        "from": "n7",
+        "to": "n9",
+        "label": "冲突"
+      },
+      {
+        "from": "n3",
+        "to": "n9",
+        "label": ""
+      },
+      {
+        "from": "n4",
+        "to": "n9",
+        "label": ""
+      }
+    ],
+    "pages": "B36、U02、O29",
+    "note": "解除后不能因同号下次登录自动复活；跨员工身份转移不在普通恢复入口。",
+    "decision": "C02/C17 / 身份方案"
+  },
+  {
+    "id": "F44",
+    "title": "第三方配置草稿与发布",
+    "scope": "B46–B53 → 权威版本 → 运行时",
+    "nodes": [
+      {
+        "id": "n1",
+        "label": "管理员｜选择授权主体及配置类型",
+        "decision": false
+      },
+      {
+        "id": "n2",
+        "label": "保存草稿｜线上版本保持不变",
+        "decision": false
+      },
+      {
+        "id": "n3",
+        "label": "校验当前版本与凭据依赖",
+        "decision": false
+      },
+      {
+        "id": "n4",
+        "label": "必填、格式和权限全部满足？",
+        "decision": true
+      },
+      {
+        "id": "n5",
+        "label": "展示影响｜确认发布或双关",
+        "decision": false
+      },
+      {
+        "id": "n6",
+        "label": "事务｜CAS切换activeRevision并写审计/outbox",
+        "decision": false
+      },
+      {
+        "id": "n7",
+        "label": "新业务｜读取权威有效版本",
+        "decision": false
+      },
+      {
+        "id": "n8",
+        "label": "历史业务｜保留原身份及有效凭据环",
+        "decision": false
+      },
+      {
+        "id": "n9",
+        "label": "失败｜保留编辑并指向字段/冲突",
+        "decision": false
+      }
+    ],
+    "edges": [
+      {
+        "from": "n1",
+        "to": "n2",
+        "label": ""
+      },
+      {
+        "from": "n2",
+        "to": "n3",
+        "label": ""
+      },
+      {
+        "from": "n3",
+        "to": "n4",
+        "label": ""
+      },
+      {
+        "from": "n4",
+        "to": "n5",
+        "label": "是"
+      },
+      {
+        "from": "n4",
+        "to": "n9",
+        "label": "否"
+      },
+      {
+        "from": "n5",
+        "to": "n6",
+        "label": ""
+      },
+      {
+        "from": "n6",
+        "to": "n7",
+        "label": ""
+      },
+      {
+        "from": "n6",
+        "to": "n8",
+        "label": ""
+      },
+      {
+        "from": "n9",
+        "to": "n2",
+        "label": "修改新草稿"
+      }
+    ],
+    "pages": "B46/B47/B48/B49/B50/B51/B53"
+  },
+  {
+    "id": "F45",
+    "title": "独立支付开关与客户端选择",
+    "scope": "四种组合；关闭新交易不关闭历史维护",
+    "nodes": [
+      {
+        "id": "n1",
+        "label": "服务端｜读取实际订单收款主体策略",
+        "decision": false
+      },
+      {
+        "id": "n2",
+        "label": "至少一种支付可用？",
+        "decision": true
+      },
+      {
+        "id": "n3",
+        "label": "暂停新付费预约｜不免费、不占额",
+        "decision": false
+      },
+      {
+        "id": "n4",
+        "label": "用户｜选择微信或线下",
+        "decision": false
+      },
+      {
+        "id": "n5",
+        "label": "首个支付意图成功创建｜锁定渠道",
+        "decision": false
+      },
+      {
+        "id": "n6",
+        "label": "微信｜可信回调/查单确认付款",
+        "decision": false
+      },
+      {
+        "id": "n7",
+        "label": "线下｜实际凭证登记与独立核实",
+        "decision": false
+      },
+      {
+        "id": "n8",
+        "label": "支付成功｜校验容量并按时派单",
+        "decision": false
+      },
+      {
+        "id": "n9",
+        "label": "历史微信｜新开关关闭仍查单退款验签",
+        "decision": false
+      }
+    ],
+    "edges": [
+      {
+        "from": "n1",
+        "to": "n2",
+        "label": ""
+      },
+      {
+        "from": "n2",
+        "to": "n3",
+        "label": "否"
+      },
+      {
+        "from": "n2",
+        "to": "n4",
+        "label": "是"
+      },
+      {
+        "from": "n4",
+        "to": "n5",
+        "label": ""
+      },
+      {
+        "from": "n5",
+        "to": "n6",
+        "label": "微信"
+      },
+      {
+        "from": "n5",
+        "to": "n7",
+        "label": "线下"
+      },
+      {
+        "from": "n6",
+        "to": "n8",
+        "label": ""
+      },
+      {
+        "from": "n7",
+        "to": "n8",
+        "label": ""
+      },
+      {
+        "from": "n1",
+        "to": "n9",
+        "label": "历史维护独立"
+      }
+    ],
+    "pages": "B46/O10/O34"
+  },
+  {
+    "id": "F46",
+    "title": "客户线下收付款核实",
+    "scope": "不等同代驾报酬付款；一次售后决定复用",
+    "nodes": [
+      {
+        "id": "n1",
+        "label": "车主｜选择线下，仍待付款",
+        "decision": false
+      },
+      {
+        "id": "n2",
+        "label": "企业｜实际收到款项",
+        "decision": false
+      },
+      {
+        "id": "n3",
+        "label": "后台登记｜完整金额/时间/流水/私有凭证",
+        "decision": false
+      },
+      {
+        "id": "n4",
+        "label": "不同人员｜核实真实资金",
+        "decision": false
+      },
+      {
+        "id": "n5",
+        "label": "全额、唯一、归属及版本正确？",
+        "decision": true
+      },
+      {
+        "id": "n6",
+        "label": "记账SUCCESS｜写事件、重新核对容量",
+        "decision": false
+      },
+      {
+        "id": "n7",
+        "label": "容量仍可用？",
+        "decision": true
+      },
+      {
+        "id": "n8",
+        "label": "按计划安排服务",
+        "decision": false
+      },
+      {
+        "id": "n9",
+        "label": "已收款但预约冲突｜人工售后",
+        "decision": false
+      },
+      {
+        "id": "n10",
+        "label": "驳回或差错｜不宣称成功",
+        "decision": false
+      },
+      {
+        "id": "n11",
+        "label": "退款｜统一批准后实际退回、登记并独立核实",
+        "decision": false
+      }
+    ],
+    "edges": [
+      {
+        "from": "n1",
+        "to": "n2",
+        "label": ""
+      },
+      {
+        "from": "n2",
+        "to": "n3",
+        "label": ""
+      },
+      {
+        "from": "n3",
+        "to": "n4",
+        "label": ""
+      },
+      {
+        "from": "n4",
+        "to": "n5",
+        "label": ""
+      },
+      {
+        "from": "n5",
+        "to": "n6",
+        "label": "是"
+      },
+      {
+        "from": "n5",
+        "to": "n10",
+        "label": "否"
+      },
+      {
+        "from": "n6",
+        "to": "n7",
+        "label": ""
+      },
+      {
+        "from": "n7",
+        "to": "n8",
+        "label": "是"
+      },
+      {
+        "from": "n7",
+        "to": "n9",
+        "label": "否"
+      },
+      {
+        "from": "n9",
+        "to": "n11",
+        "label": "批准退款"
+      },
+      {
+        "from": "n8",
+        "to": "n11",
+        "label": "售后退款"
+      }
+    ],
+    "pages": "O10/O14/O21/B52/B13"
+  },
+  {
+    "id": "F47",
+    "title": "短信通道及未知结果处理",
+    "scope": "腾讯顺序参数 / 阿里命名参数；不双发",
+    "nodes": [
+      {
+        "id": "n1",
+        "label": "真实事件｜明确收件人和场景",
+        "decision": false
+      },
+      {
+        "id": "n2",
+        "label": "选择已发布主通道和模板",
+        "decision": false
+      },
+      {
+        "id": "n3",
+        "label": "校验频率/事件时效/字段映射/去重",
+        "decision": false
+      },
+      {
+        "id": "n4",
+        "label": "供应商响应明确？",
+        "decision": true
+      },
+      {
+        "id": "n5",
+        "label": "ACCEPTED｜记录回执ID，等待送达结果",
+        "decision": false
+      },
+      {
+        "id": "n6",
+        "label": "UNKNOWN｜查询/人工，不跨云重发",
+        "decision": false
+      },
+      {
+        "id": "n7",
+        "label": "明确未受理｜按已批准策略重试或备用",
+        "decision": false
+      },
+      {
+        "id": "n8",
+        "label": "可信回执｜DELIVERED或终态失败",
+        "decision": false
+      },
+      {
+        "id": "n9",
+        "label": "订单事务与站内消息不因通知失败回滚",
+        "decision": false
+      }
+    ],
+    "edges": [
+      {
+        "from": "n1",
+        "to": "n2",
+        "label": ""
+      },
+      {
+        "from": "n2",
+        "to": "n3",
+        "label": ""
+      },
+      {
+        "from": "n3",
+        "to": "n4",
+        "label": ""
+      },
+      {
+        "from": "n4",
+        "to": "n5",
+        "label": "受理"
+      },
+      {
+        "from": "n4",
+        "to": "n6",
+        "label": "超时未知"
+      },
+      {
+        "from": "n4",
+        "to": "n7",
+        "label": "确定未发"
+      },
+      {
+        "from": "n5",
+        "to": "n8",
+        "label": ""
+      },
+      {
+        "from": "n6",
+        "to": "n8",
+        "label": "获取可信结果"
+      },
+      {
+        "from": "n7",
+        "to": "n5",
+        "label": "一次受控执行"
+      },
+      {
+        "from": "n1",
+        "to": "n9",
+        "label": "业务与通知分离"
+      }
+    ],
+    "pages": "B48/B49/B51"
+  },
+  {
+    "id": "F48",
+    "title": "订阅模板发布、本人授权与发送",
+    "scope": "保存模板不等于获得用户许可",
+    "nodes": [
+      {
+        "id": "n1",
+        "label": "后台｜真实模板ID及字段定义/映射",
+        "decision": false
+      },
+      {
+        "id": "n2",
+        "label": "校验AppID、模板、路由并发布版本",
+        "decision": false
+      },
+      {
+        "id": "n3",
+        "label": "用户主动点击｜获取短时prompt",
+        "decision": false
+      },
+      {
+        "id": "n4",
+        "label": "微信弹窗｜本人报告结果",
+        "decision": false
+      },
+      {
+        "id": "n5",
+        "label": "同意且有真实业务事件？",
+        "decision": true
+      },
+      {
+        "id": "n6",
+        "label": "校验本人/app/版本/时效并发送",
+        "decision": false
+      },
+      {
+        "id": "n7",
+        "label": "拒绝或无权限｜跳过外部发送",
+        "decision": false
+      },
+      {
+        "id": "n8",
+        "label": "微信结果｜成功/拒绝/未知分开",
+        "decision": false
+      },
+      {
+        "id": "n9",
+        "label": "站内消息保留｜不阻断预约与交接",
+        "decision": false
+      }
+    ],
+    "edges": [
+      {
+        "from": "n1",
+        "to": "n2",
+        "label": ""
+      },
+      {
+        "from": "n2",
+        "to": "n3",
+        "label": ""
+      },
+      {
+        "from": "n3",
+        "to": "n4",
+        "label": ""
+      },
+      {
+        "from": "n4",
+        "to": "n5",
+        "label": ""
+      },
+      {
+        "from": "n5",
+        "to": "n6",
+        "label": "是"
+      },
+      {
+        "from": "n5",
+        "to": "n7",
+        "label": "否"
+      },
+      {
+        "from": "n6",
+        "to": "n8",
+        "label": ""
+      },
+      {
+        "from": "n7",
+        "to": "n9",
+        "label": ""
+      },
+      {
+        "from": "n8",
+        "to": "n9",
+        "label": "业务继续"
+      }
+    ],
+    "pages": "B50/B53/O28/U04"
+  }
+]

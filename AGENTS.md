@@ -122,5 +122,5 @@ Java 包名统一使用 `com.xinyi`。控制器、服务、Mapper、实体类应
 PR 描述必须说明数据归属、查询权限、写权限、会话影响、审计事件和测试结果。无法回答其中任一项时，不应进入合并。
 
 <!-- VEHICLE_V6_EXECUTION_BEGIN -->
-用户确认机动车业务M0未开始，以当前rongli-wx改版框架从E00建设M0。阅读 `docs/vehicle/V6.1/START-CODEX.md`，状态在 `docs/implementation/vehicle/`。此入口替换本包旧V6入口，旧规范目录不并行执行；不删除原目录或真实进度。不得从历史文档、SQL、SDK样例或模块存在推定M0完成。核对后按就绪任务持续实现至G01；遵守本仓库已有安全、数据、独立复核约束。不授权生产变更、真实转账、删除数据或绕过运行环境审批。
+先实勘当前rongli-wx工作区；未开发从E00，已有进度保留并按V6.4身份范围适配。阅读 `docs/vehicle/V6.4/START-CODEX.md`，状态在 `docs/implementation/vehicle/`。此入口替换本包旧V6入口，旧规范目录不并行执行；不删除原目录或真实进度。不得从历史文档、SQL、SDK样例或模块存在推定M0完成。核对后按就绪任务持续实现至G01；遵守本仓库已有安全、数据、独立复核约束。不授权生产变更、真实转账、删除数据或绕过运行环境审批。
 <!-- VEHICLE_V6_EXECUTION_END -->

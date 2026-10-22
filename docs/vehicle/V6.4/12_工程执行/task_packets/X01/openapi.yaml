@@ -1,0 +1,2485 @@
+openapi: 3.0.3
+info:
+  title: X01 配置版本、密钥保管与发布事务
+  version: 6.4.0
+servers:
+- url: http://localhost:8080
+  description: 本地Java直连；paths已包含/api，不再次追加
+- url: https://{host}
+  description: 发布域名仅作部署变量；由环境设置真实已备案域名，代理保留/api
+  variables:
+    host:
+      default: api.example.invalid
+      description: 占位不可用于真实支付或发布
+paths:
+  /api/admin/integrations/profiles:
+    get:
+      operationId: V64_get_api_admin_integrations_profiles
+      summary: 第三方配置列表
+      tags:
+      - ADMIN
+      - INTEGRATION_V64
+      description: 主PRD第23章。服务端校验真实主体、环境、权限、对象归属、状态和版本；密钥不回显、不入日志；所有副作用幂等。
+      security:
+      - AdminBearerAuth: []
+      x-contract-baseline: V6.4
+      x-flow-ids:
+      - F44
+      x-authorization:
+        realm: ADMIN
+        scope: ORG_DEPT_CONFIG
+        permission: biz:integration:query
+      parameters:
+      - name: X-Client-Type
+        in: header
+        required: true
+        schema:
+          type: string
+          enum:
+          - owner
+          - driver
+          - station
+          - admin
+        description: 仅审计来源，不作为授权；须匹配服务端会话视角
+      - name: kind
+        in: query
+        required: false
+        schema:
+          $ref: '#/components/schemas/IntegrationKind'
+      - name: ownerDeptId
+        in: query
+        required: false
+        schema: &id001
+          type: string
+          description: 内部Long对外十进制字符串
+          pattern: ^[1-9][0-9]{0,18}$
+      - name: environment
+        in: query
+        required: false
+        schema:
+          $ref: '#/components/schemas/IntegrationEnvironment'
+      - name: pageNum
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+          default: 1
+      - name: pageSize
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 100
+          default: 20
+      responses:
+        '200':
+          description: 真实处理后的公开/脱敏结果，不返回占位Ack
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+                enum:
+                - no-store
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                properties:
+                  code:
+                    type: integer
+                    enum:
+                    - 200
+                  msg:
+                    type: string
+                  rows:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/IntegrationProfileView'
+                  total:
+                    type: integer
+                    format: int64
+                    minimum: 0
+                required:
+                - code
+                - msg
+                - rows
+                - total
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalError'
+        '503':
+          $ref: '#/components/responses/Unavailable'
+      x-permission: biz:integration:query
+      x-error-policy: UNIFORM_RESOURCE_ERRORS
+      x-error-codes:
+      - VI_REQUEST_INVALID
+      - VI_AUTH_REQUIRED
+      - VI_FORBIDDEN
+      - VI_RESOURCE_NOT_VISIBLE
+      - VI_VERSION_CONFLICT
+      - VI_STATE_CONFLICT
+      - VI_CONFIG_INVALID
+      - VI_CONFIG_CHANGED
+      - VI_SECRET_UNAVAILABLE
+      - VI_RATE_LIMITED
+      - VI_INTERNAL_ERROR
+      - VI_UPSTREAM_UNAVAILABLE
+    post:
+      operationId: V64_post_api_admin_integrations_profiles
+      summary: 新建配置档案
+      tags:
+      - ADMIN
+      - INTEGRATION_V64
+      description: 主PRD第23章。服务端校验真实主体、环境、权限、对象归属、状态和版本；密钥不回显、不入日志；所有副作用幂等。
+      security:
+      - AdminBearerAuth: []
+      x-contract-baseline: V6.4
+      x-flow-ids:
+      - F44
+      x-authorization:
+        realm: ADMIN
+        scope: ORG_DEPT_CONFIG
+        permission: biz:integration:create
+      parameters:
+      - name: Idempotency-Key
+        in: header
+        required: true
+        schema:
+          type: string
+          description: UUID；按主体+动作+资源+键及请求摘要保存首次结果；同键不同体409，至少24h，资金/交接另有永久业务去重
+      - name: X-Client-Type
+        in: header
+        required: true
+        schema:
+          type: string
+          enum:
+          - owner
+          - driver
+          - station
+          - admin
+        description: 仅审计来源，不作为授权；须匹配服务端会话视角
+      responses:
+        '200':
+          description: 真实处理后的公开/脱敏结果，不返回占位Ack
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+                enum:
+                - no-store
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                properties:
+                  code:
+                    type: integer
+                    enum:
+                    - 200
+                  msg:
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/IntegrationProfileView'
+                required:
+                - code
+                - msg
+                - data
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalError'
+        '503':
+          $ref: '#/components/responses/Unavailable'
+      x-permission: biz:integration:create
+      x-error-policy: UNIFORM_RESOURCE_ERRORS
+      x-error-codes:
+      - VI_REQUEST_INVALID
+      - VI_AUTH_REQUIRED
+      - VI_FORBIDDEN
+      - VI_RESOURCE_NOT_VISIBLE
+      - VI_VERSION_CONFLICT
+      - VI_STATE_CONFLICT
+      - VI_CONFIG_INVALID
+      - VI_CONFIG_CHANGED
+      - VI_SECRET_UNAVAILABLE
+      - VI_RATE_LIMITED
+      - VI_INTERNAL_ERROR
+      - VI_UPSTREAM_UNAVAILABLE
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IntegrationProfileCreate'
+  /api/admin/integrations/profiles/{profileId}:
+    get:
+      operationId: V64_get_api_admin_integrations_profiles_profileId
+      summary: 读取脱敏配置与生效版本
+      tags:
+      - ADMIN
+      - INTEGRATION_V64
+      description: 主PRD第23章。服务端校验真实主体、环境、权限、对象归属、状态和版本；密钥不回显、不入日志；所有副作用幂等。
+      security:
+      - AdminBearerAuth: []
+      x-contract-baseline: V6.4
+      x-flow-ids:
+      - F44
+      x-authorization:
+        realm: ADMIN
+        scope: ORG_DEPT_CONFIG
+        permission: biz:integration:query
+      parameters:
+      - name: X-Client-Type
+        in: header
+        required: true
+        schema:
+          type: string
+          enum:
+          - owner
+          - driver
+          - station
+          - admin
+        description: 仅审计来源，不作为授权；须匹配服务端会话视角
+      - name: profileId
+        in: path
+        required: true
+        schema: *id001
+      responses:
+        '200':
+          description: 真实处理后的公开/脱敏结果，不返回占位Ack
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+                enum:
+                - no-store
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                properties:
+                  code:
+                    type: integer
+                    enum:
+                    - 200
+                  msg:
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/IntegrationProfileView'
+                required:
+                - code
+                - msg
+                - data
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalError'
+        '503':
+          $ref: '#/components/responses/Unavailable'
+      x-permission: biz:integration:query
+      x-error-policy: UNIFORM_RESOURCE_ERRORS
+      x-error-codes:
+      - VI_REQUEST_INVALID
+      - VI_AUTH_REQUIRED
+      - VI_FORBIDDEN
+      - VI_RESOURCE_NOT_VISIBLE
+      - VI_VERSION_CONFLICT
+      - VI_STATE_CONFLICT
+      - VI_CONFIG_INVALID
+      - VI_CONFIG_CHANGED
+      - VI_SECRET_UNAVAILABLE
+      - VI_RATE_LIMITED
+      - VI_INTERNAL_ERROR
+      - VI_UPSTREAM_UNAVAILABLE
+  /api/admin/integrations/profiles/{profileId}/draft:
+    put:
+      operationId: V64_put_api_admin_integrations_profiles_profileId_draft
+      summary: 保存不生效草稿
+      tags:
+      - ADMIN
+      - INTEGRATION_V64
+      description: 主PRD第23章。服务端校验真实主体、环境、权限、对象归属、状态和版本；密钥不回显、不入日志；所有副作用幂等。
+      security:
+      - AdminBearerAuth: []
+      x-contract-baseline: V6.4
+      x-flow-ids:
+      - F44
+      x-authorization:
+        realm: ADMIN
+        scope: ORG_DEPT_CONFIG
+        permission: biz:integration:edit
+      parameters:
+      - name: Idempotency-Key
+        in: header
+        required: true
+        schema:
+          type: string
+          description: UUID；按主体+动作+资源+键及请求摘要保存首次结果；同键不同体409，至少24h，资金/交接另有永久业务去重
+      - name: X-Client-Type
+        in: header
+        required: true
+        schema:
+          type: string
+          enum:
+          - owner
+          - driver
+          - station
+          - admin
+        description: 仅审计来源，不作为授权；须匹配服务端会话视角
+      - name: profileId
+        in: path
+        required: true
+        schema: *id001
+      responses:
+        '200':
+          description: 真实处理后的公开/脱敏结果，不返回占位Ack
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+                enum:
+                - no-store
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                properties:
+                  code:
+                    type: integer
+                    enum:
+                    - 200
+                  msg:
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/IntegrationProfileView'
+                required:
+                - code
+                - msg
+                - data
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalError'
+        '503':
+          $ref: '#/components/responses/Unavailable'
+      x-permission: biz:integration:edit
+      x-error-policy: UNIFORM_RESOURCE_ERRORS
+      x-error-codes:
+      - VI_REQUEST_INVALID
+      - VI_AUTH_REQUIRED
+      - VI_FORBIDDEN
+      - VI_RESOURCE_NOT_VISIBLE
+      - VI_VERSION_CONFLICT
+      - VI_STATE_CONFLICT
+      - VI_CONFIG_INVALID
+      - VI_CONFIG_CHANGED
+      - VI_SECRET_UNAVAILABLE
+      - VI_RATE_LIMITED
+      - VI_INTERNAL_ERROR
+      - VI_UPSTREAM_UNAVAILABLE
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IntegrationDraftRequest'
+  /api/admin/integrations/profiles/{profileId}/checks:
+    post:
+      operationId: V64_post_api_admin_integrations_profiles_profileId_checks
+      summary: 校验指定配置版本
+      tags:
+      - ADMIN
+      - INTEGRATION_V64
+      description: 主PRD第23章。服务端校验真实主体、环境、权限、对象归属、状态和版本；密钥不回显、不入日志；所有副作用幂等。
+      security:
+      - AdminBearerAuth: []
+      x-contract-baseline: V6.4
+      x-flow-ids:
+      - F44
+      x-authorization:
+        realm: ADMIN
+        scope: ORG_DEPT_CONFIG
+        permission: biz:integration:check
+      parameters:
+      - name: Idempotency-Key
+        in: header
+        required: true
+        schema:
+          type: string
+          description: UUID；按主体+动作+资源+键及请求摘要保存首次结果；同键不同体409，至少24h，资金/交接另有永久业务去重
+      - name: X-Client-Type
+        in: header
+        required: true
+        schema:
+          type: string
+          enum:
+          - owner
+          - driver
+          - station
+          - admin
+        description: 仅审计来源，不作为授权；须匹配服务端会话视角
+      - name: profileId
+        in: path
+        required: true
+        schema: *id001
+      responses:
+        '200':
+          description: 真实处理后的公开/脱敏结果，不返回占位Ack
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+                enum:
+                - no-store
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                properties:
+                  code:
+                    type: integer
+                    enum:
+                    - 200
+                  msg:
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/IntegrationCheckView'
+                required:
+                - code
+                - msg
+                - data
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalError'
+        '503':
+          $ref: '#/components/responses/Unavailable'
+      x-permission: biz:integration:check
+      x-error-policy: UNIFORM_RESOURCE_ERRORS
+      x-error-codes:
+      - VI_REQUEST_INVALID
+      - VI_AUTH_REQUIRED
+      - VI_FORBIDDEN
+      - VI_RESOURCE_NOT_VISIBLE
+      - VI_VERSION_CONFLICT
+      - VI_STATE_CONFLICT
+      - VI_CONFIG_INVALID
+      - VI_CONFIG_CHANGED
+      - VI_SECRET_UNAVAILABLE
+      - VI_RATE_LIMITED
+      - VI_INTERNAL_ERROR
+      - VI_UPSTREAM_UNAVAILABLE
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IntegrationCheckRequest'
+  /api/admin/integrations/profiles/{profileId}/publish:
+    post:
+      operationId: V64_post_api_admin_integrations_profiles_profileId_publish
+      summary: 发布配置并原子切换生效指针
+      tags:
+      - ADMIN
+      - INTEGRATION_V64
+      description: 主PRD第23章。服务端校验真实主体、环境、权限、对象归属、状态和版本；密钥不回显、不入日志；所有副作用幂等。
+      security:
+      - AdminBearerAuth: []
+      x-contract-baseline: V6.4
+      x-flow-ids:
+      - F44
+      x-authorization:
+        realm: ADMIN
+        scope: ORG_DEPT_CONFIG
+        permission: biz:integration:publish
+      parameters:
+      - name: Idempotency-Key
+        in: header
+        required: true
+        schema:
+          type: string
+          description: UUID；按主体+动作+资源+键及请求摘要保存首次结果；同键不同体409，至少24h，资金/交接另有永久业务去重
+      - name: X-Client-Type
+        in: header
+        required: true
+        schema:
+          type: string
+          enum:
+          - owner
+          - driver
+          - station
+          - admin
+        description: 仅审计来源，不作为授权；须匹配服务端会话视角
+      - name: profileId
+        in: path
+        required: true
+        schema: *id001
+      responses:
+        '200':
+          description: 真实处理后的公开/脱敏结果，不返回占位Ack
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+                enum:
+                - no-store
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                properties:
+                  code:
+                    type: integer
+                    enum:
+                    - 200
+                  msg:
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/IntegrationPublicationView'
+                required:
+                - code
+                - msg
+                - data
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalError'
+        '503':
+          $ref: '#/components/responses/Unavailable'
+      x-permission: biz:integration:publish
+      x-error-policy: UNIFORM_RESOURCE_ERRORS
+      x-error-codes:
+      - VI_REQUEST_INVALID
+      - VI_AUTH_REQUIRED
+      - VI_FORBIDDEN
+      - VI_RESOURCE_NOT_VISIBLE
+      - VI_VERSION_CONFLICT
+      - VI_STATE_CONFLICT
+      - VI_CONFIG_INVALID
+      - VI_CONFIG_CHANGED
+      - VI_SECRET_UNAVAILABLE
+      - VI_RATE_LIMITED
+      - VI_INTERNAL_ERROR
+      - VI_UPSTREAM_UNAVAILABLE
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IntegrationPublishRequest'
+  /api/admin/integrations/profiles/{profileId}/publications:
+    get:
+      operationId: V64_get_api_admin_integrations_profiles_profileId_publications
+      summary: 配置发布审计
+      tags:
+      - ADMIN
+      - INTEGRATION_V64
+      description: 主PRD第23章。服务端校验真实主体、环境、权限、对象归属、状态和版本；密钥不回显、不入日志；所有副作用幂等。
+      security:
+      - AdminBearerAuth: []
+      x-contract-baseline: V6.4
+      x-flow-ids:
+      - F44
+      x-authorization:
+        realm: ADMIN
+        scope: ORG_DEPT_CONFIG
+        permission: biz:integration:query
+      parameters:
+      - name: X-Client-Type
+        in: header
+        required: true
+        schema:
+          type: string
+          enum:
+          - owner
+          - driver
+          - station
+          - admin
+        description: 仅审计来源，不作为授权；须匹配服务端会话视角
+      - name: profileId
+        in: path
+        required: true
+        schema: *id001
+      - name: pageNum
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+          default: 1
+      - name: pageSize
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 100
+          default: 20
+      responses:
+        '200':
+          description: 真实处理后的公开/脱敏结果，不返回占位Ack
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+                enum:
+                - no-store
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                properties:
+                  code:
+                    type: integer
+                    enum:
+                    - 200
+                  msg:
+                    type: string
+                  rows:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/IntegrationPublicationView'
+                  total:
+                    type: integer
+                    format: int64
+                    minimum: 0
+                required:
+                - code
+                - msg
+                - rows
+                - total
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalError'
+        '503':
+          $ref: '#/components/responses/Unavailable'
+      x-permission: biz:integration:query
+      x-error-policy: UNIFORM_RESOURCE_ERRORS
+      x-error-codes:
+      - VI_REQUEST_INVALID
+      - VI_AUTH_REQUIRED
+      - VI_FORBIDDEN
+      - VI_RESOURCE_NOT_VISIBLE
+      - VI_VERSION_CONFLICT
+      - VI_STATE_CONFLICT
+      - VI_CONFIG_INVALID
+      - VI_CONFIG_CHANGED
+      - VI_SECRET_UNAVAILABLE
+      - VI_RATE_LIMITED
+      - VI_INTERNAL_ERROR
+      - VI_UPSTREAM_UNAVAILABLE
+  /api/admin/integrations/profiles/{profileId}/rollback:
+    post:
+      operationId: V64_post_api_admin_integrations_profiles_profileId_rollback
+      summary: 重新验证并发布历史版本
+      tags:
+      - ADMIN
+      - INTEGRATION_V64
+      description: 主PRD第23章。服务端校验真实主体、环境、权限、对象归属、状态和版本；密钥不回显、不入日志；所有副作用幂等。
+      security:
+      - AdminBearerAuth: []
+      x-contract-baseline: V6.4
+      x-flow-ids:
+      - F44
+      x-authorization:
+        realm: ADMIN
+        scope: ORG_DEPT_CONFIG
+        permission: biz:integration:publish
+      parameters:
+      - name: Idempotency-Key
+        in: header
+        required: true
+        schema:
+          type: string
+          description: UUID；按主体+动作+资源+键及请求摘要保存首次结果；同键不同体409，至少24h，资金/交接另有永久业务去重
+      - name: X-Client-Type
+        in: header
+        required: true
+        schema:
+          type: string
+          enum:
+          - owner
+          - driver
+          - station
+          - admin
+        description: 仅审计来源，不作为授权；须匹配服务端会话视角
+      - name: profileId
+        in: path
+        required: true
+        schema: *id001
+      responses:
+        '200':
+          description: 真实处理后的公开/脱敏结果，不返回占位Ack
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+                enum:
+                - no-store
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                properties:
+                  code:
+                    type: integer
+                    enum:
+                    - 200
+                  msg:
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/IntegrationPublicationView'
+                required:
+                - code
+                - msg
+                - data
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalError'
+        '503':
+          $ref: '#/components/responses/Unavailable'
+      x-permission: biz:integration:publish
+      x-error-policy: UNIFORM_RESOURCE_ERRORS
+      x-error-codes:
+      - VI_REQUEST_INVALID
+      - VI_AUTH_REQUIRED
+      - VI_FORBIDDEN
+      - VI_RESOURCE_NOT_VISIBLE
+      - VI_VERSION_CONFLICT
+      - VI_STATE_CONFLICT
+      - VI_CONFIG_INVALID
+      - VI_CONFIG_CHANGED
+      - VI_SECRET_UNAVAILABLE
+      - VI_RATE_LIMITED
+      - VI_INTERNAL_ERROR
+      - VI_UPSTREAM_UNAVAILABLE
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IntegrationRollbackRequest'
+  /api/admin/integrations/profiles/{profileId}/revisions:
+    get:
+      operationId: V64_get_api_admin_integrations_profiles_profileId_revisions
+      summary: 脱敏配置版本记录
+      tags:
+      - ADMIN
+      - INTEGRATION_V64
+      description: 主PRD第23章。服务端校验真实主体、环境、权限、对象归属、状态和版本；密钥不回显、不入日志；所有副作用幂等。
+      security:
+      - AdminBearerAuth: []
+      x-contract-baseline: V6.4
+      x-flow-ids:
+      - F44
+      x-authorization:
+        realm: ADMIN
+        scope: ORG_DEPT_CONFIG
+        permission: biz:integration:query
+      parameters:
+      - name: X-Client-Type
+        in: header
+        required: true
+        schema:
+          type: string
+          enum:
+          - owner
+          - driver
+          - station
+          - admin
+        description: 仅审计来源，不作为授权；须匹配服务端会话视角
+      - name: profileId
+        in: path
+        required: true
+        schema: *id001
+      - name: pageNum
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+          default: 1
+      - name: pageSize
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 100
+          default: 20
+      responses:
+        '200':
+          description: 真实处理后的公开/脱敏结果，不返回占位Ack
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+                enum:
+                - no-store
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                properties:
+                  code:
+                    type: integer
+                    enum:
+                    - 200
+                  msg:
+                    type: string
+                  rows:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/IntegrationRevisionView'
+                  total:
+                    type: integer
+                    format: int64
+                    minimum: 0
+                required:
+                - code
+                - msg
+                - rows
+                - total
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalError'
+        '503':
+          $ref: '#/components/responses/Unavailable'
+      x-permission: biz:integration:query
+      x-error-policy: UNIFORM_RESOURCE_ERRORS
+      x-error-codes:
+      - VI_REQUEST_INVALID
+      - VI_AUTH_REQUIRED
+      - VI_FORBIDDEN
+      - VI_RESOURCE_NOT_VISIBLE
+      - VI_VERSION_CONFLICT
+      - VI_STATE_CONFLICT
+      - VI_CONFIG_INVALID
+      - VI_CONFIG_CHANGED
+      - VI_SECRET_UNAVAILABLE
+      - VI_RATE_LIMITED
+      - VI_INTERNAL_ERROR
+      - VI_UPSTREAM_UNAVAILABLE
+  /api/admin/integrations/test-recipients:
+    get:
+      operationId: V64_get_api_admin_integrations_test_recipients
+      summary: 受控测试收件人白名单
+      tags:
+      - ADMIN
+      - INTEGRATION_V64
+      description: 主PRD第23章。服务端校验真实主体、环境、权限、对象归属、状态和版本；密钥不回显、不入日志；所有副作用幂等。
+      security:
+      - AdminBearerAuth: []
+      x-contract-baseline: V6.4
+      x-flow-ids:
+      - F44
+      x-authorization:
+        realm: ADMIN
+        scope: ORG_DEPT_CONFIG
+        permission: biz:integration:query
+      parameters:
+      - name: X-Client-Type
+        in: header
+        required: true
+        schema:
+          type: string
+          enum:
+          - owner
+          - driver
+          - station
+          - admin
+        description: 仅审计来源，不作为授权；须匹配服务端会话视角
+      - name: pageNum
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+          default: 1
+      - name: pageSize
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 100
+          default: 20
+      responses:
+        '200':
+          description: 真实处理后的公开/脱敏结果，不返回占位Ack
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+                enum:
+                - no-store
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                properties:
+                  code:
+                    type: integer
+                    enum:
+                    - 200
+                  msg:
+                    type: string
+                  rows:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/IntegrationTestRecipient'
+                  total:
+                    type: integer
+                    format: int64
+                    minimum: 0
+                required:
+                - code
+                - msg
+                - rows
+                - total
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalError'
+        '503':
+          $ref: '#/components/responses/Unavailable'
+      x-permission: biz:integration:query
+      x-error-policy: UNIFORM_RESOURCE_ERRORS
+      x-error-codes:
+      - VI_REQUEST_INVALID
+      - VI_AUTH_REQUIRED
+      - VI_FORBIDDEN
+      - VI_RESOURCE_NOT_VISIBLE
+      - VI_VERSION_CONFLICT
+      - VI_STATE_CONFLICT
+      - VI_CONFIG_INVALID
+      - VI_CONFIG_CHANGED
+      - VI_SECRET_UNAVAILABLE
+      - VI_RATE_LIMITED
+      - VI_INTERNAL_ERROR
+      - VI_UPSTREAM_UNAVAILABLE
+    post:
+      operationId: V64_post_api_admin_integrations_test_recipients
+      summary: 登记受控测试收件人
+      tags:
+      - ADMIN
+      - INTEGRATION_V64
+      description: 主PRD第23章。服务端校验真实主体、环境、权限、对象归属、状态和版本；密钥不回显、不入日志；所有副作用幂等。
+      security:
+      - AdminBearerAuth: []
+      x-contract-baseline: V6.4
+      x-flow-ids:
+      - F44
+      x-authorization:
+        realm: ADMIN
+        scope: ORG_DEPT_CONFIG
+        permission: biz:integration:testrecipient
+      parameters:
+      - name: Idempotency-Key
+        in: header
+        required: true
+        schema:
+          type: string
+          description: UUID；按主体+动作+资源+键及请求摘要保存首次结果；同键不同体409，至少24h，资金/交接另有永久业务去重
+      - name: X-Client-Type
+        in: header
+        required: true
+        schema:
+          type: string
+          enum:
+          - owner
+          - driver
+          - station
+          - admin
+        description: 仅审计来源，不作为授权；须匹配服务端会话视角
+      responses:
+        '200':
+          description: 真实处理后的公开/脱敏结果，不返回占位Ack
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+                enum:
+                - no-store
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                properties:
+                  code:
+                    type: integer
+                    enum:
+                    - 200
+                  msg:
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/IntegrationTestRecipient'
+                required:
+                - code
+                - msg
+                - data
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalError'
+        '503':
+          $ref: '#/components/responses/Unavailable'
+      x-permission: biz:integration:testrecipient
+      x-error-policy: UNIFORM_RESOURCE_ERRORS
+      x-error-codes:
+      - VI_REQUEST_INVALID
+      - VI_AUTH_REQUIRED
+      - VI_FORBIDDEN
+      - VI_RESOURCE_NOT_VISIBLE
+      - VI_VERSION_CONFLICT
+      - VI_STATE_CONFLICT
+      - VI_CONFIG_INVALID
+      - VI_CONFIG_CHANGED
+      - VI_SECRET_UNAVAILABLE
+      - VI_RATE_LIMITED
+      - VI_INTERNAL_ERROR
+      - VI_UPSTREAM_UNAVAILABLE
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IntegrationTestRecipientInput'
+  /api/admin/integrations/test-recipients/{recipientId}/revoke:
+    post:
+      operationId: V64_post_api_admin_integrations_test_recipients_recipientId_revoke
+      summary: 撤销测试收件人
+      tags:
+      - ADMIN
+      - INTEGRATION_V64
+      description: 主PRD第23章。服务端校验真实主体、环境、权限、对象归属、状态和版本；密钥不回显、不入日志；所有副作用幂等。
+      security:
+      - AdminBearerAuth: []
+      x-contract-baseline: V6.4
+      x-flow-ids:
+      - F44
+      x-authorization:
+        realm: ADMIN
+        scope: ORG_DEPT_CONFIG
+        permission: biz:integration:testrecipient
+      parameters:
+      - name: Idempotency-Key
+        in: header
+        required: true
+        schema:
+          type: string
+          description: UUID；按主体+动作+资源+键及请求摘要保存首次结果；同键不同体409，至少24h，资金/交接另有永久业务去重
+      - name: X-Client-Type
+        in: header
+        required: true
+        schema:
+          type: string
+          enum:
+          - owner
+          - driver
+          - station
+          - admin
+        description: 仅审计来源，不作为授权；须匹配服务端会话视角
+      - name: recipientId
+        in: path
+        required: true
+        schema: *id001
+      responses:
+        '200':
+          description: 真实处理后的公开/脱敏结果，不返回占位Ack
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+                enum:
+                - no-store
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                properties:
+                  code:
+                    type: integer
+                    enum:
+                    - 200
+                  msg:
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/IntegrationTestRecipient'
+                required:
+                - code
+                - msg
+                - data
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalError'
+        '503':
+          $ref: '#/components/responses/Unavailable'
+      x-permission: biz:integration:testrecipient
+      x-error-policy: UNIFORM_RESOURCE_ERRORS
+      x-error-codes:
+      - VI_REQUEST_INVALID
+      - VI_AUTH_REQUIRED
+      - VI_FORBIDDEN
+      - VI_RESOURCE_NOT_VISIBLE
+      - VI_VERSION_CONFLICT
+      - VI_STATE_CONFLICT
+      - VI_CONFIG_INVALID
+      - VI_CONFIG_CHANGED
+      - VI_SECRET_UNAVAILABLE
+      - VI_RATE_LIMITED
+      - VI_INTERNAL_ERROR
+      - VI_UPSTREAM_UNAVAILABLE
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TestRecipientRevoke'
+components:
+  schemas:
+    TestRecipientRevoke:
+      type: object
+      additionalProperties: false
+      properties:
+        expectedVersion:
+          type: integer
+          format: int64
+          minimum: 0
+        reason: &id002
+          type: string
+          minLength: 2
+          maxLength: 500
+      required:
+      - expectedVersion
+      - reason
+    ApiError:
+      type: object
+      additionalProperties: false
+      properties:
+        code:
+          type: integer
+          description: 等于HTTP状态
+          enum:
+          - 400
+          - 401
+          - 403
+          - 404
+          - 409
+          - 422
+          - 429
+          - 500
+          - 503
+        errorCode:
+          type: string
+          enum:
+          - VI_REQUEST_INVALID
+          - VI_AUTH_REQUIRED
+          - VI_TOKEN_REALM_MISMATCH
+          - VI_REFRESH_REUSED
+          - VI_FORBIDDEN
+          - VI_SELF_REVIEW_DENIED
+          - VI_RESOURCE_NOT_VISIBLE
+          - VI_VERSION_CONFLICT
+          - VI_STATE_CONFLICT
+          - VI_IDEMPOTENCY_CONFLICT
+          - VI_SELECTION_CONFLICT
+          - VI_CONTEXT_CHANGED
+          - VI_SNAPSHOT_CHANGED
+          - VI_DATA_INVALID
+          - VI_EVIDENCE_INCOMPLETE
+          - VI_HANDOVER_CODE_INVALID
+          - VI_HANDOVER_LOCKED
+          - VI_UNPRICED_LINES
+          - VI_REFUND_LIMIT
+          - VI_PAYMENT_LIMIT
+          - VI_SERVICE_UNAVAILABLE
+          - VI_CAPABILITY_NOT_CONFIGURED
+          - VI_TRAINING_NOT_READY
+          - VI_RATE_LIMITED
+          - VI_INTERNAL_ERROR
+          - VI_AUTHORITY_UNAVAILABLE
+          - VI_UPSTREAM_UNAVAILABLE
+          - VI_PHONE_PROOF_REQUIRED
+          - VI_PHONE_PROOF_REUSED
+          - VI_EMPLOYEE_LINK_CONFLICT
+          - VI_EMPLOYEE_LINK_BLOCKED
+          - VI_CONFIG_INVALID
+          - VI_CONFIG_CHANGED
+          - VI_SECRET_UNAVAILABLE
+          - VI_PAYMENT_METHOD_DISABLED
+          - VI_PAYMENT_METHOD_LOCKED
+          - VI_SEND_RESULT_UNKNOWN
+          - VI_SUBSCRIPTION_UNAVAILABLE
+          - VI_OFFLINE_PROOF_CONFLICT
+        msg:
+          type: string
+          description: 服务端安全人类文案，前端逻辑按errorCode而非此文本
+        requestId:
+          type: string
+        retryable:
+          type: boolean
+        retryAfterSeconds:
+          type: integer
+          minimum: 0
+          nullable: true
+        data:
+          $ref: '#/components/schemas/ApiErrorDetails'
+      required:
+      - code
+      - errorCode
+      - msg
+      - requestId
+      - retryable
+      - retryAfterSeconds
+      - data
+    ApiErrorDetails:
+      type: object
+      additionalProperties: false
+      properties:
+        fieldErrors:
+          type: array
+          items:
+            $ref: '#/components/schemas/FieldViolation'
+        conflicts:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConflictItem'
+        missingPhotoTypes:
+          type: array
+          items:
+            $ref: '#/components/schemas/PhotoType'
+        remainingAttempts:
+          type: integer
+          minimum: 0
+          nullable: true
+        currentVersion:
+          type: integer
+          format: int64
+          minimum: 0
+          maximum: 9007199254740991
+          description: 最后读取的非负版本；更新CAS，冲突409
+          nullable: true
+      description: 错误详情固定白名单；无明文Token/凭证/交接码/SQL
+    PhotoType:
+      type: string
+      enum:
+      - FRONT
+      - BACK
+      - LEFT
+      - RIGHT
+      - DASHBOARD
+      - INTERIOR
+      - EXTRA
+    ConflictItem:
+      type: object
+      additionalProperties: false
+      properties:
+        resourceType:
+          type: string
+        resourceId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+        reasonCode:
+          type: string
+        currentVersion:
+          type: integer
+          format: int64
+          minimum: 0
+          maximum: 9007199254740991
+          description: 最后读取的非负版本；更新CAS，冲突409
+          nullable: true
+      required:
+      - resourceType
+      - resourceId
+      - reasonCode
+      - currentVersion
+      description: 仅返回调用者已获权对象，禁止泄露其他账单成员
+    FieldViolation:
+      type: object
+      additionalProperties: false
+      properties:
+        field:
+          type: string
+        reasonCode:
+          type: string
+        message:
+          type: string
+      required:
+      - field
+      - reasonCode
+      - message
+    IntegrationTestRecipient:
+      type: object
+      additionalProperties: false
+      properties:
+        recipientId: *id001
+        name:
+          type: string
+        kind:
+          type: string
+          enum:
+          - PHONE
+          - MINI_ACCOUNT
+        phoneMask:
+          type: string
+        accountId: *id001
+        appId:
+          type: string
+        ownerDeptId: *id001
+        environment:
+          $ref: '#/components/schemas/IntegrationEnvironment'
+        version:
+          type: integer
+          format: int64
+          minimum: 0
+        enabled:
+          type: boolean
+      required:
+      - recipientId
+      - name
+      - kind
+      - ownerDeptId
+      - environment
+      - version
+      - enabled
+    IntegrationEnvironment:
+      type: string
+      enum:
+      - TEST
+      - LIVE
+    IntegrationTestRecipientInput:
+      type: object
+      additionalProperties: false
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 80
+        kind:
+          type: string
+          enum:
+          - PHONE
+          - MINI_ACCOUNT
+        phone:
+          type: string
+          description: 敏感输入仅密文保存
+          writeOnly: true
+          maxLength: 32
+        accountId: *id001
+        appProfileId: *id001
+        ownerDeptId: *id001
+        environment:
+          $ref: '#/components/schemas/IntegrationEnvironment'
+        reason: *id002
+      required:
+      - name
+      - kind
+      - ownerDeptId
+      - environment
+      - reason
+      oneOf:
+      - properties:
+          kind:
+            type: string
+            enum:
+            - PHONE
+        required:
+        - phone
+        not:
+          required:
+          - accountId
+      - properties:
+          kind:
+            type: string
+            enum:
+            - MINI_ACCOUNT
+        required:
+        - accountId
+        - appProfileId
+        not:
+          required:
+          - phone
+    IntegrationRevisionView:
+      type: object
+      additionalProperties: false
+      properties:
+        revisionId: *id001
+        profileId: *id001
+        revision:
+          type: integer
+          format: int64
+          minimum: 0
+        contentHash: &id004
+          type: string
+          pattern: ^[a-f0-9]{64}$
+        createdAt: &id003
+          type: string
+          format: date-time
+        createdBy: *id001
+        reason:
+          type: string
+        settings:
+          $ref: '#/components/schemas/IntegrationConfigRedacted'
+      required:
+      - revisionId
+      - profileId
+      - revision
+      - contentHash
+      - settings
+      - createdAt
+    IntegrationConfigRedacted:
+      oneOf:
+      - $ref: '#/components/schemas/PaymentPolicyConfigRedacted'
+      - $ref: '#/components/schemas/WechatPayConfigRedacted'
+      - $ref: '#/components/schemas/TencentSmsConfigRedacted'
+      - $ref: '#/components/schemas/AliyunSmsConfigRedacted'
+      - $ref: '#/components/schemas/WechatAppConfigRedacted'
+      discriminator:
+        propertyName: kind
+    WechatAppConfigRedacted:
+      type: object
+      additionalProperties: false
+      properties:
+        kind:
+          type: string
+          enum:
+          - WECHAT_APP
+        config:
+          $ref: '#/components/schemas/WechatAppConfig'
+        credentialStates:
+          type: object
+          additionalProperties: false
+          properties:
+            appSecret:
+              $ref: '#/components/schemas/SecretState'
+      required:
+      - kind
+      - config
+      - credentialStates
+    SecretState:
+      type: object
+      additionalProperties: false
+      properties:
+        configured:
+          type: boolean
+        fingerprint:
+          type: string
+          description: 服务端指纹，不是秘密片段
+        updatedAt: *id003
+        expiresAt:
+          type: string
+          format: date-time
+          nullable: true
+      required:
+      - configured
+    WechatAppConfig:
+      type: object
+      additionalProperties: false
+      properties:
+        appId:
+          type: string
+          pattern: ^wx[0-9A-Za-z]{16}$
+        appName:
+          type: string
+          maxLength: 100
+        enabled:
+          type: boolean
+      required:
+      - enabled
+      description: 登录、手机号、订阅共用应用凭据；AppSecret不同于支付APIv3Key。AppID变更需新配置与新身份域，不自动合并OpenID。
+    AliyunSmsConfigRedacted:
+      type: object
+      additionalProperties: false
+      properties:
+        kind:
+          type: string
+          enum:
+          - ALIYUN_SMS
+        config:
+          $ref: '#/components/schemas/AliyunSmsConfig'
+        credentialStates:
+          type: object
+          additionalProperties: false
+          properties:
+            accessKeySecret:
+              $ref: '#/components/schemas/SecretState'
+      required:
+      - kind
+      - config
+      - credentialStates
+    AliyunSmsConfig:
+      type: object
+      additionalProperties: false
+      properties:
+        accessKeyId:
+          type: string
+          maxLength: 128
+        region:
+          type: string
+          maxLength: 64
+        apiVersion:
+          type: string
+          enum:
+          - '2017-05-25'
+        signName:
+          type: string
+          maxLength: 100
+        enabled:
+          type: boolean
+      required:
+      - apiVersion
+      - enabled
+      description: 国内短信，固定官方端点；AccessKeySecret在credentials中写入。
+    TencentSmsConfigRedacted:
+      type: object
+      additionalProperties: false
+      properties:
+        kind:
+          type: string
+          enum:
+          - TENCENT_SMS
+        config:
+          $ref: '#/components/schemas/TencentSmsConfig'
+        credentialStates:
+          type: object
+          additionalProperties: false
+          properties:
+            secretKey:
+              $ref: '#/components/schemas/SecretState'
+      required:
+      - kind
+      - config
+      - credentialStates
+    TencentSmsConfig:
+      type: object
+      additionalProperties: false
+      properties:
+        secretId:
+          type: string
+          maxLength: 128
+        region:
+          type: string
+          maxLength: 64
+        smsSdkAppId:
+          type: string
+          pattern: ^[0-9]+$
+        apiVersion:
+          type: string
+          enum:
+          - '2021-01-11'
+        signName:
+          type: string
+          maxLength: 100
+        enabled:
+          type: boolean
+      required:
+      - apiVersion
+      - enabled
+      description: 国内短信；SignName为已审核签名内容。SecretKey在credentials中写入；端点由服务器固定。
+    WechatPayConfigRedacted:
+      type: object
+      additionalProperties: false
+      properties:
+        kind:
+          type: string
+          enum:
+          - WECHAT_PAY
+        config:
+          $ref: '#/components/schemas/WechatPayConfig'
+        credentialStates:
+          type: object
+          additionalProperties: false
+          properties:
+            merchantPrivateKey:
+              $ref: '#/components/schemas/SecretState'
+            apiV3Key:
+              $ref: '#/components/schemas/SecretState'
+      required:
+      - kind
+      - config
+      - credentialStates
+    WechatPayConfig:
+      type: object
+      additionalProperties: false
+      properties:
+        merchantName:
+          type: string
+          maxLength: 200
+        mchid:
+          type: string
+          pattern: ^[0-9]{8,32}$
+        appProfile:
+          $ref: '#/components/schemas/ConfigReference'
+        merchantCertificateSerial:
+          type: string
+          maxLength: 128
+        verificationMode:
+          type: string
+          enum:
+          - WECHATPAY_PUBLIC_KEY
+          - PLATFORM_CERT
+        wechatPayPublicKeyId:
+          type: string
+          maxLength: 128
+        wechatPayPublicKeyPem:
+          type: string
+          maxLength: 16384
+        platformCertificates:
+          type: array
+          items:
+            type: object
+            additionalProperties: false
+            properties:
+              serial:
+                type: string
+              pem:
+                type: string
+                maxLength: 32768
+            required:
+            - serial
+            - pem
+        merchantCertificatePem:
+          type: string
+          maxLength: 32768
+        bindingAcknowledged:
+          type: boolean
+        bindingEvidenceId: *id001
+      description: mchid/appProfile是资金身份，关联交易后不得原位改为别家；此处校验是本地格式，不证明商户资格。回调地址由部署生成。
+    ConfigReference:
+      type: object
+      additionalProperties: false
+      properties:
+        profileId: *id001
+        revisionId: *id001
+      required:
+      - profileId
+      - revisionId
+      description: 引用已发布版本；服务端验证同环境/公司/应用和用途。
+    PaymentPolicyConfigRedacted:
+      type: object
+      additionalProperties: false
+      properties:
+        kind:
+          type: string
+          enum:
+          - PAYMENT_POLICY
+        config:
+          $ref: '#/components/schemas/PaymentPolicyConfig'
+        credentialStates:
+          type: object
+          additionalProperties: false
+          properties:
+            offlineBankAccount:
+              $ref: '#/components/schemas/SecretState'
+      required:
+      - kind
+      - config
+      - credentialStates
+    PaymentPolicyConfig:
+      type: object
+      additionalProperties: false
+      properties:
+        offlineEnabled:
+          type: boolean
+        wechatEnabled:
+          type: boolean
+        wechatMerchant:
+          $ref: '#/components/schemas/ConfigReference'
+        offlineInstructions:
+          type: string
+          maxLength: 1000
+        offlineCollectionMode:
+          type: string
+          enum:
+          - PREPAID_MANUAL_VERIFIED
+        offlineReceiverName:
+          type: string
+          maxLength: 200
+        offlineBankName:
+          type: string
+          maxLength: 100
+        offlineMethods:
+          type: array
+          items:
+            type: string
+            enum:
+            - CASH
+            - BANK_TRANSFER
+          uniqueItems: true
+          maxItems: 2
+          description: 启用线下时至少一种；CASH可在公司柜台办理，不允许个人代收
+        offlineContactName:
+          type: string
+          maxLength: 80
+        offlineContactPhone:
+          type: string
+          maxLength: 30
+          description: 正式公开企业服务电话，不使用员工隐私号码
+        offlineAccountName:
+          type: string
+          maxLength: 200
+      required:
+      - offlineEnabled
+      - wechatEnabled
+      - offlineCollectionMode
+      description: 两个开关独立；本期仅企业预收核实，不做先服务后付。银行账号单独密文管理，只在本人支付选项必要时返回。 发布时线下开关为真必须完整设置offlineMethods/联系人/说明；BANK_TRANSFER还需开户行、对公户名及已配置银行账号。支持方式与相关字段草稿阶段可不完整。
+    IntegrationRollbackRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        targetRevisionId: *id001
+        expectedVersion:
+          type: integer
+          format: int64
+          minimum: 0
+        reason: *id002
+        checkId: *id001
+      required:
+      - targetRevisionId
+      - expectedVersion
+      - reason
+      - checkId
+      description: 回滚形成新发布，重新验证目标密钥/模板有效性，不复活撤销凭据。
+    IntegrationPublicationView:
+      type: object
+      additionalProperties: false
+      properties:
+        publicationId: *id001
+        profileId: *id001
+        revisionId: *id001
+        previousRevisionId:
+          type: string
+          description: 内部Long对外十进制字符串
+          pattern: ^[1-9][0-9]{0,18}$
+          nullable: true
+        version:
+          type: integer
+          format: int64
+          minimum: 0
+        action:
+          type: string
+          enum:
+          - PUBLISH
+          - ROLLBACK
+        reason:
+          type: string
+        publishedAt: *id003
+        publishedBy: *id001
+        effectiveFor:
+          type: string
+          enum:
+          - NEW_OPERATIONS
+        historicalHandling:
+          type: string
+      required:
+      - publicationId
+      - profileId
+      - revisionId
+      - version
+      - action
+      - publishedAt
+      - effectiveFor
+    IntegrationPublishRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        revisionId: *id001
+        expectedVersion:
+          type: integer
+          format: int64
+          minimum: 0
+        contentHash: *id004
+        checkId: *id001
+        reason: *id002
+        acknowledgeNoPaymentMethods:
+          type: boolean
+        expectedDependencyVersions:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConfigReference'
+      required:
+      - revisionId
+      - expectedVersion
+      - contentHash
+      - checkId
+      - reason
+      description: 完整性与依赖版本服务端再次校验；两个开关都关需明确确认。失效的check不得发布。
+    IntegrationCheckRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        revisionId: *id001
+        expectedVersion:
+          type: integer
+          format: int64
+          minimum: 0
+        level:
+          $ref: '#/components/schemas/IntegrationCheckLevel'
+      required:
+      - revisionId
+      - expectedVersion
+      - level
+    IntegrationCheckLevel:
+      type: string
+      enum:
+      - LOCAL
+      - READ_ONLY
+      - LIVE_EVIDENCE
+    IntegrationCheckView:
+      type: object
+      additionalProperties: false
+      properties:
+        checkId: *id001
+        profileId: *id001
+        revisionId: *id001
+        contentHash: *id004
+        level:
+          $ref: '#/components/schemas/IntegrationCheckLevel'
+        status:
+          $ref: '#/components/schemas/IntegrationCheckStatus'
+        issues:
+          type: array
+          items:
+            $ref: '#/components/schemas/IntegrationValidationIssue'
+        checkedAt: *id003
+        expiresAt: *id003
+        realPaymentVerified:
+          type: boolean
+      required:
+      - checkId
+      - profileId
+      - revisionId
+      - contentHash
+      - level
+      - status
+      - issues
+      - checkedAt
+      - realPaymentVerified
+      description: READ_ONLY不扣款不发信；本地通过不代表真实联调，按字段列明不能验证的项。
+    IntegrationValidationIssue:
+      type: object
+      additionalProperties: false
+      properties:
+        field:
+          type: string
+        code:
+          type: string
+        message:
+          type: string
+        severity:
+          type: string
+          enum:
+          - ERROR
+          - WARNING
+        recovery:
+          type: string
+      required:
+      - field
+      - code
+      - message
+      - severity
+    IntegrationCheckStatus:
+      type: string
+      enum:
+      - NOT_RUN
+      - PASS
+      - FAIL
+      - PARTIAL
+    IntegrationDraftRequest:
+      oneOf:
+      - $ref: '#/components/schemas/PaymentPolicyConfigDraftRequest'
+      - $ref: '#/components/schemas/WechatPayConfigDraftRequest'
+      - $ref: '#/components/schemas/TencentSmsConfigDraftRequest'
+      - $ref: '#/components/schemas/AliyunSmsConfigDraftRequest'
+      - $ref: '#/components/schemas/WechatAppConfigDraftRequest'
+      discriminator:
+        propertyName: kind
+        mapping:
+          PAYMENT_POLICY: '#/components/schemas/PaymentPolicyConfigDraftRequest'
+          WECHAT_PAY: '#/components/schemas/WechatPayConfigDraftRequest'
+          TENCENT_SMS: '#/components/schemas/TencentSmsConfigDraftRequest'
+          ALIYUN_SMS: '#/components/schemas/AliyunSmsConfigDraftRequest'
+          WECHAT_APP: '#/components/schemas/WechatAppConfigDraftRequest'
+    WechatAppConfigDraftRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        kind:
+          type: string
+          enum:
+          - WECHAT_APP
+        expectedVersion:
+          type: integer
+          format: int64
+          minimum: 0
+        config:
+          $ref: '#/components/schemas/WechatAppConfig'
+        credentials:
+          type: object
+          additionalProperties: false
+          properties:
+            appSecret:
+              $ref: '#/components/schemas/SecretMutation'
+        reason: *id002
+      required:
+      - kind
+      - expectedVersion
+      - config
+      - reason
+      description: 保存为不可变新草稿版本，不改变线上生效版本；密钥提交不回显。
+    SecretMutation:
+      oneOf:
+      - type: object
+        additionalProperties: false
+        properties:
+          action:
+            type: string
+            enum:
+            - KEEP
+        required:
+        - action
+      - type: object
+        additionalProperties: false
+        properties:
+          action:
+            type: string
+            enum:
+            - REPLACE
+          value:
+            type: string
+            description: 只写，TLS提交后立即密文入库；日志和幂等响应不得保留原文
+            minLength: 1
+            maxLength: 32768
+            writeOnly: true
+        required:
+        - action
+        - value
+      - type: object
+        additionalProperties: false
+        properties:
+          action:
+            type: string
+            enum:
+            - CLEAR
+        required:
+        - action
+      description: 不传字段与KEEP等效。REPLACE不能传掩码。CLEAR若被有效配置或历史交易依赖则拒绝。
+    AliyunSmsConfigDraftRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        kind:
+          type: string
+          enum:
+          - ALIYUN_SMS
+        expectedVersion:
+          type: integer
+          format: int64
+          minimum: 0
+        config:
+          $ref: '#/components/schemas/AliyunSmsConfig'
+        credentials:
+          type: object
+          additionalProperties: false
+          properties:
+            accessKeySecret:
+              $ref: '#/components/schemas/SecretMutation'
+        reason: *id002
+      required:
+      - kind
+      - expectedVersion
+      - config
+      - reason
+      description: 保存为不可变新草稿版本，不改变线上生效版本；密钥提交不回显。
+    TencentSmsConfigDraftRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        kind:
+          type: string
+          enum:
+          - TENCENT_SMS
+        expectedVersion:
+          type: integer
+          format: int64
+          minimum: 0
+        config:
+          $ref: '#/components/schemas/TencentSmsConfig'
+        credentials:
+          type: object
+          additionalProperties: false
+          properties:
+            secretKey:
+              $ref: '#/components/schemas/SecretMutation'
+        reason: *id002
+      required:
+      - kind
+      - expectedVersion
+      - config
+      - reason
+      description: 保存为不可变新草稿版本，不改变线上生效版本；密钥提交不回显。
+    WechatPayConfigDraftRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        kind:
+          type: string
+          enum:
+          - WECHAT_PAY
+        expectedVersion:
+          type: integer
+          format: int64
+          minimum: 0
+        config:
+          $ref: '#/components/schemas/WechatPayConfig'
+        credentials:
+          type: object
+          additionalProperties: false
+          properties:
+            merchantPrivateKey:
+              $ref: '#/components/schemas/SecretMutation'
+            apiV3Key:
+              $ref: '#/components/schemas/SecretMutation'
+        reason: *id002
+      required:
+      - kind
+      - expectedVersion
+      - config
+      - reason
+      description: 保存为不可变新草稿版本，不改变线上生效版本；密钥提交不回显。
+    PaymentPolicyConfigDraftRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        kind:
+          type: string
+          enum:
+          - PAYMENT_POLICY
+        expectedVersion:
+          type: integer
+          format: int64
+          minimum: 0
+        config:
+          $ref: '#/components/schemas/PaymentPolicyConfig'
+        credentials:
+          type: object
+          additionalProperties: false
+          properties:
+            offlineBankAccount:
+              $ref: '#/components/schemas/SecretMutation'
+        reason: *id002
+      required:
+      - kind
+      - expectedVersion
+      - config
+      - reason
+      description: 保存为不可变新草稿版本，不改变线上生效版本；密钥提交不回显。
+    IntegrationProfileView:
+      type: object
+      additionalProperties: false
+      properties:
+        profileId: *id001
+        kind:
+          $ref: '#/components/schemas/IntegrationKind'
+        name:
+          type: string
+        scope:
+          $ref: '#/components/schemas/IntegrationScope'
+        lifecycle:
+          $ref: '#/components/schemas/IntegrationLifecycle'
+        version:
+          type: integer
+          format: int64
+          minimum: 0
+        activeRevisionId:
+          type: string
+          description: 内部Long对外十进制字符串
+          pattern: ^[1-9][0-9]{0,18}$
+          nullable: true
+        draftRevisionId:
+          type: string
+          description: 内部Long对外十进制字符串
+          pattern: ^[1-9][0-9]{0,18}$
+          nullable: true
+        active:
+          allOf:
+          - $ref: '#/components/schemas/IntegrationRevisionView'
+          nullable: true
+        draft:
+          allOf:
+          - $ref: '#/components/schemas/IntegrationRevisionView'
+          nullable: true
+        validationIssues:
+          type: array
+          items:
+            $ref: '#/components/schemas/IntegrationValidationIssue'
+        generatedPayNotifyUrl:
+          type: string
+        generatedRefundNotifyUrl:
+          type: string
+        newTransactionsEnabled:
+          type: boolean
+        historicalMaintenanceRequired:
+          type: boolean
+      required:
+      - profileId
+      - kind
+      - name
+      - scope
+      - lifecycle
+      - version
+      - activeRevisionId
+      - draftRevisionId
+      - validationIssues
+      description: 仅脱敏配置，证书/公钥可读但私钥/APIv3/云Secret/AppSecret/银行账号永不明文回显；敏感字段禁止通用导出。
+    IntegrationLifecycle:
+      type: string
+      enum:
+      - DRAFT
+      - ACTIVE
+      - RETIRED
+    IntegrationScope:
+      type: object
+      additionalProperties: false
+      properties:
+        ownerDeptId: *id001
+        environment:
+          $ref: '#/components/schemas/IntegrationEnvironment'
+      required:
+      - ownerDeptId
+      - environment
+      description: 配置归属使用服务器校验的公司/收款主体对应部门，不取客户端role为依据。
+    IntegrationKind:
+      type: string
+      enum:
+      - PAYMENT_POLICY
+      - WECHAT_PAY
+      - TENCENT_SMS
+      - ALIYUN_SMS
+      - WECHAT_APP
+    IntegrationProfileCreate:
+      type: object
+      additionalProperties: false
+      properties:
+        kind:
+          $ref: '#/components/schemas/IntegrationKind'
+        name:
+          type: string
+          minLength: 1
+          maxLength: 100
+        scope:
+          $ref: '#/components/schemas/IntegrationScope'
+      required:
+      - kind
+      - name
+      - scope
+  responses:
+    Unavailable:
+      description: 权限权威状态暂不可读取。参见errorCode注册表；HTTP状态与code一致。
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+          example:
+            code: 503
+            errorCode: VI_AUTHORITY_UNAVAILABLE
+            msg: 权限权威状态暂不可读取
+            requestId: req-example
+            retryable: true
+            retryAfterSeconds: null
+            data: {}
+      headers:
+        Retry-After:
+          description: 建议等待秒数；429必带，503仅在可估计时返回
+          schema:
+            type: integer
+            minimum: 1
+    InternalError:
+      description: 处理失败，请联系服务人员。参见errorCode注册表；HTTP状态与code一致。
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+          example:
+            code: 500
+            errorCode: VI_INTERNAL_ERROR
+            msg: 处理失败，请联系服务人员
+            requestId: req-example
+            retryable: false
+            retryAfterSeconds: null
+            data: {}
+    TooManyRequests:
+      description: 操作过于频繁，请稍后重试。参见errorCode注册表；HTTP状态与code一致。
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+          example:
+            code: 429
+            errorCode: VI_RATE_LIMITED
+            msg: 操作过于频繁，请稍后重试
+            requestId: req-example
+            retryable: true
+            retryAfterSeconds: 10
+            data: {}
+      headers:
+        Retry-After:
+          description: 建议等待秒数；429必带，503仅在可估计时返回
+          schema:
+            type: integer
+            minimum: 1
+    UnprocessableEntity:
+      description: 填写内容不符合要求。参见errorCode注册表；HTTP状态与code一致。
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+          example:
+            code: 422
+            errorCode: VI_DATA_INVALID
+            msg: 填写内容不符合要求
+            requestId: req-example
+            retryable: false
+            retryAfterSeconds: null
+            data: {}
+    Conflict:
+      description: 记录已变化，请刷新后重试。参见errorCode注册表；HTTP状态与code一致。
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+          example:
+            code: 409
+            errorCode: VI_VERSION_CONFLICT
+            msg: 记录已变化，请刷新后重试
+            requestId: req-example
+            retryable: false
+            retryAfterSeconds: null
+            data: {}
+    NotFound:
+      description: 记录不存在或不可访问。参见errorCode注册表；HTTP状态与code一致。
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+          example:
+            code: 404
+            errorCode: VI_RESOURCE_NOT_VISIBLE
+            msg: 记录不存在或不可访问
+            requestId: req-example
+            retryable: false
+            retryAfterSeconds: null
+            data: {}
+    Forbidden:
+      description: 没有执行此操作的权限。参见errorCode注册表；HTTP状态与code一致。
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+          example:
+            code: 403
+            errorCode: VI_FORBIDDEN
+            msg: 没有执行此操作的权限
+            requestId: req-example
+            retryable: false
+            retryAfterSeconds: null
+            data: {}
+    Unauthorized:
+      description: 登录已失效，请重新登录。参见errorCode注册表；HTTP状态与code一致。
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+          example:
+            code: 401
+            errorCode: VI_AUTH_REQUIRED
+            msg: 登录已失效，请重新登录
+            requestId: req-example
+            retryable: false
+            retryAfterSeconds: null
+            data: {}
+      headers:
+        WWW-Authenticate:
+          schema:
+            type: string
+          description: Bearer realm="mini" 或 "admin"；不泄露令牌细节
+    BadRequest:
+      description: 请求格式不正确。参见errorCode注册表；HTTP状态与code一致。
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+          example:
+            code: 400
+            errorCode: VI_REQUEST_INVALID
+            msg: 请求格式不正确
+            requestId: req-example
+            retryable: false
+            retryAfterSeconds: null
+            data: {}

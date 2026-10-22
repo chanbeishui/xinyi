@@ -1,0 +1,203 @@
+[
+  {
+    "name": "vi_vehicle",
+    "comment": "授权客户-车辆关联档案，供独立车辆列表",
+    "cols": [
+      [
+        "id",
+        "BIGINT NOT NULL AUTO_INCREMENT",
+        "数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串"
+      ],
+      [
+        "owner_account_id",
+        "BIGINT NOT NULL",
+        "基础账户"
+      ],
+      [
+        "plate_no",
+        "VARCHAR(20) NOT NULL",
+        "归一化车牌"
+      ],
+      [
+        "vehicle_type_code",
+        "VARCHAR(64) NOT NULL",
+        "数据字典编码"
+      ],
+      [
+        "brand_model",
+        "VARCHAR(128)",
+        "可选"
+      ],
+      [
+        "vin_last4",
+        "VARCHAR(4)",
+        "只读核验摘要"
+      ],
+      [
+        "registered_on",
+        "DATE",
+        "登记日期，按需核验"
+      ],
+      [
+        "use_type",
+        "VARCHAR(64)",
+        "使用性质"
+      ],
+      [
+        "verification_status",
+        "VARCHAR(24) NOT NULL DEFAULT 'PENDING'",
+        "VehicleVerificationStatus: PENDING,VERIFIED,REJECTED"
+      ],
+      [
+        "internal_remark",
+        "VARCHAR(1000)",
+        "运营资料备注，不回写历史订单"
+      ],
+      [
+        "is_default",
+        "TINYINT NOT NULL DEFAULT 0",
+        "服务层保证本人至多一辆默认"
+      ],
+      [
+        "deleted_at",
+        "DATETIME(3)",
+        "软删除"
+      ],
+      [
+        "active_plate",
+        "VARCHAR(20) GENERATED ALWAYS AS (IF(deleted_at IS NULL,plate_no,NULL)) STORED",
+        "软删除后不占用本人车牌约束"
+      ],
+      [
+        "created_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "创建时间，统一UTC"
+      ],
+      [
+        "updated_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "UTC更新时间；Mapper每次修改显式SET updated_at=UTC_TIMESTAMP(3)，不依赖连接时区"
+      ],
+      [
+        "version",
+        "BIGINT NOT NULL DEFAULT 0",
+        "乐观锁版本"
+      ]
+    ],
+    "indexes": [
+      "UNIQUE KEY uk_owner_plate (owner_account_id,active_plate)"
+    ],
+    "rule": "车牌唯一性限本人档案，不把跨客户同车牌直接归并或泄露",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "engine": "InnoDB",
+    "collation": "utf8mb4_0900_ai_ci",
+    "columnRules": {
+      "id": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "owner_account_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "plate_no": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "vehicle_type_code": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "brand_model": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "vin_last4": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "registered_on": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "use_type": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "verification_status": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false,
+        "enumRef": "VehicleVerificationStatus"
+      },
+      "internal_remark": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "is_default": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "deleted_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "active_plate": {
+        "generated": true,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "created_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "updated_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "version": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      }
+    },
+    "checks": [
+      "CONSTRAINT ck_66_c3de1069a647 CHECK (`verification_status` IN ('PENDING','VERIFIED','REJECTED'))",
+      "CONSTRAINT ck_ver_vehicle CHECK (version >= 0)"
+    ]
+  }
+]

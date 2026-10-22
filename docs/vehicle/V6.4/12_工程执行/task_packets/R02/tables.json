@@ -1,0 +1,777 @@
+[
+  {
+    "name": "vi_driver_statement",
+    "comment": "单主体单司机单币种对账单",
+    "cols": [
+      [
+        "id",
+        "BIGINT NOT NULL AUTO_INCREMENT",
+        "数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串"
+      ],
+      [
+        "statement_no",
+        "VARCHAR(64) NOT NULL",
+        "对外账单编号"
+      ],
+      [
+        "driver_id",
+        "BIGINT NOT NULL",
+        "代驾"
+      ],
+      [
+        "payor_entity_id",
+        "BIGINT NOT NULL",
+        "应付主体"
+      ],
+      [
+        "currency",
+        "CHAR(3) NOT NULL DEFAULT 'CNY'",
+        "币种"
+      ],
+      [
+        "service_range_start",
+        "DATETIME(3) NULL",
+        "当前有效明细最早服务结束日UTC；仅说明跨度，不用于组单；空草稿NULL"
+      ],
+      [
+        "service_range_end_exclusive",
+        "DATETIME(3) NULL",
+        "有效明细最晚结束日次日UTC；仅说明，不限定成员；空草稿NULL"
+      ],
+      [
+        "cutoff_at",
+        "DATETIME(3) NOT NULL",
+        "本次数据截点"
+      ],
+      [
+        "status",
+        "VARCHAR(24) NOT NULL",
+        "StatementStatus: DRAFT,INTERNAL_REVIEW,SENT,DISPUTED,CONFIRMED,VOID"
+      ],
+      [
+        "revision",
+        "INT NOT NULL DEFAULT 1",
+        "未确认修订版本"
+      ],
+      [
+        "amount_fen",
+        "BIGINT NULL",
+        "草稿有未核价行时NULL；不是0；金额齐全时为净拟应付"
+      ],
+      [
+        "snapshot_hash",
+        "BINARY(32) NOT NULL",
+        "当前工作副本规范化摘要，可包含NULL；发送前金额必须完整"
+      ],
+      [
+        "issued_by",
+        "BIGINT NOT NULL",
+        "平台制作人"
+      ],
+      [
+        "sent_at",
+        "DATETIME(3)",
+        "发出时冻结当前版本"
+      ],
+      [
+        "confirmed_account_id",
+        "BIGINT",
+        "本人微信账户确认"
+      ],
+      [
+        "confirmed_at",
+        "DATETIME(3)",
+        "实际确认时间"
+      ],
+      [
+        "confirmation_revision",
+        "INT",
+        "确认的版本"
+      ],
+      [
+        "voided_at",
+        "DATETIME(3)",
+        "仅未确认账单可作废"
+      ],
+      [
+        "known_amount_fen",
+        "BIGINT NOT NULL DEFAULT 0",
+        "已填写金额小计；不能冒充完整应付"
+      ],
+      [
+        "unpriced_count",
+        "INT NOT NULL DEFAULT 0",
+        "待填写行数，发送和确认要求为0"
+      ],
+      [
+        "manual_price_count",
+        "INT NOT NULL DEFAULT 0",
+        "本次有人工填价/改价的行数"
+      ],
+      [
+        "review_status",
+        "VARCHAR(24) NOT NULL DEFAULT 'NOT_REQUIRED'",
+        "StatementReviewStatus: NOT_REQUIRED,REQUIRED,PENDING,APPROVED,REJECTED"
+      ],
+      [
+        "review_revision",
+        "INT",
+        "仅对匹配revision和hash的整单复核生效"
+      ],
+      [
+        "published_revision",
+        "INT",
+        "当前发送给司机的版本；撤回后失效"
+      ],
+      [
+        "published_hash",
+        "BINARY(32)",
+        "当前有效公开快照SHA256，与public_snapshot_hash一致；内部复核用snapshot_hash"
+      ],
+      [
+        "submitted_by",
+        "BIGINT",
+        "复核提交人，需与复核人分离"
+      ],
+      [
+        "selection_mode",
+        "VARCHAR(24) NOT NULL DEFAULT 'EXPLICIT'",
+        "SelectionMode: EXPLICIT"
+      ],
+      [
+        "filter_snapshot",
+        "JSON NULL",
+        "查询条件留痕，不是组单成员定义；不能据此重跑批量选择"
+      ],
+      [
+        "active_entry_count",
+        "INT NOT NULL DEFAULT 0",
+        "当前有效工作行数；0草稿可保存不可发出"
+      ],
+      [
+        "created_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "UTC"
+      ],
+      [
+        "updated_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "UTC更新时间；Mapper每次修改显式SET updated_at=UTC_TIMESTAMP(3)，不依赖连接时区"
+      ],
+      [
+        "version",
+        "BIGINT NOT NULL DEFAULT 0",
+        "乐观锁"
+      ]
+    ],
+    "indexes": [
+      "UNIQUE KEY uk_statement_no (statement_no)",
+      "KEY ix_statement_owner (driver_id,payor_entity_id,created_at,status)",
+      "CONSTRAINT ck_statement_range CHECK ((service_range_start IS NULL AND service_range_end_exclusive IS NULL) OR (service_range_start IS NOT NULL AND service_range_end_exclusive IS NOT NULL AND service_range_end_exclusive>service_range_start))"
+    ],
+    "rule": "只按显式selectedEntries组单，无周期唯一限制。成员增减、拟价改动递增revision；历史快照不覆盖。付款状态由确认金额与净核实付款聚合推导，不写服务行paid标志。归还释放不受核价影响。",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "engine": "InnoDB",
+    "collation": "utf8mb4_0900_ai_ci",
+    "columnRules": {
+      "id": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "statement_no": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "driver_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "payor_entity_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "currency": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "service_range_start": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "service_range_end_exclusive": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "cutoff_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "status": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false,
+        "enumRef": "StatementStatus"
+      },
+      "revision": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "amount_fen": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "snapshot_hash": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "issued_by": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "sent_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "confirmed_account_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "confirmed_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "confirmation_revision": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "voided_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "known_amount_fen": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "unpriced_count": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "manual_price_count": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "review_status": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false,
+        "enumRef": "StatementReviewStatus"
+      },
+      "review_revision": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "published_revision": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "published_hash": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "submitted_by": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "selection_mode": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false,
+        "enumRef": "SelectionMode"
+      },
+      "filter_snapshot": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "active_entry_count": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "created_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "updated_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "version": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      }
+    },
+    "checks": [
+      "CONSTRAINT ck_66_09ea0dc1cb1b CHECK (`status` IN ('DRAFT','INTERNAL_REVIEW','SENT','DISPUTED','CONFIRMED','VOID'))",
+      "CONSTRAINT ck_66_8c948c332a52 CHECK (`review_status` IN ('NOT_REQUIRED','REQUIRED','PENDING','APPROVED','REJECTED'))",
+      "CONSTRAINT ck_66_83b18b98eb4a CHECK (`selection_mode` IN ('EXPLICIT'))",
+      "CONSTRAINT ck_ver_driver_statement CHECK (version >= 0)"
+    ]
+  },
+  {
+    "name": "vi_driver_statement_line",
+    "comment": "对账工作明细；历史发布版本另表保存",
+    "cols": [
+      [
+        "id",
+        "BIGINT NOT NULL AUTO_INCREMENT",
+        "数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串"
+      ],
+      [
+        "statement_id",
+        "BIGINT NOT NULL",
+        "对账单"
+      ],
+      [
+        "statement_revision",
+        "INT NOT NULL",
+        "所属账单修订"
+      ],
+      [
+        "ledger_id",
+        "BIGINT NOT NULL",
+        "费用源条目"
+      ],
+      [
+        "assignment_id",
+        "BIGINT NOT NULL",
+        "承接关联"
+      ],
+      [
+        "amount_fen",
+        "BIGINT NULL",
+        "本工作版本拟金额，可空；已发送快照必须完整"
+      ],
+      [
+        "snapshot",
+        "JSON NOT NULL",
+        "车牌/订单/服务时间/类型/规则/金额"
+      ],
+      [
+        "line_hash",
+        "BINARY(32) NOT NULL",
+        "内容摘要"
+      ],
+      [
+        "reference_amount_fen",
+        "BIGINT NULL",
+        "规则/源台账金额，只读，NULL不伪装成0"
+      ],
+      [
+        "pricing_source",
+        "VARCHAR(24) NOT NULL",
+        "PricingSource: RULE,UNPRICED,MANUAL_FILLED,MANUAL_CHANGED,APPROVED_ADJUSTMENT"
+      ],
+      [
+        "manual_changed",
+        "TINYINT NOT NULL DEFAULT 0",
+        "人工参与标记；改回原金额不擦除操作轨迹"
+      ],
+      [
+        "price_reason",
+        "VARCHAR(1000)",
+        "当前拟价依据"
+      ],
+      [
+        "last_editor_user_id",
+        "BIGINT",
+        "最近编辑人；复核排除需查本轮全部改价人"
+      ],
+      [
+        "source_version",
+        "BIGINT NOT NULL",
+        "源台账快照版本"
+      ],
+      [
+        "is_active",
+        "TINYINT NOT NULL DEFAULT 1",
+        "0为从草稿移出，保留价格与审计；只对有效行求合计和发布快照"
+      ],
+      [
+        "removed_at",
+        "DATETIME(3) NULL",
+        "最近移出时间"
+      ],
+      [
+        "removed_by",
+        "BIGINT NULL",
+        "移出操作者"
+      ],
+      [
+        "remove_reason",
+        "VARCHAR(1000) NULL",
+        "移出原因"
+      ],
+      [
+        "created_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "UTC"
+      ],
+      [
+        "updated_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "UTC更新时间；Mapper每次修改显式SET updated_at=UTC_TIMESTAMP(3)，不依赖连接时区"
+      ],
+      [
+        "version",
+        "BIGINT NOT NULL DEFAULT 0",
+        "乐观锁"
+      ]
+    ],
+    "indexes": [
+      "UNIQUE KEY uk_statement_source (statement_id,ledger_id)",
+      "KEY ix_statement_lines (statement_id,id)",
+      "KEY ix_statement_active_lines (statement_id,is_active,id)"
+    ],
+    "rule": "移出不物理删除，释放该行对应活跃allocation；再次添加同ledger恢复同一工作行并保留所有改价/成员历史，核验源版本和明确拟价。确认/任意付款锁原账。有效集合变化必须重置旧复核并重算hash。",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "engine": "InnoDB",
+    "collation": "utf8mb4_0900_ai_ci",
+    "columnRules": {
+      "id": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "statement_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "statement_revision": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "ledger_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "assignment_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "amount_fen": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "snapshot": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "line_hash": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "reference_amount_fen": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "pricing_source": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false,
+        "enumRef": "PricingSource"
+      },
+      "manual_changed": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "price_reason": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "last_editor_user_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "source_version": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "is_active": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "removed_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "removed_by": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "remove_reason": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "created_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "updated_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "version": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      }
+    },
+    "checks": [
+      "CONSTRAINT ck_66_e02515a7b248 CHECK (`pricing_source` IN ('RULE','UNPRICED','MANUAL_FILLED','MANUAL_CHANGED','APPROVED_ADJUSTMENT'))",
+      "CONSTRAINT ck_ver_driver_statement_line CHECK (version >= 0)"
+    ]
+  },
+  {
+    "name": "vi_driver_ledger_allocation",
+    "comment": "每费用条目至多一个活跃账单的分配历史",
+    "cols": [
+      [
+        "id",
+        "BIGINT NOT NULL AUTO_INCREMENT",
+        "数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串"
+      ],
+      [
+        "ledger_id",
+        "BIGINT NOT NULL",
+        "费用条目"
+      ],
+      [
+        "statement_id",
+        "BIGINT NOT NULL",
+        "有效账单"
+      ],
+      [
+        "released_at",
+        "DATETIME(3)",
+        "草稿合法移出或作废释放；已确认未付不能释放"
+      ],
+      [
+        "active_ledger",
+        "BIGINT GENERATED ALWAYS AS (IF(released_at IS NULL,ledger_id,NULL)) STORED",
+        "每费用条目至多一个有效账单"
+      ],
+      [
+        "release_reason",
+        "VARCHAR(1000) NULL",
+        "精确释放原因"
+      ],
+      [
+        "released_by",
+        "BIGINT NULL",
+        "释放者"
+      ],
+      [
+        "created_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "UTC"
+      ],
+      [
+        "updated_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "UTC更新时间；Mapper每次修改显式SET updated_at=UTC_TIMESTAMP(3)，不依赖连接时区"
+      ],
+      [
+        "version",
+        "BIGINT NOT NULL DEFAULT 0",
+        "乐观锁"
+      ]
+    ],
+    "indexes": [
+      "UNIQUE KEY uk_active_ledger (active_ledger)",
+      "KEY ix_allocation_statement (statement_id)"
+    ],
+    "rule": "勾选/预览不占用。创建与添加按升序锁源明细并建立唯一active_ledger；任何冲突整批回滚。移出/作废WHERE allocation归属本单才释放，保留历史。日期范围不决定归属。",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "engine": "InnoDB",
+    "collation": "utf8mb4_0900_ai_ci",
+    "columnRules": {
+      "id": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "ledger_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "statement_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "released_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "active_ledger": {
+        "generated": true,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "release_reason": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "released_by": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "created_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "updated_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "version": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      }
+    },
+    "checks": [
+      "CONSTRAINT ck_ver_driver_ledger_allocation CHECK (version >= 0)"
+    ]
+  }
+]

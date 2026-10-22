@@ -1,0 +1,49 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>07_已提供与需实现清单</title><style>body{font:16px/1.75 -apple-system,BlinkMacSystemFont,"Microsoft YaHei",sans-serif;color:#202632;margin:0;background:#f6f7f9}header{padding:14px 24px;background:white;border-bottom:1px solid #ddd}main{max-width:1120px;margin:24px auto;padding:30px;background:white}h1{font-size:30px}h2{margin-top:36px}a{color:#0661bd}table{border-collapse:collapse;width:100%;display:block;overflow:auto;font-size:14px}td,th{border:1px solid #dde2ea;padding:10px;vertical-align:top}th{background:#f1f5fb}pre{padding:15px;background:#f2f4f7;overflow:auto}img{max-width:100%;height:auto}blockquote{padding:10px 20px;border-left:3px solid #2571be;background:#f4f8fc}@media(max-width:700px){main{padding:15px;margin:8px}h1{font-size:25px}}</style></head><body><header><a href="../00_开始.html">V6.4 完整资料</a>　<a href="../02_UI/index.html">交互原型</a>　T3.4</header><main><h1>已提供与Codex还需执行的边界</h1>
+<table>
+<thead>
+<tr>
+  <th>内容</th>
+  <th>本包已提供</th>
+  <th>Codex在实际仓库做什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>业务/界面/机器契约</td>
+  <td>完整PRD、V6.4全量UI、当前主OpenAPI和数据模型</td>
+  <td>实现真正双端页面和后端，不把HTML模拟当业务</td>
+</tr>
+<tr>
+  <td>工程执行</td>
+  <td>85任务依赖、287API/355画板/79表/412用例责任矩阵、状态工具</td>
+  <td>认领、实现、测试、复核、记录，不填假状态</td>
+</tr>
+<tr>
+  <td>环境</td>
+  <td>Compose、配置隔离、随机密钥、构建命令、镜像锁工具</td>
+  <td>实际拉取镜像和依赖、提交真实lock、修环境差异</td>
+</tr>
+<tr>
+  <td>仓库适配</td>
+  <td>框架历史快照、当前实勘工具、空库/已实施前向适配决策、非覆盖安装器</td>
+  <td>读取实际工作树与表，复用现有模块，必要前向迁移先演练</td>
+</tr>
+<tr>
+  <td>代码模板</td>
+  <td>uni-app基础工程、请求会话封装、模块POM、ID/金额/实体边界</td>
+  <td>合并并编译，按任务实现业务；没有假定模板等于完整项目</td>
+</tr>
+<tr>
+  <td>测试基础</td>
+  <td>模拟供应商、99项支持工具测试、51项配置策略检查、33项真实HTTP测试、6项MySQL测试、完整控制面与fixture契约</td>
+  <td>实现E07的测试服务绑定并执行；逐任务补齐全部412条当前用例对应的实际测试</td>
+</tr>
+<tr>
+  <td>部署</td>
+  <td>Linux镜像/Nginx/灰度/备份/上线门禁方案</td>
+  <td>在批准目标环境演练，不自动部署生产</td>
+</tr>
+</tbody>
+</table>
+<p>“真实HTTP测试已提供”指测试程序确实向HTTP和MySQL发请求，不是它们已经在本轮目标xinyi通过。控制面已提供测试classpath控制器、守卫和FixturePort接口；其实际FixturePort服务绑定仍需E07实现，不假造一个返回终态的后端。依赖下载和Docker在本轮环境不可用的结果如实记录于09。</p>
+</main></body></html>

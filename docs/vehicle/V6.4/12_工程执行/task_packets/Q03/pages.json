@@ -1,0 +1,58 @@
+[
+  {
+    "id": "D39",
+    "base": "D39",
+    "state": "default",
+    "name": "服务培训",
+    "kind": "page",
+    "parent": "D39",
+    "status": "有效·V6.4",
+    "fields": "课程列表、课程版本、进度",
+    "actions": "开始学习、查看尝试",
+    "guards": "本人/授权范围、状态及expectedVersion；真实供应商和正式政策未配置不得返回生产通过",
+    "flows": "F04/F41",
+    "source": "V4.2既有资格/培训/申诉能力缺失合同的本轮补全；不新增保险事故或钱包"
+  },
+  {
+    "id": "D40",
+    "base": "D40",
+    "state": "default",
+    "name": "车辆交接课程",
+    "kind": "page",
+    "parent": "D40",
+    "status": "有效·V6.4",
+    "fields": "课程、媒体会话、必学要求、进度",
+    "actions": "阅读、进入考试",
+    "guards": "本人/授权范围、状态及expectedVersion；真实供应商和正式政策未配置不得返回生产通过",
+    "flows": "F41",
+    "source": "V4.2既有资格/培训/申诉能力缺失合同的本轮补全；不新增保险事故或钱包"
+  },
+  {
+    "id": "D41",
+    "base": "D41",
+    "state": "default",
+    "name": "服务知识测验",
+    "kind": "page",
+    "parent": "D41",
+    "status": "有效·V6.4",
+    "fields": "attemptId、题目选项、截止、版本",
+    "actions": "选择答案、一次提交",
+    "guards": "本人/授权范围、状态及expectedVersion；真实供应商和正式政策未配置不得返回生产通过",
+    "flows": "F41",
+    "source": "V4.2既有资格/培训/申诉能力缺失合同的本轮补全；不新增保险事故或钱包"
+  },
+  {
+    "id": "D42",
+    "base": "D42",
+    "state": "default",
+    "name": "测验结果",
+    "kind": "page",
+    "parent": "D42",
+    "status": "有效·V6.4",
+    "fields": "尝试编号、状态、分数、通过结果",
+    "actions": "返回认证或课程",
+    "guards": "本人/授权范围、状态及expectedVersion；真实供应商和正式政策未配置不得返回生产通过",
+    "flows": "F41",
+    "source": "V4.2既有资格/培训/申诉能力缺失合同的本轮补全；不新增保险事故或钱包"
+  }
+]

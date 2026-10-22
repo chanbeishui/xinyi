@@ -1,0 +1,193 @@
+[
+  {
+    "name": "vi_driver_fee_adjustment",
+    "comment": "独立审核的费用调整",
+    "cols": [
+      [
+        "id",
+        "BIGINT NOT NULL AUTO_INCREMENT",
+        "数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串"
+      ],
+      [
+        "source_entry_id",
+        "BIGINT NOT NULL",
+        "源费用记录"
+      ],
+      [
+        "driver_id",
+        "BIGINT NOT NULL",
+        "源代驾"
+      ],
+      [
+        "payor_entity_id",
+        "BIGINT NOT NULL",
+        "源主体"
+      ],
+      [
+        "amount_fen",
+        "BIGINT NOT NULL",
+        "非0有符号调整"
+      ],
+      [
+        "reason",
+        "VARCHAR(2000) NOT NULL",
+        "业务依据"
+      ],
+      [
+        "evidence_ids",
+        "JSON NOT NULL",
+        "必填凭证引用"
+      ],
+      [
+        "status",
+        "VARCHAR(16) NOT NULL",
+        "AdjustmentStatus: PENDING,APPROVED,REJECTED"
+      ],
+      [
+        "created_by",
+        "BIGINT NOT NULL",
+        "经办人"
+      ],
+      [
+        "reviewer_id",
+        "BIGINT",
+        "独立审核人"
+      ],
+      [
+        "opinion",
+        "VARCHAR(1000)",
+        "意见"
+      ],
+      [
+        "generated_ledger_id",
+        "BIGINT",
+        "审批后唯一派生费用条目"
+      ],
+      [
+        "created_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "UTC"
+      ],
+      [
+        "updated_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "UTC更新时间；Mapper每次修改显式SET updated_at=UTC_TIMESTAMP(3)，不依赖连接时区"
+      ],
+      [
+        "version",
+        "BIGINT NOT NULL DEFAULT 0",
+        "乐观锁"
+      ]
+    ],
+    "indexes": [
+      "UNIQUE KEY uk_generated_entry (generated_ledger_id)",
+      "CONSTRAINT ck_adjust_nonzero CHECK (amount_fen<>0)"
+    ],
+    "rule": "客户退款不自动扣代驾费用；已确认账单的调整另入后续账单；不得自审。",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "engine": "InnoDB",
+    "collation": "utf8mb4_0900_ai_ci",
+    "columnRules": {
+      "id": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "source_entry_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "driver_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "payor_entity_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "amount_fen": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "reason": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "evidence_ids": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "status": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false,
+        "enumRef": "AdjustmentStatus"
+      },
+      "created_by": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "reviewer_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "opinion": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "generated_ledger_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "created_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "updated_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "version": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      }
+    },
+    "checks": [
+      "CONSTRAINT ck_66_32e34f614311 CHECK (`status` IN ('PENDING','APPROVED','REJECTED'))",
+      "CONSTRAINT ck_ver_driver_fee_adjustment CHECK (version >= 0)"
+    ]
+  }
+]

@@ -1,0 +1,72 @@
+[
+  {
+    "id": "WX-PARAMS",
+    "title": "微信支付普通商户开发必要参数",
+    "url": "https://pay.wechatpay.cn/doc/v3/merchant/4013070756",
+    "checked": "2026-10-22",
+    "finding": "商户号、关联AppID、商户签名私钥/证书序列号、APIv3密钥及验签公钥身份；新接入优先微信支付公钥。"
+  },
+  {
+    "id": "WX-JSAPI",
+    "title": "微信支付JSAPI/小程序下单",
+    "url": "https://pay.wechatpay.cn/doc/v3/merchant/4012791856",
+    "checked": "2026-10-22",
+    "finding": "/v3/pay/transactions/jsapi；后端创建预支付，使用同AppID的付款人身份。"
+  },
+  {
+    "id": "WX-ROTATION",
+    "title": "平台证书切换微信支付公钥",
+    "url": "https://pay.wechatpay.cn/doc/v3/merchant/4012154180",
+    "checked": "2026-10-22",
+    "finding": "迁移期间回调验签可能涉及两套验签材料，应按Wechatpay-Serial匹配可信材料。"
+  },
+  {
+    "id": "TC-SMS",
+    "title": "腾讯云短信2021-01-11 SendSms",
+    "url": "https://cloud.tencent.com/document/api/382/55981",
+    "checked": "2026-10-22",
+    "finding": "Region、SmsSdkAppId、TemplateId、国内短信SignName及按位置排列的TemplateParamSet。"
+  },
+  {
+    "id": "TC-KEY",
+    "title": "腾讯云短信SDK接入前提",
+    "url": "https://cloud.tencent.com/document/product/382/43197",
+    "checked": "2026-10-22",
+    "finding": "使用SecretId/SecretKey；签名和模板须完成厂商审核。"
+  },
+  {
+    "id": "ALI-SMS",
+    "title": "阿里云SendSms",
+    "url": "https://help.aliyun.com/zh/sms/developer-reference/api-dysmsapi-2017-05-25-sendsms",
+    "checked": "2026-10-22",
+    "finding": "SignName、TemplateCode和JSON字符串TemplateParam；提交成功不等于运营商送达；不提供发送幂等。"
+  },
+  {
+    "id": "ALI-ACCESS",
+    "title": "阿里云短信API接入",
+    "url": "https://help.aliyun.com/zh/sms/getting-started/use-sms-api/",
+    "checked": "2026-10-22",
+    "finding": "服务端AccessKey认证；国内接口版本2017-05-25，接入地址dysmsapi.aliyuncs.com。"
+  },
+  {
+    "id": "UNI-SUB",
+    "title": "uni.requestSubscribeMessage",
+    "url": "https://uniapp.dcloud.net.cn/api/other/requestSubscribeMessage.html",
+    "checked": "2026-10-22",
+    "finding": "用户交互触发；每次请求模板数量按官方接口限制；返回每个模板的同意/拒绝结果。"
+  },
+  {
+    "id": "TC-SUB",
+    "title": "腾讯云开发订阅消息示例",
+    "url": "https://docs.cloudbase.net/recipes/add-subscribe-message-cloud-function",
+    "checked": "2026-10-22",
+    "finding": "模板字段需与申请模板一致；模板ID、接收者和消息内容要由服务端正确组合。本项目使用Java服务端，不迁移到云函数。"
+  },
+  {
+    "id": "WX-SUB-DIRECT",
+    "title": "微信订阅消息REST官方入口",
+    "url": "https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/mp-message-management/subscribe-message/sendMessage.html",
+    "checked": "2026-10-22",
+    "finding": "本轮直接抓取失败；REST字段和资格仍须在接入时对照官方最新页面及实际模板核验，不声明已完成真机或供应商联调。"
+  }
+]

@@ -1,0 +1,33 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TASK</title><style>body{font:16px/1.75 -apple-system,BlinkMacSystemFont,"Microsoft YaHei",sans-serif;color:#202632;margin:0;background:#f6f7f9}header{padding:14px 24px;background:white;border-bottom:1px solid #ddd}main{max-width:1120px;margin:24px auto;padding:30px;background:white}h1{font-size:30px}h2{margin-top:36px}a{color:#0661bd}table{border-collapse:collapse;width:100%;display:block;overflow:auto;font-size:14px}td,th{border:1px solid #dde2ea;padding:10px;vertical-align:top}th{background:#f1f5fb}pre{padding:15px;background:#f2f4f7;overflow:auto}img{max-width:100%;height:auto}blockquote{padding:10px 20px;border-left:3px solid #2571be;background:#f4f8fc}@media(max-width:700px){main{padding:15px;margin:8px}h1{font-size:25px}}</style></head><body><header><a href="../../../00_开始.html">V6.4 完整资料</a>　<a href="../../../02_UI/index.html">交互原型</a>　T3.4</header><main><h1>E05 · PC框架接入和双域API客户端</h1>
+<p>阶段：M0；责任域：web；前置：E01。
+范围版本：<code>V6.1-UNCHANGED</code>；definitionHash：<code>e7983fb6fee4fcd46a7ddc0cd8d731eb50f50d254d3775e976b1bb18b223bc43</code>。</p>
+<h2>本任务交付</h2>
+<ul>
+<li>复用xinyi-ui布局与权限路由，新增vi请求适配而不改旧接口封装</li>
+</ul>
+<h2>必测失败与并发</h2>
+<ul>
+<li>根路径/api只出现一次</li>
+<li>不覆盖原Jwt响应与错误处理</li>
+</ul>
+<h2>精确输入</h2>
+<p>主源：04_接口/openapi_V6.4.yaml、05_数据设计/data_model_V6.4.json、06_验收/test_cases_V6.4.json。本目录派生，不独立维护。
+接口：无
+画板：无
+主责任表：无
+验收：无</p>
+<h2>代码落位</h2>
+<p><code>docs/implementation/vehicle/E05/</code></p>
+<h2>验证命令</h2>
+<pre><code class="language-bash">npm --prefix xinyi-ui ci
+npm --prefix xinyi-ui run build:prod
+</code></pre>
+<h2>完成标准</h2>
+<ul>
+<li>保留原PC框架行为并完成新请求适配的组件测试及生产构建</li>
+<li>尚未实现的业务页面由后续各任务验收，不生成假Ack跳过</li>
+<li>保存实际日志和独立复核</li>
+</ul>
+<h2>执行边界</h2>
+<p>已有实现先核查适配，不清空重来。NOT_RUN与NOT_ASSESSED不表示生产已验证。缺真实凭据只阻对应真实联调；环境阻塞如实记录，不改测试期望凑通过。修改主源后重新生成派生文件和当前截图。</p>
+</main></body></html>

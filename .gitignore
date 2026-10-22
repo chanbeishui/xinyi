@@ -49,6 +49,9 @@ nbdist/
 # V6.1 规范副本：截图/流程图渲染等二进制不入库（文本规范入库；图片见源资料包，可由 build.py 重生成）
 docs/vehicle/V6.1/**/*.png
 docs/vehicle/V6.1/**/*.svg
+# V6.4 规范副本：同上（852 PNG + 48 SVG 不入库，文本规范入库）
+docs/vehicle/V6.4/**/*.png
+docs/vehicle/V6.4/**/*.svg
 docs/implementation/vehicle/E01/backup_pre_r1/
 docs/implementation/vehicle/E01/backup_pre_r3_r7/
 .DS_Store

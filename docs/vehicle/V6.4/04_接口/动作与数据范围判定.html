@@ -1,0 +1,109 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>动作与数据范围判定</title><style>body{font:16px/1.75 -apple-system,BlinkMacSystemFont,"Microsoft YaHei",sans-serif;color:#202632;margin:0;background:#f6f7f9}header{padding:14px 24px;background:white;border-bottom:1px solid #ddd}main{max-width:1120px;margin:24px auto;padding:30px;background:white}h1{font-size:30px}h2{margin-top:36px}a{color:#0661bd}table{border-collapse:collapse;width:100%;display:block;overflow:auto;font-size:14px}td,th{border:1px solid #dde2ea;padding:10px;vertical-align:top}th{background:#f1f5fb}pre{padding:15px;background:#f2f4f7;overflow:auto}img{max-width:100%;height:auto}blockquote{padding:10px 20px;border-left:3px solid #2571be;background:#f4f8fc}@media(max-width:700px){main{padding:15px;margin:8px}h1{font-size:25px}}</style></head><body><header><a href="../00_开始.html">V6.4 完整资料</a>　<a href="../02_UI/index.html">交互原型</a>　T3.4</header><main><h1>动作与数据范围判定 V6.4</h1>
+<h2>数据范围注册</h2>
+<ul>
+<li>OWNER_ORDER：从令牌accountId关联订单owner_account_id；不得从请求actorId覆盖。</li>
+<li>OWN_DRIVER_RECORD：从accountId关联driver_profile，再校验记录driver_id/assignment_id；历史读与新接单能力分开。</li>
+<li>SESSION_OR_EXPLICIT_OBJECT_POLICY：会话/档案只属于当前账号；当携带order/file/handover等目标，必须进一步校验真实关联；不能把名称理解为省略对象检查。</li>
+<li>ORG_DEPT_STATION：后台或绑定员工的当前功能权限、组织公司、真实权威部门、显式站点交集；空范围拒绝。</li>
+<li>PAYOR相关范围：还核对payor_entity_id与账单整体driver；只能看到一条本站服务不意味着能读整个跨主体账单。</li>
+<li>HOLDER_ONLY/VERIFIER_ONLY：由交接type、当前实物双方、本人及有效任务关系决定，不根据客户端自报holderRole决定。持码接口不能返回给核验方；不允许切角色自己拿码自己核销。</li>
+<li>EXACT_BINDING_REQUEST_CODE：授权工作人员用本人提供的精确请求号找最小请求记录，不开放全平台账号遍历；不因此认可人事身份。</li>
+<li>TARGET_EMPLOYEE_DEPT_AND_BINDING_REQUEST：签发时读取请求目标账号与真实sys_user，核对当前管理员覆盖目标用户的组织/全部相关任职范围和签发权限；单凭同名同手机号不授予。</li>
+</ul>
+<p>这些是x-authorization扩展字段的实施语义，不会由Spring自动执行。Service必须按类型实现；未识别scope或capability拒绝，不能默认全部数据。</p>
+<h2>订单状态与动作</h2>
+<p>allowedActions是以下状态/条件、视角动作枚举和实际权限的交集。前端不可用它替代后端鉴权；未列出的动作默认不允许。</p>
+<table>
+<thead>
+<tr>
+  <th>视角</th>
+  <th>阶段/条件</th>
+  <th>候选动作</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>车主</td>
+  <td>PENDING_PAY且未到payExpireAt</td>
+  <td>PAY、CLOSE_UNPAID（主动关闭政策P06启用后）</td>
+</tr>
+<tr>
+  <td>车主</td>
+  <td>可信已付、无未办结售后</td>
+  <td>APPLY_CANCEL_REFUND或APPLY_REFUND_ONLY，是否可退及金额由审核；服务终态不允许取消履约</td>
+</tr>
+<tr>
+  <td>车主</td>
+  <td>WAIT_CONFIRM且returnedAt存在、无阻断争议</td>
+  <td>SERVICE_CONFIRM、OPEN_DISPUTE</td>
+</tr>
+<tr>
+  <td>车主</td>
+  <td>已有检测结果/本人证据</td>
+  <td>VIEW_RESULT、VIEW_EVIDENCE，文件授权单独检查</td>
+</tr>
+<tr>
+  <td>代驾</td>
+  <td>ACCEPTED且本人的有效承接</td>
+  <td>DEPART、CANCEL_ASSIGNMENT</td>
+</tr>
+<tr>
+  <td>代驾</td>
+  <td>GOING_PICKUP</td>
+  <td>ARRIVE_PICKUP、CANCEL_ASSIGNMENT</td>
+</tr>
+<tr>
+  <td>代驾</td>
+  <td>ARRIVED_PICKUP</td>
+  <td>UPLOAD_PHOTO、FILL_MILEAGE、CREATE/CONFIRM_HANDOVER；未实际接车可CANCEL_ASSIGNMENT</td>
+</tr>
+<tr>
+  <td>代驾</td>
+  <td>PICKED_UP</td>
+  <td>ARRIVE_STATION及所需证据动作；不得自助取消承接</td>
+</tr>
+<tr>
+  <td>代驾</td>
+  <td>ARRIVED_STATION</td>
+  <td>本站收车交接所需动作、REPORT_EXCEPTION</td>
+</tr>
+<tr>
+  <td>代驾</td>
+  <td>INSPECTED或批准取消待返还且车在站内</td>
+  <td>站点放行取车交接所需动作，不伪造检测结果</td>
+</tr>
+<tr>
+  <td>代驾</td>
+  <td>CAR_TAKEN或取消返还在途</td>
+  <td>归还证据和交接动作；实际归还立即释放</td>
+</tr>
+<tr>
+  <td>代驾</td>
+  <td>HISTORY</td>
+  <td>仅VIEW_DETAIL/RESULT/EVIDENCE，实际敏感证据另经权限；无有效联系与交接码</td>
+</tr>
+<tr>
+  <td>检测</td>
+  <td>ARRIVED_STATION且收车条件满足</td>
+  <td>CREATE/CONFIRM_HANDOVER；确认收车进入INSPECTING</td>
+</tr>
+<tr>
+  <td>检测</td>
+  <td>INSPECTING且资料复核与实测结果完成</td>
+  <td>REVIEW_LICENSE、REGISTER_RESULT；同版本双端登记CAS</td>
+</tr>
+<tr>
+  <td>检测</td>
+  <td>INSPECTED或取消待返还</td>
+  <td>放行交接；若取消未检测不能强填结果</td>
+</tr>
+<tr>
+  <td>后台</td>
+  <td>拥有对应权限及对象范围</td>
+  <td>MANUAL_INVITE、REVIEW_AFTERSALE、REGISTER_RESULT等；仍按相应事务前置，不任意改目标状态</td>
+</tr>
+</tbody>
+</table>
+<p>CONTACT_*只在当前有效服务/授权运营目的下出现，返回受控联系方式；历史或被撤任务去掉。VIEW_HANDOVER_SECRET还要检查当前视角是本次持码方。账户停用、资格过期、站点撤权和配置变更每次重验；在手车辆的安全处理走受控人工协助，不把无资格继续驾驶当默认允许。</p>
+<p>对账动作按PRD19.6：DRAFT/DISPUTED可编辑，人工拟价需整单复核；INTERNAL_REVIEW/SENT先撤回；CONFIRMED或有付款只调差。创建/移出成员与价格都使revision改变；付款只在确认且有余额时登记，核实另权另人。</p>
+</main></body></html>

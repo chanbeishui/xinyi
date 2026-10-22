@@ -1,0 +1,67 @@
+[
+  {
+    "id": "D10",
+    "name": "前往接车",
+    "status": "有效·V6.4",
+    "fields": "目的地、地图导航、节点定位时间",
+    "actions": "到达、联系、更多操作",
+    "guards": "外部导航返回后刷新当前状态；不宣称连续后台轨迹有效",
+    "flows": "F14",
+    "source": "V2原页 D10",
+    "base": "D10",
+    "state": "default",
+    "kind": "page"
+  },
+  {
+    "id": "D11",
+    "name": "已到达接车点",
+    "status": "有效·V6.4",
+    "fields": "车况拍照入口、联系记录、等待计时",
+    "actions": "开始留证、联系不上上报",
+    "guards": "到达不核销接车码；等待费用启用受P02约束，不能自动补扣",
+    "flows": "F14/F21",
+    "source": "V2原页 D11",
+    "base": "D11",
+    "state": "default",
+    "kind": "page"
+  },
+  {
+    "id": "D14",
+    "name": "前往检测点",
+    "status": "有效·V6.4",
+    "fields": "检测点导航、内部预计到站和接收窗口",
+    "actions": "到站留证、联系检测点",
+    "guards": "不再拿上门时段判断到站超时；不能自行换站、车辆、地址",
+    "flows": "F15",
+    "source": "V2原页 D14",
+    "base": "D14",
+    "state": "default",
+    "kind": "page"
+  },
+  {
+    "id": "D16",
+    "name": "等待检测点收车",
+    "status": "有效·V6.4",
+    "fields": "等待时长、站点收车专用码、联系入口",
+    "actions": "向授权员工提供码、联系/服务异常上报",
+    "guards": "只显示此交接类型的码；超时不自动转检测中或取消",
+    "flows": "F15/F21",
+    "source": "V2原页 D16",
+    "base": "D16",
+    "state": "default",
+    "kind": "page"
+  },
+  {
+    "id": "D21",
+    "name": "返程导航",
+    "status": "有效·V6.4",
+    "fields": "已约定归还地址、联系入口、返还类型",
+    "actions": "到达归还处",
+    "guards": "用户变更归还地址不得绕过范围和费用确认；本版未新增异址补价能力",
+    "flows": "F18",
+    "source": "V2原页 D21",
+    "base": "D21",
+    "state": "default",
+    "kind": "page"
+  }
+]

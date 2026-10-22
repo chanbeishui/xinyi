@@ -1,0 +1,483 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>开发任务计划</title><style>body{font:16px/1.75 -apple-system,BlinkMacSystemFont,"Microsoft YaHei",sans-serif;color:#202632;margin:0;background:#f6f7f9}header{padding:14px 24px;background:white;border-bottom:1px solid #ddd}main{max-width:1120px;margin:24px auto;padding:30px;background:white}h1{font-size:30px}h2{margin-top:36px}a{color:#0661bd}table{border-collapse:collapse;width:100%;display:block;overflow:auto;font-size:14px}td,th{border:1px solid #dde2ea;padding:10px;vertical-align:top}th{background:#f1f5fb}pre{padding:15px;background:#f2f4f7;overflow:auto}img{max-width:100%;height:auto}blockquote{padding:10px 20px;border-left:3px solid #2571be;background:#f4f8fc}@media(max-width:700px){main{padding:15px;margin:8px}h1{font-size:25px}}</style></head><body><header><a href="../00_开始.html">V6.4 完整资料</a>　<a href="../02_UI/index.html">交互原型</a>　T3.4</header><main><h1>开发任务计划 V6.4</h1>
+<p>完整定义在tasks.json；状态和进度在实际工作区，不以本包NOT_ASSESSED否定已写代码。</p>
+<table>
+<thead>
+<tr>
+  <th>任务</th>
+  <th>名称</th>
+  <th>前置</th>
+  <th>范围</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>E00</td>
+  <td>当前工作区与框架基线实勘（保留进度）</td>
+  <td></td>
+  <td>DEVELOPMENT</td>
+</tr>
+<tr>
+  <td>E01</td>
+  <td>契约修复和最小输入闭合</td>
+  <td>E00</td>
+  <td>DEVELOPMENT</td>
+</tr>
+<tr>
+  <td>E02</td>
+  <td>隔离运行环境与依赖锁定</td>
+  <td>E00</td>
+  <td>DEVELOPMENT</td>
+</tr>
+<tr>
+  <td>E03</td>
+  <td>新vi数据库初装与框架数据保护</td>
+  <td>E00,E02</td>
+  <td>DEVELOPMENT</td>
+</tr>
+<tr>
+  <td>E04</td>
+  <td>新建业务Maven模块与uni-app工程</td>
+  <td>E01</td>
+  <td>DEVELOPMENT</td>
+</tr>
+<tr>
+  <td>E05</td>
+  <td>PC框架接入和双域API客户端</td>
+  <td>E01</td>
+  <td>DEVELOPMENT</td>
+</tr>
+<tr>
+  <td>E06</td>
+  <td>幂等、审计、outbox与任务基座</td>
+  <td>E03,E04</td>
+  <td>DEVELOPMENT</td>
+</tr>
+<tr>
+  <td>E07</td>
+  <td>测试夹具与控制平面接入</td>
+  <td>E02,E03,E06,E04</td>
+  <td>DEVELOPMENT</td>
+</tr>
+<tr>
+  <td>E08</td>
+  <td>CI、任务台账与证据收集</td>
+  <td>E01</td>
+  <td>DEVELOPMENT</td>
+</tr>
+<tr>
+  <td>I01</td>
+  <td>统一微信登录与默认车主</td>
+  <td>E06,E07</td>
+  <td>DEVELOPMENT</td>
+</tr>
+<tr>
+  <td>I02</td>
+  <td>手机号验证回执与自动关联触发</td>
+  <td>I01</td>
+  <td>DEVELOPMENT</td>
+</tr>
+<tr>
+  <td>I03</td>
+  <td>刷新、退出和多设备会话</td>
+  <td>I01</td>
+  <td>DEVELOPMENT</td>
+</tr>
+<tr>
+  <td>I04</td>
+  <td>角色与站点上下文切换</td>
+  <td>I03</td>
+  <td>DEVELOPMENT</td>
+</tr>
+<tr>
+  <td>I05</td>
+  <td>手机号自动关联员工与后台异常管理</td>
+  <td>I02,I03</td>
+  <td>DEVELOPMENT</td>
+</tr>
+<tr>
+  <td>I06</td>
+  <td>后台员工站点预配置与组合权限</td>
+  <td>I04,I05</td>
+  <td>DEVELOPMENT</td>
+</tr>
+<tr>
+  <td>A01</td>
+  <td>车辆档案与PC车辆列表</td>
+  <td>I01,I06,E05</td>
+  <td>DEVELOPMENT</td>
+</tr>
+<tr>
+  <td>A02</td>
+  <td>地址簿与位置输入</td>
+  <td>I01</td>
+  <td>DEVELOPMENT</td>
+</tr>
+<tr>
+  <td>A03</td>
+  <td>车主档案管理</td>
+  <td>I02,I06,E05</td>
+  <td>DEVELOPMENT</td>
+</tr>
+<tr>
+  <td>A04</td>
+  <td>代驾员档案与接单控制</td>
+  <td>I06,E05</td>
+  <td>DEVELOPMENT</td>
+</tr>
+<tr>
+  <td>C01</td>
+  <td>字典、公开条款与参数配置</td>
+  <td>I06,E05</td>
+  <td>DEVELOPMENT</td>
+</tr>
+<tr>
+  <td>C02</td>
+  <td>检测点、营业与服务区域</td>
+  <td>I06,C01</td>
+  <td>DEVELOPMENT</td>
+</tr>
+<tr>
+  <td>C03</td>
+  <td>上门时段与容量计划</td>
+  <td>C02,E06</td>
+  <td>DEVELOPMENT</td>
+</tr>
+<tr>
+  <td>C04</td>
+  <td>客户计价规则和试算</td>
+  <td>C01,C02</td>
+  <td>DEVELOPMENT</td>
+</tr>
+<tr>
+  <td>C05</td>
+  <td>司机独立费用规则</td>
+  <td>C01,I06</td>
+  <td>DEVELOPMENT</td>
+</tr>
+<tr>
+  <td>Q01</td>
+  <td>代驾资格草稿与提交</td>
+  <td>I02,C01,F01</td>
+  <td>DEVELOPMENT</td>
+</tr>
+<tr>
+  <td>Q02</td>
+  <td>培训课程和题库管理</td>
+  <td>I06,C01</td>
+  <td>DEVELOPMENT</td>
+</tr>
+<tr>
+  <td>Q03</td>
+  <td>学习播放与考试尝试</td>
+  <td>Q01,Q02</td>
+  <td>DEVELOPMENT</td>
+</tr>
+<tr>
+  <td>Q04</td>
+  <td>实名活体与核验适配</td>
+  <td>Q01</td>
+  <td>DEVELOPMENT</td>
+</tr>
+<tr>
+  <td>Q05</td>
+  <td>资格审批与到期复审</td>
+  <td>Q01,Q03,Q04,I06</td>
+  <td>DEVELOPMENT</td>
+</tr>
+<tr>
+  <td>B01</td>
+  <td>先时段后地址的预约界面</td>
+  <td>E04,A01,A02,C03</td>
+  <td>DEVELOPMENT</td>
+</tr>
+<tr>
+  <td>B02</td>
+  <td>报价快照与服务校验</td>
+  <td>C03,C04,A01,A02</td>
+  <td>DEVELOPMENT</td>
+</tr>
+<tr>
+  <td>B03</td>
+  <td>原子建单与预占</td>
+  <td>B02,E06</td>
+  <td>DEVELOPMENT</td>
+</tr>
+<tr>
+  <td>B04</td>
+  <td>四端订单投影与时间轴</td>
+  <td>B03,I06,E05,E04</td>
+  <td>DEVELOPMENT</td>
+</tr>
+<tr>
+  <td>P01</td>
+  <td>支付适配器与预支付</td>
+  <td>B03,E07</td>
+  <td>DEVELOPMENT</td>
+</tr>
+<tr>
+  <td>P02</td>
+  <td>支付可信通知、查单与关单</td>
+  <td>P01,E06</td>
+  <td>DEVELOPMENT</td>
+</tr>
+<tr>
+  <td>P04</td>
+  <td>未接车退款执行与渠道基础</td>
+  <td>S02,P02</td>
+  <td>DEVELOPMENT</td>
+</tr>
+<tr>
+  <td>P03</td>
+  <td>计划派单和时间驱动任务</td>
+  <td>P02,C03,E06</td>
+  <td>DEVELOPMENT</td>
+</tr>
+<tr>
+  <td>D01</td>
+  <td>听单、位置与资格判定</td>
+  <td>Q05,I04</td>
+  <td>DEVELOPMENT</td>
+</tr>
+<tr>
+  <td>D02</td>
+  <td>自动邀约轮转与扩圈</td>
+  <td>D01,P03</td>
+  <td>DEVELOPMENT</td>
+</tr>
+<tr>
+  <td>D03</td>
+  <td>人工邀约与计划变更</td>
+  <td>D02,E05</td>
+  <td>DEVELOPMENT</td>
+</tr>
+<tr>
+  <td>D04</td>
+  <td>司机接受与拒绝邀约</td>
+  <td>D02,E04</td>
+  <td>DEVELOPMENT</td>
+</tr>
+<tr>
+  <td>D05</td>
+  <td>出发、到达及任务视图</td>
+  <td>D04,B04</td>
+  <td>DEVELOPMENT</td>
+</tr>
+<tr>
+  <td>D06</td>
+  <td>未接车解除与原订单重派</td>
+  <td>D04,E06</td>
+  <td>DEVELOPMENT</td>
+</tr>
+<tr>
+  <td>D07</td>
+  <td>处罚及申诉查询审核</td>
+  <td>D06,I06</td>
+  <td>DEVELOPMENT</td>
+</tr>
+<tr>
+  <td>F01</td>
+  <td>私有文件全生命周期</td>
+  <td>I01,I06,E07</td>
+  <td>DEVELOPMENT</td>
+</tr>
+<tr>
+  <td>F02</td>
+  <td>四节点照片与里程证据</td>
+  <td>F01,D05</td>
+  <td>DEVELOPMENT</td>
+</tr>
+<tr>
+  <td>F03</td>
+  <td>四次交接的主体核验</td>
+  <td>F02,I06</td>
+  <td>DEVELOPMENT</td>
+</tr>
+<tr>
+  <td>F04</td>
+  <td>行驶证OCR和人工复核</td>
+  <td>F01,F03</td>
+  <td>DEVELOPMENT</td>
+</tr>
+<tr>
+  <td>F05</td>
+  <td>最终检测结果与更正</td>
+  <td>F04</td>
+  <td>DEVELOPMENT</td>
+</tr>
+<tr>
+  <td>F06</td>
+  <td>取车、归还与司机释放</td>
+  <td>F03,F05</td>
+  <td>DEVELOPMENT</td>
+</tr>
+<tr>
+  <td>S01</td>
+  <td>统一售后申请和进度</td>
+  <td>B04,P02</td>
+  <td>DEVELOPMENT</td>
+</tr>
+<tr>
+  <td>S02</td>
+  <td>一次审核及退款预留</td>
+  <td>S01,I06</td>
+  <td>DEVELOPMENT</td>
+</tr>
+<tr>
+  <td>S03</td>
+  <td>返还后退款执行与差错</td>
+  <td>P04,F06</td>
+  <td>DEVELOPMENT</td>
+</tr>
+<tr>
+  <td>S04</td>
+  <td>普通异常与争议处置</td>
+  <td>F06,I06</td>
+  <td>DEVELOPMENT</td>
+</tr>
+<tr>
+  <td>S05</td>
+  <td>服务确认与评价</td>
+  <td>F06,S04</td>
+  <td>DEVELOPMENT</td>
+</tr>
+<tr>
+  <td>N01</td>
+  <td>站内消息、订阅与重试</td>
+  <td>E06,I04</td>
+  <td>DEVELOPMENT</td>
+</tr>
+<tr>
+  <td>N02</td>
+  <td>隐私、公开内容和设置</td>
+  <td>C01,I01</td>
+  <td>DEVELOPMENT</td>
+</tr>
+<tr>
+  <td>N03</td>
+  <td>导出、敏感访问和治理</td>
+  <td>I06,F01,E06</td>
+  <td>DEVELOPMENT</td>
+</tr>
+<tr>
+  <td>R01</td>
+  <td>承接结束费用事件与台账</td>
+  <td>C05,D06,F06</td>
+  <td>DEVELOPMENT</td>
+</tr>
+<tr>
+  <td>R02</td>
+  <td>个人汇总与明确勾选组单</td>
+  <td>R01,I06</td>
+  <td>DEVELOPMENT</td>
+</tr>
+<tr>
+  <td>R03</td>
+  <td>草稿成员、行内核价与整单复核</td>
+  <td>R02</td>
+  <td>DEVELOPMENT</td>
+</tr>
+<tr>
+  <td>R04</td>
+  <td>发布快照与本人确认差异</td>
+  <td>R03,I04</td>
+  <td>DEVELOPMENT</td>
+</tr>
+<tr>
+  <td>R05</td>
+  <td>已确认账单调差</td>
+  <td>R04</td>
+  <td>DEVELOPMENT</td>
+</tr>
+<tr>
+  <td>R06</td>
+  <td>付款凭证登记与独立核实</td>
+  <td>R04</td>
+  <td>DEVELOPMENT</td>
+</tr>
+<tr>
+  <td>O01</td>
+  <td>工作台、统计与审计</td>
+  <td>B04,N01,R06</td>
+  <td>DEVELOPMENT</td>
+</tr>
+<tr>
+  <td>O02</td>
+  <td>后台任务控制和故障恢复</td>
+  <td>P03,N01,N03,S03</td>
+  <td>DEVELOPMENT</td>
+</tr>
+<tr>
+  <td>T01</td>
+  <td>身份与资料真实集成切片</td>
+  <td>I01,I02,I03,I04,I05,I06,A01,A02,A03,A04,E04,E05</td>
+  <td>DEVELOPMENT</td>
+</tr>
+<tr>
+  <td>T02</td>
+  <td>预约支付售后真实集成</td>
+  <td>B01,B02,B03,B04,P01,P02,P04,S01,S02</td>
+  <td>DEVELOPMENT</td>
+</tr>
+<tr>
+  <td>T03</td>
+  <td>派单交接并发集成</td>
+  <td>D01,D02,D03,D04,D05,D06,F01,F02,F03,F04,F05,F06</td>
+  <td>DEVELOPMENT</td>
+</tr>
+<tr>
+  <td>T04</td>
+  <td>对账核价和凭证集成</td>
+  <td>R01,R02,R03,R04,R05,R06</td>
+  <td>DEVELOPMENT</td>
+</tr>
+<tr>
+  <td>T05</td>
+  <td>全域授权和字段负向集成</td>
+  <td>T01,T02,T03,T04,N03</td>
+  <td>DEVELOPMENT</td>
+</tr>
+<tr>
+  <td>T06</td>
+  <td>结构、Mapper生成列和升级一致性</td>
+  <td>E03,E06</td>
+  <td>DEVELOPMENT</td>
+</tr>
+<tr>
+  <td>T07</td>
+  <td>重启、故障、任务补偿和备份恢复</td>
+  <td>T03,T04,O02</td>
+  <td>DEVELOPMENT</td>
+</tr>
+<tr>
+  <td>T08</td>
+  <td>全量前端实现与可用性验收</td>
+  <td>T01,T02,T03,T04,N02,O01,E04,E05</td>
+  <td>DEVELOPMENT</td>
+</tr>
+<tr>
+  <td>L01</td>
+  <td>真实供应商联调和凭据验收</td>
+  <td>T02,T03,Q04,N01</td>
+  <td>RELEASE</td>
+</tr>
+<tr>
+  <td>L02</td>
+  <td>微信真机和提交审核</td>
+  <td>T08,L01</td>
+  <td>RELEASE</td>
+</tr>
+<tr>
+  <td>L03</td>
+  <td>生产部署、恢复与值班演练</td>
+  <td>T05,T06,T07,T08</td>
+  <td>RELEASE</td>
+</tr>
+<tr>
+  <td>G01</td>
+  <td>全功能代码交付审计</td>
+  <td>T01,T02,T03,T04,T05,T06,T07,T08</td>
+  <td>DEVELOPMENT</td>
+</tr>
+</tbody>
+</table>
+</main></body></html>

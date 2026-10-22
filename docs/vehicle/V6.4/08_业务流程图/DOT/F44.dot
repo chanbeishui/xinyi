@@ -1,0 +1,23 @@
+digraph G {
+graph [rankdir=TB,bgcolor="white",pad="0.3",nodesep="0.3",ranksep="0.45",fontname="Noto Sans CJK SC",label="F44 · 第三方配置草稿与发布",labelloc=t,fontsize=20];
+node [shape=box,style="rounded,filled",fillcolor="#F2F6FC",color="#B5C9E5",fontname="Noto Sans CJK SC",fontsize=12,margin=".15,.12"];
+edge [color="#607A9C",fontname="Noto Sans CJK SC",fontsize=10];
+n1 [label="管理员｜选择授权主体及配置类型"];
+n2 [label="保存草稿｜线上版本保持不变"];
+n3 [label="校验当前版本与凭据依赖"];
+n4 [label="必填、格式和权限全部满足？",shape=diamond];
+n5 [label="展示影响｜确认发布或双关"];
+n6 [label="事务｜CAS切换activeRevision并写审计/outbox"];
+n7 [label="新业务｜读取权威有效版本"];
+n8 [label="历史业务｜保留原身份及有效凭据环"];
+n9 [label="失败｜保留编辑并指向字段/冲突"];
+n1 -> n2 [label=""];
+n2 -> n3 [label=""];
+n3 -> n4 [label=""];
+n4 -> n5 [label="是"];
+n4 -> n9 [label="否"];
+n5 -> n6 [label=""];
+n6 -> n7 [label=""];
+n6 -> n8 [label=""];
+n9 -> n2 [label="修改新草稿"];
+}

@@ -1,0 +1,229 @@
+{
+  "fixture": [
+    "IDENTITY",
+    "BOOKING",
+    "EMPLOYEE_IDENTITY",
+    "INTEGRATION_CONFIG"
+  ],
+  "testOnly": true,
+  "sourceOfTruth": "Test-classpath FixtureApplicationService using actual framework/config services",
+  "request": {
+    "fixture": "IDENTITY / BOOKING / EMPLOYEE_IDENTITY / INTEGRATION_CONFIG",
+    "providerRunId": "<obtained from simulator /control/runs>"
+  },
+  "creationRules": [
+    "one fixture per (providerRunId,fixtureKind), same request reuses; IDENTITY needs only framework test roles/dictionary, no booking services; BOOKING extends IDENTITY with C02/C03/C04 station/price/slot",
+    "unique runtime test IDs resolved from insert generated keys, do not hardcode framework ID1 as normal role",
+    "new non-login accounts created through real login endpoint; test provider exchange returns providerRunId to private registry",
+    "TEST_CAR/supports TEST_INSPECTION; next business-day pickup slot; no real merchant",
+    "station A location (110.943,22.354) nearby, route mapping fixed through test adapter with PICKUP_A/STATION_A keys",
+    "customer rule totalFen34000 independent driver rule6500; both explicitly marked fixture",
+    "fixture operation does not insert paid orders, successful handovers, confirmed statements or payment proofs",
+    "EMPLOYEE_IDENTITY仅建隔离人员/部门/角色/站点基础数据，不预建vi_account/员工微信关联；关联必须由真实phone/bind产生",
+    "测试手机号与供应商模拟器persona哈希算法一致；相同persona随providerRunId隔离OpenID，号码仅为虚构数据",
+    "故意重复手机号的历史坏数据只可通过测试classpath fixture在隔离库建前置；生产目录服务仍执行校验",
+    "不得在fixture直接批准司机/确认付款/代替业务动作创建员工关联",
+    "INTEGRATION_CONFIG仅生成隔离公司/员工权限、测试白名单、测试密钥及可约基础输入；配置发布、付款核实、订阅报告必须经真实业务接口，fixture不能伪造成功。",
+    "默认新配置双开关关闭。为回归旧BOOKING支付用例，BOOKING夹具经真实配置Service发布明确测试版微信配置；不得直接写SUCCESS支付单。",
+    "Secret测试字符串永不用于真实供应商；签名验证使用专用测试密钥；Test目录不可打包进production。",
+    "INTEGRATION_CONFIG的三个测试ADMIN令牌由test-classpath通过实际后台凭据认证后调用TokenService签发，并记录真实服务端credentialVerifiedAt；不能直接伪造近期认证标记，绑定非ID1的已持久化sys_user/role/auth_version及精确biz权限。adminToken有配置编辑检查发布；reviewerToken有不同员工的线下核实权限；readOnlyToken仅配置读取。不得把前端role字符串当权限，令牌仅内存返回给本地test控制调用，不写报告或生产接口。配置对象仍由测试通过正式API创建。"
+  ],
+  "identities": {
+    "owner-a": "basic OWNER",
+    "owner-b": "another owner",
+    "driver-a": "apply then approved by Q flow, not implicit login role",
+    "driver-b": "second driver",
+    "station-a": "sys employee with A station",
+    "station-b": "sys employee B noA",
+    "operator-a": "PC A scope",
+    "finance-maker-a": "payorA recorder",
+    "finance-reviewer-a": "payorA distinct human-review persona",
+    "operator-b": "B negative scope",
+    "employee-unique": "active sys user with matching test phone, one authorized station before first mini login",
+    "employee-no-station": "active sys user matching phone, zero station grants",
+    "employee-duplicate": "two distinct active sys users same test phone (explicit historical-invalid fixture)",
+    "employee-disabled": "disabled only matching sys user, no valid work role"
+  },
+  "cleanup": "Keep test run evidence; disposable volume recreation only explicit user approval. No public arbitrary SQL/reset endpoint.",
+  "responseSchemas": {
+    "IDENTITY": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "providerRunId",
+        "runId",
+        "vehicleTypeCode",
+        "vehiclePlate",
+        "privacyVersion"
+      ],
+      "properties": {
+        "providerRunId": {
+          "type": "string"
+        },
+        "runId": {
+          "type": "string"
+        },
+        "vehicleTypeCode": {
+          "type": "string",
+          "enum": [
+            "TEST_CAR"
+          ]
+        },
+        "vehiclePlate": {
+          "type": "string"
+        },
+        "privacyVersion": {
+          "type": "string",
+          "enum": [
+            "TEST_PRIVACY_V1"
+          ]
+        }
+      }
+    },
+    "BOOKING": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "providerRunId",
+        "runId",
+        "slotId",
+        "vehicleTypeCode",
+        "inspectionTypeCode",
+        "vehiclePlate",
+        "expectedQuoteFen",
+        "termsVersion",
+        "privacyVersion",
+        "businessDate"
+      ],
+      "properties": {
+        "providerRunId": {
+          "type": "string"
+        },
+        "runId": {
+          "type": "string"
+        },
+        "slotId": {
+          "type": "string",
+          "pattern": "^[1-9][0-9]*$"
+        },
+        "vehicleTypeCode": {
+          "type": "string",
+          "enum": [
+            "TEST_CAR"
+          ]
+        },
+        "inspectionTypeCode": {
+          "type": "string",
+          "enum": [
+            "TEST_INSPECTION"
+          ]
+        },
+        "vehiclePlate": {
+          "type": "string"
+        },
+        "expectedQuoteFen": {
+          "type": "integer",
+          "enum": [
+            34000
+          ]
+        },
+        "termsVersion": {
+          "type": "string",
+          "enum": [
+            "TEST_TERMS_V1"
+          ]
+        },
+        "privacyVersion": {
+          "type": "string",
+          "enum": [
+            "TEST_PRIVACY_V1"
+          ]
+        },
+        "businessDate": {
+          "type": "string",
+          "format": "date"
+        }
+      }
+    },
+    "EMPLOYEE_IDENTITY": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "providerRunId",
+        "runId",
+        "vehicleTypeCode",
+        "vehiclePlate",
+        "privacyVersion",
+        "employeeUserId",
+        "authorizedStationId"
+      ],
+      "properties": {
+        "providerRunId": {
+          "type": "string"
+        },
+        "runId": {
+          "type": "string"
+        },
+        "vehicleTypeCode": {
+          "type": "string",
+          "enum": [
+            "TEST_CAR"
+          ]
+        },
+        "vehiclePlate": {
+          "type": "string"
+        },
+        "privacyVersion": {
+          "type": "string",
+          "enum": [
+            "TEST_PRIVACY_V1"
+          ]
+        },
+        "employeeUserId": {
+          "type": "string",
+          "pattern": "^[1-9][0-9]{0,18}$",
+          "maxLength": 19,
+          "description": "数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807"
+        },
+        "authorizedStationId": {
+          "type": "string",
+          "pattern": "^[1-9][0-9]{0,18}$",
+          "maxLength": 19,
+          "description": "数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807"
+        }
+      }
+    },
+    "INTEGRATION_CONFIG": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "providerRunId",
+        "runId",
+        "ownerDeptId",
+        "adminToken",
+        "reviewerToken",
+        "readOnlyToken"
+      ],
+      "properties": {
+        "providerRunId": {
+          "type": "string"
+        },
+        "runId": {
+          "type": "string"
+        },
+        "ownerDeptId": {
+          "type": "string"
+        },
+        "adminToken": {
+          "type": "string"
+        },
+        "reviewerToken": {
+          "type": "string"
+        },
+        "readOnlyToken": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

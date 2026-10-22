@@ -1,0 +1,24 @@
+digraph G {
+graph [rankdir=TB,bgcolor="white",pad="0.3",nodesep="0.3",ranksep="0.45",fontname="Noto Sans CJK SC",label="F43 · 员工关联暂停、解除与重新核验",labelloc=t,fontsize=20];
+node [shape=box,style="rounded,filled",fillcolor="#F2F6FC",color="#B5C9E5",fontname="Noto Sans CJK SC",fontsize=12,margin=".15,.12"];
+edge [color="#607A9C",fontname="Noto Sans CJK SC",fontsize=10];
+n1 [label="后台核实异常并填写处理原因"];
+n2 [label="选择处理动作",shape=diamond];
+n3 [label="暂停：保留关系与唯一占用，拒绝工作"];
+n4 [label="解除：写撤销记录并阻止自动重绑"];
+n5 [label="允许重核：只清阻止，不直接恢复身份"];
+n6 [label="本人重新微信手机号授权"];
+n7 [label="重新核对唯一员工、账号关系与权限"];
+n8 [label="通过后恢复相同员工或新建合法关系"];
+n9 [label="有冲突保持拒绝；车主与在手任务不误删"];
+n1 -> n2 [label=""];
+n2 -> n3 [label="暂停"];
+n2 -> n4 [label="解除"];
+n2 -> n5 [label="允许重核"];
+n5 -> n6 [label=""];
+n6 -> n7 [label=""];
+n7 -> n8 [label="安全通过"];
+n7 -> n9 [label="冲突"];
+n3 -> n9 [label=""];
+n4 -> n9 [label=""];
+}

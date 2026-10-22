@@ -1,0 +1,587 @@
+[
+  {
+    "schema": "PaymentPolicyConfig",
+    "field": "offlineEnabled",
+    "type": "boolean",
+    "description": "见主PRD23字段表",
+    "saveRequired": true,
+    "publicationRule": "按配置kind、开启状态、供应商、模板模式及环境执行PRD23，不以草稿required替代发布校验",
+    "secret": false
+  },
+  {
+    "schema": "PaymentPolicyConfig",
+    "field": "wechatEnabled",
+    "type": "boolean",
+    "description": "见主PRD23字段表",
+    "saveRequired": true,
+    "publicationRule": "按配置kind、开启状态、供应商、模板模式及环境执行PRD23，不以草稿required替代发布校验",
+    "secret": false
+  },
+  {
+    "schema": "PaymentPolicyConfig",
+    "field": "wechatMerchant",
+    "type": "#/components/schemas/ConfigReference",
+    "description": "见主PRD23字段表",
+    "saveRequired": false,
+    "publicationRule": "按配置kind、开启状态、供应商、模板模式及环境执行PRD23，不以草稿required替代发布校验",
+    "secret": false
+  },
+  {
+    "schema": "PaymentPolicyConfig",
+    "field": "offlineInstructions",
+    "type": "string",
+    "description": "见主PRD23字段表",
+    "saveRequired": false,
+    "publicationRule": "按配置kind、开启状态、供应商、模板模式及环境执行PRD23，不以草稿required替代发布校验",
+    "secret": false
+  },
+  {
+    "schema": "PaymentPolicyConfig",
+    "field": "offlineCollectionMode",
+    "type": "string",
+    "description": "见主PRD23字段表",
+    "saveRequired": true,
+    "publicationRule": "按配置kind、开启状态、供应商、模板模式及环境执行PRD23，不以草稿required替代发布校验",
+    "secret": false
+  },
+  {
+    "schema": "PaymentPolicyConfig",
+    "field": "offlineReceiverName",
+    "type": "string",
+    "description": "见主PRD23字段表",
+    "saveRequired": false,
+    "publicationRule": "按配置kind、开启状态、供应商、模板模式及环境执行PRD23，不以草稿required替代发布校验",
+    "secret": false
+  },
+  {
+    "schema": "PaymentPolicyConfig",
+    "field": "offlineBankName",
+    "type": "string",
+    "description": "见主PRD23字段表",
+    "saveRequired": false,
+    "publicationRule": "按配置kind、开启状态、供应商、模板模式及环境执行PRD23，不以草稿required替代发布校验",
+    "secret": false
+  },
+  {
+    "schema": "PaymentPolicyConfig",
+    "field": "offlineMethods",
+    "type": "array",
+    "description": "启用线下时至少一种；CASH可在公司柜台办理，不允许个人代收",
+    "saveRequired": false,
+    "publicationRule": "按配置kind、开启状态、供应商、模板模式及环境执行PRD23，不以草稿required替代发布校验",
+    "secret": false
+  },
+  {
+    "schema": "PaymentPolicyConfig",
+    "field": "offlineContactName",
+    "type": "string",
+    "description": "见主PRD23字段表",
+    "saveRequired": false,
+    "publicationRule": "按配置kind、开启状态、供应商、模板模式及环境执行PRD23，不以草稿required替代发布校验",
+    "secret": false
+  },
+  {
+    "schema": "PaymentPolicyConfig",
+    "field": "offlineContactPhone",
+    "type": "string",
+    "description": "正式公开企业服务电话，不使用员工隐私号码",
+    "saveRequired": false,
+    "publicationRule": "按配置kind、开启状态、供应商、模板模式及环境执行PRD23，不以草稿required替代发布校验",
+    "secret": false
+  },
+  {
+    "schema": "PaymentPolicyConfig",
+    "field": "offlineAccountName",
+    "type": "string",
+    "description": "见主PRD23字段表",
+    "saveRequired": false,
+    "publicationRule": "按配置kind、开启状态、供应商、模板模式及环境执行PRD23，不以草稿required替代发布校验",
+    "secret": false
+  },
+  {
+    "schema": "WechatPayConfig",
+    "field": "merchantName",
+    "type": "string",
+    "description": "见主PRD23字段表",
+    "saveRequired": false,
+    "publicationRule": "按配置kind、开启状态、供应商、模板模式及环境执行PRD23，不以草稿required替代发布校验",
+    "secret": false
+  },
+  {
+    "schema": "WechatPayConfig",
+    "field": "mchid",
+    "type": "string",
+    "description": "见主PRD23字段表",
+    "saveRequired": false,
+    "publicationRule": "按配置kind、开启状态、供应商、模板模式及环境执行PRD23，不以草稿required替代发布校验",
+    "secret": false
+  },
+  {
+    "schema": "WechatPayConfig",
+    "field": "appProfile",
+    "type": "#/components/schemas/ConfigReference",
+    "description": "见主PRD23字段表",
+    "saveRequired": false,
+    "publicationRule": "按配置kind、开启状态、供应商、模板模式及环境执行PRD23，不以草稿required替代发布校验",
+    "secret": false
+  },
+  {
+    "schema": "WechatPayConfig",
+    "field": "merchantCertificateSerial",
+    "type": "string",
+    "description": "见主PRD23字段表",
+    "saveRequired": false,
+    "publicationRule": "按配置kind、开启状态、供应商、模板模式及环境执行PRD23，不以草稿required替代发布校验",
+    "secret": false
+  },
+  {
+    "schema": "WechatPayConfig",
+    "field": "verificationMode",
+    "type": "string",
+    "description": "见主PRD23字段表",
+    "saveRequired": false,
+    "publicationRule": "按配置kind、开启状态、供应商、模板模式及环境执行PRD23，不以草稿required替代发布校验",
+    "secret": false
+  },
+  {
+    "schema": "WechatPayConfig",
+    "field": "wechatPayPublicKeyId",
+    "type": "string",
+    "description": "见主PRD23字段表",
+    "saveRequired": false,
+    "publicationRule": "按配置kind、开启状态、供应商、模板模式及环境执行PRD23，不以草稿required替代发布校验",
+    "secret": false
+  },
+  {
+    "schema": "WechatPayConfig",
+    "field": "wechatPayPublicKeyPem",
+    "type": "string",
+    "description": "见主PRD23字段表",
+    "saveRequired": false,
+    "publicationRule": "按配置kind、开启状态、供应商、模板模式及环境执行PRD23，不以草稿required替代发布校验",
+    "secret": false
+  },
+  {
+    "schema": "WechatPayConfig",
+    "field": "platformCertificates",
+    "type": "array",
+    "description": "见主PRD23字段表",
+    "saveRequired": false,
+    "publicationRule": "按配置kind、开启状态、供应商、模板模式及环境执行PRD23，不以草稿required替代发布校验",
+    "secret": false
+  },
+  {
+    "schema": "WechatPayConfig",
+    "field": "merchantCertificatePem",
+    "type": "string",
+    "description": "见主PRD23字段表",
+    "saveRequired": false,
+    "publicationRule": "按配置kind、开启状态、供应商、模板模式及环境执行PRD23，不以草稿required替代发布校验",
+    "secret": false
+  },
+  {
+    "schema": "WechatPayConfig",
+    "field": "bindingAcknowledged",
+    "type": "boolean",
+    "description": "见主PRD23字段表",
+    "saveRequired": false,
+    "publicationRule": "按配置kind、开启状态、供应商、模板模式及环境执行PRD23，不以草稿required替代发布校验",
+    "secret": false
+  },
+  {
+    "schema": "WechatPayConfig",
+    "field": "bindingEvidenceId",
+    "type": "string",
+    "description": "内部Long对外十进制字符串",
+    "saveRequired": false,
+    "publicationRule": "按配置kind、开启状态、供应商、模板模式及环境执行PRD23，不以草稿required替代发布校验",
+    "secret": false
+  },
+  {
+    "schema": "TencentSmsConfig",
+    "field": "secretId",
+    "type": "string",
+    "description": "见主PRD23字段表",
+    "saveRequired": false,
+    "publicationRule": "按配置kind、开启状态、供应商、模板模式及环境执行PRD23，不以草稿required替代发布校验",
+    "secret": false
+  },
+  {
+    "schema": "TencentSmsConfig",
+    "field": "region",
+    "type": "string",
+    "description": "见主PRD23字段表",
+    "saveRequired": false,
+    "publicationRule": "按配置kind、开启状态、供应商、模板模式及环境执行PRD23，不以草稿required替代发布校验",
+    "secret": false
+  },
+  {
+    "schema": "TencentSmsConfig",
+    "field": "smsSdkAppId",
+    "type": "string",
+    "description": "见主PRD23字段表",
+    "saveRequired": false,
+    "publicationRule": "按配置kind、开启状态、供应商、模板模式及环境执行PRD23，不以草稿required替代发布校验",
+    "secret": false
+  },
+  {
+    "schema": "TencentSmsConfig",
+    "field": "apiVersion",
+    "type": "string",
+    "description": "见主PRD23字段表",
+    "saveRequired": true,
+    "publicationRule": "按配置kind、开启状态、供应商、模板模式及环境执行PRD23，不以草稿required替代发布校验",
+    "secret": false
+  },
+  {
+    "schema": "TencentSmsConfig",
+    "field": "signName",
+    "type": "string",
+    "description": "见主PRD23字段表",
+    "saveRequired": false,
+    "publicationRule": "按配置kind、开启状态、供应商、模板模式及环境执行PRD23，不以草稿required替代发布校验",
+    "secret": false
+  },
+  {
+    "schema": "TencentSmsConfig",
+    "field": "enabled",
+    "type": "boolean",
+    "description": "见主PRD23字段表",
+    "saveRequired": true,
+    "publicationRule": "按配置kind、开启状态、供应商、模板模式及环境执行PRD23，不以草稿required替代发布校验",
+    "secret": false
+  },
+  {
+    "schema": "AliyunSmsConfig",
+    "field": "accessKeyId",
+    "type": "string",
+    "description": "见主PRD23字段表",
+    "saveRequired": false,
+    "publicationRule": "按配置kind、开启状态、供应商、模板模式及环境执行PRD23，不以草稿required替代发布校验",
+    "secret": false
+  },
+  {
+    "schema": "AliyunSmsConfig",
+    "field": "region",
+    "type": "string",
+    "description": "见主PRD23字段表",
+    "saveRequired": false,
+    "publicationRule": "按配置kind、开启状态、供应商、模板模式及环境执行PRD23，不以草稿required替代发布校验",
+    "secret": false
+  },
+  {
+    "schema": "AliyunSmsConfig",
+    "field": "apiVersion",
+    "type": "string",
+    "description": "见主PRD23字段表",
+    "saveRequired": true,
+    "publicationRule": "按配置kind、开启状态、供应商、模板模式及环境执行PRD23，不以草稿required替代发布校验",
+    "secret": false
+  },
+  {
+    "schema": "AliyunSmsConfig",
+    "field": "signName",
+    "type": "string",
+    "description": "见主PRD23字段表",
+    "saveRequired": false,
+    "publicationRule": "按配置kind、开启状态、供应商、模板模式及环境执行PRD23，不以草稿required替代发布校验",
+    "secret": false
+  },
+  {
+    "schema": "AliyunSmsConfig",
+    "field": "enabled",
+    "type": "boolean",
+    "description": "见主PRD23字段表",
+    "saveRequired": true,
+    "publicationRule": "按配置kind、开启状态、供应商、模板模式及环境执行PRD23，不以草稿required替代发布校验",
+    "secret": false
+  },
+  {
+    "schema": "WechatAppConfig",
+    "field": "appId",
+    "type": "string",
+    "description": "见主PRD23字段表",
+    "saveRequired": false,
+    "publicationRule": "按配置kind、开启状态、供应商、模板模式及环境执行PRD23，不以草稿required替代发布校验",
+    "secret": false
+  },
+  {
+    "schema": "WechatAppConfig",
+    "field": "appName",
+    "type": "string",
+    "description": "见主PRD23字段表",
+    "saveRequired": false,
+    "publicationRule": "按配置kind、开启状态、供应商、模板模式及环境执行PRD23，不以草稿required替代发布校验",
+    "secret": false
+  },
+  {
+    "schema": "WechatAppConfig",
+    "field": "enabled",
+    "type": "boolean",
+    "description": "见主PRD23字段表",
+    "saveRequired": true,
+    "publicationRule": "按配置kind、开启状态、供应商、模板模式及环境执行PRD23，不以草稿required替代发布校验",
+    "secret": false
+  },
+  {
+    "schema": "SmsTemplateDraftRequest",
+    "field": "expectedVersion",
+    "type": "integer",
+    "description": "见主PRD23字段表",
+    "saveRequired": true,
+    "publicationRule": "按配置kind、开启状态、供应商、模板模式及环境执行PRD23，不以草稿required替代发布校验",
+    "secret": false
+  },
+  {
+    "schema": "SmsTemplateDraftRequest",
+    "field": "profile",
+    "type": "#/components/schemas/ConfigReference",
+    "description": "见主PRD23字段表",
+    "saveRequired": true,
+    "publicationRule": "按配置kind、开启状态、供应商、模板模式及环境执行PRD23，不以草稿required替代发布校验",
+    "secret": false
+  },
+  {
+    "schema": "SmsTemplateDraftRequest",
+    "field": "vendorTemplateId",
+    "type": "string",
+    "description": "见主PRD23字段表",
+    "saveRequired": false,
+    "publicationRule": "按配置kind、开启状态、供应商、模板模式及环境执行PRD23，不以草稿required替代发布校验",
+    "secret": false
+  },
+  {
+    "schema": "SmsTemplateDraftRequest",
+    "field": "approvedContent",
+    "type": "string",
+    "description": "见主PRD23字段表",
+    "saveRequired": false,
+    "publicationRule": "按配置kind、开启状态、供应商、模板模式及环境执行PRD23，不以草稿required替代发布校验",
+    "secret": false
+  },
+  {
+    "schema": "SmsTemplateDraftRequest",
+    "field": "enabled",
+    "type": "boolean",
+    "description": "见主PRD23字段表",
+    "saveRequired": true,
+    "publicationRule": "按配置kind、开启状态、供应商、模板模式及环境执行PRD23，不以草稿required替代发布校验",
+    "secret": false
+  },
+  {
+    "schema": "SmsTemplateDraftRequest",
+    "field": "reason",
+    "type": "string",
+    "description": "见主PRD23字段表",
+    "saveRequired": true,
+    "publicationRule": "按配置kind、开启状态、供应商、模板模式及环境执行PRD23，不以草稿required替代发布校验",
+    "secret": false
+  },
+  {
+    "schema": "SmsTemplateDraftRequest",
+    "field": "provider",
+    "type": "string",
+    "description": "见主PRD23字段表",
+    "saveRequired": true,
+    "publicationRule": "按配置kind、开启状态、供应商、模板模式及环境执行PRD23，不以草稿required替代发布校验",
+    "secret": false
+  },
+  {
+    "schema": "SmsTemplateDraftRequest",
+    "field": "signName",
+    "type": "string",
+    "description": "见主PRD23字段表",
+    "saveRequired": false,
+    "publicationRule": "按配置kind、开启状态、供应商、模板模式及环境执行PRD23，不以草稿required替代发布校验",
+    "secret": false
+  },
+  {
+    "schema": "SmsTemplateDraftRequest",
+    "field": "parameters",
+    "type": "array",
+    "description": "见主PRD23字段表",
+    "saveRequired": false,
+    "publicationRule": "按配置kind、开启状态、供应商、模板模式及环境执行PRD23，不以草稿required替代发布校验",
+    "secret": false
+  },
+  {
+    "schema": "SubscribeTemplateDraftRequest",
+    "field": "expectedVersion",
+    "type": "integer",
+    "description": "见主PRD23字段表",
+    "saveRequired": true,
+    "publicationRule": "按配置kind、开启状态、供应商、模板模式及环境执行PRD23，不以草稿required替代发布校验",
+    "secret": false
+  },
+  {
+    "schema": "SubscribeTemplateDraftRequest",
+    "field": "profile",
+    "type": "#/components/schemas/ConfigReference",
+    "description": "见主PRD23字段表",
+    "saveRequired": true,
+    "publicationRule": "按配置kind、开启状态、供应商、模板模式及环境执行PRD23，不以草稿required替代发布校验",
+    "secret": false
+  },
+  {
+    "schema": "SubscribeTemplateDraftRequest",
+    "field": "vendorTemplateId",
+    "type": "string",
+    "description": "见主PRD23字段表",
+    "saveRequired": false,
+    "publicationRule": "按配置kind、开启状态、供应商、模板模式及环境执行PRD23，不以草稿required替代发布校验",
+    "secret": false
+  },
+  {
+    "schema": "SubscribeTemplateDraftRequest",
+    "field": "approvedContent",
+    "type": "string",
+    "description": "见主PRD23字段表",
+    "saveRequired": false,
+    "publicationRule": "按配置kind、开启状态、供应商、模板模式及环境执行PRD23，不以草稿required替代发布校验",
+    "secret": false
+  },
+  {
+    "schema": "SubscribeTemplateDraftRequest",
+    "field": "enabled",
+    "type": "boolean",
+    "description": "见主PRD23字段表",
+    "saveRequired": true,
+    "publicationRule": "按配置kind、开启状态、供应商、模板模式及环境执行PRD23，不以草稿required替代发布校验",
+    "secret": false
+  },
+  {
+    "schema": "SubscribeTemplateDraftRequest",
+    "field": "reason",
+    "type": "string",
+    "description": "见主PRD23字段表",
+    "saveRequired": true,
+    "publicationRule": "按配置kind、开启状态、供应商、模板模式及环境执行PRD23，不以草稿required替代发布校验",
+    "secret": false
+  },
+  {
+    "schema": "SubscribeTemplateDraftRequest",
+    "field": "provider",
+    "type": "string",
+    "description": "见主PRD23字段表",
+    "saveRequired": true,
+    "publicationRule": "按配置kind、开启状态、供应商、模板模式及环境执行PRD23，不以草稿required替代发布校验",
+    "secret": false
+  },
+  {
+    "schema": "SubscribeTemplateDraftRequest",
+    "field": "parameters",
+    "type": "array",
+    "description": "见主PRD23字段表",
+    "saveRequired": false,
+    "publicationRule": "按配置kind、开启状态、供应商、模板模式及环境执行PRD23，不以草稿required替代发布校验",
+    "secret": false
+  },
+  {
+    "schema": "SubscribeTemplateDraftRequest",
+    "field": "pageRoute",
+    "type": "string",
+    "description": "见主PRD23字段表",
+    "saveRequired": false,
+    "publicationRule": "按配置kind、开启状态、供应商、模板模式及环境执行PRD23，不以草稿required替代发布校验",
+    "secret": false
+  },
+  {
+    "schema": "SubscribeTemplateDraftRequest",
+    "field": "pageParameterKeys",
+    "type": "array",
+    "description": "见主PRD23字段表",
+    "saveRequired": false,
+    "publicationRule": "按配置kind、开启状态、供应商、模板模式及环境执行PRD23，不以草稿required替代发布校验",
+    "secret": false
+  },
+  {
+    "schema": "SubscribeTemplateDraftRequest",
+    "field": "miniProgramState",
+    "type": "string",
+    "description": "见主PRD23字段表",
+    "saveRequired": false,
+    "publicationRule": "按配置kind、开启状态、供应商、模板模式及环境执行PRD23，不以草稿required替代发布校验",
+    "secret": false
+  },
+  {
+    "schema": "SubscribeTemplateDraftRequest",
+    "field": "lang",
+    "type": "string",
+    "description": "见主PRD23字段表",
+    "saveRequired": false,
+    "publicationRule": "按配置kind、开启状态、供应商、模板模式及环境执行PRD23，不以草稿required替代发布校验",
+    "secret": false
+  },
+  {
+    "schema": "SubscribeTemplateDraftRequest",
+    "field": "subscriptionType",
+    "type": "string",
+    "description": "见主PRD23字段表",
+    "saveRequired": false,
+    "publicationRule": "按配置kind、开启状态、供应商、模板模式及环境执行PRD23，不以草稿required替代发布校验",
+    "secret": false
+  },
+  {
+    "schema": "SubscribeTemplateDraftRequest",
+    "field": "longTermQualificationEvidenceId",
+    "type": "string",
+    "description": "内部Long对外十进制字符串",
+    "saveRequired": false,
+    "publicationRule": "按配置kind、开启状态、供应商、模板模式及环境执行PRD23，不以草稿required替代发布校验",
+    "secret": false
+  },
+  {
+    "kind": "PAYMENT_POLICY",
+    "field": "credentials.offlineBankAccount",
+    "type": "SecretMutation",
+    "secret": true,
+    "writeOnly": true,
+    "read": "SecretState",
+    "publicationRule": "开启且此模式需用时必须有有效已配值；不接受掩码，KEEP保留，CLEAR有依赖拒绝"
+  },
+  {
+    "kind": "WECHAT_PAY",
+    "field": "credentials.merchantPrivateKey",
+    "type": "SecretMutation",
+    "secret": true,
+    "writeOnly": true,
+    "read": "SecretState",
+    "publicationRule": "开启且此模式需用时必须有有效已配值；不接受掩码，KEEP保留，CLEAR有依赖拒绝"
+  },
+  {
+    "kind": "WECHAT_PAY",
+    "field": "credentials.apiV3Key",
+    "type": "SecretMutation",
+    "secret": true,
+    "writeOnly": true,
+    "read": "SecretState",
+    "publicationRule": "开启且此模式需用时必须有有效已配值；不接受掩码，KEEP保留，CLEAR有依赖拒绝"
+  },
+  {
+    "kind": "TENCENT_SMS",
+    "field": "credentials.secretKey",
+    "type": "SecretMutation",
+    "secret": true,
+    "writeOnly": true,
+    "read": "SecretState",
+    "publicationRule": "开启且此模式需用时必须有有效已配值；不接受掩码，KEEP保留，CLEAR有依赖拒绝"
+  },
+  {
+    "kind": "ALIYUN_SMS",
+    "field": "credentials.accessKeySecret",
+    "type": "SecretMutation",
+    "secret": true,
+    "writeOnly": true,
+    "read": "SecretState",
+    "publicationRule": "开启且此模式需用时必须有有效已配值；不接受掩码，KEEP保留，CLEAR有依赖拒绝"
+  },
+  {
+    "kind": "WECHAT_APP",
+    "field": "credentials.appSecret",
+    "type": "SecretMutation",
+    "secret": true,
+    "writeOnly": true,
+    "read": "SecretState",
+    "publicationRule": "开启且此模式需用时必须有有效已配值；不接受掩码，KEEP保留，CLEAR有依赖拒绝"
+  }
+]

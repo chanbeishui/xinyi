@@ -1,0 +1,80 @@
+[
+  {
+    "id": "O23",
+    "name": "服务争议",
+    "status": "有效·V6.4",
+    "fields": "类型、描述、凭证、处理结果",
+    "actions": "提交、补充、查看结论",
+    "guards": "不能通过confirmResult=DISPUTE却直接完成；非可拍照的态度/失联问题允许说明，3张照片作为建议而非阻止求助",
+    "flows": "F19/F21",
+    "source": "V2原页 O23",
+    "base": "O23",
+    "state": "default",
+    "kind": "page"
+  },
+  {
+    "id": "O23-progress",
+    "name": "争议处理进度",
+    "status": "有效·V6.4",
+    "fields": "类型、描述、凭证、处理结果",
+    "actions": "提交、补充、查看结论",
+    "guards": "不能通过confirmResult=DISPUTE却直接完成；非可拍照的态度/失联问题允许说明，3张照片作为建议而非阻止求助",
+    "flows": "F19/F21",
+    "source": "PRD O23 的状态/弹窗展开；不新增业务范围",
+    "base": "O23",
+    "state": "progress",
+    "kind": "state"
+  },
+  {
+    "id": "D24",
+    "name": "普通服务异常",
+    "status": "有效·V6.4",
+    "fields": "联系不上、站点拒收、资料问题、其他非事故服务事项",
+    "actions": "提交事实、联系运营",
+    "guards": "删除交通事故/理赔字段；不自动定责；需要立即求助时不因必须3张照片阻塞",
+    "flows": "F21",
+    "source": "V2原页 D24",
+    "base": "D24",
+    "state": "default",
+    "kind": "page"
+  },
+  {
+    "id": "S14",
+    "name": "退款与服务异常",
+    "status": "有效·V6.4",
+    "fields": "授权范围的申请与工单、处置状态",
+    "actions": "查看、协助、按功能权限操作",
+    "guards": "跨站不代表有退款审批权限；剔除事故理赔事项",
+    "flows": "F20/F21",
+    "source": "V2原页 S14",
+    "base": "S14",
+    "state": "default",
+    "kind": "page"
+  },
+  {
+    "id": "B15",
+    "name": "普通异常与争议工单",
+    "status": "有效·V6.4",
+    "fields": "类型、说明、照片、保管方、订单和处置结论",
+    "actions": "协助、记录结论、转取消/退款审核",
+    "guards": "删除交通事故、保单、理赔、赔付、追偿；不能自动定责",
+    "flows": "F19/F21",
+    "source": "V2原页 B15",
+    "base": "B15",
+    "state": "default",
+    "kind": "page"
+  },
+  {
+    "id": "B15-detail",
+    "name": "服务工单处置抽屉",
+    "status": "有效·V6.4",
+    "fields": "类型、说明、照片、保管方、订单和处置结论",
+    "actions": "协助、记录结论、转取消/退款审核",
+    "guards": "删除交通事故、保单、理赔、赔付、追偿；不能自动定责",
+    "flows": "F19/F21",
+    "source": "PRD B15 的状态/弹窗展开；不新增业务范围",
+    "base": "B15",
+    "state": "detail",
+    "kind": "state"
+  }
+]

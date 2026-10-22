@@ -1,0 +1,24 @@
+digraph G {
+graph [rankdir=TB,bgcolor="white",pad="0.3",nodesep="0.3",ranksep="0.45",fontname="Noto Sans CJK SC",label="F12 · 未接车取消与退款·一次审核",labelloc=t,fontsize=20];
+node [shape=box,style="rounded,filled",fillcolor="#F2F6FC",color="#B5C9E5",fontname="Noto Sans CJK SC",fontsize=12,margin=".15,.12"];
+edge [color="#607A9C",fontname="Noto Sans CJK SC",fontsize=10];
+n1 [label="车主提交取消并退款申请"];
+n2 [label="平台打开同一份售后单"];
+n3 [label="重读订单、车辆保管、可退余额"];
+n4 [label="是否批准？",shape=diamond];
+n5 [label="记录驳回原因，保持原履约事实"];
+n6 [label="一次决定取消与批准退款金额"];
+n7 [label="原子保存决定、金额预留、取消订单"];
+n8 [label="撤销对应邀约/承接，释放未用名额"];
+n9 [label="执行原批准退款，不再审核一次"];
+n10 [label="查询原退款，确认成功后办结"];
+n1 -> n2 [label=""];
+n2 -> n3 [label=""];
+n3 -> n4 [label=""];
+n4 -> n5 [label="否"];
+n4 -> n6 [label="是"];
+n6 -> n7 [label=""];
+n7 -> n8 [label=""];
+n8 -> n9 [label=""];
+n9 -> n10 [label=""];
+}

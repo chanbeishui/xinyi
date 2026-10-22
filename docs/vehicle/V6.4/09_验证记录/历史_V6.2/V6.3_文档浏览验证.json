@@ -1,0 +1,39 @@
+{
+  "kind": "DOCUMENT_BROWSER_CHECK",
+  "at": "2026-10-22T09:16:26.223988+00:00",
+  "scope": "current docs/catalog navigation only; no runtime backend",
+  "browser": "Chromium/Playwright",
+  "browserPath": "Browser has read-tab tools only, no control runtime/skill; local Playwright",
+  "checks": [
+    {
+      "name": "current home title, meaningful content and preserve-progress notice",
+      "result": "PASS",
+      "url": "about:blank"
+    },
+    {
+      "name": "78-task catalog searches current I05 auto-link implementation",
+      "result": "PASS"
+    },
+    {
+      "name": "252 API catalog filters and expands new employee-link contract",
+      "result": "PASS"
+    },
+    {
+      "name": "299 board catalog can locate pre-login staff station assignment",
+      "result": "PASS"
+    },
+    {
+      "name": "390px home no horizontal overflow",
+      "result": "PASS"
+    },
+    {
+      "name": "no JavaScript page errors in current document controls",
+      "result": "PASS"
+    }
+  ],
+  "directNavigation": "BLOCKED_ENVIRONMENT",
+  "consoleErrors": [],
+  "navigationError": "Page.goto: net::ERR_BLOCKED_BY_ADMINISTRATOR at file:///mnt/data/v62_work/%E6%9C%BA%E5%8A%A8%E8%BD%A6%E6%A3%80%E6%B5%8B%E9%A2%84%E7%BA%A6_%E5%AE%8C%E6%95%B4%E5%BC%80%E5%8F%91%E8%B5%84%E6%96%99%E5%8C%85_V6.2_%E8%BA%AB%E4%BB%BD%E6%B5%81%E7%A8%8B%E6%95%B4%E5%90%88%E7%89%88/00_%E5%BC%80%E5%A7%8B.html\nCall log:\n  - navigating to \"file:///mnt/data/v62_work/%E6%9C%BA%E5%8A%A8%E8%BD%A6%E6%A3%80%E6%B5%8B%E9%A2%84%E7%BA%A6_%E5%AE%8C%E6%95%B4%E5%BC%80%E5%8F%91%E8%B5%84%E6%96%99%E5%8C%85_V6.2_%E8%BA%AB%E4%BB%BD%E6%B5%81%E7%A8%8B%E6%95%B4%E5%90%88%E7%89%88/00_%E5%BC%80%E5%A7%8B.html\", waiting until \"load\"\n",
+  "passed": 6,
+  "failed": 0
+}

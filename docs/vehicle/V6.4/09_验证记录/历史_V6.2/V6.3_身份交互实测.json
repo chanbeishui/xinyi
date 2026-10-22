@@ -1,0 +1,67 @@
+{
+  "scope": "PLAYWRIGHT_UI_ONLY",
+  "browser": "Chromium; original single HTML set_content; Browser control runtime unavailable in this chat",
+  "pass": 13,
+  "fail": 0,
+  "checks": [
+    {
+      "name": "U01 新号默认车主、无角色注册",
+      "result": "PASS"
+    },
+    {
+      "name": "U02 未获司机角色仍有申请入口",
+      "result": "PASS"
+    },
+    {
+      "name": "U03 员工自动关联不免代驾审核",
+      "result": "PASS"
+    },
+    {
+      "name": "U04 员工已关联无站点不可工作",
+      "result": "PASS"
+    },
+    {
+      "name": "U05 后台先授权未登录员工，之后自动工作",
+      "result": "PASS"
+    },
+    {
+      "name": "U06 重号冲突不泄候选、车主仍可用",
+      "result": "PASS"
+    },
+    {
+      "name": "U07 已关联冲突不授予工作",
+      "result": "PASS"
+    },
+    {
+      "name": "U08 管理员解除后再次授权不自动复活",
+      "result": "PASS"
+    },
+    {
+      "name": "U09 允许重核后必须本人新授权",
+      "result": "PASS"
+    },
+    {
+      "name": "U10 拒绝授权不伪造登录",
+      "result": "PASS"
+    },
+    {
+      "name": "U11 直接调用角色切换不能免审核",
+      "result": "PASS"
+    },
+    {
+      "name": "U12 旧凭证演示动作不再绑定",
+      "result": "PASS"
+    },
+    {
+      "name": "U13 新身份页面截图与可见内容",
+      "result": "PASS"
+    }
+  ],
+  "pageErrors": [],
+  "notCovered": [
+    "WeChat authorization",
+    "real backend authentication",
+    "database transactions",
+    "live framework"
+  ]
+}

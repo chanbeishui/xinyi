@@ -1,0 +1,57 @@
+{
+  "edition": "V6.1",
+  "architecture": "T3.1",
+  "changed_scope": "framework-only M0 start and source baseline; safe instructions, task setup, docs",
+  "source_branch": "rongli-wx",
+  "source_commit": "890cfbbfc5e0db404a932ab5ef8b449d07c7f444",
+  "user_declared_M0": "NOT_STARTED",
+  "runtime_M0_completion": "NOT_INFERRED",
+  "checks": {
+    "tools_pytest": {
+      "passed": 72,
+      "warnings": 12,
+      "scope": "synthetic worktree and offline contract/simulator",
+      "report": "V6.1_工具回归.xml"
+    },
+    "engineering_static": {
+      "passed": 34,
+      "failed": 0,
+      "report": "V6.1_工程一致性检查.json"
+    },
+    "document_static": {
+      "passed": 42,
+      "failed": 0,
+      "report": "资料深度一致性检查.json"
+    },
+    "contract_samples": {
+      "passed": 51,
+      "failed": 0,
+      "report": "契约样本与负向字段测试.json"
+    },
+    "document_browser": {
+      "passed": 5,
+      "failed": 0,
+      "direct_file_navigation": "BLOCKED_BY_ENVIRONMENT",
+      "report": "V6.1_文档浏览验证.json"
+    }
+  },
+  "not_run": [
+    "actual xinyi build",
+    "user database observation",
+    "MySQL bootstrap or transaction tests",
+    "full uni-app build",
+    "real HTTP integration",
+    "WeChat devices",
+    "real payment and providers"
+  ],
+  "task_initial_state": "78 NOT_ASSESSED; first E00",
+  "source_cases": "298 NOT_RUN",
+  "ui": "unchanged 287 boards / 574 screenshots; not re-rendered this turn",
+  "component_versions": {
+    "business_contract": "V6.0",
+    "data_model": "V6.0",
+    "engineering": "V6.1",
+    "architecture": "T3.1"
+  },
+  "timestamp": "2026-10-20T07:03:01.800637+00:00"
+}

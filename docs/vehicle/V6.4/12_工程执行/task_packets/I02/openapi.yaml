@@ -1,0 +1,1248 @@
+openapi: 3.0.3
+info:
+  title: I02 手机号验证回执与自动关联触发
+  version: 6.4.0
+servers:
+- url: http://localhost:8080
+  description: 本地Java直连；paths已包含/api，不再次追加
+- url: https://{host}
+  description: 发布域名仅作部署变量；由环境设置真实已备案域名，代理保留/api
+  variables:
+    host:
+      default: api.example.invalid
+      description: 占位不可用于真实支付或发布
+paths:
+  /api/common/phone/bind:
+    post:
+      operationId: API_002_post
+      summary: 核验手机号并自动识别已有员工
+      tags:
+      - ACCOUNT
+      description: 核验微信手机号→保存手机号验证事实→唯一有效员工自动关联；匹配失败/重号/旧绑定冲突不覆盖，不阻断OWNER。详见T3.4自动关联事务与恢复。
+        verificationRequestId使用专用凭据回执去重；不进入通用幂等响应缓存；一次性phoneCode只换取一次，失败未知查回执或新授权。
+      x-flow-ids:
+      - F02
+      security:
+      - MiniBearerAuth: []
+      responses:
+        '200':
+          description: 服务端成功结果；不缓存身份响应
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+                enum:
+                - no-store
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                properties:
+                  code:
+                    type: integer
+                    enum:
+                    - 200
+                  msg:
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/PhoneBindResult'
+                required:
+                - code
+                - msg
+                - data
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalError'
+        '503':
+          $ref: '#/components/responses/Unavailable'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+      parameters:
+      - name: X-Client-Type
+        in: header
+        required: true
+        schema:
+          type: string
+          enum:
+          - owner
+          - driver
+          - station
+          - admin
+        description: 仅审计来源，不作为授权；须匹配服务端会话视角
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PhoneRequest'
+      x-capability: COMMON_PHONE_CREATE
+      x-authorization:
+        realm: MINI
+        scope: AUTHENTICATED_SELF_ALLOW_PHONE_UNBOUND
+        capability: COMMON_PHONE_CREATE
+      x-error-codes:
+      - VI_REQUEST_INVALID
+      - VI_AUTH_REQUIRED
+      - VI_TOKEN_REALM_MISMATCH
+      - VI_REFRESH_REUSED
+      - VI_FORBIDDEN
+      - VI_SELF_REVIEW_DENIED
+      - VI_VERSION_CONFLICT
+      - VI_STATE_CONFLICT
+      - VI_IDEMPOTENCY_CONFLICT
+      - VI_SELECTION_CONFLICT
+      - VI_CONTEXT_CHANGED
+      - VI_SNAPSHOT_CHANGED
+      - VI_DATA_INVALID
+      - VI_EVIDENCE_INCOMPLETE
+      - VI_HANDOVER_CODE_INVALID
+      - VI_HANDOVER_LOCKED
+      - VI_UNPRICED_LINES
+      - VI_REFUND_LIMIT
+      - VI_PAYMENT_LIMIT
+      - VI_SERVICE_UNAVAILABLE
+      - VI_CAPABILITY_NOT_CONFIGURED
+      - VI_TRAINING_NOT_READY
+      - VI_RATE_LIMITED
+      - VI_INTERNAL_ERROR
+      - VI_AUTHORITY_UNAVAILABLE
+      - VI_UPSTREAM_UNAVAILABLE
+      - VI_PHONE_PROOF_REQUIRED
+      - VI_PHONE_PROOF_REUSED
+      x-error-policy: GLOBAL_FAILURES_NO_RESOURCE_404
+      x-contract-baseline: V6.4
+      x-idempotency:
+        mode: PHONE_VERIFICATION_RECEIPT
+        key: accountId + verificationRequestId
+        credentialReplayGuard: appId + SHA256(phoneCode)
+        storeRawCredential: false
+        cacheTokens: false
+        recovery: 本人手机号回执查询；需要先使用refreshToken获取当前会话，不重新消费phoneCode
+  /api/common/phone/sms/send:
+    post:
+      operationId: API_003_post
+      summary: 短信兜底发送
+      tags:
+      - ACCOUNT
+      description: '流程：F02。
+
+        参数校验、真实归属、服务端当前状态/版本先于写入；不接受主体伪造。；仅已有微信MINI会话的普通手机号兜底，不新增员工关联；改变验证号码须立即暂停旧员工工作能力。
+        V6.4：按当前已发布LOGIN_OTP/PHONE_VERIFY路由调用腾讯云或阿里云；未配置拒绝并提示，禁止固定成功；验证码限频/TTL/一次消费，明文不落日志；短信核验不触发员工自动关联。'
+      x-flow-ids:
+      - F02
+      security:
+      - MiniBearerAuth: []
+      responses:
+        '200':
+          description: 操作成功；领域校验后返回真实结果
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    enum:
+                    - 200
+                  msg:
+                    type: string
+                  data:
+                    allOf:
+                    - $ref: '#/components/schemas/Ack'
+                    nullable: true
+                    type: object
+                additionalProperties: false
+                required:
+                - code
+                - msg
+                - data
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+                enum:
+                - no-store
+              description: 身份/交易/个人业务响应不缓存
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalError'
+        '503':
+          $ref: '#/components/responses/Unavailable'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+      parameters:
+      - name: Idempotency-Key
+        in: header
+        required: true
+        schema:
+          type: string
+          description: UUID；按主体+动作+资源+键及请求摘要保存首次结果；同键不同体409，至少24h，资金/交接另有永久业务去重
+      - name: X-Client-Type
+        in: header
+        required: true
+        schema:
+          type: string
+          enum:
+          - owner
+          - driver
+          - station
+          - admin
+        description: 仅审计来源，不作为授权；须匹配服务端会话视角
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SmsSend'
+      x-capability: COMMON_PHONE_SEND
+      x-authorization:
+        realm: MINI
+        scope: SESSION_OR_EXPLICIT_OBJECT_POLICY
+        capability: COMMON_PHONE_SEND
+      x-error-codes:
+      - VI_REQUEST_INVALID
+      - VI_AUTH_REQUIRED
+      - VI_TOKEN_REALM_MISMATCH
+      - VI_REFRESH_REUSED
+      - VI_FORBIDDEN
+      - VI_SELF_REVIEW_DENIED
+      - VI_VERSION_CONFLICT
+      - VI_STATE_CONFLICT
+      - VI_IDEMPOTENCY_CONFLICT
+      - VI_SELECTION_CONFLICT
+      - VI_CONTEXT_CHANGED
+      - VI_SNAPSHOT_CHANGED
+      - VI_DATA_INVALID
+      - VI_EVIDENCE_INCOMPLETE
+      - VI_HANDOVER_CODE_INVALID
+      - VI_HANDOVER_LOCKED
+      - VI_UNPRICED_LINES
+      - VI_REFUND_LIMIT
+      - VI_PAYMENT_LIMIT
+      - VI_SERVICE_UNAVAILABLE
+      - VI_CAPABILITY_NOT_CONFIGURED
+      - VI_TRAINING_NOT_READY
+      - VI_RATE_LIMITED
+      - VI_INTERNAL_ERROR
+      - VI_AUTHORITY_UNAVAILABLE
+      - VI_UPSTREAM_UNAVAILABLE
+      x-error-policy: GLOBAL_FAILURES_NO_RESOURCE_404
+      x-contract-baseline: V6.4
+  /api/common/phone/sms/verify:
+    post:
+      operationId: API_004_post
+      summary: 短信兜底核验
+      tags:
+      - ACCOUNT
+      description: '流程：F02。
+
+        参数校验、真实归属、服务端当前状态/版本先于写入；不接受主体伪造。；仅已有微信MINI会话的普通手机号兜底，不新增员工关联；改变验证号码须立即暂停旧员工工作能力。
+        V6.4：按当前已发布LOGIN_OTP/PHONE_VERIFY路由调用腾讯云或阿里云；未配置拒绝并提示，禁止固定成功；验证码限频/TTL/一次消费，明文不落日志；短信核验不触发员工自动关联。'
+      x-flow-ids:
+      - F02
+      security:
+      - MiniBearerAuth: []
+      responses:
+        '200':
+          description: 操作成功；领域校验后返回真实结果
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    enum:
+                    - 200
+                  msg:
+                    type: string
+                  data:
+                    allOf:
+                    - $ref: '#/components/schemas/Profile'
+                    nullable: true
+                    type: object
+                additionalProperties: false
+                required:
+                - code
+                - msg
+                - data
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+                enum:
+                - no-store
+              description: 身份/交易/个人业务响应不缓存
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalError'
+        '503':
+          $ref: '#/components/responses/Unavailable'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+      parameters:
+      - name: Idempotency-Key
+        in: header
+        required: true
+        schema:
+          type: string
+          description: UUID；按主体+动作+资源+键及请求摘要保存首次结果；同键不同体409，至少24h，资金/交接另有永久业务去重
+      - name: X-Client-Type
+        in: header
+        required: true
+        schema:
+          type: string
+          enum:
+          - owner
+          - driver
+          - station
+          - admin
+        description: 仅审计来源，不作为授权；须匹配服务端会话视角
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SmsVerify'
+      x-capability: COMMON_PHONE_VERIFY
+      x-authorization:
+        realm: MINI
+        scope: SESSION_OR_EXPLICIT_OBJECT_POLICY
+        capability: COMMON_PHONE_VERIFY
+      x-error-codes:
+      - VI_REQUEST_INVALID
+      - VI_AUTH_REQUIRED
+      - VI_TOKEN_REALM_MISMATCH
+      - VI_REFRESH_REUSED
+      - VI_FORBIDDEN
+      - VI_SELF_REVIEW_DENIED
+      - VI_VERSION_CONFLICT
+      - VI_STATE_CONFLICT
+      - VI_IDEMPOTENCY_CONFLICT
+      - VI_SELECTION_CONFLICT
+      - VI_CONTEXT_CHANGED
+      - VI_SNAPSHOT_CHANGED
+      - VI_DATA_INVALID
+      - VI_EVIDENCE_INCOMPLETE
+      - VI_HANDOVER_CODE_INVALID
+      - VI_HANDOVER_LOCKED
+      - VI_UNPRICED_LINES
+      - VI_REFUND_LIMIT
+      - VI_PAYMENT_LIMIT
+      - VI_SERVICE_UNAVAILABLE
+      - VI_CAPABILITY_NOT_CONFIGURED
+      - VI_TRAINING_NOT_READY
+      - VI_RATE_LIMITED
+      - VI_INTERNAL_ERROR
+      - VI_AUTHORITY_UNAVAILABLE
+      - VI_UPSTREAM_UNAVAILABLE
+      x-error-policy: GLOBAL_FAILURES_NO_RESOURCE_404
+      x-contract-baseline: V6.4
+  /api/app/owner/profile:
+    patch:
+      operationId: API_012_patch
+      summary: 修改选填档案
+      tags:
+      - OWNER
+      description: '流程：F02。
+
+        参数校验、真实归属、服务端当前状态/版本先于写入；不接受主体伪造。'
+      x-flow-ids:
+      - F02
+      security:
+      - MiniBearerAuth: []
+      responses:
+        '200':
+          description: 操作成功；领域校验后返回真实结果
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    enum:
+                    - 200
+                  msg:
+                    type: string
+                  data:
+                    allOf:
+                    - $ref: '#/components/schemas/Profile'
+                    nullable: true
+                    type: object
+                additionalProperties: false
+                required:
+                - code
+                - msg
+                - data
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+                enum:
+                - no-store
+              description: 身份/交易/个人业务响应不缓存
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalError'
+        '503':
+          $ref: '#/components/responses/Unavailable'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+      parameters:
+      - name: Idempotency-Key
+        in: header
+        required: true
+        schema:
+          type: string
+          description: UUID；按主体+动作+资源+键及请求摘要保存首次结果；同键不同体409，至少24h，资金/交接另有永久业务去重
+      - name: X-Client-Type
+        in: header
+        required: true
+        schema:
+          type: string
+          enum:
+          - owner
+          - driver
+          - station
+          - admin
+        description: 仅审计来源，不作为授权；须匹配服务端会话视角
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProfilePatch'
+      x-capability: OWNER_PROFILE_EDIT
+      x-authorization:
+        realm: MINI
+        scope: OWN_ACCOUNT_RESOURCE
+        activeRole: OWNER
+        capability: OWNER_PROFILE_EDIT
+      x-error-codes:
+      - VI_REQUEST_INVALID
+      - VI_AUTH_REQUIRED
+      - VI_TOKEN_REALM_MISMATCH
+      - VI_REFRESH_REUSED
+      - VI_FORBIDDEN
+      - VI_SELF_REVIEW_DENIED
+      - VI_VERSION_CONFLICT
+      - VI_STATE_CONFLICT
+      - VI_IDEMPOTENCY_CONFLICT
+      - VI_SELECTION_CONFLICT
+      - VI_CONTEXT_CHANGED
+      - VI_SNAPSHOT_CHANGED
+      - VI_DATA_INVALID
+      - VI_EVIDENCE_INCOMPLETE
+      - VI_HANDOVER_CODE_INVALID
+      - VI_HANDOVER_LOCKED
+      - VI_UNPRICED_LINES
+      - VI_REFUND_LIMIT
+      - VI_PAYMENT_LIMIT
+      - VI_SERVICE_UNAVAILABLE
+      - VI_CAPABILITY_NOT_CONFIGURED
+      - VI_TRAINING_NOT_READY
+      - VI_RATE_LIMITED
+      - VI_INTERNAL_ERROR
+      - VI_AUTHORITY_UNAVAILABLE
+      - VI_UPSTREAM_UNAVAILABLE
+      x-error-policy: GLOBAL_FAILURES_NO_RESOURCE_404
+      x-contract-baseline: V6.4
+  /api/common/phone/verifications/{verificationRequestId}:
+    get:
+      operationId: v62_get_phone_verification
+      summary: 查询本人手机号授权处理结果
+      tags:
+      - 身份与站点授权
+      description: 查询本人手机号授权处理结果；状态/版本/真实归属由服务端检查，结果不代表自动获得代驾资格。
+      x-flow-ids:
+      - F02
+      security:
+      - MiniBearerAuth: []
+      responses:
+        '200':
+          description: 服务端成功结果；不缓存身份响应
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+                enum:
+                - no-store
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                properties:
+                  code:
+                    type: integer
+                    enum:
+                    - 200
+                  msg:
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/PhoneBindResult'
+                required:
+                - code
+                - msg
+                - data
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalError'
+        '503':
+          $ref: '#/components/responses/Unavailable'
+      parameters:
+      - name: verificationRequestId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      x-authorization:
+        realm: MINI
+        scope: SELF
+        capability: COMMON_PHONE_CREATE
+      x-error-codes:
+      - VI_REQUEST_INVALID
+      - VI_AUTH_REQUIRED
+      - VI_TOKEN_REALM_MISMATCH
+      - VI_REFRESH_REUSED
+      - VI_FORBIDDEN
+      - VI_SELF_REVIEW_DENIED
+      - VI_RATE_LIMITED
+      - VI_INTERNAL_ERROR
+      - VI_AUTHORITY_UNAVAILABLE
+      - VI_UPSTREAM_UNAVAILABLE
+      x-error-policy: GLOBAL_FAILURES_NO_RESOURCE_404
+      x-contract-baseline: V6.4
+      x-capability: COMMON_PHONE_CREATE
+components:
+  responses:
+    Unavailable:
+      description: 权限权威状态暂不可读取。参见errorCode注册表；HTTP状态与code一致。
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+          example:
+            code: 503
+            errorCode: VI_AUTHORITY_UNAVAILABLE
+            msg: 权限权威状态暂不可读取
+            requestId: req-example
+            retryable: true
+            retryAfterSeconds: null
+            data: {}
+      headers:
+        Retry-After:
+          description: 建议等待秒数；429必带，503仅在可估计时返回
+          schema:
+            type: integer
+            minimum: 1
+    InternalError:
+      description: 处理失败，请联系服务人员。参见errorCode注册表；HTTP状态与code一致。
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+          example:
+            code: 500
+            errorCode: VI_INTERNAL_ERROR
+            msg: 处理失败，请联系服务人员
+            requestId: req-example
+            retryable: false
+            retryAfterSeconds: null
+            data: {}
+    TooManyRequests:
+      description: 操作过于频繁，请稍后重试。参见errorCode注册表；HTTP状态与code一致。
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+          example:
+            code: 429
+            errorCode: VI_RATE_LIMITED
+            msg: 操作过于频繁，请稍后重试
+            requestId: req-example
+            retryable: true
+            retryAfterSeconds: 10
+            data: {}
+      headers:
+        Retry-After:
+          description: 建议等待秒数；429必带，503仅在可估计时返回
+          schema:
+            type: integer
+            minimum: 1
+    Forbidden:
+      description: 没有执行此操作的权限。参见errorCode注册表；HTTP状态与code一致。
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+          example:
+            code: 403
+            errorCode: VI_FORBIDDEN
+            msg: 没有执行此操作的权限
+            requestId: req-example
+            retryable: false
+            retryAfterSeconds: null
+            data: {}
+    Unauthorized:
+      description: 登录已失效，请重新登录。参见errorCode注册表；HTTP状态与code一致。
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+          example:
+            code: 401
+            errorCode: VI_AUTH_REQUIRED
+            msg: 登录已失效，请重新登录
+            requestId: req-example
+            retryable: false
+            retryAfterSeconds: null
+            data: {}
+      headers:
+        WWW-Authenticate:
+          schema:
+            type: string
+          description: Bearer realm="mini" 或 "admin"；不泄露令牌细节
+    BadRequest:
+      description: 请求格式不正确。参见errorCode注册表；HTTP状态与code一致。
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+          example:
+            code: 400
+            errorCode: VI_REQUEST_INVALID
+            msg: 请求格式不正确
+            requestId: req-example
+            retryable: false
+            retryAfterSeconds: null
+            data: {}
+    UnprocessableEntity:
+      description: 填写内容不符合要求。参见errorCode注册表；HTTP状态与code一致。
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+          example:
+            code: 422
+            errorCode: VI_DATA_INVALID
+            msg: 填写内容不符合要求
+            requestId: req-example
+            retryable: false
+            retryAfterSeconds: null
+            data: {}
+    Conflict:
+      description: 记录已变化，请刷新后重试。参见errorCode注册表；HTTP状态与code一致。
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+          example:
+            code: 409
+            errorCode: VI_VERSION_CONFLICT
+            msg: 记录已变化，请刷新后重试
+            requestId: req-example
+            retryable: false
+            retryAfterSeconds: null
+            data: {}
+  schemas:
+    ApiError:
+      type: object
+      additionalProperties: false
+      properties:
+        code:
+          type: integer
+          description: 等于HTTP状态
+          enum:
+          - 400
+          - 401
+          - 403
+          - 404
+          - 409
+          - 422
+          - 429
+          - 500
+          - 503
+        errorCode:
+          type: string
+          enum:
+          - VI_REQUEST_INVALID
+          - VI_AUTH_REQUIRED
+          - VI_TOKEN_REALM_MISMATCH
+          - VI_REFRESH_REUSED
+          - VI_FORBIDDEN
+          - VI_SELF_REVIEW_DENIED
+          - VI_RESOURCE_NOT_VISIBLE
+          - VI_VERSION_CONFLICT
+          - VI_STATE_CONFLICT
+          - VI_IDEMPOTENCY_CONFLICT
+          - VI_SELECTION_CONFLICT
+          - VI_CONTEXT_CHANGED
+          - VI_SNAPSHOT_CHANGED
+          - VI_DATA_INVALID
+          - VI_EVIDENCE_INCOMPLETE
+          - VI_HANDOVER_CODE_INVALID
+          - VI_HANDOVER_LOCKED
+          - VI_UNPRICED_LINES
+          - VI_REFUND_LIMIT
+          - VI_PAYMENT_LIMIT
+          - VI_SERVICE_UNAVAILABLE
+          - VI_CAPABILITY_NOT_CONFIGURED
+          - VI_TRAINING_NOT_READY
+          - VI_RATE_LIMITED
+          - VI_INTERNAL_ERROR
+          - VI_AUTHORITY_UNAVAILABLE
+          - VI_UPSTREAM_UNAVAILABLE
+          - VI_PHONE_PROOF_REQUIRED
+          - VI_PHONE_PROOF_REUSED
+          - VI_EMPLOYEE_LINK_CONFLICT
+          - VI_EMPLOYEE_LINK_BLOCKED
+          - VI_CONFIG_INVALID
+          - VI_CONFIG_CHANGED
+          - VI_SECRET_UNAVAILABLE
+          - VI_PAYMENT_METHOD_DISABLED
+          - VI_PAYMENT_METHOD_LOCKED
+          - VI_SEND_RESULT_UNKNOWN
+          - VI_SUBSCRIPTION_UNAVAILABLE
+          - VI_OFFLINE_PROOF_CONFLICT
+        msg:
+          type: string
+          description: 服务端安全人类文案，前端逻辑按errorCode而非此文本
+        requestId:
+          type: string
+        retryable:
+          type: boolean
+        retryAfterSeconds:
+          type: integer
+          minimum: 0
+          nullable: true
+        data:
+          $ref: '#/components/schemas/ApiErrorDetails'
+      required:
+      - code
+      - errorCode
+      - msg
+      - requestId
+      - retryable
+      - retryAfterSeconds
+      - data
+    ApiErrorDetails:
+      type: object
+      additionalProperties: false
+      properties:
+        fieldErrors:
+          type: array
+          items:
+            $ref: '#/components/schemas/FieldViolation'
+        conflicts:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConflictItem'
+        missingPhotoTypes:
+          type: array
+          items:
+            $ref: '#/components/schemas/PhotoType'
+        remainingAttempts:
+          type: integer
+          minimum: 0
+          nullable: true
+        currentVersion:
+          type: integer
+          format: int64
+          minimum: 0
+          maximum: 9007199254740991
+          description: 最后读取的非负版本；更新CAS，冲突409
+          nullable: true
+      description: 错误详情固定白名单；无明文Token/凭证/交接码/SQL
+    PhotoType:
+      type: string
+      enum:
+      - FRONT
+      - BACK
+      - LEFT
+      - RIGHT
+      - DASHBOARD
+      - INTERIOR
+      - EXTRA
+    ConflictItem:
+      type: object
+      additionalProperties: false
+      properties:
+        resourceType:
+          type: string
+        resourceId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+        reasonCode:
+          type: string
+        currentVersion:
+          type: integer
+          format: int64
+          minimum: 0
+          maximum: 9007199254740991
+          description: 最后读取的非负版本；更新CAS，冲突409
+          nullable: true
+      required:
+      - resourceType
+      - resourceId
+      - reasonCode
+      - currentVersion
+      description: 仅返回调用者已获权对象，禁止泄露其他账单成员
+    FieldViolation:
+      type: object
+      additionalProperties: false
+      properties:
+        field:
+          type: string
+        reasonCode:
+          type: string
+        message:
+          type: string
+      required:
+      - field
+      - reasonCode
+      - message
+    PhoneBindResult:
+      type: object
+      additionalProperties: false
+      properties:
+        verificationRequestId:
+          type: string
+          format: uuid
+        verificationStatus:
+          $ref: '#/components/schemas/PhoneVerificationStatus'
+        phoneBound:
+          type: boolean
+        phoneMask:
+          type: string
+          nullable: true
+        accountVersion: &id001
+          type: integer
+          format: int64
+          minimum: 0
+          maximum: 9007199254740991
+          description: 最后读取的非负版本；更新CAS，冲突409
+        employeeLink:
+          $ref: '#/components/schemas/EmployeeLinkPublic'
+        requiresSessionRefresh:
+          type: boolean
+          description: 为true时客户端先以REFRESH凭据调用token/refresh轮换并保存新会话，再读employee-link/切角色；不得重放phoneCode获得Token。响应丢失也可先刷新再查本人receipt。
+      required:
+      - verificationRequestId
+      - verificationStatus
+      - phoneBound
+      - phoneMask
+      - accountVersion
+      - employeeLink
+      - requiresSessionRefresh
+      description: 手机号验证结果与员工关联结果分开；员工冲突不推翻已成功的手机号验证。无令牌；随后读取session/必要时刷新访问令牌。
+    EmployeeLinkPublic:
+      type: object
+      additionalProperties: false
+      properties:
+        status:
+          $ref: '#/components/schemas/EmployeeLinkStatus'
+        workAccessEnabled:
+          type: boolean
+        authorizedStationCount:
+          type: integer
+          minimum: 0
+        messageKey:
+          type: string
+          enum:
+          - NO_EMPLOYEE_MATCH
+          - EMPLOYEE_LINKED
+          - WAIT_ADMIN_CONFIGURATION
+          - CONTACT_ADMIN
+          - PHONE_REVERIFY_REQUIRED
+          - LINK_REVOKED
+        canReverifyPhone:
+          type: boolean
+      required:
+      - status
+      - workAccessEnabled
+      - authorizedStationCount
+      - messageKey
+      - canReverifyPhone
+      description: 仅当前小程序账号公开投影；无sysUserId、员工名单、其他手机号、完整OpenID或后台权限。
+    EmployeeLinkStatus:
+      type: string
+      enum:
+      - UNLINKED
+      - LINKED
+      - NEEDS_ADMIN
+      - SUSPENDED
+      - REVOKED
+      description: 小程序只返回本人关联粗粒度结果；重号/冲突不透露其他员工或账号
+    PhoneVerificationStatus:
+      type: string
+      enum:
+      - PROCESSING
+      - VERIFIED
+      - UNKNOWN
+      - FAILED
+      description: V6.4 身份自动关联领域取值
+    ProfilePatch:
+      type: object
+      properties:
+        nickname:
+          type: string
+        realName:
+          type: string
+          description: 只维护服务称呼；不覆盖认证姓名或驾驶证结论；随vi_account.version同事务更新owner扩展字段
+        avatarFileId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+        defaultAddressId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+        expectedVersion:
+          type: integer
+          format: int64
+          minimum: 0
+          maximum: 9007199254740991
+          description: 最后读取的非负版本；更新CAS，冲突409
+      additionalProperties: false
+      required:
+      - expectedVersion
+      minProperties: 2
+    Profile:
+      type: object
+      properties:
+        accountId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+        nickname:
+          type: string
+          nullable: true
+        phoneMask:
+          type: string
+          nullable: true
+        driverQualification:
+          type: string
+          allOf:
+          - $ref: '#/components/schemas/QualificationStatus'
+          nullable: true
+        availableRoles:
+          type: array
+          items:
+            $ref: '#/components/schemas/MiniRole'
+        permissions:
+          type: array
+          items:
+            $ref: '#/components/schemas/PermissionCode'
+          uniqueItems: true
+        version:
+          type: integer
+          minimum: 0
+          description: 客户端最后读取的版本；服务端条件更新，冲突返回409
+        realName:
+          type: string
+          description: 服务称呼，不代表实名核验已通过
+          nullable: true
+        avatarFileId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+          nullable: true
+        defaultAddressId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+          nullable: true
+        employeeLink:
+          $ref: '#/components/schemas/EmployeeLinkPublic'
+      additionalProperties: false
+      required:
+      - accountId
+      - nickname
+      - phoneMask
+      - driverQualification
+      - availableRoles
+      - permissions
+      - version
+      - realName
+      - avatarFileId
+      - defaultAddressId
+      - employeeLink
+    PermissionCode:
+      type: string
+      description: 注册表04_接口/权限与能力注册表.json；新权限先登记后发布。UI仅提示，后端每次鉴权
+      pattern: ^biz:[a-z][a-z0-9]*:[a-z][a-z0-9]*$
+      enum:
+      - biz:aftersale:create
+      - biz:aftersale:list
+      - biz:aftersale:query
+      - biz:aftersale:review
+      - biz:aftersale:reviewpreview
+      - biz:assignment:list
+      - biz:audit:list
+      - biz:capacity:edit
+      - biz:capacity:list
+      - biz:config:edit
+      - biz:config:query
+      - biz:dashboard:list
+      - biz:delivery:query
+      - biz:delivery:retry
+      - biz:dispatch:create
+      - biz:dispatch:edit
+      - biz:dispatch:list
+      - biz:dispatch:preview
+      - biz:dispatch:query
+      - biz:dispute:list
+      - biz:dispute:query
+      - biz:dispute:resolve
+      - biz:driver:disablenewassignments
+      - biz:driver:edit
+      - biz:driver:list
+      - biz:driver:query
+      - biz:driveradjust:audit
+      - biz:driveradjust:create
+      - biz:driveradjust:list
+      - biz:driverfeerule:create
+      - biz:driverfeerule:edit
+      - biz:driverfeerule:list
+      - biz:driverfeerule:publish
+      - biz:driverfeerule:query
+      - biz:driverfeerule:trial
+      - biz:driverledger:list
+      - biz:driverpayment:create
+      - biz:driverpayment:list
+      - biz:driverpayment:query
+      - biz:driverpayment:verify
+      - biz:driverqualification:audit
+      - biz:driverqualification:list
+      - biz:driverqualification:query
+      - biz:driverstatement:add
+      - biz:driverstatement:create
+      - biz:driverstatement:list
+      - biz:driverstatement:preview
+      - biz:driverstatement:price
+      - biz:driverstatement:query
+      - biz:driverstatement:remove
+      - biz:driverstatement:review
+      - biz:driverstatement:send
+      - biz:driverstatement:submitreview
+      - biz:driverstatement:void
+      - biz:driverstatement:withdraw
+      - biz:employeebinding:list
+      - biz:employeebinding:query
+      - biz:employeebinding:rematch
+      - biz:employeebinding:revoke
+      - biz:employeebinding:suspend
+      - biz:exception:list
+      - biz:exception:resolve
+      - biz:export:audit
+      - biz:export:query
+      - biz:files:access
+      - biz:files:query
+      - biz:handover:confirm
+      - biz:handover:create
+      - biz:handover:query
+      - biz:handover:secret
+      - biz:integration:check
+      - biz:integration:create
+      - biz:integration:edit
+      - biz:integration:publish
+      - biz:integration:query
+      - biz:integration:test
+      - biz:integration:testrecipient
+      - biz:job:list
+      - biz:job:retry
+      - biz:license:edit
+      - biz:license:list
+      - biz:messageroute:edit
+      - biz:messageroute:query
+      - biz:messagetemplate:check
+      - biz:messagetemplate:create
+      - biz:messagetemplate:edit
+      - biz:messagetemplate:publish
+      - biz:messagetemplate:query
+      - biz:notificationtemplate:edit
+      - biz:notificationtemplate:list
+      - biz:offlinepayment:create
+      - biz:offlinepayment:query
+      - biz:offlinepayment:verify
+      - biz:order:contact
+      - biz:order:create
+      - biz:order:export
+      - biz:order:list
+      - biz:order:query
+      - biz:owner:edit
+      - biz:owner:list
+      - biz:owner:query
+      - biz:paymentreconciliation:list
+      - biz:paymentreconciliation:query
+      - biz:paymentreconciliation:resolve
+      - biz:penalty:list
+      - biz:penalty:query
+      - biz:penaltyappeal:audit
+      - biz:penaltyappeal:list
+      - biz:penaltyappeal:query
+      - biz:price:audit
+      - biz:price:create
+      - biz:price:edit
+      - biz:price:list
+      - biz:price:publish
+      - biz:price:submit
+      - biz:privacycase:list
+      - biz:privacycase:resolve
+      - biz:refund:query
+      - biz:refund:retry
+      - biz:result:create
+      - biz:result:list
+      - biz:resultcorrection:audit
+      - biz:resultcorrection:create
+      - biz:resultcorrection:list
+      - biz:statementdifference:list
+      - biz:statementdifference:resolve
+      - biz:station:create
+      - biz:station:edit
+      - biz:station:list
+      - biz:station:query
+      - biz:stationgrant:edit
+      - biz:stationgrant:list
+      - biz:statistics:list
+      - biz:trainingcourse:create
+      - biz:trainingcourse:edit
+      - biz:trainingcourse:list
+      - biz:trainingcourse:publish
+      - biz:trainingcourse:query
+      - biz:uploads:complete
+      - biz:uploads:create
+      - biz:vehicle:edit
+      - biz:vehicle:list
+      - biz:vehicle:query
+    MiniRole:
+      type: string
+      enum:
+      - OWNER
+      - DRIVER
+      - STATION
+    QualificationStatus:
+      type: string
+      enum:
+      - DRAFT
+      - SUBMITTED
+      - APPROVED
+      - REJECTED
+      - EXPIRED
+      - SUSPENDED
+    SmsVerify:
+      type: object
+      properties:
+        challengeId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+        code:
+          type: string
+      additionalProperties: false
+      required:
+      - challengeId
+      - code
+    SmsSend:
+      type: object
+      properties:
+        phone:
+          type: string
+          description: 仅短信兜底通道接收；加密存储、限流、验证码风控
+        scene:
+          type: string
+          enum:
+          - BIND_PHONE
+      additionalProperties: false
+      required:
+      - phone
+      - scene
+    Ack:
+      type: object
+      properties:
+        accepted:
+          type: boolean
+        requestId:
+          type: string
+          description: 不透明ID，以字符串传输，避免JavaScript大整数精度丢失
+        version:
+          type: integer
+          minimum: 0
+          description: 客户端最后读取的版本；服务端条件更新，冲突返回409
+      additionalProperties: false
+      required:
+      - accepted
+    PhoneRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        phoneCode:
+          type: string
+          minLength: 1
+          maxLength: 512
+          description: 用户主动获取的微信手机号临时凭据，服务端消费；不同于wx.login code；不可日志/持久保存原文
+        expectedAccountVersion: *id001
+        verificationRequestId:
+          type: string
+          format: uuid
+          description: 绑定当前会话/账号的恢复编号。只缓存凭据摘要和非秘密处理结果；不得复用到其他账号
+      required:
+      - phoneCode
+      - expectedAccountVersion
+      - verificationRequestId
+      description: 先微信登录得到MINI会话后核验手机号；不接受裸手机号、openid、sysUserId、role、stationId。超时先查询本次核验，外部凭据已消费而结果不明时重新主动授权。

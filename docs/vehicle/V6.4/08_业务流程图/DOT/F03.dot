@@ -1,0 +1,24 @@
+digraph G {
+graph [rankdir=TB,bgcolor="white",pad="0.3",nodesep="0.3",ranksep="0.45",fontname="Noto Sans CJK SC",label="F03 · 微信手机号唯一匹配员工",labelloc=t,fontsize=20];
+node [shape=box,style="rounded,filled",fillcolor="#F2F6FC",color="#B5C9E5",fontname="Noto Sans CJK SC",fontsize=12,margin=".15,.12"];
+edge [color="#607A9C",fontname="Noto Sans CJK SC",fontsize=10];
+n1 [label="手机号凭据回执：核验并保存可信号码"];
+n2 [label="同一应用/账号是否已有有效关联？"];
+n3 [label="员工目录有效匹配数恰为1？",shape=diamond];
+n4 [label="双方无不同关联，且未被禁止重绑？",shape=diamond];
+n5 [label="在目录保护锁内重查人员版本与唯一关系"];
+n6 [label="写关联、权限版本、审计/outbox同事务"];
+n7 [label="返回最小员工状态；默认仍车主"];
+n8 [label="无匹配保留车主；重号/冲突联系后台"];
+n9 [label="已有同一关系重核状态，禁止静默转移"];
+n1 -> n2 [label=""];
+n2 -> n3 [label="首次"];
+n2 -> n9 [label="已有"];
+n3 -> n4 [label="是"];
+n3 -> n8 [label="否"];
+n4 -> n5 [label="是"];
+n4 -> n8 [label="否"];
+n5 -> n6 [label=""];
+n6 -> n7 [label=""];
+n9 -> n7 [label=""];
+}

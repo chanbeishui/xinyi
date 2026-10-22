@@ -1,0 +1,978 @@
+openapi: 3.0.3
+info:
+  title: B03 原子建单与预占
+  version: 6.4.0
+servers:
+- url: http://localhost:8080
+  description: 本地Java直连；paths已包含/api，不再次追加
+- url: https://{host}
+  description: 发布域名仅作部署变量；由环境设置真实已备案域名，代理保留/api
+  variables:
+    host:
+      default: api.example.invalid
+      description: 占位不可用于真实支付或发布
+paths:
+  /api/app/owner/orders:
+    post:
+      operationId: API_025_post
+      summary: 创建订单与预占
+      tags:
+      - OWNER
+      description: '流程：F07。报价绑定本人/车辆/地址/时段/规则；不接受金额
+
+        参数校验、真实归属、服务端当前状态/版本先于写入；不接受主体伪造。 V6.4建单前读取权威支付策略；双关或无可用收款方式时拒绝新付费订单，不预占容量，不按0元成交。'
+      x-flow-ids:
+      - F07
+      security:
+      - MiniBearerAuth: []
+      responses:
+        '200':
+          description: 操作成功；领域校验后返回真实结果
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    enum:
+                    - 200
+                  msg:
+                    type: string
+                  data:
+                    allOf:
+                    - $ref: '#/components/schemas/OwnerOrderView'
+                    nullable: true
+                    type: object
+                additionalProperties: false
+                required:
+                - code
+                - msg
+                - data
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+                enum:
+                - no-store
+              description: 身份/交易/个人业务响应不缓存
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalError'
+        '503':
+          $ref: '#/components/responses/Unavailable'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+      parameters:
+      - name: Idempotency-Key
+        in: header
+        required: true
+        schema:
+          type: string
+          description: UUID；按主体+动作+资源+键及请求摘要保存首次结果；同键不同体409，至少24h，资金/交接另有永久业务去重
+      - name: X-Client-Type
+        in: header
+        required: true
+        schema:
+          type: string
+          enum:
+          - owner
+          - driver
+          - station
+          - admin
+        description: 仅审计来源，不作为授权；须匹配服务端会话视角
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrderCreate'
+      x-capability: OWNER_ORDER_CREATE
+      x-authorization:
+        realm: MINI
+        scope: OWN_ACCOUNT_RESOURCE
+        activeRole: OWNER
+        capability: OWNER_ORDER_CREATE
+      x-error-codes:
+      - VI_REQUEST_INVALID
+      - VI_AUTH_REQUIRED
+      - VI_TOKEN_REALM_MISMATCH
+      - VI_REFRESH_REUSED
+      - VI_FORBIDDEN
+      - VI_SELF_REVIEW_DENIED
+      - VI_VERSION_CONFLICT
+      - VI_STATE_CONFLICT
+      - VI_IDEMPOTENCY_CONFLICT
+      - VI_SELECTION_CONFLICT
+      - VI_CONTEXT_CHANGED
+      - VI_SNAPSHOT_CHANGED
+      - VI_DATA_INVALID
+      - VI_EVIDENCE_INCOMPLETE
+      - VI_HANDOVER_CODE_INVALID
+      - VI_HANDOVER_LOCKED
+      - VI_UNPRICED_LINES
+      - VI_REFUND_LIMIT
+      - VI_PAYMENT_LIMIT
+      - VI_SERVICE_UNAVAILABLE
+      - VI_CAPABILITY_NOT_CONFIGURED
+      - VI_TRAINING_NOT_READY
+      - VI_RATE_LIMITED
+      - VI_INTERNAL_ERROR
+      - VI_AUTHORITY_UNAVAILABLE
+      - VI_UPSTREAM_UNAVAILABLE
+      x-error-policy: GLOBAL_FAILURES_NO_RESOURCE_404
+      x-contract-baseline: V6.4
+components:
+  schemas:
+    OrderCreate:
+      type: object
+      properties:
+        quoteId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+        termsVersion:
+          type: string
+        privacyVersion:
+          type: string
+        acceptedTerms:
+          type: boolean
+          enum:
+          - true
+        remark:
+          type: string
+      additionalProperties: false
+      required:
+      - quoteId
+      - termsVersion
+      - privacyVersion
+      - acceptedTerms
+      description: 所有车辆/地址/金额从已校验报价快照取，联系人手机号来自服务端已验证档案；不收目标状态或金额
+    ApiError:
+      type: object
+      additionalProperties: false
+      properties:
+        code:
+          type: integer
+          description: 等于HTTP状态
+          enum:
+          - 400
+          - 401
+          - 403
+          - 404
+          - 409
+          - 422
+          - 429
+          - 500
+          - 503
+        errorCode:
+          type: string
+          enum:
+          - VI_REQUEST_INVALID
+          - VI_AUTH_REQUIRED
+          - VI_TOKEN_REALM_MISMATCH
+          - VI_REFRESH_REUSED
+          - VI_FORBIDDEN
+          - VI_SELF_REVIEW_DENIED
+          - VI_RESOURCE_NOT_VISIBLE
+          - VI_VERSION_CONFLICT
+          - VI_STATE_CONFLICT
+          - VI_IDEMPOTENCY_CONFLICT
+          - VI_SELECTION_CONFLICT
+          - VI_CONTEXT_CHANGED
+          - VI_SNAPSHOT_CHANGED
+          - VI_DATA_INVALID
+          - VI_EVIDENCE_INCOMPLETE
+          - VI_HANDOVER_CODE_INVALID
+          - VI_HANDOVER_LOCKED
+          - VI_UNPRICED_LINES
+          - VI_REFUND_LIMIT
+          - VI_PAYMENT_LIMIT
+          - VI_SERVICE_UNAVAILABLE
+          - VI_CAPABILITY_NOT_CONFIGURED
+          - VI_TRAINING_NOT_READY
+          - VI_RATE_LIMITED
+          - VI_INTERNAL_ERROR
+          - VI_AUTHORITY_UNAVAILABLE
+          - VI_UPSTREAM_UNAVAILABLE
+          - VI_PHONE_PROOF_REQUIRED
+          - VI_PHONE_PROOF_REUSED
+          - VI_EMPLOYEE_LINK_CONFLICT
+          - VI_EMPLOYEE_LINK_BLOCKED
+          - VI_CONFIG_INVALID
+          - VI_CONFIG_CHANGED
+          - VI_SECRET_UNAVAILABLE
+          - VI_PAYMENT_METHOD_DISABLED
+          - VI_PAYMENT_METHOD_LOCKED
+          - VI_SEND_RESULT_UNKNOWN
+          - VI_SUBSCRIPTION_UNAVAILABLE
+          - VI_OFFLINE_PROOF_CONFLICT
+        msg:
+          type: string
+          description: 服务端安全人类文案，前端逻辑按errorCode而非此文本
+        requestId:
+          type: string
+        retryable:
+          type: boolean
+        retryAfterSeconds:
+          type: integer
+          minimum: 0
+          nullable: true
+        data:
+          $ref: '#/components/schemas/ApiErrorDetails'
+      required:
+      - code
+      - errorCode
+      - msg
+      - requestId
+      - retryable
+      - retryAfterSeconds
+      - data
+    ApiErrorDetails:
+      type: object
+      additionalProperties: false
+      properties:
+        fieldErrors:
+          type: array
+          items:
+            $ref: '#/components/schemas/FieldViolation'
+        conflicts:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConflictItem'
+        missingPhotoTypes:
+          type: array
+          items:
+            $ref: '#/components/schemas/PhotoType'
+        remainingAttempts:
+          type: integer
+          minimum: 0
+          nullable: true
+        currentVersion:
+          type: integer
+          format: int64
+          minimum: 0
+          maximum: 9007199254740991
+          description: 最后读取的非负版本；更新CAS，冲突409
+          nullable: true
+      description: 错误详情固定白名单；无明文Token/凭证/交接码/SQL
+    PhotoType:
+      type: string
+      enum:
+      - FRONT
+      - BACK
+      - LEFT
+      - RIGHT
+      - DASHBOARD
+      - INTERIOR
+      - EXTRA
+    ConflictItem:
+      type: object
+      additionalProperties: false
+      properties:
+        resourceType:
+          type: string
+        resourceId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+        reasonCode:
+          type: string
+        currentVersion:
+          type: integer
+          format: int64
+          minimum: 0
+          maximum: 9007199254740991
+          description: 最后读取的非负版本；更新CAS，冲突409
+          nullable: true
+      required:
+      - resourceType
+      - resourceId
+      - reasonCode
+      - currentVersion
+      description: 仅返回调用者已获权对象，禁止泄露其他账单成员
+    FieldViolation:
+      type: object
+      additionalProperties: false
+      properties:
+        field:
+          type: string
+        reasonCode:
+          type: string
+        message:
+          type: string
+      required:
+      - field
+      - reasonCode
+      - message
+    OwnerOrderView:
+      type: object
+      additionalProperties: false
+      properties:
+        orderNo:
+          type: string
+        fulfillmentStatus:
+          $ref: '#/components/schemas/FulfillmentStatus'
+        displayStatus:
+          type: string
+        cancelStatus:
+          $ref: '#/components/schemas/CancelStatus'
+        custody:
+          $ref: '#/components/schemas/CustodyType'
+        vehicle:
+          $ref: '#/components/schemas/OrderVehicleView'
+        station:
+          $ref: '#/components/schemas/OrderStationView'
+        slotStartAt:
+          type: string
+          format: date-time
+          pattern: Z$
+          description: ISO8601 UTC时刻，必须Z结尾；显示与业务日期Asia/Shanghai
+        slotEndAt:
+          type: string
+          format: date-time
+          pattern: Z$
+          description: ISO8601 UTC时刻，必须Z结尾；显示与业务日期Asia/Shanghai
+        returnedAt:
+          type: string
+          format: date-time
+          pattern: Z$
+          description: ISO8601 UTC时刻，必须Z结尾；显示与业务日期Asia/Shanghai
+          nullable: true
+        version:
+          type: integer
+          format: int64
+          minimum: 0
+          maximum: 9007199254740991
+          description: 最后读取的非负版本；更新CAS，冲突409
+        view:
+          type: string
+          enum:
+          - OWNER
+        paymentStatus:
+          $ref: '#/components/schemas/PaymentStatus'
+        refundStatus:
+          $ref: '#/components/schemas/RefundStatus'
+        disputeStatus:
+          $ref: '#/components/schemas/DisputeStatus'
+        pickupAddress:
+          $ref: '#/components/schemas/OrderAddressView'
+        returnAddress:
+          $ref: '#/components/schemas/OrderAddressView'
+        driver:
+          type: object
+          allOf:
+          - $ref: '#/components/schemas/DriverIdentityPublic'
+          nullable: true
+        dispatchAt:
+          type: string
+          format: date-time
+          pattern: Z$
+          description: ISO8601 UTC时刻，必须Z结尾；显示与业务日期Asia/Shanghai
+          nullable: true
+        payExpireAt:
+          type: string
+          format: date-time
+          pattern: Z$
+          description: ISO8601 UTC时刻，必须Z结尾；显示与业务日期Asia/Shanghai
+        autoConfirmAt:
+          type: string
+          format: date-time
+          pattern: Z$
+          description: ISO8601 UTC时刻，必须Z结尾；显示与业务日期Asia/Shanghai
+          nullable: true
+        money:
+          $ref: '#/components/schemas/OrderMoneyView'
+        mileage:
+          $ref: '#/components/schemas/OrderMileageView'
+        afterSale:
+          type: object
+          allOf:
+          - $ref: '#/components/schemas/OrderAfterSalePublic'
+          nullable: true
+        allowedActions:
+          type: array
+          items:
+            $ref: '#/components/schemas/OwnerOrderAction'
+          uniqueItems: true
+      required:
+      - orderNo
+      - fulfillmentStatus
+      - displayStatus
+      - cancelStatus
+      - custody
+      - vehicle
+      - station
+      - slotStartAt
+      - slotEndAt
+      - returnedAt
+      - version
+      - view
+      - paymentStatus
+      - refundStatus
+      - disputeStatus
+      - pickupAddress
+      - returnAddress
+      - driver
+      - dispatchAt
+      - payExpireAt
+      - autoConfirmAt
+      - money
+      - mileage
+      - afterSale
+      - allowedActions
+      description: Owner明确字段白名单。没有定义的字段必须省略；nullable字段明确返回null；每次响应包括嵌套字段均按服务端权限和业务阶段投影，不能直接序列化Order实体。
+      example:
+        orderNo: VI202610200001
+        fulfillmentStatus: ACCEPTED
+        displayStatus: 代驾已接单
+        cancelStatus: NONE
+        custody: OWNER
+        vehicle:
+          vehicleId: '100'
+          plateNo: 粤K12345
+          vehicleTypeCode: SMALL
+          vehicleTypeLabel: 示例小型车
+          brandModel: 演示车型
+          vinLast4: null
+        station:
+          stationId: '200'
+          name: 测试检测点
+          publicAddress: 示例服务地址
+          location:
+            lng: 110.123456
+            lat: 22.123456
+            coordinateSystem: GCJ02
+          servicePhone: null
+        slotStartAt: '2026-10-20T06:00:00.000Z'
+        slotEndAt: '2026-10-20T07:00:00.000Z'
+        returnedAt: null
+        version: 0
+        view: OWNER
+        paymentStatus: SUCCESS
+        refundStatus: NONE
+        disputeStatus: NONE
+        pickupAddress:
+          address: 示例上门地址
+          location:
+            lng: 110.123456
+            lat: 22.123456
+            coordinateSystem: GCJ02
+          contact:
+            displayName: 车主称谓
+            phoneMask: 138****0000
+            canRequestContact: true
+        returnAddress:
+          address: 示例上门地址
+          location:
+            lng: 110.123456
+            lat: 22.123456
+            coordinateSystem: GCJ02
+          contact:
+            displayName: 车主称谓
+            phoneMask: 138****0000
+            canRequestContact: true
+        driver: null
+        dispatchAt: null
+        payExpireAt: '2026-10-20T05:30:00.000Z'
+        autoConfirmAt: null
+        money:
+          items: []
+          totalAmount: 34000
+          paidAmount: 34000
+          refundedAmount: 0
+        mileage:
+          pickupKm: null
+          returnKm: null
+          distanceKm: null
+          abnormal: false
+          publicExplanation: null
+        afterSale: null
+        allowedActions:
+        - APPLY_CANCEL_REFUND
+    OwnerOrderAction:
+      type: string
+      description: 动作仍需服务端逐次鉴权，不可把UI集合当授权凭证
+      enum:
+      - PAY
+      - CLOSE_UNPAID
+      - APPLY_CANCEL_REFUND
+      - APPLY_REFUND_ONLY
+      - SERVICE_CONFIRM
+      - OPEN_DISPUTE
+      - ADD_REVIEW
+      - CONTACT_DRIVER
+      - CONTACT_STATION
+      - VIEW_DETAIL
+      - VIEW_EVIDENCE
+      - VIEW_RESULT
+      - VIEW_HANDOVER_SECRET
+    OrderAfterSalePublic:
+      type: object
+      additionalProperties: false
+      properties:
+        caseId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+        kind:
+          type: string
+          enum:
+          - CANCEL_REFUND
+          - REFUND_ONLY
+        caseStatus:
+          type: string
+          enum:
+          - PENDING_REVIEW
+          - EXECUTING
+          - CLOSED
+          - REJECTED
+        approvedAmount:
+          type: integer
+          format: int64
+          minimum: 0
+          maximum: 9007199254740991
+          description: 人民币整数分；还受生效业务/商户上限约束，不是授权如此大金额
+          nullable: true
+        returnState:
+          type: string
+          enum:
+          - UNDETERMINED
+          - NOT_REQUIRED
+          - WAIT_RETURN
+          - RETURNED
+        refundState:
+          $ref: '#/components/schemas/RefundStatus'
+        publicOpinion:
+          type: string
+          description: 对申请人公开的审核说明，不含内部审查记录
+          nullable: true
+        version:
+          type: integer
+          format: int64
+          minimum: 0
+          maximum: 9007199254740991
+          description: 最后读取的非负版本；更新CAS，冲突409
+      required:
+      - caseId
+      - kind
+      - caseStatus
+      - approvedAmount
+      - returnState
+      - refundState
+      - publicOpinion
+      - version
+    RefundStatus:
+      type: string
+      description: 客户退款执行投影
+      enum:
+      - NONE
+      - NOT_REQUIRED
+      - WAIT_RETURN
+      - READY
+      - PROCESSING
+      - SUCCESS
+      - UNKNOWN
+      - ABNORMAL
+      - CLOSED
+    OrderMileageView:
+      type: object
+      additionalProperties: false
+      properties:
+        pickupKm:
+          type: string
+          pattern: ^\d{1,6}(\.\d)?$
+          nullable: true
+        returnKm:
+          type: string
+          pattern: ^\d{1,6}(\.\d)?$
+          nullable: true
+        distanceKm:
+          type: string
+          nullable: true
+        abnormal:
+          type: boolean
+        publicExplanation:
+          type: string
+          nullable: true
+      required:
+      - pickupKm
+      - returnKm
+      - distanceKm
+      - abnormal
+      - publicExplanation
+    OrderMoneyView:
+      type: object
+      additionalProperties: false
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/FeeItem'
+        totalAmount:
+          type: integer
+          format: int64
+          minimum: 0
+          maximum: 9007199254740991
+          description: 人民币整数分；还受生效业务/商户上限约束，不是授权如此大金额
+        paidAmount:
+          type: integer
+          format: int64
+          minimum: 0
+          maximum: 9007199254740991
+          description: 人民币整数分；还受生效业务/商户上限约束，不是授权如此大金额
+        refundedAmount:
+          type: integer
+          format: int64
+          minimum: 0
+          maximum: 9007199254740991
+          description: 人民币整数分；还受生效业务/商户上限约束，不是授权如此大金额
+      required:
+      - items
+      - totalAmount
+      - paidAmount
+      - refundedAmount
+      description: 客户订单收款；不是司机报酬
+    FeeItem:
+      type: object
+      properties:
+        feeCode:
+          type: string
+        name:
+          type: string
+        amount:
+          type: integer
+          format: int64
+          minimum: 0
+          description: 人民币分，非浮点；上限按商户及业务校验
+        calculation:
+          type: string
+      additionalProperties: false
+      required:
+      - feeCode
+      - name
+      - amount
+    DriverIdentityPublic:
+      type: object
+      additionalProperties: false
+      properties:
+        displayName:
+          type: string
+          description: 对客户显示服务称谓
+        driverCode:
+          type: string
+        rating:
+          type: number
+          minimum: 0
+          maximum: 5
+          nullable: true
+        contact:
+          $ref: '#/components/schemas/ContactView'
+      required:
+      - displayName
+      - driverCode
+      - rating
+      - contact
+      description: 不暴露身份证、驾驶证和后台用户ID
+    ContactView:
+      type: object
+      additionalProperties: false
+      properties:
+        displayName:
+          type: string
+          description: 称谓/姓名最小化，不包含证件号码
+        phoneMask:
+          type: string
+          nullable: true
+        canRequestContact:
+          type: boolean
+      required:
+      - displayName
+      - phoneMask
+      - canRequestContact
+      description: 只是展示；无真实可拨电话，联系按钮调用受控联系方式接口
+    OrderAddressView:
+      type: object
+      additionalProperties: false
+      properties:
+        address:
+          type: string
+        location:
+          $ref: '#/components/schemas/GeoPoint'
+        contact:
+          $ref: '#/components/schemas/ContactView'
+      required:
+      - address
+      - location
+      - contact
+      description: 本人完整地址；司机仅当前有效承接期间可读。历史返回null而非把精确坐标藏到子字段
+    GeoPoint:
+      type: object
+      additionalProperties: false
+      properties:
+        lng:
+          type: number
+          minimum: -180
+          maximum: 180
+        lat:
+          type: number
+          minimum: -90
+          maximum: 90
+        coordinateSystem:
+          type: string
+          enum:
+          - GCJ02
+      required:
+      - lng
+      - lat
+      - coordinateSystem
+    DisputeStatus:
+      type: string
+      enum:
+      - NONE
+      - OPEN
+      - PROCESSING
+      - RESOLVED
+    PaymentStatus:
+      type: string
+      enum:
+      - PENDING
+      - REVIEW_PENDING
+      - SUCCESS
+      - CLOSED
+      - UNKNOWN
+    OrderStationView:
+      type: object
+      additionalProperties: false
+      properties:
+        stationId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+        name:
+          type: string
+        publicAddress:
+          type: string
+        location:
+          $ref: '#/components/schemas/GeoPoint'
+        servicePhone:
+          type: string
+          description: 已批准公开的检测点服务电话
+          nullable: true
+      required:
+      - stationId
+      - name
+      - publicAddress
+      - location
+      - servicePhone
+    OrderVehicleView:
+      type: object
+      additionalProperties: false
+      properties:
+        vehicleId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+        plateNo:
+          type: string
+          description: 本人/有效服务对象完整车牌；历史仅保留业务核对所需车牌
+        vehicleTypeCode:
+          type: string
+        vehicleTypeLabel:
+          type: string
+        brandModel:
+          type: string
+          nullable: true
+        vinLast4:
+          type: string
+          maxLength: 4
+          nullable: true
+      required:
+      - vehicleId
+      - plateNo
+      - vehicleTypeCode
+      - vehicleTypeLabel
+      - brandModel
+      - vinLast4
+      description: 订单时点车辆快照；无车主账号、证件原图、密文、内备注或全VIN
+    CustodyType:
+      type: string
+      description: 当前实物保管方类型
+      enum:
+      - OWNER
+      - DRIVER
+      - STATION
+    CancelStatus:
+      type: string
+      description: 一次售后决定派生的取消进展
+      enum:
+      - NONE
+      - APPLIED
+      - REJECTED
+      - APPROVED_WAIT_RETURN
+      - COMPLETED
+    FulfillmentStatus:
+      type: string
+      description: 仅履约阶段；退款/对账不混入此状态
+      enum:
+      - PENDING_PAY
+      - SCHEDULED
+      - PENDING_DISPATCH
+      - DISPATCHING
+      - MANUAL_DISPATCH
+      - ACCEPTED
+      - GOING_PICKUP
+      - ARRIVED_PICKUP
+      - PICKED_UP
+      - ARRIVED_STATION
+      - INSPECTING
+      - INSPECTED
+      - CAR_TAKEN
+      - WAIT_CONFIRM
+      - COMPLETED
+      - CANCELLED
+      - CLOSED
+  responses:
+    UnprocessableEntity:
+      description: 填写内容不符合要求。参见errorCode注册表；HTTP状态与code一致。
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+          example:
+            code: 422
+            errorCode: VI_DATA_INVALID
+            msg: 填写内容不符合要求
+            requestId: req-example
+            retryable: false
+            retryAfterSeconds: null
+            data: {}
+    Conflict:
+      description: 记录已变化，请刷新后重试。参见errorCode注册表；HTTP状态与code一致。
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+          example:
+            code: 409
+            errorCode: VI_VERSION_CONFLICT
+            msg: 记录已变化，请刷新后重试
+            requestId: req-example
+            retryable: false
+            retryAfterSeconds: null
+            data: {}
+    Unavailable:
+      description: 权限权威状态暂不可读取。参见errorCode注册表；HTTP状态与code一致。
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+          example:
+            code: 503
+            errorCode: VI_AUTHORITY_UNAVAILABLE
+            msg: 权限权威状态暂不可读取
+            requestId: req-example
+            retryable: true
+            retryAfterSeconds: null
+            data: {}
+      headers:
+        Retry-After:
+          description: 建议等待秒数；429必带，503仅在可估计时返回
+          schema:
+            type: integer
+            minimum: 1
+    InternalError:
+      description: 处理失败，请联系服务人员。参见errorCode注册表；HTTP状态与code一致。
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+          example:
+            code: 500
+            errorCode: VI_INTERNAL_ERROR
+            msg: 处理失败，请联系服务人员
+            requestId: req-example
+            retryable: false
+            retryAfterSeconds: null
+            data: {}
+    TooManyRequests:
+      description: 操作过于频繁，请稍后重试。参见errorCode注册表；HTTP状态与code一致。
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+          example:
+            code: 429
+            errorCode: VI_RATE_LIMITED
+            msg: 操作过于频繁，请稍后重试
+            requestId: req-example
+            retryable: true
+            retryAfterSeconds: 10
+            data: {}
+      headers:
+        Retry-After:
+          description: 建议等待秒数；429必带，503仅在可估计时返回
+          schema:
+            type: integer
+            minimum: 1
+    Forbidden:
+      description: 没有执行此操作的权限。参见errorCode注册表；HTTP状态与code一致。
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+          example:
+            code: 403
+            errorCode: VI_FORBIDDEN
+            msg: 没有执行此操作的权限
+            requestId: req-example
+            retryable: false
+            retryAfterSeconds: null
+            data: {}
+    Unauthorized:
+      description: 登录已失效，请重新登录。参见errorCode注册表；HTTP状态与code一致。
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+          example:
+            code: 401
+            errorCode: VI_AUTH_REQUIRED
+            msg: 登录已失效，请重新登录
+            requestId: req-example
+            retryable: false
+            retryAfterSeconds: null
+            data: {}
+      headers:
+        WWW-Authenticate:
+          schema:
+            type: string
+          description: Bearer realm="mini" 或 "admin"；不泄露令牌细节
+    BadRequest:
+      description: 请求格式不正确。参见errorCode注册表；HTTP状态与code一致。
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+          example:
+            code: 400
+            errorCode: VI_REQUEST_INVALID
+            msg: 请求格式不正确
+            requestId: req-example
+            retryable: false
+            retryAfterSeconds: null
+            data: {}

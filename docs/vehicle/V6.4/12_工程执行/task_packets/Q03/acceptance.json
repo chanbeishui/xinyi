@@ -1,0 +1,54 @@
+[
+  {
+    "id": "TC-R50-017",
+    "priority": "P1",
+    "module": "培训",
+    "flow": "F41",
+    "title": "培训尝试字段闭环",
+    "given": "ADMIN已发布课程/题库，司机完成学习",
+    "when": "创建attempt、读取问题、提交答案、读取结果",
+    "then": "产生attemptId和限时题目，返回中无标准答案；按原题库版本一次判分",
+    "status": "NOT_RUN",
+    "evidence": "",
+    "origin": "V6.4修复门禁；真实系统待实现/执行"
+  },
+  {
+    "id": "TC-R50-018",
+    "priority": "P1",
+    "module": "培训",
+    "flow": "F41",
+    "title": "进度不能快进伪造",
+    "given": "播放会话墙钟经过10秒",
+    "when": "客户端申报已看300秒或重放序号",
+    "then": "不记完整通过；可核验累计<=真实时间及允许媒体段",
+    "status": "NOT_RUN",
+    "evidence": "",
+    "origin": "V6.4修复门禁；真实系统待实现/执行"
+  },
+  {
+    "id": "TC-R50-019",
+    "priority": "P1",
+    "module": "培训",
+    "flow": "F41",
+    "title": "题库版本冻结",
+    "given": "已有attempt引用课程V1",
+    "when": "ADMIN发布新的课程题目版本",
+    "then": "旧attempt仍按V1判分；新课程不覆盖旧记录",
+    "status": "NOT_RUN",
+    "evidence": "",
+    "origin": "V6.4修复门禁；真实系统待实现/执行"
+  },
+  {
+    "id": "TC-R50-020",
+    "priority": "P1",
+    "module": "处罚",
+    "flow": "F42",
+    "title": "获取处罚与申诉ID",
+    "given": "司机合法解除触发已有规则限制",
+    "when": "读本人处罚列表→详情→申诉→读取结果",
+    "then": "所有ID来自真实记录；同一待审申请不重复，后台处理后公开意见可查",
+    "status": "NOT_RUN",
+    "evidence": "",
+    "origin": "V6.4修复门禁；真实系统待实现/执行"
+  }
+]

@@ -1,0 +1,3027 @@
+{
+  "checkedFiles": 604,
+  "allUnchanged": true,
+  "note": "没有重绘或重新渲染这些业务UI",
+  "files": [
+    {
+      "path": "02_UI/index.html",
+      "sha256": "d849cc9af13d30dc0b909531a52803ceed2e03cfce2844dabdfb121eb57301dd",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/src/v41_pages.js",
+      "sha256": "2d464d12540f5bd71afa61d835404c8b97f203aa81d68117940f9c0259843b90",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/src/v4_pages.js",
+      "sha256": "72e0bb98b7f732182acc533f05f12ac1b36604561022f0dfaeff600ec76d0ff1",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/src/app.js",
+      "sha256": "4708ac5074857d1e8ec9b3d45bba9fbe540e3a4bdcfc636e68c7b387785d5025",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/src/mobile_driver.js",
+      "sha256": "e8a2fc857c93ff7a5f736b90ae7568e9c8a0234d4575588342c5b48f9f5d5bbe",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/src/mobile_station.js",
+      "sha256": "bbae0aec3d05a371a6296f47c50589af0fb5192c89bc57968d7fe7327152ace9",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/src/v42_interactions.js",
+      "sha256": "e12972739d9802f4fc06244f6e68a0b49091bf4a59f1b943a8911a2b4785fe6b",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/src/catalog.js",
+      "sha256": "5afc69f92a78ee595674f8097189c5ad06d92fbaa5f815eb70505adcd4009158",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/src/v5_pages.js",
+      "sha256": "78f2b6ef249a2c9c61e5c85cc7c16508b210f90df11e3b676d729f3cca070b0f",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/src/data.js",
+      "sha256": "8c7818f1461f04cca0689439ad25c14ce98e9088c9acdfd9d1ab387061e12307",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/src/icons.js",
+      "sha256": "12a7ae351a6c0eec3cade0993edc890343733e4f9f43cc49c8b50364154782e2",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/src/v41_interactions.js",
+      "sha256": "822b68189bda1fe1a56637b5ebb01fab8b8a273476725c36bc9a59b91374b40a",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/src/desktop.js",
+      "sha256": "d589271c94f79658a6cc62da9a5897ef70ba7b709a41e277fd434b4fa5864499",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/src/v41_model.js",
+      "sha256": "f8b300842df0567e6719f6db2cdebbb0098862f11ccb80ef5ac09ed8e48b014e",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/src/v42_model.js",
+      "sha256": "1fd61fe67f542804bbd217ef6edf6fe0fc35d92106d5a5433ff1adea04aa9e32",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/src/v4_data.js",
+      "sha256": "aca1a9afcfe1b55188c9264730467456aa8342296191bf53ce1f8ff3cfe6222b",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/src/mobile_owner.js",
+      "sha256": "ee08e718f98c9dde8478d334ee88b4168a32f5e7dc9410576a9025e580cf4f8d",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/src/v42_pages.js",
+      "sha256": "63210817baaca41ff9ea9569b068035213435329fecf703a0a192ffd603a700e",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/src/v4_interactions.js",
+      "sha256": "d6c782001a78bb0a5869dc15a2eecd05af66f33cde044e95b6d7852349b2c273",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/src/components.js",
+      "sha256": "e83900a5f0f195ddcbde2db2d8ae3641890f2820e292d900820572c99c9859ed",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/src/v5_interactions.js",
+      "sha256": "c70ffa60fb8c619a22c098ce3312983ff9d4479e2504fef54750654dc997c75f",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/预览/B38-generate.png",
+      "sha256": "ccdb998514c0ef53536effff04638dbb155b540d7b155fc76d9a408d45d805cf",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/预览/UI_V4_总览.png",
+      "sha256": "ff0e5c05e51f753250cdb81b194af74923c8f19ead927f71664c6ce95fab9cc7",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/预览/B14.png",
+      "sha256": "9ca5ddee64ec7022c577fb766d413a44e5afeeb2d092978a52d07d38d6fc9397",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/预览/B28.png",
+      "sha256": "8798c33f6903129fc70528e5e066770a3498a09b71adc643dc6a9dac3d2ac70d",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/预览/B09-detail.png",
+      "sha256": "360e940f67853127460e924b7304e2d316fb1db06befe883098783c95585e66a",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/预览/B38.png",
+      "sha256": "f1d4c33f471e53f5904badea79e384348612a88d67da5db3b4c71b7af1d9ec9d",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/预览/B13.png",
+      "sha256": "7e87360ebb57f5c9249822254dc0050fba9631f35c563750095590f68bbc99a4",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/预览/O03.png",
+      "sha256": "61481e55dd8efe5ff0a796584a744d2b565bab6e8639c86b2f6e4d0daa09f80f",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/预览/D38.png",
+      "sha256": "681be3517820722781e6ac9f1b63cf3d3909eb7b6c1b213c7138b8d7dfd2608a",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/O24.png",
+      "sha256": "735afeebf5b7c1a3d2a3cc2a844371d4b3661c871bb49e0222530208bde706e5",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/S03.png",
+      "sha256": "8e74f527fd2d77fbd0de37898f67cc3c03e2d0cd263c1dac8af9cd7db7f6e286",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/D14.png",
+      "sha256": "9346f82c04dd42ab499697876b53961ac9fe66b272fad2bafb31fc6d26819211",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B16-review.png",
+      "sha256": "9f204a49b17a1d82314592e052e9662320c42ae2b38c3f865e0f0aa69e452eb1",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/S17.png",
+      "sha256": "1547701a6d2d27157ea7237989d5ebfb01a493c73935ff157c3b5e2cd49c7daa",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/D38-difference.png",
+      "sha256": "0ed5bf1263ab6bcc9d5f0a6b9eb447817a829501668301b15fe203a84ec005b8",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B15.png",
+      "sha256": "8dcb67958d4a18f740de017994d2e31af170299a077649708d7653971fc7834f",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B27-edit.png",
+      "sha256": "1bbf25eba9fa00935aaa7afe23873f3e770f9acd6d5b6b5051f226df5b90149a",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/O12.png",
+      "sha256": "c9871af1c8e3c328b7bae2c615ad7aa4af279a6e737b2b4eb0eb24b51013c621",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/S05.png",
+      "sha256": "7504e000dd3f7c778caca30b3f90a3a385af77a83e61bd4132b6d778d2326e43",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/U01.png",
+      "sha256": "fffff190b7a2b0df80f5a3958bbcb17f168278114c51965705482d9398768518",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/D28.png",
+      "sha256": "101a19f1f5e37939bba3fdea1be075cd249d10b2e74c3fe5697746f024e1e766",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B41.png",
+      "sha256": "64e00d6ad2a7564e2c68ac5bc056ef21d7b6bd34755405948eae2f3544436438",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/O25.png",
+      "sha256": "0073ff7f122387abd16ab64197f0137ec0b7ccc8d54b0c97ed477095889f1d7b",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/S20.png",
+      "sha256": "f6a3177db4b4f0d50bfca46172e99d1a20e15b45eb96610cb17bc993c07e68bb",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/D01.png",
+      "sha256": "9124782bdb0e6d5d5cf3006d63d1e99f154ff485a491f0da95410c841b52354a",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/S16.png",
+      "sha256": "46c66a2e9c184d0d1136dd2f332774d4b78a240953ad26fddde0608dafe5a2f7",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B14-return.png",
+      "sha256": "b97250ce7b042366ce927683262c94758bedfa349bdca7778ccee1456339fb5c",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/O18-corrected.png",
+      "sha256": "a9da380e762c439aebb11551faf91f22ff27bd9f524a6dec5f5601c3f68ef1f4",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/O10.png",
+      "sha256": "e9baa5329364a4393b284c987932946f4c97cec3b32aa8e96fa66343bac0da60",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B42-selected.png",
+      "sha256": "d7875f08e2c44c55af898cd9ca06b94e87d9158ab507b23a2cb9340e4d82d5b9",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/O26-loading.png",
+      "sha256": "3a578d7237af6a78349e3eb3b394242afb960971ffb2b5aba795f24e62cf187a",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/O34-no-price.png",
+      "sha256": "2ec1a082020984d681470b6ab9972655277a04ac3c3fdc201d5db2e0e9c61c7d",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/O19.png",
+      "sha256": "9344e2395fdb053b2fa407daec08e48a20c545fd7322fcc71dfd61e0bd3cf4d7",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B14-before.png",
+      "sha256": "f14f51680b1a48b266cc5ece10d889964bf862c8052237b574a559a871bd02d9",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B30-review.png",
+      "sha256": "60156854e9a57b593aa183eec3f41a341fc75ba0f341c25705fbe7d2d2937c0d",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/O04.png",
+      "sha256": "779b0b83a1dedf008f1a0208ca07ae2aa305cd4f4df9a823c91225ac48826035",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B32-request.png",
+      "sha256": "816c980c1aa8cd8c8157f64e84531b53e33ec7b7054b9cc509accbc27c7caca6",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B09-forbidden.png",
+      "sha256": "0135c5c78c765b3c800d2988e5e3a0ae4bd1a36aa09908eee9aec09a8f1c224b",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B15-detail.png",
+      "sha256": "ebb9cb499402b099185d780d22586a57e4767a621af51d80c1e8fbfbd943d1f2",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B27-error.png",
+      "sha256": "d8023740ca7ac12a145e4663f456abb75241e8f2f802a9ad35b50bf1a4cf4ee1",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/O35-return.png",
+      "sha256": "fde5b2fd75c35811b156417b260cac98b2eacd0d0e891ad21e9288114c96210a",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B42-conflict.png",
+      "sha256": "a78a5ae8c2540ac0e6f8fd4cb42ad98249b093585ae6abb723a11893b005e214",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/S12-notify-failed.png",
+      "sha256": "42772af8e541e360d020dba55240c7cb318865cc21dd30375e33eed20c1257f6",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/D13-code-error.png",
+      "sha256": "930aec94532e9099ea760b5967aa7ee838409f5650079cf299e4786dea0a0873",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/O19-duplicate.png",
+      "sha256": "c9692bf1cd7aac62fbef6cea7799514e46f8d13881696c1c2c3af95f98f6351a",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/S01.png",
+      "sha256": "c457924ea9745075adccb24c97eceec129c81b92c52374544c39c525cfd5b2d7",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/D38-confirmed.png",
+      "sha256": "d9008d0e2fddd5adaa5a621fb3ff4e57cf05b2d8433f64cbd68ba04a0a1a52b2",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B20-review.png",
+      "sha256": "9cc7992a80ea45b8d264afc4b71997505847a8d5cdd0e77a97c9ba5850e8b975",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B38-price-empty.png",
+      "sha256": "6b23834993fcf3568e31c22840e1db5c18b0f6d3f3a626ae827a17114263bd58",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/D06.png",
+      "sha256": "137acd662796c80e0c22c757617f2226160e04377ba84e39dda72fdb7cd624c8",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/O09.png",
+      "sha256": "b04846dd65b3bb1e2bed58a97d3a9f3ac912f5fabd00e494b6ad3352ae42e6d0",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/D45.png",
+      "sha256": "362a1584d2ad780903a6fd51766a2988934e478bba05bf3a31f143d909fd03b2",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B30.png",
+      "sha256": "6d3f69976decf5a75a1dc6f610d090240f6ecf8e33cd80482d2f174fcfce6ac7",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B42-bills.png",
+      "sha256": "af4739a8bfe47a90490e8435dc4e0c1fd4e5787f66b2f1de6ce85f7eb191e5cb",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B28-empty.png",
+      "sha256": "228fae125a1700eeb295811bd0378c893b288b90ba6dcf26c63128ccb6abb295",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B20-edit.png",
+      "sha256": "977dec4301692f04d69b242e4ec13b060a858dfc64a38de3feab6eb2039837c2",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B31.png",
+      "sha256": "312f78155178996416b7c9cfe2d52a46f8b47b0df9b6645708d489694990bacb",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B27-forbidden.png",
+      "sha256": "1dfbe4460a4d26005749c4335cd5575c4c190849e3c0454afc56a1081485ea27",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/O34.png",
+      "sha256": "cd4482a2a7cc3b47d639738ead83572eea0f03506cd3f53e6fdd99cd01db0974",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/S07.png",
+      "sha256": "38f3333e1e8f10751425e5959d0eb8eb64c98fbd09881d5842c5463a9c473332",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/D28-expired.png",
+      "sha256": "d8c00b9ce3fe23dbe962a6619aaaace2d3117b22dbe884382ff4e205ec5f0a84",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B14-complete.png",
+      "sha256": "504eff6807a40f798d271032137183c6825077579ed79dce794349b1591921a9",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B38-generate.png",
+      "sha256": "8da265ccf957792df8d40e18ac09519403aef7fa46abf3b9418ee991dc6f7295",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B14-unknown.png",
+      "sha256": "b0d83e7c81a1a0b2105befaf7df36c6b644aff070dc0fdcea3ec923fae4b8671",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B14-rejected.png",
+      "sha256": "0ab7b642d6be41cbfe8436f488d662144e6b4470cdabb4eaca96d61f273e3e50",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/U02-pending.png",
+      "sha256": "74e132ef20d9b8fa44e40b495801b83ce5b5aafeb148502590943dbbbb8648fa",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/S11-pass.png",
+      "sha256": "662420dc119ac8979ef5ff484ec8af8e74b8d5215c543b2077f0cf9cf81ca8d2",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B39-review.png",
+      "sha256": "fc2c4637cec0ac1b442a6dd9d3a9c9394ef271772de63d42787e016d874e81eb",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/S07-code-error.png",
+      "sha256": "dee2a00a4783d72b93bd3141b873d60225c3b24a86c9f277dad4b6273ed2e0b1",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/D36.png",
+      "sha256": "718f43ee4902b019c754edfd702120c1f4b872405c080759358f7c98c2b14efa",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B42-payments.png",
+      "sha256": "95b27fcf551858314f53cc9fa3b074bcf35b0d58886d9d5c3ca62490db839d37",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B24-impact.png",
+      "sha256": "415e399ee3e5f3746be75c06f33064f5b6c2c09640ccc24b12daad18486226b6",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/D13-locked.png",
+      "sha256": "6942c52d2bfdb28deef69d2a7bef1a48a688fd610f2f358f1435da02a2132f72",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/D25.png",
+      "sha256": "679198e5777c818dd11109603235cbee60e3ccebfbf5dacead872022a73a76c5",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/O29.png",
+      "sha256": "f963df18409b6c137f35893778947968ba0702b507ac908e74673f7093d56755",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/D13.png",
+      "sha256": "f6157e0e4ddd18fbca7e1d73a36b862728ec54df0aeab5339ad4e7c75dddcabb",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/D38-partial.png",
+      "sha256": "d9232d8964e0270883704041f76c2c5cab9c4171aeaf257b5bcee9702f544cb5",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/D23-cancel.png",
+      "sha256": "99f0c7bc972ece65dcbad88c0c632780a40d2f30421f4fa7d82d044f96a0e59d",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/O17.png",
+      "sha256": "88ad8fe8d6ca7ce8d9e4006320197a4281bb1f3d71effa8cab0b6fa4a513eabe",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/O19-picked.png",
+      "sha256": "8c38ab73fdd31cdc3528d44f5ab58f69ee2835cbf96f53a9f09a04790c4fe744",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/S14.png",
+      "sha256": "334443f03d21bd0ae2d508ad08f5e84efa12e550aab75b807fe42e40e1842940",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B33.png",
+      "sha256": "8ec719e9089d8a1811d46f357cb77c80aa069d84552dfa067a76015b20d85d51",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/D26.png",
+      "sha256": "613a39146e71bdda2c8075620c797bb01dcfdf2e5f99ae154742f5330da56ef1",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/O14-cancel-review.png",
+      "sha256": "4200a3ffc96651c30f3af3c67dc3fec50a515ad40294a81834927972292efe1a",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/U02-expired.png",
+      "sha256": "74e132ef20d9b8fa44e40b495801b83ce5b5aafeb148502590943dbbbb8648fa",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/D09.png",
+      "sha256": "bd0456adaedcd81d4880aa155091edc54e1f83d11489c4a81afe4131bf3742ec",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/D37-services.png",
+      "sha256": "13e67165dca1c84da90477a1c857049fd4d6a5df66e24abbff14c5f356d0ad80",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/D12.png",
+      "sha256": "2ac01990f684947fc26a76e83e20c87ec0e38aba5c8998fe9368b1d578514765",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/O13-closed.png",
+      "sha256": "22b2430153c7c273b5e2ede0d14e612a1ae0d220b1d4fd9a10cac393c97f3580",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B42-forbidden.png",
+      "sha256": "10169eed7309be4357f26fd96fd0f39490dc1b7212e89ca258da61b3ded3d0af",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/U03-progress.png",
+      "sha256": "7382a9670c830eabedaea1cbf28d0e427fd0939c7f166a141e793852b030f677",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B28-error.png",
+      "sha256": "874398e3db1b3d030ccd60e82ee7c196ef5f4599a6b92a0f3e053402c6cea531",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B38-review.png",
+      "sha256": "6648e762fb17d8b2a52e108df063632eaac28be5f17f6d3afadf453b95ac2c12",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B39.png",
+      "sha256": "89f6e704b1af7e5841e193f1c72ea2aa39f18a7e86edd5c76ae099718b6fd1aa",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/D16.png",
+      "sha256": "fb7c1ea6ac303bce8bab53638b37a590c0f899823d9cd9c409f887c9526161e3",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B38-readonly.png",
+      "sha256": "cf36815910496902ab07e2b292f963a684bb950641aae00535da017b485cf0d5",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B33-edit.png",
+      "sha256": "a31356bcf4ecef770b6059db75bd9db05003dcf426c2f2ed9ceb19dfe84068f0",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/D32.png",
+      "sha256": "a4e7de6b3ceb2109494c81333241e0c3f616f568b9e7c896cab247fa1be4961c",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/O14-cancelled.png",
+      "sha256": "6677b3d518d73775f4dc1230ad41a97ebdec09a2a52519811a78a02104ab68a9",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/D34.png",
+      "sha256": "ba55362cc3eeb048b851ae28b9aaddea944c6e76ef65a41b27eb7e4f288f5bd7",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/O26.png",
+      "sha256": "8c5fa90d466f45bd8412a0563443dc2764b497d3b31b6b069cfc87e2db26054f",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B42-empty.png",
+      "sha256": "8d077f6525759c16b8d0333167fe50c3a466a6020aa18a8b337a818c53827eb5",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/D35.png",
+      "sha256": "8aea8d5f8ee8cfb59b1982f0930ed1da62bb9788c31b70213952b10f6f667f2d",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B40-record.png",
+      "sha256": "6d8b2825ba43ac23adbcd3571d9ac97f2538c43d52f7a5a958f3ad5cb82e99e3",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B17-disable.png",
+      "sha256": "d5d0ee24b6b750ad5a5e976de994d96a5202d866eeca04974024245dd90fb625",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B05-invite.png",
+      "sha256": "4ddbe94095745d15271bffcd3f3ed3fe77d72902b1d41ac2fd42afd7a1f0057d",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/D43.png",
+      "sha256": "3effeb01648d3a773f5ca132452d9a27f6731c6dadbd7fbf80a3317839ca903e",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B03-forbidden.png",
+      "sha256": "ecace44538e3dd156b5fcdd9636cdf1e3ad400ba31ea7a58ade16fe3ae4ddde7",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/D02.png",
+      "sha256": "91b4034026d61229245ad587358a5b23a88e69bd5da541ac3cf337810e1a5985",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B40-detail.png",
+      "sha256": "6f49a590cf095929ec1b2712745a94dbc358733f520736179fa3de4d929e90a2",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/O14-cancel-return.png",
+      "sha256": "6c02acf2c2386425cdbb9da1f0f3c7c99241a8996fd4aaa6fb171b1983c6b2fb",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B38-price-conflict.png",
+      "sha256": "63907fb311a7a3cbc32c2d755b4846a06f6da2398e9cc492821a433811a54fed",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B27.png",
+      "sha256": "39f4e028e86ec91e3c529230b7597b0f216c92619495c7494930f460696ddd50",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B36.png",
+      "sha256": "03bd3ae45c239bb3803f403df12daa84e56d1fa5d82c0febe6e63616b7b174f4",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/S11-conflict.png",
+      "sha256": "c8515f1643d358a7da98f3c5299b601dd25082235abfd2a681df2548e9ab02e1",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/O31.png",
+      "sha256": "9b4884b83234bf7ed8cc956810d548749293883d3a3ff08aa9145db3f94849a1",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B38-difference.png",
+      "sha256": "621c5ba7d61dd4035aa54028a12420b9f19e73eb4162339c748d0fab4f33b4de",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/O13.png",
+      "sha256": "c803c8eaedd4cd9959c972768fedc72712cb9f046c192ccfd9ae18bd7a7d6b37",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/O34-full.png",
+      "sha256": "4089d11bd0b500f047667806c6e8059c8c6bb893f9fa19a5fec1a28f0628aecc",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/D18.png",
+      "sha256": "4cbf5b406ff7c562a3e8c3bdf31abf9b56a27edc0d45c3c0119469e1603b82dc",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/O22.png",
+      "sha256": "83cb24dad6b00f9afc2c3846dd59b8b85560e15ea0f24de75610b01a624d3056",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/D42.png",
+      "sha256": "2a4ca4a96c4c8f198082506b1761ca6b3990aeaabe4f9a391463a627407a221f",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B19.png",
+      "sha256": "e110969ff423a465e5d217aec2b1f77c5729672cfa84d248ceb25dd537339b73",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/D15.png",
+      "sha256": "c92b1fd71f48320195bae5c2490db3734243fd7c03650a82f584080af9e8e8cc",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/O21-abnormal.png",
+      "sha256": "37d648e2b80569b500a92e4789a10bcc41bd564e5ccb7ddd4488c8a9d5c9892c",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/S04.png",
+      "sha256": "1fde439de07e8b273475c07761a368a0aa1153418c4445c9099bc26b3761b9fe",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B28-forbidden.png",
+      "sha256": "95481f8b34c3abe960cc38f86cc0c548963dd881edb48d55954416d12ddbd3b7",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B42-bills-partial.png",
+      "sha256": "9fb5d66b6ee2a13f3a5918f475b1654b7662365292c93b71b9d0d18010cadcc0",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/D22.png",
+      "sha256": "559333eb08f6a9b90d1f9549d028d24253bc54324f76ef441fbc282c9b2017b9",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/U02.png",
+      "sha256": "74e132ef20d9b8fa44e40b495801b83ce5b5aafeb148502590943dbbbb8648fa",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B14.png",
+      "sha256": "2dcf7a2b717a03bddb774579e1e3bdd18d9de3b8d05236c4612f9bca1fbbaaf3",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/S02.png",
+      "sha256": "b25d2de138d464093f093b223127311a5ba8ca9145c02d56c5c21b42eda92f13",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B28-detail.png",
+      "sha256": "ce870a1d39be2b3b7534fa023329cbd3f31bb7cb245083b6dad14fb30669bffa",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B09-edit.png",
+      "sha256": "547e4507c751687ec03d467ad63da74293d2170f7cf9c76b8c67a9551d715e1f",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/O21-return.png",
+      "sha256": "1d278675c847ecbfbb44bfc36bc5cba0a14a679f42fe1ea0042377d3dfa33722",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B23.png",
+      "sha256": "6784392837724d2a2651ac0e489457c0f411fcca30e9f1bece19371e650f5fbb",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B21-edit.png",
+      "sha256": "00e24d8ff1429a9584fa84c0aa6563d055f72be04a8f609fc59e2e394fdaf373",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/O18-pass.png",
+      "sha256": "60d278b82fc1f352c2200cf992836a21dcadb47fdc0c61efc81dce0da398c342",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B04.png",
+      "sha256": "1fd6405753ffe0732ce9082b046e725c80139af867101664df51734612ad30d1",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/D10.png",
+      "sha256": "c0ba0be90b04ab01f60bf62894b176ee58438a9ea618a5a64f1a27a827317c95",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/O26-error.png",
+      "sha256": "44d0b074942a7d80aa8d7200d2beb87cf7b381258703f225d7994ca09b20e567",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/S10.png",
+      "sha256": "77685c8590b823b499dfb9efa3d411fcf5ea4997956c54db78fe5b8a300a1e3e",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/D21.png",
+      "sha256": "f3f65c9232ed06bca20e26d5299c47e2fe5f3ee98eb43f7a556b15d1e3fbed7f",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B16.png",
+      "sha256": "22c3f7b8b47617249d716b8bf3d9a92d0dd07599ec0b93d63f6a053c3cb446dd",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/D25-cancelled.png",
+      "sha256": "17692510bae3d5c33a241c956b99207ed9eefb332d23eb66c9c70d80ee5d2e18",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/O15.png",
+      "sha256": "a586b7627df439b2dd682f72146629f243f8e850ec6741464b5cd3e479405f4c",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/U04.png",
+      "sha256": "573181efda21e1b33d3a19d2e38422f166a5ec19f6201fe1de60e1a8d9aa2530",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B13-return.png",
+      "sha256": "bca54dd146dc50f9edcc656f996ccc2c97ad4b63838cb63269015450d0e70ba8",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/O14-manual.png",
+      "sha256": "f2fe01475f40682280a2d5f6cf5ab036043d925238e221e07f00a9bc62f3f017",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/O23.png",
+      "sha256": "1a1a2a88cdb25a50b53f53e34d82b0577b21b40f6f24815685c79633c74ef76d",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/U05.png",
+      "sha256": "9b359eb43327d81bfe256e5c72307753f1de19ffeb310330313ea8a745e8609c",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/O02.png",
+      "sha256": "fca6e87031d07ef78fb159fc16d98707e7c83cee82b5dc0ddd256399e146262a",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B25.png",
+      "sha256": "711e0c6f1d50eb08585e4d9e78374ad53e8cb6ba52e18d5358d73d1c24bdbb9c",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B26-revoke.png",
+      "sha256": "c6ec3e217ebf891b622c638c63ce105933f079a018a04e202fcee7bb3926e3e6",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/O16.png",
+      "sha256": "d7b2cb07e92fca59bcc3ba1e346dd86858b8c291f5899976f991b7074b92464e",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B09-empty.png",
+      "sha256": "72e02098e8cb1310728efba8c8315920bee1a3a3a6047afeda4a3e18c0c1e73d",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B01.png",
+      "sha256": "65afded0df95a4b311b9a2730d26ddbb034c9bded5b45fe876788a29c867f7ab",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/S22.png",
+      "sha256": "d357edb5ef6ca5ad6ea62d0e92c1cafb758e94c04e476af865afeca14607418c",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/O19-refund.png",
+      "sha256": "b6e5281fa2cae30d1c4cbfb854835636a5110b0c1b1f306c960ee1424da16e22",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/D33.png",
+      "sha256": "a9716f5263f6c1b42c995a50fb4c9fb12b97753f5317adbdc154d9759fd2ae0e",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/S13-released.png",
+      "sha256": "40a89409f9651f9923387c454a51c86bfdf89570722e70f4cf77a2cb02765652",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B03-error.png",
+      "sha256": "0f61ead21088282f96d96668722c3ea165cce9b3f8139596f2a9b2f077ddfc6e",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B38-price.png",
+      "sha256": "d30b79b8234ede7fb4a3039802582161b105ebd10c6af56db151cc7394b8ec3b",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B07.png",
+      "sha256": "27142f6210dd624925027704ef4868bbd9b405528976512da46594b051a4b323",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/D41.png",
+      "sha256": "3b8be2b769df0e8b5b21b6fdc2f648ccac1c46f886876a1ca9f6fcffccbcdf80",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B38-review-rejected.png",
+      "sha256": "c38db7d353f65a0af780fc114865624bf19631f0d597c0f6e040351ee3e73c2e",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/S15.png",
+      "sha256": "6148d65dd25207c3312a16648d78fbab00a4969be137d06327f582bbf15a8f29",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/O21-success.png",
+      "sha256": "da6cdecdc6233236edbb08a5f9b0571bc438ba098bdd912e2edba293fe8654ec",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/O34-price-changed.png",
+      "sha256": "79e3a33cd92619142cb5fc5ad7bc255d7dffb560e1053c6bd8a1ec79f5927f0c",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/O35.png",
+      "sha256": "9c3aff389bf775f8d461509322fe5b407ca0344bdef253c358c5a5400fcbec05",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B38-unpriced.png",
+      "sha256": "f6372c3ca3a2243a64cc8a4e913d7011b54e4284c48f6dda66dac5e2fc3a06c3",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/D23.png",
+      "sha256": "20fb09f87154682f88df3d83747e19975ccf35a4b6b3aeeb960f22a11842ea41",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B28.png",
+      "sha256": "178955580ce5fb10f83bfa6e852555d7974def2f253d31294892cc96f8d3966b",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B03.png",
+      "sha256": "a32250ee2e2cd0bf4a5514ba1eeac794c534a76a36a383ac6237236b64056a63",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B24.png",
+      "sha256": "ee85f913662113bd068de307e26d78c05f421175e461dc0432cc3e2dcc4b345b",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B03-empty.png",
+      "sha256": "3fbc44e790ce7dab7e375b561b334bec7351b27815c25e7f173e8540a688a55b",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/O11.png",
+      "sha256": "e19d48ee557fa3c2d96664291efc0d5aeea9b4a8a7915a99517c5c0d2d1ffe6e",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B14-processing.png",
+      "sha256": "2dcf7a2b717a03bddb774579e1e3bdd18d9de3b8d05236c4612f9bca1fbbaaf3",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/U01-unqualified.png",
+      "sha256": "4b1aced5bce82c801fc8d834f1f72388a8998534940e665fb907e11704ce5aa4",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/D37-payments.png",
+      "sha256": "dc1a898c645b8a759c8b0f284ad9cfcad4084a1b522376c14ef5477436f9d2ba",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/S11.png",
+      "sha256": "f22ff2490c8bc6744d849f48e145b69d8cfff8f4d88cc7fe1441b261641d2e86",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/O33.png",
+      "sha256": "416bde82bf97ee8c852857755e911b854506cf5cf97b6c18c98f20cb4b5a39da",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/D05-passed.png",
+      "sha256": "1fcd8ebddc2429854e4c0124b18dbd70eb87d56cc323743a0e7949092f9fb278",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/D17.png",
+      "sha256": "74224c81a82b6415fdf66fd507a327ff85a66247c9b28a9ecd543f5069751955",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B34.png",
+      "sha256": "3ccd500784911c5f685596037849c7933838066edf389085661eedf8d4c58e50",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/D27.png",
+      "sha256": "ef6e1700b15d9aa6c720cbf7991a7161873a177e6046d899e85460358488fef2",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/O22-review.png",
+      "sha256": "c6319364c6f31d1c9fdab5341fe3dae0080da28727e4a483a705ba99bd22bf8d",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B38-empty.png",
+      "sha256": "8da265ccf957792df8d40e18ac09519403aef7fa46abf3b9418ee991dc6f7295",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B38-paid.png",
+      "sha256": "2a36dbf225d0653e0fc3261ef177f8b49dbe547a71a3653e570246b8a0a9d079",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/O27-address.png",
+      "sha256": "b0571973573209b611e25be441c00e198eaca6ae45645da44cb47a697c6aa06c",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/D39.png",
+      "sha256": "64d004ccf25c3ea8366c37125bd4f6d5b032123117d5c4f267c41acec1bc1335",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/O33-location-failed.png",
+      "sha256": "72cb780814b2f901da7dfe38754404f4355d9b80d585c039ca6eada47a9dfbc8",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/D11.png",
+      "sha256": "bda2051422f5a2b3b1c5c6d8ef11701f8fe4ca3091f8c89854c97781c5fcd31a",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/S06.png",
+      "sha256": "1bf538a88ede0f26c94253d3b382d48960710e85ed2da2e7ce36a3fc12e91c66",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/D20.png",
+      "sha256": "4d4af7d71cf4c8170ee484757259728b24da84e8bbfc834551ac7e8092540ff5",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/S08.png",
+      "sha256": "bc71e928b86940e126846bce3716621d3116a6f22d991115a8ff1a09fb1c8548",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/D46.png",
+      "sha256": "4cc90dec8c89f9f40d78dd15f02f19e90fda5d3b08ce1dbd63c79f03b288efd9",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B45.png",
+      "sha256": "7fbe0de090a1d2f95b39e8bf97993cff8801e30f6500da9d8daa36690d7871ff",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B31-query.png",
+      "sha256": "5f5ef54c7d63a56cb2e6b961b86414f7941881d4c9cc7d123c42a03578886517",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/D22-missing.png",
+      "sha256": "292608b1063395a925b2b5d76b131ffd2d3b2b7563abcf11db3dd84ab405114c",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B26.png",
+      "sha256": "0cd3c23b4ad3ec1bfb44d46e07bb24437cf2e30917f7d70f405c4e6f0cf7253a",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/O18.png",
+      "sha256": "ee6af4d3c0881c68f7dcce26265b6df881c7afeb605c8152e74dfe440397ad7a",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/S08-manual.png",
+      "sha256": "bbac0b6763fd2582a7379f9e338e3680403ba6f0e4cd6257d5cc9ef80d06a40d",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B05.png",
+      "sha256": "32b75c24f0bd06e089199da9519874b05de241baf746fc3180558ee41949157a",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/O14-dispatching.png",
+      "sha256": "f710f7004e7be647a9912a9e713f4839f0daddf4a9468f8efd0dad89b4329804",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B10.png",
+      "sha256": "69f9b2feeff786d9d3b3b61320dac2cb4de00ca328a5bbe0380bfa66560a1358",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/O26-empty.png",
+      "sha256": "2e06ff2478d556296103ef6ab3d1f4dd737a8545e913535e37b898af508451ed",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B19-impact.png",
+      "sha256": "9d53b3fc3fd6e738c8d6529ca2bac6ae633c66760e35f1f0bceadc70a414f16e",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B38-partial.png",
+      "sha256": "d8b1b66330bbe27128e0b522d89d915bc49e6b7249523383d0d6f63578d2a807",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B09.png",
+      "sha256": "d9b6300f9043d6b6eddfc7301b9793e7ba7d25339b2f7ed2b2353a42c852cdaf",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/O23-progress.png",
+      "sha256": "49a52a0b3ef04c6eb522dec570cc140f14bb4302e5e955508bd392a41869e37b",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B40.png",
+      "sha256": "e69067c474dbe82450176d648156b2e1286ac225885a23a2fa9f88e3e6ffc941",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/D03.png",
+      "sha256": "5e2b172995eed91ea533f87f1fecce04551c257d846980611d7dc9b4be1a112c",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/O32-unavailable.png",
+      "sha256": "21f8f1a9f3c91e83374ab7a15d953f3d454437d47a6f7717781c9a11d0cf1fb1",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/O14.png",
+      "sha256": "5e03db7941f13cc487e72941dc9305417fc2a9e6a8d79b7a286be7bbed604a7b",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/D12-upload-failed.png",
+      "sha256": "bd5df7cad016b8e5223740e57464453883eb674f5c00532d48a069cbd4511e18",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/S23.png",
+      "sha256": "9d5cd601c7feb99779fd6059cf480168fc6e22ff761ff1d5b557bb6e5f0d7522",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/O35-receipt.png",
+      "sha256": "82a03cbd111a2c84e77fa9e69ecf938d24ee5823c7064f77c8eee19dabdec65d",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B32.png",
+      "sha256": "0ab12e4dda34313a293a7a7e3ecce5f0925c47dd10468cb938dd45156d37065c",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B09-detail.png",
+      "sha256": "090ec920790ec524143ccfa22888812d81cfdf94bd89648ae1105160d630f100",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B04-returned.png",
+      "sha256": "6e96b35ae828e1e5aabe3aab58925f67d71188d74f49f393cec6f2dd05f1e8bc",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/D20-cancel.png",
+      "sha256": "912f605f555e97892ae279dab54ed564c1a6d60dfe950ba0b2a4eaf4999ed2c5",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/S12.png",
+      "sha256": "376675b00208d3c464fe2f7fdfeff5f9a53ec743040b5a689580d097011148c6",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/D05.png",
+      "sha256": "5e46fa2d497240f3560357b64b5657b22b9ddc70550030274d9d3c8c60e0507e",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/O32.png",
+      "sha256": "0faa4b0aca781e994683f05c1ea0b3b9ae715b7c0d236db13157244140ff3fcc",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B38-withdraw.png",
+      "sha256": "42beff442f7bed58ea85ac5991657494c521a306a9ac356fce01fa3593ebf4d3",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/D18-unsafe.png",
+      "sha256": "4515ad7d2c42864dd22565e4b996496b34c50253571a1e653d40d016426cd3c0",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/O33-outside.png",
+      "sha256": "defc44588913367e38a635d0817e42d513d67508daf2fe485efa3a83c4fc22e9",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/S19.png",
+      "sha256": "a60ca7b8a4c4870f66a622a045a6c36ac6d3c6b07753ac3a5ad11d58d2cc310e",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B38.png",
+      "sha256": "8da265ccf957792df8d40e18ac09519403aef7fa46abf3b9418ee991dc6f7295",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B44.png",
+      "sha256": "6b2362c926ad82406c44b2ecb0c4618e3eebe92549588ff382fb64954d02a97e",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B38-confirmed.png",
+      "sha256": "73354258adae00e7d2710ed5d4fc32b222fab0a5b545f2900e765e92960f1a3f",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B03-loading.png",
+      "sha256": "763ef5f61dd1e42a27c257980b56ce1c28d5bd4ac593a82e8ef9a5200b83fedf",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B02.png",
+      "sha256": "0733790dffabe89611c6d43eaecd5ecd61dda3ae95d93b381b30224878c8340d",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/D04.png",
+      "sha256": "d1c5c5aaab30c436898d2105df14e4842374a53538848e1087876cca2c8027fc",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B13.png",
+      "sha256": "c656448162ac45d6a7e67b8c916109ec22359488ac6e90b7d6d562ca131ff505",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B14-conflict.png",
+      "sha256": "439ef372c72944103d61d7ea5f142dd7d0944b5029dc49161ec18facf1e5d251",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B41-create.png",
+      "sha256": "9c4728166896dd7b11a9fb677ddd7fc7742585f86fbb0aa949365192e98ca35d",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B35.png",
+      "sha256": "e6aad6cda984d1ac2f2fdc1bb771a3309b27eb350ccfd7563c9c6c90dabe13a4",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/O21.png",
+      "sha256": "37d648e2b80569b500a92e4789a10bcc41bd564e5ccb7ddd4488c8a9d5c9892c",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/D12-low-ocr.png",
+      "sha256": "dcf972c33a2ed3081ec8f8a5c582c34dbbc4724c1810db814ed1ebdf5ca768c4",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B08.png",
+      "sha256": "c8b59f2e129bbda14e19bb98060b741cd1123d324e0b22a1d50212b73f5ad5dd",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B11-conflict.png",
+      "sha256": "6a67ff66ff99f4865c9be443d29c92339d5fb0059762ffd7e01fab595a6e7e51",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/D07.png",
+      "sha256": "557f3738701f454753d1e137d82cc2e5cccd149991d6b015fba182df9d835ae2",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B09-error.png",
+      "sha256": "04174d1168ec8efdfec5a32131a920c98747fe41031f5ffc099aeed3bb07ca25",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B27-detail.png",
+      "sha256": "a4df2f54707b02c96af41bcc91e5fa12c273de6c35b3addd4fe3ea97b68974d2",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/S13-cancel.png",
+      "sha256": "913a4ce47be7e4bc10754ad912efb4b01dceff901cd3a5049f911d6054284bf1",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B43.png",
+      "sha256": "4a6f4add3b4289dd40e2d51f6d3be0678e5020ba23c7bb4babe6b590a7904f48",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/D30.png",
+      "sha256": "a41e1475f5b5529cfd99d42b4df37fce5acac32f27b8ca06fdfdeb42b38c42e4",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B38-zero.png",
+      "sha256": "6a6dace228ce79058a1355c7c60ec8f47fcb146c5836a7f42bd657c90b786f37",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B40-verify.png",
+      "sha256": "566a7d68e0f367668268d0d43833d456cf58f57b27a8cf9ccc7ff83fd274ab43",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/O27.png",
+      "sha256": "739b51547ddfc7f6badc775034a10cabd1c4cc423fafe0f572b1aa454d69da74",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/S21.png",
+      "sha256": "51e1e62cf98d9bc4ada9efaa78cd40a7b186fa7b86e83f463394319635826e46",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/S13.png",
+      "sha256": "09d04f7f54c2322f414f471e75a7584c79203ef852b3b08650f310fa841c722b",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/S17-impact.png",
+      "sha256": "8d7b336dcee2db40b57ea8423cae3b18702d23e47ceaa5f76a6b13031901858a",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/D06-occupied.png",
+      "sha256": "d9f591914c40edbefc42a8418316e7101159b263fa6cd8fbff77127ad35802c0",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B42-generate.png",
+      "sha256": "543dd3a03de400293ae317abf9701b9090e9de4b71658b2d7f65000560ad630f",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B38-sent.png",
+      "sha256": "beb8a574c86ea748441b5997f849e37df2be3fa37bd69fcd5d8dd6204208d9e1",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/O03-empty.png",
+      "sha256": "68b6091a7d6d020eff76696ea0cbff197c5e293bbe8c3c7c2a5e29ac18d8348c",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/U06.png",
+      "sha256": "4434e15e2c917f0b220eb7088f3d0859b65cc44689c01ad6ee92e4ac6725da26",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/D12-missing.png",
+      "sha256": "45262ac484ea0a9a30f9fb076b4fd04d6a8a6eb69c0b136c8102393f284e4334",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B22.png",
+      "sha256": "2c02c7726346dc42ebfaa891e81bdadadeee17e6f1785b158695d422c2018438",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/D24.png",
+      "sha256": "e637729583d0bc6ade1bb6312ffa14293e898ad6cb41d0bcf997048c1ea0f743",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/S18.png",
+      "sha256": "bbea696121a5b010e06f4dbf1ff8d8aef76f1dac71a35489e60779bcfc27e76e",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B39-edit.png",
+      "sha256": "5e1bd54ae7e6ca65ba16c32341117b5b9c68b09f0c990e93805cd159f78b57de",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B21.png",
+      "sha256": "b54edfecb00b7a5c95ea62d82a6ffe92a6667f8b1572c4695cb622bcc5ee6f33",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B28-edit.png",
+      "sha256": "ec39226cbc48dd9aec91bf7013971a684579ff6b051b0a82ad5cf44d0d11a515",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/O03.png",
+      "sha256": "73099e73ee0de0fcce0bdbdffdd137cd2c9fa64a15eb0720dd86e72568f223bd",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B17-edit.png",
+      "sha256": "84bbfda5891dd686435e11a3cb02298527fcac6219ed3ef84830b894f6300fed",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/D08.png",
+      "sha256": "7cfb1011b58d0e436413ddd06229de591c7486537316fe6524d638ca80d177fe",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/D37.png",
+      "sha256": "a65dd779d165999c45b5c8f1b166001cc11cace95533fdaf6941f347564e7bbd",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B11.png",
+      "sha256": "1c086c03645c26fc7cee6b3fed410ab6e1d190377b4cc5f44a706e2d36d99132",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B37.png",
+      "sha256": "e18e89c19bdedbd3c419f65792599fa274298b063f542d2a46ac8ee155e52b1c",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/D19.png",
+      "sha256": "8b73fd606cbfc356787d0dfe5c7fd945f6ae69f5ba9e31d91ab55b161bc3f49f",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B14-refund.png",
+      "sha256": "c48a1f7a1c9a42d3867274853f89d6a0d821c45b95d09f429f80dbe1414daedb",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B27-empty.png",
+      "sha256": "693b0654eb6909873d2938dccfaf06b7862c7d0c8032de34cafd5890bf48dae9",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/D38.png",
+      "sha256": "027b7f32562e27b36492b249757f0dc1b992cace6115470cde8c7706ce3aea6e",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B38-history.png",
+      "sha256": "05e562c8dbd2ba9db55401c8715c8e6a4bb5c79e71eec8359a1b2bc9eb979f8b",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/O28.png",
+      "sha256": "42a64d6c87fed54c9d37d4403a0b916e1f4586d5214c94007b12be8e01434767",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B38-forbidden.png",
+      "sha256": "dfd0af261ad7c6f7c770e164d5d81df54c5df60ef4aed02f3cc21418fd4bc871",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B38-adjust.png",
+      "sha256": "76a6e8e90f7a87a9c63f26f5b7c63ed257f1b125e0411559d28e5a05c14c2def",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B38-add.png",
+      "sha256": "51f0e0e3800a9034b0c262f06e8994f5626e945c1172feef854009f0cbd9057d",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B07-confirm.png",
+      "sha256": "ce9e677fc6294f0da2a05d9990541bac3524326006af778efef54225983ac53b",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/D05-rejected.png",
+      "sha256": "a31d08f79da327ee62553767c7ba015a2fec1e34b9fa21791429325fb1f1892a",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/D31.png",
+      "sha256": "3127a52b58954d9c901b363adbb4592cbf992bf028886c0ed6aa7d83a3781767",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/U03.png",
+      "sha256": "81eb9a98bf82bc93e5cda8cc48ec844e6e095af51692b8d323b0200bb5b19ddb",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/D40.png",
+      "sha256": "e0a29710b238756c1c2a8a39e7d93e3e92c43cc405c710939ddec9d78ee00cde",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/D44.png",
+      "sha256": "f26d7465b0103859989a4a52c31e400f0e1aa892b3f9c45e85e2a0cd806aae5c",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B20.png",
+      "sha256": "ae24efbf99a4002c82bd41a50fb7ed2d3fc712cc50e8904d91fa71898e09ee23",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B17.png",
+      "sha256": "f79e5be0a5c8df840f32fe142e5951edeb9e5619350e32b23c6b249b88425228",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/D06-offline.png",
+      "sha256": "a085a892a718eb1178f86d69f96238273faf2f2f78fb32921e712241feff1518",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B42-select.png",
+      "sha256": "4baad39c5628105eaa46d266ca53cf2bb23467d95fe1962a69b732a080ad9e31",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B42.png",
+      "sha256": "6ce32ac38cd7c6292b3266deb018497f7e5b408d1f74a98da656cab21ac53b86",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B06.png",
+      "sha256": "3d9d7aa7ad0c01646790fd8a62bed8a6ba1618e9eeb5cf3b16a31097320593e5",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/B38-self-review.png",
+      "sha256": "0ab512aeb97abcc346cb0ed595d301b5f4940033538941a745155050e3bb1319",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/完整内容/O05.png",
+      "sha256": "6c8a335d75d5e43b59571b023528f3746a4a31dae0f3af2e5da135b9142e0cc6",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/O24.png",
+      "sha256": "f359bb6f23ad2f41fb460459903cbfc81135aa6d103533b8e36418ed89081ff0",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/S03.png",
+      "sha256": "338c4d0934ab35757030f693af655c1d9a78e01201474a4666d0eb21204fde7e",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/D14.png",
+      "sha256": "84ed507df5f44ce3607f2a8bbaca42496ffe5f74cfd3e6dca378be2a0ffd16c0",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B16-review.png",
+      "sha256": "327b60ac6aa86e527026fe37c941362dde68eab834bf098f782ae12d74e95798",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/S17.png",
+      "sha256": "d3fb2f6602bce3c2e1b55d01f19d8dfe6ec548280769125d708e610223119745",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/D38-difference.png",
+      "sha256": "3f3e2c261101fbbe9da77223b2eca3bc3333cdf2f64ad5bb729bac0cceab6233",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B15.png",
+      "sha256": "3d7167362aff42b3cdefb89b3c1fc6266c5e06d79de1336b20506fbfe70e8d28",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B27-edit.png",
+      "sha256": "f5ac0014c55010d591eeb3b2d264b3a4882c941d517af4ac14d4a82ab2cfa2ba",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/O12.png",
+      "sha256": "6a78553daa3a6b8bf26f047049c674c8583bfbf03a7bc80db934d33186cf4819",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/S05.png",
+      "sha256": "5eb23bae27606bed7d3ecc4fdfc3e18fca74984fdb4882b5f8f3c749ad0e1f61",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/U01.png",
+      "sha256": "bfbdcf5d23b4d2b1e2ff865a4a3366d11a8ea12a2391ecca20def74e6e8c4f74",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/D28.png",
+      "sha256": "101a19f1f5e37939bba3fdea1be075cd249d10b2e74c3fe5697746f024e1e766",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B41.png",
+      "sha256": "56ed08f7c09672b8704efbf34f7ce7f00dac5a90bccbbdf7db7e84772a5bbc20",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/O25.png",
+      "sha256": "74ab1d6ff802471c41f6fc847e7dc1da275bbce6649b7267d5321cc12358d690",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/S20.png",
+      "sha256": "ded9705bbabab4e5b982e4c4f2219b4f9e5856d6d95e2603e17ab532d49bd2de",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/D01.png",
+      "sha256": "284e29cc1c106d3699b5ea67b87fb574078d076371dc28d6e8d37029aa548bdf",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/S16.png",
+      "sha256": "de13eae5866ef32ccc4144a7fac8dffe653e64d5904957e368283d039d211b94",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B14-return.png",
+      "sha256": "4773c1e2be2ffad704bc02e1cfd52b7c1374c1ff410bba861dbaec2005c17ac7",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/O18-corrected.png",
+      "sha256": "63831f3a9f66df0fd3b94187ba7c6bcc7f151db4874cd329bf840d11bb089866",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/O10.png",
+      "sha256": "25ec25d91e371337805f25952f8292360d02d8db7e1d0be1e3760cfec8a3cb8c",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B42-selected.png",
+      "sha256": "3920c39d1e175fc01fadb91be27dc92fb37edc669b73f8ed4d88b95053c7d686",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/O26-loading.png",
+      "sha256": "3a578d7237af6a78349e3eb3b394242afb960971ffb2b5aba795f24e62cf187a",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/O34-no-price.png",
+      "sha256": "3ad39a185f04f0b45266bb88593aab887fb3343c1bf4b9e1f58ff24a9597e013",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/O19.png",
+      "sha256": "24832df7e6313a2dee8274a8a6dda56ebff85f2f9b805e488ab495ce1d4ee78e",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B14-before.png",
+      "sha256": "3d372cf7685dcd4e2a72c83f9dcf0891557dd74d5ef310a232b50b6573089593",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B30-review.png",
+      "sha256": "99eb00d83e957985d278adf2a5f36d841e81d0ba8393ea52946e3d3331e6c6b4",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/O04.png",
+      "sha256": "779b0b83a1dedf008f1a0208ca07ae2aa305cd4f4df9a823c91225ac48826035",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B32-request.png",
+      "sha256": "40b12e9c3b86697ff2fa6b6e5813d7827d5dcb8d149a542f9f13acce9957d2b2",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B09-forbidden.png",
+      "sha256": "1bf8b2ee82f30bcdd22b9d21ba5841d750874af76b6bc3d93da10acd7cdee835",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B15-detail.png",
+      "sha256": "46c3c5dd3d72e8dedef38ce90810321e79c33bef19caf0d64d863008e957a47e",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B27-error.png",
+      "sha256": "a1d9da92b0bf78f940d26497c2189bbd3d27c8980f04a2a930300e6b173ad7f4",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/O35-return.png",
+      "sha256": "d48d7aa4434d997dd9caff750e6efb1636dff5785700b4413339758b2b029d09",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B42-conflict.png",
+      "sha256": "83ef6efb279b2a20ba5abf6e4a81593de772d929bca45caec8d41886f1c68a48",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/S12-notify-failed.png",
+      "sha256": "d32234bbde0eca94aa741919f8de23beb97f2e2fd1bf2848ccdc89900c83f257",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/D13-code-error.png",
+      "sha256": "05677d15367daf187b8c22863e84903d4c01a7b3ad4345697d4ae37d0be1a7e8",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/O19-duplicate.png",
+      "sha256": "c9692bf1cd7aac62fbef6cea7799514e46f8d13881696c1c2c3af95f98f6351a",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/S01.png",
+      "sha256": "3520618bbe76015ac64774d86b6b86d2f8cbeefdab5fdbc599c85d584c2302df",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/D38-confirmed.png",
+      "sha256": "2a49a5205ab5a3b21598ec8f3142b7ee3c9a28671a564784ff0c2ebefbcb8670",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B20-review.png",
+      "sha256": "03bc39c40527169b13acb9f0f6fc6df7e416ceb6eb1d4c7d831b3df7e780314d",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B38-price-empty.png",
+      "sha256": "b208ee539362b5160fcf37495d052adc8d33dfbc1dc007558b0e27d26e642eab",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/D06.png",
+      "sha256": "3f062e94fb6d8ddd9b2a0bfe2a652a499ba93a1790a3ecdfa990e7558f72174b",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/O09.png",
+      "sha256": "b0caca457ad0cf0e00eeecd7cd8a6038cd15cb717afcf38a9dcaca86b9ff3f73",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/D45.png",
+      "sha256": "362a1584d2ad780903a6fd51766a2988934e478bba05bf3a31f143d909fd03b2",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B30.png",
+      "sha256": "a03e4d5b25eb64eacd7062bec26cf46cb143508ba8d4dc0c844c49b8d87f0f00",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B42-bills.png",
+      "sha256": "14a1021ba512eb55d3408ec5e4e99fe2b7c25c009eeb0971e9a3c9038a494479",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B28-empty.png",
+      "sha256": "af0eb60633d924dd2dad1052cad48133181ae614d7a06b59ffc772232ed9cfb7",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B20-edit.png",
+      "sha256": "57f0efe44d0baa594bb7515fdb19a41c9f32d81ee2ae446e5c2905a52b15867e",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B31.png",
+      "sha256": "ec7cbeeb79842f7c369fa31c7534ca6d0e628da4f058211ac01708ad1dbc7796",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B27-forbidden.png",
+      "sha256": "98f43894fe47b7d4c5a70dac75886ee9b84b3b2e3cc289751ff57e065518695f",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/O34.png",
+      "sha256": "0488de68efb25b89646ef324b97c6a192bfd688a7522c8011fb8abbc4eea94e5",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/S07.png",
+      "sha256": "a8d2fbbdd808b03b56be042916c5f0898cdb5f9139f9184dd00cd42a2f73d53e",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/D28-expired.png",
+      "sha256": "d8c00b9ce3fe23dbe962a6619aaaace2d3117b22dbe884382ff4e205ec5f0a84",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B14-complete.png",
+      "sha256": "1d2b476176adb7f4a6fc02b11df5b2f91900e63c0cae45d28e0ca7ba85c2a914",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B38-generate.png",
+      "sha256": "0f99437d4e6e33a2c2d32778c417835744dd260737fe853900d5cf545f2e7301",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B14-unknown.png",
+      "sha256": "b93bd31fa9b68ae130d91b878b9d5fd3cc865ff86d1b987e5834bdd847751835",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B14-rejected.png",
+      "sha256": "007decd9a2a49ef26fa43aa07b1b1eb5cdcb58fbd23317726e2da5a3d6db340e",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/U02-pending.png",
+      "sha256": "74e132ef20d9b8fa44e40b495801b83ce5b5aafeb148502590943dbbbb8648fa",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/S11-pass.png",
+      "sha256": "b4574f1e66bcc94cdb42104798ff191c56ba94c44771d6cfbe759fe566cde883",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B39-review.png",
+      "sha256": "b030122f39ce2520b11e6eaf75138a8b997dd1e77a026c6b655f4655cba07bea",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/S07-code-error.png",
+      "sha256": "416e5f3c631bbe0a0b8c2bba75a7ecb316e449293e88cbad8de8e480692a3fd2",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/D36.png",
+      "sha256": "718f43ee4902b019c754edfd702120c1f4b872405c080759358f7c98c2b14efa",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B42-payments.png",
+      "sha256": "f541d5c61efb8ed1c5a5648f453ae0e280335b5d6254bfc4d5309bc0bc5f050b",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B24-impact.png",
+      "sha256": "70d212287b530faf75f5bfdb6d37dd0eabd86a81f12f171c131be7373d2be746",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/D13-locked.png",
+      "sha256": "2d066758658287480a36c8db96aee451be0e136b5fe124fa29a82980c8455cda",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/D25.png",
+      "sha256": "021667044ec97fde702afa62da8657c1136ae6bdf2ce9fb2fa2096cfcb4940cc",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/O29.png",
+      "sha256": "ba8cc4654440db66dd53a01ef5e3821edbc44b69c15ee4a34f0f5bb725243db7",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/D13.png",
+      "sha256": "8132fdd3ea131dfc876e6621238c1a7805f1d4b87c4046ecb7f193e848b36f4a",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/D38-partial.png",
+      "sha256": "3e99766fc58af928a05d2d07325567c776b29e10370db3a25d0559ecc2d35f99",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/D23-cancel.png",
+      "sha256": "f0b4a391f1d19a4151607c20e7d1b45ac12f99dd62f6ede34359869c15bdcd0a",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/O17.png",
+      "sha256": "455384a22f9021f284d6f183fb2b23dc7ca132c376a03ba8f6335cd301c43bfe",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/O19-picked.png",
+      "sha256": "f4f01775032a9fb88e544ca2117ceb43ddd692353e6461a60aa4cdba0fbae3e3",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/S14.png",
+      "sha256": "0a8c8a62ee4024c76a2a427697802da623caf31862a70fc77873e38389db431c",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B33.png",
+      "sha256": "aa610f4eddde597b22059b3459674f5e64f157f2af4117a573b442189d40c4a2",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/D26.png",
+      "sha256": "282ac84b87b4c0a189bfc0ba271778013783805ace2e6652b5503eb95f906382",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/O14-cancel-review.png",
+      "sha256": "193c6f13ce94e217c29366b0877f0e38caa48cfad6d7ce78ca6821e67307379d",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/U02-expired.png",
+      "sha256": "74e132ef20d9b8fa44e40b495801b83ce5b5aafeb148502590943dbbbb8648fa",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/D09.png",
+      "sha256": "817e9ae1a390867a5cd25693eb751a03aed4b58edf2537bc37347fabe7610672",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/D37-services.png",
+      "sha256": "1d715cc18cdb2fa93b73afa249f75c748a4fb9602b26fa7c27da92cfa67f0c4a",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/D12.png",
+      "sha256": "77a58621e29693b119724344430de465e3ceec611bad317715de02e840af9ad5",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/O13-closed.png",
+      "sha256": "22b2430153c7c273b5e2ede0d14e612a1ae0d220b1d4fd9a10cac393c97f3580",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B42-forbidden.png",
+      "sha256": "160138c4c49d05fe88acf41d95a43f294663250159a783fb9d55c0586ebf0950",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/U03-progress.png",
+      "sha256": "7382a9670c830eabedaea1cbf28d0e427fd0939c7f166a141e793852b030f677",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B28-error.png",
+      "sha256": "51ee51592b2170b4af9f724806fb161048bd2387e0ab59e75d9f68b225a3001c",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B38-review.png",
+      "sha256": "a214a475d7a1db2ffb29f903cea992cfe292a6c9b7db92e53902ed3c5dcb4288",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B39.png",
+      "sha256": "a57212aa33d10d7badb66b0619f288b1ac958a39adefa7f4f7b9d0d67ec88155",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/D16.png",
+      "sha256": "756544965ddcd26c4702be555e345a914c66100bfa871a088fa28b8959875a59",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B38-readonly.png",
+      "sha256": "003d4f6e921deea576b5ba87f67deb4b54f1d571174b29ba817ae92d9b84cdf5",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B33-edit.png",
+      "sha256": "8d27723016d82dfa16facc9ba1c066f24cc7f611b22a6e0fe5a0a8ec09996ccd",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/D32.png",
+      "sha256": "a4e7de6b3ceb2109494c81333241e0c3f616f568b9e7c896cab247fa1be4961c",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/O14-cancelled.png",
+      "sha256": "12e6dc91e8de1215c6a593c2d28db9556441309f8391ebd8e772af67e32609c9",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/D34.png",
+      "sha256": "cf446875ee1bd4a6f45f1f8bc4829713a48fe49b85bb59561b727866824694c9",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/O26.png",
+      "sha256": "52fd891d91df0802f9284db73b286005e13cd07882684475dabaf2d216c86d08",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B42-empty.png",
+      "sha256": "b03c1708398112c6fd8a077978b7a96cda28a30a0dbcb01e5e52c38de3c9b55a",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/D35.png",
+      "sha256": "8aea8d5f8ee8cfb59b1982f0930ed1da62bb9788c31b70213952b10f6f667f2d",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B40-record.png",
+      "sha256": "169b72a208d9a359a28cdb40b6510f0bce66874e5de56312948a50ff4a981b99",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B17-disable.png",
+      "sha256": "6daf9ebd334872cc04d40c1c40bd1d7b8a0d0b6d1205835697b22d83dc1491f5",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B05-invite.png",
+      "sha256": "12eb9816ca0269af98e3c27ecd717f4105db1d716b1ed3e759089767a3aafe10",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/D43.png",
+      "sha256": "3effeb01648d3a773f5ca132452d9a27f6731c6dadbd7fbf80a3317839ca903e",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B03-forbidden.png",
+      "sha256": "645d7fa25cd2486b7d8f24cc55549c5c5584d40ab4c79c04a2262d3de110bb3c",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/D02.png",
+      "sha256": "95ebd91c7a28a9a13b9b2d75d92ba77ed8e643f716c327cdbd15f0926429d049",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B40-detail.png",
+      "sha256": "f51cf0c9dc5889a7f1a46d62d7aaa992de433ec5eec3f26a9108f42a8a2c11a0",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/O14-cancel-return.png",
+      "sha256": "182558a6c7cd7f3bca2f3a99cb520de369cc15a8cdd7883cd0364d4d22a59326",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B38-price-conflict.png",
+      "sha256": "e925caa1d259f85cd1046dc588be2b5c81d2003f7a8b9191efa8471052b1bc85",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B27.png",
+      "sha256": "a65572914b646b3c44bb8074186998eff2863642c679ebb5803394156e65312d",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B36.png",
+      "sha256": "6bb0d4d05eafdc12c563cfaa4202e796ec44bc8ee33f0f547b6e2681a2bb95f0",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/S11-conflict.png",
+      "sha256": "964f65ec586000b69ead4750cb2f071884a7e3586ad6536a57b69e57b1078730",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/O31.png",
+      "sha256": "1596d6be007cc623970ce8930166ce053f82d465568263c5714aa0183ff9bddf",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B38-difference.png",
+      "sha256": "213c8c942c57c6ca893d133c322245b8a741e3abdf004b082424f5e2d5c2e564",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/O13.png",
+      "sha256": "c803c8eaedd4cd9959c972768fedc72712cb9f046c192ccfd9ae18bd7a7d6b37",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/O34-full.png",
+      "sha256": "d532015e464248dcbdba56f6f82777242a0b1dbfef1d091903d429c55c9e9608",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/D18.png",
+      "sha256": "4cbf5b406ff7c562a3e8c3bdf31abf9b56a27edc0d45c3c0119469e1603b82dc",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/O22.png",
+      "sha256": "6af64f10431400d0d23ff4d8a2cda825e74e841dec988244883a44a1245dc19a",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/D42.png",
+      "sha256": "2a4ca4a96c4c8f198082506b1761ca6b3990aeaabe4f9a391463a627407a221f",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B19.png",
+      "sha256": "fbc877d933e6d74f7131eb510702bc9f1a5001cac36317bbd23e85ee19cf8f5c",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/D15.png",
+      "sha256": "042876198d144ca25936d830b53d66dd332ac8ac5b25c985ab95d0aa66ff5700",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/O21-abnormal.png",
+      "sha256": "3e89529a2df7bc2806f3c8ba5daff2b9d1cea424a7b680507e01ca022fdf7bc9",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/S04.png",
+      "sha256": "171ade5c6d084996f1a91cf6c32e0e058b331a03aa2a51120f13a2367683cdfe",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B28-forbidden.png",
+      "sha256": "0160a59a7411678bf7148dd34a6298756ab5b2647fbaa70e8e1d8ddd75c0a547",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B42-bills-partial.png",
+      "sha256": "d45fc7e4d7a1fdb75249e78a88d70218ac15f20d9b49b7bf99a2377f17c8b3a8",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/D22.png",
+      "sha256": "24f07acf957e836569cc7a06395518728633660246e4082a22156aca84dd56fa",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/U02.png",
+      "sha256": "74e132ef20d9b8fa44e40b495801b83ce5b5aafeb148502590943dbbbb8648fa",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B14.png",
+      "sha256": "0df84e1fb85b455742b2663cc909736e39bb3eb32a2d2aed9a6ae5fd9e990b0c",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/S02.png",
+      "sha256": "1877d8c9a4ce983026d1df0c439745a74eaeec9882cc124e7d3f529d26ef84d8",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B28-detail.png",
+      "sha256": "854892f17c69b327505964b2d174cbb7400bf84c94720f4cf83f41a1e3959d44",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B09-edit.png",
+      "sha256": "3c2e07ae9b599f575cde9aa778a7c792bad7f32993561ba6d7eb1bc950000db6",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/O21-return.png",
+      "sha256": "6875d4e908ef4f272816acfc47fdec3b0fe6feb6a7ac106ee900784e79587931",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B23.png",
+      "sha256": "80340876d4b729c9b1f511e4b075072360d1c428fc8e6749a3d57a785f0e9328",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B21-edit.png",
+      "sha256": "c1ad72906599a44e6269311034d43060163a2f4a45642f663aeff098936ca2b1",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/O18-pass.png",
+      "sha256": "19cc123472f6c1ecd4f05fe513e7421b86c51f7f3ae3a5cf3d65b2eeee9cc392",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B04.png",
+      "sha256": "e2edce7c849c9444635f489559dfc36559f1fd32d80a0666417ab94546c3bb30",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/D10.png",
+      "sha256": "d3409002c25c1833a4e57794ea09659f5bdd5c596fe5288ab75421a2c46b26f8",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/O26-error.png",
+      "sha256": "44d0b074942a7d80aa8d7200d2beb87cf7b381258703f225d7994ca09b20e567",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/S10.png",
+      "sha256": "0917ba3c6acbcf1f852764911d937c3a1de3283d4114c6c289693f6a7f50ee66",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/D21.png",
+      "sha256": "e082ed228b2b75b8eeda667f2e3f4962a06a3fb52d566988c72382467666c89b",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B16.png",
+      "sha256": "d888cdf7cab06809396001ecba6835cd05524e7c3cff45521cfab108dbc60bc8",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/D25-cancelled.png",
+      "sha256": "ec0706d22b91906a38a8c03c8f9f6cd591427ae4c65e137939d20217381ef516",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/O15.png",
+      "sha256": "043f6504fcd4f873f3dd1717219556cc5102bd48a7250372f50b476aa261d718",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/U04.png",
+      "sha256": "573181efda21e1b33d3a19d2e38422f166a5ec19f6201fe1de60e1a8d9aa2530",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B13-return.png",
+      "sha256": "2d18aa204e9e6021daad6101bdf0e660003baf2de81af2e30d5dae553ea3780f",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/O14-manual.png",
+      "sha256": "5e33763fe545601f6e1fa65132d78a4848c1180e2650ca045c140b460593c86c",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/O23.png",
+      "sha256": "1a1a2a88cdb25a50b53f53e34d82b0577b21b40f6f24815685c79633c74ef76d",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/U05.png",
+      "sha256": "8a0d84f20c128d9e0f1a9adb7449d912153be072f45d16151649d9e847234bc6",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/O02.png",
+      "sha256": "fca6e87031d07ef78fb159fc16d98707e7c83cee82b5dc0ddd256399e146262a",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B25.png",
+      "sha256": "2e5bdf4ea8314354f583c67a69decf1739e79e83c61db9b1f48b6795a5082d84",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B26-revoke.png",
+      "sha256": "2d0d2aebda90c82d12a910e028eb6337b2dab43f5c81b89a7e158ede74f93fc2",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/O16.png",
+      "sha256": "c217207a270dbf011df7d51ef8ff530c2f5be1ae04f79796b4e8d38a9c1958cf",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B09-empty.png",
+      "sha256": "5cda5854ebf35a2adca03b8d90cd0f0b5308030910df9453d47030cd833cd322",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B01.png",
+      "sha256": "65afded0df95a4b311b9a2730d26ddbb034c9bded5b45fe876788a29c867f7ab",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/S22.png",
+      "sha256": "d357edb5ef6ca5ad6ea62d0e92c1cafb758e94c04e476af865afeca14607418c",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/O19-refund.png",
+      "sha256": "70a1e860e4b83862166ef63d5a28c98123e393b267152c91e9c34c7d48512703",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/D33.png",
+      "sha256": "15a5db03b9cedce7a9e2f279b19d24bc4edaa1c474910ae123e96e30fffd83cd",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/S13-released.png",
+      "sha256": "7af361730616ffcb3895627c730d468a45fb8c548fe80f7b27f90ee42fab8f1a",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B03-error.png",
+      "sha256": "6589a1a18e4c1bdd770f3f209d7ce9045b62e1d02cec726526f1fb79b9cafc11",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B38-price.png",
+      "sha256": "1db0cadc86c7619f39aa4a2020ff57068d35e74f8958f4d83a4574b9824eb138",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B07.png",
+      "sha256": "8e49509c8774e87bd5ffb5969d27fb5de51295bfcf6bd9d27cd4f369dd572e23",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/D41.png",
+      "sha256": "3b8be2b769df0e8b5b21b6fdc2f648ccac1c46f886876a1ca9f6fcffccbcdf80",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B38-review-rejected.png",
+      "sha256": "f328da8b8d583ff56ab026d21630ce6085c0f6f41fd936c785767e0008d6e2d5",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/S15.png",
+      "sha256": "aa2b4ee596b0845f74bfd4ddc2f7c62cef9e667bd9308c35c66208b2c172fdea",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/O21-success.png",
+      "sha256": "91f6cdba519a3c64e7fbec34e76085f08873f84896ece601373e643c0e4649a5",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/O34-price-changed.png",
+      "sha256": "b2d15eb1b31ba04ad31ffebb093d39106e78e4f1af2fd960929b173064569f5e",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/O35.png",
+      "sha256": "07e79a46051b0305b59691c8544949bc3706634d829229f3b82c2725bbd92894",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B38-unpriced.png",
+      "sha256": "46e4171e1b490f99c78a39b716718ba9b7aa00c6b2d139381ced9fc3ed07e933",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/D23.png",
+      "sha256": "c7ad1e7fccf72b80122e72b9e1359bb0733a7abd02973f04a30a5e05f0bb9fc2",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B28.png",
+      "sha256": "312bfd92495ca0b8194f9efc3857fdcc77799b41be2b9b5f77c47a1f626f99fd",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B03.png",
+      "sha256": "c7f5db948e786d7dfe04845aedb27ade1562f3aed4992d68f75d699c6b9393c5",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B24.png",
+      "sha256": "f64c2e955c1a5f82a32c6b7df70ba799db45080a78cc3dac93c1a63b5ca9ed81",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B03-empty.png",
+      "sha256": "437a5d8cff5d6358e8676eef24edf94072a0132a880aab217fe8dbaed316ea52",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/O11.png",
+      "sha256": "e19d48ee557fa3c2d96664291efc0d5aeea9b4a8a7915a99517c5c0d2d1ffe6e",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B14-processing.png",
+      "sha256": "0df84e1fb85b455742b2663cc909736e39bb3eb32a2d2aed9a6ae5fd9e990b0c",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/U01-unqualified.png",
+      "sha256": "9d5be57bd2fad778b6d01a8eb007284e1efbd01f87d7a42699b0895303582fcc",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/D37-payments.png",
+      "sha256": "dc1a898c645b8a759c8b0f284ad9cfcad4084a1b522376c14ef5477436f9d2ba",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/S11.png",
+      "sha256": "28cb8f881efd455862a14ff36b88af66ebadd9244e7fc2e16b1e1e1505fcea65",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/O33.png",
+      "sha256": "792d8eeeb9a56665ef883657c3143afb48ec1b120d53231945a0c0e09b0f7742",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/D05-passed.png",
+      "sha256": "79f26df34f9c108ceee02d6b3c9bf2060d37733b30a314d0bf99fc6da9533517",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/D17.png",
+      "sha256": "46e0c96e77161db11a822911ee8cf3e9522e300989a3a19be8d50e66a866a1eb",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B34.png",
+      "sha256": "4456a3f56048045f2cbad33878331f78be4cf3f69ef4e0dc6d2871d9358fba87",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/D27.png",
+      "sha256": "87eee96fb1fb977ffe6f8ff7ff3662592d4d31cee4b4c24df692633161372745",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/O22-review.png",
+      "sha256": "c6319364c6f31d1c9fdab5341fe3dae0080da28727e4a483a705ba99bd22bf8d",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B38-empty.png",
+      "sha256": "0f99437d4e6e33a2c2d32778c417835744dd260737fe853900d5cf545f2e7301",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B38-paid.png",
+      "sha256": "ec2884aeda834ea33a3550839db376b8b3362d238cd309be89f7a9b1bd51761e",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/O27-address.png",
+      "sha256": "b0571973573209b611e25be441c00e198eaca6ae45645da44cb47a697c6aa06c",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/D39.png",
+      "sha256": "64d004ccf25c3ea8366c37125bd4f6d5b032123117d5c4f267c41acec1bc1335",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/O33-location-failed.png",
+      "sha256": "abeb0fc34dd7d34fa4538432aa7dd62143a74171b654a3ffe4e78ccb2004fa09",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/D11.png",
+      "sha256": "51a0aeac607e03d565e3dc12f8ed510068a303ccab79878d7f965a4719e22a9e",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/S06.png",
+      "sha256": "1bf538a88ede0f26c94253d3b382d48960710e85ed2da2e7ce36a3fc12e91c66",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/D20.png",
+      "sha256": "83010b2a41562b847993c7a44fb6056cbbded5b0888d83519681a43be0d91f09",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/S08.png",
+      "sha256": "b22524403f909b57bdb6ce97d9a6e26c58c490b43ea8128f0953aeac4e89c6c8",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/D46.png",
+      "sha256": "4cc90dec8c89f9f40d78dd15f02f19e90fda5d3b08ce1dbd63c79f03b288efd9",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B45.png",
+      "sha256": "74a63221a5e122b2a1dca59209e851612b8674b4bf7a445e72d09f38d0cb5e63",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B31-query.png",
+      "sha256": "89003acbedc10d75a8391ff3035ed614edcf5b673db523f0f50856402fea6902",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/D22-missing.png",
+      "sha256": "ebf4aed79457db0ac418e7d96c5e53c1d256ed56b469ac9f701696080d5ab7e5",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B26.png",
+      "sha256": "fdf716667fb96eb254881cd89e7d56525ca19dba8238fdee73b9dcd5f4d5dc6d",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/O18.png",
+      "sha256": "1128f20d40308b157e25c2ea1b37a3decda06429dc36f145ab927f655b33049d",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/S08-manual.png",
+      "sha256": "a0f292c3b79f0ae8265726abcb56add7d37d6b860183273041306365d7dcde9f",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B05.png",
+      "sha256": "51a0fe2e28a0345d5329ccd89828c486a03945bcb15f4e34153ada5e01eb4b6a",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/O14-dispatching.png",
+      "sha256": "9483faa97589100625a523a6c0881cb6e825557893e7def1e6f62e0c16cd3f6a",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B10.png",
+      "sha256": "7148fa4b4b7ee04576c6179d456c8d425bf3e748083ef17add43c15d3761fff4",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/O26-empty.png",
+      "sha256": "2e06ff2478d556296103ef6ab3d1f4dd737a8545e913535e37b898af508451ed",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B19-impact.png",
+      "sha256": "61b4ae4d2e3ce1c2559e3d0ad175ad8c86238613238abc30a6cb82638b7b140c",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B38-partial.png",
+      "sha256": "ce2f9199e4bfb8e853a72b8d50d88e32526f4268183533e7c9e00e469bbaa8f3",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B09.png",
+      "sha256": "64dc09059b5c30663fbf31ed25d52ac7c066264fc4a8195499aef4adb17adc1f",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/O23-progress.png",
+      "sha256": "49a52a0b3ef04c6eb522dec570cc140f14bb4302e5e955508bd392a41869e37b",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B40.png",
+      "sha256": "4acbb308816c3bb0c399027a2864aa434fcb08d7dd50d84e25071e6f08ca47b9",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/D03.png",
+      "sha256": "09d5e5612ff27c84ee10021bc70f4cf18fccd4583b78b81b338477e9a32594bd",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/O32-unavailable.png",
+      "sha256": "a64844f5f42104a4a169f8b5971fe9bd8d220dc6dfe0474788db5230754b01d6",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/O14.png",
+      "sha256": "3d65cb7f0bcb2cba0e0add7b201ec1ff7426e9081feeb6456a6bad95a1ec5818",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/D12-upload-failed.png",
+      "sha256": "6ca509240171a4ec6f0e1e23decbef6d0b35b919ebbaebaaab2cf6e09eed2697",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/S23.png",
+      "sha256": "2c563911ba56c0c6339d3036da70508287a1184c092275034972bb1de503000d",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/O35-receipt.png",
+      "sha256": "82a03cbd111a2c84e77fa9e69ecf938d24ee5823c7064f77c8eee19dabdec65d",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B32.png",
+      "sha256": "c15b8c46656e9678553888d0eecfcebf9e098936c60cbf5239cb4da4f106dd1d",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B09-detail.png",
+      "sha256": "921fd987e0cf43feced84ba49b20ccd2474f1064de6a6348143787e20b545eec",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B04-returned.png",
+      "sha256": "7f926ca8f96138c40dd53bd4cec554fe872c11f572f9477c71e97949fe8de662",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/D20-cancel.png",
+      "sha256": "fdf092ba42381c226739b1cef8c71c8f1eb1db82ed827f595a0b785b7fefa31c",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/S12.png",
+      "sha256": "62015b8360baa43ce3fd1e8c337976b99fd90372fc487c9682ad8d25de489cdf",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/D05.png",
+      "sha256": "fa71f00746109072cdac036ca2c8780bab6983f29ac79912f24c031cb1e16783",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/O32.png",
+      "sha256": "c2cd2c6494d228405854eae0e60ecbc75b59a99395478b1e2ed14e460863e981",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B38-withdraw.png",
+      "sha256": "538083c1f2250aa906a2b07d9f180699baa655f3c1bb7880c8d8f5d7d5a4eb2e",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/D18-unsafe.png",
+      "sha256": "4515ad7d2c42864dd22565e4b996496b34c50253571a1e653d40d016426cd3c0",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/O33-outside.png",
+      "sha256": "210f0cb9c423721e276f94f94927a31e3f9426b30d55b8f1f2c4098feacc7e0d",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/S19.png",
+      "sha256": "a60ca7b8a4c4870f66a622a045a6c36ac6d3c6b07753ac3a5ad11d58d2cc310e",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B38.png",
+      "sha256": "0f99437d4e6e33a2c2d32778c417835744dd260737fe853900d5cf545f2e7301",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B44.png",
+      "sha256": "91522042d0a1ca13d62fdabfa7d67172dfef64d0c1e4cd17444ccebaf7882108",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B38-confirmed.png",
+      "sha256": "003d4f6e921deea576b5ba87f67deb4b54f1d571174b29ba817ae92d9b84cdf5",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B03-loading.png",
+      "sha256": "d15af413bb47afaaa794825660e0b5a0fd80332f11b660aa2609f24ea7e92af0",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B02.png",
+      "sha256": "99ceb0e8720e3f80c5f5942093f72ba295b2317e84a316c492ef6006637b55c1",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/D04.png",
+      "sha256": "9904cfe2f84ad26de507ac76a892aacab557783b58b64b1cf56fae71c0ffe7e4",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B13.png",
+      "sha256": "eb48dfec9899ec2db71f420d2ac605789145c596f69a65360b4356fe7a3309a3",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B14-conflict.png",
+      "sha256": "6e3a564fa37078b638f3a475f9b98e240f9239cd413490227c24f825990bc6db",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B41-create.png",
+      "sha256": "792b456472f0de7edc4b97c6289cd9099253e882bbe1dcb9bce2ad9a39150460",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B35.png",
+      "sha256": "7cb8fb3dafdd18e6e431420e1d1adc0f57bd3cb1fc5ebb953137e8a5cab63b09",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/O21.png",
+      "sha256": "3e89529a2df7bc2806f3c8ba5daff2b9d1cea424a7b680507e01ca022fdf7bc9",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/D12-low-ocr.png",
+      "sha256": "4a6d4221b38e08d9467056451dbec9b49326c489f34bfa435f59757517a09401",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B08.png",
+      "sha256": "aba19ac4a76f271d0096ebc07e3dc4944c9ce5c8238a9f174797a60770cdb831",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B11-conflict.png",
+      "sha256": "e18769422c73a00d5ef2db60a1daf42b274db816d5f2fe9995c871e9c263e978",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/D07.png",
+      "sha256": "522d34323451e324c2ee18c3319ebe8a3083e6791a4fd038e21a16794ee30bcf",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B09-error.png",
+      "sha256": "b31502703e39608ac5177532187cfba25c323c8496a0fc4739b2c1c7d4094950",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B27-detail.png",
+      "sha256": "7f4c2050d84a0805b84e4e410413e202b5feaee7a5ed3ce6d04ded82a510866f",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/S13-cancel.png",
+      "sha256": "f45b0d1178e209f395fd85466337b3642ccb5acaaafd9986aa7008e5e0e3317b",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B43.png",
+      "sha256": "28602a89557335c913d9d7b496e5a8eecc724f92aecd7c66d631582211d389b9",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/D30.png",
+      "sha256": "e8aaf77037fcacf692f1ac66dd4dca9a2ade6592c09743444648cd765d9ed7fb",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B38-zero.png",
+      "sha256": "e2c5a309d7d02ef3adfa4dc212fd343878aa738563b613ddc10e7e29f5d04c9e",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B40-verify.png",
+      "sha256": "a84aff91f8c1d1a8ffde5614f576e0f943287f79c2e694c11584d15f168fcf85",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/O27.png",
+      "sha256": "739b51547ddfc7f6badc775034a10cabd1c4cc423fafe0f572b1aa454d69da74",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/S21.png",
+      "sha256": "51e1e62cf98d9bc4ada9efaa78cd40a7b186fa7b86e83f463394319635826e46",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/S13.png",
+      "sha256": "72c6b50585110a06a9dd8b249e705ede7ad3032df71f0733ef4202f775a30cf6",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/S17-impact.png",
+      "sha256": "1ca50dd10cfd514b54208bd1ac3581cde7aacc35922eef821a3e22cfd34465eb",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/D06-occupied.png",
+      "sha256": "fbb415c0a172d5c94e87262309f1b0e58bda450f83d9fee00b6c7f307a86acf5",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B42-generate.png",
+      "sha256": "022568364db9171b9586439bd89714299da880f9808d512ec63d709c1bbdff62",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B38-sent.png",
+      "sha256": "538083c1f2250aa906a2b07d9f180699baa655f3c1bb7880c8d8f5d7d5a4eb2e",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/O03-empty.png",
+      "sha256": "212ddd67dd86a369d85603d5f71a939b521bd81fdf3672938ad3ef1b01d3b01d",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/U06.png",
+      "sha256": "4434e15e2c917f0b220eb7088f3d0859b65cc44689c01ad6ee92e4ac6725da26",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/D12-missing.png",
+      "sha256": "c8b10a6e44d329a9bf2980e4322528c32c3b049998f3602b6cd7eb5666cafd5b",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B22.png",
+      "sha256": "7f5310f8119942d6ebb7503c466a73dd1c2af6d96ac5053bc7800b8cfa96f750",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/D24.png",
+      "sha256": "ab67fa670d2fe5a153cb5b072ab3a04d7603e2cf324219bff155e78048ab7dd1",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/S18.png",
+      "sha256": "bbea696121a5b010e06f4dbf1ff8d8aef76f1dac71a35489e60779bcfc27e76e",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B39-edit.png",
+      "sha256": "baa3be5cfd851d5e0a2dd8b5453d51455375213f7aa14ca7ff1e2a60bd4ec653",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B21.png",
+      "sha256": "c23e1fe19805b13dcf15f8d4693c6a6f738712a15df0cfd2cde6fdcf715965c3",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B28-edit.png",
+      "sha256": "ae4c7df9aafff541799c2b69b1b3a714a9c073e630b1f2d159856a64a34f8158",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/O03.png",
+      "sha256": "61481e55dd8efe5ff0a796584a744d2b565bab6e8639c86b2f6e4d0daa09f80f",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B17-edit.png",
+      "sha256": "5157a56e704c67c25686e47bc929582cd33fd9ab90c11e73b6cc78ec81e25f73",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/D08.png",
+      "sha256": "7cfb1011b58d0e436413ddd06229de591c7486537316fe6524d638ca80d177fe",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/D37.png",
+      "sha256": "a65dd779d165999c45b5c8f1b166001cc11cace95533fdaf6941f347564e7bbd",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B11.png",
+      "sha256": "4436ad561128a0ed173ba6768d094a71e5f12de6565e071506f57ed154b90600",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B37.png",
+      "sha256": "fc14b69518df58b4dcb70904fe6a0801cbabacb5dbc3b04c229a8b806ed001b0",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/D19.png",
+      "sha256": "20cdeda798ffcd291dc3ca26368ceda4e536f1a3f6b1102a2911a38947f27536",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B14-refund.png",
+      "sha256": "d9b95c5ba74f6704e66f646fc89c238157fd4186e9fa8f9eefd7741e86a7d051",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B27-empty.png",
+      "sha256": "22afad7f35339431510175f82404edc7206dd7da9902bba253c6c49d450f44e6",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/D38.png",
+      "sha256": "3541409fba2394f383c668e7e104d2b1ca2f6608c454e651e4a2dedc5c211f18",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B38-history.png",
+      "sha256": "8fa08e8685251f1eefa86da2fa017ad4c2dd9b0b0384aa009d757a6ba3390c1c",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/O28.png",
+      "sha256": "21fe54fc4989856a448819c651c578da9b43edd085b8191532b41bc66aa0b784",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B38-forbidden.png",
+      "sha256": "8832de3df07c018a59d0dec2ee1fc53deda41ef0ab81d6b55e49b19c81831ca1",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B38-adjust.png",
+      "sha256": "397adfd8d0d479c4d9be0d95e960ef8edc61b2e3903aff74d9a08434a1fb071b",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B38-add.png",
+      "sha256": "02b92a1bf55f6c00d03b1a5df10ccea2f9500f2ea2663975b322a004ec2886a4",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B07-confirm.png",
+      "sha256": "5c36e5cb8b0462a8a18df3f3d05ba2cb60edd53010a5f93b7ca8d3923b29b40e",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/D05-rejected.png",
+      "sha256": "85d185c1f0b3eb91c7ae29c76729b9050098ae453753f407181cf77f9f7cfa85",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/D31.png",
+      "sha256": "00663da973a78a53d120179375f87201c963675ac1f0e508550991f1521c5da4",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/U03.png",
+      "sha256": "81eb9a98bf82bc93e5cda8cc48ec844e6e095af51692b8d323b0200bb5b19ddb",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/D40.png",
+      "sha256": "e0a29710b238756c1c2a8a39e7d93e3e92c43cc405c710939ddec9d78ee00cde",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/D44.png",
+      "sha256": "f26d7465b0103859989a4a52c31e400f0e1aa892b3f9c45e85e2a0cd806aae5c",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B20.png",
+      "sha256": "1afd6af4cd09ea3adf2187d53b2b380495d165b07a33a51edefef1f1161a5e58",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B17.png",
+      "sha256": "d9a8a50ecb57cb52960748064ad1c8d3b5a623945e8b2ee19a8fae7e99469814",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/D06-offline.png",
+      "sha256": "fcb83d5597b9fc75a100c77a40a9ead9cbc3c5603f862cf2132625c9377c4bf9",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B42-select.png",
+      "sha256": "9ec2ad0deacda4e024b71a9e36ccbb7c8a296b5726ec52f8d9cfbef60c7ed68c",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B42.png",
+      "sha256": "8e8cb5f15ad6047eb0c8ddbcddea6b0615d79896f64497c46c0ba5ddfce94968",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B06.png",
+      "sha256": "a158df584c83b2dcc93d85ea1c1fed9d173a098523eaf768336d418dce9c11e2",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/B38-self-review.png",
+      "sha256": "a214a475d7a1db2ffb29f903cea992cfe292a6c9b7db92e53902ed3c5dcb4288",
+      "matchesV5": true
+    },
+    {
+      "path": "02_UI/全量页面图/首屏/O05.png",
+      "sha256": "58104db6eb7b4ba61d1d7235efa57987787f13cb6cc667f5abe31df0fe0b344d",
+      "matchesV5": true
+    }
+  ]
+}

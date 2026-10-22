@@ -1,0 +1,20 @@
+digraph G {
+graph [rankdir=TB,bgcolor="white",pad="0.3",nodesep="0.3",ranksep="0.45",fontname="Noto Sans CJK SC",label="F11 · 代驾取消承接与原单重派",labelloc=t,fontsize=20];
+node [shape=box,style="rounded,filled",fillcolor="#F2F6FC",color="#B5C9E5",fontname="Noto Sans CJK SC",fontsize=12,margin=".15,.12"];
+edge [color="#607A9C",fontname="Noto Sans CJK SC",fontsize=10];
+n1 [label="代驾在履约详情申请取消接单"];
+n2 [label="车辆已接走？",shape=diamond];
+n3 [label="禁止自助解除，联系运营保持责任"];
+n4 [label="二次确认原因及取消后果"];
+n5 [label="原子结束本承接记录并释放对应占用"];
+n6 [label="原车主订单保持已付款和原预约"];
+n7 [label="更新普通取消计数；启动向其他代驾重派"];
+n8 [label="停单一轮／当日阈值，允许申诉复核"];
+n1 -> n2 [label=""];
+n2 -> n3 [label="是"];
+n2 -> n4 [label="否"];
+n4 -> n5 [label=""];
+n5 -> n6 [label=""];
+n6 -> n7 [label=""];
+n7 -> n8 [label=""];
+}

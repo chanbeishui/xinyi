@@ -1,0 +1,22 @@
+digraph G {
+graph [rankdir=TB,bgcolor="white",pad="0.3",nodesep="0.3",ranksep="0.45",fontname="Noto Sans CJK SC",label="F02 · 统一登录与按资格开放身份",labelloc=t,fontsize=20];
+node [shape=box,style="rounded,filled",fillcolor="#F2F6FC",color="#B5C9E5",fontname="Noto Sans CJK SC",fontsize=12,margin=".15,.12"];
+edge [color="#607A9C",fontname="Noto Sans CJK SC",fontsize=10];
+n1 [label="用户主动同意必要说明并微信登录"];
+n2 [label="服务端核验AppID/OpenID，创建或恢复账号"];
+n3 [label="新会话默认OWNER；老账号不清已有资格"];
+n4 [label="主动手机号授权，服务端核验"];
+n5 [label="按已核验手机号自动识别员工"];
+n6 [label="计算可用角色：OWNER＋过审DRIVER＋获授权STATION"];
+n7 [label="落到车主首页"];
+n8 [label="本人从“我的”切换已有身份"];
+n9 [label="无代驾资格可申请；无站点权限联系后台"];
+n1 -> n2 [label=""];
+n2 -> n3 [label=""];
+n3 -> n4 [label=""];
+n4 -> n5 [label=""];
+n5 -> n6 [label=""];
+n6 -> n7 [label=""];
+n7 -> n8 [label=""];
+n6 -> n9 [label=""];
+}

@@ -1,0 +1,21 @@
+digraph G {
+graph [rankdir=TB,bgcolor="white",pad="0.3",nodesep="0.3",ranksep="0.45",fontname="Noto Sans CJK SC",label="F28 · 定时任务补偿与旧事件防护",labelloc=t,fontsize=20];
+node [shape=box,style="rounded,filled",fillcolor="#F2F6FC",color="#B5C9E5",fontname="Noto Sans CJK SC",fontsize=12,margin=".15,.12"];
+edge [color="#607A9C",fontname="Noto Sans CJK SC",fontsize=10];
+n1 [label="扫描到期未支付／计划派单／邀约超时／自动完成／退款查询任务"];
+n2 [label="按业务ID与执行键抢占任务"];
+n3 [label="加载最新订单、取消、占用及版本"];
+n4 [label="事件仍适用且未成功处理？",shape=diamond];
+n5 [label="执行条件更新、状态流水与outbox"];
+n6 [label="忽略已过期或已办结事件，记录结果"];
+n7 [label="失败按类型重试，超过阈值转人工"];
+n8 [label="旧单事件只释放匹配旧任务的资源，不能清空新任务"];
+n1 -> n2 [label=""];
+n2 -> n3 [label=""];
+n3 -> n4 [label=""];
+n4 -> n5 [label="是"];
+n4 -> n6 [label="否"];
+n5 -> n7 [label="失败"];
+n5 -> n8 [label="成功"];
+n6 -> n8 [label=""];
+}

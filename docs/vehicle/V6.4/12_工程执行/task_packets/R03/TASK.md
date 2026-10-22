@@ -1,0 +1,42 @@
+# R03 · 草稿成员、行内核价与整单复核
+
+阶段：M5；责任域：statement；前置：R02。
+范围版本：`V6.1-UNCHANGED`；definitionHash：`6c9607b31ae708cf5e8f953c40bb907c138c75cd6e9457c1510c4223ad311408`。
+
+## 本任务交付
+- 添加/移出留痕、最终拟价、改价原因、独立复核、撤回
+
+## 必测失败与并发
+- 60→70→65非累加
+- 集合变化也使旧hash失效
+- 同人不能切角色复核自己
+
+## 精确输入
+主源：04_接口/openapi_V6.4.yaml、05_数据设计/data_model_V6.4.json、06_验收/test_cases_V6.4.json。本目录派生，不独立维护。
+接口：V41_put_api_admin_driver_statements_statementId_lines_lineId_price, V41_get_api_admin_driver_statements_statementId_lines_lineId_price_history, V41_post_api_admin_driver_statements_statementId_submit_review, V41_post_api_admin_driver_statements_statementId_review, V41_get_api_admin_driver_statements_statementId_reviews, V41_post_api_admin_driver_statements_statementId_withdraw, V42_post_api_admin_driver_statements__statementId__lines_add, V42_post_api_admin_driver_statements__statementId__lines__lineId__remove, V42_get_api_admin_driver_statements__statementId__membership_history
+画板：B38, B38-confirmed, B38-difference, B38-empty, B38-generate, B38-sent, B38-unpriced, B38-price, B38-price-empty, B38-price-conflict, B38-review, B38-self-review, B38-review-rejected, B38-history, B38-withdraw, B38-adjust, B38-readonly, B38-forbidden, B38-add, B38-partial, B38-paid, B38-zero
+主责任表：vi_driver_price_change, vi_driver_statement_review, vi_driver_statement_membership_change
+验收：TC-R41-001, TC-R41-002, TC-R41-003, TC-R41-004, TC-R41-005, TC-R41-006, TC-R41-007, TC-R41-008, TC-R41-009, TC-R41-010, TC-R41-011, TC-R41-012, TC-R41-013, TC-R41-014, TC-R41-015, TC-R41-016, TC-R41-017, TC-R41-018, TC-R41-019, TC-R41-020, TC-R41-021, TC-R41-022, TC-R41-023, TC-R41-024, TC-R41-025, TC-R41-026, TC-R41-027, TC-R41-028, TC-R41-029, TC-R41-030
+
+## 代码落位
+`xinyi-rongli/src/main/java/com/xinyi/rongli/statement/`
+`xinyi-rongli/src/main/resources/mapper/rongli/statement/`
+`xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/statement/`
+`xinyi-ui/src/views/rongli/statement/`
+`xinyi-ui/src/api/rongli/statement.ts`
+`xinyi-miniapp/src/features/statement/`
+
+## 验证命令
+```bash
+mvn -pl xinyi-admin -am -Pvi-it -Dit.test=R03StatementIT verify
+npm --prefix xinyi-ui run build:prod
+npm --prefix xinyi-miniapp run build:mp-weixin
+```
+
+## 完成标准
+- 源接口/页面/表/用例均有明确实现文件与关联测试；不能以目录存在当完成
+- 本任务真实集成与负向场景实际通过且保存原始报告；无测试/跳过不能通过
+- 提交独立复核记录；标注测试第三方替身，不声称真实渠道通过
+
+## 执行边界
+已有实现先核查适配，不清空重来。NOT_RUN与NOT_ASSESSED不表示生产已验证。缺真实凭据只阻对应真实联调；环境阻塞如实记录，不改测试期望凑通过。修改主源后重新生成派生文件和当前截图。

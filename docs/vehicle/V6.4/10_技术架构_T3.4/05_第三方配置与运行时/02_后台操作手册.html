@@ -1,0 +1,12 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>02_后台操作手册</title><style>body{font:16px/1.75 -apple-system,BlinkMacSystemFont,"Microsoft YaHei",sans-serif;color:#202632;margin:0;background:#f6f7f9}header{padding:14px 24px;background:white;border-bottom:1px solid #ddd}main{max-width:1120px;margin:24px auto;padding:30px;background:white}h1{font-size:30px}h2{margin-top:36px}a{color:#0661bd}table{border-collapse:collapse;width:100%;display:block;overflow:auto;font-size:14px}td,th{border:1px solid #dde2ea;padding:10px;vertical-align:top}th{background:#f1f5fb}pre{padding:15px;background:#f2f4f7;overflow:auto}img{max-width:100%;height:auto}blockquote{padding:10px 20px;border-left:3px solid #2571be;background:#f4f8fc}@media(max-width:700px){main{padding:15px;margin:8px}h1{font-size:25px}}</style></head><body><header><a href="../../00_开始.html">V6.4 完整资料</a>　<a href="../../02_UI/index.html">交互原型</a>　T3.4</header><main><h1>后台操作手册：第三方服务接入</h1>
+<ol>
+<li>B53先登记实际小程序AppID与AppSecret（已在部署配置的凭据通过受控迁移引用，不复制到多处）。AppID改变不是普通编辑。</li>
+<li>B47填写微信商户、签名私钥/序列号、APIv3密钥、验签公钥；查看系统生成的通知URL。保存草稿→本地检查→只读检测（不扣款）→发布。可先保存不完整草稿，不开放收款。</li>
+<li>B46分别设置线下与微信开关，选择对应商户和线下收款说明。打开微信缺必填项时不能生效；两个关闭需要明确确认暂停新预约。页面给出影响和生效版本。</li>
+<li>B48分别配置腾讯云或阿里云短信；B49按场景关联供应商模板和变量，选择一个主通道。后台保存不能代替厂商审核。测试短信需要白名单和费用确认。</li>
+<li>B50维护订阅消息模板ID、场景、字段映射与跳转页面。真实用户仍需在小程序主动订阅；后台无权伪造其同意。旧模板授权不转移给新的模板ID。</li>
+<li>B51查看发布、回滚、受控测试和发送失败。显示LOCAL_VALID/REMOTE_CHECKED/LIVE_VERIFIED的不同证据，不用一个绿色成功掩盖未测试部分。</li>
+<li>B52处理客户线下收退款，不是代驾付款。登记真实凭证后，由另一位有权人员核实；只有全额核实成功才进入付款完成事实。少款、多款、迟到或预约冲突进入人工处理。</li>
+</ol>
+<p>任何变更都不应要求管理员在普通设置里填写服务器绝对路径或修改Java源码。根加密密钥、服务公网基址、网络白名单和供应商签约仍属于受控部署/厂商前置事项，不宣称后台能代办全部资质。</p>
+</main></body></html>

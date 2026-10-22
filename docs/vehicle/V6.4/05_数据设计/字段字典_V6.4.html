@@ -1,0 +1,6604 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>字段字典_V6.4</title><style>body{font:16px/1.75 -apple-system,BlinkMacSystemFont,"Microsoft YaHei",sans-serif;color:#202632;margin:0;background:#f6f7f9}header{padding:14px 24px;background:white;border-bottom:1px solid #ddd}main{max-width:1120px;margin:24px auto;padding:30px;background:white}h1{font-size:30px}h2{margin-top:36px}a{color:#0661bd}table{border-collapse:collapse;width:100%;display:block;overflow:auto;font-size:14px}td,th{border:1px solid #dde2ea;padding:10px;vertical-align:top}th{background:#f1f5fb}pre{padding:15px;background:#f2f4f7;overflow:auto}img{max-width:100%;height:auto}blockquote{padding:10px 20px;border-left:3px solid #2571be;background:#f4f8fc}@media(max-width:700px){main{padding:15px;margin:8px}h1{font-size:25px}}</style></head><body><header><a href="../00_开始.html">V6.4 完整资料</a>　<a href="../02_UI/index.html">交互原型</a>　T3.4</header><main><h1>V6.4 数据字段字典</h1>
+<p>由data_model_V6.4.json生成，金额分、ID内部Long对外字符串。</p>
+<h2>vi_account · 微信统一基础账户</h2>
+<p>角色是账户扩展资格，不按客户端role直接建高权身份；新号只有OWNER；AppID/OpenID不由客户端指定；普通联系人号码不是身份号码。</p>
+<table>
+<thead>
+<tr>
+  <th>字段</th>
+  <th>SQL类型与约束</th>
+  <th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>id</td>
+  <td><code>BIGINT NOT NULL AUTO_INCREMENT</code></td>
+  <td>数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串</td>
+</tr>
+<tr>
+  <td>app_id</td>
+  <td><code>VARCHAR(64) CHARACTER SET ascii COLLATE ascii_bin NOT NULL</code></td>
+  <td>微信应用标识</td>
+</tr>
+<tr>
+  <td>open_id</td>
+  <td><code>VARCHAR(128) CHARACTER SET ascii COLLATE ascii_bin NOT NULL</code></td>
+  <td>同一小程序身份</td>
+</tr>
+<tr>
+  <td>union_id</td>
+  <td><code>VARCHAR(128) CHARACTER SET ascii COLLATE ascii_bin NULL</code></td>
+  <td>仅供应商可信返回时记录</td>
+</tr>
+<tr>
+  <td>phone_cipher</td>
+  <td><code>VARBINARY(512)</code></td>
+  <td>手机号密文</td>
+</tr>
+<tr>
+  <td>phone_lookup</td>
+  <td><code>BINARY(32)</code></td>
+  <td>带密钥摘要，非裸哈希</td>
+</tr>
+<tr>
+  <td>nickname</td>
+  <td><code>VARCHAR(100)</code></td>
+  <td>选填昵称</td>
+</tr>
+<tr>
+  <td>status</td>
+  <td><code>VARCHAR(24) NOT NULL</code></td>
+  <td>AccountStatus: ACTIVE,LOCKED</td>
+</tr>
+<tr>
+  <td>privacy_version</td>
+  <td><code>VARCHAR(64)</code></td>
+  <td>最近同意版本</td>
+</tr>
+<tr>
+  <td>avatar_file_id</td>
+  <td><code>BIGINT NULL</code></td>
+  <td>本人已验证头像引用，不直接存URL</td>
+</tr>
+<tr>
+  <td>phone_verified_at</td>
+  <td><code>DATETIME(3) NULL</code></td>
+  <td>服务端最后一次可信手机号验证UTC时刻</td>
+</tr>
+<tr>
+  <td>phone_source</td>
+  <td><code>VARCHAR(24) NULL</code></td>
+  <td>PhoneProofSource: WECHAT,SMS；仅WECHAT可触发新员工关联</td>
+</tr>
+<tr>
+  <td>employee_auto_link_blocked</td>
+  <td><code>TINYINT NOT NULL DEFAULT 0</code></td>
+  <td>管理员解除后阻止该账号自动换绑；仅后台明确恢复，可不影响车主</td>
+</tr>
+<tr>
+  <td>created_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>创建时间，统一UTC</td>
+</tr>
+<tr>
+  <td>updated_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>UTC更新时间；Mapper每次修改显式SET updated_at=UTC_TIMESTAMP(3)，不依赖连接时区</td>
+</tr>
+<tr>
+  <td>version</td>
+  <td><code>BIGINT NOT NULL DEFAULT 0</code></td>
+  <td>乐观锁版本</td>
+</tr>
+</tbody>
+</table>
+<h2>vi_employee_binding · 微信账户与框架员工受控绑定</h2>
+<p>可信微信手机号唯一匹配有效sys_user自动建立，无员工申请；同应用每账号/每员工至多一个未撤销关联。暂停仍占唯一关系；撤销写永久留痕及防重绑标记；复核修复后须本人新手机号核验，不允许后台直接填openid。关联、权限版本、audit/outbox同事务。</p>
+<table>
+<thead>
+<tr>
+  <th>字段</th>
+  <th>SQL类型与约束</th>
+  <th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>id</td>
+  <td><code>BIGINT NOT NULL AUTO_INCREMENT</code></td>
+  <td>数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串</td>
+</tr>
+<tr>
+  <td>account_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>关联vi_account</td>
+</tr>
+<tr>
+  <td>sys_user_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>引用现有sys_user，不重建员工</td>
+</tr>
+<tr>
+  <td>bound_by</td>
+  <td><code>BIGINT NULL</code></td>
+  <td>自动关联为NULL，操作者为系统；管理员后续操作单独审计，绝不填假管理员</td>
+</tr>
+<tr>
+  <td>bound_at</td>
+  <td><code>DATETIME(3) NOT NULL</code></td>
+  <td>绑定时间</td>
+</tr>
+<tr>
+  <td>revoked_at</td>
+  <td><code>DATETIME(3)</code></td>
+  <td>解除时间</td>
+</tr>
+<tr>
+  <td>active_account</td>
+  <td><code>BIGINT GENERATED ALWAYS AS (IF(revoked_at IS NULL, account_id, NULL)) STORED</code></td>
+  <td>有效或暂停关联占用；只读生成列</td>
+</tr>
+<tr>
+  <td>active_user</td>
+  <td><code>BIGINT GENERATED ALWAYS AS (IF(revoked_at IS NULL, sys_user_id, NULL)) STORED</code></td>
+  <td>有效或暂停关联占用；与app_id联合唯一</td>
+</tr>
+<tr>
+  <td>permission_version</td>
+  <td><code>BIGINT NOT NULL DEFAULT 0</code></td>
+  <td>员工关联权限版本；撤权事务更新</td>
+</tr>
+<tr>
+  <td>app_id</td>
+  <td><code>VARCHAR(64) CHARACTER SET ascii COLLATE ascii_bin NOT NULL</code></td>
+  <td>关联应用命名空间</td>
+</tr>
+<tr>
+  <td>source</td>
+  <td><code>VARCHAR(32) NOT NULL DEFAULT 'WECHAT_PHONE_MATCH'</code></td>
+  <td>EmployeeLinkSource: WECHAT_PHONE_MATCH</td>
+</tr>
+<tr>
+  <td>status</td>
+  <td><code>VARCHAR(24) NOT NULL DEFAULT 'ACTIVE'</code></td>
+  <td>EmployeeBindingLifecycle: ACTIVE,SUSPENDED,REVOKED</td>
+</tr>
+<tr>
+  <td>phone_lookup</td>
+  <td><code>BINARY(32) NOT NULL</code></td>
+  <td>关联时一致的规范化手机号HMAC；不是可还原裸手机号</td>
+</tr>
+<tr>
+  <td>last_phone_verified_at</td>
+  <td><code>DATETIME(3) NOT NULL</code></td>
+  <td>最近本人微信手机号核验时间</td>
+</tr>
+<tr>
+  <td>employee_auth_version</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>建立关联时的框架授权版本快照；每次工作请求仍检查当前员工状态和权限</td>
+</tr>
+<tr>
+  <td>auto_rebind_blocked</td>
+  <td><code>TINYINT NOT NULL DEFAULT 0</code></td>
+  <td>管理员撤销后拦截同应用同员工新自动关联；明确allow-rematch才解除</td>
+</tr>
+<tr>
+  <td>suspended_reason</td>
+  <td><code>VARCHAR(64) NULL</code></td>
+  <td>手机号变更、账号停用等失效原因；不泄漏其他账号</td>
+</tr>
+<tr>
+  <td>revoked_by</td>
+  <td><code>BIGINT NULL</code></td>
+  <td>后台受控撤销操作者</td>
+</tr>
+<tr>
+  <td>revoked_reason</td>
+  <td><code>VARCHAR(500) NULL</code></td>
+  <td>解除依据</td>
+</tr>
+<tr>
+  <td>created_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>创建时间，统一UTC</td>
+</tr>
+<tr>
+  <td>updated_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>UTC更新时间；Mapper每次修改显式SET updated_at=UTC_TIMESTAMP(3)，不依赖连接时区</td>
+</tr>
+<tr>
+  <td>version</td>
+  <td><code>BIGINT NOT NULL DEFAULT 0</code></td>
+  <td>乐观锁版本</td>
+</tr>
+</tbody>
+</table>
+<h2>vi_driver_profile · 代驾资格与听单偏好</h2>
+<table>
+<thead>
+<tr>
+  <th>字段</th>
+  <th>SQL类型与约束</th>
+  <th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>id</td>
+  <td><code>BIGINT NOT NULL AUTO_INCREMENT</code></td>
+  <td>数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串</td>
+</tr>
+<tr>
+  <td>account_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>同一个基础账户</td>
+</tr>
+<tr>
+  <td>qualification_status</td>
+  <td><code>VARCHAR(24) NOT NULL</code></td>
+  <td>QualificationStatus: DRAFT,SUBMITTED,APPROVED,REJECTED,EXPIRED,SUSPENDED</td>
+</tr>
+<tr>
+  <td>new_assignment_enabled</td>
+  <td><code>TINYINT NOT NULL DEFAULT 0</code></td>
+  <td>是否允许新增承接</td>
+</tr>
+<tr>
+  <td>listening_enabled</td>
+  <td><code>TINYINT NOT NULL DEFAULT 0</code></td>
+  <td>本人听单偏好</td>
+</tr>
+<tr>
+  <td>review_due_at</td>
+  <td><code>DATETIME(3)</code></td>
+  <td>年度复审到期</td>
+</tr>
+<tr>
+  <td>license_class</td>
+  <td><code>VARCHAR(64)</code></td>
+  <td>实际准驾类别，不用字母排序比较</td>
+</tr>
+<tr>
+  <td>license_valid_to</td>
+  <td><code>DATETIME(3)</code></td>
+  <td>到期日</td>
+</tr>
+<tr>
+  <td>license_long_term</td>
+  <td><code>TINYINT NOT NULL DEFAULT 0</code></td>
+  <td>长期有效标记</td>
+</tr>
+<tr>
+  <td>qualification_revision</td>
+  <td><code>BIGINT</code></td>
+  <td>生效认证版本</td>
+</tr>
+<tr>
+  <td>internal_remark</td>
+  <td><code>VARCHAR(1000)</code></td>
+  <td>授权运营备注，变更留痕</td>
+</tr>
+<tr>
+  <td>created_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>创建时间，统一UTC</td>
+</tr>
+<tr>
+  <td>updated_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>UTC更新时间；Mapper每次修改显式SET updated_at=UTC_TIMESTAMP(3)，不依赖连接时区</td>
+</tr>
+<tr>
+  <td>version</td>
+  <td><code>BIGINT NOT NULL DEFAULT 0</code></td>
+  <td>乐观锁版本</td>
+</tr>
+</tbody>
+</table>
+<h2>vi_driver_application · 代驾资格申请与复审版本</h2>
+<p>不以客户端PASSED当实名核验成功；禁止本人审批</p>
+<table>
+<thead>
+<tr>
+  <th>字段</th>
+  <th>SQL类型与约束</th>
+  <th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>id</td>
+  <td><code>BIGINT NOT NULL AUTO_INCREMENT</code></td>
+  <td>数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串</td>
+</tr>
+<tr>
+  <td>driver_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>关联代驾档案</td>
+</tr>
+<tr>
+  <td>status</td>
+  <td><code>VARCHAR(24) NOT NULL</code></td>
+  <td>QualificationStatus: DRAFT,SUBMITTED,APPROVED,REJECTED,EXPIRED,SUSPENDED</td>
+</tr>
+<tr>
+  <td>sensitive_payload_cipher</td>
+  <td><code>LONGBLOB</code></td>
+  <td>证件信息加密，不存明文JSON</td>
+</tr>
+<tr>
+  <td>evidence_file_ids</td>
+  <td><code>JSON</code></td>
+  <td>证件文件关联ID</td>
+</tr>
+<tr>
+  <td>provider_result_ids</td>
+  <td><code>JSON</code></td>
+  <td>可信核验和培训记录ID</td>
+</tr>
+<tr>
+  <td>submitted_at</td>
+  <td><code>DATETIME(3)</code></td>
+  <td>完整提交时间</td>
+</tr>
+<tr>
+  <td>reviewer_user_id</td>
+  <td><code>BIGINT</code></td>
+  <td>审核人</td>
+</tr>
+<tr>
+  <td>reviewed_at</td>
+  <td><code>DATETIME(3)</code></td>
+  <td>审核时间</td>
+</tr>
+<tr>
+  <td>review_opinion</td>
+  <td><code>VARCHAR(1000)</code></td>
+  <td>审批意见</td>
+</tr>
+<tr>
+  <td>created_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>创建时间，统一UTC</td>
+</tr>
+<tr>
+  <td>updated_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>UTC更新时间；Mapper每次修改显式SET updated_at=UTC_TIMESTAMP(3)，不依赖连接时区</td>
+</tr>
+<tr>
+  <td>version</td>
+  <td><code>BIGINT NOT NULL DEFAULT 0</code></td>
+  <td>乐观锁版本</td>
+</tr>
+</tbody>
+</table>
+<h2>vi_provider_verification · 第三方核验与培训任务记录</h2>
+<table>
+<thead>
+<tr>
+  <th>字段</th>
+  <th>SQL类型与约束</th>
+  <th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>id</td>
+  <td><code>BIGINT NOT NULL AUTO_INCREMENT</code></td>
+  <td>数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串</td>
+</tr>
+<tr>
+  <td>application_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>代驾申请</td>
+</tr>
+<tr>
+  <td>provider</td>
+  <td><code>VARCHAR(64)</code></td>
+  <td>供应商或培训服务</td>
+</tr>
+<tr>
+  <td>task_type</td>
+  <td><code>VARCHAR(64)</code></td>
+  <td>VerificationType: REALNAME,FACE,BACKGROUND,LICENSE,TRAINING</td>
+</tr>
+<tr>
+  <td>provider_task_id</td>
+  <td><code>VARCHAR(128)</code></td>
+  <td>外部任务标识</td>
+</tr>
+<tr>
+  <td>status</td>
+  <td><code>VARCHAR(64) NOT NULL</code></td>
+  <td>VerificationStatus: CREATED,PROCESSING,PASSED,FAILED,EXPIRED,UNAVAILABLE</td>
+</tr>
+<tr>
+  <td>result_digest</td>
+  <td><code>VARCHAR(64)</code></td>
+  <td>结果摘要，不泄露生物信息</td>
+</tr>
+<tr>
+  <td>verified_at</td>
+  <td><code>DATETIME(3)</code></td>
+  <td>可信回调或查单确认时刻</td>
+</tr>
+<tr>
+  <td>created_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>创建时间，统一UTC</td>
+</tr>
+<tr>
+  <td>updated_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>UTC更新时间；Mapper每次修改显式SET updated_at=UTC_TIMESTAMP(3)，不依赖连接时区</td>
+</tr>
+<tr>
+  <td>version</td>
+  <td><code>BIGINT NOT NULL DEFAULT 0</code></td>
+  <td>乐观锁版本</td>
+</tr>
+</tbody>
+</table>
+<h2>vi_station · 检测点与可服务设置</h2>
+<table>
+<thead>
+<tr>
+  <th>字段</th>
+  <th>SQL类型与约束</th>
+  <th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>id</td>
+  <td><code>BIGINT NOT NULL AUTO_INCREMENT</code></td>
+  <td>数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串</td>
+</tr>
+<tr>
+  <td>name</td>
+  <td><code>VARCHAR(128) NOT NULL</code></td>
+  <td>名称</td>
+</tr>
+<tr>
+  <td>dept_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>框架部门归属</td>
+</tr>
+<tr>
+  <td>address</td>
+  <td><code>VARCHAR(255) NOT NULL</code></td>
+  <td>检测点公开地址</td>
+</tr>
+<tr>
+  <td>lng</td>
+  <td><code>DECIMAL(10,6) NOT NULL</code></td>
+  <td>GCJ02经度</td>
+</tr>
+<tr>
+  <td>lat</td>
+  <td><code>DECIMAL(10,6) NOT NULL</code></td>
+  <td>GCJ02纬度</td>
+</tr>
+<tr>
+  <td>service_radius_meter</td>
+  <td><code>INT NOT NULL</code></td>
+  <td>服务半径</td>
+</tr>
+<tr>
+  <td>supported_vehicle_codes</td>
+  <td><code>JSON NOT NULL</code></td>
+  <td>引用现有vehicle_type数据字典</td>
+</tr>
+<tr>
+  <td>business_hours</td>
+  <td><code>JSON NOT NULL</code></td>
+  <td>营业日和接收边界</td>
+</tr>
+<tr>
+  <td>enabled</td>
+  <td><code>TINYINT NOT NULL DEFAULT 0</code></td>
+  <td>配置完成后启用</td>
+</tr>
+<tr>
+  <td>created_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>创建时间，统一UTC</td>
+</tr>
+<tr>
+  <td>updated_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>UTC更新时间；Mapper每次修改显式SET updated_at=UTC_TIMESTAMP(3)，不依赖连接时区</td>
+</tr>
+<tr>
+  <td>version</td>
+  <td><code>BIGINT NOT NULL DEFAULT 0</code></td>
+  <td>乐观锁版本</td>
+</tr>
+</tbody>
+</table>
+<h2>vi_station_grant · 员工跨检测点操作范围</h2>
+<p>只有OWN行政关系不等于有操作权限；站点权限撤至0后工作能力关闭，本人车主身份保留</p>
+<table>
+<thead>
+<tr>
+  <th>字段</th>
+  <th>SQL类型与约束</th>
+  <th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>id</td>
+  <td><code>BIGINT NOT NULL AUTO_INCREMENT</code></td>
+  <td>数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串</td>
+</tr>
+<tr>
+  <td>sys_user_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>复用框架人员</td>
+</tr>
+<tr>
+  <td>station_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>获授权站点</td>
+</tr>
+<tr>
+  <td>enabled</td>
+  <td><code>TINYINT NOT NULL DEFAULT 1</code></td>
+  <td>功能权限仍单独验证</td>
+</tr>
+<tr>
+  <td>granted_by</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>授权人</td>
+</tr>
+<tr>
+  <td>reason</td>
+  <td><code>VARCHAR(500) NOT NULL</code></td>
+  <td>授权变更说明</td>
+</tr>
+<tr>
+  <td>created_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>创建时间，统一UTC</td>
+</tr>
+<tr>
+  <td>updated_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>UTC更新时间；Mapper每次修改显式SET updated_at=UTC_TIMESTAMP(3)，不依赖连接时区</td>
+</tr>
+<tr>
+  <td>version</td>
+  <td><code>BIGINT NOT NULL DEFAULT 0</code></td>
+  <td>乐观锁版本</td>
+</tr>
+</tbody>
+</table>
+<h2>vi_vehicle · 授权客户-车辆关联档案，供独立车辆列表</h2>
+<p>车牌唯一性限本人档案，不把跨客户同车牌直接归并或泄露</p>
+<table>
+<thead>
+<tr>
+  <th>字段</th>
+  <th>SQL类型与约束</th>
+  <th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>id</td>
+  <td><code>BIGINT NOT NULL AUTO_INCREMENT</code></td>
+  <td>数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串</td>
+</tr>
+<tr>
+  <td>owner_account_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>基础账户</td>
+</tr>
+<tr>
+  <td>plate_no</td>
+  <td><code>VARCHAR(20) NOT NULL</code></td>
+  <td>归一化车牌</td>
+</tr>
+<tr>
+  <td>vehicle_type_code</td>
+  <td><code>VARCHAR(64) NOT NULL</code></td>
+  <td>数据字典编码</td>
+</tr>
+<tr>
+  <td>brand_model</td>
+  <td><code>VARCHAR(128)</code></td>
+  <td>可选</td>
+</tr>
+<tr>
+  <td>vin_last4</td>
+  <td><code>VARCHAR(4)</code></td>
+  <td>只读核验摘要</td>
+</tr>
+<tr>
+  <td>registered_on</td>
+  <td><code>DATE</code></td>
+  <td>登记日期，按需核验</td>
+</tr>
+<tr>
+  <td>use_type</td>
+  <td><code>VARCHAR(64)</code></td>
+  <td>使用性质</td>
+</tr>
+<tr>
+  <td>verification_status</td>
+  <td><code>VARCHAR(24) NOT NULL DEFAULT 'PENDING'</code></td>
+  <td>VehicleVerificationStatus: PENDING,VERIFIED,REJECTED</td>
+</tr>
+<tr>
+  <td>internal_remark</td>
+  <td><code>VARCHAR(1000)</code></td>
+  <td>运营资料备注，不回写历史订单</td>
+</tr>
+<tr>
+  <td>is_default</td>
+  <td><code>TINYINT NOT NULL DEFAULT 0</code></td>
+  <td>服务层保证本人至多一辆默认</td>
+</tr>
+<tr>
+  <td>deleted_at</td>
+  <td><code>DATETIME(3)</code></td>
+  <td>软删除</td>
+</tr>
+<tr>
+  <td>active_plate</td>
+  <td><code>VARCHAR(20) GENERATED ALWAYS AS (IF(deleted_at IS NULL,plate_no,NULL)) STORED</code></td>
+  <td>软删除后不占用本人车牌约束</td>
+</tr>
+<tr>
+  <td>created_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>创建时间，统一UTC</td>
+</tr>
+<tr>
+  <td>updated_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>UTC更新时间；Mapper每次修改显式SET updated_at=UTC_TIMESTAMP(3)，不依赖连接时区</td>
+</tr>
+<tr>
+  <td>version</td>
+  <td><code>BIGINT NOT NULL DEFAULT 0</code></td>
+  <td>乐观锁版本</td>
+</tr>
+</tbody>
+</table>
+<h2>vi_address · 客户常用地址</h2>
+<p>；设默认/删除默认地址先锁vi_account行，校验地址版本后同事务清旧默认/设新默认；同时递增profile聚合版本，避免多个默认。</p>
+<table>
+<thead>
+<tr>
+  <th>字段</th>
+  <th>SQL类型与约束</th>
+  <th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>id</td>
+  <td><code>BIGINT NOT NULL AUTO_INCREMENT</code></td>
+  <td>数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串</td>
+</tr>
+<tr>
+  <td>owner_account_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>所属账户</td>
+</tr>
+<tr>
+  <td>label</td>
+  <td><code>VARCHAR(40)</code></td>
+  <td>家/公司等</td>
+</tr>
+<tr>
+  <td>address_cipher</td>
+  <td><code>VARBINARY(2048)</code></td>
+  <td>精确地址加密</td>
+</tr>
+<tr>
+  <td>location_cipher</td>
+  <td><code>VARBINARY(1024)</code></td>
+  <td>坐标敏感数据</td>
+</tr>
+<tr>
+  <td>is_default</td>
+  <td><code>TINYINT NOT NULL DEFAULT 0</code></td>
+  <td>常用</td>
+</tr>
+<tr>
+  <td>deleted_at</td>
+  <td><code>DATETIME(3)</code></td>
+  <td>软删除</td>
+</tr>
+<tr>
+  <td>created_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>创建时间，统一UTC</td>
+</tr>
+<tr>
+  <td>updated_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>UTC更新时间；Mapper每次修改显式SET updated_at=UTC_TIMESTAMP(3)，不依赖连接时区</td>
+</tr>
+<tr>
+  <td>version</td>
+  <td><code>BIGINT NOT NULL DEFAULT 0</code></td>
+  <td>乐观锁版本</td>
+</tr>
+</tbody>
+</table>
+<h2>vi_price_rule · 不可变生效计价版本</h2>
+<p>服务层事务检查生效区间不得重叠；无规则不得0元报价；P02等待费受控启用</p>
+<table>
+<thead>
+<tr>
+  <th>字段</th>
+  <th>SQL类型与约束</th>
+  <th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>id</td>
+  <td><code>BIGINT NOT NULL AUTO_INCREMENT</code></td>
+  <td>数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串</td>
+</tr>
+<tr>
+  <td>rule_key</td>
+  <td><code>VARCHAR(64) NOT NULL</code></td>
+  <td>稳定方案标识</td>
+</tr>
+<tr>
+  <td>revision</td>
+  <td><code>INT NOT NULL</code></td>
+  <td>新版本号</td>
+</tr>
+<tr>
+  <td>vehicle_type_code</td>
+  <td><code>VARCHAR(64) NOT NULL</code></td>
+  <td>车型字典编码</td>
+</tr>
+<tr>
+  <td>inspection_type_code</td>
+  <td><code>VARCHAR(64) NOT NULL</code></td>
+  <td>检测业务类型</td>
+</tr>
+<tr>
+  <td>status</td>
+  <td><code>VARCHAR(64) NOT NULL</code></td>
+  <td>PriceRuleStatus: DRAFT,IN_REVIEW,APPROVED,PUBLISHED,DISABLED</td>
+</tr>
+<tr>
+  <td>config_json</td>
+  <td><code>JSON NOT NULL</code></td>
+  <td>按PriceInput约束的计价参数，分与米</td>
+</tr>
+<tr>
+  <td>effective_from</td>
+  <td><code>DATETIME(3)</code></td>
+  <td>生效时间</td>
+</tr>
+<tr>
+  <td>effective_to</td>
+  <td><code>DATETIME(3)</code></td>
+  <td>失效时间</td>
+</tr>
+<tr>
+  <td>submitted_by</td>
+  <td><code>BIGINT</code></td>
+  <td>提交人</td>
+</tr>
+<tr>
+  <td>approved_by</td>
+  <td><code>BIGINT</code></td>
+  <td>审核人</td>
+</tr>
+<tr>
+  <td>created_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>创建时间，统一UTC</td>
+</tr>
+<tr>
+  <td>updated_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>UTC更新时间；Mapper每次修改显式SET updated_at=UTC_TIMESTAMP(3)，不依赖连接时区</td>
+</tr>
+<tr>
+  <td>version</td>
+  <td><code>BIGINT NOT NULL DEFAULT 0</code></td>
+  <td>乐观锁版本</td>
+</tr>
+</tbody>
+</table>
+<h2>vi_quota_slot · 上门服务与站点接收额度</h2>
+<p>双额度为P04设计，开工模块前评审；调整容量不得小于实际占用之和</p>
+<table>
+<thead>
+<tr>
+  <th>字段</th>
+  <th>SQL类型与约束</th>
+  <th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>id</td>
+  <td><code>BIGINT NOT NULL AUTO_INCREMENT</code></td>
+  <td>数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串</td>
+</tr>
+<tr>
+  <td>quota_type</td>
+  <td><code>VARCHAR(24) NOT NULL</code></td>
+  <td>QuotaType: PICKUP,STATION_RECEIVE</td>
+</tr>
+<tr>
+  <td>scope_key</td>
+  <td><code>VARCHAR(64) NOT NULL</code></td>
+  <td>区域标识或站点标识</td>
+</tr>
+<tr>
+  <td>station_id</td>
+  <td><code>BIGINT</code></td>
+  <td>接收额度所属站点</td>
+</tr>
+<tr>
+  <td>starts_at</td>
+  <td><code>DATETIME(3) NOT NULL</code></td>
+  <td>时间区间起</td>
+</tr>
+<tr>
+  <td>ends_at</td>
+  <td><code>DATETIME(3) NOT NULL</code></td>
+  <td>时间区间止</td>
+</tr>
+<tr>
+  <td>total_quota</td>
+  <td><code>INT NOT NULL</code></td>
+  <td>可提供数量</td>
+</tr>
+<tr>
+  <td>held_quota</td>
+  <td><code>INT NOT NULL DEFAULT 0</code></td>
+  <td>未付预占数量</td>
+</tr>
+<tr>
+  <td>confirmed_quota</td>
+  <td><code>INT NOT NULL DEFAULT 0</code></td>
+  <td>已付预约尚未消耗</td>
+</tr>
+<tr>
+  <td>consumed_quota</td>
+  <td><code>INT NOT NULL DEFAULT 0</code></td>
+  <td>已经真实消耗</td>
+</tr>
+<tr>
+  <td>enabled</td>
+  <td><code>TINYINT NOT NULL DEFAULT 1</code></td>
+  <td>停约开关</td>
+</tr>
+<tr>
+  <td>created_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>创建时间，统一UTC</td>
+</tr>
+<tr>
+  <td>updated_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>UTC更新时间；Mapper每次修改显式SET updated_at=UTC_TIMESTAMP(3)，不依赖连接时区</td>
+</tr>
+<tr>
+  <td>version</td>
+  <td><code>BIGINT NOT NULL DEFAULT 0</code></td>
+  <td>乐观锁版本</td>
+</tr>
+</tbody>
+</table>
+<h2>vi_quote · 短期报价快照</h2>
+<table>
+<thead>
+<tr>
+  <th>字段</th>
+  <th>SQL类型与约束</th>
+  <th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>id</td>
+  <td><code>BIGINT NOT NULL AUTO_INCREMENT</code></td>
+  <td>数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串</td>
+</tr>
+<tr>
+  <td>owner_account_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>报价人</td>
+</tr>
+<tr>
+  <td>station_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>匹配站点</td>
+</tr>
+<tr>
+  <td>vehicle_snapshot</td>
+  <td><code>JSON NOT NULL</code></td>
+  <td>车牌、车型编码与名称快照</td>
+</tr>
+<tr>
+  <td>address_snapshot_cipher</td>
+  <td><code>LONGBLOB NOT NULL</code></td>
+  <td>加密接车地址快照</td>
+</tr>
+<tr>
+  <td>pickup_slot_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>上门时段</td>
+</tr>
+<tr>
+  <td>receive_slot_id</td>
+  <td><code>BIGINT</code></td>
+  <td>内部接收排期</td>
+</tr>
+<tr>
+  <td>rule_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>计价版本ID</td>
+</tr>
+<tr>
+  <td>route_snapshot</td>
+  <td><code>JSON NOT NULL</code></td>
+  <td>供应商路线距离、方向、时效</td>
+</tr>
+<tr>
+  <td>amount_fen</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>总费用分</td>
+</tr>
+<tr>
+  <td>items_json</td>
+  <td><code>JSON NOT NULL</code></td>
+  <td>逐项明细及计算依据</td>
+</tr>
+<tr>
+  <td>expires_at</td>
+  <td><code>DATETIME(3) NOT NULL</code></td>
+  <td>报价失效时间</td>
+</tr>
+<tr>
+  <td>used_order_id</td>
+  <td><code>BIGINT</code></td>
+  <td>已用于建单的订单</td>
+</tr>
+<tr>
+  <td>created_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>创建时间，统一UTC</td>
+</tr>
+<tr>
+  <td>updated_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>UTC更新时间；Mapper每次修改显式SET updated_at=UTC_TIMESTAMP(3)，不依赖连接时区</td>
+</tr>
+<tr>
+  <td>version</td>
+  <td><code>BIGINT NOT NULL DEFAULT 0</code></td>
+  <td>乐观锁版本</td>
+</tr>
+</tbody>
+</table>
+<h2>vi_order · 订单主履约与实际保管</h2>
+<p>主状态不得存REFUNDING或事故标记；已返回不等于已服务确认</p>
+<table>
+<thead>
+<tr>
+  <th>字段</th>
+  <th>SQL类型与约束</th>
+  <th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>id</td>
+  <td><code>BIGINT NOT NULL AUTO_INCREMENT</code></td>
+  <td>数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串</td>
+</tr>
+<tr>
+  <td>order_no</td>
+  <td><code>VARCHAR(64) NOT NULL</code></td>
+  <td>对外业务单号</td>
+</tr>
+<tr>
+  <td>owner_account_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>下单账户</td>
+</tr>
+<tr>
+  <td>vehicle_id</td>
+  <td><code>BIGINT</code></td>
+  <td>常用车辆档案</td>
+</tr>
+<tr>
+  <td>station_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>业务权威检测点归属</td>
+</tr>
+<tr>
+  <td>dept_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>框架数据归属快照</td>
+</tr>
+<tr>
+  <td>quote_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>报价及价格快照</td>
+</tr>
+<tr>
+  <td>vehicle_snapshot</td>
+  <td><code>JSON NOT NULL</code></td>
+  <td>历史车辆快照</td>
+</tr>
+<tr>
+  <td>fulfillment_status</td>
+  <td><code>VARCHAR(32) NOT NULL</code></td>
+  <td>FulfillmentStatus: PENDING_PAY,SCHEDULED,PENDING_DISPATCH,DISPATCHING,MANUAL_DISPATCH,ACCEPTED,GOING_PICKUP,ARRIVED_PICKUP,PICKED_UP,ARRIVED_STATION,INSPECTING,INSPECTED,CAR_TAKEN,WAIT_CONFIRM,COMPLETED,CANCELLED,CLOSED</td>
+</tr>
+<tr>
+  <td>cancel_status</td>
+  <td><code>VARCHAR(32) NOT NULL DEFAULT 'NONE'</code></td>
+  <td>CancelStatus: NONE,APPLIED,REJECTED,APPROVED_WAIT_RETURN,COMPLETED</td>
+</tr>
+<tr>
+  <td>custody_type</td>
+  <td><code>VARCHAR(16) NOT NULL</code></td>
+  <td>CustodyType: OWNER,DRIVER,STATION</td>
+</tr>
+<tr>
+  <td>custody_ref_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>实际保管方ID，须与类型联查</td>
+</tr>
+<tr>
+  <td>active_assignment_id</td>
+  <td><code>BIGINT</code></td>
+  <td>当前承接指针，已释放时为空</td>
+</tr>
+<tr>
+  <td>pickup_starts_at</td>
+  <td><code>DATETIME(3) NOT NULL</code></td>
+  <td>对外约定上门时间</td>
+</tr>
+<tr>
+  <td>pickup_ends_at</td>
+  <td><code>DATETIME(3) NOT NULL</code></td>
+  <td>对外时段结束</td>
+</tr>
+<tr>
+  <td>pay_expires_at</td>
+  <td><code>DATETIME(3) NOT NULL</code></td>
+  <td>创建后30分钟</td>
+</tr>
+<tr>
+  <td>dispatch_at</td>
+  <td><code>DATETIME(3)</code></td>
+  <td>预约前N分钟</td>
+</tr>
+<tr>
+  <td>dispatch_config_version</td>
+  <td><code>BIGINT</code></td>
+  <td>派单参数快照</td>
+</tr>
+<tr>
+  <td>returned_at</td>
+  <td><code>DATETIME(3)</code></td>
+  <td>实际归还成功时间</td>
+</tr>
+<tr>
+  <td>auto_confirm_at</td>
+  <td><code>DATETIME(3)</code></td>
+  <td>归还后24小时服务确认截止</td>
+</tr>
+<tr>
+  <td>completed_at</td>
+  <td><code>DATETIME(3)</code></td>
+  <td>业务服务确认完成</td>
+</tr>
+<tr>
+  <td>cancelled_at</td>
+  <td><code>DATETIME(3)</code></td>
+  <td>取消正式办结</td>
+</tr>
+<tr>
+  <td>total_fen</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>应付分</td>
+</tr>
+<tr>
+  <td>terms_version</td>
+  <td><code>VARCHAR(64) NOT NULL</code></td>
+  <td>服务协议版本</td>
+</tr>
+<tr>
+  <td>created_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>创建时间，统一UTC</td>
+</tr>
+<tr>
+  <td>updated_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>UTC更新时间；Mapper每次修改显式SET updated_at=UTC_TIMESTAMP(3)，不依赖连接时区</td>
+</tr>
+<tr>
+  <td>version</td>
+  <td><code>BIGINT NOT NULL DEFAULT 0</code></td>
+  <td>乐观锁版本</td>
+</tr>
+</tbody>
+</table>
+<h2>vi_quota_reservation · 每单额度占用凭证</h2>
+<p>每次变更和quota_slot聚合计数在同事务；只释放HELD/未消耗预约</p>
+<table>
+<thead>
+<tr>
+  <th>字段</th>
+  <th>SQL类型与约束</th>
+  <th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>id</td>
+  <td><code>BIGINT NOT NULL AUTO_INCREMENT</code></td>
+  <td>数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串</td>
+</tr>
+<tr>
+  <td>order_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>关联订单</td>
+</tr>
+<tr>
+  <td>slot_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>关联quota_slot</td>
+</tr>
+<tr>
+  <td>status</td>
+  <td><code>VARCHAR(24) NOT NULL</code></td>
+  <td>ReservationStatus: HELD,CONFIRMED,CONSUMED,RELEASED</td>
+</tr>
+<tr>
+  <td>quantity</td>
+  <td><code>INT NOT NULL DEFAULT 1</code></td>
+  <td>数量</td>
+</tr>
+<tr>
+  <td>expires_at</td>
+  <td><code>DATETIME(3)</code></td>
+  <td>未付锁额截止</td>
+</tr>
+<tr>
+  <td>released_at</td>
+  <td><code>DATETIME(3)</code></td>
+  <td>释放时间</td>
+</tr>
+<tr>
+  <td>created_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>创建时间，统一UTC</td>
+</tr>
+<tr>
+  <td>updated_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>UTC更新时间；Mapper每次修改显式SET updated_at=UTC_TIMESTAMP(3)，不依赖连接时区</td>
+</tr>
+<tr>
+  <td>version</td>
+  <td><code>BIGINT NOT NULL DEFAULT 0</code></td>
+  <td>乐观锁版本</td>
+</tr>
+</tbody>
+</table>
+<h2>vi_dispatch_invite · 单人派单邀约</h2>
+<table>
+<thead>
+<tr>
+  <th>字段</th>
+  <th>SQL类型与约束</th>
+  <th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>id</td>
+  <td><code>BIGINT NOT NULL AUTO_INCREMENT</code></td>
+  <td>数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串</td>
+</tr>
+<tr>
+  <td>order_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>订单</td>
+</tr>
+<tr>
+  <td>driver_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>候选代驾</td>
+</tr>
+<tr>
+  <td>status</td>
+  <td><code>VARCHAR(24) NOT NULL</code></td>
+  <td>InviteStatus: WAIT_RESPONSE,ACCEPTED,REJECTED,EXPIRED,REVOKED</td>
+</tr>
+<tr>
+  <td>source</td>
+  <td><code>VARCHAR(16) NOT NULL</code></td>
+  <td>AUTO/MANUAL</td>
+</tr>
+<tr>
+  <td>round_key</td>
+  <td><code>VARCHAR(64)</code></td>
+  <td>派单轮次</td>
+</tr>
+<tr>
+  <td>issued_at</td>
+  <td><code>DATETIME(3) NOT NULL</code></td>
+  <td>邀约时刻</td>
+</tr>
+<tr>
+  <td>expires_at</td>
+  <td><code>DATETIME(3) NOT NULL</code></td>
+  <td>绝对失效时间</td>
+</tr>
+<tr>
+  <td>responded_at</td>
+  <td><code>DATETIME(3)</code></td>
+  <td>响应</td>
+</tr>
+<tr>
+  <td>active_order</td>
+  <td><code>BIGINT GENERATED ALWAYS AS (IF(status='WAIT_RESPONSE',order_id,NULL)) STORED</code></td>
+  <td>同单最多一个待响应邀约</td>
+</tr>
+<tr>
+  <td>created_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>创建时间，统一UTC</td>
+</tr>
+<tr>
+  <td>updated_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>UTC更新时间；Mapper每次修改显式SET updated_at=UTC_TIMESTAMP(3)，不依赖连接时区</td>
+</tr>
+<tr>
+  <td>version</td>
+  <td><code>BIGINT NOT NULL DEFAULT 0</code></td>
+  <td>乐观锁版本</td>
+</tr>
+</tbody>
+</table>
+<h2>vi_driver_assignment · 司机承接历史，结束后仍保留</h2>
+<table>
+<thead>
+<tr>
+  <th>字段</th>
+  <th>SQL类型与约束</th>
+  <th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>id</td>
+  <td><code>BIGINT NOT NULL AUTO_INCREMENT</code></td>
+  <td>数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串</td>
+</tr>
+<tr>
+  <td>order_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>订单</td>
+</tr>
+<tr>
+  <td>driver_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>代驾</td>
+</tr>
+<tr>
+  <td>invite_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>接受的邀约</td>
+</tr>
+<tr>
+  <td>accepted_at</td>
+  <td><code>DATETIME(3) NOT NULL</code></td>
+  <td>接受时间</td>
+</tr>
+<tr>
+  <td>ended_at</td>
+  <td><code>DATETIME(3)</code></td>
+  <td>解除或归还时结束</td>
+</tr>
+<tr>
+  <td>end_reason</td>
+  <td><code>VARCHAR(64)</code></td>
+  <td>AssignmentEndReason: RETURNED,CANCELLED,DRIVER_CANCEL</td>
+</tr>
+<tr>
+  <td>active_order</td>
+  <td><code>BIGINT GENERATED ALWAYS AS (IF(ended_at IS NULL,order_id,NULL)) STORED</code></td>
+  <td>生效承接唯一订单</td>
+</tr>
+<tr>
+  <td>active_driver</td>
+  <td><code>BIGINT GENERATED ALWAYS AS (IF(ended_at IS NULL,driver_id,NULL)) STORED</code></td>
+  <td>生效承接唯一司机</td>
+</tr>
+<tr>
+  <td>created_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>创建时间，统一UTC</td>
+</tr>
+<tr>
+  <td>updated_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>UTC更新时间；Mapper每次修改显式SET updated_at=UTC_TIMESTAMP(3)，不依赖连接时区</td>
+</tr>
+<tr>
+  <td>version</td>
+  <td><code>BIGINT NOT NULL DEFAULT 0</code></td>
+  <td>乐观锁版本</td>
+</tr>
+</tbody>
+</table>
+<h2>vi_driver_occupancy · 司机唯一资源占用，不受订单待确认影响</h2>
+<p>PRIMARY KEY driver_id；释放必须匹配holder_type+holder_id，不得按driver_id裸删</p>
+<table>
+<thead>
+<tr>
+  <th>字段</th>
+  <th>SQL类型与约束</th>
+  <th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>driver_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>主键，唯一占用</td>
+</tr>
+<tr>
+  <td>holder_type</td>
+  <td><code>VARCHAR(16) NOT NULL</code></td>
+  <td>OccupancyHolderType: INVITE,ASSIGNMENT</td>
+</tr>
+<tr>
+  <td>holder_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>被占用邀约或承接ID</td>
+</tr>
+<tr>
+  <td>order_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>对应订单</td>
+</tr>
+<tr>
+  <td>expires_at</td>
+  <td><code>DATETIME(3)</code></td>
+  <td>仅邀约有自动失效</td>
+</tr>
+<tr>
+  <td>created_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>创建时间，统一UTC</td>
+</tr>
+<tr>
+  <td>updated_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>UTC更新时间；Mapper每次修改显式SET updated_at=UTC_TIMESTAMP(3)，不依赖连接时区</td>
+</tr>
+<tr>
+  <td>version</td>
+  <td><code>BIGINT NOT NULL DEFAULT 0</code></td>
+  <td>乐观锁版本</td>
+</tr>
+</tbody>
+</table>
+<h2>vi_dispatch_cursor · 全局轮转游标与版本</h2>
+<p>事务锁内原子推进，与创建邀约和占用协调</p>
+<table>
+<thead>
+<tr>
+  <th>字段</th>
+  <th>SQL类型与约束</th>
+  <th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>scope_key</td>
+  <td><code>VARCHAR(64) NOT NULL</code></td>
+  <td>全局或已确认调度域主键</td>
+</tr>
+<tr>
+  <td>last_driver_id</td>
+  <td><code>BIGINT</code></td>
+  <td>上次派发指针</td>
+</tr>
+<tr>
+  <td>round_no</td>
+  <td><code>BIGINT NOT NULL DEFAULT 0</code></td>
+  <td>轮次定义须P01评审</td>
+</tr>
+<tr>
+  <td>created_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>创建时间，统一UTC</td>
+</tr>
+<tr>
+  <td>updated_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>UTC更新时间；Mapper每次修改显式SET updated_at=UTC_TIMESTAMP(3)，不依赖连接时区</td>
+</tr>
+<tr>
+  <td>version</td>
+  <td><code>BIGINT NOT NULL DEFAULT 0</code></td>
+  <td>乐观锁版本</td>
+</tr>
+</tbody>
+</table>
+<h2>vi_driver_location · 代驾最近前台定位</h2>
+<p>位置过期不参与候选；不是持续后台实时轨迹库</p>
+<table>
+<thead>
+<tr>
+  <th>字段</th>
+  <th>SQL类型与约束</th>
+  <th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>driver_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>主键</td>
+</tr>
+<tr>
+  <td>location_cipher</td>
+  <td><code>VARBINARY(1024) NOT NULL</code></td>
+  <td>加密位置</td>
+</tr>
+<tr>
+  <td>captured_at</td>
+  <td><code>DATETIME(3) NOT NULL</code></td>
+  <td>设备采集时间</td>
+</tr>
+<tr>
+  <td>received_at</td>
+  <td><code>DATETIME(3) NOT NULL</code></td>
+  <td>服务器接收时间</td>
+</tr>
+<tr>
+  <td>created_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>创建时间，统一UTC</td>
+</tr>
+<tr>
+  <td>updated_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>UTC更新时间；Mapper每次修改显式SET updated_at=UTC_TIMESTAMP(3)，不依赖连接时区</td>
+</tr>
+<tr>
+  <td>version</td>
+  <td><code>BIGINT NOT NULL DEFAULT 0</code></td>
+  <td>乐观锁版本</td>
+</tr>
+</tbody>
+</table>
+<h2>vi_handover · 一次实物交接事务凭证</h2>
+<p>核验方不得读取密文解码接口；码消费/保管转移/封存/释放同一事务</p>
+<table>
+<thead>
+<tr>
+  <th>字段</th>
+  <th>SQL类型与约束</th>
+  <th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>id</td>
+  <td><code>BIGINT NOT NULL AUTO_INCREMENT</code></td>
+  <td>数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串</td>
+</tr>
+<tr>
+  <td>order_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>订单</td>
+</tr>
+<tr>
+  <td>assignment_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>当前承接</td>
+</tr>
+<tr>
+  <td>handover_type</td>
+  <td><code>VARCHAR(32) NOT NULL</code></td>
+  <td>HandoverType: OWNER_TO_DRIVER,DRIVER_TO_STATION,STATION_TO_DRIVER,DRIVER_TO_OWNER</td>
+</tr>
+<tr>
+  <td>holder_account_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>持码基础账号</td>
+</tr>
+<tr>
+  <td>verifier_account_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>核验基础账号</td>
+</tr>
+<tr>
+  <td>code_mac</td>
+  <td><code>BINARY(32) NOT NULL</code></td>
+  <td>含订单/类型/代次随机盐的服务端带密钥MAC；4位码不能只裸哈希</td>
+</tr>
+<tr>
+  <td>code_cipher</td>
+  <td><code>VARBINARY(512) NOT NULL</code></td>
+  <td>仅持码方短期读取所需的加密值，使用后销毁可读密文</td>
+</tr>
+<tr>
+  <td>generation_no</td>
+  <td><code>INT NOT NULL</code></td>
+  <td>码代次</td>
+</tr>
+<tr>
+  <td>status</td>
+  <td><code>VARCHAR(24) NOT NULL</code></td>
+  <td>HandoverStatus: PENDING,CONFIRMED,LOCKED,EXPIRED</td>
+</tr>
+<tr>
+  <td>expires_at</td>
+  <td><code>DATETIME(3) NOT NULL</code></td>
+  <td>时效</td>
+</tr>
+<tr>
+  <td>confirmed_at</td>
+  <td><code>DATETIME(3)</code></td>
+  <td>实物交接成功</td>
+</tr>
+<tr>
+  <td>evidence_group_id</td>
+  <td><code>BIGINT</code></td>
+  <td>已经封存证据组</td>
+</tr>
+<tr>
+  <td>active_key</td>
+  <td><code>VARCHAR(160) GENERATED ALWAYS AS (IF(status='PENDING',CONCAT(order_id,':',assignment_id,':',handover_type),NULL)) STORED</code></td>
+  <td>同时仅一个有效码</td>
+</tr>
+<tr>
+  <td>created_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>创建时间，统一UTC</td>
+</tr>
+<tr>
+  <td>updated_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>UTC更新时间；Mapper每次修改显式SET updated_at=UTC_TIMESTAMP(3)，不依赖连接时区</td>
+</tr>
+<tr>
+  <td>version</td>
+  <td><code>BIGINT NOT NULL DEFAULT 0</code></td>
+  <td>乐观锁版本</td>
+</tr>
+</tbody>
+</table>
+<h2>vi_handover_attempt_guard · 跨重发的交接错误次数</h2>
+<p>新生成验证码不能将失败计数清零；错误计数独立持久化，不能随失败事务全部回滚</p>
+<table>
+<thead>
+<tr>
+  <th>字段</th>
+  <th>SQL类型与约束</th>
+  <th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>guard_key</td>
+  <td><code>VARCHAR(160) NOT NULL</code></td>
+  <td>订单+承接+交接类型</td>
+</tr>
+<tr>
+  <td>failed_attempts</td>
+  <td><code>INT NOT NULL DEFAULT 0</code></td>
+  <td>累计错误次数</td>
+</tr>
+<tr>
+  <td>locked_at</td>
+  <td><code>DATETIME(3)</code></td>
+  <td>错3次锁定</td>
+</tr>
+<tr>
+  <td>unlocked_by</td>
+  <td><code>BIGINT</code></td>
+  <td>人工复核授权人</td>
+</tr>
+<tr>
+  <td>created_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>创建时间，统一UTC</td>
+</tr>
+<tr>
+  <td>updated_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>UTC更新时间；Mapper每次修改显式SET updated_at=UTC_TIMESTAMP(3)，不依赖连接时区</td>
+</tr>
+<tr>
+  <td>version</td>
+  <td><code>BIGINT NOT NULL DEFAULT 0</code></td>
+  <td>乐观锁版本</td>
+</tr>
+</tbody>
+</table>
+<h2>vi_evidence_group · 照片节点分组</h2>
+<p>仅实际发生节点必录；归还组不是提交就启动自动完成</p>
+<table>
+<thead>
+<tr>
+  <th>字段</th>
+  <th>SQL类型与约束</th>
+  <th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>id</td>
+  <td><code>BIGINT NOT NULL AUTO_INCREMENT</code></td>
+  <td>数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串</td>
+</tr>
+<tr>
+  <td>order_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>订单</td>
+</tr>
+<tr>
+  <td>assignment_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>承接</td>
+</tr>
+<tr>
+  <td>node_no</td>
+  <td><code>TINYINT NOT NULL</code></td>
+  <td>1接车2到站3取车4归还</td>
+</tr>
+<tr>
+  <td>status</td>
+  <td><code>VARCHAR(16) NOT NULL</code></td>
+  <td>EvidenceStatus: DRAFT,READY,SEALED</td>
+</tr>
+<tr>
+  <td>mileage_km</td>
+  <td><code>DECIMAL(7,1)</code></td>
+  <td>仪表公里数</td>
+</tr>
+<tr>
+  <td>mileage_source</td>
+  <td><code>VARCHAR(16)</code></td>
+  <td>MANUAL/OCR_REVIEWED</td>
+</tr>
+<tr>
+  <td>mileage_reason</td>
+  <td><code>VARCHAR(1000)</code></td>
+  <td>异常说明</td>
+</tr>
+<tr>
+  <td>sealed_at</td>
+  <td><code>DATETIME(3)</code></td>
+  <td>交接时封存</td>
+</tr>
+<tr>
+  <td>created_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>创建时间，统一UTC</td>
+</tr>
+<tr>
+  <td>updated_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>UTC更新时间；Mapper每次修改显式SET updated_at=UTC_TIMESTAMP(3)，不依赖连接时区</td>
+</tr>
+<tr>
+  <td>version</td>
+  <td><code>BIGINT NOT NULL DEFAULT 0</code></td>
+  <td>乐观锁版本</td>
+</tr>
+</tbody>
+</table>
+<h2>vi_photo · 照片版本与服务端元数据</h2>
+<table>
+<thead>
+<tr>
+  <th>字段</th>
+  <th>SQL类型与约束</th>
+  <th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>id</td>
+  <td><code>BIGINT NOT NULL AUTO_INCREMENT</code></td>
+  <td>数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串</td>
+</tr>
+<tr>
+  <td>group_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>证据组</td>
+</tr>
+<tr>
+  <td>photo_type</td>
+  <td><code>VARCHAR(24) NOT NULL</code></td>
+  <td>PhotoType: FRONT,BACK,LEFT,RIGHT,DASHBOARD,INTERIOR,EXTRA</td>
+</tr>
+<tr>
+  <td>file_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>私有文件</td>
+</tr>
+<tr>
+  <td>client_capture_id</td>
+  <td><code>VARCHAR(64) NOT NULL</code></td>
+  <td>同次重传去重</td>
+</tr>
+<tr>
+  <td>revision</td>
+  <td><code>INT NOT NULL</code></td>
+  <td>版本</td>
+</tr>
+<tr>
+  <td>superseded_at</td>
+  <td><code>DATETIME(3)</code></td>
+  <td>草稿重拍历史</td>
+</tr>
+<tr>
+  <td>captured_at</td>
+  <td><code>DATETIME(3) NOT NULL</code></td>
+  <td>客户端采集，仅作声明</td>
+</tr>
+<tr>
+  <td>received_at</td>
+  <td><code>DATETIME(3) NOT NULL</code></td>
+  <td>服务端收件时间</td>
+</tr>
+<tr>
+  <td>location_cipher</td>
+  <td><code>VARBINARY(1024)</code></td>
+  <td>节点位置</td>
+</tr>
+<tr>
+  <td>watermark_file_id</td>
+  <td><code>BIGINT</code></td>
+  <td>服务端生成水印副本</td>
+</tr>
+<tr>
+  <td>active_type</td>
+  <td><code>VARCHAR(24) GENERATED ALWAYS AS (IF(superseded_at IS NULL AND photo_type&lt;&gt;'EXTRA',photo_type,NULL)) STORED</code></td>
+  <td>每类有效图唯一，EXTRA不覆盖</td>
+</tr>
+<tr>
+  <td>created_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>创建时间，统一UTC</td>
+</tr>
+<tr>
+  <td>updated_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>UTC更新时间；Mapper每次修改显式SET updated_at=UTC_TIMESTAMP(3)，不依赖连接时区</td>
+</tr>
+<tr>
+  <td>version</td>
+  <td><code>BIGINT NOT NULL DEFAULT 0</code></td>
+  <td>乐观锁版本</td>
+</tr>
+</tbody>
+</table>
+<h2>vi_file · 私有文件登记与校验</h2>
+<p>访问签名不进明文长期表，不接受客户端READY/摘要即可信</p>
+<table>
+<thead>
+<tr>
+  <th>字段</th>
+  <th>SQL类型与约束</th>
+  <th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>id</td>
+  <td><code>BIGINT NOT NULL AUTO_INCREMENT</code></td>
+  <td>数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串</td>
+</tr>
+<tr>
+  <td>uploader_account_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>上传者</td>
+</tr>
+<tr>
+  <td>purpose</td>
+  <td><code>VARCHAR(32) NOT NULL</code></td>
+  <td>限定用途</td>
+</tr>
+<tr>
+  <td>order_id</td>
+  <td><code>BIGINT</code></td>
+  <td>订单归属</td>
+</tr>
+<tr>
+  <td>application_id</td>
+  <td><code>BIGINT</code></td>
+  <td>认证等申请归属</td>
+</tr>
+<tr>
+  <td>object_key</td>
+  <td><code>VARCHAR(255) NOT NULL</code></td>
+  <td>服务端生成不可猜键</td>
+</tr>
+<tr>
+  <td>status</td>
+  <td><code>VARCHAR(24) NOT NULL</code></td>
+  <td>FileStatus: UPLOADING,VERIFYING,READY,REJECTED</td>
+</tr>
+<tr>
+  <td>mime_type</td>
+  <td><code>VARCHAR(64)</code></td>
+  <td>内容识别类型</td>
+</tr>
+<tr>
+  <td>server_size</td>
+  <td><code>BIGINT</code></td>
+  <td>实际大小</td>
+</tr>
+<tr>
+  <td>server_sha256</td>
+  <td><code>BINARY(32)</code></td>
+  <td>服务器复核摘要</td>
+</tr>
+<tr>
+  <td>retain_until</td>
+  <td><code>DATETIME(3)</code></td>
+  <td>按已审批保留政策</td>
+</tr>
+<tr>
+  <td>legal_hold</td>
+  <td><code>TINYINT NOT NULL DEFAULT 0</code></td>
+  <td>争议等必要留存</td>
+</tr>
+<tr>
+  <td>created_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>创建时间，统一UTC</td>
+</tr>
+<tr>
+  <td>updated_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>UTC更新时间；Mapper每次修改显式SET updated_at=UTC_TIMESTAMP(3)，不依赖连接时区</td>
+</tr>
+<tr>
+  <td>version</td>
+  <td><code>BIGINT NOT NULL DEFAULT 0</code></td>
+  <td>乐观锁版本</td>
+</tr>
+</tbody>
+</table>
+<h2>vi_vehicle_license · 行驶证登记与人工复核</h2>
+<table>
+<thead>
+<tr>
+  <th>字段</th>
+  <th>SQL类型与约束</th>
+  <th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>id</td>
+  <td><code>BIGINT NOT NULL AUTO_INCREMENT</code></td>
+  <td>数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串</td>
+</tr>
+<tr>
+  <td>order_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>订单</td>
+</tr>
+<tr>
+  <td>sensitive_payload_cipher</td>
+  <td><code>LONGBLOB NOT NULL</code></td>
+  <td>车主/VIN等密文</td>
+</tr>
+<tr>
+  <td>main_file_id</td>
+  <td><code>BIGINT</code></td>
+  <td>主页</td>
+</tr>
+<tr>
+  <td>sub_file_id</td>
+  <td><code>BIGINT</code></td>
+  <td>副页</td>
+</tr>
+<tr>
+  <td>ocr_task_id</td>
+  <td><code>BIGINT</code></td>
+  <td>服务端OCR任务</td>
+</tr>
+<tr>
+  <td>review_status</td>
+  <td><code>VARCHAR(24) NOT NULL</code></td>
+  <td>LicenseReviewStatus: MISSING,PENDING,VERIFIED</td>
+</tr>
+<tr>
+  <td>reviewer_user_id</td>
+  <td><code>BIGINT</code></td>
+  <td>框架核验人</td>
+</tr>
+<tr>
+  <td>reviewed_at</td>
+  <td><code>DATETIME(3)</code></td>
+  <td>复核时间</td>
+</tr>
+<tr>
+  <td>created_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>创建时间，统一UTC</td>
+</tr>
+<tr>
+  <td>updated_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>UTC更新时间；Mapper每次修改显式SET updated_at=UTC_TIMESTAMP(3)，不依赖连接时区</td>
+</tr>
+<tr>
+  <td>version</td>
+  <td><code>BIGINT NOT NULL DEFAULT 0</code></td>
+  <td>乐观锁版本</td>
+</tr>
+</tbody>
+</table>
+<h2>vi_inspection_result · 追加式结构化结果版本</h2>
+<p>更正事务结束原版生效标记并插入新版；原内容永不UPDATE</p>
+<table>
+<thead>
+<tr>
+  <th>字段</th>
+  <th>SQL类型与约束</th>
+  <th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>id</td>
+  <td><code>BIGINT NOT NULL AUTO_INCREMENT</code></td>
+  <td>数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串</td>
+</tr>
+<tr>
+  <td>order_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>订单</td>
+</tr>
+<tr>
+  <td>revision</td>
+  <td><code>INT NOT NULL</code></td>
+  <td>结果版本</td>
+</tr>
+<tr>
+  <td>conclusion</td>
+  <td><code>VARCHAR(8) NOT NULL</code></td>
+  <td>PASS/FAIL</td>
+</tr>
+<tr>
+  <td>items_json</td>
+  <td><code>JSON NOT NULL</code></td>
+  <td>最终项目与凭证；没有实时阶段</td>
+</tr>
+<tr>
+  <td>inspector_user_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>真实检测人，验证可操作站点</td>
+</tr>
+<tr>
+  <td>submitted_by</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>记录人</td>
+</tr>
+<tr>
+  <td>source</td>
+  <td><code>VARCHAR(16) NOT NULL</code></td>
+  <td>STATION/ADMIN服务端写入</td>
+</tr>
+<tr>
+  <td>inspected_at</td>
+  <td><code>DATETIME(3) NOT NULL</code></td>
+  <td>实际检测完成时间</td>
+</tr>
+<tr>
+  <td>submitted_at</td>
+  <td><code>DATETIME(3) NOT NULL</code></td>
+  <td>登记时间</td>
+</tr>
+<tr>
+  <td>superseded_at</td>
+  <td><code>DATETIME(3)</code></td>
+  <td>被更正替换</td>
+</tr>
+<tr>
+  <td>active_order</td>
+  <td><code>BIGINT GENERATED ALWAYS AS (IF(superseded_at IS NULL,order_id,NULL)) STORED</code></td>
+  <td>当前生效结果唯一</td>
+</tr>
+<tr>
+  <td>created_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>创建时间，统一UTC</td>
+</tr>
+<tr>
+  <td>updated_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>UTC更新时间；Mapper每次修改显式SET updated_at=UTC_TIMESTAMP(3)，不依赖连接时区</td>
+</tr>
+<tr>
+  <td>version</td>
+  <td><code>BIGINT NOT NULL DEFAULT 0</code></td>
+  <td>乐观锁版本</td>
+</tr>
+</tbody>
+</table>
+<h2>vi_result_correction · 检测结果更正审批</h2>
+<table>
+<thead>
+<tr>
+  <th>字段</th>
+  <th>SQL类型与约束</th>
+  <th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>id</td>
+  <td><code>BIGINT NOT NULL AUTO_INCREMENT</code></td>
+  <td>数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串</td>
+</tr>
+<tr>
+  <td>order_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>订单</td>
+</tr>
+<tr>
+  <td>base_result_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>原版本</td>
+</tr>
+<tr>
+  <td>replacement_json</td>
+  <td><code>JSON NOT NULL</code></td>
+  <td>拟更正内容</td>
+</tr>
+<tr>
+  <td>status</td>
+  <td><code>VARCHAR(24) NOT NULL</code></td>
+  <td>CorrectionStatus: APPLIED,APPROVED,REJECTED</td>
+</tr>
+<tr>
+  <td>reason</td>
+  <td><code>VARCHAR(1000) NOT NULL</code></td>
+  <td>原因</td>
+</tr>
+<tr>
+  <td>applicant_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>申请人</td>
+</tr>
+<tr>
+  <td>reviewer_id</td>
+  <td><code>BIGINT</code></td>
+  <td>审核人</td>
+</tr>
+<tr>
+  <td>opinion</td>
+  <td><code>VARCHAR(1000)</code></td>
+  <td>意见</td>
+</tr>
+<tr>
+  <td>created_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>创建时间，统一UTC</td>
+</tr>
+<tr>
+  <td>updated_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>UTC更新时间；Mapper每次修改显式SET updated_at=UTC_TIMESTAMP(3)，不依赖连接时区</td>
+</tr>
+<tr>
+  <td>version</td>
+  <td><code>BIGINT NOT NULL DEFAULT 0</code></td>
+  <td>乐观锁版本</td>
+</tr>
+</tbody>
+</table>
+<h2>vi_payment_order · 支付交易与可退资金</h2>
+<p>预支付重试复用稳定商户单；退款批准时锁支付记录预留额度；V6.4：WECHAT/OFFLINE均统一资金事实，不混用渠道；关闭方式仅影响新意图，历史处理持续。未知/待人工核实不当成功，不自动切方法。</p>
+<table>
+<thead>
+<tr>
+  <th>字段</th>
+  <th>SQL类型与约束</th>
+  <th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>id</td>
+  <td><code>BIGINT NOT NULL AUTO_INCREMENT</code></td>
+  <td>数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串</td>
+</tr>
+<tr>
+  <td>order_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>订单</td>
+</tr>
+<tr>
+  <td>out_trade_no</td>
+  <td><code>VARCHAR(64) NOT NULL</code></td>
+  <td>稳定支付编号；WECHAT作为商户单号，OFFLINE只作本地资金编号</td>
+</tr>
+<tr>
+  <td>transaction_id</td>
+  <td><code>VARCHAR(64)</code></td>
+  <td>渠道交易号</td>
+</tr>
+<tr>
+  <td>status</td>
+  <td><code>VARCHAR(24) NOT NULL</code></td>
+  <td>PaymentStatus: PENDING,REVIEW_PENDING,SUCCESS,CLOSED,UNKNOWN；</td>
+</tr>
+<tr>
+  <td>total_fen</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>应付</td>
+</tr>
+<tr>
+  <td>paid_fen</td>
+  <td><code>BIGINT NOT NULL DEFAULT 0</code></td>
+  <td>实付</td>
+</tr>
+<tr>
+  <td>refund_reserved_fen</td>
+  <td><code>BIGINT NOT NULL DEFAULT 0</code></td>
+  <td>处理中退款金额预留</td>
+</tr>
+<tr>
+  <td>refunded_fen</td>
+  <td><code>BIGINT NOT NULL DEFAULT 0</code></td>
+  <td>已成功退款</td>
+</tr>
+<tr>
+  <td>paid_at</td>
+  <td><code>DATETIME(3)</code></td>
+  <td>支付成功</td>
+</tr>
+<tr>
+  <td>expires_at</td>
+  <td><code>DATETIME(3) NOT NULL</code></td>
+  <td>对应30分钟时点</td>
+</tr>
+<tr>
+  <td>payment_method</td>
+  <td><code>VARCHAR(16) NOT NULL</code></td>
+  <td>PaymentMethod: UNSELECTED,WECHAT,OFFLINE；</td>
+</tr>
+<tr>
+  <td>receiver_dept_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>原始收款主体部门</td>
+</tr>
+<tr>
+  <td>policy_revision_id</td>
+  <td><code>BIGINT NULL</code></td>
+  <td>创建/选择时采用的配置版</td>
+</tr>
+<tr>
+  <td>merchant_profile_id</td>
+  <td><code>BIGINT NULL</code></td>
+  <td>仅微信</td>
+</tr>
+<tr>
+  <td>merchant_revision_id</td>
+  <td><code>BIGINT NULL</code></td>
+  <td>原资金身份快照版本</td>
+</tr>
+<tr>
+  <td>app_id</td>
+  <td><code>VARCHAR(64) NULL</code></td>
+  <td></td>
+</tr>
+<tr>
+  <td>mchid</td>
+  <td><code>VARCHAR(32) NULL</code></td>
+  <td></td>
+</tr>
+<tr>
+  <td>method_locked_at</td>
+  <td><code>DATETIME(3) NULL</code></td>
+  <td>首次有效预下单/线下意图时写入</td>
+</tr>
+<tr>
+  <td>capacity_resolution</td>
+  <td><code>VARCHAR(24) NOT NULL</code></td>
+  <td>PaymentCapacityResolution: HELD,RELEASED,REACQUIRED,MANUAL_CONFLICT；</td>
+</tr>
+<tr>
+  <td>created_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>创建时间，统一UTC</td>
+</tr>
+<tr>
+  <td>updated_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>UTC更新时间；Mapper每次修改显式SET updated_at=UTC_TIMESTAMP(3)，不依赖连接时区</td>
+</tr>
+<tr>
+  <td>version</td>
+  <td><code>BIGINT NOT NULL DEFAULT 0</code></td>
+  <td>乐观锁版本</td>
+</tr>
+</tbody>
+</table>
+<h2>vi_refund_order · 稳定退款单及渠道执行</h2>
+<p>受理≠成功；UNKNOWN先查，不换号盲重试；OFFLINE走已有批准金额的人工付款记录和独立核实，不调用微信；关闭新支付不关闭旧退款。</p>
+<table>
+<thead>
+<tr>
+  <th>字段</th>
+  <th>SQL类型与约束</th>
+  <th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>id</td>
+  <td><code>BIGINT NOT NULL AUTO_INCREMENT</code></td>
+  <td>数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串</td>
+</tr>
+<tr>
+  <td>case_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>关联唯一统一售后申请</td>
+</tr>
+<tr>
+  <td>review_revision</td>
+  <td><code>INT NOT NULL</code></td>
+  <td>批准决定版本，金额变更必须新版本审核</td>
+</tr>
+<tr>
+  <td>payment_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>支付单</td>
+</tr>
+<tr>
+  <td>out_refund_no</td>
+  <td><code>VARCHAR(64) NOT NULL</code></td>
+  <td>幂等商户退款号</td>
+</tr>
+<tr>
+  <td>channel_refund_id</td>
+  <td><code>VARCHAR(64)</code></td>
+  <td>渠道退款ID</td>
+</tr>
+<tr>
+  <td>amount_fen</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>金额分</td>
+</tr>
+<tr>
+  <td>status</td>
+  <td><code>VARCHAR(24) NOT NULL</code></td>
+  <td>ChannelRefundStatus: CREATED,PROCESSING,SUCCESS,CLOSED,ABNORMAL,UNKNOWN</td>
+</tr>
+<tr>
+  <td>success_at</td>
+  <td><code>DATETIME(3)</code></td>
+  <td>只有SUCCESS存在</td>
+</tr>
+<tr>
+  <td>last_query_at</td>
+  <td><code>DATETIME(3)</code></td>
+  <td>查单</td>
+</tr>
+<tr>
+  <td>next_query_at</td>
+  <td><code>DATETIME(3)</code></td>
+  <td>退避后查单</td>
+</tr>
+<tr>
+  <td>payment_method</td>
+  <td><code>VARCHAR(16) NOT NULL</code></td>
+  <td>RefundPaymentMethod: WECHAT,OFFLINE；</td>
+</tr>
+<tr>
+  <td>execution_mode</td>
+  <td><code>VARCHAR(24) NOT NULL</code></td>
+  <td>RefundExecutionMode: WECHAT_API,MANUAL_OFFLINE；</td>
+</tr>
+<tr>
+  <td>created_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>创建时间，统一UTC</td>
+</tr>
+<tr>
+  <td>updated_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>UTC更新时间；Mapper每次修改显式SET updated_at=UTC_TIMESTAMP(3)，不依赖连接时区</td>
+</tr>
+<tr>
+  <td>version</td>
+  <td><code>BIGINT NOT NULL DEFAULT 0</code></td>
+  <td>乐观锁版本</td>
+</tr>
+</tbody>
+</table>
+<h2>vi_channel_event · 永久渠道回调去重</h2>
+<p>事务持久化失败不ack；不储存密钥或敏感回调明文</p>
+<table>
+<thead>
+<tr>
+  <th>字段</th>
+  <th>SQL类型与约束</th>
+  <th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>id</td>
+  <td><code>BIGINT NOT NULL AUTO_INCREMENT</code></td>
+  <td>数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串</td>
+</tr>
+<tr>
+  <td>provider</td>
+  <td><code>VARCHAR(64) NOT NULL</code></td>
+  <td>微信支付等</td>
+</tr>
+<tr>
+  <td>event_key</td>
+  <td><code>VARCHAR(128) NOT NULL</code></td>
+  <td>通知ID/交易业务唯一标识</td>
+</tr>
+<tr>
+  <td>trade_no</td>
+  <td><code>VARCHAR(64)</code></td>
+  <td>关联支付或退款号</td>
+</tr>
+<tr>
+  <td>event_type</td>
+  <td><code>VARCHAR(64)</code></td>
+  <td>事件类型</td>
+</tr>
+<tr>
+  <td>verified_digest</td>
+  <td><code>BINARY(32)</code></td>
+  <td>已验签原报文摘要</td>
+</tr>
+<tr>
+  <td>processed_at</td>
+  <td><code>DATETIME(3)</code></td>
+  <td>已持久化时间</td>
+</tr>
+<tr>
+  <td>created_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>创建时间，统一UTC</td>
+</tr>
+<tr>
+  <td>updated_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>UTC更新时间；Mapper每次修改显式SET updated_at=UTC_TIMESTAMP(3)，不依赖连接时区</td>
+</tr>
+<tr>
+  <td>version</td>
+  <td><code>BIGINT NOT NULL DEFAULT 0</code></td>
+  <td>乐观锁版本</td>
+</tr>
+</tbody>
+</table>
+<h2>vi_dispute · 普通服务争议</h2>
+<p>有活动争议暂停服务自动完成，不影响已归还释放</p>
+<table>
+<thead>
+<tr>
+  <th>字段</th>
+  <th>SQL类型与约束</th>
+  <th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>id</td>
+  <td><code>BIGINT NOT NULL AUTO_INCREMENT</code></td>
+  <td>数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串</td>
+</tr>
+<tr>
+  <td>order_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>订单</td>
+</tr>
+<tr>
+  <td>type</td>
+  <td><code>VARCHAR(64) NOT NULL</code></td>
+  <td>普通服务类型，不是事故</td>
+</tr>
+<tr>
+  <td>status</td>
+  <td><code>VARCHAR(24) NOT NULL</code></td>
+  <td>ServiceCaseStatus: OPEN,PROCESSING,RESOLVED</td>
+</tr>
+<tr>
+  <td>description</td>
+  <td><code>VARCHAR(2000) NOT NULL</code></td>
+  <td>用户说明</td>
+</tr>
+<tr>
+  <td>file_ids</td>
+  <td><code>JSON</code></td>
+  <td>凭证</td>
+</tr>
+<tr>
+  <td>handler_id</td>
+  <td><code>BIGINT</code></td>
+  <td>处理人</td>
+</tr>
+<tr>
+  <td>conclusion</td>
+  <td><code>VARCHAR(2000)</code></td>
+  <td>结论</td>
+</tr>
+<tr>
+  <td>resolved_at</td>
+  <td><code>DATETIME(3)</code></td>
+  <td>解决时间</td>
+</tr>
+<tr>
+  <td>created_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>创建时间，统一UTC</td>
+</tr>
+<tr>
+  <td>updated_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>UTC更新时间；Mapper每次修改显式SET updated_at=UTC_TIMESTAMP(3)，不依赖连接时区</td>
+</tr>
+<tr>
+  <td>version</td>
+  <td><code>BIGINT NOT NULL DEFAULT 0</code></td>
+  <td>乐观锁版本</td>
+</tr>
+</tbody>
+</table>
+<h2>vi_service_exception · 普通履约阻碍与客服待办</h2>
+<p>无事故理赔字段；联系不上不能自动把车丢在未授权位置</p>
+<table>
+<thead>
+<tr>
+  <th>字段</th>
+  <th>SQL类型与约束</th>
+  <th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>id</td>
+  <td><code>BIGINT NOT NULL AUTO_INCREMENT</code></td>
+  <td>数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串</td>
+</tr>
+<tr>
+  <td>order_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>订单</td>
+</tr>
+<tr>
+  <td>type</td>
+  <td><code>VARCHAR(64) NOT NULL</code></td>
+  <td>失联/拒收/资料/上传等</td>
+</tr>
+<tr>
+  <td>status</td>
+  <td><code>VARCHAR(24) NOT NULL</code></td>
+  <td>ServiceCaseStatus: OPEN,PROCESSING,RESOLVED</td>
+</tr>
+<tr>
+  <td>description</td>
+  <td><code>VARCHAR(2000)</code></td>
+  <td>说明</td>
+</tr>
+<tr>
+  <td>file_ids</td>
+  <td><code>JSON</code></td>
+  <td>可后补证据</td>
+</tr>
+<tr>
+  <td>handler_id</td>
+  <td><code>BIGINT</code></td>
+  <td>处理人</td>
+</tr>
+<tr>
+  <td>resolution</td>
+  <td><code>VARCHAR(2000)</code></td>
+  <td>实际处置依据</td>
+</tr>
+<tr>
+  <td>created_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>创建时间，统一UTC</td>
+</tr>
+<tr>
+  <td>updated_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>UTC更新时间；Mapper每次修改显式SET updated_at=UTC_TIMESTAMP(3)，不依赖连接时区</td>
+</tr>
+<tr>
+  <td>version</td>
+  <td><code>BIGINT NOT NULL DEFAULT 0</code></td>
+  <td>乐观锁版本</td>
+</tr>
+</tbody>
+</table>
+<h2>vi_review · 服务评价</h2>
+<table>
+<thead>
+<tr>
+  <th>字段</th>
+  <th>SQL类型与约束</th>
+  <th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>id</td>
+  <td><code>BIGINT NOT NULL AUTO_INCREMENT</code></td>
+  <td>数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串</td>
+</tr>
+<tr>
+  <td>order_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>订单</td>
+</tr>
+<tr>
+  <td>owner_account_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>下单人</td>
+</tr>
+<tr>
+  <td>score</td>
+  <td><code>TINYINT NOT NULL</code></td>
+  <td>1到5</td>
+</tr>
+<tr>
+  <td>tags</td>
+  <td><code>JSON</code></td>
+  <td>评价标签</td>
+</tr>
+<tr>
+  <td>content</td>
+  <td><code>VARCHAR(500)</code></td>
+  <td>评语</td>
+</tr>
+<tr>
+  <td>created_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>创建时间，统一UTC</td>
+</tr>
+<tr>
+  <td>updated_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>UTC更新时间；Mapper每次修改显式SET updated_at=UTC_TIMESTAMP(3)，不依赖连接时区</td>
+</tr>
+<tr>
+  <td>version</td>
+  <td><code>BIGINT NOT NULL DEFAULT 0</code></td>
+  <td>乐观锁版本</td>
+</tr>
+</tbody>
+</table>
+<h2>vi_penalty · 普通取消计次与轮转处罚</h2>
+<p>普通规则不使用事故7/30天处罚</p>
+<table>
+<thead>
+<tr>
+  <th>字段</th>
+  <th>SQL类型与约束</th>
+  <th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>id</td>
+  <td><code>BIGINT NOT NULL AUTO_INCREMENT</code></td>
+  <td>数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串</td>
+</tr>
+<tr>
+  <td>driver_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>司机</td>
+</tr>
+<tr>
+  <td>assignment_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>取消承接</td>
+</tr>
+<tr>
+  <td>business_date</td>
+  <td><code>DATE NOT NULL</code></td>
+  <td>北京时间自然日</td>
+</tr>
+<tr>
+  <td>counted</td>
+  <td><code>TINYINT NOT NULL DEFAULT 1</code></td>
+  <td>审核后是否计入</td>
+</tr>
+<tr>
+  <td>round_key</td>
+  <td><code>VARCHAR(64)</code></td>
+  <td>恢复轮次：P01评审</td>
+</tr>
+<tr>
+  <td>penalty_type</td>
+  <td><code>VARCHAR(24) NOT NULL</code></td>
+  <td>PenaltyType: SKIP_ROUND,STOP_TODAY</td>
+</tr>
+<tr>
+  <td>status</td>
+  <td><code>VARCHAR(24) NOT NULL DEFAULT 'ACTIVE'</code></td>
+  <td>PenaltyStatus: ACTIVE,EXPIRED,REVOKED</td>
+</tr>
+<tr>
+  <td>reason</td>
+  <td><code>VARCHAR(1000) NOT NULL</code></td>
+  <td>处罚依据，对本人可读</td>
+</tr>
+<tr>
+  <td>rule_version</td>
+  <td><code>VARCHAR(64) NOT NULL</code></td>
+  <td>实际适用轮转及计次规则版本</td>
+</tr>
+<tr>
+  <td>effective_until</td>
+  <td><code>DATETIME(3) NULL</code></td>
+  <td>明确时刻；轮转型另用round_key</td>
+</tr>
+<tr>
+  <td>revoked_at</td>
+  <td><code>DATETIME(3) NULL</code></td>
+  <td>通过申诉撤销时刻</td>
+</tr>
+<tr>
+  <td>created_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>创建时间，统一UTC</td>
+</tr>
+<tr>
+  <td>updated_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>UTC更新时间；Mapper每次修改显式SET updated_at=UTC_TIMESTAMP(3)，不依赖连接时区</td>
+</tr>
+<tr>
+  <td>version</td>
+  <td><code>BIGINT NOT NULL DEFAULT 0</code></td>
+  <td>乐观锁版本</td>
+</tr>
+</tbody>
+</table>
+<h2>vi_event_log · 不可变业务事实流水</h2>
+<p>表仅追加，框架审计复用/扩展；不能记交接码、证件或秘密</p>
+<table>
+<thead>
+<tr>
+  <th>字段</th>
+  <th>SQL类型与约束</th>
+  <th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>id</td>
+  <td><code>BIGINT NOT NULL AUTO_INCREMENT</code></td>
+  <td>数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串</td>
+</tr>
+<tr>
+  <td>order_id</td>
+  <td><code>BIGINT</code></td>
+  <td>可关联订单</td>
+</tr>
+<tr>
+  <td>aggregate_type</td>
+  <td><code>VARCHAR(64) NOT NULL</code></td>
+  <td>聚合类型</td>
+</tr>
+<tr>
+  <td>aggregate_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>聚合ID</td>
+</tr>
+<tr>
+  <td>action</td>
+  <td><code>VARCHAR(64) NOT NULL</code></td>
+  <td>事件或动作</td>
+</tr>
+<tr>
+  <td>actor_account_id</td>
+  <td><code>BIGINT</code></td>
+  <td>小程序账户</td>
+</tr>
+<tr>
+  <td>actor_user_id</td>
+  <td><code>BIGINT</code></td>
+  <td>框架人员</td>
+</tr>
+<tr>
+  <td>acting_role</td>
+  <td><code>VARCHAR(64)</code></td>
+  <td>视角</td>
+</tr>
+<tr>
+  <td>station_id</td>
+  <td><code>BIGINT</code></td>
+  <td>操作上下文</td>
+</tr>
+<tr>
+  <td>before_summary</td>
+  <td><code>JSON</code></td>
+  <td>脱敏前值</td>
+</tr>
+<tr>
+  <td>after_summary</td>
+  <td><code>JSON</code></td>
+  <td>脱敏后值</td>
+</tr>
+<tr>
+  <td>reason</td>
+  <td><code>VARCHAR(1000)</code></td>
+  <td>原因</td>
+</tr>
+<tr>
+  <td>actor_realm</td>
+  <td><code>VARCHAR(24)</code></td>
+  <td>MINI/ADMIN/SYSTEM/CALLBACK；不可混淆数值ID</td>
+</tr>
+<tr>
+  <td>session_id</td>
+  <td><code>BIGINT</code></td>
+  <td>可信小程序会话，可空</td>
+</tr>
+<tr>
+  <td>context_version</td>
+  <td><code>BIGINT</code></td>
+  <td>业务动作的可信上下文版本</td>
+</tr>
+<tr>
+  <td>created_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>创建时间，统一UTC</td>
+</tr>
+<tr>
+  <td>updated_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>UTC更新时间；Mapper每次修改显式SET updated_at=UTC_TIMESTAMP(3)，不依赖连接时区</td>
+</tr>
+<tr>
+  <td>version</td>
+  <td><code>BIGINT NOT NULL DEFAULT 0</code></td>
+  <td>乐观锁版本</td>
+</tr>
+</tbody>
+</table>
+<h2>vi_outbox · 可靠异步事务消息</h2>
+<p>不在长数据库事务里调用外部支付或等待人工审核</p>
+<table>
+<thead>
+<tr>
+  <th>字段</th>
+  <th>SQL类型与约束</th>
+  <th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>id</td>
+  <td><code>BIGINT NOT NULL AUTO_INCREMENT</code></td>
+  <td>数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串</td>
+</tr>
+<tr>
+  <td>event_key</td>
+  <td><code>VARCHAR(128) NOT NULL</code></td>
+  <td>事件唯一键</td>
+</tr>
+<tr>
+  <td>aggregate_type</td>
+  <td><code>VARCHAR(64) NOT NULL</code></td>
+  <td>所属对象</td>
+</tr>
+<tr>
+  <td>aggregate_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>对象ID</td>
+</tr>
+<tr>
+  <td>event_type</td>
+  <td><code>VARCHAR(64) NOT NULL</code></td>
+  <td>通知/支付查单/补偿等</td>
+</tr>
+<tr>
+  <td>payload</td>
+  <td><code>JSON NOT NULL</code></td>
+  <td>最小必要载荷，不塞敏感原文</td>
+</tr>
+<tr>
+  <td>status</td>
+  <td><code>VARCHAR(24) NOT NULL</code></td>
+  <td>OutboxStatus: READY,PROCESSING,DONE,FAILED</td>
+</tr>
+<tr>
+  <td>attempts</td>
+  <td><code>INT NOT NULL DEFAULT 0</code></td>
+  <td>重试次数</td>
+</tr>
+<tr>
+  <td>next_attempt_at</td>
+  <td><code>DATETIME(3) NOT NULL</code></td>
+  <td>退避时间</td>
+</tr>
+<tr>
+  <td>lease_until</td>
+  <td><code>DATETIME(3)</code></td>
+  <td>工作者租约</td>
+</tr>
+<tr>
+  <td>created_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>创建时间，统一UTC</td>
+</tr>
+<tr>
+  <td>updated_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>UTC更新时间；Mapper每次修改显式SET updated_at=UTC_TIMESTAMP(3)，不依赖连接时区</td>
+</tr>
+<tr>
+  <td>version</td>
+  <td><code>BIGINT NOT NULL DEFAULT 0</code></td>
+  <td>乐观锁版本</td>
+</tr>
+</tbody>
+</table>
+<h2>vi_notification · 站内消息与下发记录</h2>
+<table>
+<thead>
+<tr>
+  <th>字段</th>
+  <th>SQL类型与约束</th>
+  <th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>id</td>
+  <td><code>BIGINT NOT NULL AUTO_INCREMENT</code></td>
+  <td>数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串</td>
+</tr>
+<tr>
+  <td>account_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>接收人</td>
+</tr>
+<tr>
+  <td>role</td>
+  <td><code>VARCHAR(64) NOT NULL</code></td>
+  <td>业务视角</td>
+</tr>
+<tr>
+  <td>order_id</td>
+  <td><code>BIGINT</code></td>
+  <td>订单</td>
+</tr>
+<tr>
+  <td>scene</td>
+  <td><code>VARCHAR(64) NOT NULL</code></td>
+  <td>场景</td>
+</tr>
+<tr>
+  <td>outbox_id</td>
+  <td><code>BIGINT</code></td>
+  <td>触发事件</td>
+</tr>
+<tr>
+  <td>send_status</td>
+  <td><code>VARCHAR(64)</code></td>
+  <td>NotificationSendStatus: PENDING,ACCEPTED,FAILED,DISCARDED</td>
+</tr>
+<tr>
+  <td>content</td>
+  <td><code>VARCHAR(2000)</code></td>
+  <td>脱敏消息</td>
+</tr>
+<tr>
+  <td>read_at</td>
+  <td><code>DATETIME(3)</code></td>
+  <td>站内显式已读</td>
+</tr>
+<tr>
+  <td>created_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>创建时间，统一UTC</td>
+</tr>
+<tr>
+  <td>updated_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>UTC更新时间；Mapper每次修改显式SET updated_at=UTC_TIMESTAMP(3)，不依赖连接时区</td>
+</tr>
+<tr>
+  <td>version</td>
+  <td><code>BIGINT NOT NULL DEFAULT 0</code></td>
+  <td>乐观锁版本</td>
+</tr>
+</tbody>
+</table>
+<h2>vi_idempotency · 请求级幂等</h2>
+<p>资金和交接另依赖永久业务去重，不能仅依赖缓存24小时</p>
+<table>
+<thead>
+<tr>
+  <th>字段</th>
+  <th>SQL类型与约束</th>
+  <th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>id</td>
+  <td><code>BIGINT NOT NULL AUTO_INCREMENT</code></td>
+  <td>数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串</td>
+</tr>
+<tr>
+  <td>subject_key</td>
+  <td><code>VARCHAR(96) NOT NULL</code></td>
+  <td>统一主体命名空间</td>
+</tr>
+<tr>
+  <td>action_key</td>
+  <td><code>VARCHAR(160) NOT NULL</code></td>
+  <td>HTTP动作+资源</td>
+</tr>
+<tr>
+  <td>request_key</td>
+  <td><code>VARCHAR(64) NOT NULL</code></td>
+  <td>UUID幂等头</td>
+</tr>
+<tr>
+  <td>request_mac</td>
+  <td><code>BINARY(32) NOT NULL</code></td>
+  <td>请求摘要</td>
+</tr>
+<tr>
+  <td>result_json</td>
+  <td><code>JSON</code></td>
+  <td>成功结果或可重放结果</td>
+</tr>
+<tr>
+  <td>status</td>
+  <td><code>VARCHAR(64) NOT NULL</code></td>
+  <td>IdempotencyStatus: PROCESSING,DONE</td>
+</tr>
+<tr>
+  <td>expires_at</td>
+  <td><code>DATETIME(3) NOT NULL</code></td>
+  <td>至少24h，请求级保存时限</td>
+</tr>
+<tr>
+  <td>created_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>创建时间，统一UTC</td>
+</tr>
+<tr>
+  <td>updated_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>UTC更新时间；Mapper每次修改显式SET updated_at=UTC_TIMESTAMP(3)，不依赖连接时区</td>
+</tr>
+<tr>
+  <td>version</td>
+  <td><code>BIGINT NOT NULL DEFAULT 0</code></td>
+  <td>乐观锁版本</td>
+</tr>
+</tbody>
+</table>
+<h2>vi_governance_case · 隐私、导出、敏感访问与对账审批台账</h2>
+<p>此表为轻量共用台账建议，各业务仍用独立DTO和类型校验，不做万能状态编辑接口</p>
+<table>
+<thead>
+<tr>
+  <th>字段</th>
+  <th>SQL类型与约束</th>
+  <th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>id</td>
+  <td><code>BIGINT NOT NULL AUTO_INCREMENT</code></td>
+  <td>数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串</td>
+</tr>
+<tr>
+  <td>case_type</td>
+  <td><code>VARCHAR(64) NOT NULL</code></td>
+  <td>GovernanceType: PRIVACY,EXPORT,SENSITIVE_ACCESS,RECONCILE</td>
+</tr>
+<tr>
+  <td>order_id</td>
+  <td><code>BIGINT</code></td>
+  <td>可关联订单</td>
+</tr>
+<tr>
+  <td>requester_account_id</td>
+  <td><code>BIGINT</code></td>
+  <td>申请客户</td>
+</tr>
+<tr>
+  <td>requester_user_id</td>
+  <td><code>BIGINT</code></td>
+  <td>申请后台人员</td>
+</tr>
+<tr>
+  <td>status</td>
+  <td><code>VARCHAR(64) NOT NULL</code></td>
+  <td>GovernanceStatus: APPLIED,APPROVED,CHECKING,COMPLETED,EXPIRED,FAILED,OPEN,PROCESSING,READY,REJECTED,RESOLVED,REVOKED</td>
+</tr>
+<tr>
+  <td>payload_cipher</td>
+  <td><code>LONGBLOB</code></td>
+  <td>必要申请与结果加密</td>
+</tr>
+<tr>
+  <td>reason</td>
+  <td><code>VARCHAR(1000)</code></td>
+  <td>申请/处置依据</td>
+</tr>
+<tr>
+  <td>reviewer_id</td>
+  <td><code>BIGINT</code></td>
+  <td>审批人</td>
+</tr>
+<tr>
+  <td>expires_at</td>
+  <td><code>DATETIME(3)</code></td>
+  <td>授权或下载失效</td>
+</tr>
+<tr>
+  <td>created_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>创建时间，统一UTC</td>
+</tr>
+<tr>
+  <td>updated_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>UTC更新时间；Mapper每次修改显式SET updated_at=UTC_TIMESTAMP(3)，不依赖连接时区</td>
+</tr>
+<tr>
+  <td>version</td>
+  <td><code>BIGINT NOT NULL DEFAULT 0</code></td>
+  <td>乐观锁版本</td>
+</tr>
+</tbody>
+</table>
+<h2>vi_owner_profile · 车主运营档案扩展，非另一套登录账户</h2>
+<p>默认脱敏；微信标识与已验证手机通过认证服务维护，不由运营字段覆盖。；本人ProfilePatch.realName映射service_name，仅服务称呼不是真实核验姓名；与vi_account版本门禁同事务更新。</p>
+<table>
+<thead>
+<tr>
+  <th>字段</th>
+  <th>SQL类型与约束</th>
+  <th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>id</td>
+  <td><code>BIGINT NOT NULL AUTO_INCREMENT</code></td>
+  <td>数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串</td>
+</tr>
+<tr>
+  <td>account_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>关联vi_account</td>
+</tr>
+<tr>
+  <td>service_name</td>
+  <td><code>VARCHAR(100)</code></td>
+  <td>服务称呼</td>
+</tr>
+<tr>
+  <td>service_flag</td>
+  <td><code>VARCHAR(24) NOT NULL DEFAULT 'NORMAL'</code></td>
+  <td>OwnerServiceFlag: NORMAL,VERIFY_AGAIN</td>
+</tr>
+<tr>
+  <td>internal_remark</td>
+  <td><code>VARCHAR(1000)</code></td>
+  <td>内部备注</td>
+</tr>
+<tr>
+  <td>maintained_by</td>
+  <td><code>BIGINT</code></td>
+  <td>框架维护人</td>
+</tr>
+<tr>
+  <td>created_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>UTC</td>
+</tr>
+<tr>
+  <td>updated_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>UTC更新时间；Mapper每次修改显式SET updated_at=UTC_TIMESTAMP(3)，不依赖连接时区</td>
+</tr>
+<tr>
+  <td>version</td>
+  <td><code>BIGINT NOT NULL DEFAULT 0</code></td>
+  <td>乐观锁</td>
+</tr>
+</tbody>
+</table>
+<h2>vi_aftersale_case · 取消与退款的唯一申请与处理记录</h2>
+<p>审核时锁订单/支付/申请，预留退款；实际返还后继续同一决定，无二次默认退款审核。</p>
+<table>
+<thead>
+<tr>
+  <th>字段</th>
+  <th>SQL类型与约束</th>
+  <th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>id</td>
+  <td><code>BIGINT NOT NULL AUTO_INCREMENT</code></td>
+  <td>数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串</td>
+</tr>
+<tr>
+  <td>case_no</td>
+  <td><code>VARCHAR(64) NOT NULL</code></td>
+  <td>对外售后号</td>
+</tr>
+<tr>
+  <td>order_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>订单</td>
+</tr>
+<tr>
+  <td>payment_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>支付记录</td>
+</tr>
+<tr>
+  <td>kind</td>
+  <td><code>VARCHAR(24) NOT NULL</code></td>
+  <td>CANCEL_REFUND/REFUND_ONLY</td>
+</tr>
+<tr>
+  <td>case_status</td>
+  <td><code>VARCHAR(24) NOT NULL DEFAULT 'PENDING_REVIEW'</code></td>
+  <td>AfterSaleStatus: PENDING_REVIEW,EXECUTING,CLOSED,REJECTED</td>
+</tr>
+<tr>
+  <td>review_status</td>
+  <td><code>VARCHAR(16) NOT NULL DEFAULT 'PENDING'</code></td>
+  <td>AfterSaleReviewStatus: PENDING,APPROVED,REJECTED</td>
+</tr>
+<tr>
+  <td>review_revision</td>
+  <td><code>INT NOT NULL DEFAULT 1</code></td>
+  <td>审核修订号</td>
+</tr>
+<tr>
+  <td>requested_fen</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>申请金额</td>
+</tr>
+<tr>
+  <td>approved_fen</td>
+  <td><code>BIGINT</code></td>
+  <td>批准金额，未审为NULL</td>
+</tr>
+<tr>
+  <td>return_state</td>
+  <td><code>VARCHAR(24) NOT NULL</code></td>
+  <td>UNDETERMINED/NOT_REQUIRED/WAIT_RETURN/RETURNED</td>
+</tr>
+<tr>
+  <td>refund_state</td>
+  <td><code>VARCHAR(24) NOT NULL</code></td>
+  <td>NONE/NOT_REQUIRED/WAIT_RETURN/READY/PROCESSING/SUCCESS/UNKNOWN/ABNORMAL</td>
+</tr>
+<tr>
+  <td>applicant_type</td>
+  <td><code>VARCHAR(16) NOT NULL</code></td>
+  <td>ApplicantType: ACCOUNT,SYS_USER</td>
+</tr>
+<tr>
+  <td>applicant_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>实际申请身份</td>
+</tr>
+<tr>
+  <td>reason</td>
+  <td><code>VARCHAR(1000) NOT NULL</code></td>
+  <td>原始申请说明</td>
+</tr>
+<tr>
+  <td>evidence_ids</td>
+  <td><code>JSON</code></td>
+  <td>关联证据文件ID</td>
+</tr>
+<tr>
+  <td>resolved_at</td>
+  <td><code>DATETIME(3)</code></td>
+  <td>业务及资金均已办结</td>
+</tr>
+<tr>
+  <td>active_order</td>
+  <td><code>BIGINT GENERATED ALWAYS AS (IF(case_status IN ('PENDING_REVIEW','EXECUTING'),order_id,NULL)) STORED</code></td>
+  <td>一个未办结申请</td>
+</tr>
+<tr>
+  <td>created_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>UTC</td>
+</tr>
+<tr>
+  <td>updated_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>UTC更新时间；Mapper每次修改显式SET updated_at=UTC_TIMESTAMP(3)，不依赖连接时区</td>
+</tr>
+<tr>
+  <td>version</td>
+  <td><code>BIGINT NOT NULL DEFAULT 0</code></td>
+  <td>乐观锁</td>
+</tr>
+</tbody>
+</table>
+<h2>vi_aftersale_review · 统一审核的追加式决定凭证</h2>
+<p>一个决定同时覆盖取消及批准金额；批准与退款预留同事务。</p>
+<table>
+<thead>
+<tr>
+  <th>字段</th>
+  <th>SQL类型与约束</th>
+  <th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>id</td>
+  <td><code>BIGINT NOT NULL AUTO_INCREMENT</code></td>
+  <td>数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串</td>
+</tr>
+<tr>
+  <td>case_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>申请</td>
+</tr>
+<tr>
+  <td>revision</td>
+  <td><code>INT NOT NULL</code></td>
+  <td>唯一决定版本</td>
+</tr>
+<tr>
+  <td>decision</td>
+  <td><code>VARCHAR(16) NOT NULL</code></td>
+  <td>APPROVE/REJECT</td>
+</tr>
+<tr>
+  <td>approved_fen</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>本决定金额</td>
+</tr>
+<tr>
+  <td>observed_order_version</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>审批时重新读取订单版本</td>
+</tr>
+<tr>
+  <td>custody_at_review</td>
+  <td><code>VARCHAR(16) NOT NULL</code></td>
+  <td>实际保管方快照</td>
+</tr>
+<tr>
+  <td>return_required</td>
+  <td><code>TINYINT NOT NULL</code></td>
+  <td>由服务端产生</td>
+</tr>
+<tr>
+  <td>reviewer_user_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>不能与申请人为同一真实身份</td>
+</tr>
+<tr>
+  <td>opinion</td>
+  <td><code>VARCHAR(1000) NOT NULL</code></td>
+  <td>审核意见</td>
+</tr>
+<tr>
+  <td>reviewed_at</td>
+  <td><code>DATETIME(3) NOT NULL</code></td>
+  <td>UTC</td>
+</tr>
+<tr>
+  <td>created_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>UTC</td>
+</tr>
+<tr>
+  <td>updated_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>UTC更新时间；Mapper每次修改显式SET updated_at=UTC_TIMESTAMP(3)，不依赖连接时区</td>
+</tr>
+<tr>
+  <td>version</td>
+  <td><code>BIGINT NOT NULL DEFAULT 0</code></td>
+  <td>乐观锁</td>
+</tr>
+</tbody>
+</table>
+<h2>vi_driver_fee_rule · 代驾报酬规则独立版本</h2>
+<p>服务端禁止重叠同优先范围规则；实际适用事件时间与版本在源服务快照中确定。</p>
+<table>
+<thead>
+<tr>
+  <th>字段</th>
+  <th>SQL类型与约束</th>
+  <th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>id</td>
+  <td><code>BIGINT NOT NULL AUTO_INCREMENT</code></td>
+  <td>数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串</td>
+</tr>
+<tr>
+  <td>payor_entity_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>承担应付的主体</td>
+</tr>
+<tr>
+  <td>rule_code</td>
+  <td><code>VARCHAR(64) NOT NULL</code></td>
+  <td>稳定规则标识</td>
+</tr>
+<tr>
+  <td>revision</td>
+  <td><code>INT NOT NULL</code></td>
+  <td>版本</td>
+</tr>
+<tr>
+  <td>currency</td>
+  <td><code>CHAR(3) NOT NULL DEFAULT 'CNY'</code></td>
+  <td>币种</td>
+</tr>
+<tr>
+  <td>scenario</td>
+  <td><code>VARCHAR(32) NOT NULL</code></td>
+  <td>正常归还/取消返还/接车前解除</td>
+</tr>
+<tr>
+  <td>scope_json</td>
+  <td><code>JSON NOT NULL</code></td>
+  <td>车型/代驾/服务范围条件</td>
+</tr>
+<tr>
+  <td>pricing_json</td>
+  <td><code>JSON NOT NULL</code></td>
+  <td>固定费、含路线米、计费单位、单价及进位</td>
+</tr>
+<tr>
+  <td>status</td>
+  <td><code>VARCHAR(24) NOT NULL</code></td>
+  <td>DriverFeeRuleStatus: DRAFT,PENDING_REVIEW,PUBLISHED,DISABLED</td>
+</tr>
+<tr>
+  <td>effective_from</td>
+  <td><code>DATETIME(3) NOT NULL</code></td>
+  <td>生效起点UTC</td>
+</tr>
+<tr>
+  <td>effective_to</td>
+  <td><code>DATETIME(3)</code></td>
+  <td>不含截止</td>
+</tr>
+<tr>
+  <td>created_by</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>规则编辑人</td>
+</tr>
+<tr>
+  <td>approved_by</td>
+  <td><code>BIGINT</code></td>
+  <td>独立审核人</td>
+</tr>
+<tr>
+  <td>approved_at</td>
+  <td><code>DATETIME(3)</code></td>
+  <td>发布确认时间</td>
+</tr>
+<tr>
+  <td>created_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>UTC</td>
+</tr>
+<tr>
+  <td>updated_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>UTC更新时间；Mapper每次修改显式SET updated_at=UTC_TIMESTAMP(3)，不依赖连接时区</td>
+</tr>
+<tr>
+  <td>version</td>
+  <td><code>BIGINT NOT NULL DEFAULT 0</code></td>
+  <td>乐观锁</td>
+</tr>
+</tbody>
+</table>
+<h2>vi_driver_fee_ledger · 按真实承接形成的不可覆盖费用台账</h2>
+<p>真实服务事件先留存；源金额不覆盖。草稿拟价与复核不反复入账，司机确认事务追加INITIAL_VALUATION或PRICE_DELTA并直接分配本单；唯一source_event_key防重复。独立已确认调差仍按其审核产生台账。</p>
+<table>
+<thead>
+<tr>
+  <th>字段</th>
+  <th>SQL类型与约束</th>
+  <th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>id</td>
+  <td><code>BIGINT NOT NULL AUTO_INCREMENT</code></td>
+  <td>数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串</td>
+</tr>
+<tr>
+  <td>driver_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>代驾</td>
+</tr>
+<tr>
+  <td>payor_entity_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>付款责任主体</td>
+</tr>
+<tr>
+  <td>currency</td>
+  <td><code>CHAR(3) NOT NULL DEFAULT 'CNY'</code></td>
+  <td>币种</td>
+</tr>
+<tr>
+  <td>assignment_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>具体承接，不仅订单</td>
+</tr>
+<tr>
+  <td>order_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>客户订单</td>
+</tr>
+<tr>
+  <td>source_event_key</td>
+  <td><code>VARCHAR(128) NOT NULL</code></td>
+  <td>归还/解除/调整永久去重键</td>
+</tr>
+<tr>
+  <td>entry_kind</td>
+  <td><code>VARCHAR(32) NOT NULL</code></td>
+  <td>NORMAL_RETURN/CANCEL_RETURN/CANCEL_BEFORE_PICKUP/ADJUSTMENT/INITIAL_VALUATION/PRICE_DELTA</td>
+</tr>
+<tr>
+  <td>service_ended_at</td>
+  <td><code>DATETIME(3) NOT NULL</code></td>
+  <td>实际任务结束UTC；非客户服务确认时间</td>
+</tr>
+<tr>
+  <td>pricing_status</td>
+  <td><code>VARCHAR(24) NOT NULL</code></td>
+  <td>LedgerPricingStatus: PENDING_PRICING,READY</td>
+</tr>
+<tr>
+  <td>fee_rule_id</td>
+  <td><code>BIGINT</code></td>
+  <td>匹配规则版本ID</td>
+</tr>
+<tr>
+  <td>rule_snapshot</td>
+  <td><code>JSON</code></td>
+  <td>冻结规则</td>
+</tr>
+<tr>
+  <td>amount_fen</td>
+  <td><code>BIGINT</code></td>
+  <td>未知为NULL；调整可负</td>
+</tr>
+<tr>
+  <td>fee_breakdown</td>
+  <td><code>JSON</code></td>
+  <td>基础/路线/调整明细</td>
+</tr>
+<tr>
+  <td>source_entry_id</td>
+  <td><code>BIGINT</code></td>
+  <td>调整源条目</td>
+</tr>
+<tr>
+  <td>verified_by</td>
+  <td><code>BIGINT</code></td>
+  <td>人工核价复核人</td>
+</tr>
+<tr>
+  <td>included_statement_id</td>
+  <td><code>BIGINT</code></td>
+  <td>确认结转生成的核价/差额已直接纳入本单，不能再入未来账单</td>
+</tr>
+<tr>
+  <td>created_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>UTC</td>
+</tr>
+<tr>
+  <td>updated_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>UTC更新时间；Mapper每次修改显式SET updated_at=UTC_TIMESTAMP(3)，不依赖连接时区</td>
+</tr>
+<tr>
+  <td>version</td>
+  <td><code>BIGINT NOT NULL DEFAULT 0</code></td>
+  <td>乐观锁</td>
+</tr>
+</tbody>
+</table>
+<h2>vi_driver_statement · 单主体单司机单币种对账单</h2>
+<p>只按显式selectedEntries组单，无周期唯一限制。成员增减、拟价改动递增revision；历史快照不覆盖。付款状态由确认金额与净核实付款聚合推导，不写服务行paid标志。归还释放不受核价影响。</p>
+<table>
+<thead>
+<tr>
+  <th>字段</th>
+  <th>SQL类型与约束</th>
+  <th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>id</td>
+  <td><code>BIGINT NOT NULL AUTO_INCREMENT</code></td>
+  <td>数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串</td>
+</tr>
+<tr>
+  <td>statement_no</td>
+  <td><code>VARCHAR(64) NOT NULL</code></td>
+  <td>对外账单编号</td>
+</tr>
+<tr>
+  <td>driver_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>代驾</td>
+</tr>
+<tr>
+  <td>payor_entity_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>应付主体</td>
+</tr>
+<tr>
+  <td>currency</td>
+  <td><code>CHAR(3) NOT NULL DEFAULT 'CNY'</code></td>
+  <td>币种</td>
+</tr>
+<tr>
+  <td>service_range_start</td>
+  <td><code>DATETIME(3) NULL</code></td>
+  <td>当前有效明细最早服务结束日UTC；仅说明跨度，不用于组单；空草稿NULL</td>
+</tr>
+<tr>
+  <td>service_range_end_exclusive</td>
+  <td><code>DATETIME(3) NULL</code></td>
+  <td>有效明细最晚结束日次日UTC；仅说明，不限定成员；空草稿NULL</td>
+</tr>
+<tr>
+  <td>cutoff_at</td>
+  <td><code>DATETIME(3) NOT NULL</code></td>
+  <td>本次数据截点</td>
+</tr>
+<tr>
+  <td>status</td>
+  <td><code>VARCHAR(24) NOT NULL</code></td>
+  <td>StatementStatus: DRAFT,INTERNAL_REVIEW,SENT,DISPUTED,CONFIRMED,VOID</td>
+</tr>
+<tr>
+  <td>revision</td>
+  <td><code>INT NOT NULL DEFAULT 1</code></td>
+  <td>未确认修订版本</td>
+</tr>
+<tr>
+  <td>amount_fen</td>
+  <td><code>BIGINT NULL</code></td>
+  <td>草稿有未核价行时NULL；不是0；金额齐全时为净拟应付</td>
+</tr>
+<tr>
+  <td>snapshot_hash</td>
+  <td><code>BINARY(32) NOT NULL</code></td>
+  <td>当前工作副本规范化摘要，可包含NULL；发送前金额必须完整</td>
+</tr>
+<tr>
+  <td>issued_by</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>平台制作人</td>
+</tr>
+<tr>
+  <td>sent_at</td>
+  <td><code>DATETIME(3)</code></td>
+  <td>发出时冻结当前版本</td>
+</tr>
+<tr>
+  <td>confirmed_account_id</td>
+  <td><code>BIGINT</code></td>
+  <td>本人微信账户确认</td>
+</tr>
+<tr>
+  <td>confirmed_at</td>
+  <td><code>DATETIME(3)</code></td>
+  <td>实际确认时间</td>
+</tr>
+<tr>
+  <td>confirmation_revision</td>
+  <td><code>INT</code></td>
+  <td>确认的版本</td>
+</tr>
+<tr>
+  <td>voided_at</td>
+  <td><code>DATETIME(3)</code></td>
+  <td>仅未确认账单可作废</td>
+</tr>
+<tr>
+  <td>known_amount_fen</td>
+  <td><code>BIGINT NOT NULL DEFAULT 0</code></td>
+  <td>已填写金额小计；不能冒充完整应付</td>
+</tr>
+<tr>
+  <td>unpriced_count</td>
+  <td><code>INT NOT NULL DEFAULT 0</code></td>
+  <td>待填写行数，发送和确认要求为0</td>
+</tr>
+<tr>
+  <td>manual_price_count</td>
+  <td><code>INT NOT NULL DEFAULT 0</code></td>
+  <td>本次有人工填价/改价的行数</td>
+</tr>
+<tr>
+  <td>review_status</td>
+  <td><code>VARCHAR(24) NOT NULL DEFAULT 'NOT_REQUIRED'</code></td>
+  <td>StatementReviewStatus: NOT_REQUIRED,REQUIRED,PENDING,APPROVED,REJECTED</td>
+</tr>
+<tr>
+  <td>review_revision</td>
+  <td><code>INT</code></td>
+  <td>仅对匹配revision和hash的整单复核生效</td>
+</tr>
+<tr>
+  <td>published_revision</td>
+  <td><code>INT</code></td>
+  <td>当前发送给司机的版本；撤回后失效</td>
+</tr>
+<tr>
+  <td>published_hash</td>
+  <td><code>BINARY(32)</code></td>
+  <td>当前有效公开快照SHA256，与public_snapshot_hash一致；内部复核用snapshot_hash</td>
+</tr>
+<tr>
+  <td>submitted_by</td>
+  <td><code>BIGINT</code></td>
+  <td>复核提交人，需与复核人分离</td>
+</tr>
+<tr>
+  <td>selection_mode</td>
+  <td><code>VARCHAR(24) NOT NULL DEFAULT 'EXPLICIT'</code></td>
+  <td>SelectionMode: EXPLICIT</td>
+</tr>
+<tr>
+  <td>filter_snapshot</td>
+  <td><code>JSON NULL</code></td>
+  <td>查询条件留痕，不是组单成员定义；不能据此重跑批量选择</td>
+</tr>
+<tr>
+  <td>active_entry_count</td>
+  <td><code>INT NOT NULL DEFAULT 0</code></td>
+  <td>当前有效工作行数；0草稿可保存不可发出</td>
+</tr>
+<tr>
+  <td>created_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>UTC</td>
+</tr>
+<tr>
+  <td>updated_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>UTC更新时间；Mapper每次修改显式SET updated_at=UTC_TIMESTAMP(3)，不依赖连接时区</td>
+</tr>
+<tr>
+  <td>version</td>
+  <td><code>BIGINT NOT NULL DEFAULT 0</code></td>
+  <td>乐观锁</td>
+</tr>
+</tbody>
+</table>
+<h2>vi_driver_statement_line · 对账工作明细；历史发布版本另表保存</h2>
+<p>移出不物理删除，释放该行对应活跃allocation；再次添加同ledger恢复同一工作行并保留所有改价/成员历史，核验源版本和明确拟价。确认/任意付款锁原账。有效集合变化必须重置旧复核并重算hash。</p>
+<table>
+<thead>
+<tr>
+  <th>字段</th>
+  <th>SQL类型与约束</th>
+  <th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>id</td>
+  <td><code>BIGINT NOT NULL AUTO_INCREMENT</code></td>
+  <td>数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串</td>
+</tr>
+<tr>
+  <td>statement_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>对账单</td>
+</tr>
+<tr>
+  <td>statement_revision</td>
+  <td><code>INT NOT NULL</code></td>
+  <td>所属账单修订</td>
+</tr>
+<tr>
+  <td>ledger_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>费用源条目</td>
+</tr>
+<tr>
+  <td>assignment_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>承接关联</td>
+</tr>
+<tr>
+  <td>amount_fen</td>
+  <td><code>BIGINT NULL</code></td>
+  <td>本工作版本拟金额，可空；已发送快照必须完整</td>
+</tr>
+<tr>
+  <td>snapshot</td>
+  <td><code>JSON NOT NULL</code></td>
+  <td>车牌/订单/服务时间/类型/规则/金额</td>
+</tr>
+<tr>
+  <td>line_hash</td>
+  <td><code>BINARY(32) NOT NULL</code></td>
+  <td>内容摘要</td>
+</tr>
+<tr>
+  <td>reference_amount_fen</td>
+  <td><code>BIGINT NULL</code></td>
+  <td>规则/源台账金额，只读，NULL不伪装成0</td>
+</tr>
+<tr>
+  <td>pricing_source</td>
+  <td><code>VARCHAR(24) NOT NULL</code></td>
+  <td>PricingSource: RULE,UNPRICED,MANUAL_FILLED,MANUAL_CHANGED,APPROVED_ADJUSTMENT</td>
+</tr>
+<tr>
+  <td>manual_changed</td>
+  <td><code>TINYINT NOT NULL DEFAULT 0</code></td>
+  <td>人工参与标记；改回原金额不擦除操作轨迹</td>
+</tr>
+<tr>
+  <td>price_reason</td>
+  <td><code>VARCHAR(1000)</code></td>
+  <td>当前拟价依据</td>
+</tr>
+<tr>
+  <td>last_editor_user_id</td>
+  <td><code>BIGINT</code></td>
+  <td>最近编辑人；复核排除需查本轮全部改价人</td>
+</tr>
+<tr>
+  <td>source_version</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>源台账快照版本</td>
+</tr>
+<tr>
+  <td>is_active</td>
+  <td><code>TINYINT NOT NULL DEFAULT 1</code></td>
+  <td>0为从草稿移出，保留价格与审计；只对有效行求合计和发布快照</td>
+</tr>
+<tr>
+  <td>removed_at</td>
+  <td><code>DATETIME(3) NULL</code></td>
+  <td>最近移出时间</td>
+</tr>
+<tr>
+  <td>removed_by</td>
+  <td><code>BIGINT NULL</code></td>
+  <td>移出操作者</td>
+</tr>
+<tr>
+  <td>remove_reason</td>
+  <td><code>VARCHAR(1000) NULL</code></td>
+  <td>移出原因</td>
+</tr>
+<tr>
+  <td>created_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>UTC</td>
+</tr>
+<tr>
+  <td>updated_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>UTC更新时间；Mapper每次修改显式SET updated_at=UTC_TIMESTAMP(3)，不依赖连接时区</td>
+</tr>
+<tr>
+  <td>version</td>
+  <td><code>BIGINT NOT NULL DEFAULT 0</code></td>
+  <td>乐观锁</td>
+</tr>
+</tbody>
+</table>
+<h2>vi_driver_ledger_allocation · 每费用条目至多一个活跃账单的分配历史</h2>
+<p>勾选/预览不占用。创建与添加按升序锁源明细并建立唯一active_ledger；任何冲突整批回滚。移出/作废WHERE allocation归属本单才释放，保留历史。日期范围不决定归属。</p>
+<table>
+<thead>
+<tr>
+  <th>字段</th>
+  <th>SQL类型与约束</th>
+  <th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>id</td>
+  <td><code>BIGINT NOT NULL AUTO_INCREMENT</code></td>
+  <td>数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串</td>
+</tr>
+<tr>
+  <td>ledger_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>费用条目</td>
+</tr>
+<tr>
+  <td>statement_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>有效账单</td>
+</tr>
+<tr>
+  <td>released_at</td>
+  <td><code>DATETIME(3)</code></td>
+  <td>草稿合法移出或作废释放；已确认未付不能释放</td>
+</tr>
+<tr>
+  <td>active_ledger</td>
+  <td><code>BIGINT GENERATED ALWAYS AS (IF(released_at IS NULL,ledger_id,NULL)) STORED</code></td>
+  <td>每费用条目至多一个有效账单</td>
+</tr>
+<tr>
+  <td>release_reason</td>
+  <td><code>VARCHAR(1000) NULL</code></td>
+  <td>精确释放原因</td>
+</tr>
+<tr>
+  <td>released_by</td>
+  <td><code>BIGINT NULL</code></td>
+  <td>释放者</td>
+</tr>
+<tr>
+  <td>created_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>UTC</td>
+</tr>
+<tr>
+  <td>updated_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>UTC更新时间；Mapper每次修改显式SET updated_at=UTC_TIMESTAMP(3)，不依赖连接时区</td>
+</tr>
+<tr>
+  <td>version</td>
+  <td><code>BIGINT NOT NULL DEFAULT 0</code></td>
+  <td>乐观锁</td>
+</tr>
+</tbody>
+</table>
+<h2>vi_driver_statement_difference · 本人对账差异与处理记录</h2>
+<p>差异本身不改应付；改额必须独立审核调整，重发新快照由本人确认。</p>
+<table>
+<thead>
+<tr>
+  <th>字段</th>
+  <th>SQL类型与约束</th>
+  <th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>id</td>
+  <td><code>BIGINT NOT NULL AUTO_INCREMENT</code></td>
+  <td>数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串</td>
+</tr>
+<tr>
+  <td>statement_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>账单</td>
+</tr>
+<tr>
+  <td>statement_revision</td>
+  <td><code>INT NOT NULL</code></td>
+  <td>被质疑版本</td>
+</tr>
+<tr>
+  <td>driver_account_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>本人</td>
+</tr>
+<tr>
+  <td>entry_ids</td>
+  <td><code>JSON</code></td>
+  <td>相关条目</td>
+</tr>
+<tr>
+  <td>description</td>
+  <td><code>VARCHAR(2000) NOT NULL</code></td>
+  <td>差异说明</td>
+</tr>
+<tr>
+  <td>evidence_ids</td>
+  <td><code>JSON</code></td>
+  <td>凭证引用</td>
+</tr>
+<tr>
+  <td>status</td>
+  <td><code>VARCHAR(24) NOT NULL</code></td>
+  <td>StatementDifferenceStatus: OPEN,RESOLVED</td>
+</tr>
+<tr>
+  <td>resolution</td>
+  <td><code>VARCHAR(2000)</code></td>
+  <td>处理说明</td>
+</tr>
+<tr>
+  <td>approved_adjustment_ids</td>
+  <td><code>JSON</code></td>
+  <td>金额变更引用已审核调整</td>
+</tr>
+<tr>
+  <td>resolved_by</td>
+  <td><code>BIGINT</code></td>
+  <td>处理人</td>
+</tr>
+<tr>
+  <td>resolved_at</td>
+  <td><code>DATETIME(3)</code></td>
+  <td>UTC</td>
+</tr>
+<tr>
+  <td>created_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>UTC</td>
+</tr>
+<tr>
+  <td>updated_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>UTC更新时间；Mapper每次修改显式SET updated_at=UTC_TIMESTAMP(3)，不依赖连接时区</td>
+</tr>
+<tr>
+  <td>version</td>
+  <td><code>BIGINT NOT NULL DEFAULT 0</code></td>
+  <td>乐观锁</td>
+</tr>
+</tbody>
+</table>
+<h2>vi_driver_fee_adjustment · 独立审核的费用调整</h2>
+<p>客户退款不自动扣代驾费用；已确认账单的调整另入后续账单；不得自审。</p>
+<table>
+<thead>
+<tr>
+  <th>字段</th>
+  <th>SQL类型与约束</th>
+  <th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>id</td>
+  <td><code>BIGINT NOT NULL AUTO_INCREMENT</code></td>
+  <td>数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串</td>
+</tr>
+<tr>
+  <td>source_entry_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>源费用记录</td>
+</tr>
+<tr>
+  <td>driver_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>源代驾</td>
+</tr>
+<tr>
+  <td>payor_entity_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>源主体</td>
+</tr>
+<tr>
+  <td>amount_fen</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>非0有符号调整</td>
+</tr>
+<tr>
+  <td>reason</td>
+  <td><code>VARCHAR(2000) NOT NULL</code></td>
+  <td>业务依据</td>
+</tr>
+<tr>
+  <td>evidence_ids</td>
+  <td><code>JSON NOT NULL</code></td>
+  <td>必填凭证引用</td>
+</tr>
+<tr>
+  <td>status</td>
+  <td><code>VARCHAR(16) NOT NULL</code></td>
+  <td>AdjustmentStatus: PENDING,APPROVED,REJECTED</td>
+</tr>
+<tr>
+  <td>created_by</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>经办人</td>
+</tr>
+<tr>
+  <td>reviewer_id</td>
+  <td><code>BIGINT</code></td>
+  <td>独立审核人</td>
+</tr>
+<tr>
+  <td>opinion</td>
+  <td><code>VARCHAR(1000)</code></td>
+  <td>意见</td>
+</tr>
+<tr>
+  <td>generated_ledger_id</td>
+  <td><code>BIGINT</code></td>
+  <td>审批后唯一派生费用条目</td>
+</tr>
+<tr>
+  <td>created_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>UTC</td>
+</tr>
+<tr>
+  <td>updated_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>UTC更新时间；Mapper每次修改显式SET updated_at=UTC_TIMESTAMP(3)，不依赖连接时区</td>
+</tr>
+<tr>
+  <td>version</td>
+  <td><code>BIGINT NOT NULL DEFAULT 0</code></td>
+  <td>乐观锁</td>
+</tr>
+</tbody>
+</table>
+<h2>vi_driver_external_payment · 外部已付款证据登记与核实，不发起转账</h2>
+<p>登记和核实均锁父账单；仅CONFIRMED且正净额。PENDING预留可登记余额但不计已付；VERIFIED净金额才影响账单付款状态。拒绝/冲正保留原记录。首期一条正常外部付款记录关联一张账单，不将余额自动分到服务行；同主体流水不得重复记录。</p>
+<table>
+<thead>
+<tr>
+  <th>字段</th>
+  <th>SQL类型与约束</th>
+  <th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>id</td>
+  <td><code>BIGINT NOT NULL AUTO_INCREMENT</code></td>
+  <td>数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串</td>
+</tr>
+<tr>
+  <td>statement_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>已确认对账单</td>
+</tr>
+<tr>
+  <td>driver_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>收款代驾</td>
+</tr>
+<tr>
+  <td>payor_entity_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>付款主体</td>
+</tr>
+<tr>
+  <td>amount_fen</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>正数已发生付款</td>
+</tr>
+<tr>
+  <td>external_reference_cipher</td>
+  <td><code>VARBINARY(1024) NOT NULL</code></td>
+  <td>外部流水密文</td>
+</tr>
+<tr>
+  <td>reference_lookup</td>
+  <td><code>BINARY(32) NOT NULL</code></td>
+  <td>带密钥查询摘要</td>
+</tr>
+<tr>
+  <td>paid_at</td>
+  <td><code>DATETIME(3) NOT NULL</code></td>
+  <td>外部付款时间</td>
+</tr>
+<tr>
+  <td>evidence_ids</td>
+  <td><code>JSON NOT NULL</code></td>
+  <td>凭证</td>
+</tr>
+<tr>
+  <td>status</td>
+  <td><code>VARCHAR(24) NOT NULL</code></td>
+  <td>ExternalPaymentStatus: PENDING,VERIFIED,REJECTED,REVERSED</td>
+</tr>
+<tr>
+  <td>registered_by</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>登记人</td>
+</tr>
+<tr>
+  <td>verified_by</td>
+  <td><code>BIGINT</code></td>
+  <td>不可同一真实身份</td>
+</tr>
+<tr>
+  <td>verified_at</td>
+  <td><code>DATETIME(3)</code></td>
+  <td>核对时间</td>
+</tr>
+<tr>
+  <td>reason</td>
+  <td><code>VARCHAR(1000)</code></td>
+  <td>核对说明/冲正原因</td>
+</tr>
+<tr>
+  <td>reversal_of</td>
+  <td><code>BIGINT</code></td>
+  <td>有错通过冲正记录处理</td>
+</tr>
+<tr>
+  <td>statement_revision</td>
+  <td><code>INT NOT NULL</code></td>
+  <td>关联的已确认内容版本</td>
+</tr>
+<tr>
+  <td>created_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>UTC</td>
+</tr>
+<tr>
+  <td>updated_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>UTC更新时间；Mapper每次修改显式SET updated_at=UTC_TIMESTAMP(3)，不依赖连接时区</td>
+</tr>
+<tr>
+  <td>version</td>
+  <td><code>BIGINT NOT NULL DEFAULT 0</code></td>
+  <td>乐观锁</td>
+</tr>
+</tbody>
+</table>
+<h2>vi_account_security · 小程序账号安全版本</h2>
+<p>与普通资料版本分开；sys_user停用不自动注销车主。作为新域权限线性化门禁。</p>
+<table>
+<thead>
+<tr>
+  <th>字段</th>
+  <th>SQL类型与约束</th>
+  <th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>id</td>
+  <td><code>BIGINT NOT NULL AUTO_INCREMENT</code></td>
+  <td>数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串</td>
+</tr>
+<tr>
+  <td>account_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>vi_account</td>
+</tr>
+<tr>
+  <td>session_epoch</td>
+  <td><code>BIGINT NOT NULL DEFAULT 0</code></td>
+  <td>全局退出/安全封禁代际</td>
+</tr>
+<tr>
+  <td>permission_version</td>
+  <td><code>BIGINT NOT NULL DEFAULT 0</code></td>
+  <td>角色/能力变化版本，不等于资料version</td>
+</tr>
+<tr>
+  <td>security_status</td>
+  <td><code>VARCHAR(24) NOT NULL DEFAULT 'ACTIVE'</code></td>
+  <td>AccountStatus: ACTIVE,LOCKED</td>
+</tr>
+<tr>
+  <td>changed_at</td>
+  <td><code>DATETIME(3) NOT NULL</code></td>
+  <td>最近权限/安全变化时间</td>
+</tr>
+<tr>
+  <td>created_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>UTC</td>
+</tr>
+<tr>
+  <td>version</td>
+  <td><code>BIGINT NOT NULL DEFAULT 0</code></td>
+  <td>并发控制；不可变行不更新内容</td>
+</tr>
+</tbody>
+</table>
+<h2>vi_session · 小程序独立设备会话</h2>
+<p>两设备隔离；当前工作能力失效仍允许经过基础会话验证切回OWNER。</p>
+<table>
+<thead>
+<tr>
+  <th>字段</th>
+  <th>SQL类型与约束</th>
+  <th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>id</td>
+  <td><code>BIGINT NOT NULL AUTO_INCREMENT</code></td>
+  <td>数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串</td>
+</tr>
+<tr>
+  <td>account_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>基础账号</td>
+</tr>
+<tr>
+  <td>app_id</td>
+  <td><code>VARCHAR(64) CHARACTER SET ascii COLLATE ascii_bin NOT NULL</code></td>
+  <td>微信应用</td>
+</tr>
+<tr>
+  <td>status</td>
+  <td><code>VARCHAR(24) NOT NULL DEFAULT 'ACTIVE'</code></td>
+  <td>SessionStatus: ACTIVE,REVOKED,EXPIRED</td>
+</tr>
+<tr>
+  <td>session_epoch</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>签发时代际</td>
+</tr>
+<tr>
+  <td>context_version</td>
+  <td><code>BIGINT NOT NULL DEFAULT 1</code></td>
+  <td>当前设备角色/站点切换版本</td>
+</tr>
+<tr>
+  <td>active_role</td>
+  <td><code>VARCHAR(24) NOT NULL DEFAULT 'OWNER'</code></td>
+  <td>OWNER/DRIVER/STATION；不是授权来源</td>
+</tr>
+<tr>
+  <td>station_id</td>
+  <td><code>BIGINT</code></td>
+  <td>只存获授权当前站点上下文</td>
+</tr>
+<tr>
+  <td>linked_sys_user_id</td>
+  <td><code>BIGINT</code></td>
+  <td>可信受控绑定快照；每次工作操作再查实时状态</td>
+</tr>
+<tr>
+  <td>absolute_expires_at</td>
+  <td><code>DATETIME(3) NOT NULL</code></td>
+  <td>会话绝对截止，不无限滑动</td>
+</tr>
+<tr>
+  <td>revoked_at</td>
+  <td><code>DATETIME(3)</code></td>
+  <td>退出或安全撤销</td>
+</tr>
+<tr>
+  <td>device_label</td>
+  <td><code>VARCHAR(120)</code></td>
+  <td>最小必要设备标识摘要，不作为授权凭据</td>
+</tr>
+<tr>
+  <td>created_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>UTC</td>
+</tr>
+<tr>
+  <td>version</td>
+  <td><code>BIGINT NOT NULL DEFAULT 0</code></td>
+  <td>并发控制；不可变行不更新内容</td>
+</tr>
+</tbody>
+</table>
+<h2>vi_session_token · 访问与刷新令牌摘要</h2>
+<p>仅TLS返回明文一次；刷新重用检测有保留窗口；登录刷新/切角色不进入通用幂等响应缓存。</p>
+<table>
+<thead>
+<tr>
+  <th>字段</th>
+  <th>SQL类型与约束</th>
+  <th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>id</td>
+  <td><code>BIGINT NOT NULL AUTO_INCREMENT</code></td>
+  <td>数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串</td>
+</tr>
+<tr>
+  <td>session_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>vi_session</td>
+</tr>
+<tr>
+  <td>token_hash</td>
+  <td><code>BINARY(32) NOT NULL</code></td>
+  <td>安全随机令牌的摘要；不存明文</td>
+</tr>
+<tr>
+  <td>token_type</td>
+  <td><code>VARCHAR(16) NOT NULL</code></td>
+  <td>SessionTokenType: ACCESS,REFRESH</td>
+</tr>
+<tr>
+  <td>generation</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>刷新令牌代际</td>
+</tr>
+<tr>
+  <td>context_version</td>
+  <td><code>BIGINT</code></td>
+  <td>ACCESS绑定上下文</td>
+</tr>
+<tr>
+  <td>parent_token_id</td>
+  <td><code>BIGINT</code></td>
+  <td>刷新祖先关系</td>
+</tr>
+<tr>
+  <td>replaced_by_token_id</td>
+  <td><code>BIGINT</code></td>
+  <td>轮换后的令牌引用</td>
+</tr>
+<tr>
+  <td>expires_at</td>
+  <td><code>DATETIME(3) NOT NULL</code></td>
+  <td>到期</td>
+</tr>
+<tr>
+  <td>consumed_at</td>
+  <td><code>DATETIME(3)</code></td>
+  <td>刷新原子消费时间</td>
+</tr>
+<tr>
+  <td>revoked_at</td>
+  <td><code>DATETIME(3)</code></td>
+  <td>撤销时间</td>
+</tr>
+<tr>
+  <td>created_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>UTC</td>
+</tr>
+<tr>
+  <td>version</td>
+  <td><code>BIGINT NOT NULL DEFAULT 0</code></td>
+  <td>并发控制；不可变行不更新内容</td>
+</tr>
+</tbody>
+</table>
+<h2>vi_driver_price_change · 对账内填写与改价不可变记录</h2>
+<p>只追加；所有参与当前提交快照改价的人均不得复核，包括不同认证域下同一实际人员。</p>
+<table>
+<thead>
+<tr>
+  <th>字段</th>
+  <th>SQL类型与约束</th>
+  <th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>id</td>
+  <td><code>BIGINT NOT NULL AUTO_INCREMENT</code></td>
+  <td>数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串</td>
+</tr>
+<tr>
+  <td>statement_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>账单</td>
+</tr>
+<tr>
+  <td>statement_line_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>工作明细</td>
+</tr>
+<tr>
+  <td>ledger_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>不可变费用源</td>
+</tr>
+<tr>
+  <td>revision</td>
+  <td><code>INT NOT NULL</code></td>
+  <td>修改后的内容修订</td>
+</tr>
+<tr>
+  <td>old_amount_fen</td>
+  <td><code>BIGINT NULL</code></td>
+  <td>原拟价，未填写为NULL</td>
+</tr>
+<tr>
+  <td>new_amount_fen</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>新拟价，总额输入，不是重复加差额</td>
+</tr>
+<tr>
+  <td>reason</td>
+  <td><code>VARCHAR(1000) NOT NULL</code></td>
+  <td>修改原因或初次定价依据</td>
+</tr>
+<tr>
+  <td>evidence_file_ids</td>
+  <td><code>JSON</code></td>
+  <td>经权限及归属验证的文件引用</td>
+</tr>
+<tr>
+  <td>actor_user_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>从ADMIN会话读取</td>
+</tr>
+<tr>
+  <td>actor_account_id</td>
+  <td><code>BIGINT</code></td>
+  <td>与受控绑定一致的真实人员关联，可空</td>
+</tr>
+<tr>
+  <td>idempotency_key</td>
+  <td><code>VARCHAR(100) CHARACTER SET ascii COLLATE ascii_bin NOT NULL</code></td>
+  <td>同主体动作资源请求键</td>
+</tr>
+<tr>
+  <td>created_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>UTC</td>
+</tr>
+<tr>
+  <td>version</td>
+  <td><code>BIGINT NOT NULL DEFAULT 0</code></td>
+  <td>并发控制；不可变行不更新内容</td>
+</tr>
+</tbody>
+</table>
+<h2>vi_driver_statement_review · 整单内部复核记录</h2>
+<p>批准并发送为同一业务事务；外部通知异步，失败不能重复审核。锁账单后再验证复核内容、权限和人员隔离。</p>
+<table>
+<thead>
+<tr>
+  <th>字段</th>
+  <th>SQL类型与约束</th>
+  <th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>id</td>
+  <td><code>BIGINT NOT NULL AUTO_INCREMENT</code></td>
+  <td>数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串</td>
+</tr>
+<tr>
+  <td>statement_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>账单</td>
+</tr>
+<tr>
+  <td>revision</td>
+  <td><code>INT NOT NULL</code></td>
+  <td>提交内容版本</td>
+</tr>
+<tr>
+  <td>snapshot_hash</td>
+  <td><code>BINARY(32) NOT NULL</code></td>
+  <td>待审全部明细摘要</td>
+</tr>
+<tr>
+  <td>snapshot_json</td>
+  <td><code>JSON NOT NULL</code></td>
+  <td>冻结的明细与变更，不能只查当前值</td>
+</tr>
+<tr>
+  <td>contributor_ids</td>
+  <td><code>JSON NOT NULL</code></td>
+  <td>服务端查出的本轮所有实际改价人</td>
+</tr>
+<tr>
+  <td>submitted_by</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>提交人</td>
+</tr>
+<tr>
+  <td>reviewed_by</td>
+  <td><code>BIGINT</code></td>
+  <td>独立复核人</td>
+</tr>
+<tr>
+  <td>status</td>
+  <td><code>VARCHAR(24) NOT NULL</code></td>
+  <td>InternalReviewRecordStatus: PENDING,APPROVED,REJECTED,WITHDRAWN</td>
+</tr>
+<tr>
+  <td>opinion</td>
+  <td><code>VARCHAR(1000)</code></td>
+  <td>复核或撤回意见</td>
+</tr>
+<tr>
+  <td>decided_at</td>
+  <td><code>DATETIME(3)</code></td>
+  <td>决定时间</td>
+</tr>
+<tr>
+  <td>active_statement</td>
+  <td><code>BIGINT GENERATED ALWAYS AS (IF(status='PENDING',statement_id,NULL)) STORED</code></td>
+  <td>每账单至多一份待审</td>
+</tr>
+<tr>
+  <td>created_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>UTC</td>
+</tr>
+<tr>
+  <td>version</td>
+  <td><code>BIGINT NOT NULL DEFAULT 0</code></td>
+  <td>并发控制；不可变行不更新内容</td>
+</tr>
+</tbody>
+</table>
+<h2>vi_driver_statement_snapshot · 已发送与确认的不可变版本快照</h2>
+<p>只追加；同版本同内容重发复用快照，改内容递增版本。撤回不删快照，司机确认只接受当前有效版本。</p>
+<table>
+<thead>
+<tr>
+  <th>字段</th>
+  <th>SQL类型与约束</th>
+  <th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>id</td>
+  <td><code>BIGINT NOT NULL AUTO_INCREMENT</code></td>
+  <td>数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串</td>
+</tr>
+<tr>
+  <td>statement_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>账单</td>
+</tr>
+<tr>
+  <td>revision</td>
+  <td><code>INT NOT NULL</code></td>
+  <td>内容版本</td>
+</tr>
+<tr>
+  <td>snapshot_hash</td>
+  <td><code>BINARY(32) NOT NULL</code></td>
+  <td>规范化SHA-256，包含主体司机币种和明细</td>
+</tr>
+<tr>
+  <td>snapshot_json</td>
+  <td><code>JSON NOT NULL</code></td>
+  <td>完整明细、理由、总额与审核来源</td>
+</tr>
+<tr>
+  <td>amount_fen</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>此版明确净应付</td>
+</tr>
+<tr>
+  <td>published_by</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>发送或复核人</td>
+</tr>
+<tr>
+  <td>public_snapshot_json</td>
+  <td><code>JSON NOT NULL</code></td>
+  <td>仅对本人发布的规范化字段，不含内部理由/改价者/复核者</td>
+</tr>
+<tr>
+  <td>public_snapshot_hash</td>
+  <td><code>BINARY(32) NOT NULL</code></td>
+  <td>SHA256公开快照；MINI snapshotHash与此匹配，不用内部snapshot_hash</td>
+</tr>
+<tr>
+  <td>published_at</td>
+  <td><code>DATETIME(3) NOT NULL</code></td>
+  <td>版本发出时间</td>
+</tr>
+<tr>
+  <td>created_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>UTC</td>
+</tr>
+<tr>
+  <td>version</td>
+  <td><code>BIGINT NOT NULL DEFAULT 0</code></td>
+  <td>并发控制；不可变行不更新内容</td>
+</tr>
+</tbody>
+</table>
+<h2>vi_driver_statement_membership_change · 对账成员变更不可变历史</h2>
+<p>同业务事务追加，与工作行/分配/账单合计一起提交；不删除。已移出行的改价历史仍可查。确认后调差是新费用条目，不重开原条目。</p>
+<table>
+<thead>
+<tr>
+  <th>字段</th>
+  <th>SQL类型与约束</th>
+  <th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>id</td>
+  <td><code>BIGINT NOT NULL AUTO_INCREMENT</code></td>
+  <td>数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串</td>
+</tr>
+<tr>
+  <td>statement_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>账单</td>
+</tr>
+<tr>
+  <td>ledger_id</td>
+  <td><code>BIGINT NULL</code></td>
+  <td>源条目；整单作废时可为空</td>
+</tr>
+<tr>
+  <td>line_id</td>
+  <td><code>BIGINT NULL</code></td>
+  <td>可重复激活的工作行</td>
+</tr>
+<tr>
+  <td>action</td>
+  <td><code>VARCHAR(24) NOT NULL</code></td>
+  <td>CREATE/ADD/REMOVE/REACTIVATE/VOID</td>
+</tr>
+<tr>
+  <td>revision_before</td>
+  <td><code>INT NOT NULL</code></td>
+  <td>变更前内容版本</td>
+</tr>
+<tr>
+  <td>revision_after</td>
+  <td><code>INT NOT NULL</code></td>
+  <td>变更后内容版本</td>
+</tr>
+<tr>
+  <td>actor_user_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>真实授权后台操作者</td>
+</tr>
+<tr>
+  <td>reason</td>
+  <td><code>VARCHAR(1000) NOT NULL</code></td>
+  <td>操作依据</td>
+</tr>
+<tr>
+  <td>snapshot_json</td>
+  <td><code>JSON NOT NULL</code></td>
+  <td>集合变化及涉及行完整快照；不存凭据</td>
+</tr>
+<tr>
+  <td>created_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>UTC</td>
+</tr>
+</tbody>
+</table>
+<h2>vi_penalty_appeal · 普通取消处罚申诉记录</h2>
+<p>审批与处罚撤销/计次重新计算/权限版本/outbox同事务；不是事故处罚模块</p>
+<table>
+<thead>
+<tr>
+  <th>字段</th>
+  <th>SQL类型与约束</th>
+  <th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>id</td>
+  <td><code>BIGINT NOT NULL AUTO_INCREMENT</code></td>
+  <td>数据库生成业务主键；插入不提供id</td>
+</tr>
+<tr>
+  <td>penalty_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>处罚主键</td>
+</tr>
+<tr>
+  <td>driver_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>本人司机档案</td>
+</tr>
+<tr>
+  <td>status</td>
+  <td><code>VARCHAR(24) NOT NULL DEFAULT 'SUBMITTED'</code></td>
+  <td>AppealRecordStatus: SUBMITTED,APPROVED,REJECTED</td>
+</tr>
+<tr>
+  <td>reason</td>
+  <td><code>VARCHAR(1000) NOT NULL</code></td>
+  <td>本人说明</td>
+</tr>
+<tr>
+  <td>evidence_file_ids</td>
+  <td><code>JSON NULL</code></td>
+  <td>通过文件权限检查的证据引用</td>
+</tr>
+<tr>
+  <td>submitted_at</td>
+  <td><code>DATETIME(3) NOT NULL</code></td>
+  <td>UTC提交时刻</td>
+</tr>
+<tr>
+  <td>reviewer_user_id</td>
+  <td><code>BIGINT NULL</code></td>
+  <td>独立后台审核人</td>
+</tr>
+<tr>
+  <td>reviewed_at</td>
+  <td><code>DATETIME(3) NULL</code></td>
+  <td>UTC审核时刻</td>
+</tr>
+<tr>
+  <td>public_opinion</td>
+  <td><code>VARCHAR(1000) NULL</code></td>
+  <td>对本人公开结论</td>
+</tr>
+<tr>
+  <td>active_penalty</td>
+  <td><code>BIGINT GENERATED ALWAYS AS (IF(status='SUBMITTED',penalty_id,NULL)) STORED</code></td>
+  <td>同一处罚只允许一项待审申诉</td>
+</tr>
+<tr>
+  <td>created_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>创建时刻UTC</td>
+</tr>
+<tr>
+  <td>updated_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>更新时间UTC；更新必须显式设置UTC_TIMESTAMP(3)</td>
+</tr>
+<tr>
+  <td>version</td>
+  <td><code>BIGINT NOT NULL DEFAULT 0</code></td>
+  <td>手写CAS版本</td>
+</tr>
+</tbody>
+</table>
+<h2>vi_training_course · 代驾培训不可变课程版本</h2>
+<p>课程发布后不可原地修改；更新发布新版本；正式题目和通过标准由业务配置，不是demo</p>
+<table>
+<thead>
+<tr>
+  <th>字段</th>
+  <th>SQL类型与约束</th>
+  <th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>id</td>
+  <td><code>BIGINT NOT NULL AUTO_INCREMENT</code></td>
+  <td>数据库生成业务主键；插入不提供id</td>
+</tr>
+<tr>
+  <td>course_key</td>
+  <td><code>VARCHAR(64) CHARACTER SET ascii COLLATE ascii_bin NOT NULL</code></td>
+  <td>稳定课程编码</td>
+</tr>
+<tr>
+  <td>course_version</td>
+  <td><code>INT NOT NULL</code></td>
+  <td>课程内容版本</td>
+</tr>
+<tr>
+  <td>title</td>
+  <td><code>VARCHAR(200) NOT NULL</code></td>
+  <td>课程标题</td>
+</tr>
+<tr>
+  <td>description</td>
+  <td><code>TEXT NULL</code></td>
+  <td>培训说明</td>
+</tr>
+<tr>
+  <td>media_file_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>私有培训媒体</td>
+</tr>
+<tr>
+  <td>required_duration_seconds</td>
+  <td><code>INT NOT NULL</code></td>
+  <td>规定学习时长；发布时校验&gt;0</td>
+</tr>
+<tr>
+  <td>pass_score</td>
+  <td><code>INT NOT NULL</code></td>
+  <td>0至100的配置门槛</td>
+</tr>
+<tr>
+  <td>attempt_time_limit_seconds</td>
+  <td><code>INT NOT NULL</code></td>
+  <td>考试时间配置</td>
+</tr>
+<tr>
+  <td>status</td>
+  <td><code>VARCHAR(24) NOT NULL DEFAULT 'DRAFT'</code></td>
+  <td>TrainingCourseStatus: DRAFT,PUBLISHED,DISABLED</td>
+</tr>
+<tr>
+  <td>published_at</td>
+  <td><code>DATETIME(3) NULL</code></td>
+  <td>UTC发布时间</td>
+</tr>
+<tr>
+  <td>published_by_user_id</td>
+  <td><code>BIGINT NULL</code></td>
+  <td>后台发布人</td>
+</tr>
+<tr>
+  <td>created_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>创建时刻UTC</td>
+</tr>
+<tr>
+  <td>updated_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>更新时间UTC；更新必须显式设置UTC_TIMESTAMP(3)</td>
+</tr>
+<tr>
+  <td>version</td>
+  <td><code>BIGINT NOT NULL DEFAULT 0</code></td>
+  <td>手写CAS版本</td>
+</tr>
+</tbody>
+</table>
+<h2>vi_training_question · 培训课程版本的后台题库</h2>
+<p>发布题库只读；考试返回TrainingQuestion白名单，无正确答案；独立权限保护后台读取</p>
+<table>
+<thead>
+<tr>
+  <th>字段</th>
+  <th>SQL类型与约束</th>
+  <th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>id</td>
+  <td><code>BIGINT NOT NULL AUTO_INCREMENT</code></td>
+  <td>数据库生成业务主键；插入不提供id</td>
+</tr>
+<tr>
+  <td>training_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>确切课程版本</td>
+</tr>
+<tr>
+  <td>question_code</td>
+  <td><code>VARCHAR(64) CHARACTER SET ascii COLLATE ascii_bin NOT NULL</code></td>
+  <td>课程内稳定编码</td>
+</tr>
+<tr>
+  <td>question_type</td>
+  <td><code>VARCHAR(24) NOT NULL</code></td>
+  <td>QuestionType: SINGLE,MULTIPLE,TRUE_FALSE</td>
+</tr>
+<tr>
+  <td>prompt</td>
+  <td><code>TEXT NOT NULL</code></td>
+  <td>题干</td>
+</tr>
+<tr>
+  <td>options_json</td>
+  <td><code>JSON NOT NULL</code></td>
+  <td>code和text</td>
+</tr>
+<tr>
+  <td>correct_option_codes</td>
+  <td><code>JSON NOT NULL</code></td>
+  <td>仅课程管理/服务端阅卷可见，禁止MINI输出</td>
+</tr>
+<tr>
+  <td>sort_no</td>
+  <td><code>INT NOT NULL</code></td>
+  <td>排序</td>
+</tr>
+<tr>
+  <td>created_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>创建时刻UTC</td>
+</tr>
+<tr>
+  <td>updated_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>更新时间UTC；更新必须显式设置UTC_TIMESTAMP(3)</td>
+</tr>
+<tr>
+  <td>version</td>
+  <td><code>BIGINT NOT NULL DEFAULT 0</code></td>
+  <td>手写CAS版本</td>
+</tr>
+</tbody>
+</table>
+<h2>vi_training_progress · 本人每个课程版本的学习进度</h2>
+<p>普通前端上报不证明观看完整；时长限幅、顺序检查、服务端阅卷共同决定培训完成；不宣称防作弊认证</p>
+<table>
+<thead>
+<tr>
+  <th>字段</th>
+  <th>SQL类型与约束</th>
+  <th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>id</td>
+  <td><code>BIGINT NOT NULL AUTO_INCREMENT</code></td>
+  <td>数据库生成业务主键；插入不提供id</td>
+</tr>
+<tr>
+  <td>application_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>资格申请</td>
+</tr>
+<tr>
+  <td>driver_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>真正司机档案</td>
+</tr>
+<tr>
+  <td>training_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>课程版本主键</td>
+</tr>
+<tr>
+  <td>verified_duration_seconds</td>
+  <td><code>INT NOT NULL DEFAULT 0</code></td>
+  <td>服务端按会话时间限幅的有效学习时长</td>
+</tr>
+<tr>
+  <td>status</td>
+  <td><code>VARCHAR(24) NOT NULL DEFAULT 'NOT_STARTED'</code></td>
+  <td>TrainingStatus: NOT_STARTED,IN_PROGRESS,READY_FOR_EXAM,PASSED,FAILED</td>
+</tr>
+<tr>
+  <td>last_position_seconds</td>
+  <td><code>INT NOT NULL DEFAULT 0</code></td>
+  <td>仅恢复位置，不等于有效学习时长</td>
+</tr>
+<tr>
+  <td>created_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>创建时刻UTC</td>
+</tr>
+<tr>
+  <td>updated_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>更新时间UTC；更新必须显式设置UTC_TIMESTAMP(3)</td>
+</tr>
+<tr>
+  <td>version</td>
+  <td><code>BIGINT NOT NULL DEFAULT 0</code></td>
+  <td>手写CAS版本</td>
+</tr>
+</tbody>
+</table>
+<h2>vi_training_playback · 短期受控学习会话</h2>
+<p>按相邻报告服务端经过时长上限累加；多个并发播放会话不能重复计入时长</p>
+<table>
+<thead>
+<tr>
+  <th>字段</th>
+  <th>SQL类型与约束</th>
+  <th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>id</td>
+  <td><code>BIGINT NOT NULL AUTO_INCREMENT</code></td>
+  <td>数据库生成业务主键；插入不提供id</td>
+</tr>
+<tr>
+  <td>progress_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>本人进度</td>
+</tr>
+<tr>
+  <td>session_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>小程序设备会话</td>
+</tr>
+<tr>
+  <td>started_at</td>
+  <td><code>DATETIME(3) NOT NULL</code></td>
+  <td>服务端开始时间</td>
+</tr>
+<tr>
+  <td>expires_at</td>
+  <td><code>DATETIME(3) NOT NULL</code></td>
+  <td>服务端结束边界</td>
+</tr>
+<tr>
+  <td>last_reported_at</td>
+  <td><code>DATETIME(3) NULL</code></td>
+  <td>最近服务器接收时刻</td>
+</tr>
+<tr>
+  <td>last_sequence</td>
+  <td><code>INT NOT NULL DEFAULT 0</code></td>
+  <td>乱序和重复不增加时长</td>
+</tr>
+<tr>
+  <td>created_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>创建时刻UTC</td>
+</tr>
+<tr>
+  <td>updated_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>更新时间UTC；更新必须显式设置UTC_TIMESTAMP(3)</td>
+</tr>
+<tr>
+  <td>version</td>
+  <td><code>BIGINT NOT NULL DEFAULT 0</code></td>
+  <td>手写CAS版本</td>
+</tr>
+</tbody>
+</table>
+<h2>vi_training_attempt · 本人考试尝试及不可变题卷快照</h2>
+<p>作答绑定attemptId+expectedVersion；提交后不可重写；正确答案只在服务端按确切课程版本读取</p>
+<table>
+<thead>
+<tr>
+  <th>字段</th>
+  <th>SQL类型与约束</th>
+  <th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>id</td>
+  <td><code>BIGINT NOT NULL AUTO_INCREMENT</code></td>
+  <td>数据库生成业务主键；插入不提供id</td>
+</tr>
+<tr>
+  <td>application_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>资格申请</td>
+</tr>
+<tr>
+  <td>driver_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>本人</td>
+</tr>
+<tr>
+  <td>training_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>确切课程版本</td>
+</tr>
+<tr>
+  <td>attempt_no</td>
+  <td><code>INT NOT NULL</code></td>
+  <td>本课程尝试序号</td>
+</tr>
+<tr>
+  <td>status</td>
+  <td><code>VARCHAR(24) NOT NULL DEFAULT 'OPEN'</code></td>
+  <td>AttemptStatus: OPEN,SUBMITTED,PASSED,FAILED,EXPIRED</td>
+</tr>
+<tr>
+  <td>question_snapshot</td>
+  <td><code>JSON NOT NULL</code></td>
+  <td>确切题干/选项；无答案的对外投影单独构造</td>
+</tr>
+<tr>
+  <td>answer_snapshot</td>
+  <td><code>JSON NULL</code></td>
+  <td>本人作答</td>
+</tr>
+<tr>
+  <td>score</td>
+  <td><code>INT NULL</code></td>
+  <td>服务器阅卷0至100</td>
+</tr>
+<tr>
+  <td>started_at</td>
+  <td><code>DATETIME(3) NOT NULL</code></td>
+  <td>UTC开始</td>
+</tr>
+<tr>
+  <td>expires_at</td>
+  <td><code>DATETIME(3) NOT NULL</code></td>
+  <td>UTC失效</td>
+</tr>
+<tr>
+  <td>submitted_at</td>
+  <td><code>DATETIME(3) NULL</code></td>
+  <td>UTC提交</td>
+</tr>
+<tr>
+  <td>active_attempt</td>
+  <td><code>VARCHAR(128) GENERATED ALWAYS AS (IF(status='OPEN',CONCAT(application_id,':',training_id),NULL)) STORED</code></td>
+  <td>同申请同课程仅一个开放尝试</td>
+</tr>
+<tr>
+  <td>created_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>创建时刻UTC</td>
+</tr>
+<tr>
+  <td>updated_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>更新时间UTC；更新必须显式设置UTC_TIMESTAMP(3)</td>
+</tr>
+<tr>
+  <td>version</td>
+  <td><code>BIGINT NOT NULL DEFAULT 0</code></td>
+  <td>手写CAS版本</td>
+</tr>
+</tbody>
+</table>
+<h2>vi_face_session · 本人实名活体启动与可信结果会话</h2>
+<p>不信任客户端回调PASSED；供应商具体开通和WEBVIEW能力未证实即不能启用正式认证</p>
+<table>
+<thead>
+<tr>
+  <th>字段</th>
+  <th>SQL类型与约束</th>
+  <th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>id</td>
+  <td><code>BIGINT NOT NULL AUTO_INCREMENT</code></td>
+  <td>数据库生成业务主键；插入不提供id</td>
+</tr>
+<tr>
+  <td>application_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>资格申请</td>
+</tr>
+<tr>
+  <td>verification_id</td>
+  <td><code>BIGINT NULL</code></td>
+  <td>供应商核验记录</td>
+</tr>
+<tr>
+  <td>account_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>本人基础账户</td>
+</tr>
+<tr>
+  <td>status</td>
+  <td><code>VARCHAR(24) NOT NULL DEFAULT 'CREATED'</code></td>
+  <td>FaceSessionStatus: CREATED,PROCESSING,PASSED,FAILED,EXPIRED</td>
+</tr>
+<tr>
+  <td>launch_mode</td>
+  <td><code>VARCHAR(24) NOT NULL DEFAULT 'WEBVIEW_URL'</code></td>
+  <td>FaceLaunchMode: WEBVIEW_URL</td>
+</tr>
+<tr>
+  <td>launch_payload_cipher</td>
+  <td><code>BLOB NULL</code></td>
+  <td>加密短期URL；失效或结束销毁</td>
+</tr>
+<tr>
+  <td>consent_version</td>
+  <td><code>VARCHAR(64) NOT NULL</code></td>
+  <td>此次明确同意版本</td>
+</tr>
+<tr>
+  <td>expires_at</td>
+  <td><code>DATETIME(3) NOT NULL</code></td>
+  <td>供应商与本地较短有效期</td>
+</tr>
+<tr>
+  <td>result_available</td>
+  <td><code>TINYINT NOT NULL DEFAULT 0</code></td>
+  <td>可信查询后赋值</td>
+</tr>
+<tr>
+  <td>failure_code</td>
+  <td><code>VARCHAR(64) NULL</code></td>
+  <td>安全映射错误，无原始生物数据</td>
+</tr>
+<tr>
+  <td>created_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>创建时刻UTC</td>
+</tr>
+<tr>
+  <td>updated_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>更新时间UTC；更新必须显式设置UTC_TIMESTAMP(3)</td>
+</tr>
+<tr>
+  <td>version</td>
+  <td><code>BIGINT NOT NULL DEFAULT 0</code></td>
+  <td>手写CAS版本</td>
+</tr>
+</tbody>
+</table>
+<h2>vi_phone_verification_receipt · 手机号授权处理与重试回执</h2>
+<p>先登记请求及摘要并获得领取权，供应商调用在短事务外，成功后原子保存手机号验证事实；自动关联单独安全重试。结果不明查询回执，不把未知当成功；不缓存token。仅使用最近微信证明，SMS不能产生员工关联。</p>
+<table>
+<thead>
+<tr>
+  <th>字段</th>
+  <th>SQL类型与约束</th>
+  <th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>id</td>
+  <td><code>BIGINT NOT NULL AUTO_INCREMENT</code></td>
+  <td>数据库生成内部Long，API字符串</td>
+</tr>
+<tr>
+  <td>request_id</td>
+  <td><code>CHAR(36) CHARACTER SET ascii COLLATE ascii_bin NOT NULL</code></td>
+  <td>客户端一次流程UUID，绑定当前账号</td>
+</tr>
+<tr>
+  <td>app_id</td>
+  <td><code>VARCHAR(64) CHARACTER SET ascii COLLATE ascii_bin NOT NULL</code></td>
+  <td>服务端应用标识</td>
+</tr>
+<tr>
+  <td>account_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>已认证MINI账号；不从请求接收</td>
+</tr>
+<tr>
+  <td>session_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>发起的基础会话</td>
+</tr>
+<tr>
+  <td>code_hash</td>
+  <td><code>BINARY(32) NOT NULL</code></td>
+  <td>微信phoneCode摘要，防跨账号重放；绝不保存原始code</td>
+</tr>
+<tr>
+  <td>status</td>
+  <td><code>VARCHAR(24) NOT NULL DEFAULT 'PROCESSING'</code></td>
+  <td>PhoneVerificationStatus: PROCESSING,VERIFIED,UNKNOWN,FAILED</td>
+</tr>
+<tr>
+  <td>phone_lookup</td>
+  <td><code>BINARY(32) NULL</code></td>
+  <td>成功后可信手机号HMAC</td>
+</tr>
+<tr>
+  <td>phone_cipher</td>
+  <td><code>VARBINARY(512) NULL</code></td>
+  <td>成功结果恢复所需加密号码；敏感回执到期按留存规则清理，审计不记录原文</td>
+</tr>
+<tr>
+  <td>verified_at</td>
+  <td><code>DATETIME(3) NULL</code></td>
+  <td>微信已成功核验的UTC时间</td>
+</tr>
+<tr>
+  <td>expires_at</td>
+  <td><code>DATETIME(3) NOT NULL</code></td>
+  <td>关联重试窗口截至时间；默认10分钟是技术值，不是微信code有效期</td>
+</tr>
+<tr>
+  <td>employee_link_outcome</td>
+  <td><code>VARCHAR(40) NOT NULL DEFAULT 'NOT_ATTEMPTED'</code></td>
+  <td>EmployeeLinkOutcome；内部原因不直接下发小程序</td>
+</tr>
+<tr>
+  <td>lease_until</td>
+  <td><code>DATETIME(3) NULL</code></td>
+  <td>处理租约；处理中未知不盲目重复消费供应商凭据</td>
+</tr>
+<tr>
+  <td>finished_at</td>
+  <td><code>DATETIME(3) NULL</code></td>
+  <td>最终处理时间</td>
+</tr>
+<tr>
+  <td>created_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>UTC创建时间</td>
+</tr>
+<tr>
+  <td>updated_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>更新显式UTC_TIMESTAMP(3)</td>
+</tr>
+<tr>
+  <td>version</td>
+  <td><code>BIGINT NOT NULL DEFAULT 0</code></td>
+  <td>受控CAS版本</td>
+</tr>
+</tbody>
+</table>
+<h2>vi_station_grant_set · 员工站点授权集合版本</h2>
+<p>对集合加锁和CAS，首配expectedVersion=0。不存在时并发创建只允许一份；空集合也有版本。子关系与sys_user.auth_version、受影响MINI权限版本、审计/outbox同事务。</p>
+<table>
+<thead>
+<tr>
+  <th>字段</th>
+  <th>SQL类型与约束</th>
+  <th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>id</td>
+  <td><code>BIGINT NOT NULL AUTO_INCREMENT</code></td>
+  <td>数据库生成内部Long，API字符串</td>
+</tr>
+<tr>
+  <td>sys_user_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>目标框架员工；可无微信账号</td>
+</tr>
+<tr>
+  <td>own_station_id</td>
+  <td><code>BIGINT NULL</code></td>
+  <td>仅行政展示，不自动授权</td>
+</tr>
+<tr>
+  <td>changed_by</td>
+  <td><code>BIGINT NULL</code></td>
+  <td>后台修改人</td>
+</tr>
+<tr>
+  <td>reason</td>
+  <td><code>VARCHAR(500) NULL</code></td>
+  <td>本次集合调整原因</td>
+</tr>
+<tr>
+  <td>created_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>UTC创建时间</td>
+</tr>
+<tr>
+  <td>updated_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>更新显式UTC_TIMESTAMP(3)</td>
+</tr>
+<tr>
+  <td>version</td>
+  <td><code>BIGINT NOT NULL DEFAULT 0</code></td>
+  <td>受控CAS版本</td>
+</tr>
+</tbody>
+</table>
+<h2>vi_employee_directory_guard · 员工手机号匹配与目录变更串行防护</h2>
+<p>首次以唯一guard_key初始化后SELECT FOR UPDATE；员工首次自动绑定与框架手机号/账号状态/新增删除导入变更均经统一服务先锁本行，再锁员工与关联。供应商调用在锁外。首期低频串行，禁止把整个登录业务外部调用放进锁。</p>
+<table>
+<thead>
+<tr>
+  <th>字段</th>
+  <th>SQL类型与约束</th>
+  <th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>id</td>
+  <td><code>BIGINT NOT NULL AUTO_INCREMENT</code></td>
+  <td>数据库生成内部Long，API字符串</td>
+</tr>
+<tr>
+  <td>guard_key</td>
+  <td><code>VARCHAR(64) CHARACTER SET ascii COLLATE ascii_bin NOT NULL</code></td>
+  <td>首期唯一GLOBAL_DIRECTORY；同库轻量互斥，不是用户权限</td>
+</tr>
+<tr>
+  <td>created_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>UTC创建时间</td>
+</tr>
+<tr>
+  <td>updated_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>更新显式UTC_TIMESTAMP(3)</td>
+</tr>
+<tr>
+  <td>version</td>
+  <td><code>BIGINT NOT NULL DEFAULT 0</code></td>
+  <td>受控CAS版本</td>
+</tr>
+</tbody>
+</table>
+<h2>vi_integration_profile · 第三方配置档案与生效指针</h2>
+<p>权限与组织范围校验；AppID/mchid一旦有业务引用不得原位改主体；发布仅原子变更指针，版本不可变。</p>
+<table>
+<thead>
+<tr>
+  <th>字段</th>
+  <th>SQL类型与约束</th>
+  <th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>id</td>
+  <td><code>BIGINT NOT NULL AUTO_INCREMENT</code></td>
+  <td>内部自增Long；API十进制字符串</td>
+</tr>
+<tr>
+  <td>kind</td>
+  <td><code>VARCHAR(32) NOT NULL</code></td>
+  <td>IntegrationKind: PAYMENT_POLICY,WECHAT_PAY,TENCENT_SMS,ALIYUN_SMS,WECHAT_APP；</td>
+</tr>
+<tr>
+  <td>owner_dept_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>真实管理/收款主体，复用框架部门归属</td>
+</tr>
+<tr>
+  <td>environment</td>
+  <td><code>VARCHAR(12) NOT NULL</code></td>
+  <td>IntegrationEnvironment: TEST,LIVE；</td>
+</tr>
+<tr>
+  <td>config_key</td>
+  <td><code>VARCHAR(80) NOT NULL</code></td>
+  <td>PAYMENT_POLICY与WECHAT_APP用DEFAULT；其他由服务端生成，不由用户改身份</td>
+</tr>
+<tr>
+  <td>display_name</td>
+  <td><code>VARCHAR(100) NOT NULL</code></td>
+  <td></td>
+</tr>
+<tr>
+  <td>lifecycle</td>
+  <td><code>VARCHAR(16) NOT NULL</code></td>
+  <td>IntegrationLifecycle: DRAFT,ACTIVE,RETIRED；</td>
+</tr>
+<tr>
+  <td>active_revision_id</td>
+  <td><code>BIGINT NULL</code></td>
+  <td>当前发布版本</td>
+</tr>
+<tr>
+  <td>draft_revision_id</td>
+  <td><code>BIGINT NULL</code></td>
+  <td>最新草稿版本</td>
+</tr>
+<tr>
+  <td>revision_seq</td>
+  <td><code>BIGINT NOT NULL DEFAULT 0</code></td>
+  <td>分配版本号的CAS计数</td>
+</tr>
+<tr>
+  <td>created_by</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>配置创建人</td>
+</tr>
+<tr>
+  <td>last_published_by</td>
+  <td><code>BIGINT NULL</code></td>
+  <td>最近发布人</td>
+</tr>
+<tr>
+  <td>created_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>UTC创建时间</td>
+</tr>
+<tr>
+  <td>updated_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>Mapper显式UTC更新时间</td>
+</tr>
+<tr>
+  <td>version</td>
+  <td><code>BIGINT NOT NULL DEFAULT 0</code></td>
+  <td>显式CAS；不是注解自动生效</td>
+</tr>
+</tbody>
+</table>
+<h2>vi_integration_revision · 不可变第三方配置版本</h2>
+<p>保存创建新版本；发布、回滚均不能改写本行；没有私钥/APIv3/AK/AppSecret明文。</p>
+<table>
+<thead>
+<tr>
+  <th>字段</th>
+  <th>SQL类型与约束</th>
+  <th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>id</td>
+  <td><code>BIGINT NOT NULL AUTO_INCREMENT</code></td>
+  <td>内部自增Long；API十进制字符串</td>
+</tr>
+<tr>
+  <td>profile_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td></td>
+</tr>
+<tr>
+  <td>revision_no</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td></td>
+</tr>
+<tr>
+  <td>config_json</td>
+  <td><code>JSON NOT NULL</code></td>
+  <td>经kind专用DTO验证的非秘密配置</td>
+</tr>
+<tr>
+  <td>secret_refs_json</td>
+  <td><code>JSON NOT NULL</code></td>
+  <td>本配置凭据槽位到secret id的内部映射，不下发</td>
+</tr>
+<tr>
+  <td>content_hash</td>
+  <td><code>VARCHAR(64) NOT NULL</code></td>
+  <td>规范化内容与秘密引用版本摘要</td>
+</tr>
+<tr>
+  <td>created_by</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td></td>
+</tr>
+<tr>
+  <td>reason</td>
+  <td><code>VARCHAR(500) NOT NULL</code></td>
+  <td></td>
+</tr>
+<tr>
+  <td>created_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>UTC创建时间</td>
+</tr>
+<tr>
+  <td>updated_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>Mapper显式UTC更新时间</td>
+</tr>
+<tr>
+  <td>version</td>
+  <td><code>BIGINT NOT NULL DEFAULT 0</code></td>
+  <td>显式CAS；不是注解自动生效</td>
+</tr>
+</tbody>
+</table>
+<h2>vi_integration_secret · 安全凭据密文与受控生命周期</h2>
+<p>密文与签发元数据不可编辑；替换是新secret。ACTIVE-&gt;RETIRED/REVOKED受控；被历史操作所需凭据不能简单清空；主密钥不在数据库。</p>
+<table>
+<thead>
+<tr>
+  <th>字段</th>
+  <th>SQL类型与约束</th>
+  <th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>id</td>
+  <td><code>BIGINT NOT NULL AUTO_INCREMENT</code></td>
+  <td>内部自增Long；API十进制字符串</td>
+</tr>
+<tr>
+  <td>profile_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td></td>
+</tr>
+<tr>
+  <td>slot_name</td>
+  <td><code>VARCHAR(64) NOT NULL</code></td>
+  <td>固定允许的凭据槽，禁止用户自造密钥用途</td>
+</tr>
+<tr>
+  <td>credential_kind</td>
+  <td><code>VARCHAR(32) NOT NULL</code></td>
+  <td>IntegrationCredentialKind: PRIVATE_KEY,API_V3_KEY,CLOUD_SECRET,APP_SECRET,BANK_ACCOUNT；</td>
+</tr>
+<tr>
+  <td>ciphertext</td>
+  <td><code>MEDIUMBLOB NOT NULL</code></td>
+  <td>AEAD密文或KMS加密数据键封装，绝非base64明文</td>
+</tr>
+<tr>
+  <td>nonce</td>
+  <td><code>VARBINARY(32) NOT NULL</code></td>
+  <td>每密文独立随机nonce</td>
+</tr>
+<tr>
+  <td>key_version</td>
+  <td><code>VARCHAR(128) NOT NULL</code></td>
+  <td>主密钥版本在服务端安全配置</td>
+</tr>
+<tr>
+  <td>aad_context</td>
+  <td><code>VARCHAR(255) NOT NULL</code></td>
+  <td>绑定profile/slot/env的不可更改上下文</td>
+</tr>
+<tr>
+  <td>fingerprint</td>
+  <td><code>VARCHAR(64) NOT NULL</code></td>
+  <td>安全标识不可逆；不显示明文末几位</td>
+</tr>
+<tr>
+  <td>lifecycle</td>
+  <td><code>VARCHAR(16) NOT NULL</code></td>
+  <td>IntegrationSecretLifecycle: ACTIVE,RETIRED,REVOKED；</td>
+</tr>
+<tr>
+  <td>expires_at</td>
+  <td><code>DATETIME(3) NULL</code></td>
+  <td></td>
+</tr>
+<tr>
+  <td>retired_at</td>
+  <td><code>DATETIME(3) NULL</code></td>
+  <td></td>
+</tr>
+<tr>
+  <td>created_by</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td></td>
+</tr>
+<tr>
+  <td>retired_by</td>
+  <td><code>BIGINT NULL</code></td>
+  <td>受控撤销人</td>
+</tr>
+<tr>
+  <td>retire_reason</td>
+  <td><code>VARCHAR(500) NULL</code></td>
+  <td></td>
+</tr>
+<tr>
+  <td>created_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>UTC创建时间</td>
+</tr>
+<tr>
+  <td>updated_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>Mapper显式UTC更新时间</td>
+</tr>
+<tr>
+  <td>version</td>
+  <td><code>BIGINT NOT NULL DEFAULT 0</code></td>
+  <td>显式CAS；不是注解自动生效</td>
+</tr>
+</tbody>
+</table>
+<h2>vi_integration_check · 指定配置版本校验记录</h2>
+<p>校验针对不可变版本和哈希；用户改草稿即失配。离线/只读/真实联调分别记录；追加结果不覆盖。</p>
+<table>
+<thead>
+<tr>
+  <th>字段</th>
+  <th>SQL类型与约束</th>
+  <th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>id</td>
+  <td><code>BIGINT NOT NULL AUTO_INCREMENT</code></td>
+  <td>内部自增Long；API十进制字符串</td>
+</tr>
+<tr>
+  <td>target_type</td>
+  <td><code>VARCHAR(16) NOT NULL</code></td>
+  <td>IntegrationTargetType: PROFILE,TEMPLATE；</td>
+</tr>
+<tr>
+  <td>target_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td></td>
+</tr>
+<tr>
+  <td>revision_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td></td>
+</tr>
+<tr>
+  <td>content_hash</td>
+  <td><code>VARCHAR(64) NOT NULL</code></td>
+  <td></td>
+</tr>
+<tr>
+  <td>check_level</td>
+  <td><code>VARCHAR(24) NOT NULL</code></td>
+  <td>IntegrationCheckLevel: LOCAL,READ_ONLY,LIVE_EVIDENCE；</td>
+</tr>
+<tr>
+  <td>status</td>
+  <td><code>VARCHAR(16) NOT NULL</code></td>
+  <td>IntegrationCheckStatus: NOT_RUN,PASS,FAIL,PARTIAL；</td>
+</tr>
+<tr>
+  <td>issues_json</td>
+  <td><code>JSON NOT NULL</code></td>
+  <td>脱敏逐字段错误/警告/未验证项</td>
+</tr>
+<tr>
+  <td>checked_at</td>
+  <td><code>DATETIME(3) NOT NULL</code></td>
+  <td></td>
+</tr>
+<tr>
+  <td>expires_at</td>
+  <td><code>DATETIME(3) NOT NULL</code></td>
+  <td></td>
+</tr>
+<tr>
+  <td>checked_by</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td></td>
+</tr>
+<tr>
+  <td>real_payment_verified</td>
+  <td><code>TINYINT NOT NULL DEFAULT 0</code></td>
+  <td>仅真实授权资金测试证据才能标记；只读连接不是支付成功</td>
+</tr>
+<tr>
+  <td>created_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>UTC创建时间</td>
+</tr>
+<tr>
+  <td>updated_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>Mapper显式UTC更新时间</td>
+</tr>
+<tr>
+  <td>version</td>
+  <td><code>BIGINT NOT NULL DEFAULT 0</code></td>
+  <td>显式CAS；不是注解自动生效</td>
+</tr>
+</tbody>
+</table>
+<h2>vi_integration_publication · 配置发布与回滚审计</h2>
+<p>与当前指针、审计、outbox同事务；只追加。回滚也有新记录，不删除发布历史。</p>
+<table>
+<thead>
+<tr>
+  <th>字段</th>
+  <th>SQL类型与约束</th>
+  <th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>id</td>
+  <td><code>BIGINT NOT NULL AUTO_INCREMENT</code></td>
+  <td>内部自增Long；API十进制字符串</td>
+</tr>
+<tr>
+  <td>target_type</td>
+  <td><code>VARCHAR(16) NOT NULL</code></td>
+  <td>IntegrationTargetType: PROFILE,TEMPLATE；</td>
+</tr>
+<tr>
+  <td>target_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td></td>
+</tr>
+<tr>
+  <td>revision_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td></td>
+</tr>
+<tr>
+  <td>previous_revision_id</td>
+  <td><code>BIGINT NULL</code></td>
+  <td>旧生效版本</td>
+</tr>
+<tr>
+  <td>check_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td></td>
+</tr>
+<tr>
+  <td>action</td>
+  <td><code>VARCHAR(16) NOT NULL</code></td>
+  <td>IntegrationPublishAction: PUBLISH,ROLLBACK；</td>
+</tr>
+<tr>
+  <td>published_by</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td></td>
+</tr>
+<tr>
+  <td>published_at</td>
+  <td><code>DATETIME(3) NOT NULL</code></td>
+  <td></td>
+</tr>
+<tr>
+  <td>reason</td>
+  <td><code>VARCHAR(500) NOT NULL</code></td>
+  <td></td>
+</tr>
+<tr>
+  <td>dependency_versions</td>
+  <td><code>JSON NOT NULL</code></td>
+  <td>发布时依赖版本快照</td>
+</tr>
+<tr>
+  <td>target_version</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>发布事务后的根版本</td>
+</tr>
+<tr>
+  <td>created_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>UTC创建时间</td>
+</tr>
+<tr>
+  <td>updated_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>Mapper显式UTC更新时间</td>
+</tr>
+<tr>
+  <td>version</td>
+  <td><code>BIGINT NOT NULL DEFAULT 0</code></td>
+  <td>显式CAS；不是注解自动生效</td>
+</tr>
+</tbody>
+</table>
+<h2>vi_message_template · 外部短信与订阅模板档案</h2>
+<p>多个模板可维护，实际发送由路由唯一主选；内部id和供应商templateId不得混淆。</p>
+<table>
+<thead>
+<tr>
+  <th>字段</th>
+  <th>SQL类型与约束</th>
+  <th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>id</td>
+  <td><code>BIGINT NOT NULL AUTO_INCREMENT</code></td>
+  <td>内部自增Long；API十进制字符串</td>
+</tr>
+<tr>
+  <td>name</td>
+  <td><code>VARCHAR(100) NOT NULL</code></td>
+  <td></td>
+</tr>
+<tr>
+  <td>provider</td>
+  <td><code>VARCHAR(32) NOT NULL</code></td>
+  <td>ExternalMessageProvider: TENCENT_SMS,ALIYUN_SMS,WECHAT_SUBSCRIBE；</td>
+</tr>
+<tr>
+  <td>owner_dept_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td></td>
+</tr>
+<tr>
+  <td>environment</td>
+  <td><code>VARCHAR(12) NOT NULL</code></td>
+  <td>IntegrationEnvironment: TEST,LIVE；</td>
+</tr>
+<tr>
+  <td>scene</td>
+  <td><code>VARCHAR(40) NOT NULL</code></td>
+  <td>NotificationScene: LOGIN_OTP,PHONE_VERIFY,BOOKING_CONFIRMED,DRIVER_ASSIGNED,PICKUP_ARRIVED,INSPECTION_FINISHED,RETURN_COMPLETED,AFTERSALE_DECIDED,REFUND_CHANGED,DRIVER_INVITE,STATEMENT_READY；</td>
+</tr>
+<tr>
+  <td>audience</td>
+  <td><code>VARCHAR(16) NOT NULL</code></td>
+  <td>NotificationAudience: OWNER,DRIVER,STATION；</td>
+</tr>
+<tr>
+  <td>active_revision_id</td>
+  <td><code>BIGINT NULL</code></td>
+  <td>当前已发布模板</td>
+</tr>
+<tr>
+  <td>draft_revision_id</td>
+  <td><code>BIGINT NULL</code></td>
+  <td>最新草稿</td>
+</tr>
+<tr>
+  <td>revision_seq</td>
+  <td><code>BIGINT NOT NULL DEFAULT 0</code></td>
+  <td>模板版本分配计数</td>
+</tr>
+<tr>
+  <td>created_by</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td></td>
+</tr>
+<tr>
+  <td>created_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>UTC创建时间</td>
+</tr>
+<tr>
+  <td>updated_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>Mapper显式UTC更新时间</td>
+</tr>
+<tr>
+  <td>version</td>
+  <td><code>BIGINT NOT NULL DEFAULT 0</code></td>
+  <td>显式CAS；不是注解自动生效</td>
+</tr>
+</tbody>
+</table>
+<h2>vi_message_template_revision · 不可变外部模板版本</h2>
+<p>只追加；模板检查记录不得回写修改不可变快照的官方审核结论。保存时未知则发布前check证明审批状态。</p>
+<table>
+<thead>
+<tr>
+  <th>字段</th>
+  <th>SQL类型与约束</th>
+  <th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>id</td>
+  <td><code>BIGINT NOT NULL AUTO_INCREMENT</code></td>
+  <td>内部自增Long；API十进制字符串</td>
+</tr>
+<tr>
+  <td>template_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td></td>
+</tr>
+<tr>
+  <td>revision_no</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td></td>
+</tr>
+<tr>
+  <td>profile_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td></td>
+</tr>
+<tr>
+  <td>profile_revision_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td></td>
+</tr>
+<tr>
+  <td>vendor_template_id</td>
+  <td><code>VARCHAR(256) NULL</code></td>
+  <td>实际供应商审核通过的模板ID；草稿可空，发布时强制</td>
+</tr>
+<tr>
+  <td>parameter_bindings</td>
+  <td><code>JSON NOT NULL</code></td>
+  <td>白名单变量、实际key/type/length；腾讯顺序/阿里命名</td>
+</tr>
+<tr>
+  <td>options_json</td>
+  <td><code>JSON NOT NULL</code></td>
+  <td>签名/内容快照/小程序page/env/lang等非秘密</td>
+</tr>
+<tr>
+  <td>enabled</td>
+  <td><code>TINYINT NOT NULL</code></td>
+  <td>发送开关</td>
+</tr>
+<tr>
+  <td>approval_status</td>
+  <td><code>VARCHAR(16) NOT NULL</code></td>
+  <td>TemplateApprovalStatus: UNKNOWN,APPROVED,REJECTED；</td>
+</tr>
+<tr>
+  <td>content_hash</td>
+  <td><code>VARCHAR(64) NOT NULL</code></td>
+  <td></td>
+</tr>
+<tr>
+  <td>created_by</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td></td>
+</tr>
+<tr>
+  <td>reason</td>
+  <td><code>VARCHAR(500) NOT NULL</code></td>
+  <td></td>
+</tr>
+<tr>
+  <td>created_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>UTC创建时间</td>
+</tr>
+<tr>
+  <td>updated_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>Mapper显式UTC更新时间</td>
+</tr>
+<tr>
+  <td>version</td>
+  <td><code>BIGINT NOT NULL DEFAULT 0</code></td>
+  <td>显式CAS；不是注解自动生效</td>
+</tr>
+</tbody>
+</table>
+<h2>vi_notification_route · 业务事件到唯一主通道的路由</h2>
+<p>每场景/收件身份/主体/环境仅一个主路由；事务性保存立即生效，所有依赖必须发布可用。历史delivery冻结快照；UNKNOWN不可备用重发。</p>
+<table>
+<thead>
+<tr>
+  <th>字段</th>
+  <th>SQL类型与约束</th>
+  <th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>id</td>
+  <td><code>BIGINT NOT NULL AUTO_INCREMENT</code></td>
+  <td>内部自增Long；API十进制字符串</td>
+</tr>
+<tr>
+  <td>owner_dept_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td></td>
+</tr>
+<tr>
+  <td>environment</td>
+  <td><code>VARCHAR(12) NOT NULL</code></td>
+  <td>IntegrationEnvironment: TEST,LIVE；</td>
+</tr>
+<tr>
+  <td>scene</td>
+  <td><code>VARCHAR(40) NOT NULL</code></td>
+  <td>NotificationScene: LOGIN_OTP,PHONE_VERIFY,BOOKING_CONFIRMED,DRIVER_ASSIGNED,PICKUP_ARRIVED,INSPECTION_FINISHED,RETURN_COMPLETED,AFTERSALE_DECIDED,REFUND_CHANGED,DRIVER_INVITE,STATEMENT_READY；</td>
+</tr>
+<tr>
+  <td>audience</td>
+  <td><code>VARCHAR(16) NOT NULL</code></td>
+  <td>NotificationAudience: OWNER,DRIVER,STATION；</td>
+</tr>
+<tr>
+  <td>primary_template_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td></td>
+</tr>
+<tr>
+  <td>fallback_template_id</td>
+  <td><code>BIGINT NULL</code></td>
+  <td>只允许明确未发送时按规则用备用</td>
+</tr>
+<tr>
+  <td>fallback_policy</td>
+  <td><code>VARCHAR(32) NOT NULL</code></td>
+  <td>MessageFallbackPolicy: NONE,DEFINITELY_NOT_SENT_ONLY；</td>
+</tr>
+<tr>
+  <td>enabled</td>
+  <td><code>TINYINT NOT NULL</code></td>
+  <td></td>
+</tr>
+<tr>
+  <td>updated_by</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td></td>
+</tr>
+<tr>
+  <td>reason</td>
+  <td><code>VARCHAR(500) NOT NULL</code></td>
+  <td></td>
+</tr>
+<tr>
+  <td>created_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>UTC创建时间</td>
+</tr>
+<tr>
+  <td>updated_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>Mapper显式UTC更新时间</td>
+</tr>
+<tr>
+  <td>version</td>
+  <td><code>BIGINT NOT NULL DEFAULT 0</code></td>
+  <td>显式CAS；不是注解自动生效</td>
+</tr>
+</tbody>
+</table>
+<h2>vi_notification_delivery · 外部发送执行与回执</h2>
+<p>内部业务幂等不等于供应商exactly-once。UNKNOWN先查；ACCEPTED不代表送达/已读；禁用阻止未发和重试，但回执继续。重试/备用同一delivery受控更新provider和冻结引用并追加审计，不生成并行双发。</p>
+<table>
+<thead>
+<tr>
+  <th>字段</th>
+  <th>SQL类型与约束</th>
+  <th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>id</td>
+  <td><code>BIGINT NOT NULL AUTO_INCREMENT</code></td>
+  <td>内部自增Long；API十进制字符串</td>
+</tr>
+<tr>
+  <td>notification_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>关联已有站内消息/OTP任务；OTP可使用内部通知目标记录</td>
+</tr>
+<tr>
+  <td>event_key</td>
+  <td><code>VARCHAR(128) NOT NULL</code></td>
+  <td>逻辑事件业务键</td>
+</tr>
+<tr>
+  <td>recipient_key</td>
+  <td><code>VARCHAR(128) NOT NULL</code></td>
+  <td>accountId或脱敏HMAC，禁止裸号</td>
+</tr>
+<tr>
+  <td>recipient_cipher</td>
+  <td><code>VARBINARY(1024) NOT NULL</code></td>
+  <td>必要收件手机号/OpenID密文</td>
+</tr>
+<tr>
+  <td>owner_dept_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td></td>
+</tr>
+<tr>
+  <td>environment</td>
+  <td><code>VARCHAR(12) NOT NULL</code></td>
+  <td>IntegrationEnvironment: TEST,LIVE；</td>
+</tr>
+<tr>
+  <td>route_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td></td>
+</tr>
+<tr>
+  <td>scene</td>
+  <td><code>VARCHAR(40) NOT NULL</code></td>
+  <td>NotificationScene: LOGIN_OTP,PHONE_VERIFY,BOOKING_CONFIRMED,DRIVER_ASSIGNED,PICKUP_ARRIVED,INSPECTION_FINISHED,RETURN_COMPLETED,AFTERSALE_DECIDED,REFUND_CHANGED,DRIVER_INVITE,STATEMENT_READY；</td>
+</tr>
+<tr>
+  <td>provider</td>
+  <td><code>VARCHAR(32) NOT NULL</code></td>
+  <td>ExternalMessageProvider: TENCENT_SMS,ALIYUN_SMS,WECHAT_SUBSCRIBE；</td>
+</tr>
+<tr>
+  <td>template_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td></td>
+</tr>
+<tr>
+  <td>template_revision_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td></td>
+</tr>
+<tr>
+  <td>profile_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td></td>
+</tr>
+<tr>
+  <td>profile_revision_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td></td>
+</tr>
+<tr>
+  <td>payload_cipher_refs</td>
+  <td><code>JSON NOT NULL</code></td>
+  <td>消息内容加密引用/服务器事件引用，不含明文验证码</td>
+</tr>
+<tr>
+  <td>status</td>
+  <td><code>VARCHAR(24) NOT NULL</code></td>
+  <td>ExternalDeliveryStatus: PENDING,SENDING,ACCEPTED,DELIVERED,FAILED,UNKNOWN,SKIPPED；</td>
+</tr>
+<tr>
+  <td>vendor_request_id</td>
+  <td><code>VARCHAR(128) NULL</code></td>
+  <td></td>
+</tr>
+<tr>
+  <td>vendor_biz_id</td>
+  <td><code>VARCHAR(128) NULL</code></td>
+  <td></td>
+</tr>
+<tr>
+  <td>safe_error_code</td>
+  <td><code>VARCHAR(128) NULL</code></td>
+  <td></td>
+</tr>
+<tr>
+  <td>safe_error_message</td>
+  <td><code>VARCHAR(500) NULL</code></td>
+  <td></td>
+</tr>
+<tr>
+  <td>attempt_count</td>
+  <td><code>INT NOT NULL DEFAULT 0</code></td>
+  <td></td>
+</tr>
+<tr>
+  <td>next_attempt_at</td>
+  <td><code>DATETIME(3) NULL</code></td>
+  <td></td>
+</tr>
+<tr>
+  <td>lease_until</td>
+  <td><code>DATETIME(3) NULL</code></td>
+  <td></td>
+</tr>
+<tr>
+  <td>accepted_at</td>
+  <td><code>DATETIME(3) NULL</code></td>
+  <td></td>
+</tr>
+<tr>
+  <td>delivered_at</td>
+  <td><code>DATETIME(3) NULL</code></td>
+  <td></td>
+</tr>
+<tr>
+  <td>business_expires_at</td>
+  <td><code>DATETIME(3) NOT NULL</code></td>
+  <td></td>
+</tr>
+<tr>
+  <td>created_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>UTC创建时间</td>
+</tr>
+<tr>
+  <td>updated_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>Mapper显式UTC更新时间</td>
+</tr>
+<tr>
+  <td>version</td>
+  <td><code>BIGINT NOT NULL DEFAULT 0</code></td>
+  <td>显式CAS；不是注解自动生效</td>
+</tr>
+</tbody>
+</table>
+<h2>vi_subscription_prompt · 一次用户触发订阅请求与结果</h2>
+<p>限定本人/同app/过期/单次结果；重复同体幂等，异体拒绝；真实发信需供应商接受。拒绝不阻断业务。不根据客户端报告无限增加次数。</p>
+<table>
+<thead>
+<tr>
+  <th>字段</th>
+  <th>SQL类型与约束</th>
+  <th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>id</td>
+  <td><code>BIGINT NOT NULL AUTO_INCREMENT</code></td>
+  <td>内部自增Long；API十进制字符串</td>
+</tr>
+<tr>
+  <td>account_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td></td>
+</tr>
+<tr>
+  <td>app_id</td>
+  <td><code>VARCHAR(64) NOT NULL</code></td>
+  <td></td>
+</tr>
+<tr>
+  <td>nonce_hash</td>
+  <td><code>VARCHAR(64) NOT NULL</code></td>
+  <td>一次性nonce摘要</td>
+</tr>
+<tr>
+  <td>template_versions</td>
+  <td><code>JSON NOT NULL</code></td>
+  <td>模板ID、公开版本及场景</td>
+</tr>
+<tr>
+  <td>business_object_type</td>
+  <td><code>VARCHAR(32) NOT NULL</code></td>
+  <td>SubscriptionObjectType: ORDER,ASSIGNMENT,STATEMENT,DRIVER_APPLICATION；</td>
+</tr>
+<tr>
+  <td>business_object_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td></td>
+</tr>
+<tr>
+  <td>status</td>
+  <td><code>VARCHAR(16) NOT NULL</code></td>
+  <td>SubscriptionPromptStatus: CREATED,REPORTED,EXPIRED；</td>
+</tr>
+<tr>
+  <td>expires_at</td>
+  <td><code>DATETIME(3) NOT NULL</code></td>
+  <td></td>
+</tr>
+<tr>
+  <td>reported_at</td>
+  <td><code>DATETIME(3) NULL</code></td>
+  <td></td>
+</tr>
+<tr>
+  <td>client_report</td>
+  <td><code>JSON NULL</code></td>
+  <td>微信前端结果不等于服务端真实剩余额度</td>
+</tr>
+<tr>
+  <td>report_hash</td>
+  <td><code>VARCHAR(64) NULL</code></td>
+  <td></td>
+</tr>
+<tr>
+  <td>created_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>UTC创建时间</td>
+</tr>
+<tr>
+  <td>updated_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>Mapper显式UTC更新时间</td>
+</tr>
+<tr>
+  <td>version</td>
+  <td><code>BIGINT NOT NULL DEFAULT 0</code></td>
+  <td>显式CAS；不是注解自动生效</td>
+</tr>
+</tbody>
+</table>
+<h2>vi_offline_payment_record · 客户线下收退款证明与核实</h2>
+<p>非司机报酬付款表。SUBMITTED不记已付；VERIFY事务锁支付/退款与证明，复核人不同；证明不覆盖更改金额。过期资金真实有效也先处理容量冲突。</p>
+<table>
+<thead>
+<tr>
+  <th>字段</th>
+  <th>SQL类型与约束</th>
+  <th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>id</td>
+  <td><code>BIGINT NOT NULL AUTO_INCREMENT</code></td>
+  <td>内部自增Long；API十进制字符串</td>
+</tr>
+<tr>
+  <td>payment_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td></td>
+</tr>
+<tr>
+  <td>refund_id</td>
+  <td><code>BIGINT NULL</code></td>
+  <td>仅REFUND有值，必须来自统一审核已批准执行单</td>
+</tr>
+<tr>
+  <td>direction</td>
+  <td><code>VARCHAR(16) NOT NULL</code></td>
+  <td>OfflineProofDirection: COLLECTION,REFUND；</td>
+</tr>
+<tr>
+  <td>owner_dept_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>原支付收款主体快照</td>
+</tr>
+<tr>
+  <td>amount_fen</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>本期完整金额；不支持混合/客户拆单付款</td>
+</tr>
+<tr>
+  <td>paid_at</td>
+  <td><code>DATETIME(3) NOT NULL</code></td>
+  <td>真实线下发生时刻</td>
+</tr>
+<tr>
+  <td>method</td>
+  <td><code>VARCHAR(24) NOT NULL</code></td>
+  <td>OfflineProofMethod: CASH,BANK_TRANSFER；</td>
+</tr>
+<tr>
+  <td>external_reference_cipher</td>
+  <td><code>VARBINARY(1024) NOT NULL</code></td>
+  <td>流水/收据编号密文</td>
+</tr>
+<tr>
+  <td>reference_hmac</td>
+  <td><code>VARCHAR(64) NOT NULL</code></td>
+  <td>主体+方向+方式+流水永久去重摘要</td>
+</tr>
+<tr>
+  <td>voucher_file_ids</td>
+  <td><code>JSON NOT NULL</code></td>
+  <td>私有文件，服务端核查归属与可用性</td>
+</tr>
+<tr>
+  <td>status</td>
+  <td><code>VARCHAR(16) NOT NULL</code></td>
+  <td>OfflineProofStatus: SUBMITTED,VERIFIED,REJECTED；</td>
+</tr>
+<tr>
+  <td>registered_by</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td></td>
+</tr>
+<tr>
+  <td>registered_at</td>
+  <td><code>DATETIME(3) NOT NULL</code></td>
+  <td></td>
+</tr>
+<tr>
+  <td>verified_by</td>
+  <td><code>BIGINT NULL</code></td>
+  <td></td>
+</tr>
+<tr>
+  <td>verified_at</td>
+  <td><code>DATETIME(3) NULL</code></td>
+  <td></td>
+</tr>
+<tr>
+  <td>register_note</td>
+  <td><code>VARCHAR(500) NOT NULL</code></td>
+  <td></td>
+</tr>
+<tr>
+  <td>verify_reason</td>
+  <td><code>VARCHAR(500) NULL</code></td>
+  <td></td>
+</tr>
+<tr>
+  <td>active_payment</td>
+  <td><code>BIGINT GENERATED ALWAYS AS (IF(direction='COLLECTION' AND status IN ('SUBMITTED','VERIFIED'),payment_id,NULL)) STORED</code></td>
+  <td>当前有效收款证明唯一占位</td>
+</tr>
+<tr>
+  <td>active_refund</td>
+  <td><code>BIGINT GENERATED ALWAYS AS (IF(direction='REFUND' AND status IN ('SUBMITTED','VERIFIED'),refund_id,NULL)) STORED</code></td>
+  <td>当前有效退款证明唯一占位</td>
+</tr>
+<tr>
+  <td>created_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>UTC创建时间</td>
+</tr>
+<tr>
+  <td>updated_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>Mapper显式UTC更新时间</td>
+</tr>
+<tr>
+  <td>version</td>
+  <td><code>BIGINT NOT NULL DEFAULT 0</code></td>
+  <td>显式CAS；不是注解自动生效</td>
+</tr>
+</tbody>
+</table>
+<h2>vi_integration_test_recipient · 第三方测试收件人白名单</h2>
+<p>真实测试先单独提示费用并明确确认；白名单不是订阅授权的替代。只给有test权限者使用。</p>
+<table>
+<thead>
+<tr>
+  <th>字段</th>
+  <th>SQL类型与约束</th>
+  <th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>id</td>
+  <td><code>BIGINT NOT NULL AUTO_INCREMENT</code></td>
+  <td>内部自增Long；API十进制字符串</td>
+</tr>
+<tr>
+  <td>name</td>
+  <td><code>VARCHAR(80) NOT NULL</code></td>
+  <td></td>
+</tr>
+<tr>
+  <td>kind</td>
+  <td><code>VARCHAR(16) NOT NULL</code></td>
+  <td>IntegrationRecipientKind: PHONE,MINI_ACCOUNT；</td>
+</tr>
+<tr>
+  <td>owner_dept_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td></td>
+</tr>
+<tr>
+  <td>environment</td>
+  <td><code>VARCHAR(12) NOT NULL</code></td>
+  <td>IntegrationEnvironment: TEST,LIVE；</td>
+</tr>
+<tr>
+  <td>phone_cipher</td>
+  <td><code>VARBINARY(512) NULL</code></td>
+  <td>仅PHONE</td>
+</tr>
+<tr>
+  <td>account_id</td>
+  <td><code>BIGINT NULL</code></td>
+  <td>仅MINI_ACCOUNT</td>
+</tr>
+<tr>
+  <td>app_profile_id</td>
+  <td><code>BIGINT NULL</code></td>
+  <td>小程序白名单同应用</td>
+</tr>
+<tr>
+  <td>enabled</td>
+  <td><code>TINYINT NOT NULL</code></td>
+  <td></td>
+</tr>
+<tr>
+  <td>created_by</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td></td>
+</tr>
+<tr>
+  <td>reason</td>
+  <td><code>VARCHAR(500) NOT NULL</code></td>
+  <td></td>
+</tr>
+<tr>
+  <td>created_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>UTC创建时间</td>
+</tr>
+<tr>
+  <td>updated_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>Mapper显式UTC更新时间</td>
+</tr>
+<tr>
+  <td>version</td>
+  <td><code>BIGINT NOT NULL DEFAULT 0</code></td>
+  <td>显式CAS；不是注解自动生效</td>
+</tr>
+</tbody>
+</table>
+</main></body></html>

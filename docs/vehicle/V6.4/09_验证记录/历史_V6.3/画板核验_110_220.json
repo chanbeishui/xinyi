@@ -1,0 +1,1142 @@
+{
+  "environment": "Chromium with Playwright; V6.3 self-contained HTML loaded via set_content; product routes driven by same original JS renderer",
+  "browserPlugin": "Browser connector exists but browser runtime skill is not listed; local Playwright used per validation skill",
+  "screenCount": 110,
+  "catalogCount": 317,
+  "range": [
+    110,
+    220
+  ],
+  "screens": [
+    {
+      "id": "D28-expired",
+      "kind": "state",
+      "base": "D28",
+      "passed": true,
+      "textLength": 202,
+      "mobileHorizontalOverflow": 0,
+      "firstImage": "全量页面图/首屏/D28-expired.png",
+      "fullImage": "全量页面图/完整内容/D28-expired.png"
+    },
+    {
+      "id": "D30",
+      "kind": "page",
+      "base": "D30",
+      "passed": true,
+      "textLength": 199,
+      "mobileHorizontalOverflow": 0,
+      "firstImage": "全量页面图/首屏/D30.png",
+      "fullImage": "全量页面图/完整内容/D30.png"
+    },
+    {
+      "id": "D31",
+      "kind": "page",
+      "base": "D31",
+      "passed": true,
+      "textLength": 226,
+      "mobileHorizontalOverflow": 0,
+      "firstImage": "全量页面图/首屏/D31.png",
+      "fullImage": "全量页面图/完整内容/D31.png"
+    },
+    {
+      "id": "D32",
+      "kind": "page",
+      "base": "D32",
+      "passed": true,
+      "textLength": 137,
+      "mobileHorizontalOverflow": 0,
+      "firstImage": "全量页面图/首屏/D32.png",
+      "fullImage": "全量页面图/完整内容/D32.png"
+    },
+    {
+      "id": "D33",
+      "kind": "page",
+      "base": "D33",
+      "passed": true,
+      "textLength": 228,
+      "mobileHorizontalOverflow": 0,
+      "firstImage": "全量页面图/首屏/D33.png",
+      "fullImage": "全量页面图/完整内容/D33.png"
+    },
+    {
+      "id": "D34",
+      "kind": "page",
+      "base": "D34",
+      "passed": true,
+      "textLength": 179,
+      "mobileHorizontalOverflow": 0,
+      "firstImage": "全量页面图/首屏/D34.png",
+      "fullImage": "全量页面图/完整内容/D34.png"
+    },
+    {
+      "id": "D35",
+      "kind": "page",
+      "base": "D35",
+      "passed": true,
+      "textLength": 186,
+      "mobileHorizontalOverflow": 0,
+      "firstImage": "全量页面图/首屏/D35.png",
+      "fullImage": "全量页面图/完整内容/D35.png"
+    },
+    {
+      "id": "D36",
+      "kind": "page",
+      "base": "D36",
+      "passed": true,
+      "textLength": 133,
+      "mobileHorizontalOverflow": 0,
+      "firstImage": "全量页面图/首屏/D36.png",
+      "fullImage": "全量页面图/完整内容/D36.png"
+    },
+    {
+      "id": "D37",
+      "kind": "page",
+      "base": "D37",
+      "passed": true,
+      "textLength": 93,
+      "mobileHorizontalOverflow": 0,
+      "firstImage": "全量页面图/首屏/D37.png",
+      "fullImage": "全量页面图/完整内容/D37.png"
+    },
+    {
+      "id": "D38",
+      "kind": "page",
+      "base": "D38",
+      "passed": true,
+      "textLength": 295,
+      "mobileHorizontalOverflow": 0,
+      "firstImage": "全量页面图/首屏/D38.png",
+      "fullImage": "全量页面图/完整内容/D38.png"
+    },
+    {
+      "id": "D38-confirmed",
+      "kind": "state",
+      "base": "D38",
+      "passed": true,
+      "textLength": 304,
+      "mobileHorizontalOverflow": 0,
+      "firstImage": "全量页面图/首屏/D38-confirmed.png",
+      "fullImage": "全量页面图/完整内容/D38-confirmed.png"
+    },
+    {
+      "id": "D38-difference",
+      "kind": "state",
+      "base": "D38",
+      "passed": true,
+      "textLength": 285,
+      "mobileHorizontalOverflow": 0,
+      "firstImage": "全量页面图/首屏/D38-difference.png",
+      "fullImage": "全量页面图/完整内容/D38-difference.png"
+    },
+    {
+      "id": "S01",
+      "kind": "page",
+      "base": "S01",
+      "passed": true,
+      "textLength": 158,
+      "mobileHorizontalOverflow": 0,
+      "firstImage": "全量页面图/首屏/S01.png",
+      "fullImage": "全量页面图/完整内容/S01.png"
+    },
+    {
+      "id": "S02",
+      "kind": "page",
+      "base": "S02",
+      "passed": true,
+      "textLength": 216,
+      "mobileHorizontalOverflow": 0,
+      "firstImage": "全量页面图/首屏/S02.png",
+      "fullImage": "全量页面图/完整内容/S02.png"
+    },
+    {
+      "id": "S03",
+      "kind": "page",
+      "base": "S03",
+      "passed": true,
+      "textLength": 317,
+      "mobileHorizontalOverflow": 0,
+      "firstImage": "全量页面图/首屏/S03.png",
+      "fullImage": "全量页面图/完整内容/S03.png"
+    },
+    {
+      "id": "S04",
+      "kind": "page",
+      "base": "S04",
+      "passed": true,
+      "textLength": 209,
+      "mobileHorizontalOverflow": 0,
+      "firstImage": "全量页面图/首屏/S04.png",
+      "fullImage": "全量页面图/完整内容/S04.png"
+    },
+    {
+      "id": "S05",
+      "kind": "page",
+      "base": "S05",
+      "passed": true,
+      "textLength": 210,
+      "mobileHorizontalOverflow": 0,
+      "firstImage": "全量页面图/首屏/S05.png",
+      "fullImage": "全量页面图/完整内容/S05.png"
+    },
+    {
+      "id": "S06",
+      "kind": "page",
+      "base": "S06",
+      "passed": true,
+      "textLength": 208,
+      "mobileHorizontalOverflow": 0,
+      "firstImage": "全量页面图/首屏/S06.png",
+      "fullImage": "全量页面图/完整内容/S06.png"
+    },
+    {
+      "id": "S07",
+      "kind": "page",
+      "base": "S07",
+      "passed": true,
+      "textLength": 313,
+      "mobileHorizontalOverflow": 0,
+      "firstImage": "全量页面图/首屏/S07.png",
+      "fullImage": "全量页面图/完整内容/S07.png"
+    },
+    {
+      "id": "S07-code-error",
+      "kind": "state",
+      "base": "S07",
+      "passed": true,
+      "textLength": 332,
+      "mobileHorizontalOverflow": 0,
+      "firstImage": "全量页面图/首屏/S07-code-error.png",
+      "fullImage": "全量页面图/完整内容/S07-code-error.png"
+    },
+    {
+      "id": "S08",
+      "kind": "page",
+      "base": "S08",
+      "passed": true,
+      "textLength": 247,
+      "mobileHorizontalOverflow": 0,
+      "firstImage": "全量页面图/首屏/S08.png",
+      "fullImage": "全量页面图/完整内容/S08.png"
+    },
+    {
+      "id": "S08-manual",
+      "kind": "state",
+      "base": "S08",
+      "passed": true,
+      "textLength": 249,
+      "mobileHorizontalOverflow": 0,
+      "firstImage": "全量页面图/首屏/S08-manual.png",
+      "fullImage": "全量页面图/完整内容/S08-manual.png"
+    },
+    {
+      "id": "S10",
+      "kind": "page",
+      "base": "S10",
+      "passed": true,
+      "textLength": 236,
+      "mobileHorizontalOverflow": 0,
+      "firstImage": "全量页面图/首屏/S10.png",
+      "fullImage": "全量页面图/完整内容/S10.png"
+    },
+    {
+      "id": "S11",
+      "kind": "page",
+      "base": "S11",
+      "passed": true,
+      "textLength": 276,
+      "mobileHorizontalOverflow": 0,
+      "firstImage": "全量页面图/首屏/S11.png",
+      "fullImage": "全量页面图/完整内容/S11.png"
+    },
+    {
+      "id": "S11-conflict",
+      "kind": "state",
+      "base": "S11",
+      "passed": true,
+      "textLength": 321,
+      "mobileHorizontalOverflow": 0,
+      "firstImage": "全量页面图/首屏/S11-conflict.png",
+      "fullImage": "全量页面图/完整内容/S11-conflict.png"
+    },
+    {
+      "id": "S11-pass",
+      "kind": "state",
+      "base": "S11",
+      "passed": true,
+      "textLength": 221,
+      "mobileHorizontalOverflow": 0,
+      "firstImage": "全量页面图/首屏/S11-pass.png",
+      "fullImage": "全量页面图/完整内容/S11-pass.png"
+    },
+    {
+      "id": "S12",
+      "kind": "page",
+      "base": "S12",
+      "passed": true,
+      "textLength": 190,
+      "mobileHorizontalOverflow": 0,
+      "firstImage": "全量页面图/首屏/S12.png",
+      "fullImage": "全量页面图/完整内容/S12.png"
+    },
+    {
+      "id": "S12-notify-failed",
+      "kind": "state",
+      "base": "S12",
+      "passed": true,
+      "textLength": 188,
+      "mobileHorizontalOverflow": 0,
+      "firstImage": "全量页面图/首屏/S12-notify-failed.png",
+      "fullImage": "全量页面图/完整内容/S12-notify-failed.png"
+    },
+    {
+      "id": "S13",
+      "kind": "page",
+      "base": "S13",
+      "passed": true,
+      "textLength": 313,
+      "mobileHorizontalOverflow": 0,
+      "firstImage": "全量页面图/首屏/S13.png",
+      "fullImage": "全量页面图/完整内容/S13.png"
+    },
+    {
+      "id": "S13-cancel",
+      "kind": "state",
+      "base": "S13",
+      "passed": true,
+      "textLength": 344,
+      "mobileHorizontalOverflow": 0,
+      "firstImage": "全量页面图/首屏/S13-cancel.png",
+      "fullImage": "全量页面图/完整内容/S13-cancel.png"
+    },
+    {
+      "id": "S13-released",
+      "kind": "state",
+      "base": "S13",
+      "passed": true,
+      "textLength": 323,
+      "mobileHorizontalOverflow": 0,
+      "firstImage": "全量页面图/首屏/S13-released.png",
+      "fullImage": "全量页面图/完整内容/S13-released.png"
+    },
+    {
+      "id": "S14",
+      "kind": "page",
+      "base": "S14",
+      "passed": true,
+      "textLength": 180,
+      "mobileHorizontalOverflow": 0,
+      "firstImage": "全量页面图/首屏/S14.png",
+      "fullImage": "全量页面图/完整内容/S14.png"
+    },
+    {
+      "id": "S15",
+      "kind": "page",
+      "base": "S15",
+      "passed": true,
+      "textLength": 202,
+      "mobileHorizontalOverflow": 0,
+      "firstImage": "全量页面图/首屏/S15.png",
+      "fullImage": "全量页面图/完整内容/S15.png"
+    },
+    {
+      "id": "S16",
+      "kind": "page",
+      "base": "S16",
+      "passed": true,
+      "textLength": 124,
+      "mobileHorizontalOverflow": 0,
+      "firstImage": "全量页面图/首屏/S16.png",
+      "fullImage": "全量页面图/完整内容/S16.png"
+    },
+    {
+      "id": "S17",
+      "kind": "page",
+      "base": "S17",
+      "passed": true,
+      "textLength": 172,
+      "mobileHorizontalOverflow": 0,
+      "firstImage": "全量页面图/首屏/S17.png",
+      "fullImage": "全量页面图/完整内容/S17.png"
+    },
+    {
+      "id": "S17-impact",
+      "kind": "state",
+      "base": "S17",
+      "passed": true,
+      "textLength": 215,
+      "mobileHorizontalOverflow": 0,
+      "firstImage": "全量页面图/首屏/S17-impact.png",
+      "fullImage": "全量页面图/完整内容/S17-impact.png"
+    },
+    {
+      "id": "S18",
+      "kind": "page",
+      "base": "S18",
+      "passed": true,
+      "textLength": 128,
+      "mobileHorizontalOverflow": 0,
+      "firstImage": "全量页面图/首屏/S18.png",
+      "fullImage": "全量页面图/完整内容/S18.png"
+    },
+    {
+      "id": "S19",
+      "kind": "page",
+      "base": "S19",
+      "passed": true,
+      "textLength": 179,
+      "mobileHorizontalOverflow": 0,
+      "firstImage": "全量页面图/首屏/S19.png",
+      "fullImage": "全量页面图/完整内容/S19.png"
+    },
+    {
+      "id": "S20",
+      "kind": "page",
+      "base": "S20",
+      "passed": true,
+      "textLength": 237,
+      "mobileHorizontalOverflow": 0,
+      "firstImage": "全量页面图/首屏/S20.png",
+      "fullImage": "全量页面图/完整内容/S20.png"
+    },
+    {
+      "id": "S21",
+      "kind": "page",
+      "base": "S21",
+      "passed": true,
+      "textLength": 63,
+      "mobileHorizontalOverflow": 0,
+      "firstImage": "全量页面图/首屏/S21.png",
+      "fullImage": "全量页面图/完整内容/S21.png"
+    },
+    {
+      "id": "S22",
+      "kind": "page",
+      "base": "S22",
+      "passed": true,
+      "textLength": 110,
+      "mobileHorizontalOverflow": 0,
+      "firstImage": "全量页面图/首屏/S22.png",
+      "fullImage": "全量页面图/完整内容/S22.png"
+    },
+    {
+      "id": "S23",
+      "kind": "page",
+      "base": "S23",
+      "passed": true,
+      "textLength": 187,
+      "mobileHorizontalOverflow": 0,
+      "firstImage": "全量页面图/首屏/S23.png",
+      "fullImage": "全量页面图/完整内容/S23.png"
+    },
+    {
+      "id": "B01",
+      "kind": "page",
+      "base": "B01",
+      "passed": true,
+      "textLength": 168,
+      "mobileHorizontalOverflow": 0,
+      "firstImage": "全量页面图/首屏/B01.png",
+      "fullImage": "全量页面图/完整内容/B01.png"
+    },
+    {
+      "id": "B02",
+      "kind": "page",
+      "base": "B02",
+      "passed": true,
+      "textLength": 724,
+      "mobileHorizontalOverflow": 0,
+      "firstImage": "全量页面图/首屏/B02.png",
+      "fullImage": "全量页面图/完整内容/B02.png"
+    },
+    {
+      "id": "B03",
+      "kind": "page",
+      "base": "B03",
+      "passed": true,
+      "textLength": 880,
+      "mobileHorizontalOverflow": 0,
+      "firstImage": "全量页面图/首屏/B03.png",
+      "fullImage": "全量页面图/完整内容/B03.png"
+    },
+    {
+      "id": "B03-empty",
+      "kind": "state",
+      "base": "B03",
+      "passed": true,
+      "textLength": 346,
+      "mobileHorizontalOverflow": 0,
+      "firstImage": "全量页面图/首屏/B03-empty.png",
+      "fullImage": "全量页面图/完整内容/B03-empty.png"
+    },
+    {
+      "id": "B03-error",
+      "kind": "state",
+      "base": "B03",
+      "passed": true,
+      "textLength": 342,
+      "mobileHorizontalOverflow": 0,
+      "firstImage": "全量页面图/首屏/B03-error.png",
+      "fullImage": "全量页面图/完整内容/B03-error.png"
+    },
+    {
+      "id": "B03-forbidden",
+      "kind": "state",
+      "base": "B03",
+      "passed": true,
+      "textLength": 347,
+      "mobileHorizontalOverflow": 0,
+      "firstImage": "全量页面图/首屏/B03-forbidden.png",
+      "fullImage": "全量页面图/完整内容/B03-forbidden.png"
+    },
+    {
+      "id": "B03-loading",
+      "kind": "state",
+      "base": "B03",
+      "passed": true,
+      "textLength": 307,
+      "mobileHorizontalOverflow": 0,
+      "firstImage": "全量页面图/首屏/B03-loading.png",
+      "fullImage": "全量页面图/完整内容/B03-loading.png"
+    },
+    {
+      "id": "B04",
+      "kind": "page",
+      "base": "B04",
+      "passed": true,
+      "textLength": 783,
+      "mobileHorizontalOverflow": 0,
+      "firstImage": "全量页面图/首屏/B04.png",
+      "fullImage": "全量页面图/完整内容/B04.png"
+    },
+    {
+      "id": "B04-returned",
+      "kind": "state",
+      "base": "B04",
+      "passed": true,
+      "textLength": 828,
+      "mobileHorizontalOverflow": 0,
+      "firstImage": "全量页面图/首屏/B04-returned.png",
+      "fullImage": "全量页面图/完整内容/B04-returned.png"
+    },
+    {
+      "id": "B05",
+      "kind": "page",
+      "base": "B05",
+      "passed": true,
+      "textLength": 674,
+      "mobileHorizontalOverflow": 0,
+      "firstImage": "全量页面图/首屏/B05.png",
+      "fullImage": "全量页面图/完整内容/B05.png"
+    },
+    {
+      "id": "B05-invite",
+      "kind": "state",
+      "base": "B05",
+      "passed": true,
+      "textLength": 788,
+      "mobileHorizontalOverflow": 0,
+      "firstImage": "全量页面图/首屏/B05-invite.png",
+      "fullImage": "全量页面图/完整内容/B05-invite.png"
+    },
+    {
+      "id": "B06",
+      "kind": "page",
+      "base": "B06",
+      "passed": true,
+      "textLength": 612,
+      "mobileHorizontalOverflow": 0,
+      "firstImage": "全量页面图/首屏/B06.png",
+      "fullImage": "全量页面图/完整内容/B06.png"
+    },
+    {
+      "id": "B07",
+      "kind": "page",
+      "base": "B07",
+      "passed": true,
+      "textLength": 379,
+      "mobileHorizontalOverflow": 0,
+      "firstImage": "全量页面图/首屏/B07.png",
+      "fullImage": "全量页面图/完整内容/B07.png"
+    },
+    {
+      "id": "B07-confirm",
+      "kind": "state",
+      "base": "B07",
+      "passed": true,
+      "textLength": 603,
+      "mobileHorizontalOverflow": 0,
+      "firstImage": "全量页面图/首屏/B07-confirm.png",
+      "fullImage": "全量页面图/完整内容/B07-confirm.png"
+    },
+    {
+      "id": "B08",
+      "kind": "page",
+      "base": "B08",
+      "passed": true,
+      "textLength": 536,
+      "mobileHorizontalOverflow": 0,
+      "firstImage": "全量页面图/首屏/B08.png",
+      "fullImage": "全量页面图/完整内容/B08.png"
+    },
+    {
+      "id": "B09",
+      "kind": "page",
+      "base": "B09",
+      "passed": true,
+      "textLength": 588,
+      "mobileHorizontalOverflow": 0,
+      "firstImage": "全量页面图/首屏/B09.png",
+      "fullImage": "全量页面图/完整内容/B09.png"
+    },
+    {
+      "id": "B09-detail",
+      "kind": "state",
+      "base": "B09",
+      "passed": true,
+      "textLength": 751,
+      "mobileHorizontalOverflow": 0,
+      "firstImage": "全量页面图/首屏/B09-detail.png",
+      "fullImage": "全量页面图/完整内容/B09-detail.png"
+    },
+    {
+      "id": "B09-edit",
+      "kind": "state",
+      "base": "B09",
+      "passed": true,
+      "textLength": 702,
+      "mobileHorizontalOverflow": 0,
+      "firstImage": "全量页面图/首屏/B09-edit.png",
+      "fullImage": "全量页面图/完整内容/B09-edit.png"
+    },
+    {
+      "id": "B09-empty",
+      "kind": "state",
+      "base": "B09",
+      "passed": true,
+      "textLength": 339,
+      "mobileHorizontalOverflow": 0,
+      "firstImage": "全量页面图/首屏/B09-empty.png",
+      "fullImage": "全量页面图/完整内容/B09-empty.png"
+    },
+    {
+      "id": "B09-error",
+      "kind": "state",
+      "base": "B09",
+      "passed": true,
+      "textLength": 335,
+      "mobileHorizontalOverflow": 0,
+      "firstImage": "全量页面图/首屏/B09-error.png",
+      "fullImage": "全量页面图/完整内容/B09-error.png"
+    },
+    {
+      "id": "B09-forbidden",
+      "kind": "state",
+      "base": "B09",
+      "passed": true,
+      "textLength": 338,
+      "mobileHorizontalOverflow": 0,
+      "firstImage": "全量页面图/首屏/B09-forbidden.png",
+      "fullImage": "全量页面图/完整内容/B09-forbidden.png"
+    },
+    {
+      "id": "B10",
+      "kind": "page",
+      "base": "B10",
+      "passed": true,
+      "textLength": 446,
+      "mobileHorizontalOverflow": 0,
+      "firstImage": "全量页面图/首屏/B10.png",
+      "fullImage": "全量页面图/完整内容/B10.png"
+    },
+    {
+      "id": "B11",
+      "kind": "page",
+      "base": "B11",
+      "passed": true,
+      "textLength": 596,
+      "mobileHorizontalOverflow": 0,
+      "firstImage": "全量页面图/首屏/B11.png",
+      "fullImage": "全量页面图/完整内容/B11.png"
+    },
+    {
+      "id": "B11-conflict",
+      "kind": "state",
+      "base": "B11",
+      "passed": true,
+      "textLength": 636,
+      "mobileHorizontalOverflow": 0,
+      "firstImage": "全量页面图/首屏/B11-conflict.png",
+      "fullImage": "全量页面图/完整内容/B11-conflict.png"
+    },
+    {
+      "id": "B13",
+      "kind": "page",
+      "base": "B13",
+      "passed": true,
+      "textLength": 701,
+      "mobileHorizontalOverflow": 0,
+      "firstImage": "全量页面图/首屏/B13.png",
+      "fullImage": "全量页面图/完整内容/B13.png"
+    },
+    {
+      "id": "B13-return",
+      "kind": "state",
+      "base": "B13",
+      "passed": true,
+      "textLength": 469,
+      "mobileHorizontalOverflow": 0,
+      "firstImage": "全量页面图/首屏/B13-return.png",
+      "fullImage": "全量页面图/完整内容/B13-return.png"
+    },
+    {
+      "id": "B14",
+      "kind": "page",
+      "base": "B14",
+      "passed": true,
+      "textLength": 614,
+      "mobileHorizontalOverflow": 0,
+      "firstImage": "全量页面图/首屏/B14.png",
+      "fullImage": "全量页面图/完整内容/B14.png"
+    },
+    {
+      "id": "B14-before",
+      "kind": "state",
+      "base": "B14",
+      "passed": true,
+      "textLength": 576,
+      "mobileHorizontalOverflow": 0,
+      "firstImage": "全量页面图/首屏/B14-before.png",
+      "fullImage": "全量页面图/完整内容/B14-before.png"
+    },
+    {
+      "id": "B14-complete",
+      "kind": "state",
+      "base": "B14",
+      "passed": true,
+      "textLength": 597,
+      "mobileHorizontalOverflow": 0,
+      "firstImage": "全量页面图/首屏/B14-complete.png",
+      "fullImage": "全量页面图/完整内容/B14-complete.png"
+    },
+    {
+      "id": "B14-conflict",
+      "kind": "state",
+      "base": "B14",
+      "passed": true,
+      "textLength": 648,
+      "mobileHorizontalOverflow": 0,
+      "firstImage": "全量页面图/首屏/B14-conflict.png",
+      "fullImage": "全量页面图/完整内容/B14-conflict.png"
+    },
+    {
+      "id": "B14-processing",
+      "kind": "state",
+      "base": "B14",
+      "passed": true,
+      "textLength": 614,
+      "mobileHorizontalOverflow": 0,
+      "firstImage": "全量页面图/首屏/B14-processing.png",
+      "fullImage": "全量页面图/完整内容/B14-processing.png"
+    },
+    {
+      "id": "B14-refund",
+      "kind": "state",
+      "base": "B14",
+      "passed": true,
+      "textLength": 595,
+      "mobileHorizontalOverflow": 0,
+      "firstImage": "全量页面图/首屏/B14-refund.png",
+      "fullImage": "全量页面图/完整内容/B14-refund.png"
+    },
+    {
+      "id": "B14-rejected",
+      "kind": "state",
+      "base": "B14",
+      "passed": true,
+      "textLength": 616,
+      "mobileHorizontalOverflow": 0,
+      "firstImage": "全量页面图/首屏/B14-rejected.png",
+      "fullImage": "全量页面图/完整内容/B14-rejected.png"
+    },
+    {
+      "id": "B14-return",
+      "kind": "state",
+      "base": "B14",
+      "passed": true,
+      "textLength": 616,
+      "mobileHorizontalOverflow": 0,
+      "firstImage": "全量页面图/首屏/B14-return.png",
+      "fullImage": "全量页面图/完整内容/B14-return.png"
+    },
+    {
+      "id": "B14-unknown",
+      "kind": "state",
+      "base": "B14",
+      "passed": true,
+      "textLength": 605,
+      "mobileHorizontalOverflow": 0,
+      "firstImage": "全量页面图/首屏/B14-unknown.png",
+      "fullImage": "全量页面图/完整内容/B14-unknown.png"
+    },
+    {
+      "id": "B15",
+      "kind": "page",
+      "base": "B15",
+      "passed": true,
+      "textLength": 474,
+      "mobileHorizontalOverflow": 0,
+      "firstImage": "全量页面图/首屏/B15.png",
+      "fullImage": "全量页面图/完整内容/B15.png"
+    },
+    {
+      "id": "B15-detail",
+      "kind": "state",
+      "base": "B15",
+      "passed": true,
+      "textLength": 640,
+      "mobileHorizontalOverflow": 0,
+      "firstImage": "全量页面图/首屏/B15-detail.png",
+      "fullImage": "全量页面图/完整内容/B15-detail.png"
+    },
+    {
+      "id": "B16",
+      "kind": "page",
+      "base": "B16",
+      "passed": true,
+      "textLength": 449,
+      "mobileHorizontalOverflow": 0,
+      "firstImage": "全量页面图/首屏/B16.png",
+      "fullImage": "全量页面图/完整内容/B16.png"
+    },
+    {
+      "id": "B16-review",
+      "kind": "state",
+      "base": "B16",
+      "passed": true,
+      "textLength": 646,
+      "mobileHorizontalOverflow": 0,
+      "firstImage": "全量页面图/首屏/B16-review.png",
+      "fullImage": "全量页面图/完整内容/B16-review.png"
+    },
+    {
+      "id": "B17",
+      "kind": "page",
+      "base": "B17",
+      "passed": true,
+      "textLength": 460,
+      "mobileHorizontalOverflow": 0,
+      "firstImage": "全量页面图/首屏/B17.png",
+      "fullImage": "全量页面图/完整内容/B17.png"
+    },
+    {
+      "id": "B17-disable",
+      "kind": "state",
+      "base": "B17",
+      "passed": true,
+      "textLength": 592,
+      "mobileHorizontalOverflow": 0,
+      "firstImage": "全量页面图/首屏/B17-disable.png",
+      "fullImage": "全量页面图/完整内容/B17-disable.png"
+    },
+    {
+      "id": "B17-edit",
+      "kind": "state",
+      "base": "B17",
+      "passed": true,
+      "textLength": 569,
+      "mobileHorizontalOverflow": 0,
+      "firstImage": "全量页面图/首屏/B17-edit.png",
+      "fullImage": "全量页面图/完整内容/B17-edit.png"
+    },
+    {
+      "id": "B19",
+      "kind": "page",
+      "base": "B19",
+      "passed": true,
+      "textLength": 948,
+      "mobileHorizontalOverflow": 0,
+      "firstImage": "全量页面图/首屏/B19.png",
+      "fullImage": "全量页面图/完整内容/B19.png"
+    },
+    {
+      "id": "B19-impact",
+      "kind": "state",
+      "base": "B19",
+      "passed": true,
+      "textLength": 1080,
+      "mobileHorizontalOverflow": 0,
+      "firstImage": "全量页面图/首屏/B19-impact.png",
+      "fullImage": "全量页面图/完整内容/B19-impact.png"
+    },
+    {
+      "id": "B20",
+      "kind": "page",
+      "base": "B20",
+      "passed": true,
+      "textLength": 508,
+      "mobileHorizontalOverflow": 0,
+      "firstImage": "全量页面图/首屏/B20.png",
+      "fullImage": "全量页面图/完整内容/B20.png"
+    },
+    {
+      "id": "B20-edit",
+      "kind": "state",
+      "base": "B20",
+      "passed": true,
+      "textLength": 517,
+      "mobileHorizontalOverflow": 0,
+      "firstImage": "全量页面图/首屏/B20-edit.png",
+      "fullImage": "全量页面图/完整内容/B20-edit.png"
+    },
+    {
+      "id": "B20-review",
+      "kind": "state",
+      "base": "B20",
+      "passed": true,
+      "textLength": 688,
+      "mobileHorizontalOverflow": 0,
+      "firstImage": "全量页面图/首屏/B20-review.png",
+      "fullImage": "全量页面图/完整内容/B20-review.png"
+    },
+    {
+      "id": "B21",
+      "kind": "page",
+      "base": "B21",
+      "passed": true,
+      "textLength": 518,
+      "mobileHorizontalOverflow": 0,
+      "firstImage": "全量页面图/首屏/B21.png",
+      "fullImage": "全量页面图/完整内容/B21.png"
+    },
+    {
+      "id": "B21-edit",
+      "kind": "state",
+      "base": "B21",
+      "passed": true,
+      "textLength": 630,
+      "mobileHorizontalOverflow": 0,
+      "firstImage": "全量页面图/首屏/B21-edit.png",
+      "fullImage": "全量页面图/完整内容/B21-edit.png"
+    },
+    {
+      "id": "B22",
+      "kind": "page",
+      "base": "B22",
+      "passed": true,
+      "textLength": 630,
+      "mobileHorizontalOverflow": 0,
+      "firstImage": "全量页面图/首屏/B22.png",
+      "fullImage": "全量页面图/完整内容/B22.png"
+    },
+    {
+      "id": "B23",
+      "kind": "page",
+      "base": "B23",
+      "passed": true,
+      "textLength": 608,
+      "mobileHorizontalOverflow": 0,
+      "firstImage": "全量页面图/首屏/B23.png",
+      "fullImage": "全量页面图/完整内容/B23.png"
+    },
+    {
+      "id": "B24",
+      "kind": "page",
+      "base": "B24",
+      "passed": true,
+      "textLength": 482,
+      "mobileHorizontalOverflow": 0,
+      "firstImage": "全量页面图/首屏/B24.png",
+      "fullImage": "全量页面图/完整内容/B24.png"
+    },
+    {
+      "id": "B24-impact",
+      "kind": "state",
+      "base": "B24",
+      "passed": true,
+      "textLength": 641,
+      "mobileHorizontalOverflow": 0,
+      "firstImage": "全量页面图/首屏/B24-impact.png",
+      "fullImage": "全量页面图/完整内容/B24-impact.png"
+    },
+    {
+      "id": "B25",
+      "kind": "page",
+      "base": "B25",
+      "passed": true,
+      "textLength": 467,
+      "mobileHorizontalOverflow": 0,
+      "firstImage": "全量页面图/首屏/B25.png",
+      "fullImage": "全量页面图/完整内容/B25.png"
+    },
+    {
+      "id": "B26",
+      "kind": "page",
+      "base": "B26",
+      "passed": true,
+      "textLength": 442,
+      "mobileHorizontalOverflow": 0,
+      "firstImage": "全量页面图/首屏/B26.png",
+      "fullImage": "全量页面图/完整内容/B26.png"
+    },
+    {
+      "id": "B26-revoke",
+      "kind": "state",
+      "base": "B26",
+      "passed": true,
+      "textLength": 442,
+      "mobileHorizontalOverflow": 0,
+      "firstImage": "全量页面图/首屏/B26-revoke.png",
+      "fullImage": "全量页面图/完整内容/B26-revoke.png"
+    },
+    {
+      "id": "B27",
+      "kind": "page",
+      "base": "B27",
+      "passed": true,
+      "textLength": 630,
+      "mobileHorizontalOverflow": 0,
+      "firstImage": "全量页面图/首屏/B27.png",
+      "fullImage": "全量页面图/完整内容/B27.png"
+    },
+    {
+      "id": "B27-detail",
+      "kind": "state",
+      "base": "B27",
+      "passed": true,
+      "textLength": 752,
+      "mobileHorizontalOverflow": 0,
+      "firstImage": "全量页面图/首屏/B27-detail.png",
+      "fullImage": "全量页面图/完整内容/B27-detail.png"
+    },
+    {
+      "id": "B27-edit",
+      "kind": "state",
+      "base": "B27",
+      "passed": true,
+      "textLength": 750,
+      "mobileHorizontalOverflow": 0,
+      "firstImage": "全量页面图/首屏/B27-edit.png",
+      "fullImage": "全量页面图/完整内容/B27-edit.png"
+    },
+    {
+      "id": "B27-empty",
+      "kind": "state",
+      "base": "B27",
+      "passed": true,
+      "textLength": 338,
+      "mobileHorizontalOverflow": 0,
+      "firstImage": "全量页面图/首屏/B27-empty.png",
+      "fullImage": "全量页面图/完整内容/B27-empty.png"
+    },
+    {
+      "id": "B27-error",
+      "kind": "state",
+      "base": "B27",
+      "passed": true,
+      "textLength": 334,
+      "mobileHorizontalOverflow": 0,
+      "firstImage": "全量页面图/首屏/B27-error.png",
+      "fullImage": "全量页面图/完整内容/B27-error.png"
+    },
+    {
+      "id": "B27-forbidden",
+      "kind": "state",
+      "base": "B27",
+      "passed": true,
+      "textLength": 337,
+      "mobileHorizontalOverflow": 0,
+      "firstImage": "全量页面图/首屏/B27-forbidden.png",
+      "fullImage": "全量页面图/完整内容/B27-forbidden.png"
+    },
+    {
+      "id": "B28",
+      "kind": "page",
+      "base": "B28",
+      "passed": true,
+      "textLength": 596,
+      "mobileHorizontalOverflow": 0,
+      "firstImage": "全量页面图/首屏/B28.png",
+      "fullImage": "全量页面图/完整内容/B28.png"
+    },
+    {
+      "id": "B28-detail",
+      "kind": "state",
+      "base": "B28",
+      "passed": true,
+      "textLength": 783,
+      "mobileHorizontalOverflow": 0,
+      "firstImage": "全量页面图/首屏/B28-detail.png",
+      "fullImage": "全量页面图/完整内容/B28-detail.png"
+    },
+    {
+      "id": "B28-edit",
+      "kind": "state",
+      "base": "B28",
+      "passed": true,
+      "textLength": 677,
+      "mobileHorizontalOverflow": 0,
+      "firstImage": "全量页面图/首屏/B28-edit.png",
+      "fullImage": "全量页面图/完整内容/B28-edit.png"
+    },
+    {
+      "id": "B28-empty",
+      "kind": "state",
+      "base": "B28",
+      "passed": true,
+      "textLength": 346,
+      "mobileHorizontalOverflow": 0,
+      "firstImage": "全量页面图/首屏/B28-empty.png",
+      "fullImage": "全量页面图/完整内容/B28-empty.png"
+    },
+    {
+      "id": "B28-error",
+      "kind": "state",
+      "base": "B28",
+      "passed": true,
+      "textLength": 342,
+      "mobileHorizontalOverflow": 0,
+      "firstImage": "全量页面图/首屏/B28-error.png",
+      "fullImage": "全量页面图/完整内容/B28-error.png"
+    },
+    {
+      "id": "B28-forbidden",
+      "kind": "state",
+      "base": "B28",
+      "passed": true,
+      "textLength": 345,
+      "mobileHorizontalOverflow": 0,
+      "firstImage": "全量页面图/首屏/B28-forbidden.png",
+      "fullImage": "全量页面图/完整内容/B28-forbidden.png"
+    }
+  ],
+  "pageErrors": [],
+  "unresolvedRoutes": [],
+  "unhandledActions": [],
+  "duplicateControlIds": [],
+  "horizontalOverflow": [],
+  "responsive": [
+    {
+      "width": 375,
+      "viewport": 375,
+      "document": 375,
+      "device": 375,
+      "passed": true
+    },
+    {
+      "width": 390,
+      "viewport": 390,
+      "document": 390,
+      "device": 390,
+      "passed": true
+    },
+    {
+      "width": 428,
+      "viewport": 428,
+      "document": 428,
+      "device": 428,
+      "passed": true
+    }
+  ],
+  "allScreenshotsRegenerated": true,
+  "scope": "All catalog views rendered; not a test of every interaction or production service"
+}

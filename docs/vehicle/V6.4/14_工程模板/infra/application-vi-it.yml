@@ -1,0 +1,50 @@
+# Merge via spring.config.additional-location in the launch command; do not overwrite existing production settings.
+server:
+  address: 127.0.0.1
+  port: ${VI_APP_PORT:18080}
+  servlet:
+    context-path: /
+spring:
+  datasource:
+    druid:
+      master:
+        url: jdbc:mysql://${VI_DB_HOST:127.0.0.1}:${VI_DB_PORT:33306}/${VI_DB_NAME:xinyi_vi_dev}?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC&connectionTimeZone=UTC&forceConnectionTimeZoneToSession=true
+        username: ${VI_DB_USER:vi_dev}
+        password: ${VI_DB_PASSWORD}
+      slave:
+        enabled: false
+      statViewServlet:
+        enabled: false
+  data:
+    redis:
+      host: ${VI_REDIS_HOST:127.0.0.1}
+      port: ${VI_REDIS_PORT:36379}
+      password: ${VI_REDIS_PASSWORD}
+      database: 0
+  devtools:
+    restart:
+      enabled: false
+ruoyi:
+  profile: ${VI_PUBLIC_FILES_DIR}
+token:
+  secret: ${VI_ADMIN_JWT_SECRET:${VI_TEST_CONTROL_KEY}}
+vi:
+  environment: integration
+  providers:
+    mode: SIMULATOR
+    base-url: http://127.0.0.1:${VI_SIM_PORT:19091}
+    secret: ${VI_SIM_SECRET}
+  storage:
+    mode: PRIVATE_LOCAL
+    root: ${VI_FILES_DIR}
+  crypto:
+    data-key: ${VI_DATA_KEY}
+    lookup-key: ${VI_LOOKUP_KEY}
+  test-control:
+    enabled: true
+# Testing adapters/control endpoints are test-scope only; this file alone does not create any API or bypass.
+springdoc:
+  swagger-ui:
+    enabled: false
+  api-docs:
+    enabled: false

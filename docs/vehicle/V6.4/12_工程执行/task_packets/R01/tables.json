@@ -1,0 +1,249 @@
+[
+  {
+    "name": "vi_driver_fee_ledger",
+    "comment": "按真实承接形成的不可覆盖费用台账",
+    "cols": [
+      [
+        "id",
+        "BIGINT NOT NULL AUTO_INCREMENT",
+        "数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串"
+      ],
+      [
+        "driver_id",
+        "BIGINT NOT NULL",
+        "代驾"
+      ],
+      [
+        "payor_entity_id",
+        "BIGINT NOT NULL",
+        "付款责任主体"
+      ],
+      [
+        "currency",
+        "CHAR(3) NOT NULL DEFAULT 'CNY'",
+        "币种"
+      ],
+      [
+        "assignment_id",
+        "BIGINT NOT NULL",
+        "具体承接，不仅订单"
+      ],
+      [
+        "order_id",
+        "BIGINT NOT NULL",
+        "客户订单"
+      ],
+      [
+        "source_event_key",
+        "VARCHAR(128) NOT NULL",
+        "归还/解除/调整永久去重键"
+      ],
+      [
+        "entry_kind",
+        "VARCHAR(32) NOT NULL",
+        "NORMAL_RETURN/CANCEL_RETURN/CANCEL_BEFORE_PICKUP/ADJUSTMENT/INITIAL_VALUATION/PRICE_DELTA"
+      ],
+      [
+        "service_ended_at",
+        "DATETIME(3) NOT NULL",
+        "实际任务结束UTC；非客户服务确认时间"
+      ],
+      [
+        "pricing_status",
+        "VARCHAR(24) NOT NULL",
+        "LedgerPricingStatus: PENDING_PRICING,READY"
+      ],
+      [
+        "fee_rule_id",
+        "BIGINT",
+        "匹配规则版本ID"
+      ],
+      [
+        "rule_snapshot",
+        "JSON",
+        "冻结规则"
+      ],
+      [
+        "amount_fen",
+        "BIGINT",
+        "未知为NULL；调整可负"
+      ],
+      [
+        "fee_breakdown",
+        "JSON",
+        "基础/路线/调整明细"
+      ],
+      [
+        "source_entry_id",
+        "BIGINT",
+        "调整源条目"
+      ],
+      [
+        "verified_by",
+        "BIGINT",
+        "人工核价复核人"
+      ],
+      [
+        "included_statement_id",
+        "BIGINT",
+        "确认结转生成的核价/差额已直接纳入本单，不能再入未来账单"
+      ],
+      [
+        "created_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "UTC"
+      ],
+      [
+        "updated_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "UTC更新时间；Mapper每次修改显式SET updated_at=UTC_TIMESTAMP(3)，不依赖连接时区"
+      ],
+      [
+        "version",
+        "BIGINT NOT NULL DEFAULT 0",
+        "乐观锁"
+      ]
+    ],
+    "indexes": [
+      "UNIQUE KEY uk_fee_source (payor_entity_id,driver_id,source_event_key)",
+      "KEY ix_fee_period (payor_entity_id,driver_id,service_ended_at)",
+      "CONSTRAINT ck_fee_known CHECK ((pricing_status='PENDING_PRICING' AND amount_fen IS NULL) OR (pricing_status='READY' AND amount_fen IS NOT NULL))"
+    ],
+    "rule": "真实服务事件先留存；源金额不覆盖。草稿拟价与复核不反复入账，司机确认事务追加INITIAL_VALUATION或PRICE_DELTA并直接分配本单；唯一source_event_key防重复。独立已确认调差仍按其审核产生台账。",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "engine": "InnoDB",
+    "collation": "utf8mb4_0900_ai_ci",
+    "columnRules": {
+      "id": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "driver_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "payor_entity_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "currency": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "assignment_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "order_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "source_event_key": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "entry_kind": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "service_ended_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "pricing_status": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false,
+        "enumRef": "LedgerPricingStatus"
+      },
+      "fee_rule_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "rule_snapshot": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "amount_fen": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "fee_breakdown": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "source_entry_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "verified_by": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "included_statement_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "created_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "updated_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "version": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      }
+    },
+    "checks": [
+      "CONSTRAINT ck_66_fadb078c6aab CHECK (`pricing_status` IN ('PENDING_PRICING','READY'))",
+      "CONSTRAINT ck_ver_driver_fee_ledger CHECK (version >= 0)"
+    ]
+  }
+]

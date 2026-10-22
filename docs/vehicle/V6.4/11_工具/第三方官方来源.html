@@ -1,0 +1,33 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>第三方官方来源</title><style>body{font:16px/1.75 -apple-system,BlinkMacSystemFont,"Microsoft YaHei",sans-serif;color:#202632;margin:0;background:#f6f7f9}header{padding:14px 24px;background:white;border-bottom:1px solid #ddd}main{max-width:1120px;margin:24px auto;padding:30px;background:white}h1{font-size:30px}h2{margin-top:36px}a{color:#0661bd}table{border-collapse:collapse;width:100%;display:block;overflow:auto;font-size:14px}td,th{border:1px solid #dde2ea;padding:10px;vertical-align:top}th{background:#f1f5fb}pre{padding:15px;background:#f2f4f7;overflow:auto}img{max-width:100%;height:auto}blockquote{padding:10px 20px;border-left:3px solid #2571be;background:#f4f8fc}@media(max-width:700px){main{padding:15px;margin:8px}h1{font-size:25px}}</style></head><body><header><a href="../00_开始.html">V6.4 完整资料</a>　<a href="../02_UI/index.html">交互原型</a>　T3.4</header><main><h1>第三方配置：官方依据与本项目设计的边界</h1>
+<p>核验日期：2026-10-22。供应商字段依据如下；本项目的独立开关、线下核实、配置发布、权限、版本和重试决策是本轮实施设计，不宣称是供应商要求。微信直接文档抓取失败已明示；不引用旧版微信接口清单或社区博客作为实现权威。</p>
+<h2>WX-PARAMS · 微信支付普通商户开发必要参数</h2>
+<p><a href="https://pay.wechatpay.cn/doc/v3/merchant/4013070756">https://pay.wechatpay.cn/doc/v3/merchant/4013070756</a></p>
+<p>商户号、关联AppID、商户签名私钥/证书序列号、APIv3密钥及验签公钥身份；新接入优先微信支付公钥。</p>
+<h2>WX-JSAPI · 微信支付JSAPI/小程序下单</h2>
+<p><a href="https://pay.wechatpay.cn/doc/v3/merchant/4012791856">https://pay.wechatpay.cn/doc/v3/merchant/4012791856</a></p>
+<p>/v3/pay/transactions/jsapi；后端创建预支付，使用同AppID的付款人身份。</p>
+<h2>WX-ROTATION · 平台证书切换微信支付公钥</h2>
+<p><a href="https://pay.wechatpay.cn/doc/v3/merchant/4012154180">https://pay.wechatpay.cn/doc/v3/merchant/4012154180</a></p>
+<p>迁移期间回调验签可能涉及两套验签材料，应按Wechatpay-Serial匹配可信材料。</p>
+<h2>TC-SMS · 腾讯云短信2021-01-11 SendSms</h2>
+<p><a href="https://cloud.tencent.com/document/api/382/55981">https://cloud.tencent.com/document/api/382/55981</a></p>
+<p>Region、SmsSdkAppId、TemplateId、国内短信SignName及按位置排列的TemplateParamSet。</p>
+<h2>TC-KEY · 腾讯云短信SDK接入前提</h2>
+<p><a href="https://cloud.tencent.com/document/product/382/43197">https://cloud.tencent.com/document/product/382/43197</a></p>
+<p>使用SecretId/SecretKey；签名和模板须完成厂商审核。</p>
+<h2>ALI-SMS · 阿里云SendSms</h2>
+<p><a href="https://help.aliyun.com/zh/sms/developer-reference/api-dysmsapi-2017-05-25-sendsms">https://help.aliyun.com/zh/sms/developer-reference/api-dysmsapi-2017-05-25-sendsms</a></p>
+<p>SignName、TemplateCode和JSON字符串TemplateParam；提交成功不等于运营商送达；不提供发送幂等。</p>
+<h2>ALI-ACCESS · 阿里云短信API接入</h2>
+<p><a href="https://help.aliyun.com/zh/sms/getting-started/use-sms-api/">https://help.aliyun.com/zh/sms/getting-started/use-sms-api/</a></p>
+<p>服务端AccessKey认证；国内接口版本2017-05-25，接入地址dysmsapi.aliyuncs.com。</p>
+<h2>UNI-SUB · uni.requestSubscribeMessage</h2>
+<p><a href="https://uniapp.dcloud.net.cn/api/other/requestSubscribeMessage.html">https://uniapp.dcloud.net.cn/api/other/requestSubscribeMessage.html</a></p>
+<p>用户交互触发；每次请求模板数量按官方接口限制；返回每个模板的同意/拒绝结果。</p>
+<h2>TC-SUB · 腾讯云开发订阅消息示例</h2>
+<p><a href="https://docs.cloudbase.net/recipes/add-subscribe-message-cloud-function">https://docs.cloudbase.net/recipes/add-subscribe-message-cloud-function</a></p>
+<p>模板字段需与申请模板一致；模板ID、接收者和消息内容要由服务端正确组合。本项目使用Java服务端，不迁移到云函数。</p>
+<h2>WX-SUB-DIRECT · 微信订阅消息REST官方入口</h2>
+<p><a href="https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/mp-message-management/subscribe-message/sendMessage.html">https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/mp-message-management/subscribe-message/sendMessage.html</a></p>
+<p>本轮直接抓取失败；REST字段和资格仍须在接入时对照官方最新页面及实际模板核验，不声明已完成真机或供应商联调。</p>
+</main></body></html>

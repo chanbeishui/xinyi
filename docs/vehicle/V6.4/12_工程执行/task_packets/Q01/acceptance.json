@@ -1,0 +1,41 @@
+[
+  {
+    "id": "TC-R62-003",
+    "priority": "P0",
+    "module": "身份与员工自动关联",
+    "flow": "F02 F03 F04 F43",
+    "title": "未取得代驾身份进入资格申请",
+    "given": "已验证手机号的OWNER，没有driver_profile批准记录",
+    "when": "读取/填写并提交本人代驾申请；另调用接单接口",
+    "then": "可以申请和查询本人进度，但不能接单",
+    "status": "NOT_RUN",
+    "evidence": "",
+    "origin": "用户确认的登录方案及R1防错边界整合；需真实HTTP/MySQL验收"
+  },
+  {
+    "id": "TC-R62-004",
+    "priority": "P0",
+    "module": "身份与员工自动关联",
+    "flow": "F02 F03 F04 F43",
+    "title": "资格审核中/驳回",
+    "given": "本人申请为审核中或驳回",
+    "when": "查询session和角色切换DRIVER",
+    "then": "只有原有有效角色；显示审核状态",
+    "status": "NOT_RUN",
+    "evidence": "",
+    "origin": "用户确认的登录方案及R1防错边界整合；需真实HTTP/MySQL验收"
+  },
+  {
+    "id": "TC-R62-005",
+    "priority": "P0",
+    "module": "身份与员工自动关联",
+    "flow": "F02 F03 F04 F43",
+    "title": "资格通过",
+    "given": "后台按原标准审批本人申请通过",
+    "when": "刷新session并切换DRIVER",
+    "then": "增加DRIVER，仍保留OWNER，资料与订单不复制",
+    "status": "NOT_RUN",
+    "evidence": "",
+    "origin": "用户确认的登录方案及R1防错边界整合；需真实HTTP/MySQL验收"
+  }
+]

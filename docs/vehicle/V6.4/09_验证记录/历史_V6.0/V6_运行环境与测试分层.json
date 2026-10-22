@@ -1,0 +1,47 @@
+{
+  "at": "2026-10-20T04:51:57.600993+00:00",
+  "kind": "CURRENT_CONTAINER_NOT_USER_WORKSPACE",
+  "commands": {
+    "java": "/usr/bin/java",
+    "javac": "/usr/bin/javac",
+    "node": "/opt/nvm/versions/node/v22.16.0/bin/node",
+    "npm": "/opt/nvm/versions/node/v22.16.0/bin/npm",
+    "tsc": "/opt/nvm/versions/node/v22.16.0/bin/tsc",
+    "docker": null,
+    "mysql": null,
+    "mvn": null
+  },
+  "dependencies": "NPM/Maven/Docker not resolved or executed; package registry DNS unavailable in earlier attempt",
+  "runtimeTests": {
+    "HTTP_MySQL": {
+      "collected": 19,
+      "executed": 0,
+      "status": "NOT_RUN"
+    },
+    "MySQLProbes": {
+      "collected": 6,
+      "executed": 0,
+      "status": "NOT_RUN"
+    }
+  },
+  "referenceJava": {
+    "sourceFiles": 4,
+    "release": 17,
+    "assertions": 6,
+    "result": "PASS",
+    "note": "UTF-8 sources copied to ASCII temp directory; not Spring build"
+  },
+  "TypeScript": {
+    "target": "04_接口/dto-types.ts",
+    "command": "tsc --noEmit --skipLibCheck --target ES2020",
+    "exitCode": 0,
+    "notCovered": "uni-app or PC build"
+  },
+  "supportPytest": {
+    "tests": 58,
+    "passed": 58,
+    "skipped": 0,
+    "warnings": 12,
+    "note": "RefResolver deprecation; no real xinyi"
+  }
+}

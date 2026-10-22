@@ -1,0 +1,290 @@
+[
+  {
+    "name": "vi_offline_payment_record",
+    "comment": "客户线下收退款证明与核实",
+    "cols": [
+      [
+        "id",
+        "BIGINT NOT NULL AUTO_INCREMENT",
+        "内部自增Long；API十进制字符串"
+      ],
+      [
+        "payment_id",
+        "BIGINT NOT NULL",
+        ""
+      ],
+      [
+        "refund_id",
+        "BIGINT NULL",
+        "仅REFUND有值，必须来自统一审核已批准执行单"
+      ],
+      [
+        "direction",
+        "VARCHAR(16) NOT NULL",
+        "OfflineProofDirection: COLLECTION,REFUND；"
+      ],
+      [
+        "owner_dept_id",
+        "BIGINT NOT NULL",
+        "原支付收款主体快照"
+      ],
+      [
+        "amount_fen",
+        "BIGINT NOT NULL",
+        "本期完整金额；不支持混合/客户拆单付款"
+      ],
+      [
+        "paid_at",
+        "DATETIME(3) NOT NULL",
+        "真实线下发生时刻"
+      ],
+      [
+        "method",
+        "VARCHAR(24) NOT NULL",
+        "OfflineProofMethod: CASH,BANK_TRANSFER；"
+      ],
+      [
+        "external_reference_cipher",
+        "VARBINARY(1024) NOT NULL",
+        "流水/收据编号密文"
+      ],
+      [
+        "reference_hmac",
+        "VARCHAR(64) NOT NULL",
+        "主体+方向+方式+流水永久去重摘要"
+      ],
+      [
+        "voucher_file_ids",
+        "JSON NOT NULL",
+        "私有文件，服务端核查归属与可用性"
+      ],
+      [
+        "status",
+        "VARCHAR(16) NOT NULL",
+        "OfflineProofStatus: SUBMITTED,VERIFIED,REJECTED；"
+      ],
+      [
+        "registered_by",
+        "BIGINT NOT NULL",
+        ""
+      ],
+      [
+        "registered_at",
+        "DATETIME(3) NOT NULL",
+        ""
+      ],
+      [
+        "verified_by",
+        "BIGINT NULL",
+        ""
+      ],
+      [
+        "verified_at",
+        "DATETIME(3) NULL",
+        ""
+      ],
+      [
+        "register_note",
+        "VARCHAR(500) NOT NULL",
+        ""
+      ],
+      [
+        "verify_reason",
+        "VARCHAR(500) NULL",
+        ""
+      ],
+      [
+        "active_payment",
+        "BIGINT GENERATED ALWAYS AS (IF(direction='COLLECTION' AND status IN ('SUBMITTED','VERIFIED'),payment_id,NULL)) STORED",
+        "当前有效收款证明唯一占位"
+      ],
+      [
+        "active_refund",
+        "BIGINT GENERATED ALWAYS AS (IF(direction='REFUND' AND status IN ('SUBMITTED','VERIFIED'),refund_id,NULL)) STORED",
+        "当前有效退款证明唯一占位"
+      ],
+      [
+        "created_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "UTC创建时间"
+      ],
+      [
+        "updated_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "Mapper显式UTC更新时间"
+      ],
+      [
+        "version",
+        "BIGINT NOT NULL DEFAULT 0",
+        "显式CAS；不是注解自动生效"
+      ]
+    ],
+    "indexes": [
+      "UNIQUE KEY uk_offline_reference (owner_dept_id,direction,method,reference_hmac)",
+      "UNIQUE KEY uk_offline_payment (active_payment)",
+      "UNIQUE KEY uk_offline_refund (active_refund)",
+      "KEY ix_offline_status (owner_dept_id,status)"
+    ],
+    "rule": "非司机报酬付款表。SUBMITTED不记已付；VERIFY事务锁支付/退款与证明，复核人不同；证明不覆盖更改金额。过期资金真实有效也先处理容量冲突。",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "engine": "InnoDB",
+    "collation": "utf8mb4_0900_ai_ci",
+    "columnRules": {
+      "id": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "payment_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "refund_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "direction": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false,
+        "enumRef": "OfflineProofDirection"
+      },
+      "owner_dept_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "amount_fen": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "paid_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "method": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false,
+        "enumRef": "OfflineProofMethod"
+      },
+      "external_reference_cipher": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "reference_hmac": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "voucher_file_ids": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "status": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false,
+        "enumRef": "OfflineProofStatus"
+      },
+      "registered_by": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "registered_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "verified_by": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "verified_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "register_note": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "verify_reason": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "active_payment": {
+        "generated": true,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "active_refund": {
+        "generated": true,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "created_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "updated_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "version": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      }
+    },
+    "checks": [
+      "CONSTRAINT ck_ver_offline_payment_record CHECK (version >= 0)",
+      "CONSTRAINT ck_e240ee818b669d CHECK (`direction` IN ('COLLECTION','REFUND'))",
+      "CONSTRAINT ck_1cc104f12b184a CHECK (`status` IN ('SUBMITTED','VERIFIED','REJECTED'))",
+      "CONSTRAINT ck_538550895b553c CHECK (`method` IN ('CASH','BANK_TRANSFER'))",
+      "CONSTRAINT ck_offline_amount CHECK (amount_fen>0)",
+      "CONSTRAINT ck_offline_direction CHECK ((direction='COLLECTION' AND refund_id IS NULL) OR (direction='REFUND' AND refund_id IS NOT NULL))",
+      "CONSTRAINT ck_offline_reviewer CHECK (verified_by IS NULL OR verified_by<>registered_by)"
+    ]
+  }
+]

@@ -1,0 +1,2443 @@
+[
+  {
+    "view": "OWNER",
+    "schema": "OwnerOrderView",
+    "field": "orderNo",
+    "type": "string",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "OWNER",
+    "schema": "OwnerOrderView",
+    "field": "fulfillmentStatus",
+    "type": "string",
+    "enum": [
+      "PENDING_PAY",
+      "SCHEDULED",
+      "PENDING_DISPATCH",
+      "DISPATCHING",
+      "MANUAL_DISPATCH",
+      "ACCEPTED",
+      "GOING_PICKUP",
+      "ARRIVED_PICKUP",
+      "PICKED_UP",
+      "ARRIVED_STATION",
+      "INSPECTING",
+      "INSPECTED",
+      "CAR_TAKEN",
+      "WAIT_CONFIRM",
+      "COMPLETED",
+      "CANCELLED",
+      "CLOSED"
+    ],
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "OWNER",
+    "schema": "OwnerOrderView",
+    "field": "displayStatus",
+    "type": "string",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "OWNER",
+    "schema": "OwnerOrderView",
+    "field": "cancelStatus",
+    "type": "string",
+    "enum": [
+      "NONE",
+      "APPLIED",
+      "REJECTED",
+      "APPROVED_WAIT_RETURN",
+      "COMPLETED"
+    ],
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "OWNER",
+    "schema": "OwnerOrderView",
+    "field": "custody",
+    "type": "string",
+    "enum": [
+      "OWNER",
+      "DRIVER",
+      "STATION"
+    ],
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "OWNER",
+    "schema": "OwnerOrderView",
+    "field": "vehicle.vehicleId",
+    "type": "string",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "OWNER",
+    "schema": "OwnerOrderView",
+    "field": "vehicle.plateNo",
+    "type": "string",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "OWNER",
+    "schema": "OwnerOrderView",
+    "field": "vehicle.vehicleTypeCode",
+    "type": "string",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "OWNER",
+    "schema": "OwnerOrderView",
+    "field": "vehicle.vehicleTypeLabel",
+    "type": "string",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "OWNER",
+    "schema": "OwnerOrderView",
+    "field": "vehicle.brandModel",
+    "type": "string",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "OWNER",
+    "schema": "OwnerOrderView",
+    "field": "vehicle.vinLast4",
+    "type": "string",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "最多后四位；所有通用订单视角不返回完整VIN"
+  },
+  {
+    "view": "OWNER",
+    "schema": "OwnerOrderView",
+    "field": "station.stationId",
+    "type": "string",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "OWNER",
+    "schema": "OwnerOrderView",
+    "field": "station.name",
+    "type": "string",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "OWNER",
+    "schema": "OwnerOrderView",
+    "field": "station.publicAddress",
+    "type": "string",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "OWNER",
+    "schema": "OwnerOrderView",
+    "field": "station.location.lng",
+    "type": "number",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "OWNER",
+    "schema": "OwnerOrderView",
+    "field": "station.location.lat",
+    "type": "number",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "OWNER",
+    "schema": "OwnerOrderView",
+    "field": "station.location.coordinateSystem",
+    "type": "string",
+    "enum": [
+      "GCJ02"
+    ],
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "OWNER",
+    "schema": "OwnerOrderView",
+    "field": "station.servicePhone",
+    "type": "string",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "OWNER",
+    "schema": "OwnerOrderView",
+    "field": "slotStartAt",
+    "type": "string",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "OWNER",
+    "schema": "OwnerOrderView",
+    "field": "slotEndAt",
+    "type": "string",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "OWNER",
+    "schema": "OwnerOrderView",
+    "field": "returnedAt",
+    "type": "string",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "OWNER",
+    "schema": "OwnerOrderView",
+    "field": "version",
+    "type": "integer",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "OWNER",
+    "schema": "OwnerOrderView",
+    "field": "view",
+    "type": "string",
+    "enum": [
+      "OWNER"
+    ],
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "OWNER",
+    "schema": "OwnerOrderView",
+    "field": "paymentStatus",
+    "type": "string",
+    "enum": [
+      "PENDING",
+      "SUCCESS",
+      "CLOSED",
+      "UNKNOWN"
+    ],
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "OWNER",
+    "schema": "OwnerOrderView",
+    "field": "refundStatus",
+    "type": "string",
+    "enum": [
+      "NONE",
+      "NOT_REQUIRED",
+      "WAIT_RETURN",
+      "READY",
+      "PROCESSING",
+      "SUCCESS",
+      "UNKNOWN",
+      "ABNORMAL",
+      "CLOSED"
+    ],
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "OWNER",
+    "schema": "OwnerOrderView",
+    "field": "disputeStatus",
+    "type": "string",
+    "enum": [
+      "NONE",
+      "OPEN",
+      "PROCESSING",
+      "RESOLVED"
+    ],
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "OWNER",
+    "schema": "OwnerOrderView",
+    "field": "pickupAddress.address",
+    "type": "string",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "OWNER",
+    "schema": "OwnerOrderView",
+    "field": "pickupAddress.location.lng",
+    "type": "number",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "OWNER",
+    "schema": "OwnerOrderView",
+    "field": "pickupAddress.location.lat",
+    "type": "number",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "OWNER",
+    "schema": "OwnerOrderView",
+    "field": "pickupAddress.location.coordinateSystem",
+    "type": "string",
+    "enum": [
+      "GCJ02"
+    ],
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "OWNER",
+    "schema": "OwnerOrderView",
+    "field": "pickupAddress.contact.displayName",
+    "type": "string",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "OWNER",
+    "schema": "OwnerOrderView",
+    "field": "pickupAddress.contact.phoneMask",
+    "type": "string",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "仅手机号掩码；完整号码不得出现"
+  },
+  {
+    "view": "OWNER",
+    "schema": "OwnerOrderView",
+    "field": "pickupAddress.contact.canRequestContact",
+    "type": "boolean",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "OWNER",
+    "schema": "OwnerOrderView",
+    "field": "returnAddress.address",
+    "type": "string",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "OWNER",
+    "schema": "OwnerOrderView",
+    "field": "returnAddress.location.lng",
+    "type": "number",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "OWNER",
+    "schema": "OwnerOrderView",
+    "field": "returnAddress.location.lat",
+    "type": "number",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "OWNER",
+    "schema": "OwnerOrderView",
+    "field": "returnAddress.location.coordinateSystem",
+    "type": "string",
+    "enum": [
+      "GCJ02"
+    ],
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "OWNER",
+    "schema": "OwnerOrderView",
+    "field": "returnAddress.contact.displayName",
+    "type": "string",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "OWNER",
+    "schema": "OwnerOrderView",
+    "field": "returnAddress.contact.phoneMask",
+    "type": "string",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "仅手机号掩码；完整号码不得出现"
+  },
+  {
+    "view": "OWNER",
+    "schema": "OwnerOrderView",
+    "field": "returnAddress.contact.canRequestContact",
+    "type": "boolean",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "OWNER",
+    "schema": "OwnerOrderView",
+    "field": "driver.displayName",
+    "type": "string",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "OWNER",
+    "schema": "OwnerOrderView",
+    "field": "driver.driverCode",
+    "type": "string",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "OWNER",
+    "schema": "OwnerOrderView",
+    "field": "driver.rating",
+    "type": "number",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "OWNER",
+    "schema": "OwnerOrderView",
+    "field": "driver.contact.displayName",
+    "type": "string",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "OWNER",
+    "schema": "OwnerOrderView",
+    "field": "driver.contact.phoneMask",
+    "type": "string",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "仅手机号掩码；完整号码不得出现"
+  },
+  {
+    "view": "OWNER",
+    "schema": "OwnerOrderView",
+    "field": "driver.contact.canRequestContact",
+    "type": "boolean",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "OWNER",
+    "schema": "OwnerOrderView",
+    "field": "dispatchAt",
+    "type": "string",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "OWNER",
+    "schema": "OwnerOrderView",
+    "field": "payExpireAt",
+    "type": "string",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "OWNER",
+    "schema": "OwnerOrderView",
+    "field": "autoConfirmAt",
+    "type": "string",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "OWNER",
+    "schema": "OwnerOrderView",
+    "field": "money.items[].feeCode",
+    "type": "string",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "OWNER",
+    "schema": "OwnerOrderView",
+    "field": "money.items[].name",
+    "type": "string",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "OWNER",
+    "schema": "OwnerOrderView",
+    "field": "money.items[].amount",
+    "type": "integer",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "OWNER",
+    "schema": "OwnerOrderView",
+    "field": "money.items[].calculation",
+    "type": "string",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "OWNER",
+    "schema": "OwnerOrderView",
+    "field": "money.totalAmount",
+    "type": "integer",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "OWNER",
+    "schema": "OwnerOrderView",
+    "field": "money.paidAmount",
+    "type": "integer",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "OWNER",
+    "schema": "OwnerOrderView",
+    "field": "money.refundedAmount",
+    "type": "integer",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "OWNER",
+    "schema": "OwnerOrderView",
+    "field": "mileage.pickupKm",
+    "type": "string",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "OWNER",
+    "schema": "OwnerOrderView",
+    "field": "mileage.returnKm",
+    "type": "string",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "OWNER",
+    "schema": "OwnerOrderView",
+    "field": "mileage.distanceKm",
+    "type": "string",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "OWNER",
+    "schema": "OwnerOrderView",
+    "field": "mileage.abnormal",
+    "type": "boolean",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "OWNER",
+    "schema": "OwnerOrderView",
+    "field": "mileage.publicExplanation",
+    "type": "string",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "仅明确面向服务参与人的文本，不复用内部reason/notes"
+  },
+  {
+    "view": "OWNER",
+    "schema": "OwnerOrderView",
+    "field": "afterSale.caseId",
+    "type": "string",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "OWNER",
+    "schema": "OwnerOrderView",
+    "field": "afterSale.kind",
+    "type": "string",
+    "enum": [
+      "CANCEL_REFUND",
+      "REFUND_ONLY"
+    ],
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "OWNER",
+    "schema": "OwnerOrderView",
+    "field": "afterSale.caseStatus",
+    "type": "string",
+    "enum": [
+      "PENDING_REVIEW",
+      "EXECUTING",
+      "CLOSED",
+      "REJECTED"
+    ],
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "OWNER",
+    "schema": "OwnerOrderView",
+    "field": "afterSale.approvedAmount",
+    "type": "integer",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "OWNER",
+    "schema": "OwnerOrderView",
+    "field": "afterSale.returnState",
+    "type": "string",
+    "enum": [
+      "UNDETERMINED",
+      "NOT_REQUIRED",
+      "WAIT_RETURN",
+      "RETURNED"
+    ],
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "OWNER",
+    "schema": "OwnerOrderView",
+    "field": "afterSale.refundState",
+    "type": "string",
+    "enum": [
+      "NONE",
+      "NOT_REQUIRED",
+      "WAIT_RETURN",
+      "READY",
+      "PROCESSING",
+      "SUCCESS",
+      "UNKNOWN",
+      "ABNORMAL",
+      "CLOSED"
+    ],
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "OWNER",
+    "schema": "OwnerOrderView",
+    "field": "afterSale.publicOpinion",
+    "type": "string",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "仅明确面向服务参与人的文本，不复用内部reason/notes"
+  },
+  {
+    "view": "OWNER",
+    "schema": "OwnerOrderView",
+    "field": "afterSale.version",
+    "type": "integer",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "OWNER",
+    "schema": "OwnerOrderView",
+    "field": "allowedActions[]",
+    "type": "string",
+    "enum": [
+      "PAY",
+      "CLOSE_UNPAID",
+      "APPLY_CANCEL_REFUND",
+      "APPLY_REFUND_ONLY",
+      "SERVICE_CONFIRM",
+      "OPEN_DISPUTE",
+      "ADD_REVIEW",
+      "CONTACT_DRIVER",
+      "CONTACT_STATION",
+      "VIEW_DETAIL",
+      "VIEW_EVIDENCE",
+      "VIEW_RESULT",
+      "VIEW_HANDOVER_SECRET"
+    ],
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "DRIVER",
+    "schema": "DriverOrderView",
+    "field": "orderNo",
+    "type": "string",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "DRIVER",
+    "schema": "DriverOrderView",
+    "field": "fulfillmentStatus",
+    "type": "string",
+    "enum": [
+      "PENDING_PAY",
+      "SCHEDULED",
+      "PENDING_DISPATCH",
+      "DISPATCHING",
+      "MANUAL_DISPATCH",
+      "ACCEPTED",
+      "GOING_PICKUP",
+      "ARRIVED_PICKUP",
+      "PICKED_UP",
+      "ARRIVED_STATION",
+      "INSPECTING",
+      "INSPECTED",
+      "CAR_TAKEN",
+      "WAIT_CONFIRM",
+      "COMPLETED",
+      "CANCELLED",
+      "CLOSED"
+    ],
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "DRIVER",
+    "schema": "DriverOrderView",
+    "field": "displayStatus",
+    "type": "string",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "DRIVER",
+    "schema": "DriverOrderView",
+    "field": "cancelStatus",
+    "type": "string",
+    "enum": [
+      "NONE",
+      "APPLIED",
+      "REJECTED",
+      "APPROVED_WAIT_RETURN",
+      "COMPLETED"
+    ],
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "DRIVER",
+    "schema": "DriverOrderView",
+    "field": "custody",
+    "type": "string",
+    "enum": [
+      "OWNER",
+      "DRIVER",
+      "STATION"
+    ],
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "DRIVER",
+    "schema": "DriverOrderView",
+    "field": "vehicle.vehicleId",
+    "type": "string",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "DRIVER",
+    "schema": "DriverOrderView",
+    "field": "vehicle.plateNo",
+    "type": "string",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "DRIVER",
+    "schema": "DriverOrderView",
+    "field": "vehicle.vehicleTypeCode",
+    "type": "string",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "DRIVER",
+    "schema": "DriverOrderView",
+    "field": "vehicle.vehicleTypeLabel",
+    "type": "string",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "DRIVER",
+    "schema": "DriverOrderView",
+    "field": "vehicle.brandModel",
+    "type": "string",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "DRIVER",
+    "schema": "DriverOrderView",
+    "field": "vehicle.vinLast4",
+    "type": "string",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "最多后四位；所有通用订单视角不返回完整VIN"
+  },
+  {
+    "view": "DRIVER",
+    "schema": "DriverOrderView",
+    "field": "station.stationId",
+    "type": "string",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "DRIVER",
+    "schema": "DriverOrderView",
+    "field": "station.name",
+    "type": "string",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "DRIVER",
+    "schema": "DriverOrderView",
+    "field": "station.publicAddress",
+    "type": "string",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "DRIVER",
+    "schema": "DriverOrderView",
+    "field": "station.location.lng",
+    "type": "number",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "DRIVER",
+    "schema": "DriverOrderView",
+    "field": "station.location.lat",
+    "type": "number",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "DRIVER",
+    "schema": "DriverOrderView",
+    "field": "station.location.coordinateSystem",
+    "type": "string",
+    "enum": [
+      "GCJ02"
+    ],
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "DRIVER",
+    "schema": "DriverOrderView",
+    "field": "station.servicePhone",
+    "type": "string",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "DRIVER",
+    "schema": "DriverOrderView",
+    "field": "slotStartAt",
+    "type": "string",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "DRIVER",
+    "schema": "DriverOrderView",
+    "field": "slotEndAt",
+    "type": "string",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "DRIVER",
+    "schema": "DriverOrderView",
+    "field": "returnedAt",
+    "type": "string",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "DRIVER",
+    "schema": "DriverOrderView",
+    "field": "version",
+    "type": "integer",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "DRIVER",
+    "schema": "DriverOrderView",
+    "field": "view",
+    "type": "string",
+    "enum": [
+      "DRIVER"
+    ],
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "DRIVER",
+    "schema": "DriverOrderView",
+    "field": "assignmentId",
+    "type": "string",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "DRIVER",
+    "schema": "DriverOrderView",
+    "field": "assignmentEndedAt",
+    "type": "string",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "DRIVER",
+    "schema": "DriverOrderView",
+    "field": "accessPhase",
+    "type": "string",
+    "enum": [
+      "ACTIVE_ASSIGNMENT",
+      "HISTORY"
+    ],
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "DRIVER",
+    "schema": "DriverOrderView",
+    "field": "pickupArea",
+    "type": "string",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "DRIVER",
+    "schema": "DriverOrderView",
+    "field": "pickupAddress.address",
+    "type": "string",
+    "enum": null,
+    "visibility": "仅当前有效承接；HISTORY时父对象整体为null",
+    "treatment": "有效期间最小必要；历史不保留精确地址/坐标/联系人"
+  },
+  {
+    "view": "DRIVER",
+    "schema": "DriverOrderView",
+    "field": "pickupAddress.location.lng",
+    "type": "number",
+    "enum": null,
+    "visibility": "仅当前有效承接；HISTORY时父对象整体为null",
+    "treatment": "有效期间最小必要；历史不保留精确地址/坐标/联系人"
+  },
+  {
+    "view": "DRIVER",
+    "schema": "DriverOrderView",
+    "field": "pickupAddress.location.lat",
+    "type": "number",
+    "enum": null,
+    "visibility": "仅当前有效承接；HISTORY时父对象整体为null",
+    "treatment": "有效期间最小必要；历史不保留精确地址/坐标/联系人"
+  },
+  {
+    "view": "DRIVER",
+    "schema": "DriverOrderView",
+    "field": "pickupAddress.location.coordinateSystem",
+    "type": "string",
+    "enum": [
+      "GCJ02"
+    ],
+    "visibility": "仅当前有效承接；HISTORY时父对象整体为null",
+    "treatment": "有效期间最小必要；历史不保留精确地址/坐标/联系人"
+  },
+  {
+    "view": "DRIVER",
+    "schema": "DriverOrderView",
+    "field": "pickupAddress.contact.displayName",
+    "type": "string",
+    "enum": null,
+    "visibility": "仅当前有效承接；HISTORY时父对象整体为null",
+    "treatment": "有效期间最小必要；历史不保留精确地址/坐标/联系人"
+  },
+  {
+    "view": "DRIVER",
+    "schema": "DriverOrderView",
+    "field": "pickupAddress.contact.phoneMask",
+    "type": "string",
+    "enum": null,
+    "visibility": "仅当前有效承接；HISTORY时父对象整体为null",
+    "treatment": "有效期间最小必要；历史不保留精确地址/坐标/联系人"
+  },
+  {
+    "view": "DRIVER",
+    "schema": "DriverOrderView",
+    "field": "pickupAddress.contact.canRequestContact",
+    "type": "boolean",
+    "enum": null,
+    "visibility": "仅当前有效承接；HISTORY时父对象整体为null",
+    "treatment": "有效期间最小必要；历史不保留精确地址/坐标/联系人"
+  },
+  {
+    "view": "DRIVER",
+    "schema": "DriverOrderView",
+    "field": "returnAddress.address",
+    "type": "string",
+    "enum": null,
+    "visibility": "仅当前有效承接；HISTORY时父对象整体为null",
+    "treatment": "有效期间最小必要；历史不保留精确地址/坐标/联系人"
+  },
+  {
+    "view": "DRIVER",
+    "schema": "DriverOrderView",
+    "field": "returnAddress.location.lng",
+    "type": "number",
+    "enum": null,
+    "visibility": "仅当前有效承接；HISTORY时父对象整体为null",
+    "treatment": "有效期间最小必要；历史不保留精确地址/坐标/联系人"
+  },
+  {
+    "view": "DRIVER",
+    "schema": "DriverOrderView",
+    "field": "returnAddress.location.lat",
+    "type": "number",
+    "enum": null,
+    "visibility": "仅当前有效承接；HISTORY时父对象整体为null",
+    "treatment": "有效期间最小必要；历史不保留精确地址/坐标/联系人"
+  },
+  {
+    "view": "DRIVER",
+    "schema": "DriverOrderView",
+    "field": "returnAddress.location.coordinateSystem",
+    "type": "string",
+    "enum": [
+      "GCJ02"
+    ],
+    "visibility": "仅当前有效承接；HISTORY时父对象整体为null",
+    "treatment": "有效期间最小必要；历史不保留精确地址/坐标/联系人"
+  },
+  {
+    "view": "DRIVER",
+    "schema": "DriverOrderView",
+    "field": "returnAddress.contact.displayName",
+    "type": "string",
+    "enum": null,
+    "visibility": "仅当前有效承接；HISTORY时父对象整体为null",
+    "treatment": "有效期间最小必要；历史不保留精确地址/坐标/联系人"
+  },
+  {
+    "view": "DRIVER",
+    "schema": "DriverOrderView",
+    "field": "returnAddress.contact.phoneMask",
+    "type": "string",
+    "enum": null,
+    "visibility": "仅当前有效承接；HISTORY时父对象整体为null",
+    "treatment": "有效期间最小必要；历史不保留精确地址/坐标/联系人"
+  },
+  {
+    "view": "DRIVER",
+    "schema": "DriverOrderView",
+    "field": "returnAddress.contact.canRequestContact",
+    "type": "boolean",
+    "enum": null,
+    "visibility": "仅当前有效承接；HISTORY时父对象整体为null",
+    "treatment": "有效期间最小必要；历史不保留精确地址/坐标/联系人"
+  },
+  {
+    "view": "DRIVER",
+    "schema": "DriverOrderView",
+    "field": "ownerContact.displayName",
+    "type": "string",
+    "enum": null,
+    "visibility": "仅当前有效承接；HISTORY时父对象整体为null",
+    "treatment": "有效期间最小必要；历史不保留精确地址/坐标/联系人"
+  },
+  {
+    "view": "DRIVER",
+    "schema": "DriverOrderView",
+    "field": "ownerContact.phoneMask",
+    "type": "string",
+    "enum": null,
+    "visibility": "仅当前有效承接；HISTORY时父对象整体为null",
+    "treatment": "有效期间最小必要；历史不保留精确地址/坐标/联系人"
+  },
+  {
+    "view": "DRIVER",
+    "schema": "DriverOrderView",
+    "field": "ownerContact.canRequestContact",
+    "type": "boolean",
+    "enum": null,
+    "visibility": "仅当前有效承接；HISTORY时父对象整体为null",
+    "treatment": "有效期间最小必要；历史不保留精确地址/坐标/联系人"
+  },
+  {
+    "view": "DRIVER",
+    "schema": "DriverOrderView",
+    "field": "mileage.pickupKm",
+    "type": "string",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "DRIVER",
+    "schema": "DriverOrderView",
+    "field": "mileage.returnKm",
+    "type": "string",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "DRIVER",
+    "schema": "DriverOrderView",
+    "field": "mileage.distanceKm",
+    "type": "string",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "DRIVER",
+    "schema": "DriverOrderView",
+    "field": "mileage.abnormal",
+    "type": "boolean",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "DRIVER",
+    "schema": "DriverOrderView",
+    "field": "mileage.publicExplanation",
+    "type": "string",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "仅明确面向服务参与人的文本，不复用内部reason/notes"
+  },
+  {
+    "view": "DRIVER",
+    "schema": "DriverOrderView",
+    "field": "cancellation.returnRequired",
+    "type": "boolean",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "DRIVER",
+    "schema": "DriverOrderView",
+    "field": "cancellation.displayStatus",
+    "type": "string",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "DRIVER",
+    "schema": "DriverOrderView",
+    "field": "cancellation.publicInstruction",
+    "type": "string",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "DRIVER",
+    "schema": "DriverOrderView",
+    "field": "driverReleased",
+    "type": "boolean",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "DRIVER",
+    "schema": "DriverOrderView",
+    "field": "allowedActions[]",
+    "type": "string",
+    "enum": [
+      "DEPART",
+      "ARRIVE_PICKUP",
+      "ARRIVE_STATION",
+      "CANCEL_ASSIGNMENT",
+      "CONTACT_OWNER",
+      "CONTACT_STATION",
+      "CREATE_HANDOVER",
+      "CONFIRM_HANDOVER",
+      "MARK_EVIDENCE_READY",
+      "UPLOAD_PHOTO",
+      "FILL_MILEAGE",
+      "REPORT_EXCEPTION",
+      "VIEW_DETAIL",
+      "VIEW_RESULT",
+      "VIEW_EVIDENCE",
+      "VIEW_HANDOVER_SECRET"
+    ],
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "STATION",
+    "schema": "StationOrderView",
+    "field": "orderNo",
+    "type": "string",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "STATION",
+    "schema": "StationOrderView",
+    "field": "fulfillmentStatus",
+    "type": "string",
+    "enum": [
+      "PENDING_PAY",
+      "SCHEDULED",
+      "PENDING_DISPATCH",
+      "DISPATCHING",
+      "MANUAL_DISPATCH",
+      "ACCEPTED",
+      "GOING_PICKUP",
+      "ARRIVED_PICKUP",
+      "PICKED_UP",
+      "ARRIVED_STATION",
+      "INSPECTING",
+      "INSPECTED",
+      "CAR_TAKEN",
+      "WAIT_CONFIRM",
+      "COMPLETED",
+      "CANCELLED",
+      "CLOSED"
+    ],
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "STATION",
+    "schema": "StationOrderView",
+    "field": "displayStatus",
+    "type": "string",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "STATION",
+    "schema": "StationOrderView",
+    "field": "cancelStatus",
+    "type": "string",
+    "enum": [
+      "NONE",
+      "APPLIED",
+      "REJECTED",
+      "APPROVED_WAIT_RETURN",
+      "COMPLETED"
+    ],
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "STATION",
+    "schema": "StationOrderView",
+    "field": "custody",
+    "type": "string",
+    "enum": [
+      "OWNER",
+      "DRIVER",
+      "STATION"
+    ],
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "STATION",
+    "schema": "StationOrderView",
+    "field": "vehicle.vehicleId",
+    "type": "string",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "STATION",
+    "schema": "StationOrderView",
+    "field": "vehicle.plateNo",
+    "type": "string",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "STATION",
+    "schema": "StationOrderView",
+    "field": "vehicle.vehicleTypeCode",
+    "type": "string",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "STATION",
+    "schema": "StationOrderView",
+    "field": "vehicle.vehicleTypeLabel",
+    "type": "string",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "STATION",
+    "schema": "StationOrderView",
+    "field": "vehicle.brandModel",
+    "type": "string",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "STATION",
+    "schema": "StationOrderView",
+    "field": "vehicle.vinLast4",
+    "type": "string",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "最多后四位；所有通用订单视角不返回完整VIN"
+  },
+  {
+    "view": "STATION",
+    "schema": "StationOrderView",
+    "field": "station.stationId",
+    "type": "string",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "STATION",
+    "schema": "StationOrderView",
+    "field": "station.name",
+    "type": "string",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "STATION",
+    "schema": "StationOrderView",
+    "field": "station.publicAddress",
+    "type": "string",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "STATION",
+    "schema": "StationOrderView",
+    "field": "station.location.lng",
+    "type": "number",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "STATION",
+    "schema": "StationOrderView",
+    "field": "station.location.lat",
+    "type": "number",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "STATION",
+    "schema": "StationOrderView",
+    "field": "station.location.coordinateSystem",
+    "type": "string",
+    "enum": [
+      "GCJ02"
+    ],
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "STATION",
+    "schema": "StationOrderView",
+    "field": "station.servicePhone",
+    "type": "string",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "STATION",
+    "schema": "StationOrderView",
+    "field": "slotStartAt",
+    "type": "string",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "STATION",
+    "schema": "StationOrderView",
+    "field": "slotEndAt",
+    "type": "string",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "STATION",
+    "schema": "StationOrderView",
+    "field": "returnedAt",
+    "type": "string",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "STATION",
+    "schema": "StationOrderView",
+    "field": "version",
+    "type": "integer",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "STATION",
+    "schema": "StationOrderView",
+    "field": "view",
+    "type": "string",
+    "enum": [
+      "STATION"
+    ],
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "STATION",
+    "schema": "StationOrderView",
+    "field": "paymentStatus",
+    "type": "string",
+    "enum": [
+      "PENDING",
+      "SUCCESS",
+      "CLOSED",
+      "UNKNOWN"
+    ],
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "STATION",
+    "schema": "StationOrderView",
+    "field": "driver.displayName",
+    "type": "string",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "STATION",
+    "schema": "StationOrderView",
+    "field": "driver.driverCode",
+    "type": "string",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "STATION",
+    "schema": "StationOrderView",
+    "field": "driver.rating",
+    "type": "number",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "STATION",
+    "schema": "StationOrderView",
+    "field": "driver.contact.displayName",
+    "type": "string",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "STATION",
+    "schema": "StationOrderView",
+    "field": "driver.contact.phoneMask",
+    "type": "string",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "仅手机号掩码；完整号码不得出现"
+  },
+  {
+    "view": "STATION",
+    "schema": "StationOrderView",
+    "field": "driver.contact.canRequestContact",
+    "type": "boolean",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "STATION",
+    "schema": "StationOrderView",
+    "field": "assignmentId",
+    "type": "string",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "STATION",
+    "schema": "StationOrderView",
+    "field": "licenseReviewStatus",
+    "type": "string",
+    "enum": [
+      "MISSING",
+      "PENDING",
+      "VERIFIED"
+    ],
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "STATION",
+    "schema": "StationOrderView",
+    "field": "result",
+    "type": "string",
+    "enum": [
+      "PASS",
+      "FAIL"
+    ],
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "STATION",
+    "schema": "StationOrderView",
+    "field": "cancellation.returnRequired",
+    "type": "boolean",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "STATION",
+    "schema": "StationOrderView",
+    "field": "cancellation.displayStatus",
+    "type": "string",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "STATION",
+    "schema": "StationOrderView",
+    "field": "cancellation.publicInstruction",
+    "type": "string",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "STATION",
+    "schema": "StationOrderView",
+    "field": "allowedActions[]",
+    "type": "string",
+    "enum": [
+      "CONTACT_DRIVER",
+      "CREATE_HANDOVER",
+      "CONFIRM_HANDOVER",
+      "REVIEW_LICENSE",
+      "REGISTER_RESULT",
+      "REQUEST_RESULT_CORRECTION",
+      "RENOTIFY_PICKUP",
+      "REPORT_EXCEPTION",
+      "VIEW_DETAIL",
+      "VIEW_EVIDENCE",
+      "VIEW_RESULT",
+      "VIEW_HANDOVER_SECRET"
+    ],
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "ADMIN",
+    "schema": "AdminOrderView",
+    "field": "orderNo",
+    "type": "string",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "ADMIN",
+    "schema": "AdminOrderView",
+    "field": "fulfillmentStatus",
+    "type": "string",
+    "enum": [
+      "PENDING_PAY",
+      "SCHEDULED",
+      "PENDING_DISPATCH",
+      "DISPATCHING",
+      "MANUAL_DISPATCH",
+      "ACCEPTED",
+      "GOING_PICKUP",
+      "ARRIVED_PICKUP",
+      "PICKED_UP",
+      "ARRIVED_STATION",
+      "INSPECTING",
+      "INSPECTED",
+      "CAR_TAKEN",
+      "WAIT_CONFIRM",
+      "COMPLETED",
+      "CANCELLED",
+      "CLOSED"
+    ],
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "ADMIN",
+    "schema": "AdminOrderView",
+    "field": "displayStatus",
+    "type": "string",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "ADMIN",
+    "schema": "AdminOrderView",
+    "field": "cancelStatus",
+    "type": "string",
+    "enum": [
+      "NONE",
+      "APPLIED",
+      "REJECTED",
+      "APPROVED_WAIT_RETURN",
+      "COMPLETED"
+    ],
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "ADMIN",
+    "schema": "AdminOrderView",
+    "field": "custody",
+    "type": "string",
+    "enum": [
+      "OWNER",
+      "DRIVER",
+      "STATION"
+    ],
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "ADMIN",
+    "schema": "AdminOrderView",
+    "field": "vehicle.vehicleId",
+    "type": "string",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "ADMIN",
+    "schema": "AdminOrderView",
+    "field": "vehicle.plateNo",
+    "type": "string",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "ADMIN",
+    "schema": "AdminOrderView",
+    "field": "vehicle.vehicleTypeCode",
+    "type": "string",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "ADMIN",
+    "schema": "AdminOrderView",
+    "field": "vehicle.vehicleTypeLabel",
+    "type": "string",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "ADMIN",
+    "schema": "AdminOrderView",
+    "field": "vehicle.brandModel",
+    "type": "string",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "ADMIN",
+    "schema": "AdminOrderView",
+    "field": "vehicle.vinLast4",
+    "type": "string",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "最多后四位；所有通用订单视角不返回完整VIN"
+  },
+  {
+    "view": "ADMIN",
+    "schema": "AdminOrderView",
+    "field": "station.stationId",
+    "type": "string",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "ADMIN",
+    "schema": "AdminOrderView",
+    "field": "station.name",
+    "type": "string",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "ADMIN",
+    "schema": "AdminOrderView",
+    "field": "station.publicAddress",
+    "type": "string",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "ADMIN",
+    "schema": "AdminOrderView",
+    "field": "station.location.lng",
+    "type": "number",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "ADMIN",
+    "schema": "AdminOrderView",
+    "field": "station.location.lat",
+    "type": "number",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "ADMIN",
+    "schema": "AdminOrderView",
+    "field": "station.location.coordinateSystem",
+    "type": "string",
+    "enum": [
+      "GCJ02"
+    ],
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "ADMIN",
+    "schema": "AdminOrderView",
+    "field": "station.servicePhone",
+    "type": "string",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "ADMIN",
+    "schema": "AdminOrderView",
+    "field": "slotStartAt",
+    "type": "string",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "ADMIN",
+    "schema": "AdminOrderView",
+    "field": "slotEndAt",
+    "type": "string",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "ADMIN",
+    "schema": "AdminOrderView",
+    "field": "returnedAt",
+    "type": "string",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "ADMIN",
+    "schema": "AdminOrderView",
+    "field": "version",
+    "type": "integer",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "ADMIN",
+    "schema": "AdminOrderView",
+    "field": "view",
+    "type": "string",
+    "enum": [
+      "ADMIN"
+    ],
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "ADMIN",
+    "schema": "AdminOrderView",
+    "field": "ownerAccountId",
+    "type": "string",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "ADMIN",
+    "schema": "AdminOrderView",
+    "field": "ownerContact.displayName",
+    "type": "string",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "ADMIN",
+    "schema": "AdminOrderView",
+    "field": "ownerContact.phoneMask",
+    "type": "string",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "仅手机号掩码；完整号码不得出现"
+  },
+  {
+    "view": "ADMIN",
+    "schema": "AdminOrderView",
+    "field": "ownerContact.canRequestContact",
+    "type": "boolean",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "ADMIN",
+    "schema": "AdminOrderView",
+    "field": "driver.displayName",
+    "type": "string",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "ADMIN",
+    "schema": "AdminOrderView",
+    "field": "driver.driverCode",
+    "type": "string",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "ADMIN",
+    "schema": "AdminOrderView",
+    "field": "driver.rating",
+    "type": "number",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "ADMIN",
+    "schema": "AdminOrderView",
+    "field": "driver.contact.displayName",
+    "type": "string",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "ADMIN",
+    "schema": "AdminOrderView",
+    "field": "driver.contact.phoneMask",
+    "type": "string",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "仅手机号掩码；完整号码不得出现"
+  },
+  {
+    "view": "ADMIN",
+    "schema": "AdminOrderView",
+    "field": "driver.contact.canRequestContact",
+    "type": "boolean",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "ADMIN",
+    "schema": "AdminOrderView",
+    "field": "assignmentId",
+    "type": "string",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "ADMIN",
+    "schema": "AdminOrderView",
+    "field": "authoritativeDeptId",
+    "type": "string",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "ADMIN",
+    "schema": "AdminOrderView",
+    "field": "paymentStatus",
+    "type": "string",
+    "enum": [
+      "PENDING",
+      "SUCCESS",
+      "CLOSED",
+      "UNKNOWN"
+    ],
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "ADMIN",
+    "schema": "AdminOrderView",
+    "field": "refundStatus",
+    "type": "string",
+    "enum": [
+      "NONE",
+      "NOT_REQUIRED",
+      "WAIT_RETURN",
+      "READY",
+      "PROCESSING",
+      "SUCCESS",
+      "UNKNOWN",
+      "ABNORMAL",
+      "CLOSED"
+    ],
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "ADMIN",
+    "schema": "AdminOrderView",
+    "field": "disputeStatus",
+    "type": "string",
+    "enum": [
+      "NONE",
+      "OPEN",
+      "PROCESSING",
+      "RESOLVED"
+    ],
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "ADMIN",
+    "schema": "AdminOrderView",
+    "field": "money.items[].feeCode",
+    "type": "string",
+    "enum": null,
+    "visibility": "biz:order:finance + 订单范围；否则money=null",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "ADMIN",
+    "schema": "AdminOrderView",
+    "field": "money.items[].name",
+    "type": "string",
+    "enum": null,
+    "visibility": "biz:order:finance + 订单范围；否则money=null",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "ADMIN",
+    "schema": "AdminOrderView",
+    "field": "money.items[].amount",
+    "type": "integer",
+    "enum": null,
+    "visibility": "biz:order:finance + 订单范围；否则money=null",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "ADMIN",
+    "schema": "AdminOrderView",
+    "field": "money.items[].calculation",
+    "type": "string",
+    "enum": null,
+    "visibility": "biz:order:finance + 订单范围；否则money=null",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "ADMIN",
+    "schema": "AdminOrderView",
+    "field": "money.totalAmount",
+    "type": "integer",
+    "enum": null,
+    "visibility": "biz:order:finance + 订单范围；否则money=null",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "ADMIN",
+    "schema": "AdminOrderView",
+    "field": "money.paidAmount",
+    "type": "integer",
+    "enum": null,
+    "visibility": "biz:order:finance + 订单范围；否则money=null",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "ADMIN",
+    "schema": "AdminOrderView",
+    "field": "money.refundedAmount",
+    "type": "integer",
+    "enum": null,
+    "visibility": "biz:order:finance + 订单范围；否则money=null",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "ADMIN",
+    "schema": "AdminOrderView",
+    "field": "pickupAddress.address",
+    "type": "string",
+    "enum": null,
+    "visibility": "biz:order:address + 订单范围；否则父对象null",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "ADMIN",
+    "schema": "AdminOrderView",
+    "field": "pickupAddress.location.lng",
+    "type": "number",
+    "enum": null,
+    "visibility": "biz:order:address + 订单范围；否则父对象null",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "ADMIN",
+    "schema": "AdminOrderView",
+    "field": "pickupAddress.location.lat",
+    "type": "number",
+    "enum": null,
+    "visibility": "biz:order:address + 订单范围；否则父对象null",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "ADMIN",
+    "schema": "AdminOrderView",
+    "field": "pickupAddress.location.coordinateSystem",
+    "type": "string",
+    "enum": [
+      "GCJ02"
+    ],
+    "visibility": "biz:order:address + 订单范围；否则父对象null",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "ADMIN",
+    "schema": "AdminOrderView",
+    "field": "pickupAddress.contact.displayName",
+    "type": "string",
+    "enum": null,
+    "visibility": "biz:order:address + 订单范围；否则父对象null",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "ADMIN",
+    "schema": "AdminOrderView",
+    "field": "pickupAddress.contact.phoneMask",
+    "type": "string",
+    "enum": null,
+    "visibility": "biz:order:address + 订单范围；否则父对象null",
+    "treatment": "仅手机号掩码；完整号码不得出现"
+  },
+  {
+    "view": "ADMIN",
+    "schema": "AdminOrderView",
+    "field": "pickupAddress.contact.canRequestContact",
+    "type": "boolean",
+    "enum": null,
+    "visibility": "biz:order:address + 订单范围；否则父对象null",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "ADMIN",
+    "schema": "AdminOrderView",
+    "field": "returnAddress.address",
+    "type": "string",
+    "enum": null,
+    "visibility": "biz:order:address + 订单范围；否则父对象null",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "ADMIN",
+    "schema": "AdminOrderView",
+    "field": "returnAddress.location.lng",
+    "type": "number",
+    "enum": null,
+    "visibility": "biz:order:address + 订单范围；否则父对象null",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "ADMIN",
+    "schema": "AdminOrderView",
+    "field": "returnAddress.location.lat",
+    "type": "number",
+    "enum": null,
+    "visibility": "biz:order:address + 订单范围；否则父对象null",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "ADMIN",
+    "schema": "AdminOrderView",
+    "field": "returnAddress.location.coordinateSystem",
+    "type": "string",
+    "enum": [
+      "GCJ02"
+    ],
+    "visibility": "biz:order:address + 订单范围；否则父对象null",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "ADMIN",
+    "schema": "AdminOrderView",
+    "field": "returnAddress.contact.displayName",
+    "type": "string",
+    "enum": null,
+    "visibility": "biz:order:address + 订单范围；否则父对象null",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "ADMIN",
+    "schema": "AdminOrderView",
+    "field": "returnAddress.contact.phoneMask",
+    "type": "string",
+    "enum": null,
+    "visibility": "biz:order:address + 订单范围；否则父对象null",
+    "treatment": "仅手机号掩码；完整号码不得出现"
+  },
+  {
+    "view": "ADMIN",
+    "schema": "AdminOrderView",
+    "field": "returnAddress.contact.canRequestContact",
+    "type": "boolean",
+    "enum": null,
+    "visibility": "biz:order:address + 订单范围；否则父对象null",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "ADMIN",
+    "schema": "AdminOrderView",
+    "field": "mileage.pickupKm",
+    "type": "string",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "ADMIN",
+    "schema": "AdminOrderView",
+    "field": "mileage.returnKm",
+    "type": "string",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "ADMIN",
+    "schema": "AdminOrderView",
+    "field": "mileage.distanceKm",
+    "type": "string",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "ADMIN",
+    "schema": "AdminOrderView",
+    "field": "mileage.abnormal",
+    "type": "boolean",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "ADMIN",
+    "schema": "AdminOrderView",
+    "field": "mileage.publicExplanation",
+    "type": "string",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "仅明确面向服务参与人的文本，不复用内部reason/notes"
+  },
+  {
+    "view": "ADMIN",
+    "schema": "AdminOrderView",
+    "field": "afterSale.caseId",
+    "type": "string",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "ADMIN",
+    "schema": "AdminOrderView",
+    "field": "afterSale.kind",
+    "type": "string",
+    "enum": [
+      "CANCEL_REFUND",
+      "REFUND_ONLY"
+    ],
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "ADMIN",
+    "schema": "AdminOrderView",
+    "field": "afterSale.caseStatus",
+    "type": "string",
+    "enum": [
+      "PENDING_REVIEW",
+      "EXECUTING",
+      "CLOSED",
+      "REJECTED"
+    ],
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "ADMIN",
+    "schema": "AdminOrderView",
+    "field": "afterSale.approvedAmount",
+    "type": "integer",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "ADMIN",
+    "schema": "AdminOrderView",
+    "field": "afterSale.returnState",
+    "type": "string",
+    "enum": [
+      "UNDETERMINED",
+      "NOT_REQUIRED",
+      "WAIT_RETURN",
+      "RETURNED"
+    ],
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "ADMIN",
+    "schema": "AdminOrderView",
+    "field": "afterSale.refundState",
+    "type": "string",
+    "enum": [
+      "NONE",
+      "NOT_REQUIRED",
+      "WAIT_RETURN",
+      "READY",
+      "PROCESSING",
+      "SUCCESS",
+      "UNKNOWN",
+      "ABNORMAL",
+      "CLOSED"
+    ],
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "ADMIN",
+    "schema": "AdminOrderView",
+    "field": "afterSale.publicOpinion",
+    "type": "string",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "仅明确面向服务参与人的文本，不复用内部reason/notes"
+  },
+  {
+    "view": "ADMIN",
+    "schema": "AdminOrderView",
+    "field": "afterSale.version",
+    "type": "integer",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "ADMIN",
+    "schema": "AdminOrderView",
+    "field": "payExpireAt",
+    "type": "string",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "ADMIN",
+    "schema": "AdminOrderView",
+    "field": "dispatchAt",
+    "type": "string",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "ADMIN",
+    "schema": "AdminOrderView",
+    "field": "autoConfirmAt",
+    "type": "string",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "ADMIN",
+    "schema": "AdminOrderView",
+    "field": "driverReleased",
+    "type": "boolean",
+    "enum": null,
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  },
+  {
+    "view": "ADMIN",
+    "schema": "AdminOrderView",
+    "field": "allowedActions[]",
+    "type": "string",
+    "enum": [
+      "MANUAL_INVITE",
+      "REVIEW_AFTERSALE",
+      "REVIEW_LICENSE",
+      "REGISTER_RESULT",
+      "REQUEST_RESULT_CORRECTION",
+      "CONTACT_OWNER",
+      "CONTACT_DRIVER",
+      "CONTACT_STATION",
+      "EXPORT",
+      "VIEW_DETAIL",
+      "VIEW_EVIDENCE",
+      "VIEW_RESULT",
+      "VIEW_PAYMENT"
+    ],
+    "visibility": "授权可见订单期间；仍受留存策略与对象归属限制",
+    "treatment": "按Schema明示；未定义字段不返回"
+  }
+]

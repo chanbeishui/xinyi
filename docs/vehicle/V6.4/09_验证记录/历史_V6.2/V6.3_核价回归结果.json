@@ -1,0 +1,122 @@
+{
+  "suite": "V5.0对账内核价新增交互",
+  "environment": "Chromium + Playwright / local self-contained HTML",
+  "browserPlugin": "absent; regular Playwright used",
+  "scope": "Local Chromium prototype interactions and model state; not real backend/DB/provider",
+  "passed": 22,
+  "failed": 0,
+  "pageErrors": [],
+  "tests": [
+    {
+      "name": "P01 待核价草稿→行内填30元→整单拒绝自审→独立复核→本人确认",
+      "result": "PASS",
+      "mode": "DOM_FLOW"
+    },
+    {
+      "name": "P02 60→70→65保存最终65而非累加差额",
+      "result": "PASS",
+      "mode": "LOCAL_MODEL_GUARD"
+    },
+    {
+      "name": "P03 超过两位小数拒绝且保留输入",
+      "result": "PASS",
+      "mode": "DOM_FLOW"
+    },
+    {
+      "name": "P04 普通服务行拟价格不可负数",
+      "result": "PASS",
+      "mode": "DOM_FLOW"
+    },
+    {
+      "name": "P05 明确0元与待核价NULL严格区分",
+      "result": "PASS",
+      "mode": "DOM_FLOW"
+    },
+    {
+      "name": "P06 原因必填，校验失败不清输入",
+      "result": "PASS",
+      "mode": "DOM_FLOW"
+    },
+    {
+      "name": "P07 模拟外部版本变更后保存被拒绝",
+      "result": "PASS",
+      "mode": "DOM_FLOW"
+    },
+    {
+      "name": "P08 人工改价不能绕过review直接send",
+      "result": "PASS",
+      "mode": "LOCAL_MODEL_GUARD"
+    },
+    {
+      "name": "P09 任一改价参与者都不能复核整单",
+      "result": "PASS",
+      "mode": "LOCAL_MODEL_GUARD"
+    },
+    {
+      "name": "P10 复核退回原稿并留审查历史",
+      "result": "PASS",
+      "mode": "LOCAL_MODEL_GUARD"
+    },
+    {
+      "name": "P11 撤回先成功后旧确认失效，发布快照仍保留",
+      "result": "PASS",
+      "mode": "LOCAL_MODEL_GUARD"
+    },
+    {
+      "name": "P12 确认先成功后撤回拒绝",
+      "result": "PASS",
+      "mode": "LOCAL_MODEL_GUARD"
+    },
+    {
+      "name": "P13 相同确认重试不追加第二组结转键（本地模型）",
+      "result": "PASS",
+      "mode": "LOCAL_MODEL_GUARD"
+    },
+    {
+      "name": "P14 司机列表不泄露平台整理中草稿",
+      "result": "PASS",
+      "mode": "DOM_FLOW"
+    },
+    {
+      "name": "P15 已确认行内改为调差弹窗，原账不改",
+      "result": "PASS",
+      "mode": "DOM_FLOW"
+    },
+    {
+      "name": "P16 任意已登记付款记录锁原账，未核实也不能改价",
+      "result": "PASS",
+      "mode": "LOCAL_MODEL_GUARD"
+    },
+    {
+      "name": "P17 无改价权限不开放模型保存",
+      "result": "PASS",
+      "mode": "LOCAL_MODEL_GUARD"
+    },
+    {
+      "name": "P18 改司机拟价不影响客户订单和司机占用",
+      "result": "PASS",
+      "mode": "DOM_FLOW"
+    },
+    {
+      "name": "P19 取消未保存弹窗不写改价历史",
+      "result": "PASS",
+      "mode": "DOM_FLOW"
+    },
+    {
+      "name": "P20 差异说明与金额处理在同一账单完成",
+      "result": "PASS",
+      "mode": "LOCAL_MODEL_GUARD"
+    },
+    {
+      "name": "P21 仅修改金额也会阻止未保存离开",
+      "result": "PASS",
+      "mode": "DOM_FLOW"
+    },
+    {
+      "name": "P22 短桌面视口内弹窗保存按钮可见且表单可滚动",
+      "result": "PASS",
+      "mode": "DOM_FLOW"
+    }
+  ],
+  "runEdition": "V6.2"
+}

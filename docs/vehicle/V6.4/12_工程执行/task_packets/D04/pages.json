@@ -1,0 +1,28 @@
+[
+  {
+    "id": "D07",
+    "name": "单人派单邀约",
+    "status": "有效·V6.4",
+    "fields": "时段、接车区域、站点、路线、服务工作量、有效期",
+    "actions": "接受、拒绝",
+    "guards": "服务端过期时间为准；不得将服务收费标成本单收入；仅本人邀约",
+    "flows": "F10",
+    "source": "V2原页 D07",
+    "base": "D07",
+    "state": "default",
+    "kind": "page"
+  },
+  {
+    "id": "D08",
+    "name": "邀约失效",
+    "status": "有效·V6.4",
+    "fields": "拒绝/超时/撤销/他人已接说明",
+    "actions": "返回工作台",
+    "guards": "失效请求不能建立承接；旧消息不可重新接单",
+    "flows": "F10",
+    "source": "V2原页 D08",
+    "base": "D08",
+    "state": "default",
+    "kind": "page"
+  }
+]

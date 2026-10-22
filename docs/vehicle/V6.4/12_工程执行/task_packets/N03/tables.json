@@ -1,0 +1,173 @@
+[
+  {
+    "name": "vi_governance_case",
+    "comment": "隐私、导出、敏感访问与对账审批台账",
+    "cols": [
+      [
+        "id",
+        "BIGINT NOT NULL AUTO_INCREMENT",
+        "数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串"
+      ],
+      [
+        "case_type",
+        "VARCHAR(64) NOT NULL",
+        "GovernanceType: PRIVACY,EXPORT,SENSITIVE_ACCESS,RECONCILE"
+      ],
+      [
+        "order_id",
+        "BIGINT",
+        "可关联订单"
+      ],
+      [
+        "requester_account_id",
+        "BIGINT",
+        "申请客户"
+      ],
+      [
+        "requester_user_id",
+        "BIGINT",
+        "申请后台人员"
+      ],
+      [
+        "status",
+        "VARCHAR(64) NOT NULL",
+        "GovernanceStatus: APPLIED,APPROVED,CHECKING,COMPLETED,EXPIRED,FAILED,OPEN,PROCESSING,READY,REJECTED,RESOLVED,REVOKED"
+      ],
+      [
+        "payload_cipher",
+        "LONGBLOB",
+        "必要申请与结果加密"
+      ],
+      [
+        "reason",
+        "VARCHAR(1000)",
+        "申请/处置依据"
+      ],
+      [
+        "reviewer_id",
+        "BIGINT",
+        "审批人"
+      ],
+      [
+        "expires_at",
+        "DATETIME(3)",
+        "授权或下载失效"
+      ],
+      [
+        "created_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "创建时间，统一UTC"
+      ],
+      [
+        "updated_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "UTC更新时间；Mapper每次修改显式SET updated_at=UTC_TIMESTAMP(3)，不依赖连接时区"
+      ],
+      [
+        "version",
+        "BIGINT NOT NULL DEFAULT 0",
+        "乐观锁版本"
+      ]
+    ],
+    "indexes": [
+      "KEY ix_type_status (case_type,status,created_at)"
+    ],
+    "rule": "此表为轻量共用台账建议，各业务仍用独立DTO和类型校验，不做万能状态编辑接口",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "engine": "InnoDB",
+    "collation": "utf8mb4_0900_ai_ci",
+    "columnRules": {
+      "id": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "case_type": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false,
+        "enumRef": "GovernanceType"
+      },
+      "order_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "requester_account_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "requester_user_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "status": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false,
+        "enumRef": "GovernanceStatus"
+      },
+      "payload_cipher": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "reason": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "reviewer_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "expires_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "created_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "updated_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "version": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      }
+    },
+    "checks": [
+      "CONSTRAINT ck_66_4f31235a8dc4 CHECK (`case_type` IN ('PRIVACY','EXPORT','SENSITIVE_ACCESS','RECONCILE'))",
+      "CONSTRAINT ck_66_54fd86e51e4e CHECK (`status` IN ('APPLIED','APPROVED','CHECKING','COMPLETED','EXPIRED','FAILED','OPEN','PROCESSING','READY','REJECTED','RESOLVED','REVOKED'))",
+      "CONSTRAINT ck_ver_governance_case CHECK (version >= 0)",
+      "CONSTRAINT ck_governance_type_status CHECK ((case_type='PRIVACY' AND status IN ('APPLIED','PROCESSING','COMPLETED','REJECTED')) OR (case_type='EXPORT' AND status IN ('APPLIED','APPROVED','REJECTED','PROCESSING','READY','FAILED','EXPIRED')) OR (case_type='SENSITIVE_ACCESS' AND status IN ('APPLIED','APPROVED','REJECTED','EXPIRED','REVOKED')) OR (case_type='RECONCILE' AND status IN ('OPEN','CHECKING','RESOLVED')))"
+    ]
+  }
+]

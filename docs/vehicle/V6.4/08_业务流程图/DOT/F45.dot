@@ -1,0 +1,23 @@
+digraph G {
+graph [rankdir=TB,bgcolor="white",pad="0.3",nodesep="0.3",ranksep="0.45",fontname="Noto Sans CJK SC",label="F45 · 独立支付开关与客户端选择",labelloc=t,fontsize=20];
+node [shape=box,style="rounded,filled",fillcolor="#F2F6FC",color="#B5C9E5",fontname="Noto Sans CJK SC",fontsize=12,margin=".15,.12"];
+edge [color="#607A9C",fontname="Noto Sans CJK SC",fontsize=10];
+n1 [label="服务端｜读取实际订单收款主体策略"];
+n2 [label="至少一种支付可用？",shape=diamond];
+n3 [label="暂停新付费预约｜不免费、不占额"];
+n4 [label="用户｜选择微信或线下"];
+n5 [label="首个支付意图成功创建｜锁定渠道"];
+n6 [label="微信｜可信回调/查单确认付款"];
+n7 [label="线下｜实际凭证登记与独立核实"];
+n8 [label="支付成功｜校验容量并按时派单"];
+n9 [label="历史微信｜新开关关闭仍查单退款验签"];
+n1 -> n2 [label=""];
+n2 -> n3 [label="否"];
+n2 -> n4 [label="是"];
+n4 -> n5 [label=""];
+n5 -> n6 [label="微信"];
+n5 -> n7 [label="线下"];
+n6 -> n8 [label=""];
+n7 -> n8 [label=""];
+n1 -> n9 [label="历史维护独立"];
+}

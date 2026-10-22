@@ -1,0 +1,16 @@
+digraph G {
+graph [rankdir=TB,bgcolor="white",pad="0.3",nodesep="0.3",ranksep="0.45",fontname="Noto Sans CJK SC",label="F27 · 服务记录、评价与再次预约",labelloc=t,fontsize=20];
+node [shape=box,style="rounded,filled",fillcolor="#F2F6FC",color="#B5C9E5",fontname="Noto Sans CJK SC",fontsize=12,margin=".15,.12"];
+edge [color="#607A9C",fontname="Noto Sans CJK SC",fontsize=10];
+n1 [label="已归还的司机任务进入服务记录"];
+n2 [label="车主服务确认后可以评价"];
+n3 [label="服务端按订单校验评价主体与唯一性"];
+n4 [label="评分和完单数按定义计算，不人工改数"];
+n5 [label="历史详情按当时关系脱敏展示"];
+n6 [label="车主再次预约只复用车辆/地址，不复用旧价旧时段"];
+n1 -> n2 [label=""];
+n2 -> n3 [label=""];
+n3 -> n4 [label=""];
+n4 -> n5 [label=""];
+n5 -> n6 [label=""];
+}

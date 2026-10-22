@@ -1,0 +1,15 @@
+openapi: 3.0.3
+info:
+  title: E04 新建业务Maven模块与uni-app工程
+  version: 6.4.0
+servers:
+- url: http://localhost:8080
+  description: 本地Java直连；paths已包含/api，不再次追加
+- url: https://{host}
+  description: 发布域名仅作部署变量；由环境设置真实已备案域名，代理保留/api
+  variables:
+    host:
+      default: api.example.invalid
+      description: 占位不可用于真实支付或发布
+paths: {}
+components: {}

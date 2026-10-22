@@ -1,0 +1,503 @@
+[
+  {
+    "name": "vi_driver_price_change",
+    "comment": "对账内填写与改价不可变记录",
+    "cols": [
+      [
+        "id",
+        "BIGINT NOT NULL AUTO_INCREMENT",
+        "数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串"
+      ],
+      [
+        "statement_id",
+        "BIGINT NOT NULL",
+        "账单"
+      ],
+      [
+        "statement_line_id",
+        "BIGINT NOT NULL",
+        "工作明细"
+      ],
+      [
+        "ledger_id",
+        "BIGINT NOT NULL",
+        "不可变费用源"
+      ],
+      [
+        "revision",
+        "INT NOT NULL",
+        "修改后的内容修订"
+      ],
+      [
+        "old_amount_fen",
+        "BIGINT NULL",
+        "原拟价，未填写为NULL"
+      ],
+      [
+        "new_amount_fen",
+        "BIGINT NOT NULL",
+        "新拟价，总额输入，不是重复加差额"
+      ],
+      [
+        "reason",
+        "VARCHAR(1000) NOT NULL",
+        "修改原因或初次定价依据"
+      ],
+      [
+        "evidence_file_ids",
+        "JSON",
+        "经权限及归属验证的文件引用"
+      ],
+      [
+        "actor_user_id",
+        "BIGINT NOT NULL",
+        "从ADMIN会话读取"
+      ],
+      [
+        "actor_account_id",
+        "BIGINT",
+        "与受控绑定一致的真实人员关联，可空"
+      ],
+      [
+        "idempotency_key",
+        "VARCHAR(100) CHARACTER SET ascii COLLATE ascii_bin NOT NULL",
+        "同主体动作资源请求键"
+      ],
+      [
+        "created_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "UTC"
+      ],
+      [
+        "version",
+        "BIGINT NOT NULL DEFAULT 0",
+        "并发控制；不可变行不更新内容"
+      ]
+    ],
+    "indexes": [
+      "UNIQUE KEY uk_price_change_retry (actor_user_id,statement_line_id,idempotency_key)",
+      "KEY ix_price_history (statement_id,revision,id)",
+      "CONSTRAINT ck_price_nonnegative CHECK (new_amount_fen>=0)"
+    ],
+    "rule": "只追加；所有参与当前提交快照改价的人均不得复核，包括不同认证域下同一实际人员。",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "engine": "InnoDB",
+    "collation": "utf8mb4_0900_ai_ci",
+    "columnRules": {
+      "id": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "statement_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "statement_line_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "ledger_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "revision": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "old_amount_fen": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "new_amount_fen": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "reason": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "evidence_file_ids": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "actor_user_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "actor_account_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "idempotency_key": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "created_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "version": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      }
+    },
+    "checks": [
+      "CONSTRAINT ck_ver_driver_price_change CHECK (version >= 0)"
+    ]
+  },
+  {
+    "name": "vi_driver_statement_review",
+    "comment": "整单内部复核记录",
+    "cols": [
+      [
+        "id",
+        "BIGINT NOT NULL AUTO_INCREMENT",
+        "数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串"
+      ],
+      [
+        "statement_id",
+        "BIGINT NOT NULL",
+        "账单"
+      ],
+      [
+        "revision",
+        "INT NOT NULL",
+        "提交内容版本"
+      ],
+      [
+        "snapshot_hash",
+        "BINARY(32) NOT NULL",
+        "待审全部明细摘要"
+      ],
+      [
+        "snapshot_json",
+        "JSON NOT NULL",
+        "冻结的明细与变更，不能只查当前值"
+      ],
+      [
+        "contributor_ids",
+        "JSON NOT NULL",
+        "服务端查出的本轮所有实际改价人"
+      ],
+      [
+        "submitted_by",
+        "BIGINT NOT NULL",
+        "提交人"
+      ],
+      [
+        "reviewed_by",
+        "BIGINT",
+        "独立复核人"
+      ],
+      [
+        "status",
+        "VARCHAR(24) NOT NULL",
+        "InternalReviewRecordStatus: PENDING,APPROVED,REJECTED,WITHDRAWN"
+      ],
+      [
+        "opinion",
+        "VARCHAR(1000)",
+        "复核或撤回意见"
+      ],
+      [
+        "decided_at",
+        "DATETIME(3)",
+        "决定时间"
+      ],
+      [
+        "active_statement",
+        "BIGINT GENERATED ALWAYS AS (IF(status='PENDING',statement_id,NULL)) STORED",
+        "每账单至多一份待审"
+      ],
+      [
+        "created_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "UTC"
+      ],
+      [
+        "version",
+        "BIGINT NOT NULL DEFAULT 0",
+        "并发控制；不可变行不更新内容"
+      ]
+    ],
+    "indexes": [
+      "UNIQUE KEY uk_active_statement_review (active_statement)",
+      "KEY ix_statement_review_history (statement_id,revision)"
+    ],
+    "rule": "批准并发送为同一业务事务；外部通知异步，失败不能重复审核。锁账单后再验证复核内容、权限和人员隔离。",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "engine": "InnoDB",
+    "collation": "utf8mb4_0900_ai_ci",
+    "columnRules": {
+      "id": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "statement_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "revision": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "snapshot_hash": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "snapshot_json": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "contributor_ids": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "submitted_by": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "reviewed_by": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "status": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false,
+        "enumRef": "InternalReviewRecordStatus"
+      },
+      "opinion": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "decided_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "active_statement": {
+        "generated": true,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "created_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "version": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      }
+    },
+    "checks": [
+      "CONSTRAINT ck_66_081decdd6dd7 CHECK (`status` IN ('PENDING','APPROVED','REJECTED','WITHDRAWN'))",
+      "CONSTRAINT ck_ver_driver_statement_review CHECK (version >= 0)"
+    ]
+  },
+  {
+    "name": "vi_driver_statement_membership_change",
+    "comment": "对账成员变更不可变历史",
+    "cols": [
+      [
+        "id",
+        "BIGINT NOT NULL AUTO_INCREMENT",
+        "数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串"
+      ],
+      [
+        "statement_id",
+        "BIGINT NOT NULL",
+        "账单"
+      ],
+      [
+        "ledger_id",
+        "BIGINT NULL",
+        "源条目；整单作废时可为空"
+      ],
+      [
+        "line_id",
+        "BIGINT NULL",
+        "可重复激活的工作行"
+      ],
+      [
+        "action",
+        "VARCHAR(24) NOT NULL",
+        "CREATE/ADD/REMOVE/REACTIVATE/VOID"
+      ],
+      [
+        "revision_before",
+        "INT NOT NULL",
+        "变更前内容版本"
+      ],
+      [
+        "revision_after",
+        "INT NOT NULL",
+        "变更后内容版本"
+      ],
+      [
+        "actor_user_id",
+        "BIGINT NOT NULL",
+        "真实授权后台操作者"
+      ],
+      [
+        "reason",
+        "VARCHAR(1000) NOT NULL",
+        "操作依据"
+      ],
+      [
+        "snapshot_json",
+        "JSON NOT NULL",
+        "集合变化及涉及行完整快照；不存凭据"
+      ],
+      [
+        "created_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "UTC"
+      ]
+    ],
+    "indexes": [
+      "KEY ix_membership_history (statement_id,revision_after,id)"
+    ],
+    "rule": "同业务事务追加，与工作行/分配/账单合计一起提交；不删除。已移出行的改价历史仍可查。确认后调差是新费用条目，不重开原条目。",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "engine": "InnoDB",
+    "collation": "utf8mb4_0900_ai_ci",
+    "columnRules": {
+      "id": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "statement_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "ledger_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "line_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "action": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "revision_before": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "revision_after": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "actor_user_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "reason": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "snapshot_json": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "created_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      }
+    },
+    "checks": [
+      "CONSTRAINT ck_ver_driver_statement_membership_change CHECK (version >= 0)"
+    ],
+    "writeMode": "INSERT_ONLY"
+  }
+]

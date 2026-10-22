@@ -1,0 +1,21 @@
+digraph G {
+graph [rankdir=TB,bgcolor="white",pad="0.3",nodesep="0.3",ranksep="0.45",fontname="Noto Sans CJK SC",label="F19 · 服务确认、争议与自动完成",labelloc=t,fontsize=20];
+node [shape=box,style="rounded,filled",fillcolor="#F2F6FC",color="#B5C9E5",fontname="Noto Sans CJK SC",fontsize=12,margin=".15,.12"];
+edge [color="#607A9C",fontname="Noto Sans CJK SC",fontsize=10];
+n1 [label="实际归还已完成，司机已经释放"];
+n2 [label="车主查看照片、结果及服务情况"];
+n3 [label="是否提出争议？",shape=diamond];
+n4 [label="建立争议，暂停自动完成，运营审查"];
+n5 [label="正常确认或满24小时且无争议"];
+n6 [label="订单完成，允许评价和售后查看"];
+n7 [label="争议结论记录，退款另走F20"];
+n8 [label="禁止旧单完成任务释放司机的新单占用"];
+n1 -> n2 [label=""];
+n2 -> n3 [label=""];
+n3 -> n4 [label="是"];
+n3 -> n5 [label="否"];
+n5 -> n6 [label=""];
+n4 -> n7 [label=""];
+n7 -> n6 [label="按结论办结"];
+n6 -> n8 [label=""];
+}

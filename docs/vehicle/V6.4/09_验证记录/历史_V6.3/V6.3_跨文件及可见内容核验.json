@@ -1,0 +1,130 @@
+{
+  "kind": "CURRENT_CROSS_ARTIFACT_AND_RENDER_CHECK",
+  "scope": "Full file/index linkage and visible local prototype semantics; not proof of real services or every UI branch",
+  "passed": 30,
+  "failed": 0,
+  "checks": [
+    {
+      "name": "01 当前全部画板有真实渲染且无JS运行异常",
+      "result": "PASS"
+    },
+    {
+      "name": "02 全部画板浏览器标题使用V6.3",
+      "result": "PASS"
+    },
+    {
+      "name": "03 B25无正常员工申请或确认绑定按钮",
+      "result": "PASS"
+    },
+    {
+      "name": "04 B25有直接配置站点与关联详情操作",
+      "result": "PASS"
+    },
+    {
+      "name": "05 统一登录不要求选注册角色或员工",
+      "result": "PASS"
+    },
+    {
+      "name": "06 普通新号身份切换仅有车主",
+      "result": "PASS"
+    },
+    {
+      "name": "07 已关联画板手机号也已核验",
+      "result": "PASS"
+    },
+    {
+      "name": "08 无站点画板保持关联成功但工作未授权",
+      "result": "PASS"
+    },
+    {
+      "name": "09 独立代驾通过画板与可用按钮一致",
+      "result": "PASS"
+    },
+    {
+      "name": "10 我的页面按审核状态显示申请或进度",
+      "result": "PASS"
+    },
+    {
+      "name": "11 后台未关联人员预授权无需OpenID表单",
+      "result": "PASS"
+    },
+    {
+      "name": "12 当前所有按钮无旧员工凭证动作",
+      "result": "PASS"
+    },
+    {
+      "name": "13 两类工作我的页没有硬编码其他人姓名",
+      "result": "PASS"
+    },
+    {
+      "name": "14 主PRD直接写明车主/代驾/员工获得方式",
+      "result": "PASS"
+    },
+    {
+      "name": "15 主PRD F03图注没有旧凭证正向链",
+      "result": "PASS"
+    },
+    {
+      "name": "16 主PRD不再宣称M0五表必已存在",
+      "result": "PASS"
+    },
+    {
+      "name": "17 INT73为自动关联而不是旧申请链",
+      "result": "PASS"
+    },
+    {
+      "name": "18 IT02采用新自动关联联调流程",
+      "result": "PASS"
+    },
+    {
+      "name": "19 重建说明的权威版本是V6.3",
+      "result": "PASS"
+    },
+    {
+      "name": "20 当前PRD Markdown生成的HTML有相同可见条款",
+      "result": "PASS"
+    },
+    {
+      "name": "21 每张画板有首屏及完整图",
+      "result": "PASS"
+    },
+    {
+      "name": "22 图库中仅有当前画板",
+      "result": "PASS"
+    },
+    {
+      "name": "23 逐画板说明与索引ID集合一致",
+      "result": "PASS"
+    },
+    {
+      "name": "24 单文件内嵌索引与机器索引相同",
+      "result": "PASS"
+    },
+    {
+      "name": "25 任务中画板/用例无遗漏或重复主责任",
+      "result": "PASS"
+    },
+    {
+      "name": "26 每个任务说明和验收片段与主JSON一致",
+      "result": "PASS"
+    },
+    {
+      "name": "27 真实业务用例仍全部NOT_RUN",
+      "result": "PASS"
+    },
+    {
+      "name": "28 PRD图片确实嵌入当前身份与后台页面",
+      "result": "PASS"
+    },
+    {
+      "name": "29 原型所有修改身份渲染器只有一份权威定义",
+      "result": "PASS"
+    },
+    {
+      "name": "30 原型可见内容不再有保险/钱包/提现/检测分步骤操作",
+      "result": "PASS"
+    }
+  ],
+  "catalogCount": 317,
+  "pageErrors": []
+}

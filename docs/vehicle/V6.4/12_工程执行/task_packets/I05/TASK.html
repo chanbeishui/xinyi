@@ -1,0 +1,46 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TASK</title><style>body{font:16px/1.75 -apple-system,BlinkMacSystemFont,"Microsoft YaHei",sans-serif;color:#202632;margin:0;background:#f6f7f9}header{padding:14px 24px;background:white;border-bottom:1px solid #ddd}main{max-width:1120px;margin:24px auto;padding:30px;background:white}h1{font-size:30px}h2{margin-top:36px}a{color:#0661bd}table{border-collapse:collapse;width:100%;display:block;overflow:auto;font-size:14px}td,th{border:1px solid #dde2ea;padding:10px;vertical-align:top}th{background:#f1f5fb}pre{padding:15px;background:#f2f4f7;overflow:auto}img{max-width:100%;height:auto}blockquote{padding:10px 20px;border-left:3px solid #2571be;background:#f4f8fc}@media(max-width:700px){main{padding:15px;margin:8px}h1{font-size:25px}}</style></head><body><header><a href="../../../00_开始.html">V6.4 完整资料</a>　<a href="../../../02_UI/index.html">交互原型</a>　T3.4</header><main><h1>I05 · 手机号自动关联员工与后台异常管理</h1>
+<p>阶段：M1；责任域：identity；前置：I02, I03。
+范围版本：<code>V6.4-IDENTITY-CONSISTENCY-20261022</code>；definitionHash：<code>dc343dd4c0ce51809df061b045e2372ee95de2d15b65e3ad3abff68e7ea7e8cf</code>。</p>
+<h2>本任务交付</h2>
+<ul>
+<li>唯一有效sys_user手机号自动关联；无申请/凭证</li>
+<li>框架目录保护行与人员创建/导入/手机号/状态变更钩子</li>
+<li>后台查询、暂停、解除、允许本人重新核验；不直接覆盖不同关联</li>
+<li>解绑阻止自动复绑、换号安全失效、审计与权限版本同事务</li>
+</ul>
+<h2>必测失败与并发</h2>
+<ul>
+<li>重号按distinct人员计数，无名单泄露</li>
+<li>并发手机号变更/绑定唯一性保护</li>
+<li>未验证号/SMS/假openid不绑定</li>
+<li>既有关系不可抢占；主动解绑下一次不恢复</li>
+<li>后台账号匹配不签ADMIN Token</li>
+</ul>
+<h2>精确输入</h2>
+<p>主源：04_接口/openapi_V6.4.yaml、05_数据设计/data_model_V6.4.json、06_验收/test_cases_V6.4.json。本目录派生，不独立维护。
+接口：v62_get_employee_link, v62_post_employee_link_reconcile, v62_get_employee_links, v62_get_employee_link_detail, v62_suspend_employee_link, v62_revoke_employee_link, v62_allow_employee_rematch
+画板：U02, B36, U02-revoked, U02-unconfigured, U02-conflict, U02-linked, B36-suspend, B36-revoke, B36-rematch, U02-suspended, U02-verifying, U02-unknown, B36-unlinked
+主责任表：vi_employee_binding, vi_employee_directory_guard
+验收：TC-R50-016, TC-R62-007, TC-R62-009, TC-R62-010, TC-R62-011, TC-R62-012, TC-R62-013, TC-R62-015, TC-R62-019, TC-R62-020, TC-R62-022, TC-R62-026, TC-R62-027, TC-R62-028, TC-R62-032, TC-R62-033, TC-R62-036, TC-R63-003, TC-R63-004, TC-R63-005, TC-R63-011, TC-R63-015</p>
+<h2>代码落位</h2>
+<p><code>xinyi-rongli/src/main/java/com/xinyi/rongli/identity/</code>
+<code>xinyi-rongli/src/main/resources/mapper/rongli/identity/</code>
+<code>xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/identity/</code>
+<code>xinyi-ui/src/views/rongli/identity/</code>
+<code>xinyi-ui/src/api/rongli/identity.ts</code>
+<code>xinyi-miniapp/src/features/identity/</code></p>
+<h2>验证命令</h2>
+<pre><code class="language-bash">mvn -pl xinyi-admin -am -Pvi-it -Dit.test=I05IdentityIT verify
+npm --prefix xinyi-ui run build:prod
+npm --prefix xinyi-miniapp run build:mp-weixin
+</code></pre>
+<h2>完成标准</h2>
+<ul>
+<li>源接口/页面/表/用例均有明确实现文件与关联测试；不能以目录存在当完成</li>
+<li>本任务真实集成与负向场景实际通过且保存原始报告；无测试/跳过不能通过</li>
+<li>提交独立复核记录；标注测试第三方替身，不声称真实渠道通过</li>
+<li>本版主PRD/逐页规格/当前UI实图一致；不得复用已退役员工申请页面</li>
+</ul>
+<h2>执行边界</h2>
+<p>已有实现先核查适配，不清空重来。NOT_RUN与NOT_ASSESSED不表示生产已验证。缺真实凭据只阻对应真实联调；环境阻塞如实记录，不改测试期望凑通过。修改主源后重新生成派生文件和当前截图。</p>
+</main></body></html>

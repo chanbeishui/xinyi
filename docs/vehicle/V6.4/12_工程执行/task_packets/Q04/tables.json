@@ -1,0 +1,332 @@
+[
+  {
+    "name": "vi_provider_verification",
+    "comment": "第三方核验与培训任务记录",
+    "cols": [
+      [
+        "id",
+        "BIGINT NOT NULL AUTO_INCREMENT",
+        "数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串"
+      ],
+      [
+        "application_id",
+        "BIGINT NOT NULL",
+        "代驾申请"
+      ],
+      [
+        "provider",
+        "VARCHAR(64)",
+        "供应商或培训服务"
+      ],
+      [
+        "task_type",
+        "VARCHAR(64)",
+        "VerificationType: REALNAME,FACE,BACKGROUND,LICENSE,TRAINING"
+      ],
+      [
+        "provider_task_id",
+        "VARCHAR(128)",
+        "外部任务标识"
+      ],
+      [
+        "status",
+        "VARCHAR(64) NOT NULL",
+        "VerificationStatus: CREATED,PROCESSING,PASSED,FAILED,EXPIRED,UNAVAILABLE"
+      ],
+      [
+        "result_digest",
+        "VARCHAR(64)",
+        "结果摘要，不泄露生物信息"
+      ],
+      [
+        "verified_at",
+        "DATETIME(3)",
+        "可信回调或查单确认时刻"
+      ],
+      [
+        "created_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "创建时间，统一UTC"
+      ],
+      [
+        "updated_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "UTC更新时间；Mapper每次修改显式SET updated_at=UTC_TIMESTAMP(3)，不依赖连接时区"
+      ],
+      [
+        "version",
+        "BIGINT NOT NULL DEFAULT 0",
+        "乐观锁版本"
+      ]
+    ],
+    "indexes": [
+      "UNIQUE KEY uk_provider_task (provider,provider_task_id)",
+      "KEY ix_app_type (application_id,task_type)"
+    ],
+    "rule": "",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "engine": "InnoDB",
+    "collation": "utf8mb4_0900_ai_ci",
+    "columnRules": {
+      "id": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "application_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "provider": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "task_type": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false,
+        "enumRef": "VerificationType"
+      },
+      "provider_task_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "status": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false,
+        "enumRef": "VerificationStatus"
+      },
+      "result_digest": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "verified_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "created_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "updated_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "version": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      }
+    },
+    "checks": [
+      "CONSTRAINT ck_66_2612e28e561f CHECK (`task_type` IN ('REALNAME','FACE','BACKGROUND','LICENSE','TRAINING'))",
+      "CONSTRAINT ck_66_fd8e93f22cc6 CHECK (`status` IN ('CREATED','PROCESSING','PASSED','FAILED','EXPIRED','UNAVAILABLE'))",
+      "CONSTRAINT ck_ver_provider_verification CHECK (version >= 0)"
+    ]
+  },
+  {
+    "name": "vi_face_session",
+    "comment": "本人实名活体启动与可信结果会话",
+    "cols": [
+      [
+        "id",
+        "BIGINT NOT NULL AUTO_INCREMENT",
+        "数据库生成业务主键；插入不提供id"
+      ],
+      [
+        "application_id",
+        "BIGINT NOT NULL",
+        "资格申请"
+      ],
+      [
+        "verification_id",
+        "BIGINT NULL",
+        "供应商核验记录"
+      ],
+      [
+        "account_id",
+        "BIGINT NOT NULL",
+        "本人基础账户"
+      ],
+      [
+        "status",
+        "VARCHAR(24) NOT NULL DEFAULT 'CREATED'",
+        "FaceSessionStatus: CREATED,PROCESSING,PASSED,FAILED,EXPIRED"
+      ],
+      [
+        "launch_mode",
+        "VARCHAR(24) NOT NULL DEFAULT 'WEBVIEW_URL'",
+        "FaceLaunchMode: WEBVIEW_URL"
+      ],
+      [
+        "launch_payload_cipher",
+        "BLOB NULL",
+        "加密短期URL；失效或结束销毁"
+      ],
+      [
+        "consent_version",
+        "VARCHAR(64) NOT NULL",
+        "此次明确同意版本"
+      ],
+      [
+        "expires_at",
+        "DATETIME(3) NOT NULL",
+        "供应商与本地较短有效期"
+      ],
+      [
+        "result_available",
+        "TINYINT NOT NULL DEFAULT 0",
+        "可信查询后赋值"
+      ],
+      [
+        "failure_code",
+        "VARCHAR(64) NULL",
+        "安全映射错误，无原始生物数据"
+      ],
+      [
+        "created_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "创建时刻UTC"
+      ],
+      [
+        "updated_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "更新时间UTC；更新必须显式设置UTC_TIMESTAMP(3)"
+      ],
+      [
+        "version",
+        "BIGINT NOT NULL DEFAULT 0",
+        "手写CAS版本"
+      ]
+    ],
+    "indexes": [
+      "KEY ix_face_app_status (application_id,status)"
+    ],
+    "rule": "不信任客户端回调PASSED；供应商具体开通和WEBVIEW能力未证实即不能启用正式认证",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "engine": "InnoDB",
+    "collation": "utf8mb4_0900_ai_ci",
+    "columnRules": {
+      "id": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "application_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "verification_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "account_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "status": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false,
+        "enumRef": "FaceSessionStatus"
+      },
+      "launch_mode": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false,
+        "enumRef": "FaceLaunchMode"
+      },
+      "launch_payload_cipher": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "consent_version": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "expires_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "result_available": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "failure_code": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "created_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "updated_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "version": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      }
+    },
+    "checks": [
+      "CONSTRAINT ck_66_b67f9761e849 CHECK (`status` IN ('CREATED','PROCESSING','PASSED','FAILED','EXPIRED'))",
+      "CONSTRAINT ck_66_a153de145e1b CHECK (`launch_mode` IN ('WEBVIEW_URL'))",
+      "CONSTRAINT ck_ver_face_session CHECK (version >= 0)"
+    ]
+  }
+]

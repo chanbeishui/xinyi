@@ -1,0 +1,8 @@
+{
+  "source": "https://github.com/dcloudio/uni-preset-vue/tree/vite-ts",
+  "observedPackageBlob": "248b25df7f4b1a08e1786fa8337fbf5c9c671f69",
+  "dcloudRelease": "3.0.0-5020420260813003",
+  "selection": "仅保留WeChat与辅助H5；主依赖取官方模板版本系列，非本轮已构建证明",
+  "lockfileStatus": "NOT_RESOLVED_IN_CURRENT_OFFLINE_ENVIRONMENT",
+  "requiredTask": "E04必须npm install生成实际package-lock.json并提交；后续一律npm ci。失败按环境/兼容问题修复，不用猜测锁文件。"
+}
