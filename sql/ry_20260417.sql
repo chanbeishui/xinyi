@@ -809,19 +809,18 @@ create table gen_table_column (
 ) engine=innodb auto_increment=1 comment = '代码生成业务表字段';
 
 -- ----------------------------
--- 机动车检测预约 V6.0：vi_* 业务表（66 张）
--- 与 sql/migration_20261021_vehicle_initial.sql 同源；新环境一次初始化到最新结构。
--- 仅 CREATE vi_*；不含 sys_ 改动。目标 MySQL 8.0.22+（CHECK/表达式默认）。
+-- 机动车检测预约 V6.4：vi_* 业务表（79 张，新安装完整初始化到最新结构）
+-- 与 migration_20261021_vehicle_initial.sql（V6.1 66 表）+ migration_20261022_01_integration_config.sql
+-- （V6.4 前向适配：+15 表、4 表加列、payment.status 扩 REVIEW_PENDING）增量结果同构。
+-- 退役 vi_employee_binding_request/vi_employee_binding_credential 不在完整初始化创建；
+--   已按 V6.1 建库的既有库保留其历史（不 DROP），见 migration_20261022 头部与回滚说明。
+-- 仅 CREATE vi_*；不含 sys_ 改动，不插入员工/真实价格/商户。目标 MySQL 8.0.22+（CHECK/表达式默认）。
+-- DATETIME 使用 UTC 分量；DEFAULT(UTC_TIMESTAMP(3)) 不依赖连接时区；UPDATE 由 Mapper 显式写 UTC_TIMESTAMP(3)。
+-- 权威来源：资料包 V6.4 05_数据设计/001_vi业务表_初始化_V6.4.sql；由 v64_adapt/sync_ry.py 同步。
 -- ----------------------------
--- 机动车检测预约 V6.0：从零初始化 vi_* 业务表，不是V4升级脚本。
--- 不创建/修改/删除任何sys_*表，不插入员工、真实价格或商户。
--- 仅在明确选定的空业务库/已备份的测试框架库执行；已有vi_*表会直接报错，禁止IF NOT EXISTS掩盖结构差异。
--- 目标MySQL 8.0.22+（CHECK及表达式DEFAULT）；正式采用版本须在目标环境执行验收。
--- DATETIME使用UTC分量；DEFAULT(UTC_TIMESTAMP(3))不依赖连接时区；UPDATE由Mapper显式写UTC_TIMESTAMP(3)。
--- DDL在MySQL中会隐式提交，不宣称全脚本事务回滚。请先跑环境预检。
 SET NAMES utf8mb4;
+SET time_zone = '+00:00';
 
--- 微信统一基础账户 | MYSQL_AUTO_INCREMENT
 CREATE TABLE `vi_account` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',
   `app_id` VARCHAR(64) CHARACTER SET ascii COLLATE ascii_bin NOT NULL COMMENT '微信应用标识',
@@ -833,37 +832,55 @@ CREATE TABLE `vi_account` (
   `status` VARCHAR(24) NOT NULL COMMENT 'AccountStatus: ACTIVE,LOCKED',
   `privacy_version` VARCHAR(64) COMMENT '最近同意版本',
   `avatar_file_id` BIGINT NULL COMMENT '本人已验证头像引用，不直接存URL',
+  `phone_verified_at` DATETIME(3) NULL COMMENT '服务端最后一次可信手机号验证UTC时刻',
+  `phone_source` VARCHAR(24) NULL COMMENT 'PhoneProofSource: WECHAT,SMS；仅WECHAT可触发新员工关联',
+  `employee_auto_link_blocked` TINYINT NOT NULL DEFAULT 0 COMMENT '管理员解除后阻止该账号自动换绑；仅后台明确恢复，可不影响车主',
   `created_at` DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3)) COMMENT '创建时间，统一UTC',
   `updated_at` DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3)) COMMENT 'UTC更新时间；Mapper每次修改显式SET updated_at=UTC_TIMESTAMP(3)，不依赖连接时区',
   `version` BIGINT NOT NULL DEFAULT 0 COMMENT '乐观锁版本',
   PRIMARY KEY (`id`),
   UNIQUE KEY uk_app_open (app_id,open_id),
   KEY ix_phone_lookup (phone_lookup),
-  CONSTRAINT ck_66_592d8ece9cae CHECK (`status` IN ('ACTIVE','LOCKED')),
-  CONSTRAINT ck_ver_account CHECK (version >= 0)
+  CONSTRAINT ck_ver_account CHECK (version >= 0),
+  CONSTRAINT ck_592d8ece9c CHECK (`status` IN ('ACTIVE','LOCKED')),
+  CONSTRAINT ck_87f78b0fed CHECK (`phone_source` IN ('WECHAT','SMS'))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='微信统一基础账户';
 
--- 微信账户与框架员工受控绑定 | MYSQL_AUTO_INCREMENT
 CREATE TABLE `vi_employee_binding` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',
   `account_id` BIGINT NOT NULL COMMENT '关联vi_account',
   `sys_user_id` BIGINT NOT NULL COMMENT '引用现有sys_user，不重建员工',
-  `bound_by` BIGINT NOT NULL COMMENT '受控绑定审批人',
+  `bound_by` BIGINT NULL COMMENT '自动关联为NULL，操作者为系统；管理员后续操作单独审计，绝不填假管理员',
   `bound_at` DATETIME(3) NOT NULL COMMENT '绑定时间',
   `revoked_at` DATETIME(3) COMMENT '解除时间',
-  `active_account` BIGINT GENERATED ALWAYS AS (IF(revoked_at IS NULL, account_id, NULL)) STORED COMMENT '生效账户唯一',
-  `active_user` BIGINT GENERATED ALWAYS AS (IF(revoked_at IS NULL, sys_user_id, NULL)) STORED COMMENT '生效员工唯一',
+  `active_account` BIGINT GENERATED ALWAYS AS (IF(revoked_at IS NULL, account_id, NULL)) STORED COMMENT '有效或暂停关联占用；只读生成列',
+  `active_user` BIGINT GENERATED ALWAYS AS (IF(revoked_at IS NULL, sys_user_id, NULL)) STORED COMMENT '有效或暂停关联占用；与app_id联合唯一',
   `permission_version` BIGINT NOT NULL DEFAULT 0 COMMENT '员工关联权限版本；撤权事务更新',
+  `app_id` VARCHAR(64) CHARACTER SET ascii COLLATE ascii_bin NOT NULL COMMENT '关联应用命名空间',
+  `source` VARCHAR(32) NOT NULL DEFAULT 'WECHAT_PHONE_MATCH' COMMENT 'EmployeeLinkSource: WECHAT_PHONE_MATCH',
+  `status` VARCHAR(24) NOT NULL DEFAULT 'ACTIVE' COMMENT 'EmployeeBindingLifecycle: ACTIVE,SUSPENDED,REVOKED',
+  `phone_lookup` BINARY(32) NOT NULL COMMENT '关联时一致的规范化手机号HMAC；不是可还原裸手机号',
+  `last_phone_verified_at` DATETIME(3) NOT NULL COMMENT '最近本人微信手机号核验时间',
+  `employee_auth_version` BIGINT NOT NULL COMMENT '建立关联时的框架授权版本快照；每次工作请求仍检查当前员工状态和权限',
+  `auto_rebind_blocked` TINYINT NOT NULL DEFAULT 0 COMMENT '管理员撤销后拦截同应用同员工新自动关联；明确allow-rematch才解除',
+  `suspended_reason` VARCHAR(64) NULL COMMENT '手机号变更、账号停用等失效原因；不泄漏其他账号',
+  `revoked_by` BIGINT NULL COMMENT '后台受控撤销操作者',
+  `revoked_reason` VARCHAR(500) NULL COMMENT '解除依据',
   `created_at` DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3)) COMMENT '创建时间，统一UTC',
   `updated_at` DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3)) COMMENT 'UTC更新时间；Mapper每次修改显式SET updated_at=UTC_TIMESTAMP(3)，不依赖连接时区',
   `version` BIGINT NOT NULL DEFAULT 0 COMMENT '乐观锁版本',
   PRIMARY KEY (`id`),
   UNIQUE KEY uk_active_account (active_account),
-  UNIQUE KEY uk_active_user (active_user),
-  CONSTRAINT ck_ver_employee_binding CHECK (version >= 0)
+  UNIQUE KEY uk_active_user (app_id,active_user),
+  KEY ix_employee_link_phone (phone_lookup),
+  KEY ix_employee_link_block (app_id,sys_user_id,auto_rebind_blocked),
+  CONSTRAINT ck_ver_employee_binding CHECK (version >= 0),
+  CONSTRAINT ck_0322202dab CHECK (`source` IN ('WECHAT_PHONE_MATCH')),
+  CONSTRAINT ck_3c0e2a701f CHECK (`status` IN ('ACTIVE','SUSPENDED','REVOKED')),
+  CONSTRAINT ck_employee_link_revoke CHECK ((status='REVOKED' AND revoked_at IS NOT NULL) OR (status IN ('ACTIVE','SUSPENDED') AND revoked_at IS NULL)),
+  CONSTRAINT ck_employee_link_source_actor CHECK (source='WECHAT_PHONE_MATCH' AND bound_by IS NULL)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='微信账户与框架员工受控绑定';
 
--- 代驾资格与听单偏好 | MYSQL_AUTO_INCREMENT
 CREATE TABLE `vi_driver_profile` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',
   `account_id` BIGINT NOT NULL COMMENT '同一个基础账户',
@@ -886,7 +903,6 @@ CREATE TABLE `vi_driver_profile` (
   CONSTRAINT ck_ver_driver_profile CHECK (version >= 0)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='代驾资格与听单偏好';
 
--- 代驾资格申请与复审版本 | MYSQL_AUTO_INCREMENT
 CREATE TABLE `vi_driver_application` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',
   `driver_id` BIGINT NOT NULL COMMENT '关联代驾档案',
@@ -908,7 +924,6 @@ CREATE TABLE `vi_driver_application` (
   CONSTRAINT ck_ver_driver_application CHECK (version >= 0)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='代驾资格申请与复审版本';
 
--- 第三方核验与培训任务记录 | MYSQL_AUTO_INCREMENT
 CREATE TABLE `vi_provider_verification` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',
   `application_id` BIGINT NOT NULL COMMENT '代驾申请',
@@ -929,7 +944,6 @@ CREATE TABLE `vi_provider_verification` (
   CONSTRAINT ck_ver_provider_verification CHECK (version >= 0)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='第三方核验与培训任务记录';
 
--- 检测点与可服务设置 | MYSQL_AUTO_INCREMENT
 CREATE TABLE `vi_station` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',
   `name` VARCHAR(128) NOT NULL COMMENT '名称',
@@ -949,7 +963,6 @@ CREATE TABLE `vi_station` (
   CONSTRAINT ck_ver_station CHECK (version >= 0)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='检测点与可服务设置';
 
--- 员工跨检测点操作范围 | MYSQL_AUTO_INCREMENT
 CREATE TABLE `vi_station_grant` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',
   `sys_user_id` BIGINT NOT NULL COMMENT '复用框架人员',
@@ -965,7 +978,6 @@ CREATE TABLE `vi_station_grant` (
   CONSTRAINT ck_ver_station_grant CHECK (version >= 0)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='员工跨检测点操作范围';
 
--- 授权客户-车辆关联档案，供独立车辆列表 | MYSQL_AUTO_INCREMENT
 CREATE TABLE `vi_vehicle` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',
   `owner_account_id` BIGINT NOT NULL COMMENT '基础账户',
@@ -989,7 +1001,6 @@ CREATE TABLE `vi_vehicle` (
   CONSTRAINT ck_ver_vehicle CHECK (version >= 0)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='授权客户-车辆关联档案，供独立车辆列表';
 
--- 客户常用地址 | MYSQL_AUTO_INCREMENT
 CREATE TABLE `vi_address` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',
   `owner_account_id` BIGINT NOT NULL COMMENT '所属账户',
@@ -1006,7 +1017,6 @@ CREATE TABLE `vi_address` (
   CONSTRAINT ck_ver_address CHECK (version >= 0)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='客户常用地址';
 
--- 不可变生效计价版本 | MYSQL_AUTO_INCREMENT
 CREATE TABLE `vi_price_rule` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',
   `rule_key` VARCHAR(64) NOT NULL COMMENT '稳定方案标识',
@@ -1029,7 +1039,6 @@ CREATE TABLE `vi_price_rule` (
   CONSTRAINT ck_ver_price_rule CHECK (version >= 0)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='不可变生效计价版本';
 
--- 上门服务与站点接收额度 | MYSQL_AUTO_INCREMENT
 CREATE TABLE `vi_quota_slot` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',
   `quota_type` VARCHAR(24) NOT NULL COMMENT 'QuotaType: PICKUP,STATION_RECEIVE',
@@ -1053,7 +1062,6 @@ CREATE TABLE `vi_quota_slot` (
   CONSTRAINT ck_ver_quota_slot CHECK (version >= 0)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='上门服务与站点接收额度';
 
--- 短期报价快照 | MYSQL_AUTO_INCREMENT
 CREATE TABLE `vi_quote` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',
   `owner_account_id` BIGINT NOT NULL COMMENT '报价人',
@@ -1078,7 +1086,6 @@ CREATE TABLE `vi_quote` (
   CONSTRAINT ck_ver_quote CHECK (version >= 0)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='短期报价快照';
 
--- 订单主履约与实际保管 | MYSQL_AUTO_INCREMENT
 CREATE TABLE `vi_order` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',
   `order_no` VARCHAR(64) NOT NULL COMMENT '对外业务单号',
@@ -1121,7 +1128,6 @@ CREATE TABLE `vi_order` (
   CONSTRAINT ck_ver_order CHECK (version >= 0)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='订单主履约与实际保管';
 
--- 每单额度占用凭证 | MYSQL_AUTO_INCREMENT
 CREATE TABLE `vi_quota_reservation` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',
   `order_id` BIGINT NOT NULL COMMENT '关联订单',
@@ -1140,7 +1146,6 @@ CREATE TABLE `vi_quota_reservation` (
   CONSTRAINT ck_ver_quota_reservation CHECK (version >= 0)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='每单额度占用凭证';
 
--- 单人派单邀约 | MYSQL_AUTO_INCREMENT
 CREATE TABLE `vi_dispatch_invite` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',
   `order_id` BIGINT NOT NULL COMMENT '订单',
@@ -1160,11 +1165,9 @@ CREATE TABLE `vi_dispatch_invite` (
   KEY ix_driver_status (driver_id,status),
   KEY ix_expire (status,expires_at),
   CONSTRAINT ck_66_22cd3ab6b830 CHECK (`status` IN ('WAIT_RESPONSE','ACCEPTED','REJECTED','EXPIRED','REVOKED')),
-  CONSTRAINT ck_ver_dispatch_invite CHECK (version >= 0),
-  CONSTRAINT ck_dispatch_invite_source CHECK (`source` IN ('AUTO','MANUAL'))
+  CONSTRAINT ck_ver_dispatch_invite CHECK (version >= 0)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='单人派单邀约';
 
--- 司机承接历史，结束后仍保留 | MYSQL_AUTO_INCREMENT
 CREATE TABLE `vi_driver_assignment` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',
   `order_id` BIGINT NOT NULL COMMENT '订单',
@@ -1187,7 +1190,6 @@ CREATE TABLE `vi_driver_assignment` (
   CONSTRAINT ck_ver_driver_assignment CHECK (version >= 0)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='司机承接历史，结束后仍保留';
 
--- 司机唯一资源占用，不受订单待确认影响 | BUSINESS_KEY
 CREATE TABLE `vi_driver_occupancy` (
   `driver_id` BIGINT NOT NULL COMMENT '主键，唯一占用',
   `holder_type` VARCHAR(16) NOT NULL COMMENT 'OccupancyHolderType: INVITE,ASSIGNMENT',
@@ -1203,7 +1205,6 @@ CREATE TABLE `vi_driver_occupancy` (
   CONSTRAINT ck_ver_driver_occupancy CHECK (version >= 0)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='司机唯一资源占用，不受订单待确认影响';
 
--- 全局轮转游标与版本 | BUSINESS_KEY
 CREATE TABLE `vi_dispatch_cursor` (
   `scope_key` VARCHAR(64) NOT NULL COMMENT '全局或已确认调度域主键',
   `last_driver_id` BIGINT COMMENT '上次派发指针',
@@ -1215,7 +1216,6 @@ CREATE TABLE `vi_dispatch_cursor` (
   CONSTRAINT ck_ver_dispatch_cursor CHECK (version >= 0)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='全局轮转游标与版本';
 
--- 代驾最近前台定位 | BUSINESS_KEY
 CREATE TABLE `vi_driver_location` (
   `driver_id` BIGINT NOT NULL COMMENT '主键',
   `location_cipher` VARBINARY(1024) NOT NULL COMMENT '加密位置',
@@ -1228,7 +1228,6 @@ CREATE TABLE `vi_driver_location` (
   CONSTRAINT ck_ver_driver_location CHECK (version >= 0)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='代驾最近前台定位';
 
--- 一次实物交接事务凭证 | MYSQL_AUTO_INCREMENT
 CREATE TABLE `vi_handover` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',
   `order_id` BIGINT NOT NULL COMMENT '订单',
@@ -1255,7 +1254,6 @@ CREATE TABLE `vi_handover` (
   CONSTRAINT ck_ver_handover CHECK (version >= 0)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='一次实物交接事务凭证';
 
--- 跨重发的交接错误次数 | BUSINESS_KEY
 CREATE TABLE `vi_handover_attempt_guard` (
   `guard_key` VARCHAR(160) NOT NULL COMMENT '订单+承接+交接类型',
   `failed_attempts` INT NOT NULL DEFAULT 0 COMMENT '累计错误次数',
@@ -1268,7 +1266,6 @@ CREATE TABLE `vi_handover_attempt_guard` (
   CONSTRAINT ck_ver_handover_attempt_guard CHECK (version >= 0)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='跨重发的交接错误次数';
 
--- 照片节点分组 | MYSQL_AUTO_INCREMENT
 CREATE TABLE `vi_evidence_group` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',
   `order_id` BIGINT NOT NULL COMMENT '订单',
@@ -1287,11 +1284,9 @@ CREATE TABLE `vi_evidence_group` (
   CONSTRAINT ck_node CHECK (node_no BETWEEN 1 AND 4),
   CONSTRAINT ck_mileage CHECK (mileage_km IS NULL OR mileage_km>=0),
   CONSTRAINT ck_66_6c92d2f8851d CHECK (`status` IN ('DRAFT','READY','SEALED')),
-  CONSTRAINT ck_ver_evidence_group CHECK (version >= 0),
-  CONSTRAINT ck_evidence_group_mileage_source CHECK (`mileage_source` IS NULL OR `mileage_source` IN ('MANUAL','OCR_REVIEWED'))
+  CONSTRAINT ck_ver_evidence_group CHECK (version >= 0)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='照片节点分组';
 
--- 照片版本与服务端元数据 | MYSQL_AUTO_INCREMENT
 CREATE TABLE `vi_photo` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',
   `group_id` BIGINT NOT NULL COMMENT '证据组',
@@ -1315,7 +1310,6 @@ CREATE TABLE `vi_photo` (
   CONSTRAINT ck_ver_photo CHECK (version >= 0)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='照片版本与服务端元数据';
 
--- 私有文件登记与校验 | MYSQL_AUTO_INCREMENT
 CREATE TABLE `vi_file` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',
   `uploader_account_id` BIGINT NOT NULL COMMENT '上传者',
@@ -1339,7 +1333,6 @@ CREATE TABLE `vi_file` (
   CONSTRAINT ck_ver_file CHECK (version >= 0)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='私有文件登记与校验';
 
--- 行驶证登记与人工复核 | MYSQL_AUTO_INCREMENT
 CREATE TABLE `vi_vehicle_license` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',
   `order_id` BIGINT NOT NULL COMMENT '订单',
@@ -1359,7 +1352,6 @@ CREATE TABLE `vi_vehicle_license` (
   CONSTRAINT ck_ver_vehicle_license CHECK (version >= 0)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='行驶证登记与人工复核';
 
--- 追加式结构化结果版本 | MYSQL_AUTO_INCREMENT
 CREATE TABLE `vi_inspection_result` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',
   `order_id` BIGINT NOT NULL COMMENT '订单',
@@ -1379,12 +1371,9 @@ CREATE TABLE `vi_inspection_result` (
   PRIMARY KEY (`id`),
   UNIQUE KEY uk_order_revision (order_id,revision),
   UNIQUE KEY uk_current_order (active_order),
-  CONSTRAINT ck_ver_inspection_result CHECK (version >= 0),
-  CONSTRAINT ck_inspection_result_conclusion CHECK (`conclusion` IN ('PASS','FAIL')),
-  CONSTRAINT ck_inspection_result_source CHECK (`source` IN ('STATION','ADMIN'))
+  CONSTRAINT ck_ver_inspection_result CHECK (version >= 0)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='追加式结构化结果版本';
 
--- 检测结果更正审批 | MYSQL_AUTO_INCREMENT
 CREATE TABLE `vi_result_correction` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',
   `order_id` BIGINT NOT NULL COMMENT '订单',
@@ -1404,19 +1393,27 @@ CREATE TABLE `vi_result_correction` (
   CONSTRAINT ck_ver_result_correction CHECK (version >= 0)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='检测结果更正审批';
 
--- 支付交易与可退资金 | MYSQL_AUTO_INCREMENT
 CREATE TABLE `vi_payment_order` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',
   `order_id` BIGINT NOT NULL COMMENT '订单',
-  `out_trade_no` VARCHAR(64) NOT NULL COMMENT '稳定微信商户单号',
+  `out_trade_no` VARCHAR(64) NOT NULL COMMENT '稳定支付编号；WECHAT作为商户单号，OFFLINE只作本地资金编号',
   `transaction_id` VARCHAR(64) COMMENT '渠道交易号',
-  `status` VARCHAR(24) NOT NULL COMMENT 'PaymentStatus: PENDING,SUCCESS,CLOSED,UNKNOWN',
+  `status` VARCHAR(24) NOT NULL COMMENT 'PaymentStatus: PENDING,REVIEW_PENDING,SUCCESS,CLOSED,UNKNOWN；',
   `total_fen` BIGINT NOT NULL COMMENT '应付',
   `paid_fen` BIGINT NOT NULL DEFAULT 0 COMMENT '实付',
   `refund_reserved_fen` BIGINT NOT NULL DEFAULT 0 COMMENT '处理中退款金额预留',
   `refunded_fen` BIGINT NOT NULL DEFAULT 0 COMMENT '已成功退款',
   `paid_at` DATETIME(3) COMMENT '支付成功',
   `expires_at` DATETIME(3) NOT NULL COMMENT '对应30分钟时点',
+  `payment_method` VARCHAR(16) NOT NULL COMMENT 'PaymentMethod: UNSELECTED,WECHAT,OFFLINE；',
+  `receiver_dept_id` BIGINT NOT NULL COMMENT '原始收款主体部门',
+  `policy_revision_id` BIGINT NULL COMMENT '创建/选择时采用的配置版',
+  `merchant_profile_id` BIGINT NULL COMMENT '仅微信',
+  `merchant_revision_id` BIGINT NULL COMMENT '原资金身份快照版本',
+  `app_id` VARCHAR(64) NULL COMMENT '',
+  `mchid` VARCHAR(32) NULL COMMENT '',
+  `method_locked_at` DATETIME(3) NULL COMMENT '首次有效预下单/线下意图时写入',
+  `capacity_resolution` VARCHAR(24) NOT NULL COMMENT 'PaymentCapacityResolution: HELD,RELEASED,REACQUIRED,MANUAL_CONFLICT；',
   `created_at` DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3)) COMMENT '创建时间，统一UTC',
   `updated_at` DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3)) COMMENT 'UTC更新时间；Mapper每次修改显式SET updated_at=UTC_TIMESTAMP(3)，不依赖连接时区',
   `version` BIGINT NOT NULL DEFAULT 0 COMMENT '乐观锁版本',
@@ -1425,11 +1422,13 @@ CREATE TABLE `vi_payment_order` (
   UNIQUE KEY uk_transaction (transaction_id),
   UNIQUE KEY uk_order (order_id),
   CONSTRAINT ck_refund_balance CHECK (paid_fen>=0 AND refund_reserved_fen>=0 AND refunded_fen>=0 AND refund_reserved_fen+refunded_fen<=paid_fen),
-  CONSTRAINT ck_66_a1f02dcffc3b CHECK (`status` IN ('PENDING','SUCCESS','CLOSED','UNKNOWN')),
-  CONSTRAINT ck_ver_payment_order CHECK (version >= 0)
+  CONSTRAINT ck_ver_payment_order CHECK (version >= 0),
+  CONSTRAINT ck_af21e8f90ed6d9 CHECK (`payment_method` IN ('UNSELECTED','WECHAT','OFFLINE')),
+  CONSTRAINT ck_3029b56e69d651 CHECK (`status` IN ('PENDING','REVIEW_PENDING','SUCCESS','CLOSED','UNKNOWN')),
+  CONSTRAINT ck_51d858e7957115 CHECK (`capacity_resolution` IN ('HELD','RELEASED','REACQUIRED','MANUAL_CONFLICT')),
+  CONSTRAINT ck_pay_method_identity CHECK (payment_method<>'WECHAT' OR (merchant_profile_id IS NOT NULL AND merchant_revision_id IS NOT NULL AND app_id IS NOT NULL AND mchid IS NOT NULL))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='支付交易与可退资金';
 
--- 稳定退款单及渠道执行 | MYSQL_AUTO_INCREMENT
 CREATE TABLE `vi_refund_order` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',
   `case_id` BIGINT NOT NULL COMMENT '关联唯一统一售后申请',
@@ -1442,6 +1441,8 @@ CREATE TABLE `vi_refund_order` (
   `success_at` DATETIME(3) COMMENT '只有SUCCESS存在',
   `last_query_at` DATETIME(3) COMMENT '查单',
   `next_query_at` DATETIME(3) COMMENT '退避后查单',
+  `payment_method` VARCHAR(16) NOT NULL COMMENT 'RefundPaymentMethod: WECHAT,OFFLINE；',
+  `execution_mode` VARCHAR(24) NOT NULL COMMENT 'RefundExecutionMode: WECHAT_API,MANUAL_OFFLINE；',
   `created_at` DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3)) COMMENT '创建时间，统一UTC',
   `updated_at` DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3)) COMMENT 'UTC更新时间；Mapper每次修改显式SET updated_at=UTC_TIMESTAMP(3)，不依赖连接时区',
   `version` BIGINT NOT NULL DEFAULT 0 COMMENT '乐观锁版本',
@@ -1451,10 +1452,11 @@ CREATE TABLE `vi_refund_order` (
   KEY ix_query (status,next_query_at),
   CONSTRAINT ck_refund_amount CHECK (amount_fen>0),
   CONSTRAINT ck_66_8132f268f5fd CHECK (`status` IN ('CREATED','PROCESSING','SUCCESS','CLOSED','ABNORMAL','UNKNOWN')),
-  CONSTRAINT ck_ver_refund_order CHECK (version >= 0)
+  CONSTRAINT ck_ver_refund_order CHECK (version >= 0),
+  CONSTRAINT ck_be46cf0b350473 CHECK (`payment_method` IN ('WECHAT','OFFLINE')),
+  CONSTRAINT ck_35feb49f221ec5 CHECK (`execution_mode` IN ('WECHAT_API','MANUAL_OFFLINE'))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='稳定退款单及渠道执行';
 
--- 永久渠道回调去重 | MYSQL_AUTO_INCREMENT
 CREATE TABLE `vi_channel_event` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',
   `provider` VARCHAR(64) NOT NULL COMMENT '微信支付等',
@@ -1472,7 +1474,6 @@ CREATE TABLE `vi_channel_event` (
   CONSTRAINT ck_ver_channel_event CHECK (version >= 0)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='永久渠道回调去重';
 
--- 普通服务争议 | MYSQL_AUTO_INCREMENT
 CREATE TABLE `vi_dispute` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',
   `order_id` BIGINT NOT NULL COMMENT '订单',
@@ -1492,7 +1493,6 @@ CREATE TABLE `vi_dispute` (
   CONSTRAINT ck_ver_dispute CHECK (version >= 0)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='普通服务争议';
 
--- 普通履约阻碍与客服待办 | MYSQL_AUTO_INCREMENT
 CREATE TABLE `vi_service_exception` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',
   `order_id` BIGINT NOT NULL COMMENT '订单',
@@ -1511,7 +1511,6 @@ CREATE TABLE `vi_service_exception` (
   CONSTRAINT ck_ver_service_exception CHECK (version >= 0)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='普通履约阻碍与客服待办';
 
--- 服务评价 | MYSQL_AUTO_INCREMENT
 CREATE TABLE `vi_review` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',
   `order_id` BIGINT NOT NULL COMMENT '订单',
@@ -1528,7 +1527,6 @@ CREATE TABLE `vi_review` (
   CONSTRAINT ck_ver_review CHECK (version >= 0)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='服务评价';
 
--- 普通取消计次与轮转处罚 | MYSQL_AUTO_INCREMENT
 CREATE TABLE `vi_penalty` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',
   `driver_id` BIGINT NOT NULL COMMENT '司机',
@@ -1553,7 +1551,6 @@ CREATE TABLE `vi_penalty` (
   CONSTRAINT ck_ver_penalty CHECK (version >= 0)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='普通取消计次与轮转处罚';
 
--- 不可变业务事实流水 | MYSQL_AUTO_INCREMENT
 CREATE TABLE `vi_event_log` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',
   `order_id` BIGINT COMMENT '可关联订单',
@@ -1575,11 +1572,9 @@ CREATE TABLE `vi_event_log` (
   `version` BIGINT NOT NULL DEFAULT 0 COMMENT '乐观锁版本',
   PRIMARY KEY (`id`),
   KEY ix_order_time (order_id,created_at,id),
-  CONSTRAINT ck_ver_event_log CHECK (version >= 0),
-  CONSTRAINT ck_event_log_actor_realm CHECK (`actor_realm` IS NULL OR `actor_realm` IN ('MINI','ADMIN','SYSTEM','CALLBACK'))
+  CONSTRAINT ck_ver_event_log CHECK (version >= 0)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='不可变业务事实流水';
 
--- 可靠异步事务消息 | MYSQL_AUTO_INCREMENT
 CREATE TABLE `vi_outbox` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',
   `event_key` VARCHAR(128) NOT NULL COMMENT '事件唯一键',
@@ -1601,7 +1596,6 @@ CREATE TABLE `vi_outbox` (
   CONSTRAINT ck_ver_outbox CHECK (version >= 0)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='可靠异步事务消息';
 
--- 站内消息与下发记录 | MYSQL_AUTO_INCREMENT
 CREATE TABLE `vi_notification` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',
   `account_id` BIGINT NOT NULL COMMENT '接收人',
@@ -1621,7 +1615,6 @@ CREATE TABLE `vi_notification` (
   CONSTRAINT ck_ver_notification CHECK (version >= 0)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='站内消息与下发记录';
 
--- 请求级幂等 | MYSQL_AUTO_INCREMENT
 CREATE TABLE `vi_idempotency` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',
   `subject_key` VARCHAR(96) NOT NULL COMMENT '统一主体命名空间',
@@ -1641,7 +1634,6 @@ CREATE TABLE `vi_idempotency` (
   CONSTRAINT ck_ver_idempotency CHECK (version >= 0)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='请求级幂等';
 
--- 隐私、导出、敏感访问与对账审批台账 | MYSQL_AUTO_INCREMENT
 CREATE TABLE `vi_governance_case` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',
   `case_type` VARCHAR(64) NOT NULL COMMENT 'GovernanceType: PRIVACY,EXPORT,SENSITIVE_ACCESS,RECONCILE',
@@ -1664,7 +1656,6 @@ CREATE TABLE `vi_governance_case` (
   CONSTRAINT ck_governance_type_status CHECK ((case_type='PRIVACY' AND status IN ('APPLIED','PROCESSING','COMPLETED','REJECTED')) OR (case_type='EXPORT' AND status IN ('APPLIED','APPROVED','REJECTED','PROCESSING','READY','FAILED','EXPIRED')) OR (case_type='SENSITIVE_ACCESS' AND status IN ('APPLIED','APPROVED','REJECTED','EXPIRED','REVOKED')) OR (case_type='RECONCILE' AND status IN ('OPEN','CHECKING','RESOLVED')))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='隐私、导出、敏感访问与对账审批台账';
 
--- 车主运营档案扩展，非另一套登录账户 | MYSQL_AUTO_INCREMENT
 CREATE TABLE `vi_owner_profile` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',
   `account_id` BIGINT NOT NULL COMMENT '关联vi_account',
@@ -1681,7 +1672,6 @@ CREATE TABLE `vi_owner_profile` (
   CONSTRAINT ck_ver_owner_profile CHECK (version >= 0)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='车主运营档案扩展，非另一套登录账户';
 
--- 取消与退款的唯一申请与处理记录 | MYSQL_AUTO_INCREMENT
 CREATE TABLE `vi_aftersale_case` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',
   `case_no` VARCHAR(64) NOT NULL COMMENT '对外售后号',
@@ -1694,7 +1684,7 @@ CREATE TABLE `vi_aftersale_case` (
   `requested_fen` BIGINT NOT NULL COMMENT '申请金额',
   `approved_fen` BIGINT COMMENT '批准金额，未审为NULL',
   `return_state` VARCHAR(24) NOT NULL COMMENT 'UNDETERMINED/NOT_REQUIRED/WAIT_RETURN/RETURNED',
-  `refund_state` VARCHAR(24) NOT NULL COMMENT 'RefundStatus: NONE,NOT_REQUIRED,WAIT_RETURN,READY,PROCESSING,SUCCESS,UNKNOWN,ABNORMAL,CLOSED',
+  `refund_state` VARCHAR(24) NOT NULL COMMENT 'NONE/NOT_REQUIRED/WAIT_RETURN/READY/PROCESSING/SUCCESS/UNKNOWN/ABNORMAL',
   `applicant_type` VARCHAR(16) NOT NULL COMMENT 'ApplicantType: ACCOUNT,SYS_USER',
   `applicant_id` BIGINT NOT NULL COMMENT '实际申请身份',
   `reason` VARCHAR(1000) NOT NULL COMMENT '原始申请说明',
@@ -1713,13 +1703,9 @@ CREATE TABLE `vi_aftersale_case` (
   CONSTRAINT ck_66_55e0ea12e908 CHECK (`case_status` IN ('PENDING_REVIEW','EXECUTING','CLOSED','REJECTED')),
   CONSTRAINT ck_66_dc8bfeb94c93 CHECK (`review_status` IN ('PENDING','APPROVED','REJECTED')),
   CONSTRAINT ck_66_c205c5c1a697 CHECK (`applicant_type` IN ('ACCOUNT','SYS_USER')),
-  CONSTRAINT ck_ver_aftersale_case CHECK (version >= 0),
-  CONSTRAINT ck_aftersale_case_kind CHECK (`kind` IN ('CANCEL_REFUND','REFUND_ONLY')),
-  CONSTRAINT ck_aftersale_case_return_state CHECK (`return_state` IN ('UNDETERMINED','NOT_REQUIRED','WAIT_RETURN','RETURNED')),
-  CONSTRAINT ck_aftersale_case_refund_state CHECK (`refund_state` IN ('NONE','NOT_REQUIRED','WAIT_RETURN','READY','PROCESSING','SUCCESS','UNKNOWN','ABNORMAL','CLOSED'))
+  CONSTRAINT ck_ver_aftersale_case CHECK (version >= 0)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='取消与退款的唯一申请与处理记录';
 
--- 统一审核的追加式决定凭证 | MYSQL_AUTO_INCREMENT
 CREATE TABLE `vi_aftersale_review` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',
   `case_id` BIGINT NOT NULL COMMENT '申请',
@@ -1738,11 +1724,9 @@ CREATE TABLE `vi_aftersale_review` (
   PRIMARY KEY (`id`),
   UNIQUE KEY uk_case_revision (case_id,revision),
   CONSTRAINT ck_review_fen CHECK (approved_fen>=0),
-  CONSTRAINT ck_ver_aftersale_review CHECK (version >= 0),
-  CONSTRAINT ck_aftersale_review_decision CHECK (`decision` IN ('APPROVE','REJECT'))
+  CONSTRAINT ck_ver_aftersale_review CHECK (version >= 0)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='统一审核的追加式决定凭证';
 
--- 代驾报酬规则独立版本 | MYSQL_AUTO_INCREMENT
 CREATE TABLE `vi_driver_fee_rule` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',
   `payor_entity_id` BIGINT NOT NULL COMMENT '承担应付的主体',
@@ -1765,11 +1749,9 @@ CREATE TABLE `vi_driver_fee_rule` (
   UNIQUE KEY uk_fee_rule_revision (payor_entity_id,rule_code,revision),
   KEY ix_fee_effective (payor_entity_id,scenario,status,effective_from),
   CONSTRAINT ck_66_78d970a2e61f CHECK (`status` IN ('DRAFT','PENDING_REVIEW','PUBLISHED','DISABLED')),
-  CONSTRAINT ck_ver_driver_fee_rule CHECK (version >= 0),
-  CONSTRAINT ck_driver_fee_rule_currency CHECK (`currency` IN ('CNY'))
+  CONSTRAINT ck_ver_driver_fee_rule CHECK (version >= 0)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='代驾报酬规则独立版本';
 
--- 按真实承接形成的不可覆盖费用台账 | MYSQL_AUTO_INCREMENT
 CREATE TABLE `vi_driver_fee_ledger` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',
   `driver_id` BIGINT NOT NULL COMMENT '代驾',
@@ -1796,12 +1778,9 @@ CREATE TABLE `vi_driver_fee_ledger` (
   KEY ix_fee_period (payor_entity_id,driver_id,service_ended_at),
   CONSTRAINT ck_fee_known CHECK ((pricing_status='PENDING_PRICING' AND amount_fen IS NULL) OR (pricing_status='READY' AND amount_fen IS NOT NULL)),
   CONSTRAINT ck_66_fadb078c6aab CHECK (`pricing_status` IN ('PENDING_PRICING','READY')),
-  CONSTRAINT ck_ver_driver_fee_ledger CHECK (version >= 0),
-  CONSTRAINT ck_driver_fee_ledger_entry_kind CHECK (`entry_kind` IN ('NORMAL_RETURN','CANCEL_RETURN','CANCEL_BEFORE_PICKUP','ADJUSTMENT','INITIAL_VALUATION','PRICE_DELTA')),
-  CONSTRAINT ck_driver_fee_ledger_currency CHECK (`currency` IN ('CNY'))
+  CONSTRAINT ck_ver_driver_fee_ledger CHECK (version >= 0)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='按真实承接形成的不可覆盖费用台账';
 
--- 单主体单司机单币种对账单 | MYSQL_AUTO_INCREMENT
 CREATE TABLE `vi_driver_statement` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',
   `statement_no` VARCHAR(64) NOT NULL COMMENT '对外账单编号',
@@ -1842,11 +1821,9 @@ CREATE TABLE `vi_driver_statement` (
   CONSTRAINT ck_66_09ea0dc1cb1b CHECK (`status` IN ('DRAFT','INTERNAL_REVIEW','SENT','DISPUTED','CONFIRMED','VOID')),
   CONSTRAINT ck_66_8c948c332a52 CHECK (`review_status` IN ('NOT_REQUIRED','REQUIRED','PENDING','APPROVED','REJECTED')),
   CONSTRAINT ck_66_83b18b98eb4a CHECK (`selection_mode` IN ('EXPLICIT')),
-  CONSTRAINT ck_ver_driver_statement CHECK (version >= 0),
-  CONSTRAINT ck_driver_statement_currency CHECK (`currency` IN ('CNY'))
+  CONSTRAINT ck_ver_driver_statement CHECK (version >= 0)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='单主体单司机单币种对账单';
 
--- 对账工作明细；历史发布版本另表保存 | MYSQL_AUTO_INCREMENT
 CREATE TABLE `vi_driver_statement_line` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',
   `statement_id` BIGINT NOT NULL COMMENT '对账单',
@@ -1877,7 +1854,6 @@ CREATE TABLE `vi_driver_statement_line` (
   CONSTRAINT ck_ver_driver_statement_line CHECK (version >= 0)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='对账工作明细；历史发布版本另表保存';
 
--- 每费用条目至多一个活跃账单的分配历史 | MYSQL_AUTO_INCREMENT
 CREATE TABLE `vi_driver_ledger_allocation` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',
   `ledger_id` BIGINT NOT NULL COMMENT '费用条目',
@@ -1895,7 +1871,6 @@ CREATE TABLE `vi_driver_ledger_allocation` (
   CONSTRAINT ck_ver_driver_ledger_allocation CHECK (version >= 0)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='每费用条目至多一个活跃账单的分配历史';
 
--- 本人对账差异与处理记录 | MYSQL_AUTO_INCREMENT
 CREATE TABLE `vi_driver_statement_difference` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',
   `statement_id` BIGINT NOT NULL COMMENT '账单',
@@ -1918,7 +1893,6 @@ CREATE TABLE `vi_driver_statement_difference` (
   CONSTRAINT ck_ver_driver_statement_difference CHECK (version >= 0)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='本人对账差异与处理记录';
 
--- 独立审核的费用调整 | MYSQL_AUTO_INCREMENT
 CREATE TABLE `vi_driver_fee_adjustment` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',
   `source_entry_id` BIGINT NOT NULL COMMENT '源费用记录',
@@ -1942,7 +1916,6 @@ CREATE TABLE `vi_driver_fee_adjustment` (
   CONSTRAINT ck_ver_driver_fee_adjustment CHECK (version >= 0)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='独立审核的费用调整';
 
--- 外部已付款证据登记与核实，不发起转账 | MYSQL_AUTO_INCREMENT
 CREATE TABLE `vi_driver_external_payment` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',
   `statement_id` BIGINT NOT NULL COMMENT '已确认对账单',
@@ -1971,7 +1944,6 @@ CREATE TABLE `vi_driver_external_payment` (
   CONSTRAINT ck_ver_driver_external_payment CHECK (version >= 0)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='外部已付款证据登记与核实，不发起转账';
 
--- 小程序账号安全版本 | MYSQL_AUTO_INCREMENT
 CREATE TABLE `vi_account_security` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',
   `account_id` BIGINT NOT NULL COMMENT 'vi_account',
@@ -1987,7 +1959,6 @@ CREATE TABLE `vi_account_security` (
   CONSTRAINT ck_ver_account_security CHECK (version >= 0)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='小程序账号安全版本';
 
--- 小程序独立设备会话 | MYSQL_AUTO_INCREMENT
 CREATE TABLE `vi_session` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',
   `account_id` BIGINT NOT NULL COMMENT '基础账号',
@@ -2007,11 +1978,9 @@ CREATE TABLE `vi_session` (
   KEY ix_session_account (account_id,status),
   KEY ix_session_expiry (status,absolute_expires_at),
   CONSTRAINT ck_66_b41d9706dfcd CHECK (`status` IN ('ACTIVE','REVOKED','EXPIRED')),
-  CONSTRAINT ck_ver_session CHECK (version >= 0),
-  CONSTRAINT ck_session_active_role CHECK (`active_role` IN ('OWNER','DRIVER','STATION'))
+  CONSTRAINT ck_ver_session CHECK (version >= 0)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='小程序独立设备会话';
 
--- 访问与刷新令牌摘要 | MYSQL_AUTO_INCREMENT
 CREATE TABLE `vi_session_token` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',
   `session_id` BIGINT NOT NULL COMMENT 'vi_session',
@@ -2034,7 +2003,6 @@ CREATE TABLE `vi_session_token` (
   CONSTRAINT ck_ver_session_token CHECK (version >= 0)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='访问与刷新令牌摘要';
 
--- 对账内填写与改价不可变记录 | MYSQL_AUTO_INCREMENT
 CREATE TABLE `vi_driver_price_change` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',
   `statement_id` BIGINT NOT NULL COMMENT '账单',
@@ -2057,7 +2025,6 @@ CREATE TABLE `vi_driver_price_change` (
   CONSTRAINT ck_ver_driver_price_change CHECK (version >= 0)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='对账内填写与改价不可变记录';
 
--- 整单内部复核记录 | MYSQL_AUTO_INCREMENT
 CREATE TABLE `vi_driver_statement_review` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',
   `statement_id` BIGINT NOT NULL COMMENT '账单',
@@ -2080,7 +2047,6 @@ CREATE TABLE `vi_driver_statement_review` (
   CONSTRAINT ck_ver_driver_statement_review CHECK (version >= 0)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='整单内部复核记录';
 
--- 已发送与确认的不可变版本快照 | MYSQL_AUTO_INCREMENT
 CREATE TABLE `vi_driver_statement_snapshot` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',
   `statement_id` BIGINT NOT NULL COMMENT '账单',
@@ -2099,7 +2065,9 @@ CREATE TABLE `vi_driver_statement_snapshot` (
   CONSTRAINT ck_ver_driver_statement_snapshot CHECK (version >= 0)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='已发送与确认的不可变版本快照';
 
--- 对账成员变更不可变历史 | MYSQL_AUTO_INCREMENT
+-- [V6.4 001 缺陷修正] 原 001 此表含 CONSTRAINT ck_ver_driver_statement_membership_change CHECK(version>=0)，
+--   但本表为 append-only 不可变历史、无 version 列，该约束引用不存在列会致建表失败；已移除以可完整初始化。
+--   xinyi 增量库同步不建此约束；见 docs/implementation/vehicle/v64_adapt/ 与 E03 V6.4 前向适配报告 finding。
 CREATE TABLE `vi_driver_statement_membership_change` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',
   `statement_id` BIGINT NOT NULL COMMENT '账单',
@@ -2113,11 +2081,9 @@ CREATE TABLE `vi_driver_statement_membership_change` (
   `snapshot_json` JSON NOT NULL COMMENT '集合变化及涉及行完整快照；不存凭据',
   `created_at` DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3)) COMMENT 'UTC',
   PRIMARY KEY (`id`),
-  KEY ix_membership_history (statement_id,revision_after,id),
-  CONSTRAINT ck_driver_statement_membership_change_action CHECK (`action` IN ('CREATE','ADD','REMOVE','REACTIVATE','VOID'))
+  KEY ix_membership_history (statement_id,revision_after,id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='对账成员变更不可变历史';
 
--- 普通取消处罚申诉记录 | MYSQL_AUTO_INCREMENT
 CREATE TABLE `vi_penalty_appeal` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库生成业务主键；插入不提供id',
   `penalty_id` BIGINT NOT NULL COMMENT '处罚主键',
@@ -2140,47 +2106,6 @@ CREATE TABLE `vi_penalty_appeal` (
   CONSTRAINT ck_ver_penalty_appeal CHECK (version >= 0)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='普通取消处罚申诉记录';
 
--- 本人发起的受控员工绑定申请 | MYSQL_AUTO_INCREMENT
-CREATE TABLE `vi_employee_binding_request` (
-  `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库生成业务主键；插入不提供id',
-  `account_id` BIGINT NOT NULL COMMENT '不可由客户端选择申请主体',
-  `request_code` VARCHAR(64) CHARACTER SET ascii COLLATE ascii_bin NOT NULL COMMENT '公开核对编号，不是授权秘密',
-  `status` VARCHAR(32) NOT NULL DEFAULT 'REQUESTED' COMMENT 'EmployeeBindingStatus: REQUESTED,CREDENTIAL_ISSUED,BOUND,REJECTED,EXPIRED,REVOKED',
-  `request_reason` VARCHAR(500) NOT NULL COMMENT '本人申请理由',
-  `expires_at` DATETIME(3) NOT NULL COMMENT '到期不自动绑定',
-  `created_at` DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3)) COMMENT '创建时刻UTC',
-  `updated_at` DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3)) COMMENT '更新时间UTC；更新必须显式设置UTC_TIMESTAMP(3)',
-  `version` BIGINT NOT NULL DEFAULT 0 COMMENT '手写CAS版本',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY uk_binding_request_code (request_code),
-  KEY ix_binding_request_owner (account_id,status),
-  CONSTRAINT ck_66_8efc7aae47ab CHECK (`status` IN ('REQUESTED','CREDENTIAL_ISSUED','BOUND','REJECTED','EXPIRED','REVOKED')),
-  CONSTRAINT ck_ver_employee_binding_request CHECK (version >= 0)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='本人发起的受控员工绑定申请';
-
--- 管理员签发的一次性员工绑定凭证 | MYSQL_AUTO_INCREMENT
-CREATE TABLE `vi_employee_binding_credential` (
-  `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库生成业务主键；插入不提供id',
-  `request_id` BIGINT NOT NULL COMMENT '绑定申请',
-  `target_account_id` BIGINT NOT NULL COMMENT '凭证只能由此已认证account消费',
-  `target_sys_user_id` BIGINT NOT NULL COMMENT '核对现有sys_user及其全部任职',
-  `token_hash` BINARY(32) NOT NULL COMMENT '随机凭证摘要；不保存或日志输出明文',
-  `status` VARCHAR(24) NOT NULL DEFAULT 'ISSUED' COMMENT 'BindingCredentialStatus: ISSUED,CONSUMED,REVOKED,EXPIRED',
-  `issued_by_user_id` BIGINT NOT NULL COMMENT '真正后台签发人',
-  `expires_at` DATETIME(3) NOT NULL COMMENT 'UTC短期失效',
-  `consumed_at` DATETIME(3) NULL COMMENT '一次性消费',
-  `reason` VARCHAR(500) NOT NULL COMMENT '签发理由',
-  `created_at` DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3)) COMMENT '创建时刻UTC',
-  `updated_at` DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3)) COMMENT '更新时间UTC；更新必须显式设置UTC_TIMESTAMP(3)',
-  `version` BIGINT NOT NULL DEFAULT 0 COMMENT '手写CAS版本',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY uk_binding_token_hash (token_hash),
-  KEY ix_binding_credential_request (request_id,status),
-  CONSTRAINT ck_66_ec6a315733a1 CHECK (`status` IN ('ISSUED','CONSUMED','REVOKED','EXPIRED')),
-  CONSTRAINT ck_ver_employee_binding_credential CHECK (version >= 0)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='管理员签发的一次性员工绑定凭证';
-
--- 代驾培训不可变课程版本 | MYSQL_AUTO_INCREMENT
 CREATE TABLE `vi_training_course` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库生成业务主键；插入不提供id',
   `course_key` VARCHAR(64) CHARACTER SET ascii COLLATE ascii_bin NOT NULL COMMENT '稳定课程编码',
@@ -2205,7 +2130,6 @@ CREATE TABLE `vi_training_course` (
   CONSTRAINT ck_ver_training_course CHECK (version >= 0)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='代驾培训不可变课程版本';
 
--- 培训课程版本的后台题库 | MYSQL_AUTO_INCREMENT
 CREATE TABLE `vi_training_question` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库生成业务主键；插入不提供id',
   `training_id` BIGINT NOT NULL COMMENT '确切课程版本',
@@ -2224,7 +2148,6 @@ CREATE TABLE `vi_training_question` (
   CONSTRAINT ck_ver_training_question CHECK (version >= 0)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='培训课程版本的后台题库';
 
--- 本人每个课程版本的学习进度 | MYSQL_AUTO_INCREMENT
 CREATE TABLE `vi_training_progress` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库生成业务主键；插入不提供id',
   `application_id` BIGINT NOT NULL COMMENT '资格申请',
@@ -2242,7 +2165,6 @@ CREATE TABLE `vi_training_progress` (
   CONSTRAINT ck_ver_training_progress CHECK (version >= 0)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='本人每个课程版本的学习进度';
 
--- 短期受控学习会话 | MYSQL_AUTO_INCREMENT
 CREATE TABLE `vi_training_playback` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库生成业务主键；插入不提供id',
   `progress_id` BIGINT NOT NULL COMMENT '本人进度',
@@ -2259,7 +2181,6 @@ CREATE TABLE `vi_training_playback` (
   CONSTRAINT ck_ver_training_playback CHECK (version >= 0)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='短期受控学习会话';
 
--- 本人考试尝试及不可变题卷快照 | MYSQL_AUTO_INCREMENT
 CREATE TABLE `vi_training_attempt` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库生成业务主键；插入不提供id',
   `application_id` BIGINT NOT NULL COMMENT '资格申请',
@@ -2284,7 +2205,6 @@ CREATE TABLE `vi_training_attempt` (
   CONSTRAINT ck_ver_training_attempt CHECK (version >= 0)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='本人考试尝试及不可变题卷快照';
 
--- 本人实名活体启动与可信结果会话 | MYSQL_AUTO_INCREMENT
 CREATE TABLE `vi_face_session` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库生成业务主键；插入不提供id',
   `application_id` BIGINT NOT NULL COMMENT '资格申请',
@@ -2306,3 +2226,368 @@ CREATE TABLE `vi_face_session` (
   CONSTRAINT ck_66_a153de145e1b CHECK (`launch_mode` IN ('WEBVIEW_URL')),
   CONSTRAINT ck_ver_face_session CHECK (version >= 0)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='本人实名活体启动与可信结果会话';
+
+CREATE TABLE `vi_phone_verification_receipt` (
+  `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库生成内部Long，API字符串',
+  `request_id` CHAR(36) CHARACTER SET ascii COLLATE ascii_bin NOT NULL COMMENT '客户端一次流程UUID，绑定当前账号',
+  `app_id` VARCHAR(64) CHARACTER SET ascii COLLATE ascii_bin NOT NULL COMMENT '服务端应用标识',
+  `account_id` BIGINT NOT NULL COMMENT '已认证MINI账号；不从请求接收',
+  `session_id` BIGINT NOT NULL COMMENT '发起的基础会话',
+  `code_hash` BINARY(32) NOT NULL COMMENT '微信phoneCode摘要，防跨账号重放；绝不保存原始code',
+  `status` VARCHAR(24) NOT NULL DEFAULT 'PROCESSING' COMMENT 'PhoneVerificationStatus: PROCESSING,VERIFIED,UNKNOWN,FAILED',
+  `phone_lookup` BINARY(32) NULL COMMENT '成功后可信手机号HMAC',
+  `phone_cipher` VARBINARY(512) NULL COMMENT '成功结果恢复所需加密号码；敏感回执到期按留存规则清理，审计不记录原文',
+  `verified_at` DATETIME(3) NULL COMMENT '微信已成功核验的UTC时间',
+  `expires_at` DATETIME(3) NOT NULL COMMENT '关联重试窗口截至时间；默认10分钟是技术值，不是微信code有效期',
+  `employee_link_outcome` VARCHAR(40) NOT NULL DEFAULT 'NOT_ATTEMPTED' COMMENT 'EmployeeLinkOutcome；内部原因不直接下发小程序',
+  `lease_until` DATETIME(3) NULL COMMENT '处理租约；处理中未知不盲目重复消费供应商凭据',
+  `finished_at` DATETIME(3) NULL COMMENT '最终处理时间',
+  `created_at` DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3)) COMMENT 'UTC创建时间',
+  `updated_at` DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3)) COMMENT '更新显式UTC_TIMESTAMP(3)',
+  `version` BIGINT NOT NULL DEFAULT 0 COMMENT '受控CAS版本',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY uk_phone_request (account_id,request_id),
+  UNIQUE KEY uk_phone_code (app_id,code_hash),
+  KEY ix_phone_receipt_status (status,lease_until),
+  CONSTRAINT ck_cbadb1ceb7 CHECK (`status` IN ('PROCESSING','VERIFIED','UNKNOWN','FAILED')),
+  CONSTRAINT ck_b584437700 CHECK (`employee_link_outcome` IN ('NOT_ATTEMPTED','NO_MATCH','LINKED','EXISTING_LINK','AMBIGUOUS_PHONE','EMPLOYEE_UNAVAILABLE','USER_ALREADY_LINKED','ACCOUNT_ALREADY_LINKED','REBIND_BLOCKED','PHONE_CHANGED','DIRECTORY_UNAVAILABLE')),
+  CONSTRAINT ck_ver_phone_verification_receipt CHECK (version >= 0)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='手机号授权处理与重试回执';
+
+CREATE TABLE `vi_station_grant_set` (
+  `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库生成内部Long，API字符串',
+  `sys_user_id` BIGINT NOT NULL COMMENT '目标框架员工；可无微信账号',
+  `own_station_id` BIGINT NULL COMMENT '仅行政展示，不自动授权',
+  `changed_by` BIGINT NULL COMMENT '后台修改人',
+  `reason` VARCHAR(500) NULL COMMENT '本次集合调整原因',
+  `created_at` DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3)) COMMENT 'UTC创建时间',
+  `updated_at` DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3)) COMMENT '更新显式UTC_TIMESTAMP(3)',
+  `version` BIGINT NOT NULL DEFAULT 0 COMMENT '受控CAS版本',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY uk_station_grant_employee (sys_user_id),
+  CONSTRAINT ck_ver_station_grant_set CHECK (version >= 0)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='员工站点授权集合版本';
+
+CREATE TABLE `vi_employee_directory_guard` (
+  `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库生成内部Long，API字符串',
+  `guard_key` VARCHAR(64) CHARACTER SET ascii COLLATE ascii_bin NOT NULL COMMENT '首期唯一GLOBAL_DIRECTORY；同库轻量互斥，不是用户权限',
+  `created_at` DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3)) COMMENT 'UTC创建时间',
+  `updated_at` DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3)) COMMENT '更新显式UTC_TIMESTAMP(3)',
+  `version` BIGINT NOT NULL DEFAULT 0 COMMENT '受控CAS版本',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY uk_employee_directory_guard (guard_key),
+  CONSTRAINT ck_ver_employee_directory_guard CHECK (version >= 0)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='员工手机号匹配与目录变更串行防护';
+
+CREATE TABLE `vi_integration_profile` (
+  `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '内部自增Long；API十进制字符串',
+  `kind` VARCHAR(32) NOT NULL COMMENT 'IntegrationKind: PAYMENT_POLICY,WECHAT_PAY,TENCENT_SMS,ALIYUN_SMS,WECHAT_APP；',
+  `owner_dept_id` BIGINT NOT NULL COMMENT '真实管理/收款主体，复用框架部门归属',
+  `environment` VARCHAR(12) NOT NULL COMMENT 'IntegrationEnvironment: TEST,LIVE；',
+  `config_key` VARCHAR(80) NOT NULL COMMENT 'PAYMENT_POLICY与WECHAT_APP用DEFAULT；其他由服务端生成，不由用户改身份',
+  `display_name` VARCHAR(100) NOT NULL COMMENT '',
+  `lifecycle` VARCHAR(16) NOT NULL COMMENT 'IntegrationLifecycle: DRAFT,ACTIVE,RETIRED；',
+  `active_revision_id` BIGINT NULL COMMENT '当前发布版本',
+  `draft_revision_id` BIGINT NULL COMMENT '最新草稿版本',
+  `revision_seq` BIGINT NOT NULL DEFAULT 0 COMMENT '分配版本号的CAS计数',
+  `created_by` BIGINT NOT NULL COMMENT '配置创建人',
+  `last_published_by` BIGINT NULL COMMENT '最近发布人',
+  `created_at` DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3)) COMMENT 'UTC创建时间',
+  `updated_at` DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3)) COMMENT 'Mapper显式UTC更新时间',
+  `version` BIGINT NOT NULL DEFAULT 0 COMMENT '显式CAS；不是注解自动生效',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY uk_integration_scope (kind,owner_dept_id,environment,config_key),
+  KEY ix_integration_active (active_revision_id),
+  CONSTRAINT ck_ver_integration_profile CHECK (version >= 0),
+  CONSTRAINT ck_fdb65a8cb0d9d1 CHECK (`kind` IN ('PAYMENT_POLICY','WECHAT_PAY','TENCENT_SMS','ALIYUN_SMS','WECHAT_APP')),
+  CONSTRAINT ck_5d0e7efd82afb9 CHECK (`environment` IN ('TEST','LIVE')),
+  CONSTRAINT ck_7d6eefe158cca1 CHECK (`lifecycle` IN ('DRAFT','ACTIVE','RETIRED'))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='第三方配置档案与生效指针';
+
+CREATE TABLE `vi_integration_revision` (
+  `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '内部自增Long；API十进制字符串',
+  `profile_id` BIGINT NOT NULL COMMENT '',
+  `revision_no` BIGINT NOT NULL COMMENT '',
+  `config_json` JSON NOT NULL COMMENT '经kind专用DTO验证的非秘密配置',
+  `secret_refs_json` JSON NOT NULL COMMENT '本配置凭据槽位到secret id的内部映射，不下发',
+  `content_hash` VARCHAR(64) NOT NULL COMMENT '规范化内容与秘密引用版本摘要',
+  `created_by` BIGINT NOT NULL COMMENT '',
+  `reason` VARCHAR(500) NOT NULL COMMENT '',
+  `created_at` DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3)) COMMENT 'UTC创建时间',
+  `updated_at` DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3)) COMMENT 'Mapper显式UTC更新时间',
+  `version` BIGINT NOT NULL DEFAULT 0 COMMENT '显式CAS；不是注解自动生效',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY uk_config_revision (profile_id,revision_no),
+  UNIQUE KEY uk_config_hash (profile_id,content_hash),
+  CONSTRAINT ck_ver_integration_revision CHECK (version >= 0)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='不可变第三方配置版本';
+
+CREATE TABLE `vi_integration_secret` (
+  `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '内部自增Long；API十进制字符串',
+  `profile_id` BIGINT NOT NULL COMMENT '',
+  `slot_name` VARCHAR(64) NOT NULL COMMENT '固定允许的凭据槽，禁止用户自造密钥用途',
+  `credential_kind` VARCHAR(32) NOT NULL COMMENT 'IntegrationCredentialKind: PRIVATE_KEY,API_V3_KEY,CLOUD_SECRET,APP_SECRET,BANK_ACCOUNT；',
+  `ciphertext` MEDIUMBLOB NOT NULL COMMENT 'AEAD密文或KMS加密数据键封装，绝非base64明文',
+  `nonce` VARBINARY(32) NOT NULL COMMENT '每密文独立随机nonce',
+  `key_version` VARCHAR(128) NOT NULL COMMENT '主密钥版本在服务端安全配置',
+  `aad_context` VARCHAR(255) NOT NULL COMMENT '绑定profile/slot/env的不可更改上下文',
+  `fingerprint` VARCHAR(64) NOT NULL COMMENT '安全标识不可逆；不显示明文末几位',
+  `lifecycle` VARCHAR(16) NOT NULL COMMENT 'IntegrationSecretLifecycle: ACTIVE,RETIRED,REVOKED；',
+  `expires_at` DATETIME(3) NULL COMMENT '',
+  `retired_at` DATETIME(3) NULL COMMENT '',
+  `created_by` BIGINT NOT NULL COMMENT '',
+  `retired_by` BIGINT NULL COMMENT '受控撤销人',
+  `retire_reason` VARCHAR(500) NULL COMMENT '',
+  `created_at` DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3)) COMMENT 'UTC创建时间',
+  `updated_at` DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3)) COMMENT 'Mapper显式UTC更新时间',
+  `version` BIGINT NOT NULL DEFAULT 0 COMMENT '显式CAS；不是注解自动生效',
+  PRIMARY KEY (`id`),
+  KEY ix_secret_owner (profile_id,slot_name,lifecycle),
+  CONSTRAINT ck_ver_integration_secret CHECK (version >= 0),
+  CONSTRAINT ck_db3f36fab3347a CHECK (`credential_kind` IN ('PRIVATE_KEY','API_V3_KEY','CLOUD_SECRET','APP_SECRET','BANK_ACCOUNT')),
+  CONSTRAINT ck_83aefc040222fa CHECK (`lifecycle` IN ('ACTIVE','RETIRED','REVOKED'))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='安全凭据密文与受控生命周期';
+
+CREATE TABLE `vi_integration_check` (
+  `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '内部自增Long；API十进制字符串',
+  `target_type` VARCHAR(16) NOT NULL COMMENT 'IntegrationTargetType: PROFILE,TEMPLATE；',
+  `target_id` BIGINT NOT NULL COMMENT '',
+  `revision_id` BIGINT NOT NULL COMMENT '',
+  `content_hash` VARCHAR(64) NOT NULL COMMENT '',
+  `check_level` VARCHAR(24) NOT NULL COMMENT 'IntegrationCheckLevel: LOCAL,READ_ONLY,LIVE_EVIDENCE；',
+  `status` VARCHAR(16) NOT NULL COMMENT 'IntegrationCheckStatus: NOT_RUN,PASS,FAIL,PARTIAL；',
+  `issues_json` JSON NOT NULL COMMENT '脱敏逐字段错误/警告/未验证项',
+  `checked_at` DATETIME(3) NOT NULL COMMENT '',
+  `expires_at` DATETIME(3) NOT NULL COMMENT '',
+  `checked_by` BIGINT NOT NULL COMMENT '',
+  `real_payment_verified` TINYINT NOT NULL DEFAULT 0 COMMENT '仅真实授权资金测试证据才能标记；只读连接不是支付成功',
+  `created_at` DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3)) COMMENT 'UTC创建时间',
+  `updated_at` DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3)) COMMENT 'Mapper显式UTC更新时间',
+  `version` BIGINT NOT NULL DEFAULT 0 COMMENT '显式CAS；不是注解自动生效',
+  PRIMARY KEY (`id`),
+  KEY ix_check_revision (target_type,target_id,revision_id,checked_at),
+  CONSTRAINT ck_ver_integration_check CHECK (version >= 0),
+  CONSTRAINT ck_88cd710155a461 CHECK (`target_type` IN ('PROFILE','TEMPLATE')),
+  CONSTRAINT ck_4c4d3c7687eba0 CHECK (`check_level` IN ('LOCAL','READ_ONLY','LIVE_EVIDENCE')),
+  CONSTRAINT ck_5bc059710176ef CHECK (`status` IN ('NOT_RUN','PASS','FAIL','PARTIAL'))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='指定配置版本校验记录';
+
+CREATE TABLE `vi_integration_publication` (
+  `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '内部自增Long；API十进制字符串',
+  `target_type` VARCHAR(16) NOT NULL COMMENT 'IntegrationTargetType: PROFILE,TEMPLATE；',
+  `target_id` BIGINT NOT NULL COMMENT '',
+  `revision_id` BIGINT NOT NULL COMMENT '',
+  `previous_revision_id` BIGINT NULL COMMENT '旧生效版本',
+  `check_id` BIGINT NOT NULL COMMENT '',
+  `action` VARCHAR(16) NOT NULL COMMENT 'IntegrationPublishAction: PUBLISH,ROLLBACK；',
+  `published_by` BIGINT NOT NULL COMMENT '',
+  `published_at` DATETIME(3) NOT NULL COMMENT '',
+  `reason` VARCHAR(500) NOT NULL COMMENT '',
+  `dependency_versions` JSON NOT NULL COMMENT '发布时依赖版本快照',
+  `target_version` BIGINT NOT NULL COMMENT '发布事务后的根版本',
+  `created_at` DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3)) COMMENT 'UTC创建时间',
+  `updated_at` DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3)) COMMENT 'Mapper显式UTC更新时间',
+  `version` BIGINT NOT NULL DEFAULT 0 COMMENT '显式CAS；不是注解自动生效',
+  PRIMARY KEY (`id`),
+  KEY ix_publication_target (target_type,target_id,published_at),
+  CONSTRAINT ck_ver_integration_publication CHECK (version >= 0),
+  CONSTRAINT ck_1da14a68f349f2 CHECK (`target_type` IN ('PROFILE','TEMPLATE')),
+  CONSTRAINT ck_fc819ff643e13c CHECK (`action` IN ('PUBLISH','ROLLBACK'))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='配置发布与回滚审计';
+
+CREATE TABLE `vi_message_template` (
+  `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '内部自增Long；API十进制字符串',
+  `name` VARCHAR(100) NOT NULL COMMENT '',
+  `provider` VARCHAR(32) NOT NULL COMMENT 'ExternalMessageProvider: TENCENT_SMS,ALIYUN_SMS,WECHAT_SUBSCRIBE；',
+  `owner_dept_id` BIGINT NOT NULL COMMENT '',
+  `environment` VARCHAR(12) NOT NULL COMMENT 'IntegrationEnvironment: TEST,LIVE；',
+  `scene` VARCHAR(40) NOT NULL COMMENT 'NotificationScene: LOGIN_OTP,PHONE_VERIFY,BOOKING_CONFIRMED,DRIVER_ASSIGNED,PICKUP_ARRIVED,INSPECTION_FINISHED,RETURN_COMPLETED,AFTERSALE_DECIDED,REFUND_CHANGED,DRIVER_INVITE,STATEMENT_READY；',
+  `audience` VARCHAR(16) NOT NULL COMMENT 'NotificationAudience: OWNER,DRIVER,STATION；',
+  `active_revision_id` BIGINT NULL COMMENT '当前已发布模板',
+  `draft_revision_id` BIGINT NULL COMMENT '最新草稿',
+  `revision_seq` BIGINT NOT NULL DEFAULT 0 COMMENT '模板版本分配计数',
+  `created_by` BIGINT NOT NULL COMMENT '',
+  `created_at` DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3)) COMMENT 'UTC创建时间',
+  `updated_at` DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3)) COMMENT 'Mapper显式UTC更新时间',
+  `version` BIGINT NOT NULL DEFAULT 0 COMMENT '显式CAS；不是注解自动生效',
+  PRIMARY KEY (`id`),
+  KEY ix_template_scene (owner_dept_id,environment,scene,audience,provider),
+  CONSTRAINT ck_ver_message_template CHECK (version >= 0),
+  CONSTRAINT ck_d4792ebbf8b6a6 CHECK (`provider` IN ('TENCENT_SMS','ALIYUN_SMS','WECHAT_SUBSCRIBE')),
+  CONSTRAINT ck_fc161ac5a52b5d CHECK (`environment` IN ('TEST','LIVE')),
+  CONSTRAINT ck_a22fd0ee77b18a CHECK (`scene` IN ('LOGIN_OTP','PHONE_VERIFY','BOOKING_CONFIRMED','DRIVER_ASSIGNED','PICKUP_ARRIVED','INSPECTION_FINISHED','RETURN_COMPLETED','AFTERSALE_DECIDED','REFUND_CHANGED','DRIVER_INVITE','STATEMENT_READY')),
+  CONSTRAINT ck_992903d6097179 CHECK (`audience` IN ('OWNER','DRIVER','STATION'))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='外部短信与订阅模板档案';
+
+CREATE TABLE `vi_message_template_revision` (
+  `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '内部自增Long；API十进制字符串',
+  `template_id` BIGINT NOT NULL COMMENT '',
+  `revision_no` BIGINT NOT NULL COMMENT '',
+  `profile_id` BIGINT NOT NULL COMMENT '',
+  `profile_revision_id` BIGINT NOT NULL COMMENT '',
+  `vendor_template_id` VARCHAR(256) NULL COMMENT '实际供应商审核通过的模板ID；草稿可空，发布时强制',
+  `parameter_bindings` JSON NOT NULL COMMENT '白名单变量、实际key/type/length；腾讯顺序/阿里命名',
+  `options_json` JSON NOT NULL COMMENT '签名/内容快照/小程序page/env/lang等非秘密',
+  `enabled` TINYINT NOT NULL COMMENT '发送开关',
+  `approval_status` VARCHAR(16) NOT NULL COMMENT 'TemplateApprovalStatus: UNKNOWN,APPROVED,REJECTED；',
+  `content_hash` VARCHAR(64) NOT NULL COMMENT '',
+  `created_by` BIGINT NOT NULL COMMENT '',
+  `reason` VARCHAR(500) NOT NULL COMMENT '',
+  `created_at` DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3)) COMMENT 'UTC创建时间',
+  `updated_at` DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3)) COMMENT 'Mapper显式UTC更新时间',
+  `version` BIGINT NOT NULL DEFAULT 0 COMMENT '显式CAS；不是注解自动生效',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY uk_template_revision (template_id,revision_no),
+  CONSTRAINT ck_ver_message_template_revision CHECK (version >= 0),
+  CONSTRAINT ck_b7dcf36d038099 CHECK (`approval_status` IN ('UNKNOWN','APPROVED','REJECTED'))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='不可变外部模板版本';
+
+CREATE TABLE `vi_notification_route` (
+  `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '内部自增Long；API十进制字符串',
+  `owner_dept_id` BIGINT NOT NULL COMMENT '',
+  `environment` VARCHAR(12) NOT NULL COMMENT 'IntegrationEnvironment: TEST,LIVE；',
+  `scene` VARCHAR(40) NOT NULL COMMENT 'NotificationScene: LOGIN_OTP,PHONE_VERIFY,BOOKING_CONFIRMED,DRIVER_ASSIGNED,PICKUP_ARRIVED,INSPECTION_FINISHED,RETURN_COMPLETED,AFTERSALE_DECIDED,REFUND_CHANGED,DRIVER_INVITE,STATEMENT_READY；',
+  `audience` VARCHAR(16) NOT NULL COMMENT 'NotificationAudience: OWNER,DRIVER,STATION；',
+  `primary_template_id` BIGINT NOT NULL COMMENT '',
+  `fallback_template_id` BIGINT NULL COMMENT '只允许明确未发送时按规则用备用',
+  `fallback_policy` VARCHAR(32) NOT NULL COMMENT 'MessageFallbackPolicy: NONE,DEFINITELY_NOT_SENT_ONLY；',
+  `enabled` TINYINT NOT NULL COMMENT '',
+  `updated_by` BIGINT NOT NULL COMMENT '',
+  `reason` VARCHAR(500) NOT NULL COMMENT '',
+  `created_at` DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3)) COMMENT 'UTC创建时间',
+  `updated_at` DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3)) COMMENT 'Mapper显式UTC更新时间',
+  `version` BIGINT NOT NULL DEFAULT 0 COMMENT '显式CAS；不是注解自动生效',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY uk_message_route (owner_dept_id,environment,scene,audience),
+  CONSTRAINT ck_ver_notification_route CHECK (version >= 0),
+  CONSTRAINT ck_545a6078080a6c CHECK (`environment` IN ('TEST','LIVE')),
+  CONSTRAINT ck_abb77f22beb38f CHECK (`scene` IN ('LOGIN_OTP','PHONE_VERIFY','BOOKING_CONFIRMED','DRIVER_ASSIGNED','PICKUP_ARRIVED','INSPECTION_FINISHED','RETURN_COMPLETED','AFTERSALE_DECIDED','REFUND_CHANGED','DRIVER_INVITE','STATEMENT_READY')),
+  CONSTRAINT ck_e031dc9c69e46e CHECK (`audience` IN ('OWNER','DRIVER','STATION')),
+  CONSTRAINT ck_fbf39632b0a6fb CHECK (`fallback_policy` IN ('NONE','DEFINITELY_NOT_SENT_ONLY'))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='业务事件到唯一主通道的路由';
+
+CREATE TABLE `vi_notification_delivery` (
+  `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '内部自增Long；API十进制字符串',
+  `notification_id` BIGINT NOT NULL COMMENT '关联已有站内消息/OTP任务；OTP可使用内部通知目标记录',
+  `event_key` VARCHAR(128) NOT NULL COMMENT '逻辑事件业务键',
+  `recipient_key` VARCHAR(128) NOT NULL COMMENT 'accountId或脱敏HMAC，禁止裸号',
+  `recipient_cipher` VARBINARY(1024) NOT NULL COMMENT '必要收件手机号/OpenID密文',
+  `owner_dept_id` BIGINT NOT NULL COMMENT '',
+  `environment` VARCHAR(12) NOT NULL COMMENT 'IntegrationEnvironment: TEST,LIVE；',
+  `route_id` BIGINT NOT NULL COMMENT '',
+  `scene` VARCHAR(40) NOT NULL COMMENT 'NotificationScene: LOGIN_OTP,PHONE_VERIFY,BOOKING_CONFIRMED,DRIVER_ASSIGNED,PICKUP_ARRIVED,INSPECTION_FINISHED,RETURN_COMPLETED,AFTERSALE_DECIDED,REFUND_CHANGED,DRIVER_INVITE,STATEMENT_READY；',
+  `provider` VARCHAR(32) NOT NULL COMMENT 'ExternalMessageProvider: TENCENT_SMS,ALIYUN_SMS,WECHAT_SUBSCRIBE；',
+  `template_id` BIGINT NOT NULL COMMENT '',
+  `template_revision_id` BIGINT NOT NULL COMMENT '',
+  `profile_id` BIGINT NOT NULL COMMENT '',
+  `profile_revision_id` BIGINT NOT NULL COMMENT '',
+  `payload_cipher_refs` JSON NOT NULL COMMENT '消息内容加密引用/服务器事件引用，不含明文验证码',
+  `status` VARCHAR(24) NOT NULL COMMENT 'ExternalDeliveryStatus: PENDING,SENDING,ACCEPTED,DELIVERED,FAILED,UNKNOWN,SKIPPED；',
+  `vendor_request_id` VARCHAR(128) NULL COMMENT '',
+  `vendor_biz_id` VARCHAR(128) NULL COMMENT '',
+  `safe_error_code` VARCHAR(128) NULL COMMENT '',
+  `safe_error_message` VARCHAR(500) NULL COMMENT '',
+  `attempt_count` INT NOT NULL DEFAULT 0 COMMENT '',
+  `next_attempt_at` DATETIME(3) NULL COMMENT '',
+  `lease_until` DATETIME(3) NULL COMMENT '',
+  `accepted_at` DATETIME(3) NULL COMMENT '',
+  `delivered_at` DATETIME(3) NULL COMMENT '',
+  `business_expires_at` DATETIME(3) NOT NULL COMMENT '',
+  `created_at` DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3)) COMMENT 'UTC创建时间',
+  `updated_at` DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3)) COMMENT 'Mapper显式UTC更新时间',
+  `version` BIGINT NOT NULL DEFAULT 0 COMMENT '显式CAS；不是注解自动生效',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY uk_delivery_event (event_key,recipient_key,scene),
+  KEY ix_delivery_retry (status,next_attempt_at),
+  KEY ix_vendor_message (provider,vendor_biz_id),
+  CONSTRAINT ck_ver_notification_delivery CHECK (version >= 0),
+  CONSTRAINT ck_3295c253da0860 CHECK (`environment` IN ('TEST','LIVE')),
+  CONSTRAINT ck_53d61b6a3a8ac2 CHECK (`scene` IN ('LOGIN_OTP','PHONE_VERIFY','BOOKING_CONFIRMED','DRIVER_ASSIGNED','PICKUP_ARRIVED','INSPECTION_FINISHED','RETURN_COMPLETED','AFTERSALE_DECIDED','REFUND_CHANGED','DRIVER_INVITE','STATEMENT_READY')),
+  CONSTRAINT ck_6066945178ca2a CHECK (`provider` IN ('TENCENT_SMS','ALIYUN_SMS','WECHAT_SUBSCRIBE')),
+  CONSTRAINT ck_9de57b85c185c7 CHECK (`status` IN ('PENDING','SENDING','ACCEPTED','DELIVERED','FAILED','UNKNOWN','SKIPPED'))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='外部发送执行与回执';
+
+CREATE TABLE `vi_subscription_prompt` (
+  `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '内部自增Long；API十进制字符串',
+  `account_id` BIGINT NOT NULL COMMENT '',
+  `app_id` VARCHAR(64) NOT NULL COMMENT '',
+  `nonce_hash` VARCHAR(64) NOT NULL COMMENT '一次性nonce摘要',
+  `template_versions` JSON NOT NULL COMMENT '模板ID、公开版本及场景',
+  `business_object_type` VARCHAR(32) NOT NULL COMMENT 'SubscriptionObjectType: ORDER,ASSIGNMENT,STATEMENT,DRIVER_APPLICATION；',
+  `business_object_id` BIGINT NOT NULL COMMENT '',
+  `status` VARCHAR(16) NOT NULL COMMENT 'SubscriptionPromptStatus: CREATED,REPORTED,EXPIRED；',
+  `expires_at` DATETIME(3) NOT NULL COMMENT '',
+  `reported_at` DATETIME(3) NULL COMMENT '',
+  `client_report` JSON NULL COMMENT '微信前端结果不等于服务端真实剩余额度',
+  `report_hash` VARCHAR(64) NULL COMMENT '',
+  `created_at` DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3)) COMMENT 'UTC创建时间',
+  `updated_at` DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3)) COMMENT 'Mapper显式UTC更新时间',
+  `version` BIGINT NOT NULL DEFAULT 0 COMMENT '显式CAS；不是注解自动生效',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY uk_prompt_nonce (nonce_hash),
+  KEY ix_prompt_account (account_id,created_at),
+  CONSTRAINT ck_ver_subscription_prompt CHECK (version >= 0),
+  CONSTRAINT ck_31c0259441de72 CHECK (`business_object_type` IN ('ORDER','ASSIGNMENT','STATEMENT','DRIVER_APPLICATION')),
+  CONSTRAINT ck_dfa4511a54a323 CHECK (`status` IN ('CREATED','REPORTED','EXPIRED'))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='一次用户触发订阅请求与结果';
+
+CREATE TABLE `vi_offline_payment_record` (
+  `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '内部自增Long；API十进制字符串',
+  `payment_id` BIGINT NOT NULL COMMENT '',
+  `refund_id` BIGINT NULL COMMENT '仅REFUND有值，必须来自统一审核已批准执行单',
+  `direction` VARCHAR(16) NOT NULL COMMENT 'OfflineProofDirection: COLLECTION,REFUND；',
+  `owner_dept_id` BIGINT NOT NULL COMMENT '原支付收款主体快照',
+  `amount_fen` BIGINT NOT NULL COMMENT '本期完整金额；不支持混合/客户拆单付款',
+  `paid_at` DATETIME(3) NOT NULL COMMENT '真实线下发生时刻',
+  `method` VARCHAR(24) NOT NULL COMMENT 'OfflineProofMethod: CASH,BANK_TRANSFER；',
+  `external_reference_cipher` VARBINARY(1024) NOT NULL COMMENT '流水/收据编号密文',
+  `reference_hmac` VARCHAR(64) NOT NULL COMMENT '主体+方向+方式+流水永久去重摘要',
+  `voucher_file_ids` JSON NOT NULL COMMENT '私有文件，服务端核查归属与可用性',
+  `status` VARCHAR(16) NOT NULL COMMENT 'OfflineProofStatus: SUBMITTED,VERIFIED,REJECTED；',
+  `registered_by` BIGINT NOT NULL COMMENT '',
+  `registered_at` DATETIME(3) NOT NULL COMMENT '',
+  `verified_by` BIGINT NULL COMMENT '',
+  `verified_at` DATETIME(3) NULL COMMENT '',
+  `register_note` VARCHAR(500) NOT NULL COMMENT '',
+  `verify_reason` VARCHAR(500) NULL COMMENT '',
+  `active_payment` BIGINT GENERATED ALWAYS AS (IF(direction='COLLECTION' AND status IN ('SUBMITTED','VERIFIED'),payment_id,NULL)) STORED COMMENT '当前有效收款证明唯一占位',
+  `active_refund` BIGINT GENERATED ALWAYS AS (IF(direction='REFUND' AND status IN ('SUBMITTED','VERIFIED'),refund_id,NULL)) STORED COMMENT '当前有效退款证明唯一占位',
+  `created_at` DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3)) COMMENT 'UTC创建时间',
+  `updated_at` DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3)) COMMENT 'Mapper显式UTC更新时间',
+  `version` BIGINT NOT NULL DEFAULT 0 COMMENT '显式CAS；不是注解自动生效',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY uk_offline_reference (owner_dept_id,direction,method,reference_hmac),
+  UNIQUE KEY uk_offline_payment (active_payment),
+  UNIQUE KEY uk_offline_refund (active_refund),
+  KEY ix_offline_status (owner_dept_id,status),
+  CONSTRAINT ck_ver_offline_payment_record CHECK (version >= 0),
+  CONSTRAINT ck_e240ee818b669d CHECK (`direction` IN ('COLLECTION','REFUND')),
+  CONSTRAINT ck_1cc104f12b184a CHECK (`status` IN ('SUBMITTED','VERIFIED','REJECTED')),
+  CONSTRAINT ck_538550895b553c CHECK (`method` IN ('CASH','BANK_TRANSFER')),
+  CONSTRAINT ck_offline_amount CHECK (amount_fen>0),
+  CONSTRAINT ck_offline_direction CHECK ((direction='COLLECTION' AND refund_id IS NULL) OR (direction='REFUND' AND refund_id IS NOT NULL)),
+  CONSTRAINT ck_offline_reviewer CHECK (verified_by IS NULL OR verified_by<>registered_by)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='客户线下收退款证明与核实';
+
+CREATE TABLE `vi_integration_test_recipient` (
+  `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '内部自增Long；API十进制字符串',
+  `name` VARCHAR(80) NOT NULL COMMENT '',
+  `kind` VARCHAR(16) NOT NULL COMMENT 'IntegrationRecipientKind: PHONE,MINI_ACCOUNT；',
+  `owner_dept_id` BIGINT NOT NULL COMMENT '',
+  `environment` VARCHAR(12) NOT NULL COMMENT 'IntegrationEnvironment: TEST,LIVE；',
+  `phone_cipher` VARBINARY(512) NULL COMMENT '仅PHONE',
+  `account_id` BIGINT NULL COMMENT '仅MINI_ACCOUNT',
+  `app_profile_id` BIGINT NULL COMMENT '小程序白名单同应用',
+  `enabled` TINYINT NOT NULL COMMENT '',
+  `created_by` BIGINT NOT NULL COMMENT '',
+  `reason` VARCHAR(500) NOT NULL COMMENT '',
+  `created_at` DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3)) COMMENT 'UTC创建时间',
+  `updated_at` DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3)) COMMENT 'Mapper显式UTC更新时间',
+  `version` BIGINT NOT NULL DEFAULT 0 COMMENT '显式CAS；不是注解自动生效',
+  PRIMARY KEY (`id`),
+  KEY ix_test_recipient_scope (owner_dept_id,environment,enabled),
+  CONSTRAINT ck_ver_integration_test_recipient CHECK (version >= 0),
+  CONSTRAINT ck_1117ecf2dcdc35 CHECK (`kind` IN ('PHONE','MINI_ACCOUNT')),
+  CONSTRAINT ck_95800f15c7f107 CHECK (`environment` IN ('TEST','LIVE')),
+  CONSTRAINT ck_recipient_shape CHECK ((kind='PHONE' AND phone_cipher IS NOT NULL AND account_id IS NULL) OR (kind='MINI_ACCOUNT' AND phone_cipher IS NULL AND account_id IS NOT NULL AND app_profile_id IS NOT NULL))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='第三方测试收件人白名单';
