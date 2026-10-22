@@ -65,8 +65,8 @@ class E08PlatformIT {
         assertTrue(rep.contains("\"L01_REAL_CHANNEL\": \"NOT_RUN\""), "真实渠道须 NOT_RUN");
         assertTrue(rep.contains("\"L02_DEVICE\": \"NOT_RUN\""), "真机须 NOT_RUN");
         assertTrue(rep.contains("\"L03_DEPLOY\": \"NOT_RUN\""), "部署须 NOT_RUN");
-        assertTrue(rep.contains("\"total\": 249"), "api 覆盖总数应为 249");
-        assertTrue(rep.contains("\"total\": 298"), "case 覆盖总数应为 298");
+        assertTrue(rep.contains("\"total\": 287"), "api 覆盖总数应为 V6.4 的 287");
+        assertTrue(rep.contains("\"total\": 412"), "case 覆盖总数应为 V6.4 的 412");
         // 业务实现仍 0：M0 只建基座，不得把未实现算作完成
         assertTrue(rep.contains("\"implemented\": 0"), "M0 阶段业务 api 实现数应为 0（不得虚报完成）");
     }

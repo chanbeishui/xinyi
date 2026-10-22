@@ -1,0 +1,44 @@
+{
+  "taskId": "E07",
+  "implementer": "Qoder-Agent",
+  "codeCommit": "V6.4 前向适配重验；提交在本步之后",
+  "scopeRevision": "V6.4-CONFIG-20261022",
+  "reverifies": "install 因 V6.4- scopeRevision 降级 needsAdaptation，本文件为新范围重验证据",
+  "runs": [
+    {
+      "command": "bash E07/bootstrap_it_db.sh（克隆V6.4化xinyi重建xinyi_vi_it_e07：79+2表→清空vi_→守卫表→run登记表）",
+      "exitCode": 0,
+      "layer": "MYSQL_PROBES",
+      "testsRun": 1,
+      "skipped": 0,
+      "reportPath": "docs/implementation/vehicle/v64_adapt/REPORT.md",
+      "note": "IT库重建为V6.4 schema(119对象)，vi_account=0，守卫kind=XINYI_VEHICLE_ISOLATED。"
+    },
+    {
+      "command": "mvn -pl xinyi-admin -am -Pvi-it -Dit.test=E07TestingIT verify（V6.4 IT库真实HTTP）",
+      "exitCode": 0,
+      "layer": "LIVE_HTTP_MYSQL",
+      "testsRun": 5,
+      "skipped": 0,
+      "reportPath": "docs/implementation/vehicle/v64_adapt/REPORT.md",
+      "note": "E07TestingIT 5/5在V6.4 IT库全过：守卫双校验、IDENTITY契约+幂等、BOOKING诚实延后、生产jar无__integration。provider_simulator V6.4==V6.1(相同)，控制面机制不变。"
+    }
+  ],
+  "review": {
+    "reviewer": null,
+    "approved": false,
+    "reportPath": null,
+    "note": "REVIEWED 需独立复核人≠实现者；本 Agent 不自审。"
+  },
+  "deferredNote": "V6.4新增 live 测试 test_employee_identity.py/test_integration_config.py 属 I01/X系列任务驱动；E07控制面+IDENTITY夹具+守卫在V6.4下不变、回归全绿。",
+  "codeFiles": [
+    "xinyi-admin/src/test/java/com/xinyi/web/viit/FixtureProvisioner.java",
+    "xinyi-admin/src/test/java/com/xinyi/web/viit/E07TestingIT.java",
+    "xinyi-admin/src/test/java/com/xinyi/web/viit/ViIntegrationTestConfiguration.java",
+    "xinyi-admin/src/test/java/com/xinyi/web/viit/ViHttpSuiteIT.java",
+    "docs/implementation/vehicle/E07/test_fixture_run.sql",
+    "docs/implementation/vehicle/E07/bootstrap_it_db.sh",
+    "docs/implementation/vehicle/E07/report.md",
+    "docs/implementation/vehicle/v64_adapt/REPORT.md"
+  ]
+}

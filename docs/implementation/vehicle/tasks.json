@@ -21,7 +21,7 @@
     "case_ids": [],
     "scope": "DEVELOPMENT",
     "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
-    "status": "PLANNED",
+    "status": "VERIFIED",
     "code_paths": [
       "docs/implementation/vehicle/E00/"
     ],
@@ -52,12 +52,16 @@
       {
         "path": "docs/implementation/vehicle/evidence/E00.json",
         "sha256": "ff2a8956af49fe78fcbdc4d6ca1e553148f7145f9bd0f3b10f141bcb55f9e62b"
+      },
+      {
+        "path": "docs/implementation/vehicle/evidence/E00-v64.json",
+        "sha256": "80e8153cd2379ecb0ba08a9224361496c74226b301f2752b9f1d5487459c2a20"
       }
     ],
     "implementation": null,
     "review": null,
     "blocker": null,
-    "updatedAt": "2026-10-20T15:34:20.162283+00:00",
+    "updatedAt": "2026-10-22T15:54:10.897765+00:00",
     "scopeHistory": [
       {
         "fromScope": "V6.1",
@@ -77,7 +81,7 @@
         "at": "2026-10-22T14:48:23.198388+00:00"
       }
     ],
-    "needsAdaptation": true
+    "needsAdaptation": false
   },
   {
     "id": "E01",
@@ -102,7 +106,7 @@
     "case_ids": [],
     "scope": "DEVELOPMENT",
     "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
-    "status": "PLANNED",
+    "status": "VERIFIED",
     "code_paths": [
       "docs/implementation/vehicle/E01/"
     ],
@@ -133,12 +137,16 @@
       {
         "path": "docs/implementation/vehicle/evidence/E01.json",
         "sha256": "aa9ce8f9133aef60671e99efd59c442a1a3be333ce77b44fd2114ce4523f5b7c"
+      },
+      {
+        "path": "docs/implementation/vehicle/evidence/E01-v64.json",
+        "sha256": "7aa0860c34b69ce434b6760ca798744312c5a009bda7ebee7701eba298e31840"
       }
     ],
     "implementation": null,
     "review": null,
     "blocker": null,
-    "updatedAt": "2026-10-20T16:13:48.395699+00:00",
+    "updatedAt": "2026-10-22T15:55:13.951114+00:00",
     "scopeHistory": [
       {
         "fromScope": "V6.1",
@@ -158,7 +166,7 @@
         "at": "2026-10-22T14:48:23.198397+00:00"
       }
     ],
-    "needsAdaptation": true
+    "needsAdaptation": false
   },
   {
     "id": "E02",
@@ -246,7 +254,7 @@
     "case_ids": [],
     "scope": "DEVELOPMENT",
     "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
-    "status": "PLANNED",
+    "status": "VERIFIED",
     "code_paths": [
       "sql/migration_YYYYMMDD_vehicle_initial.sql",
       "sql/ry_20260417.sql",
@@ -280,12 +288,16 @@
       {
         "path": "docs/implementation/vehicle/evidence/E03.json",
         "sha256": "20a9f0fc45a2bd9485ae460205d1b2a8a5e59d23d96f0f6564b31ba7470220e1"
+      },
+      {
+        "path": "docs/implementation/vehicle/evidence/E03-v64.json",
+        "sha256": "ae0d8bb3e12f8fb6f085ebaa553d4b43f70203707c884bcd721c771c2538a35a"
       }
     ],
     "implementation": null,
     "review": null,
     "blocker": null,
-    "updatedAt": "2026-10-21T14:09:30.892958+00:00",
+    "updatedAt": "2026-10-22T15:55:13.983976+00:00",
     "scopeHistory": [
       {
         "fromScope": "V6.1",
@@ -305,7 +317,7 @@
         "at": "2026-10-22T14:48:23.198401+00:00"
       }
     ],
-    "needsAdaptation": true
+    "needsAdaptation": false
   },
   {
     "id": "E04",
@@ -331,7 +343,7 @@
     "case_ids": [],
     "scope": "DEVELOPMENT",
     "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
-    "status": "PLANNED",
+    "status": "VERIFIED",
     "code_paths": [
       "pom.xml",
       "xinyi-admin/pom.xml",
@@ -370,12 +382,16 @@
       {
         "path": "docs/implementation/vehicle/evidence/E04.json",
         "sha256": "3a7926ad5219f559ec7211e1923ba19faf10dba1322842755a33c4680ec6f6fc"
+      },
+      {
+        "path": "docs/implementation/vehicle/evidence/E04-v64.json",
+        "sha256": "76b9f72c7891840e9e56731f88fc65d70e178497fa672fdc5f2acf4df3570e08"
       }
     ],
     "implementation": null,
     "review": null,
     "blocker": null,
-    "updatedAt": "2026-10-21T14:46:06.667968+00:00",
+    "updatedAt": "2026-10-22T15:55:14.014781+00:00",
     "scopeHistory": [
       {
         "fromScope": "V6.1",
@@ -395,7 +411,7 @@
         "at": "2026-10-22T14:48:23.198428+00:00"
       }
     ],
-    "needsAdaptation": true
+    "needsAdaptation": false
   },
   {
     "id": "E05",
@@ -481,7 +497,7 @@
     "case_ids": [],
     "scope": "DEVELOPMENT",
     "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
-    "status": "PLANNED",
+    "status": "VERIFIED",
     "code_paths": [
       "docs/implementation/vehicle/E06/"
     ],
@@ -508,12 +524,16 @@
       {
         "path": "docs/implementation/vehicle/evidence/E06.json",
         "sha256": "4639f59d720d4f570124954b1cafad5c85e6edb2746a941ed957c85a8f4a40d0"
+      },
+      {
+        "path": "docs/implementation/vehicle/evidence/E06-v64.json",
+        "sha256": "87589b5ff1ee44b248ca58d37da722d733cbe5a7ef9ccf72f65c67c824a34e16"
       }
     ],
     "implementation": null,
     "review": null,
     "blocker": null,
-    "updatedAt": "2026-10-21T16:04:36.028523+00:00",
+    "updatedAt": "2026-10-22T15:55:14.044729+00:00",
     "scopeHistory": [
       {
         "fromScope": "V6.1",
@@ -529,7 +549,7 @@
         "at": "2026-10-22T14:48:23.198431+00:00"
       }
     ],
-    "needsAdaptation": true
+    "needsAdaptation": false
   },
   {
     "id": "E07",
@@ -561,7 +581,7 @@
     "case_ids": [],
     "scope": "DEVELOPMENT",
     "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
-    "status": "PLANNED",
+    "status": "VERIFIED",
     "code_paths": [
       "docs/implementation/vehicle/E07/"
     ],
@@ -588,12 +608,16 @@
       {
         "path": "docs/implementation/vehicle/evidence/E07.json",
         "sha256": "e8dd95e7d6252cbcd5c93db76dbc6bfb632670b90cfb55ccc1b87b2dcca36491"
+      },
+      {
+        "path": "docs/implementation/vehicle/evidence/E07-v64.json",
+        "sha256": "dc74a7318782d98e1a6e936703cc102d55ee440403ff81c93f7e8b43494dce15"
       }
     ],
     "implementation": null,
     "review": null,
     "blocker": null,
-    "updatedAt": "2026-10-21T16:37:07.368452+00:00",
+    "updatedAt": "2026-10-22T15:55:14.073452+00:00",
     "scopeHistory": [
       {
         "fromScope": "V6.1",
@@ -609,7 +633,7 @@
         "at": "2026-10-22T14:48:23.198435+00:00"
       }
     ],
-    "needsAdaptation": true
+    "needsAdaptation": false
   },
   {
     "id": "E08",

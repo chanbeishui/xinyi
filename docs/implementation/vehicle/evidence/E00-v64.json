@@ -1,0 +1,29 @@
+{
+  "taskId": "E00",
+  "implementer": "Qoder-Agent",
+  "codeCommit": "V6.4 前向适配重验；提交在本步之后",
+  "scopeRevision": "V6.4-CONFIG-20261022",
+  "reverifies": "install 因 V6.4- scopeRevision 降级 needsAdaptation，本文件为新范围重验证据",
+  "runs": [
+    {
+      "command": "V6.4 engineer.py doctor --repo . + install --apply（实勘工作区/合并账本/更新AGENTS入口到V6.4）",
+      "exitCode": 0,
+      "layer": "WORKSPACE_OBSERVATION",
+      "checksRun": 1,
+      "skipped": 0,
+      "reportPath": "docs/implementation/vehicle/v64_adapt/REPORT.md",
+      "note": "doctor 实勘 modules含xinyi-rongli、miniappExists=true、m0Completion=NOT_INFERRED；install 合并 X01-X07、保留 E00-E08 证据、退役覆盖归档；workspace.json 更新为 V6.4 实勘；baseline 以实际工作区为权威，不据历史指纹判定完成。"
+    }
+  ],
+  "review": {
+    "reviewer": null,
+    "approved": false,
+    "reportPath": null,
+    "note": "REVIEWED 需独立复核人≠实现者；本 Agent 不自审。"
+  },
+  "codeFiles": [
+    "docs/implementation/vehicle/workspace.json",
+    "AGENTS.md",
+    "docs/implementation/vehicle/v64_adapt/REPORT.md"
+  ]
+}

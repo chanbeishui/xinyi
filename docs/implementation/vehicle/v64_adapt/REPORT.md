@@ -35,3 +35,26 @@
 
 ## 数据安全
 不 DROP 任何既有表；退役 2 表保留；4 加列表与各 vi_ 表当前 0 行（新系统无业务数据），加列/DROP CHECK 无数据风险、不回填猜测值；全程先备份。业务库 xinyi 仅按 V6.4 前向适配增量变更。
+
+## 追加修复（2026-10-23）：注释双重编码乱码
+**发现**：用户报告"数据库表注释乱码"。诊断确认 stage② 应用 `migration_20261022_01/02` 时 **mysql 客户端连接字符集非 utf8mb4**（走了 latin1/cp1252），使迁移文件中正确的 UTF-8 中文注释在写库时被**双重编码**（如"手机号"→"æ‰‹æœºå·"），且生成列表达式里的字符串字面量被误标 `_latin1'...'` 前缀。
+
+**范围**（以 ry 权威源逐表逐列比对，非依赖易漏的反解探测）：
+- 表注释 17 处、列注释 183 处与 ry 不一致——含 15 张新表全部注释、migration 新增列（vi_account/vi_employee_binding/vi_payment_order/vi_refund_order）注释；
+- 附带发现：既有 E03 列（如 `vi_employee_binding.bound_by`、`vi_payment_order.out_trade_no`）DB 仍是 V6.1 措辞、ry 已是 V6.4 措辞——stage② 增量只加表/列，未回填既有列的 V6.4 注释；
+- `vi_offline_payment_record.active_payment/active_refund` 生成列字面量为 `_latin1'COLLECTION'`（应为 utf8mb4）。
+- 注：stage② 的 `verify_schema.py` 只比对了字段/CHECK/主键/生成列**结构**，未比对**注释文本**，故当时未捕获此乱码（校验盲区，已记）。
+
+**修复**：`sql/migration_20261023_01_fix_v64_comment_encoding.sql`（可移植、幂等、**非破坏性，不 DROP 表**）：
+- 置顶 `SET NAMES utf8mb4;`，以 utf8mb4 连接应用；
+- 表注释用 `ALTER TABLE ... COMMENT=`、列注释用 `ALTER TABLE ... MODIFY COLUMN <ry 原定义>`（沿用 ry 的类型/字符集/生成表达式，仅改注释，顺带把 `_latin1` 字面量修正为 utf8mb4）；
+- 权威源 = `ry_20260417.sql`（正确 UTF-8，已核验逐字 == V6.4 001）+ `migration_20261022_01`（2 张退役表注释，退役表不在 ry）；
+- 同时将既有列注释对齐到 V6.4 措辞，使"增量升级结果"与"完整初始化(ry)结果"在**注释层面也一致**（补齐根 AGENTS.md 数据库同步规范的一致性要求）。
+
+**验证**（真实执行，全绿）：
+- 修复后 xinyi vs ry：表注释差异 0、列注释差异 0、退役表注释差异 0；`active_payment` 生成表达式已为 `_utf8mb4'COLLECTION'`，全库无 `_latin1` 残留；
+- IT 库 `xinyi_vi_it_e07` 经 `bootstrap_it_db.sh` 从修复后的 xinyi 重新克隆（119 表、guard 就位、vi_account=0）；
+- `E06PlatformIT 10/10`、`E07TestingIT 5/5`、`E08PlatformIT 1/1`、平台单元 `16/16`、V6.4 工具链 `pytest 99 passed`、`engineer.py check 34/34 PASS`；
+- 业务库 xinyi 清洁：vi_idempotency/outbox/event_log 均 0 行，无 E06 测试残留。
+
+**预防**：后续任何增量迁移必须以 `mysql --default-character-set=utf8mb4`（或脚本内置 `SET NAMES utf8mb4`）应用；ry 全量初始化本身始终正确，故全新安装不受此缺陷影响。受影响 vi_ 表在 M0 均为空，仅注释元数据受损，无业务数据风险。
