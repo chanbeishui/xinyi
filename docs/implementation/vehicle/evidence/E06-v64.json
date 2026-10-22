@@ -1,0 +1,75 @@
+{
+  "taskId": "E06",
+  "implementer": "Qoder-Agent",
+  "codeCommit": "V6.4 前向适配重验；提交在本步之后",
+  "scopeRevision": "V6.4-IDENTITY-20261022",
+  "reverifies": "install 因 V6.4- scopeRevision 降级 needsAdaptation，本文件为新范围重验证据",
+  "runs": [
+    {
+      "command": "mvn -pl xinyi-admin -am test（平台单元）",
+      "exitCode": 0,
+      "layer": "TOOLS_OR_COMPONENT",
+      "testsRun": 22,
+      "skipped": 0,
+      "reportPath": "docs/implementation/vehicle/v64_adapt/REPORT.md",
+      "note": "E06平台单元16(SecretGuard5+PlatformPrimitives6+IdempotencyMac5)+既存6，V6.4下全过。"
+    },
+    {
+      "command": "mvn -pl xinyi-admin -am -Pvi-it -Dit.test=E06PlatformIT verify（V6.4 schema 真实MySQL）",
+      "exitCode": 0,
+      "layer": "LIVE_HTTP_MYSQL",
+      "testsRun": 10,
+      "skipped": 0,
+      "reportPath": "docs/implementation/vehicle/v64_adapt/REPORT.md",
+      "note": "E06PlatformIT 10/10 在V6.4化xinyi库全过。vi_event_log移除R1的actor_realm DB CHECK后，AuditService仍写合法realm值（应用层保证），双主体审计不受影响。V6.4身份架构§4锁顺序/失败审计独立/回执只存摘要均复用E06 OrderLocks/AuditService(REQUIRES_NEW)/SecretGuard。"
+    }
+  ],
+  "review": {
+    "reviewer": null,
+    "approved": false,
+    "reportPath": null,
+    "note": "REVIEWED 需独立复核人≠实现者；本 Agent 不自审。"
+  },
+  "negativeChecks": {
+    "V6.4复用E06平台基座": "幂等/双主体审计/outbox/有序锁/死锁重试/SecretGuard/方法覆写过滤器在V6.4 schema下回归全绿，无需改平台代码"
+  },
+  "codeFiles": [
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/platform/error/ViErrorCode.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/platform/error/ViException.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/platform/actor/ActorRealm.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/platform/actor/Actor.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/platform/actor/MiniPrincipal.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/platform/actor/BusinessActorResolver.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/platform/mybatis/ViUtcInstantTypeHandler.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/platform/json/ViJson.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/platform/config/ViPlatformProperties.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/platform/domain/IdempotencyStatus.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/platform/domain/OutboxStatus.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/platform/domain/ViIdempotency.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/platform/domain/ViOutbox.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/platform/domain/ViEventLog.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/platform/mapper/ViIdempotencyMapper.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/platform/mapper/ViOutboxMapper.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/platform/mapper/ViEventLogMapper.java",
+    "xinyi-rongli/src/main/resources/mapper/rongli/ViIdempotencyMapper.xml",
+    "xinyi-rongli/src/main/resources/mapper/rongli/ViOutboxMapper.xml",
+    "xinyi-rongli/src/main/resources/mapper/rongli/ViEventLogMapper.xml",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/platform/service/SecretGuard.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/platform/service/IdempotencyService.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/platform/service/OutboxDispatcher.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/platform/service/OutboxService.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/platform/service/ViOutboxRelay.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/platform/service/AuditService.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/platform/service/OrderLocks.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/platform/service/DeadlockRetry.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/platform/web/HttpMethodOverrideFilter.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/platform/web/ViWebConfig.java",
+    "xinyi-rongli/src/test/java/com/xinyi/rongli/platform/SecretGuardTest.java",
+    "xinyi-rongli/src/test/java/com/xinyi/rongli/platform/PlatformPrimitivesTest.java",
+    "xinyi-rongli/src/test/java/com/xinyi/rongli/platform/IdempotencyMacTest.java",
+    "xinyi-admin/src/test/java/com/xinyi/web/viit/E06PlatformIT.java",
+    "xinyi-admin/pom.xml",
+    "docs/implementation/vehicle/E06/report.md",
+    "docs/implementation/vehicle/v64_adapt/REPORT.md"
+  ]
+}

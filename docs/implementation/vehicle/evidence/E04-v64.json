@@ -1,0 +1,51 @@
+{
+  "taskId": "E04",
+  "implementer": "Qoder-Agent",
+  "codeCommit": "V6.4 前向适配重验；提交在本步之后",
+  "scopeRevision": "V6.4-IDENTITY-20261022",
+  "reverifies": "install 因 V6.4- scopeRevision 降级 needsAdaptation，本文件为新范围重验证据",
+  "runs": [
+    {
+      "command": "mvn -pl xinyi-admin -am -Pvi-it test-compile/verify（xinyi-rongli 主+测试编译）",
+      "exitCode": 0,
+      "layer": "BUILD",
+      "checksRun": 1,
+      "skipped": 0,
+      "reportPath": "docs/implementation/vehicle/v64_adapt/REPORT.md",
+      "note": "xinyi-rongli(com.xinyi.rongli)在V6.4下正常编译；平台基座+viit骨架编译通过。"
+    },
+    {
+      "command": "npm --prefix xinyi-miniapp run type-check && run build:mp-weixin",
+      "exitCode": 0,
+      "layer": "BUILD",
+      "checksRun": 2,
+      "skipped": 0,
+      "reportPath": "docs/implementation/vehicle/v64_adapt/REPORT.md",
+      "note": "type-check exit0；build:mp-weixin exit0，dist/build/mp-weixin 微信产物生成。V6.4身份流程变更属I01业务实现，E04脚手架(uni-app工程+http.ts基础)不受影响、仍复用。"
+    }
+  ],
+  "review": {
+    "reviewer": null,
+    "approved": false,
+    "reportPath": null,
+    "note": "REVIEWED 需独立复核人≠实现者；本 Agent 不自审。"
+  },
+  "deferredNote": "V6.4 统一登录/手机号证明的前端页面与请求属 I01 及后续业务任务；E04 仅提供 uni-app 工程与 http.ts（含 X-HTTP-Method-Override）基础，V6.4 下不变。",
+  "codeFiles": [
+    "xinyi-rongli/pom.xml",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/core/ViRecord.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/core/ViId.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/core/ViMoney.java",
+    "xinyi-rongli/src/test/java/com/xinyi/rongli/core/BoundarySelfTest.java",
+    "xinyi-miniapp/package.json",
+    "xinyi-miniapp/package-lock.json",
+    "xinyi-miniapp/src/manifest.json",
+    "xinyi-miniapp/src/services/http.ts",
+    "xinyi-miniapp/src/pages.json",
+    "xinyi-admin/src/test/java/com/xinyi/web/viit/ViHttpSuiteIT.java",
+    "pom.xml",
+    "xinyi-admin/pom.xml",
+    "docs/implementation/vehicle/E04/report.md",
+    "docs/implementation/vehicle/v64_adapt/REPORT.md"
+  ]
+}

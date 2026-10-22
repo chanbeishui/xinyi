@@ -1,0 +1,38 @@
+{
+  "taskId": "E01",
+  "implementer": "Qoder-Agent",
+  "codeCommit": "V6.4 前向适配重验；提交在本步之后",
+  "scopeRevision": "V6.4-CONFIG-20261022",
+  "reverifies": "install 因 V6.4- scopeRevision 降级 needsAdaptation，本文件为新范围重验证据",
+  "runs": [
+    {
+      "command": "python -m pytest docs/vehicle/V6.4/12_工程执行/tests -q（含 test_contract_regression）",
+      "exitCode": 0,
+      "layer": "TOOLS_OR_COMPONENT",
+      "testsRun": 99,
+      "skipped": 0,
+      "reportPath": "docs/implementation/vehicle/v64_adapt/REPORT.md",
+      "note": "V6.4 契约回归通过。openapi_V6.4.yaml 为权威（287 操作）；6 个 employee-binding 写接口退役并归档 retired/V6.4_api_implementation_map.json；生成列白名单 V6.4==V6.1（generated_ledger_id）。E01 R1-R8 残留项在 V6.4 同源更新中吸收或继续按清单跟踪。"
+    }
+  ],
+  "review": {
+    "reviewer": null,
+    "approved": false,
+    "reportPath": null,
+    "note": "REVIEWED 需独立复核人≠实现者；本 Agent 不自审。"
+  },
+  "negativeChecks": {
+    "退役接口不再实现": "employee-binding request/credential 6 接口从主契约移除并归档；新初始化不建 request/credential 表；旧入口应用层显式拒绝（I01/后续落实），不留暗中授权通道"
+  },
+  "codeFiles": [
+    "docs/vehicle/V6.4/04_接口/openapi_V6.4.yaml",
+    "docs/vehicle/V6.4/04_接口/权限与能力注册表.json",
+    "docs/vehicle/V6.4/05_数据设计/001_vi业务表_初始化_V6.4.sql",
+    "docs/vehicle/V6.4/05_数据设计/data_model_V6.4.json",
+    "docs/vehicle/V6.4/05_数据设计/枚举字典_V6.4.json",
+    "docs/implementation/vehicle/v64_adapt/gen_migration.py",
+    "docs/implementation/vehicle/v64_adapt/verify_schema.py",
+    "sql/migration_20261022_02_align_v64_constraints.sql",
+    "docs/implementation/vehicle/v64_adapt/REPORT.md"
+  ]
+}

@@ -1,0 +1,66 @@
+{
+  "taskId": "E03",
+  "implementer": "Qoder-Agent",
+  "codeCommit": "V6.4 前向适配重验；提交在本步之后",
+  "scopeRevision": "V6.4-CONFIG-20261022",
+  "reverifies": "install 因 V6.4- scopeRevision 降级 needsAdaptation，本文件为新范围重验证据",
+  "runs": [
+    {
+      "command": "mysql xinyi < migration_20261022_01_integration_config.sql（+15表/4表加列/约束/索引）",
+      "exitCode": 0,
+      "layer": "MYSQL_PROBES",
+      "testsRun": 1,
+      "skipped": 0,
+      "reportPath": "docs/implementation/vehicle/v64_adapt/REPORT.md",
+      "note": "先 mysqldump 备份 xinyi；空表前向新增不回填猜测值；退役2表保留不DROP。"
+    },
+    {
+      "command": "mysql xinyi < migration_20261022_02_align_v64_constraints.sql（DROP 15个R1多余枚举CHECK，对齐纯V6.4 001）",
+      "exitCode": 0,
+      "layer": "MYSQL_PROBES",
+      "testsRun": 15,
+      "skipped": 0,
+      "reportPath": "docs/implementation/vehicle/v64_adapt/REPORT.md",
+      "note": "用户选定对齐纯V6.4 001；枚举改应用层+字典+COMMENT约束。"
+    },
+    {
+      "command": "verify_schema.py（xinyi 增量 vs V6.4 001：字段/CHECK/主键/生成列）",
+      "exitCode": 0,
+      "layer": "MYSQL_PROBES",
+      "testsRun": 79,
+      "skipped": 0,
+      "reportPath": "docs/implementation/vehicle/v64_adapt/REPORT.md",
+      "note": "STRUCTURE_CONSISTENT：79表0 mismatch，退役2表保留。"
+    },
+    {
+      "command": "ry_20260417.sql 完整初始化 scratch 库 + verify_schema（完整初始化 vs V6.4 001）",
+      "exitCode": 0,
+      "layer": "MYSQL_PROBES",
+      "testsRun": 79,
+      "skipped": 0,
+      "reportPath": "docs/implementation/vehicle/v64_adapt/REPORT.md",
+      "note": "ry干净应用exit0，79表0 mismatch，不含退役表；证明 增量结果==完整初始化结果（根AGENTS要求）。"
+    }
+  ],
+  "review": {
+    "reviewer": null,
+    "approved": false,
+    "reportPath": null,
+    "note": "REVIEWED 需独立复核人≠实现者；本 Agent 不自审。"
+  },
+  "negativeChecks": {
+    "禁DROP/清空/IF NOT EXISTS掩盖": "退役2表保留仅加注释；无DROP TABLE；migration无IF NOT EXISTS",
+    "不猜测回填": "4加列表当前0行，新增列不回填历史值"
+  },
+  "deferredNote": "⚠Finding：V6.4 001 自身缺陷——vi_driver_statement_membership_change(append-only无version列)被误加 ck_ver CHECK(version>=0)引用不存在列，原样建表必失败(MySQL1054)；全量扫描仅此1处。ry与xinyi均不建此无效约束，gen/verify脚本自动识别排除留痕。建议反馈资料包维护方修正001。",
+  "codeFiles": [
+    "sql/migration_20261022_01_integration_config.sql",
+    "sql/migration_20261022_02_align_v64_constraints.sql",
+    "sql/ry_20260417.sql",
+    "docs/implementation/vehicle/v64_adapt/gen_migration.py",
+    "docs/implementation/vehicle/v64_adapt/sync_ry.py",
+    "docs/implementation/vehicle/v64_adapt/gen_align_constraints.py",
+    "docs/implementation/vehicle/v64_adapt/verify_schema.py",
+    "docs/implementation/vehicle/v64_adapt/REPORT.md"
+  ]
+}
