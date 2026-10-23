@@ -24,6 +24,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # 前置断言：`npm ci` 与 setup-node 的 cache 都依赖锁文件。
+      # 若 package-lock.json 又被加进 .gitignore，这里会给出可执行的原因，
+      # 而不是让人对着 setup-node 的 "Dependencies lock file is not found" 猜。
+      - name: Verify lock file is committed
+        run: |
+          if [ ! -f package-lock.json ]; then
+            echo "::error file=xinyi-ui/.gitignore::xinyi-ui/package-lock.json 未入库。CI 使用 npm ci 安装，缺锁文件必然失败；请勿把 package-lock.json 加入 .gitignore，并在本地执行 npm install 生成后提交。"
+            exit 1
+          fi
+
       - uses: actions/setup-node@v4
         with:
           node-version: "20"
