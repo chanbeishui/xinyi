@@ -17,7 +17,7 @@
       <el-table-column label="车牌" prop="plateNo" width="120" />
       <el-table-column label="车主" prop="ownerName" width="120" />
       <el-table-column label="检测点" prop="stationName" min-width="160" show-overflow-tooltip />
-      <el-table-column label="上门时段" prop="pickupWindow" width="180" />
+      <el-table-column label="上门时段" prop="pickupWindowLabel" width="190" />
       <el-table-column label="状态" width="150">
         <template #default="{ row }">
           <el-tag :type="statusTag(row.fulfillmentStatus)">{{ row.fulfillmentStatusLabel || row.fulfillmentStatus }}</el-tag>
@@ -52,7 +52,7 @@
         <el-descriptions-item label="车牌">{{ detail.plateNo }}</el-descriptions-item>
         <el-descriptions-item label="车型">{{ detail.vehicleTypeName }}</el-descriptions-item>
         <el-descriptions-item label="检测点">{{ detail.stationName }}</el-descriptions-item>
-        <el-descriptions-item label="上门时段">{{ detail.pickupWindow }}</el-descriptions-item>
+        <el-descriptions-item label="上门时段">{{ detail.pickupWindowLabel }}</el-descriptions-item>
         <el-descriptions-item label="车主账号">{{ detail.ownerAccountId }}</el-descriptions-item>
         <el-descriptions-item label="金额(元)">{{ detail.totalYuan }}</el-descriptions-item>
         <el-descriptions-item label="证件核对">{{ detail.licenseStatus }}</el-descriptions-item>

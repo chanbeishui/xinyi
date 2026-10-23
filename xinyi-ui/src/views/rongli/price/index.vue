@@ -16,6 +16,7 @@
       <el-form-item>
         <el-button type="primary" icon="Search" @click="handleQuery">查询</el-button>
         <el-button type="success" icon="Plus" @click="openCreate">新增方案</el-button>
+        <el-button icon="Education" @click="router.push('/rongli/inspect/vehicleType')">车型字典</el-button>
       </el-form-item>
     </el-form>
 
@@ -88,9 +89,11 @@
 
 <script setup name="RongliPrice" lang="ts">
 import { onMounted, reactive, ref } from 'vue'
+import { useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { auditPrice, createPrice, listPrices, publishPrice, submitPrice, updatePrice } from '@/api/rongli'
 
+const router = useRouter()
 const loading = ref(false)
 const rows = ref<any[]>([])
 const total = ref(0)

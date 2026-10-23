@@ -109,40 +109,7 @@
         />
       </el-tab-pane>
 
-      <!-- 员工账号绑定 -->
-      <el-tab-pane label="员工账号绑定" name="binding">
-        <el-form :inline="true" class="mb8">
-          <el-form-item>
-            <el-button icon="Refresh" @click="loadBindings">刷新</el-button>
-          </el-form-item>
-        </el-form>
-
-        <el-alert
-          class="mb8"
-          type="info"
-          :closable="false"
-          show-icon
-          title="员工在小程序提交绑定申请后，由管理员签发一次性凭证（8 位数字，24 小时有效）；凭证只显示一次，请线下告知员工本人。"
-        />
-
-        <el-table v-loading="loading" :data="bindingRows" border>
-          <el-table-column label="申请号" prop="id" width="100" />
-          <el-table-column label="申请码" prop="request_code" width="180" show-overflow-tooltip />
-          <el-table-column label="申请账号" prop="nickname" width="160" />
-          <el-table-column label="状态" width="140">
-            <template #default="{ row }">
-              <el-tag :type="row.status === 'CREDENTIAL_ISSUED' ? 'success' : 'warning'">{{ row.status }}</el-tag>
-            </template>
-          </el-table-column>
-          <el-table-column label="申请说明" prop="request_reason" min-width="200" show-overflow-tooltip />
-          <el-table-column label="提交时间" prop="created_at" width="180" />
-          <el-table-column label="操作" width="130" fixed="right">
-            <template #default="{ row }">
-              <el-button link type="primary" :disabled="row.status !== 'REQUESTED'" @click="openIssue(row)">签发凭证</el-button>
-            </template>
-          </el-table-column>
-        </el-table>
-      </el-tab-pane>
+      <!-- 员工账号绑定页签已随 V6.4 退役：员工关联改由微信手机号唯一匹配自动完成 -->
     </el-tabs>
 
     <!-- 隐私处理 -->
@@ -228,48 +195,6 @@
       <div class="muted mt8">共 {{ exportView.rowCount || 0 }} 条，数据有效期至 {{ exportView.expiresAt || '-' }}</div>
     </el-dialog>
 
-    <!-- 签发绑定凭证 -->
-    <el-dialog v-model="issueVisible" title="签发员工绑定凭证" width="480px">
-      <el-alert
-        class="mb8"
-        type="warning"
-        :closable="false"
-        show-icon
-        title="签发后凭证只显示一次，请立即线下告知员工本人；绑定后需再次签发才能换绑。"
-      />
-      <el-form label-width="90px">
-        <el-form-item label="申请号">
-          <span>{{ issueForm.requestId }}</span>
-        </el-form-item>
-        <el-form-item label="员工账号">
-          <el-select v-model="issueForm.employeeUserId" filterable placeholder="选择系统员工" style="width: 100%">
-            <el-option
-              v-for="u in employees"
-              :key="u.userId"
-              :label="`${u.nickName || u.userName}（${u.userName}）`"
-              :value="u.userId"
-            />
-          </el-select>
-        </el-form-item>
-      </el-form>
-      <template #footer>
-        <el-button @click="issueVisible = false">取消</el-button>
-        <el-button type="primary" :loading="saving" @click="submitIssue">签发</el-button>
-      </template>
-    </el-dialog>
-
-    <!-- 凭证结果 -->
-    <el-dialog v-model="credentialVisible" title="绑定凭证（仅显示一次）" width="440px">
-      <div class="code-box">{{ credential.code }}</div>
-      <div class="muted mt8">
-        员工：{{ credential.employeeName }} · 有效期至 {{ credential.expiresAt }}
-      </div>
-      <div class="muted mt8">{{ credential.hint }}</div>
-      <template #footer>
-        <el-button type="danger" plain :loading="saving" @click="revokeCredential">撤销该凭证</el-button>
-        <el-button type="primary" @click="credentialVisible = false">我已记录</el-button>
-      </template>
-    </el-dialog>
   </div>
 </template>
 
@@ -279,15 +204,11 @@ import { ElMessage, ElMessageBox } from 'element-plus'
 import {
   auditExport,
   getExportTask,
-  issueBindingCredential,
-  listBindingRequests,
   listExports,
   listPrivacyCases,
   requestExport,
-  resolvePrivacyCase,
-  revokeBindingCredential
+  resolvePrivacyCase
 } from '@/api/rongli'
-import { listUser } from '@/api/system/user'
 
 const active = ref('privacy')
 const loading = ref(false)
@@ -309,13 +230,6 @@ const exportApply = reactive<any>({ from: '', to: '', status: '', reason: '' })
 const exportViewVisible = ref(false)
 const exportView = ref<any>({})
 
-const bindingRows = ref<any[]>([])
-const issueVisible = ref(false)
-const issueForm = reactive<any>({ requestId: '', employeeUserId: null })
-const employees = ref<any[]>([])
-const credentialVisible = ref(false)
-const credential = ref<any>({})
-
 onMounted(() => {
   loadPrivacy()
 })
@@ -323,7 +237,6 @@ onMounted(() => {
 function onTabChange(name: string) {
   if (name === 'privacy') loadPrivacy()
   if (name === 'export') loadExports()
-  if (name === 'binding') loadBindings()
 }
 
 async function loadPrivacy() {
@@ -419,58 +332,6 @@ async function viewExport(row: any) {
   exportViewVisible.value = true
 }
 
-async function loadBindings() {
-  loading.value = true
-  try {
-    const res: any = await listBindingRequests()
-    bindingRows.value = (res && res.rows) || []
-    if (!employees.value.length) {
-      const page: any = await listUser({ pageNum: 1, pageSize: 200, status: '0' })
-      employees.value = (page && page.rows) || []
-    }
-  } finally {
-    loading.value = false
-  }
-}
-
-function openIssue(row: any) {
-  issueForm.requestId = row.id
-  issueForm.employeeUserId = null
-  issueVisible.value = true
-}
-
-async function submitIssue() {
-  if (!issueForm.employeeUserId) {
-    ElMessage.warning('请选择员工账号')
-    return
-  }
-  saving.value = true
-  try {
-    const res: any = await issueBindingCredential({
-      requestId: issueForm.requestId,
-      employeeUserId: issueForm.employeeUserId
-    })
-    credential.value = res || {}
-    issueVisible.value = false
-    credentialVisible.value = true
-    loadBindings()
-  } finally {
-    saving.value = false
-  }
-}
-
-async function revokeCredential() {
-  await ElMessageBox.confirm('撤销后该凭证立即失效，员工需重新申请。确认撤销？', '撤销凭证', { type: 'warning' })
-  saving.value = true
-  try {
-    await revokeBindingCredential(credential.value.credentialId)
-    ElMessage.success('已撤销')
-    credentialVisible.value = false
-    loadBindings()
-  } finally {
-    saving.value = false
-  }
-}
 </script>
 
 <style scoped>

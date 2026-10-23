@@ -3,6 +3,7 @@ import { ElNotification , ElMessageBox, ElMessage, ElLoading } from 'element-plu
 import { getToken } from '@/utils/auth'
 import errorCode from '@/utils/errorCode'
 import { tansParams, blobValidate } from '@/utils/ruoyi'
+import { normalizeTimeStrings } from '@/utils/datetime'
 import cache from '@/plugins/cache'
 import { saveAs } from 'file-saver'
 import useUserStore from '@/store/modules/user'
@@ -105,12 +106,21 @@ service.interceptors.response.use((res: any) => {
       ElNotification.error({ title: msg })
       return Promise.reject('error')
     } else {
-      return  Promise.resolve(res.data)
+      // 后端时间统一为 ISO8601 UTC（带 Z），在这里一次性转成北京时间文本，
+      // 避免各页面各自 new Date / parseTime 时出现 8 小时偏差
+      return  Promise.resolve(normalizeTimeStrings(res.data))
     }
   },
   (error: any) => {
     console.log('err' + error)
     let { message } = error
+    // 荣利业务接口按语义返回 4xx，真实原因在响应体里；不读出来会只剩"系统接口xxx异常"
+    const payload = error && error.response && error.response.data
+    const serverMsg = payload && (payload.msg || payload.message)
+    if (serverMsg && typeof serverMsg === 'string') {
+      ElMessage({ message: serverMsg, type: 'error', duration: 5 * 1000 })
+      return Promise.reject(error)
+    }
     if (message == "Network Error") {
       message = "后端接口连接异常"
     } else if (message.includes("timeout")) {

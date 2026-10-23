@@ -41,35 +41,35 @@
             </div>
           </template>
           <div class="todo-grid">
-            <div class="todo" @click="go('/rongli/dispatch')">
+            <div class="todo" @click="go('/rongli/business/dispatch')">
               <div class="todo-num">{{ num(demand.dispatching) }}</div>
               <div class="todo-label">待派单/派单中</div>
             </div>
-            <div class="todo" @click="go('/rongli/aftersale')">
+            <div class="todo" @click="go('/rongli/business/aftersale')">
               <div class="todo-num">{{ num(overview.aftersale_pending) }}</div>
               <div class="todo-label">售后待审</div>
             </div>
-            <div class="todo" @click="go('/rongli/exception')">
+            <div class="todo" @click="go('/rongli/business/exception')">
               <div class="todo-num">{{ num(overview.dispute_open) }}</div>
               <div class="todo-label">争议未结</div>
             </div>
-            <div class="todo" @click="go('/rongli/exception')">
+            <div class="todo" @click="go('/rongli/business/exception')">
               <div class="todo-num">{{ num(overview.exception_open) }}</div>
               <div class="todo-label">服务异常</div>
             </div>
-            <div class="todo" @click="go('/rongli/exception')">
+            <div class="todo" @click="go('/rongli/business/exception')">
               <div class="todo-num">{{ num(overview.correction_pending) }}</div>
               <div class="todo-label">结果更正</div>
             </div>
-            <div class="todo" @click="go('/rongli/penalty')">
+            <div class="todo" @click="go('/rongli/people/penalty')">
               <div class="todo-num">{{ num(overview.appeal_pending) }}</div>
               <div class="todo-label">申诉待处理</div>
             </div>
-            <div class="todo" @click="go('/rongli/qualification')">
+            <div class="todo" @click="go('/rongli/people/qualification')">
               <div class="todo-num">{{ num(overview.qualification_pending) }}</div>
               <div class="todo-label">资格待审</div>
             </div>
-            <div class="todo" @click="go('/rongli/order')">
+            <div class="todo" @click="go('/rongli/business/order')">
               <div class="todo-num">{{ num(demand.wait_confirm) }}</div>
               <div class="todo-label">待车主确认</div>
             </div>

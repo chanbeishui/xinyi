@@ -38,6 +38,25 @@ export function reportOrderException(orderNo: string, data: any): Promise<any> {
 export function listCapacity(stationId: number | string): Promise<any> {
   return request({ url: '/api/admin/capacity', method: 'get', params: { stationId } })
 }
+
+// ---------------------------------------------------------------- 收车与检测待办
+export function listReceivingPending(params: any): Promise<any> {
+  return request({ url: '/api/admin/receiving/pending', method: 'get', params })
+}
+export function getReceivingDetail(orderNo: string): Promise<any> {
+  return request({ url: `/api/admin/receiving/${orderNo}`, method: 'get' })
+}
+/** 确认收车：必须传司机口述的 4 位交接码，核验规则与代驾端一致 */
+export function confirmReceiving(orderNo: string, handoverId: string | number, data: any): Promise<any> {
+  return request({
+    url: `/api/admin/receiving/${orderNo}/handovers/${handoverId}/confirm`,
+    method: 'post',
+    data
+  })
+}
+export function listInspectionTodos(params: any): Promise<any> {
+  return request({ url: '/api/admin/inspection/todos', method: 'get', params })
+}
 export function updateCapacity(slotId: number | string, data: any): Promise<any> {
   return request({ url: `/api/admin/capacity/${slotId}`, method: 'put', data })
 }
@@ -109,6 +128,10 @@ export function updateStation(stationId: number | string, data: any): Promise<an
 }
 export function listStationGrants(params?: any): Promise<any> {
   return request({ url: '/api/admin/station-grants', method: 'get', params })
+}
+/** 新增站点授权时的员工候选（按手机号/姓名/账号检索） */
+export function listEmployeeCandidates(keyword?: string): Promise<any> {
+  return request({ url: '/api/admin/employee-candidates', method: 'get', params: { keyword } })
 }
 export function updateStationGrant(employeeUserId: number | string, data: any): Promise<any> {
   return request({ url: `/api/admin/station-grants/${employeeUserId}`, method: 'put', data })
@@ -369,14 +392,33 @@ export function getBusinessConfig(): Promise<any> {
 export function saveBusinessConfig(data: any): Promise<any> {
   return request({ url: '/api/admin/config', method: 'put', data })
 }
-export function listBindingRequests(): Promise<any> {
-  return request({ url: '/api/admin/employee-binding-requests', method: 'get' })
+// ---------------------------------------------------------------- 支付 / 短信 / 订阅消息配置
+export function getPayConfig(): Promise<any> {
+  return request({ url: '/api/admin/config/payment', method: 'get' })
 }
-export function issueBindingCredential(data: any): Promise<any> {
-  return request({ url: '/api/admin/employee-binding-credentials', method: 'post', data })
+export function savePayConfig(data: any): Promise<any> {
+  return request({ url: '/api/admin/config/payment', method: 'put', data })
 }
-export function revokeBindingCredential(credentialId: number | string): Promise<any> {
-  return request({ url: `/api/admin/employee-binding-credentials/${credentialId}/revoke`, method: 'post' })
+export function selfCheckPayConfig(): Promise<any> {
+  return request({ url: '/api/admin/config/payment/self-check', method: 'post' })
+}
+export function getSmsConfig(): Promise<any> {
+  return request({ url: '/api/admin/config/sms', method: 'get' })
+}
+export function saveSmsConfig(data: any): Promise<any> {
+  return request({ url: '/api/admin/config/sms', method: 'put', data })
+}
+export function testSmsConfig(phone: string): Promise<any> {
+  return request({ url: '/api/admin/config/sms/test', method: 'post', data: { phone } })
+}
+export function getSubscribeConfig(): Promise<any> {
+  return request({ url: '/api/admin/config/subscribe', method: 'get' })
+}
+export function saveSubscribeConfig(data: any): Promise<any> {
+  return request({ url: '/api/admin/config/subscribe', method: 'put', data })
+}
+export function selfCheckSubscribeConfig(): Promise<any> {
+  return request({ url: '/api/admin/config/subscribe/self-check', method: 'post' })
 }
 export function listPenalties(params: any): Promise<any> {
   return request({ url: '/api/admin/penalties', method: 'get', params })

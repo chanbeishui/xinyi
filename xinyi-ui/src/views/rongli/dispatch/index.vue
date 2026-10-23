@@ -18,7 +18,7 @@
           <el-table-column label="车牌" prop="plateNo" width="120" />
           <el-table-column label="检测点" prop="stationName" min-width="160" />
           <el-table-column label="状态" prop="fulfillmentStatus" width="150" />
-          <el-table-column label="上门时段" prop="pickupStartsAt" width="200" />
+          <el-table-column label="上门时段" prop="pickupWindowLabel" width="200" />
           <el-table-column label="派单时间" prop="dispatchAt" width="200" />
           <el-table-column label="操作" width="200" fixed="right">
             <template #default="{ row }">

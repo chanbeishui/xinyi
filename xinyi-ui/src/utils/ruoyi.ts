@@ -15,6 +15,10 @@ export function parseTime(time: any, pattern?: string): string | null {
   } else {
     if ((typeof time === 'string') && (/^[0-9]+$/.test(time))) {
       time = parseInt(time)
+    } else if (typeof time === 'string' && /(?:Z|[+-]\d{2}:?\d{2})$/i.test(time.trim())) {
+      // 带时区的 ISO8601（荣利业务接口统一格式）：必须保留原文，去掉 Z 会被按本地时间解释，
+      // 展示结果整体少 8 小时
+      time = time.trim()
     } else if (typeof time === 'string') {
       time = time.replace(new RegExp(/-/gm), '/').replace('T', ' ').replace(new RegExp(/\.[\d]{3}/gm), '')
     }

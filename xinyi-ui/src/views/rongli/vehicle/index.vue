@@ -45,7 +45,7 @@
       <el-table :data="orders" border max-height="420">
         <el-table-column label="订单号" prop="orderNo" width="180" />
         <el-table-column label="状态" prop="fulfillmentStatusLabel" width="140" />
-        <el-table-column label="上门时段" prop="pickupWindow" min-width="180" />
+        <el-table-column label="上门时段" prop="pickupWindowLabel" min-width="190" />
       </el-table>
     </el-dialog>
 

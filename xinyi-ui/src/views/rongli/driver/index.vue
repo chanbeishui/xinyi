@@ -15,6 +15,7 @@
       <el-form-item>
         <el-button type="primary" icon="Search" @click="handleQuery">查询</el-button>
         <el-button icon="Refresh" @click="resetQuery">重置</el-button>
+        <el-button icon="Check" @click="router.push('/rongli/people/qualification')">代驾认证审核</el-button>
       </el-form-item>
     </el-form>
 
@@ -84,8 +85,11 @@
 
 <script setup name="RongliDriver" lang="ts">
 import { onMounted, reactive, ref } from 'vue'
+import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import { disableDriverNewAssignments, getDriver, listDriverAssignments, listDrivers } from '@/api/rongli'
+
+const router = useRouter()
 
 const loading = ref(false)
 const rows = ref<any[]>([])

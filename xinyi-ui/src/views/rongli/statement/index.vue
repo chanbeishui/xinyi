@@ -13,6 +13,10 @@
       <el-form-item>
         <el-button type="primary" icon="Search" @click="handleQuery">查询</el-button>
         <el-button type="success" icon="Plus" @click="openCreate">新建对账单</el-button>
+        <el-button icon="User" @click="go('/rongli/people/reconcileSummary')">个人对账汇总</el-button>
+        <el-button icon="Edit" @click="go('/rongli/people/adjustment')">对账调整记录</el-button>
+        <el-button icon="Money" @click="go('/rongli/people/paymentVerify')">外部付款核对</el-button>
+        <el-button icon="Setting" @click="go('/rongli/people/feeRule')">代驾费用规则</el-button>
       </el-form-item>
     </el-form>
 
@@ -103,6 +107,7 @@
 
 <script setup name="RongliStatement" lang="ts">
 import { onMounted, reactive, ref } from 'vue'
+import { useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import {
   createStatement,
@@ -115,6 +120,7 @@ import {
   voidStatement
 } from '@/api/rongli'
 
+const router = useRouter()
 const loading = ref(false)
 const rows = ref<any[]>([])
 const total = ref(0)
@@ -225,6 +231,10 @@ async function voidIt(row: any) {
   await voidStatement(row.statementId)
   ElMessage.success('已作废')
   load()
+}
+
+function go(path: string) {
+  router.push(path)
 }
 </script>
 

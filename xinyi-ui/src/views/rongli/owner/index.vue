@@ -57,7 +57,7 @@
         <el-table-column label="订单号" prop="orderNo" width="180" />
         <el-table-column label="状态" prop="fulfillmentStatusLabel" width="140" />
         <el-table-column label="金额(元)" prop="totalYuan" width="110" />
-        <el-table-column label="上门时段" prop="pickupWindow" min-width="170" />
+        <el-table-column label="上门时段" prop="pickupWindowLabel" min-width="190" />
       </el-table>
     </el-dialog>
   </div>
@@ -101,12 +101,22 @@ function resetQuery() {
 }
 
 async function openDetail(row: any) {
-  detail.value = await getOwner(row.ownerId)
+  // 后端列表返回的是 owner_id（下划线），早期这里读的是 row.ownerId，
+  // 导致点「档案」时请求 /api/admin/owners/undefined 并 500。
+  const id = row.owner_id ?? row.ownerId ?? row.account_id
+  if (!id) {
+    return
+  }
+  detail.value = await getOwner(id)
   detailVisible.value = true
 }
 
 async function openOrders(row: any) {
-  const res: any = await listOwnerOrders(row.ownerId)
+  const id = row.owner_id ?? row.ownerId ?? row.account_id
+  if (!id) {
+    return
+  }
+  const res: any = await listOwnerOrders(id)
   orders.value = (res && res.rows) || (Array.isArray(res) ? res : [])
   orderVisible.value = true
 }

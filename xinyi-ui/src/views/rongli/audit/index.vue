@@ -16,6 +16,7 @@
       <el-form-item>
         <el-button type="primary" icon="Search" @click="handleQuery">查询</el-button>
         <el-button icon="Refresh" @click="resetQuery">重置</el-button>
+        <el-button icon="Lock" @click="router.push('/rongli/runtime/governance')">治理与导出</el-button>
       </el-form-item>
     </el-form>
 
@@ -51,8 +52,10 @@
 
 <script setup name="RongliAudit" lang="ts">
 import { onMounted, reactive, ref } from 'vue'
+import { useRouter } from 'vue-router'
 import { listAuditEvents } from '@/api/rongli'
 
+const router = useRouter()
 const loading = ref(false)
 const rows = ref<any[]>([])
 const total = ref(0)
