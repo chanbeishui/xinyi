@@ -1,0 +1,63 @@
+# 隔离运行环境：一条命令起 MySQL + Redis，不占用本机 3306/3307/6379。
+#
+#   docker compose up -d
+#   mysql -h127.0.0.1 -P13307 -uroot -pxinyi_dev xinyi
+#
+# 初始化顺序由文件名决定：ry_20260417.sql（全量表+菜单+字典）先执行，
+# 其余 migration/seed 脚本按前缀序号依次执行。
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: xinyi-mysql
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_0900_ai_ci
+      - --default-time-zone=+00:00
+    environment:
+      MYSQL_ROOT_PASSWORD: xinyi_dev
+      MYSQL_DATABASE: xinyi
+      TZ: UTC
+    ports:
+      - "13307:3306"
+    volumes:
+      - xinyi-mysql-data:/var/lib/mysql
+      - ./sql/ry_20260417.sql:/docker-entrypoint-initdb.d/00_base.sql:ro
+      - ./sql/migration_20260804_digital_twin_menu.sql:/docker-entrypoint-initdb.d/05_digital_twin.sql:ro
+      - ./sql/migration_20260915_data_screen_menu.sql:/docker-entrypoint-initdb.d/06_data_screen.sql:ro
+      - ./sql/migration_20261021_01_rongli_vi_business_tables.sql:/docker-entrypoint-initdb.d/10_vi_business.sql:ro
+      - ./sql/migration_20261021_02_rongli_menu_dict_seed.sql:/docker-entrypoint-initdb.d/11_menu_dict_seed.sql:ro
+      - ./sql/migration_20261021_03_rongli_admin_pages.sql:/docker-entrypoint-initdb.d/12_admin_pages.sql:ro
+      - ./sql/migration_20261022_01_rongli_menu_groups.sql:/docker-entrypoint-initdb.d/20_menu_groups.sql:ro
+      - ./sql/migration_20261022_02_rongli_stats_reconcile_perm.sql:/docker-entrypoint-initdb.d/21_stats_perm.sql:ro
+      - ./sql/migration_20261022_03_rongli_governance_conclusion.sql:/docker-entrypoint-initdb.d/22_governance.sql:ro
+      - ./sql/migration_20261022_04_rongli_dispatch_rounds_playback_subscribe.sql:/docker-entrypoint-initdb.d/23_rounds_playback_subscribe.sql:ro
+      - ./sql/migration_20261022_05_rongli_master_dept_scope.sql:/docker-entrypoint-initdb.d/24_master_dept.sql:ro
+      - ./sql/migration_20261022_06_rongli_pay_sms_subscribe_handover.sql:/docker-entrypoint-initdb.d/25_pay_sms_subscribe_handover.sql:ro
+      - ./sql/migration_20261023_01_rongli_integration_config.sql:/docker-entrypoint-initdb.d/40_integration_config.sql:ro
+      - ./sql/migration_20261023_02_rongli_identity_v64_align.sql:/docker-entrypoint-initdb.d/41_identity_v64_align.sql:ro
+      - ./sql/migration_20261023_03_rongli_menu_parent_align.sql:/docker-entrypoint-initdb.d/42_menu_parent_align.sql:ro
+      - ./sql/migration_20261023_04_rongli_identity_v64_columns.sql:/docker-entrypoint-initdb.d/43_identity_v64_columns.sql:ro
+      - ./sql/migration_20261023_05_rongli_retire_binding_flow.sql:/docker-entrypoint-initdb.d/44_retire_binding_flow.sql:ro
+      - ./sql/migration_20261023_06_rongli_payment_identity.sql:/docker-entrypoint-initdb.d/45_payment_identity.sql:ro
+      - ./sql/migration_multi_dept_authorization.sql:/docker-entrypoint-initdb.d/50_multi_dept_authz.sql:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-pxinyi_dev"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+
+  redis:
+    image: redis:7-alpine
+    container_name: xinyi-redis
+    command: ["redis-server", "--appendonly", "no"]
+    ports:
+      - "16379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+
+volumes:
+  xinyi-mysql-data:
