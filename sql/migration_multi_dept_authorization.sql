@@ -1,11 +1,20 @@
 -- 多部门任职、安全授权与审计迁移（MySQL，一次性执行）
 -- 执行前必须备份；生产发布应先执行结构与回填，再根据文末校验结果决定是否放量。
 
-alter table sys_user
-  add column management_scope varchar(16) not null default 'DEPT'
-    comment '管理范围（DEPT部门账号 PLATFORM平台账号）' after dept_id,
-  add column auth_version bigint not null default 0
-    comment '授权版本' after management_scope;
+-- 幂等：两列在全新库（基础脚本已含）里可能已存在，按列判断后分别 ALTER
+set @has_scope := (select count(*) from information_schema.columns
+  where table_schema = database() and table_name = 'sys_user' and column_name = 'management_scope');
+set @ddl := if(@has_scope = 0,
+  'alter table sys_user add column management_scope varchar(16) not null default ''DEPT'' comment ''管理范围（DEPT部门账号 PLATFORM平台账号）'' after dept_id',
+  'do 0');
+prepare stmt from @ddl; execute stmt; deallocate prepare stmt;
+
+set @has_ver := (select count(*) from information_schema.columns
+  where table_schema = database() and table_name = 'sys_user' and column_name = 'auth_version');
+set @ddl := if(@has_ver = 0,
+  'alter table sys_user add column auth_version bigint not null default 0 comment ''授权版本'' after management_scope',
+  'do 0');
+prepare stmt from @ddl; execute stmt; deallocate prepare stmt;
 
 create table if not exists sys_user_dept (
   user_id      bigint not null comment '用户ID',

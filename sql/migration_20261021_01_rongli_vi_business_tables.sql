@@ -12,7 +12,7 @@
 SET NAMES utf8mb4;
 
 -- 微信统一基础账户 | MYSQL_AUTO_INCREMENT
-CREATE TABLE `vi_account` (
+CREATE TABLE IF NOT EXISTS `vi_account` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',
   `app_id` VARCHAR(64) CHARACTER SET ascii COLLATE ascii_bin NOT NULL COMMENT '微信应用标识',
   `open_id` VARCHAR(128) CHARACTER SET ascii COLLATE ascii_bin NOT NULL COMMENT '同一小程序身份',
@@ -34,7 +34,7 @@ CREATE TABLE `vi_account` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='微信统一基础账户';
 
 -- 微信账户与框架员工受控绑定 | MYSQL_AUTO_INCREMENT
-CREATE TABLE `vi_employee_binding` (
+CREATE TABLE IF NOT EXISTS `vi_employee_binding` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',
   `account_id` BIGINT NOT NULL COMMENT '关联vi_account',
   `sys_user_id` BIGINT NOT NULL COMMENT '引用现有sys_user，不重建员工',
@@ -54,7 +54,7 @@ CREATE TABLE `vi_employee_binding` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='微信账户与框架员工受控绑定';
 
 -- 代驾资格与听单偏好 | MYSQL_AUTO_INCREMENT
-CREATE TABLE `vi_driver_profile` (
+CREATE TABLE IF NOT EXISTS `vi_driver_profile` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',
   `account_id` BIGINT NOT NULL COMMENT '同一个基础账户',
   `qualification_status` VARCHAR(24) NOT NULL COMMENT 'QualificationStatus: DRAFT,SUBMITTED,APPROVED,REJECTED,EXPIRED,SUSPENDED',
@@ -77,7 +77,7 @@ CREATE TABLE `vi_driver_profile` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='代驾资格与听单偏好';
 
 -- 代驾资格申请与复审版本 | MYSQL_AUTO_INCREMENT
-CREATE TABLE `vi_driver_application` (
+CREATE TABLE IF NOT EXISTS `vi_driver_application` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',
   `driver_id` BIGINT NOT NULL COMMENT '关联代驾档案',
   `status` VARCHAR(24) NOT NULL COMMENT 'QualificationStatus: DRAFT,SUBMITTED,APPROVED,REJECTED,EXPIRED,SUSPENDED',
@@ -99,7 +99,7 @@ CREATE TABLE `vi_driver_application` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='代驾资格申请与复审版本';
 
 -- 第三方核验与培训任务记录 | MYSQL_AUTO_INCREMENT
-CREATE TABLE `vi_provider_verification` (
+CREATE TABLE IF NOT EXISTS `vi_provider_verification` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',
   `application_id` BIGINT NOT NULL COMMENT '代驾申请',
   `provider` VARCHAR(64) COMMENT '供应商或培训服务',
@@ -120,7 +120,7 @@ CREATE TABLE `vi_provider_verification` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='第三方核验与培训任务记录';
 
 -- 检测点与可服务设置 | MYSQL_AUTO_INCREMENT
-CREATE TABLE `vi_station` (
+CREATE TABLE IF NOT EXISTS `vi_station` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',
   `name` VARCHAR(128) NOT NULL COMMENT '名称',
   `dept_id` BIGINT NOT NULL COMMENT '框架部门归属',
@@ -140,7 +140,7 @@ CREATE TABLE `vi_station` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='检测点与可服务设置';
 
 -- 员工跨检测点操作范围 | MYSQL_AUTO_INCREMENT
-CREATE TABLE `vi_station_grant` (
+CREATE TABLE IF NOT EXISTS `vi_station_grant` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',
   `sys_user_id` BIGINT NOT NULL COMMENT '复用框架人员',
   `station_id` BIGINT NOT NULL COMMENT '获授权站点',
@@ -156,7 +156,7 @@ CREATE TABLE `vi_station_grant` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='员工跨检测点操作范围';
 
 -- 授权客户-车辆关联档案，供独立车辆列表 | MYSQL_AUTO_INCREMENT
-CREATE TABLE `vi_vehicle` (
+CREATE TABLE IF NOT EXISTS `vi_vehicle` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',
   `owner_account_id` BIGINT NOT NULL COMMENT '基础账户',
   `plate_no` VARCHAR(20) NOT NULL COMMENT '归一化车牌',
@@ -180,7 +180,7 @@ CREATE TABLE `vi_vehicle` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='授权客户-车辆关联档案，供独立车辆列表';
 
 -- 客户常用地址 | MYSQL_AUTO_INCREMENT
-CREATE TABLE `vi_address` (
+CREATE TABLE IF NOT EXISTS `vi_address` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',
   `owner_account_id` BIGINT NOT NULL COMMENT '所属账户',
   `label` VARCHAR(40) COMMENT '家/公司等',
@@ -197,7 +197,7 @@ CREATE TABLE `vi_address` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='客户常用地址';
 
 -- 不可变生效计价版本 | MYSQL_AUTO_INCREMENT
-CREATE TABLE `vi_price_rule` (
+CREATE TABLE IF NOT EXISTS `vi_price_rule` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',
   `rule_key` VARCHAR(64) NOT NULL COMMENT '稳定方案标识',
   `revision` INT NOT NULL COMMENT '新版本号',
@@ -220,7 +220,7 @@ CREATE TABLE `vi_price_rule` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='不可变生效计价版本';
 
 -- 上门服务与站点接收额度 | MYSQL_AUTO_INCREMENT
-CREATE TABLE `vi_quota_slot` (
+CREATE TABLE IF NOT EXISTS `vi_quota_slot` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',
   `quota_type` VARCHAR(24) NOT NULL COMMENT 'QuotaType: PICKUP,STATION_RECEIVE',
   `scope_key` VARCHAR(64) NOT NULL COMMENT '区域标识或站点标识',
@@ -244,7 +244,7 @@ CREATE TABLE `vi_quota_slot` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='上门服务与站点接收额度';
 
 -- 短期报价快照 | MYSQL_AUTO_INCREMENT
-CREATE TABLE `vi_quote` (
+CREATE TABLE IF NOT EXISTS `vi_quote` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',
   `owner_account_id` BIGINT NOT NULL COMMENT '报价人',
   `station_id` BIGINT NOT NULL COMMENT '匹配站点',
@@ -269,7 +269,7 @@ CREATE TABLE `vi_quote` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='短期报价快照';
 
 -- 订单主履约与实际保管 | MYSQL_AUTO_INCREMENT
-CREATE TABLE `vi_order` (
+CREATE TABLE IF NOT EXISTS `vi_order` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',
   `order_no` VARCHAR(64) NOT NULL COMMENT '对外业务单号',
   `owner_account_id` BIGINT NOT NULL COMMENT '下单账户',
@@ -312,7 +312,7 @@ CREATE TABLE `vi_order` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='订单主履约与实际保管';
 
 -- 每单额度占用凭证 | MYSQL_AUTO_INCREMENT
-CREATE TABLE `vi_quota_reservation` (
+CREATE TABLE IF NOT EXISTS `vi_quota_reservation` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',
   `order_id` BIGINT NOT NULL COMMENT '关联订单',
   `slot_id` BIGINT NOT NULL COMMENT '关联quota_slot',
@@ -331,7 +331,7 @@ CREATE TABLE `vi_quota_reservation` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='每单额度占用凭证';
 
 -- 单人派单邀约 | MYSQL_AUTO_INCREMENT
-CREATE TABLE `vi_dispatch_invite` (
+CREATE TABLE IF NOT EXISTS `vi_dispatch_invite` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',
   `order_id` BIGINT NOT NULL COMMENT '订单',
   `driver_id` BIGINT NOT NULL COMMENT '候选代驾',
@@ -354,7 +354,7 @@ CREATE TABLE `vi_dispatch_invite` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='单人派单邀约';
 
 -- 司机承接历史，结束后仍保留 | MYSQL_AUTO_INCREMENT
-CREATE TABLE `vi_driver_assignment` (
+CREATE TABLE IF NOT EXISTS `vi_driver_assignment` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',
   `order_id` BIGINT NOT NULL COMMENT '订单',
   `driver_id` BIGINT NOT NULL COMMENT '代驾',
@@ -377,7 +377,7 @@ CREATE TABLE `vi_driver_assignment` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='司机承接历史，结束后仍保留';
 
 -- 司机唯一资源占用，不受订单待确认影响 | BUSINESS_KEY
-CREATE TABLE `vi_driver_occupancy` (
+CREATE TABLE IF NOT EXISTS `vi_driver_occupancy` (
   `driver_id` BIGINT NOT NULL COMMENT '主键，唯一占用',
   `holder_type` VARCHAR(16) NOT NULL COMMENT 'OccupancyHolderType: INVITE,ASSIGNMENT',
   `holder_id` BIGINT NOT NULL COMMENT '被占用邀约或承接ID',
@@ -393,7 +393,7 @@ CREATE TABLE `vi_driver_occupancy` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='司机唯一资源占用，不受订单待确认影响';
 
 -- 全局轮转游标与版本 | BUSINESS_KEY
-CREATE TABLE `vi_dispatch_cursor` (
+CREATE TABLE IF NOT EXISTS `vi_dispatch_cursor` (
   `scope_key` VARCHAR(64) NOT NULL COMMENT '全局或已确认调度域主键',
   `last_driver_id` BIGINT COMMENT '上次派发指针',
   `round_no` BIGINT NOT NULL DEFAULT 0 COMMENT '轮次定义须P01评审',
@@ -405,7 +405,7 @@ CREATE TABLE `vi_dispatch_cursor` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='全局轮转游标与版本';
 
 -- 代驾最近前台定位 | BUSINESS_KEY
-CREATE TABLE `vi_driver_location` (
+CREATE TABLE IF NOT EXISTS `vi_driver_location` (
   `driver_id` BIGINT NOT NULL COMMENT '主键',
   `location_cipher` VARBINARY(1024) NOT NULL COMMENT '加密位置',
   `captured_at` DATETIME(3) NOT NULL COMMENT '设备采集时间',
@@ -418,7 +418,7 @@ CREATE TABLE `vi_driver_location` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='代驾最近前台定位';
 
 -- 一次实物交接事务凭证 | MYSQL_AUTO_INCREMENT
-CREATE TABLE `vi_handover` (
+CREATE TABLE IF NOT EXISTS `vi_handover` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',
   `order_id` BIGINT NOT NULL COMMENT '订单',
   `assignment_id` BIGINT NOT NULL COMMENT '当前承接',
@@ -445,7 +445,7 @@ CREATE TABLE `vi_handover` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='一次实物交接事务凭证';
 
 -- 跨重发的交接错误次数 | BUSINESS_KEY
-CREATE TABLE `vi_handover_attempt_guard` (
+CREATE TABLE IF NOT EXISTS `vi_handover_attempt_guard` (
   `guard_key` VARCHAR(160) NOT NULL COMMENT '订单+承接+交接类型',
   `failed_attempts` INT NOT NULL DEFAULT 0 COMMENT '累计错误次数',
   `locked_at` DATETIME(3) COMMENT '错3次锁定',
@@ -458,7 +458,7 @@ CREATE TABLE `vi_handover_attempt_guard` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='跨重发的交接错误次数';
 
 -- 照片节点分组 | MYSQL_AUTO_INCREMENT
-CREATE TABLE `vi_evidence_group` (
+CREATE TABLE IF NOT EXISTS `vi_evidence_group` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',
   `order_id` BIGINT NOT NULL COMMENT '订单',
   `assignment_id` BIGINT NOT NULL COMMENT '承接',
@@ -480,7 +480,7 @@ CREATE TABLE `vi_evidence_group` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='照片节点分组';
 
 -- 照片版本与服务端元数据 | MYSQL_AUTO_INCREMENT
-CREATE TABLE `vi_photo` (
+CREATE TABLE IF NOT EXISTS `vi_photo` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',
   `group_id` BIGINT NOT NULL COMMENT '证据组',
   `photo_type` VARCHAR(24) NOT NULL COMMENT 'PhotoType: FRONT,BACK,LEFT,RIGHT,DASHBOARD,INTERIOR,EXTRA',
@@ -504,7 +504,7 @@ CREATE TABLE `vi_photo` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='照片版本与服务端元数据';
 
 -- 私有文件登记与校验 | MYSQL_AUTO_INCREMENT
-CREATE TABLE `vi_file` (
+CREATE TABLE IF NOT EXISTS `vi_file` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',
   `uploader_account_id` BIGINT NOT NULL COMMENT '上传者',
   `purpose` VARCHAR(32) NOT NULL COMMENT '限定用途',
@@ -528,7 +528,7 @@ CREATE TABLE `vi_file` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='私有文件登记与校验';
 
 -- 行驶证登记与人工复核 | MYSQL_AUTO_INCREMENT
-CREATE TABLE `vi_vehicle_license` (
+CREATE TABLE IF NOT EXISTS `vi_vehicle_license` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',
   `order_id` BIGINT NOT NULL COMMENT '订单',
   `sensitive_payload_cipher` LONGBLOB NOT NULL COMMENT '车主/VIN等密文',
@@ -548,7 +548,7 @@ CREATE TABLE `vi_vehicle_license` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='行驶证登记与人工复核';
 
 -- 追加式结构化结果版本 | MYSQL_AUTO_INCREMENT
-CREATE TABLE `vi_inspection_result` (
+CREATE TABLE IF NOT EXISTS `vi_inspection_result` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',
   `order_id` BIGINT NOT NULL COMMENT '订单',
   `revision` INT NOT NULL COMMENT '结果版本',
@@ -571,7 +571,7 @@ CREATE TABLE `vi_inspection_result` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='追加式结构化结果版本';
 
 -- 检测结果更正审批 | MYSQL_AUTO_INCREMENT
-CREATE TABLE `vi_result_correction` (
+CREATE TABLE IF NOT EXISTS `vi_result_correction` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',
   `order_id` BIGINT NOT NULL COMMENT '订单',
   `base_result_id` BIGINT NOT NULL COMMENT '原版本',
@@ -591,7 +591,7 @@ CREATE TABLE `vi_result_correction` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='检测结果更正审批';
 
 -- 支付交易与可退资金 | MYSQL_AUTO_INCREMENT
-CREATE TABLE `vi_payment_order` (
+CREATE TABLE IF NOT EXISTS `vi_payment_order` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',
   `order_id` BIGINT NOT NULL COMMENT '订单',
   `out_trade_no` VARCHAR(64) NOT NULL COMMENT '稳定微信商户单号',
@@ -616,7 +616,7 @@ CREATE TABLE `vi_payment_order` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='支付交易与可退资金';
 
 -- 稳定退款单及渠道执行 | MYSQL_AUTO_INCREMENT
-CREATE TABLE `vi_refund_order` (
+CREATE TABLE IF NOT EXISTS `vi_refund_order` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',
   `case_id` BIGINT NOT NULL COMMENT '关联唯一统一售后申请',
   `review_revision` INT NOT NULL COMMENT '批准决定版本，金额变更必须新版本审核',
@@ -641,7 +641,7 @@ CREATE TABLE `vi_refund_order` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='稳定退款单及渠道执行';
 
 -- 永久渠道回调去重 | MYSQL_AUTO_INCREMENT
-CREATE TABLE `vi_channel_event` (
+CREATE TABLE IF NOT EXISTS `vi_channel_event` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',
   `provider` VARCHAR(64) NOT NULL COMMENT '微信支付等',
   `event_key` VARCHAR(128) NOT NULL COMMENT '通知ID/交易业务唯一标识',
@@ -659,7 +659,7 @@ CREATE TABLE `vi_channel_event` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='永久渠道回调去重';
 
 -- 普通服务争议 | MYSQL_AUTO_INCREMENT
-CREATE TABLE `vi_dispute` (
+CREATE TABLE IF NOT EXISTS `vi_dispute` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',
   `order_id` BIGINT NOT NULL COMMENT '订单',
   `type` VARCHAR(64) NOT NULL COMMENT '普通服务类型，不是事故',
@@ -679,7 +679,7 @@ CREATE TABLE `vi_dispute` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='普通服务争议';
 
 -- 普通履约阻碍与客服待办 | MYSQL_AUTO_INCREMENT
-CREATE TABLE `vi_service_exception` (
+CREATE TABLE IF NOT EXISTS `vi_service_exception` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',
   `order_id` BIGINT NOT NULL COMMENT '订单',
   `type` VARCHAR(64) NOT NULL COMMENT '失联/拒收/资料/上传等',
@@ -698,7 +698,7 @@ CREATE TABLE `vi_service_exception` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='普通履约阻碍与客服待办';
 
 -- 服务评价 | MYSQL_AUTO_INCREMENT
-CREATE TABLE `vi_review` (
+CREATE TABLE IF NOT EXISTS `vi_review` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',
   `order_id` BIGINT NOT NULL COMMENT '订单',
   `owner_account_id` BIGINT NOT NULL COMMENT '下单人',
@@ -715,7 +715,7 @@ CREATE TABLE `vi_review` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='服务评价';
 
 -- 普通取消计次与轮转处罚 | MYSQL_AUTO_INCREMENT
-CREATE TABLE `vi_penalty` (
+CREATE TABLE IF NOT EXISTS `vi_penalty` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',
   `driver_id` BIGINT NOT NULL COMMENT '司机',
   `assignment_id` BIGINT NOT NULL COMMENT '取消承接',
@@ -740,7 +740,7 @@ CREATE TABLE `vi_penalty` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='普通取消计次与轮转处罚';
 
 -- 不可变业务事实流水 | MYSQL_AUTO_INCREMENT
-CREATE TABLE `vi_event_log` (
+CREATE TABLE IF NOT EXISTS `vi_event_log` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',
   `order_id` BIGINT COMMENT '可关联订单',
   `aggregate_type` VARCHAR(64) NOT NULL COMMENT '聚合类型',
@@ -765,7 +765,7 @@ CREATE TABLE `vi_event_log` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='不可变业务事实流水';
 
 -- 可靠异步事务消息 | MYSQL_AUTO_INCREMENT
-CREATE TABLE `vi_outbox` (
+CREATE TABLE IF NOT EXISTS `vi_outbox` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',
   `event_key` VARCHAR(128) NOT NULL COMMENT '事件唯一键',
   `aggregate_type` VARCHAR(64) NOT NULL COMMENT '所属对象',
@@ -787,7 +787,7 @@ CREATE TABLE `vi_outbox` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='可靠异步事务消息';
 
 -- 站内消息与下发记录 | MYSQL_AUTO_INCREMENT
-CREATE TABLE `vi_notification` (
+CREATE TABLE IF NOT EXISTS `vi_notification` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',
   `account_id` BIGINT NOT NULL COMMENT '接收人',
   `role` VARCHAR(64) NOT NULL COMMENT '业务视角',
@@ -807,7 +807,7 @@ CREATE TABLE `vi_notification` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='站内消息与下发记录';
 
 -- 请求级幂等 | MYSQL_AUTO_INCREMENT
-CREATE TABLE `vi_idempotency` (
+CREATE TABLE IF NOT EXISTS `vi_idempotency` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',
   `subject_key` VARCHAR(96) NOT NULL COMMENT '统一主体命名空间',
   `action_key` VARCHAR(160) NOT NULL COMMENT 'HTTP动作+资源',
@@ -827,7 +827,7 @@ CREATE TABLE `vi_idempotency` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='请求级幂等';
 
 -- 隐私、导出、敏感访问与对账审批台账 | MYSQL_AUTO_INCREMENT
-CREATE TABLE `vi_governance_case` (
+CREATE TABLE IF NOT EXISTS `vi_governance_case` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',
   `case_type` VARCHAR(64) NOT NULL COMMENT 'GovernanceType: PRIVACY,EXPORT,SENSITIVE_ACCESS,RECONCILE',
   `order_id` BIGINT COMMENT '可关联订单',
@@ -850,7 +850,7 @@ CREATE TABLE `vi_governance_case` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='隐私、导出、敏感访问与对账审批台账';
 
 -- 车主运营档案扩展，非另一套登录账户 | MYSQL_AUTO_INCREMENT
-CREATE TABLE `vi_owner_profile` (
+CREATE TABLE IF NOT EXISTS `vi_owner_profile` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',
   `account_id` BIGINT NOT NULL COMMENT '关联vi_account',
   `service_name` VARCHAR(100) COMMENT '服务称呼',
@@ -867,7 +867,7 @@ CREATE TABLE `vi_owner_profile` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='车主运营档案扩展，非另一套登录账户';
 
 -- 取消与退款的唯一申请与处理记录 | MYSQL_AUTO_INCREMENT
-CREATE TABLE `vi_aftersale_case` (
+CREATE TABLE IF NOT EXISTS `vi_aftersale_case` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',
   `case_no` VARCHAR(64) NOT NULL COMMENT '对外售后号',
   `order_id` BIGINT NOT NULL COMMENT '订单',
@@ -902,7 +902,7 @@ CREATE TABLE `vi_aftersale_case` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='取消与退款的唯一申请与处理记录';
 
 -- 统一审核的追加式决定凭证 | MYSQL_AUTO_INCREMENT
-CREATE TABLE `vi_aftersale_review` (
+CREATE TABLE IF NOT EXISTS `vi_aftersale_review` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',
   `case_id` BIGINT NOT NULL COMMENT '申请',
   `revision` INT NOT NULL COMMENT '唯一决定版本',
@@ -924,7 +924,7 @@ CREATE TABLE `vi_aftersale_review` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='统一审核的追加式决定凭证';
 
 -- 代驾报酬规则独立版本 | MYSQL_AUTO_INCREMENT
-CREATE TABLE `vi_driver_fee_rule` (
+CREATE TABLE IF NOT EXISTS `vi_driver_fee_rule` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',
   `payor_entity_id` BIGINT NOT NULL COMMENT '承担应付的主体',
   `rule_code` VARCHAR(64) NOT NULL COMMENT '稳定规则标识',
@@ -950,7 +950,7 @@ CREATE TABLE `vi_driver_fee_rule` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='代驾报酬规则独立版本';
 
 -- 按真实承接形成的不可覆盖费用台账 | MYSQL_AUTO_INCREMENT
-CREATE TABLE `vi_driver_fee_ledger` (
+CREATE TABLE IF NOT EXISTS `vi_driver_fee_ledger` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',
   `driver_id` BIGINT NOT NULL COMMENT '代驾',
   `payor_entity_id` BIGINT NOT NULL COMMENT '付款责任主体',
@@ -980,7 +980,7 @@ CREATE TABLE `vi_driver_fee_ledger` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='按真实承接形成的不可覆盖费用台账';
 
 -- 单主体单司机单币种对账单 | MYSQL_AUTO_INCREMENT
-CREATE TABLE `vi_driver_statement` (
+CREATE TABLE IF NOT EXISTS `vi_driver_statement` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',
   `statement_no` VARCHAR(64) NOT NULL COMMENT '对外账单编号',
   `driver_id` BIGINT NOT NULL COMMENT '代驾',
@@ -1024,7 +1024,7 @@ CREATE TABLE `vi_driver_statement` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='单主体单司机单币种对账单';
 
 -- 对账工作明细；历史发布版本另表保存 | MYSQL_AUTO_INCREMENT
-CREATE TABLE `vi_driver_statement_line` (
+CREATE TABLE IF NOT EXISTS `vi_driver_statement_line` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',
   `statement_id` BIGINT NOT NULL COMMENT '对账单',
   `statement_revision` INT NOT NULL COMMENT '所属账单修订',
@@ -1055,7 +1055,7 @@ CREATE TABLE `vi_driver_statement_line` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='对账工作明细；历史发布版本另表保存';
 
 -- 每费用条目至多一个活跃账单的分配历史 | MYSQL_AUTO_INCREMENT
-CREATE TABLE `vi_driver_ledger_allocation` (
+CREATE TABLE IF NOT EXISTS `vi_driver_ledger_allocation` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',
   `ledger_id` BIGINT NOT NULL COMMENT '费用条目',
   `statement_id` BIGINT NOT NULL COMMENT '有效账单',
@@ -1073,7 +1073,7 @@ CREATE TABLE `vi_driver_ledger_allocation` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='每费用条目至多一个活跃账单的分配历史';
 
 -- 本人对账差异与处理记录 | MYSQL_AUTO_INCREMENT
-CREATE TABLE `vi_driver_statement_difference` (
+CREATE TABLE IF NOT EXISTS `vi_driver_statement_difference` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',
   `statement_id` BIGINT NOT NULL COMMENT '账单',
   `statement_revision` INT NOT NULL COMMENT '被质疑版本',
@@ -1096,7 +1096,7 @@ CREATE TABLE `vi_driver_statement_difference` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='本人对账差异与处理记录';
 
 -- 独立审核的费用调整 | MYSQL_AUTO_INCREMENT
-CREATE TABLE `vi_driver_fee_adjustment` (
+CREATE TABLE IF NOT EXISTS `vi_driver_fee_adjustment` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',
   `source_entry_id` BIGINT NOT NULL COMMENT '源费用记录',
   `driver_id` BIGINT NOT NULL COMMENT '源代驾',
@@ -1120,7 +1120,7 @@ CREATE TABLE `vi_driver_fee_adjustment` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='独立审核的费用调整';
 
 -- 外部已付款证据登记与核实，不发起转账 | MYSQL_AUTO_INCREMENT
-CREATE TABLE `vi_driver_external_payment` (
+CREATE TABLE IF NOT EXISTS `vi_driver_external_payment` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',
   `statement_id` BIGINT NOT NULL COMMENT '已确认对账单',
   `driver_id` BIGINT NOT NULL COMMENT '收款代驾',
@@ -1149,7 +1149,7 @@ CREATE TABLE `vi_driver_external_payment` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='外部已付款证据登记与核实，不发起转账';
 
 -- 小程序账号安全版本 | MYSQL_AUTO_INCREMENT
-CREATE TABLE `vi_account_security` (
+CREATE TABLE IF NOT EXISTS `vi_account_security` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',
   `account_id` BIGINT NOT NULL COMMENT 'vi_account',
   `session_epoch` BIGINT NOT NULL DEFAULT 0 COMMENT '全局退出/安全封禁代际',
@@ -1165,7 +1165,7 @@ CREATE TABLE `vi_account_security` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='小程序账号安全版本';
 
 -- 小程序独立设备会话 | MYSQL_AUTO_INCREMENT
-CREATE TABLE `vi_session` (
+CREATE TABLE IF NOT EXISTS `vi_session` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',
   `account_id` BIGINT NOT NULL COMMENT '基础账号',
   `app_id` VARCHAR(64) CHARACTER SET ascii COLLATE ascii_bin NOT NULL COMMENT '微信应用',
@@ -1188,7 +1188,7 @@ CREATE TABLE `vi_session` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='小程序独立设备会话';
 
 -- 访问与刷新令牌摘要 | MYSQL_AUTO_INCREMENT
-CREATE TABLE `vi_session_token` (
+CREATE TABLE IF NOT EXISTS `vi_session_token` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',
   `session_id` BIGINT NOT NULL COMMENT 'vi_session',
   `token_hash` BINARY(32) NOT NULL COMMENT '安全随机令牌的摘要；不存明文',
@@ -1211,7 +1211,7 @@ CREATE TABLE `vi_session_token` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='访问与刷新令牌摘要';
 
 -- 对账内填写与改价不可变记录 | MYSQL_AUTO_INCREMENT
-CREATE TABLE `vi_driver_price_change` (
+CREATE TABLE IF NOT EXISTS `vi_driver_price_change` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',
   `statement_id` BIGINT NOT NULL COMMENT '账单',
   `statement_line_id` BIGINT NOT NULL COMMENT '工作明细',
@@ -1234,7 +1234,7 @@ CREATE TABLE `vi_driver_price_change` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='对账内填写与改价不可变记录';
 
 -- 整单内部复核记录 | MYSQL_AUTO_INCREMENT
-CREATE TABLE `vi_driver_statement_review` (
+CREATE TABLE IF NOT EXISTS `vi_driver_statement_review` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',
   `statement_id` BIGINT NOT NULL COMMENT '账单',
   `revision` INT NOT NULL COMMENT '提交内容版本',
@@ -1257,7 +1257,7 @@ CREATE TABLE `vi_driver_statement_review` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='整单内部复核记录';
 
 -- 已发送与确认的不可变版本快照 | MYSQL_AUTO_INCREMENT
-CREATE TABLE `vi_driver_statement_snapshot` (
+CREATE TABLE IF NOT EXISTS `vi_driver_statement_snapshot` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',
   `statement_id` BIGINT NOT NULL COMMENT '账单',
   `revision` INT NOT NULL COMMENT '内容版本',
@@ -1276,7 +1276,7 @@ CREATE TABLE `vi_driver_statement_snapshot` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='已发送与确认的不可变版本快照';
 
 -- 对账成员变更不可变历史 | MYSQL_AUTO_INCREMENT
-CREATE TABLE `vi_driver_statement_membership_change` (
+CREATE TABLE IF NOT EXISTS `vi_driver_statement_membership_change` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',
   `statement_id` BIGINT NOT NULL COMMENT '账单',
   `ledger_id` BIGINT NULL COMMENT '源条目；整单作废时可为空',
@@ -1293,7 +1293,7 @@ CREATE TABLE `vi_driver_statement_membership_change` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='对账成员变更不可变历史';
 
 -- 普通取消处罚申诉记录 | MYSQL_AUTO_INCREMENT
-CREATE TABLE `vi_penalty_appeal` (
+CREATE TABLE IF NOT EXISTS `vi_penalty_appeal` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库生成业务主键；插入不提供id',
   `penalty_id` BIGINT NOT NULL COMMENT '处罚主键',
   `driver_id` BIGINT NOT NULL COMMENT '本人司机档案',
@@ -1316,7 +1316,7 @@ CREATE TABLE `vi_penalty_appeal` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='普通取消处罚申诉记录';
 
 -- 本人发起的受控员工绑定申请 | MYSQL_AUTO_INCREMENT
-CREATE TABLE `vi_employee_binding_request` (
+CREATE TABLE IF NOT EXISTS `vi_employee_binding_request` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库生成业务主键；插入不提供id',
   `account_id` BIGINT NOT NULL COMMENT '不可由客户端选择申请主体',
   `request_code` VARCHAR(64) CHARACTER SET ascii COLLATE ascii_bin NOT NULL COMMENT '公开核对编号，不是授权秘密',
@@ -1334,7 +1334,7 @@ CREATE TABLE `vi_employee_binding_request` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='本人发起的受控员工绑定申请';
 
 -- 管理员签发的一次性员工绑定凭证 | MYSQL_AUTO_INCREMENT
-CREATE TABLE `vi_employee_binding_credential` (
+CREATE TABLE IF NOT EXISTS `vi_employee_binding_credential` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库生成业务主键；插入不提供id',
   `request_id` BIGINT NOT NULL COMMENT '绑定申请',
   `target_account_id` BIGINT NOT NULL COMMENT '凭证只能由此已认证account消费',
@@ -1356,7 +1356,7 @@ CREATE TABLE `vi_employee_binding_credential` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='管理员签发的一次性员工绑定凭证';
 
 -- 代驾培训不可变课程版本 | MYSQL_AUTO_INCREMENT
-CREATE TABLE `vi_training_course` (
+CREATE TABLE IF NOT EXISTS `vi_training_course` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库生成业务主键；插入不提供id',
   `course_key` VARCHAR(64) CHARACTER SET ascii COLLATE ascii_bin NOT NULL COMMENT '稳定课程编码',
   `course_version` INT NOT NULL COMMENT '课程内容版本',
@@ -1381,7 +1381,7 @@ CREATE TABLE `vi_training_course` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='代驾培训不可变课程版本';
 
 -- 培训课程版本的后台题库 | MYSQL_AUTO_INCREMENT
-CREATE TABLE `vi_training_question` (
+CREATE TABLE IF NOT EXISTS `vi_training_question` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库生成业务主键；插入不提供id',
   `training_id` BIGINT NOT NULL COMMENT '确切课程版本',
   `question_code` VARCHAR(64) CHARACTER SET ascii COLLATE ascii_bin NOT NULL COMMENT '课程内稳定编码',
@@ -1400,7 +1400,7 @@ CREATE TABLE `vi_training_question` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='培训课程版本的后台题库';
 
 -- 本人每个课程版本的学习进度 | MYSQL_AUTO_INCREMENT
-CREATE TABLE `vi_training_progress` (
+CREATE TABLE IF NOT EXISTS `vi_training_progress` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库生成业务主键；插入不提供id',
   `application_id` BIGINT NOT NULL COMMENT '资格申请',
   `driver_id` BIGINT NOT NULL COMMENT '真正司机档案',
@@ -1418,7 +1418,7 @@ CREATE TABLE `vi_training_progress` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='本人每个课程版本的学习进度';
 
 -- 短期受控学习会话 | MYSQL_AUTO_INCREMENT
-CREATE TABLE `vi_training_playback` (
+CREATE TABLE IF NOT EXISTS `vi_training_playback` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库生成业务主键；插入不提供id',
   `progress_id` BIGINT NOT NULL COMMENT '本人进度',
   `session_id` BIGINT NOT NULL COMMENT '小程序设备会话',
@@ -1435,7 +1435,7 @@ CREATE TABLE `vi_training_playback` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='短期受控学习会话';
 
 -- 本人考试尝试及不可变题卷快照 | MYSQL_AUTO_INCREMENT
-CREATE TABLE `vi_training_attempt` (
+CREATE TABLE IF NOT EXISTS `vi_training_attempt` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库生成业务主键；插入不提供id',
   `application_id` BIGINT NOT NULL COMMENT '资格申请',
   `driver_id` BIGINT NOT NULL COMMENT '本人',
@@ -1460,7 +1460,7 @@ CREATE TABLE `vi_training_attempt` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='本人考试尝试及不可变题卷快照';
 
 -- 本人实名活体启动与可信结果会话 | MYSQL_AUTO_INCREMENT
-CREATE TABLE `vi_face_session` (
+CREATE TABLE IF NOT EXISTS `vi_face_session` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库生成业务主键；插入不提供id',
   `application_id` BIGINT NOT NULL COMMENT '资格申请',
   `verification_id` BIGINT NULL COMMENT '供应商核验记录',

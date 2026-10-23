@@ -32,6 +32,14 @@ WHERE menu_id BETWEEN 2115 AND 2120 AND perms LIKE '%:list';
 
 -- ---------------------------------------------------------------- 培训演示课程
 SET @app_id := 'wxdev000000000000';
+
+-- 联调种子账号：演示课程视频需要一个上传者账号。真实环境由微信登录自动创建，
+-- 全新库（CI / docker compose）里没有任何账号，缺这一行会导致后续 @seed_account 为
+-- NULL，vi_file.uploader_account_id 插入直接报 1048。
+INSERT INTO vi_account (app_id, open_id, status, created_at, updated_at, version)
+VALUES (@app_id, 'dev_owner_001', 'ACTIVE', UTC_TIMESTAMP(3), UTC_TIMESTAMP(3), 0)
+ON DUPLICATE KEY UPDATE status = 'ACTIVE', updated_at = UTC_TIMESTAMP(3), version = version + 1;
+
 SET @seed_account := (SELECT id FROM vi_account WHERE app_id = @app_id AND open_id = 'dev_owner_001' LIMIT 1);
 SET @seed_account := IFNULL(@seed_account, (SELECT id FROM vi_account ORDER BY id LIMIT 1));
 
