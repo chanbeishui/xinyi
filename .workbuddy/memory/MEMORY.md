@@ -35,6 +35,52 @@
 - 待办（重启该项目时）：荣利在 `sys_dept` 的部门归属、后台岗位角色划分、M2a 的 6 项业务参数
   （客户计价语义、时段粒度与容量、站点清单、车型与检测项目分类、服务地址规则、取消改约规则）。
 
+## 工程硬约束（V6.4 第三方配置落地时确认，2026-10-23）
+- Mapper 只能放 `com.xinyi.**.mapper` 包：`@MapperScan` 限定了包名，放其它包会启动即 "No qualifying bean"
+- `sys_config` 没有 `config_key` 唯一索引：`ON DUPLICATE KEY UPDATE` 不生效，必须先去重 + `WHERE NOT EXISTS`
+- 未注册的路由返回 **HTTP 200 + `{"msg":"No static resource ..."}`**，不是 404；RuoYi 未登录是 HTTP 200 + body.code=401
+- 打包用 `/e/codex/.cprep/tools/apache-maven-3.9.16/bin/mvn`（`logs/mvn.sh` 缺 guice 会崩，`build_backend.sh` 只做 javac）
+- 前端构建必须 `npx vite build --outDir dist-verify-<ts>`，沙箱禁止清空 `dist`（>50 文件触发批量删除保护）
+- **MyBatis 注解 Mapper 不要声明 `byte[]` 返回值**：会被解析成单字节标量类型处理器，
+  binary/varbinary 列直接抛 `Value '...' is outside of valid range for type java.lang.Byte`。
+  取二进制列要返回 `Map` 再手工归一化（参考 `AccountMapper.findPhoneCipher` 的 default 方法）
+- **`docker-compose.yml` 的 `docker-entrypoint-initdb.d` 是手写挂载清单**，新增迁移后必须同步补，
+  否则 `docker compose up` 起的全新库会缺表（CI 走 glob 完全看不出来）。`ci_sql_check.sh` 第 0 步已机器断言
+- **资料包 `ck_ver_<表名>` 约束是批量生成的**：只追加的不可变历史表（如
+  `vi_driver_statement_membership_change`）没有 `version` 列，照抄 `CHECK (version >= 0)` 会
+  `ERROR 3820 ... non-existing column`（ALTER 已有表时才是 1054），且会让整份 DDL 中途断掉
+  （实测 79 张表只建成 56 张）。正确修法是改表达式落到真实列（`revision_before`/`revision_after`），
+  **不是给表加 version 列**
+- **资料包 V6.4 原始 zip 已就地修正**：`C:/Users/Administrator/Downloads/机动车检测预约_完整开发资料包_V6.4_第三方接入配置版.zip`
+  的 `05_数据设计/001_vi业务表_初始化_V6.4.sql` 第 1270 行；原包备份 `*.zip.bak-20261023`。
+  修正后的 SQL 副本在 `E:/codex/_backup/001_vi业务表_初始化_V6.4_patched.sql`
+- 详见 `docs/implementation/v6.4-sync-diff.md`、`.workbuddy/memory/2026-10-23.md`
+
+## 荣利身份流程（V6.4，2026-10-23 已落地）
+- **唯一合法自动关联路径**：微信手机号授权 → 手机号唯一匹配员工 → 自动建 `vi_employee_binding`。
+  短信验证码是"兜底核验"，**不能**作为员工关联依据（V6.4 §2.5）
+- 自动关联的行必须 `source='WECHAT_PHONE_MATCH'` + `bound_by IS NULL` + `phone_lookup`/
+  `last_phone_verified_at`/`employee_auth_version` 非空（`ck_employee_link_identity` 只约束这一类行，
+  `MANUAL_LEGACY` 历史行豁免）
+- **跨账号身份冲突必须拒绝**：同一员工已被账号 A 关联，账号 B 再授权同一手机号 → 记 `EMPLOYEE_LINK_CONFLICT`
+  并返回，不得静默把绑定迁到 B（V6.4 §4）
+- 「员工自助申请 + 后台签发一次性凭证 + 本人兑换」整条流程已退役并删干净
+  （2 张表 + 6 个端点 + 10 个 Mapper 方法 + 后台 Tab + 小程序 3 个 API）
+- **改会话必须与换令牌成对**：`updateSessionBinding` 等语句会 `context_version + 1`，
+  若只改会话不 `issueTokens`，用户手里的令牌立刻失效又拿不到新的，表现为"操作成功后被踢下线"
+- `vi_*` 现为 **80 张**（V6.4 的 79 张 + 本库保留的 `vi_sms_send_log`）
+
+## 消息自动下发（V6.4 第六章，2026-10-23 接通）
+- 链路：业务事件 → `vi_notification_route`（按 `owner_dept_id` 精确优先、全局兜底）→ 已发布模板 →
+  `vi_notification_delivery`（`INSERT IGNORE` + `uk_delivery_event` 去重）→ 短信/订阅
+- 接的 4 个事件：`PAYMENT_SUCCEEDED→BOOKING_CONFIRMED`、`ASSIGNMENT_ACCEPTED→DRIVER_ASSIGNED`、
+  `INSPECTION_FINISHED→INSPECTION_FINISHED`、`VEHICLE_RETURNED→RETURN_COMPLETED`
+- 未配置一律 `SKIPPED` + 原因码（`VI_NOTIF_NO_PHONE`/`NO_PROFILE`/`CHANNEL_DISABLED`/`NO_VENDOR_TEMPLATE`/
+  `USER_UNSUBSCRIBED`），**绝不退回默认通道**；环境不一致的模板直接不用（TEST 模板不能打到 LIVE 用户）
+- `ACCEPTED ≠ DELIVERED`；网络异常记 `UNKNOWN` 只查回执，**不重发**
+- 异常绝不影响业务事务，但投递行不能停在 `PENDING` 无原因
+- 手机号密文用 `AccountMapper.findPhoneCipher` 单独取，通用 `findAccount` 不带敏感字段
+
 ## 数据大屏与档案室管理
 - 数据大屏菜单：menu_id=2024(path=dataScreen), 2025(管理层BI看板), 2026(档案室管理)
 - 档案室页面：`src/views/archiveRoom/`，3 个档案室可切换，SVG 平面图 + fuse.js 搜索
