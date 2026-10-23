@@ -54,6 +54,9 @@
 - **资料包 V6.4 原始 zip 已就地修正**：`C:/Users/Administrator/Downloads/机动车检测预约_完整开发资料包_V6.4_第三方接入配置版.zip`
   的 `05_数据设计/001_vi业务表_初始化_V6.4.sql` 第 1270 行；原包备份 `*.zip.bak-20261023`。
   修正后的 SQL 副本在 `E:/codex/_backup/001_vi业务表_初始化_V6.4_patched.sql`
+- **Git Bash 会把 `rev:path` 里的 `/` 当路径转换**：`git cat-file -e origin/x:.github/a.yml`
+  会被改写成 `origin\x;.github\a.yml` 而报 `Not a valid object name`，看起来像"远程缺这个文件"。
+  查远程文件用 `git ls-tree -r <rev> --name-only | grep`，或先 `export MSYS_NO_PATHCONV=1`
 - 详见 `docs/implementation/v6.4-sync-diff.md`、`.workbuddy/memory/2026-10-23.md`
 
 ## 荣利身份流程（V6.4，2026-10-23 已落地）
