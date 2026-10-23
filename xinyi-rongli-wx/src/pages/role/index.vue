@@ -31,9 +31,11 @@
     <view class="card">
       <view class="card-title">还没有员工视角？</view>
       <view class="muted" style="margin-bottom: 20rpx">
-        代驾与检测员工视角必须由公司受控绑定开通：检测员工需公司下发绑定凭证，代驾需提交实名与驾驶证资料审核。
+        {{ employeeHint }}
       </view>
-      <view class="btn ghost small" @tap="goBinding">填写绑定申请</view>
+      <view class="btn ghost small" @tap="goSettings">
+        {{ profile.employeeBound ? '查看员工身份' : '授权公司登记的手机号' }}
+      </view>
     </view>
 
     <view class="btn gray" style="margin-top: 12rpx" @tap="logout">退出登录</view>
@@ -41,14 +43,25 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed } from 'vue'
 import { onShow } from '@dcloudio/uni-app'
 import { commonApi } from '@/api'
 import { applySession, resetSession, session } from '@/store/session'
 
 const profile = computed(() => session.profile || {})
 const roles = computed<string[]>(() => (session.profile && session.profile.roles) || ['OWNER'])
-const bindingReason = ref('')
+
+/** 员工视角说明：身份按手机号识别，检测点授权只在后台维护 */
+const employeeHint = computed(() => {
+  const p: any = profile.value
+  if (!p.employeeBound) {
+    return '检测员工视角无需在小程序申请：由公司在后台登记你的员工账号与手机号；你用同一手机号完成微信授权后会自动识别。代驾视角需提交实名与驾驶证资料审核。'
+  }
+  if (!p.employeeStationCount) {
+    return '已识别员工身份，但尚未获得检测点授权。请联系公司管理员在后台为你的账号配置检测点。'
+  }
+  return '已识别员工身份并获得检测点授权，可直接进入检测员工视角。'
+})
 
 const roleList = computed(() => [
   {
@@ -80,18 +93,29 @@ onShow(() => {
 
 async function pick(role: any) {
   if (!role.enabled) {
+    if (role.code === 'DRIVER') {
+      uni.showModal({
+        title: '代驾视角未开通',
+        content: '请先提交实名与驾驶证资料，审核通过后开通接单视角',
+        confirmText: '去认证',
+        success: (res) => {
+          if (res.confirm) uni.navigateTo({ url: '/pages/driver/qualification/index' })
+        }
+      })
+      return
+    }
+    // 检测员工：绑定与站点授权都由后台维护，小程序端只提示下一步该找谁
     uni.showModal({
-      title: '视角未开通',
-      content:
-        role.code === 'DRIVER'
-          ? '请先提交代驾实名与驾驶证资料，审核通过后开通接单视角'
-          : '请先使用公司下发的绑定凭证完成员工账号绑定',
-      confirmText: role.code === 'DRIVER' ? '去认证' : '去绑定',
+      title: '检测员工视角未开通',
+      content: profile.value.employeeBound
+        ? '已识别员工身份，但尚未获得检测点授权。请联系公司管理员在后台为你的账号配置检测点。'
+        : '员工身份按手机号自动识别：请使用公司人事登记的手机号完成微信授权；仍未识别请联系公司管理员核对账号。',
+      confirmText: profile.value.employeeBound ? '知道了' : '去授权',
+      showCancel: !profile.value.employeeBound,
       success: (res) => {
-        if (!res.confirm) return
-        uni.navigateTo({
-          url: role.code === 'DRIVER' ? '/pages/driver/qualification/index' : '/pages/settings/index'
-        })
+        if (res.confirm && !profile.value.employeeBound) {
+          uni.navigateTo({ url: '/pages/settings/index' })
+        }
       }
     })
     return
@@ -111,8 +135,8 @@ async function pick(role: any) {
   }
 }
 
-function goBinding() {
-  uni.navigateTo({ url: '/pages/settings/index?tab=binding' })
+function goSettings() {
+  uni.navigateTo({ url: '/pages/settings/index' })
 }
 
 function logout() {
@@ -132,7 +156,6 @@ function logout() {
   })
 }
 
-void bindingReason
 </script>
 
 <style scoped>

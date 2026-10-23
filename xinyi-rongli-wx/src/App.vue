@@ -2,6 +2,7 @@
 import { onLaunch, onShow } from '@dcloudio/uni-app'
 import { restoreSession } from '@/store/session'
 import { commonApi } from '@/api'
+import { STORAGE } from '@/utils/config'
 
 onLaunch(() => {
   restoreSession()
@@ -9,7 +10,7 @@ onLaunch(() => {
 
 onShow(() => {
   // 已登录时静默校验会话；令牌失效由请求层统一处理跳转
-  if (!uni.getStorageSync('rongli_access_token')) return
+  if (!uni.getStorageSync(STORAGE.access)) return
   commonApi.session().catch(() => {})
 })
 </script>

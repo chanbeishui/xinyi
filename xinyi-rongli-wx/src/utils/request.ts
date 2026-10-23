@@ -10,9 +10,19 @@ export interface RequestOptions {
   silent?: boolean
   /** 内部使用：标记这是刷新令牌后的重放，避免死循环 */
   retried?: boolean
+  /**
+   * 内部使用：本次请求实际带出的令牌快照。
+   *
+   * 401 回来时若存储中的令牌已与快照不同，说明令牌在请求飞行期间已被其他请求
+   * 成功续期，此时应直接用新令牌重放，而不是再发一次刷新去轮换令牌。
+   */
+  token?: string
 }
 
 let refreshing: Promise<boolean> | null = null
+
+/** 并发 401 时只跳转一次登录页，避免多次 reLaunch 叠加导致页面栈异常 */
+let redirecting = false
 
 function readAccess(): string {
   return (uni.getStorageSync(STORAGE.access) as string) || ''
@@ -39,7 +49,7 @@ export function refreshToken(): Promise<boolean> {
   if (refreshing) return refreshing
   const token = readRefresh()
   if (!token) return Promise.resolve(false)
-  refreshing = new Promise<boolean>((resolve) => {
+  const task = new Promise<boolean>((resolve) => {
     uni.request({
       url: `${API_BASE}/api/common/token/refresh`,
       method: 'POST',
@@ -54,21 +64,40 @@ export function refreshToken(): Promise<boolean> {
           resolve(false)
         }
       },
-      fail: () => resolve(false),
-      complete: () => {
-        refreshing = null
-      }
+      fail: () => resolve(false)
     })
   })
+  // 刷新标志在本次结果落地后才释放：过早清空会让等待中的 401 再发起一次刷新，
+  // 而刷新令牌是单次消费 + 整链轮换的，第二次必然失败并把用户踢回登录页。
+  refreshing = task.then(
+    (ok) => {
+      refreshing = null
+      return ok
+    },
+    () => {
+      refreshing = null
+      return false
+    }
+  )
   return refreshing
 }
 
 function toLogin() {
+  if (redirecting) return
+  redirecting = true
   clearSession()
   const pages = getCurrentPages()
   const current = pages.length ? pages[pages.length - 1].route : ''
-  if (current && current.indexOf('pages/login') === 0) return
-  uni.reLaunch({ url: '/pages/login/index' })
+  if (current && current.indexOf('pages/login') === 0) {
+    redirecting = false
+    return
+  }
+  uni.reLaunch({
+    url: '/pages/login/index',
+    complete: () => {
+      redirecting = false
+    }
+  })
 }
 
 function toast(message: string) {
@@ -94,7 +123,7 @@ function bizError(body: any): string | null {
 export function request<T = any>(options: RequestOptions): Promise<T> {
   const { url, method = 'GET', data, silent = false } = options
   const header: Record<string, string> = { 'Content-Type': 'application/json' }
-  const access = readAccess()
+  const access = options.token !== undefined ? options.token : readAccess()
   if (access) header['X-Mini-Token'] = access
 
   return new Promise<T>((resolve, reject) => {
@@ -117,16 +146,24 @@ export function request<T = any>(options: RequestOptions): Promise<T> {
           return
         }
         if (status === 401 && !options.retried) {
+          // 请求飞行期间令牌已被其他请求续期：直接换新令牌重放，不再轮换
+          const latest = readAccess()
+          if (latest && latest !== access) {
+            try {
+              resolve(await request<T>({ ...options, token: latest, retried: true }))
+            } catch (e) {
+              reject(e)
+            }
+            return
+          }
           const ok = await refreshToken()
           if (ok) {
             try {
-              const replay = await request<T>({ ...options, retried: true })
-              resolve(replay)
-              return
+              resolve(await request<T>({ ...options, token: readAccess(), retried: true }))
             } catch (e) {
               reject(e)
-              return
             }
+            return
           }
           toLogin()
           reject(new Error('登录已过期，请重新进入'))
@@ -153,7 +190,7 @@ export const http = {
 }
 
 /** 文件上传：先申请上传会话，再提交内容并完成校验 */
-export function uploadFile(filePath: string, purpose: string, orderNo?: string): Promise<any> {
+export function uploadFile(filePath: string, purpose: string, orderNo?: string, retried = false): Promise<any> {
   return new Promise((resolve, reject) => {
     http
       .post('/api/common/uploads', { purpose, mimeType: guessMime(filePath), size: 0, orderNo })
@@ -164,6 +201,20 @@ export function uploadFile(filePath: string, purpose: string, orderNo?: string):
           name: 'file',
           header: { 'X-Mini-Token': readAccess() },
           success: (res) => {
+            if (res.statusCode === 401 && !retried) {
+              // 上传不走 uni.request，无法复用请求层的 401 续期，这里单独补一次
+              refreshToken().then((ok) => {
+                if (!ok) {
+                  toLogin()
+                  reject(new Error('登录已过期，请重新进入'))
+                  return
+                }
+                uploadFile(filePath, purpose, orderNo, true)
+                  .then(resolve)
+                  .catch(reject)
+              })
+              return
+            }
             let body: any = {}
             try {
               body = JSON.parse(res.data)

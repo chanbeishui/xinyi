@@ -61,6 +61,11 @@
       <view class="row" style="gap: 16rpx; margin-top: 20rpx">
         <view v-if="handover.canViewCode" class="btn ghost small" @tap="loadCode">查看交接码</view>
         <view v-if="handover.canConfirm" class="btn small" @tap="showConfirm = true">核验交接码</view>
+        <!-- 站内交接：检测点核验后，司机还要确认自己确实把车交出去了 -->
+        <view v-if="handover.canCounterConfirm" class="btn small" @tap="confirmDelivered">确认已交付</view>
+      </view>
+      <view v-if="handover.mutualConfirm && handover.status !== 'CONFIRMED'" class="muted" style="margin-top: 12rpx">
+        本环节需双方确认：检测点核验交接码 + 您确认已交付，两者齐备才算完成。
       </view>
     </view>
 
@@ -284,6 +289,25 @@ async function submitConfirm() {
   } catch (e) {
     // 已提示
   }
+}
+
+async function confirmDelivered() {
+  const h = handover.value
+  if (!h) return
+  uni.showModal({
+    title: '确认已交付',
+    content: '请确认车辆与随车物品已交给检测点工作人员，确认后不可撤回。',
+    success: async (res) => {
+      if (!res.confirm) return
+      try {
+        handover.value = await handoverApi.holderConfirm(orderNo.value, h.handoverId)
+        uni.showToast({ title: '已确认交付', icon: 'success' })
+        await load()
+      } catch (e) {
+        // 已提示
+      }
+    }
+  })
 }
 
 async function loadEvidence() {

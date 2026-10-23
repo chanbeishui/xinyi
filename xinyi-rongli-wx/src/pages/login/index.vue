@@ -8,15 +8,36 @@
 
     <view class="panel">
       <view class="panel-title">微信登录</view>
-      <view class="panel-desc">登录后可使用车主预约、代驾接单与检测点工作台。员工能力须由公司账号受控绑定后开通。</view>
-
-      <view v-if="showDev" class="field">
-        <view class="field-label">联调登录标识（后端开启 mock 时使用）</view>
-        <input v-model="devCode" class="input" placeholder="例如 dev_owner_001" />
+      <view class="panel-desc">
+        授权手机号后即可预约；若手机号与公司在册员工账号一致，系统会自动识别员工身份。
+        新账号默认为车主，代驾能力需另行申请并通过审核。
       </view>
 
-      <view class="btn" :class="{ disabled: loading }" @tap="doLogin">
-        {{ loading ? '登录中…' : '微信一键登录' }}
+      <view v-if="showDev" class="field">
+        <view class="field-label">联调手机号（后端 mock 模式，选填）</view>
+        <input v-model="devPhone" class="input" type="number" maxlength="11" placeholder="例如 15888888888" />
+      </view>
+
+      <!-- 真实环境：手机号由微信校验，服务端用 code 换取，避免前端伪造号码 -->
+      <!-- #ifdef MP-WEIXIN -->
+      <button
+        v-if="!isMock"
+        class="btn wx-btn"
+        :class="{ disabled: loading }"
+        open-type="getPhoneNumber"
+        @getphonenumber="onGetPhoneNumber"
+      >
+        {{ loading ? '登录中…' : '微信手机号一键登录' }}
+      </button>
+      <!-- #endif -->
+
+      <!-- 联调环境：getPhoneNumber 不可用，用输入框模拟同一条链路 -->
+      <view v-if="isMock" class="btn" :class="{ disabled: loading }" @tap="mockLogin">
+        {{ loading ? '登录中…' : '微信手机号一键登录（联调）' }}
+      </view>
+
+      <view class="btn ghost" :class="{ disabled: loading }" @tap="loginWithoutPhone">
+        暂不授权手机号，以车主身份进入
       </view>
 
       <view class="agreement">
@@ -31,7 +52,7 @@
       <view class="tips-title">账号说明</view>
       <view class="tips-item">· 车主：微信登录后即可预约，车辆与地址可随时维护</view>
       <view class="tips-item">· 代驾：需提交实名与驾驶证资料并审核通过后接单</view>
-      <view class="tips-item">· 检测员工：需通过公司发放的绑定凭证开通检测点视角</view>
+      <view class="tips-item">· 检测员工：公司账号登记的手机号与本微信一致时自动识别，检测点权限由后台配置</view>
     </view>
 
     <view v-if="showTerms || showPrivacy" class="mask" @tap="closeDoc">
@@ -54,10 +75,11 @@ import { saveTokens } from '@/utils/request'
 import { applySession } from '@/store/session'
 
 const loading = ref(false)
-const devCode = ref(MOCK_LOGIN_CODE)
+const devPhone = ref('')
 const showTerms = ref(false)
 const showPrivacy = ref(false)
 const showDev = ref(USE_MOCK_LOGIN)
+const isMock = USE_MOCK_LOGIN
 
 const docParagraphs = computed(() => {
   if (showTerms.value) {
@@ -87,28 +109,39 @@ function fetchWechatCode(): Promise<string> {
   return new Promise((resolve) => {
     // 演示/联调：后端把 code 当 openId，必须用固定标识，否则每次登录都会新建账号
     if (USE_MOCK_LOGIN) {
-      resolve(devCode.value || MOCK_LOGIN_CODE)
+      resolve(MOCK_LOGIN_CODE)
       return
     }
     // #ifdef MP-WEIXIN
     uni.login({
       provider: 'weixin',
-      success: (res) => resolve(res.code || devCode.value),
-      fail: () => resolve(devCode.value)
+      success: (res) => resolve(res.code || ''),
+      fail: () => resolve('')
     })
     // #endif
     // #ifndef MP-WEIXIN
-    resolve(devCode.value)
+    resolve('')
     // #endif
   })
 }
 
-async function doLogin() {
+/**
+ * 统一登录入口。
+ *
+ * @param phoneCode 微信 getPhoneNumber 回调的 code；不传则只做身份登录，仍为车主身份
+ */
+async function doLogin(phoneCode?: string) {
   if (loading.value) return
   loading.value = true
   try {
     const code = await fetchWechatCode()
-    const view: any = await commonApi.login({ code, deviceLabel: 'mini-program' })
+    if (!code) {
+      uni.showToast({ title: '微信登录失败，请重试', icon: 'none' })
+      return
+    }
+    const payload: any = { code, deviceLabel: 'mini-program' }
+    if (phoneCode) payload.phoneCode = phoneCode
+    const view: any = await commonApi.login(payload)
     saveTokens(view.accessToken, view.refreshToken)
     applySession(view)
     uni.setStorageSync(STORAGE.lastRole, view.activeRole)
@@ -118,6 +151,32 @@ async function doLogin() {
   } finally {
     loading.value = false
   }
+}
+
+/** 真实环境：微信手机号授权回调 */
+function onGetPhoneNumber(e: any) {
+  const detail = e && e.detail ? e.detail : {}
+  if (!detail.code) {
+    // 用户拒绝或基础库不支持：退回无手机号登录，不阻断进入
+    uni.showToast({ title: '未授权手机号，将以车主身份进入', icon: 'none' })
+    doLogin()
+    return
+  }
+  doLogin(detail.code)
+}
+
+/** 联调环境：输入框里的手机号直接当作授权 code 传给后端（mock 模式下后端按手机号解析） */
+function mockLogin() {
+  const phone = devPhone.value.trim()
+  if (phone && !/^1\d{10}$/.test(phone)) {
+    uni.showToast({ title: '请输入 11 位手机号', icon: 'none' })
+    return
+  }
+  doLogin(phone || undefined)
+}
+
+function loginWithoutPhone() {
+  doLogin()
 }
 </script>
 
@@ -185,6 +244,20 @@ async function doLogin() {
 
 .panel .btn {
   margin-top: 32rpx;
+}
+
+/* 原生 button 用于 getPhoneNumber 时需抹掉默认样式，保持与 .btn 一致 */
+.wx-btn {
+  width: 100%;
+  margin: 32rpx 0 0;
+  padding: 0;
+  line-height: 1;
+  border: none;
+  overflow: visible;
+}
+
+.wx-btn::after {
+  border: none;
 }
 
 .agreement {

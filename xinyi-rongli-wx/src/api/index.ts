@@ -2,7 +2,8 @@ import { http, uploadFile } from '@/utils/request'
 
 /** 公共域：登录、会话、档案、字典、站点、消息、隐私 */
 export const commonApi = {
-  login: (data: { code: string; nickname?: string; deviceLabel?: string }) =>
+  /** phoneCode 为微信 getPhoneNumber 回调的 code：带上即同时完成手机号授权 */
+  login: (data: { code: string; phoneCode?: string; nickname?: string; deviceLabel?: string }) =>
     http.post('/api/common/login/wechat', data),
   session: () => http.get('/api/common/session'),
   logout: (all = false) => http.post(`/api/common/session/logout?all=${all}`),
@@ -10,6 +11,8 @@ export const commonApi = {
   switchStation: (stationId: number | string) => http.post('/api/common/session/station', { stationId }),
   profile: () => http.get('/api/common/profile'),
   patchProfile: (data: { nickname?: string; serviceName?: string }) => http.post('/api/common/profile', data),
+  /** 微信手机号授权（已登录后补充授权） */
+  bindWechatPhone: (phoneCode: string) => http.post('/api/common/phone/wechat', { phoneCode }),
   bindPhone: (phone: string, smsCode: string) => http.post('/api/common/phone/bind', { phone, smsCode }),
   sendSms: (phone: string) => http.post('/api/common/phone/sms/send', { phone }),
   balanceSheet: (dictType: string) => http.get(`/api/common/dict/${dictType}`),
@@ -18,13 +21,22 @@ export const commonApi = {
   readMessage: (id: number | string) => http.post(`/api/common/messages/${id}/read`),
   createPrivacy: (reason: string, orderNo?: string) => http.post('/api/common/privacy-cases', { reason, orderNo }),
   privacyCases: () => http.get('/api/common/privacy-cases'),
-  bindingRequest: (reason?: string) => http.post('/api/common/employee-binding-requests', { reason }),
-  bindingRequests: () => http.get('/api/common/employee-binding-requests'),
-  bindEmployee: (credentialToken: string) => http.post('/api/common/employee-binding', { credentialToken }),
   contactAccess: (orderNo: string, purpose: string) =>
     http.post(`/api/common/orders/${orderNo}/contact-access`, { purpose }),
   fileAccess: (fileId: number | string) => http.post(`/api/common/files/${fileId}/access`),
-  upload: (filePath: string, purpose: string, orderNo?: string) => uploadFile(filePath, purpose, orderNo)
+  upload: (filePath: string, purpose: string, orderNo?: string) => uploadFile(filePath, purpose, orderNo),
+  /**
+   * 订阅授权请求（V6.4）：先取本次可请求的已发布模板，再由客户端在用户点击时调起订阅面板。
+   * 返回的 accept 只是“用户点了允许”的记录，不代表服务端获得发送许可。
+   */
+  createSubscriptionPrompt: (data: {
+    businessObjectType: 'ORDER' | 'ASSIGNMENT' | 'STATEMENT' | 'DRIVER_APPLICATION'
+    businessObjectId: number | string
+    scenes: string[]
+  }) => http.post('/api/common/subscriptions/prompts', data),
+  /** 回传本次授权结果：nonce 必须与下发时一致，且只能上报一次 */
+  reportSubscriptionPrompt: (promptId: number | string, data: { nonce: string; results: any[] }) =>
+    http.post(`/api/common/subscriptions/prompts/${promptId}/report`, data)
 }
 
 /** 车主端 */
@@ -49,6 +61,11 @@ export const ownerApi = {
   prepay: (orderNo: string) => http.post(`/api/app/owner/orders/${orderNo}/prepay`),
   mockPay: (orderNo: string) => http.post(`/api/app/owner/orders/${orderNo}/mock-pay`),
   payment: (orderNo: string) => http.get(`/api/app/owner/orders/${orderNo}/payment`),
+  /** 支付方式由后台已发布策略决定，前端只展示；服务端每次重新读取权威版本 */
+  paymentOptions: (orderNo: string) => http.get(`/api/app/owner/orders/${orderNo}/payment-options`),
+  /** 选择线下付款：只记录意向并锁定方式，订单仍为待支付 */
+  chooseOfflinePayment: (orderNo: string, data: { expectedVersion: number; expectedPolicyRevisionId?: string }) =>
+    http.post(`/api/app/owner/orders/${orderNo}/offline-payment`, data),
   closeUnpaid: (orderNo: string, reason?: string) =>
     http.post(`/api/app/owner/orders/${orderNo}/close-unpaid`, { reason }),
   confirmService: (orderNo: string, version?: number) =>
@@ -163,5 +180,8 @@ export const handoverApi = {
   secret: (orderNo: string, handoverId: number | string) =>
     http.get(`/api/common/orders/${orderNo}/handovers/${handoverId}/secret`),
   confirm: (orderNo: string, handoverId: number | string, data: any) =>
-    http.post(`/api/common/orders/${orderNo}/handovers/${handoverId}/confirm`, data)
+    http.post(`/api/common/orders/${orderNo}/handovers/${handoverId}/confirm`, data),
+  // 持码方确认已交付：站内交接需要司机与检测员工双方都确认
+  holderConfirm: (orderNo: string, handoverId: number | string) =>
+    http.post(`/api/common/orders/${orderNo}/handovers/${handoverId}/holder-confirm`, {})
 }

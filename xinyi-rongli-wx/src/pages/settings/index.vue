@@ -19,6 +19,30 @@
         <text class="label">绑定状态</text>
         <text class="value">{{ profile.phoneBound ? '已绑定' : '未绑定' }}</text>
       </view>
+      <view class="muted" style="margin-top: 12rpx">
+        建议使用微信授权手机号：若该号码与公司在册员工账号一致，系统会自动识别员工身份，无需另行申请。
+      </view>
+      <!-- #ifdef MP-WEIXIN -->
+      <button
+        v-if="!isMock"
+        class="btn ghost"
+        style="margin-top: 20rpx"
+        open-type="getPhoneNumber"
+        @getphonenumber="onGetPhoneNumber"
+      >
+        微信授权手机号
+      </button>
+      <!-- #endif -->
+      <template v-if="isMock">
+        <view class="field" style="margin-top: 16rpx">
+          <view class="field-label">联调手机号（后端 mock 模式）</view>
+          <input v-model="wechatPhone" class="input" type="number" maxlength="11" placeholder="11 位手机号" />
+        </view>
+        <view class="btn ghost" style="margin-top: 20rpx" @tap="mockBindWechatPhone">模拟微信授权</view>
+      </template>
+
+      <view class="divider"></view>
+      <view class="muted">无法获得微信授权时，可用短信验证码兜底绑定。</view>
       <view class="field" style="margin-top: 12rpx">
         <view class="field-label">手机号</view>
         <input v-model="phone" class="input" type="number" maxlength="11" placeholder="请输入手机号" />
@@ -27,26 +51,25 @@
         <view class="btn gray small" @tap="sendSms">获取验证码</view>
         <input v-model="smsCode" class="input" type="number" maxlength="6" placeholder="验证码" style="flex: 1" />
       </view>
-      <view class="btn ghost" style="margin-top: 20rpx" @tap="bindPhone">绑定手机号</view>
+      <view class="btn ghost" style="margin-top: 20rpx" @tap="bindPhone">短信验证绑定</view>
     </view>
 
     <view class="card">
-      <view class="card-title">员工账号绑定</view>
-      <view class="muted">
-        检测员工需使用公司下发的绑定凭证开通工作视角；代驾请到代驾认证入口提交资料。绑定只开通能力，不改变账号归属。
+      <view class="card-title">员工身份</view>
+      <view class="row-between">
+        <text class="label">绑定状态</text>
+        <text class="value">{{ profile.employeeBound ? (profile.employeeName || '已绑定') : '未绑定' }}</text>
       </view>
-      <view class="field" style="margin-top: 16rpx">
-        <view class="field-label">绑定凭证</view>
-        <input v-model="credential" class="input" placeholder="粘贴公司下发的凭证" />
+      <view v-if="profile.employeeBound" class="row-between">
+        <text class="label">所属部门</text>
+        <text class="value">{{ profile.employeeDeptName || '—' }}</text>
       </view>
-      <view class="row" style="gap: 16rpx; margin-top: 20rpx">
-        <view class="btn small" style="flex: 1" @tap="bindEmployee">立即绑定</view>
-        <view class="btn ghost small" style="flex: 1" @tap="requestBinding">申请凭证</view>
+      <view v-if="profile.employeeBound" class="row-between">
+        <text class="label">已授权检测点</text>
+        <text class="value">{{ profile.employeeStationCount || 0 }} 个</text>
       </view>
-      <view v-if="bindingRequests.length" class="divider"></view>
-      <view v-for="r in bindingRequests" :key="r.requestId" class="row-between">
-        <text class="muted">{{ r.reason || '绑定申请' }}</text>
-        <text class="tag gray">{{ r.status }}</text>
+      <view class="muted" style="margin-top: 12rpx">
+        {{ employeeHint }}
       </view>
     </view>
 
@@ -87,16 +110,29 @@ import { computed, reactive, ref } from 'vue'
 import { onLoad, onShow } from '@dcloudio/uni-app'
 import { commonApi } from '@/api'
 import { applySession, resetSession, session } from '@/store/session'
+import { USE_MOCK_LOGIN } from '@/utils/config'
 
 const profile = computed(() => session.profile || {})
 const form = reactive({ nickname: '', serviceName: '' })
 const phone = ref('')
 const smsCode = ref('')
-const credential = ref('')
+const wechatPhone = ref('')
 const privacyReason = ref('')
 const privacyCases = ref<any[]>([])
-const bindingRequests = ref<any[]>([])
 const tab = ref('')
+const isMock = USE_MOCK_LOGIN
+
+/** 员工身份说明：绑定与检测点授权都只在后台维护，小程序端不发起申请 */
+const employeeHint = computed(() => {
+  const p: any = profile.value
+  if (!p.employeeBound) {
+    return '未识别到员工身份。若你是在职员工，请确认公司人事登记的手机号与本微信授权手机号一致；如仍不识别，请联系公司管理员核对账号。'
+  }
+  if (!p.employeeStationCount) {
+    return '已识别员工身份，但尚未获得检测点授权，暂时没有检测点工作台入口。请联系公司管理员在后台为你的账号配置检测点。'
+  }
+  return '员工身份由公司账号按手机号自动识别，检测点权限由公司管理员在后台配置。如需调整请联系管理员。'
+})
 
 onLoad((options) => {
   if (options && options.tab) tab.value = options.tab
@@ -105,7 +141,6 @@ onLoad((options) => {
 onShow(async () => {
   await loadProfile()
   await loadPrivacy()
-  await loadBindingRequests()
 })
 
 async function loadProfile() {
@@ -124,14 +159,6 @@ async function loadPrivacy() {
     privacyCases.value = ((await commonApi.privacyCases()) as any) || []
   } catch (e) {
     privacyCases.value = []
-  }
-}
-
-async function loadBindingRequests() {
-  try {
-    bindingRequests.value = ((await commonApi.bindingRequests()) as any) || []
-  } catch (e) {
-    bindingRequests.value = []
   }
 }
 
@@ -168,7 +195,9 @@ async function bindPhone() {
     return
   }
   try {
-    await commonApi.bindPhone(phone.value, smsCode.value)
+    const res: any = await commonApi.bindPhone(phone.value, smsCode.value)
+    // 绑定关系变化时后端会换发令牌并返回完整会话视图
+    if (res && res.accessToken) applySession(res)
     uni.showToast({ title: '绑定成功', icon: 'success' })
     loadProfile()
   } catch (e) {
@@ -176,30 +205,33 @@ async function bindPhone() {
   }
 }
 
-async function bindEmployee() {
-  if (!credential.value) {
-    uni.showToast({ title: '请填写绑定凭证', icon: 'none' })
+/** 微信手机号授权：真实环境拿 code，联调环境直接用输入框里的手机号 */
+async function applyWechatPhone(phoneCode: string) {
+  try {
+    const view: any = await commonApi.bindWechatPhone(phoneCode)
+    applySession(view)
+    uni.showToast({ title: '手机号已授权', icon: 'success' })
+    loadProfile()
+  } catch (e) {
+    // 已提示
+  }
+}
+
+function onGetPhoneNumber(e: any) {
+  const detail = e && e.detail ? e.detail : {}
+  if (!detail.code) {
+    uni.showToast({ title: '已取消授权', icon: 'none' })
     return
   }
-  try {
-    await commonApi.bindEmployee(credential.value)
-    credential.value = ''
-    uni.showToast({ title: '绑定成功', icon: 'success' })
-    loadProfile()
-    loadBindingRequests()
-  } catch (e) {
-    // 已提示
-  }
+  applyWechatPhone(detail.code)
 }
 
-async function requestBinding() {
-  try {
-    await commonApi.bindingRequest('员工账号绑定申请')
-    uni.showToast({ title: '申请已提交', icon: 'success' })
-    loadBindingRequests()
-  } catch (e) {
-    // 已提示
+function mockBindWechatPhone() {
+  if (!/^1\d{10}$/.test(wechatPhone.value)) {
+    uni.showToast({ title: '请输入 11 位手机号', icon: 'none' })
+    return
   }
+  applyWechatPhone(wechatPhone.value)
 }
 
 async function submitPrivacy() {

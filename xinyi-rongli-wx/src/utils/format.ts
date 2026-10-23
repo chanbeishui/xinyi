@@ -19,7 +19,12 @@ function pad(n: number): string {
 /** ISO8601 UTC 转北京时间 Date */
 export function toDate(iso?: string | null): Date | null {
   if (!iso) return null
-  const normalized = /Z$|[+-]\d{2}:?\d{2}$/.test(iso) ? iso : `${iso.replace(' ', 'T')}Z`
+  let normalized = iso
+  if (!/Z$|[+-]\d{2}:?\d{2}$/.test(normalized)) {
+    // 后端大部分字段带 Z；少数历史接口返回裸 LocalDateTime，分量同样是 UTC，必须补 Z，
+    // 否则小程序会按本地时间解析，展示结果整体早 8 小时
+    normalized = `${normalized.replace(' ', 'T')}${normalized.length === 10 ? 'T00:00:00' : ''}Z`
+  }
   const date = new Date(normalized)
   return isNaN(date.getTime()) ? null : date
 }

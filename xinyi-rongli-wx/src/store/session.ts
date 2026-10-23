@@ -1,6 +1,6 @@
 import { reactive } from 'vue'
 import { STORAGE } from '@/utils/config'
-import { clearSession as clearStorage } from '@/utils/request'
+import { clearSession as clearStorage, saveTokens } from '@/utils/request'
 
 export interface SessionProfile {
   accountId?: string
@@ -55,6 +55,14 @@ export const ROLE_HOME: Record<string, string> = {
 /** 应用登录返回的会话视图 */
 export function applySession(view: any) {
   if (!view) return
+  /**
+   * 切换角色、切换检测点、员工绑定都会让服务端撤销整条旧令牌链并签发新令牌，
+   * 会话视图里带回了新令牌就必须落盘。此前只更新内存状态、不写存储，
+   * 后续请求仍携带已被撤销的旧令牌，表现为"登录令牌频繁失效"。
+   */
+  if (view.accessToken) {
+    saveTokens(view.accessToken, view.refreshToken)
+  }
   session.loggedIn = true
   session.activeRole = view.activeRole || 'OWNER'
   session.stationId = view.stationId ? String(view.stationId) : null

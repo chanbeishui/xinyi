@@ -84,17 +84,35 @@ onLoad(async (options) => {
 
 async function loadDict() {
   try {
-    const list: any = await commonApi.balanceSheet('vehicle_type')
-    types.value = (list || []).map((d: any) => ({ label: d.dictLabel, value: d.dictValue }))
+    const raw: any = await commonApi.balanceSheet('vehicle_type')
+    // 后端 /api/common/dict/{type} 返回 { dictType, total, items: [{label,value}] }，
+    // 早期这里把整个对象当数组直接 .map，抛 TypeError 后掉进 catch，
+    // 用了字典里并不存在的 SMALL_CAR，提交就被后端判成「车型不在可选范围内」。
+    // 这里同时兼容 items / data / rows 三种包裹形式与驼峰字段。
+    const list: any[] = Array.isArray(raw)
+      ? raw
+      : (raw && (raw.items || raw.data || raw.rows)) || []
+    types.value = list
+      .map((d: any) => ({
+        label: d.label ?? d.dictLabel ?? '',
+        value: d.value ?? d.dictValue ?? ''
+      }))
+      .filter((t) => t.value)
     if (!form.vehicleTypeCode && types.value.length) {
       form.vehicleTypeCode = types.value[0].value
     }
   } catch (e) {
+    // 兜底值必须与 sys_dict_data(vehicle_type) 保持一致，
+    // 否则能选中但提交必被拒，报错还会误导成「车型不在可选范围内」。
     types.value = [
-      { label: '小型汽车', value: 'SMALL_CAR' },
-      { label: '大型汽车', value: 'LARGE_CAR' }
+      { label: '轿车', value: 'sedan' },
+      { label: 'SUV', value: 'suv' },
+      { label: '商务车', value: 'mpv' },
+      { label: '皮卡', value: 'pickup' },
+      { label: '面包车', value: 'van' }
     ]
   }
+  syncTypeIndex()
 }
 
 async function loadVehicle(id: string) {
