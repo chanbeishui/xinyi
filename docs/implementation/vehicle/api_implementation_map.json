@@ -1,10 +1,12 @@
 [
   {
-    "implementationStatus": "NOT_ASSESSED",
-    "controllerFile": null,
-    "serviceFile": null,
-    "mapperFile": null,
-    "testFiles": [],
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/identity/LoginController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/identity/service/MiniLoginService.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/identity/ViAccountMapper.xml",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/I01IdentityIT.java"
+    ],
     "reviewEvidence": null,
     "operationId": "API_001_post",
     "method": "POST",
@@ -52,11 +54,13 @@
     "taskId": "I02"
   },
   {
-    "implementationStatus": "NOT_ASSESSED",
-    "controllerFile": null,
-    "serviceFile": null,
-    "mapperFile": null,
-    "testFiles": [],
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/identity/ProfileController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/identity/service/ProfileService.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/identity/ViAccountMapper.xml",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/I01IdentityIT.java"
+    ],
     "reviewEvidence": null,
     "operationId": "API_005_get",
     "method": "GET",

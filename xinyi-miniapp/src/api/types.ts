@@ -13,7 +13,12 @@ export type LoginRequest = { "code": string };
 
 export type PhoneRequest = { "phoneCode": string };
 
-export type Session = { "sessionId": string; "accountId": string; "activeRole": MiniRole; "availableRoles": Array<MiniRole>; "contextVersion": number; "phoneBound"?: boolean; "permissions"?: Array<PermissionCode>; "capabilities": Array<CapabilityCode>; "stationIds"?: Array<string>; "stationId"?: (string) | null; "workAccessDisabled"?: boolean; "driverQualification"?: ((QualificationStatus)) | null; "token": string; "expiresIn": number; "refreshToken": string; "refreshExpiresIn": number };
+export type Session = { "sessionId": string; "accountId": string; "activeRole": MiniRole; "availableRoles": Array<MiniRole>; "contextVersion": number; "phoneBound"?: boolean; "permissions"?: Array<PermissionCode>; "capabilities": Array<CapabilityCode>; "stationIds"?: Array<string>; "stationId"?: (string) | null; "workAccessDisabled"?: boolean; "driverQualification"?: ((QualificationStatus)) | null; "token": string; "expiresIn": number; "refreshToken": string; "refreshExpiresIn": number; "employeeLink": EmployeeLinkPublic; "accountVersion": number };
+
+// V6.4 身份架构：员工关联公开投影（粗粒度，不含 sysUserId/员工名单/完整手机号/完整 OpenID）
+export type EmployeeLinkStatus = "UNLINKED" | "LINKED" | "NEEDS_ADMIN" | "SUSPENDED" | "REVOKED";
+export type EmployeeLinkMessageKey = "NO_EMPLOYEE_MATCH" | "EMPLOYEE_LINKED" | "WAIT_ADMIN_CONFIGURATION" | "CONTACT_ADMIN" | "PHONE_REVERIFY_REQUIRED" | "LINK_REVOKED";
+export type EmployeeLinkPublic = { "status": EmployeeLinkStatus; "workAccessEnabled": boolean; "authorizedStationCount": number; "messageKey": EmployeeLinkMessageKey; "canReverifyPhone": boolean };
 
 export type RoleSwitch = { "role": "OWNER" | "DRIVER" | "STATION"; "expectedContextVersion": number };
 
@@ -21,7 +26,7 @@ export type StationSwitch = { "stationId": string; "expectedContextVersion": num
 
 export type ProfilePatch = { "nickname"?: string; "realName"?: string; "avatarFileId"?: string; "defaultAddressId"?: string; "expectedVersion": number };
 
-export type Profile = { "accountId": string; "nickname": (string) | null; "phoneMask": (string) | null; "driverQualification": ((QualificationStatus)) | null; "availableRoles": Array<MiniRole>; "permissions": Array<PermissionCode>; "version": number; "realName": (string) | null; "avatarFileId": (string) | null; "defaultAddressId": (string) | null };
+export type Profile = { "accountId": string; "nickname": (string) | null; "phoneMask": (string) | null; "driverQualification": ((QualificationStatus)) | null; "availableRoles": Array<MiniRole>; "permissions": Array<PermissionCode>; "version": number; "realName": (string) | null; "avatarFileId": (string) | null; "defaultAddressId": (string) | null; "employeeLink": EmployeeLinkPublic };
 
 export type SmsSend = { "phone": string; "scene": "BIND_PHONE" };
 

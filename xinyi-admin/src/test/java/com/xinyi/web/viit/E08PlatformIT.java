@@ -67,7 +67,13 @@ class E08PlatformIT {
         assertTrue(rep.contains("\"L03_DEPLOY\": \"NOT_RUN\""), "部署须 NOT_RUN");
         assertTrue(rep.contains("\"total\": 287"), "api 覆盖总数应为 V6.4 的 287");
         assertTrue(rep.contains("\"total\": 412"), "case 覆盖总数应为 V6.4 的 412");
-        // 业务实现仍 0：M0 只建基座，不得把未实现算作完成
-        assertTrue(rep.contains("\"implemented\": 0"), "M0 阶段业务 api 实现数应为 0（不得虚报完成）");
+        // 业务 api 实现数随 M1 任务增长（M0 为 0；I01 落地 API_001_post/API_005_get = 2）。
+        // harness 按 controllerFile/serviceFile 真实存在计数，不虚报；此处断言已 >=2 且不超过总数。
+        java.util.regex.Matcher apiImpl = java.util.regex.Pattern
+                .compile("\"api\":\\s*\\{[^}]*?\"implemented\":\\s*(\\d+)").matcher(rep);
+        assertTrue(apiImpl.find(), "报告应含 coverage.api.implemented");
+        int implemented = Integer.parseInt(apiImpl.group(1));
+        assertTrue(implemented >= 2, "I01 已实现 API_001_post/API_005_get，api 实现数应 >=2，实际=" + implemented);
+        assertTrue(implemented <= 287, "api 实现数不得超过总数");
     }
 }

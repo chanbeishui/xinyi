@@ -378,9 +378,11 @@
     "taskId": "N02"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "IMPLEMENTED",
+    "implementationFile": "xinyi-miniapp/src/pages/identity/login.vue",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/I01.json"
+    ],
     "boardId": "O29",
     "taskId": "I01"
   },

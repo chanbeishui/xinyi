@@ -1,19 +1,23 @@
 [
   {
-    "status": "NOT_RUN",
-    "testFiles": [],
-    "evidence": null,
+    "status": "PASS",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/I01IdentityIT.java"
+    ],
+    "evidence": "docs/implementation/vehicle/evidence/I01.json",
     "caseId": "TC-001",
     "taskId": "I01",
-    "testMethod": "test_tc_001"
+    "testMethod": "I01IdentityIT#同身份再次登录恢复同账号_TC_001"
   },
   {
-    "status": "NOT_RUN",
-    "testFiles": [],
-    "evidence": null,
+    "status": "PASS",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/I01IdentityIT.java"
+    ],
+    "evidence": "docs/implementation/vehicle/evidence/I01.json",
     "caseId": "TC-002",
     "taskId": "I01",
-    "testMethod": "test_tc_002"
+    "testMethod": "I01IdentityIT#伪造role或openid字段被400拒绝不提权_TC_002_R62_002"
   },
   {
     "status": "NOT_RUN",
@@ -2176,12 +2180,14 @@
     "testMethod": "test_tc_r50_006"
   },
   {
-    "status": "NOT_RUN",
-    "testFiles": [],
-    "evidence": null,
+    "status": "PASS",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/I01IdentityIT.java"
+    ],
+    "evidence": "docs/implementation/vehicle/evidence/I01.json",
     "caseId": "TC-R50-007",
     "taskId": "I01",
-    "testMethod": "test_tc_r50_007"
+    "testMethod": "I01IdentityIT#旧common_logout无业务映射不撤销会话_TC_R50_007"
   },
   {
     "status": "NOT_RUN",
@@ -2376,28 +2382,34 @@
     "testMethod": "test_tc_r50_031"
   },
   {
-    "status": "NOT_RUN",
-    "testFiles": [],
-    "evidence": null,
+    "status": "PASS",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/I01IdentityIT.java"
+    ],
+    "evidence": "docs/implementation/vehicle/evidence/I01.json",
     "caseId": "TC-R50-032",
     "taskId": "I01",
-    "testMethod": "test_tc_r50_032"
+    "testMethod": "I01IdentityIT#MINI令牌不能访问ADMIN入口_accountId不触发超管_TC_R50_032"
   },
   {
-    "status": "NOT_RUN",
-    "testFiles": [],
-    "evidence": null,
+    "status": "PASS",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/I01IdentityIT.java"
+    ],
+    "evidence": "docs/implementation/vehicle/evidence/I01.json",
     "caseId": "TC-R62-001",
     "taskId": "I01",
-    "testMethod": "test_tc_r62_001"
+    "testMethod": "I01IdentityIT#新微信用户默认OWNER且不建sys_user_TC_R62_001"
   },
   {
-    "status": "NOT_RUN",
-    "testFiles": [],
-    "evidence": null,
+    "status": "PASS",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/I01IdentityIT.java"
+    ],
+    "evidence": "docs/implementation/vehicle/evidence/I01.json",
     "caseId": "TC-R62-002",
     "taskId": "I01",
-    "testMethod": "test_tc_r62_002"
+    "testMethod": "I01IdentityIT#伪造role或openid字段被400拒绝不提权_TC_002_R62_002"
   },
   {
     "status": "NOT_RUN",
@@ -2520,12 +2532,14 @@
     "testMethod": "test_tc_r62_017"
   },
   {
-    "status": "NOT_RUN",
-    "testFiles": [],
-    "evidence": null,
+    "status": "PASS",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/I01IdentityIT.java"
+    ],
+    "evidence": "docs/implementation/vehicle/evidence/I01.json",
     "caseId": "TC-R62-018",
     "taskId": "I01",
-    "testMethod": "test_tc_r62_018"
+    "testMethod": "I01IdentityIT#已审核DRIVER与有效STATION再登录保持资格_默认OWNER_TC_R62_018_035"
   },
   {
     "status": "NOT_RUN",
@@ -2656,12 +2670,14 @@
     "testMethod": "test_tc_r62_034"
   },
   {
-    "status": "NOT_RUN",
-    "testFiles": [],
-    "evidence": null,
+    "status": "PASS",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/I01IdentityIT.java"
+    ],
+    "evidence": "docs/implementation/vehicle/evidence/I01.json",
     "caseId": "TC-R62-035",
     "taskId": "I01",
-    "testMethod": "test_tc_r62_035"
+    "testMethod": "I01IdentityIT#已审核DRIVER与有效STATION再登录保持资格_默认OWNER_TC_R62_018_035"
   },
   {
     "status": "NOT_RUN",
@@ -2776,12 +2792,14 @@
     "testMethod": "test_tc_r63_013"
   },
   {
-    "status": "NOT_RUN",
-    "testFiles": [],
-    "evidence": null,
+    "status": "PASS",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/I01IdentityIT.java"
+    ],
+    "evidence": "docs/implementation/vehicle/evidence/I01.json",
     "caseId": "TC-R63-014",
     "taskId": "I01",
-    "testMethod": "test_tc_r63_014"
+    "testMethod": "I01IdentityIT#新微信用户默认OWNER且不建sys_user_TC_R62_001"
   },
   {
     "status": "NOT_RUN",
