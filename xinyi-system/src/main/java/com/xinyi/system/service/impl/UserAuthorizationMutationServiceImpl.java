@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionSynchronization;
@@ -141,7 +142,7 @@ public class UserAuthorizationMutationServiceImpl implements IUserAuthorizationM
             requested.put("userName", user == null ? null : user.getUserName());
             auditService.recordFailure(event, null, "用户自助注册", null,
                     requested, failureCode(ex), ex.getMessage());
-            throw ex;
+            throw translateUnique(ex);
         }
     }
 
@@ -204,7 +205,7 @@ public class UserAuthorizationMutationServiceImpl implements IUserAuthorizationM
             auditService.recordFailure(event, null, "后台新增用户", null,
                     requested,
                     failureCode(ex), ex.getMessage());
-            throw ex;
+            throw translateUnique(ex);
         }
     }
 
@@ -251,7 +252,7 @@ public class UserAuthorizationMutationServiceImpl implements IUserAuthorizationM
         catch (RuntimeException ex)
         {
             auditFailure(event, target, request.getReason(), request, ex);
-            throw ex;
+            throw translateUnique(ex);
         }
     }
 
@@ -917,5 +918,25 @@ public class UserAuthorizationMutationServiceImpl implements IUserAuthorizationM
     private String failureCode(RuntimeException ex)
     {
         return ex instanceof ServiceException ? "AUTHORIZATION_OR_VALIDATION_DENIED" : "MUTATION_FAILED";
+    }
+
+    /**
+     * 唯一约束冲突的可读化。
+     *
+     * <p>手机号与登录账号都在写入前做了应用层唯一校验，但并发提交时两次校验可以同时通过，
+     * 最终由数据库唯一索引拦下。这里把索引冲突翻译成业务提示，避免把 SQL 异常直接抛给页面。</p>
+     */
+    private RuntimeException translateUnique(RuntimeException ex)
+    {
+        if (ex instanceof DuplicateKeyException)
+        {
+            String message = String.valueOf(ex.getMessage());
+            if (message.contains("uk_sys_user_phone"))
+            {
+                return new ServiceException("该手机号已被其他账号使用，请核对是否重复录入；"
+                        + "若为历史重复数据，请先修正原账号手机号");
+            }
+        }
+        return ex;
     }
 }
