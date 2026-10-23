@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xinyi.rongli.identity.mapper.ViSessionMapper">
+
+    <resultMap id="ViSessionMap" type="com.xinyi.rongli.identity.domain.ViSession">
+        <id property="id" column="id"/>
+        <result property="accountId" column="account_id"/>
+        <result property="appId" column="app_id"/>
+        <result property="status" column="status"/>
+        <result property="sessionEpoch" column="session_epoch"/>
+        <result property="contextVersion" column="context_version"/>
+        <result property="activeRole" column="active_role"/>
+        <result property="stationId" column="station_id"/>
+        <result property="linkedSysUserId" column="linked_sys_user_id"/>
+        <result property="absoluteExpiresAt" column="absolute_expires_at"
+                typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+        <result property="revokedAt" column="revoked_at"
+                typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+        <result property="deviceLabel" column="device_label"/>
+        <result property="createdAt" column="created_at"
+                typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+        <result property="version" column="version"/>
+    </resultMap>
+
+    <sql id="cols">
+        id, account_id, app_id, status, session_epoch, context_version, active_role, station_id,
+        linked_sys_user_id, absolute_expires_at, revoked_at, device_label, created_at, version
+    </sql>
+
+    <!-- session_epoch / absolute_expires_at 无 DB 默认，必须显式写入 -->
+    <insert id="insert" parameterType="com.xinyi.rongli.identity.domain.ViSession"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO vi_session
+            (account_id, app_id, status, session_epoch, context_version, active_role, station_id,
+             linked_sys_user_id, absolute_expires_at, device_label)
+        VALUES
+            (#{accountId}, #{appId}, #{status}, #{sessionEpoch}, #{contextVersion}, #{activeRole}, #{stationId},
+             #{linkedSysUserId},
+             #{absoluteExpiresAt,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler},
+             #{deviceLabel})
+    </insert>
+
+    <select id="selectById" resultMap="ViSessionMap">
+        SELECT <include refid="cols"/> FROM vi_session WHERE id = #{id}
+    </select>
+
+</mapper>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xinyi.rongli.identity.mapper.ViAccountSecurityMapper">
+
+    <resultMap id="ViAccountSecurityMap" type="com.xinyi.rongli.identity.domain.ViAccountSecurity">
+        <id property="id" column="id"/>
+        <result property="accountId" column="account_id"/>
+        <result property="sessionEpoch" column="session_epoch"/>
+        <result property="permissionVersion" column="permission_version"/>
+        <result property="securityStatus" column="security_status"/>
+        <result property="changedAt" column="changed_at"
+                typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+        <result property="createdAt" column="created_at"
+                typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+        <result property="version" column="version"/>
+    </resultMap>
+
+    <sql id="cols">
+        id, account_id, session_epoch, permission_version, security_status, changed_at, created_at, version
+    </sql>
+
+    <!-- changed_at 无 DB 默认，必须显式写入(UTC) -->
+    <insert id="insert" parameterType="com.xinyi.rongli.identity.domain.ViAccountSecurity"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO vi_account_security
+            (account_id, session_epoch, permission_version, security_status, changed_at)
+        VALUES
+            (#{accountId}, #{sessionEpoch}, #{permissionVersion}, #{securityStatus},
+             #{changedAt,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler})
+    </insert>
+
+    <select id="selectByAccountId" resultMap="ViAccountSecurityMap">
+        SELECT <include refid="cols"/> FROM vi_account_security WHERE account_id = #{accountId}
+    </select>
+
+</mapper>

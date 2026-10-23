@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xinyi.rongli.identity.mapper.ViSessionTokenMapper">
+
+    <resultMap id="ViSessionTokenMap" type="com.xinyi.rongli.identity.domain.ViSessionToken">
+        <id property="id" column="id"/>
+        <result property="sessionId" column="session_id"/>
+        <result property="tokenHash" column="token_hash"/>
+        <result property="tokenType" column="token_type"/>
+        <result property="generation" column="generation"/>
+        <result property="contextVersion" column="context_version"/>
+        <result property="parentTokenId" column="parent_token_id"/>
+        <result property="replacedByTokenId" column="replaced_by_token_id"/>
+        <result property="expiresAt" column="expires_at"
+                typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+        <result property="consumedAt" column="consumed_at"
+                typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+        <result property="revokedAt" column="revoked_at"
+                typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+        <result property="createdAt" column="created_at"
+                typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+        <result property="version" column="version"/>
+    </resultMap>
+
+    <sql id="cols">
+        id, session_id, token_hash, token_type, generation, context_version, parent_token_id,
+        replaced_by_token_id, expires_at, consumed_at, revoked_at, created_at, version
+    </sql>
+
+    <!-- expires_at / generation / token_hash / token_type 无 DB 默认，必须显式写入 -->
+    <insert id="insert" parameterType="com.xinyi.rongli.identity.domain.ViSessionToken"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO vi_session_token
+            (session_id, token_hash, token_type, generation, context_version, parent_token_id,
+             replaced_by_token_id, expires_at)
+        VALUES
+            (#{sessionId}, #{tokenHash}, #{tokenType}, #{generation}, #{contextVersion}, #{parentTokenId},
+             #{replacedByTokenId},
+             #{expiresAt,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler})
+    </insert>
+
+    <select id="selectByHash" resultMap="ViSessionTokenMap">
+        SELECT <include refid="cols"/> FROM vi_session_token
+        WHERE token_hash = #{tokenHash} AND token_type = #{tokenType}
+    </select>
+
+</mapper>

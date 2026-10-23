@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xinyi.rongli.identity.mapper.IdentityReadMapper">
+
+    <select id="selectDriverQualificationStatus" resultType="java.lang.String">
+        SELECT qualification_status FROM vi_driver_profile WHERE account_id = #{accountId}
+    </select>
+
+    <select id="countDriverApprovedCurrent" resultType="int">
+        SELECT COUNT(*) FROM vi_driver_profile
+        WHERE account_id = #{accountId}
+          AND qualification_status = 'APPROVED'
+          AND (license_long_term = 1 OR license_valid_to IS NULL OR license_valid_to &gt;= UTC_TIMESTAMP(3))
+    </select>
+
+    <select id="selectActiveBinding" resultType="java.util.LinkedHashMap">
+        SELECT sys_user_id, status FROM vi_employee_binding
+        WHERE account_id = #{accountId} AND revoked_at IS NULL
+        LIMIT 1
+    </select>
+
+    <select id="countEnabledStationGrants" resultType="int">
+        SELECT COUNT(*) FROM vi_station_grant WHERE sys_user_id = #{sysUserId} AND enabled = 1
+    </select>
+
+    <select id="selectGrantedStationIds" resultType="java.lang.Long">
+        SELECT station_id FROM vi_station_grant
+        WHERE sys_user_id = #{sysUserId} AND enabled = 1
+        ORDER BY station_id
+    </select>
+
+</mapper>

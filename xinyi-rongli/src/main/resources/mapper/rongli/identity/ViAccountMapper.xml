@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xinyi.rongli.identity.mapper.ViAccountMapper">
+
+    <resultMap id="ViAccountMap" type="com.xinyi.rongli.identity.domain.ViAccount">
+        <id property="id" column="id"/>
+        <result property="appId" column="app_id"/>
+        <result property="openId" column="open_id"/>
+        <result property="unionId" column="union_id"/>
+        <result property="phoneCipher" column="phone_cipher"/>
+        <result property="phoneLookup" column="phone_lookup"/>
+        <result property="nickname" column="nickname"/>
+        <result property="status" column="status"/>
+        <result property="privacyVersion" column="privacy_version"/>
+        <result property="avatarFileId" column="avatar_file_id"/>
+        <result property="phoneVerifiedAt" column="phone_verified_at"
+                typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+        <result property="phoneSource" column="phone_source"/>
+        <result property="employeeAutoLinkBlocked" column="employee_auto_link_blocked"/>
+        <result property="createdAt" column="created_at"
+                typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+        <result property="updatedAt" column="updated_at"
+                typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+        <result property="version" column="version"/>
+    </resultMap>
+
+    <sql id="cols">
+        id, app_id, open_id, union_id, phone_cipher, phone_lookup, nickname, status,
+        privacy_version, avatar_file_id, phone_verified_at, phone_source,
+        employee_auto_link_blocked, created_at, updated_at, version
+    </sql>
+
+    <!-- insert 白名单不含 id/created_at/updated_at/version/employee_auto_link_blocked(走DB默认) -->
+    <insert id="insert" parameterType="com.xinyi.rongli.identity.domain.ViAccount"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO vi_account
+            (app_id, open_id, union_id, phone_cipher, phone_lookup, nickname, status,
+             privacy_version, avatar_file_id, phone_verified_at, phone_source)
+        VALUES
+            (#{appId}, #{openId}, #{unionId}, #{phoneCipher}, #{phoneLookup}, #{nickname}, #{status},
+             #{privacyVersion}, #{avatarFileId},
+             #{phoneVerifiedAt,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler},
+             #{phoneSource})
+    </insert>
+
+    <!-- 原子 get-or-create：uk_app_open 冲突时回填既有 id，不覆盖既有行；保证同 openid 并发只一账号 -->
+    <insert id="insertOrGetId" parameterType="com.xinyi.rongli.identity.domain.ViAccount"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO vi_account
+            (app_id, open_id, union_id, phone_cipher, phone_lookup, nickname, status,
+             privacy_version, avatar_file_id, phone_verified_at, phone_source)
+        VALUES
+            (#{appId}, #{openId}, #{unionId}, #{phoneCipher}, #{phoneLookup}, #{nickname}, #{status},
+             #{privacyVersion}, #{avatarFileId},
+             #{phoneVerifiedAt,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler},
+             #{phoneSource})
+        ON DUPLICATE KEY UPDATE id = LAST_INSERT_ID(id)
+    </insert>
+
+    <select id="selectByAppOpen" resultMap="ViAccountMap">
+        SELECT <include refid="cols"/> FROM vi_account
+        WHERE app_id = #{appId} AND open_id = #{openId}
+    </select>
+
+    <select id="selectById" resultMap="ViAccountMap">
+        SELECT <include refid="cols"/> FROM vi_account WHERE id = #{id}
+    </select>
+
+    <select id="selectByIdForUpdate" resultMap="ViAccountMap">
+        SELECT <include refid="cols"/> FROM vi_account WHERE id = #{id} FOR UPDATE
+    </select>
+
+</mapper>
