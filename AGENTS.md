@@ -43,7 +43,57 @@ Java 包名统一使用 `com.xinyi`。控制器、服务、Mapper、实体类应
 
 ## 提交与 Pull Request 规范
 
-当前历史只有 `Initial commit`，后续提交建议使用简洁的祈使句，例如 `Add user import validation` 或 `Fix Vite dev port`。PR 应说明改动摘要、影响模块、测试或构建结果、关联 issue；涉及界面变化时附截图。
+### 一次提交只做一件事
+
+**任何功能性修正或 bug 修复都必须单独提交一次**，不要攒成一批。具体到本仓库：
+
+- 修一个 bug 就提交一次，即使同一个文件里还有别的不相关改动
+- 新增一个功能点就提交一次，不要把「功能 + 顺手重构 + 格式化」混在一起
+- 数据库迁移、后端、后台前端、小程序、验收套件、文档各成一次提交；
+  跨层必须同批时（如新增字段 + 写入该字段的 Mapper），在正文说明牵动关系
+
+唯一例外：**改动之间互相依赖、拆开任一半都编译不过**时，允许合并为一次提交，
+但正文必须写明「为什么拆不开」。例如 `EventService` 引用 `NotificationDispatchService`，
+后者又依赖 `AccountMapper` 新增的方法，三者分开提交会产生无法编译的中间状态。
+
+### 提交信息格式
+
+```
+<type>(<scope>): <一句话说明做了什么>
+
+<body：为什么这么改，以及不这么改会怎样>
+```
+
+`type`：
+
+| 类型 | 用途 |
+|---|---|
+| `feat` | 新增能力 |
+| `fix` | 修复缺陷（**必须写清复现条件与根因**，不要只写「修复 XX」） |
+| `refactor` | 不改变外部行为的结构调整 |
+| `perf` | 性能相关 |
+| `test` | 验收套件、用例 |
+| `docs` | 文档 |
+| `chore` | 构建、依赖、CI、忽略规则 |
+
+`scope`：`rongli` / `ui` / `wx` / `sql` / `system` / `ci` / `memory`。
+
+正文写「为什么」而不是「改了什么」——改了什么看 diff 就够了。修复类提交请包含：
+复现条件、根因、修法、验证方式（跑了哪个套件、几条断言）。
+
+### 提交前必须确认
+
+- 工作区没有构建产物、运行日志、`.env` 之类的残留（`.gitignore` 已覆盖 `dist-*`、`*.out`、`*.log`）
+- 数据库结构改动随代码提交可重复执行的迁移脚本（见下节）
+- 后端改动跑过 `mvn -o -pl xinyi-admin -am package -DskipTests`；
+  前端改动跑过 `npx vite build --outDir dist-verify-<ts>`；
+  数据层或业务逻辑改动跑过 `python logs/run_acceptance.py`
+- 不跳过 hooks（不用 `--no-verify`）。hook 失败要查清原因，不能绕过
+
+### Pull Request
+
+PR 应说明改动摘要、影响模块、测试或构建结果、关联 issue；涉及界面变化时附截图。
+大改动请附上 `logs/evidence.md` 里的断言统计。
 
 ## 安全与配置提示
 
