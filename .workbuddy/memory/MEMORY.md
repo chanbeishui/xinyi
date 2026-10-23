@@ -68,6 +68,10 @@
   查 Actions 结果不必等额度：`https://github.com/OWNER/REPO/actions/workflows/<wf>.yml?query=branch%3A<branch>`
   的 HTML 里能直接 grep 到 `completed successfully: Run N of <wf>` / `failed: Run N of <wf>`，
   或读 `.../actions/workflows/<wf>.yml/badge.svg?branch=<branch>`（输出 `passing`/`failing`）
+- **起本地 18080 实例必须用任务方式（run_in_background），不能 `nohup ... &`**：`nohup` 起的进程
+  会随该任务结束被回收，日志停在启动中途（实测停在 55 行、无 Started 行、端口不监听）。
+  正确做法：`java -jar xinyi-admin/target/xinyi-admin.jar --server.port=18080` 直接后台任务，
+  约 8 秒就绪，探活用 `/api/common/session` 期望 **401**
 - 详见 `docs/implementation/v6.4-sync-diff.md`、`.workbuddy/memory/2026-10-23.md`
 
 ## 荣利身份流程（V6.4，2026-10-23 已落地）
