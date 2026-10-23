@@ -4,11 +4,13 @@
 隐私案件、任务重试列表，以及小程序端培训/处罚/流水接口的字段契约。
 """
 import json
+import os
 import urllib.request
 import urllib.error
 from urllib.parse import urlencode
 
-BASE = "http://127.0.0.1:8080"
+# 默认打开发实例 8080；BACKEND_BASE / BACKEND_DEV 都可以指向验证实例（如 18080）
+BASE = os.environ.get("BACKEND_BASE") or os.environ.get("BACKEND_DEV") or "http://127.0.0.1:8080"
 OPENER = urllib.request.build_opener(urllib.request.ProxyHandler({}))
 
 
@@ -95,12 +97,12 @@ def main():
     s, b = call("GET", "/api/admin/jobs", token, params={"pageNum": 1, "pageSize": 20})
     results.append(check("补偿任务 /api/admin/jobs", s == 200 and "rows" in b, f"http={s} total={b.get('total')}"))
 
-    # 6) 治理：隐私、绑定
+    # 6) 治理：隐私案件（员工绑定申请页随 V6.4 退役，改为断言接口确已下线）
     s, b = call("GET", "/api/admin/privacy-cases", token, params={"pageNum": 1, "pageSize": 10})
     results.append(check("隐私案件 /api/admin/privacy-cases", s == 200 and "rows" in b, f"http={s} total={b.get('total')}"))
     s, b = call("GET", "/api/admin/employee-binding-requests", token, params={"pageNum": 1, "pageSize": 10})
-    results.append(check("员工绑定申请 /api/admin/employee-binding-requests", s == 200 and "rows" in b,
-                         f"http={s} total={b.get('total')}"))
+    results.append(check("员工绑定申请接口已退役（V6.4 改手机号自动关联）",
+                         "No static resource" in str(b.get("msg") or ""), f"http={s} msg={b.get('msg')}"))
 
     # 7) 异常与争议四类列表
     for name, path in [
