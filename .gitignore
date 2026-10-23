@@ -33,12 +33,16 @@ nbproject/private/
 build/*
 nbbuild/
 dist/
+dist-verify*/
+dist_ci/
+/xinyi-ui/dist-*/
 nbdist/
 .nb-gradle/
 
 ######################################################################
 # Others
 *.log
+*.out
 *.etl
 *.pcap
 *.xml.versionsBackup
@@ -47,3 +51,6 @@ nbdist/
 !*/build/*.java
 !*/build/*.html
 !*/build/*.xml
+
+# 小程序本地环境配置（含联调标识），仅保留示例文件
+xinyi-rongli-wx/.env
