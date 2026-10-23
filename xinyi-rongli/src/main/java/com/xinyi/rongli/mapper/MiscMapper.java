@@ -93,7 +93,18 @@ public interface MiscMapper
             VALUES (#{accountId}, #{role}, #{orderId}, #{scene}, #{outboxId}, 'ACCEPTED', #{content},
                    UTC_TIMESTAMP(3), UTC_TIMESTAMP(3), 0)
             """)
+    @Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "id")
     int insertNotification(Map<String, Object> row);
+
+    @Update("""
+            UPDATE vi_notification SET channel = #{channel}, updated_at = UTC_TIMESTAMP(3), version = version + 1
+            WHERE id = #{id}
+            """)
+    int markNotificationChannel(@Param("id") Long id, @Param("channel") String channel);
+
+    /** 直接读库取配置值，绕过框架缓存；订阅推送需"改完立刻生效" */
+    @Select("SELECT config_value FROM sys_config WHERE config_key = #{key} LIMIT 1")
+    String findConfigValue(@Param("key") String key);
 
     @Select("""
             SELECT * FROM vi_notification WHERE account_id = #{accountId} AND role = #{role}

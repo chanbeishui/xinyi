@@ -18,6 +18,8 @@ import com.xinyi.rongli.mapper.AccountMapper;
 import com.xinyi.rongli.mapper.AdminMapper;
 import com.xinyi.rongli.mapper.MiscMapper;
 import com.xinyi.rongli.support.ApiException;
+import com.xinyi.rongli.support.BizConfig;
+import com.xinyi.rongli.support.Codes;
 import com.xinyi.rongli.support.Crypto;
 import com.xinyi.rongli.support.MiniContext;
 import com.xinyi.rongli.support.MiniPrincipal;
@@ -49,6 +51,9 @@ public class TrainingService
 
     @Autowired
     private EventService eventService;
+
+    @Autowired
+    private BizConfig config;
 
     // ------------------------------------------------------------------ 代驾侧
 
@@ -129,6 +134,8 @@ public class TrainingService
         Row progress = Row.of(miscMapper.findProgress(applicationId, trainingId));
 
         String sessionId = crypto.randomToken().substring(0, 32);
+        // 同一进度只保留一个有效会话，避免多端并行刷时长
+        adminMapper.expirePlaybacks(progress.lng("id"));
         Map<String, Object> playback = new LinkedHashMap<>();
         playback.put("progressId", progress.lng("id"));
         playback.put("sessionId", sessionId);
@@ -141,10 +148,22 @@ public class TrainingService
         view.put("expiresAt", ViTime.iso((LocalDateTime) playback.get("expiresAt")));
         view.put("resumeAtSeconds", progress.intg("last_position_seconds", 0));
         view.put("hint", "请保持前台播放，离开页面或快进不计入有效学时");
+        view.put("heartbeatSeconds", config.trainingHeartbeatMaxGapSeconds());
         return view;
     }
 
-    /** 上报学习进度：采信上限为距上次上报的真实流逝时间 */
+    /**
+     * 上报学习进度（同时作为播放心跳）。
+     *
+     * <p>有效学时由服务端按墙钟核算，客户端上报值只作上限参考：
+     * <ol>
+     *   <li>会话必须由本人在本课程签发且未过期，否则拒绝；</li>
+     *   <li>采信时长 = min(客户端上报, 相邻心跳真实间隔, 心跳阈值)；间隔越长，
+     *       超出阈值的部分视为"人不在场"，不计学时；</li>
+     *   <li>序号必须递增，乱序/重放一律按 0 秒处理，不阻断幂等重试；</li>
+     *   <li>播放位置不得超过上次位置 + 本次采信时长 + 容差，防快进刷时长。</li>
+     * </ol>
+     */
     @Transactional
     public Map<String, Object> reportProgress(Long trainingId, DriverDtos.ProgressReq req)
     {
@@ -160,21 +179,67 @@ public class TrainingService
         {
             throw ApiException.stateConflict("请先开始学习会话");
         }
+        Row playback = Row.of(adminMapper.findPlaybackBySession(progress.lng("id"), req.sessionId.trim()));
+        if (playback.isEmpty())
+        {
+            throw ApiException.stateConflict("学习会话无效，请重新开始学习");
+        }
+        LocalDateTime expiresAt = playback.time("expires_at");
+        if (expiresAt == null || expiresAt.isBefore(ViTime.now()))
+        {
+            throw ApiException.stateConflict("学习会话已过期，请重新开始学习");
+        }
+
         int reported = req.deltaSeconds == null ? 0 : Math.max(0, req.deltaSeconds);
         if (reported > 600)
         {
             throw ApiException.validation("单次上报时长不能超过 600 秒");
         }
-        LocalDateTime lastReport = progress.time("updated_at");
-        int allowance = reported;
-        if (lastReport != null)
+
+        int lastPosition = playback.intg("last_position_seconds", 0);
+        int lastSequence = playback.intg("last_sequence", 0);
+        int sequence = req.sequence == null ? lastSequence + 1 : req.sequence;
+        LocalDateTime lastReportAt = playback.time("last_reported_at");
+        int maxGap = config.trainingHeartbeatMaxGapSeconds();
+
+        // 乱序或重放：幂等返回当前状态，不累加学时
+        if (sequence <= lastSequence)
         {
-            long elapsed = Math.max(0, Duration.between(lastReport, ViTime.now()).getSeconds());
-            allowance = (int) Math.min(reported, elapsed + 5);
+            return progressView(trainingId, Row.of(miscMapper.findProgress(applicationId, trainingId)),
+                    course.intg("required_duration_seconds", 0), 0, "DUPLICATE", lastPosition);
         }
+
+        int allowance = reported;
+        if (lastReportAt == null)
+        {
+            allowance = Math.min(reported, maxGap);
+        }
+        else
+        {
+            long gap = Math.max(0, Duration.between(lastReportAt, ViTime.now()).getSeconds());
+            // 允许 2 秒网络/调度误差，避免首次心跳因取整被判为 0
+            allowance = (int) Math.min(reported, gap + 2);
+            if (gap > maxGap)
+            {
+                // 超时心跳：只认阈值内的在线时长
+                allowance = Math.min(allowance, maxGap);
+                eventService.record("TRAINING", trainingId, "HEARTBEAT_GAP", null, null,
+                        Map.of("gapSeconds", String.valueOf(gap), "capSeconds", String.valueOf(maxGap)),
+                        "相邻心跳间隔超阈值，超出部分不计学时");
+            }
+        }
+        allowance = Math.max(0, allowance);
+
+        int position = req.positionSeconds == null ? lastPosition : Math.max(0, req.positionSeconds);
+        int positionCeiling = lastPosition + allowance + 3;
+        if (position > positionCeiling)
+        {
+            throw ApiException.unprocessable(Codes.Error.STATE_CONFLICT, "播放位置跳变，疑似快进，本次不计入学时");
+        }
+        position = Math.max(position, lastPosition);
+
+        adminMapper.touchPlayback(playback.lng("id"), sequence, position);
         int required = course.intg("required_duration_seconds", 0);
-        int position = req.positionSeconds == null ? progress.intg("last_position_seconds", 0)
-                : Math.max(0, req.positionSeconds);
         miscMapper.addProgress(progress.lng("id"), allowance, position, required);
         Row after = Row.of(miscMapper.findProgress(applicationId, trainingId));
         if ("READY_FOR_EXAM".equals(after.str("status")) && !"READY_FOR_EXAM".equals(progress.str("status")))
@@ -182,13 +247,21 @@ public class TrainingService
             eventService.record("TRAINING", trainingId, "TRAINING_COMPLETED", null, null,
                     Map.of("verifiedSeconds", String.valueOf(after.intg("verified_duration_seconds", 0))), null);
         }
+        return progressView(trainingId, after, required, allowance, "ACCEPTED", position);
+    }
+
+    private Map<String, Object> progressView(Long trainingId, Row progress, int required, int accepted,
+            String result, int position)
+    {
         Map<String, Object> view = new LinkedHashMap<>();
         view.put("trainingId", String.valueOf(trainingId));
-        view.put("verifiedSeconds", after.intg("verified_duration_seconds", 0));
+        view.put("verifiedSeconds", progress.intg("verified_duration_seconds", 0));
         view.put("requiredDurationSeconds", required);
-        view.put("progressStatus", after.str("status"));
-        view.put("acceptedSeconds", allowance);
-        view.put("canExam", "READY_FOR_EXAM".equals(after.str("status")));
+        view.put("progressStatus", progress.str("status"));
+        view.put("acceptedSeconds", accepted);
+        view.put("lastPositionSeconds", position);
+        view.put("heartbeatResult", result);
+        view.put("canExam", "READY_FOR_EXAM".equals(progress.str("status")));
         return view;
     }
 

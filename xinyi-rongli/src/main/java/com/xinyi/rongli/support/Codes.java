@@ -56,6 +56,11 @@ public final class Codes
         public static final String DRIVER_TO_STATION = "DRIVER_TO_STATION";
         public static final String STATION_TO_DRIVER = "STATION_TO_DRIVER";
         public static final String DRIVER_TO_OWNER = "DRIVER_TO_OWNER";
+
+        /** 交接单状态：一方已确认、等待另一方确认（仅双方确认模式下出现） */
+        public static final String STATUS_PENDING = "PENDING";
+        public static final String STATUS_PARTIAL = "PARTIAL";
+        public static final String STATUS_CONFIRMED = "CONFIRMED";
     }
 
     /** 承运结束原因 */
@@ -182,6 +187,7 @@ public final class Codes
         public static final String HANDOVER_CODE_INVALID = "HANDOVER_CODE_INVALID";
         public static final String HANDOVER_LOCKED = "HANDOVER_LOCKED";
         public static final String CHANNEL_UNAVAILABLE = "CHANNEL_UNAVAILABLE";
+        public static final String SIGNATURE_INVALID = "SIGNATURE_INVALID";
         public static final String INTERNAL = "INTERNAL_ERROR";
     }
 }

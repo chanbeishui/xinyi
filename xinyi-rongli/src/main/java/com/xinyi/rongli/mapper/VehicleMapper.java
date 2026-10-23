@@ -100,10 +100,15 @@ public interface VehicleMapper
             <if test="vehicleTypeCode != null and vehicleTypeCode != ''">
               AND v.vehicle_type_code = #{vehicleTypeCode}
             </if>
+            <if test="deptId != null">
+              AND (v.dept_id IS NULL OR v.dept_id IN (SELECT dept_id FROM sys_dept
+                                     WHERE dept_id = #{deptId} OR FIND_IN_SET(#{deptId}, ancestors)))
+            </if>
             ORDER BY v.id DESC LIMIT #{offset}, #{limit}
             </script>
             """)
     List<Map<String, Object>> adminList(@Param("keyword") String keyword, @Param("vehicleTypeCode") String vehicleTypeCode,
+            @Param("deptId") Long deptId,
             @Param("offset") int offset, @Param("limit") int limit);
 
     @Select("""
@@ -116,9 +121,14 @@ public interface VehicleMapper
             <if test="vehicleTypeCode != null and vehicleTypeCode != ''">
               AND v.vehicle_type_code = #{vehicleTypeCode}
             </if>
+            <if test="deptId != null">
+              AND (v.dept_id IS NULL OR v.dept_id IN (SELECT dept_id FROM sys_dept
+                                     WHERE dept_id = #{deptId} OR FIND_IN_SET(#{deptId}, ancestors)))
+            </if>
             </script>
             """)
-    long adminCount(@Param("keyword") String keyword, @Param("vehicleTypeCode") String vehicleTypeCode);
+    long adminCount(@Param("keyword") String keyword, @Param("vehicleTypeCode") String vehicleTypeCode,
+            @Param("deptId") Long deptId);
 
     // ------------------------------------------------------------------ 地址
 
@@ -215,10 +225,15 @@ public interface VehicleMapper
             <if test="status != null and status != ''">
               AND d.qualification_status = #{status}
             </if>
+            <if test="deptId != null">
+              AND (d.dept_id IS NULL OR d.dept_id IN (SELECT dept_id FROM sys_dept
+                                     WHERE dept_id = #{deptId} OR FIND_IN_SET(#{deptId}, ancestors)))
+            </if>
             ORDER BY d.id DESC LIMIT #{offset}, #{limit}
             </script>
             """)
     List<Map<String, Object>> adminDriverList(@Param("keyword") String keyword, @Param("status") String status,
+            @Param("deptId") Long deptId,
             @Param("offset") int offset, @Param("limit") int limit);
 
     @Select("""
@@ -231,9 +246,14 @@ public interface VehicleMapper
             <if test="status != null and status != ''">
               AND d.qualification_status = #{status}
             </if>
+            <if test="deptId != null">
+              AND (d.dept_id IS NULL OR d.dept_id IN (SELECT dept_id FROM sys_dept
+                                     WHERE dept_id = #{deptId} OR FIND_IN_SET(#{deptId}, ancestors)))
+            </if>
             </script>
             """)
-    long adminDriverCount(@Param("keyword") String keyword, @Param("status") String status);
+    long adminDriverCount(@Param("keyword") String keyword, @Param("status") String status,
+            @Param("deptId") Long deptId);
 
     @Select("""
             SELECT d.*, a.nickname, a.status, a.created_at AS account_created_at,

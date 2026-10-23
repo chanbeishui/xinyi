@@ -16,6 +16,7 @@ import com.xinyi.rongli.support.ApiException;
 import com.xinyi.rongli.support.BizConfig;
 import com.xinyi.rongli.support.Codes;
 import com.xinyi.rongli.support.Crypto;
+import com.xinyi.rongli.support.DeptScope;
 import com.xinyi.rongli.support.MiniContext;
 import com.xinyi.rongli.support.MiniPrincipal;
 import com.xinyi.rongli.support.Row;
@@ -56,6 +57,12 @@ public class AfterSaleService
     @Autowired
     private Crypto crypto;
 
+    @Autowired
+    private PayConfigService payConfigService;
+
+    @Autowired
+    private com.xinyi.rongli.support.WechatPayClient wechatPayClient;
+
     // ------------------------------------------------------------------ 申请
 
     /** 车主侧：创建统一取消与退款申请 */
@@ -64,7 +71,7 @@ public class AfterSaleService
     {
         MiniPrincipal p = MiniContext.require();
         Row order = bookingService.requireOwnerOrder(orderNo, p.accountId);
-        return create(order, req, "ACCOUNT", p.accountId);
+        return create(order, req, "ACCOUNT", p.accountId, false);
     }
 
     /** 管理端：代客创建申请 */
@@ -76,10 +83,11 @@ public class AfterSaleService
         {
             throw ApiException.notFound("订单不存在");
         }
-        return create(order, req, "ADMIN", userId);
+        return create(order, req, "ADMIN", userId, true);
     }
 
-    private Map<String, Object> create(Row order, MiniDtos.AfterSaleApply req, String applicantType, Long applicantId)
+    private Map<String, Object> create(Row order, MiniDtos.AfterSaleApply req, String applicantType, Long applicantId,
+            boolean admin)
     {
         Long orderId = order.lng("id");
         String status = order.str("fulfillment_status");
@@ -124,7 +132,7 @@ public class AfterSaleService
                 Map.of("kind", kind, "requestedFen", String.valueOf(requested)), reason);
         eventService.publish("AFTERSALE", caseId, "AFTERSALE_APPLIED",
                 Map.of("caseNo", row.get("caseNo"), "orderNo", order.str("order_no")));
-        return detail(caseId, true);
+        return detail(caseId, admin);
     }
 
     private String nextCaseNo()
@@ -179,16 +187,30 @@ public class AfterSaleService
         int limit = Math.min(Math.max(pageSize, 1), 100);
         int offset = (Math.max(pageNum, 1) - 1) * limit;
         List<Map<String, Object>> list = new ArrayList<>();
-        for (Map<String, Object> c : afterSaleMapper.adminList(status, kind, offset, limit))
+        Long deptId = DeptScope.scopedDeptId();
+        for (Map<String, Object> c : afterSaleMapper.adminList(status, kind, deptId, offset, limit))
         {
             list.add(summary(Row.of(c)));
         }
         Map<String, Object> result = new LinkedHashMap<>();
         result.put("pageNum", pageNum);
         result.put("pageSize", limit);
-        result.put("total", afterSaleMapper.adminCount(status, kind));
+        result.put("total", afterSaleMapper.adminCount(status, kind, deptId));
         result.put("rows", list);
         return result;
+    }
+
+    /**
+     * 二次授权：后台按 id 直达详情/审批/退款时，仍需校验该单归属部门，
+     * 防止跨部门越权（列表过滤不能替代详情鉴权）。
+     */
+    private void assertAdminDept(Long caseId)
+    {
+        Long deptId = DeptScope.scopedDeptId();
+        if (deptId != null && afterSaleMapper.countInDept(caseId, deptId) == 0)
+        {
+            throw ApiException.forbidden("该售后单不在您的部门数据范围内");
+        }
     }
 
     private Map<String, Object> summary(Row c)
@@ -226,6 +248,10 @@ public class AfterSaleService
             {
                 throw ApiException.forbidden("无权查看该售后申请");
             }
+        }
+        else
+        {
+            assertAdminDept(caseId);
         }
         Map<String, Object> view = summary(c);
         view.put("orderId", String.valueOf(c.lng("order_id")));
@@ -308,6 +334,7 @@ public class AfterSaleService
     /** 审核前预览：把"同意后会怎样"提前算清楚，避免审核人凭印象决策 */
     public Map<String, Object> reviewPreview(Long caseId)
     {
+        assertAdminDept(caseId);
         Row c = Row.of(afterSaleMapper.findCaseDetail(caseId));
         if (c.isEmpty())
         {
@@ -379,6 +406,7 @@ public class AfterSaleService
     public Map<String, Object> review(Long caseId, boolean approve, Long approvedFen, Boolean returnRequired,
             String opinion, Long reviewerUserId)
     {
+        assertAdminDept(caseId);
         Row c = Row.of(afterSaleMapper.findCaseDetail(caseId));
         if (c.isEmpty())
         {
@@ -514,6 +542,7 @@ public class AfterSaleService
     @Transactional
     public Map<String, Object> executeRefund(Long caseId)
     {
+        assertAdminDept(caseId);
         Row c = Row.of(afterSaleMapper.findCaseDetail(caseId));
         if (c.isEmpty())
         {
@@ -589,8 +618,30 @@ public class AfterSaleService
         {
             afterSaleMapper.updateProgress(caseId, Codes.AfterSale.EXECUTING, c.str("return_state"),
                     Codes.AfterSale.REFUND_PROCESSING, null);
-            eventService.record("AFTERSALE", caseId, "REFUND_SUBMITTED", c.lng("order_id"), null,
-                    Map.of("amountFen", String.valueOf(approved)), "已提交渠道退款，等待回调");
+            // 真实通道必须真的向微信发起退款；提交失败要释放预留，否则这笔可退金额会被永久占用
+            Row payRow = Row.of(payMapper.findByOrder(c.lng("order_id")));
+            try
+            {
+                var result = wechatPayClient.refund(payConfigService.settings(), payRow.str("out_trade_no"),
+                        String.valueOf(refund.get("outRefundNo")), c.str("reason"), approved,
+                        payRow.lng("total_fen", approved));
+                payMapper.updateRefundStatus(refundId, Codes.AfterSale.REFUND_PROCESSING,
+                        (String) result.get("refundId"));
+                eventService.record("AFTERSALE", caseId, "REFUND_SUBMITTED", c.lng("order_id"), null,
+                        Map.of("amountFen", String.valueOf(approved),
+                                "refundId", String.valueOf(result.get("refundId"))),
+                        "已提交渠道退款，等待回调");
+            }
+            catch (RuntimeException ex)
+            {
+                payMapper.releaseRefundReserve(paymentId, approved);
+                payMapper.updateRefundStatus(refundId, Codes.AfterSale.REFUND_ABNORMAL, null);
+                afterSaleMapper.updateProgress(caseId, Codes.AfterSale.EXECUTING, c.str("return_state"),
+                        Codes.AfterSale.REFUND_ABNORMAL, null);
+                eventService.record("AFTERSALE", caseId, "REFUND_SUBMIT_FAILED", c.lng("order_id"), null,
+                        Map.of("amountFen", String.valueOf(approved)), ex.getMessage());
+                throw ex;
+            }
         }
         return detail(caseId, true);
     }
@@ -698,9 +749,25 @@ public class AfterSaleService
         }
         if (!config.mockPayment())
         {
-            payMapper.updateRefundStatus(refund.lng("id"), refund.str("status"), null);
+            // 以渠道结果为准：查询成功即按渠道状态推进，查询失败保持原状态并记录查询时间
+            var result = wechatPayClient.queryRefund(payConfigService.settings(), refundNo);
+            String channelStatus = String.valueOf(result.get("status"));
+            if ("SUCCESS".equalsIgnoreCase(channelStatus))
+            {
+                applyRefundResult(refundNo, true, (String) result.get("refundId"));
+            }
+            else if ("ABNORMAL".equalsIgnoreCase(channelStatus) || "CLOSED".equalsIgnoreCase(channelStatus))
+            {
+                applyRefundResult(refundNo, false, (String) result.get("refundId"));
+            }
+            else
+            {
+                payMapper.updateRefundStatus(refund.lng("id"), Codes.AfterSale.REFUND_PROCESSING,
+                        (String) result.get("refundId"));
+            }
             Map<String, Object> view = refundDetail(refundNo);
-            view.put("hint", "真实通道未配置商户凭据（L01），已记录查询时间，请以渠道后台为准");
+            view.put("channelStatus", channelStatus);
+            view.put("hint", "已按微信渠道返回状态同步");
             return view;
         }
         if (Codes.AfterSale.REFUND_PROCESSING.equals(refund.str("status"))

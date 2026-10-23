@@ -23,7 +23,7 @@ public class AdminDispatchController
     private AdminService adminService;
 
     @GetMapping("/dashboard")
-    @PreAuthorize("@ss.hasPermi('biz:dashboard:list')")
+    @PreAuthorize("@ss.hasPermi('biz:statistics:list')")
     public Map<String, Object> dashboard()
     {
         return adminService.dashboard();
@@ -71,10 +71,11 @@ public class AdminDispatchController
     public Map<String, Object> invites(@RequestParam(required = false) Long orderId,
             @RequestParam(required = false) Long driverId,
             @RequestParam(required = false) String status,
+            @RequestParam(required = false) String keyword,
             @RequestParam(defaultValue = "1") int pageNum,
             @RequestParam(defaultValue = "20") int pageSize)
     {
-        return adminService.dispatchInvites(orderId, driverId, status, pageNum, pageSize);
+        return adminService.dispatchInvites(orderId, driverId, status, keyword, pageNum, pageSize);
     }
 
     @GetMapping("/dispatch/config")

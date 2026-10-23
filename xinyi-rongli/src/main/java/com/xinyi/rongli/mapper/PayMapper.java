@@ -18,9 +18,10 @@ public interface PayMapper
 {
     @Insert("""
             INSERT INTO vi_payment_order (order_id, out_trade_no, status, total_fen, paid_fen,
-                   refund_reserved_fen, refunded_fen, expires_at, created_at, updated_at, version)
-            VALUES (#{orderId}, #{outTradeNo}, 'PENDING', #{totalFen}, 0, 0, 0, #{expiresAt},
-                   UTC_TIMESTAMP(3), UTC_TIMESTAMP(3), 0)
+                   refund_reserved_fen, refunded_fen, expires_at, payment_method, receiver_dept_id,
+                   capacity_resolution, created_at, updated_at, version)
+            VALUES (#{orderId}, #{outTradeNo}, 'PENDING', #{totalFen}, 0, 0, 0, #{expiresAt}, #{paymentMethod},
+                   #{receiverDeptId}, #{capacityResolution}, UTC_TIMESTAMP(3), UTC_TIMESTAMP(3), 0)
             ON DUPLICATE KEY UPDATE total_fen = VALUES(total_fen), expires_at = VALUES(expires_at),
                    updated_at = UTC_TIMESTAMP(3)
             """)

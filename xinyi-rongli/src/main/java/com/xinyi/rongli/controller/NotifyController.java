@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.xinyi.rongli.service.NotifyService;
@@ -21,15 +22,23 @@ public class NotifyController
     private NotifyService notifyService;
 
     @PostMapping("/api/notify/wechat/pay")
-    public Map<String, Object> payNotify(@RequestBody(required = false) String body)
+    public Map<String, Object> payNotify(@RequestBody(required = false) String body,
+            @RequestHeader(value = "Wechatpay-Timestamp", required = false) String timestamp,
+            @RequestHeader(value = "Wechatpay-Nonce", required = false) String nonce,
+            @RequestHeader(value = "Wechatpay-Signature", required = false) String signature,
+            @RequestHeader(value = "Wechatpay-Serial", required = false) String serial)
     {
-        return notifyService.payNotify(body);
+        return notifyService.payNotify(body, NotifyService.notifyHeaders(timestamp, nonce, signature, serial));
     }
 
     @PostMapping("/api/notify/wechat/refund")
-    public Map<String, Object> refundNotify(@RequestBody(required = false) String body)
+    public Map<String, Object> refundNotify(@RequestBody(required = false) String body,
+            @RequestHeader(value = "Wechatpay-Timestamp", required = false) String timestamp,
+            @RequestHeader(value = "Wechatpay-Nonce", required = false) String nonce,
+            @RequestHeader(value = "Wechatpay-Signature", required = false) String signature,
+            @RequestHeader(value = "Wechatpay-Serial", required = false) String serial)
     {
-        return notifyService.refundNotify(body);
+        return notifyService.refundNotify(body, NotifyService.notifyHeaders(timestamp, nonce, signature, serial));
     }
 
     @GetMapping("/api/public/service-config")

@@ -155,6 +155,8 @@ public final class DriverDtos
         public String sessionId;
         public Integer deltaSeconds;
         public Integer positionSeconds;
+        /** 客户端自增序号；乱序或重复上报不增加有效学时 */
+        public Integer sequence;
     }
 
     public static class AttemptSubmitReq

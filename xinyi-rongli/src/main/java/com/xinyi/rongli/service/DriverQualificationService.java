@@ -455,4 +455,35 @@ public class DriverQualificationService
         view.put("freshSeconds", config.locationFreshSeconds());
         return view;
     }
+
+    /**
+     * 年度复审到期扫描（Q05 / TC-017）。
+     *
+     * <p>到期即把资格置为 EXPIRED 并停掉新承接，已经在手的承接不受影响、仍可履约到归还；
+     * 派单候选查询侧另有一道 {@code review_due_at} 过滤兜底，即使扫描尚未跑到也不会把
+     * 过期司机派进新单。</p>
+     *
+     * @return 本轮处理的司机数
+     */
+    @org.springframework.transaction.annotation.Transactional
+    public int sweepExpiredQualifications()
+    {
+        int handled = 0;
+        for (Map<String, Object> r : accountMapper.findExpiredQualifications(200))
+        {
+            Row d = Row.of(r);
+            Long driverId = d.lng("id");
+            if (accountMapper.expireQualification(driverId) == 0)
+            {
+                continue;
+            }
+            handled++;
+            Long accountId = d.lng("account_id");
+            eventService.record("DRIVER", driverId, "QUALIFICATION_EXPIRED", null, null,
+                    Map.of("reviewDueAt", ViTime.iso(d.time("review_due_at"))), "年度复审到期自动失效");
+            eventService.notify(accountId, com.xinyi.rongli.support.Codes.Role.DRIVER, null,
+                    "QUALIFICATION_EXPIRED", "资格年审已到期，已暂停新增接单；请在代驾端重新提交资料完成复审");
+        }
+        return handled;
+    }
 }

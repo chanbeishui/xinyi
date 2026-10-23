@@ -72,6 +72,16 @@ public class AdminDirectoryController
         return adminService.ownerOrders(ownerId, pageNum, pageSize);
     }
 
+    /** 车主关联售后（契约 V4 GET /api/admin/owners/{ownerId}/after-sales） */
+    @GetMapping("/owners/{ownerId}/after-sales")
+    @PreAuthorize("@ss.hasPermi('biz:aftersale:list')")
+    public Map<String, Object> ownerAfterSales(@PathVariable Long ownerId,
+            @RequestParam(defaultValue = "1") int pageNum,
+            @RequestParam(defaultValue = "10") int pageSize)
+    {
+        return adminService.ownerAfterSales(ownerId, pageNum, pageSize);
+    }
+
     // ------------------------------------------------------------------ 代驾
 
     @GetMapping("/drivers")
@@ -208,6 +218,15 @@ public class AdminDirectoryController
             @RequestParam(defaultValue = "50") int pageSize)
     {
         return adminService.stationGrants(pageNum, pageSize);
+    }
+
+    /** 新增站点授权时的员工候选（按手机号/姓名/账号检索） */
+    @GetMapping("/employee-candidates")
+    @PreAuthorize("@ss.hasPermi('biz:stationgrant:list')")
+    public java.util.List<Map<String, Object>> employeeCandidates(
+            @RequestParam(required = false) String keyword)
+    {
+        return adminService.employeeCandidates(keyword);
     }
 
     @PutMapping("/station-grants/{employeeUserId}")

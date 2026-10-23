@@ -192,11 +192,16 @@ public interface OrderMapper
             </if>
             <if test="from != null"> AND o.created_at &gt;= #{from} </if>
             <if test="to != null"> AND o.created_at &lt; #{to} </if>
+            <if test="deptId != null">
+              AND o.dept_id IN (SELECT dept_id FROM sys_dept
+                                WHERE dept_id = #{deptId} OR FIND_IN_SET(#{deptId}, ancestors))
+            </if>
             ORDER BY o.id DESC LIMIT #{offset}, #{limit}
             </script>
             """)
     List<Map<String, Object>> adminList(@Param("status") String status, @Param("stationId") Long stationId,
             @Param("keyword") String keyword, @Param("from") LocalDateTime from, @Param("to") LocalDateTime to,
+            @Param("deptId") Long deptId,
             @Param("offset") int offset, @Param("limit") int limit);
 
     @Select("""
@@ -211,10 +216,110 @@ public interface OrderMapper
             </if>
             <if test="from != null"> AND o.created_at &gt;= #{from} </if>
             <if test="to != null"> AND o.created_at &lt; #{to} </if>
+            <if test="deptId != null">
+              AND o.dept_id IN (SELECT dept_id FROM sys_dept
+                                WHERE dept_id = #{deptId} OR FIND_IN_SET(#{deptId}, ancestors))
+            </if>
             </script>
             """)
     long adminCount(@Param("status") String status, @Param("stationId") Long stationId,
-            @Param("keyword") String keyword, @Param("from") LocalDateTime from, @Param("to") LocalDateTime to);
+            @Param("keyword") String keyword, @Param("from") LocalDateTime from, @Param("to") LocalDateTime to,
+            @Param("deptId") Long deptId);
+
+    /**
+     * 后台履约看板：一次取齐 B07 收车登记与 B10 检测结果待办所需的订单侧字段。
+     *
+     * <p>statuses 传 ARRIVED_STATION 即待收车；传 INSPECTING/INSPECTED 即检测待办。
+     * 司机名、行驶证核验状态、结果版本数、站点侧交接状态都在同一条 SQL 内取回，
+     * 避免列表逐行回查造成 N+1。</p>
+     */
+    @Select("""
+            <script>
+            SELECT o.id, o.order_no, o.fulfillment_status, o.cancel_status, o.custody_type, o.total_fen,
+                   o.pickup_starts_at, o.pickup_ends_at, o.vehicle_snapshot, o.station_id,
+                   s.name AS station_name, oa.nickname AS owner_name, da.nickname AS driver_name,
+                   ass.id AS assignment_id,
+                   lic.review_status AS license_status,
+                   h.id AS handover_id, h.status AS handover_status, h.expires_at AS handover_expires_at,
+                   h.generation_no AS handover_generation,
+                   (SELECT COUNT(1) FROM vi_inspection_result r
+                     WHERE r.order_id = o.id AND r.superseded_at IS NULL) AS result_count,
+                   (SELECT r2.revision FROM vi_inspection_result r2
+                     WHERE r2.order_id = o.id AND r2.superseded_at IS NULL
+                     ORDER BY r2.revision DESC LIMIT 1) AS result_revision
+            FROM vi_order o
+            LEFT JOIN vi_station s ON s.id = o.station_id
+            LEFT JOIN vi_account oa ON oa.id = o.owner_account_id
+            LEFT JOIN vi_driver_assignment ass ON ass.order_id = o.id AND ass.ended_at IS NULL
+            LEFT JOIN vi_driver_profile dp ON dp.id = ass.driver_id
+            LEFT JOIN vi_account da ON da.id = dp.account_id
+            LEFT JOIN vi_vehicle_license lic ON lic.order_id = o.id
+            LEFT JOIN vi_handover h ON h.id = (
+                SELECT h2.id FROM vi_handover h2
+                WHERE h2.order_id = o.id AND h2.handover_type = 'DRIVER_TO_STATION'
+                ORDER BY h2.id DESC LIMIT 1)
+            WHERE o.fulfillment_status IN
+            <foreach collection="statuses" item="st" open="(" separator="," close=")">#{st}</foreach>
+            <if test="stationId != null"> AND o.station_id = #{stationId} </if>
+            <if test="keyword != null and keyword != ''">
+              AND (o.order_no LIKE CONCAT('%', #{keyword}, '%')
+                   OR JSON_UNQUOTE(JSON_EXTRACT(o.vehicle_snapshot, '$.plateNo')) LIKE CONCAT('%', #{keyword}, '%')
+                   OR da.nickname LIKE CONCAT('%', #{keyword}, '%'))
+            </if>
+            <if test="deptId != null">
+              AND o.dept_id IN (SELECT dept_id FROM sys_dept
+                                WHERE dept_id = #{deptId} OR FIND_IN_SET(#{deptId}, ancestors))
+            </if>
+            <if test="licensePending != null and licensePending">
+              AND (lic.review_status IS NULL OR lic.review_status &lt;&gt; 'VERIFIED')
+            </if>
+            <if test="resultMissing != null and resultMissing">
+              AND NOT EXISTS (SELECT 1 FROM vi_inspection_result r3
+                              WHERE r3.order_id = o.id AND r3.superseded_at IS NULL)
+            </if>
+            ORDER BY o.pickup_starts_at ASC, o.id ASC
+            LIMIT #{offset}, #{limit}
+            </script>
+            """)
+    List<Map<String, Object>> adminFulfillBoard(@Param("statuses") List<String> statuses,
+            @Param("stationId") Long stationId, @Param("keyword") String keyword,
+            @Param("deptId") Long deptId, @Param("licensePending") Boolean licensePending,
+            @Param("resultMissing") Boolean resultMissing,
+            @Param("offset") int offset, @Param("limit") int limit);
+
+    @Select("""
+            <script>
+            SELECT COUNT(1) FROM vi_order o
+            LEFT JOIN vi_account oa ON oa.id = o.owner_account_id
+            LEFT JOIN vi_driver_assignment ass ON ass.order_id = o.id AND ass.ended_at IS NULL
+            LEFT JOIN vi_driver_profile dp ON dp.id = ass.driver_id
+            LEFT JOIN vi_account da ON da.id = dp.account_id
+            LEFT JOIN vi_vehicle_license lic ON lic.order_id = o.id
+            WHERE o.fulfillment_status IN
+            <foreach collection="statuses" item="st" open="(" separator="," close=")">#{st}</foreach>
+            <if test="stationId != null"> AND o.station_id = #{stationId} </if>
+            <if test="keyword != null and keyword != ''">
+              AND (o.order_no LIKE CONCAT('%', #{keyword}, '%')
+                   OR JSON_UNQUOTE(JSON_EXTRACT(o.vehicle_snapshot, '$.plateNo')) LIKE CONCAT('%', #{keyword}, '%')
+                   OR da.nickname LIKE CONCAT('%', #{keyword}, '%'))
+            </if>
+            <if test="deptId != null">
+              AND o.dept_id IN (SELECT dept_id FROM sys_dept
+                                WHERE dept_id = #{deptId} OR FIND_IN_SET(#{deptId}, ancestors))
+            </if>
+            <if test="licensePending != null and licensePending">
+              AND (lic.review_status IS NULL OR lic.review_status &lt;&gt; 'VERIFIED')
+            </if>
+            <if test="resultMissing != null and resultMissing">
+              AND NOT EXISTS (SELECT 1 FROM vi_inspection_result r3
+                              WHERE r3.order_id = o.id AND r3.superseded_at IS NULL)
+            </if>
+            </script>
+            """)
+    long adminFulfillBoardCount(@Param("statuses") List<String> statuses,
+            @Param("stationId") Long stationId, @Param("keyword") String keyword,
+            @Param("deptId") Long deptId, @Param("licensePending") Boolean licensePending,
+            @Param("resultMissing") Boolean resultMissing);
 
     @Select("""
             SELECT o.id, o.order_no, o.fulfillment_status, o.cancel_status, o.custody_type, o.total_fen,
@@ -242,9 +347,14 @@ public interface OrderMapper
               COUNT(*) AS total,
               COALESCE(SUM(CASE WHEN fulfillment_status NOT IN ('CANCELLED','CLOSED') THEN total_fen ELSE 0 END), 0) AS gmv_fen
             FROM vi_order
+            <where>
+              <if test="deptId != null">
+                dept_id IN (SELECT dept_id FROM sys_dept WHERE dept_id = #{deptId} OR FIND_IN_SET(#{deptId}, ancestors))
+              </if>
+            </where>
             </script>
             """)
-    Map<String, Object> dashboard();
+    Map<String, Object> dashboard(@Param("deptId") Long deptId);
 
     @Select("""
             SELECT COUNT(1) FROM vi_order WHERE cancel_status = 'APPLIED'
@@ -262,12 +372,17 @@ public interface OrderMapper
     long countWaitReturn();
 
     @Select("""
+            <script>
             SELECT DATE_FORMAT(CONVERT_TZ(created_at, '+00:00', '+08:00'), '%Y-%m-%d') AS day,
                    COUNT(*) AS orders, COALESCE(SUM(total_fen), 0) AS amount_fen
-            FROM vi_order WHERE created_at >= #{from}
+            FROM vi_order WHERE created_at &gt;= #{from}
+            <if test="deptId != null">
+              AND dept_id IN (SELECT dept_id FROM sys_dept WHERE dept_id = #{deptId} OR FIND_IN_SET(#{deptId}, ancestors))
+            </if>
             GROUP BY day ORDER BY day
+            </script>
             """)
-    List<Map<String, Object>> dailyStats(@Param("from") LocalDateTime from);
+    List<Map<String, Object>> dailyStats(@Param("from") LocalDateTime from, @Param("deptId") Long deptId);
 
     // ------------------------------------------------------------------ 额度凭证
 

@@ -129,14 +129,14 @@ public class MessageService
         int limit = Math.min(Math.max(pageSize, 1), 100);
         int offset = (Math.max(pageNum, 1) - 1) * limit;
         List<Map<String, Object>> rows = new ArrayList<>();
-        for (Map<String, Object> c : adminMapper.listGovernance("PRIVACY", status, offset, limit))
+        for (Map<String, Object> c : adminMapper.listGovernance("PRIVACY", status, null, offset, limit))
         {
             rows.add(privacyView(Row.of(c), true));
         }
         Map<String, Object> result = new LinkedHashMap<>();
         result.put("pageNum", pageNum);
         result.put("pageSize", limit);
-        result.put("total", adminMapper.countGovernance("PRIVACY", status));
+        result.put("total", adminMapper.countGovernance("PRIVACY", status, null));
         result.put("rows", rows);
         return result;
     }

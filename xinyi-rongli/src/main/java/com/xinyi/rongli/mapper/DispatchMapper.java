@@ -20,13 +20,36 @@ public interface DispatchMapper
     // ------------------------------------------------------------------ 邀约
 
     @Insert("""
-            INSERT INTO vi_dispatch_invite (order_id, driver_id, status, source, round_key, issued_at, expires_at,
+            INSERT INTO vi_dispatch_invite (order_id, driver_id, status, source, round_key, round_no, issued_at, expires_at,
                    created_at, updated_at, version)
-            VALUES (#{orderId}, #{driverId}, 'WAIT_RESPONSE', #{source}, #{roundKey}, UTC_TIMESTAMP(3),
+            VALUES (#{orderId}, #{driverId}, 'WAIT_RESPONSE', #{source}, #{roundKey}, #{roundNo}, UTC_TIMESTAMP(3),
                    #{expiresAt}, UTC_TIMESTAMP(3), UTC_TIMESTAMP(3), 0)
             """)
     @Options(useGeneratedKeys = true, keyProperty = "id")
     int insertInvite(Map<String, Object> row);
+
+    /** 该订单已用到的最大扩圈轮次；从未邀约时为 0 */
+    @Select("SELECT COALESCE(MAX(round_no), 0) FROM vi_dispatch_invite WHERE order_id = #{orderId}")
+    int maxRoundNo(@Param("orderId") Long orderId);
+
+    /**
+     * 该订单已经走到过的最大扩圈轮次（邀约轮次与扩圈留痕取大者）。
+     *
+     * <p>只看邀约不够：三轮都没候选的订单从未发出过邀约，{@link #maxRoundNo} 恒为 0，
+     * 于是每次重新派单都从第 1 档重跑整个阶梯，把 DISPATCH_EXPAND 留痕重复写一遍
+     * （实测同一订单出现 4 条扩圈事件、轮次仍是 2/3，验收里表现为计数抖动）。</p>
+     */
+    @Select("""
+            SELECT GREATEST(
+              COALESCE((SELECT MAX(round_no) FROM vi_dispatch_invite WHERE order_id = #{orderId}), 0),
+              COALESCE((SELECT MAX(CAST(JSON_UNQUOTE(JSON_EXTRACT(after_summary, '$.round')) AS UNSIGNED))
+                        FROM vi_event_log WHERE order_id = #{orderId} AND action = 'DISPATCH_EXPAND'), 0))
+            """)
+    int maxReachedRound(@Param("orderId") Long orderId);
+
+    /** 该订单首条邀约距今的分钟数；从未邀约时返回 null */
+    @Select("SELECT TIMESTAMPDIFF(MINUTE, MIN(issued_at), UTC_TIMESTAMP(3)) FROM vi_dispatch_invite WHERE order_id = #{orderId}")
+    Integer minutesSinceFirstInvite(@Param("orderId") Long orderId);
 
     @Select("SELECT * FROM vi_dispatch_invite WHERE id = #{inviteId}")
     Map<String, Object> findInvite(@Param("inviteId") Long inviteId);
@@ -73,8 +96,10 @@ public interface DispatchMapper
 
     @Select("""
             <script>
-            SELECT i.id, i.order_id, i.driver_id, i.status, i.source, i.issued_at, i.expires_at, i.responded_at,
-                   o.order_no, a.nickname AS driver_name
+            SELECT i.id, i.order_id, i.driver_id, i.status, i.source, i.round_key, i.round_no,
+                   i.issued_at, i.expires_at, i.responded_at,
+                   o.order_no, JSON_UNQUOTE(JSON_EXTRACT(o.vehicle_snapshot, '$.plateNo')) AS plate_no,
+                   a.nickname AS driver_name
             FROM vi_dispatch_invite i
             JOIN vi_order o ON o.id = i.order_id
             LEFT JOIN vi_driver_profile d ON d.id = i.driver_id
@@ -83,11 +108,38 @@ public interface DispatchMapper
             <if test="orderId != null"> AND i.order_id = #{orderId} </if>
             <if test="driverId != null"> AND i.driver_id = #{driverId} </if>
             <if test="status != null and status != ''"> AND i.status = #{status} </if>
+            <if test="keyword != null and keyword != ''">
+              AND (o.order_no LIKE CONCAT('%', #{keyword}, '%')
+                   OR a.nickname LIKE CONCAT('%', #{keyword}, '%')
+                   OR JSON_UNQUOTE(JSON_EXTRACT(o.vehicle_snapshot, '$.plateNo')) LIKE CONCAT('%', #{keyword}, '%'))
+            </if>
             ORDER BY i.id DESC LIMIT #{offset}, #{limit}
             </script>
             """)
     List<Map<String, Object>> adminListInvites(@Param("orderId") Long orderId, @Param("driverId") Long driverId,
-            @Param("status") String status, @Param("offset") int offset, @Param("limit") int limit);
+            @Param("status") String status, @Param("keyword") String keyword,
+            @Param("offset") int offset, @Param("limit") int limit);
+
+    @Select("""
+            <script>
+            SELECT COUNT(1)
+            FROM vi_dispatch_invite i
+            JOIN vi_order o ON o.id = i.order_id
+            LEFT JOIN vi_driver_profile d ON d.id = i.driver_id
+            LEFT JOIN vi_account a ON a.id = d.account_id
+            WHERE 1 = 1
+            <if test="orderId != null"> AND i.order_id = #{orderId} </if>
+            <if test="driverId != null"> AND i.driver_id = #{driverId} </if>
+            <if test="status != null and status != ''"> AND i.status = #{status} </if>
+            <if test="keyword != null and keyword != ''">
+              AND (o.order_no LIKE CONCAT('%', #{keyword}, '%')
+                   OR a.nickname LIKE CONCAT('%', #{keyword}, '%')
+                   OR JSON_UNQUOTE(JSON_EXTRACT(o.vehicle_snapshot, '$.plateNo')) LIKE CONCAT('%', #{keyword}, '%'))
+            </if>
+            </script>
+            """)
+    long adminCountInvites(@Param("orderId") Long orderId, @Param("driverId") Long driverId,
+            @Param("status") String status, @Param("keyword") String keyword);
 
     // ------------------------------------------------------------------ 承接
 
@@ -154,7 +206,11 @@ public interface DispatchMapper
             """)
     int releaseOccupancy(@Param("driverId") Long driverId, @Param("holderId") Long holderId);
 
-    @Select("SELECT * FROM vi_driver_occupancy WHERE driver_id = #{driverId}")
+    /** 未过期的占用；已过期的邀约占用不再阻挡人工邀约 */
+    @Select("""
+            SELECT * FROM vi_driver_occupancy
+            WHERE driver_id = #{driverId} AND (expires_at IS NULL OR expires_at > UTC_TIMESTAMP(3))
+            """)
     Map<String, Object> findOccupancy(@Param("driverId") Long driverId);
 
     @Delete("""
@@ -172,11 +228,14 @@ public interface DispatchMapper
             LEFT JOIN vi_driver_occupancy oc ON oc.driver_id = d.id
             WHERE d.qualification_status = 'APPROVED' AND d.new_assignment_enabled = 1
               AND d.listening_enabled = 1 AND a.status = 'ACTIVE' AND oc.driver_id IS NULL
+              -- 资格到期即拒绝新承接（TC-017）：未设置复审日期视为长期有效
+              AND (d.review_due_at IS NULL OR d.review_due_at > UTC_TIMESTAMP(3))
             ORDER BY d.id
             """)
     List<Map<String, Object>> listEligibleDrivers();
 
     @Select("""
+            <script>
             SELECT d.id AS driver_id, a.nickname, d.qualification_status, d.listening_enabled,
                    d.new_assignment_enabled, oc.holder_type, oc.order_id, l.captured_at
             FROM vi_driver_profile d
@@ -186,6 +245,7 @@ public interface DispatchMapper
             WHERE 1 = 1
             <if test="keyword != null and keyword != ''"> AND a.nickname LIKE CONCAT('%', #{keyword}, '%') </if>
             ORDER BY d.id LIMIT 200
+            </script>
             """)
     List<Map<String, Object>> candidates(@Param("keyword") String keyword);
 

@@ -14,10 +14,21 @@ public final class MiniDtos
 
     public static class LoginReq
     {
+        /** wx.login 的 code */
         public String code;
+
+        /** getPhoneNumber 回调里的 code；带上即同时完成手机号授权与登录 */
+        public String phoneCode;
+
         public String appId;
         public String nickname;
         public String deviceLabel;
+    }
+
+    /** 已登录账号补充手机号授权 */
+    public static class WechatPhoneReq
+    {
+        public String phoneCode;
     }
 
     public static class RoleSwitchReq
@@ -47,15 +58,7 @@ public final class MiniDtos
         public String serviceName;
     }
 
-    public static class BindingRequestCreate
-    {
-        public String reason;
-    }
-
-    public static class EmployeeBindingReq
-    {
-        public String credentialToken;
-    }
+    // BindingRequestCreate / EmployeeBindingReq 随 V6.4 员工绑定流程退役一并删除
 
     public static class VehicleReq
     {

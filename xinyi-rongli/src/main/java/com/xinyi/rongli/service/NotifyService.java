@@ -50,12 +50,67 @@ public class NotifyService
     @Autowired
     private Crypto crypto;
 
+    @Autowired
+    private PayConfigService payConfigService;
+
+    @Autowired
+    private com.xinyi.rongli.support.WechatPayClient wechatPayClient;
+
+    /** 微信回调请求头，键统一小写 */
+    public static Map<String, String> notifyHeaders(String timestamp, String nonce, String signature, String serial)
+    {
+        Map<String, String> headers = new LinkedHashMap<>();
+        headers.put("wechatpay-timestamp", timestamp);
+        headers.put("wechatpay-nonce", nonce);
+        headers.put("wechatpay-signature", signature);
+        headers.put("wechatpay-serial", serial);
+        return headers;
+    }
+
+    /**
+     * 回调报文可信化：真实通道下必须通过平台证书验签并按 APIv3 密钥解密；
+     * 联调通道（MOCK）允许直接提交明文，便于本地构造回调验证幂等与状态推进。
+     */
+    private JSONObject resolvePayload(String body, Map<String, String> headers)
+    {
+        if (config.mockPayment())
+        {
+            return parse(body);
+        }
+        var settings = payConfigService.settings();
+        String timestamp = header(headers, "wechatpay-timestamp");
+        String nonce = header(headers, "wechatpay-nonce");
+        String signature = header(headers, "wechatpay-signature");
+        String serial = header(headers, "wechatpay-serial");
+        if (timestamp == null || nonce == null || signature == null)
+        {
+            throw ApiException.forbidden("缺少微信支付回调签名头，已拒绝处理");
+        }
+        return wechatPayClient.verifyAndDecrypt(settings, timestamp, nonce, signature, serial, body);
+    }
+
+    private String header(Map<String, String> headers, String name)
+    {
+        if (headers == null)
+        {
+            return null;
+        }
+        for (Map.Entry<String, String> e : headers.entrySet())
+        {
+            if (e.getKey() != null && e.getKey().equalsIgnoreCase(name))
+            {
+                return e.getValue();
+            }
+        }
+        return null;
+    }
+
     // ------------------------------------------------------------------ 支付通知
 
     @Transactional
-    public Map<String, Object> payNotify(String body)
+    public Map<String, Object> payNotify(String body, Map<String, String> headers)
     {
-        JSONObject json = parse(body);
+        JSONObject json = resolvePayload(body, headers);
         String outTradeNo = first(json, "out_trade_no", "outTradeNo");
         String transactionId = first(json, "transaction_id", "transactionId");
         String tradeState = first(json, "trade_state", "tradeState", "result_code");
@@ -93,9 +148,9 @@ public class NotifyService
     // ------------------------------------------------------------------ 退款通知
 
     @Transactional
-    public Map<String, Object> refundNotify(String body)
+    public Map<String, Object> refundNotify(String body, Map<String, String> headers)
     {
-        JSONObject json = parse(body);
+        JSONObject json = resolvePayload(body, headers);
         String outRefundNo = first(json, "out_refund_no", "outRefundNo");
         String refundId = first(json, "refund_id", "refundId");
         String status = first(json, "refund_status", "refundStatus", "status");

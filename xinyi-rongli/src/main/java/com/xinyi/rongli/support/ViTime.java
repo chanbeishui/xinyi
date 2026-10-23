@@ -94,6 +94,29 @@ public final class ViTime
                 .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
     }
 
+    /**
+     * 时段文案（北京时间）：同日显示 "2026-10-21 13:00 - 15:00"，跨日补全结束日期。
+     * 供 {@code *Label} 字段使用，前端直接渲染，不再二次格式化。
+     */
+    public static String windowLabel(LocalDateTime startUtc, LocalDateTime endUtc)
+    {
+        String head = shanghaiText(startUtc);
+        if (head == null)
+        {
+            return null;
+        }
+        String tail = shanghaiText(endUtc);
+        if (tail == null)
+        {
+            return head;
+        }
+        if (head.length() >= 10 && tail.length() >= 16 && head.substring(0, 10).equals(tail.substring(0, 10)))
+        {
+            return head + " - " + tail.substring(11);
+        }
+        return head + " - " + tail;
+    }
+
     /** 北京时间本地时刻转 UTC */
     public static LocalDateTime fromShanghai(LocalDateTime shanghaiLocal)
     {

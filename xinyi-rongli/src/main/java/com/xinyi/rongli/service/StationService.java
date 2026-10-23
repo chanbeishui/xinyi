@@ -22,6 +22,7 @@ import com.xinyi.rongli.mapper.StationMapper;
 import com.xinyi.rongli.support.ApiException;
 import com.xinyi.rongli.support.Codes;
 import com.xinyi.rongli.support.Crypto;
+import com.xinyi.rongli.support.DeptScope;
 import com.xinyi.rongli.support.Json;
 import com.xinyi.rongli.support.MiniContext;
 import com.xinyi.rongli.support.MiniPrincipal;
@@ -140,16 +141,17 @@ public class StationService
     public Map<String, Object> orders(String status, int pageNum, int pageSize)
     {
         MiniPrincipal p = requireStationRole();
-        return listOrders(p.requireStation(), status, pageNum, pageSize);
+        // 小程序侧以「已授权站点」为唯一范围，没有后台的部门上下文，不能套用部门数据权限
+        return listOrders(p.requireStation(), status, pageNum, pageSize, null);
     }
 
     /** 管理端工作订单：stationId 为空表示不限站点 */
     public Map<String, Object> adminOrders(String status, Long stationId, int pageNum, int pageSize)
     {
-        return listOrders(stationId, status, pageNum, pageSize);
+        return listOrders(stationId, status, pageNum, pageSize, DeptScope.scopedDeptId());
     }
 
-    private Map<String, Object> listOrders(Long stationId, String status, int pageNum, int pageSize)
+    private Map<String, Object> listOrders(Long stationId, String status, int pageNum, int pageSize, Long deptId)
     {
         String filter = status;
         if (filter == null || filter.isBlank())
@@ -158,7 +160,8 @@ public class StationService
         }
         int limit = Math.min(Math.max(pageSize, 1), 100);
         int offset = Math.max(0, (Math.max(pageNum, 1) - 1) * limit);
-        List<Map<String, Object>> rows = orderMapper.adminList(filter, stationId, null, null, null, offset, limit);
+        List<Map<String, Object>> rows = orderMapper.adminList(filter, stationId, null, null, null,
+                deptId, offset, limit);
         List<Map<String, Object>> out = new ArrayList<>();
         for (Map<String, Object> r : rows)
         {
@@ -171,13 +174,15 @@ public class StationService
             item.put("plateNo", snapshot.getString("plateNo"));
             item.put("vehicleTypeName", snapshot.getString("vehicleTypeName"));
             item.put("pickupStartsAt", ViTime.iso(o.time("pickup_starts_at")));
+            item.put("pickupWindowLabel",
+                    ViTime.windowLabel(o.time("pickup_starts_at"), o.time("pickup_ends_at")));
             item.put("custodyType", o.str("custody_type"));
             item.put("ownerName", o.str("owner_name"));
             out.add(item);
         }
         Map<String, Object> page = new LinkedHashMap<>();
         page.put("rows", out);
-        page.put("total", orderMapper.adminCount(filter, stationId, null, null, null));
+        page.put("total", orderMapper.adminCount(filter, stationId, null, null, null, deptId));
         page.put("pageNum", pageNum);
         page.put("pageSize", limit);
         return page;

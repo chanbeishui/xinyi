@@ -118,6 +118,13 @@ public class CommonController
         return authService.bindPhone(req);
     }
 
+    /** 微信手机号授权：已登录账号补充手机号，并按手机号匹配员工账号 */
+    @PostMapping("/phone/wechat")
+    public Map<String, Object> bindWechatPhone(@RequestBody MiniDtos.WechatPhoneReq req)
+    {
+        return authService.bindWechatPhone(req);
+    }
+
     @PostMapping("/phone/sms/send")
     public Map<String, Object> sendSms(@RequestBody(required = false) MiniDtos.SmsSendReq req)
     {
@@ -131,24 +138,9 @@ public class CommonController
     }
 
     // ------------------------------------------------------------------ 员工绑定
-
-    @PostMapping("/employee-binding")
-    public Map<String, Object> employeeBinding(@RequestBody MiniDtos.EmployeeBindingReq req)
-    {
-        return authService.consumeBinding(req);
-    }
-
-    @PostMapping("/employee-binding-requests")
-    public Map<String, Object> requestBinding(@RequestBody MiniDtos.BindingRequestCreate req)
-    {
-        return authService.requestBinding(req);
-    }
-
-    @GetMapping("/employee-binding-requests")
-    public List<Map<String, Object>> bindingRequests()
-    {
-        return authService.myBindingRequests();
-    }
+    // V6.4 起员工绑定只有一条路径：微信手机号授权（POST /phone/wechat）。
+    // 旧的「提交绑定申请 / 查询申请 / 凭证兑换」三个端点已下线，
+    // 相关表 vi_employee_binding_request、vi_employee_binding_credential 已删除。
 
     // ------------------------------------------------------------------ 字典与站点
 

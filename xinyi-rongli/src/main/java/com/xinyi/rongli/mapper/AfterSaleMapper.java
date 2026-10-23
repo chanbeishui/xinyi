@@ -46,20 +46,39 @@ public interface AfterSaleMapper
             WHERE 1 = 1
             <if test="status != null and status != ''"> AND c.case_status = #{status} </if>
             <if test="kind != null and kind != ''"> AND c.kind = #{kind} </if>
+            <if test="deptId != null">
+              AND o.dept_id IN (SELECT dept_id FROM sys_dept
+                                WHERE dept_id = #{deptId} OR FIND_IN_SET(#{deptId}, ancestors))
+            </if>
             ORDER BY c.id DESC LIMIT #{offset}, #{limit}
             </script>
             """)
     List<Map<String, Object>> adminList(@Param("status") String status, @Param("kind") String kind,
+            @Param("deptId") Long deptId,
             @Param("offset") int offset, @Param("limit") int limit);
 
     @Select("""
             <script>
-            SELECT COUNT(1) FROM vi_aftersale_case c WHERE 1 = 1
+            SELECT COUNT(1) FROM vi_aftersale_case c JOIN vi_order o ON o.id = c.order_id WHERE 1 = 1
             <if test="status != null and status != ''"> AND c.case_status = #{status} </if>
             <if test="kind != null and kind != ''"> AND c.kind = #{kind} </if>
+            <if test="deptId != null">
+              AND o.dept_id IN (SELECT dept_id FROM sys_dept
+                                WHERE dept_id = #{deptId} OR FIND_IN_SET(#{deptId}, ancestors))
+            </if>
             </script>
             """)
-    long adminCount(@Param("status") String status, @Param("kind") String kind);
+    long adminCount(@Param("status") String status, @Param("kind") String kind,
+            @Param("deptId") Long deptId);
+
+    /** 二次授权：该售后单是否落在当前部门数据范围内 */
+    @Select("""
+            SELECT COUNT(1) FROM vi_aftersale_case c JOIN vi_order o ON o.id = c.order_id
+            WHERE c.id = #{caseId}
+              AND o.dept_id IN (SELECT dept_id FROM sys_dept
+                                WHERE dept_id = #{deptId} OR FIND_IN_SET(#{deptId}, ancestors))
+            """)
+    long countInDept(@Param("caseId") Long caseId, @Param("deptId") Long deptId);
 
     @Select("""
             SELECT c.*, o.order_no, o.fulfillment_status, o.vehicle_snapshot
@@ -76,6 +95,12 @@ public interface AfterSaleMapper
             """)
     List<Map<String, Object>> listByApplicant(@Param("accountId") Long accountId, @Param("offset") int offset,
             @Param("limit") int limit);
+
+    @Select("""
+            SELECT COUNT(1) FROM vi_aftersale_case
+            WHERE applicant_type = 'ACCOUNT' AND applicant_id = #{accountId}
+            """)
+    long countByApplicant(@Param("accountId") Long accountId);
 
     /** 审核决定：同时写 case 结果与 review_revision，review 表保留追加式决定凭证 */
     @Update("""

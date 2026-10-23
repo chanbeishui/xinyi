@@ -119,16 +119,52 @@ public class DispatchService
             return;
         }
 
-        Set<Long> invited = invitedDriverIds(orderId);
-        Row candidate = pickCandidate(order, invited);
-        if (candidate == null)
+        // 已派单总时长超过上限：不再扩圈，直接转人工
+        Integer elapsedMinutes = dispatchMapper.minutesSinceFirstInvite(orderId);
+        if (elapsedMinutes != null && elapsedMinutes >= config.dispatchTotalMinutes())
         {
-            orderMapper.casStatusByState(orderId, Codes.Fulfill.DISPATCHING, Codes.Fulfill.MANUAL_DISPATCH);
-            eventService.record("ORDER", orderId, "NO_CANDIDATE", orderId, null,
-                    Map.of("status", Codes.Fulfill.MANUAL_DISPATCH), "无可用代驾");
+            toManual(orderId, "派单超时，已按上限转待人工安排");
             return;
         }
-        issueInvite(order, candidate, "AUTO");
+
+        Set<Long> invited = invitedDriverIds(orderId);
+        List<Integer> steps = config.dispatchRadiusSteps();
+        // 断点续跑：从"已经走到过的最大轮次"接着扩，而不是每次都从第 1 档重来。
+        // 轮次取邀约与扩圈留痕的较大者——三轮都没候选的订单没有邀约，只看邀约会退化成 0。
+        int startRound = Math.max(1, Math.min(dispatchMapper.maxReachedRound(orderId), steps.size()));
+
+        Row candidate = null;
+        int round = startRound;
+        while (true)
+        {
+            candidate = pickCandidate(order, invited, steps.get(round - 1));
+            if (candidate != null)
+            {
+                break;
+            }
+            if (round >= steps.size())
+            {
+                break;
+            }
+            round++;
+            eventService.record("ORDER", orderId, "DISPATCH_EXPAND", orderId, null,
+                    Map.of("round", String.valueOf(round), "radiusMeter", String.valueOf(steps.get(round - 1))),
+                    "第 " + (round - 1) + " 轮半径内无可用代驾，按阶梯扩圈");
+        }
+        if (candidate == null)
+        {
+            toManual(orderId, "扩圈 " + steps.size() + " 轮后仍无可用代驾");
+            return;
+        }
+        issueInvite(order, candidate, "AUTO", round);
+    }
+
+    /** 转待人工安排并留痕 */
+    private void toManual(Long orderId, String reason)
+    {
+        orderMapper.casStatusByState(orderId, Codes.Fulfill.DISPATCHING, Codes.Fulfill.MANUAL_DISPATCH);
+        eventService.record("ORDER", orderId, "NO_CANDIDATE", orderId, null,
+                Map.of("status", Codes.Fulfill.MANUAL_DISPATCH), reason);
     }
 
     /** 人工发出邀约 */
@@ -168,7 +204,7 @@ public class DispatchService
         {
             throw ApiException.stateConflict("订单状态已变化，请刷新");
         }
-        issueInvite(order, driver, "MANUAL");
+        issueInvite(order, driver, "MANUAL", Math.max(1, dispatchMapper.maxRoundNo(orderId)));
         eventService.record("ORDER", orderId, "MANUAL_INVITE", orderId, null,
                 Map.of("driverId", String.valueOf(driverId)), reason);
         Map<String, Object> view = new LinkedHashMap<>();
@@ -179,7 +215,7 @@ public class DispatchService
         return view;
     }
 
-    private void issueInvite(Row order, Row driver, String source)
+    private void issueInvite(Row order, Row driver, String source, int roundNo)
     {
         Long orderId = order.lng("id");
         Long driverId = driver.lng("driver_id", driver.lng("id", 0L));
@@ -189,7 +225,8 @@ public class DispatchService
         invite.put("orderId", orderId);
         invite.put("driverId", driverId);
         invite.put("source", source);
-        invite.put("roundKey", String.valueOf(System.currentTimeMillis()));
+        invite.put("roundNo", roundNo);
+        invite.put("roundKey", roundNo + "-" + System.currentTimeMillis());
         invite.put("expiresAt", expiresAt);
         try
         {
@@ -215,13 +252,14 @@ public class DispatchService
         eventService.notify(accountId, Codes.Role.DRIVER, orderId, "DISPATCH_INVITE",
                 "您有新的接车邀约，请在 " + config.inviteExpireSeconds() + " 秒内响应");
         eventService.record("ORDER", orderId, "INVITE_ISSUED", orderId, null,
-                Map.of("inviteId", String.valueOf(inviteId), "driverId", String.valueOf(driverId)), source);
+                Map.of("inviteId", String.valueOf(inviteId), "driverId", String.valueOf(driverId),
+                        "round", String.valueOf(roundNo)), source);
     }
 
     /** 全局游标轮转：从上次指针之后找第一位可用司机，找不到再从头 */
-    private Row pickCandidate(Row order, Set<Long> exclude)
+    private Row pickCandidate(Row order, Set<Long> exclude, int radiusMeter)
     {
-        List<Row> eligible = eligibleDrivers(order);
+        List<Row> eligible = eligibleDrivers(order, radiusMeter);
         if (eligible.isEmpty())
         {
             return null;
@@ -261,12 +299,12 @@ public class DispatchService
     }
 
     /** 资格有效、允许新接单、开启听单、无占用，且位置在派单半径内 */
-    private List<Row> eligibleDrivers(Row order)
+    private List<Row> eligibleDrivers(Row order, int radiusMeter)
     {
         JSONObject snapshot = Json.read(order.json("vehicle_snapshot"));
         double targetLng = snapshot.getDoubleValue("lng");
         double targetLat = snapshot.getDoubleValue("lat");
-        int radius = config.dispatchRadiusMeter();
+        int radius = radiusMeter;
         long now = System.currentTimeMillis();
         int freshSeconds = config.locationFreshSeconds();
 
@@ -309,7 +347,7 @@ public class DispatchService
     private Set<Long> invitedDriverIds(Long orderId)
     {
         Set<Long> ids = new LinkedHashSet<>();
-        for (Map<String, Object> r : dispatchMapper.adminListInvites(orderId, null, null, 0, 100))
+        for (Map<String, Object> r : dispatchMapper.adminListInvites(orderId, null, null, null, 0, 100))
         {
             ids.add(Row.of(r).lng("driver_id"));
         }
@@ -422,7 +460,7 @@ public class DispatchService
             Long orderId = Row.of(r).lng("id");
             Map<String, Object> invite = null;
             for (Map<String, Object> item : dispatchMapper.adminListInvites(orderId, null,
-                    Codes.Invite.WAIT_RESPONSE, 0, 5))
+                    Codes.Invite.WAIT_RESPONSE, null, 0, 5))
             {
                 invite = item;
                 break;
@@ -533,6 +571,9 @@ public class DispatchService
             item.put("plateNo", snapshot.getString("plateNo"));
             item.put("stationName", o.str("station_name"));
             item.put("pickupStartsAt", ViTime.iso(o.time("pickup_starts_at")));
+            item.put("pickupEndsAt", ViTime.iso(o.time("pickup_ends_at")));
+            item.put("pickupWindowLabel",
+                    ViTime.windowLabel(o.time("pickup_starts_at"), o.time("pickup_ends_at")));
             item.put("dispatchAt", ViTime.iso(o.time("dispatch_at")));
             item.put("totalFen", o.lng("total_fen"));
             out.add(item);
@@ -566,6 +607,7 @@ public class DispatchService
         view.put("leadMinutes", config.dispatchLeadMinutes());
         view.put("inviteExpireSeconds", config.inviteExpireSeconds());
         view.put("radiusMeter", config.dispatchRadiusMeter());
+        view.put("radiusSteps", config.dispatchRadiusSteps());
         view.put("totalMinutes", config.dispatchTotalMinutes());
         view.put("requireApprovedQualification", true);
         return view;

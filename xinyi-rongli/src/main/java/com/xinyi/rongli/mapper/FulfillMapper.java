@@ -46,27 +46,55 @@ public interface FulfillMapper
     Map<String, Object> findHandoverDetail(@Param("handoverId") Long handoverId);
 
     @Select("""
-            SELECT * FROM vi_handover WHERE order_id = #{orderId} AND status = 'PENDING'
+            SELECT * FROM vi_handover WHERE order_id = #{orderId} AND status IN ('PENDING', 'PARTIAL')
             ORDER BY id DESC LIMIT 1
             """)
     Map<String, Object> findPendingHandoverOfOrder(@Param("orderId") Long orderId);
 
+    /** 单方确认：PENDING 直接完成，并记录核验方确认时刻 */
     @Update("""
             UPDATE vi_handover SET status = 'CONFIRMED', confirmed_at = UTC_TIMESTAMP(3),
+                   verifier_confirmed_at = UTC_TIMESTAMP(3),
                    evidence_group_id = #{evidenceGroupId}, updated_at = UTC_TIMESTAMP(3), version = version + 1
             WHERE id = #{handoverId} AND status = 'PENDING'
             """)
     int confirmHandover(@Param("handoverId") Long handoverId, @Param("evidenceGroupId") Long evidenceGroupId);
 
+    /**
+     * 双方确认 · 核验方先确认。
+     *
+     * <p>持码方若已确认过则本步直接置为 CONFIRMED，否则停留在 PARTIAL 等待持码方。
+     * {@code verifier_confirmed_at IS NULL} 保证同一方重复提交不会重复推进。</p>
+     */
+    @Update("""
+            UPDATE vi_handover SET verifier_confirmed_at = UTC_TIMESTAMP(3),
+                   evidence_group_id = COALESCE(#{evidenceGroupId}, evidence_group_id),
+                   status = IF(holder_confirmed_at IS NULL, 'PARTIAL', 'CONFIRMED'),
+                   confirmed_at = IF(holder_confirmed_at IS NULL, confirmed_at, UTC_TIMESTAMP(3)),
+                   updated_at = UTC_TIMESTAMP(3), version = version + 1
+            WHERE id = #{handoverId} AND status IN ('PENDING', 'PARTIAL') AND verifier_confirmed_at IS NULL
+            """)
+    int confirmVerifierSide(@Param("handoverId") Long handoverId, @Param("evidenceGroupId") Long evidenceGroupId);
+
+    /** 双方确认 · 持码方确认已交付；核验方已确认时一并完成 */
+    @Update("""
+            UPDATE vi_handover SET holder_confirmed_at = UTC_TIMESTAMP(3),
+                   status = IF(verifier_confirmed_at IS NULL, 'PARTIAL', 'CONFIRMED'),
+                   confirmed_at = IF(verifier_confirmed_at IS NULL, confirmed_at, UTC_TIMESTAMP(3)),
+                   updated_at = UTC_TIMESTAMP(3), version = version + 1
+            WHERE id = #{handoverId} AND status IN ('PENDING', 'PARTIAL') AND holder_confirmed_at IS NULL
+            """)
+    int confirmHolderSide(@Param("handoverId") Long handoverId);
+
     @Update("""
             UPDATE vi_handover SET status = 'EXPIRED', updated_at = UTC_TIMESTAMP(3), version = version + 1
-            WHERE id = #{handoverId} AND status = 'PENDING'
+            WHERE id = #{handoverId} AND status IN ('PENDING', 'PARTIAL')
             """)
     int expireHandover(@Param("handoverId") Long handoverId);
 
     @Update("""
             UPDATE vi_handover SET status = 'LOCKED', updated_at = UTC_TIMESTAMP(3), version = version + 1
-            WHERE id = #{handoverId} AND status = 'PENDING'
+            WHERE id = #{handoverId} AND status IN ('PENDING', 'PARTIAL')
             """)
     int lockHandover(@Param("handoverId") Long handoverId);
 

@@ -430,7 +430,11 @@ public interface LedgerMapper
 
     @Select("""
             <script>
-            SELECT p.*, s.statement_no, a.nickname AS driver_name FROM vi_driver_external_payment p
+            SELECT p.id, p.statement_id, p.driver_id, p.payor_entity_id, p.amount_fen, p.paid_at,
+                   p.evidence_ids, p.status, p.registered_by, p.verified_by, p.verified_at, p.reason,
+                   p.reversal_of, p.statement_revision, p.created_at, p.updated_at, p.version,
+                   s.statement_no, a.nickname AS driver_name
+            FROM vi_driver_external_payment p
             JOIN vi_driver_statement s ON s.id = p.statement_id
             JOIN vi_driver_profile d ON d.id = p.driver_id
             JOIN vi_account a ON a.id = d.account_id
@@ -444,7 +448,20 @@ public interface LedgerMapper
             @Param("offset") int offset, @Param("limit") int limit);
 
     @Select("""
-            SELECT p.*, s.statement_no FROM vi_driver_external_payment p
+            <script>
+            SELECT COUNT(1) FROM vi_driver_external_payment p
+            WHERE 1 = 1
+            <if test="status != null and status != ''"> AND p.status = #{status} </if>
+            <if test="statementId != null"> AND p.statement_id = #{statementId} </if>
+            </script>
+            """)
+    long countPayments(@Param("status") String status, @Param("statementId") Long statementId);
+
+    /** 司机本人可见字段：显式列名，避免 external_reference_cipher 密文随响应体外泄 */
+    @Select("""
+            SELECT p.id, p.statement_id, p.amount_fen, p.paid_at, p.evidence_ids, p.status,
+                   p.verified_at, p.reason, p.reversal_of, p.created_at, s.statement_no
+            FROM vi_driver_external_payment p
             JOIN vi_driver_statement s ON s.id = p.statement_id
             WHERE p.driver_id = #{driverId} ORDER BY p.id DESC LIMIT 100
             """)
@@ -501,9 +518,14 @@ public interface LedgerMapper
 
     @Select("""
             <script>
-            SELECT ad.*, a.nickname AS driver_name FROM vi_driver_fee_adjustment ad
+            SELECT ad.*, a.nickname AS driver_name,
+                   l.amount_fen AS source_amount_fen, l.entry_kind AS source_entry_kind,
+                   o.order_no AS source_order_no, l.service_ended_at AS source_service_ended_at
+            FROM vi_driver_fee_adjustment ad
             JOIN vi_driver_profile d ON d.id = ad.driver_id
             JOIN vi_account a ON a.id = d.account_id
+            LEFT JOIN vi_driver_fee_ledger l ON l.id = ad.source_entry_id
+            LEFT JOIN vi_order o ON o.id = l.order_id
             WHERE 1 = 1
             <if test="status != null and status != ''"> AND ad.status = #{status} </if>
             ORDER BY ad.id DESC LIMIT #{offset}, #{limit}
@@ -511,6 +533,15 @@ public interface LedgerMapper
             """)
     List<Map<String, Object>> listAdjustments(@Param("status") String status, @Param("offset") int offset,
             @Param("limit") int limit);
+
+    @Select("""
+            <script>
+            SELECT COUNT(1) FROM vi_driver_fee_adjustment ad
+            WHERE 1 = 1
+            <if test="status != null and status != ''"> AND ad.status = #{status} </if>
+            </script>
+            """)
+    long countAdjustments(@Param("status") String status);
 
     @Select("SELECT * FROM vi_driver_fee_adjustment WHERE id = #{adjustmentId}")
     Map<String, Object> findAdjustment(@Param("adjustmentId") Long adjustmentId);

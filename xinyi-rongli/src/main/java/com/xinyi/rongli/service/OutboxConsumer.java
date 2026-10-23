@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.xinyi.rongli.mapper.MiscMapper;
+import com.xinyi.rongli.support.Json;
 import com.xinyi.rongli.support.Row;
 
 /**
@@ -24,6 +25,9 @@ public class OutboxConsumer
 
     @Autowired
     private MiscMapper miscMapper;
+
+    @Autowired
+    private SubscribeService subscribeService;
 
     /** 单批最多消费条数 */
     private static final int BATCH = 50;
@@ -55,8 +59,10 @@ public class OutboxConsumer
     }
 
     /**
-     * 渠道投递。当前环境未接入订阅消息，记录投递轨迹后即视为成功；
-     * 接入微信订阅消息时在此替换为真实调用，失败抛异常即可触发重试。
+     * 渠道投递。
+     *
+     * <p>SUBSCRIBE_PUSH 走微信订阅消息；其余事件为业务事实广播，当前只记录投递轨迹。
+     * 任一渠道抛异常都会触发 outbox 退避重试。</p>
      */
     private void deliver(Row row)
     {
@@ -64,6 +70,14 @@ public class OutboxConsumer
         String aggregateType = row.str("aggregate_type");
         Long aggregateId = row.lng("aggregate_id");
         String payload = row.str("payload");
+
+        if ("SUBSCRIBE_PUSH".equals(eventType))
+        {
+            SubscribeService.Result result = subscribeService.deliver(Json.read(payload));
+            log.info("订阅推送 aggregate={}:{} 结果={} 说明={}", aggregateType, aggregateId,
+                    result.channel(), result.reason());
+            return;
+        }
 
         Map<String, Object> trace = new LinkedHashMap<>();
         trace.put("eventType", eventType);

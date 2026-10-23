@@ -340,7 +340,8 @@ public class FulfillService
         }
 
         Map<String, Object> existing = fulfillMapper.findLatestHandover(orderId, assignment.lng("id"), handoverType);
-        if (existing != null && "PENDING".equals(Row.of(existing).str("status")))
+        if (existing != null && (Codes.Handover.STATUS_PENDING.equals(Row.of(existing).str("status"))
+                || Codes.Handover.STATUS_PARTIAL.equals(Row.of(existing).str("status"))))
         {
             return handoverView(Row.of(existing), p.accountId);
         }
@@ -366,7 +367,7 @@ public class FulfillService
         return handoverView(Row.of(fulfillMapper.findHandover(handoverId)), p.accountId);
     }
 
-    /** 持码方读取明文码：仅持码方本人、仅 PENDING 状态 */
+    /** 持码方读取明文码：仅持码方本人、仅对方尚未核验 */
     public Map<String, Object> handoverSecret(String orderNo, Long handoverId)
     {
         MiniPrincipal p = MiniContext.require();
@@ -375,7 +376,11 @@ public class FulfillService
         {
             throw ApiException.forbidden("只有持码方可以查看交接码");
         }
-        if (!"PENDING".equals(handover.str("status")))
+        if (handover.time("verifier_confirmed_at") != null)
+        {
+            throw ApiException.stateConflict("对方已完成核验，交接码已失效");
+        }
+        if (!Codes.Handover.STATUS_PENDING.equals(handover.str("status")))
         {
             throw ApiException.stateConflict("交接码已失效");
         }
@@ -411,9 +416,145 @@ public class FulfillService
         {
             throw ApiException.forbidden("只有核验方可以提交交接码");
         }
-        if (!"PENDING".equals(handover.str("status")))
+        return doConfirmHandover(orderNo, handover, req, "MINI", p.accountId);
+    }
+
+    /**
+     * 管理端代为确认站点侧交接（B07 收车登记）。
+     *
+     * <p>与小程序端共用同一套交接内核：交接码必须校验、失败计次锁定、证据封存、
+     * 状态机推进与容量消耗都不减少任何一步，只是把操作来源记为 ADMIN 并留痕操作人。
+     * 仅允许站点侧的两类交接，车主侧交接仍必须由真实当事方完成。</p>
+     */
+    @Transactional
+    public Map<String, Object> confirmHandoverByAdmin(String orderNo, Long handoverId,
+            DriverDtos.HandoverConfirmReq req, Long operatorUserId)
+    {
+        Row handover = requireHandover(orderNo, handoverId);
+        String type = handover.str("handover_type");
+        if (!Codes.Handover.DRIVER_TO_STATION.equals(type) && !Codes.Handover.STATION_TO_DRIVER.equals(type))
+        {
+            throw ApiException.forbidden("管理端只能代确认站点侧交接");
+        }
+        Map<String, Object> result = doConfirmHandover(orderNo, handover, req, "ADMIN", operatorUserId);
+        // 双方确认类型下，运营代核验通常意味着现场收车已完成；补齐持码方确认
+        // 以免站点流程被卡住，同时把"代确认"写进审计留痕。
+        if (Boolean.TRUE.equals(result.get("awaitingCounterpart"))
+                && config.handoverMutualConfirm(type))
+        {
+            if (fulfillMapper.confirmHolderSide(handoverId) > 0)
+            {
+                Row latest = Row.of(fulfillMapper.findHandover(handoverId));
+                if (Codes.Handover.STATUS_CONFIRMED.equals(latest.str("status")))
+                {
+                    advanceAfterHandover(handover, "ADMIN", operatorUserId);
+                }
+                eventService.record("ORDER", handover.lng("order_id"), "HANDOVER_HOLDER_CONFIRMED",
+                        handover.lng("order_id"), null,
+                        Map.of("handoverId", String.valueOf(handoverId), "source", "ADMIN"),
+                        "管理端代确认时一并补齐持码方确认");
+                result.put("confirmed", Codes.Handover.STATUS_CONFIRMED.equals(latest.str("status")));
+                result.put("status", latest.str("status"));
+                result.put("awaitingCounterpart", Codes.Handover.STATUS_PARTIAL.equals(latest.str("status")));
+                result.put("holderConfirmedByAdmin", true);
+                result.put("fulfillmentStatus",
+                        Row.of(orderMapper.findById(handover.lng("order_id"))).str("fulfillment_status"));
+                result.put("custodyType",
+                        Row.of(orderMapper.findById(handover.lng("order_id"))).str("custody_type"));
+                if (Boolean.TRUE.equals(result.get("confirmed")))
+                {
+                    result.remove("hint");
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
+     * 管理端读取订单当前的站点侧交接信息：只读，不存在时返回 empty 标记而不创建，
+     * 交接仍由持码方（司机）在端内发起。
+     */
+    public Map<String, Object> adminStationHandover(String orderNo)
+    {
+        Row order = Row.of(orderMapper.findDetailByNo(orderNo));
+        if (order.isEmpty())
+        {
+            throw ApiException.notFound("订单不存在");
+        }
+        Row assignment = Row.of(dispatchMapper.findActiveAssignmentOfOrder(order.lng("id")));
+        Map<String, Object> view = new LinkedHashMap<>();
+        view.put("orderNo", order.str("order_no"));
+        view.put("fulfillmentStatus", order.str("fulfillment_status"));
+        view.put("fulfillmentStatusLabel", bookingService.statusLabel(order.str("fulfillment_status")));
+        view.put("hasAssignment", !assignment.isEmpty());
+        if (assignment.isEmpty())
+        {
+            view.put("handover", null);
+            return view;
+        }
+        Map<String, Object> latest = fulfillMapper.findLatestHandover(order.lng("id"), assignment.lng("id"),
+                Codes.Handover.DRIVER_TO_STATION);
+        if (latest == null)
+        {
+            view.put("handover", null);
+        }
+        else
+        {
+            Map<String, Object> hv = new LinkedHashMap<>(handoverView(Row.of(latest), null));
+            // 管理端视角：不是当事方，但可代确认；口径与后端校验保持一致
+            String status = String.valueOf(hv.get("status"));
+            boolean active = Codes.Handover.STATUS_PENDING.equals(status)
+                    || Codes.Handover.STATUS_PARTIAL.equals(status);
+            boolean expired = Boolean.TRUE.equals(hv.get("expired"));
+            hv.put("mySide", "ADMIN");
+            hv.put("canConfirm", active && !Boolean.TRUE.equals(hv.get("verifierConfirmed")) && !expired);
+            hv.put("canViewCode", false);
+            view.put("handover", hv);
+        }
+        // 节点2证据：司机送车到站时留存的里程与照片
+        Map<String, Object> group = fulfillMapper.findEvidenceGroup(assignment.lng("id"), 2);
+        if (group != null)
+        {
+            Row g = Row.of(group);
+            Map<String, Object> evidence = new LinkedHashMap<>();
+            evidence.put("groupId", String.valueOf(g.lng("id")));
+            evidence.put("status", g.str("status"));
+            evidence.put("mileageKm", g.lng("mileage_km"));
+            evidence.put("mileageSource", g.str("mileage_source"));
+            evidence.put("mileageReason", g.str("mileage_reason"));
+            List<Map<String, Object>> photos = new ArrayList<>();
+            for (Map<String, Object> p : fulfillMapper.listPhotos(g.lng("id")))
+            {
+                Row ph = Row.of(p);
+                Map<String, Object> item = new LinkedHashMap<>();
+                item.put("photoType", ph.str("photo_type"));
+                item.put("fileId", ph.lng("file_id") == null ? null : String.valueOf(ph.lng("file_id")));
+                item.put("capturedAt", ViTime.iso(ph.time("captured_at")));
+                photos.add(item);
+            }
+            evidence.put("photos", photos);
+            view.put("evidence", evidence);
+        }
+        else
+        {
+            view.put("evidence", null);
+        }
+        return view;
+    }
+
+    /** 交接内核：码校验 → 计次锁定 → 证据封存 → 双方/单方确认 → 状态推进 → 通知与留痕 */
+    private Map<String, Object> doConfirmHandover(String orderNo, Row handover,
+            DriverDtos.HandoverConfirmReq req, String source, Long operatorId)
+    {
+        Long handoverId = handover.lng("id");
+        String status = handover.str("status");
+        if (!Codes.Handover.STATUS_PENDING.equals(status) && !Codes.Handover.STATUS_PARTIAL.equals(status))
         {
             throw ApiException.stateConflict("该交接已处理或已失效");
+        }
+        if (handover.time("verifier_confirmed_at") != null)
+        {
+            throw ApiException.stateConflict("核验方已确认，请等待持码方确认交付");
         }
         if (handover.time("expires_at").isBefore(ViTime.now()))
         {
@@ -448,7 +589,13 @@ public class FulfillService
             evidenceGroupId = createEvidenceInternal(handover.lng("order_id"), handover.lng("assignment_id"),
                     req.evidence, 2);
         }
-        if (fulfillMapper.confirmHandover(handoverId, evidenceGroupId) == 0)
+        String type = handover.str("handover_type");
+        boolean mutual = config.handoverMutualConfirm(type);
+        // 双方确认的类型：本步只登记核验方确认，等持码方确认后才推进订单状态
+        int updated = mutual
+                ? fulfillMapper.confirmVerifierSide(handoverId, evidenceGroupId)
+                : fulfillMapper.confirmHandover(handoverId, evidenceGroupId);
+        if (updated == 0)
         {
             throw ApiException.stateConflict("交接已被处理，请刷新");
         }
@@ -457,6 +604,103 @@ public class FulfillService
             fulfillMapper.sealEvidence(evidenceGroupId);
         }
 
+        Row latest = Row.of(fulfillMapper.findHandover(handoverId));
+        if (Codes.Handover.STATUS_CONFIRMED.equals(latest.str("status")))
+        {
+            advanceAfterHandover(handover, source, operatorId);
+        }
+        else
+        {
+            // 半确认：让持码方和车主都知道下一步该谁操作
+            Long halfOrderId = handover.lng("order_id");
+            Row halfOrder = Row.of(orderMapper.findDetailById(halfOrderId));
+            Long holder = handover.lng("holder_account_id");
+            eventService.notify(holder, Codes.Role.DRIVER, halfOrderId, "HANDOVER_AWAIT_COUNTERPART",
+                    "检测点已核对交接码，请在" + nextStepHint(type) + "确认车辆已交付");
+            eventService.record("ORDER", halfOrderId, "HANDOVER_HALF_CONFIRMED", halfOrderId, null,
+                    Map.of("handoverId", String.valueOf(handoverId), "type", type,
+                            "awaiting", holder == null ? "" : String.valueOf(holder)),
+                    "核验方已确认，等待持码方确认");
+            if (!halfOrder.isEmpty())
+            {
+                eventService.notify(halfOrder.lng("owner_account_id"), Codes.Role.OWNER, halfOrderId,
+                        "HANDOVER_WAITING_DRIVER", "检测点已接车，正在等待代驾确认交付");
+            }
+        }
+
+        Long orderId = handover.lng("order_id");
+        Map<String, Object> result = new LinkedHashMap<>();
+        result.put("handoverId", String.valueOf(handoverId));
+        result.put("confirmed", Codes.Handover.STATUS_CONFIRMED.equals(latest.str("status")));
+        result.put("status", latest.str("status"));
+        result.put("awaitingCounterpart", Codes.Handover.STATUS_PARTIAL.equals(latest.str("status")));
+        result.put("source", source);
+        result.put("fulfillmentStatus", Row.of(orderMapper.findById(orderId)).str("fulfillment_status"));
+        result.put("custodyType", Row.of(orderMapper.findById(orderId)).str("custody_type"));
+        if (Codes.Handover.STATUS_PARTIAL.equals(latest.str("status")))
+        {
+            result.put("hint", "已完成核验，请等待持码方在其端内确认交付后，订单才会进入下一环节");
+        }
+        return result;
+    }
+
+    /**
+     * 持码方确认已交付（G04）。
+     *
+     * <p>站内交接是"交付 + 接收"两个动作：检测员工核验交接码只是确认收到，
+     * 司机还需要在自己的端内确认车辆已交出，两者齐备交接才算完成。
+     * 该动作不需要再输入交接码——持码方本身就是出码方。</p>
+     */
+    @Transactional
+    public Map<String, Object> holderConfirmHandover(String orderNo, Long handoverId)
+    {
+        MiniPrincipal p = MiniContext.require();
+        Row handover = requireHandover(orderNo, handoverId);
+        if (!Objects.equals(p.accountId, handover.lng("holder_account_id")))
+        {
+            throw ApiException.forbidden("只有交接发起方可以确认已交付");
+        }
+        String status = handover.str("status");
+        if (!Codes.Handover.STATUS_PENDING.equals(status) && !Codes.Handover.STATUS_PARTIAL.equals(status))
+        {
+            throw ApiException.stateConflict("该交接已处理或已失效");
+        }
+        if (!config.handoverMutualConfirm(handover.str("handover_type")))
+        {
+            throw ApiException.stateConflict("该交接由核验方确认即可，无需发起方重复确认");
+        }
+        if (handover.time("holder_confirmed_at") != null)
+        {
+            throw ApiException.stateConflict("您已确认过本次交付");
+        }
+        if (handover.time("expires_at").isBefore(ViTime.now()))
+        {
+            fulfillMapper.expireHandover(handoverId);
+            throw ApiException.stateConflict("交接已超时，请重新发起");
+        }
+        if (fulfillMapper.confirmHolderSide(handoverId) == 0)
+        {
+            throw ApiException.stateConflict("交接已被处理，请刷新");
+        }
+        Row latest = Row.of(fulfillMapper.findHandover(handoverId));
+        boolean completed = Codes.Handover.STATUS_CONFIRMED.equals(latest.str("status"));
+        if (completed)
+        {
+            advanceAfterHandover(handover, "MINI", p.accountId);
+        }
+        else
+        {
+            eventService.record("ORDER", handover.lng("order_id"), "HANDOVER_HOLDER_CONFIRMED",
+                    handover.lng("order_id"), null,
+                    Map.of("handoverId", String.valueOf(handoverId)), "持码方已确认交付，等待核验方核验");
+        }
+        return handoverView(latest, p.accountId);
+    }
+
+    /** 交接完成后的订单状态推进与留痕；单方确认与双方确认共用 */
+    private void advanceAfterHandover(Row handover, String source, Long operatorId)
+    {
+        Long handoverId = handover.lng("id");
         Long orderId = handover.lng("order_id");
         Row order = Row.of(orderMapper.findDetailById(orderId));
         Long assignmentId = handover.lng("assignment_id");
@@ -491,22 +735,23 @@ public class FulfillService
             {
                 orderMapper.casStatusByState(orderId, Codes.Fulfill.INSPECTED, Codes.Fulfill.CAR_TAKEN);
                 orderMapper.updateCustody(orderId, Codes.Custody.DRIVER, driverIdOfAssignment(assignmentId));
+                // 站点把车交回司机即「检测完成」对客户可见的时点
+                eventService.notify(order.lng("owner_account_id"), Codes.Role.OWNER, orderId, "INSPECTION_FINISHED",
+                        "检测已完成，代驾正在将车辆送回");
             }
             case Codes.Handover.DRIVER_TO_OWNER -> completeReturn(order, assignmentId);
             default ->
             {
             }
         }
-        eventService.record("ORDER", orderId, "HANDOVER_CONFIRMED", orderId, null,
-                Map.of("handoverId", String.valueOf(handoverId), "type", type), null);
+        // 来源与操作人一并留痕：ADMIN 代操作必须可追溯到具体后台账号
+        Map<String, Object> audit = new LinkedHashMap<>();
+        audit.put("handoverId", String.valueOf(handoverId));
+        audit.put("type", type);
+        audit.put("source", source);
+        audit.put("operator", operatorId == null ? null : String.valueOf(operatorId));
+        eventService.record("ORDER", orderId, "HANDOVER_CONFIRMED", orderId, null, audit, null);
         eventService.publish("ORDER", orderId, "HANDOVER_CONFIRMED", Map.of("orderNo", order.str("order_no"), "type", type));
-
-        Map<String, Object> result = new LinkedHashMap<>();
-        result.put("handoverId", String.valueOf(handoverId));
-        result.put("confirmed", true);
-        result.put("fulfillmentStatus", Row.of(orderMapper.findById(orderId)).str("fulfillment_status"));
-        result.put("custodyType", Row.of(orderMapper.findById(orderId)).str("custody_type"));
-        return result;
     }
 
     /**
@@ -948,6 +1193,10 @@ public class FulfillService
         boolean verifier = Objects.equals(accountId, handover.lng("verifier_account_id"));
         boolean expired = handover.time("expires_at") != null
                 && handover.time("expires_at").isBefore(ViTime.now());
+        boolean active = Codes.Handover.STATUS_PENDING.equals(status) || Codes.Handover.STATUS_PARTIAL.equals(status);
+        boolean mutual = config.handoverMutualConfirm(type);
+        boolean holderDone = handover.time("holder_confirmed_at") != null;
+        boolean verifierDone = handover.time("verifier_confirmed_at") != null;
 
         Map<String, Object> view = new LinkedHashMap<>();
         view.put("handoverId", String.valueOf(handover.lng("id")));
@@ -964,16 +1213,35 @@ public class FulfillService
         view.put("evidenceGroupId", handover.lng("evidence_group_id") == null ? null
                 : String.valueOf(handover.lng("evidence_group_id")));
         view.put("mySide", holder ? "HOLDER" : (verifier ? "VERIFIER" : "OBSERVER"));
+        // 双方确认相关：让前端能准确显示"你还没确认/对方已确认"
+        view.put("mutualConfirm", mutual);
+        view.put("holderConfirmed", holderDone);
+        view.put("verifierConfirmed", verifierDone);
+        view.put("holderConfirmedAt", ViTime.iso(handover.time("holder_confirmed_at")));
+        view.put("verifierConfirmedAt", ViTime.iso(handover.time("verifier_confirmed_at")));
         // 权限口径与后端校验完全一致，避免前端出现"看得到按钮却必然失败"
-        view.put("canViewCode", holder && "PENDING".equals(status) && !expired);
-        view.put("canConfirm", verifier && "PENDING".equals(status) && !expired);
-        if (holder && "PENDING".equals(status))
+        view.put("canViewCode", holder && active && !verifierDone && !expired);
+        view.put("canConfirm", verifier && active && !verifierDone && !expired);
+        view.put("canCounterConfirm", holder && mutual && active && !holderDone && !expired);
+        if (holder && active && !verifierDone)
         {
             view.put("actionHint", "请把 4 位交接码告知对方，由对方在" + nextStepHint(type) + "核验");
         }
-        else if (verifier && "PENDING".equals(status))
+        else if (verifier && active && !verifierDone)
         {
             view.put("actionHint", "请向对方索要 4 位交接码后在" + nextStepHint(type) + "核验");
+        }
+        else if (mutual && active && verifierDone && !holderDone)
+        {
+            view.put("actionHint", holder
+                    ? "对方已核对交接码，请点击「确认已交付」完成本环节"
+                    : "已核对交接码，正在等待对方确认交付");
+        }
+        else if (mutual && active && holderDone && !verifierDone)
+        {
+            view.put("actionHint", verifier
+                    ? "对方已确认交付，请核验 4 位交接码后完成本环节"
+                    : "已确认交付，正在等待对方核验交接码");
         }
         else if (expired)
         {
@@ -1011,6 +1279,7 @@ public class FulfillService
         return switch (status)
         {
             case "PENDING" -> "待核验";
+            case "PARTIAL" -> "待对方确认";
             case "CONFIRMED" -> "已完成";
             case "LOCKED" -> "已锁定";
             case "EXPIRED" -> "已过期";

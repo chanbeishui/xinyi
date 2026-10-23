@@ -58,6 +58,43 @@ public interface AccountMapper
     int updatePhone(@Param("accountId") Long accountId, @Param("phoneCipher") byte[] phoneCipher,
             @Param("phoneLookup") byte[] phoneLookup);
 
+    /**
+     * 只取手机号密文。
+     *
+     * <p>手机号密文属于敏感数据，不放进通用的 {@code findAccount}（那会被十几个
+     * 业务场景调用），需要解密手机号的少数链路（短信下发、验证码发送）单独取。</p>
+     *
+     * <p>用 Map 承接而不是直接声明 {@code byte[]} 返回值：MyBatis 对裸数组返回类型
+     * 会解析成单字节标量类型处理器，binary 列直接抛「outside of valid range for
+     * java.lang.Byte」。这里统一在 default 方法里归一化成 byte[]。</p>
+     */
+    @Select("SELECT phone_cipher AS phoneCipher FROM vi_account WHERE id = #{accountId}")
+    Map<String, Object> findPhoneCipherRow(@Param("accountId") Long accountId);
+
+    /** 手机号密文；未绑定返回 null */
+    default byte[] findPhoneCipher(Long accountId)
+    {
+        Map<String, Object> row = findPhoneCipherRow(accountId);
+        Object value = row == null ? null : row.get("phoneCipher");
+        if (value instanceof byte[] bytes)
+        {
+            return bytes.length == 0 ? null : bytes;
+        }
+        if (value instanceof java.sql.Blob blob)
+        {
+            try
+            {
+                byte[] bytes = blob.getBytes(1, (int) blob.length());
+                return bytes.length == 0 ? null : bytes;
+            }
+            catch (java.sql.SQLException e)
+            {
+                return null;
+            }
+        }
+        return null;
+    }
+
     // ------------------------------------------------------------------ 会话
 
     @Insert("""
@@ -271,6 +308,27 @@ public interface AccountMapper
             """)
     int updateDriverRemark(@Param("driverId") Long driverId, @Param("remark") String remark);
 
+    /**
+     * 年度复审到期的已认证代驾：停掉新承接并置为 EXPIRED。
+     *
+     * <p>只处理 APPROVED 且 review_due_at 已过的行；review_due_at 为空表示长期有效，不在此列。
+     * 已经在手承接的任务不受影响，仍可正常履约到归还。</p>
+     */
+    @Select("""
+            SELECT id, account_id, review_due_at FROM vi_driver_profile
+            WHERE qualification_status = 'APPROVED' AND review_due_at IS NOT NULL
+              AND review_due_at < UTC_TIMESTAMP(3)
+            ORDER BY review_due_at ASC LIMIT #{limit}
+            """)
+    List<java.util.Map<String, Object>> findExpiredQualifications(@Param("limit") int limit);
+
+    @Update("""
+            UPDATE vi_driver_profile SET qualification_status = 'EXPIRED', new_assignment_enabled = 0,
+                   updated_at = UTC_TIMESTAMP(3), version = version + 1
+            WHERE id = #{driverId} AND qualification_status = 'APPROVED'
+            """)
+    int expireQualification(@Param("driverId") Long driverId);
+
     // ------------------------------------------------------------------ 资格申请
 
     @Select("""
@@ -329,7 +387,7 @@ public interface AccountMapper
     // ------------------------------------------------------------------ 员工绑定
 
     @Select("""
-            SELECT u.user_id, u.user_name, u.nick_name, u.status, u.dept_id, d.dept_name
+            SELECT u.user_id, u.user_name, u.nick_name, u.status, u.dept_id, u.auth_version, d.dept_name
             FROM sys_user u LEFT JOIN sys_dept d ON d.dept_id = u.dept_id
             WHERE u.user_id = #{userId} AND u.del_flag = '0'
             """)
@@ -344,6 +402,55 @@ public interface AccountMapper
             """)
     int countPerm(@Param("userId") Long userId, @Param("perm") String perm);
 
+    /**
+     * 按手机号匹配框架内的员工账号。
+     *
+     * <p>只认未删除且状态正常的账号；手机号在 sys_user 上不保证唯一，命中多条时由调用方
+     * 视为歧义并拒绝自动绑定，避免把微信账号绑到错误的员工身上。</p>
+     */
+    @Select("""
+            SELECT u.user_id, u.user_name, u.nick_name, u.phonenumber, u.dept_id, d.dept_name
+            FROM sys_user u LEFT JOIN sys_dept d ON d.dept_id = u.dept_id
+            WHERE u.phonenumber = #{phone} AND u.del_flag = '0' AND u.status = '0'
+            ORDER BY u.user_id LIMIT 5
+            """)
+    List<Map<String, Object>> listSysUserByPhone(@Param("phone") String phone);
+
+    /** 同手机号是否已被其它小程序账号占用（用于换微信后的绑定迁移判断） */
+    @Select("""
+            SELECT id, app_id, open_id, nickname FROM vi_account
+            WHERE phone_lookup = #{phoneLookup} AND id <> #{accountId}
+            ORDER BY id LIMIT 5
+            """)
+    List<Map<String, Object>> listOtherAccountsByPhone(@Param("phoneLookup") byte[] phoneLookup,
+            @Param("accountId") Long accountId);
+
+    /** 该员工当前是否已被其他小程序账号绑定（唯一约束 active_user 只允许一条） */
+    @Select("""
+            SELECT b.id, b.account_id, a.nickname FROM vi_employee_binding b
+            LEFT JOIN vi_account a ON a.id = b.account_id
+            WHERE b.sys_user_id = #{sysUserId} AND b.revoked_at IS NULL
+            """)
+    Map<String, Object> findActiveBindingByUser(@Param("sysUserId") Long sysUserId);
+
+    /** 后台新增站点授权时的员工候选：按手机号/姓名/账号搜索 */
+    @Select("""
+            <script>
+            SELECT u.user_id, u.user_name, u.nick_name, u.phonenumber, d.dept_name,
+                   (SELECT COUNT(1) FROM vi_station_grant g WHERE g.sys_user_id = u.user_id AND g.enabled = 1)
+                     AS granted_station_count
+            FROM sys_user u LEFT JOIN sys_dept d ON d.dept_id = u.dept_id
+            WHERE u.del_flag = '0' AND u.status = '0'
+            <if test="keyword != null and keyword != ''">
+              AND (u.phonenumber LIKE CONCAT('%', #{keyword}, '%')
+                   OR u.nick_name LIKE CONCAT('%', #{keyword}, '%')
+                   OR u.user_name LIKE CONCAT('%', #{keyword}, '%'))
+            </if>
+            ORDER BY u.user_id LIMIT 50
+            </script>
+            """)
+    List<Map<String, Object>> searchEmployeeCandidates(@Param("keyword") String keyword);
+
     @Select("""
             SELECT b.*, u.user_name, u.nick_name FROM vi_employee_binding b
             LEFT JOIN sys_user u ON u.user_id = b.sys_user_id
@@ -351,79 +458,54 @@ public interface AccountMapper
             """)
     Map<String, Object> findActiveBinding(@Param("accountId") Long accountId);
 
+    /**
+     * 建立员工关联（V6.4 手机号自动关联）。
+     *
+     * <p>自动关联由系统发起，{@code bound_by} 必须为空——数据库
+     * {@code ck_employee_link_source_actor} 会拦住挂管理员身份的行。
+     * {@code phone_lookup} / {@code last_phone_verified_at} /
+     * {@code employee_auth_version} 由 {@code ck_employee_link_identity} 强制非空。</p>
+     */
     @Insert("""
-            INSERT INTO vi_employee_binding (account_id, sys_user_id, bound_by, bound_at, created_at, updated_at, version)
-            VALUES (#{accountId}, #{sysUserId}, #{boundBy}, UTC_TIMESTAMP(3), UTC_TIMESTAMP(3), UTC_TIMESTAMP(3), 0)
+            INSERT INTO vi_employee_binding (account_id, sys_user_id, app_id, source, status, bound_by, bound_at,
+                   phone_lookup, last_phone_verified_at, employee_auth_version, created_at, updated_at, version)
+            VALUES (#{accountId}, #{sysUserId}, #{appId}, 'WECHAT_PHONE_MATCH', 'ACTIVE', NULL, UTC_TIMESTAMP(3),
+                   #{phoneLookup}, UTC_TIMESTAMP(3), #{employeeAuthVersion}, UTC_TIMESTAMP(3), UTC_TIMESTAMP(3), 0)
             """)
     int insertBinding(@Param("accountId") Long accountId, @Param("sysUserId") Long sysUserId,
-            @Param("boundBy") Long boundBy);
+            @Param("appId") String appId, @Param("phoneLookup") byte[] phoneLookup,
+            @Param("employeeAuthVersion") Long employeeAuthVersion);
 
+    /** 同应用下该员工的有效关联；V6.4 的唯一占用从「全库」改为「按应用」 */
+    @Select("""
+            SELECT b.id, b.account_id, a.nickname, a.open_id, b.app_id
+            FROM vi_employee_binding b LEFT JOIN vi_account a ON a.id = b.account_id
+            WHERE b.app_id = #{appId} AND b.sys_user_id = #{sysUserId} AND b.revoked_at IS NULL
+            """)
+    Map<String, Object> findActiveBindingByUserInApp(@Param("appId") String appId,
+            @Param("sysUserId") Long sysUserId);
+
+    /** 该账号或该员工是否被管理员设置过禁止自动重绑（V6.4 ALLOW_REMATCH 才解除） */
+    @Select("""
+            SELECT b.id, b.account_id, b.sys_user_id, b.status FROM vi_employee_binding b
+            WHERE b.app_id = #{appId}
+              AND (b.account_id = #{accountId} OR b.sys_user_id = #{sysUserId})
+              AND b.auto_rebind_blocked = 1
+            LIMIT 1
+            """)
+    Map<String, Object> findRebindBlocked(@Param("appId") String appId,
+            @Param("accountId") Long accountId, @Param("sysUserId") Long sysUserId);
+
+    /** 撤销关联。status 与 revoked_at 必须同时变更，否则违反 ck_employee_link_revoke */
     @Update("""
-            UPDATE vi_employee_binding SET revoked_at = UTC_TIMESTAMP(3), updated_at = UTC_TIMESTAMP(3),
-                   version = version + 1
+            UPDATE vi_employee_binding SET status = 'REVOKED', revoked_at = UTC_TIMESTAMP(3),
+                   updated_at = UTC_TIMESTAMP(3), version = version + 1
             WHERE account_id = #{accountId} AND revoked_at IS NULL
             """)
     int revokeBinding(@Param("accountId") Long accountId);
 
-    @Select("""
-            SELECT b.id, b.request_code, b.status, b.request_reason, b.expires_at, b.created_at,
-                   a.nickname, a.open_id
-            FROM vi_employee_binding_request b JOIN vi_account a ON a.id = b.account_id
-            WHERE b.status IN ('REQUESTED','CREDENTIAL_ISSUED')
-            ORDER BY b.created_at ASC LIMIT 100
-            """)
-    List<Map<String, Object>> listPendingBindingRequests();
-
-    @Select("""
-            SELECT b.*, a.nickname FROM vi_employee_binding_request b JOIN vi_account a ON a.id = b.account_id
-            WHERE b.account_id = #{accountId} ORDER BY b.id DESC LIMIT 20
-            """)
-    List<Map<String, Object>> listBindingRequests(@Param("accountId") Long accountId);
-
-    @Select("SELECT * FROM vi_employee_binding_request WHERE id = #{requestId}")
-    Map<String, Object> findBindingRequest(@Param("requestId") Long requestId);
-
-    @Insert("""
-            INSERT INTO vi_employee_binding_request (account_id, request_code, status, request_reason, expires_at, created_at, updated_at, version)
-            VALUES (#{accountId}, #{code}, 'REQUESTED', #{reason}, #{expiresAt}, UTC_TIMESTAMP(3), UTC_TIMESTAMP(3), 0)
-            """)
-    @Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "id")
-    int insertBindingRequest(Map<String, Object> row);
-
-    @Update("""
-            UPDATE vi_employee_binding_request SET status = #{status}, updated_at = UTC_TIMESTAMP(3), version = version + 1
-            WHERE id = #{requestId}
-            """)
-    int updateBindingRequestStatus(@Param("requestId") Long requestId, @Param("status") String status);
-
-    @Insert("""
-            INSERT INTO vi_employee_binding_credential (request_id, target_account_id, target_sys_user_id, token_hash,
-                   status, issued_by_user_id, expires_at, reason, created_at, updated_at, version)
-            VALUES (#{requestId}, #{targetAccountId}, #{targetSysUserId}, #{tokenHash}, 'ISSUED', #{issuedBy},
-                   #{expiresAt}, #{reason}, UTC_TIMESTAMP(3), UTC_TIMESTAMP(3), 0)
-            """)
-    @Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "id")
-    int insertBindingCredential(Map<String, Object> row);
-
-    @Select("SELECT * FROM vi_employee_binding_credential WHERE token_hash = #{tokenHash}")
-    Map<String, Object> findCredentialByHash(@Param("tokenHash") byte[] tokenHash);
-
-    @Select("SELECT * FROM vi_employee_binding_credential WHERE id = #{credentialId}")
-    Map<String, Object> findCredential(@Param("credentialId") Long credentialId);
-
-    @Update("""
-            UPDATE vi_employee_binding_credential SET status = 'CONSUMED', consumed_at = UTC_TIMESTAMP(3),
-                   updated_at = UTC_TIMESTAMP(3), version = version + 1
-            WHERE id = #{credentialId} AND status = 'ISSUED'
-            """)
-    int consumeCredential(@Param("credentialId") Long credentialId);
-
-    @Update("""
-            UPDATE vi_employee_binding_credential SET status = 'REVOKED', updated_at = UTC_TIMESTAMP(3),
-                   version = version + 1
-            WHERE id = #{credentialId} AND status = 'ISSUED'
-            """)
-    int revokeCredential(@Param("credentialId") Long credentialId);
+    // ---- 员工绑定申请 / 一次性凭证兑换流程已于 V6.4 退役（改用微信手机号自动关联），
+    // ---- vi_employee_binding_request 与 vi_employee_binding_credential 两张表一并删除。
 
     // ------------------------------------------------------------------ 定位
 

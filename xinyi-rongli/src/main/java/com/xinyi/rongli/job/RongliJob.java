@@ -29,6 +29,27 @@ public class RongliJob
     @Autowired
     private OutboxConsumer outboxConsumer;
 
+    @Autowired
+    private com.xinyi.rongli.service.DriverQualificationService qualificationService;
+
+    /** 年度复审到期扫描：置 EXPIRED 并停新承接（默认每 30 分钟，命中量极小） */
+    @Scheduled(initialDelay = 90_000, fixedDelayString = "${rongli.job.qualificationExpiry:1800000}")
+    public void expireQualifications()
+    {
+        try
+        {
+            int n = qualificationService.sweepExpiredQualifications();
+            if (n > 0)
+            {
+                log.info("资格年审到期：本轮失效 {} 名代驾", n);
+            }
+        }
+        catch (Exception e)
+        {
+            log.error("资格年审到期扫描异常", e);
+        }
+    }
+
     /** 到期订单启动派单（默认每 60 秒） */
     @Scheduled(initialDelay = 15_000, fixedDelayString = "${rongli.job.dispatch:60000}")
     public void dispatchDue()

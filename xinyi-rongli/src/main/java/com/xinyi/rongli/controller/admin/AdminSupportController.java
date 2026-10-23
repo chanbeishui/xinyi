@@ -114,10 +114,11 @@ public class AdminSupportController
     @GetMapping("/reconciliation")
     @PreAuthorize("@ss.hasPermi('biz:paymentreconciliation:list')")
     public Map<String, Object> reconciliation(@RequestParam(required = false) String status,
+            @RequestParam(required = false) String keyword,
             @RequestParam(defaultValue = "1") int pageNum,
             @RequestParam(defaultValue = "10") int pageSize)
     {
-        return adminService.reconciliation(status, pageNum, pageSize);
+        return adminService.reconciliation(status, keyword, pageNum, pageSize);
     }
 
     @PostMapping("/reconciliation/{caseId}/query")
@@ -189,9 +190,10 @@ public class AdminSupportController
 
     @GetMapping("/statistics")
     @PreAuthorize("@ss.hasPermi('biz:statistics:list')")
-    public Map<String, Object> statistics(@RequestParam(defaultValue = "14") int days)
+    public Map<String, Object> statistics(@RequestParam(defaultValue = "14") int days,
+            @RequestParam(required = false) String range)
     {
-        return adminService.statistics(days);
+        return adminService.statistics(days, range);
     }
 
     // ------------------------------------------------------------------ 通知模板
@@ -270,36 +272,10 @@ public class AdminSupportController
     }
 
     // ------------------------------------------------------------------ 员工绑定
-
-    @GetMapping("/employee-binding-requests")
-    @PreAuthorize("@ss.hasPermi('biz:employeebinding:list')")
-    public Map<String, Object> bindingRequests(@RequestParam(defaultValue = "1") int pageNum,
-            @RequestParam(defaultValue = "20") int pageSize)
-    {
-        return adminService.bindingRequests(pageNum, pageSize);
-    }
-
-    @PostMapping("/employee-binding-credentials")
-    @PreAuthorize("@ss.hasPermi('biz:employeebinding:issue')")
-    public Map<String, Object> issueCredential(@RequestBody Map<String, Object> body)
-    {
-        Long requestId = body == null || body.get("requestId") == null ? null
-                : Long.valueOf(String.valueOf(body.get("requestId")));
-        Long employeeUserId = body == null || body.get("employeeUserId") == null ? null
-                : Long.valueOf(String.valueOf(body.get("employeeUserId")));
-        if (requestId == null || employeeUserId == null)
-        {
-            throw com.xinyi.rongli.support.ApiException.validation("请指定绑定申请与员工账号");
-        }
-        return adminService.issueBindingCredential(requestId, employeeUserId, SecurityUtils.getUserId());
-    }
-
-    @PostMapping("/employee-binding-credentials/{credentialId}/revoke")
-    @PreAuthorize("@ss.hasPermi('biz:employeebinding:revoke')")
-    public Map<String, Object> revokeCredential(@PathVariable Long credentialId)
-    {
-        return adminService.revokeBindingCredential(credentialId, SecurityUtils.getUserId());
-    }
+    // V6.4 起后台不再签发一次性绑定凭证：员工关联由微信手机号自动完成，
+    // 后台只保留「查看微信关联 / 暂停 / 解除 / 允许重新核验」（B36）。
+    // 原 employee-binding-requests、employee-binding-credentials 两族端点已下线，
+    // 对应权限点 biz:employeebinding:list / issue / revoke 同步失效。
 
     // ------------------------------------------------------------------ 处罚与申诉
 

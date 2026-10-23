@@ -77,6 +77,18 @@ public class BookingService
     @Autowired
     private DispatchService dispatchService;
 
+    @Autowired
+    private PayConfigService payConfigService;
+
+    @Autowired
+    private com.xinyi.rongli.integration.IntegrationPaymentService integrationPaymentService;
+
+    @Autowired
+    private com.xinyi.rongli.integration.IntegrationConfigService integrationConfigService;
+
+    @Autowired
+    private com.xinyi.rongli.support.WechatPayClient wechatPayClient;
+
     // ------------------------------------------------------------------ 时段
 
     /**
@@ -466,6 +478,11 @@ public class BookingService
         payment.put("outTradeNo", "RLP" + orderNo);
         payment.put("totalFen", orderRow.get("totalFen"));
         payment.put("expiresAt", payExpiresAt);
+        // V6.4：支付方式先为“未选择”，由 O10 支付页首次选择时 CAS 锁定；
+        // 收款主体在创建时按订单归属快照固定，之后不允许跟随配置变更。
+        payment.put("paymentMethod", "UNSELECTED");
+        payment.put("receiverDeptId", st.lng("dept_id"));
+        payment.put("capacityResolution", "HELD");
         payMapper.insertPayment(payment);
 
         eventService.record("ORDER", orderId, "ORDER_CREATED", orderId, null,
@@ -501,6 +518,22 @@ public class BookingService
             throw ApiException.notFound("支付单不存在");
         }
         Row pay = Row.of(payment);
+        // V6.4：支付方式在第一次有效预支付时锁定，之后不能在同一订单上改成线下，避免双收。
+        if ("OFFLINE".equals(pay.str("payment_method")))
+        {
+            throw ApiException.stateConflict("该订单已选择线下付款，不能再发起微信支付；如需更换方式请先取消后重新预约");
+        }
+        if ("UNSELECTED".equals(pay.str("payment_method")))
+        {
+            Long deptId = pay.lng("receiver_dept_id") == null ? order.lng("dept_id") : pay.lng("receiver_dept_id");
+            Row merchant = integrationConfigService.activeProfile("WECHAT_PAY", deptId);
+            var paySettings = payConfigService.settings();
+            integrationPaymentService.lockWechat(orderNo,
+                    merchant.isEmpty() ? null : merchant.lng("id"), merchant.lng("activeRevisionId"),
+                    paySettings.appId(), paySettings.mchId());
+            payment = payMapper.findByOrder(order.lng("id"));
+            pay = Row.of(payment);
+        }
         Map<String, Object> view = new LinkedHashMap<>();
         view.put("orderNo", orderNo);
         view.put("outTradeNo", pay.str("out_trade_no"));
@@ -519,8 +552,17 @@ public class BookingService
         }
         else
         {
-            throw new ApiException(org.springframework.http.HttpStatus.SERVICE_UNAVAILABLE,
-                    Codes.Error.CHANNEL_UNAVAILABLE, "微信支付尚未配置商户凭据（L01），请改用联调通道");
+            // 真实通道：JSAPI 下单后返回 wx.requestPayment 所需的完整签名参数。
+            // 配置缺失时 WechatPayClient 抛 503 并列出缺哪几项，前端直接提示去系统设置补齐。
+            var settings = payConfigService.settings();
+            Row account = Row.of(accountMapper.findAccount(p.accountId));
+            String openId = account.isEmpty() ? null : account.str("open_id");
+            var prepay = wechatPayClient.jsapiPrepay(settings, pay.str("out_trade_no"),
+                    settings.effectiveDescription(), pay.lng("total_fen"), openId);
+            view.put("mock", false);
+            view.put("appId", prepay.appId());
+            view.putAll(prepay.toView());
+            view.put("hint", "请在支付时限内完成支付，超时订单将自动关闭");
         }
         return view;
     }
@@ -536,6 +578,10 @@ public class BookingService
         MiniPrincipal p = MiniContext.require();
         Row order = requireOwnerOrder(orderNo, p.accountId);
         Map<String, Object> payment = payMapper.findByOrder(order.lng("id"));
+        if (payment != null && "OFFLINE".equals(Row.of(payment).str("payment_method")))
+        {
+            throw ApiException.stateConflict("该订单已选择线下付款，不能模拟微信支付");
+        }
         if (payment == null)
         {
             throw ApiException.notFound("支付单不存在");
@@ -731,6 +777,8 @@ public class BookingService
         JSONObject snapshot = Json.read(o.json("vehicle_snapshot"));
         Map<String, Object> view = new LinkedHashMap<>();
         view.put("orderNo", o.str("order_no"));
+        // V6.4：订阅授权请求需要业务对象主键，客户端只有 orderNo，因此在这里一并返回
+        view.put("orderId", String.valueOf(o.lng("id")));
         view.put("fulfillmentStatus", o.str("fulfillment_status"));
         view.put("fulfillmentStatusLabel", statusLabel(o.str("fulfillment_status")));
         view.put("cancelStatus", o.str("cancel_status"));

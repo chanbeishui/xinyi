@@ -1,5 +1,8 @@
 package com.xinyi.rongli.service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -12,6 +15,7 @@ import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
 import com.xinyi.rongli.mapper.AccountMapper;
 import com.xinyi.rongli.mapper.AdminMapper;
+import com.xinyi.rongli.mapper.AfterSaleMapper;
 import com.xinyi.rongli.mapper.DispatchMapper;
 import com.xinyi.rongli.mapper.LedgerMapper;
 import com.xinyi.rongli.mapper.MiscMapper;
@@ -21,6 +25,7 @@ import com.xinyi.rongli.mapper.StationMapper;
 import com.xinyi.rongli.mapper.VehicleMapper;
 import com.xinyi.rongli.support.ApiException;
 import com.xinyi.rongli.support.BizConfig;
+import com.xinyi.rongli.support.DeptScope;
 import com.xinyi.rongli.support.Codes;
 import com.xinyi.rongli.support.Crypto;
 import com.xinyi.rongli.support.Json;
@@ -55,6 +60,9 @@ public class AdminService
     private VehicleMapper vehicleMapper;
 
     @Autowired
+    private AfterSaleMapper afterSaleMapper;
+
+    @Autowired
     private StationMapper stationMapper;
 
     @Autowired
@@ -85,8 +93,9 @@ public class AdminService
 
     public Map<String, Object> dashboard()
     {
-        Row base = Row.of(orderMapper.dashboard());
-        Row extra = Row.of(adminMapper.statisticsOverview(ViTime.shanghaiDate(ViTime.now()).toString()));
+        Long deptId = DeptScope.scopedDeptId();
+        Row base = Row.of(orderMapper.dashboard(deptId));
+        Row extra = Row.of(adminMapper.statisticsOverview(ViTime.shanghaiDate(ViTime.now()).toString(), deptId));
         Map<String, Object> view = new LinkedHashMap<>();
         view.put("activeOrders", base.lng("active_orders", 0L));
         view.put("ordersToday", extra.lng("orders_today", 0L));
@@ -221,6 +230,107 @@ public class AdminService
         return stationService.reportException(orderNo, req);
     }
 
+    // ------------------------------------------------------------------ 收车与检测待办
+
+    /** B07 站点收车登记：待收车订单（已到站、尚未完成站点侧交接） */
+    public Map<String, Object> receivingBoard(Long stationId, String keyword, int pageNum, int pageSize)
+    {
+        return fulfillBoard(List.of(Codes.Fulfill.ARRIVED_STATION), stationId, keyword, null, null,
+                pageNum, pageSize);
+    }
+
+    /** B10 检测结果待办：已收车订单，可按「资料待核验 / 结果待登记」筛选 */
+    public Map<String, Object> inspectionTodoBoard(Long stationId, String keyword, String bucket,
+            int pageNum, int pageSize)
+    {
+        boolean licensePendingOnly = "LICENSE_PENDING".equalsIgnoreCase(bucket);
+        Boolean licensePending = licensePendingOnly ? Boolean.TRUE : null;
+        Boolean resultMissing = "RESULT_PENDING".equalsIgnoreCase(bucket) ? Boolean.TRUE : null;
+        // 行驶证复核覆盖「已到站」起的全部在站订单：有的车在收车前就要先核证件
+        List<String> statuses = licensePendingOnly
+                ? List.of(Codes.Fulfill.ARRIVED_STATION, Codes.Fulfill.INSPECTING, Codes.Fulfill.INSPECTED)
+                : List.of(Codes.Fulfill.INSPECTING, Codes.Fulfill.INSPECTED);
+        return fulfillBoard(statuses, stationId, keyword, licensePending, resultMissing, pageNum, pageSize);
+    }
+
+    private Map<String, Object> fulfillBoard(List<String> statuses, Long stationId, String keyword,
+            Boolean licensePending, Boolean resultMissing, int pageNum, int pageSize)
+    {
+        int limit = Math.min(Math.max(pageSize, 1), 100);
+        int offset = (Math.max(pageNum, 1) - 1) * limit;
+        Long deptId = DeptScope.scopedDeptId();
+        List<Map<String, Object>> out = new ArrayList<>();
+        for (Map<String, Object> r : orderMapper.adminFulfillBoard(statuses, stationId, keyword, deptId,
+                licensePending, resultMissing, offset, limit))
+        {
+            Row o = Row.of(r);
+            JSONObject snapshot = Json.read(o.json("vehicle_snapshot"));
+            Map<String, Object> item = new LinkedHashMap<>();
+            item.put("orderNo", o.str("order_no"));
+            item.put("fulfillmentStatus", o.str("fulfillment_status"));
+            item.put("fulfillmentStatusLabel", bookingService.statusLabel(o.str("fulfillment_status")));
+            item.put("custodyType", o.str("custody_type"));
+            item.put("plateNo", snapshot.getString("plateNo"));
+            item.put("vehicleTypeName", snapshot.getString("vehicleTypeName"));
+            item.put("brandModel", snapshot.getString("brandModel"));
+            item.put("stationId", o.lng("station_id") == null ? null : String.valueOf(o.lng("station_id")));
+            item.put("stationName", o.str("station_name"));
+            item.put("ownerName", o.str("owner_name"));
+            item.put("driverName", o.str("driver_name"));
+            item.put("pickupStartsAt", ViTime.iso(o.time("pickup_starts_at")));
+            item.put("pickupEndsAt", ViTime.iso(o.time("pickup_ends_at")));
+            item.put("pickupWindowLabel",
+                    ViTime.windowLabel(o.time("pickup_starts_at"), o.time("pickup_ends_at")));
+            String licenseStatus = o.str("license_status");
+            item.put("licenseStatus", licenseStatus == null ? "MISSING" : licenseStatus);
+            item.put("licenseStatusLabel", licenseLabel(licenseStatus));
+            int resultCount = o.intg("result_count", 0);
+            item.put("resultCount", resultCount);
+            item.put("resultRevision", o.intg("result_revision", 0));
+            // 待办分档，前端直接按 bucket 分栏，不用重复判断口径
+            item.put("bucket", !"VERIFIED".equals(licenseStatus) ? "LICENSE_PENDING"
+                    : (resultCount <= 0 ? "RESULT_PENDING" : "DONE"));
+            if (o.lng("handover_id") != null)
+            {
+                Map<String, Object> handover = new LinkedHashMap<>();
+                handover.put("handoverId", String.valueOf(o.lng("handover_id")));
+                handover.put("status", o.str("handover_status"));
+                handover.put("generationNo", o.intg("handover_generation", 1));
+                handover.put("expiresAt", ViTime.iso(o.time("handover_expires_at")));
+                handover.put("expired", o.time("handover_expires_at") != null
+                        && o.time("handover_expires_at").isBefore(ViTime.now()));
+                item.put("handover", handover);
+            }
+            else
+            {
+                item.put("handover", null);
+            }
+            out.add(item);
+        }
+        Map<String, Object> page = new LinkedHashMap<>();
+        page.put("rows", out);
+        page.put("total", orderMapper.adminFulfillBoardCount(statuses, stationId, keyword, deptId,
+                licensePending, resultMissing));
+        page.put("pageNum", pageNum);
+        page.put("pageSize", limit);
+        return page;
+    }
+
+    private String licenseLabel(String status)
+    {
+        if (status == null)
+        {
+            return "未登记";
+        }
+        return switch (status)
+        {
+            case "MISSING" -> "未登记";
+            case "PENDING" -> "待复核";
+            case "VERIFIED" -> "已核验";
+            default -> status;
+        };
+    }
+
     public Map<String, Object> capacity(Long stationId)
     {
         return stationService.adminCapacity(stationId);
@@ -307,20 +417,31 @@ public class AdminService
 
     public Map<String, Object> dispatchInvites(Long orderId, Long driverId, String status, int pageNum, int pageSize)
     {
+        return dispatchInvites(orderId, driverId, status, null, pageNum, pageSize);
+    }
+
+    public Map<String, Object> dispatchInvites(Long orderId, Long driverId, String status, String keyword,
+            int pageNum, int pageSize)
+    {
         int limit = Math.min(Math.max(pageSize, 1), 100);
         int offset = (Math.max(pageNum, 1) - 1) * limit;
         List<Map<String, Object>> rows = new ArrayList<>();
-        for (Map<String, Object> i : dispatchMapper.adminListInvites(orderId, driverId, status, offset, limit))
+        for (Map<String, Object> i : dispatchMapper.adminListInvites(orderId, driverId, status, keyword, offset, limit))
         {
             Row inv = Row.of(i);
             Map<String, Object> item = new LinkedHashMap<>();
             item.put("inviteId", String.valueOf(inv.lng("id")));
             item.put("orderNo", inv.str("order_no"));
+            item.put("plateNo", inv.str("plate_no"));
             item.put("driverId", String.valueOf(inv.lng("driver_id")));
             item.put("driverName", inv.str("driver_name"));
             item.put("source", inv.str("source"));
+            item.put("sourceLabel", "MANUAL".equals(inv.str("source")) ? "人工邀约" : "自动派单");
+            item.put("roundKey", inv.str("round_key"));
+            item.put("roundNo", inv.intg("round_no", 1));
             item.put("status", inv.str("status"));
             item.put("statusLabel", inviteLabel(inv.str("status")));
+            item.put("issuedAt", ViTime.iso(inv.time("issued_at")));
             item.put("expiresAt", ViTime.iso(inv.time("expires_at")));
             item.put("respondedAt", ViTime.iso(inv.time("responded_at")));
             item.put("createdAt", ViTime.iso(inv.time("created_at")));
@@ -330,6 +451,7 @@ public class AdminService
         view.put("pageNum", pageNum);
         view.put("pageSize", limit);
         view.put("rows", rows);
+        view.put("total", dispatchMapper.adminCountInvites(orderId, driverId, status, keyword));
         return view;
     }
 
@@ -372,12 +494,19 @@ public class AdminService
         Map<String, String> allowed = new LinkedHashMap<>();
         allowed.put("leadMinutes", "rongli.dispatch.leadMinutes");
         allowed.put("radiusMeter", "rongli.dispatch.radiusMeter");
+        allowed.put("radiusSteps", "rongli.dispatch.radiusSteps");
         allowed.put("totalMinutes", "rongli.dispatch.totalMinutes");
         allowed.put("inviteExpireSeconds", "rongli.invite.expireSeconds");
         allowed.put("payExpireMinutes", "rongli.pay.expireMinutes");
         allowed.put("autoConfirmHours", "rongli.confirm.autoHours");
         allowed.put("locationFreshSeconds", "rongli.driver.locationFreshSeconds");
         allowed.put("termsVersion", "rongli.service.termsVersion");
+        allowed.put("heartbeatMaxGapSeconds", "rongli.training.heartbeatMaxGapSeconds");
+        allowed.put("subscribeEnabled", "rongli.subscribe.enabled");
+        allowed.put("subscribeTemplateDispatchInvite", "rongli.subscribe.template.dispatchInvite");
+        allowed.put("subscribeTemplateAssignmentAccepted", "rongli.subscribe.template.assignmentAccepted");
+        allowed.put("subscribeTemplateResultReady", "rongli.subscribe.template.resultReady");
+        allowed.put("subscribeTemplateRefundDone", "rongli.subscribe.template.refundDone");
         for (Map.Entry<String, String> e : allowed.entrySet())
         {
             Object v = req.get(e.getKey());
@@ -386,11 +515,47 @@ public class AdminService
                 continue;
             }
             String text = String.valueOf(v).trim();
-            if (text.isEmpty())
+            boolean blankAllowed = e.getValue().startsWith("rongli.subscribe.template.")
+                    || "rongli.dispatch.radiusSteps".equals(e.getValue());
+            if (text.isEmpty() && !blankAllowed)
             {
                 throw ApiException.validation(e.getKey() + " 不能为空");
             }
-            if (!"termsVersion".equals(e.getKey()))
+            if ("rongli.dispatch.radiusSteps".equals(e.getValue()))
+            {
+                String[] parts = text.isEmpty() ? new String[0] : text.split("[,;\\s]+");
+                if (parts.length > 6)
+                {
+                    throw ApiException.validation("扩圈阶梯最多 6 档");
+                }
+                for (String part : parts)
+                {
+                    int n;
+                    try
+                    {
+                        n = Integer.parseInt(part);
+                    }
+                    catch (NumberFormatException ex)
+                    {
+                        throw ApiException.validation("扩圈阶梯必须是逗号分隔的正整数（米）");
+                    }
+                    if (n <= 0 || n > 200000)
+                    {
+                        throw ApiException.validation("扩圈阶梯半径需在 1~200000 米之间");
+                    }
+                }
+            }
+            else if ("rongli.service.termsVersion".equals(e.getValue())
+                    || e.getValue().startsWith("rongli.subscribe.template.")
+                    || "rongli.subscribe.enabled".equals(e.getValue()))
+            {
+                if ("rongli.subscribe.enabled".equals(e.getValue())
+                        && !"true".equalsIgnoreCase(text) && !"false".equalsIgnoreCase(text))
+                {
+                    throw ApiException.validation("订阅消息开关只能是 true 或 false");
+                }
+            }
+            else
             {
                 int n;
                 try
@@ -422,6 +587,22 @@ public class AdminService
             }
             eventService.record("CONFIG", null, "CONFIG_CHANGED", null,
                     Map.of("key", e.getValue()), Map.of("value", text), "管理端保存业务配置");
+        }
+        // 配置走的是直接 SQL 更新，必须显式失效框架缓存，否则 BizConfig 仍读到旧值。
+        // 先同步刷新一次，保证本次响应回显的是新值；事务结束后再刷一次，
+        // 覆盖提交/回滚两种情况，避免缓存与库长期不一致。
+        sysConfigService.resetConfigCache();
+        if (org.springframework.transaction.support.TransactionSynchronizationManager.isSynchronizationActive())
+        {
+            org.springframework.transaction.support.TransactionSynchronizationManager.registerSynchronization(
+                    new org.springframework.transaction.support.TransactionSynchronization()
+                    {
+                        @Override
+                        public void afterCompletion(int status)
+                        {
+                            sysConfigService.resetConfigCache();
+                        }
+                    });
         }
         return dispatchConfig();
     }
@@ -845,7 +1026,7 @@ public class AdminService
         view.put("pageNum", pageNum);
         view.put("pageSize", limit);
         view.put("total", vehicleMapper.adminOwnerCount(keyword));
-        view.put("rows", vehicleMapper.adminOwnerList(keyword, offset, limit));
+        view.put("rows", camelRows(vehicleMapper.adminOwnerList(keyword, offset, limit)));
         return view;
     }
 
@@ -856,8 +1037,8 @@ public class AdminService
         {
             throw ApiException.notFound("车主不存在");
         }
-        Map<String, Object> view = new LinkedHashMap<>(o.map());
-        view.put("vehicles", vehicleMapper.vehiclesByOwner(o.lng("account_id")));
+        Map<String, Object> view = new LinkedHashMap<>(camelRow(o.map()));
+        view.put("vehicles", camelRows(vehicleMapper.vehiclesByOwner(o.lng("account_id"))));
         return view;
     }
 
@@ -889,8 +1070,9 @@ public class AdminService
         Map<String, Object> view = new LinkedHashMap<>();
         view.put("pageNum", pageNum);
         view.put("pageSize", limit);
-        view.put("total", vehicleMapper.adminDriverCount(keyword, status));
-        view.put("rows", vehicleMapper.adminDriverList(keyword, status, offset, limit));
+        Long deptId = DeptScope.scopedDeptId();
+        view.put("total", vehicleMapper.adminDriverCount(keyword, status, deptId));
+        view.put("rows", vehicleMapper.adminDriverList(keyword, status, deptId, offset, limit));
         return view;
     }
 
@@ -966,8 +1148,9 @@ public class AdminService
         Map<String, Object> view = new LinkedHashMap<>();
         view.put("pageNum", pageNum);
         view.put("pageSize", limit);
-        view.put("total", vehicleMapper.adminCount(keyword, vehicleTypeCode));
-        view.put("rows", vehicleMapper.adminList(keyword, vehicleTypeCode, offset, limit));
+        Long deptId = DeptScope.scopedDeptId();
+        view.put("total", vehicleMapper.adminCount(keyword, vehicleTypeCode, deptId));
+        view.put("rows", camelRows(vehicleMapper.adminList(keyword, vehicleTypeCode, deptId, offset, limit)));
         return view;
     }
 
@@ -978,9 +1161,9 @@ public class AdminService
         {
             throw ApiException.notFound("车辆不存在");
         }
-        Map<String, Object> view = new LinkedHashMap<>(v.map());
-        view.put("orders", vehicleMapper.ordersByVehicle(vehicleId));
-        view.put("inspectionResults", vehicleMapper.resultsByVehicle(vehicleId));
+        Map<String, Object> view = new LinkedHashMap<>(camelRow(v.map()));
+        view.put("orders", camelRows(vehicleMapper.ordersByVehicle(vehicleId)));
+        view.put("inspectionResults", camelRows(vehicleMapper.resultsByVehicle(vehicleId)));
         return view;
     }
 
@@ -1008,14 +1191,16 @@ public class AdminService
     public Map<String, Object> vehicleOrders(Long vehicleId)
     {
         Map<String, Object> view = new LinkedHashMap<>();
-        view.put("rows", vehicleMapper.ordersByVehicle(vehicleId));
+        List<Map<String, Object>> rows = vehicleMapper.ordersByVehicle(vehicleId);
+        rows.forEach(this::enrichOrderRow);
+        view.put("rows", camelRows(rows));
         return view;
     }
 
     public Map<String, Object> vehicleResults(Long vehicleId)
     {
         Map<String, Object> view = new LinkedHashMap<>();
-        view.put("rows", vehicleMapper.resultsByVehicle(vehicleId));
+        view.put("rows", camelRows(vehicleMapper.resultsByVehicle(vehicleId)));
         return view;
     }
 
@@ -1027,7 +1212,7 @@ public class AdminService
             throw ApiException.notFound("车主不存在");
         }
         Map<String, Object> view = new LinkedHashMap<>();
-        view.put("rows", vehicleMapper.vehiclesByOwner(o.lng("account_id")));
+        view.put("rows", camelRows(vehicleMapper.vehiclesByOwner(o.lng("account_id"))));
         return view;
     }
 
@@ -1041,8 +1226,26 @@ public class AdminService
         Map<String, Object> view = new LinkedHashMap<>();
         List<Map<String, Object>> rows = orderMapper.ownerList(o.lng("account_id"), null,
                 Math.max(0, (pageNum - 1) * pageSize), Math.min(Math.max(pageSize, 1), 100));
-        view.put("rows", rows);
+        rows.forEach(this::enrichOrderRow);
+        view.put("rows", camelRows(rows));
         view.put("total", orderMapper.ownerCount(o.lng("account_id"), null));
+        return view;
+    }
+
+    /** 车主关联售后：按申请人账号查全部售后案件，用于车主档案页的售后子列表 */
+    public Map<String, Object> ownerAfterSales(Long ownerId, int pageNum, int pageSize)
+    {
+        Row o = Row.of(vehicleMapper.adminOwnerDetail(ownerId));
+        if (o.isEmpty())
+        {
+            throw ApiException.notFound("车主不存在");
+        }
+        int limit = Math.min(Math.max(pageSize, 1), 100);
+        int offset = Math.max(0, (Math.max(pageNum, 1) - 1) * limit);
+        Long accountId = o.lng("account_id");
+        Map<String, Object> view = new LinkedHashMap<>();
+        view.put("rows", camelRows(afterSaleMapper.listByApplicant(accountId, offset, limit)));
+        view.put("total", afterSaleMapper.countByApplicant(accountId));
         return view;
     }
 
@@ -1161,6 +1364,41 @@ public class AdminService
         view.put("pageSize", limit);
         view.put("rows", stationMapper.listGrants(offset, limit));
         return view;
+    }
+
+    /**
+     * 后台新增站点授权时可选的员工列表。
+     *
+     * <p>员工与检测点的关系只由后台建立：这里提供按手机号/姓名/账号检索的候选，
+     * 手机号脱敏后返回，避免把完整号码暴露在列表接口里。</p>
+     */
+    public List<Map<String, Object>> employeeCandidates(String keyword)
+    {
+        String kw = keyword == null ? null : keyword.trim();
+        List<Map<String, Object>> out = new ArrayList<>();
+        for (Map<String, Object> raw : accountMapper.searchEmployeeCandidates(kw))
+        {
+            Row r = Row.of(raw);
+            String phone = r.str("phonenumber");
+            Map<String, Object> item = new LinkedHashMap<>();
+            item.put("userId", String.valueOf(r.lng("user_id")));
+            item.put("userName", r.str("user_name"));
+            item.put("nickName", r.str("nick_name"));
+            item.put("phoneMasked", maskPhone(phone));
+            item.put("deptName", r.str("dept_name"));
+            item.put("grantedStationCount", r.intg("granted_station_count", 0));
+            out.add(item);
+        }
+        return out;
+    }
+
+    private String maskPhone(String phone)
+    {
+        if (phone == null || phone.length() < 7)
+        {
+            return phone;
+        }
+        return phone.substring(0, 3) + "****" + phone.substring(phone.length() - 4);
     }
 
     @Transactional
@@ -1411,17 +1649,23 @@ public class AdminService
 
     public Map<String, Object> reconciliation(String status, int pageNum, int pageSize)
     {
+        return reconciliation(status, null, pageNum, pageSize);
+    }
+
+    /** keyword 支持按业务单号、支付商户单号、退款商户单号模糊匹配 */
+    public Map<String, Object> reconciliation(String status, String keyword, int pageNum, int pageSize)
+    {
         int limit = Math.min(Math.max(pageSize, 1), 100);
         int offset = (Math.max(pageNum, 1) - 1) * limit;
         List<Map<String, Object>> rows = new ArrayList<>();
-        for (Map<String, Object> g : adminMapper.listGovernance("RECONCILE", status, offset, limit))
+        for (Map<String, Object> g : adminMapper.listGovernance("RECONCILE", status, keyword, offset, limit))
         {
             rows.add(governanceView(Row.of(g), true));
         }
         Map<String, Object> view = new LinkedHashMap<>();
         view.put("pageNum", pageNum);
         view.put("pageSize", limit);
-        view.put("total", adminMapper.countGovernance("RECONCILE", status));
+        view.put("total", adminMapper.countGovernance("RECONCILE", status, keyword));
         view.put("rows", rows);
         return view;
     }
@@ -1454,7 +1698,7 @@ public class AdminService
         {
             throw ApiException.validation("请填写对账结论与依据");
         }
-        adminMapper.updateGovernance(caseId, "RESOLVED", userId, conclusion, null, null);
+        adminMapper.concludeGovernance(caseId, "RESOLVED", userId, conclusion);
         eventService.record("RECONCILE", caseId, "RECONCILE_RESOLVED", g.lng("order_id"), null,
                 Map.of("status", "RESOLVED"), conclusion);
         return governanceView(Row.of(adminMapper.findGovernance(caseId)), true);
@@ -1468,14 +1712,14 @@ public class AdminService
         int limit = Math.min(Math.max(pageSize, 1), 100);
         int offset = (Math.max(pageNum, 1) - 1) * limit;
         List<Map<String, Object>> rows = new ArrayList<>();
-        for (Map<String, Object> g : adminMapper.listGovernance("EXPORT", status, offset, limit))
+        for (Map<String, Object> g : adminMapper.listGovernance("EXPORT", status, null, offset, limit))
         {
             rows.add(governanceView(Row.of(g), true));
         }
         Map<String, Object> view = new LinkedHashMap<>();
         view.put("pageNum", pageNum);
         view.put("pageSize", limit);
-        view.put("total", adminMapper.countGovernance("EXPORT", status));
+        view.put("total", adminMapper.countGovernance("EXPORT", status, null));
         view.put("rows", rows);
         return view;
     }
@@ -1555,7 +1799,7 @@ public class AdminService
         List<Map<String, Object>> rows = new ArrayList<>();
         for (Map<String, Object> o : orderMapper.adminList(payload.getString("status"),
                 payload.getString("stationId") == null ? null : Long.valueOf(payload.getString("stationId")),
-                null, null, null, 0, 500))
+                null, null, null, DeptScope.scopedDeptId(), 0, 500))
         {
             Row order = Row.of(o);
             JSONObject snapshot = Json.read(order.json("vehicle_snapshot"));
@@ -1612,7 +1856,68 @@ public class AdminService
             view.put("requesterUserId", g.lng("requester_user_id"));
             view.put("reviewerId", g.lng("reviewer_id"));
         }
+        // B31 支付渠道核对所需列：业务订单、关联交易、问题类型、业务/渠道、金额
+        view.put("amountFen", g.lng("total_fen", 0L));
+        String refundNo = g.str("out_refund_no");
+        String paymentNo = g.str("out_trade_no");
+        view.put("relatedTradeNo", refundNo != null ? refundNo : paymentNo);
+        view.put("paymentTradeNo", paymentNo);
+        view.put("refundTradeNo", refundNo);
+        view.put("problemType", g.str("reason"));
+        view.put("conclusion", g.str("conclusion"));
+        view.put("bizStatusLabel", reconcileBizLabel(g));
+        view.put("channelStatus", reconcileChannelLabel(g));
+        view.put("relatedTradeKind", refundNo != null ? "REFUND" : "PAYMENT");
         return view;
+    }
+
+    /** 业务侧状态：先看退款预留，再看支付单，最后退回订单履约状态 */
+    private String reconcileBizLabel(Row g)
+    {
+        long reserved = g.lng("refund_reserved_fen", 0L);
+        long refunded = g.lng("refunded_fen", 0L);
+        String pay = g.str("payment_status");
+        if (reserved > 0)
+        {
+            return "已预留";
+        }
+        if (pay != null)
+        {
+            return switch (pay)
+            {
+                case "CLOSED" -> "已关闭";
+                case "SUCCESS" -> refunded > 0 ? "已退款" : "已支付";
+                case "PENDING" -> "待支付";
+                case "UNKNOWN" -> "渠道未知";
+                default -> pay;
+            };
+        }
+        String fs = g.str("fulfillment_status");
+        return switch (fs == null ? "" : fs)
+        {
+            case "CLOSED" -> "已关闭";
+            case "CANCELLED" -> "已取消";
+            case "COMPLETED" -> "已完成";
+            case "PENDING_PAY" -> "待支付";
+            case "" -> "-";
+            default -> "进行中";
+        };
+    }
+
+    /** 渠道侧状态：有退款单看退款；已拿到渠道交易号才认支付状态；否则只能标待核实 */
+    private String reconcileChannelLabel(Row g)
+    {
+        String refund = g.str("refund_status");
+        if (refund != null)
+        {
+            return refund;
+        }
+        String pay = g.str("payment_status");
+        if (pay == null)
+        {
+            return "待核实";
+        }
+        return g.str("transaction_id") == null ? "待核实" : pay;
     }
 
     // ------------------------------------------------------------------ 审计 / 统计 / 补偿
@@ -1654,13 +1959,36 @@ public class AdminService
 
     public Map<String, Object> statistics(int days)
     {
-        int span = Math.min(Math.max(days, 1), 90);
+        return statistics(days, null);
+    }
+
+    /**
+     * B23 业务统计。既有 overview/dashboard/daily 口径保持不变，新增统计卡、近7日趋势、
+     * 指标口径与按站点服务概况，供后台「业务统计」页 1:1 还原设计稿。
+     *
+     * @param days  兼容旧调用方的天数（1~90）
+     * @param range DAY / WEEK / MONTH，给出时优先于 days，分别对应 7 / 30 / 90 天
+     */
+    public Map<String, Object> statistics(int days, String range)
+    {
+        String scope = range == null || range.isBlank() ? null : range.trim().toUpperCase();
+        int span = switch (scope == null ? "" : scope)
+        {
+            case "DAY" -> 7;
+            case "WEEK" -> 30;
+            case "MONTH" -> 90;
+            default -> Math.min(Math.max(days, 1), 90);
+        };
         java.time.LocalDateTime from = ViTime.now().minusDays(span);
-        List<Map<String, Object>> daily = orderMapper.dailyStats(from);
-        Row overview = Row.of(adminMapper.statisticsOverview(ViTime.shanghaiDate(ViTime.now()).toString()));
-        Row dash = Row.of(orderMapper.dashboard());
+        Long deptId = DeptScope.scopedDeptId();
+        List<Map<String, Object>> daily = orderMapper.dailyStats(from, deptId);
+        Row overview = Row.of(adminMapper.statisticsOverview(ViTime.shanghaiDate(ViTime.now()).toString(), deptId));
+        Row dash = Row.of(orderMapper.dashboard(deptId));
+        Row orderKpi = Row.of(adminMapper.statisticsOrderKpi(deptId));
+        Row payKpi = Row.of(adminMapper.statisticsPaymentKpi(deptId));
         Map<String, Object> view = new LinkedHashMap<>();
         view.put("rangeDays", span);
+        view.put("range", scope == null ? "DAY" : scope);
         view.put("from", ViTime.iso(from));
         view.put("overview", overview.map());
         view.put("dashboard", dash.map());
@@ -1670,7 +1998,198 @@ public class AdminService
                 "完成口径：以实际归还交接时间为准，非支付时间",
                 "取消口径：含取消已办结与未支付关闭",
                 "金额口径：一律为整数分，均为订单应收金额，不含代驾费用"));
+
+        // ---- 统计卡：与设计稿四张卡顺序一致
+        long sampleOrders = orderKpi.lng("sample_orders", 0L);
+        long returnedAssignments = orderKpi.lng("returned_assignments", 0L);
+        long pendingPayOrders = orderKpi.lng("pending_pay_orders", 0L);
+        long paidFen = payKpi.lng("paid_fen", 0L);
+        long refundedFen = payKpi.lng("refunded_fen", 0L);
+        long paidOrders = payKpi.lng("paid_orders", 0L);
+        long netPaidFen = paidFen - refundedFen;
+        Map<String, Object> kpi = new LinkedHashMap<>();
+        kpi.put("sampleOrders", sampleOrders);
+        kpi.put("paidFen", paidFen);
+        kpi.put("paidOrders", paidOrders);
+        kpi.put("refundedFen", refundedFen);
+        kpi.put("netPaidFen", netPaidFen);
+        kpi.put("returnedAssignments", returnedAssignments);
+        kpi.put("pendingPayOrders", pendingPayOrders);
+        view.put("kpi", kpi);
+        List<Map<String, Object>> cards = new ArrayList<>();
+        cards.add(statCard("sampleOrders", "样本服务订单", String.valueOf(sampleOrders), "演示数据"));
+        cards.add(statCard("paidAmount", "已支付金额", yuanText(paidFen), paidOrders + "条已支付演示订单"));
+        cards.add(statCard("returnedAssignments", "已归还司机任务", String.valueOf(returnedAssignments),
+                "司机已释放，等待服务确认"));
+        cards.add(statCard("pendingPayOrders", "待支付订单", String.valueOf(pendingPayOrders), "不计入成功收款"));
+        view.put("cards", cards);
+
+        // ---- 近7日订单量：固定 7 天，缺数据的自然日补 0
+        Map<String, Long> dailyMap = new LinkedHashMap<>();
+        for (Map<String, Object> d : daily)
+        {
+            Row row = Row.of(d);
+            dailyMap.put(row.str("day"), row.lng("orders", 0L));
+        }
+        List<Map<String, Object>> last7 = new ArrayList<>();
+        java.time.LocalDate today = java.time.LocalDate.now(java.time.ZoneId.of("Asia/Shanghai"));
+        for (int i = 6; i >= 0; i--)
+        {
+            String day = today.minusDays(i).toString();
+            Map<String, Object> item = new LinkedHashMap<>();
+            item.put("day", day);
+            item.put("label", (today.minusDays(i).getMonthValue()) + "/" + today.minusDays(i).getDayOfMonth());
+            item.put("orders", dailyMap.getOrDefault(day, 0L));
+            last7.add(item);
+        }
+        view.put("last7", last7);
+        view.put("chartNote", "按订单创建时间（Asia/Shanghai）归属自然日，用于核对趋势与筛选条件；不对应当前明细样本。");
+
+        // ---- 指标口径：设计稿右侧清单
+        List<Map<String, Object>> metrics = new ArrayList<>();
+        metrics.add(metricRow("司机任务占用起点", "接受邀约"));
+        metrics.add(metricRow("司机任务占用终点", "实际归还 / 合法解除"));
+        metrics.add(metricRow("上门准时", "与约定上门区间比较"));
+        metrics.add(metricRow("净收款", "成功收款减成功退款"));
+        metrics.add(metricRow("取消返还", "单独观察车辆是否交还"));
+        view.put("metricDefinitions", metrics);
+
+        // ---- 按站点服务概况
+        List<Map<String, Object>> stationStats = new ArrayList<>();
+        for (Map<String, Object> s : adminMapper.statisticsByStation(deptId))
+        {
+            Row row = Row.of(s);
+            Map<String, Object> item = new LinkedHashMap<>();
+            item.put("stationId", String.valueOf(row.lng("station_id")));
+            item.put("stationName", row.str("station_name"));
+            item.put("orders", row.lng("orders", 0L));
+            item.put("paid", row.lng("paid", 0L));
+            item.put("unpaid", row.lng("unpaid", 0L));
+            item.put("inHand", row.lng("in_hand", 0L));
+            item.put("returned", row.lng("returned", 0L));
+            stationStats.add(item);
+        }
+        view.put("stationStats", stationStats);
+        view.put("stationTotal", stationStats.size());
         return view;
+    }
+
+    private Map<String, Object> statCard(String key, String label, String value, String hint)
+    {
+        Map<String, Object> card = new LinkedHashMap<>();
+        card.put("key", key);
+        card.put("label", label);
+        card.put("value", value);
+        card.put("hint", hint);
+        return card;
+    }
+
+    private Map<String, Object> metricRow(String label, String value)
+    {
+        Map<String, Object> row = new LinkedHashMap<>();
+        row.put("label", label);
+        row.put("value", value);
+        return row;
+    }
+
+    /** 分转元展示，仅用于统计卡文案 */
+    private String yuanText(long fen)
+    {
+        return "¥" + java.math.BigDecimal.valueOf(fen).movePointLeft(2)
+                .setScale(2, java.math.RoundingMode.HALF_UP).toPlainString();
+    }
+
+    /**
+     * 档案类接口的行转换：MyBatis 直接返回的 Map 带下划线键，时间列是裸 LocalDateTime。
+     *
+     * <p>裸 LocalDateTime 交给 Jackson 会输出 {@code 2026-10-21T02:18:02.638}（没有 Z），
+     * 浏览器按「本地时间」解析，展示与计算都会整体偏差 8 小时；这里统一按 ViTime.iso
+     * 输出带 Z 的 ISO8601，前端只认一种时间形状。</p>
+     */
+    private List<Map<String, Object>> camelRows(List<Map<String, Object>> rows)
+    {
+        List<Map<String, Object>> out = new ArrayList<>();
+        if (rows == null)
+        {
+            return out;
+        }
+        for (Map<String, Object> row : rows)
+        {
+            out.add(camelRow(row));
+        }
+        return out;
+    }
+
+    private Map<String, Object> camelRow(Map<String, Object> row)
+    {
+        Map<String, Object> out = new LinkedHashMap<>();
+        if (row == null)
+        {
+            return out;
+        }
+        for (Map.Entry<String, Object> entry : row.entrySet())
+        {
+            out.put(camelKey(entry.getKey()), cellValue(entry.getValue()));
+        }
+        return out;
+    }
+
+    /** {@code pickup_starts_at} → {@code pickupStartsAt}；已是驼峰的键保持原样 */
+    private String camelKey(String key)
+    {
+        if (key == null || key.indexOf('_') < 0)
+        {
+            return key;
+        }
+        StringBuilder sb = new StringBuilder(key.length());
+        boolean upper = false;
+        for (char c : key.toCharArray())
+        {
+            if (c == '_')
+            {
+                upper = true;
+                continue;
+            }
+            sb.append(upper ? Character.toUpperCase(c) : c);
+            upper = false;
+        }
+        return sb.toString();
+    }
+
+    /** 时间列统一 ISO8601 UTC；日期列保持 yyyy-MM-dd */
+    private Object cellValue(Object value)
+    {
+        if (value instanceof LocalDateTime time)
+        {
+            return ViTime.iso(time);
+        }
+        if (value instanceof java.time.LocalDate date)
+        {
+            return date.toString();
+        }
+        return value;
+    }
+
+    /** 给订单行补上门时段文案与金额，避免前端自己拼时间 */
+    private void enrichOrderRow(Map<String, Object> row)
+    {
+        Object starts = row.get("pickup_starts_at");
+        Object ends = row.get("pickup_ends_at");
+        if (starts instanceof LocalDateTime s && ends instanceof LocalDateTime e)
+        {
+            row.put("pickup_window_label", ViTime.windowLabel(s, e));
+        }
+        Object status = row.get("fulfillment_status");
+        if (status != null)
+        {
+            row.put("fulfillment_status_label", bookingService.statusLabel(String.valueOf(status)));
+        }
+        Object fen = row.get("total_fen");
+        if (fen instanceof Number n)
+        {
+            row.put("total_yuan", BigDecimal.valueOf(n.longValue()).movePointLeft(2)
+                    .setScale(2, RoundingMode.HALF_UP));
+        }
     }
 
     public Map<String, Object> jobs(int pageNum, int pageSize)
@@ -1737,10 +2256,15 @@ public class AdminService
         effective.put("rongli.driver.locationFreshSeconds", config.locationFreshSeconds());
         effective.put("rongli.service.termsVersion", config.termsVersion());
         effective.put("rongli.payment.channel", config.mockPayment() ? "MOCK" : "WECHAT");
+        effective.put("rongli.sms.enabled", config.getBool("rongli.sms.enabled", false));
+        effective.put("rongli.sms.provider", config.get("rongli.sms.provider", "ALIYUN"));
+        effective.put("rongli.subscribe.enabled", config.getBool("rongli.subscribe.enabled", true));
+        effective.put("rongli.handover.mutualConfirmTypes",
+                String.join(",", config.handoverMutualConfirmTypes()));
         view.put("effective", effective);
         view.put("stored", adminMapper.listRongliConfigs());
-        view.put("paymentChannelLocked", true);
-        view.put("hint", "支付通道需在配置文件中切换，管理端不可改，避免误把联调通道用于真实收款");
+        view.put("paymentChannelLocked", false);
+        view.put("hint", "支付通道与商户参数在「系统设置 → 微信支付」维护；短信通道、订阅消息各有独立配置页，保存后即时生效。");
         return view;
     }
 
@@ -1826,87 +2350,9 @@ public class AdminService
         return notificationTemplates();
     }
 
-    // ------------------------------------------------------------------ 员工绑定申请
-
-    public Map<String, Object> bindingRequests(int pageNum, int pageSize)
-    {
-        int limit = Math.min(Math.max(pageSize, 1), 100);
-        int offset = (Math.max(pageNum, 1) - 1) * limit;
-        List<Map<String, Object>> all = accountMapper.listPendingBindingRequests();
-        List<Map<String, Object>> rows = new ArrayList<>();
-        for (int i = offset; i < all.size() && rows.size() < limit; i++)
-        {
-            rows.add(all.get(i));
-        }
-        Map<String, Object> view = new LinkedHashMap<>();
-        view.put("pageNum", pageNum);
-        view.put("pageSize", limit);
-        view.put("total", all.size());
-        view.put("rows", rows);
-        return view;
-    }
-
-    /** 签发绑定凭证：凭证只返回一次明文，之后只存哈希 */
-    @Transactional
-    public Map<String, Object> issueBindingCredential(Long requestId, Long employeeUserId, Long userId)
-    {
-        Row request = Row.of(accountMapper.findBindingRequest(requestId));
-        if (request.isEmpty())
-        {
-            throw ApiException.notFound("绑定申请不存在");
-        }
-        if (!"PENDING".equals(request.str("status")))
-        {
-            throw ApiException.stateConflict("该申请已处理");
-        }
-        Row employee = Row.of(accountMapper.findSysUser(employeeUserId));
-        if (employee.isEmpty())
-        {
-            throw ApiException.notFound("员工不存在");
-        }
-        String code = crypto.randomDigits(8);
-        Map<String, Object> row = new LinkedHashMap<>();
-        row.put("requestId", requestId);
-        row.put("targetAccountId", request.lng("account_id"));
-        row.put("targetSysUserId", employeeUserId);
-        row.put("tokenHash", crypto.sha256(code));
-        row.put("issuedBy", userId);
-        row.put("expiresAt", ViTime.now().plusHours(24));
-        row.put("reason", "管理端签发");
-        accountMapper.insertBindingCredential(row);
-        Long credentialId = ((Number) row.get("id")).longValue();
-        accountMapper.updateBindingRequestStatus(requestId, "ISSUED");
-        eventService.record("EMPLOYEE_BINDING", requestId, "BINDING_CREDENTIAL_ISSUED", null, null,
-                Map.of("sysUserId", String.valueOf(employeeUserId)), "签发绑定凭证");
-        Map<String, Object> view = new LinkedHashMap<>();
-        view.put("credentialId", String.valueOf(credentialId));
-        view.put("requestId", String.valueOf(requestId));
-        view.put("sysUserId", String.valueOf(employeeUserId));
-        view.put("employeeName", employee.str("nick_name"));
-        view.put("code", code);
-        view.put("expiresAt", ViTime.iso((java.time.LocalDateTime) row.get("expiresAt")));
-        view.put("hint", "该凭证只显示一次，请线下告知员工本人在小程序内输入完成绑定");
-        return view;
-    }
-
-    @Transactional
-    public Map<String, Object> revokeBindingCredential(Long credentialId, Long userId)
-    {
-        Row c = Row.of(accountMapper.findCredential(credentialId));
-        if (c.isEmpty())
-        {
-            throw ApiException.notFound("绑定凭证不存在");
-        }
-        if (accountMapper.revokeCredential(credentialId) == 0)
-        {
-            throw ApiException.stateConflict("凭证已被使用或已撤销");
-        }
-        eventService.record("EMPLOYEE_BINDING", credentialId, "BINDING_CREDENTIAL_REVOKED", null, null, null, null);
-        Map<String, Object> view = new LinkedHashMap<>();
-        view.put("credentialId", String.valueOf(credentialId));
-        view.put("revoked", true);
-        return view;
-    }
+    // ------------------------------------------------------------------ 员工绑定
+    // V6.4 已退役后台签发一次性绑定凭证的流程，改由微信手机号唯一匹配自动关联；
+    // 相关表与权限点（biz:employeebinding:list/issue/revoke）一并下线。
 
     // ------------------------------------------------------------------ 代驾对账运维
 
@@ -2001,6 +2447,7 @@ public class AdminService
         view.put("pageNum", pageNum);
         view.put("pageSize", limit);
         view.put("rows", rows);
+        view.put("total", ledgerMapper.countPayments(status, statementId));
         return view;
     }
 
@@ -2028,6 +2475,7 @@ public class AdminService
         view.put("pageNum", pageNum);
         view.put("pageSize", limit);
         view.put("rows", ledgerMapper.listAdjustments(status, offset, limit));
+        view.put("total", ledgerMapper.countAdjustments(status));
         return view;
     }
 
