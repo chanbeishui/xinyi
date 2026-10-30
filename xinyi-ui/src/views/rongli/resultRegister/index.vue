@@ -1,5 +1,5 @@
 <template>
-  <div class="app-container">
+  <RongliPage title="登记最终检测结果" subtitle="与检测工作小程序同源；双端并发只保留一份有效提交。">
     <el-page-header class="mb12" @back="router.push('/rongli/inspect/inspectionTodo')">
       <template #content>
         <span>检测结果登记</span>
@@ -135,10 +135,11 @@
         </el-col>
       </el-row>
     </template>
-  </div>
+  </RongliPage>
 </template>
 
 <script setup name="RongliResultRegister" lang="ts">
+import RongliPage from '../components/RongliPage.vue'
 import { computed, onMounted, reactive, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'

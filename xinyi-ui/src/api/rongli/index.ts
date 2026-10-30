@@ -77,6 +77,9 @@ export function listOwnerVehicles(ownerId: number | string): Promise<any> {
 export function listOwnerOrders(ownerId: number | string): Promise<any> {
   return request({ url: `/api/admin/owners/${ownerId}/orders`, method: 'get' })
 }
+export function listOwnerAfterSales(ownerId: number | string, params?: any): Promise<any> {
+  return request({ url: `/api/admin/owners/${ownerId}/after-sales`, method: 'get', params })
+}
 
 export function listDrivers(params: any): Promise<any> {
   return request({ url: '/api/admin/drivers', method: 'get', params })
@@ -169,8 +172,8 @@ export function getFeeRule(ruleId: number | string): Promise<any> {
 export function updateFeeRule(ruleId: number | string, data: any): Promise<any> {
   return request({ url: `/api/admin/driver-fee-rules/${ruleId}`, method: 'put', data })
 }
-export function publishFeeRule(ruleId: number | string): Promise<any> {
-  return request({ url: `/api/admin/driver-fee-rules/${ruleId}/publish`, method: 'post' })
+export function publishFeeRule(ruleId: number | string, opinion?: string): Promise<any> {
+  return request({ url: `/api/admin/driver-fee-rules/${ruleId}/publish`, method: 'post', data: { opinion } })
 }
 export function trialFeeRule(data: any): Promise<any> {
   return request({ url: '/api/admin/driver-fee-rules/trial', method: 'post', data })

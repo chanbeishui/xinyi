@@ -1,5 +1,5 @@
 <template>
-  <div class="app-container">
+  <RongliPage title="对账调整记录" subtitle="保留原费用与账单，通过有依据的调整处理差异。">
     <el-row :gutter="12" class="mb8">
       <el-col :span="5">
         <el-select v-model="query.status" placeholder="全部状态" clearable class="w100">
@@ -119,10 +119,11 @@
         <el-button type="primary" :loading="saving" @click="submitAudit">提交</el-button>
       </template>
     </el-dialog>
-  </div>
+  </RongliPage>
 </template>
 
 <script setup name="RongliAdjustment" lang="ts">
+import RongliPage from '../components/RongliPage.vue'
 import { onMounted, reactive, ref } from 'vue'
 import { ElMessage } from 'element-plus'
 import { auditFeeAdjustment, createFeeAdjustment, listFeeAdjustments } from '@/api/rongli'

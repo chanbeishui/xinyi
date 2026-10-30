@@ -1,5 +1,5 @@
 <template>
-  <div class="app-container">
+  <RongliPage title="个人对账" subtitle="费用及账单需要对应主体授权。">
     <el-form :inline="true" class="mb8">
       <el-form-item label="代驾">
         <el-select
@@ -192,10 +192,11 @@
         <el-button type="primary" @click="generate">生成对账单</el-button>
       </template>
     </el-dialog>
-  </div>
+  </RongliPage>
 </template>
 
 <script setup name="RongliReconcileSummary" lang="ts">
+import RongliPage from '../components/RongliPage.vue'
 import { computed, onMounted, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'

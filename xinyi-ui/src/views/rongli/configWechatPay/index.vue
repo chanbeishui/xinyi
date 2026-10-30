@@ -1,5 +1,5 @@
 <template>
-  <div class="app-container">
+  <RongliPage title="微信支付配置" subtitle="商户参数加密保存；通道切换在配置文件完成。">
     <el-alert
       :type="statusAlertType"
       :closable="false"
@@ -167,10 +167,11 @@
         <el-descriptions-item label="结论">{{ checkResult.hint }}</el-descriptions-item>
       </el-descriptions>
     </el-card>
-  </div>
+  </RongliPage>
 </template>
 
 <script setup name="RongliConfigWechatPay" lang="ts">
+import RongliPage from '../components/RongliPage.vue'
 import { computed, onMounted, reactive, ref } from 'vue'
 import { ElMessage } from 'element-plus'
 import { getPayConfig, savePayConfig, selfCheckPayConfig } from '@/api/rongli'

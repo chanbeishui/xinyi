@@ -1,235 +1,294 @@
 <template>
-  <div class="app-container">
-    <el-row :gutter="12" class="mb12">
-      <el-col :span="6">
-        <el-card shadow="never" class="stat-card">
-          <div class="stat-label">进行中订单</div>
-          <div class="stat-value">{{ num(overview.active_orders) }}</div>
-          <div class="stat-hint">未完成、未取消</div>
-        </el-card>
-      </el-col>
-      <el-col :span="6">
-        <el-card shadow="never" class="stat-card">
-          <div class="stat-label">今日新增预约</div>
-          <div class="stat-value">{{ num(overview.orders_today) }}</div>
-          <div class="stat-hint">按自然日（Asia/Shanghai）</div>
-        </el-card>
-      </el-col>
-      <el-col :span="6">
-        <el-card shadow="never" class="stat-card">
-          <div class="stat-label">待审售后</div>
-          <div class="stat-value warn">{{ num(overview.aftersale_pending) }}</div>
-          <div class="stat-hint">待运营一次性审核</div>
-        </el-card>
-      </el-col>
-      <el-col :span="6">
-        <el-card shadow="never" class="stat-card">
-          <div class="stat-label">GMV（未取消）</div>
-          <div class="stat-value">{{ yuan(demand.gmv_fen) }}</div>
-          <div class="stat-hint">订单应收金额合计</div>
-        </el-card>
-      </el-col>
-    </el-row>
+  <RongliPage title="运营工作台" subtitle="先处理待返还车辆和人工待办，再关注当日业务概况。">
+    <template #actions>
+      <el-button icon="Refresh" @click="load">刷新</el-button>
+      <el-button @click="go(RL.order)">查看预约订单</el-button>
+    </template>
 
-    <el-row :gutter="12" class="mb12">
-      <el-col :span="12">
-        <el-card shadow="never">
-          <template #header>
-            <div class="card-head">
-              <span>需要处理</span>
-              <el-button icon="Refresh" text @click="load">刷新</el-button>
-            </div>
-          </template>
-          <div class="todo-grid">
-            <div class="todo" @click="go('/rongli/business/dispatch')">
-              <div class="todo-num">{{ num(demand.dispatching) }}</div>
-              <div class="todo-label">待派单/派单中</div>
-            </div>
-            <div class="todo" @click="go('/rongli/business/aftersale')">
-              <div class="todo-num">{{ num(overview.aftersale_pending) }}</div>
-              <div class="todo-label">售后待审</div>
-            </div>
-            <div class="todo" @click="go('/rongli/business/exception')">
-              <div class="todo-num">{{ num(overview.dispute_open) }}</div>
-              <div class="todo-label">争议未结</div>
-            </div>
-            <div class="todo" @click="go('/rongli/business/exception')">
-              <div class="todo-num">{{ num(overview.exception_open) }}</div>
-              <div class="todo-label">服务异常</div>
-            </div>
-            <div class="todo" @click="go('/rongli/business/exception')">
-              <div class="todo-num">{{ num(overview.correction_pending) }}</div>
-              <div class="todo-label">结果更正</div>
-            </div>
-            <div class="todo" @click="go('/rongli/people/penalty')">
-              <div class="todo-num">{{ num(overview.appeal_pending) }}</div>
-              <div class="todo-label">申诉待处理</div>
-            </div>
-            <div class="todo" @click="go('/rongli/people/qualification')">
-              <div class="todo-num">{{ num(overview.qualification_pending) }}</div>
-              <div class="todo-label">资格待审</div>
-            </div>
-            <div class="todo" @click="go('/rongli/business/order')">
-              <div class="todo-num">{{ num(demand.wait_confirm) }}</div>
-              <div class="todo-label">待车主确认</div>
-            </div>
-          </div>
-        </el-card>
-      </el-col>
-      <el-col :span="12">
-        <el-card shadow="never">
-          <template #header>
-            <div class="card-head">
-              <span>履约分布</span>
-              <el-radio-group v-model="days" size="small" @change="load">
-                <el-radio-button :value="7">近 7 天</el-radio-button>
-                <el-radio-button :value="14">近 14 天</el-radio-button>
-                <el-radio-button :value="30">近 30 天</el-radio-button>
-              </el-radio-group>
-            </div>
-          </template>
-          <el-descriptions :column="2" border size="small">
-            <el-descriptions-item label="在途取车">{{ num(demand.on_the_way) }}</el-descriptions-item>
-            <el-descriptions-item label="服务中">{{ num(demand.in_service) }}</el-descriptions-item>
-            <el-descriptions-item label="已检测">{{ num(demand.inspected) }}</el-descriptions-item>
-            <el-descriptions-item label="返程中">{{ num(demand.returning) }}</el-descriptions-item>
-            <el-descriptions-item label="待确认">{{ num(demand.wait_confirm) }}</el-descriptions-item>
-            <el-descriptions-item label="已完成">{{ num(demand.completed) }}</el-descriptions-item>
-            <el-descriptions-item label="已取消">{{ num(demand.cancelled) }}</el-descriptions-item>
-            <el-descriptions-item label="累计订单">{{ num(demand.total) }}</el-descriptions-item>
-          </el-descriptions>
-        </el-card>
-      </el-col>
-    </el-row>
-
-    <el-card shadow="never" class="mb12">
-      <template #header>
-        <div class="card-head">
-          <span>下单与金额趋势（近 {{ rangeDays }} 天）</span>
-          <el-tag type="info" effect="plain">{{ rangeText }}</el-tag>
+    <section class="rl-panel">
+      <div class="rl-quiet-stats">
+        <div>
+          <span>今日预约</span>
+          <b>{{ num(overview.orders_today) }}</b>
         </div>
-      </template>
-      <div ref="chartRef" class="chart"></div>
-    </el-card>
+        <div>
+          <span>统一售后待审</span>
+          <b :class="{ 'is-warn': num(overview.aftersale_pending) > 0 }">{{ num(overview.aftersale_pending) }}</b>
+        </div>
+        <div>
+          <span>取消待返还</span>
+          <b :class="{ 'is-warn': num(overview.cancel_return_waiting) > 0 }">{{ num(overview.cancel_return_waiting) }}</b>
+        </div>
+        <div>
+          <span>待核对账单</span>
+          <b :class="{ 'is-warn': num(overview.statement_pending) > 0 }">{{ num(overview.statement_pending) }}</b>
+        </div>
+      </div>
+    </section>
 
-    <el-card shadow="never">
-      <template #header>逐日明细</template>
-      <el-table :data="daily" border size="small" max-height="360">
-        <el-table-column label="日期" prop="day" width="140" />
-        <el-table-column label="下单量" prop="orders" width="120" align="right" />
-        <el-table-column label="应收金额" width="160" align="right">
-          <template #default="{ row }">{{ yuan(row.amount_fen) }}</template>
+    <div class="rl-grid rl-grid--2 mt16">
+      <section class="rl-panel">
+        <div class="rl-panel__head">
+          <h3>需要先处理</h3>
+        </div>
+        <div class="rl-panel__body rl-todo">
+          <div v-for="item in todos" :key="item.title" class="rl-todo__row">
+            <div class="rl-todo__icon" :class="'is-' + item.tone">{{ item.icon }}</div>
+            <div class="rl-todo__body">
+              <div class="rl-todo__title">{{ item.title }}</div>
+              <div class="rl-todo__sub">{{ item.sub }}</div>
+            </div>
+            <el-button link type="primary" @click="go(item.to)">{{ item.action }}</el-button>
+          </div>
+        </div>
+      </section>
+
+      <section class="rl-panel">
+        <div class="rl-panel__head">
+          <h3>资料与人员</h3>
+        </div>
+        <div class="rl-panel__body rl-todo">
+          <div v-for="item in entries" :key="item.title" class="rl-todo__row is-link" @click="go(item.to)">
+            <div class="rl-todo__icon is-gray">{{ item.icon }}</div>
+            <div class="rl-todo__body">
+              <div class="rl-todo__title">{{ item.title }}</div>
+              <div class="rl-todo__sub">{{ item.sub }}</div>
+            </div>
+            <el-icon class="rl-todo__arrow"><ArrowRight /></el-icon>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <section class="rl-panel mt16">
+      <div class="rl-panel__head">
+        <h3>当日预约</h3>
+        <el-button link type="primary" @click="go(RL.order)">查看全部</el-button>
+      </div>
+      <el-table v-loading="loading" :data="todayOrders" :border="false">
+        <el-table-column label="订单 / 车辆" min-width="190">
+          <template #default="{ row }">
+            <div class="rl-cell-title">{{ row.plateNo || '—' }}</div>
+            <div class="rl-mono">{{ row.orderNo }}</div>
+          </template>
         </el-table-column>
-      </el-table>
-      <el-alert class="mt12" type="info" :closable="false" show-icon>
-        <template #title>
-          <div v-for="(d, i) in definitions" :key="i">{{ d }}</div>
+        <el-table-column label="上门时段" width="170">
+          <template #default="{ row }">{{ row.pickupWindowLabel || shortTime(row.pickupStartsAt) }}</template>
+        </el-table-column>
+        <el-table-column label="检测点" width="150">
+          <template #default="{ row }">{{ row.stationName || '—' }}</template>
+        </el-table-column>
+        <el-table-column label="履约状态" width="130">
+          <template #default="{ row }">
+            <span class="rl-tag" :class="stageClass(row.fulfillmentStatus)">
+              {{ row.fulfillmentStatusLabel || row.fulfillmentStatus }}
+            </span>
+          </template>
+        </el-table-column>
+        <el-table-column label="操作" width="90" fixed="right">
+          <template #default="{ row }">
+            <el-button link type="primary" @click="goOrder(row)">查看</el-button>
+          </template>
+        </el-table-column>
+        <template #empty>
+          <div class="rl-empty">
+            <div class="rl-empty__title">今天还没有预约</div>
+            <div class="rl-empty__hint">当日下单的订单会出现在这里。</div>
+            <el-button @click="go(RL.order)">查看全部订单</el-button>
+          </div>
         </template>
-      </el-alert>
-    </el-card>
-  </div>
+      </el-table>
+    </section>
+  </RongliPage>
 </template>
 
 <script setup name="RongliDashboard" lang="ts">
-import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import RongliPage from '../components/RongliPage.vue'
+import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import * as echarts from 'echarts'
-import { getStatistics } from '@/api/rongli'
+import { getStatistics, listOrders } from '@/api/rongli'
+import { shortTime } from '../format'
+import { RL } from '../routes'
+import { stageClass } from '../status'
 
 const router = useRouter()
-const days = ref(14)
-const rangeDays = ref(14)
-const rangeText = ref('')
 const overview = ref<any>({})
-const demand = ref<any>({})
-const daily = ref<any[]>([])
-const definitions = ref<string[]>([])
-const chartRef = ref<HTMLElement | null>(null)
-let chart: echarts.ECharts | null = null
+const dash = ref<any>({})
+const todayOrders = ref<any[]>([])
+const loading = ref(false)
 
-onMounted(() => {
-  load()
-  window.addEventListener('resize', resize)
-})
+const todos = ref<any[]>([])
+const entries = [
+  { icon: '车', title: '车辆列表', sub: '查看资料、关联车主与检测历史', to: RL.vehicle },
+  { icon: '主', title: '车主列表', sub: '维护必要资料与服务备注', to: RL.owner },
+  { icon: '驾', title: '代驾员列表', sub: '资格、任务与个人对账', to: RL.driver }
+]
 
-onBeforeUnmount(() => {
-  window.removeEventListener('resize', resize)
-  if (chart) {
-    chart.dispose()
-    chart = null
-  }
-})
-
-watch(days, () => load())
+onMounted(load)
 
 async function load() {
-  const res: any = await getStatistics({ days: days.value })
-  overview.value = (res && res.overview) || {}
-  demand.value = (res && res.dashboard) || {}
-  daily.value = (res && res.daily) || []
-  definitions.value = (res && res.definitions) || []
-  rangeDays.value = Number((res && res.rangeDays) || days.value)
-  rangeText.value = String((res && res.from) || '').slice(0, 10)
-  await nextTick()
-  render()
+  loading.value = true
+  try {
+    const stat: any = await getStatistics({ days: 14 }).catch(() => null)
+    overview.value = (stat && stat.overview) || {}
+    dash.value = (stat && stat.dashboard) || {}
+    const o = overview.value
+    const res: any = await listOrders({ pageNum: 1, pageSize: 8, from: todayStart() }).catch(() => null)
+    todayOrders.value = (res && res.rows) || []
+    todos.value = [
+      {
+        icon: '返',
+        tone: 'amber',
+        title: num(o.cancel_return_waiting) > 0 ? '取消已批准，车辆待返还' : '当前没有待返还车辆',
+        sub: num(o.cancel_return_waiting) > 0 ? '返还完成前仍需保留保管责任' : '取消批准后会自动进入此处',
+        action: '查看返还',
+        to: RL.aftersale
+      },
+      {
+        icon: '审',
+        tone: 'amber',
+        title: num(o.aftersale_pending) > 0 ? '取消与退款申请等待审核' : '售后申请已清空',
+        sub: '一次审核决定取消结果与退款金额',
+        action: '进入工作台',
+        to: RL.aftersale
+      },
+      {
+        icon: '派',
+        tone: 'blue',
+        title: num(dash.value.dispatching) > 0 ? '有预约等待人工安排' : '自动派单队列为空',
+        sub: '只邀请当前具备资格和空闲条件的代驾',
+        action: '处理派单',
+        to: RL.dispatch
+      }
+    ]
+  } finally {
+    loading.value = false
+  }
 }
 
-function render() {
-  if (!chartRef.value) return
-  if (!chart) chart = echarts.init(chartRef.value)
-  const labels = daily.value.map((d) => d.day)
-  const orders = daily.value.map((d) => Number(d.orders || 0))
-  const amounts = daily.value.map((d) => Number(d.amount_fen || 0) / 100)
-  chart.setOption(
-    {
-      tooltip: { trigger: 'axis' },
-      legend: { data: ['下单量', '应收金额(元)'] },
-      grid: { left: 48, right: 56, top: 40, bottom: 32 },
-      xAxis: { type: 'category', data: labels },
-      yAxis: [
-        { type: 'value', name: '单' },
-        { type: 'value', name: '元' }
-      ],
-      series: [
-        { name: '下单量', type: 'bar', data: orders, barMaxWidth: 26, itemStyle: { color: '#1f6feb' } },
-        { name: '应收金额(元)', type: 'line', yAxisIndex: 1, smooth: true, data: amounts, itemStyle: { color: '#e5484d' } }
-      ]
-    },
-    true
-  )
-  chart.resize()
-}
-
-function resize() {
-  if (chart) chart.resize()
-}
-
-function go(path: string) {
-  router.push(path)
+function todayStart() {
+  const d = new Date()
+  d.setHours(0, 0, 0, 0)
+  return d.toISOString().slice(0, 19)
 }
 
 function num(v: any) {
   return Number(v || 0)
 }
 
-function yuan(v: any) {
-  return '¥' + (Number(v || 0) / 100).toFixed(2)
+function go(path: string) {
+  router.push(path)
+}
+
+function goOrder(row: any) {
+  router.push({ path: RL.order, query: { orderNo: row.orderNo } })
 }
 </script>
 
 <style scoped>
-.mb12 { margin-bottom: 12px; }
-.mt12 { margin-top: 12px; }
-.stat-card { border-left: 3px solid #1f6feb; }
-.stat-label { color: #6b7280; font-size: 13px; }
-.stat-value { font-size: 26px; font-weight: 600; margin-top: 6px; }
-.stat-value.warn { color: #e6a23c; }
-.stat-hint { color: #9aa1ac; font-size: 12px; margin-top: 4px; }
-.card-head { display: flex; align-items: center; justify-content: space-between; }
-.todo-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
-.todo { border: 1px solid #edeff3; border-radius: 8px; padding: 12px; text-align: center; cursor: pointer; transition: all 0.15s; }
-.todo:hover { border-color: #1f6feb; background: #f5f9ff; }
-.todo-num { font-size: 22px; font-weight: 600; color: #1f6feb; }
-.todo-label { color: #6b7280; font-size: 12px; margin-top: 4px; }
-.chart { height: 300px; width: 100%; }
+.rl-quiet-stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.rl-quiet-stats > div {
+  padding: 18px 20px;
+  border-right: 1px solid var(--rl-line-soft);
+}
+
+.rl-quiet-stats > div:last-child {
+  border-right: 0;
+}
+
+.rl-quiet-stats span {
+  display: block;
+  font-size: 12.5px;
+  color: var(--rl-ink-3);
+  margin-bottom: 6px;
+}
+
+.rl-quiet-stats b {
+  font-size: 26px;
+  line-height: 32px;
+  font-weight: 600;
+  color: var(--rl-ink);
+  letter-spacing: 0.4px;
+}
+
+.rl-quiet-stats b.is-warn {
+  color: #b54708;
+}
+
+.rl-todo__row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--rl-line-soft);
+}
+
+.rl-todo__row:first-child {
+  padding-top: 0;
+}
+
+.rl-todo__row:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
+.rl-todo__row.is-link {
+  cursor: pointer;
+}
+
+.rl-todo__row.is-link:hover .rl-todo__title {
+  color: var(--rl-primary);
+}
+
+.rl-todo__icon {
+  flex: none;
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12.5px;
+  background: #f2f4f7;
+  color: var(--rl-ink-2);
+}
+
+.rl-todo__icon.is-amber {
+  background: #fffaeb;
+  color: #b54708;
+}
+
+.rl-todo__icon.is-blue {
+  background: #eff8ff;
+  color: #175cd3;
+}
+
+.rl-todo__body {
+  flex: 1;
+  min-width: 0;
+}
+
+.rl-todo__title {
+  font-size: 13px;
+  color: var(--rl-ink);
+  font-weight: 500;
+}
+
+.rl-todo__sub {
+  font-size: 12px;
+  color: var(--rl-ink-3);
+  margin-top: 2px;
+}
+
+.rl-todo__arrow {
+  color: var(--rl-ink-4);
+}
+
+.rl-cell-title {
+  font-weight: 500;
+}
 </style>

@@ -1,145 +1,174 @@
 <template>
-  <div class="app-container">
-    <el-form :inline="true" class="mb8">
-      <el-form-item label="状态">
-        <el-select v-model="query.status" clearable placeholder="全部" style="width: 140px" @change="load">
+  <RongliPage
+    title="培训课程"
+    subtitle="维护真实服务规范与考核内容。发布版本不能覆盖已产生的学习或答题记录。"
+  >
+    <template #actions>
+      <el-button icon="Refresh" @click="load">刷新</el-button>
+      <el-button type="primary" icon="Plus" @click="openCreate">维护课程</el-button>
+    </template>
+
+    <section class="rl-panel">
+      <div class="rl-filters">
+        <el-select v-model="query.status" placeholder="全部状态" style="width: 150px" @change="load">
+          <el-option label="全部状态" value="" />
           <el-option label="草稿" value="DRAFT" />
           <el-option label="已发布" value="PUBLISHED" />
           <el-option label="已停用" value="DISABLED" />
         </el-select>
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary" icon="Plus" @click="openCreate">新建课程</el-button>
-        <el-button icon="Refresh" @click="load">刷新</el-button>
-      </el-form-item>
-    </el-form>
+        <span class="rl-muted">共 {{ total }} 个课程版本</span>
+      </div>
 
-    <el-alert
-      class="mb8"
-      type="info"
-      :closable="false"
-      show-icon
-      title="课程按版本管理：已发布课程不可修改（学时与题库已对代驾生效），需要调整请新建同 courseKey 的新版本。"
-    />
-
-    <el-table v-loading="loading" :data="rows" border>
-      <el-table-column label="ID" prop="trainingId" width="80" />
-      <el-table-column label="课程编码" prop="courseKey" width="200" show-overflow-tooltip />
-      <el-table-column label="版本" prop="courseVersion" width="80" />
-      <el-table-column label="标题" prop="title" min-width="200" show-overflow-tooltip />
-      <el-table-column label="要求学时" width="120">
-        <template #default="{ row }">{{ Math.round(Number(row.requiredDurationSeconds || 0) / 60) }} 分钟</template>
-      </el-table-column>
-      <el-table-column label="及格分" prop="passScore" width="90" />
-      <el-table-column label="状态" width="100">
-        <template #default="{ row }">
-          <el-tag :type="row.status === 'PUBLISHED' ? 'success' : row.status === 'DRAFT' ? 'warning' : 'info'">
-            {{ row.statusLabel }}
-          </el-tag>
+      <el-table v-loading="loading" :data="rows" :border="false">
+        <el-table-column label="课程" min-width="220">
+          <template #default="{ row }">
+            <div class="rl-strong">{{ row.title }}</div>
+            <div class="rl-mono">{{ row.courseKey }}</div>
+          </template>
+        </el-table-column>
+        <el-table-column label="版本" width="100">
+          <template #default="{ row }">
+            <span class="rl-mono">V{{ row.courseVersion }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="要求学时" width="110">
+          <template #default="{ row }">
+            {{ Math.round(Number(row.requiredDurationSeconds || 0) / 60) }} 分钟
+          </template>
+        </el-table-column>
+        <el-table-column label="及格分" width="90" align="center">
+          <template #default="{ row }">{{ row.passScore }}</template>
+        </el-table-column>
+        <el-table-column label="状态" width="110">
+          <template #default="{ row }">
+            <span class="rl-tag" :class="statusClass(row.status)">{{ row.statusLabel }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="发布时间" width="150">
+          <template #default="{ row }">{{ shortTime(row.publishedAt) }}</template>
+        </el-table-column>
+        <el-table-column label="操作" width="200" fixed="right">
+          <template #default="{ row }">
+            <el-button link type="primary" @click="openEdit(row)">
+              {{ row.status === 'DRAFT' ? '编辑课程与题目' : '查看课程' }}
+            </el-button>
+            <el-button v-if="row.status === 'DRAFT'" link type="success" @click="publish(row)">发布</el-button>
+          </template>
+        </el-table-column>
+        <template #empty>
+          <div class="rl-empty">
+            <div class="rl-empty__title">还没有课程</div>
+            <div class="rl-empty__hint">先维护教材与题库，发布后对新代驾生效。</div>
+            <el-button type="primary" @click="openCreate">维护课程</el-button>
+          </div>
         </template>
-      </el-table-column>
-      <el-table-column label="发布时间" prop="publishedAt" width="180" />
-      <el-table-column label="操作" width="180" fixed="right">
-        <template #default="{ row }">
-          <el-button link type="primary" :disabled="row.status !== 'DRAFT'" @click="openEdit(row)">编辑</el-button>
-          <el-button link type="success" :disabled="row.status !== 'DRAFT'" @click="publish(row)">发布</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
+      </el-table>
 
-    <el-pagination
-      v-model:current-page="query.pageNum"
-      v-model:page-size="query.pageSize"
-      :total="total"
-      layout="total, sizes, prev, pager, next"
-      class="mt16"
-      @current-change="load"
-      @size-change="load"
-    />
+      <div class="rl-pager">
+        <el-pagination
+          v-model:current-page="query.pageNum"
+          v-model:page-size="query.pageSize"
+          :total="total"
+          layout="total, sizes, prev, pager, next"
+          @current-change="load"
+          @size-change="load"
+        />
+      </div>
 
-    <el-dialog v-model="dialogVisible" :title="form.trainingId ? '编辑课程' : '新建课程'" width="820px" top="6vh">
-      <el-form label-width="110px">
-        <el-row :gutter="12">
-          <el-col :span="12">
+      <div class="rl-panel__body">
+        <p class="rl-hint">
+          只读演示题不代表实际培训政策。正式上线前由业务确定教材、必学时长、分数及重试规则；已发布课程不可修改，调整需新建同编码的新版本。
+        </p>
+      </div>
+    </section>
+
+    <el-drawer v-model="dialogVisible" :title="form.trainingId ? '编辑课程与题目' : '新建课程'" size="780px">
+      <div class="rl-panel">
+        <div class="rl-panel__head"><h3>课程信息</h3></div>
+        <div class="rl-panel__body">
+          <el-form label-position="top" class="rl-form-grid">
             <el-form-item label="课程编码">
               <el-input v-model="form.courseKey" placeholder="留空自动生成，例如 SERVICE_BASIC" :disabled="!!form.trainingId" />
             </el-form-item>
-          </el-col>
-          <el-col :span="12">
             <el-form-item label="课程标题" required>
               <el-input v-model="form.title" maxlength="120" />
             </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="要求学时(秒)" required>
+            <el-form-item label="要求学时（秒）" required>
               <el-input-number v-model="form.requiredDurationSeconds" :min="30" :step="30" style="width: 100%" />
             </el-form-item>
-          </el-col>
-          <el-col :span="12">
             <el-form-item label="及格分">
               <el-input-number v-model="form.passScore" :min="0" :max="100" style="width: 100%" />
             </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="考试时限(秒)">
+            <el-form-item label="考试时限（秒）">
               <el-input-number v-model="form.attemptTimeLimitSeconds" :min="60" :step="60" style="width: 100%" />
             </el-form-item>
-          </el-col>
-          <el-col :span="12">
             <el-form-item label="视频文件 ID">
               <el-input v-model="form.mediaFileId" placeholder="可选，培训视频的媒体文件 ID" />
             </el-form-item>
-          </el-col>
-        </el-row>
-        <el-form-item label="课程说明">
-          <el-input v-model="form.description" type="textarea" :rows="2" maxlength="500" show-word-limit />
-        </el-form-item>
-      </el-form>
-
-      <el-divider content-position="left">题库（选项一行一个，正确答案填 A/B/C，多选可用 A,B）</el-divider>
-
-      <div v-for="(q, i) in form.questions" :key="i" class="question-block">
-        <el-row :gutter="8">
-          <el-col :span="4">
-            <el-input v-model="q.questionCode" placeholder="题号" />
-          </el-col>
-          <el-col :span="6">
-            <el-select v-model="q.questionType" style="width: 100%">
-              <el-option label="单选" value="SINGLE" />
-              <el-option label="多选" value="MULTIPLE" />
-              <el-option label="判断" value="TRUE_FALSE" />
-            </el-select>
-          </el-col>
-          <el-col :span="10">
-            <el-input v-model="q.prompt" placeholder="题干" />
-          </el-col>
-          <el-col :span="4">
-            <el-button type="danger" plain @click="removeQuestion(i)">删除</el-button>
-          </el-col>
-        </el-row>
-        <el-row :gutter="8" class="mt8">
-          <el-col :span="16">
-            <el-input v-model="q.optionsText" type="textarea" :rows="3" placeholder="选项，一行一个&#10;合格&#10;不合格" />
-          </el-col>
-          <el-col :span="8">
-            <el-input v-model="q.correctOptionCodes" placeholder="正确答案，如 A" />
-            <div class="muted mt8">按选项顺序自动编号 A/B/C/D</div>
-          </el-col>
-        </el-row>
+          </el-form>
+          <el-form-item label="课程说明" label-position="top">
+            <el-input v-model="form.description" type="textarea" :rows="2" maxlength="500" show-word-limit />
+          </el-form-item>
+        </div>
       </div>
 
-      <el-button class="mt8" icon="Plus" @click="addQuestion">添加题目</el-button>
+      <div class="rl-panel">
+        <div class="rl-panel__head">
+          <h3>题库</h3>
+          <span class="rl-muted">选项一行一个，正确答案填 A/B/C，多选可用 A,B</span>
+        </div>
+        <div class="rl-panel__body">
+          <div v-for="(q, i) in form.questions" :key="i" class="rl-question">
+            <div class="rl-question__head">
+              <span class="rl-strong">第 {{ i + 1 }} 题</span>
+              <el-button link type="danger" :disabled="readonly" @click="removeQuestion(i)">删除</el-button>
+            </div>
+            <el-form label-position="top" class="rl-form-grid">
+              <el-form-item label="题号">
+                <el-input v-model="q.questionCode" placeholder="Q1" :disabled="readonly" />
+              </el-form-item>
+              <el-form-item label="题型">
+                <el-select v-model="q.questionType" style="width: 100%" :disabled="readonly">
+                  <el-option label="单选" value="SINGLE" />
+                  <el-option label="多选" value="MULTIPLE" />
+                  <el-option label="判断" value="TRUE_FALSE" />
+                </el-select>
+              </el-form-item>
+              <el-form-item label="题干" style="grid-column: span 2">
+                <el-input v-model="q.prompt" placeholder="请输入题干" :disabled="readonly" />
+              </el-form-item>
+              <el-form-item label="选项（一行一个）">
+                <el-input
+                  v-model="q.optionsText"
+                  type="textarea"
+                  :rows="3"
+                  :disabled="readonly"
+                  placeholder="合格&#10;不合格"
+                />
+              </el-form-item>
+              <el-form-item label="正确答案">
+                <el-input v-model="q.correctOptionCodes" placeholder="如 A" :disabled="readonly" />
+                <div class="rl-sub">按选项顺序自动编号 A/B/C/D</div>
+              </el-form-item>
+            </el-form>
+          </div>
+
+          <el-button v-if="!readonly" icon="Plus" @click="addQuestion">添加题目</el-button>
+          <p v-if="readonly" class="rl-hint">已发布课程不可修改，需要调整请新建同编码的新版本。</p>
+        </div>
+      </div>
 
       <template #footer>
         <el-button @click="dialogVisible = false">取消</el-button>
-        <el-button type="primary" :loading="saving" @click="submit">保存草稿</el-button>
+        <el-button v-if="!readonly" type="primary" :loading="saving" @click="submit">保存草稿</el-button>
       </template>
-    </el-dialog>
-  </div>
+    </el-drawer>
+  </RongliPage>
 </template>
 
 <script setup name="RongliTraining" lang="ts">
-import { onMounted, reactive, ref } from 'vue'
+import RongliPage from '../components/RongliPage.vue'
+import { computed, onMounted, reactive, ref } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import {
   createTrainingCourse,
@@ -148,6 +177,7 @@ import {
   publishTrainingCourse,
   updateTrainingCourse
 } from '@/api/rongli'
+import { shortTime } from '../format'
 
 const loading = ref(false)
 const saving = ref(false)
@@ -158,6 +188,7 @@ const query = reactive<any>({ status: '', pageNum: 1, pageSize: 20 })
 const dialogVisible = ref(false)
 const form = reactive<any>({
   trainingId: '',
+  status: 'DRAFT',
   courseKey: '',
   title: '',
   description: '',
@@ -167,6 +198,8 @@ const form = reactive<any>({
   attemptTimeLimitSeconds: 1800,
   questions: [] as any[]
 })
+
+const readonly = computed(() => !!form.trainingId && form.status !== 'DRAFT')
 
 onMounted(load)
 
@@ -183,8 +216,15 @@ async function load() {
   }
 }
 
+function statusClass(status: string) {
+  if (status === 'PUBLISHED') return 'rl-tag--green'
+  if (status === 'DRAFT') return 'rl-tag--amber'
+  return 'rl-tag--gray'
+}
+
 function resetForm() {
   form.trainingId = ''
+  form.status = 'DRAFT'
   form.courseKey = ''
   form.title = ''
   form.description = ''
@@ -205,6 +245,7 @@ async function openEdit(row: any) {
   const detail: any = await getTrainingCourse(row.trainingId)
   resetForm()
   form.trainingId = detail.trainingId
+  form.status = detail.status || 'DRAFT'
   form.courseKey = detail.courseKey
   form.title = detail.title
   form.description = detail.description
@@ -293,9 +334,17 @@ async function publish(row: any) {
 </script>
 
 <style scoped>
-.mb8 { margin-bottom: 8px; }
-.mt8 { margin-top: 8px; }
-.mt16 { margin-top: 16px; justify-content: flex-end; }
-.muted { color: #909399; font-size: 12px; }
-.question-block { border: 1px dashed #dcdfe6; border-radius: 6px; padding: 10px; margin-bottom: 10px; }
+.rl-question {
+  border: 1px solid var(--rl-line, #eaecf0);
+  border-radius: 8px;
+  padding: 12px 14px;
+  margin-bottom: 12px;
+}
+
+.rl-question__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
 </style>

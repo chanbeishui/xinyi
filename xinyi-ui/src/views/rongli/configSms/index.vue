@@ -1,5 +1,5 @@
 <template>
-  <div class="app-container">
+  <RongliPage title="短信通道配置" subtitle="短信通道参数与发送记录；未配置时不退回默认通道。">
     <el-alert
       :type="statusAlertType"
       :closable="false"
@@ -166,10 +166,11 @@
       </el-table>
       <div v-if="!(data.recentLogs || []).length" class="tip">暂无发送记录。</div>
     </el-card>
-  </div>
+  </RongliPage>
 </template>
 
 <script setup name="RongliConfigSms" lang="ts">
+import RongliPage from '../components/RongliPage.vue'
 import { computed, onMounted, reactive, ref } from 'vue'
 import { ElMessage } from 'element-plus'
 import { getSmsConfig, saveSmsConfig, testSmsConfig } from '@/api/rongli'

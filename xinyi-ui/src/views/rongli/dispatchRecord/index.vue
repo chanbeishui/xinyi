@@ -1,5 +1,5 @@
 <template>
-  <div class="app-container">
+  <RongliPage title="派单记录" subtitle="每次邀约、承接和解除均保留，原单重派不覆盖历史。">
     <el-row :gutter="12" class="mb8">
       <el-col :span="5">
         <el-input v-model="query.keyword" placeholder="订单号 / 车牌 / 司机" clearable @keyup.enter="search" />
@@ -72,10 +72,11 @@
       @current-change="load"
       @size-change="search"
     />
-  </div>
+  </RongliPage>
 </template>
 
 <script setup name="RongliDispatchRecord" lang="ts">
+import RongliPage from '../components/RongliPage.vue'
 import { onMounted, reactive, ref } from 'vue'
 import { ElMessage } from 'element-plus'
 import { listInvites } from '@/api/rongli'

@@ -1,5 +1,5 @@
 <template>
-  <div class="app-container rl-stats">
+  <RongliPage title="业务统计" subtitle="区分订单完成与司机任务结束、上门准时与到站延误、成功收款与退款。">
     <div class="page-head">
       <div>
         <h2 class="page-title">业务统计</h2>
@@ -64,10 +64,11 @@
         class="pager"
       />
     </div>
-  </div>
+  </RongliPage>
 </template>
 
 <script setup name="RongliStatistics" lang="ts">
+import RongliPage from '../components/RongliPage.vue'
 import { computed, nextTick, onBeforeUnmount, onMounted, reactive, ref } from 'vue'
 import * as echarts from 'echarts'
 import { ElMessage, ElMessageBox } from 'element-plus'

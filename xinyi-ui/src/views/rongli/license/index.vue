@@ -1,5 +1,5 @@
 <template>
-  <div class="app-container">
+  <RongliPage title="行驶证登记与复核" subtitle="低置信度字段必须人工核对；完整敏感原图须单独授权。">
     <el-row :gutter="12" class="mb8">
       <el-col :span="6">
         <el-select v-model="query.stationId" placeholder="全部检测点" clearable filterable class="w100">
@@ -110,10 +110,11 @@
         <el-button type="primary" :loading="saving" @click="save(true)">保存并标记已核验</el-button>
       </template>
     </el-drawer>
-  </div>
+  </RongliPage>
 </template>
 
 <script setup name="RongliLicense" lang="ts">
+import RongliPage from '../components/RongliPage.vue'
 import { onMounted, reactive, ref } from 'vue'
 import { ElMessage } from 'element-plus'
 import { getOrderLicense, listInspectionTodos, listStations, saveOrderLicense } from '@/api/rongli'

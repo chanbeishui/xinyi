@@ -1,5 +1,5 @@
 <template>
-  <div class="app-container">
+  <RongliPage title="订阅消息配置" subtitle="订阅模板与开关；未订阅不等于可无限重试。">
     <el-alert
       :type="statusAlertType"
       :closable="false"
@@ -145,10 +145,11 @@
         </el-table-column>
       </el-table>
     </el-card>
-  </div>
+  </RongliPage>
 </template>
 
 <script setup name="RongliConfigSubscribe" lang="ts">
+import RongliPage from '../components/RongliPage.vue'
 import { computed, onMounted, reactive, ref } from 'vue'
 import { ElMessage } from 'element-plus'
 import { getSubscribeConfig, saveSubscribeConfig, selfCheckSubscribeConfig } from '@/api/rongli'

@@ -1,5 +1,5 @@
 <template>
-  <div class="app-container">
+  <RongliPage title="车型数据字典" subtitle="框架字典 vehicle_type 的复用界面，不建设第二套车型字典。">
     <el-alert
       class="mb8"
       type="info"
@@ -39,10 +39,11 @@
         <li><b>历史订单</b>：车型展示走订单快照，字典改名不会改写既有订单。</li>
       </ul>
     </el-card>
-  </div>
+  </RongliPage>
 </template>
 
 <script setup name="RongliVehicleType" lang="ts">
+import RongliPage from '../components/RongliPage.vue'
 import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { getDicts } from '@/api/system/dict/data'

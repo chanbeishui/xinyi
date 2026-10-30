@@ -1,5 +1,5 @@
 <template>
-  <div class="app-container rl-reconcile">
+  <RongliPage title="支付退款对账异常" subtitle="不靠手工改成功状态代替渠道证据；先核实原交易。">
     <div class="page-head">
       <h2 class="page-title">支付退款对账异常</h2>
       <p class="page-desc">核实订单付款与渠道退款状态。</p>
@@ -93,10 +93,11 @@
         <el-button type="primary" :loading="saving" @click="submitConclusion">提交结论</el-button>
       </template>
     </el-dialog>
-  </div>
+  </RongliPage>
 </template>
 
 <script setup name="RongliPaymentReconcile" lang="ts">
+import RongliPage from '../components/RongliPage.vue'
 import { onMounted, reactive, ref } from 'vue'
 import { ElMessage } from 'element-plus'
 import { listReconciliation, queryReconciliation, resolveReconciliation } from '@/api/rongli'

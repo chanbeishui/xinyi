@@ -1,5 +1,5 @@
 <template>
-  <div class="app-container">
+  <RongliPage title="检测结果待办" subtitle="仅处理已收车订单的资料核验和最终结果，不另建检测设备任务。">
     <el-row :gutter="12" class="mb8">
       <el-col :span="5">
         <el-select v-model="query.stationId" placeholder="全部检测点" clearable filterable class="w100">
@@ -104,10 +104,11 @@
       @current-change="load"
       @size-change="search"
     />
-  </div>
+  </RongliPage>
 </template>
 
 <script setup name="RongliInspectionTodo" lang="ts">
+import RongliPage from '../components/RongliPage.vue'
 import { onMounted, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { listInspectionTodos, listStations } from '@/api/rongli'

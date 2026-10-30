@@ -1,5 +1,5 @@
 <template>
-  <div class="app-container">
+  <RongliPage title="外部付款核对" subtitle="记录已有付款凭证；这里不会发起银行或微信转账。">
     <el-row :gutter="12" class="mb8">
       <el-col :span="5">
         <el-select v-model="query.status" placeholder="全部状态" clearable class="w100">
@@ -146,10 +146,11 @@
         <el-descriptions-item label="提示">{{ detail.hint }}</el-descriptions-item>
       </el-descriptions>
     </el-drawer>
-  </div>
+  </RongliPage>
 </template>
 
 <script setup name="RongliPaymentVerify" lang="ts">
+import RongliPage from '../components/RongliPage.vue'
 import { onMounted, reactive, ref } from 'vue'
 import { ElMessage } from 'element-plus'
 import {

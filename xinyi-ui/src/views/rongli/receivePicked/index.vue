@@ -1,5 +1,5 @@
 <template>
-  <div class="app-container">
+  <RongliPage title="检测点收车登记" subtitle="与小程序使用同样的照片、专用码和物品核对要求。">
     <el-row :gutter="12" class="mb8">
       <el-col :span="6">
         <el-select v-model="query.stationId" placeholder="全部检测点" clearable filterable class="w100">
@@ -145,10 +145,11 @@
         </el-button>
       </template>
     </el-drawer>
-  </div>
+  </RongliPage>
 </template>
 
 <script setup name="RongliReceivePicked" lang="ts">
+import RongliPage from '../components/RongliPage.vue'
 import { computed, onMounted, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'

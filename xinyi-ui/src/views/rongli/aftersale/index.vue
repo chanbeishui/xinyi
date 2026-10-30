@@ -1,5 +1,5 @@
 <template>
-  <div class="app-container">
+  <RongliPage title="取消与退款" subtitle="一次申请、一次审核，车辆返还与退款执行在同一处跟踪。">
     <el-form :inline="true" class="mb8">
       <el-form-item label="状态">
         <el-select v-model="query.status" clearable placeholder="全部" style="width: 150px" @change="handleQuery">
@@ -17,40 +17,74 @@
       </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="Search" @click="handleQuery">查询</el-button>
+        <el-button icon="Refresh" @click="resetQuery">重置</el-button>
       </el-form-item>
     </el-form>
 
-    <el-table v-loading="loading" :data="rows" border>
-      <el-table-column label="售后单号" prop="caseNo" width="180" />
-      <el-table-column label="订单号" prop="orderNo" width="180" />
-      <el-table-column label="类型" prop="kindLabel" width="120" />
-      <el-table-column label="申请(元)" width="110" align="right">
-        <template #default="{ row }">{{ fen2yuan(row.requestedFen) }}</template>
-      </el-table-column>
-      <el-table-column label="状态" width="120">
+    <el-table v-loading="loading" :data="rows" row-key="caseId">
+      <el-table-column label="售后 / 订单" min-width="190">
         <template #default="{ row }">
-          <el-tag :type="tagType(row.caseStatus)">{{ row.caseStatusLabel }}</el-tag>
+          <div class="rl-strong">{{ row.caseNo }}</div>
+          <div class="rl-mono">{{ row.orderNo }}</div>
         </template>
       </el-table-column>
-      <el-table-column label="还车" prop="returnState" width="130" />
-      <el-table-column label="退款" prop="refundState" width="130" />
-      <el-table-column label="原因" prop="reason" min-width="180" show-overflow-tooltip />
-      <el-table-column label="操作" width="200" fixed="right">
+      <el-table-column label="车辆 / 保管" width="150">
+        <template #default="{ row }">
+          <div class="rl-strong">{{ row.plateNo || '—' }}</div>
+          <div class="rl-sub">{{ row.custodyLabel || '—' }}</div>
+        </template>
+      </el-table-column>
+      <el-table-column label="申请类型" prop="kindLabel" width="110" />
+      <el-table-column label="取消决定" width="110">
+        <template #default="{ row }">
+          <span class="rl-tag" :class="decisionTone(row.reviewStatus)">{{ row.decisionLabel }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="金额" width="150">
+        <template #default="{ row }">
+          <div class="rl-strong">¥{{ fen2yuan(row.requestedFen) }}</div>
+          <div class="rl-sub">批准 ¥{{ fen2yuan(row.approvedFen) }}</div>
+        </template>
+      </el-table-column>
+      <el-table-column label="返还进度" width="110">
+        <template #default="{ row }">
+          <span class="rl-tag" :class="returnTone(row.returnState)">{{ row.returnStateLabel }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="退款进度" width="130">
+        <template #default="{ row }">
+          <span class="rl-tag" :class="refundTone(row.refundState)">{{ row.refundStateLabel }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="申请时间" width="150">
+        <template #default="{ row }">{{ shortTime(row.createdAt) }}</template>
+      </el-table-column>
+      <el-table-column label="原因" prop="reason" min-width="160" show-overflow-tooltip />
+      <el-table-column label="操作" width="120" fixed="right">
         <template #default="{ row }">
           <el-button link type="primary" @click="openReview(row)">审核</el-button>
           <el-button link type="primary" @click="openDetail(row)">详情</el-button>
         </template>
       </el-table-column>
+      <template #empty>
+        <div class="rl-empty">
+          <div class="rl-empty__title">没有符合条件的售后申请</div>
+          <div class="rl-empty__hint">取消与退款统一在一份申请中处理，可调整筛选后重试。</div>
+          <el-button @click="resetQuery">重置筛选</el-button>
+        </div>
+      </template>
     </el-table>
 
     <el-pagination
       v-model:current-page="query.pageNum"
       v-model:page-size="query.pageSize"
       :total="total"
-      layout="total, sizes, prev, pager, next"
+      :page-sizes="[10, 20, 50]"
+      layout="total, sizes, prev, pager, next, jumper"
       class="mt16"
+      background
       @current-change="load"
-      @size-change="load"
+      @size-change="handleQuery"
     />
 
     <el-dialog v-model="reviewVisible" title="售后审核（一次审核完成）" width="600px">
@@ -109,10 +143,11 @@
       <el-input v-model="note" type="textarea" :rows="3" placeholder="补充说明" style="margin-top: 12px" />
       <el-button type="primary" style="margin-top: 12px" @click="addNote">提交说明</el-button>
     </el-drawer>
-  </div>
+  </RongliPage>
 </template>
 
 <script setup name="RongliAfterSale" lang="ts">
+import RongliPage from '../components/RongliPage.vue'
 import { onMounted, reactive, ref } from 'vue'
 import { ElMessage } from 'element-plus'
 import {
@@ -141,11 +176,35 @@ function fen2yuan(fen: any) {
   return (Number(fen || 0) / 100).toFixed(2)
 }
 
-function tagType(s: string) {
-  if (s === 'CLOSED') return 'success'
-  if (s === 'REJECTED') return 'info'
-  if (s === 'EXECUTING') return 'warning'
-  return ''
+function shortTime(value?: string) {
+  if (!value) return '—'
+  return String(value).replace('T', ' ').replace('Z', '').slice(0, 16)
+}
+
+function decisionTone(review?: string) {
+  if (review === 'APPROVED') return 'rl-tag--green'
+  if (review === 'REJECTED') return 'rl-tag--red'
+  return 'rl-tag--amber'
+}
+
+function returnTone(state?: string) {
+  if (state === 'RETURNED' || state === 'NOT_REQUIRED') return 'rl-tag--green'
+  if (state === 'WAIT_RETURN') return 'rl-tag--amber'
+  return 'rl-tag--gray'
+}
+
+function refundTone(state?: string) {
+  if (state === 'SUCCESS' || state === 'NOT_REQUIRED') return 'rl-tag--green'
+  if (state === 'ABNORMAL' || state === 'UNKNOWN') return 'rl-tag--red'
+  if (state === 'PROCESSING' || state === 'READY' || state === 'WAIT_RETURN') return 'rl-tag--amber'
+  return 'rl-tag--gray'
+}
+
+function resetQuery() {
+  query.status = ''
+  query.kind = ''
+  query.pageNum = 1
+  load()
 }
 
 onMounted(load)
