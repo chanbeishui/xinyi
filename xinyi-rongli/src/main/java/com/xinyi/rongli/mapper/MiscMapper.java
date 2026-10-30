@@ -165,7 +165,8 @@ public interface MiscMapper
 
     @Select("""
             <script>
-            SELECT d.*, o.order_no FROM vi_dispute d JOIN vi_order o ON o.id = d.order_id
+            SELECT d.*, o.order_no, o.custody_type, o.vehicle_snapshot, d.updated_at AS changed_at
+            FROM vi_dispute d JOIN vi_order o ON o.id = d.order_id
             WHERE 1 = 1
             <if test="status != null and status != ''"> AND d.status = #{status} </if>
             ORDER BY d.id DESC LIMIT #{offset}, #{limit}
@@ -190,7 +191,8 @@ public interface MiscMapper
 
     @Select("""
             <script>
-            SELECT e.*, o.order_no FROM vi_service_exception e JOIN vi_order o ON o.id = e.order_id
+            SELECT e.*, o.order_no, o.custody_type, o.vehicle_snapshot, e.updated_at AS changed_at
+            FROM vi_service_exception e JOIN vi_order o ON o.id = e.order_id
             WHERE 1 = 1
             <if test="status != null and status != ''"> AND e.status = #{status} </if>
             ORDER BY e.id DESC LIMIT #{offset}, #{limit}

@@ -89,16 +89,28 @@ public interface VehicleMapper
             <script>
             SELECT v.id, v.plate_no, v.vehicle_type_code, v.brand_model, v.verification_status, v.is_default,
                    v.created_at, v.updated_at, a.id AS owner_account_id, a.nickname AS owner_name,
-                   d.dict_label AS vehicle_type_name
+                   d.dict_label AS vehicle_type_name,
+                   (SELECT r.inspected_at FROM vi_inspection_result r
+                      JOIN vi_order o2 ON o2.id = r.order_id
+                     WHERE o2.vehicle_id = v.id AND r.superseded_at IS NULL
+                     ORDER BY r.inspected_at DESC LIMIT 1) AS last_inspected_at,
+                   (SELECT r.conclusion FROM vi_inspection_result r
+                      JOIN vi_order o2 ON o2.id = r.order_id
+                     WHERE o2.vehicle_id = v.id AND r.superseded_at IS NULL
+                     ORDER BY r.inspected_at DESC LIMIT 1) AS last_conclusion
             FROM vi_vehicle v
             LEFT JOIN vi_account a ON a.id = v.owner_account_id
             LEFT JOIN sys_dict_data d ON d.dict_type = 'vehicle_type' AND d.dict_value = v.vehicle_type_code
             WHERE v.deleted_at IS NULL
             <if test="keyword != null and keyword != ''">
-              AND (v.plate_no LIKE CONCAT('%', #{keyword}, '%') OR a.nickname LIKE CONCAT('%', #{keyword}, '%'))
+              AND (v.plate_no LIKE CONCAT('%', #{keyword}, '%') OR a.nickname LIKE CONCAT('%', #{keyword}, '%')
+                   OR v.brand_model LIKE CONCAT('%', #{keyword}, '%'))
             </if>
             <if test="vehicleTypeCode != null and vehicleTypeCode != ''">
               AND v.vehicle_type_code = #{vehicleTypeCode}
+            </if>
+            <if test="verificationStatus != null and verificationStatus != ''">
+              AND v.verification_status = #{verificationStatus}
             </if>
             <if test="deptId != null">
               AND (v.dept_id IS NULL OR v.dept_id IN (SELECT dept_id FROM sys_dept
@@ -108,6 +120,7 @@ public interface VehicleMapper
             </script>
             """)
     List<Map<String, Object>> adminList(@Param("keyword") String keyword, @Param("vehicleTypeCode") String vehicleTypeCode,
+            @Param("verificationStatus") String verificationStatus,
             @Param("deptId") Long deptId,
             @Param("offset") int offset, @Param("limit") int limit);
 
@@ -121,6 +134,9 @@ public interface VehicleMapper
             <if test="vehicleTypeCode != null and vehicleTypeCode != ''">
               AND v.vehicle_type_code = #{vehicleTypeCode}
             </if>
+            <if test="verificationStatus != null and verificationStatus != ''">
+              AND v.verification_status = #{verificationStatus}
+            </if>
             <if test="deptId != null">
               AND (v.dept_id IS NULL OR v.dept_id IN (SELECT dept_id FROM sys_dept
                                      WHERE dept_id = #{deptId} OR FIND_IN_SET(#{deptId}, ancestors)))
@@ -128,6 +144,7 @@ public interface VehicleMapper
             </script>
             """)
     long adminCount(@Param("keyword") String keyword, @Param("vehicleTypeCode") String vehicleTypeCode,
+            @Param("verificationStatus") String verificationStatus,
             @Param("deptId") Long deptId);
 
     // ------------------------------------------------------------------ 地址
@@ -181,7 +198,8 @@ public interface VehicleMapper
             SELECT o.id AS owner_id, o.account_id, o.service_name, o.service_flag, o.internal_remark,
                    a.nickname, a.status, a.created_at,
                    (SELECT COUNT(1) FROM vi_vehicle v WHERE v.owner_account_id = o.account_id AND v.deleted_at IS NULL) AS vehicle_count,
-                   (SELECT COUNT(1) FROM vi_order od WHERE od.owner_account_id = o.account_id) AS order_count
+                   (SELECT COUNT(1) FROM vi_order od WHERE od.owner_account_id = o.account_id) AS order_count,
+                   (SELECT MAX(od2.created_at) FROM vi_order od2 WHERE od2.owner_account_id = o.account_id) AS last_order_at
             FROM vi_owner_profile o JOIN vi_account a ON a.id = o.account_id
             WHERE 1 = 1
             <if test="keyword != null and keyword != ''">

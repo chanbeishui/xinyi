@@ -493,7 +493,13 @@ public interface AdminMapper
                    AND o.dept_id IN (SELECT dept_id FROM sys_dept WHERE dept_id = #{deptId} OR FIND_IN_SET(#{deptId}, ancestors))
                  </if>) AS correction_pending,
               (SELECT COUNT(1) FROM vi_penalty_appeal WHERE status = 'SUBMITTED') AS appeal_pending,
-              (SELECT COUNT(1) FROM vi_driver_application WHERE status = 'SUBMITTED') AS qualification_pending
+              (SELECT COUNT(1) FROM vi_driver_application WHERE status = 'SUBMITTED') AS qualification_pending,
+              (SELECT COUNT(1) FROM vi_aftersale_case c JOIN vi_order o ON o.id = c.order_id
+                 WHERE c.case_status = 'EXECUTING' AND c.return_state = 'WAIT_RETURN'
+                 <if test="deptId != null">
+                   AND o.dept_id IN (SELECT dept_id FROM sys_dept WHERE dept_id = #{deptId} OR FIND_IN_SET(#{deptId}, ancestors))
+                 </if>) AS cancel_return_waiting,
+              (SELECT COUNT(1) FROM vi_driver_statement WHERE status IN ('INTERNAL_REVIEW','SENT','DISPUTED')) AS statement_pending
             </script>
             """)
     Map<String, Object> statisticsOverview(@Param("bizDate") String bizDate, @Param("deptId") Long deptId);

@@ -17,6 +17,7 @@ import com.xinyi.rongli.support.BizConfig;
 import com.xinyi.rongli.support.Codes;
 import com.xinyi.rongli.support.Crypto;
 import com.xinyi.rongli.support.DeptScope;
+import com.xinyi.rongli.support.Json;
 import com.xinyi.rongli.support.MiniContext;
 import com.xinyi.rongli.support.MiniPrincipal;
 import com.xinyi.rongli.support.Row;
@@ -231,7 +232,80 @@ public class AfterSaleService
         view.put("orderStatus", c.str("fulfillment_status"));
         view.put("reason", c.str("reason"));
         view.put("createdAt", ViTime.iso(c.time("created_at")));
+        view.put("plateNo", Json.read(c.json("vehicle_snapshot")).getString("plateNo"));
+        view.put("custodyType", c.str("custody_type"));
+        view.put("custodyLabel", custodyLabel(c.str("custody_type")));
+        view.put("decisionLabel", decisionLabel(c.str("review_status")));
+        view.put("returnStateLabel", returnStateLabel(c.str("return_state")));
+        view.put("refundStateLabel", refundStateLabel(c.str("refund_state")));
         return view;
+    }
+
+    /** 取消决定：后台列表与详情统一口径，未审核时不能显示为已同意 */
+    private String decisionLabel(String review)
+    {
+        if (review == null)
+        {
+            return "待审核";
+        }
+        return switch (review)
+        {
+            case "PENDING" -> "待审核";
+            case "APPROVED" -> "同意取消";
+            case "REJECTED" -> "驳回";
+            default -> review;
+        };
+    }
+
+    private String returnStateLabel(String state)
+    {
+        if (state == null)
+        {
+            return "—";
+        }
+        return switch (state)
+        {
+            case "UNDETERMINED" -> "待确定";
+            case "NOT_REQUIRED" -> "无需返还";
+            case "WAIT_RETURN" -> "待返还";
+            case "RETURNED" -> "已返还";
+            default -> state;
+        };
+    }
+
+    private String refundStateLabel(String state)
+    {
+        if (state == null)
+        {
+            return "—";
+        }
+        return switch (state)
+        {
+            case "NONE" -> "无退款";
+            case "NOT_REQUIRED" -> "无需退款";
+            case "WAIT_RETURN" -> "待返还后执行";
+            case "READY" -> "待执行";
+            case "PROCESSING" -> "退款中";
+            case "SUCCESS" -> "已退款";
+            case "UNKNOWN" -> "待核实";
+            case "ABNORMAL" -> "退款异常";
+            default -> state;
+        };
+    }
+
+    private String custodyLabel(String custody)
+    {
+        if (custody == null)
+        {
+            return "—";
+        }
+        return switch (custody)
+        {
+            case "OWNER" -> "车主保管";
+            case "DRIVER" -> "代驾保管";
+            case "STATION" -> "检测点保管";
+            default -> custody;
+        };
     }
 
     public Map<String, Object> detail(Long caseId, boolean admin)

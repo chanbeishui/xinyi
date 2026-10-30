@@ -1,5 +1,7 @@
 package com.xinyi.rongli.service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -142,25 +144,37 @@ public class StationService
     {
         MiniPrincipal p = requireStationRole();
         // 小程序侧以「已授权站点」为唯一范围，没有后台的部门上下文，不能套用部门数据权限
-        return listOrders(p.requireStation(), status, pageNum, pageSize, null);
+        return listOrders(p.requireStation(), status, null, null, null, null, pageNum, pageSize, null);
     }
 
     /** 管理端工作订单：stationId 为空表示不限站点 */
-    public Map<String, Object> adminOrders(String status, Long stationId, int pageNum, int pageSize)
+    public Map<String, Object> adminOrders(String status, String group, String keyword, Long stationId,
+            LocalDateTime from, LocalDateTime to, int pageNum, int pageSize)
     {
-        return listOrders(stationId, status, pageNum, pageSize, DeptScope.scopedDeptId());
+        return listOrders(stationId, status, group, keyword, from, to, pageNum, pageSize, DeptScope.scopedDeptId());
     }
 
-    private Map<String, Object> listOrders(Long stationId, String status, int pageNum, int pageSize, Long deptId)
+    private Map<String, Object> listOrders(Long stationId, String status, String group, String keyword,
+            LocalDateTime from, LocalDateTime to, int pageNum, int pageSize, Long deptId)
     {
         String filter = status;
         if (filter == null || filter.isBlank())
         {
             filter = null;
         }
+        String groupFilter = group;
+        if (groupFilter == null || groupFilter.isBlank())
+        {
+            groupFilter = null;
+        }
+        String kw = keyword == null ? null : keyword.trim();
+        if (kw != null && kw.isEmpty())
+        {
+            kw = null;
+        }
         int limit = Math.min(Math.max(pageSize, 1), 100);
         int offset = Math.max(0, (Math.max(pageNum, 1) - 1) * limit);
-        List<Map<String, Object>> rows = orderMapper.adminList(filter, stationId, null, null, null,
+        List<Map<String, Object>> rows = orderMapper.adminList(filter, groupFilter, stationId, kw, from, to,
                 deptId, offset, limit);
         List<Map<String, Object>> out = new ArrayList<>();
         for (Map<String, Object> r : rows)
@@ -177,15 +191,62 @@ public class StationService
             item.put("pickupWindowLabel",
                     ViTime.windowLabel(o.time("pickup_starts_at"), o.time("pickup_ends_at")));
             item.put("custodyType", o.str("custody_type"));
+            item.put("custodyLabel", bookingService.custodyLabel(o.str("custody_type")));
             item.put("ownerName", o.str("owner_name"));
+            item.put("stationName", o.str("station_name"));
+            item.put("driverName", o.str("driver_name"));
+            item.put("cancelStatus", o.str("cancel_status"));
+            item.put("cancelStatusLabel", cancelLabel(o.str("cancel_status")));
+            item.put("payStatus", o.str("pay_status"));
+            item.put("payStatusLabel", payLabel(o.str("pay_status")));
+            item.put("totalFen", o.lng("total_fen", 0L));
+            item.put("totalYuan", BigDecimal.valueOf(o.lng("total_fen", 0L)).movePointLeft(2)
+                    .setScale(2, RoundingMode.HALF_UP));
+            item.put("paidYuan", BigDecimal.valueOf(o.lng("paid_fen", 0L)).movePointLeft(2)
+                    .setScale(2, RoundingMode.HALF_UP));
             out.add(item);
         }
         Map<String, Object> page = new LinkedHashMap<>();
         page.put("rows", out);
-        page.put("total", orderMapper.adminCount(filter, stationId, null, null, null, deptId));
+        page.put("total", orderMapper.adminCount(filter, groupFilter, stationId, kw, from, to, deptId));
         page.put("pageNum", pageNum);
         page.put("pageSize", limit);
         return page;
+    }
+
+    /** 取消状态文案：与原型「取消 / 资金」列一致 */
+    private String cancelLabel(String cancel)
+    {
+        if (cancel == null)
+        {
+            return "无申请";
+        }
+        return switch (cancel)
+        {
+            case "NONE" -> "无申请";
+            case "APPLIED" -> "取消申请";
+            case "REJECTED" -> "已拒绝取消";
+            case "APPROVED_WAIT_RETURN" -> "待返还车辆";
+            case "COMPLETED" -> "已取消";
+            default -> cancel;
+        };
+    }
+
+    /** 支付状态文案：无支付单时为待支付，避免展示空白 */
+    private String payLabel(String pay)
+    {
+        if (pay == null)
+        {
+            return "待支付";
+        }
+        return switch (pay)
+        {
+            case "SUCCESS" -> "已支付";
+            case "PENDING" -> "待支付";
+            case "CLOSED" -> "支付已关闭";
+            case "UNKNOWN" -> "支付待核实";
+            default -> pay;
+        };
     }
 
     public Map<String, Object> orderDetail(String orderNo)

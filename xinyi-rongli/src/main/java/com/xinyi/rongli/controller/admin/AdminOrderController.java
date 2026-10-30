@@ -35,11 +35,18 @@ public class AdminOrderController
     @GetMapping("/orders")
     @PreAuthorize("@ss.hasPermi('biz:order:list')")
     public Map<String, Object> orders(@RequestParam(required = false) String status,
+            @RequestParam(required = false) String group,
+            @RequestParam(required = false) String keyword,
             @RequestParam(required = false) Long stationId,
+            @RequestParam(required = false) String from,
+            @RequestParam(required = false) String to,
             @RequestParam(defaultValue = "1") int pageNum,
             @RequestParam(defaultValue = "10") int pageSize)
     {
-        return adminService.orders(status, stationId, pageNum, pageSize);
+        return adminService.orders(status, group, keyword, stationId,
+                com.xinyi.rongli.support.ViTime.parseFlexible(from),
+                com.xinyi.rongli.support.ViTime.parseFlexible(to),
+                pageNum, pageSize);
     }
 
     @GetMapping("/orders/{orderNo}")

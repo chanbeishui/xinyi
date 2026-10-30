@@ -166,9 +166,10 @@ public class AdminService
 
     // ------------------------------------------------------------------ 订单（复用站点服务同一套履约口径）
 
-    public Map<String, Object> orders(String status, Long stationId, int pageNum, int pageSize)
+    public Map<String, Object> orders(String status, String group, String keyword, Long stationId,
+            LocalDateTime from, LocalDateTime to, int pageNum, int pageSize)
     {
-        return stationService.adminOrders(status, stationId, pageNum, pageSize);
+        return stationService.adminOrders(status, group, keyword, stationId, from, to, pageNum, pageSize);
     }
 
     public Map<String, Object> orderDetail(String orderNo)
@@ -507,6 +508,8 @@ public class AdminService
         allowed.put("subscribeTemplateAssignmentAccepted", "rongli.subscribe.template.assignmentAccepted");
         allowed.put("subscribeTemplateResultReady", "rongli.subscribe.template.resultReady");
         allowed.put("subscribeTemplateRefundDone", "rongli.subscribe.template.refundDone");
+        allowed.put("contentIntro", "rongli.content.intro");
+        allowed.put("contentSupport", "rongli.content.support");
         for (Map.Entry<String, String> e : allowed.entrySet())
         {
             Object v = req.get(e.getKey());
@@ -547,6 +550,7 @@ public class AdminService
             }
             else if ("rongli.service.termsVersion".equals(e.getValue())
                     || e.getValue().startsWith("rongli.subscribe.template.")
+                    || e.getValue().startsWith("rongli.content.")
                     || "rongli.subscribe.enabled".equals(e.getValue()))
             {
                 if ("rongli.subscribe.enabled".equals(e.getValue())
@@ -729,7 +733,27 @@ public class AdminService
         item.put("conclusion", d.str("conclusion"));
         item.put("resolvedAt", ViTime.iso(d.time("resolved_at")));
         item.put("createdAt", ViTime.iso(d.time("created_at")));
+        item.put("plateNo", plateOf(d.str("vehicle_snapshot")));
+        item.put("custodyType", d.str("custody_type"));
+        item.put("changedAt", ViTime.iso(d.time("changed_at")));
         return item;
+    }
+
+    /** 订单车辆快照里的车牌，列表展示用；快照缺失时返回 null。 */
+    private String plateOf(String snapshot)
+    {
+        if (snapshot == null || snapshot.isBlank())
+        {
+            return null;
+        }
+        try
+        {
+            return Json.read(snapshot).getString("plateNo");
+        }
+        catch (RuntimeException ex)
+        {
+            return null;
+        }
     }
 
     @Transactional
@@ -774,6 +798,9 @@ public class AdminService
             item.put("description", ex.str("description"));
             item.put("resolution", ex.str("resolution"));
             item.put("createdAt", ViTime.iso(ex.time("created_at")));
+            item.put("plateNo", plateOf(ex.str("vehicle_snapshot")));
+            item.put("custodyType", ex.str("custody_type"));
+            item.put("changedAt", ViTime.iso(ex.time("changed_at")));
             rows.add(item);
         }
         Map<String, Object> view = new LinkedHashMap<>();
@@ -1022,12 +1049,41 @@ public class AdminService
     {
         int limit = Math.min(Math.max(pageSize, 1), 100);
         int offset = (Math.max(pageNum, 1) - 1) * limit;
+        List<Map<String, Object>> rows = camelRows(vehicleMapper.adminOwnerList(keyword, offset, limit));
+        for (Map<String, Object> item : rows)
+        {
+            Map<String, Object> raw = new LinkedHashMap<>(item);
+            Object accountId = raw.get("accountId");
+            item.put("phoneMasked", maskedPhone(accountId));
+        }
         Map<String, Object> view = new LinkedHashMap<>();
         view.put("pageNum", pageNum);
         view.put("pageSize", limit);
         view.put("total", vehicleMapper.adminOwnerCount(keyword));
-        view.put("rows", camelRows(vehicleMapper.adminOwnerList(keyword, offset, limit)));
+        view.put("rows", rows);
         return view;
+    }
+
+    /** 列表只输出脱敏号码，完整号码仍走单独授权与审计。 */
+    private String maskedPhone(Object accountId)
+    {
+        if (accountId == null)
+        {
+            return null;
+        }
+        try
+        {
+            byte[] cipher = accountMapper.findPhoneCipher(Long.valueOf(String.valueOf(accountId)));
+            if (cipher == null || cipher.length == 0)
+            {
+                return null;
+            }
+            return maskPhone(crypto.decrypt(cipher));
+        }
+        catch (RuntimeException ex)
+        {
+            return null;
+        }
     }
 
     public Map<String, Object> ownerDetail(Long ownerId)
@@ -1141,7 +1197,8 @@ public class AdminService
         return view;
     }
 
-    public Map<String, Object> vehicles(String keyword, String vehicleTypeCode, int pageNum, int pageSize)
+    public Map<String, Object> vehicles(String keyword, String vehicleTypeCode, String verificationStatus,
+            int pageNum, int pageSize)
     {
         int limit = Math.min(Math.max(pageSize, 1), 100);
         int offset = (Math.max(pageNum, 1) - 1) * limit;
@@ -1149,8 +1206,9 @@ public class AdminService
         view.put("pageNum", pageNum);
         view.put("pageSize", limit);
         Long deptId = DeptScope.scopedDeptId();
-        view.put("total", vehicleMapper.adminCount(keyword, vehicleTypeCode, deptId));
-        view.put("rows", camelRows(vehicleMapper.adminList(keyword, vehicleTypeCode, deptId, offset, limit)));
+        view.put("total", vehicleMapper.adminCount(keyword, vehicleTypeCode, verificationStatus, deptId));
+        view.put("rows", camelRows(
+                vehicleMapper.adminList(keyword, vehicleTypeCode, verificationStatus, deptId, offset, limit)));
         return view;
     }
 
@@ -1797,7 +1855,7 @@ public class AdminService
         }
         JSONObject payload = Json.read(crypto.decrypt((byte[]) g.get("payload_cipher")));
         List<Map<String, Object>> rows = new ArrayList<>();
-        for (Map<String, Object> o : orderMapper.adminList(payload.getString("status"),
+        for (Map<String, Object> o : orderMapper.adminList(payload.getString("status"), null,
                 payload.getString("stationId") == null ? null : Long.valueOf(payload.getString("stationId")),
                 null, null, null, DeptScope.scopedDeptId(), 0, 500))
         {
@@ -2249,12 +2307,18 @@ public class AdminService
         Map<String, Object> effective = new LinkedHashMap<>();
         effective.put("rongli.dispatch.leadMinutes", config.dispatchLeadMinutes());
         effective.put("rongli.dispatch.radiusMeter", config.dispatchRadiusMeter());
+        effective.put("rongli.dispatch.radiusSteps",
+                config.dispatchRadiusSteps().stream().map(String::valueOf).collect(java.util.stream.Collectors.joining(",")));
         effective.put("rongli.dispatch.totalMinutes", config.dispatchTotalMinutes());
         effective.put("rongli.invite.expireSeconds", config.inviteExpireSeconds());
         effective.put("rongli.pay.expireMinutes", config.payExpireMinutes());
         effective.put("rongli.confirm.autoHours", config.autoConfirmHours());
         effective.put("rongli.driver.locationFreshSeconds", config.locationFreshSeconds());
         effective.put("rongli.service.termsVersion", config.termsVersion());
+        effective.put("rongli.content.intro",
+                config.get("rongli.content.intro", "预约上门接车与检测结果登记服务。"));
+        effective.put("rongli.content.support",
+                config.get("rongli.content.support", "工作时段由运营确认后公布。"));
         effective.put("rongli.payment.channel", config.mockPayment() ? "MOCK" : "WECHAT");
         effective.put("rongli.sms.enabled", config.getBool("rongli.sms.enabled", false));
         effective.put("rongli.sms.provider", config.get("rongli.sms.provider", "ALIYUN"));
@@ -2409,6 +2473,8 @@ public class AdminService
             item.put("unpricedCount", st.intg("unpriced_count", 0));
             item.put("manualPriceCount", st.intg("manual_price_count", 0));
             item.put("activeEntryCount", st.intg("active_entry_count", 0));
+            item.put("periodStart", ViTime.iso(st.time("service_range_start")));
+            item.put("periodEnd", ViTime.iso(st.time("service_range_end_exclusive")));
             item.put("createdAt", ViTime.iso(st.time("created_at")));
             rows.add(item);
         }

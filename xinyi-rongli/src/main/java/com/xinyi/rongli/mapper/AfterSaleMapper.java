@@ -41,7 +41,7 @@ public interface AfterSaleMapper
 
     @Select("""
             <script>
-            SELECT c.*, o.order_no, o.fulfillment_status, o.vehicle_snapshot
+            SELECT c.*, o.order_no, o.fulfillment_status, o.custody_type, o.vehicle_snapshot
             FROM vi_aftersale_case c JOIN vi_order o ON o.id = c.order_id
             WHERE 1 = 1
             <if test="status != null and status != ''"> AND c.case_status = #{status} </if>

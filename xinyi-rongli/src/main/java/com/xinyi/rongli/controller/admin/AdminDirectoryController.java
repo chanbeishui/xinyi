@@ -148,10 +148,11 @@ public class AdminDirectoryController
     @PreAuthorize("@ss.hasPermi('biz:vehicle:list')")
     public Map<String, Object> vehicles(@RequestParam(required = false) String keyword,
             @RequestParam(required = false) String vehicleTypeCode,
+            @RequestParam(required = false) String verificationStatus,
             @RequestParam(defaultValue = "1") int pageNum,
             @RequestParam(defaultValue = "10") int pageSize)
     {
-        return adminService.vehicles(keyword, vehicleTypeCode, pageNum, pageSize);
+        return adminService.vehicles(keyword, vehicleTypeCode, verificationStatus, pageNum, pageSize);
     }
 
     @GetMapping("/vehicles/{vehicleId}")

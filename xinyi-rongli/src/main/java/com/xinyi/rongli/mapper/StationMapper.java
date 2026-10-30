@@ -86,9 +86,12 @@ public interface StationMapper
 
     @Select("""
             SELECT g.sys_user_id, u.user_name, u.nick_name, g.station_id, s.name AS station_name,
-                   g.enabled, g.reason, g.updated_at
+                   g.enabled, g.reason, g.updated_at, d.dept_id, d.dept_name,
+                   (SELECT COUNT(1) FROM vi_employee_binding b
+                     WHERE b.sys_user_id = g.sys_user_id AND b.revoked_at IS NULL) AS binding_count
             FROM vi_station_grant g
             LEFT JOIN sys_user u ON u.user_id = g.sys_user_id
+            LEFT JOIN sys_dept d ON d.dept_id = u.dept_id
             LEFT JOIN vi_station s ON s.id = g.station_id
             ORDER BY g.updated_at DESC LIMIT #{offset}, #{limit}
             """)

@@ -173,22 +173,45 @@ public interface OrderMapper
 
     // ------------------------------------------------------------------ 管理端
 
+    /**
+     * 管理端订单列表（B03）：一次取齐原型要求的「订单/车辆、上门时段、检测点、当前保管方、
+     * 履约状态、取消/资金」六列，以及详情抽屉需要的司机与支付信息，避免逐行回查。
+     *
+     * <p>group 是原型的履约状态分组（PENDING/PROCESSING/DONE），与 status 单值筛选互斥：
+     * 两者都传时以 status 精确值为准。</p>
+     */
     @Select("""
             <script>
             SELECT o.id, o.order_no, o.fulfillment_status, o.cancel_status, o.custody_type, o.total_fen,
                    o.pickup_starts_at, o.pickup_ends_at, o.dispatch_at, o.created_at, o.returned_at,
-                   o.vehicle_snapshot, o.station_id, s.name AS station_name, a.nickname AS owner_name,
-                   o.active_assignment_id
+                   o.vehicle_snapshot, o.station_id, s.name AS station_name, oa.nickname AS owner_name,
+                   o.active_assignment_id, da.nickname AS driver_name,
+                   po.status AS pay_status, po.paid_fen, po.paid_at
             FROM vi_order o
             LEFT JOIN vi_station s ON s.id = o.station_id
-            LEFT JOIN vi_account a ON a.id = o.owner_account_id
+            LEFT JOIN vi_account oa ON oa.id = o.owner_account_id
+            LEFT JOIN vi_driver_assignment ass ON ass.id = o.active_assignment_id
+            LEFT JOIN vi_driver_profile dp ON dp.id = ass.driver_id
+            LEFT JOIN vi_account da ON da.id = dp.account_id
+            LEFT JOIN vi_payment_order po ON po.id = (
+                SELECT MAX(p2.id) FROM vi_payment_order p2 WHERE p2.order_id = o.id)
             WHERE 1 = 1
             <if test="status != null and status != ''"> AND o.fulfillment_status = #{status} </if>
+            <if test="(status == null or status == '') and group == 'PENDING'">
+              AND o.fulfillment_status IN ('PENDING_PAY','SCHEDULED','PENDING_DISPATCH','DISPATCHING','MANUAL_DISPATCH')
+            </if>
+            <if test="(status == null or status == '') and group == 'PROCESSING'">
+              AND o.fulfillment_status IN ('ACCEPTED','GOING_PICKUP','ARRIVED_PICKUP','PICKED_UP',
+                                           'ARRIVED_STATION','INSPECTING','INSPECTED','CAR_TAKEN','WAIT_CONFIRM')
+            </if>
+            <if test="(status == null or status == '') and group == 'DONE'">
+              AND o.fulfillment_status IN ('COMPLETED','CANCELLED','CLOSED')
+            </if>
             <if test="stationId != null"> AND o.station_id = #{stationId} </if>
             <if test="keyword != null and keyword != ''">
               AND (o.order_no LIKE CONCAT('%', #{keyword}, '%')
                    OR JSON_UNQUOTE(JSON_EXTRACT(o.vehicle_snapshot, '$.plateNo')) LIKE CONCAT('%', #{keyword}, '%')
-                   OR a.nickname LIKE CONCAT('%', #{keyword}, '%'))
+                   OR oa.nickname LIKE CONCAT('%', #{keyword}, '%'))
             </if>
             <if test="from != null"> AND o.created_at &gt;= #{from} </if>
             <if test="to != null"> AND o.created_at &lt; #{to} </if>
@@ -199,20 +222,31 @@ public interface OrderMapper
             ORDER BY o.id DESC LIMIT #{offset}, #{limit}
             </script>
             """)
-    List<Map<String, Object>> adminList(@Param("status") String status, @Param("stationId") Long stationId,
+    List<Map<String, Object>> adminList(@Param("status") String status, @Param("group") String group,
+            @Param("stationId") Long stationId,
             @Param("keyword") String keyword, @Param("from") LocalDateTime from, @Param("to") LocalDateTime to,
             @Param("deptId") Long deptId,
             @Param("offset") int offset, @Param("limit") int limit);
 
     @Select("""
             <script>
-            SELECT COUNT(1) FROM vi_order o LEFT JOIN vi_account a ON a.id = o.owner_account_id WHERE 1 = 1
+            SELECT COUNT(1) FROM vi_order o LEFT JOIN vi_account oa ON oa.id = o.owner_account_id WHERE 1 = 1
             <if test="status != null and status != ''"> AND o.fulfillment_status = #{status} </if>
+            <if test="(status == null or status == '') and group == 'PENDING'">
+              AND o.fulfillment_status IN ('PENDING_PAY','SCHEDULED','PENDING_DISPATCH','DISPATCHING','MANUAL_DISPATCH')
+            </if>
+            <if test="(status == null or status == '') and group == 'PROCESSING'">
+              AND o.fulfillment_status IN ('ACCEPTED','GOING_PICKUP','ARRIVED_PICKUP','PICKED_UP',
+                                           'ARRIVED_STATION','INSPECTING','INSPECTED','CAR_TAKEN','WAIT_CONFIRM')
+            </if>
+            <if test="(status == null or status == '') and group == 'DONE'">
+              AND o.fulfillment_status IN ('COMPLETED','CANCELLED','CLOSED')
+            </if>
             <if test="stationId != null"> AND o.station_id = #{stationId} </if>
             <if test="keyword != null and keyword != ''">
               AND (o.order_no LIKE CONCAT('%', #{keyword}, '%')
                    OR JSON_UNQUOTE(JSON_EXTRACT(o.vehicle_snapshot, '$.plateNo')) LIKE CONCAT('%', #{keyword}, '%')
-                   OR a.nickname LIKE CONCAT('%', #{keyword}, '%'))
+                   OR oa.nickname LIKE CONCAT('%', #{keyword}, '%'))
             </if>
             <if test="from != null"> AND o.created_at &gt;= #{from} </if>
             <if test="to != null"> AND o.created_at &lt; #{to} </if>
@@ -222,7 +256,8 @@ public interface OrderMapper
             </if>
             </script>
             """)
-    long adminCount(@Param("status") String status, @Param("stationId") Long stationId,
+    long adminCount(@Param("status") String status, @Param("group") String group,
+            @Param("stationId") Long stationId,
             @Param("keyword") String keyword, @Param("from") LocalDateTime from, @Param("to") LocalDateTime to,
             @Param("deptId") Long deptId);
 
