@@ -37,6 +37,12 @@ export interface SessionView {
   accountVersion: number
 }
 
+// 退出结果（I03）：loggedOut 恒 true；scope=CURRENT/ALL。确认会话撤销，不返回 Token，不改变订单或司机任务。
+export interface LogoutResult {
+  loggedOut: true
+  scope: 'CURRENT' | 'ALL'
+}
+
 // 统一档案只读投影
 export interface ProfileView {
   accountId: string

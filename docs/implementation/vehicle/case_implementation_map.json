@@ -2754,12 +2754,14 @@
     "testMethod": "test_tc_r63_007"
   },
   {
-    "status": "NOT_RUN",
-    "testFiles": [],
-    "evidence": null,
+    "status": "PASS",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/I03IdentityIT.java"
+    ],
+    "evidence": "docs/implementation/vehicle/evidence/I03.json",
     "caseId": "TC-R63-008",
     "taskId": "I03",
-    "testMethod": "test_tc_r63_008"
+    "testMethod": "I03IdentityIT#退出当前会话旧令牌失效保留车辆任务重登恢复_TC_R63_008"
   },
   {
     "status": "NOT_RUN",

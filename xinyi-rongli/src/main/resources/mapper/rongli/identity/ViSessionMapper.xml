@@ -44,4 +44,16 @@
         SELECT <include refid="cols"/> FROM vi_session WHERE id = #{id}
     </select>
 
+    <select id="selectByIdForUpdate" resultMap="ViSessionMap">
+        SELECT <include refid="cols"/> FROM vi_session WHERE id = #{id} FOR UPDATE
+    </select>
+
+    <update id="revokeSession">
+        UPDATE vi_session
+        SET status = 'REVOKED',
+            revoked_at = #{revokedAt,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler},
+            version = version + 1
+        WHERE id = #{id} AND version = #{expectedVersion} AND status = 'ACTIVE'
+    </update>
+
 </mapper>

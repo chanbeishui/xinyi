@@ -53,24 +53,34 @@ public class MiniTokenService {
 
     /** 为已持久化的会话签发初始 ACCESS + REFRESH 令牌（同事务内调用）。 */
     public IssuedTokens issueForSession(ViSession session) {
+        return issueWithGeneration(session, 0L, null);
+    }
+
+    /** 刷新轮换：签发新一代 ACCESS + REFRESH（generation 递增，REFRESH 链接父令牌）。同事务内调用。 */
+    public IssuedTokens rotateSession(ViSession session, long generation, Long parentRefreshTokenId) {
+        return issueWithGeneration(session, generation, parentRefreshTokenId);
+    }
+
+    private IssuedTokens issueWithGeneration(ViSession session, long generation, Long parentRefreshTokenId) {
         Instant now = Instant.now();
         long accessTtl = props.getAccessTtlSeconds();
-        long absoluteTtl = props.getAbsoluteTtlSeconds();
 
         String accessPlain = newToken();
-        insertToken(session.getId(), accessPlain, SessionTokenType.ACCESS.name(), 0L,
-                session.getContextVersion(), now.plusSeconds(accessTtl));
+        insertToken(session.getId(), accessPlain, SessionTokenType.ACCESS.name(), generation,
+                session.getContextVersion(), now.plusSeconds(accessTtl), null);
 
         String refreshPlain = newToken();
-        long refreshExpiresIn = absoluteTtl;
-        insertToken(session.getId(), refreshPlain, SessionTokenType.REFRESH.name(), 0L,
-                null, session.getAbsoluteExpiresAt());
+        // 刷新令牌绝对截止随会话（不无限滑动）；剩余秒数按会话绝对截止计算
+        long refreshExpiresIn = Math.max(1,
+                java.time.Duration.between(now, session.getAbsoluteExpiresAt()).getSeconds());
+        insertToken(session.getId(), refreshPlain, SessionTokenType.REFRESH.name(), generation,
+                null, session.getAbsoluteExpiresAt(), parentRefreshTokenId);
 
         return new IssuedTokens(accessPlain, accessTtl, refreshPlain, refreshExpiresIn);
     }
 
     private void insertToken(Long sessionId, String plain, String type, long generation,
-                             Long contextVersion, Instant expiresAt) {
+                             Long contextVersion, Instant expiresAt, Long parentTokenId) {
         ViSessionToken t = new ViSessionToken();
         t.setSessionId(sessionId);
         t.setTokenHash(sha256(plain));
@@ -78,7 +88,13 @@ public class MiniTokenService {
         t.setGeneration(generation);
         t.setContextVersion(contextVersion);
         t.setExpiresAt(expiresAt);
+        t.setParentTokenId(parentTokenId);
         tokenMapper.insert(t);
+    }
+
+    /** 计算令牌摘要（供会话服务按 refreshToken 解析）。 */
+    public byte[] hash(String plain) {
+        return sha256(plain);
     }
 
     /** 解析访问令牌为 MiniPrincipal；任何无效/过期/撤销/代际不符/锁定都拒绝（不泄露细节）。 */

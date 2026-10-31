@@ -34,7 +34,7 @@ public class MiniSecurityConfig {
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .exceptionHandling(eh -> eh.authenticationEntryPoint(new MiniAuthenticationEntryPoint()))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/common/login/wechat").permitAll()
+                        .requestMatchers("/api/common/login/wechat", "/api/common/token/refresh").permitAll()
                         .anyRequest().authenticated())
                 .addFilterBefore(new MiniTokenAuthFilter(tokenService),
                         UsernamePasswordAuthenticationFilter.class);

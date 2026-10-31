@@ -41,4 +41,12 @@
         WHERE account_id = #{accountId}
     </update>
 
+    <update id="bumpSessionEpoch">
+        UPDATE vi_account_security
+        SET session_epoch = session_epoch + 1,
+            changed_at = #{now,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler},
+            version = version + 1
+        WHERE account_id = #{accountId}
+    </update>
+
 </mapper>

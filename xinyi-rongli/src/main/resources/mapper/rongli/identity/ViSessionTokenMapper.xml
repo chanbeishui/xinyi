@@ -44,4 +44,22 @@
         WHERE token_hash = #{tokenHash} AND token_type = #{tokenType}
     </select>
 
+    <select id="selectByIdForUpdate" resultMap="ViSessionTokenMap">
+        SELECT <include refid="cols"/> FROM vi_session_token WHERE id = #{id} FOR UPDATE
+    </select>
+
+    <update id="consumeRefresh">
+        UPDATE vi_session_token
+        SET consumed_at = #{consumedAt,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler},
+            replaced_by_token_id = #{replacedByTokenId}, version = version + 1
+        WHERE id = #{id} AND version = #{expectedVersion} AND consumed_at IS NULL AND revoked_at IS NULL
+    </update>
+
+    <update id="revokeBySession">
+        UPDATE vi_session_token
+        SET revoked_at = #{revokedAt,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler},
+            version = version + 1
+        WHERE session_id = #{sessionId} AND revoked_at IS NULL
+    </update>
+
 </mapper>
