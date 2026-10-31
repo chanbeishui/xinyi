@@ -238,7 +238,7 @@ export type ExternalPaymentRecord = { "recordId": string; "statementId": string;
 
 export type DriverAssignmentRecord = { "assignmentId": string; "driverId": string; "orderNo": string; "acceptedAt"?: string; "endedAt"?: string; "endReason"?: string; "custody"?: string; "released"?: boolean; "feeEntryId"?: string };
 
-export type SessionView = { "sessionId": string; "accountId": string; "activeRole": MiniRole; "availableRoles": Array<MiniRole>; "contextVersion": number; "phoneBound"?: boolean; "permissions"?: Array<PermissionCode>; "capabilities": Array<CapabilityCode>; "stationIds"?: Array<string>; "stationId"?: (string) | null; "workAccessDisabled"?: boolean; "driverQualification"?: ((QualificationStatus)) | null };
+export type SessionView = { "sessionId": string; "accountId": string; "activeRole": MiniRole; "availableRoles": Array<MiniRole>; "contextVersion": number; "phoneBound"?: boolean; "permissions"?: Array<PermissionCode>; "capabilities": Array<CapabilityCode>; "stationIds"?: Array<string>; "stationId"?: (string) | null; "workAccessDisabled"?: boolean; "driverQualification"?: ((QualificationStatus)) | null; "employeeLink": EmployeeLinkPublic; "accountVersion": number };
 
 export type AccessSession = { "sessionId": string; "accountId": string; "activeRole": MiniRole; "availableRoles": Array<MiniRole>; "contextVersion": number; "phoneBound"?: boolean; "permissions"?: Array<PermissionCode>; "capabilities": Array<CapabilityCode>; "stationIds"?: Array<string>; "stationId"?: (string) | null; "workAccessDisabled"?: boolean; "driverQualification"?: ((QualificationStatus)) | null; "token": string; "expiresIn": number };
 

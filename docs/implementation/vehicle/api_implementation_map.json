@@ -2677,11 +2677,13 @@
     "taskId": "R06"
   },
   {
-    "implementationStatus": "NOT_ASSESSED",
-    "controllerFile": null,
-    "serviceFile": null,
-    "mapperFile": null,
-    "testFiles": [],
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/identity/SessionController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/identity/service/MiniSessionService.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/identity/ViSessionTokenMapper.xml",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/I03IdentityIT.java"
+    ],
     "reviewEvidence": null,
     "operationId": "V41_post_api_common_token_refresh",
     "method": "POST",
@@ -2690,11 +2692,13 @@
     "taskId": "I03"
   },
   {
-    "implementationStatus": "NOT_ASSESSED",
-    "controllerFile": null,
-    "serviceFile": null,
-    "mapperFile": null,
-    "testFiles": [],
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/identity/SessionController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/identity/service/MiniSessionService.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/identity/ViSessionMapper.xml",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/I03IdentityIT.java"
+    ],
     "reviewEvidence": null,
     "operationId": "V41_get_api_common_session",
     "method": "GET",
@@ -2703,11 +2707,13 @@
     "taskId": "I03"
   },
   {
-    "implementationStatus": "NOT_ASSESSED",
-    "controllerFile": null,
-    "serviceFile": null,
-    "mapperFile": null,
-    "testFiles": [],
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/identity/SessionController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/identity/service/MiniSessionService.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/identity/ViSessionMapper.xml",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/I03IdentityIT.java"
+    ],
     "reviewEvidence": null,
     "operationId": "V41_post_api_common_session_logout",
     "method": "POST",
