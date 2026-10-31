@@ -16,4 +16,8 @@ public interface ViSessionMapper {
     /** CAS 撤销当前会话（status=REVOKED，revoked_at）；DB 权威撤权，不依赖 Redis。 */
     int revokeSession(@Param("id") long id, @Param("revokedAt") Instant revokedAt,
                       @Param("expectedVersion") long expectedVersion);
+
+    /** CAS 切换角色/站点：仅当 context_version 匹配且会话 ACTIVE 时原子递增上下文（I04，T3.4）。 */
+    int switchContext(@Param("id") long id, @Param("activeRole") String activeRole,
+                      @Param("stationId") Long stationId, @Param("expectedContextVersion") long expectedContextVersion);
 }

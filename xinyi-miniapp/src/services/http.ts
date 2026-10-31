@@ -1,4 +1,4 @@
-import type { Session } from '../api/types';
+import type { Session, AccessSession } from '../api/types';
 const base = String(import.meta.env.VITE_API_BASE || '').replace(/\/$/, '');
 const mode = String(import.meta.env.VITE_APP_REALM || 'local');
 if (!base || (mode === 'production' && !base.startsWith('https://'))) throw new Error('API地址未配置或生产不是HTTPS');
@@ -7,6 +7,12 @@ let session: Session | null = uni.getStorageSync(key) || null;
 let refreshing: Promise<void> | null = null;
 export function saveSession(value: Session | null) {
   session = value; if (value) uni.setStorageSync(key, value); else uni.removeStorageSync(key);
+}
+export function currentSession(): Session | null { return session; }
+// I04 切换后合并新访问令牌与上下文（保留会话级 refreshToken，不随切换轮换）。
+export function applyAccessSession(a: AccessSession) {
+  if (!session) return;
+  saveSession({ ...session, ...a, refreshToken: session.refreshToken, refreshExpiresIn: session.refreshExpiresIn } as Session);
 }
 function raw(method: 'GET'|'POST'|'PUT'|'PATCH'|'DELETE', path: string, data?: object, idem?: string): Promise<{ status: number; body: any }> {
   if (!path.startsWith('/api/')) return Promise.reject(new Error('拒绝非业务API路径'));

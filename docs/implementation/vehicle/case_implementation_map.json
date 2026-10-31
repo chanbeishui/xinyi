@@ -2588,12 +2588,14 @@
     "testMethod": "test_tc_r62_023"
   },
   {
-    "status": "NOT_RUN",
-    "testFiles": [],
-    "evidence": null,
+    "status": "PASS",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/I04IdentityIT.java"
+    ],
+    "evidence": "docs/implementation/vehicle/evidence/I04.json",
     "caseId": "TC-R62-024",
     "taskId": "I04",
-    "testMethod": "test_tc_r62_024"
+    "testMethod": "I04IdentityIT#切换与退出均不释放assignment_TC_R62_024"
   },
   {
     "status": "PASS",
@@ -2698,12 +2700,14 @@
     "testMethod": "test_tc_r62_036"
   },
   {
-    "status": "NOT_RUN",
-    "testFiles": [],
-    "evidence": null,
+    "status": "PASS",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/I04IdentityIT.java"
+    ],
+    "evidence": "docs/implementation/vehicle/evidence/I04.json",
     "caseId": "TC-R63-001",
     "taskId": "I04",
-    "testMethod": "test_tc_r63_001"
+    "testMethod": "I04IdentityIT#员工站点同源一致切STATION_TC_R63_001"
   },
   {
     "status": "NOT_RUN",
@@ -2764,20 +2768,24 @@
     "testMethod": "I03IdentityIT#退出当前会话旧令牌失效保留车辆任务重登恢复_TC_R63_008"
   },
   {
-    "status": "NOT_RUN",
-    "testFiles": [],
-    "evidence": null,
+    "status": "PASS",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/I04IdentityIT.java"
+    ],
+    "evidence": "docs/implementation/vehicle/evidence/I04.json",
     "caseId": "TC-R63-009",
     "taskId": "I04",
-    "testMethod": "test_tc_r63_009"
+    "testMethod": "I04IdentityIT#已批准代驾我的入口显示资格不重复引导_TC_R63_009"
   },
   {
-    "status": "NOT_RUN",
-    "testFiles": [],
-    "evidence": null,
+    "status": "PASS",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/I04IdentityIT.java"
+    ],
+    "evidence": "docs/implementation/vehicle/evidence/I04.json",
     "caseId": "TC-R63-010",
     "taskId": "I04",
-    "testMethod": "test_tc_r63_010"
+    "testMethod": "I04IdentityIT#待审账号切代驾拒绝且刷新不审批_TC_R63_010_R63_016"
   },
   {
     "status": "NOT_RUN",
@@ -2824,12 +2832,14 @@
     "testMethod": "test_tc_r63_015"
   },
   {
-    "status": "NOT_RUN",
-    "testFiles": [],
-    "evidence": null,
+    "status": "PASS",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/I04IdentityIT.java"
+    ],
+    "evidence": "docs/implementation/vehicle/evidence/I04.json",
     "caseId": "TC-R63-016",
     "taskId": "I04",
-    "testMethod": "test_tc_r63_016"
+    "testMethod": "I04IdentityIT#待审账号切代驾拒绝且刷新不审批_TC_R63_010_R63_016"
   },
   {
     "status": "NOT_ASSESSED",

@@ -19,4 +19,7 @@ public interface ViSessionTokenMapper {
 
     /** 撤销某会话的全部令牌（刷新重用检测→撤会话族，或退出）。 */
     int revokeBySession(@Param("sessionId") long sessionId, @Param("revokedAt") Instant revokedAt);
+
+    /** 会话当前最大令牌代际（切换签发新 ACCESS 时沿用轮换谱系；无令牌返回 0）。 */
+    long selectMaxGeneration(@Param("sessionId") long sessionId);
 }

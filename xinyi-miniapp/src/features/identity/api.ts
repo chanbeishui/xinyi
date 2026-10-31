@@ -1,5 +1,5 @@
 import { request } from '../../services/http';
-import type { Session, Profile, PhoneBindResult, SessionView, LogoutResult } from '../../api/types';
+import type { Session, Profile, PhoneBindResult, SessionView, LogoutResult, AccessSession, MiniRole } from '../../api/types';
 
 // I01/I02/I03 身份接口客户端（MINI 认证域）。响应为 vi 信封 {code,msg,data}；http.ts 已处理真实状态码/401 刷新。
 
@@ -57,4 +57,19 @@ function newIdempotencyKey(): string {
     const r = (Math.random() * 16) | 0;
     return (c === 'x' ? r : (r & 0x3) | 0x8).toString(16);
   });
+}
+
+// I04 角色切换（API_006）：只切服务端 availableRoles 内角色；返回新访问令牌（绑定新上下文），旧上下文令牌失效。
+// 调用方须以 applyAccessSession 合并存储（保留 refreshToken）。expectedContextVersion 取自当前会话。
+export async function switchRole(role: MiniRole, expectedContextVersion: number): Promise<AccessSession> {
+  const resp = await request<{ code: number; msg: string; data: AccessSession }>(
+    'POST', '/api/common/session/role', { role, expectedContextVersion });
+  return resp.data;
+}
+
+// I04 站点切换（API_007）：目标须在授权站点集合内；视角置 STATION。
+export async function switchStation(stationId: string, expectedContextVersion: number): Promise<AccessSession> {
+  const resp = await request<{ code: number; msg: string; data: AccessSession }>(
+    'POST', '/api/common/session/station', { stationId, expectedContextVersion });
+  return resp.data;
 }

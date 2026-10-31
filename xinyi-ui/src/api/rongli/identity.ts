@@ -43,6 +43,12 @@ export interface LogoutResult {
   scope: 'CURRENT' | 'ALL'
 }
 
+// 角色/站点切换返回（I04，AccessSession）：含新访问令牌（绑定新上下文），不含刷新令牌；旧上下文令牌随即失效。
+export interface AccessSession extends SessionView {
+  token: string
+  expiresIn: number
+}
+
 // 统一档案只读投影
 export interface ProfileView {
   accountId: string
