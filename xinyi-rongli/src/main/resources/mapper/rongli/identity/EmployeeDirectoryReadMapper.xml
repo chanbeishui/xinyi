@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xinyi.rongli.identity.mapper.EmployeeDirectoryReadMapper">
+
+    <select id="selectActiveUserIdsByPhone" resultType="java.lang.Long">
+        SELECT DISTINCT user_id FROM sys_user
+        WHERE phonenumber = #{phone} AND status = '0' AND del_flag = '0'
+        ORDER BY user_id
+    </select>
+
+    <select id="selectUserAuthVersion" resultType="java.lang.Long">
+        SELECT auth_version FROM sys_user WHERE user_id = #{sysUserId}
+    </select>
+
+</mapper>

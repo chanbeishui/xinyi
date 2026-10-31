@@ -51,3 +51,15 @@ export interface ProfileView {
   defaultAddressId: string | null
   employeeLink: EmployeeLinkPublic
 }
+
+// I02 手机号验证结果（手机号验证与员工关联结果分开；无令牌）
+export type PhoneVerificationStatus = 'PROCESSING' | 'VERIFIED' | 'UNKNOWN' | 'FAILED'
+export interface PhoneBindResult {
+  verificationRequestId: string
+  verificationStatus: PhoneVerificationStatus
+  phoneBound: boolean
+  phoneMask: string | null
+  accountVersion: number
+  employeeLink: EmployeeLinkPublic
+  requiresSessionRefresh: boolean
+}

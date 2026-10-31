@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xinyi.rongli.identity.mapper.EmployeeDirectoryGuardMapper">
+
+    <insert id="ensureGuard">
+        INSERT INTO vi_employee_directory_guard (guard_key) VALUES ('GLOBAL_DIRECTORY')
+        ON DUPLICATE KEY UPDATE guard_key = guard_key
+    </insert>
+
+    <select id="lockGuard" resultType="long">
+        SELECT id FROM vi_employee_directory_guard WHERE guard_key = 'GLOBAL_DIRECTORY' FOR UPDATE
+    </select>
+
+</mapper>

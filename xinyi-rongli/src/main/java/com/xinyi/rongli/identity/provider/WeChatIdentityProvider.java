@@ -98,4 +98,19 @@ public class WeChatIdentityProvider implements IdentityProvider {
         JsonNode v = node.get(field);
         return v == null || v.isNull() ? null : v.asText();
     }
+
+    @Override
+    public PhoneExchangeResult exchangePhone(String phoneCode) {
+        if (phoneCode == null || phoneCode.isBlank()) {
+            throw new ViException(ViErrorCode.VI_REQUEST_INVALID, "缺少微信手机号 phoneCode");
+        }
+        // 真实手机号换取需 access_token（getAccessToken）+ getuserphonenumber，凭据来自 KMS；
+        // 属 L01 真实渠道门禁，未配置凭据 fail-closed，绝不以模拟器/固定值替代真实微信认证。
+        if (appId.isBlank() || appSecret.isBlank()) {
+            throw new ViException(ViErrorCode.VI_CAPABILITY_NOT_CONFIGURED,
+                    "微信真实手机号渠道未配置凭据（vi.providers.wechat.app-id/app-secret）；属 L01 发布门禁");
+        }
+        throw new ViException(ViErrorCode.VI_CAPABILITY_NOT_CONFIGURED,
+                "微信真实手机号换取（getuserphonenumber）待 L01 真实渠道联调接入");
+    }
 }

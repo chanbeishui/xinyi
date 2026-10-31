@@ -15,11 +15,13 @@
     "taskId": "I01"
   },
   {
-    "implementationStatus": "NOT_ASSESSED",
-    "controllerFile": null,
-    "serviceFile": null,
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/identity/PhoneController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/identity/service/PhoneBindService.java",
     "mapperFile": null,
-    "testFiles": [],
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/I02IdentityIT.java"
+    ],
     "reviewEvidence": null,
     "operationId": "API_002_post",
     "method": "POST",
@@ -28,11 +30,13 @@
     "taskId": "I02"
   },
   {
-    "implementationStatus": "NOT_ASSESSED",
-    "controllerFile": null,
-    "serviceFile": null,
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/identity/PhoneController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/identity/service/SmsService.java",
     "mapperFile": null,
-    "testFiles": [],
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/I02IdentityIT.java"
+    ],
     "reviewEvidence": null,
     "operationId": "API_003_post",
     "method": "POST",
@@ -41,11 +45,13 @@
     "taskId": "I02"
   },
   {
-    "implementationStatus": "NOT_ASSESSED",
-    "controllerFile": null,
-    "serviceFile": null,
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/identity/PhoneController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/identity/service/SmsService.java",
     "mapperFile": null,
-    "testFiles": [],
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/I02IdentityIT.java"
+    ],
     "reviewEvidence": null,
     "operationId": "API_004_post",
     "method": "POST",
@@ -121,11 +127,13 @@
     "taskId": "C02"
   },
   {
-    "implementationStatus": "NOT_ASSESSED",
-    "controllerFile": null,
-    "serviceFile": null,
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/identity/OwnerProfileController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/identity/service/ProfilePatchService.java",
     "mapperFile": null,
-    "testFiles": [],
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/I02IdentityIT.java"
+    ],
     "reviewEvidence": null,
     "operationId": "API_012_patch",
     "method": "PATCH",
@@ -3202,11 +3210,13 @@
     "taskId": "I05"
   },
   {
-    "implementationStatus": "NOT_ASSESSED",
-    "controllerFile": null,
-    "serviceFile": null,
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/identity/PhoneController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/identity/service/PhoneBindService.java",
     "mapperFile": null,
-    "testFiles": [],
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/I02IdentityIT.java"
+    ],
     "reviewEvidence": null,
     "operationId": "v62_get_phone_verification",
     "method": "GET",

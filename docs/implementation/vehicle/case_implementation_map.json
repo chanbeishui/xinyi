@@ -2452,12 +2452,14 @@
     "testMethod": "test_tc_r62_007"
   },
   {
-    "status": "NOT_RUN",
-    "testFiles": [],
-    "evidence": null,
+    "status": "PASS",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/I02IdentityIT.java"
+    ],
+    "evidence": "docs/implementation/vehicle/evidence/I02.json",
     "caseId": "TC-R62-008",
     "taskId": "I02",
-    "testMethod": "test_tc_r62_008"
+    "testMethod": "I02IdentityIT#bind混入裸手机号或假身份字段被400拒绝_TC_R62_008"
   },
   {
     "status": "NOT_RUN",
@@ -2500,12 +2502,14 @@
     "testMethod": "test_tc_r62_013"
   },
   {
-    "status": "NOT_RUN",
-    "testFiles": [],
-    "evidence": null,
+    "status": "PASS",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/I02IdentityIT.java"
+    ],
+    "evidence": "docs/implementation/vehicle/evidence/I02.json",
     "caseId": "TC-R62-014",
     "taskId": "I02",
-    "testMethod": "test_tc_r62_014"
+    "testMethod": "I02IdentityIT#核验成功响应丢失可查回执并安全重试_TC_R62_014"
   },
   {
     "status": "NOT_RUN",
@@ -2558,12 +2562,14 @@
     "testMethod": "test_tc_r62_020"
   },
   {
-    "status": "NOT_RUN",
-    "testFiles": [],
-    "evidence": null,
+    "status": "PASS",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/I02IdentityIT.java"
+    ],
+    "evidence": "docs/implementation/vehicle/evidence/I02.json",
     "caseId": "TC-R62-021",
     "taskId": "I02",
-    "testMethod": "test_tc_r62_021"
+    "testMethod": "I02IdentityIT#无效phoneCode失败不假成功不开STATION_TC_R62_021_R63_012"
   },
   {
     "status": "NOT_RUN",
@@ -2590,12 +2596,14 @@
     "testMethod": "test_tc_r62_024"
   },
   {
-    "status": "NOT_RUN",
-    "testFiles": [],
-    "evidence": null,
+    "status": "PASS",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/I02IdentityIT.java"
+    ],
+    "evidence": "docs/implementation/vehicle/evidence/I02.json",
     "caseId": "TC-R62-025",
     "taskId": "I02",
-    "testMethod": "test_tc_r62_025"
+    "testMethod": "I02IdentityIT#目录重号核验成功但关联需管理员_TC_R62_025"
   },
   {
     "status": "NOT_RUN",
@@ -2638,12 +2646,14 @@
     "testMethod": "test_tc_r62_030"
   },
   {
-    "status": "NOT_RUN",
-    "testFiles": [],
-    "evidence": null,
+    "status": "PASS",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/I02IdentityIT.java"
+    ],
+    "evidence": "docs/implementation/vehicle/evidence/I02.json",
     "caseId": "TC-R62-031",
     "taskId": "I02",
-    "testMethod": "test_tc_r62_031"
+    "testMethod": "I02IdentityIT#同requestId并发只一次外部消费_TC_R62_031"
   },
   {
     "status": "NOT_RUN",
@@ -2776,12 +2786,14 @@
     "testMethod": "test_tc_r63_011"
   },
   {
-    "status": "NOT_RUN",
-    "testFiles": [],
-    "evidence": null,
+    "status": "PASS",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/I02IdentityIT.java"
+    ],
+    "evidence": "docs/implementation/vehicle/evidence/I02.json",
     "caseId": "TC-R63-012",
     "taskId": "I02",
-    "testMethod": "test_tc_r63_012"
+    "testMethod": "I02IdentityIT#无效phoneCode失败不假成功不开STATION_TC_R62_021_R63_012"
   },
   {
     "status": "NOT_RUN",

@@ -322,9 +322,11 @@
     "taskId": "N02"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "IMPLEMENTED",
+    "implementationFile": "xinyi-miniapp/src/pages/identity/phone.vue",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/I02.json"
+    ],
     "boardId": "O25",
     "taskId": "I02"
   },

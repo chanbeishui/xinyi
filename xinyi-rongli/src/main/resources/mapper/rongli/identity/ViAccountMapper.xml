@@ -70,4 +70,19 @@
         SELECT <include refid="cols"/> FROM vi_account WHERE id = #{id} FOR UPDATE
     </select>
 
+    <update id="updatePhone">
+        UPDATE vi_account
+        SET phone_lookup = #{phoneLookup}, phone_cipher = #{phoneCipher},
+            phone_verified_at = #{verifiedAt,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler},
+            phone_source = #{phoneSource}, updated_at = UTC_TIMESTAMP(3), version = version + 1
+        WHERE id = #{id} AND version = #{expectedVersion}
+    </update>
+
+    <update id="updateProfile">
+        UPDATE vi_account
+        SET nickname = #{nickname}, avatar_file_id = #{avatarFileId},
+            updated_at = UTC_TIMESTAMP(3), version = version + 1
+        WHERE id = #{id} AND version = #{expectedVersion}
+    </update>
+
 </mapper>

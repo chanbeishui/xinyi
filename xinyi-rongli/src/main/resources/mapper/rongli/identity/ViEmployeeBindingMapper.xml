@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xinyi.rongli.identity.mapper.ViEmployeeBindingMapper">
+
+    <resultMap id="BindingMap" type="com.xinyi.rongli.identity.domain.ViEmployeeBinding">
+        <id property="id" column="id"/>
+        <result property="accountId" column="account_id"/>
+        <result property="sysUserId" column="sys_user_id"/>
+        <result property="boundBy" column="bound_by"/>
+        <result property="boundAt" column="bound_at"
+                typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+        <result property="revokedAt" column="revoked_at"
+                typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+        <result property="permissionVersion" column="permission_version"/>
+        <result property="appId" column="app_id"/>
+        <result property="source" column="source"/>
+        <result property="status" column="status"/>
+        <result property="phoneLookup" column="phone_lookup"/>
+        <result property="lastPhoneVerifiedAt" column="last_phone_verified_at"
+                typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+        <result property="employeeAuthVersion" column="employee_auth_version"/>
+        <result property="autoRebindBlocked" column="auto_rebind_blocked"/>
+        <result property="suspendedReason" column="suspended_reason"/>
+        <result property="revokedBy" column="revoked_by"/>
+        <result property="revokedReason" column="revoked_reason"/>
+        <result property="createdAt" column="created_at"
+                typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+        <result property="updatedAt" column="updated_at"
+                typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+        <result property="version" column="version"/>
+    </resultMap>
+
+    <sql id="cols">
+        id, account_id, sys_user_id, bound_by, bound_at, revoked_at, permission_version, app_id, source,
+        status, phone_lookup, last_phone_verified_at, employee_auth_version, auto_rebind_blocked,
+        suspended_reason, revoked_by, revoked_reason, created_at, updated_at, version
+    </sql>
+
+    <!-- 生成列 active_account/active_user 与 id/created_at/updated_at/version 不写 -->
+    <insert id="insert" parameterType="com.xinyi.rongli.identity.domain.ViEmployeeBinding"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO vi_employee_binding
+            (account_id, sys_user_id, bound_by, bound_at, permission_version, app_id, source, status,
+             phone_lookup, last_phone_verified_at, employee_auth_version, auto_rebind_blocked)
+        VALUES
+            (#{accountId}, #{sysUserId}, #{boundBy},
+             #{boundAt,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler},
+             #{permissionVersion}, #{appId}, #{source}, #{status}, #{phoneLookup},
+             #{lastPhoneVerifiedAt,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler},
+             #{employeeAuthVersion}, #{autoRebindBlocked})
+    </insert>
+
+    <select id="selectActiveByAccount" resultMap="BindingMap">
+        SELECT <include refid="cols"/> FROM vi_employee_binding
+        WHERE account_id = #{accountId} AND revoked_at IS NULL LIMIT 1
+    </select>
+
+    <select id="countActiveByAppUser" resultType="int">
+        SELECT COUNT(*) FROM vi_employee_binding
+        WHERE app_id = #{appId} AND sys_user_id = #{sysUserId} AND revoked_at IS NULL
+    </select>
+
+</mapper>
