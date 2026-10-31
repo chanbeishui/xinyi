@@ -27,4 +27,7 @@ public interface IdentityReadMapper {
 
     /** 某 sys_user 已启用的站点 ID 列表（升序）；STATION 视角的 stationIds。 */
     List<Long> selectGrantedStationIds(@Param("sysUserId") long sysUserId);
+
+    /** 链接员工是否在职有效（status='0' 且 del_flag='0'）；STATION 工作能力实时 fail-closed。 */
+    int countActiveUserById(@Param("sysUserId") long sysUserId);
 }

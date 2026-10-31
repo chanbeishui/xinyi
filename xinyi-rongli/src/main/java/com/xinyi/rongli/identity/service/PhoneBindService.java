@@ -3,15 +3,12 @@ package com.xinyi.rongli.identity.service;
 import com.xinyi.rongli.identity.domain.EmployeeLinkOutcome;
 import com.xinyi.rongli.identity.domain.PhoneVerificationStatus;
 import com.xinyi.rongli.identity.domain.ViAccount;
-import com.xinyi.rongli.identity.domain.ViEmployeeBinding;
 import com.xinyi.rongli.identity.domain.ViPhoneVerificationReceipt;
 import com.xinyi.rongli.identity.dto.EmployeeLinkPublic;
 import com.xinyi.rongli.identity.dto.PhoneBindResult;
 import com.xinyi.rongli.identity.mapper.EmployeeDirectoryGuardMapper;
-import com.xinyi.rongli.identity.mapper.EmployeeDirectoryReadMapper;
 import com.xinyi.rongli.identity.mapper.ViAccountMapper;
 import com.xinyi.rongli.identity.mapper.ViAccountSecurityMapper;
-import com.xinyi.rongli.identity.mapper.ViEmployeeBindingMapper;
 import com.xinyi.rongli.identity.mapper.ViPhoneVerificationReceiptMapper;
 import com.xinyi.rongli.identity.provider.IdentityProvider;
 import com.xinyi.rongli.identity.provider.PhoneExchangeResult;
@@ -30,7 +27,6 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.time.Instant;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -57,9 +53,8 @@ public class PhoneBindService {
     private final ViAccountMapper accountMapper;
     private final ViAccountSecurityMapper securityMapper;
     private final ViPhoneVerificationReceiptMapper receiptMapper;
-    private final ViEmployeeBindingMapper bindingMapper;
     private final EmployeeDirectoryGuardMapper guardMapper;
-    private final EmployeeDirectoryReadMapper directoryReadMapper;
+    private final EmployeeAssociationService associationService;
     private final IdentityProvider identityProvider;
     private final PhoneCrypto crypto;
     private final IdentityContextService contextService;
@@ -68,17 +63,16 @@ public class PhoneBindService {
     private final TransactionTemplate tx;
 
     public PhoneBindService(ViAccountMapper accountMapper, ViAccountSecurityMapper securityMapper,
-                            ViPhoneVerificationReceiptMapper receiptMapper, ViEmployeeBindingMapper bindingMapper,
-                            EmployeeDirectoryGuardMapper guardMapper, EmployeeDirectoryReadMapper directoryReadMapper,
+                            ViPhoneVerificationReceiptMapper receiptMapper,
+                            EmployeeDirectoryGuardMapper guardMapper, EmployeeAssociationService associationService,
                             IdentityProvider identityProvider, PhoneCrypto crypto,
                             IdentityContextService contextService, AuditService auditService,
                             OutboxService outboxService, PlatformTransactionManager txManager) {
         this.accountMapper = accountMapper;
         this.securityMapper = securityMapper;
         this.receiptMapper = receiptMapper;
-        this.bindingMapper = bindingMapper;
         this.guardMapper = guardMapper;
-        this.directoryReadMapper = directoryReadMapper;
+        this.associationService = associationService;
         this.identityProvider = identityProvider;
         this.crypto = crypto;
         this.contextService = contextService;
@@ -169,7 +163,7 @@ public class PhoneBindService {
             String phone = ext.phone();
             byte[] lookup = crypto.lookup(phone);
             byte[] cipher = crypto.encrypt(phone);
-            EmployeeLinkOutcome outcome = associate(account, appId, phone, lookup, now);
+            EmployeeLinkOutcome outcome = associationService.associate(account, appId, phone, lookup, now);
             receiptMapper.markVerified(receiptId, lookup, cipher, now, outcome.name(), now, receipt.getVersion());
             accountMapper.updatePhone(accountId, lookup, cipher, now, "WECHAT", account.getVersion());
             boolean linked = outcome == EmployeeLinkOutcome.LINKED || outcome == EmployeeLinkOutcome.EXISTING_LINK;
@@ -191,51 +185,6 @@ public class PhoneBindService {
         return buildResult(updated, accountId, false);
     }
 
-    /** 目录锁内自动关联：唯一有效员工匹配则建绑定；重号/冲突/已绑/禁用记内部 outcome，不覆盖、不泄细节。 */
-    private EmployeeLinkOutcome associate(ViAccount account, String appId, String phone, byte[] lookup, Instant now) {
-        if (account.getEmployeeAutoLinkBlocked() != null && account.getEmployeeAutoLinkBlocked() == 1) {
-            return EmployeeLinkOutcome.REBIND_BLOCKED;
-        }
-        String normalized = PhoneCrypto.normalize(phone);
-        List<Long> userIds = directoryReadMapper.selectActiveUserIdsByPhone(normalized);
-        ViEmployeeBinding existing = bindingMapper.selectActiveByAccount(account.getId());
-        if (existing != null) {
-            if (userIds.size() == 1 && userIds.get(0).equals(existing.getSysUserId())) {
-                return EmployeeLinkOutcome.EXISTING_LINK;
-            }
-            return EmployeeLinkOutcome.ACCOUNT_ALREADY_LINKED;
-        }
-        if (userIds.isEmpty()) {
-            return EmployeeLinkOutcome.NO_MATCH;
-        }
-        if (userIds.size() > 1) {
-            return EmployeeLinkOutcome.AMBIGUOUS_PHONE;
-        }
-        long sysUserId = userIds.get(0);
-        if (bindingMapper.countActiveByAppUser(appId, sysUserId) > 0) {
-            return EmployeeLinkOutcome.USER_ALREADY_LINKED;
-        }
-        Long authVersion = directoryReadMapper.selectUserAuthVersion(sysUserId);
-        if (authVersion == null) {
-            return EmployeeLinkOutcome.EMPLOYEE_UNAVAILABLE;
-        }
-        ViEmployeeBinding b = new ViEmployeeBinding();
-        b.setAccountId(account.getId());
-        b.setSysUserId(sysUserId);
-        b.setBoundBy(null);
-        b.setBoundAt(now);
-        b.setPermissionVersion(0L);
-        b.setAppId(appId);
-        b.setSource("WECHAT_PHONE_MATCH");
-        b.setStatus("ACTIVE");
-        b.setPhoneLookup(lookup);
-        b.setLastPhoneVerifiedAt(now);
-        b.setEmployeeAuthVersion(authVersion);
-        b.setAutoRebindBlocked(0);
-        bindingMapper.insert(b);
-        return EmployeeLinkOutcome.LINKED;
-    }
-
     /** 查询本人手机号授权处理结果；VERIFIED 且关联可重试时安全重试关联（不重复消费外部凭据）。 */
     public PhoneBindResult queryReceipt(long accountId, String requestId) {
         ViPhoneVerificationReceipt receipt = receiptMapper.selectByRequest(accountId, requestId);
@@ -251,7 +200,7 @@ public class PhoneBindService {
                 ViPhoneVerificationReceipt r = receiptMapper.selectByIdForUpdate(rid);
                 ViAccount account = accountMapper.selectByIdForUpdate(accountId);
                 String phone = crypto.decrypt(r.getPhoneCipher());
-                EmployeeLinkOutcome outcome = associate(account, account.getAppId(), phone, r.getPhoneLookup(), Instant.now());
+                EmployeeLinkOutcome outcome = associationService.associate(account, account.getAppId(), phone, r.getPhoneLookup(), Instant.now());
                 receiptMapper.updateOutcome(r.getId(), outcome.name(), r.getVersion());
                 if (outcome == EmployeeLinkOutcome.LINKED || outcome == EmployeeLinkOutcome.EXISTING_LINK) {
                     securityMapper.bumpPermissionVersion(accountId, Instant.now());

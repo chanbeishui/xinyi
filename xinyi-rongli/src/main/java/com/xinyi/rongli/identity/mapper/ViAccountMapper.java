@@ -38,4 +38,8 @@ public interface ViAccountMapper {
     /** CAS 更新选填档案（nickname/avatar_file_id，服务端已合并未提供字段），version+1。 */
     int updateProfile(@Param("id") long id, @Param("nickname") String nickname,
                       @Param("avatarFileId") Long avatarFileId, @Param("expectedVersion") long expectedVersion);
+
+    /** 设置管理员禁止自动重绑标记（解绑=1/允许重核=0），version+1。 */
+    int updateAutoLinkBlocked(@Param("id") long id, @Param("blocked") int blocked,
+                              @Param("expectedVersion") long expectedVersion);
 }

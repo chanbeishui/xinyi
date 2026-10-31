@@ -71,6 +71,19 @@ export const constantRoutes = [
     ]
   },
   {
+    path: '/rongli',
+    component: Layout,
+    redirect: 'noredirect',
+    children: [
+      {
+        path: 'employee-link',
+        component: () => import('@/views/rongli/identity/employeeLink.vue'),
+        name: 'RongliEmployeeLink',
+        meta: { title: '员工微信关联', icon: 'peoples' }
+      }
+    ]
+  },
+  {
     path: '/lock',
     component: () => import('@/views/lock.vue'),
     hidden: true,

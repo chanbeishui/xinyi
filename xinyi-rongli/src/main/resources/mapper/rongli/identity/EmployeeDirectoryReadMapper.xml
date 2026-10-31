@@ -12,4 +12,12 @@
         SELECT auth_version FROM sys_user WHERE user_id = #{sysUserId}
     </select>
 
+    <select id="countActiveUserById" resultType="int">
+        SELECT COUNT(*) FROM sys_user WHERE user_id = #{sysUserId} AND status = '0' AND del_flag = '0'
+    </select>
+
+    <select id="selectUserPhone" resultType="java.lang.String">
+        SELECT phonenumber FROM sys_user WHERE user_id = #{sysUserId}
+    </select>
+
 </mapper>

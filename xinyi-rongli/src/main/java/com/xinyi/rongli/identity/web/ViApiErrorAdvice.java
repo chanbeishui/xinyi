@@ -42,6 +42,12 @@ public class ViApiErrorAdvice {
 
     @ExceptionHandler(Exception.class)
     public void handleOther(Exception ex, HttpServletRequest request, HttpServletResponse response) throws IOException {
+        // 退役/不存在的 vi 路由明确 404（NoResourceFoundException，spring-webmvc 不在本模块依赖，按类名识别），无授权写入副作用
+        if ("NoResourceFoundException".equals(ex.getClass().getSimpleName())) {
+            write(response, ApiErrors.of(ViErrorCode.VI_RESOURCE_NOT_VISIBLE,
+                    ViErrorCode.VI_RESOURCE_NOT_VISIBLE.defaultMsg(), UUID.randomUUID().toString()));
+            return;
+        }
         write(response, ApiErrors.of(ViErrorCode.VI_INTERNAL_ERROR,
                 ViErrorCode.VI_INTERNAL_ERROR.defaultMsg(), UUID.randomUUID().toString()));
     }

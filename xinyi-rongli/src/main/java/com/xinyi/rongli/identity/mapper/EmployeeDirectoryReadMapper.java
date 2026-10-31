@@ -15,4 +15,10 @@ public interface EmployeeDirectoryReadMapper {
 
     /** 员工当前框架授权版本（建立绑定时快照）。 */
     Long selectUserAuthVersion(@Param("sysUserId") long sysUserId);
+
+    /** 员工是否在职有效（status='0' 且 del_flag='0'）；工作权限实时 fail-closed 校验。 */
+    int countActiveUserById(@Param("sysUserId") long sysUserId);
+
+    /** 员工当前目录手机号（目录钩子换号比对用）。 */
+    String selectUserPhone(@Param("sysUserId") long sysUserId);
 }

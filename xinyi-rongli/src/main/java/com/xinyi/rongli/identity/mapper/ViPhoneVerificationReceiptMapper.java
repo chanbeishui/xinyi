@@ -39,4 +39,7 @@ public interface ViPhoneVerificationReceiptMapper {
     /** 安全重试关联后仅更新 outcome（CAS），不改手机号验证事实。 */
     int updateOutcome(@Param("id") long id, @Param("employeeLinkOutcome") String employeeLinkOutcome,
                       @Param("expectedVersion") long expectedVersion);
+
+    /** 账号最近一条 VERIFIED 回执（reconcile 用，服务端再校验有效窗口）。 */
+    ViPhoneVerificationReceipt selectLatestVerifiedByAccount(@Param("accountId") long accountId);
 }

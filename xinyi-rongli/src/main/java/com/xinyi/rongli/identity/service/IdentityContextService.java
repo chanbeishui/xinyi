@@ -55,13 +55,15 @@ public class IdentityContextService {
                 stationIds.add(ViId.external(id));
             }
             if ("ACTIVE".equals(status)) {
-                boolean work = grantCount > 0;
+                // 工作能力实时 fail-closed：须员工在职有效 + 至少一个启用站点授权（停用/删除立即失权，不靠旧缓存）
+                boolean employeeActive = readMapper.countActiveUserById(sysUserId) > 0;
+                boolean work = grantCount > 0 && employeeActive;
                 if (work) {
                     roles.add("STATION");
                 }
                 workAccessDisabled = !work;
                 link = new EmployeeLinkPublic("LINKED", work, grantCount,
-                        work ? "EMPLOYEE_LINKED" : "WAIT_ADMIN_CONFIGURATION", false);
+                        work ? "EMPLOYEE_LINKED" : (employeeActive ? "WAIT_ADMIN_CONFIGURATION" : "CONTACT_ADMIN"), false);
             } else {
                 // SUSPENDED：暂停工作能力，保留唯一关系与历史；不自动恢复，需本人重新核验/后台处理
                 workAccessDisabled = true;
