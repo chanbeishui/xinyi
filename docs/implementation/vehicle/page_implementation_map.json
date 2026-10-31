@@ -18,23 +18,29 @@
     "taskId": "I04"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "IMPLEMENTED",
+    "implementationFile": "xinyi-miniapp/src/pages/identity/link.vue",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/I05.json"
+    ],
     "boardId": "U02",
     "taskId": "I05"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "IMPLEMENTED",
+    "implementationFile": "xinyi-miniapp/src/pages/identity/link.vue",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/I05.json"
+    ],
     "boardId": "U02-revoked",
     "taskId": "I05"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "IMPLEMENTED",
+    "implementationFile": "xinyi-miniapp/src/pages/identity/link.vue",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/I05.json"
+    ],
     "boardId": "U02-unconfigured",
     "taskId": "I05"
   },
@@ -1622,9 +1628,11 @@
     "taskId": "N01"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "IMPLEMENTED",
+    "implementationFile": "xinyi-ui/src/views/rongli/identity/employeeLink.vue",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/I05.json"
+    ],
     "boardId": "B36",
     "taskId": "I05"
   },
@@ -2063,16 +2071,20 @@
     "taskId": "I01"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "IMPLEMENTED",
+    "implementationFile": "xinyi-miniapp/src/pages/identity/link.vue",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/I05.json"
+    ],
     "boardId": "U02-conflict",
     "taskId": "I05"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "IMPLEMENTED",
+    "implementationFile": "xinyi-miniapp/src/pages/identity/link.vue",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/I05.json"
+    ],
     "boardId": "U02-linked",
     "taskId": "I05"
   },
@@ -2084,23 +2096,29 @@
     "taskId": "I06"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "IMPLEMENTED",
+    "implementationFile": "xinyi-ui/src/views/rongli/identity/employeeLink.vue",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/I05.json"
+    ],
     "boardId": "B36-suspend",
     "taskId": "I05"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "IMPLEMENTED",
+    "implementationFile": "xinyi-ui/src/views/rongli/identity/employeeLink.vue",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/I05.json"
+    ],
     "boardId": "B36-revoke",
     "taskId": "I05"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "IMPLEMENTED",
+    "implementationFile": "xinyi-ui/src/views/rongli/identity/employeeLink.vue",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/I05.json"
+    ],
     "boardId": "B36-rematch",
     "taskId": "I05"
   },
@@ -2146,23 +2164,29 @@
     "taskId": "I04"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "IMPLEMENTED",
+    "implementationFile": "xinyi-miniapp/src/pages/identity/link.vue",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/I05.json"
+    ],
     "boardId": "U02-suspended",
     "taskId": "I05"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "IMPLEMENTED",
+    "implementationFile": "xinyi-miniapp/src/pages/identity/link.vue",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/I05.json"
+    ],
     "boardId": "U02-verifying",
     "taskId": "I05"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "IMPLEMENTED",
+    "implementationFile": "xinyi-miniapp/src/pages/identity/link.vue",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/I05.json"
+    ],
     "boardId": "U02-unknown",
     "taskId": "I05"
   },
@@ -2195,9 +2219,11 @@
     "taskId": "I01"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "IMPLEMENTED",
+    "implementationFile": "xinyi-ui/src/views/rongli/identity/employeeLink.vue",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/I05.json"
+    ],
     "boardId": "B36-unlinked",
     "taskId": "I05"
   },

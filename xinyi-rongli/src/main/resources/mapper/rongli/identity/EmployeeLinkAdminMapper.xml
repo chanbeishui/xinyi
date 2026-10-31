@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xinyi.rongli.identity.mapper.EmployeeLinkAdminMapper">
+
+    <sql id="adminCols">
+        b.id, b.account_id, b.app_id, b.sys_user_id, b.status, b.source, b.bound_at,
+        b.last_phone_verified_at, b.auto_rebind_blocked, b.version,
+        u.nick_name, a.open_id, a.phone_cipher
+    </sql>
+
+    <select id="selectBindings" resultType="java.util.LinkedHashMap">
+        SELECT <include refid="adminCols"/>
+        FROM vi_employee_binding b
+        JOIN sys_user u ON u.user_id = b.sys_user_id
+        JOIN vi_account a ON a.id = b.account_id
+        <if test="deptIds != null">
+            WHERE u.user_id IN (SELECT ud.user_id FROM sys_user_dept ud WHERE ud.dept_id IN
+            <foreach collection="deptIds" item="d" open="(" separator="," close=")">#{d}</foreach>)
+        </if>
+        ORDER BY b.id DESC
+    </select>
+
+    <select id="selectAdminById" resultType="java.util.LinkedHashMap">
+        SELECT <include refid="adminCols"/>
+        FROM vi_employee_binding b
+        JOIN sys_user u ON u.user_id = b.sys_user_id
+        JOIN vi_account a ON a.id = b.account_id
+        WHERE b.id = #{id}
+    </select>
+
+</mapper>

@@ -85,4 +85,11 @@
         WHERE id = #{id} AND version = #{expectedVersion}
     </update>
 
+    <update id="updateAutoLinkBlocked">
+        UPDATE vi_account
+        SET employee_auto_link_blocked = #{blocked},
+            updated_at = UTC_TIMESTAMP(3), version = version + 1
+        WHERE id = #{id} AND version = #{expectedVersion}
+    </update>
+
 </mapper>

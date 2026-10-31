@@ -90,4 +90,10 @@
         WHERE id = #{id} AND version = #{expectedVersion}
     </update>
 
+    <select id="selectLatestVerifiedByAccount" resultMap="ReceiptMap">
+        SELECT <include refid="cols"/> FROM vi_phone_verification_receipt
+        WHERE account_id = #{accountId} AND status = 'VERIFIED'
+        ORDER BY verified_at DESC, id DESC LIMIT 1
+    </select>
+
 </mapper>

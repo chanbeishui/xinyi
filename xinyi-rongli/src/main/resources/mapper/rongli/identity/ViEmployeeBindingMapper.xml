@@ -60,4 +60,44 @@
         WHERE app_id = #{appId} AND sys_user_id = #{sysUserId} AND revoked_at IS NULL
     </select>
 
+    <select id="selectById" resultMap="BindingMap">
+        SELECT <include refid="cols"/> FROM vi_employee_binding WHERE id = #{id}
+    </select>
+
+    <select id="selectByIdForUpdate" resultMap="BindingMap">
+        SELECT <include refid="cols"/> FROM vi_employee_binding WHERE id = #{id} FOR UPDATE
+    </select>
+
+    <select id="selectLatestByAccount" resultMap="BindingMap">
+        SELECT <include refid="cols"/> FROM vi_employee_binding
+        WHERE account_id = #{accountId} ORDER BY id DESC LIMIT 1
+    </select>
+
+    <select id="selectActiveBySysUser" resultMap="BindingMap">
+        SELECT <include refid="cols"/> FROM vi_employee_binding
+        WHERE sys_user_id = #{sysUserId} AND revoked_at IS NULL LIMIT 1
+    </select>
+
+    <update id="suspend">
+        UPDATE vi_employee_binding
+        SET status = 'SUSPENDED', suspended_reason = #{reason},
+            updated_at = UTC_TIMESTAMP(3), version = version + 1
+        WHERE id = #{id} AND version = #{expectedVersion} AND status = 'ACTIVE'
+    </update>
+
+    <update id="revoke">
+        UPDATE vi_employee_binding
+        SET status = 'REVOKED', revoked_at = #{revokedAt,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler},
+            revoked_by = #{revokedBy}, revoked_reason = #{reason}, auto_rebind_blocked = 1,
+            updated_at = UTC_TIMESTAMP(3), version = version + 1
+        WHERE id = #{id} AND version = #{expectedVersion} AND status IN ('ACTIVE', 'SUSPENDED')
+    </update>
+
+    <update id="allowRematch">
+        UPDATE vi_employee_binding
+        SET auto_rebind_blocked = 0,
+            updated_at = UTC_TIMESTAMP(3), version = version + 1
+        WHERE id = #{id} AND version = #{expectedVersion} AND status IN ('SUSPENDED', 'REVOKED')
+    </update>
+
 </mapper>

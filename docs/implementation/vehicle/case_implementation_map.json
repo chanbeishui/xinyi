@@ -2254,12 +2254,14 @@
     "testMethod": "test_tc_r50_015"
   },
   {
-    "status": "NOT_RUN",
-    "testFiles": [],
-    "evidence": null,
+    "status": "PASS",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/I05IdentityIT.java"
+    ],
+    "evidence": "docs/implementation/vehicle/evidence/I05.json",
     "caseId": "TC-R50-016",
     "taskId": "I05",
-    "testMethod": "test_tc_r50_016"
+    "testMethod": "I05IdentityIT#唯一匹配自动关联无凭证且不免司机审核_TC_R50_016_R62_007"
   },
   {
     "status": "NOT_RUN",
@@ -2444,12 +2446,14 @@
     "testMethod": "test_tc_r62_006"
   },
   {
-    "status": "NOT_RUN",
-    "testFiles": [],
-    "evidence": null,
+    "status": "PASS",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/I05IdentityIT.java"
+    ],
+    "evidence": "docs/implementation/vehicle/evidence/I05.json",
     "caseId": "TC-R62-007",
     "taskId": "I05",
-    "testMethod": "test_tc_r62_007"
+    "testMethod": "I05IdentityIT#唯一匹配自动关联无凭证且不免司机审核_TC_R50_016_R62_007"
   },
   {
     "status": "PASS",
@@ -2462,44 +2466,54 @@
     "testMethod": "I02IdentityIT#bind混入裸手机号或假身份字段被400拒绝_TC_R62_008"
   },
   {
-    "status": "NOT_RUN",
-    "testFiles": [],
-    "evidence": null,
+    "status": "PASS",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/I05IdentityIT.java"
+    ],
+    "evidence": "docs/implementation/vehicle/evidence/I05.json",
     "caseId": "TC-R62-009",
     "taskId": "I05",
-    "testMethod": "test_tc_r62_009"
+    "testMethod": "I05IdentityIT#重号不选第一不泄名单_TC_R62_009"
   },
   {
-    "status": "NOT_RUN",
-    "testFiles": [],
-    "evidence": null,
+    "status": "PASS",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/I05IdentityIT.java"
+    ],
+    "evidence": "docs/implementation/vehicle/evidence/I05.json",
     "caseId": "TC-R62-010",
     "taskId": "I05",
-    "testMethod": "test_tc_r62_010"
+    "testMethod": "I05IdentityIT#多部门join按主键去重_TC_R62_010"
   },
   {
-    "status": "NOT_RUN",
-    "testFiles": [],
-    "evidence": null,
+    "status": "PASS",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/I05IdentityIT.java"
+    ],
+    "evidence": "docs/implementation/vehicle/evidence/I05.json",
     "caseId": "TC-R62-011",
     "taskId": "I05",
-    "testMethod": "test_tc_r62_011"
+    "testMethod": "I05IdentityIT#员工已绑其他微信拒绝覆盖_TC_R62_011"
   },
   {
-    "status": "NOT_RUN",
-    "testFiles": [],
-    "evidence": null,
+    "status": "PASS",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/I05IdentityIT.java"
+    ],
+    "evidence": "docs/implementation/vehicle/evidence/I05.json",
     "caseId": "TC-R62-012",
     "taskId": "I05",
-    "testMethod": "test_tc_r62_012"
+    "testMethod": "I05IdentityIT#账号已绑另一员工拒绝转移_TC_R62_012"
   },
   {
-    "status": "NOT_RUN",
-    "testFiles": [],
-    "evidence": null,
+    "status": "PASS",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/I05IdentityIT.java"
+    ],
+    "evidence": "docs/implementation/vehicle/evidence/I05.json",
     "caseId": "TC-R62-013",
     "taskId": "I05",
-    "testMethod": "test_tc_r62_013"
+    "testMethod": "I05IdentityIT#并发绑定同一员工只一条有效_TC_R62_013"
   },
   {
     "status": "PASS",
@@ -2512,12 +2526,14 @@
     "testMethod": "I02IdentityIT#核验成功响应丢失可查回执并安全重试_TC_R62_014"
   },
   {
-    "status": "NOT_RUN",
-    "testFiles": [],
-    "evidence": null,
+    "status": "PASS",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/I05IdentityIT.java"
+    ],
+    "evidence": "docs/implementation/vehicle/evidence/I05.json",
     "caseId": "TC-R62-015",
     "taskId": "I05",
-    "testMethod": "test_tc_r62_015"
+    "testMethod": "I05IdentityIT#停用员工旧会话失权车主保留_TC_R62_015"
   },
   {
     "status": "NOT_RUN",
@@ -2546,20 +2562,24 @@
     "testMethod": "I01IdentityIT#已审核DRIVER与有效STATION再登录保持资格_默认OWNER_TC_R62_018_035"
   },
   {
-    "status": "NOT_RUN",
-    "testFiles": [],
-    "evidence": null,
+    "status": "PASS",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/I05IdentityIT.java"
+    ],
+    "evidence": "docs/implementation/vehicle/evidence/I05.json",
     "caseId": "TC-R62-019",
     "taskId": "I05",
-    "testMethod": "test_tc_r62_019"
+    "testMethod": "I05IdentityIT#换号旧能力暂停不变成另一员工_TC_R62_019"
   },
   {
-    "status": "NOT_RUN",
-    "testFiles": [],
-    "evidence": null,
+    "status": "PASS",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/I05IdentityIT.java"
+    ],
+    "evidence": "docs/implementation/vehicle/evidence/I05.json",
     "caseId": "TC-R62-020",
     "taskId": "I05",
-    "testMethod": "test_tc_r62_020"
+    "testMethod": "I05IdentityIT#revoke后登录授权不自动复绑_TC_R62_020_R62_032"
   },
   {
     "status": "PASS",
@@ -2572,12 +2592,14 @@
     "testMethod": "I02IdentityIT#无效phoneCode失败不假成功不开STATION_TC_R62_021_R63_012"
   },
   {
-    "status": "NOT_RUN",
-    "testFiles": [],
-    "evidence": null,
+    "status": "PASS",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/I05IdentityIT.java"
+    ],
+    "evidence": "docs/implementation/vehicle/evidence/I05.json",
     "caseId": "TC-R62-022",
     "taskId": "I05",
-    "testMethod": "test_tc_r62_022"
+    "testMethod": "I05IdentityIT#MINI令牌不获ADMIN能力_TC_R62_022"
   },
   {
     "status": "NOT_RUN",
@@ -2608,28 +2630,34 @@
     "testMethod": "I02IdentityIT#目录重号核验成功但关联需管理员_TC_R62_025"
   },
   {
-    "status": "NOT_RUN",
-    "testFiles": [],
-    "evidence": null,
+    "status": "PASS",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/I05IdentityIT.java"
+    ],
+    "evidence": "docs/implementation/vehicle/evidence/I05.json",
     "caseId": "TC-R62-026",
     "taskId": "I05",
-    "testMethod": "test_tc_r62_026"
+    "testMethod": "I05IdentityIT#退役旧绑定申请路由拒绝无副作用_TC_R62_026_R63_015"
   },
   {
-    "status": "NOT_RUN",
-    "testFiles": [],
-    "evidence": null,
+    "status": "PASS",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/I05IdentityIT.java"
+    ],
+    "evidence": "docs/implementation/vehicle/evidence/I05.json",
     "caseId": "TC-R62-027",
     "taskId": "I05",
-    "testMethod": "test_tc_r62_027"
+    "testMethod": "I05IdentityIT#同号停用旧与启用新仅匹配有效员工_TC_R62_027"
   },
   {
-    "status": "NOT_RUN",
-    "testFiles": [],
-    "evidence": null,
+    "status": "PASS",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/I05IdentityIT.java"
+    ],
+    "evidence": "docs/implementation/vehicle/evidence/I05.json",
     "caseId": "TC-R62-028",
     "taskId": "I05",
-    "testMethod": "test_tc_r62_028"
+    "testMethod": "I05IdentityIT#目录改号后绑定不提交到已变化身份_TC_R62_028"
   },
   {
     "status": "NOT_RUN",
@@ -2658,20 +2686,24 @@
     "testMethod": "I02IdentityIT#同requestId并发只一次外部消费_TC_R62_031"
   },
   {
-    "status": "NOT_RUN",
-    "testFiles": [],
-    "evidence": null,
+    "status": "PASS",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/I05IdentityIT.java"
+    ],
+    "evidence": "docs/implementation/vehicle/evidence/I05.json",
     "caseId": "TC-R62-032",
     "taskId": "I05",
-    "testMethod": "test_tc_r62_032"
+    "testMethod": "I05IdentityIT#revoke后登录授权不自动复绑_TC_R62_020_R62_032"
   },
   {
-    "status": "NOT_RUN",
-    "testFiles": [],
-    "evidence": null,
+    "status": "PASS",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/I05IdentityIT.java"
+    ],
+    "evidence": "docs/implementation/vehicle/evidence/I05.json",
     "caseId": "TC-R62-033",
     "taskId": "I05",
-    "testMethod": "test_tc_r62_033"
+    "testMethod": "I05IdentityIT#allowRematch不直接恢复须本人新核验_TC_R62_033_R63_005"
   },
   {
     "status": "NOT_RUN",
@@ -2692,12 +2724,14 @@
     "testMethod": "I01IdentityIT#已审核DRIVER与有效STATION再登录保持资格_默认OWNER_TC_R62_018_035"
   },
   {
-    "status": "NOT_RUN",
-    "testFiles": [],
-    "evidence": null,
+    "status": "PASS",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/I05IdentityIT.java"
+    ],
+    "evidence": "docs/implementation/vehicle/evidence/I05.json",
     "caseId": "TC-R62-036",
     "taskId": "I05",
-    "testMethod": "test_tc_r62_036"
+    "testMethod": "I05IdentityIT#本人自改手机号不成为可信目录值_TC_R62_036"
   },
   {
     "status": "PASS",
@@ -2718,28 +2752,34 @@
     "testMethod": "test_tc_r63_002"
   },
   {
-    "status": "NOT_RUN",
-    "testFiles": [],
-    "evidence": null,
+    "status": "PASS",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/I05IdentityIT.java"
+    ],
+    "evidence": "docs/implementation/vehicle/evidence/I05.json",
     "caseId": "TC-R63-003",
     "taskId": "I05",
-    "testMethod": "test_tc_r63_003"
+    "testMethod": "I05IdentityIT#后台改选对象暂停B不处理A_TC_R63_003"
   },
   {
-    "status": "NOT_RUN",
-    "testFiles": [],
-    "evidence": null,
+    "status": "PASS",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/I05IdentityIT.java"
+    ],
+    "evidence": "docs/implementation/vehicle/evidence/I05.json",
     "caseId": "TC-R63-004",
     "taskId": "I05",
-    "testMethod": "test_tc_r63_004"
+    "testMethod": "I05IdentityIT#暂停不能由登录绕过_TC_R63_004"
   },
   {
-    "status": "NOT_RUN",
-    "testFiles": [],
-    "evidence": null,
+    "status": "PASS",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/I05IdentityIT.java"
+    ],
+    "evidence": "docs/implementation/vehicle/evidence/I05.json",
     "caseId": "TC-R63-005",
     "taskId": "I05",
-    "testMethod": "test_tc_r63_005"
+    "testMethod": "I05IdentityIT#allowRematch不直接恢复须本人新核验_TC_R62_033_R63_005"
   },
   {
     "status": "NOT_RUN",
@@ -2788,12 +2828,14 @@
     "testMethod": "I04IdentityIT#待审账号切代驾拒绝且刷新不审批_TC_R63_010_R63_016"
   },
   {
-    "status": "NOT_RUN",
-    "testFiles": [],
-    "evidence": null,
+    "status": "PASS",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/I05IdentityIT.java"
+    ],
+    "evidence": "docs/implementation/vehicle/evidence/I05.json",
     "caseId": "TC-R63-011",
     "taskId": "I05",
-    "testMethod": "test_tc_r63_011"
+    "testMethod": "I05IdentityIT#无关联不能暂停或解除_TC_R63_011"
   },
   {
     "status": "PASS",
@@ -2824,12 +2866,14 @@
     "testMethod": "I01IdentityIT#新微信用户默认OWNER且不建sys_user_TC_R62_001"
   },
   {
-    "status": "NOT_RUN",
-    "testFiles": [],
-    "evidence": null,
+    "status": "PASS",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/I05IdentityIT.java"
+    ],
+    "evidence": "docs/implementation/vehicle/evidence/I05.json",
     "caseId": "TC-R63-015",
     "taskId": "I05",
-    "testMethod": "test_tc_r63_015"
+    "testMethod": "I05IdentityIT#退役旧绑定申请路由拒绝无副作用_TC_R62_026_R63_015"
   },
   {
     "status": "PASS",

@@ -3194,11 +3194,13 @@
     "taskId": "C01"
   },
   {
-    "implementationStatus": "NOT_ASSESSED",
-    "controllerFile": null,
-    "serviceFile": null,
-    "mapperFile": null,
-    "testFiles": [],
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/identity/EmployeeLinkController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/identity/service/EmployeeLinkService.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/identity/ViEmployeeBindingMapper.xml",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/I05IdentityIT.java"
+    ],
     "reviewEvidence": null,
     "operationId": "v62_get_employee_link",
     "method": "GET",
@@ -3207,11 +3209,13 @@
     "taskId": "I05"
   },
   {
-    "implementationStatus": "NOT_ASSESSED",
-    "controllerFile": null,
-    "serviceFile": null,
-    "mapperFile": null,
-    "testFiles": [],
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/identity/EmployeeLinkController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/identity/service/EmployeeLinkService.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/identity/ViEmployeeBindingMapper.xml",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/I05IdentityIT.java"
+    ],
     "reviewEvidence": null,
     "operationId": "v62_post_employee_link_reconcile",
     "method": "POST",
@@ -3235,11 +3239,13 @@
     "taskId": "I02"
   },
   {
-    "implementationStatus": "NOT_ASSESSED",
-    "controllerFile": null,
-    "serviceFile": null,
-    "mapperFile": null,
-    "testFiles": [],
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/identity/EmployeeLinkAdminController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/identity/service/EmployeeLinkAdminService.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/identity/ViEmployeeBindingMapper.xml",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/I05IdentityIT.java"
+    ],
     "reviewEvidence": null,
     "operationId": "v62_get_employee_links",
     "method": "GET",
@@ -3248,11 +3254,13 @@
     "taskId": "I05"
   },
   {
-    "implementationStatus": "NOT_ASSESSED",
-    "controllerFile": null,
-    "serviceFile": null,
-    "mapperFile": null,
-    "testFiles": [],
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/identity/EmployeeLinkAdminController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/identity/service/EmployeeLinkAdminService.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/identity/ViEmployeeBindingMapper.xml",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/I05IdentityIT.java"
+    ],
     "reviewEvidence": null,
     "operationId": "v62_get_employee_link_detail",
     "method": "GET",
@@ -3261,11 +3269,13 @@
     "taskId": "I05"
   },
   {
-    "implementationStatus": "NOT_ASSESSED",
-    "controllerFile": null,
-    "serviceFile": null,
-    "mapperFile": null,
-    "testFiles": [],
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/identity/EmployeeLinkAdminController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/identity/service/EmployeeLinkAdminService.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/identity/ViEmployeeBindingMapper.xml",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/I05IdentityIT.java"
+    ],
     "reviewEvidence": null,
     "operationId": "v62_suspend_employee_link",
     "method": "POST",
@@ -3274,11 +3284,13 @@
     "taskId": "I05"
   },
   {
-    "implementationStatus": "NOT_ASSESSED",
-    "controllerFile": null,
-    "serviceFile": null,
-    "mapperFile": null,
-    "testFiles": [],
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/identity/EmployeeLinkAdminController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/identity/service/EmployeeLinkAdminService.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/identity/ViEmployeeBindingMapper.xml",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/I05IdentityIT.java"
+    ],
     "reviewEvidence": null,
     "operationId": "v62_revoke_employee_link",
     "method": "POST",
@@ -3287,11 +3299,13 @@
     "taskId": "I05"
   },
   {
-    "implementationStatus": "NOT_ASSESSED",
-    "controllerFile": null,
-    "serviceFile": null,
-    "mapperFile": null,
-    "testFiles": [],
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/identity/EmployeeLinkAdminController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/identity/service/EmployeeLinkAdminService.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/identity/ViEmployeeBindingMapper.xml",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/I05IdentityIT.java"
+    ],
     "reviewEvidence": null,
     "operationId": "v62_allow_employee_rematch",
     "method": "POST",

@@ -1,5 +1,5 @@
 import { request } from '../../services/http';
-import type { Session, Profile, PhoneBindResult, SessionView, LogoutResult, AccessSession, MiniRole } from '../../api/types';
+import type { Session, Profile, PhoneBindResult, SessionView, LogoutResult, AccessSession, MiniRole, EmployeeLinkPublic } from '../../api/types';
 
 // I01/I02/I03 身份接口客户端（MINI 认证域）。响应为 vi 信封 {code,msg,data}；http.ts 已处理真实状态码/401 刷新。
 
@@ -71,5 +71,19 @@ export async function switchRole(role: MiniRole, expectedContextVersion: number)
 export async function switchStation(stationId: string, expectedContextVersion: number): Promise<AccessSession> {
   const resp = await request<{ code: number; msg: string; data: AccessSession }>(
     'POST', '/api/common/session/station', { stationId, expectedContextVersion });
+  return resp.data;
+}
+
+// I05 本人员工关联状态（U02，只读粗粒度投影）。
+export async function getEmployeeLink(): Promise<EmployeeLinkPublic> {
+  const resp = await request<{ code: number; msg: string; data: EmployeeLinkPublic }>(
+    'GET', '/api/common/employee-link');
+  return resp.data;
+}
+
+// I05 重试最近核验的自动关联（不重复消费 phoneCode；窗口外须重新授权）。
+export async function reconcileEmployeeLink(expectedContextVersion: number): Promise<EmployeeLinkPublic> {
+  const resp = await request<{ code: number; msg: string; data: EmployeeLinkPublic }>(
+    'POST', '/api/common/employee-link/reconcile', { expectedContextVersion });
   return resp.data;
 }

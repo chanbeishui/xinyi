@@ -45,6 +45,7 @@ import com.xinyi.system.mapper.SysUserMapper;
 import com.xinyi.system.mapper.SysUserPostMapper;
 import com.xinyi.system.mapper.SysUserRoleMapper;
 import com.xinyi.system.service.IDeptScopeService;
+import com.xinyi.system.service.EmployeeDirectoryChangeListener;
 import com.xinyi.system.service.ISecurityAuditService;
 import com.xinyi.system.service.ISysConfigService;
 import com.xinyi.system.service.ISysRoleService;
@@ -70,6 +71,7 @@ public class UserAuthorizationMutationServiceImpl implements IUserAuthorizationM
     private final ObjectProvider<ISysRoleService> roleServiceProvider;
     private final ISecurityAuditService auditService;
     private final ObjectProvider<SessionInvalidator> sessionInvalidatorProvider;
+    private final ObjectProvider<EmployeeDirectoryChangeListener> directoryChangeListeners;
 
     @Value("${security.multi-dept-write-enabled:false}")
     private boolean multiDeptWriteEnabled;
@@ -80,7 +82,8 @@ public class UserAuthorizationMutationServiceImpl implements IUserAuthorizationM
             SysSecurityOutboxMapper outboxMapper, IDeptScopeService deptScopeService,
             ISysConfigService configService, ObjectProvider<ISysRoleService> roleServiceProvider,
             ISecurityAuditService auditService,
-            ObjectProvider<SessionInvalidator> sessionInvalidatorProvider)
+            ObjectProvider<SessionInvalidator> sessionInvalidatorProvider,
+            ObjectProvider<EmployeeDirectoryChangeListener> directoryChangeListeners)
     {
         this.userMapper = userMapper;
         this.userDeptMapper = userDeptMapper;
@@ -94,6 +97,33 @@ public class UserAuthorizationMutationServiceImpl implements IUserAuthorizationM
         this.roleServiceProvider = roleServiceProvider;
         this.auditService = auditService;
         this.sessionInvalidatorProvider = sessionInvalidatorProvider;
+        this.directoryChangeListeners = directoryChangeListeners;
+    }
+
+    /** 目录变更提交后通知监听方（vi 员工关联域）失效旧工作能力；无监听 Bean 时行为不变。 */
+    private void notifyDirectoryChange(Long userId, String changeType)
+    {
+        if (userId == null || !TransactionSynchronizationManager.isSynchronizationActive())
+        {
+            return;
+        }
+        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization()
+        {
+            @Override
+            public void afterCommit()
+            {
+                directoryChangeListeners.orderedStream().forEach(l -> {
+                    try
+                    {
+                        l.onDirectoryChanged(userId, changeType);
+                    }
+                    catch (RuntimeException ex)
+                    {
+                        log.warn("用户[{}]目录变更通知失败，等待实时校验兜底: {}", userId, ex.getMessage());
+                    }
+                });
+            }
+        });
     }
 
     @Override
@@ -246,6 +276,10 @@ public class UserAuthorizationMutationServiceImpl implements IUserAuthorizationM
             long version = bumpVersion(target.getUserId(), event);
             auditService.recordSuccess(event, target.getUserId(), request.getReason(),
                     before, authorizationSnapshot(target.getUserId()), target.getAuthVersion(), version);
+            if (!StringUtils.equals(target.getPhonenumber(), request.getPhonenumber()))
+            {
+                notifyDirectoryChange(target.getUserId(), "PHONE_CHANGED");
+            }
             return rows;
         }
         catch (RuntimeException ex)
@@ -394,6 +428,7 @@ public class UserAuthorizationMutationServiceImpl implements IUserAuthorizationM
             long version = bumpVersion(target.getUserId(), event);
             auditService.recordSuccess(event, target.getUserId(), request.getReason(), before,
                     request.getStatus(), target.getAuthVersion(), version);
+            notifyDirectoryChange(target.getUserId(), "STATUS_CHANGED");
             return rows;
         }
         catch (RuntimeException ex)
@@ -484,6 +519,7 @@ public class UserAuthorizationMutationServiceImpl implements IUserAuthorizationM
                 long version = bumpVersion(target.getUserId(), event);
                 auditService.recordSuccess(event, target.getUserId(), reason, before,
                         null, target.getAuthVersion(), version);
+                notifyDirectoryChange(target.getUserId(), "DELETED");
             }
             return targets.size();
         }
@@ -588,6 +624,9 @@ public class UserAuthorizationMutationServiceImpl implements IUserAuthorizationM
                     auditService.recordSuccess("USER_IMPORT_OVERWRITE", existing.getUserId(), reason,
                             before, authorizationSnapshot(existing.getUserId()),
                             existing.getAuthVersion(), version);
+                    notifyDirectoryChange(existing.getUserId(),
+                            StringUtils.equals(existing.getPhonenumber(), row.getPhonenumber())
+                                    ? "IMPORTED" : "PHONE_CHANGED");
                 }
                 affected++;
             }

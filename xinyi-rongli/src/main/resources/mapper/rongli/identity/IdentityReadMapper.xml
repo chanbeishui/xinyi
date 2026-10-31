@@ -29,4 +29,8 @@
         ORDER BY station_id
     </select>
 
+    <select id="countActiveUserById" resultType="int">
+        SELECT COUNT(*) FROM sys_user WHERE user_id = #{sysUserId} AND status = '0' AND del_flag = '0'
+    </select>
+
 </mapper>

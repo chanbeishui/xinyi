@@ -164,6 +164,7 @@ class I01IdentityIT {
                 "vi_driver_profile", "vi_employee_binding", "vi_station_grant")) {
             jdbc.execute("DELETE FROM " + t);
         }
+        jdbc.execute("DELETE FROM sys_user WHERE user_name LIKE 'i01rest\\_%'");
     }
 
     // ---------- 模拟器交互 ----------
@@ -404,6 +405,9 @@ class I01IdentityIT {
                 + "listening_enabled, license_long_term) VALUES (?, 'APPROVED', 1, 1, 1)", accountId);
         long sysUserId = 900000000L + (accountId % 100000);
         long stationId = 700000000L + (accountId % 100000);
+        // STATION 须链接真实在职员工（fail-closed 实时校验）；构造既有有效员工目录行
+        jdbc.update("INSERT INTO sys_user (user_id, user_name, nick_name, status, del_flag, auth_version, password) "
+                + "VALUES (?, ?, '恢复员工', '0', '0', 0, 'x')", sysUserId, "i01rest_" + accountId);
         jdbc.update("INSERT INTO vi_employee_binding (account_id, sys_user_id, bound_at, app_id, phone_lookup, "
                 + "last_phone_verified_at, employee_auth_version, status) VALUES (?, ?, UTC_TIMESTAMP(3), 'SIM_APP', "
                 + "?, UTC_TIMESTAMP(3), 0, 'ACTIVE')", accountId, sysUserId, new byte[32]);
