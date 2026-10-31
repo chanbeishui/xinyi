@@ -1,0 +1,86 @@
+{
+  "taskId": "I04",
+  "implementer": "Qoder-Agent",
+  "scopeRevision": "V6.4-IDENTITY-CONSISTENCY-20261022",
+  "codeCommit": "本提交（I04 后端+前端+证据）",
+  "codeFiles": [
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/identity/service/SessionSwitchService.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/identity/service/MiniTokenService.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/identity/service/ProfileService.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/identity/dto/AccessSessionResponse.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/identity/mapper/ViSessionMapper.java",
+    "xinyi-rongli/src/main/resources/mapper/rongli/identity/ViSessionMapper.xml",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/identity/mapper/ViSessionTokenMapper.java",
+    "xinyi-rongli/src/main/resources/mapper/rongli/identity/ViSessionTokenMapper.xml",
+    "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/identity/SessionSwitchController.java",
+    "xinyi-admin/src/test/java/com/xinyi/web/viit/I04IdentityIT.java",
+    "xinyi-miniapp/src/pages/identity/switch.vue",
+    "xinyi-miniapp/src/pages/identity/station.vue",
+    "xinyi-miniapp/src/pages/identity/no-access.vue",
+    "xinyi-miniapp/src/pages.json",
+    "xinyi-miniapp/src/features/identity/api.ts",
+    "xinyi-miniapp/src/services/http.ts",
+    "xinyi-miniapp/src/api/types.ts",
+    "xinyi-ui/src/api/rongli/identity.ts",
+    "docs/implementation/vehicle/I04/report.md"
+  ],
+  "runs": [
+    {
+      "command": "mvn -pl xinyi-admin -am -Pvi-it -Dit.test=I04IdentityIT verify",
+      "exitCode": 0,
+      "layer": "LIVE_HTTP_MYSQL",
+      "testsRun": 10,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "reportPath": "docs/implementation/vehicle/I04/report.md",
+      "note": "真实HTTP+Security(MINI链)+MyBatis+隔离库MySQL+provider模拟器；10用例覆盖角色切换+旧上下文失效/待审拒绝刷新不审批/已批准入口/员工站点同源切STATION/越权与0授权/切换不释放assignment/失权切回OWNER/上下文冲突409/非法请求/仅本设备生效。"
+    },
+    {
+      "command": "mvn -pl xinyi-admin -am -Pvi-it -Dit.test=E06PlatformIT,E07TestingIT,E08PlatformIT,I01IdentityIT,I02IdentityIT,I03IdentityIT,I04IdentityIT verify",
+      "exitCode": 0,
+      "layer": "LIVE_HTTP_MYSQL",
+      "testsRun": 54,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "reportPath": "docs/implementation/vehicle/I04/report.md",
+      "note": "全量IT回归 E06 10+E07 5+E08 1+I01 9+I02 9+I03 10+I04 10=54，0失败0错误0跳过；平台单元16/16；BUILD SUCCESS；phoneMask同源修复无回归。"
+    },
+    {
+      "command": "npm --prefix xinyi-miniapp run build:mp-weixin",
+      "exitCode": 0,
+      "layer": "BUILD",
+      "testsRun": 1,
+      "skipped": 0,
+      "reportPath": "docs/implementation/vehicle/I04/report.md",
+      "note": "小程序构建通过（DONE Build complete）；产出 U01 switch（含状态变体）/S21 station/S22 no-access 页。"
+    },
+    {
+      "command": "npm --prefix xinyi-ui run build:prod",
+      "exitCode": 0,
+      "layer": "BUILD",
+      "testsRun": 1,
+      "skipped": 0,
+      "reportPath": "docs/implementation/vehicle/I04/report.md",
+      "note": "PC构建通过（identity.ts 补 AccessSession）。"
+    }
+  ],
+  "review": {
+    "reviewer": null,
+    "approved": false,
+    "reportPath": null,
+    "note": "REVIEWED 需独立复核人≠实现者；本 Agent 不自审。"
+  },
+  "deferredCases": {
+    "crossTask": "站点名称/地址富化属公开站点目录任务（S21 以授权ID渲染，不臆造）；代驾申请属D系列、员工关联详情跳O25；refresh限流属平台/X系列。",
+    "verifiedHere": [
+      "TC-R62-024",
+      "TC-R63-001",
+      "TC-R63-009",
+      "TC-R63-010",
+      "TC-R63-016"
+    ]
+  },
+  "thirdPartyStub": "SIMULATOR provider 为显式测试替身；真实微信登录/手机号API属L01门禁，未声称通过。"
+}

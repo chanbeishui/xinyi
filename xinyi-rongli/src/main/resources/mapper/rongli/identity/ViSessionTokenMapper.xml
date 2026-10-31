@@ -62,4 +62,8 @@
         WHERE session_id = #{sessionId} AND revoked_at IS NULL
     </update>
 
+    <select id="selectMaxGeneration" resultType="long">
+        SELECT COALESCE(MAX(generation), 0) FROM vi_session_token WHERE session_id = #{sessionId}
+    </select>
+
 </mapper>

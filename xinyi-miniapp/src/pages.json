@@ -13,6 +13,24 @@
       }
     },
     {
+      "path": "pages/identity/switch",
+      "style": {
+        "navigationBarTitleText": "切换身份"
+      }
+    },
+    {
+      "path": "pages/identity/station",
+      "style": {
+        "navigationBarTitleText": "切换检测点"
+      }
+    },
+    {
+      "path": "pages/identity/no-access",
+      "style": {
+        "navigationBarTitleText": "无工作权限"
+      }
+    },
+    {
       "path": "pages/index/index",
       "style": {
         "navigationBarTitleText": "工程联通检查"

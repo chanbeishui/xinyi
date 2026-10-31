@@ -56,4 +56,14 @@
         WHERE id = #{id} AND version = #{expectedVersion} AND status = 'ACTIVE'
     </update>
 
+    <update id="switchContext">
+        UPDATE vi_session
+        SET active_role = #{activeRole},
+            station_id = #{stationId},
+            context_version = context_version + 1,
+            version = version + 1
+        WHERE id = #{id} AND context_version = #{expectedContextVersion}
+          AND status = 'ACTIVE' AND revoked_at IS NULL
+    </update>
+
 </mapper>

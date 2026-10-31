@@ -1043,7 +1043,7 @@
     ],
     "scope": "DEVELOPMENT",
     "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
-    "status": "NOT_ASSESSED",
+    "status": "VERIFIED",
     "code_paths": [
       "xinyi-rongli/src/main/java/com/xinyi/rongli/identity/",
       "xinyi-rongli/src/main/resources/mapper/rongli/identity/",
@@ -1073,7 +1073,12 @@
     },
     "scopeRevision": "V6.4-IDENTITY-CONSISTENCY-20261022",
     "definitionHash": "07b22a0fbb43670c5dacbdeb132b2ac45894a394bc592cdaf10f861715f6b372",
-    "evidence": [],
+    "evidence": [
+      {
+        "path": "docs/implementation/vehicle/evidence/I04.json",
+        "sha256": "c453003213ae07aa31cdd9526205aecd245e153c2215ad58e0772e8cbd66fe1b"
+      }
+    ],
     "implementation": null,
     "review": null,
     "blocker": null,
@@ -1086,7 +1091,9 @@
         "reason": "用户确认身份流程变更，保留代码和旧证据但需适配新范围",
         "at": "2026-10-22T14:48:23.198445+00:00"
       }
-    ]
+    ],
+    "needsAdaptation": false,
+    "updatedAt": "2026-10-31T16:31:28.930595+00:00"
   },
   {
     "id": "I05",

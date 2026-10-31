@@ -1,15 +1,19 @@
 [
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "IMPLEMENTED",
+    "implementationFile": "xinyi-miniapp/src/pages/identity/switch.vue",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/I04.json"
+    ],
     "boardId": "U01",
     "taskId": "I04"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "IMPLEMENTED",
+    "implementationFile": "xinyi-miniapp/src/pages/identity/switch.vue",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/I04.json"
+    ],
     "boardId": "U01-unqualified",
     "taskId": "I04"
   },
@@ -1047,16 +1051,20 @@
     "taskId": "N02"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "IMPLEMENTED",
+    "implementationFile": "xinyi-miniapp/src/pages/identity/station.vue",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/I04.json"
+    ],
     "boardId": "S21",
     "taskId": "I04"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "IMPLEMENTED",
+    "implementationFile": "xinyi-miniapp/src/pages/identity/no-access.vue",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/I04.json"
+    ],
     "boardId": "S22",
     "taskId": "I04"
   },
@@ -2111,23 +2119,29 @@
     "taskId": "I01"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "IMPLEMENTED",
+    "implementationFile": "xinyi-miniapp/src/pages/identity/switch.vue",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/I04.json"
+    ],
     "boardId": "U01-driver",
     "taskId": "I04"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "IMPLEMENTED",
+    "implementationFile": "xinyi-miniapp/src/pages/identity/switch.vue",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/I04.json"
+    ],
     "boardId": "U01-staff",
     "taskId": "I04"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "IMPLEMENTED",
+    "implementationFile": "xinyi-miniapp/src/pages/identity/switch.vue",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/I04.json"
+    ],
     "boardId": "U01-all",
     "taskId": "I04"
   },

@@ -61,6 +61,21 @@ public class MiniTokenService {
         return issueWithGeneration(session, generation, parentRefreshTokenId);
     }
 
+    /** 切换后仅签发新 ACCESS（绑定当前上下文版本，沿用最大代际）；不轮换 REFRESH。同事务内调用。 */
+    public IssuedAccess issueAccessForContext(ViSession session) {
+        Instant now = Instant.now();
+        long accessTtl = props.getAccessTtlSeconds();
+        String accessPlain = newToken();
+        insertToken(session.getId(), accessPlain, SessionTokenType.ACCESS.name(),
+                tokenMapper.selectMaxGeneration(session.getId()), session.getContextVersion(),
+                now.plusSeconds(accessTtl), null);
+        return new IssuedAccess(accessPlain, accessTtl);
+    }
+
+    /** 切换签发的访问令牌（无刷新令牌）。 */
+    public record IssuedAccess(String accessToken, long expiresIn) {
+    }
+
     private IssuedTokens issueWithGeneration(ViSession session, long generation, Long parentRefreshTokenId) {
         Instant now = Instant.now();
         long accessTtl = props.getAccessTtlSeconds();
@@ -113,6 +128,10 @@ public class MiniTokenService {
                 || session.getRevokedAt() != null
                 || session.getAbsoluteExpiresAt() == null || !session.getAbsoluteExpiresAt().isAfter(now)) {
             throw new ViException(ViErrorCode.VI_AUTH_REQUIRED);
+        }
+        if (!java.util.Objects.equals(token.getContextVersion(), session.getContextVersion())) {
+            // 角色/站点切换递增上下文：本会话旧上下文 ACCESS 立即失效（T3.4），其他设备会话不受影响
+            throw new ViException(ViErrorCode.VI_CONTEXT_CHANGED);
         }
         ViAccountSecurity security = securityMapper.selectByAccountId(session.getAccountId());
         if (security == null
