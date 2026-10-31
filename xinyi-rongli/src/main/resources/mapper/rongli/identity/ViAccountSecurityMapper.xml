@@ -33,4 +33,12 @@
         SELECT <include refid="cols"/> FROM vi_account_security WHERE account_id = #{accountId}
     </select>
 
+    <update id="bumpPermissionVersion">
+        UPDATE vi_account_security
+        SET permission_version = permission_version + 1,
+            changed_at = #{now,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler},
+            version = version + 1
+        WHERE account_id = #{accountId}
+    </update>
+
 </mapper>

@@ -84,4 +84,47 @@ public class SimulatorIdentityProvider implements IdentityProvider {
         JsonNode v = node.get(field);
         return v == null || v.isNull() ? null : v.asText();
     }
+
+    @Override
+    public PhoneExchangeResult exchangePhone(String phoneCode) {
+        if (phoneCode == null || phoneCode.isBlank()) {
+            throw new ViException(ViErrorCode.VI_REQUEST_INVALID, "缺少微信手机号 phoneCode");
+        }
+        String base = props.getProvidersBaseUrl();
+        if (base.isBlank()) {
+            throw new ViException(ViErrorCode.VI_CAPABILITY_NOT_CONFIGURED, "SIMULATOR 未配置 vi.providers.base-url");
+        }
+        String body = ViJson.write(Map.of("code", phoneCode));
+        HttpRequest req = HttpRequest.newBuilder(URI.create(base.replaceAll("/+$", "") + "/phone/exchange"))
+                .timeout(Duration.ofSeconds(8))
+                .header("Content-Type", "application/json")
+                .header("X-Sim-Secret", props.getProvidersSecret())
+                .POST(HttpRequest.BodyPublishers.ofString(body, StandardCharsets.UTF_8))
+                .build();
+        HttpResponse<String> resp;
+        try {
+            resp = http.send(req, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
+        } catch (IOException e) {
+            // 网络不确定：外部可能已消费凭据而结果不明 → UNKNOWN，查回执/重新授权，不假成功
+            return PhoneExchangeResult.unknown();
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            return PhoneExchangeResult.unknown();
+        }
+        int sc = resp.statusCode();
+        if (sc == 403) {
+            throw new ViException(ViErrorCode.VI_CAPABILITY_NOT_CONFIGURED, "身份模拟器密钥不匹配");
+        }
+        if (sc == 422 || sc == 409) {
+            return PhoneExchangeResult.failed();
+        }
+        if (sc != 200) {
+            return PhoneExchangeResult.unknown();
+        }
+        String phone = text(ViJson.tree(resp.body()), "verifiedPhone");
+        if (phone == null || phone.isBlank()) {
+            return PhoneExchangeResult.unknown();
+        }
+        return PhoneExchangeResult.verified(phone);
+    }
 }

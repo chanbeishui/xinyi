@@ -11,7 +11,11 @@ export type Address = { "addressId": string; "label": string; "address": string;
 
 export type LoginRequest = { "code": string };
 
-export type PhoneRequest = { "phoneCode": string };
+export type PhoneRequest = { "phoneCode": string; "expectedAccountVersion": number; "verificationRequestId": string };
+
+// V6.4 手机号验证结果（手机号验证与员工关联结果分开；无令牌；requiresSessionRefresh 时先刷新会话）
+export type PhoneVerificationStatus = "PROCESSING" | "VERIFIED" | "UNKNOWN" | "FAILED";
+export type PhoneBindResult = { "verificationRequestId": string; "verificationStatus": PhoneVerificationStatus; "phoneBound": boolean; "phoneMask": string | null; "accountVersion": number; "employeeLink": EmployeeLinkPublic; "requiresSessionRefresh": boolean };
 
 export type Session = { "sessionId": string; "accountId": string; "activeRole": MiniRole; "availableRoles": Array<MiniRole>; "contextVersion": number; "phoneBound"?: boolean; "permissions"?: Array<PermissionCode>; "capabilities": Array<CapabilityCode>; "stationIds"?: Array<string>; "stationId"?: (string) | null; "workAccessDisabled"?: boolean; "driverQualification"?: ((QualificationStatus)) | null; "token": string; "expiresIn": number; "refreshToken": string; "refreshExpiresIn": number; "employeeLink": EmployeeLinkPublic; "accountVersion": number };
 

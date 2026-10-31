@@ -7,4 +7,10 @@ package com.xinyi.rongli.identity.provider;
  */
 public interface IdentityProvider {
     WeChatIdentity exchangeCode(String code);
+
+    /**
+     * 以用户主动授权的微信手机号临时 phoneCode 换取可信号码（不同于 wx.login code）。
+     * 一次性消费；结果不明返回 UNKNOWN（不假成功）。外部调用绝不置于数据库锁/事务内。
+     */
+    PhoneExchangeResult exchangePhone(String phoneCode);
 }

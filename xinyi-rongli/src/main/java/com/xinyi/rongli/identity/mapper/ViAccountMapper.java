@@ -3,6 +3,8 @@ package com.xinyi.rongli.identity.mapper;
 import com.xinyi.rongli.identity.domain.ViAccount;
 import org.apache.ibatis.annotations.Param;
 
+import java.time.Instant;
+
 /**
  * vi_account Mapper。登录只经服务端可信 AppID/OpenID 创建/恢复账号；
  * uk_app_open 唯一键是"同 openid 并发只一账号"的第二道防线（插入冲突则重查）。
@@ -27,4 +29,13 @@ public interface ViAccountMapper {
      * 保证"同 openid 并发只一账号"后能可靠取回该账号。
      */
     ViAccount selectByIdForUpdate(@Param("id") long id);
+
+    /** CAS 写入已核验手机号事实（lookup/cipher/verified_at/source），version+1；受影响行数须为1。 */
+    int updatePhone(@Param("id") long id, @Param("phoneLookup") byte[] phoneLookup,
+                    @Param("phoneCipher") byte[] phoneCipher, @Param("verifiedAt") Instant verifiedAt,
+                    @Param("phoneSource") String phoneSource, @Param("expectedVersion") long expectedVersion);
+
+    /** CAS 更新选填档案（nickname/avatar_file_id，服务端已合并未提供字段），version+1。 */
+    int updateProfile(@Param("id") long id, @Param("nickname") String nickname,
+                      @Param("avatarFileId") Long avatarFileId, @Param("expectedVersion") long expectedVersion);
 }

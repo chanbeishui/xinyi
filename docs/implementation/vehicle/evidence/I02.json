@@ -1,0 +1,104 @@
+{
+  "taskId": "I02",
+  "implementer": "Qoder-Agent",
+  "scopeRevision": "V6.4-CONFIG-20261022",
+  "codeCommit": "本提交（I02 后端+前端+证据）",
+  "codeFiles": [
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/identity/domain/ViPhoneVerificationReceipt.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/identity/mapper/ViPhoneVerificationReceiptMapper.java",
+    "xinyi-rongli/src/main/resources/mapper/rongli/identity/ViPhoneVerificationReceiptMapper.xml",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/identity/mapper/ViEmployeeBindingMapper.java",
+    "xinyi-rongli/src/main/resources/mapper/rongli/identity/ViEmployeeBindingMapper.xml",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/identity/mapper/EmployeeDirectoryGuardMapper.java",
+    "xinyi-rongli/src/main/resources/mapper/rongli/identity/EmployeeDirectoryGuardMapper.xml",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/identity/mapper/EmployeeDirectoryReadMapper.java",
+    "xinyi-rongli/src/main/resources/mapper/rongli/identity/EmployeeDirectoryReadMapper.xml",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/identity/mapper/OwnerProfileEditMapper.java",
+    "xinyi-rongli/src/main/resources/mapper/rongli/identity/OwnerProfileEditMapper.xml",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/identity/service/PhoneCrypto.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/identity/service/PhoneBindService.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/identity/service/ProfilePatchService.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/identity/service/SmsService.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/identity/provider/PhoneExchangeResult.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/identity/dto/PhoneBindResult.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/identity/dto/Ack.java",
+    "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/identity/PhoneController.java",
+    "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/identity/OwnerProfileController.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/platform/error/ViErrorCode.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/identity/config/ViIdentityProperties.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/identity/mapper/ViAccountMapper.java",
+    "xinyi-rongli/src/main/resources/mapper/rongli/identity/ViAccountMapper.xml",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/identity/mapper/ViAccountSecurityMapper.java",
+    "xinyi-rongli/src/main/resources/mapper/rongli/identity/ViAccountSecurityMapper.xml",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/identity/provider/IdentityProvider.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/identity/provider/SimulatorIdentityProvider.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/identity/provider/WeChatIdentityProvider.java",
+    "xinyi-miniapp/src/api/types.ts",
+    "xinyi-miniapp/src/features/identity/api.ts",
+    "xinyi-miniapp/src/pages/identity/phone.vue",
+    "xinyi-miniapp/src/pages.json",
+    "xinyi-ui/src/api/rongli/identity.ts",
+    "xinyi-admin/src/test/java/com/xinyi/web/viit/I02IdentityIT.java",
+    "docs/implementation/vehicle/I02/report.md"
+  ],
+  "runs": [
+    {
+      "command": "mvn -pl xinyi-admin -am -Pvi-it -Dit.test=I02IdentityIT verify",
+      "exitCode": 0,
+      "layer": "LIVE_HTTP_MYSQL",
+      "testsRun": 9,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "reportPath": "docs/implementation/vehicle/I02/report.md",
+      "note": "真实HTTP+Security(MINI链)+MyBatis+隔离库MySQL+provider模拟器；9用例覆盖裸字段拒绝/回执查询安全重试/无效凭据失败/手机号与员工结果分开/重号NEEDS_ADMIN/唯一匹配LINKED+STATION/同requestId并发一次消费/SMS未配置拒绝/档案PATCH CAS。"
+    },
+    {
+      "command": "mvn -pl xinyi-admin -am -Pvi-it -Dit.test=E06PlatformIT,E07TestingIT,E08PlatformIT,I01IdentityIT,I02IdentityIT verify",
+      "exitCode": 0,
+      "layer": "LIVE_HTTP_MYSQL",
+      "testsRun": 34,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "reportPath": "docs/implementation/vehicle/I02/report.md",
+      "note": "全量IT回归 E06 10+E07 5+E08 1+I01 9+I02 9=34，0失败0错误0跳过；平台单元16/16；无回归。"
+    },
+    {
+      "command": "npm --prefix xinyi-miniapp run build:mp-weixin",
+      "exitCode": 0,
+      "layer": "BUILD",
+      "testsRun": 1,
+      "skipped": 0,
+      "reportPath": "docs/implementation/vehicle/I02/report.md",
+      "note": "小程序构建通过，产出 pages/identity/phone（O25）。"
+    },
+    {
+      "command": "npm --prefix xinyi-ui run build:prod",
+      "exitCode": 0,
+      "layer": "BUILD",
+      "testsRun": 1,
+      "skipped": 0,
+      "reportPath": "docs/implementation/vehicle/I02/report.md",
+      "note": "PC构建通过（identity.ts 补 PhoneBindResult/PhoneVerificationStatus）。"
+    }
+  ],
+  "review": {
+    "reviewer": null,
+    "approved": false,
+    "reportPath": null,
+    "note": "REVIEWED 需独立复核人≠实现者；本 Agent 不自审。"
+  },
+  "deferredCases": {
+    "crossTask": "TC-R62-029(订单联系人)属订单任务；TC-R62-030(SMS成功路径)依赖X01-X07配置，当前未配置拒绝已验证、不关联原则由代码保证",
+    "verifiedHere": [
+      "TC-R62-008",
+      "TC-R62-014",
+      "TC-R62-021",
+      "TC-R62-025",
+      "TC-R62-031",
+      "TC-R63-012"
+    ]
+  },
+  "thirdPartyStub": "SIMULATOR provider 为显式测试替身；真实微信手机号API(getuserphonenumber)与SMS路由属L01/X04-X05门禁，未声称通过。"
+}

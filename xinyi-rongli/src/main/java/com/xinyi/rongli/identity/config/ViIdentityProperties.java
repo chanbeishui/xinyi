@@ -16,18 +16,21 @@ public class ViIdentityProperties {
     private final String providersSecret;
     private final long accessTtlSeconds;
     private final long absoluteTtlSeconds;
+    private final String dataKey;
 
     public ViIdentityProperties(
             @Value("${vi.providers.mode:WECHAT}") String providersMode,
             @Value("${vi.providers.base-url:}") String providersBaseUrl,
             @Value("${vi.providers.secret:}") String providersSecret,
             @Value("${vi.session.access-ttl-seconds:900}") long accessTtlSeconds,
-            @Value("${vi.session.absolute-ttl-seconds:604800}") long absoluteTtlSeconds) {
+            @Value("${vi.session.absolute-ttl-seconds:604800}") long absoluteTtlSeconds,
+            @Value("${vi.crypto.data-key:${VI_DATA_KEY:}}") String dataKey) {
         this.providersMode = providersMode == null ? "WECHAT" : providersMode.trim();
         this.providersBaseUrl = providersBaseUrl == null ? "" : providersBaseUrl.trim();
         this.providersSecret = providersSecret == null ? "" : providersSecret;
         this.accessTtlSeconds = accessTtlSeconds > 0 ? accessTtlSeconds : 900L;
         this.absoluteTtlSeconds = absoluteTtlSeconds > 0 ? absoluteTtlSeconds : 604800L;
+        this.dataKey = dataKey == null ? "" : dataKey;
     }
 
     public String getProvidersMode() { return providersMode; }
@@ -36,4 +39,5 @@ public class ViIdentityProperties {
     public long getAccessTtlSeconds() { return accessTtlSeconds; }
     public long getAbsoluteTtlSeconds() { return absoluteTtlSeconds; }
     public boolean isSimulator() { return "SIMULATOR".equalsIgnoreCase(providersMode); }
+    public String getDataKey() { return dataKey; }
 }

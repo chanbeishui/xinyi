@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xinyi.rongli.identity.mapper.ViPhoneVerificationReceiptMapper">
+
+    <resultMap id="ReceiptMap" type="com.xinyi.rongli.identity.domain.ViPhoneVerificationReceipt">
+        <id property="id" column="id"/>
+        <result property="requestId" column="request_id"/>
+        <result property="appId" column="app_id"/>
+        <result property="accountId" column="account_id"/>
+        <result property="sessionId" column="session_id"/>
+        <result property="codeHash" column="code_hash"/>
+        <result property="status" column="status"/>
+        <result property="phoneLookup" column="phone_lookup"/>
+        <result property="phoneCipher" column="phone_cipher"/>
+        <result property="verifiedAt" column="verified_at"
+                typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+        <result property="expiresAt" column="expires_at"
+                typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+        <result property="employeeLinkOutcome" column="employee_link_outcome"/>
+        <result property="leaseUntil" column="lease_until"
+                typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+        <result property="finishedAt" column="finished_at"
+                typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+        <result property="createdAt" column="created_at"
+                typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+        <result property="updatedAt" column="updated_at"
+                typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+        <result property="version" column="version"/>
+    </resultMap>
+
+    <sql id="cols">
+        id, request_id, app_id, account_id, session_id, code_hash, status, phone_lookup, phone_cipher,
+        verified_at, expires_at, employee_link_outcome, lease_until, finished_at, created_at, updated_at, version
+    </sql>
+
+    <insert id="insert" parameterType="com.xinyi.rongli.identity.domain.ViPhoneVerificationReceipt"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO vi_phone_verification_receipt
+            (request_id, app_id, account_id, session_id, code_hash, status, expires_at, employee_link_outcome, lease_until)
+        VALUES
+            (#{requestId}, #{appId}, #{accountId}, #{sessionId}, #{codeHash}, #{status},
+             #{expiresAt,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler},
+             #{employeeLinkOutcome},
+             #{leaseUntil,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler})
+    </insert>
+
+    <select id="selectByRequest" resultMap="ReceiptMap">
+        SELECT <include refid="cols"/> FROM vi_phone_verification_receipt
+        WHERE account_id = #{accountId} AND request_id = #{requestId}
+    </select>
+
+    <select id="selectByCode" resultMap="ReceiptMap">
+        SELECT <include refid="cols"/> FROM vi_phone_verification_receipt
+        WHERE app_id = #{appId} AND code_hash = #{codeHash}
+    </select>
+
+    <select id="selectByIdForUpdate" resultMap="ReceiptMap">
+        SELECT <include refid="cols"/> FROM vi_phone_verification_receipt WHERE id = #{id} FOR UPDATE
+    </select>
+
+    <update id="claimLease">
+        UPDATE vi_phone_verification_receipt
+        SET lease_until = #{leaseUntil,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler},
+            updated_at = UTC_TIMESTAMP(3), version = version + 1
+        WHERE id = #{id} AND version = #{expectedVersion}
+          AND (lease_until IS NULL OR lease_until &lt; #{now,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler})
+    </update>
+
+    <update id="markVerified">
+        UPDATE vi_phone_verification_receipt
+        SET status = 'VERIFIED', phone_lookup = #{phoneLookup}, phone_cipher = #{phoneCipher},
+            verified_at = #{verifiedAt,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler},
+            employee_link_outcome = #{employeeLinkOutcome},
+            finished_at = #{finishedAt,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler},
+            lease_until = NULL, updated_at = UTC_TIMESTAMP(3), version = version + 1
+        WHERE id = #{id} AND version = #{expectedVersion}
+    </update>
+
+    <update id="markTerminal">
+        UPDATE vi_phone_verification_receipt
+        SET status = #{status}, employee_link_outcome = #{employeeLinkOutcome},
+            finished_at = #{finishedAt,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler},
+            lease_until = NULL, updated_at = UTC_TIMESTAMP(3), version = version + 1
+        WHERE id = #{id} AND version = #{expectedVersion}
+    </update>
+
+    <update id="updateOutcome">
+        UPDATE vi_phone_verification_receipt
+        SET employee_link_outcome = #{employeeLinkOutcome}, updated_at = UTC_TIMESTAMP(3), version = version + 1
+        WHERE id = #{id} AND version = #{expectedVersion}
+    </update>
+
+</mapper>
