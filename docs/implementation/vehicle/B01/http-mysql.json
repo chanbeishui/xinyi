@@ -1,0 +1,30 @@
+{
+  "suites": [
+    {
+      "{http://www.w3.org/2001/XMLSchema-instance}noNamespaceSchemaLocation": "https://maven.apache.org/surefire/maven-failsafe-plugin/xsd/failsafe-test-report.xsd",
+      "version": "3.0.2",
+      "name": "com.xinyi.web.viit.B01BookingIT",
+      "time": "5.568",
+      "tests": "3",
+      "errors": "0",
+      "skipped": "0",
+      "failures": "0"
+    },
+    {
+      "{http://www.w3.org/2001/XMLSchema-instance}noNamespaceSchemaLocation": "https://maven.apache.org/surefire/maven-failsafe-plugin/xsd/failsafe-test-report.xsd",
+      "version": "3.0.2",
+      "name": "com.xinyi.web.viit.C03CapacityIT",
+      "time": "1.98",
+      "tests": "6",
+      "errors": "0",
+      "skipped": "0",
+      "failures": "0"
+    }
+  ],
+  "tests": 9,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "database": "xinyi_vi_it_e07",
+  "boundary": "真实HTTP/MySQL，外部微信为SIMULATOR"
+}

@@ -300,11 +300,13 @@
     "taskId": "A02"
   },
   {
-    "implementationStatus": "NOT_ASSESSED",
-    "controllerFile": null,
-    "serviceFile": null,
-    "mapperFile": null,
-    "testFiles": [],
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/booking/ScheduleController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/booking/service/ScheduleService.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/booking/ScheduleMapper.xml",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/B01BookingIT.java"
+    ],
     "reviewEvidence": null,
     "operationId": "API_023_get",
     "method": "GET",

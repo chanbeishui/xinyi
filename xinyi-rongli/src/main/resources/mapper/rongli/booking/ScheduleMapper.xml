@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xinyi.rongli.booking.mapper.ScheduleMapper">
+ <resultMap id="slot" type="com.xinyi.rongli.capacity.domain.ViQuotaSlot">
+  <id property="id" column="id"/>
+  <result property="startsAt" column="starts_at" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+  <result property="endsAt" column="ends_at" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+ </resultMap>
+ <select id="candidates" resultMap="slot">
+ SELECT MIN(q.id) id,q.starts_at,q.ends_at FROM vi_quota_slot q
+ JOIN vi_station s ON s.id=q.station_id AND s.enabled=1
+ JOIN sys_dept d ON d.dept_id=s.dept_id AND d.status='0' AND d.del_flag='0'
+ WHERE q.quota_type='PICKUP' AND q.enabled=1
+ AND q.starts_at &gt; UTC_TIMESTAMP(3)
+ AND q.starts_at &gt;= #{start,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler}
+ AND q.starts_at &lt; #{end,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler}
+ AND q.total_quota &gt; q.held_quota+q.confirmed_quota+q.consumed_quota
+ GROUP BY q.starts_at,q.ends_at ORDER BY q.starts_at,q.ends_at
+ </select>
+</mapper>
