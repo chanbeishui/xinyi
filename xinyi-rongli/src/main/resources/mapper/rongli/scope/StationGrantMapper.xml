@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xinyi.rongli.scope.mapper.StationGrantMapper">
+
+    <select id="selectBySysUser" resultType="java.util.LinkedHashMap">
+        SELECT id, sys_user_id, station_id, enabled, granted_by, reason, version
+        FROM vi_station_grant WHERE sys_user_id = #{sysUserId} ORDER BY station_id
+    </select>
+
+    <select id="selectEnabledStationIds" resultType="java.lang.Long">
+        SELECT station_id FROM vi_station_grant WHERE sys_user_id = #{sysUserId} AND enabled = 1
+        ORDER BY station_id
+    </select>
+
+    <insert id="insert">
+        INSERT INTO vi_station_grant (sys_user_id, station_id, enabled, granted_by, reason)
+        VALUES (#{sysUserId}, #{stationId}, 1, #{grantedBy}, #{reason})
+    </insert>
+
+    <update id="setEnabled">
+        UPDATE vi_station_grant
+        SET enabled = #{enabled}, granted_by = #{grantedBy}, reason = #{reason},
+            updated_at = UTC_TIMESTAMP(3), version = version + 1
+        WHERE sys_user_id = #{sysUserId} AND station_id = #{stationId}
+    </update>
+
+</mapper>

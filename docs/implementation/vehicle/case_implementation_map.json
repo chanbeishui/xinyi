@@ -2438,12 +2438,14 @@
     "testMethod": "test_tc_r62_005"
   },
   {
-    "status": "NOT_RUN",
-    "testFiles": [],
-    "evidence": null,
+    "status": "PASS",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/I06ScopeIT.java"
+    ],
+    "evidence": "docs/implementation/vehicle/evidence/I06.json",
     "caseId": "TC-R62-006",
     "taskId": "I06",
-    "testMethod": "test_tc_r62_006"
+    "testMethod": "I06ScopeIT#未过代驾审核可STATION不可DRIVER_TC_R62_006"
   },
   {
     "status": "PASS",
@@ -2536,20 +2538,24 @@
     "testMethod": "I05IdentityIT#停用员工旧会话失权车主保留_TC_R62_015"
   },
   {
-    "status": "NOT_RUN",
-    "testFiles": [],
-    "evidence": null,
+    "status": "PASS",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/I06ScopeIT.java"
+    ],
+    "evidence": "docs/implementation/vehicle/evidence/I06.json",
     "caseId": "TC-R62-016",
     "taskId": "I06",
-    "testMethod": "test_tc_r62_016"
+    "testMethod": "I06ScopeIT#未登录员工先授权不建微信身份且首登读到_TC_R62_016_R63_006"
   },
   {
-    "status": "NOT_RUN",
-    "testFiles": [],
-    "evidence": null,
+    "status": "PASS",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/I06ScopeIT.java"
+    ],
+    "evidence": "docs/implementation/vehicle/evidence/I06.json",
     "caseId": "TC-R62-017",
     "taskId": "I06",
-    "testMethod": "test_tc_r62_017"
+    "testMethod": "I06ScopeIT#先关联后补站点刷新可用无需重绑_TC_R62_017"
   },
   {
     "status": "PASS",
@@ -2602,12 +2608,14 @@
     "testMethod": "I05IdentityIT#MINI令牌不获ADMIN能力_TC_R62_022"
   },
   {
-    "status": "NOT_RUN",
-    "testFiles": [],
-    "evidence": null,
+    "status": "PASS",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/I06ScopeIT.java"
+    ],
+    "evidence": "docs/implementation/vehicle/evidence/I06.json",
     "caseId": "TC-R62-023",
     "taskId": "I06",
-    "testMethod": "test_tc_r62_023"
+    "testMethod": "I06ScopeIT#越权站点切换拒绝_TC_R62_023"
   },
   {
     "status": "PASS",
@@ -2706,12 +2714,14 @@
     "testMethod": "I05IdentityIT#allowRematch不直接恢复须本人新核验_TC_R62_033_R63_005"
   },
   {
-    "status": "NOT_RUN",
-    "testFiles": [],
-    "evidence": null,
+    "status": "PASS",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/I06ScopeIT.java"
+    ],
+    "evidence": "docs/implementation/vehicle/evidence/I06.json",
     "caseId": "TC-R62-034",
     "taskId": "I06",
-    "testMethod": "test_tc_r62_034"
+    "testMethod": "I06ScopeIT#空集合版本与CAS冲突_TC_R62_034_R63_013"
   },
   {
     "status": "PASS",
@@ -2744,12 +2754,14 @@
     "testMethod": "I04IdentityIT#员工站点同源一致切STATION_TC_R63_001"
   },
   {
-    "status": "NOT_RUN",
-    "testFiles": [],
-    "evidence": null,
+    "status": "PASS",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/I06ScopeIT.java"
+    ],
+    "evidence": "docs/implementation/vehicle/evidence/I06.json",
     "caseId": "TC-R63-002",
     "taskId": "I06",
-    "testMethod": "test_tc_r63_002"
+    "testMethod": "I06ScopeIT#配置对象不串员工_TC_R63_002"
   },
   {
     "status": "PASS",
@@ -2782,20 +2794,24 @@
     "testMethod": "I05IdentityIT#allowRematch不直接恢复须本人新核验_TC_R62_033_R63_005"
   },
   {
-    "status": "NOT_RUN",
-    "testFiles": [],
-    "evidence": null,
+    "status": "PASS",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/I06ScopeIT.java"
+    ],
+    "evidence": "docs/implementation/vehicle/evidence/I06.json",
     "caseId": "TC-R63-006",
     "taskId": "I06",
-    "testMethod": "test_tc_r63_006"
+    "testMethod": "I06ScopeIT#未登录员工先授权不建微信身份且首登读到_TC_R62_016_R63_006"
   },
   {
-    "status": "NOT_RUN",
-    "testFiles": [],
-    "evidence": null,
+    "status": "PASS",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/I06ScopeIT.java"
+    ],
+    "evidence": "docs/implementation/vehicle/evidence/I06.json",
     "caseId": "TC-R63-007",
     "taskId": "I06",
-    "testMethod": "test_tc_r63_007"
+    "testMethod": "I06ScopeIT#清空站点旧会话失权车主保留_TC_R63_007"
   },
   {
     "status": "PASS",
@@ -2848,12 +2864,14 @@
     "testMethod": "I02IdentityIT#无效phoneCode失败不假成功不开STATION_TC_R62_021_R63_012"
   },
   {
-    "status": "NOT_RUN",
-    "testFiles": [],
-    "evidence": null,
+    "status": "PASS",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/I06ScopeIT.java"
+    ],
+    "evidence": "docs/implementation/vehicle/evidence/I06.json",
     "caseId": "TC-R63-013",
     "taskId": "I06",
-    "testMethod": "test_tc_r63_013"
+    "testMethod": "I06ScopeIT#空集合版本与CAS冲突_TC_R62_034_R63_013"
   },
   {
     "status": "PASS",

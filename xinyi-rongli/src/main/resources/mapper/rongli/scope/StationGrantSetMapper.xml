@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xinyi.rongli.scope.mapper.StationGrantSetMapper">
+
+    <resultMap id="SetMap" type="com.xinyi.rongli.scope.domain.ViStationGrantSet">
+        <id property="id" column="id"/>
+        <result property="sysUserId" column="sys_user_id"/>
+        <result property="ownStationId" column="own_station_id"/>
+        <result property="changedBy" column="changed_by"/>
+        <result property="reason" column="reason"/>
+        <result property="createdAt" column="created_at"
+                typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+        <result property="updatedAt" column="updated_at"
+                typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+        <result property="version" column="version"/>
+    </resultMap>
+
+    <sql id="cols">id, sys_user_id, own_station_id, changed_by, reason, created_at, updated_at, version</sql>
+
+    <select id="selectBySysUser" resultMap="SetMap">
+        SELECT <include refid="cols"/> FROM vi_station_grant_set WHERE sys_user_id = #{sysUserId}
+    </select>
+
+    <select id="selectBySysUserForUpdate" resultMap="SetMap">
+        SELECT <include refid="cols"/> FROM vi_station_grant_set WHERE sys_user_id = #{sysUserId} FOR UPDATE
+    </select>
+
+    <insert id="insert" parameterType="com.xinyi.rongli.scope.domain.ViStationGrantSet"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO vi_station_grant_set (sys_user_id, own_station_id, changed_by, reason)
+        VALUES (#{sysUserId}, #{ownStationId}, #{changedBy}, #{reason})
+    </insert>
+
+    <update id="casUpdate">
+        UPDATE vi_station_grant_set
+        SET own_station_id = #{ownStationId}, changed_by = #{changedBy}, reason = #{reason},
+            updated_at = UTC_TIMESTAMP(3), version = version + 1
+        WHERE id = #{id} AND version = #{expectedVersion}
+    </update>
+
+</mapper>

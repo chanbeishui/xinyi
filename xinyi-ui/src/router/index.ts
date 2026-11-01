@@ -80,6 +80,12 @@ export const constantRoutes = [
         component: () => import('@/views/rongli/identity/employeeLink.vue'),
         name: 'RongliEmployeeLink',
         meta: { title: '员工微信关联', icon: 'peoples' }
+      },
+      {
+        path: 'station-grant',
+        component: () => import('@/views/rongli/scope/stationGrant.vue'),
+        name: 'RongliStationGrant',
+        meta: { title: '员工站点授权', icon: 'tree' }
       }
     ]
   },

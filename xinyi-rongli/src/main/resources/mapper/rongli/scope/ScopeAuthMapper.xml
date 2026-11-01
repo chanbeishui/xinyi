@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xinyi.rongli.scope.mapper.ScopeAuthMapper">
+
+    <update id="bumpAuthVersion">
+        UPDATE sys_user SET auth_version = auth_version + 1 WHERE user_id = #{sysUserId}
+    </update>
+
+</mapper>

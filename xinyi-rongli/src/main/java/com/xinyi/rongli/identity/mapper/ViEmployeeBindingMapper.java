@@ -26,6 +26,9 @@ public interface ViEmployeeBindingMapper {
     /** 员工当前未撤销绑定（目录钩子用，uk_active_user 保证同应用至多一条）。 */
     ViEmployeeBinding selectActiveBySysUser(@Param("sysUserId") long sysUserId);
 
+    /** 员工最近一条绑定（含 REVOKED，站点配置 wechatLinkStatus 投影用）。 */
+    ViEmployeeBinding selectLatestBySysUser(@Param("sysUserId") long sysUserId);
+
     /** 暂停：ACTIVE→SUSPENDED，保留唯一占用与历史（CAS）。 */
     int suspend(@Param("id") long id, @Param("reason") String reason, @Param("expectedVersion") long expectedVersion);
 
