@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xinyi.rongli.vehicle.mapper.VehicleAdminReadMapper">
+
+    <sql id="vcols">v.id, v.owner_account_id, v.plate_no, v.vehicle_type_code, v.brand_model, v.vin_last4,
+        v.registered_on, v.use_type, v.verification_status, v.is_default, v.version, a.phone_cipher</sql>
+
+    <select id="selectVehicles" resultType="java.util.LinkedHashMap">
+        SELECT <include refid="vcols"/>
+        FROM vi_vehicle v JOIN vi_account a ON a.id = v.owner_account_id
+        WHERE v.deleted_at IS NULL
+        ORDER BY v.id DESC LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <select id="selectVehicleById" resultType="java.util.LinkedHashMap">
+        SELECT <include refid="vcols"/>
+        FROM vi_vehicle v JOIN vi_account a ON a.id = v.owner_account_id
+        WHERE v.id = #{id}
+    </select>
+
+    <select id="selectOrdersByVehicle" resultType="java.util.LinkedHashMap">
+        SELECT order_no, fulfillment_status, created_at
+        FROM vi_order WHERE vehicle_id = #{vehicleId} ORDER BY id DESC
+    </select>
+
+    <select id="selectResultsByVehicle" resultType="java.util.LinkedHashMap">
+        SELECT r.conclusion, r.inspected_at, r.created_at, o.order_no
+        FROM vi_inspection_result r JOIN vi_order o ON o.id = r.order_id
+        WHERE o.vehicle_id = #{vehicleId} ORDER BY r.id DESC
+    </select>
+
+</mapper>

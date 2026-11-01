@@ -86,6 +86,12 @@ export const constantRoutes = [
         component: () => import('@/views/rongli/scope/stationGrant.vue'),
         name: 'RongliStationGrant',
         meta: { title: '员工站点授权', icon: 'tree' }
+      },
+      {
+        path: 'vehicles',
+        component: () => import('@/views/rongli/vehicle/vehicle.vue'),
+        name: 'RongliVehicles',
+        meta: { title: '车辆档案', icon: 'car' }
       }
     ]
   },

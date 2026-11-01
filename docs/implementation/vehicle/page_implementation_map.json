@@ -101,16 +101,20 @@
     "taskId": "B01"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "IMPLEMENTED",
+    "implementationFile": "xinyi-miniapp/src/pages/vehicle/list.vue",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/A01.json"
+    ],
     "boardId": "O04",
     "taskId": "A01"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "IMPLEMENTED",
+    "implementationFile": "xinyi-miniapp/src/pages/vehicle/list.vue",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/A01.json"
+    ],
     "boardId": "O05",
     "taskId": "A01"
   },
@@ -369,16 +373,20 @@
     "taskId": "B04"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "IMPLEMENTED",
+    "implementationFile": "xinyi-miniapp/src/pages/vehicle/list.vue",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/A01.json"
+    ],
     "boardId": "O27",
     "taskId": "A01"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "IMPLEMENTED",
+    "implementationFile": "xinyi-miniapp/src/pages/vehicle/list.vue",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/A01.json"
+    ],
     "boardId": "O27-address",
     "taskId": "A01"
   },
@@ -1189,44 +1197,56 @@
     "taskId": "F04"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "IMPLEMENTED",
+    "implementationFile": "xinyi-ui/src/views/rongli/vehicle/vehicle.vue",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/A01.json"
+    ],
     "boardId": "B09",
     "taskId": "A01"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "IMPLEMENTED",
+    "implementationFile": "xinyi-ui/src/views/rongli/vehicle/vehicle.vue",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/A01.json"
+    ],
     "boardId": "B09-detail",
     "taskId": "A01"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "IMPLEMENTED",
+    "implementationFile": "xinyi-ui/src/views/rongli/vehicle/vehicle.vue",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/A01.json"
+    ],
     "boardId": "B09-edit",
     "taskId": "A01"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "IMPLEMENTED",
+    "implementationFile": "xinyi-ui/src/views/rongli/vehicle/vehicle.vue",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/A01.json"
+    ],
     "boardId": "B09-empty",
     "taskId": "A01"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "IMPLEMENTED",
+    "implementationFile": "xinyi-ui/src/views/rongli/vehicle/vehicle.vue",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/A01.json"
+    ],
     "boardId": "B09-error",
     "taskId": "A01"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "IMPLEMENTED",
+    "implementationFile": "xinyi-ui/src/views/rongli/vehicle/vehicle.vue",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/A01.json"
+    ],
     "boardId": "B09-forbidden",
     "taskId": "A01"
   },
