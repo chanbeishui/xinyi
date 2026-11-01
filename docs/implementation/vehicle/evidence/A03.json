@@ -1,0 +1,85 @@
+{
+  "taskId": "A03",
+  "implementer": "Qoder-Agent",
+  "scopeRevision": "V6.1-UNCHANGED",
+  "codeCommit": "本提交（A03 后端+前端+证据）",
+  "codeFiles": [
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/owner/domain/ViOwnerProfile.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/owner/dto/OwnerView.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/owner/mapper/ViOwnerProfileMapper.java",
+    "xinyi-rongli/src/main/resources/mapper/rongli/owner/ViOwnerProfileMapper.xml",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/owner/mapper/OwnerAdminReadMapper.java",
+    "xinyi-rongli/src/main/resources/mapper/rongli/owner/OwnerAdminReadMapper.xml",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/owner/service/OwnerAdminService.java",
+    "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/owner/OwnerAdminController.java",
+    "xinyi-admin/src/test/java/com/xinyi/web/viit/A03OwnerIT.java",
+    "xinyi-ui/src/api/rongli/owner.ts",
+    "xinyi-ui/src/views/rongli/owner/owner.vue",
+    "xinyi-ui/src/router/index.ts",
+    "docs/implementation/vehicle/A03/report.md"
+  ],
+  "runs": [
+    {
+      "command": "mvn -pl xinyi-admin -am -Pvi-it -Dit.test=A03OwnerIT verify",
+      "exitCode": 0,
+      "layer": "LIVE_HTTP_MYSQL",
+      "testsRun": 7,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "reportPath": "docs/implementation/vehicle/A03/report.md",
+      "note": "真实HTTP+双安全链+MyBatis+隔离库MySQL+provider模拟器；7用例覆盖列表/详情脱敏与档案投影、维护仅运营字段+CAS+手机/核验不可改、跨公司历史不因一条订单暴露（部门数据范围+受限管理员）、无订单车主fail-closed不可见、关联车辆rows/total、MINI不获ADMIN、非超管无功能权限403。原始报告 A03/A03OwnerIT.txt 与 A03OwnerIT-junit.xml。"
+    },
+    {
+      "command": "mvn -pl xinyi-admin -am -Pvi-it -Dit.test=E06PlatformIT,E07TestingIT,E08PlatformIT,I01IdentityIT,I02IdentityIT,I03IdentityIT,I04IdentityIT,I05IdentityIT,I06ScopeIT,A02AddressIT,A01VehicleIT,C01ConfigIT,A03OwnerIT verify",
+      "exitCode": 0,
+      "layer": "LIVE_HTTP_MYSQL",
+      "testsRun": 111,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "reportPath": "docs/implementation/vehicle/A03/report.md",
+      "note": "全量IT回归 E06 10+E07 5+E08 1+I01 9+I02 9+I03 10+I04 10+I05 20+I06 10+A02 7+A01 7+C01 6+A03 7=111，0失败0错误0跳过；BUILD SUCCESS。"
+    },
+    {
+      "command": "mvn -pl xinyi-rongli -am test",
+      "exitCode": 0,
+      "layer": "UNIT_TEST",
+      "testsRun": 16,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "reportPath": "docs/implementation/vehicle/A03/report.md",
+      "note": "平台单元 16/16，0失败0跳过。"
+    },
+    {
+      "command": "npm --prefix xinyi-miniapp run build:mp-weixin",
+      "exitCode": 0,
+      "layer": "BUILD",
+      "testsRun": 1,
+      "skipped": 0,
+      "reportPath": "docs/implementation/vehicle/A03/report.md",
+      "note": "小程序构建通过（回归校验）；A03 全为 ADMIN 接口无 MINI 画板，features/owner 无对应面，不虚构空模块。"
+    },
+    {
+      "command": "npm --prefix xinyi-ui run build:prod",
+      "exitCode": 0,
+      "layer": "BUILD",
+      "testsRun": 1,
+      "skipped": 0,
+      "reportPath": "docs/implementation/vehicle/A03/report.md",
+      "note": "PC构建通过；B27 owner.vue+owner.ts+常量路由，owner chunk 产出。"
+    }
+  ],
+  "review": {
+    "reviewer": null,
+    "approved": false,
+    "reportPath": null,
+    "note": "REVIEWED 需独立复核人≠实现者；本 Agent 不自审。"
+  },
+  "deferredCases": {
+    "crossTask": "完整订单域读写（状态流转/动作鉴权/AdminOrderView 详情）属 B01/B02 下单与履约；非超管 biz:owner:list/query/edit 菜单基数据属部署/权限任务；A03无验收用例，负向以IT覆盖。",
+    "verifiedHere": []
+  },
+  "thirdPartyStub": "SIMULATOR provider 为显式测试替身（仅登录换取）；ADMIN/受限令牌经 TokenService 铸造；真实微信渠道属 L01，未声称通过。"
+}

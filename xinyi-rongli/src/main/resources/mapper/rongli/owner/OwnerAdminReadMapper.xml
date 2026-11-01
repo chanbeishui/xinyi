@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xinyi.rongli.owner.mapper.OwnerAdminReadMapper">
+
+    <!-- 订单权威部门归属过滤；deptIds=null 全量，空集合由 foreach 生成 IN () 需服务层 fail-closed 兜底 -->
+    <sql id="deptFilter">
+        <if test="deptIds != null">
+            AND o.dept_id IN
+            <foreach collection="deptIds" item="d" open="(" separator="," close=")">#{d}</foreach>
+        </if>
+    </sql>
+
+    <sql id="ownerCols">
+        p.id, p.account_id, p.service_name, p.service_flag, p.internal_remark, p.version,
+        a.nickname, a.phone_cipher, a.phone_verified_at,
+        (SELECT COUNT(*) FROM vi_vehicle v WHERE v.owner_account_id = a.id AND v.deleted_at IS NULL) AS vehicle_count,
+        (SELECT COUNT(*) FROM vi_order o WHERE o.owner_account_id = a.id <include refid="deptFilter"/>) AS order_count,
+        (SELECT MAX(o.created_at) FROM vi_order o WHERE o.owner_account_id = a.id <include refid="deptFilter"/>) AS last_service_at
+    </sql>
+
+    <sql id="ownerWhere">
+        <if test="deptIds != null">
+            AND EXISTS (SELECT 1 FROM vi_order o WHERE o.owner_account_id = a.id
+                AND o.dept_id IN <foreach collection="deptIds" item="d" open="(" separator="," close=")">#{d}</foreach>)
+        </if>
+        <if test="keyword != null and keyword != ''">
+            AND (a.nickname LIKE CONCAT('%', #{keyword}, '%') OR p.service_name LIKE CONCAT('%', #{keyword}, '%'))
+        </if>
+        <if test="status != null and status != ''">
+            AND p.service_flag = #{status}
+        </if>
+    </sql>
+
+    <select id="selectOwners" resultType="java.util.LinkedHashMap">
+        SELECT <include refid="ownerCols"/>
+        FROM vi_owner_profile p JOIN vi_account a ON a.id = p.account_id
+        WHERE 1 = 1 <include refid="ownerWhere"/>
+        ORDER BY p.id DESC LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <select id="countOwners" resultType="long">
+        SELECT COUNT(*) FROM vi_owner_profile p JOIN vi_account a ON a.id = p.account_id
+        WHERE 1 = 1 <include refid="ownerWhere"/>
+    </select>
+
+    <select id="selectOwnerById" resultType="java.util.LinkedHashMap">
+        SELECT <include refid="ownerCols"/>
+        FROM vi_owner_profile p JOIN vi_account a ON a.id = p.account_id
+        WHERE p.id = #{id}
+    </select>
+
+    <select id="countVisible" resultType="long">
+        SELECT COUNT(*) FROM vi_owner_profile p WHERE p.id = #{id}
+        <if test="deptIds != null">
+            AND EXISTS (SELECT 1 FROM vi_order o WHERE o.owner_account_id = p.account_id
+                AND o.dept_id IN <foreach collection="deptIds" item="d" open="(" separator="," close=")">#{d}</foreach>)
+        </if>
+    </select>
+
+    <select id="selectVehiclesByOwner" resultType="java.util.LinkedHashMap">
+        SELECT id, plate_no, vehicle_type_code, brand_model, vin_last4, verification_status, version
+        FROM vi_vehicle WHERE owner_account_id = #{accountId} AND deleted_at IS NULL
+        ORDER BY id DESC LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <select id="countVehiclesByOwner" resultType="long">
+        SELECT COUNT(*) FROM vi_vehicle WHERE owner_account_id = #{accountId} AND deleted_at IS NULL
+    </select>
+
+    <select id="selectOrdersByOwner" resultType="java.util.LinkedHashMap">
+        SELECT o.id, o.order_no, o.fulfillment_status, o.cancel_status, o.custody_type,
+               o.pickup_starts_at, o.pickup_ends_at, o.returned_at, o.version, o.vehicle_snapshot,
+               o.station_id, s.name AS station_name, s.address AS station_address, s.lng, s.lat,
+               (SELECT pay.status FROM vi_payment_order pay WHERE pay.order_id = o.id ORDER BY pay.id DESC LIMIT 1) AS payment_status
+        FROM vi_order o JOIN vi_station s ON s.id = o.station_id
+        WHERE o.owner_account_id = #{accountId} <include refid="deptFilter"/>
+        ORDER BY o.id DESC LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <select id="countOrdersByOwner" resultType="long">
+        SELECT COUNT(*) FROM vi_order o WHERE o.owner_account_id = #{accountId} <include refid="deptFilter"/>
+    </select>
+
+</mapper>
