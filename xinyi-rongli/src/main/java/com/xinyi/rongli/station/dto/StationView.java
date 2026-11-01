@@ -9,6 +9,7 @@ public record StationView(
         String address,
         GeoPoint location,
         String phoneMask,
+        String deptId,
         boolean enabled,
         List<String> supportedVehicleTypeCodes,
         String businessHours,

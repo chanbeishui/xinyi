@@ -18,9 +18,7 @@ paths:
       summary: 查询容量
       tags:
       - STATION
-      description: '流程：F24。复用同一应用服务；当前会话角色及授权站点∩真实订单归属验证；站点收车/放车走统一交接confirm，不另造绕过接口
-
-        参数校验、真实归属、服务端当前状态/版本先于写入；不接受主体伪造。'
+      description: 读取站点独立双额度；slotId+proposedTotal返回当前占用和可调容性，仅预览不扣减、不冻结、不承诺未匹配站点名额。员工只读当前有效授权站点，后台按站点权威部门过滤。
       x-flow-ids:
       - F24
       security:
@@ -71,6 +69,8 @@ paths:
           $ref: '#/components/responses/InternalError'
         '503':
           $ref: '#/components/responses/Unavailable'
+        '404':
+          $ref: '#/components/responses/NotFound'
       parameters:
       - name: X-Client-Type
         in: header
@@ -96,6 +96,35 @@ paths:
           minimum: 1
           maximum: 100
           default: 10
+      - name: stationId
+        in: query
+        schema:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+        description: 筛选范围仍受服务端权限限制
+      - name: quotaType
+        in: query
+        schema:
+          type: string
+          enum:
+          - PICKUP
+          - STATION_RECEIVE
+        description: 筛选范围仍受服务端权限限制
+      - name: slotId
+        in: query
+        schema:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+        description: 查询过滤；slotId与proposedTotal同时填写为只读影响预览
+      - name: proposedTotal
+        in: query
+        schema:
+          type: integer
+          minimum: 0
+          maximum: 2147483647
+        description: 查询过滤；slotId与proposedTotal同时填写为只读影响预览
       x-permission: biz:capacity:list
       x-authorization:
         realm: MINI
@@ -114,6 +143,7 @@ paths:
       - VI_INTERNAL_ERROR
       - VI_AUTHORITY_UNAVAILABLE
       - VI_UPSTREAM_UNAVAILABLE
+      - VI_RESOURCE_NOT_VISIBLE
       x-error-policy: GLOBAL_FAILURES_NO_RESOURCE_404
       x-contract-baseline: V6.4
   /api/app/station/capacity/{slotId}:
@@ -253,9 +283,7 @@ paths:
       summary: 查询容量
       tags:
       - ADMIN
-      description: '流程：F24。复用同一应用服务；当前会话角色及授权站点∩真实订单归属验证；站点收车/放车走统一交接confirm，不另造绕过接口
-
-        参数校验、真实归属、服务端当前状态/版本先于写入；不接受主体伪造。'
+      description: 读取站点独立双额度；slotId+proposedTotal返回当前占用和可调容性，仅预览不扣减、不冻结、不承诺未匹配站点名额。员工只读当前有效授权站点，后台按站点权威部门过滤。
       x-flow-ids:
       - F24
       security:
@@ -306,6 +334,8 @@ paths:
           $ref: '#/components/responses/InternalError'
         '503':
           $ref: '#/components/responses/Unavailable'
+        '404':
+          $ref: '#/components/responses/NotFound'
       parameters:
       - name: X-Client-Type
         in: header
@@ -331,6 +361,35 @@ paths:
           minimum: 1
           maximum: 100
           default: 10
+      - name: stationId
+        in: query
+        schema:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+        description: 筛选范围仍受服务端权限限制
+      - name: quotaType
+        in: query
+        schema:
+          type: string
+          enum:
+          - PICKUP
+          - STATION_RECEIVE
+        description: 筛选范围仍受服务端权限限制
+      - name: slotId
+        in: query
+        schema:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+        description: 查询过滤；slotId与proposedTotal同时填写为只读影响预览
+      - name: proposedTotal
+        in: query
+        schema:
+          type: integer
+          minimum: 0
+          maximum: 2147483647
+        description: 查询过滤；slotId与proposedTotal同时填写为只读影响预览
       x-permission: biz:capacity:list
       x-authorization:
         realm: ADMIN
@@ -347,7 +406,126 @@ paths:
       - VI_INTERNAL_ERROR
       - VI_AUTHORITY_UNAVAILABLE
       - VI_UPSTREAM_UNAVAILABLE
+      - VI_RESOURCE_NOT_VISIBLE
       x-error-policy: GLOBAL_FAILURES_NO_RESOURCE_404
+      x-contract-baseline: V6.4
+    post:
+      operationId: V64_post_api_admin_capacity
+      summary: 新增站点未来供给时段
+      tags:
+      - ADMIN
+      description: 每个站点独立维护接车和接收额度；部门归属从站点读取。拒绝停用站点、过去或重叠的同类区间；创建不占用订单名额。幂等写入与审计和outbox同事务。
+      x-flow-ids:
+      - F24
+      security:
+      - AdminBearerAuth: []
+      responses:
+        '200':
+          description: 操作成功；领域校验后返回真实结果
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    enum:
+                    - 200
+                  msg:
+                    type: string
+                  data:
+                    allOf:
+                    - $ref: '#/components/schemas/Capacity'
+                    nullable: true
+                    type: object
+                additionalProperties: false
+                required:
+                - code
+                - msg
+                - data
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+                enum:
+                - no-store
+              description: 身份/交易/个人业务响应不缓存
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalError'
+        '503':
+          $ref: '#/components/responses/Unavailable'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+      parameters:
+      - name: Idempotency-Key
+        in: header
+        required: true
+        schema:
+          type: string
+          description: UUID；按主体+动作+资源+键及请求摘要保存首次结果；同键不同体409，至少24h，资金/交接另有永久业务去重
+      - name: X-Client-Type
+        in: header
+        required: true
+        schema:
+          type: string
+          enum:
+          - owner
+          - driver
+          - station
+          - admin
+        description: 仅审计来源，不作为授权；须匹配服务端会话视角
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CapacityCreate'
+      x-permission: biz:capacity:edit
+      x-authorization:
+        realm: ADMIN
+        scope: ORG_DEPT_STATION
+        permission: biz:capacity:edit
+      x-error-codes:
+      - VI_REQUEST_INVALID
+      - VI_AUTH_REQUIRED
+      - VI_TOKEN_REALM_MISMATCH
+      - VI_REFRESH_REUSED
+      - VI_FORBIDDEN
+      - VI_SELF_REVIEW_DENIED
+      - VI_RESOURCE_NOT_VISIBLE
+      - VI_VERSION_CONFLICT
+      - VI_STATE_CONFLICT
+      - VI_IDEMPOTENCY_CONFLICT
+      - VI_SELECTION_CONFLICT
+      - VI_CONTEXT_CHANGED
+      - VI_SNAPSHOT_CHANGED
+      - VI_DATA_INVALID
+      - VI_EVIDENCE_INCOMPLETE
+      - VI_HANDOVER_CODE_INVALID
+      - VI_HANDOVER_LOCKED
+      - VI_UNPRICED_LINES
+      - VI_REFUND_LIMIT
+      - VI_PAYMENT_LIMIT
+      - VI_SERVICE_UNAVAILABLE
+      - VI_CAPABILITY_NOT_CONFIGURED
+      - VI_TRAINING_NOT_READY
+      - VI_RATE_LIMITED
+      - VI_INTERNAL_ERROR
+      - VI_AUTHORITY_UNAVAILABLE
+      - VI_UPSTREAM_UNAVAILABLE
+      x-error-policy: OBJECT_404_HIDES_EXISTENCE
       x-contract-baseline: V6.4
   /api/admin/capacity/{slotId}:
     put:
@@ -486,12 +664,19 @@ components:
         total:
           type: integer
           minimum: 0
+          maximum: 2147483647
         expectedVersion:
           type: integer
           minimum: 0
           description: 客户端最后读取的版本；服务端条件更新，冲突返回409
+          maximum: 9007199254740991
         reason:
           type: string
+          minLength: 1
+          maxLength: 500
+        enabled:
+          type: boolean
+          description: 只限制新预约，不删除或释放已有占用
       additionalProperties: false
       required:
       - total
@@ -702,7 +887,69 @@ components:
           type: integer
           minimum: 0
           description: 客户端最后读取的版本；服务端条件更新，冲突返回409
+        enabled:
+          type: boolean
+        proposedTotal:
+          type: integer
+          minimum: 0
+          nullable: true
+          description: 只读影响预览的目标额度
+        canApply:
+          type: boolean
+          nullable: true
+          description: 预览时依据当前占用与时段计算；写入仍须CAS重验
       additionalProperties: false
+      required:
+      - slotId
+      - stationId
+      - quotaType
+      - startAt
+      - endAt
+      - total
+      - held
+      - confirmed
+      - consumed
+      - available
+      - enabled
+      - version
+    CapacityCreate:
+      type: object
+      additionalProperties: false
+      properties:
+        stationId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+        quotaType:
+          type: string
+          enum:
+          - PICKUP
+          - STATION_RECEIVE
+        startAt:
+          type: string
+          format: date-time
+          pattern: Z$
+          description: UTC未来开始时刻，最多毫秒精度
+        endAt:
+          type: string
+          format: date-time
+          pattern: Z$
+          description: UTC结束时刻，必须晚于开始
+        total:
+          type: integer
+          minimum: 0
+          maximum: 2147483647
+        reason:
+          type: string
+          minLength: 1
+          maxLength: 500
+      required:
+      - stationId
+      - quotaType
+      - startAt
+      - endAt
+      - total
+      - reason
   responses:
     UnprocessableEntity:
       description: 填写内容不符合要求。参见errorCode注册表；HTTP状态与code一致。

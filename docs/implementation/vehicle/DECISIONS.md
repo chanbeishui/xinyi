@@ -77,3 +77,10 @@
 - D-E08-3 **诚实分层，不用 FOUNDATION 绿色代替全功能**：report 将 L01_REAL_CHANNEL/L02_DEVICE/L03_DEPLOY 明确 NOT_RUN、LIVE_HTTP_MYSQL=PARTIAL（E06 服务层+E07 控制面真实 HTTP/MySQL，业务端点未建）；verifiedWithEvidence 仅纳 status∈{VERIFIED,REVIEWED} 且 evidence 文件真实存在者（当前 E00-E07）；api implemented 以 controllerFile/serviceFile 真实存在计数（当前 0）；case passed 以 status=PASS+testMethod 真实计数（当前 0）。ci-stage 停 FOUNDATION，前移需业务端点+真实集成由后续任务升级。
 - D-E08-4 验证分两层：`test_ci_run.py`（pytest，tmp **受控测试工作区**驱动 ci_run，6 用例：退出码传播/跨平台/覆盖/NOT_RUN 不算完成）+ `E08PlatformIT`（轻量 JUnit IT，**不启 Spring**，shell 到 ci_run.py report 对真实仓库聚合断言）。E08PlatformIT 经 `mvn -Pvi-it -Dit.test=E08PlatformIT verify` 跑（1/1）。资料包套件 72 + engineer.py check 34/0 为 E08 两条列名命令。
 - D-E08-5 JUnit 报告统一归集 evidence/：mvn surefire/failsafe XML + pytest --junitxml（pkg-suite-junit.xml、e08-selftest-junit.xml）；ci_run.py collect_junit 汇总，report 列 junitReports（当前 8 个）。
+
+
+## D-C03-20261101 · 每站独立双额度（用户本轮明确）
+
+用户选择「每个站点独立维护接车和接收额度」。PICKUP/STATION_RECEIVE 均归真实站点，部门归属通过 vi_station.dept_id 解析；scope_key 服务端生成 station:<id>。不新建共享区域额度，不默认采用操作者主部门。未填写地址时只展示候选时间，不预占或承诺具体站点。既有无归属额度只报告，不猜测回填。
+
+C03增加后台创建未来时段动作，原4接口保留；GET的slotId+proposedTotal为只读影响预览。总额度、停约状态可受控调整，预占/正式/已消耗计数不接受客户端写入。当前API总数288，任务仍85项。

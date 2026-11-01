@@ -100,13 +100,13 @@ export type ManualInvite = { "orderNo": string; "driverId": string; "expectedOrd
 
 export type DispatchConfig = { "dispatchLeadMinutes": number; "inviteResponseSeconds"?: number; "radiusMeter"?: number; "expandedRadiusMeter"?: number; "overallDeadlineSeconds"?: number; "roundPolicy"?: string; "locationMaxAgeSeconds"?: number; "dailyCancelLimit"?: number; "expectedVersion": number };
 
-export type Station = { "stationId"?: string; "name"?: string; "address"?: string; "location"?: GeoPoint; "phoneMask"?: string; "enabled"?: boolean; "supportedVehicleTypeCodes"?: Array<string>; "businessHours"?: string; "serviceRadiusMeter"?: number; "version": number };
+export type Station = { "deptId"?: string; "stationId"?: string; "name"?: string; "address"?: string; "location"?: GeoPoint; "phoneMask"?: string; "enabled"?: boolean; "supportedVehicleTypeCodes"?: Array<string>; "businessHours"?: string; "serviceRadiusMeter"?: number; "version": number };
 
 export type StationGrant = { "employeeUserId": string; "ownStationId"?: string; "authorizedStationIds": Array<string>; "expectedVersion": number; "reason": string };
 
-export type Capacity = { "slotId"?: string; "stationId"?: string; "startAt"?: string; "endAt"?: string; "quotaType"?: "PICKUP" | "STATION_RECEIVE"; "total"?: number; "held"?: number; "confirmed"?: number; "consumed"?: number; "available"?: number; "version"?: number };
+export type Capacity = { "slotId": string; "stationId": string; "startAt": string; "endAt": string; "quotaType": "PICKUP" | "STATION_RECEIVE"; "total": number; "held": number; "confirmed": number; "consumed": number; "available": number; "version": number; "enabled": boolean; "proposedTotal"?: (number) | null; "canApply"?: (boolean) | null };
 
-export type CapacityChange = { "total": number; "expectedVersion": number; "reason": string };
+export type CapacityChange = { "total": number; "expectedVersion": number; "reason": string; "enabled"?: boolean };
 
 export type LicenseReview = { "expectedVersion": number; "plateNo": string; "ownerName": string; "vin": string; "registerDate": string; "useType": string; "mainFileId": string; "subFileId"?: string; "reviewComment"?: string };
 
@@ -562,3 +562,9 @@ export type StationOrderAction = "CONTACT_DRIVER" | "CREATE_HANDOVER" | "CONFIRM
 
 export type AdminOrderAction = "MANUAL_INVITE" | "REVIEW_AFTERSALE" | "REVIEW_LICENSE" | "REGISTER_RESULT" | "REQUEST_RESULT_CORRECTION" | "CONTACT_OWNER" | "CONTACT_DRIVER" | "CONTACT_STATION" | "EXPORT" | "VIEW_DETAIL" | "VIEW_EVIDENCE" | "VIEW_RESULT" | "VIEW_PAYMENT";
 export type PublicServiceConfig = { version: number; companyName: string; supportPhone: string; termsVersion: string; termsText: string; privacyVersion: string; privacyText: string; serviceCities: string[]; bookingEnabled: boolean };
+
+export type AdminStationCreate = { "deptId": string; "name": string; "address": string; "location": GeoPoint; "contactPhone"?: string; "enabled"?: boolean; "supportedVehicleTypeCodes": Array<string>; "businessHours"?: string; "serviceRadiusMeter"?: number; "qualificationFileIds"?: Array<string> };
+
+export type AdminStationUpdate = { "deptId"?: string; "name": string; "address": string; "location": GeoPoint; "contactPhone"?: string; "enabled"?: boolean; "supportedVehicleTypeCodes": Array<string>; "businessHours"?: string; "serviceRadiusMeter"?: number; "qualificationFileIds"?: Array<string>; "expectedVersion": number };
+
+export type CapacityCreate = { "stationId": string; "quotaType": "PICKUP" | "STATION_RECEIVE"; "startAt": string; "endAt": string; "total": number; "reason": string };

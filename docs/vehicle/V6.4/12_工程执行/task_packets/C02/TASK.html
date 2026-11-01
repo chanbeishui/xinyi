@@ -1,10 +1,13 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TASK</title><style>body{font:16px/1.75 -apple-system,BlinkMacSystemFont,"Microsoft YaHei",sans-serif;color:#202632;margin:0;background:#f6f7f9}header{padding:14px 24px;background:white;border-bottom:1px solid #ddd}main{max-width:1120px;margin:24px auto;padding:30px;background:white}h1{font-size:30px}h2{margin-top:36px}a{color:#0661bd}table{border-collapse:collapse;width:100%;display:block;overflow:auto;font-size:14px}td,th{border:1px solid #dde2ea;padding:10px;vertical-align:top}th{background:#f1f5fb}pre{padding:15px;background:#f2f4f7;overflow:auto}img{max-width:100%;height:auto}blockquote{padding:10px 20px;border-left:3px solid #2571be;background:#f4f8fc}@media(max-width:700px){main{padding:15px;margin:8px}h1{font-size:25px}}</style></head><body><header><a href="../../../00_开始.html">V6.4 完整资料</a>　<a href="../../../02_UI/index.html">交互原型</a>　T3.4</header><main><h1>C02 · 检测点、营业与服务区域</h1>
 <p>阶段：M1；责任域：station；前置：I06, C01。
-范围版本：<code>V6.1-UNCHANGED</code>；definitionHash：<code>7d9b24a673ff457d2fc901a6069693f8e849d396fdfcbe5852fda7b36fe91c0b</code>。</p>
+范围版本：<code>V6.4-STATION-AUTH-20261101</code>；definitionHash：<code>4ea6e333e8b99104e5fb55418b6d2af00e81f959ea62554643a464b40708b50f</code>。</p>
 <h2>本任务交付</h2>
 <ul>
 <li>站点CRUD/资质/地址/服务能力/营业范围</li>
 <li>后台与员工共用Service</li>
+<li>站点显式选择权威部门，ADMIN写DTO与员工写DTO分离</li>
+<li>工作请求实时校验有效关联、角色功能权限及站点部门范围，撤权不依赖Redis</li>
+<li>创建和更新使用事务幂等，重放前仍检查当前访问权限</li>
 </ul>
 <h2>必测失败与并发</h2>
 <ul>

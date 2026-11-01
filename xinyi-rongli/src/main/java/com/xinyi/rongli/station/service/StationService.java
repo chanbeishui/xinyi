@@ -4,6 +4,10 @@ import com.xinyi.common.core.domain.model.LoginUser;
 import com.xinyi.common.utils.SecurityUtils;
 import com.xinyi.rongli.core.ViId;
 import com.xinyi.rongli.identity.service.PhoneCrypto;
+import com.xinyi.rongli.identity.mapper.EmployeeDirectoryGuardMapper;
+import com.xinyi.rongli.scope.service.EmployeeStationAccessService;
+import com.xinyi.rongli.platform.service.IdempotencyService;
+import com.xinyi.common.exception.ServiceException;
 import com.xinyi.rongli.platform.actor.Actor;
 import com.xinyi.rongli.platform.actor.BusinessActorResolver;
 import com.xinyi.rongli.platform.error.ViErrorCode;
@@ -46,10 +50,17 @@ public class StationService {
     private final AuditService auditService;
     private final OutboxService outboxService;
     private final TransactionTemplate tx;
+    private final EmployeeStationAccessService employeeAccess;
+    private final EmployeeDirectoryGuardMapper directoryGuard;
+    private final IdempotencyService idempotency;
 
     public StationService(ViStationMapper stationMapper, PhoneCrypto crypto, BusinessActorResolver actorResolver,
                           IDeptScopeService deptScope, AuditService auditService, OutboxService outboxService,
-                          PlatformTransactionManager txManager) {
+                          PlatformTransactionManager txManager, EmployeeStationAccessService employeeAccess,
+                          EmployeeDirectoryGuardMapper directoryGuard, IdempotencyService idempotency) {
+        this.employeeAccess = employeeAccess;
+        this.directoryGuard = directoryGuard;
+        this.idempotency = idempotency;
         this.stationMapper = stationMapper;
         this.crypto = crypto;
         this.actorResolver = actorResolver;
@@ -81,7 +92,7 @@ public class StationService {
 
     public StationView getOwnStation() {
         Actor actor = actorResolver.requireMini();
-        long id = requireStationContext(actor);
+        long id = employeeAccess.require("biz:station:query");
         ViStation s = stationMapper.selectById(id);
         if (s == null) {
             throw new ViException(ViErrorCode.VI_RESOURCE_NOT_VISIBLE);
@@ -89,22 +100,33 @@ public class StationService {
         return toView(s);
     }
 
-    public StationView updateOwnStation(StationInput in) {
+    public StationView updateOwnStation(StationInput in, String requestKey) {
         Actor actor = actorResolver.requireMini();
-        long id = requireStationContext(actor);
         validate(in, true);
+        if (in.deptId() != null) {
+            throw new ViException(ViErrorCode.VI_REQUEST_INVALID, "员工端不能修改部门");
+        }
         return tx.execute(st -> {
+            directoryGuard.ensureGuard();
+            directoryGuard.lockGuard();
+            long id = employeeAccess.require("biz:station:edit");
             ViStation row = stationMapper.selectByIdForUpdate(id);
             if (row == null) {
                 throw new ViException(ViErrorCode.VI_RESOURCE_NOT_VISIBLE);
             }
-            ViStation merged = merge(row, in, false);
-            if (stationMapper.update(merged, in.expectedVersion()) != 1) {
-                throw new ViException(ViErrorCode.VI_VERSION_CONFLICT, "站点已变化，请重新获取");
-            }
-            auditService.recordSuccess(actor, "VI_STATION", id, "STATION_UPDATE", null, Map.of("scope", "SELF"), null);
-            outboxService.publish("station-update:" + id, "VI_STATION", id, "STATION_UPDATED", Map.of());
-            return toView(stationMapper.selectById(id));
+            // 加锁后重新核对权威归属，重放也不能绕过已撤销的工作权限。
+            employeeAccess.require("biz:station:edit");
+            return idempotency.execute(IdempotencyService.subjectKey(actor), "PUT /api/app/station/info:" + id,
+                    requestKey, ViJson.write(in), true, StationView.class, () -> {
+                ViStation merged = merge(row, in, false);
+                if (stationMapper.update(merged, in.expectedVersion()) != 1) {
+                    throw new ViException(ViErrorCode.VI_VERSION_CONFLICT, "站点已变化，请重新获取");
+                }
+                auditService.recordSuccess(actor, "VI_STATION", id, "STATION_UPDATE", null, Map.of("scope", "SELF"), null);
+                outboxService.publish("station-update:" + id + ":" + (in.expectedVersion() + 1),
+                        "VI_STATION", id, "STATION_UPDATED", Map.of());
+                return toView(stationMapper.selectById(id));
+            });
         });
     }
 
@@ -135,11 +157,18 @@ public class StationService {
         return stationMapper.countList(deptIds, false);
     }
 
-    public StationView create(StationInput in) {
+    public StationView create(StationInput in, String requestKey) {
         Actor actor = actorResolver.requireAdmin();
         requirePerm("biz:station:create");
         validate(in, false);
-        long deptId = resolveCreateDept(in);
+        long deptId;
+        try {
+            deptId = resolveCreateDept(in);
+        } catch (ViException e) {
+            auditService.recordFailure(actor, "VI_STATION", 0L, "STATION_CREATE_REJECTED", null,
+                    Map.of("errorCode", e.getErrorCode().name()), "站点部门归属校验未通过");
+            throw e;
+        }
         ViStation s = new ViStation();
         s.setName(in.name().trim());
         s.setDeptId(deptId);
@@ -152,62 +181,76 @@ public class StationService {
         s.setEnabled(Boolean.TRUE.equals(in.enabled()) ? 1 : 0);
         s.setContactPhoneCipher(in.contactPhone() == null || in.contactPhone().isBlank() ? null : crypto.encrypt(in.contactPhone()));
         s.setQualificationFileIds(in.qualificationFileIds() == null ? null : ViJson.write(in.qualificationFileIds()));
-        return tx.execute(st -> {
+        return tx.execute(st -> idempotency.execute(IdempotencyService.subjectKey(actor),
+                "POST /api/admin/stations", requestKey, ViJson.write(in), true, StationView.class, () -> {
+            checkTargetDept(deptId, "biz:station:create");
             stationMapper.insert(s);
             auditService.recordSuccess(actor, "VI_STATION", s.getId(), "STATION_CREATE", null, Map.of("deptId", deptId), null);
             outboxService.publish("station-create:" + s.getId(), "VI_STATION", s.getId(), "STATION_CREATED", Map.of());
             return toView(stationMapper.selectById(s.getId()));
-        });
+        }));
     }
 
-    public StationView adminUpdate(long id, StationInput in) {
+    public StationView adminUpdate(long id, StationInput in, String requestKey) {
         Actor actor = actorResolver.requireAdmin();
         requirePerm("biz:station:edit");
-        Set<Long> deptIds = scope("biz:station:edit");
-        requireVisible(id, deptIds);
         validate(in, true);
-        return tx.execute(st -> {
-            ViStation row = stationMapper.selectByIdForUpdate(id);
-            if (row == null) {
-                throw new ViException(ViErrorCode.VI_RESOURCE_NOT_VISIBLE);
-            }
-            // 迁部门：目标部门须在本人数据范围内，且无在手订单（受控拒绝，不静默改归属）
-            if (in.deptId() != null && in.deptId() != row.getDeptId().longValue()) {
-                deptScope.checkDeptAccess(List.of(in.deptId()));
-                if (stationMapper.countActiveOrders(id) > 0) {
-                    throw new ViException(ViErrorCode.VI_STATE_CONFLICT, "站点存在在手订单，不能迁部门");
+        try {
+            return tx.execute(st -> {
+                directoryGuard.ensureGuard();
+                directoryGuard.lockGuard();
+                ViStation row = stationMapper.selectByIdForUpdate(id);
+                if (row == null) {
+                    throw new ViException(ViErrorCode.VI_RESOURCE_NOT_VISIBLE);
                 }
-            }
-            ViStation merged = merge(row, in, true);
-            if (stationMapper.update(merged, in.expectedVersion()) != 1) {
-                throw new ViException(ViErrorCode.VI_VERSION_CONFLICT, "站点已变化，请重新获取");
-            }
-            auditService.recordSuccess(actor, "VI_STATION", id, "STATION_UPDATE", null, Map.of("scope", "ADMIN"), null);
-            outboxService.publish("station-update:" + id, "VI_STATION", id, "STATION_UPDATED", Map.of());
-            return toView(stationMapper.selectById(id));
-        });
-    }
-
-    // ---------- 内部 ----------
-
-    private long requireStationContext(Actor actor) {
-        if (!"STATION".equals(actor.actingRole()) || actor.stationId() == null) {
-            throw new ViException(ViErrorCode.VI_FORBIDDEN, "需切换到站点工作身份");
+                Set<Long> deptIds = scope("biz:station:edit");
+                if (emptyScope(deptIds) || (deptIds != null && !deptIds.contains(row.getDeptId()))) {
+                    throw new ViException(ViErrorCode.VI_RESOURCE_NOT_VISIBLE);
+                }
+                if (in.deptId() != null) {
+                    checkTargetDept(in.deptId(), "biz:station:edit");
+                }
+                return idempotency.execute(IdempotencyService.subjectKey(actor), "PUT /api/admin/stations/" + id,
+                        requestKey, ViJson.write(in), true, StationView.class, () -> {
+                    if (in.deptId() != null && !in.deptId().equals(row.getDeptId())
+                            && stationMapper.countActiveOrders(id) > 0) {
+                        throw new ViException(ViErrorCode.VI_STATE_CONFLICT, "站点存在在手订单，不能迁部门");
+                    }
+                    ViStation merged = merge(row, in, true);
+                    if (stationMapper.update(merged, in.expectedVersion()) != 1) {
+                        throw new ViException(ViErrorCode.VI_VERSION_CONFLICT, "站点已变化，请重新获取");
+                    }
+                    auditService.recordSuccess(actor, "VI_STATION", id, "STATION_UPDATE", null, Map.of("scope", "ADMIN"), null);
+                    outboxService.publish("station-update:" + id + ":" + (in.expectedVersion() + 1),
+                            "VI_STATION", id, "STATION_UPDATED", Map.of());
+                    return toView(stationMapper.selectById(id));
+                });
+            });
+        } catch (ViException e) {
+            auditService.recordFailure(actor, "VI_STATION", id, "STATION_UPDATE_REJECTED", null,
+                    Map.of("errorCode", e.getErrorCode().name()), "站点修改未成功");
+            throw e;
         }
-        return actor.stationId();
     }
 
     private long resolveCreateDept(StationInput in) {
-        if (in.deptId() != null) {
-            deptScope.checkDeptAccess(List.of(in.deptId()));
-            return in.deptId();
+        if (in.deptId() == null) {
+            throw new ViException(ViErrorCode.VI_REQUEST_INVALID, "请选择站点归属部门");
         }
-        LoginUser lu = SecurityUtils.getLoginUser();
-        Long deptId = lu == null || lu.getUser() == null ? null : lu.getUser().getDeptId();
-        if (deptId == null) {
-            throw new ViException(ViErrorCode.VI_REQUEST_INVALID, "无法确定站点权威部门归属");
+        checkTargetDept(in.deptId(), "biz:station:create");
+        return in.deptId();
+    }
+
+    private void checkTargetDept(long deptId, String permission) {
+        Set<Long> allowed = scope(permission);
+        if (emptyScope(allowed) || (allowed != null && !allowed.contains(deptId))) {
+            throw new ViException(ViErrorCode.VI_FORBIDDEN, "没有权限操作目标部门");
         }
-        return deptId;
+        try {
+            deptScope.checkDeptAccess(List.of(deptId));
+        } catch (ServiceException e) {
+            throw new ViException(ViErrorCode.VI_FORBIDDEN, "目标部门无效或不在授权范围内");
+        }
     }
 
     /** 合并更新：必填字段覆盖，可选字段提供才改；allowDeptMove 控制是否接受 deptId（员工端恒 false）。 */
@@ -286,7 +329,7 @@ public class StationService {
     private StationView toView(ViStation s) {
         return new StationView(ViId.external(s.getId()), s.getName(), s.getAddress(),
                 GeoPoint.gcj02(s.getLng(), s.getLat()), phoneMask(s.getContactPhoneCipher()),
-                s.getEnabled() != null && s.getEnabled() == 1, parseList(s.getSupportedVehicleCodes()),
+                ViId.external(s.getDeptId()), s.getEnabled() != null && s.getEnabled() == 1, parseList(s.getSupportedVehicleCodes()),
                 parseStr(s.getBusinessHours()), s.getServiceRadiusMeter() == null ? 0 : s.getServiceRadiusMeter(),
                 s.getVersion() == null ? 0 : s.getVersion());
     }

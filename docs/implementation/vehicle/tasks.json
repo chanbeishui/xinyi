@@ -1731,7 +1731,10 @@
     ],
     "deliverables": [
       "站点CRUD/资质/地址/服务能力/营业范围",
-      "后台与员工共用Service"
+      "后台与员工共用Service",
+      "站点显式选择权威部门，ADMIN写DTO与员工写DTO分离",
+      "工作请求实时校验有效关联、角色功能权限及站点部门范围，撤权不依赖Redis",
+      "创建和更新使用事务幂等，重放前仍检查当前访问权限"
     ],
     "negative_checks": [
       "迁部门存在在手订单需拒绝或受控方案",
@@ -1784,19 +1787,32 @@
       "access": "不得绕过限制；保存恢复点",
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
-    "scopeRevision": "V6.1-UNCHANGED",
-    "definitionHash": "7d9b24a673ff457d2fc901a6069693f8e849d396fdfcbe5852fda7b36fe91c0b",
+    "scopeRevision": "V6.4-STATION-AUTH-20261101",
+    "definitionHash": "4ea6e333e8b99104e5fb55418b6d2af00e81f959ea62554643a464b40708b50f",
     "evidence": [
       {
         "path": "docs/implementation/vehicle/evidence/C02.json",
         "sha256": "e55cb5a80b76a3ef2236295af1fc296218fac08241fe25fc31b5129285ecb10e"
+      },
+      {
+        "path": "docs/implementation/vehicle/evidence/C02-20261101.json",
+        "sha256": "f59fd6b612a98489a24c86d24ff2140895238ea463e8db05b27d2744fef6b78a"
       }
     ],
     "implementation": null,
     "review": null,
     "blocker": null,
     "needsAdaptation": false,
-    "updatedAt": "2026-11-01T08:55:51.852381+00:00"
+    "updatedAt": "2026-11-01T14:49:48.421168+00:00",
+    "scopeHistory": [
+      {
+        "fromScope": "V6.1-UNCHANGED",
+        "toScope": "V6.4-STATION-AUTH-20261101",
+        "priorStatus": "VERIFIED",
+        "reason": "站点权威归属及实时权限、事务幂等补强；保留既有代码和历史证据",
+        "at": "2026-11-01T14:49:48.370269+00:00"
+      }
+    ]
   },
   {
     "id": "C03",
@@ -1808,7 +1824,9 @@
       "E06"
     ],
     "deliverables": [
-      "候选时段、地址后复核、容量调整影响预览和预占统计"
+      "每站独立接车和接收额度；后台显式创建未来时段，拒绝同站同类区间重叠",
+      "容量调整只读影响预览、停约及预占/正式/已消耗统计；调容不改订单占用",
+      "服务端实时权限、版本CAS与事务幂等，代码及前后端真实验证"
     ],
     "negative_checks": [
       "上门时段非到站考核",
@@ -1819,7 +1837,8 @@
       "API_081_get",
       "API_082_put",
       "API_092_get",
-      "API_093_put"
+      "API_093_put",
+      "V64_post_api_admin_capacity"
     ],
     "page_ids": [
       "S17",
@@ -1833,7 +1852,7 @@
     "case_ids": [],
     "scope": "DEVELOPMENT",
     "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
-    "status": "NOT_ASSESSED",
+    "status": "VERIFIED",
     "code_paths": [
       "xinyi-rongli/src/main/java/com/xinyi/rongli/capacity/",
       "xinyi-rongli/src/main/resources/mapper/rongli/capacity/",
@@ -1860,12 +1879,19 @@
       "access": "不得绕过限制；保存恢复点",
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
-    "scopeRevision": "V6.1-UNCHANGED",
-    "definitionHash": "76db2364911e2c70953bd798e643df7722acc9d00fd761aa55f858f010fd87ac",
-    "evidence": [],
+    "scopeRevision": "V6.4-STATION-QUOTA-20261101",
+    "definitionHash": "3f0fa553908852ece5326e383d7dea51dc5ff108acc91cebdd8c91073f69c301",
+    "evidence": [
+      {
+        "path": "docs/implementation/vehicle/evidence/C03-20261101.json",
+        "sha256": "5226299cc0593ee9b0897b3314a58836bab01c468fdcedbff9d5cf11c12b0ae6"
+      }
+    ],
     "implementation": null,
     "review": null,
-    "blocker": null
+    "blocker": null,
+    "needsAdaptation": false,
+    "updatedAt": "2026-11-01T14:49:48.452192+00:00"
   },
   {
     "id": "C04",

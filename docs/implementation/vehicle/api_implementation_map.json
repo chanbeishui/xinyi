@@ -1015,11 +1015,13 @@
     "taskId": "S04"
   },
   {
-    "implementationStatus": "NOT_ASSESSED",
-    "controllerFile": null,
-    "serviceFile": null,
-    "mapperFile": null,
-    "testFiles": [],
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/capacity/CapacityController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/capacity/service/CapacityService.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/capacity/ViQuotaSlotMapper.xml",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/C03CapacityIT.java"
+    ],
     "reviewEvidence": null,
     "operationId": "API_081_get",
     "method": "GET",
@@ -1028,11 +1030,13 @@
     "taskId": "C03"
   },
   {
-    "implementationStatus": "NOT_ASSESSED",
-    "controllerFile": null,
-    "serviceFile": null,
-    "mapperFile": null,
-    "testFiles": [],
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/capacity/CapacityController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/capacity/service/CapacityService.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/capacity/ViQuotaSlotMapper.xml",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/C03CapacityIT.java"
+    ],
     "reviewEvidence": null,
     "operationId": "API_082_put",
     "method": "PUT",
@@ -1158,11 +1162,13 @@
     "taskId": "S04"
   },
   {
-    "implementationStatus": "NOT_ASSESSED",
-    "controllerFile": null,
-    "serviceFile": null,
-    "mapperFile": null,
-    "testFiles": [],
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/capacity/CapacityController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/capacity/service/CapacityService.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/capacity/ViQuotaSlotMapper.xml",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/C03CapacityIT.java"
+    ],
     "reviewEvidence": null,
     "operationId": "API_092_get",
     "method": "GET",
@@ -1171,11 +1177,13 @@
     "taskId": "C03"
   },
   {
-    "implementationStatus": "NOT_ASSESSED",
-    "controllerFile": null,
-    "serviceFile": null,
-    "mapperFile": null,
-    "testFiles": [],
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/capacity/CapacityController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/capacity/service/CapacityService.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/capacity/ViQuotaSlotMapper.xml",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/C03CapacityIT.java"
+    ],
     "reviewEvidence": null,
     "operationId": "API_093_put",
     "method": "PUT",
@@ -3835,5 +3843,20 @@
     "path": "/api/admin/integrations/test-recipients/{recipientId}/revoke",
     "summary": "撤销测试收件人",
     "taskId": "X01"
+  },
+  {
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/capacity/CapacityController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/capacity/service/CapacityService.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/capacity/ViQuotaSlotMapper.xml",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/C03CapacityIT.java"
+    ],
+    "reviewEvidence": null,
+    "operationId": "V64_post_api_admin_capacity",
+    "method": "POST",
+    "path": "/api/admin/capacity",
+    "summary": "新增站点未来供给时段",
+    "taskId": "C03"
   }
 ]

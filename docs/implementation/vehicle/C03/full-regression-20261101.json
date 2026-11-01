@@ -1,0 +1,130 @@
+{
+  "at": "2026-11-01T14:47:56.397894+00:00",
+  "suites": [
+    {
+      "name": "com.xinyi.web.viit.C03CapacityIT",
+      "tests": "6",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.967"
+    },
+    {
+      "name": "com.xinyi.web.viit.C02StationIT",
+      "tests": "13",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "1.149"
+    },
+    {
+      "name": "com.xinyi.web.viit.E07TestingIT",
+      "tests": "5",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.599"
+    },
+    {
+      "name": "com.xinyi.web.viit.I03IdentityIT",
+      "tests": "10",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "4.525"
+    },
+    {
+      "name": "com.xinyi.web.viit.I04IdentityIT",
+      "tests": "10",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "1.119"
+    },
+    {
+      "name": "com.xinyi.web.viit.A02AddressIT",
+      "tests": "7",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.79"
+    },
+    {
+      "name": "com.xinyi.web.viit.I05IdentityIT",
+      "tests": "20",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "1.73"
+    },
+    {
+      "name": "com.xinyi.web.viit.I01IdentityIT",
+      "tests": "9",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.809"
+    },
+    {
+      "name": "com.xinyi.web.viit.C01ConfigIT",
+      "tests": "6",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "1.851"
+    },
+    {
+      "name": "com.xinyi.web.viit.E06PlatformIT",
+      "tests": "10",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "1.081"
+    },
+    {
+      "name": "com.xinyi.web.viit.A03OwnerIT",
+      "tests": "7",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "1.036"
+    },
+    {
+      "name": "com.xinyi.web.viit.I02IdentityIT",
+      "tests": "9",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.894"
+    },
+    {
+      "name": "com.xinyi.web.viit.I06ScopeIT",
+      "tests": "10",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "1.107"
+    },
+    {
+      "name": "com.xinyi.web.viit.A01VehicleIT",
+      "tests": "7",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.858"
+    },
+    {
+      "name": "com.xinyi.web.viit.E08PlatformIT",
+      "tests": "1",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.034"
+    }
+  ],
+  "tests": 130,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "rawReports": "xinyi-admin/target/failsafe-reports/TEST-*.xml"
+}

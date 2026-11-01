@@ -1032,16 +1032,22 @@
     "taskId": "C02"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "IMPLEMENTED",
+    "implementationFile": "xinyi-miniapp/src/pages/capacity/list.vue",
+    "evidence": [
+      "docs/implementation/vehicle/C03/ui-qa.json",
+      "docs/implementation/vehicle/C03/C03CapacityIT-20261101.xml"
+    ],
     "boardId": "S17",
     "taskId": "C03"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "IMPLEMENTED",
+    "implementationFile": "xinyi-miniapp/src/pages/capacity/list.vue",
+    "evidence": [
+      "docs/implementation/vehicle/C03/ui-qa.json",
+      "docs/implementation/vehicle/C03/C03CapacityIT-20261101.xml"
+    ],
     "boardId": "S17-impact",
     "taskId": "C03"
   },
@@ -1406,16 +1412,22 @@
     "taskId": "C02"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "IMPLEMENTED",
+    "implementationFile": "xinyi-ui/src/views/rongli/capacity/capacity.vue",
+    "evidence": [
+      "docs/implementation/vehicle/C03/ui-qa.json",
+      "docs/implementation/vehicle/C03/C03CapacityIT-20261101.xml"
+    ],
     "boardId": "B19",
     "taskId": "C03"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "IMPLEMENTED",
+    "implementationFile": "xinyi-ui/src/views/rongli/capacity/capacity.vue",
+    "evidence": [
+      "docs/implementation/vehicle/C03/ui-qa.json",
+      "docs/implementation/vehicle/C03/C03CapacityIT-20261101.xml"
+    ],
     "boardId": "B19-impact",
     "taskId": "C03"
   },

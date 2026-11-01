@@ -1283,7 +1283,7 @@
         "clientWritable": false
       }
     },
-    "rule": "双额度为P04设计，开工模块前评审；调整容量不得小于实际占用之和"
+    "rule": "2026-11-01用户确认：每站独立维护PICKUP与STATION_RECEIVE，新增两类额度均填写station_id，scope_key由服务端生成为station:<id>；按站点dept_id鉴权。既有无归属记录不得猜测回填，须核实；调容不得低于预占+正式+已消耗，不改变历史占用。"
   },
   {
     "table": "vi_quote",

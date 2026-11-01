@@ -1,10 +1,12 @@
 # C03 · 上门时段与容量计划
 
 阶段：M2；责任域：capacity；前置：C02, E06。
-范围版本：`V6.1-UNCHANGED`；definitionHash：`76db2364911e2c70953bd798e643df7722acc9d00fd761aa55f858f010fd87ac`。
+范围版本：`V6.4-STATION-QUOTA-20261101`；definitionHash：`3f0fa553908852ece5326e383d7dea51dc5ff108acc91cebdd8c91073f69c301`。
 
 ## 本任务交付
-- 候选时段、地址后复核、容量调整影响预览和预占统计
+- 每站独立接车和接收额度；后台显式创建未来时段，拒绝同站同类区间重叠
+- 容量调整只读影响预览、停约及预占/正式/已消耗统计；调容不改订单占用
+- 服务端实时权限、版本CAS与事务幂等，代码及前后端真实验证
 
 ## 必测失败与并发
 - 上门时段非到站考核
@@ -13,7 +15,7 @@
 
 ## 精确输入
 主源：04_接口/openapi_V6.4.yaml、05_数据设计/data_model_V6.4.json、06_验收/test_cases_V6.4.json。本目录派生，不独立维护。
-接口：API_081_get, API_082_put, API_092_get, API_093_put
+接口：API_081_get, API_082_put, API_092_get, API_093_put, V64_post_api_admin_capacity
 画板：S17, S17-impact, B19, B19-impact
 主责任表：vi_quota_slot
 验收：无

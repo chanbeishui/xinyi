@@ -112,6 +112,12 @@ export const constantRoutes = [
         meta: { title: '车主档案', icon: 'user' }
       },
       {
+        path: 'capacity',
+        component: () => import('@/views/rongli/capacity/capacity.vue'),
+        name: 'RongliCapacity',
+        meta: { title: '排期与容量', icon: 'date' }
+      },
+      {
         path: 'stations',
         component: () => import('@/views/rongli/station/station.vue'),
         name: 'RongliStations',
