@@ -1,0 +1,75 @@
+{
+  "taskId": "A02",
+  "implementer": "Qoder-Agent",
+  "scopeRevision": "V6.1-UNCHANGED",
+  "codeCommit": "本提交（A02 后端+前端+证据）",
+  "codeFiles": [
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/address/domain/ViAddress.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/address/dto/GeoPoint.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/address/dto/AddressView.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/address/mapper/ViAddressMapper.java",
+    "xinyi-rongli/src/main/resources/mapper/rongli/address/ViAddressMapper.xml",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/address/service/AddressCrypto.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/address/service/AddressService.java",
+    "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/address/AddressController.java",
+    "xinyi-admin/src/test/java/com/xinyi/web/viit/A02AddressIT.java",
+    "xinyi-miniapp/src/features/address/api.ts",
+    "xinyi-miniapp/src/pages/address/list.vue",
+    "xinyi-miniapp/src/pages.json",
+    "xinyi-ui/src/api/rongli/address.ts",
+    "docs/implementation/vehicle/A02/report.md"
+  ],
+  "runs": [
+    {
+      "command": "mvn -pl xinyi-admin -am -Pvi-it -Dit.test=A02AddressIT verify",
+      "exitCode": 0,
+      "layer": "LIVE_HTTP_MYSQL",
+      "testsRun": 7,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "reportPath": "docs/implementation/vehicle/A02/report.md",
+      "note": "真实HTTP+MINI链+MyBatis+隔离库MySQL+provider模拟器；7用例覆盖CRUD+版本/并发设常用单默认/创建即默认清旧/越权404/CAS409/删除默认不残留/非法输入+空列表。"
+    },
+    {
+      "command": "mvn -pl xinyi-admin -am -Pvi-it -Dit.test=E06PlatformIT,E07TestingIT,E08PlatformIT,I01IdentityIT,I02IdentityIT,I03IdentityIT,I04IdentityIT,I05IdentityIT,I06ScopeIT,A02AddressIT verify",
+      "exitCode": 0,
+      "layer": "LIVE_HTTP_MYSQL",
+      "testsRun": 91,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "reportPath": "docs/implementation/vehicle/A02/report.md",
+      "note": "全量IT回归 E06 10+E07 5+E08 1+I01 9+I02 9+I03 10+I04 10+I05 20+I06 10+A02 7=91，0失败0错误0跳过；平台单元16/16；BUILD SUCCESS。"
+    },
+    {
+      "command": "npm --prefix xinyi-miniapp run build:mp-weixin",
+      "exitCode": 0,
+      "layer": "BUILD",
+      "testsRun": 1,
+      "skipped": 0,
+      "reportPath": "docs/implementation/vehicle/A02/report.md",
+      "note": "小程序构建通过；产出地址簿 list 页（手填坐标兜底）。"
+    },
+    {
+      "command": "npm --prefix xinyi-ui run build:prod",
+      "exitCode": 0,
+      "layer": "BUILD",
+      "testsRun": 1,
+      "skipped": 0,
+      "reportPath": "docs/implementation/vehicle/A02/report.md",
+      "note": "PC构建通过；address.ts 共享类型（车主地址 MINI 私有，后台不读明文）。"
+    }
+  ],
+  "review": {
+    "reviewer": null,
+    "approved": false,
+    "reportPath": null,
+    "note": "REVIEWED 需独立复核人≠实现者；本 Agent 不自审。"
+  },
+  "deferredCases": {
+    "crossTask": "临时地址草稿/报价坐标解析属 B01/B02；A02 无画板/验收用例，负向以 IT 覆盖。",
+    "verifiedHere": []
+  },
+  "thirdPartyStub": "SIMULATOR provider 为显式测试替身（仅登录换取）；真实微信渠道属 L01，未声称通过。"
+}

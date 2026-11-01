@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xinyi.rongli.address.mapper.ViAddressMapper">
+
+    <resultMap id="AddressMap" type="com.xinyi.rongli.address.domain.ViAddress">
+        <id property="id" column="id"/>
+        <result property="ownerAccountId" column="owner_account_id"/>
+        <result property="label" column="label"/>
+        <result property="addressCipher" column="address_cipher"/>
+        <result property="locationCipher" column="location_cipher"/>
+        <result property="isDefault" column="is_default"/>
+        <result property="deletedAt" column="deleted_at"
+                typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+        <result property="createdAt" column="created_at"
+                typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+        <result property="updatedAt" column="updated_at"
+                typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+        <result property="version" column="version"/>
+    </resultMap>
+
+    <sql id="cols">id, owner_account_id, label, address_cipher, location_cipher, is_default, deleted_at, created_at, updated_at, version</sql>
+
+    <insert id="insert" parameterType="com.xinyi.rongli.address.domain.ViAddress"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO vi_address (owner_account_id, label, address_cipher, location_cipher, is_default)
+        VALUES (#{ownerAccountId}, #{label}, #{addressCipher}, #{locationCipher}, #{isDefault})
+    </insert>
+
+    <select id="selectById" resultMap="AddressMap">
+        SELECT <include refid="cols"/> FROM vi_address WHERE id = #{id}
+    </select>
+
+    <select id="selectByIdForUpdate" resultMap="AddressMap">
+        SELECT <include refid="cols"/> FROM vi_address WHERE id = #{id} FOR UPDATE
+    </select>
+
+    <select id="selectByOwner" resultMap="AddressMap">
+        SELECT <include refid="cols"/> FROM vi_address
+        WHERE owner_account_id = #{ownerAccountId} AND deleted_at IS NULL
+        ORDER BY is_default DESC, id
+    </select>
+
+    <update id="update">
+        UPDATE vi_address
+        SET label = #{label}, address_cipher = #{addressCipher}, location_cipher = #{locationCipher},
+            is_default = #{isDefault}, updated_at = UTC_TIMESTAMP(3), version = version + 1
+        WHERE id = #{id} AND owner_account_id = #{ownerAccountId} AND version = #{expectedVersion} AND deleted_at IS NULL
+    </update>
+
+    <update id="softDelete">
+        UPDATE vi_address
+        SET deleted_at = #{deletedAt,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler},
+            is_default = 0, updated_at = UTC_TIMESTAMP(3), version = version + 1
+        WHERE id = #{id} AND owner_account_id = #{ownerAccountId} AND version = #{expectedVersion} AND deleted_at IS NULL
+    </update>
+
+    <update id="clearDefault">
+        UPDATE vi_address SET is_default = 0, updated_at = UTC_TIMESTAMP(3), version = version + 1
+        WHERE owner_account_id = #{ownerAccountId} AND is_default = 1 AND deleted_at IS NULL AND id != #{excludeId}
+    </update>
+
+    <update id="setDefaultFlag">
+        UPDATE vi_address
+        SET is_default = #{flag}, updated_at = UTC_TIMESTAMP(3), version = version + 1
+        WHERE id = #{id} AND owner_account_id = #{ownerAccountId} AND version = #{expectedVersion} AND deleted_at IS NULL
+    </update>
+
+</mapper>
