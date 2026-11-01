@@ -1,0 +1,8 @@
+..................                                                       [100%]
+=============================== warnings summary ===============================
+docs/vehicle/V6.4/12_工程执行/tests/test_contract_regression.py: 12 warnings
+  /Users/chenbeishui/Downloads/code_project/xinyi/docs/vehicle/V6.4/12_工程执行/tests/test_contract_regression.py:12: DeprecationWarning: jsonschema.RefResolver is deprecated as of v4.18.0, in favor of the https://github.com/python-jsonschema/referencing library, which provides more compliant referencing behavior as well as more flexible APIs for customization. A future release will remove RefResolver. Please file a feature request (on referencing) if you are missing an API for the kind of customization you need.
+    def validate(x):jsonschema.Draft7Validator(C['components']['schemas']['QuoteRequest'],resolver=jsonschema.RefResolver.from_schema(C)).validate(x)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+18 passed, 12 warnings in 1.13s

@@ -31,3 +31,9 @@ def test_new_address_id_not_required():
  x=good();validate(x);assert 'addressId'not in x['addressDraft']and'version'not in x['addressDraft']
 def test_confirm_returns_public():assert 'DriverStatementPublic' in str(S['paths']['/api/app/driver/statements/{statementId}/confirm']['post']['responses']['200'])
 def test_terms_must_be_true():assert S['components']['schemas']['OrderCreate']['properties']['acceptedTerms']['enum']==[True]
+
+@pytest.mark.parametrize('replacement,valid', [({}, True), ({'replacesRuleId':'12','replacesExpectedVersion':3}, True), ({'replacesRuleId':'12'}, False), ({'replacesExpectedVersion':3}, False)])
+def test_price_replacement_requires_paired_identity_and_version(replacement,valid):
+ x={'expectedVersion':2,'reason':'核实替换版本',**replacement}
+ errors=list(jsonschema.Draft7Validator(C['components']['schemas']['PricePublish']).iter_errors(x))
+ assert (not errors)==valid

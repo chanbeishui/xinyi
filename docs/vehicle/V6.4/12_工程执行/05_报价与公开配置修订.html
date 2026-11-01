@@ -7,5 +7,5 @@
 <li>原接口只有后台config，没有登录前取得隐私协议内容与版本的明确读取端。因此补GET /api/public/service-config，返回PublicServiceConfig严格白名单。与已有后台ConfigPatch的ConfigItem(key,value)对应，以下配置键是本轮工程约定：<code>vi.public.companyName</code>、<code>supportPhone</code>、<code>termsVersion</code>、<code>termsText</code>、<code>privacyVersion</code>、<code>privacyText</code>、<code>serviceCities</code>(JSON字符串)、<code>bookingEnabled</code>。后台更新在同版本事务下校验整组完整性和内部权限，再公开当前已发布版本；不要把密钥或整个sys_config返回。</li>
 <li>隐私版本在用户确认前从公开接口读取，建单提交隐私/条款版本，后端重新核对有效性与报价版本；版本变化返回VI_SNAPSHOT_CHANGED(409)，前端重新展示并确认，不静默换新版。</li>
 </ol>
-<p>新增公开读取是既有首页/公司说明/O09/隐私需求的接口补齐，不新增营销或收费业务。请求示例用于测试，不是真实公司条款。公开配置作为V6.0阶段已补齐的能力继续保留；当前整合契约为287操作、373具名结构，UI身份页按V6.4更新，其他已确认视图保留。</p>
+<p>新增公开读取是既有首页/公司说明/O09/隐私需求的接口补齐，不新增营销或收费业务。请求示例用于测试，不是真实公司条款。公开配置作为V6.0阶段已补齐的能力继续保留；当前整合契约为291操作、381具名结构，UI身份页按V6.4更新，其他已确认视图保留。</p>
 </main></body></html>

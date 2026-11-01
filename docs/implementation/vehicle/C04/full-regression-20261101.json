@@ -1,0 +1,263 @@
+{
+  "at": "2026-11-01T15:42:21.939301+00:00",
+  "database": "xinyi_vi_it_e07",
+  "isolatedGuard": "XINYI_VEHICLE_ISOLATED",
+  "suites": [
+    {
+      "{http://www.w3.org/2001/XMLSchema-instance}noNamespaceSchemaLocation": "https://maven.apache.org/surefire/maven-failsafe-plugin/xsd/failsafe-test-report.xsd",
+      "version": "3.0.2",
+      "name": "com.xinyi.web.viit.A01VehicleIT",
+      "time": "0.843",
+      "tests": "7",
+      "errors": "0",
+      "skipped": "0",
+      "failures": "0"
+    },
+    {
+      "{http://www.w3.org/2001/XMLSchema-instance}noNamespaceSchemaLocation": "https://maven.apache.org/surefire/maven-failsafe-plugin/xsd/failsafe-test-report.xsd",
+      "version": "3.0.2",
+      "name": "com.xinyi.web.viit.A02AddressIT",
+      "time": "1.003",
+      "tests": "7",
+      "errors": "0",
+      "skipped": "0",
+      "failures": "0"
+    },
+    {
+      "{http://www.w3.org/2001/XMLSchema-instance}noNamespaceSchemaLocation": "https://maven.apache.org/surefire/maven-failsafe-plugin/xsd/failsafe-test-report.xsd",
+      "version": "3.0.2",
+      "name": "com.xinyi.web.viit.A03OwnerIT",
+      "time": "0.983",
+      "tests": "7",
+      "errors": "0",
+      "skipped": "0",
+      "failures": "0"
+    },
+    {
+      "{http://www.w3.org/2001/XMLSchema-instance}noNamespaceSchemaLocation": "https://maven.apache.org/surefire/maven-failsafe-plugin/xsd/failsafe-test-report.xsd",
+      "version": "3.0.2",
+      "name": "com.xinyi.web.viit.C01ConfigIT",
+      "time": "1.738",
+      "tests": "6",
+      "errors": "0",
+      "skipped": "0",
+      "failures": "0"
+    },
+    {
+      "{http://www.w3.org/2001/XMLSchema-instance}noNamespaceSchemaLocation": "https://maven.apache.org/surefire/maven-failsafe-plugin/xsd/failsafe-test-report.xsd",
+      "version": "3.0.2",
+      "name": "com.xinyi.web.viit.C02StationIT",
+      "time": "1.115",
+      "tests": "13",
+      "errors": "0",
+      "skipped": "0",
+      "failures": "0"
+    },
+    {
+      "{http://www.w3.org/2001/XMLSchema-instance}noNamespaceSchemaLocation": "https://maven.apache.org/surefire/maven-failsafe-plugin/xsd/failsafe-test-report.xsd",
+      "version": "3.0.2",
+      "name": "com.xinyi.web.viit.C03CapacityIT",
+      "time": "0.965",
+      "tests": "6",
+      "errors": "0",
+      "skipped": "0",
+      "failures": "0"
+    },
+    {
+      "{http://www.w3.org/2001/XMLSchema-instance}noNamespaceSchemaLocation": "https://maven.apache.org/surefire/maven-failsafe-plugin/xsd/failsafe-test-report.xsd",
+      "version": "3.0.2",
+      "name": "com.xinyi.web.viit.C04LivePricingIT",
+      "time": "0.716",
+      "tests": "1",
+      "errors": "0",
+      "skipped": "0",
+      "failures": "0"
+    },
+    {
+      "{http://www.w3.org/2001/XMLSchema-instance}noNamespaceSchemaLocation": "https://maven.apache.org/surefire/maven-failsafe-plugin/xsd/failsafe-test-report.xsd",
+      "version": "3.0.2",
+      "name": "com.xinyi.web.viit.C04PricingIT",
+      "time": "1.592",
+      "tests": "14",
+      "errors": "0",
+      "skipped": "0",
+      "failures": "0"
+    },
+    {
+      "{http://www.w3.org/2001/XMLSchema-instance}noNamespaceSchemaLocation": "https://maven.apache.org/surefire/maven-failsafe-plugin/xsd/failsafe-test-report.xsd",
+      "version": "3.0.2",
+      "name": "com.xinyi.web.viit.E06PlatformIT",
+      "time": "1.044",
+      "tests": "10",
+      "errors": "0",
+      "skipped": "0",
+      "failures": "0"
+    },
+    {
+      "{http://www.w3.org/2001/XMLSchema-instance}noNamespaceSchemaLocation": "https://maven.apache.org/surefire/maven-failsafe-plugin/xsd/failsafe-test-report.xsd",
+      "version": "3.0.2",
+      "name": "com.xinyi.web.viit.E07TestingIT",
+      "time": "0.586",
+      "tests": "5",
+      "errors": "0",
+      "skipped": "0",
+      "failures": "0"
+    },
+    {
+      "{http://www.w3.org/2001/XMLSchema-instance}noNamespaceSchemaLocation": "https://maven.apache.org/surefire/maven-failsafe-plugin/xsd/failsafe-test-report.xsd",
+      "version": "3.0.2",
+      "name": "com.xinyi.web.viit.E08PlatformIT",
+      "time": "0.038",
+      "tests": "1",
+      "errors": "0",
+      "skipped": "0",
+      "failures": "0"
+    },
+    {
+      "{http://www.w3.org/2001/XMLSchema-instance}noNamespaceSchemaLocation": "https://maven.apache.org/surefire/maven-failsafe-plugin/xsd/failsafe-test-report.xsd",
+      "version": "3.0.2",
+      "name": "com.xinyi.web.viit.I01IdentityIT",
+      "time": "0.762",
+      "tests": "9",
+      "errors": "0",
+      "skipped": "0",
+      "failures": "0"
+    },
+    {
+      "{http://www.w3.org/2001/XMLSchema-instance}noNamespaceSchemaLocation": "https://maven.apache.org/surefire/maven-failsafe-plugin/xsd/failsafe-test-report.xsd",
+      "version": "3.0.2",
+      "name": "com.xinyi.web.viit.I02IdentityIT",
+      "time": "0.897",
+      "tests": "9",
+      "errors": "0",
+      "skipped": "0",
+      "failures": "0"
+    },
+    {
+      "{http://www.w3.org/2001/XMLSchema-instance}noNamespaceSchemaLocation": "https://maven.apache.org/surefire/maven-failsafe-plugin/xsd/failsafe-test-report.xsd",
+      "version": "3.0.2",
+      "name": "com.xinyi.web.viit.I03IdentityIT",
+      "time": "4.596",
+      "tests": "10",
+      "errors": "0",
+      "skipped": "0",
+      "failures": "0"
+    },
+    {
+      "{http://www.w3.org/2001/XMLSchema-instance}noNamespaceSchemaLocation": "https://maven.apache.org/surefire/maven-failsafe-plugin/xsd/failsafe-test-report.xsd",
+      "version": "3.0.2",
+      "name": "com.xinyi.web.viit.I04IdentityIT",
+      "time": "1.124",
+      "tests": "10",
+      "errors": "0",
+      "skipped": "0",
+      "failures": "0"
+    },
+    {
+      "{http://www.w3.org/2001/XMLSchema-instance}noNamespaceSchemaLocation": "https://maven.apache.org/surefire/maven-failsafe-plugin/xsd/failsafe-test-report.xsd",
+      "version": "3.0.2",
+      "name": "com.xinyi.web.viit.I05IdentityIT",
+      "time": "1.725",
+      "tests": "20",
+      "errors": "0",
+      "skipped": "0",
+      "failures": "0"
+    },
+    {
+      "{http://www.w3.org/2001/XMLSchema-instance}noNamespaceSchemaLocation": "https://maven.apache.org/surefire/maven-failsafe-plugin/xsd/failsafe-test-report.xsd",
+      "version": "3.0.2",
+      "name": "com.xinyi.web.viit.I06ScopeIT",
+      "time": "1.088",
+      "tests": "10",
+      "errors": "0",
+      "skipped": "0",
+      "failures": "0"
+    }
+  ],
+  "totals": {
+    "tests": 145,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "unitSuites": [
+    {
+      "{http://www.w3.org/2001/XMLSchema-instance}noNamespaceSchemaLocation": "https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd",
+      "version": "3.0.2",
+      "name": "com.xinyi.system.service.impl.DeptScopeServiceImplTest",
+      "time": "0.489",
+      "tests": "5",
+      "errors": "0",
+      "skipped": "0",
+      "failures": "0"
+    },
+    {
+      "{http://www.w3.org/2001/XMLSchema-instance}noNamespaceSchemaLocation": "https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd",
+      "version": "3.0.2",
+      "name": "com.xinyi.rongli.platform.PlatformPrimitivesTest",
+      "time": "0.064",
+      "tests": "6",
+      "errors": "0",
+      "skipped": "0",
+      "failures": "0"
+    },
+    {
+      "{http://www.w3.org/2001/XMLSchema-instance}noNamespaceSchemaLocation": "https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd",
+      "version": "3.0.2",
+      "name": "com.xinyi.rongli.pricing.PriceCalculatorTest",
+      "time": "0.006",
+      "tests": "5",
+      "errors": "0",
+      "skipped": "0",
+      "failures": "0"
+    },
+    {
+      "{http://www.w3.org/2001/XMLSchema-instance}noNamespaceSchemaLocation": "https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd",
+      "version": "3.0.2",
+      "name": "com.xinyi.rongli.pricing.PriceEnvironmentTest",
+      "time": "0.002",
+      "tests": "2",
+      "errors": "0",
+      "skipped": "0",
+      "failures": "0"
+    },
+    {
+      "{http://www.w3.org/2001/XMLSchema-instance}noNamespaceSchemaLocation": "https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd",
+      "version": "3.0.2",
+      "name": "com.xinyi.rongli.platform.SecretGuardTest",
+      "time": "0.058",
+      "tests": "5",
+      "errors": "0",
+      "skipped": "0",
+      "failures": "0"
+    },
+    {
+      "{http://www.w3.org/2001/XMLSchema-instance}noNamespaceSchemaLocation": "https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd",
+      "version": "3.0.2",
+      "name": "com.xinyi.rongli.platform.IdempotencyMacTest",
+      "time": "0.412",
+      "tests": "5",
+      "errors": "0",
+      "skipped": "0",
+      "failures": "0"
+    },
+    {
+      "{http://www.w3.org/2001/XMLSchema-instance}noNamespaceSchemaLocation": "https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd",
+      "version": "3.0.2",
+      "name": "com.xinyi.framework.web.service.TokenServiceTest",
+      "time": "0.041",
+      "tests": "1",
+      "errors": "0",
+      "skipped": "0",
+      "failures": "0"
+    }
+  ],
+  "unitTotals": {
+    "tests": 29,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "thirdParty": "SIMULATOR；C04仅规则/试算，不调用真实渠道",
+  "rawReports": "xinyi-admin/target/failsafe-reports/（本地未提交，归档XML剔除环境属性及运行日志）"
+}

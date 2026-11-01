@@ -298,10 +298,10 @@ class C01ConfigIT {
         jdbc.update("INSERT INTO sys_dict_data (dict_sort, dict_label, dict_value, dict_type, status) VALUES (1, '新车', 'NEW_TYPE', 'vi_vehicle_type', '0')");
         ViException ex = assertThrows(ViException.class, () -> configService.assertPriced("NEW_TYPE"));
         assertEquals("VI_SERVICE_UNAVAILABLE", ex.getErrorCode().name());
-        // 有已发布价格 → 放行
+        // 旧的无公司/环境/审核绑定记录不能因PUBLISHED标记就放行
         jdbc.update("INSERT INTO vi_price_rule (rule_key, revision, vehicle_type_code, inspection_type_code, status, config_json) "
                 + "VALUES ('k1', 1, 'SMALL_CAR', 'ANNUAL', 'PUBLISHED', '{}')");
-        configService.assertPriced("SMALL_CAR");
+        assertThrows(ViException.class, () -> configService.assertPriced("SMALL_CAR"));
     }
 
     @Test

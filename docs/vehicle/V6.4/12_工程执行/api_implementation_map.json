@@ -3742,5 +3742,44 @@
     "path": "/api/admin/capacity",
     "summary": "新增站点未来供给时段",
     "taskId": "C03"
+  },
+  {
+    "implementationStatus": "NOT_ASSESSED",
+    "controllerFile": null,
+    "serviceFile": null,
+    "mapperFile": null,
+    "testFiles": [],
+    "reviewEvidence": null,
+    "operationId": "V64_post_api_admin_prices_ruleId_trial",
+    "method": "POST",
+    "path": "/api/admin/prices/{ruleId}/trial",
+    "summary": "试算已保存计价版本",
+    "taskId": "C04"
+  },
+  {
+    "implementationStatus": "NOT_ASSESSED",
+    "controllerFile": null,
+    "serviceFile": null,
+    "mapperFile": null,
+    "testFiles": [],
+    "reviewEvidence": null,
+    "operationId": "V64_post_api_admin_prices_trial",
+    "method": "POST",
+    "path": "/api/admin/prices/trial",
+    "summary": "按站点匹配唯一已发布价格试算",
+    "taskId": "C04"
+  },
+  {
+    "implementationStatus": "NOT_ASSESSED",
+    "controllerFile": null,
+    "serviceFile": null,
+    "mapperFile": null,
+    "testFiles": [],
+    "reviewEvidence": null,
+    "operationId": "V64_post_api_admin_prices_ruleId_disable",
+    "method": "POST",
+    "path": "/api/admin/prices/{ruleId}/disable",
+    "summary": "停用计价版本",
+    "taskId": "C04"
   }
 ]

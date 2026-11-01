@@ -2,6 +2,7 @@ package com.xinyi.rongli.config.service;
 
 import com.xinyi.common.core.domain.model.LoginUser;
 import com.xinyi.common.utils.SecurityUtils;
+import com.xinyi.rongli.pricing.service.PricingService;
 import com.xinyi.rongli.config.dto.ConfigView;
 import com.xinyi.rongli.config.dto.DictItemView;
 import com.xinyi.rongli.config.dto.PublicServiceConfigView;
@@ -42,11 +43,13 @@ public class ConfigService {
     private final OutboxService outboxService;
     private final TransactionTemplate tx;
     private final String environment;
+    private final PricingService pricingService;
 
     public ConfigService(ConfigMapper configMapper, BusinessActorResolver actorResolver,
                          AuditService auditService, OutboxService outboxService,
-                         PlatformTransactionManager txManager, @Value("${vi.environment:local}") String environment) {
+                         PlatformTransactionManager txManager, PricingService pricingService, @Value("${vi.environment:local}") String environment) {
         this.configMapper = configMapper;
+        this.pricingService = pricingService;
         this.actorResolver = actorResolver;
         this.auditService = auditService;
         this.outboxService = outboxService;
@@ -132,11 +135,14 @@ public class ConfigService {
                 nvl(configMapper.selectValue("vi.biz.payment.notice")));
     }
 
-    /** 价格守卫：新车型无已发布价格不能下单（防0元）。供报价/下单调用。 */
+    /** 缺少真实站点和检测类型的旧入口不能证明可计价，保留签名并拒绝绕过C04。 */
+    @Deprecated
     public void assertPriced(String vehicleTypeCode) {
-        if (configMapper.countPublishedPrice(vehicleTypeCode) <= 0) {
-            throw new ViException(ViErrorCode.VI_SERVICE_UNAVAILABLE, "该车型暂无已发布价格，不能下单");
-        }
+        throw new ViException(ViErrorCode.VI_SERVICE_UNAVAILABLE, "计价必须提供真实站点、车型及检测类型");
+    }
+
+    public void assertPriced(long stationId, String vehicleTypeCode, String inspectionTypeCode) {
+        pricingService.quoteForStation(stationId, vehicleTypeCode, inspectionTypeCode, java.time.Instant.now(), 0);
     }
 
     private List<String> parseList(String json) {

@@ -789,93 +789,156 @@ CONSTRAINT ck_ver_vehicle CHECK (version &gt;= 0)
 CONSTRAINT ck_ver_address CHECK (version &gt;= 0)
 </code></pre>
 <h2>vi_price_rule · 不可变生效计价版本</h2>
-<p>服务层事务检查生效区间不得重叠；无规则不得0元报价；P02等待费受控启用
-主键：id；ID策略：MYSQL_AUTO_INCREMENT</p>
+<p>2026-11-01用户确认同公司统一、多站点共用；owner_dept_id显式归属，TEST/LIVE隔离。审核绑定内容哈希，已发布配置不可覆盖；比例计费HALF_UP至分。旧NULL归属/环境/哈希只报告不猜测回填，不参与新报价。</p>
 <table>
 <thead>
 <tr>
   <th>字段</th>
-  <th>SQL类型</th>
-  <th>含义</th>
+  <th>SQL类型与约束</th>
+  <th>说明</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-  <td><code>id</code></td>
+  <td>id</td>
   <td><code>BIGINT NOT NULL AUTO_INCREMENT</code></td>
   <td>数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串</td>
 </tr>
 <tr>
-  <td><code>rule_key</code></td>
+  <td>owner_dept_id</td>
+  <td><code>BIGINT NULL</code></td>
+  <td>明确选择的公司权威部门，旧未知归属保持NULL</td>
+</tr>
+<tr>
+  <td>environment</td>
+  <td><code>VARCHAR(12) NULL</code></td>
+  <td>TEST/LIVE；旧未知环境保持NULL</td>
+</tr>
+<tr>
+  <td>rule_key</td>
   <td><code>VARCHAR(64) NOT NULL</code></td>
   <td>稳定方案标识</td>
 </tr>
 <tr>
-  <td><code>revision</code></td>
+  <td>revision</td>
   <td><code>INT NOT NULL</code></td>
   <td>新版本号</td>
 </tr>
 <tr>
-  <td><code>vehicle_type_code</code></td>
+  <td>vehicle_type_code</td>
   <td><code>VARCHAR(64) NOT NULL</code></td>
   <td>车型字典编码</td>
 </tr>
 <tr>
-  <td><code>inspection_type_code</code></td>
+  <td>inspection_type_code</td>
   <td><code>VARCHAR(64) NOT NULL</code></td>
   <td>检测业务类型</td>
 </tr>
 <tr>
-  <td><code>status</code></td>
+  <td>status</td>
   <td><code>VARCHAR(64) NOT NULL</code></td>
   <td>PriceRuleStatus: DRAFT,IN_REVIEW,APPROVED,PUBLISHED,DISABLED</td>
 </tr>
 <tr>
-  <td><code>config_json</code></td>
+  <td>config_json</td>
   <td><code>JSON NOT NULL</code></td>
   <td>按PriceInput约束的计价参数，分与米</td>
 </tr>
 <tr>
-  <td><code>effective_from</code></td>
+  <td>effective_from</td>
   <td><code>DATETIME(3)</code></td>
   <td>生效时间</td>
 </tr>
 <tr>
-  <td><code>effective_to</code></td>
+  <td>effective_to</td>
   <td><code>DATETIME(3)</code></td>
   <td>失效时间</td>
 </tr>
 <tr>
-  <td><code>submitted_by</code></td>
+  <td>submitted_by</td>
   <td><code>BIGINT</code></td>
   <td>提交人</td>
 </tr>
 <tr>
-  <td><code>approved_by</code></td>
+  <td>approved_by</td>
   <td><code>BIGINT</code></td>
   <td>审核人</td>
 </tr>
 <tr>
-  <td><code>created_at</code></td>
+  <td>created_by</td>
+  <td><code>BIGINT NULL</code></td>
+  <td>可信ADMIN创建人；不接收客户端提交</td>
+</tr>
+<tr>
+  <td>config_hash</td>
+  <td><code>CHAR(64) CHARACTER SET ascii COLLATE ascii_bin NULL</code></td>
+  <td>规范化公司环境及计价内容SHA256</td>
+</tr>
+<tr>
+  <td>approved_hash</td>
+  <td><code>CHAR(64) CHARACTER SET ascii COLLATE ascii_bin NULL</code></td>
+  <td>独立审核通过时绑定的内容SHA256</td>
+</tr>
+<tr>
+  <td>published_at</td>
+  <td><code>DATETIME(3) NULL</code></td>
+  <td>实际发布时间UTC；不改历史配置</td>
+</tr>
+<tr>
+  <td>source_rule_id</td>
+  <td><code>BIGINT NULL</code></td>
+  <td>显式派生来源规则ID，服务端验证实际归属</td>
+</tr>
+<tr>
+  <td>created_at</td>
   <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
   <td>创建时间，统一UTC</td>
 </tr>
 <tr>
-  <td><code>updated_at</code></td>
+  <td>updated_at</td>
   <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
   <td>UTC更新时间；Mapper每次修改显式SET updated_at=UTC_TIMESTAMP(3)，不依赖连接时区</td>
 </tr>
 <tr>
-  <td><code>version</code></td>
+  <td>version</td>
   <td><code>BIGINT NOT NULL DEFAULT 0</code></td>
   <td>乐观锁版本</td>
 </tr>
 </tbody>
 </table>
-<pre><code class="language-sql">UNIQUE KEY uk_rule_revision (rule_key,revision)
-KEY ix_lookup (vehicle_type_code,inspection_type_code,status,effective_from)
-CONSTRAINT ck_66_9d65819638e0 CHECK (`status` IN ('DRAFT','IN_REVIEW','APPROVED','PUBLISHED','DISABLED'))
-CONSTRAINT ck_ver_price_rule CHECK (version &gt;= 0)
+<pre><code class="language-sql">CREATE TABLE `vi_price_rule` (
+  `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',
+  `owner_dept_id` BIGINT NULL COMMENT '明确选择的公司权威部门，旧未知归属保持NULL',
+  `environment` VARCHAR(12) NULL COMMENT 'TEST/LIVE；旧未知环境保持NULL',
+  `rule_key` VARCHAR(64) NOT NULL COMMENT '稳定方案标识',
+  `revision` INT NOT NULL COMMENT '新版本号',
+  `vehicle_type_code` VARCHAR(64) NOT NULL COMMENT '车型字典编码',
+  `inspection_type_code` VARCHAR(64) NOT NULL COMMENT '检测业务类型',
+  `status` VARCHAR(64) NOT NULL COMMENT 'PriceRuleStatus: DRAFT,IN_REVIEW,APPROVED,PUBLISHED,DISABLED',
+  `config_json` JSON NOT NULL COMMENT '按PriceInput约束的计价参数，分与米',
+  `effective_from` DATETIME(3) COMMENT '生效时间',
+  `effective_to` DATETIME(3) COMMENT '失效时间',
+  `submitted_by` BIGINT COMMENT '提交人',
+  `approved_by` BIGINT COMMENT '审核人',
+  `created_by` BIGINT NULL COMMENT '可信ADMIN创建人；不接收客户端提交',
+  `config_hash` CHAR(64) CHARACTER SET ascii COLLATE ascii_bin NULL COMMENT '规范化公司环境及计价内容SHA256',
+  `approved_hash` CHAR(64) CHARACTER SET ascii COLLATE ascii_bin NULL COMMENT '独立审核通过时绑定的内容SHA256',
+  `published_at` DATETIME(3) NULL COMMENT '实际发布时间UTC；不改历史配置',
+  `source_rule_id` BIGINT NULL COMMENT '显式派生来源规则ID，服务端验证实际归属',
+  `created_at` DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3)) COMMENT '创建时间，统一UTC',
+  `updated_at` DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3)) COMMENT 'UTC更新时间；Mapper每次修改显式SET updated_at=UTC_TIMESTAMP(3)，不依赖连接时区',
+  `version` BIGINT NOT NULL DEFAULT 0 COMMENT '乐观锁版本',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY uk_rule_revision (rule_key,revision),
+  KEY ix_lookup (vehicle_type_code,inspection_type_code,status,effective_from),
+  KEY ix_price_owner_lookup (owner_dept_id,environment,vehicle_type_code,inspection_type_code,status,effective_from,effective_to),
+  CONSTRAINT ck_66_9d65819638e0 CHECK (`status` IN ('DRAFT','IN_REVIEW','APPROVED','PUBLISHED','DISABLED')),
+  CONSTRAINT ck_ver_price_rule CHECK (version &gt;= 0),
+  CONSTRAINT ck_price_owner CHECK (owner_dept_id IS NULL OR owner_dept_id &gt; 0),
+  CONSTRAINT ck_price_environment CHECK (environment IS NULL OR environment IN ('TEST','LIVE')),
+  CONSTRAINT ck_price_hash CHECK (config_hash IS NULL OR LENGTH(config_hash) = 64),
+  CONSTRAINT ck_price_approved_hash CHECK (approved_hash IS NULL OR LENGTH(approved_hash) = 64)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='不可变生效计价版本';
 </code></pre>
 <h2>vi_quota_slot · 上门服务与站点接收额度</h2>
 <p>2026-11-01用户确认：每站独立维护PICKUP与STATION_RECEIVE，新增两类额度均填写station_id，scope_key由服务端生成为station:<id>；按站点dept_id鉴权。既有无归属记录不得猜测回填，须核实；调容不得低于预占+正式+已消耗，不改变历史占用。

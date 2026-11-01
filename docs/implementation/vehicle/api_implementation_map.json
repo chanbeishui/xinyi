@@ -1641,82 +1641,106 @@
     "taskId": "I06"
   },
   {
-    "implementationStatus": "NOT_ASSESSED",
-    "controllerFile": null,
-    "serviceFile": null,
-    "mapperFile": null,
-    "testFiles": [],
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/pricing/PricingController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/pricing/service/PricingService.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/pricing/ViPriceRuleMapper.xml",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/C04PricingIT.java",
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/C04LivePricingIT.java"
+    ],
     "reviewEvidence": null,
     "operationId": "API_133_get",
     "method": "GET",
     "path": "/api/admin/prices",
     "summary": "计价规则列表",
-    "taskId": "C04"
+    "taskId": "C04",
+    "verificationEvidence": "docs/implementation/vehicle/evidence/C04-20261101.json"
   },
   {
-    "implementationStatus": "NOT_ASSESSED",
-    "controllerFile": null,
-    "serviceFile": null,
-    "mapperFile": null,
-    "testFiles": [],
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/pricing/PricingController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/pricing/service/PricingService.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/pricing/ViPriceRuleMapper.xml",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/C04PricingIT.java",
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/C04LivePricingIT.java"
+    ],
     "reviewEvidence": null,
     "operationId": "API_134_post",
     "method": "POST",
     "path": "/api/admin/prices",
     "summary": "计价草稿",
-    "taskId": "C04"
+    "taskId": "C04",
+    "verificationEvidence": "docs/implementation/vehicle/evidence/C04-20261101.json"
   },
   {
-    "implementationStatus": "NOT_ASSESSED",
-    "controllerFile": null,
-    "serviceFile": null,
-    "mapperFile": null,
-    "testFiles": [],
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/pricing/PricingController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/pricing/service/PricingService.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/pricing/ViPriceRuleMapper.xml",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/C04PricingIT.java",
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/C04LivePricingIT.java"
+    ],
     "reviewEvidence": null,
     "operationId": "API_135_put",
     "method": "PUT",
     "path": "/api/admin/prices/{ruleId}",
     "summary": "修改计价草稿",
-    "taskId": "C04"
+    "taskId": "C04",
+    "verificationEvidence": "docs/implementation/vehicle/evidence/C04-20261101.json"
   },
   {
-    "implementationStatus": "NOT_ASSESSED",
-    "controllerFile": null,
-    "serviceFile": null,
-    "mapperFile": null,
-    "testFiles": [],
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/pricing/PricingController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/pricing/service/PricingService.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/pricing/ViPriceRuleMapper.xml",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/C04PricingIT.java",
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/C04LivePricingIT.java"
+    ],
     "reviewEvidence": null,
     "operationId": "API_136_post",
     "method": "POST",
     "path": "/api/admin/prices/{ruleId}/submit",
     "summary": "提交价格审核",
-    "taskId": "C04"
+    "taskId": "C04",
+    "verificationEvidence": "docs/implementation/vehicle/evidence/C04-20261101.json"
   },
   {
-    "implementationStatus": "NOT_ASSESSED",
-    "controllerFile": null,
-    "serviceFile": null,
-    "mapperFile": null,
-    "testFiles": [],
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/pricing/PricingController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/pricing/service/PricingService.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/pricing/ViPriceRuleMapper.xml",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/C04PricingIT.java",
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/C04LivePricingIT.java"
+    ],
     "reviewEvidence": null,
     "operationId": "API_137_post",
     "method": "POST",
     "path": "/api/admin/prices/{ruleId}/audit",
     "summary": "价格审核",
-    "taskId": "C04"
+    "taskId": "C04",
+    "verificationEvidence": "docs/implementation/vehicle/evidence/C04-20261101.json"
   },
   {
-    "implementationStatus": "NOT_ASSESSED",
-    "controllerFile": null,
-    "serviceFile": null,
-    "mapperFile": null,
-    "testFiles": [],
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/pricing/PricingController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/pricing/service/PricingService.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/pricing/ViPriceRuleMapper.xml",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/C04PricingIT.java",
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/C04LivePricingIT.java"
+    ],
     "reviewEvidence": null,
     "operationId": "API_138_post",
     "method": "POST",
     "path": "/api/admin/prices/{ruleId}/publish",
     "summary": "发布计价版本",
-    "taskId": "C04"
+    "taskId": "C04",
+    "verificationEvidence": "docs/implementation/vehicle/evidence/C04-20261101.json"
   },
   {
     "implementationStatus": "NOT_ASSESSED",
@@ -3858,5 +3882,56 @@
     "path": "/api/admin/capacity",
     "summary": "新增站点未来供给时段",
     "taskId": "C03"
+  },
+  {
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/pricing/PricingController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/pricing/service/PricingService.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/pricing/ViPriceRuleMapper.xml",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/C04PricingIT.java",
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/C04LivePricingIT.java"
+    ],
+    "reviewEvidence": null,
+    "operationId": "V64_post_api_admin_prices_ruleId_trial",
+    "method": "POST",
+    "path": "/api/admin/prices/{ruleId}/trial",
+    "summary": "试算已保存计价版本",
+    "taskId": "C04",
+    "verificationEvidence": "docs/implementation/vehicle/evidence/C04-20261101.json"
+  },
+  {
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/pricing/PricingController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/pricing/service/PricingService.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/pricing/ViPriceRuleMapper.xml",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/C04PricingIT.java",
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/C04LivePricingIT.java"
+    ],
+    "reviewEvidence": null,
+    "operationId": "V64_post_api_admin_prices_trial",
+    "method": "POST",
+    "path": "/api/admin/prices/trial",
+    "summary": "按站点匹配唯一已发布价格试算",
+    "taskId": "C04",
+    "verificationEvidence": "docs/implementation/vehicle/evidence/C04-20261101.json"
+  },
+  {
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/pricing/PricingController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/pricing/service/PricingService.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/pricing/ViPriceRuleMapper.xml",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/C04PricingIT.java",
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/C04LivePricingIT.java"
+    ],
+    "reviewEvidence": null,
+    "operationId": "V64_post_api_admin_prices_ruleId_disable",
+    "method": "POST",
+    "path": "/api/admin/prices/{ruleId}/disable",
+    "summary": "停用计价版本",
+    "taskId": "C04",
+    "verificationEvidence": "docs/implementation/vehicle/evidence/C04-20261101.json"
   }
 ]

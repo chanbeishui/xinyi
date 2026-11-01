@@ -72,10 +72,13 @@
     "taskId": "A02"
   },
   {
-    "status": "NOT_ASSESSED",
-    "entityFile": null,
-    "mapperFile": null,
-    "evidence": [],
+    "status": "VERIFIED",
+    "entityFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/pricing/domain/ViPriceRule.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/pricing/ViPriceRuleMapper.xml",
+    "evidence": [
+      "docs/implementation/vehicle/C04/schema-verification.json",
+      "docs/implementation/vehicle/C04/C04PricingIT-20261101.xml"
+    ],
     "table": "vi_price_rule",
     "taskId": "C04"
   },

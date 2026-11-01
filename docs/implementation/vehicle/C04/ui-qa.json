@@ -1,0 +1,76 @@
+{
+  "url": "http://127.0.0.1:5173/rongli/pricing",
+  "title": "集信国控检测管理系统",
+  "nonblank": true,
+  "overlay": 0,
+  "errors": [],
+  "expectedErrors": [
+    "Failed to load resource: the server responded with a status of 503 (Service Unavailable)"
+  ],
+  "writes": [
+    {
+      "body": {
+        "ownerDeptId": "994001",
+        "environment": "TEST",
+        "name": "公司统一年度方案",
+        "vehicleTypeCode": "C04_CAR",
+        "inspectionTypeCode": "C04_ANNUAL",
+        "inspectionFee": 20029,
+        "driverBaseFee": 3001,
+        "includedDistanceMeter": 1000,
+        "distanceUnitMeter": 1000,
+        "distanceUnitFee": 105,
+        "distanceRounding": "CEIL_UNIT",
+        "routeBasis": "ONE_WAY",
+        "waitingFeeEnabled": false,
+        "waitingFreeSeconds": 0,
+        "waitingUnitSeconds": 0,
+        "waitingUnitFee": 0
+      },
+      "key": "2b354bf1-b740-48af-8dc0-bb5e174f1def"
+    },
+    {
+      "body": {
+        "ownerDeptId": "994001",
+        "environment": "TEST",
+        "name": "公司统一年度方案",
+        "vehicleTypeCode": "C04_CAR",
+        "inspectionTypeCode": "C04_ANNUAL",
+        "inspectionFee": 20029,
+        "driverBaseFee": 3001,
+        "includedDistanceMeter": 1000,
+        "distanceUnitMeter": 1000,
+        "distanceUnitFee": 105,
+        "distanceRounding": "CEIL_UNIT",
+        "routeBasis": "ONE_WAY",
+        "waitingFeeEnabled": false,
+        "waitingFreeSeconds": 0,
+        "waitingUnitSeconds": 0,
+        "waitingUnitFee": 0
+      },
+      "key": "2b354bf1-b740-48af-8dc0-bb5e174f1def"
+    },
+    {
+      "body": {
+        "expectedVersion": 0,
+        "reason": "核实公司统一费用及生效区间"
+      },
+      "key": "972b032c-19dd-498b-8d75-1d7c505934b0",
+      "action": "submit"
+    }
+  ],
+  "viewports": [
+    "1440x1000",
+    "390x844"
+  ],
+  "mode": "明确UI API夹具；业务权限及金额由真实HTTP/MySQL回归另证",
+  "checks": [
+    "三位小数阻止提交",
+    "整数分转换",
+    "503重试复用同一请求和幂等键",
+    "保存版本试算展示分项和合计",
+    "提交审核使用原始版本",
+    "桌面与手机布局"
+  ],
+  "executedAt": "2026-11-01T15:42:21.939301+00:00"
+}

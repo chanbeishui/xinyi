@@ -1,19 +1,24 @@
 # C04 · 客户计价规则和试算
 
 阶段：M2；责任域：pricing；前置：C01, C02。
-范围版本：`V6.1-UNCHANGED`；definitionHash：`6cd9f7a562da146ef3fca3a6a782f9b4e46185bc6498df4132a265df6866e4d5`。
+范围版本：`V6.4-COMPANY-PRICING-20261101`；definitionHash：`a7e3fa64ff43f20930b917be6d2068e8e5e3297b9b31f0a35a48fe15f86ef93e`。
 
 ## 本任务交付
-- 固定费/包含米/超里程单位进位/单或往返，独立审核发布版本
+- 同公司统一、多站点共用的独立TEST/LIVE计价版本与权威部门归属
+- 草稿、独立审核、发布、停用、显式原子替换与不可变历史配置
+- 保存版本和正式匹配试算共用整数计算器；比例计费HALF_UP至分；拒绝无匹配、多匹配和等待费未批准启用
 
 ## 必测失败与并发
 - 多匹配不猜最便宜
 - 未配置拒绝报价
 - test配置与prod隔离
+- 提交人/编辑参与人自审、摘要变化后发布拒绝
+- 未知旧记录不猜测回填；跨公司/环境写入拒绝
+- 同条件并发发布只能一个成功；显式替换失败整体回滚
 
 ## 精确输入
 主源：04_接口/openapi_V6.4.yaml、05_数据设计/data_model_V6.4.json、06_验收/test_cases_V6.4.json。本目录派生，不独立维护。
-接口：API_133_get, API_134_post, API_135_put, API_136_post, API_137_post, API_138_post
+接口：API_133_get, API_134_post, API_135_put, API_136_post, API_137_post, API_138_post, V64_post_api_admin_prices_ruleId_trial, V64_post_api_admin_prices_trial, V64_post_api_admin_prices_ruleId_disable
 画板：B20, B20-edit, B20-review
 主责任表：vi_price_rule
 验收：无
@@ -24,11 +29,11 @@
 `xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/pricing/`
 `xinyi-ui/src/views/rongli/pricing/`
 `xinyi-ui/src/api/rongli/pricing.ts`
-`xinyi-miniapp/src/features/pricing/`
+小程序报价入口由B02接入；本任务提供共享计价Service及生成契约类型，不伪造独立计价页。
 
 ## 验证命令
 ```bash
-mvn -pl xinyi-admin -am -Pvi-it -Dit.test=C04PricingIT verify
+mvn -pl xinyi-admin -am -Pvi-it -Dit.test=C04PricingIT,C04LivePricingIT verify
 npm --prefix xinyi-ui run build:prod
 npm --prefix xinyi-miniapp run build:mp-weixin
 ```
