@@ -1,0 +1,88 @@
+{
+  "taskId": "I06",
+  "implementer": "Qoder-Agent",
+  "scopeRevision": "V6.4-IDENTITY-CONSISTENCY-20261022",
+  "codeCommit": "本提交（I06 后端+前端+证据）",
+  "codeFiles": [
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/scope/domain/ViStationGrantSet.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/scope/dto/StationGrantView.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/scope/dto/AuthorizedStation.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/scope/mapper/StationGrantSetMapper.java",
+    "xinyi-rongli/src/main/resources/mapper/rongli/scope/StationGrantSetMapper.xml",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/scope/mapper/StationGrantMapper.java",
+    "xinyi-rongli/src/main/resources/mapper/rongli/scope/StationGrantMapper.xml",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/scope/mapper/StationScopeReadMapper.java",
+    "xinyi-rongli/src/main/resources/mapper/rongli/scope/StationScopeReadMapper.xml",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/scope/mapper/ScopeAuthMapper.java",
+    "xinyi-rongli/src/main/resources/mapper/rongli/scope/ScopeAuthMapper.xml",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/scope/service/StationGrantService.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/identity/mapper/ViEmployeeBindingMapper.java",
+    "xinyi-rongli/src/main/resources/mapper/rongli/identity/ViEmployeeBindingMapper.xml",
+    "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/scope/StationGrantAdminController.java",
+    "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/scope/AuthorizedStationController.java",
+    "xinyi-admin/src/test/java/com/xinyi/web/viit/I06ScopeIT.java",
+    "xinyi-ui/src/api/rongli/scope.ts",
+    "xinyi-ui/src/views/rongli/scope/stationGrant.vue",
+    "xinyi-ui/src/router/index.ts",
+    "xinyi-miniapp/src/features/scope/api.ts",
+    "xinyi-miniapp/src/pages/scope/stations.vue",
+    "xinyi-miniapp/src/pages.json",
+    "docs/implementation/vehicle/I06/report.md"
+  ],
+  "runs": [
+    {
+      "command": "mvn -pl xinyi-admin -am -Pvi-it -Dit.test=I06ScopeIT verify",
+      "exitCode": 0,
+      "layer": "LIVE_HTTP_MYSQL",
+      "testsRun": 10,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "reportPath": "docs/implementation/vehicle/I06/report.md",
+      "note": "真实HTTP+双安全链+MyBatis+隔离库MySQL+provider模拟器；10用例覆盖9验收（未登录先授权/先关联后补/可STATION不可DRIVER/空集合CAS/清空失权/越权拒绝/不串员工/批量拒绝/MINI投影/列表）。ADMIN令牌为TokenService测试夹具。"
+    },
+    {
+      "command": "mvn -pl xinyi-admin -am -Pvi-it -Dit.test=E06PlatformIT,E07TestingIT,E08PlatformIT,I01IdentityIT,I02IdentityIT,I03IdentityIT,I04IdentityIT,I05IdentityIT,I06ScopeIT verify",
+      "exitCode": 0,
+      "layer": "LIVE_HTTP_MYSQL",
+      "testsRun": 84,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "reportPath": "docs/implementation/vehicle/I06/report.md",
+      "note": "全量IT回归 E06 10+E07 5+E08 1+I01 9+I02 9+I03 10+I04 10+I05 20+I06 10=84，0失败0错误0跳过；平台单元16/16；BUILD SUCCESS。"
+    },
+    {
+      "command": "npm --prefix xinyi-miniapp run build:mp-weixin",
+      "exitCode": 0,
+      "layer": "BUILD",
+      "testsRun": 1,
+      "skipped": 0,
+      "reportPath": "docs/implementation/vehicle/I06/report.md",
+      "note": "小程序构建通过；产出 S18 stations 页。"
+    },
+    {
+      "command": "npm --prefix xinyi-ui run build:prod",
+      "exitCode": 0,
+      "layer": "BUILD",
+      "testsRun": 1,
+      "skipped": 0,
+      "reportPath": "docs/implementation/vehicle/I06/report.md",
+      "note": "PC构建通过；B26 stationGrant 视图+scope.ts+常量路由。"
+    }
+  ],
+  "review": {
+    "reviewer": null,
+    "approved": false,
+    "reportPath": null,
+    "note": "REVIEWED 需独立复核人≠实现者；本 Agent 不自审。"
+  },
+  "deferredCases": {
+    "crossTask": "非超管 biz:stationgrant:* 菜单基数据登记属部署/权限任务；B25/S18 视觉变体由同一视图按状态渲染；真实微信渠道属L01。",
+    "verifiedHere": [
+      "TC-R62-006", "TC-R62-016", "TC-R62-017", "TC-R62-023", "TC-R62-034",
+      "TC-R63-002", "TC-R63-006", "TC-R63-007", "TC-R63-013"
+    ]
+  },
+  "thirdPartyStub": "SIMULATOR provider 为显式测试替身；ADMIN 令牌经框架 TokenService 铸造（真实 auth_version 校验，非真实 /login）；真实微信渠道属 L01，未声称通过。"
+}

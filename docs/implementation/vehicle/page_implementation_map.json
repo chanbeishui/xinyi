@@ -1036,9 +1036,11 @@
     "taskId": "C03"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "IMPLEMENTED",
+    "implementationFile": "xinyi-miniapp/src/pages/scope/stations.vue",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/I06.json"
+    ],
     "boardId": "S18",
     "taskId": "I06"
   },
@@ -1453,23 +1455,29 @@
     "taskId": "D03"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "IMPLEMENTED",
+    "implementationFile": "xinyi-ui/src/views/rongli/scope/stationGrant.vue",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/I06.json"
+    ],
     "boardId": "B25",
     "taskId": "I06"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "IMPLEMENTED",
+    "implementationFile": "xinyi-ui/src/views/rongli/scope/stationGrant.vue",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/I06.json"
+    ],
     "boardId": "B26",
     "taskId": "I06"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "IMPLEMENTED",
+    "implementationFile": "xinyi-ui/src/views/rongli/scope/stationGrant.vue",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/I06.json"
+    ],
     "boardId": "B26-revoke",
     "taskId": "I06"
   },
@@ -2089,9 +2097,11 @@
     "taskId": "I05"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "IMPLEMENTED",
+    "implementationFile": "xinyi-ui/src/views/rongli/scope/stationGrant.vue",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/I06.json"
+    ],
     "boardId": "B26-unlinked",
     "taskId": "I06"
   },
@@ -2228,9 +2238,11 @@
     "taskId": "I05"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "IMPLEMENTED",
+    "implementationFile": "xinyi-ui/src/views/rongli/scope/stationGrant.vue",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/I06.json"
+    ],
     "boardId": "B26-conflict",
     "taskId": "I06"
   },

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xinyi.rongli.scope.mapper.StationScopeReadMapper">
+
+    <select id="selectExistingStations" resultType="java.util.LinkedHashMap">
+        SELECT id, dept_id, enabled FROM vi_station WHERE id IN
+        <foreach collection="ids" item="i" open="(" separator="," close=")">#{i}</foreach>
+    </select>
+
+    <select id="selectStationsByIds" resultType="java.util.LinkedHashMap">
+        SELECT id, name, address, lng, lat, enabled, supported_vehicle_codes, business_hours,
+               service_radius_meter, version
+        FROM vi_station WHERE enabled = 1 AND id IN
+        <foreach collection="ids" item="i" open="(" separator="," close=")">#{i}</foreach>
+        ORDER BY id
+    </select>
+
+    <select id="selectEmployeeIds" resultType="java.lang.Long">
+        SELECT u.user_id FROM sys_user u
+        WHERE u.del_flag = '0' AND u.status = '0'
+        <if test="deptIds != null">
+            AND u.user_id IN (SELECT ud.user_id FROM sys_user_dept ud WHERE ud.dept_id IN
+            <foreach collection="deptIds" item="d" open="(" separator="," close=")">#{d}</foreach>)
+        </if>
+        ORDER BY u.user_id LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <select id="countEmployees" resultType="int">
+        SELECT COUNT(*) FROM sys_user u
+        WHERE u.del_flag = '0' AND u.status = '0'
+        <if test="deptIds != null">
+            AND u.user_id IN (SELECT ud.user_id FROM sys_user_dept ud WHERE ud.dept_id IN
+            <foreach collection="deptIds" item="d" open="(" separator="," close=")">#{d}</foreach>)
+        </if>
+    </select>
+
+</mapper>

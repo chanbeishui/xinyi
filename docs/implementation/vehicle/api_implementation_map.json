@@ -1160,11 +1160,13 @@
     "taskId": "C03"
   },
   {
-    "implementationStatus": "NOT_ASSESSED",
-    "controllerFile": null,
-    "serviceFile": null,
-    "mapperFile": null,
-    "testFiles": [],
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/scope/AuthorizedStationController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/scope/service/StationGrantService.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/scope/StationGrantMapper.xml",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/I06ScopeIT.java"
+    ],
     "reviewEvidence": null,
     "operationId": "API_094_get",
     "method": "GET",
@@ -1550,11 +1552,13 @@
     "taskId": "C02"
   },
   {
-    "implementationStatus": "NOT_ASSESSED",
-    "controllerFile": null,
-    "serviceFile": null,
-    "mapperFile": null,
-    "testFiles": [],
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/scope/StationGrantAdminController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/scope/service/StationGrantService.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/scope/StationGrantSetMapper.xml",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/I06ScopeIT.java"
+    ],
     "reviewEvidence": null,
     "operationId": "API_131_get",
     "method": "GET",
@@ -1563,11 +1567,13 @@
     "taskId": "I06"
   },
   {
-    "implementationStatus": "NOT_ASSESSED",
-    "controllerFile": null,
-    "serviceFile": null,
-    "mapperFile": null,
-    "testFiles": [],
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/scope/StationGrantAdminController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/scope/service/StationGrantService.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/scope/StationGrantSetMapper.xml",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/I06ScopeIT.java"
+    ],
     "reviewEvidence": null,
     "operationId": "API_132_put",
     "method": "PUT",
@@ -1576,11 +1582,13 @@
     "taskId": "I06"
   },
   {
-    "implementationStatus": "NOT_ASSESSED",
-    "controllerFile": null,
-    "serviceFile": null,
-    "mapperFile": null,
-    "testFiles": [],
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/scope/StationGrantAdminController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/scope/service/StationGrantService.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/scope/StationGrantSetMapper.xml",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/I06ScopeIT.java"
+    ],
     "reviewEvidence": null,
     "operationId": "v62_get_station_grant",
     "method": "GET",
