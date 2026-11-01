@@ -1,0 +1,43 @@
+{
+  "taskId": "B01",
+  "implementer": "Codex",
+  "scopeRevision": "V6.1-UNCHANGED",
+  "codeFiles": [
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/booking/mapper/ScheduleMapper.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/booking/service/ScheduleService.java",
+    "xinyi-rongli/src/main/resources/mapper/rongli/booking/ScheduleMapper.xml",
+    "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/booking/ScheduleController.java",
+    "xinyi-miniapp/src/features/booking/api.ts",
+    "xinyi-miniapp/src/pages/booking/start.vue",
+    "xinyi-admin/src/test/java/com/xinyi/web/viit/B01BookingIT.java",
+    "xinyi-miniapp/src/pages/vehicle/list.vue",
+    "xinyi-miniapp/src/pages.json"
+  ],
+  "sourceDigests": {
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/booking/mapper/ScheduleMapper.java": "bff349e6b4aab21a0052deeaa2d09d0c640eee0060190f2be7a8beea9c5f699e",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/booking/service/ScheduleService.java": "b3f91434c2acbe25eb5bee55fd27b927f7a22dee7ad1c7ff0e170fb3a2515210",
+    "xinyi-rongli/src/main/resources/mapper/rongli/booking/ScheduleMapper.xml": "5c265981f09ddc9c8c1f5abbffc6ece40585fbe20287c966a3b61d9532a1af87",
+    "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/booking/ScheduleController.java": "d6a6a367adcd79878dbdee224d6154876cfcaa10eb84f0af58a1d89bc80f7af5",
+    "xinyi-miniapp/src/features/booking/api.ts": "89e43bd1a6c12d4010ff8501a675d8c8842b173acfed6fc026e1c4ffda13e168",
+    "xinyi-miniapp/src/pages/booking/start.vue": "d42392414904479b05a807a99ec68882a19d6b585bed48430fbf57fd1981477f",
+    "xinyi-admin/src/test/java/com/xinyi/web/viit/B01BookingIT.java": "862c193511d929e4432e30396de3dbb308273bb51c3b6b098e83a29dca25ba87",
+    "xinyi-miniapp/src/pages/vehicle/list.vue": "046ee40edf0c21b5a184c1ba3e0c079c5e012b53f907cbd98b6b9866d44292fd",
+    "xinyi-miniapp/src/pages.json": "11e2375c27d20571743c89855e577c0c548abfd6200e208e56ec6290f955934b"
+  },
+  "runs": [
+    {
+      "command": "mvn -o -pl xinyi-admin -am -Pvi-it -Dit.test=B01BookingIT,C03CapacityIT verify",
+      "exitCode": 0,
+      "layer": "LIVE_HTTP_MYSQL",
+      "testsRun": 9,
+      "skipped": 0,
+      "reportPath": "docs/implementation/vehicle/B01/http-mysql.json"
+    }
+  ],
+  "review": {
+    "approved": false,
+    "reviewer": null
+  },
+  "remaining": "B02正式报价与O34闭环、B03建单；B01整体未VERIFIED",
+  "at": "2026-11-01T15:52:56.013002+00:00"
+}

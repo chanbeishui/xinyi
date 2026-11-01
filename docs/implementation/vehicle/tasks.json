@@ -2492,7 +2492,7 @@
     ],
     "scope": "DEVELOPMENT",
     "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
-    "status": "NOT_ASSESSED",
+    "status": "IMPLEMENTED",
     "code_paths": [
       "xinyi-rongli/src/main/java/com/xinyi/rongli/booking/",
       "xinyi-rongli/src/main/resources/mapper/rongli/booking/",
@@ -2521,10 +2521,17 @@
     },
     "scopeRevision": "V6.1-UNCHANGED",
     "definitionHash": "bdb3ee7f1054a9f0261d90beaa98e2dc58bbedf4101bf5db859e9c264f4991d1",
-    "evidence": [],
+    "evidence": [
+      {
+        "path": "docs/implementation/vehicle/evidence/B01-20261101.json",
+        "sha256": "72d61c7a22f1e5e1ba6fc132adbf5058d95bd1d0618a56eafa09de1a167c69e1"
+      }
+    ],
     "implementation": null,
     "review": null,
-    "blocker": null
+    "blocker": null,
+    "needsAdaptation": false,
+    "updatedAt": "2026-11-01T15:52:56.046254+00:00"
   },
   {
     "id": "B02",

@@ -55,10 +55,12 @@ async function remove(v: Vehicle) {
     message.value = err instanceof Error ? err.message : '删除失败';
   }
 }
+function startBooking() { uni.navigateTo({ url: '/pages/booking/start' }); }
 </script>
 
 <template>
   <view class="screen">
+    <button @click="startBooking">预约上门检测</button>
     <text class="title">我的车辆</text>
     <view v-for="v in vehicles" :key="v.vehicleId" class="card">
       <text class="plate">{{ v.plateNo }}</text>
