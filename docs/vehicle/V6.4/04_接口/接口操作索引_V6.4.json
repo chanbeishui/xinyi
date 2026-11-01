@@ -5069,5 +5069,19 @@
     "flows": [
       "F06"
     ]
+  },
+  {
+    "operationId": "V64_post_api_app_owner_orders_stations",
+    "method": "POST",
+    "path": "/api/app/owner/orders/stations",
+    "summary": "按本次资料查询可服务站点，由车主明确选择",
+    "permission": null,
+    "capability": "OWNER_ORDER_CREATE",
+    "authorization": {
+      "realm": "MINI",
+      "scope": "OWN_ACCOUNT_RESOURCE",
+      "activeRole": "OWNER",
+      "capability": "OWNER_ORDER_CREATE"
+    }
   }
 ]

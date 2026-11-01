@@ -8,7 +8,7 @@ def convert(x):
  d={k:convert(v)for k,v in x.items()if k not in ['nullable','example','discriminator']}
  return {'anyOf':[d,{'type':'null'}]}if x.get('nullable')else d
 C=convert(S)
-def good():return{'slotId':'12','inspectionTypeCode':'TEST_INSPECTION','vehicleDraft':{'plateNo':'粤A12345','vehicleTypeCode':'TEST_CAR'},'addressDraft':{'address':'测试路1号','location':{'lng':110.9,'lat':22.3,'coordinateSystem':'GCJ02'}}}
+def good():return{'slotId':'12','stationId':'15','inspectionTypeCode':'TEST_INSPECTION','vehicleDraft':{'plateNo':'粤A12345','vehicleTypeCode':'TEST_CAR'},'addressDraft':{'address':'测试路1号','location':{'lng':110.9,'lat':22.3,'coordinateSystem':'GCJ02'}}}
 def validate(x):jsonschema.Draft7Validator(C['components']['schemas']['QuoteRequest'],resolver=jsonschema.RefResolver.from_schema(C)).validate(x)
 @pytest.mark.parametrize('vehicle,address',[(False,False),(False,True),(True,False),(True,True)])
 def test_four_valid_sources(vehicle,address):

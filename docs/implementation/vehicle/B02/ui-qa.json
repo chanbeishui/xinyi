@@ -1,0 +1,35 @@
+{
+  "url": "http://127.0.0.1:5174/#/pages/booking/start",
+  "errors": [],
+  "overlay": 0,
+  "quotes": [
+    {
+      "body": {
+        "slotId": "1",
+        "inspectionTypeCode": "CAR",
+        "vehicleId": "1",
+        "addressId": "1",
+        "stationId": "12"
+      },
+      "key": "6da9ef55-e879-40c6-85e2-46d53ce391d8"
+    },
+    {
+      "body": {
+        "slotId": "1",
+        "inspectionTypeCode": "CAR",
+        "vehicleId": "1",
+        "addressId": "1",
+        "stationId": "12"
+      },
+      "key": "6da9ef55-e879-40c6-85e2-46d53ce391d8"
+    }
+  ],
+  "checks": [
+    "用户明确选择乙站",
+    "请求携带stationId",
+    "503重试保留幂等键",
+    "报价和分项展示",
+    "修改清空旧报价"
+  ],
+  "mode": "H5明确UI API夹具；业务另由真实HTTP/MySQL验证，未执行微信真机"
+}

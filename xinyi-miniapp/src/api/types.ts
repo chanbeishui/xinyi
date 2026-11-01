@@ -44,7 +44,8 @@ export type Vehicle = { "vehicleId": string; "plateNo": string; "vehicleTypeCode
 
 export type Slot = { "slotId": string; "startAt": string; "endAt": string; "displayText"?: string; "candidateOnly": boolean; "status": "CANDIDATE" | "AVAILABLE" | "FULL" | "CLOSED"; "remainQuota"?: number };
 
-export type QuoteRequest = { slotId: string; inspectionTypeCode: string } & ({ vehicleId: string; vehicleDraft?: never } | { vehicleDraft: VehicleCreate; vehicleId?: never }) & ({ addressId: string; addressDraft?: never } | { addressDraft: AddressCreate; addressId?: never });
+export type StationSelectionRequest = { slotId: string; inspectionTypeCode: string } & ({ vehicleId: string; vehicleDraft?: never } | { vehicleDraft: VehicleCreate; vehicleId?: never }) & ({ addressId: string; addressDraft?: never } | { addressDraft: AddressCreate; addressId?: never });
+export type QuoteRequest = StationSelectionRequest & { stationId: string };
 
 export type FeeItem = { "feeCode": string; "name": string; "amount": number; "calculation"?: string };
 
@@ -578,3 +579,5 @@ export type PriceSavedTrialRequest = { "distanceMeter": number };
 export type PriceMatchTrialRequest = { "stationId": string; "vehicleTypeCode": string; "inspectionTypeCode": string; "serviceAt"?: string; "distanceMeter": number };
 
 export type PriceTrial = { "ruleId": string; "revision": number; "version": number; "ownerDeptId": string; "environment": "TEST" | "LIVE"; "matchedPublished": boolean; "routeBasis": "ONE_WAY" | "ROUND_TRIP"; "distanceRounding": "CEIL_UNIT" | "EXACT_PRORATA"; "chargedUnits": string; "contentHash": string; "oneWayDistanceMeter": number; "billableDistanceMeter": number; "includedDistanceMeter": number; "excessDistanceMeter": number; "inspectionFee": number; "driverBaseFee": number; "distanceFee": number; "totalFen": number };
+
+export type AvailableStation = { stationId: string; name: string; address: string; routeDistanceMeter: number; estimatedDurationSecond: number };

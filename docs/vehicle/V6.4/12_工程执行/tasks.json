@@ -2007,7 +2007,8 @@
       "A02"
     ],
     "deliverables": [
-      "四组合输入归属、地图路线、站点匹配、保存报价输入和规则快照"
+      "四组合输入归属、地图路线、站点匹配、保存报价输入和规则快照",
+      "用户明确选择可用站点；腾讯路线；双额度保守排期；完整加密输入与计价协议快照"
     ],
     "negative_checks": [
       "越权地址车辆拒绝",
@@ -2015,7 +2016,8 @@
       "无隐藏自动保存地址簿"
     ],
     "api_ids": [
-      "API_024_post"
+      "API_024_post",
+      "V64_post_api_app_owner_orders_stations"
     ],
     "page_ids": [],
     "tables": [
@@ -2051,8 +2053,8 @@
       "access": "不得绕过限制；保存恢复点",
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
-    "scopeRevision": "V6.1-UNCHANGED",
-    "definitionHash": "52828b00ec96ea7d114994dac4fa41d48107821cdd74ebe3262cd52c404b5106"
+    "scopeRevision": "V6.4-OWNER-SELECT-STATION-20261102",
+    "definitionHash": "b1e1258b91bee6c0094bc2b16c9326a1ca6639057f642a061a4fe8f83a20914a"
   },
   {
     "id": "B03",

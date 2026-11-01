@@ -2153,7 +2153,7 @@
       "UNIQUE KEY uk_used_order (used_order_id)",
       "CONSTRAINT ck_quote_amount CHECK (amount_fen>=0)"
     ],
-    "rule": "",
+    "rule": "B02：owner_account_id为本人归属；车主明确选择station_id，正式报价重验双额度和C04价格。items_json为items/price/ruleContent/policy/fingerprint/inputCipher快照对象；地址及原请求密文。报价不占额，B03事务消费前校验过期/版本/归属。",
     "primaryKey": [
       "id"
     ],

@@ -1,0 +1,239 @@
+{
+  "executedAt": "2026-11-02T00:14:49+08:00",
+  "environment": "xinyi_vi_it_e07；受保护隔离库；本机MySQL9.6，JDK21/release17，腾讯本机HTTP协议替身",
+  "exitCode": 0,
+  "realProvider": "NOT_RUN",
+  "realDevice": "NOT_RUN",
+  "regression": {
+    "testsRun": 154,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "suites": [
+      {
+        "name": "com.xinyi.web.viit.A01VehicleIT",
+        "time": "0.887",
+        "tests": "7",
+        "errors": "0",
+        "skipped": "0",
+        "failures": "0"
+      },
+      {
+        "name": "com.xinyi.web.viit.A02AddressIT",
+        "time": "0.741",
+        "tests": "7",
+        "errors": "0",
+        "skipped": "0",
+        "failures": "0"
+      },
+      {
+        "name": "com.xinyi.web.viit.A03OwnerIT",
+        "time": "0.956",
+        "tests": "7",
+        "errors": "0",
+        "skipped": "0",
+        "failures": "0"
+      },
+      {
+        "name": "com.xinyi.web.viit.B01BookingIT",
+        "time": "0.715",
+        "tests": "3",
+        "errors": "0",
+        "skipped": "0",
+        "failures": "0"
+      },
+      {
+        "name": "com.xinyi.web.viit.B02BookingIT",
+        "time": "1.457",
+        "tests": "6",
+        "errors": "0",
+        "skipped": "0",
+        "failures": "0"
+      },
+      {
+        "name": "com.xinyi.web.viit.C01ConfigIT",
+        "time": "1.717",
+        "tests": "6",
+        "errors": "0",
+        "skipped": "0",
+        "failures": "0"
+      },
+      {
+        "name": "com.xinyi.web.viit.C02StationIT",
+        "time": "1.051",
+        "tests": "13",
+        "errors": "0",
+        "skipped": "0",
+        "failures": "0"
+      },
+      {
+        "name": "com.xinyi.web.viit.C03CapacityIT",
+        "time": "0.899",
+        "tests": "6",
+        "errors": "0",
+        "skipped": "0",
+        "failures": "0"
+      },
+      {
+        "name": "com.xinyi.web.viit.C04LivePricingIT",
+        "time": "0.699",
+        "tests": "1",
+        "errors": "0",
+        "skipped": "0",
+        "failures": "0"
+      },
+      {
+        "name": "com.xinyi.web.viit.C04PricingIT",
+        "time": "1.602",
+        "tests": "14",
+        "errors": "0",
+        "skipped": "0",
+        "failures": "0"
+      },
+      {
+        "name": "com.xinyi.web.viit.E06PlatformIT",
+        "time": "1.126",
+        "tests": "10",
+        "errors": "0",
+        "skipped": "0",
+        "failures": "0"
+      },
+      {
+        "name": "com.xinyi.web.viit.E07TestingIT",
+        "time": "0.544",
+        "tests": "5",
+        "errors": "0",
+        "skipped": "0",
+        "failures": "0"
+      },
+      {
+        "name": "com.xinyi.web.viit.E08PlatformIT",
+        "time": "0.038",
+        "tests": "1",
+        "errors": "0",
+        "skipped": "0",
+        "failures": "0"
+      },
+      {
+        "name": "com.xinyi.web.viit.I01IdentityIT",
+        "time": "0.681",
+        "tests": "9",
+        "errors": "0",
+        "skipped": "0",
+        "failures": "0"
+      },
+      {
+        "name": "com.xinyi.web.viit.I02IdentityIT",
+        "time": "0.87",
+        "tests": "9",
+        "errors": "0",
+        "skipped": "0",
+        "failures": "0"
+      },
+      {
+        "name": "com.xinyi.web.viit.I03IdentityIT",
+        "time": "4.122",
+        "tests": "10",
+        "errors": "0",
+        "skipped": "0",
+        "failures": "0"
+      },
+      {
+        "name": "com.xinyi.web.viit.I04IdentityIT",
+        "time": "1.054",
+        "tests": "10",
+        "errors": "0",
+        "skipped": "0",
+        "failures": "0"
+      },
+      {
+        "name": "com.xinyi.web.viit.I05IdentityIT",
+        "time": "1.709",
+        "tests": "20",
+        "errors": "0",
+        "skipped": "0",
+        "failures": "0"
+      },
+      {
+        "name": "com.xinyi.web.viit.I06ScopeIT",
+        "time": "1.042",
+        "tests": "10",
+        "errors": "0",
+        "skipped": "0",
+        "failures": "0"
+      }
+    ]
+  },
+  "unit": {
+    "testsRun": 31,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "suites": [
+      {
+        "name": "com.xinyi.framework.web.service.TokenServiceTest",
+        "time": "0.04",
+        "tests": "1",
+        "errors": "0",
+        "skipped": "0",
+        "failures": "0"
+      },
+      {
+        "name": "com.xinyi.rongli.booking.TencentRouteGatewayTest",
+        "time": "0.182",
+        "tests": "2",
+        "errors": "0",
+        "skipped": "0",
+        "failures": "0"
+      },
+      {
+        "name": "com.xinyi.rongli.platform.IdempotencyMacTest",
+        "time": "0.37",
+        "tests": "5",
+        "errors": "0",
+        "skipped": "0",
+        "failures": "0"
+      },
+      {
+        "name": "com.xinyi.rongli.platform.PlatformPrimitivesTest",
+        "time": "0.075",
+        "tests": "6",
+        "errors": "0",
+        "skipped": "0",
+        "failures": "0"
+      },
+      {
+        "name": "com.xinyi.rongli.platform.SecretGuardTest",
+        "time": "0.005",
+        "tests": "5",
+        "errors": "0",
+        "skipped": "0",
+        "failures": "0"
+      },
+      {
+        "name": "com.xinyi.rongli.pricing.PriceCalculatorTest",
+        "time": "0.006",
+        "tests": "5",
+        "errors": "0",
+        "skipped": "0",
+        "failures": "0"
+      },
+      {
+        "name": "com.xinyi.rongli.pricing.PriceEnvironmentTest",
+        "time": "0.002",
+        "tests": "2",
+        "errors": "0",
+        "skipped": "0",
+        "failures": "0"
+      },
+      {
+        "name": "com.xinyi.system.service.impl.DeptScopeServiceImplTest",
+        "time": "0.498",
+        "tests": "5",
+        "errors": "0",
+        "skipped": "0",
+        "failures": "0"
+      }
+    ]
+  }
+}
