@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xinyi.rongli.station.mapper.ViStationMapper">
+
+    <resultMap id="StationMap" type="com.xinyi.rongli.station.domain.ViStation">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="deptId" column="dept_id"/>
+        <result property="address" column="address"/>
+        <result property="lng" column="lng"/>
+        <result property="lat" column="lat"/>
+        <result property="serviceRadiusMeter" column="service_radius_meter"/>
+        <result property="supportedVehicleCodes" column="supported_vehicle_codes"/>
+        <result property="businessHours" column="business_hours"/>
+        <result property="enabled" column="enabled"/>
+        <result property="contactPhoneCipher" column="contact_phone_cipher"/>
+        <result property="qualificationFileIds" column="qualification_file_ids"/>
+        <result property="createdAt" column="created_at"
+                typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+        <result property="updatedAt" column="updated_at"
+                typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+        <result property="version" column="version"/>
+    </resultMap>
+
+    <sql id="cols">id, name, dept_id, address, lng, lat, service_radius_meter, supported_vehicle_codes,
+        business_hours, enabled, contact_phone_cipher, qualification_file_ids, created_at, updated_at, version</sql>
+
+    <sql id="scopeFilter">
+        <if test="deptIds != null">
+            AND dept_id IN
+            <foreach collection="deptIds" item="d" open="(" separator="," close=")">#{d}</foreach>
+        </if>
+        <if test="enabledOnly">
+            AND enabled = 1
+        </if>
+    </sql>
+
+    <select id="selectByIdForUpdate" resultMap="StationMap">
+        SELECT <include refid="cols"/> FROM vi_station WHERE id = #{id} FOR UPDATE
+    </select>
+
+    <select id="selectById" resultMap="StationMap">
+        SELECT <include refid="cols"/> FROM vi_station WHERE id = #{id}
+    </select>
+
+    <select id="selectList" resultMap="StationMap">
+        SELECT <include refid="cols"/> FROM vi_station
+        WHERE 1 = 1 <include refid="scopeFilter"/>
+        ORDER BY id DESC LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <select id="countList" resultType="long">
+        SELECT COUNT(*) FROM vi_station WHERE 1 = 1 <include refid="scopeFilter"/>
+    </select>
+
+    <insert id="insert" parameterType="com.xinyi.rongli.station.domain.ViStation"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO vi_station (name, dept_id, address, lng, lat, service_radius_meter, supported_vehicle_codes,
+            business_hours, enabled, contact_phone_cipher, qualification_file_ids, version)
+        VALUES (#{name}, #{deptId}, #{address}, #{lng}, #{lat}, #{serviceRadiusMeter}, #{supportedVehicleCodes},
+            #{businessHours}, #{enabled}, #{contactPhoneCipher,jdbcType=VARBINARY}, #{qualificationFileIds,jdbcType=VARCHAR}, 0)
+    </insert>
+
+    <!-- 全字段受控更新（含 dept_id 迁移）；CAS 版本+1，显式 UTC 更新时间 -->
+    <update id="update">
+        UPDATE vi_station
+        SET name = #{s.name}, dept_id = #{s.deptId}, address = #{s.address}, lng = #{s.lng}, lat = #{s.lat},
+            service_radius_meter = #{s.serviceRadiusMeter}, supported_vehicle_codes = #{s.supportedVehicleCodes},
+            business_hours = #{s.businessHours}, enabled = #{s.enabled},
+            contact_phone_cipher = #{s.contactPhoneCipher,jdbcType=VARBINARY},
+            qualification_file_ids = #{s.qualificationFileIds,jdbcType=VARCHAR},
+            updated_at = UTC_TIMESTAMP(3), version = version + 1
+        WHERE id = #{s.id} AND version = #{expectedVersion}
+    </update>
+
+    <!-- 在手订单：未办结（非 COMPLETED/CANCELLED/CLOSED）；迁部门守卫用 -->
+    <select id="countActiveOrders" resultType="long">
+        SELECT COUNT(*) FROM vi_order
+        WHERE station_id = #{stationId}
+          AND fulfillment_status NOT IN ('COMPLETED','CANCELLED','CLOSED')
+    </select>
+
+</mapper>

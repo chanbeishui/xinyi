@@ -120,11 +120,13 @@
     "taskId": "C01"
   },
   {
-    "implementationStatus": "NOT_ASSESSED",
-    "controllerFile": null,
-    "serviceFile": null,
-    "mapperFile": null,
-    "testFiles": [],
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/station/StationCommonController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/station/service/StationService.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/station/ViStationMapper.xml",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/C02StationIT.java"
+    ],
     "reviewEvidence": null,
     "operationId": "API_011_get",
     "method": "GET",
@@ -1197,11 +1199,13 @@
     "taskId": "I06"
   },
   {
-    "implementationStatus": "NOT_ASSESSED",
-    "controllerFile": null,
-    "serviceFile": null,
-    "mapperFile": null,
-    "testFiles": [],
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/station/StationInfoController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/station/service/StationService.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/station/ViStationMapper.xml",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/C02StationIT.java"
+    ],
     "reviewEvidence": null,
     "operationId": "API_095_get",
     "method": "GET",
@@ -1210,11 +1214,13 @@
     "taskId": "C02"
   },
   {
-    "implementationStatus": "NOT_ASSESSED",
-    "controllerFile": null,
-    "serviceFile": null,
-    "mapperFile": null,
-    "testFiles": [],
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/station/StationInfoController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/station/service/StationService.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/station/ViStationMapper.xml",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/C02StationIT.java"
+    ],
     "reviewEvidence": null,
     "operationId": "API_096_put",
     "method": "PUT",
@@ -1537,11 +1543,13 @@
     "taskId": "D07"
   },
   {
-    "implementationStatus": "NOT_ASSESSED",
-    "controllerFile": null,
-    "serviceFile": null,
-    "mapperFile": null,
-    "testFiles": [],
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/station/StationAdminController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/station/service/StationService.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/station/ViStationMapper.xml",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/C02StationIT.java"
+    ],
     "reviewEvidence": null,
     "operationId": "API_128_get",
     "method": "GET",
@@ -1550,11 +1558,13 @@
     "taskId": "C02"
   },
   {
-    "implementationStatus": "NOT_ASSESSED",
-    "controllerFile": null,
-    "serviceFile": null,
-    "mapperFile": null,
-    "testFiles": [],
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/station/StationAdminController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/station/service/StationService.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/station/ViStationMapper.xml",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/C02StationIT.java"
+    ],
     "reviewEvidence": null,
     "operationId": "API_129_post",
     "method": "POST",
@@ -1563,11 +1573,13 @@
     "taskId": "C02"
   },
   {
-    "implementationStatus": "NOT_ASSESSED",
-    "controllerFile": null,
-    "serviceFile": null,
-    "mapperFile": null,
-    "testFiles": [],
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/station/StationAdminController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/station/service/StationService.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/station/ViStationMapper.xml",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/C02StationIT.java"
+    ],
     "reviewEvidence": null,
     "operationId": "API_130_put",
     "method": "PUT",

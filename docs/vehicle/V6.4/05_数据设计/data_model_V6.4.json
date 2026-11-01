@@ -1031,6 +1031,16 @@
         "配置完成后启用"
       ],
       [
+        "contact_phone_cipher",
+        "VARBINARY(512) NULL",
+        "检测点已批准公开联系电话密文；PhoneCrypto加密，对外仅脱敏phoneMask"
+      ],
+      [
+        "qualification_file_ids",
+        "JSON NULL",
+        "资质文件不透明ID列表（引用vi_file）；不含明文证件原图/URL"
+      ],
+      [
         "created_at",
         "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
         "创建时间，统一UTC"
@@ -1136,6 +1146,18 @@
         "insertable": false,
         "updatable": false,
         "clientWritable": false
+      },
+      "contact_phone_cipher": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "qualification_file_ids": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": true
       }
     },
     "checks": [
