@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xinyi.rongli.owner.mapper.ViOwnerProfileMapper">
+
+    <resultMap id="OwnerProfileMap" type="com.xinyi.rongli.owner.domain.ViOwnerProfile">
+        <id property="id" column="id"/>
+        <result property="accountId" column="account_id"/>
+        <result property="serviceName" column="service_name"/>
+        <result property="serviceFlag" column="service_flag"/>
+        <result property="internalRemark" column="internal_remark"/>
+        <result property="maintainedBy" column="maintained_by"/>
+        <result property="createdAt" column="created_at"
+                typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+        <result property="updatedAt" column="updated_at"
+                typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+        <result property="version" column="version"/>
+    </resultMap>
+
+    <sql id="cols">id, account_id, service_name, service_flag, internal_remark, maintained_by,
+        created_at, updated_at, version</sql>
+
+    <select id="selectByIdForUpdate" resultMap="OwnerProfileMap">
+        SELECT <include refid="cols"/> FROM vi_owner_profile WHERE id = #{id} FOR UPDATE
+    </select>
+
+    <!-- 仅运营字段；service_flag NOT NULL 恒写入合并值；CAS 版本+1，显式 UTC 更新时间 -->
+    <update id="adminUpdate">
+        UPDATE vi_owner_profile
+        SET service_name = #{serviceName,jdbcType=VARCHAR}, service_flag = #{serviceFlag},
+            internal_remark = #{internalRemark,jdbcType=VARCHAR}, maintained_by = #{maintainedBy,jdbcType=BIGINT},
+            updated_at = UTC_TIMESTAMP(3), version = version + 1
+        WHERE id = #{id} AND version = #{expectedVersion}
+    </update>
+
+</mapper>

@@ -104,6 +104,12 @@ export const constantRoutes = [
         component: () => import('@/views/rongli/config/dict.vue'),
         name: 'RongliDict',
         meta: { title: '车型字典', icon: 'collection' }
+      },
+      {
+        path: 'owners',
+        component: () => import('@/views/rongli/owner/owner.vue'),
+        name: 'RongliOwners',
+        meta: { title: '车主档案', icon: 'user' }
       }
     ]
   },
