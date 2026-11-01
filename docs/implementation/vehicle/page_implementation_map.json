@@ -1433,16 +1433,20 @@
     "taskId": "C04"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "IMPLEMENTED",
+    "implementationFile": "xinyi-ui/src/views/rongli/config/config.vue",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/C01.json"
+    ],
     "boardId": "B21",
     "taskId": "C01"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "IMPLEMENTED",
+    "implementationFile": "xinyi-ui/src/views/rongli/config/config.vue",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/C01.json"
+    ],
     "boardId": "B21-edit",
     "taskId": "C01"
   },
@@ -1628,16 +1632,20 @@
     "taskId": "O01"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "IMPLEMENTED",
+    "implementationFile": "xinyi-ui/src/views/rongli/config/dict.vue",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/C01.json"
+    ],
     "boardId": "B33",
     "taskId": "C01"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "IMPLEMENTED",
+    "implementationFile": "xinyi-ui/src/views/rongli/config/dict.vue",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/C01.json"
+    ],
     "boardId": "B33-edit",
     "taskId": "C01"
   },
