@@ -955,6 +955,8 @@ CREATE TABLE `vi_station` (
   `supported_vehicle_codes` JSON NOT NULL COMMENT '引用现有vehicle_type数据字典',
   `business_hours` JSON NOT NULL COMMENT '营业日和接收边界',
   `enabled` TINYINT NOT NULL DEFAULT 0 COMMENT '配置完成后启用',
+  `contact_phone_cipher` VARBINARY(512) NULL COMMENT '检测点已批准公开联系电话密文；PhoneCrypto加密，对外仅脱敏phoneMask',
+  `qualification_file_ids` JSON NULL COMMENT '资质文件不透明ID列表（引用vi_file）；不含明文证件原图/URL',
   `created_at` DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3)) COMMENT '创建时间，统一UTC',
   `updated_at` DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3)) COMMENT 'UTC更新时间；Mapper每次修改显式SET updated_at=UTC_TIMESTAMP(3)，不依赖连接时区',
   `version` BIGINT NOT NULL DEFAULT 0 COMMENT '乐观锁版本',

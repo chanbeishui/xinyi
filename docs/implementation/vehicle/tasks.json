@@ -1757,7 +1757,7 @@
     "case_ids": [],
     "scope": "DEVELOPMENT",
     "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
-    "status": "NOT_ASSESSED",
+    "status": "VERIFIED",
     "code_paths": [
       "xinyi-rongli/src/main/java/com/xinyi/rongli/station/",
       "xinyi-rongli/src/main/resources/mapper/rongli/station/",
@@ -1786,10 +1786,17 @@
     },
     "scopeRevision": "V6.1-UNCHANGED",
     "definitionHash": "7d9b24a673ff457d2fc901a6069693f8e849d396fdfcbe5852fda7b36fe91c0b",
-    "evidence": [],
+    "evidence": [
+      {
+        "path": "docs/implementation/vehicle/evidence/C02.json",
+        "sha256": "e55cb5a80b76a3ef2236295af1fc296218fac08241fe25fc31b5129285ecb10e"
+      }
+    ],
     "implementation": null,
     "review": null,
-    "blocker": null
+    "blocker": null,
+    "needsAdaptation": false,
+    "updatedAt": "2026-11-01T08:55:51.852381+00:00"
   },
   {
     "id": "C03",

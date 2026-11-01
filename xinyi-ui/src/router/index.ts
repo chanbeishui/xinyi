@@ -110,6 +110,12 @@ export const constantRoutes = [
         component: () => import('@/views/rongli/owner/owner.vue'),
         name: 'RongliOwners',
         meta: { title: '车主档案', icon: 'user' }
+      },
+      {
+        path: 'stations',
+        component: () => import('@/views/rongli/station/station.vue'),
+        name: 'RongliStations',
+        meta: { title: '检测点管理', icon: 'international' }
       }
     ]
   },

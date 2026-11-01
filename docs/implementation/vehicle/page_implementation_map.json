@@ -1023,9 +1023,11 @@
     "taskId": "A04"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "IMPLEMENTED",
+    "implementationFile": "xinyi-miniapp/src/pages/station/info.vue",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/C02.json"
+    ],
     "boardId": "S16",
     "taskId": "C02"
   },
@@ -1377,23 +1379,29 @@
     "taskId": "Q05"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "IMPLEMENTED",
+    "implementationFile": "xinyi-ui/src/views/rongli/station/station.vue",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/C02.json"
+    ],
     "boardId": "B17",
     "taskId": "C02"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "IMPLEMENTED",
+    "implementationFile": "xinyi-ui/src/views/rongli/station/station.vue",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/C02.json"
+    ],
     "boardId": "B17-disable",
     "taskId": "C02"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "IMPLEMENTED",
+    "implementationFile": "xinyi-ui/src/views/rongli/station/station.vue",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/C02.json"
+    ],
     "boardId": "B17-edit",
     "taskId": "C02"
   },
