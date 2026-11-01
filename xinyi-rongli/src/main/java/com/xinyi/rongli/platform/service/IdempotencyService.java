@@ -124,6 +124,13 @@ public class IdempotencyService {
         return result;
     }
 
+    /** 外部只读调用前检查已完成请求；无记录不占位，最终写入仍须execute同事务去重。 */
+    public <T> java.util.Optional<T> replayIfPresent(String subject,String action,String key,String body,Class<T> type) {
+        if(isBlank(subject)||isBlank(action)||isBlank(key))throw new ViException(ViErrorCode.VI_REQUEST_INVALID);
+        if(mapper.selectByKey(subject,action,key)==null)return java.util.Optional.empty();
+        return java.util.Optional.of(replayOrConflict(subject,action,key,mac(body),true,type));
+    }
+
     private <T> T replayOrConflict(String subjectKey, String actionKey, String requestKey,
                                    byte[] mac, boolean cacheResult, Class<T> resultType) {
         ViIdempotency existing = mapper.selectByKey(subjectKey, actionKey, requestKey);

@@ -3781,5 +3781,18 @@
     "path": "/api/admin/prices/{ruleId}/disable",
     "summary": "停用计价版本",
     "taskId": "C04"
+  },
+  {
+    "operationId": "V64_post_api_app_owner_orders_stations",
+    "method": "POST",
+    "path": "/api/app/owner/orders/stations",
+    "summary": "按本次资料查询可服务站点，由车主明确选择",
+    "taskId": "B02",
+    "implementationStatus": "NOT_ASSESSED",
+    "controllerFile": null,
+    "serviceFile": null,
+    "mapperFile": null,
+    "testFiles": [],
+    "reviewEvidence": null
   }
 ]

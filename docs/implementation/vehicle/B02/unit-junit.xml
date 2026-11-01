@@ -1,0 +1,50 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites>
+  <testsuite name="com.xinyi.framework.web.service.TokenServiceTest" time="0.04" tests="1" errors="0" skipped="0" failures="0">
+    <testcase name="authorizationRequiresMatchingVersionAndActiveAccount" classname="com.xinyi.framework.web.service.TokenServiceTest" time="0.022" />
+  </testsuite>
+  <testsuite name="com.xinyi.rongli.booking.TencentRouteGatewayTest" time="0.182" tests="2" errors="0" skipped="0" failures="0">
+    <testcase name="缺凭据非法坐标与生产替身关闭" classname="com.xinyi.rongli.booking.TencentRouteGatewayTest" time="0.082" />
+    <testcase name="真实HTTP协议校验坐标顺序及分钟转秒" classname="com.xinyi.rongli.booking.TencentRouteGatewayTest" time="0.096" />
+  </testsuite>
+  <testsuite name="com.xinyi.rongli.platform.IdempotencyMacTest" time="0.37" tests="5" errors="0" skipped="0" failures="0">
+    <testcase name="主体与动作键格式" classname="com.xinyi.rongli.platform.IdempotencyMacTest" time="0.001" />
+    <testcase name="不同体不同摘要" classname="com.xinyi.rongli.platform.IdempotencyMacTest" time="0.362" />
+    <testcase name="不同密钥不同摘要" classname="com.xinyi.rongli.platform.IdempotencyMacTest" time="0.001" />
+    <testcase name="空密钥拒绝计算" classname="com.xinyi.rongli.platform.IdempotencyMacTest" time="0.0" />
+    <testcase name="同体同摘要_32字节" classname="com.xinyi.rongli.platform.IdempotencyMacTest" time="0.001" />
+  </testsuite>
+  <testsuite name="com.xinyi.rongli.platform.PlatformPrimitivesTest" time="0.075" tests="6" errors="0" skipped="0" failures="0">
+    <testcase name="死锁有限重试后成功" classname="com.xinyi.rongli.platform.PlatformPrimitivesTest" time="0.052" />
+    <testcase name="死锁超过上限抛出" classname="com.xinyi.rongli.platform.PlatformPrimitivesTest" time="0.016" />
+    <testcase name="非锁异常不重试" classname="com.xinyi.rongli.platform.PlatformPrimitivesTest" time="0.001" />
+    <testcase name="同域比较成立_跨域数值相等也不混比" classname="com.xinyi.rongli.platform.PlatformPrimitivesTest" time="0.002" />
+    <testcase name="有序锁去重升序" classname="com.xinyi.rongli.platform.PlatformPrimitivesTest" time="0.001" />
+    <testcase name="双主体Actor按域构造" classname="com.xinyi.rongli.platform.PlatformPrimitivesTest" time="0.001" />
+  </testsuite>
+  <testsuite name="com.xinyi.rongli.platform.SecretGuardTest" time="0.005" tests="5" errors="0" skipped="0" failures="0">
+    <testcase name="拒绝嵌套与下划线命名的机密字段" classname="com.xinyi.rongli.platform.SecretGuardTest" time="0.002" />
+    <testcase name="非JSON文本拒绝以免漏网" classname="com.xinyi.rongli.platform.SecretGuardTest" time="0.0" />
+    <testcase name="拒绝顶层明文令牌字段" classname="com.xinyi.rongli.platform.SecretGuardTest" time="0.0" />
+    <testcase name="拒绝数组元素中的机密字段" classname="com.xinyi.rongli.platform.SecretGuardTest" time="0.0" />
+    <testcase name="放行不含机密的业务结果" classname="com.xinyi.rongli.platform.SecretGuardTest" time="0.001" />
+  </testsuite>
+  <testsuite name="com.xinyi.rongli.pricing.PriceCalculatorTest" time="0.006" tests="5" errors="0" skipped="0" failures="0">
+    <testcase name="大整数比例不因中间乘法溢出失真" classname="com.xinyi.rongli.pricing.PriceCalculatorTest" time="0.003" />
+    <testcase name="往返先加倍距离再扣包含里程" classname="com.xinyi.rongli.pricing.PriceCalculatorTest" time="0.0" />
+    <testcase name="超安全金额拒绝而非返回负数或零" classname="com.xinyi.rongli.pricing.PriceCalculatorTest" time="0.001" />
+    <testcase name="包含里程边界不多收" classname="com.xinyi.rongli.pricing.PriceCalculatorTest" time="0.001" />
+    <testcase name="按比例半分四舍五入只计算一次" classname="com.xinyi.rongli.pricing.PriceCalculatorTest" time="0.0" />
+  </testsuite>
+  <testsuite name="com.xinyi.rongli.pricing.PriceEnvironmentTest" time="0.002" tests="2" errors="0" skipped="0" failures="0">
+    <testcase name="生产不能降为测试且未知环境不得猜测" classname="com.xinyi.rongli.pricing.PriceEnvironmentTest" time="0.001" />
+    <testcase name="部署环境明确分离" classname="com.xinyi.rongli.pricing.PriceEnvironmentTest" time="0.0" />
+  </testsuite>
+  <testsuite name="com.xinyi.system.service.impl.DeptScopeServiceImplTest" time="0.498" tests="5" errors="0" skipped="0" failures="0">
+    <testcase name="allDataRoleShortCircuitsDepartmentFiltering" classname="com.xinyi.system.service.impl.DeptScopeServiceImplTest" time="0.483" />
+    <testcase name="noApplicableRoleProducesEmptyFailClosedScope" classname="com.xinyi.system.service.impl.DeptScopeServiceImplTest" time="0.002" />
+    <testcase name="scopeThreeIncludesAllMembershipDepartments" classname="com.xinyi.system.service.impl.DeptScopeServiceImplTest" time="0.002" />
+    <testcase name="multipleRolesUseUnionAndRetainSelfScope" classname="com.xinyi.system.service.impl.DeptScopeServiceImplTest" time="0.002" />
+    <testcase name="scopeFourExpandsEveryMembershipDepartment" classname="com.xinyi.system.service.impl.DeptScopeServiceImplTest" time="0.002" />
+  </testsuite>
+</testsuites>

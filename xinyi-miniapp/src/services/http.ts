@@ -41,6 +41,6 @@ export async function request<T>(method:'GET'|'POST'|'PUT'|'PATCH'|'DELETE',path
     r=await raw(method,path,data,idempotencyKey); // 同一个业务意图沿用原幂等键，最多重试一次。
   }
   if (callerSessionId!==undefined && (session?.sessionId!==callerSessionId || session?.contextVersion!==context)) throw new Error('工作身份已切换，旧响应已丢弃');
-  if (r.status<200 || r.status>=300) throw new Error(r.body?.message || r.body?.msg || '请求未完成，请刷新状态');
+  if (r.status<200 || r.status>=300) throw Object.assign(new Error(r.body?.message || r.body?.msg || '请求未完成，请刷新状态'), { errorCode: r.body?.errorCode, status: r.status });
   return r.body as T;
 }

@@ -1,9 +1,10 @@
 # B02 · 报价快照与服务校验
 
 阶段：M2；责任域：booking；前置：C03, C04, A01, A02。
-范围版本：`V6.1-UNCHANGED`；definitionHash：`52828b00ec96ea7d114994dac4fa41d48107821cdd74ebe3262cd52c404b5106`。
+范围版本：`V6.4-OWNER-SELECT-STATION-20261102`；definitionHash：`b1e1258b91bee6c0094bc2b16c9326a1ca6639057f642a061a4fe8f83a20914a`。
 
 ## 本任务交付
+- 车主明确选择可用站点；腾讯路线、双额度保守排期、加密输入及完整计价协议快照
 - 四组合输入归属、地图路线、站点匹配、保存报价输入和规则快照
 
 ## 必测失败与并发
@@ -13,7 +14,7 @@
 
 ## 精确输入
 主源：04_接口/openapi_V6.4.yaml、05_数据设计/data_model_V6.4.json、06_验收/test_cases_V6.4.json。本目录派生，不独立维护。
-接口：API_024_post
+接口：API_024_post, V64_post_api_app_owner_orders_stations
 画板：无
 主责任表：vi_quote
 验收：无

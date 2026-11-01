@@ -31910,6 +31910,116 @@ paths:
       - VI_UPSTREAM_UNAVAILABLE
       x-error-policy: OBJECT_404_HIDES_EXISTENCE
       x-contract-baseline: V6.4
+  /api/app/owner/orders/stations:
+    post:
+      operationId: V64_post_api_app_owner_orders_stations
+      summary: 按本次资料查询可服务站点，由车主明确选择
+      tags:
+      - OWNER
+      description: 四组合本人归属、真实路线及双额度校验；不占额、不保存报价。返回仅为候选，正式报价再次核验。
+      x-flow-ids:
+      - F05
+      security:
+      - MiniBearerAuth: []
+      responses:
+        '200':
+          description: 操作成功；领域校验后返回真实结果
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    enum:
+                    - 200
+                  msg:
+                    type: string
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/AvailableStation'
+                additionalProperties: false
+                required:
+                - code
+                - msg
+                - data
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+                enum:
+                - no-store
+              description: 身份/交易/个人业务响应不缓存
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalError'
+        '503':
+          $ref: '#/components/responses/Unavailable'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+      parameters:
+      - name: X-Client-Type
+        in: header
+        required: true
+        schema:
+          type: string
+          enum:
+          - owner
+          - driver
+          - station
+          - admin
+        description: 仅审计来源，不作为授权；须匹配服务端会话视角
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StationSelectionRequest'
+      x-capability: OWNER_ORDER_CREATE
+      x-authorization:
+        realm: MINI
+        scope: OWN_ACCOUNT_RESOURCE
+        activeRole: OWNER
+        capability: OWNER_ORDER_CREATE
+      x-error-codes:
+      - VI_REQUEST_INVALID
+      - VI_AUTH_REQUIRED
+      - VI_TOKEN_REALM_MISMATCH
+      - VI_REFRESH_REUSED
+      - VI_FORBIDDEN
+      - VI_SELF_REVIEW_DENIED
+      - VI_VERSION_CONFLICT
+      - VI_STATE_CONFLICT
+      - VI_IDEMPOTENCY_CONFLICT
+      - VI_SELECTION_CONFLICT
+      - VI_CONTEXT_CHANGED
+      - VI_SNAPSHOT_CHANGED
+      - VI_DATA_INVALID
+      - VI_EVIDENCE_INCOMPLETE
+      - VI_HANDOVER_CODE_INVALID
+      - VI_HANDOVER_LOCKED
+      - VI_UNPRICED_LINES
+      - VI_REFUND_LIMIT
+      - VI_PAYMENT_LIMIT
+      - VI_SERVICE_UNAVAILABLE
+      - VI_CAPABILITY_NOT_CONFIGURED
+      - VI_TRAINING_NOT_READY
+      - VI_RATE_LIMITED
+      - VI_INTERNAL_ERROR
+      - VI_AUTHORITY_UNAVAILABLE
+      - VI_UPSTREAM_UNAVAILABLE
+      x-error-policy: GLOBAL_FAILURES_NO_RESOURCE_404
+      x-contract-baseline: V6.4
 components:
   securitySchemes:
     MiniBearerAuth:
@@ -32409,10 +32519,16 @@ components:
           $ref: '#/components/schemas/AddressCreate'
         inspectionTypeCode:
           type: string
+        stationId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
       additionalProperties: false
       required:
       - slotId
       - inspectionTypeCode
+      - stationId
       description: vehicleId/vehicleDraft二选一；addressId/addressDraft二选一；站点由服务端匹配，不允许客户端指定低价站点绕过匹配。V6修复：两组XOR作为机器约束；地址草稿无addressId/version；null不视为有效分支。草稿仅保存在报价快照，地址簿保存仍需本人明确操作。
       allOf:
       - oneOf:
@@ -43480,6 +43596,84 @@ components:
       - driverBaseFee
       - distanceFee
       - totalFen
+
+    StationSelectionRequest:
+      type: object
+      properties:
+        slotId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+        vehicleId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+        vehicleDraft:
+          $ref: '#/components/schemas/VehicleCreate'
+        addressId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+        addressDraft:
+          $ref: '#/components/schemas/AddressCreate'
+        inspectionTypeCode:
+          type: string
+      additionalProperties: false
+      required:
+      - slotId
+      - inspectionTypeCode
+      description: vehicleId/vehicleDraft二选一；addressId/addressDraft二选一；站点由服务端匹配，不允许客户端指定低价站点绕过匹配。V6修复：两组XOR作为机器约束；地址草稿无addressId/version；null不视为有效分支。草稿仅保存在报价快照，地址簿保存仍需本人明确操作。
+      allOf:
+      - oneOf:
+        - required:
+          - vehicleId
+          not:
+            required:
+            - vehicleDraft
+        - required:
+          - vehicleDraft
+          not:
+            required:
+            - vehicleId
+      - oneOf:
+        - required:
+          - addressId
+          not:
+            required:
+            - addressDraft
+        - required:
+          - addressDraft
+          not:
+            required:
+            - addressId
+    AvailableStation:
+      type: object
+      additionalProperties: false
+      required:
+      - stationId
+      - name
+      - address
+      - routeDistanceMeter
+      - estimatedDurationSecond
+      properties:
+        stationId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+        name:
+          type: string
+        address:
+          type: string
+        routeDistanceMeter:
+          type: integer
+          minimum: 1
+        estimatedDurationSecond:
+          type: integer
+          minimum: 1
   responses:
     BadRequest:
       description: 请求格式不正确。参见errorCode注册表；HTTP状态与code一致。

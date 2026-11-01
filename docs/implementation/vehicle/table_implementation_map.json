@@ -93,10 +93,13 @@
     "taskId": "C03"
   },
   {
-    "status": "NOT_ASSESSED",
-    "entityFile": null,
-    "mapperFile": null,
-    "evidence": [],
+    "status": "VERIFIED",
+    "entityFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/booking/domain/ViQuote.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/booking/QuoteMapper.xml",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/B02-20261102.json",
+      "docs/implementation/vehicle/B02/B02BookingIT.xml"
+    ],
     "table": "vi_quote",
     "taskId": "B02"
   },

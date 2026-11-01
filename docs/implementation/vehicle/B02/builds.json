@@ -1,0 +1,19 @@
+{
+  "at": "2026-11-01T16:25:36.070672+00:00",
+  "exitCode": 0,
+  "checks": [
+    {
+      "command": "npm --prefix xinyi-miniapp run type-check",
+      "exitCode": 0
+    },
+    {
+      "command": "npm --prefix xinyi-miniapp run build:mp-weixin",
+      "exitCode": 0
+    },
+    {
+      "command": "npm --prefix xinyi-ui run build:prod",
+      "exitCode": 0
+    }
+  ],
+  "warnings": "Vite大包和现有Sass旧API告警；不是微信真机验证"
+}

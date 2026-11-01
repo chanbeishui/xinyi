@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xinyi.rongli.booking.mapper.QuoteMapper">
+<resultMap id="slot" type="com.xinyi.rongli.capacity.domain.ViQuotaSlot">
+<id property="id" column="id"/><result property="stationId" column="station_id"/>
+<result property="quotaType" column="quota_type"/><result property="startsAt" column="starts_at" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/><result property="endsAt" column="ends_at" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+<result property="totalQuota" column="total_quota"/><result property="heldQuota" column="held_quota"/><result property="confirmedQuota" column="confirmed_quota"/><result property="consumedQuota" column="consumed_quota"/><result property="enabled" column="enabled"/><result property="version" column="version"/>
+</resultMap>
+<resultMap id="quote" type="com.xinyi.rongli.booking.domain.ViQuote">
+<result property="id" column="id"/><result property="ownerAccountId" column="owner_account_id"/><result property="stationId" column="station_id"/><result property="vehicleSnapshot" column="vehicle_snapshot"/><result property="addressSnapshotCipher" column="address_snapshot_cipher"/><result property="pickupSlotId" column="pickup_slot_id"/><result property="receiveSlotId" column="receive_slot_id"/><result property="ruleId" column="rule_id"/><result property="routeSnapshot" column="route_snapshot"/><result property="amountFen" column="amount_fen"/><result property="itemsJson" column="items_json"/><result property="expiresAt" column="expires_at" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/><result property="usedOrderId" column="used_order_id"/><result property="version" column="version"/></resultMap>
+<select id="slot" resultMap="slot">SELECT * FROM vi_quota_slot WHERE id=#{id}</select>
+<select id="slots" resultMap="slot">SELECT * FROM vi_quota_slot WHERE station_id=#{stationId} AND enabled=1 AND starts_at &gt; UTC_TIMESTAMP(3) AND total_quota &gt; held_quota+confirmed_quota+consumed_quota ORDER BY id</select>
+<select id="stations" resultType="long">SELECT s.id FROM vi_station s JOIN sys_dept d ON d.dept_id=s.dept_id AND d.status='0' AND d.del_flag='0' WHERE s.enabled=1 ORDER BY s.id</select>
+<select id="activeDepartment" resultType="int">SELECT COUNT(*) FROM sys_dept WHERE dept_id=#{id} AND status='0' AND del_flag='0'</select>
+<select id="dictLabel" resultType="string">SELECT dict_label FROM sys_dict_data WHERE dict_type=#{type} AND dict_value=#{code} AND status='0'</select>
+<select id="find" resultMap="quote">SELECT * FROM vi_quote WHERE id=#{id}</select>
+<insert id="insert" useGeneratedKeys="true" keyProperty="id">INSERT INTO vi_quote (owner_account_id,station_id,vehicle_snapshot,address_snapshot_cipher,pickup_slot_id,receive_slot_id,rule_id,route_snapshot,amount_fen,items_json,expires_at) VALUES (#{ownerAccountId},#{stationId},#{vehicleSnapshot},#{addressSnapshotCipher},#{pickupSlotId},#{receiveSlotId},#{ruleId},#{routeSnapshot},#{amountFen},#{itemsJson},#{expiresAt,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler})</insert>
+<select id="lockConfig" resultType="string">SELECT config_value FROM sys_config WHERE config_key='vi.config.version' FOR UPDATE</select>
+<select id="ruleContent" resultType="string">SELECT config_json FROM vi_price_rule WHERE id=#{id}</select>
+</mapper>

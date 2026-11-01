@@ -1094,7 +1094,7 @@ CONSTRAINT ck_ver_quota_slot CHECK (version &gt;= 0)
 <tr>
   <td><code>items_json</code></td>
   <td><code>JSON NOT NULL</code></td>
-  <td>逐项明细及计算依据</td>
+  <td>报价快照对象：items（明细数组）、price、ruleContent（完整计价规则）、policy（协议及排期版本）、fingerprint（输入HMAC）、inputCipher（加密原请求）；不是裸数组</td>
 </tr>
 <tr>
   <td><code>expires_at</code></td>
