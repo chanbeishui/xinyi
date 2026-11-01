@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xinyi.rongli.pricing.mapper.ViPriceRuleMapper">
+    <resultMap id="price" type="com.xinyi.rongli.pricing.domain.ViPriceRule">
+        <id property="id" column="id"/>
+        <result property="ownerDeptId" column="owner_dept_id"/>
+        <result property="companyName" column="company_name"/>
+        <result property="environment" column="environment"/>
+        <result property="ruleKey" column="rule_key"/>
+        <result property="revision" column="revision"/>
+        <result property="vehicleTypeCode" column="vehicle_type_code"/>
+        <result property="inspectionTypeCode" column="inspection_type_code"/>
+        <result property="status" column="status"/>
+        <result property="configJson" column="config_json"/>
+        <result property="effectiveFrom" column="effective_from" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+        <result property="effectiveTo" column="effective_to" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+        <result property="createdBy" column="created_by"/>
+        <result property="submittedBy" column="submitted_by"/>
+        <result property="approvedBy" column="approved_by"/>
+        <result property="configHash" column="config_hash"/>
+        <result property="approvedHash" column="approved_hash"/>
+        <result property="publishedAt" column="published_at" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+        <result property="sourceRuleId" column="source_rule_id"/>
+        <result property="version" column="version"/>
+    </resultMap>
+    <sql id="select">SELECT r.*, d.dept_name AS company_name FROM vi_price_rule r LEFT JOIN sys_dept d ON d.dept_id=r.owner_dept_id</sql>
+    <sql id="filter">
+        WHERE r.owner_dept_id IS NOT NULL AND r.created_by IS NOT NULL AND r.config_hash IS NOT NULL AND r.environment=#{environment}
+        <if test="deptIds != null"><choose><when test="deptIds.size() == 0">AND 1=0</when><otherwise>
+            AND r.owner_dept_id IN <foreach collection="deptIds" item="id" open="(" separator="," close=")">#{id}</foreach>
+        </otherwise></choose></if>
+        <if test="query.ownerDeptId != null">AND r.owner_dept_id=#{query.ownerDeptId}</if>
+        <if test="query.status != null">AND r.status=#{query.status}</if>
+        <if test="query.vehicleTypeCode != null">AND r.vehicle_type_code=#{query.vehicleTypeCode}</if>
+        <if test="query.inspectionTypeCode != null">AND r.inspection_type_code=#{query.inspectionTypeCode}</if>
+    </sql>
+    <select id="selectList" resultMap="price"><include refid="select"/><include refid="filter"/> ORDER BY r.id DESC LIMIT #{query.pageSize} OFFSET #{offset}</select>
+    <select id="countList" resultType="long">SELECT COUNT(*) FROM vi_price_rule r <include refid="filter"/></select>
+    <select id="selectById" resultMap="price"><include refid="select"/> WHERE r.id=#{id}</select>
+    <select id="lockById" resultMap="price"><include refid="select"/> WHERE r.id=#{id} FOR UPDATE</select>
+    <select id="lockCompany" resultType="java.util.LinkedHashMap">SELECT dept_id,status,del_flag FROM sys_dept WHERE dept_id=#{id} FOR UPDATE</select>
+    <select id="maxRevision" resultType="int">SELECT COALESCE(MAX(revision),0) FROM vi_price_rule WHERE rule_key=#{key}</select>
+    <select id="countContribution" resultType="int">
+        SELECT COUNT(*) FROM vi_event_log WHERE aggregate_type='VI_PRICE_RULE' AND aggregate_id=#{id}
+        AND actor_realm='ADMIN' AND actor_user_id=#{userId} AND action IN ('PRICE_CREATE','PRICE_UPDATE')
+    </select>
+    <select id="countDict" resultType="int">SELECT COUNT(*) FROM sys_dict_data WHERE dict_type=#{type} AND dict_value=#{code} AND status='0'</select>
+    <select id="countStationScope" resultType="int">
+        SELECT COUNT(*) FROM vi_station s JOIN sys_dept d ON d.dept_id=s.dept_id AND d.status='0' AND d.del_flag='0'
+        WHERE s.id=#{stationId} AND s.enabled=1
+        <if test="deptIds != null"><choose><when test="deptIds.size() == 0">AND 1=0</when><otherwise>
+            AND EXISTS (SELECT 1 FROM sys_dept company WHERE company.status='0' AND company.del_flag='0'
+            AND company.dept_id IN <foreach collection="deptIds" item="id" open="(" separator="," close=")">#{id}</foreach>
+            AND (company.dept_id=d.dept_id OR FIND_IN_SET(company.dept_id,d.ancestors)&gt;0))
+        </otherwise></choose></if>
+    </select>
+    <select id="findPublished" resultMap="price">
+        <include refid="select"/>
+        JOIN vi_station s ON s.id=#{stationId} AND s.enabled=1
+        JOIN sys_dept station_dept ON station_dept.dept_id=s.dept_id AND station_dept.status='0' AND station_dept.del_flag='0'
+        WHERE r.status='PUBLISHED' AND r.environment=#{environment}
+        AND r.config_hash IS NOT NULL AND r.approved_hash IS NOT NULL AND r.published_at IS NOT NULL
+        AND d.status='0' AND d.del_flag='0' AND (r.owner_dept_id=station_dept.dept_id OR FIND_IN_SET(r.owner_dept_id,station_dept.ancestors)&gt;0)
+        AND r.vehicle_type_code=#{vehicle} AND r.inspection_type_code=#{inspection}
+        AND r.effective_from &lt;= #{at,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler}
+        AND (r.effective_to IS NULL OR r.effective_to &gt; #{at,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler})
+        ORDER BY r.id
+    </select>
+    <select id="countOverlap" resultType="int">
+        SELECT COUNT(*) FROM vi_price_rule r JOIN sys_dept existing_company ON existing_company.dept_id=r.owner_dept_id
+        JOIN sys_dept candidate_company ON candidate_company.dept_id=#{row.ownerDeptId}
+        WHERE r.id != #{row.id} AND r.status='PUBLISHED' AND r.environment=#{row.environment}
+        AND r.vehicle_type_code=#{row.vehicleTypeCode} AND r.inspection_type_code=#{row.inspectionTypeCode}
+        AND (r.owner_dept_id=candidate_company.dept_id OR FIND_IN_SET(r.owner_dept_id,candidate_company.ancestors)&gt;0
+            OR FIND_IN_SET(candidate_company.dept_id,existing_company.ancestors)&gt;0)
+        <if test="replacesId != null">AND r.id != #{replacesId}</if>
+        AND (#{row.effectiveTo,jdbcType=TIMESTAMP,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler} IS NULL
+            OR r.effective_from &lt; #{row.effectiveTo,jdbcType=TIMESTAMP,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler})
+        AND (r.effective_to IS NULL OR r.effective_to &gt; #{row.effectiveFrom,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler})
+    </select>
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO vi_price_rule (owner_dept_id,environment,rule_key,revision,vehicle_type_code,inspection_type_code,status,
+            config_json,effective_from,effective_to,created_by,config_hash,source_rule_id)
+        VALUES (#{ownerDeptId},#{environment},#{ruleKey},#{revision},#{vehicleTypeCode},#{inspectionTypeCode},'DRAFT',#{configJson},
+            #{effectiveFrom,jdbcType=TIMESTAMP,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler},
+            #{effectiveTo,jdbcType=TIMESTAMP,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler},
+            #{createdBy},#{configHash},#{sourceRuleId,jdbcType=BIGINT})
+    </insert>
+    <update id="updateDraft">
+        UPDATE vi_price_rule SET config_json=#{row.configJson},config_hash=#{row.configHash},
+            effective_from=#{row.effectiveFrom,jdbcType=TIMESTAMP,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler},
+            effective_to=#{row.effectiveTo,jdbcType=TIMESTAMP,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler},
+            approved_hash=NULL,approved_by=NULL,published_at=NULL,version=version+1,updated_at=UTC_TIMESTAMP(3)
+        WHERE id=#{row.id} AND status='DRAFT' AND version=#{expectedVersion}
+    </update>
+    <update id="transition">
+        UPDATE vi_price_rule SET status=#{row.status},submitted_by=#{row.submittedBy,jdbcType=BIGINT},
+            approved_by=#{row.approvedBy,jdbcType=BIGINT},approved_hash=#{row.approvedHash,jdbcType=CHAR},
+            published_at=#{row.publishedAt,jdbcType=TIMESTAMP,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler},
+            version=version+1,updated_at=UTC_TIMESTAMP(3)
+        WHERE id=#{row.id} AND version=#{expectedVersion}
+    </update>
+</mapper>

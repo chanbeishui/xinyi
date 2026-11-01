@@ -129,7 +129,7 @@ export type ReviewInput = { "score": number; "tags"?: Array<string>; "content"?:
 
 export type Review = { "reviewId"?: string; "orderNo"?: string; "score"?: number; "tags"?: Array<string>; "content"?: string; "createdAt"?: string };
 
-export type PriceRule = { "ruleId"?: string; "revision"?: number; "status"?: PriceRuleStatus; "config"?: PriceUpdate; "version": number };
+export type PriceRule = { "ruleId": string; "ownerDeptId": string; "companyName": string; "environment": "TEST" | "LIVE"; "ruleKey": string; "revision": number; "status": PriceRuleStatus; "config": (PriceContent) | null; "version": number; "sourceRuleId": (string) | null; "createdBy": string; "submittedBy": (string) | null; "approvedBy": (string) | null; "contentHash": string; "approvedHash": (string) | null; "publishedAt": (string) | null };
 
 export type UploadRequest = { "purpose": "VEHICLE_PHOTO" | "ID_CARD" | "DRIVER_LICENSE" | "VEHICLE_LICENSE" | "RESULT_EVIDENCE" | "DISPUTE" | "STATION_QUALIFICATION" | "AVATAR"; "orderNo"?: string; "applicationId"?: string; "fileName": string; "mimeType": "image/jpeg" | "image/png"; "size": number };
 
@@ -517,9 +517,9 @@ export type AdminPenaltyView = { "penaltyId": string; "assignmentId": string; "o
 
 export type AdminPenaltyAppealView = { "appealId": string; "penaltyId": string; "status": AppealRecordStatus; "reason": string; "evidenceFileIds": Array<string>; "submittedAt": string; "publicOpinion": (string) | null; "reviewedAt": (string) | null; "version": number; "driverId": string; "driverDisplayName": string };
 
-export type PriceCreate = { "name": string; "vehicleTypeCode": string; "inspectionTypeCode": string; "inspectionFee": number; "driverBaseFee": number; "includedDistanceMeter": number; "distanceUnitMeter": number; "distanceUnitFee": number; "distanceRounding": "CEIL_UNIT" | "EXACT_PRORATA"; "routeBasis": "ONE_WAY" | "ROUND_TRIP"; "waitingFeeEnabled"?: boolean; "waitingFreeSeconds"?: number; "waitingUnitSeconds"?: number; "waitingUnitFee"?: number; "effectiveFrom"?: string; "effectiveTo"?: string };
+export type PriceCreate = { "ownerDeptId": string; "environment": "TEST" | "LIVE"; "sourceRuleId"?: string; "name": string; "vehicleTypeCode": string; "inspectionTypeCode": string; "inspectionFee": number; "driverBaseFee": number; "includedDistanceMeter": number; "distanceUnitMeter": number; "distanceUnitFee": number; "distanceRounding": "CEIL_UNIT" | "EXACT_PRORATA"; "routeBasis": "ONE_WAY" | "ROUND_TRIP"; "waitingFeeEnabled"?: boolean; "waitingFreeSeconds"?: number; "waitingUnitSeconds"?: number; "waitingUnitFee"?: number; "effectiveFrom"?: string; "effectiveTo"?: string };
 
-export type PriceUpdate = { "name": string; "vehicleTypeCode": string; "inspectionTypeCode": string; "inspectionFee": number; "driverBaseFee": number; "includedDistanceMeter": number; "distanceUnitMeter": number; "distanceUnitFee": number; "distanceRounding": "CEIL_UNIT" | "EXACT_PRORATA"; "routeBasis": "ONE_WAY" | "ROUND_TRIP"; "waitingFeeEnabled"?: boolean; "waitingFreeSeconds"?: number; "waitingUnitSeconds"?: number; "waitingUnitFee"?: number; "effectiveFrom"?: string; "effectiveTo"?: string; "expectedVersion": number };
+export type PriceUpdate = { "ownerDeptId": string; "environment": "TEST" | "LIVE"; "name": string; "vehicleTypeCode": string; "inspectionTypeCode": string; "inspectionFee": number; "driverBaseFee": number; "includedDistanceMeter": number; "distanceUnitMeter": number; "distanceUnitFee": number; "distanceRounding": "CEIL_UNIT" | "EXACT_PRORATA"; "routeBasis": "ONE_WAY" | "ROUND_TRIP"; "waitingFeeEnabled"?: boolean; "waitingFreeSeconds"?: number; "waitingUnitSeconds"?: number; "waitingUnitFee"?: number; "effectiveFrom"?: string; "effectiveTo"?: string; "expectedVersion": number };
 
 export type DriverFeeRuleCreate = { "name": string; "payorEntityId": string; "currency": "CNY"; "driverScope"?: Array<string>; "vehicleTypeCodes"?: Array<string>; "scenario": "NORMAL_RETURN" | "CANCEL_RETURN" | "CANCEL_BEFORE_PICKUP"; "baseAmount": number; "includedDistanceMeter": number; "unitDistanceMeter": number; "unitAmount": number; "rounding": "CEIL" | "HALF_UP"; "routeBasis": "CONTRACT_ROUTE"; "effectiveFrom": string; "effectiveTo"?: string; "changeReason": string };
 
@@ -572,3 +572,13 @@ export type AdminStationCreate = { "deptId": string; "name": string; "address": 
 export type AdminStationUpdate = { "deptId"?: string; "name": string; "address": string; "location": GeoPoint; "contactPhone"?: string; "enabled"?: boolean; "supportedVehicleTypeCodes": Array<string>; "businessHours"?: string; "serviceRadiusMeter"?: number; "qualificationFileIds"?: Array<string>; "expectedVersion": number };
 
 export type CapacityCreate = { "stationId": string; "quotaType": "PICKUP" | "STATION_RECEIVE"; "startAt": string; "endAt": string; "total": number; "reason": string };
+
+export type PriceContent = { "name": string; "vehicleTypeCode": string; "inspectionTypeCode": string; "inspectionFee": number; "driverBaseFee": number; "includedDistanceMeter": number; "distanceUnitMeter": number; "distanceUnitFee": number; "distanceRounding": "CEIL_UNIT" | "EXACT_PRORATA"; "routeBasis": "ONE_WAY" | "ROUND_TRIP"; "waitingFeeEnabled": boolean; "waitingFreeSeconds": number; "waitingUnitSeconds": number; "waitingUnitFee": number; "effectiveFrom": (string) | null; "effectiveTo": (string) | null };
+
+export type PricePublish = unknown;
+
+export type PriceSavedTrialRequest = { "distanceMeter": number };
+
+export type PriceMatchTrialRequest = { "stationId": string; "vehicleTypeCode": string; "inspectionTypeCode": string; "serviceAt"?: string; "distanceMeter": number };
+
+export type PriceTrial = { "ruleId": string; "revision": number; "version": number; "ownerDeptId": string; "environment": "TEST" | "LIVE"; "matchedPublished": boolean; "routeBasis": "ONE_WAY" | "ROUND_TRIP"; "distanceRounding": "CEIL_UNIT" | "EXACT_PRORATA"; "chargedUnits": string; "contentHash": string; "oneWayDistanceMeter": number; "billableDistanceMeter": number; "includedDistanceMeter": number; "excessDistanceMeter": number; "inspectionFee": number; "driverBaseFee": number; "distanceFee": number; "totalFen": number };

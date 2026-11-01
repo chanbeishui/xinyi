@@ -1,0 +1,18 @@
+{
+  "kind": "C04_MYSQL_MIGRATION_AND_FULL_INIT",
+  "passed": true,
+  "columns": 21,
+  "indexes": 4,
+  "checks": 6,
+  "upgradeEqualsFull": true,
+  "testSchemaEqualsFull": true,
+  "legacyRowPreservedWithoutGuessing": true,
+  "testRowsBeforeMigration": 0,
+  "testRowsAfterMigration": 0,
+  "legacyRowsReported": 0,
+  "productionOrBusinessSchemaChanged": false,
+  "migration": "sql/migration_20261101_02_customer_pricing.sql",
+  "backup": "仅专属测试库vi_price_rule已备份至忽略目录.vi-local/backup/",
+  "at": "2026-11-01T15:16:04.131210+00:00",
+  "executedAt": "2026-11-01T15:42:21.939301+00:00"
+}

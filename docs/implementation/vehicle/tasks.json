@@ -1647,7 +1647,8 @@
     ],
     "deliverables": [
       "车型字典、检测类型、协议版本、客服资料、权限注册、默认安全配置",
-      "V6.4同步范围：第三方配置/支付method/外部路由/消息模板以主PRD23和X01–X07为准；旧静态配置不能形成旁路"
+      "V6.4同步范围：第三方配置/支付method/外部路由/消息模板以主PRD23和X01–X07为准；旧静态配置不能形成旁路",
+      "C04适配：仅车型计数入口关闭；正式价格须校验真实站点、公司、车型/检测类型、时间和部署环境"
     ],
     "negative_checks": [
       "新车型无价格不能0元下单",
@@ -1696,12 +1697,16 @@
       "access": "不得绕过限制；保存恢复点",
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
-    "scopeRevision": "V6.4-CONFIG-20261022",
-    "definitionHash": "34fdec19a3aa332bcb0844401002eab67e16db2e41319274f969d66ded1b51d4",
+    "scopeRevision": "V6.4-PRICE-CONTEXT-20261101",
+    "definitionHash": "5173e4b3de42b1f99e8661147d887af213b271dffa99c0f85f99cc5ae6312112",
     "evidence": [
       {
         "path": "docs/implementation/vehicle/evidence/C01.json",
         "sha256": "fc56c470ca2e4653c9b6972dbed13c256e499145d47eba434f229dd313cf4308"
+      },
+      {
+        "path": "docs/implementation/vehicle/evidence/C01-20261101.json",
+        "sha256": "54004fd2c67544828963bb17e70131f1ab14af0ab863bdda0deeda5ec59b93c7"
       }
     ],
     "implementation": null,
@@ -1715,10 +1720,23 @@
         "priorEvidence": [],
         "reason": "用户确认身份流程变更，保留代码和旧证据但需适配新范围",
         "at": "2026-10-22T14:48:23.198453+00:00"
+      },
+      {
+        "fromScope": "V6.4-CONFIG-20261022",
+        "toScope": "V6.4-PRICE-CONTEXT-20261101",
+        "priorStatus": "VERIFIED",
+        "priorEvidence": [
+          {
+            "path": "docs/implementation/vehicle/evidence/C01.json",
+            "sha256": "fc56c470ca2e4653c9b6972dbed13c256e499145d47eba434f229dd313cf4308"
+          }
+        ],
+        "reason": "C04公司统一计价替换旧车型计数守卫，保留历史证据重新验证",
+        "at": "2026-11-01"
       }
     ],
     "needsAdaptation": false,
-    "updatedAt": "2026-11-01T06:05:56.062510+00:00"
+    "updatedAt": "2026-11-01T15:45:15.824815+00:00"
   },
   {
     "id": "C02",
@@ -1903,12 +1921,17 @@
       "C02"
     ],
     "deliverables": [
-      "固定费/包含米/超里程单位进位/单或往返，独立审核发布版本"
+      "同公司统一、多站点共用的独立TEST/LIVE计价版本与权威部门归属",
+      "草稿、独立审核、发布、停用、显式原子替换与不可变历史配置",
+      "保存版本和正式匹配试算共用整数计算器；比例计费HALF_UP至分；拒绝无匹配、多匹配和等待费未批准启用"
     ],
     "negative_checks": [
       "多匹配不猜最便宜",
       "未配置拒绝报价",
-      "test配置与prod隔离"
+      "test配置与prod隔离",
+      "提交人/编辑参与人自审、摘要变化后发布拒绝",
+      "未知旧记录不猜测回填；跨公司/环境写入拒绝",
+      "同条件并发发布只能一个成功；显式替换失败整体回滚"
     ],
     "api_ids": [
       "API_133_get",
@@ -1916,7 +1939,10 @@
       "API_135_put",
       "API_136_post",
       "API_137_post",
-      "API_138_post"
+      "API_138_post",
+      "V64_post_api_admin_prices_ruleId_trial",
+      "V64_post_api_admin_prices_trial",
+      "V64_post_api_admin_prices_ruleId_disable"
     ],
     "page_ids": [
       "B20",
@@ -1929,18 +1955,17 @@
     "case_ids": [],
     "scope": "DEVELOPMENT",
     "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
-    "status": "NOT_ASSESSED",
+    "status": "VERIFIED",
     "code_paths": [
       "xinyi-rongli/src/main/java/com/xinyi/rongli/pricing/",
       "xinyi-rongli/src/main/resources/mapper/rongli/pricing/",
       "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/pricing/",
       "xinyi-ui/src/views/rongli/pricing/",
-      "xinyi-ui/src/api/rongli/pricing.ts",
-      "xinyi-miniapp/src/features/pricing/"
+      "xinyi-ui/src/api/rongli/pricing.ts"
     ],
     "test_class": "C04PricingIT",
     "commands": [
-      "mvn -pl xinyi-admin -am -Pvi-it -Dit.test=C04PricingIT verify",
+      "mvn -pl xinyi-admin -am -Pvi-it -Dit.test=C04PricingIT,C04LivePricingIT verify",
       "npm --prefix xinyi-ui run build:prod",
       "npm --prefix xinyi-miniapp run build:mp-weixin"
     ],
@@ -1956,12 +1981,19 @@
       "access": "不得绕过限制；保存恢复点",
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
-    "scopeRevision": "V6.1-UNCHANGED",
-    "definitionHash": "6cd9f7a562da146ef3fca3a6a782f9b4e46185bc6498df4132a265df6866e4d5",
-    "evidence": [],
+    "scopeRevision": "V6.4-COMPANY-PRICING-20261101",
+    "definitionHash": "a7e3fa64ff43f20930b917be6d2068e8e5e3297b9b31f0a35a48fe15f86ef93e",
+    "evidence": [
+      {
+        "path": "docs/implementation/vehicle/evidence/C04-20261101.json",
+        "sha256": "c7b2eefd365c87abcc845b8996c707a881195e433a51675b76ade2a9138324fa"
+      }
+    ],
     "implementation": null,
     "review": null,
-    "blocker": null
+    "blocker": null,
+    "updatedAt": "2026-11-01T15:45:15.855299+00:00",
+    "needsAdaptation": false
   },
   {
     "id": "C05",

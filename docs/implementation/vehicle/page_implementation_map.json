@@ -1432,23 +1432,32 @@
     "taskId": "C03"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "IMPLEMENTED",
+    "implementationFile": "xinyi-ui/src/views/rongli/pricing/pricing.vue",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/C04-20261101.json",
+      "docs/implementation/vehicle/C04/ui-qa.json"
+    ],
     "boardId": "B20",
     "taskId": "C04"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "IMPLEMENTED",
+    "implementationFile": "xinyi-ui/src/views/rongli/pricing/pricing.vue",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/C04-20261101.json",
+      "docs/implementation/vehicle/C04/ui-qa.json"
+    ],
     "boardId": "B20-edit",
     "taskId": "C04"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "IMPLEMENTED",
+    "implementationFile": "xinyi-ui/src/views/rongli/pricing/pricing.vue",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/C04-20261101.json",
+      "docs/implementation/vehicle/C04/ui-qa.json"
+    ],
     "boardId": "B20-review",
     "taskId": "C04"
   },

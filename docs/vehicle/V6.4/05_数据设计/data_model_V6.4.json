@@ -1630,6 +1630,16 @@
         "数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串"
       ],
       [
+        "owner_dept_id",
+        "BIGINT NULL",
+        "明确选择的公司权威部门，旧未知归属保持NULL"
+      ],
+      [
+        "environment",
+        "VARCHAR(12) NULL",
+        "TEST/LIVE；旧未知环境保持NULL"
+      ],
+      [
         "rule_key",
         "VARCHAR(64) NOT NULL",
         "稳定方案标识"
@@ -1680,6 +1690,31 @@
         "审核人"
       ],
       [
+        "created_by",
+        "BIGINT NULL",
+        "可信ADMIN创建人；不接收客户端提交"
+      ],
+      [
+        "config_hash",
+        "CHAR(64) CHARACTER SET ascii COLLATE ascii_bin NULL",
+        "规范化公司环境及计价内容SHA256"
+      ],
+      [
+        "approved_hash",
+        "CHAR(64) CHARACTER SET ascii COLLATE ascii_bin NULL",
+        "独立审核通过时绑定的内容SHA256"
+      ],
+      [
+        "published_at",
+        "DATETIME(3) NULL",
+        "实际发布时间UTC；不改历史配置"
+      ],
+      [
+        "source_rule_id",
+        "BIGINT NULL",
+        "显式派生来源规则ID，服务端验证实际归属"
+      ],
+      [
         "created_at",
         "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
         "创建时间，统一UTC"
@@ -1697,9 +1732,10 @@
     ],
     "indexes": [
       "UNIQUE KEY uk_rule_revision (rule_key,revision)",
-      "KEY ix_lookup (vehicle_type_code,inspection_type_code,status,effective_from)"
+      "KEY ix_lookup (vehicle_type_code,inspection_type_code,status,effective_from)",
+      "KEY ix_price_owner_lookup (owner_dept_id,environment,vehicle_type_code,inspection_type_code,status,effective_from,effective_to)"
     ],
-    "rule": "服务层事务检查生效区间不得重叠；无规则不得0元报价；P02等待费受控启用",
+    "rule": "2026-11-01用户确认同公司统一、多站点共用；owner_dept_id显式归属，TEST/LIVE隔离。审核绑定内容哈希，已发布配置不可覆盖；比例计费HALF_UP至分。旧NULL归属/环境/哈希只报告不猜测回填，不参与新报价。",
     "primaryKey": [
       "id"
     ],
@@ -1716,25 +1752,25 @@
       "rule_key": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "revision": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "vehicle_type_code": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "inspection_type_code": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "status": {
@@ -1793,11 +1829,57 @@
         "insertable": false,
         "updatable": false,
         "clientWritable": false
+      },
+      "owner_dept_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "environment": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "created_by": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "config_hash": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "approved_hash": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "published_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "source_rule_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
       }
     },
     "checks": [
       "CONSTRAINT ck_66_9d65819638e0 CHECK (`status` IN ('DRAFT','IN_REVIEW','APPROVED','PUBLISHED','DISABLED'))",
-      "CONSTRAINT ck_ver_price_rule CHECK (version >= 0)"
+      "CONSTRAINT ck_ver_price_rule CHECK (version >= 0)",
+      "CONSTRAINT ck_price_owner CHECK (owner_dept_id IS NULL OR owner_dept_id > 0)",
+      "CONSTRAINT ck_price_environment CHECK (environment IS NULL OR environment IN ('TEST','LIVE'))",
+      "CONSTRAINT ck_price_hash CHECK (config_hash IS NULL OR LENGTH(config_hash) = 64)",
+      "CONSTRAINT ck_price_approved_hash CHECK (approved_hash IS NULL OR LENGTH(approved_hash) = 64)"
     ]
   },
   {

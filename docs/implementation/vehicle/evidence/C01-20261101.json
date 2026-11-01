@@ -1,0 +1,43 @@
+{
+  "taskId": "C01",
+  "implementer": "Codex-20261101",
+  "scopeRevision": "V6.4-PRICE-CONTEXT-20261101",
+  "baseCommit": "a43be1a",
+  "codeCommit": "本次本地提交；源文件SHA-256见sourceDigests",
+  "codeFiles": [
+    "xinyi-admin/src/test/java/com/xinyi/web/viit/C01ConfigIT.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/config/service/ConfigService.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/pricing/service/PricingService.java"
+  ],
+  "sourceDigests": {
+    "xinyi-admin/src/test/java/com/xinyi/web/viit/C01ConfigIT.java": "f7aedeff6fd2ac66fd22bec6d60dd660a702efa4f285e968e684445c8f02a45d",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/config/service/ConfigService.java": "64887031b1acd7651e28080660e6e428a1723f8d68bdbdf71bd1167b9218c6b4",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/pricing/service/PricingService.java": "66b7e23333c906aa20b5d5be150ff3098090eb29c9c48e33dbd5260029a0fd2c"
+  },
+  "runs": [
+    {
+      "command": "JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk-21.jdk/Contents/Home VI_PYTHON=/opt/homebrew/Cellar/python@3.11/3.11.15/Frameworks/Python.framework/Versions/3.11/bin/python3.11 mvn -o -pl xinyi-admin -am -Pvi-it -Dit.test=E06PlatformIT,E07TestingIT,E08PlatformIT,I01IdentityIT,I02IdentityIT,I03IdentityIT,I04IdentityIT,I05IdentityIT,I06ScopeIT,A02AddressIT,A01VehicleIT,C01ConfigIT,A03OwnerIT,C02StationIT,C03CapacityIT,C04PricingIT,C04LivePricingIT verify",
+      "exitCode": 0,
+      "layer": "LIVE_HTTP_MYSQL",
+      "testsRun": 145,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "reportPath": "docs/implementation/vehicle/C04/full-regression-20261101.json"
+    }
+  ],
+  "review": {
+    "reviewer": null,
+    "approved": false,
+    "reportPath": null
+  },
+  "thirdPartyStub": "SIMULATOR；UI明确API夹具；未调用真实微信/支付/短信；无真机或生产操作",
+  "at": "2026-11-01T15:45:15.790903+00:00",
+  "environment": {
+    "database": "xinyi_vi_it_e07",
+    "guard": "XINYI_VEHICLE_ISOLATED",
+    "testControlKeySource": "既有.env.vi.local，仅进程内注入，不输出/提交",
+    "JDK": "21.0.8 / release17",
+    "realProviders": "NOT_RUN"
+  }
+}

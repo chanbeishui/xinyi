@@ -1061,19 +1061,25 @@
       "effective_from",
       "effective_to",
       "submitted_by",
-      "approved_by"
+      "approved_by",
+      "owner_dept_id",
+      "environment",
+      "created_by",
+      "config_hash",
+      "approved_hash",
+      "published_at",
+      "source_rule_id"
     ],
     "updateColumns": [
-      "rule_key",
-      "revision",
-      "vehicle_type_code",
-      "inspection_type_code",
       "status",
       "config_json",
       "effective_from",
       "effective_to",
       "submitted_by",
-      "approved_by"
+      "approved_by",
+      "config_hash",
+      "approved_hash",
+      "published_at"
     ],
     "columnRules": {
       "id": {
@@ -1085,25 +1091,25 @@
       "rule_key": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "revision": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "vehicle_type_code": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "inspection_type_code": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "status": {
@@ -1162,9 +1168,51 @@
         "insertable": false,
         "updatable": false,
         "clientWritable": false
+      },
+      "owner_dept_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "environment": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "created_by": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "config_hash": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "approved_hash": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "published_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "source_rule_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
       }
     },
-    "rule": "服务层事务检查生效区间不得重叠；无规则不得0元报价；P02等待费受控启用"
+    "rule": "2026-11-01用户确认同公司统一、多站点共用；owner_dept_id显式归属，TEST/LIVE隔离。审核绑定内容哈希，已发布配置不可覆盖；比例计费HALF_UP至分。旧NULL归属/环境/哈希只报告不猜测回填，不参与新报价。"
   },
   {
     "table": "vi_quota_slot",

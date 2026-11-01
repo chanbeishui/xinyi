@@ -1,19 +1,24 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TASK</title><style>body{font:16px/1.75 -apple-system,BlinkMacSystemFont,"Microsoft YaHei",sans-serif;color:#202632;margin:0;background:#f6f7f9}header{padding:14px 24px;background:white;border-bottom:1px solid #ddd}main{max-width:1120px;margin:24px auto;padding:30px;background:white}h1{font-size:30px}h2{margin-top:36px}a{color:#0661bd}table{border-collapse:collapse;width:100%;display:block;overflow:auto;font-size:14px}td,th{border:1px solid #dde2ea;padding:10px;vertical-align:top}th{background:#f1f5fb}pre{padding:15px;background:#f2f4f7;overflow:auto}img{max-width:100%;height:auto}blockquote{padding:10px 20px;border-left:3px solid #2571be;background:#f4f8fc}@media(max-width:700px){main{padding:15px;margin:8px}h1{font-size:25px}}</style></head><body><header><a href="../../../00_开始.html">V6.4 完整资料</a>　<a href="../../../02_UI/index.html">交互原型</a>　T3.4</header><main><h1>C04 · 客户计价规则和试算</h1>
 <p>阶段：M2；责任域：pricing；前置：C01, C02。
-范围版本：<code>V6.1-UNCHANGED</code>；definitionHash：<code>6cd9f7a562da146ef3fca3a6a782f9b4e46185bc6498df4132a265df6866e4d5</code>。</p>
+范围版本：<code>V6.4-COMPANY-PRICING-20261101</code>；definitionHash：<code>a7e3fa64ff43f20930b917be6d2068e8e5e3297b9b31f0a35a48fe15f86ef93e</code>。</p>
 <h2>本任务交付</h2>
 <ul>
-<li>固定费/包含米/超里程单位进位/单或往返，独立审核发布版本</li>
+<li>同公司统一、多站点共用的独立TEST/LIVE计价版本与权威部门归属</li>
+<li>草稿、独立审核、发布、停用、显式原子替换与不可变历史配置</li>
+<li>保存版本和正式匹配试算共用整数计算器；比例计费HALF_UP至分；拒绝无匹配、多匹配和等待费未批准启用</li>
 </ul>
 <h2>必测失败与并发</h2>
 <ul>
 <li>多匹配不猜最便宜</li>
 <li>未配置拒绝报价</li>
 <li>test配置与prod隔离</li>
+<li>提交人/编辑参与人自审、摘要变化后发布拒绝</li>
+<li>未知旧记录不猜测回填；跨公司/环境写入拒绝</li>
+<li>同条件并发发布只能一个成功；显式替换失败整体回滚</li>
 </ul>
 <h2>精确输入</h2>
 <p>主源：04_接口/openapi_V6.4.yaml、05_数据设计/data_model_V6.4.json、06_验收/test_cases_V6.4.json。本目录派生，不独立维护。
-接口：API_133_get, API_134_post, API_135_put, API_136_post, API_137_post, API_138_post
+接口：API_133_get, API_134_post, API_135_put, API_136_post, API_137_post, API_138_post, V64_post_api_admin_prices_ruleId_trial, V64_post_api_admin_prices_trial, V64_post_api_admin_prices_ruleId_disable
 画板：B20, B20-edit, B20-review
 主责任表：vi_price_rule
 验收：无</p>
@@ -23,9 +28,9 @@
 <code>xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/pricing/</code>
 <code>xinyi-ui/src/views/rongli/pricing/</code>
 <code>xinyi-ui/src/api/rongli/pricing.ts</code>
-<code>xinyi-miniapp/src/features/pricing/</code></p>
+小程序报价入口由B02接入；本任务提供共享计价Service及生成契约类型，不伪造独立计价页。</p>
 <h2>验证命令</h2>
-<pre><code class="language-bash">mvn -pl xinyi-admin -am -Pvi-it -Dit.test=C04PricingIT verify
+<pre><code class="language-bash">mvn -pl xinyi-admin -am -Pvi-it -Dit.test=C04PricingIT,C04LivePricingIT verify
 npm --prefix xinyi-ui run build:prod
 npm --prefix xinyi-miniapp run build:mp-weixin
 </code></pre>

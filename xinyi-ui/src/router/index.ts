@@ -112,6 +112,12 @@ export const constantRoutes = [
         meta: { title: '车主档案', icon: 'user' }
       },
       {
+        path: 'pricing',
+        component: () => import('@/views/rongli/pricing/pricing.vue'),
+        name: 'RongliPricing',
+        meta: { title: '客户计价规则', icon: 'money' }
+      },
+      {
         path: 'capacity',
         component: () => import('@/views/rongli/capacity/capacity.vue'),
         name: 'RongliCapacity',

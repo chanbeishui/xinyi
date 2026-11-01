@@ -5021,5 +5021,53 @@
     "flows": [
       "F24"
     ]
+  },
+  {
+    "method": "POST",
+    "path": "/api/admin/prices/{ruleId}/trial",
+    "operationId": "V64_post_api_admin_prices_ruleId_trial",
+    "summary": "试算已保存计价版本",
+    "permission": "biz:price:list",
+    "capability": null,
+    "authorization": {
+      "realm": "ADMIN",
+      "scope": "ORG_DEPT_STATION",
+      "permission": "biz:price:list"
+    },
+    "flows": [
+      "F06"
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/api/admin/prices/trial",
+    "operationId": "V64_post_api_admin_prices_trial",
+    "summary": "按站点匹配唯一已发布价格试算",
+    "permission": "biz:price:list",
+    "capability": null,
+    "authorization": {
+      "realm": "ADMIN",
+      "scope": "ORG_DEPT_STATION",
+      "permission": "biz:price:list"
+    },
+    "flows": [
+      "F06"
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/api/admin/prices/{ruleId}/disable",
+    "operationId": "V64_post_api_admin_prices_ruleId_disable",
+    "summary": "停用计价版本",
+    "permission": "biz:price:publish",
+    "capability": null,
+    "authorization": {
+      "realm": "ADMIN",
+      "scope": "ORG_DEPT_STATION",
+      "permission": "biz:price:publish"
+    },
+    "flows": [
+      "F06"
+    ]
   }
 ]

@@ -735,7 +735,7 @@
 </tbody>
 </table>
 <h2>vi_price_rule · 不可变生效计价版本</h2>
-<p>服务层事务检查生效区间不得重叠；无规则不得0元报价；P02等待费受控启用</p>
+<p>2026-11-01用户确认同公司统一、多站点共用；owner_dept_id显式归属，TEST/LIVE隔离。审核绑定内容哈希，已发布配置不可覆盖；比例计费HALF_UP至分。旧NULL归属/环境/哈希只报告不猜测回填，不参与新报价。</p>
 <table>
 <thead>
 <tr>
@@ -749,6 +749,16 @@
   <td>id</td>
   <td><code>BIGINT NOT NULL AUTO_INCREMENT</code></td>
   <td>数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串</td>
+</tr>
+<tr>
+  <td>owner_dept_id</td>
+  <td><code>BIGINT NULL</code></td>
+  <td>明确选择的公司权威部门，旧未知归属保持NULL</td>
+</tr>
+<tr>
+  <td>environment</td>
+  <td><code>VARCHAR(12) NULL</code></td>
+  <td>TEST/LIVE；旧未知环境保持NULL</td>
 </tr>
 <tr>
   <td>rule_key</td>
@@ -799,6 +809,31 @@
   <td>approved_by</td>
   <td><code>BIGINT</code></td>
   <td>审核人</td>
+</tr>
+<tr>
+  <td>created_by</td>
+  <td><code>BIGINT NULL</code></td>
+  <td>可信ADMIN创建人；不接收客户端提交</td>
+</tr>
+<tr>
+  <td>config_hash</td>
+  <td><code>CHAR(64) CHARACTER SET ascii COLLATE ascii_bin NULL</code></td>
+  <td>规范化公司环境及计价内容SHA256</td>
+</tr>
+<tr>
+  <td>approved_hash</td>
+  <td><code>CHAR(64) CHARACTER SET ascii COLLATE ascii_bin NULL</code></td>
+  <td>独立审核通过时绑定的内容SHA256</td>
+</tr>
+<tr>
+  <td>published_at</td>
+  <td><code>DATETIME(3) NULL</code></td>
+  <td>实际发布时间UTC；不改历史配置</td>
+</tr>
+<tr>
+  <td>source_rule_id</td>
+  <td><code>BIGINT NULL</code></td>
+  <td>显式派生来源规则ID，服务端验证实际归属</td>
 </tr>
 <tr>
   <td>created_at</td>

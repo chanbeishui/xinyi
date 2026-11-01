@@ -287,3 +287,6 @@ V64_get_api_admin_integrations_test_recipients,GET,/api/admin/integrations/test-
 V64_post_api_admin_integrations_test_recipients,POST,/api/admin/integrations/test-recipients,登记受控测试收件人,biz:integration:testrecipient,
 V64_post_api_admin_integrations_test_recipients_recipientId_revoke,POST,/api/admin/integrations/test-recipients/{recipientId}/revoke,撤销测试收件人,biz:integration:testrecipient,
 V64_post_api_admin_capacity,POST,/api/admin/capacity,新增站点未来供给时段,biz:capacity:edit,
+V64_post_api_admin_prices_ruleId_trial,POST,/api/admin/prices/{ruleId}/trial,试算已保存计价版本,biz:price:list,
+V64_post_api_admin_prices_trial,POST,/api/admin/prices/trial,按站点匹配唯一已发布价格试算,biz:price:list,
+V64_post_api_admin_prices_ruleId_disable,POST,/api/admin/prices/{ruleId}/disable,停用计价版本,biz:price:publish,

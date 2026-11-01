@@ -1,0 +1,129 @@
+{
+  "taskId": "C04",
+  "implementer": "Codex-20261101",
+  "scopeRevision": "V6.4-COMPANY-PRICING-20261101",
+  "baseCommit": "a43be1a",
+  "codeCommit": "本次本地提交；源文件SHA-256见sourceDigests",
+  "codeFiles": [
+    "docs/implementation/vehicle/C04/pricing-ui-qa.cjs",
+    "docs/implementation/vehicle/C04/verify_schema.py",
+    "sql/migration_20261101_02_customer_pricing.sql",
+    "sql/ry_20260417.sql",
+    "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/pricing/PricingController.java",
+    "xinyi-admin/src/test/java/com/xinyi/web/viit/C04LivePricingIT.java",
+    "xinyi-admin/src/test/java/com/xinyi/web/viit/C04PricingIT.java",
+    "xinyi-admin/src/test/java/com/xinyi/web/viit/E08PlatformIT.java",
+    "xinyi-admin/src/test/java/com/xinyi/web/viit/PricingHttpFixture.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/pricing/domain/ViPriceRule.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/pricing/dto/PriceAction.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/pricing/dto/PriceContent.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/pricing/dto/PriceQuery.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/pricing/dto/PriceTrial.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/pricing/dto/PriceView.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/pricing/dto/PriceWrite.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/pricing/mapper/ViPriceRuleMapper.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/pricing/service/PriceCalculator.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/pricing/service/PriceEnvironment.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/pricing/service/PricingService.java",
+    "xinyi-rongli/src/main/resources/mapper/rongli/pricing/ViPriceRuleMapper.xml",
+    "xinyi-rongli/src/test/java/com/xinyi/rongli/pricing/PriceCalculatorTest.java",
+    "xinyi-rongli/src/test/java/com/xinyi/rongli/pricing/PriceEnvironmentTest.java",
+    "xinyi-ui/src/api/rongli/pricing.ts",
+    "xinyi-ui/src/router/index.ts",
+    "xinyi-ui/src/views/rongli/pricing/pricing.vue"
+  ],
+  "sourceDigests": {
+    "docs/implementation/vehicle/C04/pricing-ui-qa.cjs": "915a20e1c3fcfaa43e6f518b09c15e5d0fe71b94be600f86b9c02379f2720226",
+    "docs/implementation/vehicle/C04/verify_schema.py": "a13907541c0f20157b884689c5a087b56fbc242ddb33a9b43eb849da2216e37d",
+    "sql/migration_20261101_02_customer_pricing.sql": "78570df73ac0fca8dccfaca44739f37f5764a1584a1382b00a7dc93ab0b58dcf",
+    "sql/ry_20260417.sql": "6d9d095c18e78ecf4d0d87b58e69492f4c8b736d7d5b214a2148803877324d59",
+    "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/pricing/PricingController.java": "8f88c19c1bff354013e978913ba68f31dddb1616bb974f9fbc6131f75f616844",
+    "xinyi-admin/src/test/java/com/xinyi/web/viit/C04LivePricingIT.java": "7563ae9a38e2f14a81e137035f5aab5693fc02a6b56179980eb3b476f372d802",
+    "xinyi-admin/src/test/java/com/xinyi/web/viit/C04PricingIT.java": "c223f88cf5154d713d73228457bfa8b7daf6065013e1557455dde7eebf4a24aa",
+    "xinyi-admin/src/test/java/com/xinyi/web/viit/E08PlatformIT.java": "523f51d4c73bae70df0a11fc99114f4bbb0cad74ecfe04c15d9d4fc26adc629f",
+    "xinyi-admin/src/test/java/com/xinyi/web/viit/PricingHttpFixture.java": "2d359c3270b5abc8e577415ef59e3c33709ceef4d043521fbf56154d20613708",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/pricing/domain/ViPriceRule.java": "2826ae9506e58b90c6183fec22c2bb0b965d10067cd5369df7c353ce1050bd6b",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/pricing/dto/PriceAction.java": "3ad2e87bbbcb5f01db369b29d172a1d7f92ee51facb23315e8a37e8c00facedf",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/pricing/dto/PriceContent.java": "61e5fbadcc1e03b85dbeab6a8f497c5d5d0eb4bf69e017adce3e49e9cae4012d",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/pricing/dto/PriceQuery.java": "243412c124a973e885ba7e7cd7552db2ea43629b1edb633cb121b7bc8c904d51",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/pricing/dto/PriceTrial.java": "15115221c8529f3e1baa8d5172de0fa5a358bb4e4553e78387a71777fc1c2712",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/pricing/dto/PriceView.java": "8c676a1d791b7997e7145cd3ae94568eb20e0efba77dc62a1977708a841b323a",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/pricing/dto/PriceWrite.java": "7e072d274a8686b286ab3bad54886d34f2b8b5680c0db1c03e70302bd6abb8df",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/pricing/mapper/ViPriceRuleMapper.java": "965c91ca72a313343709c074db2e36457fbaf95a1b7f3a1d4b6b6c917c19675f",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/pricing/service/PriceCalculator.java": "a0533c35cd1641f5102f292cbdf5c940453418abf944429112e3cd98c0fc2266",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/pricing/service/PriceEnvironment.java": "d5f0812ed22fa53bc64aacc5866e5679b7379fe5a4989984cb230e2ca0df1e68",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/pricing/service/PricingService.java": "66b7e23333c906aa20b5d5be150ff3098090eb29c9c48e33dbd5260029a0fd2c",
+    "xinyi-rongli/src/main/resources/mapper/rongli/pricing/ViPriceRuleMapper.xml": "d6149a565b865d6dee2032545d51dd9770b13fb108bf3a468c36b15ffe9d340a",
+    "xinyi-rongli/src/test/java/com/xinyi/rongli/pricing/PriceCalculatorTest.java": "0dd8992d4d4d00a998ff7444428a256fe5b4815eaaf029b606b97b0e9ea94c44",
+    "xinyi-rongli/src/test/java/com/xinyi/rongli/pricing/PriceEnvironmentTest.java": "d195be25059f778862e908a9b1410f887c79952c88dcb5aee8c55bd0d0002102",
+    "xinyi-ui/src/api/rongli/pricing.ts": "e3f6604ce012421062d097fb4f7b70a1e3429c8c4116c1dd8833eb906d9a011c",
+    "xinyi-ui/src/router/index.ts": "6c8e81195f5bcf48ae49bf771c3420de1e7b7f23071045f0136e7386c7b0b85e",
+    "xinyi-ui/src/views/rongli/pricing/pricing.vue": "bb61891a17f975b356cd9c0382079c45760e656fef049cad4a5a3dd1dc012441"
+  },
+  "runs": [
+    {
+      "command": "JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk-21.jdk/Contents/Home VI_PYTHON=/opt/homebrew/Cellar/python@3.11/3.11.15/Frameworks/Python.framework/Versions/3.11/bin/python3.11 mvn -o -pl xinyi-admin -am -Pvi-it -Dit.test=E06PlatformIT,E07TestingIT,E08PlatformIT,I01IdentityIT,I02IdentityIT,I03IdentityIT,I04IdentityIT,I05IdentityIT,I06ScopeIT,A02AddressIT,A01VehicleIT,C01ConfigIT,A03OwnerIT,C02StationIT,C03CapacityIT,C04PricingIT,C04LivePricingIT verify",
+      "exitCode": 0,
+      "layer": "LIVE_HTTP_MYSQL",
+      "testsRun": 145,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "reportPath": "docs/implementation/vehicle/C04/full-regression-20261101.json"
+    },
+    {
+      "command": "npm --prefix xinyi-ui run build:prod",
+      "exitCode": 0,
+      "layer": "BUILD",
+      "testsRun": 1,
+      "skipped": 0,
+      "reportPath": "docs/implementation/vehicle/C04/report.md"
+    },
+    {
+      "command": "npm --prefix xinyi-miniapp run type-check && npm --prefix xinyi-miniapp run build:mp-weixin",
+      "exitCode": 0,
+      "layer": "BUILD",
+      "testsRun": 1,
+      "skipped": 0,
+      "reportPath": "docs/implementation/vehicle/C04/report.md"
+    },
+    {
+      "command": ".vi-local/venv/bin/python -m pytest docs/vehicle/V6.4/12_工程执行/tests/test_contract_regression.py -q",
+      "exitCode": 0,
+      "layer": "CONTRACT",
+      "testsRun": 18,
+      "skipped": 0,
+      "reportPath": "docs/implementation/vehicle/C04/contract-regression.txt"
+    },
+    {
+      "command": "python3 /private/tmp/xinyi-ui-qa/run-ui.py pricing-qa.cjs（脚本归档于C04/pricing-ui-qa.cjs）",
+      "exitCode": 0,
+      "layer": "UI_FIXTURE",
+      "testsRun": 6,
+      "skipped": 0,
+      "reportPath": "docs/implementation/vehicle/C04/ui-qa.json"
+    },
+    {
+      "command": ".vi-local/venv/bin/python docs/implementation/vehicle/C04/verify_schema.py",
+      "exitCode": 0,
+      "layer": "MYSQL_SCHEMA",
+      "testsRun": 1,
+      "skipped": 0,
+      "reportPath": "docs/implementation/vehicle/C04/schema-recheck.json"
+    }
+  ],
+  "review": {
+    "reviewer": null,
+    "approved": false,
+    "reportPath": null
+  },
+  "thirdPartyStub": "SIMULATOR；UI明确API夹具；未调用真实微信/支付/短信；无真机或生产操作",
+  "at": "2026-11-01T15:45:15.790903+00:00",
+  "environment": {
+    "database": "xinyi_vi_it_e07",
+    "guard": "XINYI_VEHICLE_ISOLATED",
+    "testControlKeySource": "既有.env.vi.local，仅进程内注入，不输出/提交",
+    "JDK": "21.0.8 / release17",
+    "realProviders": "NOT_RUN"
+  }
+}

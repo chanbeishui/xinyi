@@ -14071,9 +14071,7 @@ paths:
       summary: 计价规则列表
       tags:
       - ADMIN
-      description: '流程：F06。权限码为建议，须映射实际仓库；非全局角色必须有站点范围；审核不允许自己审批自己的申请
-
-        参数校验、真实归属、服务端当前状态/版本先于写入；不接受主体伪造。'
+      description: 公司以显式owner_dept_id为权威归属，多站点共用；TEST/LIVE按部署隔离。写操作权限、归属、版本、幂等、审计及outbox同事务；审核不能由提交人或编辑参与人完成。试算不建单、不占容量、不发支付。
       x-flow-ids:
       - F06
       security:
@@ -14099,12 +14097,18 @@ paths:
                   total:
                     type: integer
                     minimum: 0
+                  environment:
+                    type: string
+                    enum:
+                    - TEST
+                    - LIVE
                 additionalProperties: false
                 required:
                 - code
                 - msg
                 - rows
                 - total
+                - environment
           headers:
             Cache-Control:
               schema:
@@ -14149,6 +14153,37 @@ paths:
           minimum: 1
           maximum: 100
           default: 10
+      - name: ownerDeptId
+        in: query
+        schema:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+      - name: environment
+        in: query
+        schema:
+          type: string
+          enum:
+          - TEST
+          - LIVE
+      - name: status
+        in: query
+        schema:
+          type: string
+          enum:
+          - DRAFT
+          - IN_REVIEW
+          - APPROVED
+          - PUBLISHED
+          - DISABLED
+      - name: vehicleTypeCode
+        in: query
+        schema:
+          type: string
+      - name: inspectionTypeCode
+        in: query
+        schema:
+          type: string
       x-permission: biz:price:list
       x-authorization:
         realm: ADMIN
@@ -14172,9 +14207,7 @@ paths:
       summary: 计价草稿
       tags:
       - ADMIN
-      description: '流程：F06。权限码为建议，须映射实际仓库；非全局角色必须有站点范围；审核不允许自己审批自己的申请
-
-        参数校验、真实归属、服务端当前状态/版本先于写入；不接受主体伪造。'
+      description: 公司以显式owner_dept_id为权威归属，多站点共用；TEST/LIVE按部署隔离。写操作权限、归属、版本、幂等、审计及outbox同事务；审核不能由提交人或编辑参与人完成。试算不建单、不占容量、不发支付。
       x-flow-ids:
       - F06
       security:
@@ -14290,9 +14323,7 @@ paths:
       summary: 修改计价草稿
       tags:
       - ADMIN
-      description: '流程：F06。权限码为建议，须映射实际仓库；非全局角色必须有站点范围；审核不允许自己审批自己的申请
-
-        参数校验、真实归属、服务端当前状态/版本先于写入；不接受主体伪造。'
+      description: 公司以显式owner_dept_id为权威归属，多站点共用；TEST/LIVE按部署隔离。写操作权限、归属、版本、幂等、审计及outbox同事务；审核不能由提交人或编辑参与人完成。试算不建单、不占容量、不发支付。
       x-flow-ids:
       - F06
       security:
@@ -14419,9 +14450,7 @@ paths:
       summary: 提交价格审核
       tags:
       - ADMIN
-      description: '流程：F06。权限码为建议，须映射实际仓库；非全局角色必须有站点范围；审核不允许自己审批自己的申请
-
-        参数校验、真实归属、服务端当前状态/版本先于写入；不接受主体伪造。'
+      description: 公司以显式owner_dept_id为权威归属，多站点共用；TEST/LIVE按部署隔离。写操作权限、归属、版本、幂等、审计及outbox同事务；审核不能由提交人或编辑参与人完成。试算不建单、不占容量、不发支付。
       x-flow-ids:
       - F06
       security:
@@ -14548,9 +14577,7 @@ paths:
       summary: 价格审核
       tags:
       - ADMIN
-      description: '流程：F06。权限码为建议，须映射实际仓库；非全局角色必须有站点范围；审核不允许自己审批自己的申请
-
-        参数校验、真实归属、服务端当前状态/版本先于写入；不接受主体伪造。'
+      description: 公司以显式owner_dept_id为权威归属，多站点共用；TEST/LIVE按部署隔离。写操作权限、归属、版本、幂等、审计及outbox同事务；审核不能由提交人或编辑参与人完成。试算不建单、不占容量、不发支付。
       x-flow-ids:
       - F06
       security:
@@ -14677,9 +14704,7 @@ paths:
       summary: 发布计价版本
       tags:
       - ADMIN
-      description: '流程：F06。权限码为建议，须映射实际仓库；非全局角色必须有站点范围；审核不允许自己审批自己的申请
-
-        参数校验、真实归属、服务端当前状态/版本先于写入；不接受主体伪造。'
+      description: 公司以显式owner_dept_id为权威归属，多站点共用；TEST/LIVE按部署隔离。写操作权限、归属、版本、幂等、审计及outbox同事务；审核不能由提交人或编辑参与人完成。试算不建单、不占容量、不发支付。
       x-flow-ids:
       - F06
       security:
@@ -14764,7 +14789,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/VersionReason'
+              $ref: '#/components/schemas/PricePublish'
       x-permission: biz:price:publish
       x-authorization:
         realm: ADMIN
@@ -31524,6 +31549,367 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/TestRecipientRevoke'
+  /api/admin/prices/{ruleId}/trial:
+    post:
+      operationId: V64_post_api_admin_prices_ruleId_trial
+      summary: 试算已保存计价版本
+      tags:
+      - ADMIN
+      description: 公司以显式owner_dept_id为权威归属，多站点共用；TEST/LIVE按部署隔离。写操作权限、归属、版本、幂等、审计及outbox同事务；审核不能由提交人或编辑参与人完成。试算不建单、不占容量、不发支付。
+      x-flow-ids:
+      - F06
+      security:
+      - AdminBearerAuth: []
+      responses:
+        '200':
+          description: 操作成功；领域校验后返回真实结果
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    enum:
+                    - 200
+                  msg:
+                    type: string
+                  data:
+                    allOf:
+                    - $ref: '#/components/schemas/PriceTrial'
+                    nullable: true
+                    type: object
+                additionalProperties: false
+                required:
+                - code
+                - msg
+                - data
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+                enum:
+                - no-store
+              description: 身份/交易/个人业务响应不缓存
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalError'
+        '503':
+          $ref: '#/components/responses/Unavailable'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+      parameters:
+      - name: ruleId
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+      - name: X-Client-Type
+        in: header
+        required: true
+        schema:
+          type: string
+          enum:
+          - owner
+          - driver
+          - station
+          - admin
+        description: 仅审计来源，不作为授权；须匹配服务端会话视角
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PriceSavedTrialRequest'
+      x-permission: biz:price:list
+      x-authorization:
+        realm: ADMIN
+        scope: ORG_DEPT_STATION
+        permission: biz:price:list
+      x-error-codes:
+      - VI_REQUEST_INVALID
+      - VI_AUTH_REQUIRED
+      - VI_TOKEN_REALM_MISMATCH
+      - VI_REFRESH_REUSED
+      - VI_FORBIDDEN
+      - VI_SELF_REVIEW_DENIED
+      - VI_RESOURCE_NOT_VISIBLE
+      - VI_VERSION_CONFLICT
+      - VI_STATE_CONFLICT
+      - VI_IDEMPOTENCY_CONFLICT
+      - VI_SELECTION_CONFLICT
+      - VI_CONTEXT_CHANGED
+      - VI_SNAPSHOT_CHANGED
+      - VI_DATA_INVALID
+      - VI_EVIDENCE_INCOMPLETE
+      - VI_HANDOVER_CODE_INVALID
+      - VI_HANDOVER_LOCKED
+      - VI_UNPRICED_LINES
+      - VI_REFUND_LIMIT
+      - VI_PAYMENT_LIMIT
+      - VI_SERVICE_UNAVAILABLE
+      - VI_CAPABILITY_NOT_CONFIGURED
+      - VI_TRAINING_NOT_READY
+      - VI_RATE_LIMITED
+      - VI_INTERNAL_ERROR
+      - VI_AUTHORITY_UNAVAILABLE
+      - VI_UPSTREAM_UNAVAILABLE
+      x-error-policy: OBJECT_404_HIDES_EXISTENCE
+      x-contract-baseline: V6.4
+  /api/admin/prices/trial:
+    post:
+      operationId: V64_post_api_admin_prices_trial
+      summary: 按站点匹配唯一已发布价格试算
+      tags:
+      - ADMIN
+      description: 公司以显式owner_dept_id为权威归属，多站点共用；TEST/LIVE按部署隔离。写操作权限、归属、版本、幂等、审计及outbox同事务；审核不能由提交人或编辑参与人完成。试算不建单、不占容量、不发支付。
+      x-flow-ids:
+      - F06
+      security:
+      - AdminBearerAuth: []
+      responses:
+        '200':
+          description: 操作成功；领域校验后返回真实结果
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    enum:
+                    - 200
+                  msg:
+                    type: string
+                  data:
+                    allOf:
+                    - $ref: '#/components/schemas/PriceTrial'
+                    nullable: true
+                    type: object
+                additionalProperties: false
+                required:
+                - code
+                - msg
+                - data
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+                enum:
+                - no-store
+              description: 身份/交易/个人业务响应不缓存
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalError'
+        '503':
+          $ref: '#/components/responses/Unavailable'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+      parameters:
+      - name: X-Client-Type
+        in: header
+        required: true
+        schema:
+          type: string
+          enum:
+          - owner
+          - driver
+          - station
+          - admin
+        description: 仅审计来源，不作为授权；须匹配服务端会话视角
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PriceMatchTrialRequest'
+      x-permission: biz:price:list
+      x-authorization:
+        realm: ADMIN
+        scope: ORG_DEPT_STATION
+        permission: biz:price:list
+      x-error-codes:
+      - VI_REQUEST_INVALID
+      - VI_AUTH_REQUIRED
+      - VI_TOKEN_REALM_MISMATCH
+      - VI_REFRESH_REUSED
+      - VI_FORBIDDEN
+      - VI_SELF_REVIEW_DENIED
+      - VI_RESOURCE_NOT_VISIBLE
+      - VI_VERSION_CONFLICT
+      - VI_STATE_CONFLICT
+      - VI_IDEMPOTENCY_CONFLICT
+      - VI_SELECTION_CONFLICT
+      - VI_CONTEXT_CHANGED
+      - VI_SNAPSHOT_CHANGED
+      - VI_DATA_INVALID
+      - VI_EVIDENCE_INCOMPLETE
+      - VI_HANDOVER_CODE_INVALID
+      - VI_HANDOVER_LOCKED
+      - VI_UNPRICED_LINES
+      - VI_REFUND_LIMIT
+      - VI_PAYMENT_LIMIT
+      - VI_SERVICE_UNAVAILABLE
+      - VI_CAPABILITY_NOT_CONFIGURED
+      - VI_TRAINING_NOT_READY
+      - VI_RATE_LIMITED
+      - VI_INTERNAL_ERROR
+      - VI_AUTHORITY_UNAVAILABLE
+      - VI_UPSTREAM_UNAVAILABLE
+      x-error-policy: OBJECT_404_HIDES_EXISTENCE
+      x-contract-baseline: V6.4
+  /api/admin/prices/{ruleId}/disable:
+    post:
+      operationId: V64_post_api_admin_prices_ruleId_disable
+      summary: 停用计价版本
+      tags:
+      - ADMIN
+      description: 公司以显式owner_dept_id为权威归属，多站点共用；TEST/LIVE按部署隔离。写操作权限、归属、版本、幂等、审计及outbox同事务；审核不能由提交人或编辑参与人完成。试算不建单、不占容量、不发支付。
+      x-flow-ids:
+      - F06
+      security:
+      - AdminBearerAuth: []
+      responses:
+        '200':
+          description: 操作成功；领域校验后返回真实结果
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    enum:
+                    - 200
+                  msg:
+                    type: string
+                  data:
+                    allOf:
+                    - $ref: '#/components/schemas/PriceRule'
+                    nullable: true
+                    type: object
+                additionalProperties: false
+                required:
+                - code
+                - msg
+                - data
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+                enum:
+                - no-store
+              description: 身份/交易/个人业务响应不缓存
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalError'
+        '503':
+          $ref: '#/components/responses/Unavailable'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+      parameters:
+      - name: ruleId
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+      - name: Idempotency-Key
+        in: header
+        required: true
+        schema:
+          type: string
+          description: UUID；按主体+动作+资源+键及请求摘要保存首次结果；同键不同体409，至少24h，资金/交接另有永久业务去重
+      - name: X-Client-Type
+        in: header
+        required: true
+        schema:
+          type: string
+          enum:
+          - owner
+          - driver
+          - station
+          - admin
+        description: 仅审计来源，不作为授权；须匹配服务端会话视角
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VersionReason'
+      x-permission: biz:price:publish
+      x-authorization:
+        realm: ADMIN
+        scope: ORG_DEPT_STATION
+        permission: biz:price:publish
+      x-error-codes:
+      - VI_REQUEST_INVALID
+      - VI_AUTH_REQUIRED
+      - VI_TOKEN_REALM_MISMATCH
+      - VI_REFRESH_REUSED
+      - VI_FORBIDDEN
+      - VI_SELF_REVIEW_DENIED
+      - VI_RESOURCE_NOT_VISIBLE
+      - VI_VERSION_CONFLICT
+      - VI_STATE_CONFLICT
+      - VI_IDEMPOTENCY_CONFLICT
+      - VI_SELECTION_CONFLICT
+      - VI_CONTEXT_CHANGED
+      - VI_SNAPSHOT_CHANGED
+      - VI_DATA_INVALID
+      - VI_EVIDENCE_INCOMPLETE
+      - VI_HANDOVER_CODE_INVALID
+      - VI_HANDOVER_LOCKED
+      - VI_UNPRICED_LINES
+      - VI_REFUND_LIMIT
+      - VI_PAYMENT_LIMIT
+      - VI_SERVICE_UNAVAILABLE
+      - VI_CAPABILITY_NOT_CONFIGURED
+      - VI_TRAINING_NOT_READY
+      - VI_RATE_LIMITED
+      - VI_INTERNAL_ERROR
+      - VI_AUTHORITY_UNAVAILABLE
+      - VI_UPSTREAM_UNAVAILABLE
+      x-error-policy: OBJECT_404_HIDES_EXISTENCE
+      x-contract-baseline: V6.4
 components:
   securitySchemes:
     MiniBearerAuth:
@@ -33459,26 +33845,89 @@ components:
       additionalProperties: false
     PriceRule:
       type: object
+      additionalProperties: false
       properties:
         ruleId:
           type: string
           pattern: ^[1-9][0-9]{0,18}$
           maxLength: 19
-          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+        ownerDeptId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+        companyName:
+          type: string
+        environment:
+          type: string
+          enum:
+          - TEST
+          - LIVE
+        ruleKey:
+          type: string
         revision:
           type: integer
-          minimum: 0
+          minimum: 1
         status:
           $ref: '#/components/schemas/PriceRuleStatus'
         config:
-          $ref: '#/components/schemas/PriceUpdate'
+          type: object
+          allOf:
+          - $ref: '#/components/schemas/PriceContent'
+          nullable: true
         version:
           type: integer
           minimum: 0
-          description: 客户端最后读取的版本；服务端条件更新，冲突返回409
-      additionalProperties: false
+          maximum: 9007199254740991
+        sourceRuleId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          nullable: true
+        createdBy:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          nullable: false
+        submittedBy:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          nullable: true
+        approvedBy:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          nullable: true
+        contentHash:
+          type: string
+          pattern: ^[a-f0-9]{64}$
+          nullable: false
+        approvedHash:
+          type: string
+          pattern: ^[a-f0-9]{64}$
+          nullable: true
+        publishedAt:
+          type: string
+          format: date-time
+          pattern: Z$
+          nullable: true
       required:
+      - ruleId
+      - ownerDeptId
+      - companyName
+      - environment
+      - ruleKey
+      - revision
+      - status
+      - config
       - version
+      - sourceRuleId
+      - createdBy
+      - submittedBy
+      - approvedBy
+      - contentHash
+      - approvedHash
+      - publishedAt
     UploadRequest:
       type: object
       properties:
@@ -39824,33 +40273,57 @@ components:
     PriceCreate:
       type: object
       properties:
+        ownerDeptId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+        environment:
+          type: string
+          enum:
+          - TEST
+          - LIVE
+        sourceRuleId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
         name:
           type: string
+          minLength: 1
+          maxLength: 100
         vehicleTypeCode:
           type: string
+          minLength: 1
+          maxLength: 64
         inspectionTypeCode:
           type: string
+          minLength: 1
+          maxLength: 64
         inspectionFee:
           type: integer
           format: int64
           minimum: 0
           description: 人民币分，非浮点；上限按商户及业务校验
+          maximum: 9007199254740991
         driverBaseFee:
           type: integer
           format: int64
           minimum: 0
           description: 人民币分，非浮点；上限按商户及业务校验
+          maximum: 9007199254740991
         includedDistanceMeter:
           type: integer
           minimum: 0
+          maximum: 2147483647
         distanceUnitMeter:
           type: integer
           minimum: 1
+          maximum: 2147483647
         distanceUnitFee:
           type: integer
           format: int64
           minimum: 0
           description: 人民币分，非浮点；上限按商户及业务校验
+          maximum: 9007199254740991
         distanceRounding:
           type: string
           enum:
@@ -39866,14 +40339,17 @@ components:
         waitingFreeSeconds:
           type: integer
           minimum: 0
+          maximum: 2147483647
         waitingUnitSeconds:
           type: integer
           minimum: 0
+          maximum: 2147483647
         waitingUnitFee:
           type: integer
           format: int64
           minimum: 0
           description: 人民币分，非浮点；上限按商户及业务校验
+          maximum: 9007199254740991
         effectiveFrom:
           type: string
           format: date-time
@@ -39886,6 +40362,8 @@ components:
           description: ISO8601 UTC时刻，必须Z结尾；显示与业务日期Asia/Shanghai
       additionalProperties: false
       required:
+      - ownerDeptId
+      - environment
       - name
       - vehicleTypeCode
       - inspectionTypeCode
@@ -39896,37 +40374,57 @@ components:
       - distanceUnitFee
       - distanceRounding
       - routeBasis
-      description: 等待费启用受P02评审阻断；首期价格不含司机结算金额；币值最终四舍五入规则须签字
+      description: 显式公司归属和当前部署环境；sourceRuleId可从已发布/停用版本派生新修订，不覆盖原内容。
     PriceUpdate:
       type: object
       properties:
+        ownerDeptId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+        environment:
+          type: string
+          enum:
+          - TEST
+          - LIVE
         name:
           type: string
+          minLength: 1
+          maxLength: 100
         vehicleTypeCode:
           type: string
+          minLength: 1
+          maxLength: 64
         inspectionTypeCode:
           type: string
+          minLength: 1
+          maxLength: 64
         inspectionFee:
           type: integer
           format: int64
           minimum: 0
           description: 人民币分，非浮点；上限按商户及业务校验
+          maximum: 9007199254740991
         driverBaseFee:
           type: integer
           format: int64
           minimum: 0
           description: 人民币分，非浮点；上限按商户及业务校验
+          maximum: 9007199254740991
         includedDistanceMeter:
           type: integer
           minimum: 0
+          maximum: 2147483647
         distanceUnitMeter:
           type: integer
           minimum: 1
+          maximum: 2147483647
         distanceUnitFee:
           type: integer
           format: int64
           minimum: 0
           description: 人民币分，非浮点；上限按商户及业务校验
+          maximum: 9007199254740991
         distanceRounding:
           type: string
           enum:
@@ -39942,14 +40440,17 @@ components:
         waitingFreeSeconds:
           type: integer
           minimum: 0
+          maximum: 2147483647
         waitingUnitSeconds:
           type: integer
           minimum: 0
+          maximum: 2147483647
         waitingUnitFee:
           type: integer
           format: int64
           minimum: 0
           description: 人民币分，非浮点；上限按商户及业务校验
+          maximum: 9007199254740991
         effectiveFrom:
           type: string
           format: date-time
@@ -39962,12 +40463,12 @@ components:
           description: ISO8601 UTC时刻，必须Z结尾；显示与业务日期Asia/Shanghai
         expectedVersion:
           type: integer
-          format: int64
           minimum: 0
           maximum: 9007199254740991
-          description: 最后读取的非负版本；更新CAS，冲突409
       additionalProperties: false
       required:
+      - ownerDeptId
+      - environment
       - name
       - vehicleTypeCode
       - inspectionTypeCode
@@ -39979,7 +40480,7 @@ components:
       - distanceRounding
       - routeBasis
       - expectedVersion
-      description: 等待费启用受P02评审阻断；首期价格不含司机结算金额；币值最终四舍五入规则须签字
+      description: 仅可修改DRAFT内容；公司、环境、车型与检测类型固定。审核中的或已批准/发布内容不可覆盖。
     DriverFeeRuleCreate:
       type: object
       additionalProperties: false
@@ -42709,6 +43210,276 @@ components:
       - endAt
       - total
       - reason
+
+    PriceContent:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 100
+        vehicleTypeCode:
+          type: string
+          minLength: 1
+          maxLength: 64
+        inspectionTypeCode:
+          type: string
+          minLength: 1
+          maxLength: 64
+        inspectionFee:
+          type: integer
+          format: int64
+          minimum: 0
+          description: 人民币分，非浮点；上限按商户及业务校验
+          maximum: 9007199254740991
+        driverBaseFee:
+          type: integer
+          format: int64
+          minimum: 0
+          description: 人民币分，非浮点；上限按商户及业务校验
+          maximum: 9007199254740991
+        includedDistanceMeter:
+          type: integer
+          minimum: 0
+          maximum: 2147483647
+        distanceUnitMeter:
+          type: integer
+          minimum: 1
+          maximum: 2147483647
+        distanceUnitFee:
+          type: integer
+          format: int64
+          minimum: 0
+          description: 人民币分，非浮点；上限按商户及业务校验
+          maximum: 9007199254740991
+        distanceRounding:
+          type: string
+          enum:
+          - CEIL_UNIT
+          - EXACT_PRORATA
+        routeBasis:
+          type: string
+          enum:
+          - ONE_WAY
+          - ROUND_TRIP
+        waitingFeeEnabled:
+          type: boolean
+        waitingFreeSeconds:
+          type: integer
+          minimum: 0
+          maximum: 2147483647
+        waitingUnitSeconds:
+          type: integer
+          minimum: 0
+          maximum: 2147483647
+        waitingUnitFee:
+          type: integer
+          format: int64
+          minimum: 0
+          description: 人民币分，非浮点；上限按商户及业务校验
+          maximum: 9007199254740991
+        effectiveFrom:
+          type: string
+          format: date-time
+          pattern: Z$
+          description: ISO8601 UTC时刻，必须Z结尾；显示与业务日期Asia/Shanghai
+          nullable: true
+        effectiveTo:
+          type: string
+          format: date-time
+          pattern: Z$
+          description: ISO8601 UTC时刻，必须Z结尾；显示与业务日期Asia/Shanghai
+          nullable: true
+      additionalProperties: false
+      required:
+      - name
+      - vehicleTypeCode
+      - inspectionTypeCode
+      - inspectionFee
+      - driverBaseFee
+      - includedDistanceMeter
+      - distanceUnitMeter
+      - distanceUnitFee
+      - distanceRounding
+      - routeBasis
+      - waitingFeeEnabled
+      - waitingFreeSeconds
+      - waitingUnitSeconds
+      - waitingUnitFee
+      - effectiveFrom
+      - effectiveTo
+      description: 公司统一客户收费参数；金额为整数分。比例计费仅在结算到分时HALF_UP一次；等待费尚未开放。
+    PricePublish:
+      type: object
+      additionalProperties: false
+      properties:
+        expectedVersion:
+          type: integer
+          minimum: 0
+          maximum: 9007199254740991
+        reason:
+          type: string
+          minLength: 1
+          maxLength: 500
+        replacesRuleId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+        replacesExpectedVersion:
+          type: integer
+          minimum: 0
+          maximum: 9007199254740991
+      required:
+      - expectedVersion
+      - reason
+      allOf:
+      - oneOf:
+        - required:
+          - replacesRuleId
+          - replacesExpectedVersion
+        - not:
+            anyOf:
+            - required:
+              - replacesRuleId
+            - required:
+              - replacesExpectedVersion
+    PriceSavedTrialRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        distanceMeter:
+          type: integer
+          minimum: 0
+          maximum: 2147483647
+          description: 单程路线米数；往返按所选口径乘2
+      required:
+      - distanceMeter
+    PriceMatchTrialRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        stationId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+        vehicleTypeCode:
+          type: string
+          minLength: 1
+          maxLength: 64
+        inspectionTypeCode:
+          type: string
+          minLength: 1
+          maxLength: 64
+        serviceAt:
+          type: string
+          format: date-time
+          pattern: Z$
+        distanceMeter:
+          type: integer
+          minimum: 0
+          maximum: 2147483647
+          description: 单程路线米数；往返按所选口径乘2
+      required:
+      - stationId
+      - vehicleTypeCode
+      - inspectionTypeCode
+      - distanceMeter
+    PriceTrial:
+      type: object
+      additionalProperties: false
+      properties:
+        ruleId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+        revision:
+          type: integer
+          minimum: 1
+        version:
+          type: integer
+          minimum: 0
+          maximum: 9007199254740991
+        ownerDeptId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+        environment:
+          type: string
+          enum:
+          - TEST
+          - LIVE
+        matchedPublished:
+          type: boolean
+        routeBasis:
+          type: string
+          enum:
+          - ONE_WAY
+          - ROUND_TRIP
+        distanceRounding:
+          type: string
+          enum:
+          - CEIL_UNIT
+          - EXACT_PRORATA
+        chargedUnits:
+          type: string
+        contentHash:
+          type: string
+          pattern: ^[a-f0-9]{64}$
+        oneWayDistanceMeter:
+          type: integer
+          minimum: 0
+          maximum: 4294967294
+        billableDistanceMeter:
+          type: integer
+          minimum: 0
+          maximum: 4294967294
+        includedDistanceMeter:
+          type: integer
+          minimum: 0
+          maximum: 4294967294
+        excessDistanceMeter:
+          type: integer
+          minimum: 0
+          maximum: 4294967294
+        inspectionFee:
+          type: integer
+          format: int64
+          minimum: 0
+          maximum: 9007199254740991
+        driverBaseFee:
+          type: integer
+          format: int64
+          minimum: 0
+          maximum: 9007199254740991
+        distanceFee:
+          type: integer
+          format: int64
+          minimum: 0
+          maximum: 9007199254740991
+        totalFen:
+          type: integer
+          format: int64
+          minimum: 0
+          maximum: 9007199254740991
+      required:
+      - ruleId
+      - revision
+      - version
+      - ownerDeptId
+      - environment
+      - matchedPublished
+      - routeBasis
+      - distanceRounding
+      - chargedUnits
+      - contentHash
+      - oneWayDistanceMeter
+      - billableDistanceMeter
+      - includedDistanceMeter
+      - excessDistanceMeter
+      - inspectionFee
+      - driverBaseFee
+      - distanceFee
+      - totalFen
   responses:
     BadRequest:
       description: 请求格式不正确。参见errorCode注册表；HTTP状态与code一致。
