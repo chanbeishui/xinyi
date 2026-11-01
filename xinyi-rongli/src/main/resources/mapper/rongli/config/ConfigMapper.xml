@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xinyi.rongli.config.mapper.ConfigMapper">
+
+    <select id="selectValue" resultType="java.lang.String">
+        SELECT config_value FROM sys_config WHERE config_key = #{key}
+    </select>
+
+    <select id="selectBusiness" resultType="java.util.LinkedHashMap">
+        SELECT config_key, config_value FROM sys_config WHERE config_key LIKE 'vi.biz.%' ORDER BY config_key
+    </select>
+
+    <insert id="upsert">
+        INSERT INTO sys_config (config_name, config_key, config_value, config_type)
+        VALUES (#{key}, #{key}, #{value}, 'N')
+        ON DUPLICATE KEY UPDATE config_value = #{value}, update_time = NOW()
+    </insert>
+
+    <insert id="ensureVersion">
+        INSERT INTO sys_config (config_name, config_key, config_value, config_type)
+        SELECT 'vi.config.version', 'vi.config.version', '0', 'N' FROM DUAL
+        WHERE NOT EXISTS (SELECT 1 FROM sys_config WHERE config_key = 'vi.config.version')
+    </insert>
+
+    <select id="selectVersion" resultType="long">
+        SELECT COALESCE((SELECT config_value FROM sys_config WHERE config_key = 'vi.config.version'), '0')
+    </select>
+
+    <update id="casVersion">
+        UPDATE sys_config SET config_value = #{next}, update_time = NOW()
+        WHERE config_key = 'vi.config.version' AND config_value = #{expected}
+    </update>
+
+    <select id="selectDict" resultType="java.util.LinkedHashMap">
+        SELECT dict_value, dict_label, dict_sort, status
+        FROM sys_dict_data WHERE dict_type = #{dictType} AND status = '0' ORDER BY dict_sort
+    </select>
+
+    <select id="countPublishedPrice" resultType="int">
+        SELECT COUNT(*) FROM vi_price_rule WHERE vehicle_type_code = #{vehicleTypeCode} AND status = 'PUBLISHED'
+    </select>
+
+</mapper>

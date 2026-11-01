@@ -92,6 +92,18 @@ export const constantRoutes = [
         component: () => import('@/views/rongli/vehicle/vehicle.vue'),
         name: 'RongliVehicles',
         meta: { title: '车辆档案', icon: 'car' }
+      },
+      {
+        path: 'config',
+        component: () => import('@/views/rongli/config/config.vue'),
+        name: 'RongliConfig',
+        meta: { title: '业务配置', icon: 'edit' }
+      },
+      {
+        path: 'dict',
+        component: () => import('@/views/rongli/config/dict.vue'),
+        name: 'RongliDict',
+        meta: { title: '车型字典', icon: 'collection' }
       }
     ]
   },
