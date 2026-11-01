@@ -10,6 +10,7 @@ export interface GeoPoint {
 
 export interface StationRecord {
   stationId: string
+  deptId: string
   name: string
   address: string
   location: GeoPoint
@@ -32,7 +33,7 @@ export interface StationWrite {
   serviceRadiusMeter?: number
   qualificationFileIds?: string[]
   expectedVersion?: number
-  deptId?: number
+  deptId?: string
 }
 
 export function listStations(pageNum = 1, pageSize = 20) {

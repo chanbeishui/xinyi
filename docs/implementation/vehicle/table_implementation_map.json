@@ -80,10 +80,12 @@
     "taskId": "C04"
   },
   {
-    "status": "NOT_ASSESSED",
-    "entityFile": null,
-    "mapperFile": null,
-    "evidence": [],
+    "status": "VERIFIED",
+    "entityFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/capacity/domain/ViQuotaSlot.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/capacity/ViQuotaSlotMapper.xml",
+    "evidence": [
+      "docs/implementation/vehicle/C03/C03CapacityIT-20261101.xml"
+    ],
     "table": "vi_quota_slot",
     "taskId": "C03"
   },

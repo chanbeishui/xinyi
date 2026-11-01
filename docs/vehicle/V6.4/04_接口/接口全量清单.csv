@@ -286,3 +286,4 @@ V64_post_api_common_subscriptions_prompts_promptId_report,POST,/api/common/subsc
 V64_get_api_admin_integrations_test_recipients,GET,/api/admin/integrations/test-recipients,受控测试收件人白名单,biz:integration:query,
 V64_post_api_admin_integrations_test_recipients,POST,/api/admin/integrations/test-recipients,登记受控测试收件人,biz:integration:testrecipient,
 V64_post_api_admin_integrations_test_recipients_recipientId_revoke,POST,/api/admin/integrations/test-recipients/{recipientId}/revoke,撤销测试收件人,biz:integration:testrecipient,
+V64_post_api_admin_capacity,POST,/api/admin/capacity,新增站点未来供给时段,biz:capacity:edit,

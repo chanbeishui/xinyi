@@ -1,0 +1,86 @@
+{
+  "taskId": "C02",
+  "implementer": "Codex-20261101",
+  "scopeRevision": "V6.4-STATION-AUTH-20261101",
+  "baseCommit": "d520801728ffada2c4715129ab94c8540ec8f197",
+  "codeCommit": "本次本地提交；源文件SHA-256见sourceDigests",
+  "codeFiles": [
+    "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/station/StationAdminController.java",
+    "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/station/StationCommonController.java",
+    "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/station/StationInfoController.java",
+    "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/station/StationWebSupport.java",
+    "xinyi-admin/src/test/java/com/xinyi/web/viit/C02StationIT.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/scope/mapper/EmployeeStationAccessMapper.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/scope/service/EmployeeStationAccessService.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/station/domain/ViStation.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/station/dto/GeoPoint.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/station/dto/PublicStationView.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/station/dto/StationInput.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/station/dto/StationView.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/station/mapper/ViStationMapper.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/station/service/StationService.java",
+    "xinyi-rongli/src/main/resources/mapper/rongli/scope/EmployeeStationAccessMapper.xml",
+    "xinyi-ui/src/api/rongli/station.ts",
+    "xinyi-ui/src/views/rongli/station/station.vue"
+  ],
+  "sourceDigests": {
+    "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/station/StationAdminController.java": "e8efe2fe7ee2fcd8e8b3675d8dffd9b8e83ddea03fb5dbecc8b98b276c590f47",
+    "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/station/StationCommonController.java": "090844b5d650a662385f1bde59c34e8452fbf114b3a4d1c6a68f34b751d912a3",
+    "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/station/StationInfoController.java": "6f544c4d36c0e4da0c2bba757a60a430b8adf2a20366c80191bda839612e5874",
+    "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/station/StationWebSupport.java": "4ccb3368ae18d13b4e4caa9490bd076096b932f671ca8dd99993edcfa9ac668e",
+    "xinyi-admin/src/test/java/com/xinyi/web/viit/C02StationIT.java": "9d5a65cf7e3b34488aa4af20e42fb03099152b7eef3a42334410fc74edfe8e9c",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/scope/mapper/EmployeeStationAccessMapper.java": "a652436f84b7d5f312006617e4cc86d7b66cc8cbfd36bb9b41dd0542de5b370d",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/scope/service/EmployeeStationAccessService.java": "19ef1eebfaf03642264486690a31287c256a1763c49224bb0b5ae68b684bad06",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/station/domain/ViStation.java": "30503bdc83ec42b6ad7e0234f8efc24513fb691f3afbc659582f19157ae7573a",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/station/dto/GeoPoint.java": "85644c975efcbf1d45d5a5fc92086a23c1e84c410a952b0ba24d4156b0028d08",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/station/dto/PublicStationView.java": "676b0f24041fe35808bdb2339b31c012898c2f781ef042a511a2819b5ec9fb64",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/station/dto/StationInput.java": "78ea7cff4164974579f778dcdbe5d4c23d9c22698fe85d971eabcee2381c28d6",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/station/dto/StationView.java": "9f2b5d739d292e0716dffeff9c7b19920c6d13796a176f7b76b9e3d2efceb4bd",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/station/mapper/ViStationMapper.java": "71e69297d963b7d7b8efbdcaeed86240f38a354169449ab7d4c4068574809369",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/station/service/StationService.java": "fd72951eccfda7ff299479fe42db401a2e1b8bb514720f82896b7de225130b7a",
+    "xinyi-rongli/src/main/resources/mapper/rongli/scope/EmployeeStationAccessMapper.xml": "b1ba5926019e9347e1e045eba19936fb56dfa847b5e216199d60b1da77d6cf8a",
+    "xinyi-ui/src/api/rongli/station.ts": "518253d8713252f26c2787488e7571700f0c95b2cceea840524554660d1a717a",
+    "xinyi-ui/src/views/rongli/station/station.vue": "24e1ec96840d8d1e5c439a5ca532c17d839bfe803ba255c60a074b5c6e201a8b"
+  },
+  "runs": [
+    {
+      "command": "JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk-21.jdk/Contents/Home VI_PYTHON=.vi-local/venv/bin/python mvn -o -pl xinyi-admin -am -Pvi-it -Dit.test=E06PlatformIT,E07TestingIT,E08PlatformIT,I01IdentityIT,I02IdentityIT,I03IdentityIT,I04IdentityIT,I05IdentityIT,I06ScopeIT,A02AddressIT,A01VehicleIT,C01ConfigIT,A03OwnerIT,C02StationIT,C03CapacityIT verify",
+      "exitCode": 0,
+      "layer": "LIVE_HTTP_MYSQL",
+      "testsRun": 130,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "reportPath": "docs/implementation/vehicle/C03/full-regression-20261101.json"
+    },
+    {
+      "command": "npm --prefix xinyi-ui run build:prod",
+      "exitCode": 0,
+      "layer": "BUILD",
+      "testsRun": 1,
+      "skipped": 0,
+      "reportPath": "docs/implementation/vehicle/C02/hardening-20261101.md"
+    },
+    {
+      "command": "npm --prefix xinyi-miniapp run type-check && npm --prefix xinyi-miniapp run build:mp-weixin",
+      "exitCode": 0,
+      "layer": "BUILD",
+      "testsRun": 1,
+      "skipped": 0,
+      "reportPath": "docs/implementation/vehicle/C02/hardening-20261101.md"
+    }
+  ],
+  "review": {
+    "reviewer": null,
+    "approved": false,
+    "reportPath": null
+  },
+  "thirdPartyStub": "SIMULATOR；UI API夹具单独验证；无真实微信/支付/短信/真机/生产操作",
+  "at": "2026-11-01T14:47:56.397894+00:00",
+  "environment": {
+    "database": "xinyi_vi_it_e07",
+    "testControlKeySource": ".env.vi.local 中已存在的测试控制密钥，仅注入进程，不输出或改写",
+    "JDK": "21.0.8 / release17",
+    "realProviders": "NOT_RUN"
+  }
+}

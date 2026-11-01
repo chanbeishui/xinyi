@@ -34,8 +34,13 @@
     <el-pagination class="mt12" layout="total, prev, pager, next" :total="total"
       :page-size="pageSize" :current-page="pageNum" @current-change="onPage" />
 
-    <el-drawer v-model="drawer" :title="form && form.stationId ? '编辑检测点' : '新增检测点'" size="520px">
+    <el-drawer v-model="drawer" :title="form && form.stationId ? '编辑检测点' : '新增检测点'" size="min(520px, 100vw)">
       <el-form v-if="form" label-width="100px">
+        <el-form-item label="归属部门" required>
+          <el-select v-model="form.deptId" filterable placeholder="请选择站点归属部门" style="width: 100%">
+            <el-option v-for="dept in departments" :key="dept.id" :label="dept.name" :value="dept.id" />
+          </el-select>
+        </el-form-item>
         <el-form-item label="名称" required><el-input v-model="form.name" /></el-form-item>
         <el-form-item label="地址" required><el-input v-model="form.address" /></el-form-item>
         <el-form-item label="经度(GCJ02)" required><el-input v-model.number="form.lng" /></el-form-item>
@@ -64,9 +69,11 @@ import { ref, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { listStations, createStation, updateStation, type StationRecord, type StationWrite } from '@/api/rongli/station'
 import { isVersionConflict } from '@/api/rongli/viError'
+import { listDept } from '@/api/system/dept'
 
 interface FormModel {
   stationId: string
+  deptId: string
   name: string
   address: string
   lng: number
@@ -80,6 +87,8 @@ interface FormModel {
   version: number
 }
 
+const departments = ref<{ id: string; name: string }[]>([])
+let saveAttempt: { body: string; key: string } | null = null
 const loading = ref(false)
 const saving = ref(false)
 const rows = ref<StationRecord[]>([])
@@ -111,13 +120,15 @@ async function load() {
 function onPage(p: number) { pageNum.value = p; load() }
 
 function openCreate() {
-  form.value = { stationId: '', name: '', address: '', lng: 120.0, lat: 30.0, contactPhone: '', supportedCodes: 'SMALL_CAR', businessHours: '', serviceRadiusMeter: 5000, qualificationFileIds: '', enabled: false, version: 0 }
+  saveAttempt = null
+  form.value = { stationId: '', deptId: '', name: '', address: '', lng: 120.0, lat: 30.0, contactPhone: '', supportedCodes: 'SMALL_CAR', businessHours: '', serviceRadiusMeter: 5000, qualificationFileIds: '', enabled: false, version: 0 }
   drawer.value = true
 }
 
 function openEdit(row: StationRecord) {
+  saveAttempt = null
   form.value = {
-    stationId: row.stationId, name: row.name, address: row.address,
+    deptId: row.deptId, stationId: row.stationId, name: row.name, address: row.address,
     lng: row.location?.lng ?? 0, lat: row.location?.lat ?? 0, contactPhone: '',
     supportedCodes: (row.supportedVehicleTypeCodes || []).join(','), businessHours: row.businessHours || '',
     serviceRadiusMeter: row.serviceRadiusMeter ?? 0, qualificationFileIds: '', enabled: row.enabled, version: row.version
@@ -128,7 +139,7 @@ function openEdit(row: StationRecord) {
 function buildWrite(): StationWrite {
   const f = form.value!
   return {
-    name: f.name.trim(), address: f.address.trim(),
+    deptId: f.deptId, name: f.name.trim(), address: f.address.trim(),
     location: { lng: Number(f.lng), lat: Number(f.lat), coordinateSystem: 'GCJ02' },
     contactPhone: f.contactPhone.trim() || undefined,
     enabled: f.enabled,
@@ -143,14 +154,19 @@ function buildWrite(): StationWrite {
 async function save() {
   if (!form.value) return
   const f = form.value
+  if (!f.deptId) { ElMessage.warning('请选择站点归属部门'); return }
   if (!f.name.trim() || !f.address.trim()) { ElMessage.warning('名称与地址必填'); return }
   saving.value = true
   try {
+    const input = buildWrite()
+    const body = JSON.stringify(input)
+    if (!saveAttempt || saveAttempt.body !== body) saveAttempt = { body, key: uuid() }
     if (f.stationId) {
-      await updateStation(f.stationId, buildWrite(), uuid())
+      await updateStation(f.stationId, input, saveAttempt.key)
     } else {
-      await createStation(buildWrite(), uuid())
+      await createStation(input, saveAttempt.key)
     }
+    saveAttempt = null
     ElMessage.success('保存成功')
     drawer.value = false
     await load()
@@ -186,7 +202,16 @@ async function toggleEnabled(row: StationRecord) {
   }
 }
 
-onMounted(load)
+onMounted(async () => {
+  await load()
+  try {
+    const res = await listDept()
+    departments.value = (res.data || []).filter(dept => dept.status === '0' && dept.deptId != null && dept.deptName)
+      .map(dept => ({ id: String(dept.deptId), name: dept.deptName! }))
+  } catch {
+    ElMessage.warning('无法加载部门目录，请联系管理员授予部门查询权限')
+  }
+})
 </script>
 
 <style scoped>

@@ -68,6 +68,7 @@ onShow(load);
 <template>
   <view class="screen">
     <text class="title">站点资料与资质</text>
+    <navigator url="/pages/capacity/list">营业时段与预约容量</navigator>
     <view v-if="station" class="card">
       <text class="row">名称：{{ station.name }}</text>
       <text class="row">地址：{{ station.address }}</text>

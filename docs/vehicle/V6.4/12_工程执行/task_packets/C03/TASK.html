@@ -1,9 +1,11 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TASK</title><style>body{font:16px/1.75 -apple-system,BlinkMacSystemFont,"Microsoft YaHei",sans-serif;color:#202632;margin:0;background:#f6f7f9}header{padding:14px 24px;background:white;border-bottom:1px solid #ddd}main{max-width:1120px;margin:24px auto;padding:30px;background:white}h1{font-size:30px}h2{margin-top:36px}a{color:#0661bd}table{border-collapse:collapse;width:100%;display:block;overflow:auto;font-size:14px}td,th{border:1px solid #dde2ea;padding:10px;vertical-align:top}th{background:#f1f5fb}pre{padding:15px;background:#f2f4f7;overflow:auto}img{max-width:100%;height:auto}blockquote{padding:10px 20px;border-left:3px solid #2571be;background:#f4f8fc}@media(max-width:700px){main{padding:15px;margin:8px}h1{font-size:25px}}</style></head><body><header><a href="../../../00_开始.html">V6.4 完整资料</a>　<a href="../../../02_UI/index.html">交互原型</a>　T3.4</header><main><h1>C03 · 上门时段与容量计划</h1>
 <p>阶段：M2；责任域：capacity；前置：C02, E06。
-范围版本：<code>V6.1-UNCHANGED</code>；definitionHash：<code>76db2364911e2c70953bd798e643df7722acc9d00fd761aa55f858f010fd87ac</code>。</p>
+范围版本：<code>V6.4-STATION-QUOTA-20261101</code>；definitionHash：<code>3f0fa553908852ece5326e383d7dea51dc5ff108acc91cebdd8c91073f69c301</code>。</p>
 <h2>本任务交付</h2>
 <ul>
-<li>候选时段、地址后复核、容量调整影响预览和预占统计</li>
+<li>每站独立接车和接收额度；后台显式创建未来时段，拒绝同站同类区间重叠</li>
+<li>容量调整只读影响预览、停约及预占/正式/已消耗统计；调容不改订单占用</li>
+<li>服务端实时权限、版本CAS与事务幂等，代码及前后端真实验证</li>
 </ul>
 <h2>必测失败与并发</h2>
 <ul>
@@ -13,7 +15,7 @@
 </ul>
 <h2>精确输入</h2>
 <p>主源：04_接口/openapi_V6.4.yaml、05_数据设计/data_model_V6.4.json、06_验收/test_cases_V6.4.json。本目录派生，不独立维护。
-接口：API_081_get, API_082_put, API_092_get, API_093_put
+接口：API_081_get, API_082_put, API_092_get, API_093_put, V64_post_api_admin_capacity
 画板：S17, S17-impact, B19, B19-impact
 主责任表：vi_quota_slot
 验收：无</p>

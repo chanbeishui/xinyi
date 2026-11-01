@@ -792,6 +792,9 @@ components:
     Station:
       type: object
       properties:
+        deptId:
+          type: string
+          description: 站点权威部门ID；公开站点视图不返回
         stationId:
           type: string
           pattern: ^[1-9][0-9]{0,18}$

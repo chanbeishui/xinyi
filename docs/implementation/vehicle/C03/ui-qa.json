@@ -1,0 +1,36 @@
+{
+  "url": "http://127.0.0.1:5173/rongli/capacity",
+  "title": "集信国控检测管理系统",
+  "nonblank": true,
+  "overlay": 0,
+  "errors": [],
+  "expectedErrors": [
+    "Failed to load resource: the server responded with a status of 503 (Service Unavailable)"
+  ],
+  "writes": [
+    {
+      "body": {
+        "total": 5,
+        "enabled": false,
+        "reason": "运营调整",
+        "expectedVersion": 0
+      },
+      "key": "b1293b60-69ba-4520-a538-8faa5910fe5d"
+    },
+    {
+      "body": {
+        "total": 5,
+        "enabled": false,
+        "reason": "运营调整",
+        "expectedVersion": 0
+      },
+      "key": "b1293b60-69ba-4520-a538-8faa5910fe5d"
+    }
+  ],
+  "viewports": [
+    "1440x1000",
+    "390x844"
+  ],
+  "mode": "UI API fixtures; business behavior separately tested against real HTTP/MySQL",
+  "executedAt": "2026-11-01T14:54:45.529257+00:00"
+}

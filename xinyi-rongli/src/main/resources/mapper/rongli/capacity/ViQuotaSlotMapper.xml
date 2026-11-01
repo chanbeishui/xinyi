@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xinyi.rongli.capacity.mapper.ViQuotaSlotMapper">
+    <resultMap id="slot" type="com.xinyi.rongli.capacity.domain.ViQuotaSlot">
+        <id column="id" property="id"/>
+        <result column="station_id" property="stationId"/>
+        <result column="quota_type" property="quotaType"/>
+        <result column="starts_at" property="startsAt" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+        <result column="ends_at" property="endsAt" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+        <result column="total_quota" property="totalQuota"/>
+        <result column="held_quota" property="heldQuota"/>
+        <result column="confirmed_quota" property="confirmedQuota"/>
+        <result column="consumed_quota" property="consumedQuota"/>
+        <result column="enabled" property="enabled"/>
+        <result column="version" property="version"/>
+    </resultMap>
+    <select id="selectById" resultMap="slot">SELECT * FROM vi_quota_slot WHERE id=#{id}</select>
+    <select id="lockById" resultMap="slot">SELECT * FROM vi_quota_slot WHERE id=#{id} FOR UPDATE</select>
+    <sql id="filter">
+        WHERE q.station_id IS NOT NULL
+        <if test="deptIds != null">
+            <choose><when test="deptIds.size() == 0">AND 1=0</when><otherwise>
+                AND s.dept_id IN <foreach collection="deptIds" item="d" open="(" separator="," close=")">#{d}</foreach>
+            </otherwise></choose>
+        </if>
+        <if test="stationId != null">AND q.station_id=#{stationId}</if>
+        <if test="query.stationId != null">AND q.station_id=#{query.stationId}</if>
+        <if test="query.slotId != null">AND q.id=#{query.slotId}</if>
+        <if test="query.quotaType != null">AND q.quota_type=#{query.quotaType}</if>
+    </sql>
+    <select id="selectList" resultMap="slot">
+        SELECT q.* FROM vi_quota_slot q JOIN vi_station s ON s.id=q.station_id
+        <include refid="filter"/> ORDER BY q.starts_at, q.id LIMIT #{query.pageSize} OFFSET #{offset}
+    </select>
+    <select id="countList" resultType="long">
+        SELECT COUNT(*) FROM vi_quota_slot q JOIN vi_station s ON s.id=q.station_id <include refid="filter"/>
+    </select>
+    <select id="countOverlap" resultType="int">
+        SELECT COUNT(*) FROM vi_quota_slot WHERE station_id=#{row.stationId} AND quota_type=#{row.quotaType}
+        AND starts_at &lt; #{row.endsAt,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler}
+        AND ends_at &gt; #{row.startsAt,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler}
+    </select>
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO vi_quota_slot (station_id,quota_type,scope_key,starts_at,ends_at,total_quota,enabled)
+        VALUES (#{stationId},#{quotaType},CONCAT('station:',#{stationId}),
+            #{startsAt,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler},
+            #{endsAt,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler},#{totalQuota},1)
+    </insert>
+    <update id="change">
+        UPDATE vi_quota_slot SET total_quota=#{total},
+        <if test="enabled != null">enabled=#{enabled},</if>
+        version=version+1,updated_at=UTC_TIMESTAMP(3)
+        WHERE id=#{id} AND version=#{expectedVersion} AND starts_at &gt; UTC_TIMESTAMP(3)
+        AND held_quota+confirmed_quota+consumed_quota &lt;= #{total}
+    </update>
+</mapper>

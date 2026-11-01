@@ -5005,5 +5005,21 @@
     "flows": [
       "F44"
     ]
+  },
+  {
+    "method": "POST",
+    "path": "/api/admin/capacity",
+    "operationId": "V64_post_api_admin_capacity",
+    "summary": "新增站点未来供给时段",
+    "permission": "biz:capacity:edit",
+    "capability": null,
+    "authorization": {
+      "realm": "ADMIN",
+      "scope": "ORG_DEPT_STATION",
+      "permission": "biz:capacity:edit"
+    },
+    "flows": [
+      "F24"
+    ]
   }
 ]

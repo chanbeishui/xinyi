@@ -39,7 +39,7 @@ public class StationInfoController {
             @RequestBody Map<String, Object> body) {
         requireIdem(idem);
         StationInput in = StationWebSupport.parse(body, true, false);
-        return noStore(ViSuccess.ok(stationService.updateOwnStation(in)));
+        return noStore(ViSuccess.ok(stationService.updateOwnStation(in, idem)));
     }
 
     private static void requireIdem(String idem) {

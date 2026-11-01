@@ -153,6 +153,17 @@ class C02StationIT {
 
     @BeforeEach
     void clean() {
+        assertEquals("xinyi_vi_it_e07", jdbc.queryForObject("SELECT DATABASE()", String.class), "只允许在专属测试库清理夹具");
+        jdbc.execute("DELETE FROM vi_idempotency");
+        jdbc.execute("DELETE FROM vi_event_log");
+        jdbc.execute("DELETE FROM vi_outbox");
+        jdbc.execute("DELETE FROM sys_user_role WHERE role_id = 990201");
+        jdbc.execute("DELETE FROM sys_role_menu WHERE role_id = 990201");
+        jdbc.execute("DELETE FROM sys_role WHERE role_id = 990201");
+        jdbc.execute("DELETE FROM sys_menu WHERE menu_id IN (990301, 990302)");
+        jdbc.execute("INSERT INTO sys_role (role_id, role_name, role_key, role_sort, data_scope, status, del_flag) VALUES (990201, 'C02测试', 'c02-work', 1, '3', '0', '0')");
+        jdbc.execute("INSERT INTO sys_menu (menu_id, menu_name, menu_type, status, perms) VALUES (990301, 'C02读取', 'F', '0', 'biz:station:query'), (990302, 'C02编辑', 'F', '0', 'biz:station:edit')");
+        jdbc.execute("INSERT INTO sys_role_menu (role_id, menu_id) VALUES (990201,990301),(990201,990302)");
         jdbc.execute("DELETE FROM vi_order");
         jdbc.execute("DELETE FROM vi_station_grant");
         jdbc.execute("DELETE FROM vi_station");
@@ -301,7 +312,10 @@ class C02StationIT {
     private long seedEmployee(String phone, String suffix) {
         String userName = "c02emp_" + suffix;
         jdbc.update("INSERT INTO sys_user (user_name, nick_name, phonenumber, status, del_flag, auth_version, password) VALUES (?, ?, ?, '0', '0', 0, 'x')", userName, "员工" + suffix, phone);
-        return jdbc.queryForObject("SELECT user_id FROM sys_user WHERE user_name = ?", Long.class, userName);
+        long id = jdbc.queryForObject("SELECT user_id FROM sys_user WHERE user_name = ?", Long.class, userName);
+        jdbc.update("INSERT INTO sys_user_role (user_id, role_id) VALUES (?, 990201)", id);
+        jdbc.update("INSERT INTO sys_user_dept (user_id, dept_id) VALUES (?, ?)", id, DEPT_A);
+        return id;
     }
 
     private void seedGrant(long sysUserId, long stationId) {
@@ -326,9 +340,30 @@ class C02StationIT {
     }
 
     private Map<String, Object> createBody(String name) {
-        return Map.of("name", name, "address", "地址X", "location", Map.of("lng", 120.1, "lat", 30.2, "coordinateSystem", "GCJ02"),
+        Map<String, Object> body = new java.util.HashMap<>(Map.of("name", name, "address", "地址X", "location", Map.of("lng", 120.1, "lat", 30.2, "coordinateSystem", "GCJ02"),
                 "contactPhone", "13800002222", "enabled", true, "supportedVehicleTypeCodes", List.of("SMALL_CAR", "SUV"),
-                "businessHours", "周一至周日 08:00-20:00", "serviceRadiusMeter", 8000, "qualificationFileIds", List.of("9100"));
+                "businessHours", "周一至周日 08:00-20:00", "serviceRadiusMeter", 8000, "qualificationFileIds", List.of("9100")));
+        body.put("deptId", Long.toString(DEPT_A));
+        return body;
+    }
+
+    private String employeeStationToken(String persona, long stationId) {
+        JsonNode s = login(persona);
+        String token = s.get("token").asText();
+        String pcode = newCode(newRun(), persona, "phone");
+        ResponseEntity<String> bind = rest.exchange(url("/api/common/phone/bind"), HttpMethod.POST,
+                mini(Map.of("phoneCode", pcode, "expectedAccountVersion", s.get("accountVersion").asLong(),
+                        "verificationRequestId", UUID.randomUUID().toString()), token), String.class);
+        assertEquals(200, bind.getStatusCode().value(), bind.getBody());
+        assertEquals("LINKED", ViJson.tree(bind.getBody()).get("data").get("employeeLink").get("status").asText());
+        JsonNode sess = ViJson.tree(rest.exchange(url("/api/common/session"), HttpMethod.GET, mini(null, token), String.class).getBody()).get("data");
+        ResponseEntity<String> sw = rest.exchange(url("/api/common/session/station"), HttpMethod.POST,
+                mini(Map.of("stationId", Long.toString(stationId), "expectedContextVersion", sess.get("contextVersion").asLong()), token), String.class);
+        assertEquals(200, sw.getStatusCode().value(), sw.getBody());
+        JsonNode swd = ViJson.tree(sw.getBody()).get("data");
+        assertEquals("STATION", swd.get("activeRole").asText());
+        String stToken = swd.has("token") ? swd.get("token").asText() : token;
+        return stToken;
     }
 
     private JsonNode rowsOf(ResponseEntity<String> r) {
@@ -462,21 +497,7 @@ class C02StationIT {
         String persona = "c02-emp-" + System.nanoTime();
         long sysUserId = seedEmployee(expectedPhone(persona), "e" + System.nanoTime());
         seedGrant(sysUserId, stationId);
-        JsonNode s = login(persona);
-        String token = s.get("token").asText();
-        String pcode = newCode(newRun(), persona, "phone");
-        ResponseEntity<String> bind = rest.exchange(url("/api/common/phone/bind"), HttpMethod.POST,
-                mini(Map.of("phoneCode", pcode, "expectedAccountVersion", s.get("accountVersion").asLong(),
-                        "verificationRequestId", UUID.randomUUID().toString()), token), String.class);
-        assertEquals(200, bind.getStatusCode().value(), bind.getBody());
-        assertEquals("LINKED", ViJson.tree(bind.getBody()).get("data").get("employeeLink").get("status").asText());
-        JsonNode sess = ViJson.tree(rest.exchange(url("/api/common/session"), HttpMethod.GET, mini(null, token), String.class).getBody()).get("data");
-        ResponseEntity<String> sw = rest.exchange(url("/api/common/session/station"), HttpMethod.POST,
-                mini(Map.of("stationId", Long.toString(stationId), "expectedContextVersion", sess.get("contextVersion").asLong()), token), String.class);
-        assertEquals(200, sw.getStatusCode().value(), sw.getBody());
-        JsonNode swd = ViJson.tree(sw.getBody()).get("data");
-        assertEquals("STATION", swd.get("activeRole").asText());
-        String stToken = swd.has("token") ? swd.get("token").asText() : token;
+        String stToken = employeeStationToken(persona, stationId);
         // 读取本站点
         ResponseEntity<String> info = rest.exchange(url("/api/app/station/info"), HttpMethod.GET, station(null, stToken, null), String.class);
         assertEquals(200, info.getStatusCode().value(), info.getBody());
@@ -495,7 +516,7 @@ class C02StationIT {
         assertEquals(v0 + 1, ViJson.tree(put.getBody()).get("data").get("version").asLong());
         assertEquals("C02员工站改", ViJson.tree(put.getBody()).get("data").get("name").asText());
         // 员工端不接受 deptId 迁移
-        body.put("deptId", DEPT_B);
+        body.put("deptId", Long.toString(DEPT_B));
         body.put("expectedVersion", v0 + 1);
         assertEquals(400, rest.exchange(url("/api/app/station/info"), HttpMethod.PUT, station(body, stToken, UUID.randomUUID().toString()), String.class).getStatusCode().value());
     }
@@ -512,4 +533,115 @@ class C02StationIT {
         assertFalse(sc == 200 && bc == 200 && body.has("rows"), "MINI 不得获得 ADMIN 站点列表");
         assertTrue(sc == 401 || sc == 403 || bc == 401 || bc == 403, "MINI 不获 ADMIN，status=" + sc + " body=" + r.getBody());
     }
+    @Test
+    void 同键创建重放且不同请求拒绝() {
+        String admin = adminToken();
+        String key = UUID.randomUUID().toString();
+        Map<String, Object> body = createBody("C02幂等创建");
+        HttpEntity<Object> request = admin(body, admin);
+        HttpHeaders headers = new HttpHeaders();
+        headers.putAll(request.getHeaders());
+        headers.set("Idempotency-Key", key);
+        ResponseEntity<String> first = rest.exchange(url("/api/admin/stations"), HttpMethod.POST, new HttpEntity<>(body, headers), String.class);
+        ResponseEntity<String> repeat = rest.exchange(url("/api/admin/stations"), HttpMethod.POST, new HttpEntity<>(body, headers), String.class);
+        assertEquals(200, first.getStatusCode().value(), first.getBody());
+        assertEquals(ViJson.tree(first.getBody()), ViJson.tree(repeat.getBody()));
+        assertEquals(1, jdbc.queryForObject("SELECT COUNT(*) FROM vi_station WHERE name='C02幂等创建'", Integer.class));
+        assertEquals(1, jdbc.queryForObject("SELECT COUNT(*) FROM vi_event_log WHERE action='STATION_CREATE'", Integer.class));
+        Map<String, Object> changed = new java.util.HashMap<>(body);
+        changed.put("name", "另一个名字");
+        ResponseEntity<String> conflict = rest.exchange(url("/api/admin/stations"), HttpMethod.POST, new HttpEntity<>(changed, headers), String.class);
+        assertEquals(409, conflict.getStatusCode().value());
+        assertTrue(conflict.getBody().contains("VI_IDEMPOTENCY_CONFLICT"));
+    }
+
+    @Test
+    void 创建必须明确归属且目标部门越权拒绝() {
+        String admin = adminToken();
+        Map<String, Object> body = new java.util.HashMap<>(createBody("C02无归属"));
+        body.remove("deptId");
+        assertEquals(400, rest.exchange(url("/api/admin/stations"), HttpMethod.POST, admin(body, admin), String.class).getStatusCode().value());
+        String limited = scopedAdminToken(DEPT_A, "biz:station:create");
+        body.put("deptId", Long.toString(DEPT_B));
+        assertEquals(403, rest.exchange(url("/api/admin/stations"), HttpMethod.POST, admin(body, limited), String.class).getStatusCode().value());
+        assertEquals(0, jdbc.queryForObject("SELECT COUNT(*) FROM vi_station WHERE name='C02无归属'", Integer.class));
+    }
+
+    @Test
+    void 站点授权或功能权限撤销旧工作令牌立即失权() {
+        long id = seedStation(DEPT_A, true, "C02实时授权");
+        String persona = "c02-revoke-" + System.nanoTime();
+        long employee = seedEmployee(expectedPhone(persona), "revoke" + System.nanoTime());
+        seedGrant(employee, id);
+        String token = employeeStationToken(persona, id);
+        assertEquals(200, rest.exchange(url("/api/app/station/info"), HttpMethod.GET, station(null, token, null), String.class).getStatusCode().value());
+        jdbc.execute("DELETE FROM sys_role_menu WHERE role_id=990201 AND menu_id=990302");
+        Map<String, Object> body = new java.util.HashMap<>(createBody("不应写入"));
+        body.remove("deptId");
+        body.put("expectedVersion", 0);
+        assertEquals(403, rest.exchange(url("/api/app/station/info"), HttpMethod.PUT, station(body, token, UUID.randomUUID().toString()), String.class).getStatusCode().value());
+        jdbc.update("UPDATE vi_station_grant SET enabled=0 WHERE sys_user_id=?", employee);
+        assertEquals(403, rest.exchange(url("/api/app/station/info"), HttpMethod.GET, station(null, token, null), String.class).getStatusCode().value());
+        assertEquals("C02实时授权", jdbc.queryForObject("SELECT name FROM vi_station WHERE id=?", String.class, id));
+        assertEquals(0, jdbc.queryForObject("SELECT COUNT(*) FROM vi_outbox WHERE aggregate_type='VI_STATION'", Integer.class));
+        assertEquals(2, jdbc.queryForObject("SELECT COUNT(*) FROM vi_event_log WHERE action='STATION_ACCESS_DENIED'", Integer.class));
+        assertEquals(200, rest.exchange(url("/api/common/session"), HttpMethod.GET, mini(null, token), String.class).getStatusCode().value(), "保留基础账号查询及刷新能力");
+    }
+
+    @Test
+    void 员工停用或权威部门超范围拒绝旧令牌() {
+        long id = seedStation(DEPT_B, true, "C02跨部门");
+        String persona = "c02-dept-" + System.nanoTime();
+        long employee = seedEmployee(expectedPhone(persona), "dept" + System.nanoTime());
+        seedGrant(employee, id);
+        String token = employeeStationToken(persona, id);
+        assertEquals(403, rest.exchange(url("/api/app/station/info"), HttpMethod.GET, station(null, token, null), String.class).getStatusCode().value());
+        jdbc.update("INSERT INTO sys_user_dept (user_id, dept_id) VALUES (?, ?)", employee, DEPT_B);
+        assertEquals(200, rest.exchange(url("/api/app/station/info"), HttpMethod.GET, station(null, token, null), String.class).getStatusCode().value());
+        jdbc.update("UPDATE sys_user SET status='1' WHERE user_id=?", employee);
+        assertEquals(403, rest.exchange(url("/api/app/station/info"), HttpMethod.GET, station(null, token, null), String.class).getStatusCode().value());
+    }
+
+    @Test
+    void 部门迁移必须覆盖原部门和目标部门() {
+        long original = seedStation(DEPT_A, true, "C02迁移保护");
+        Map<String, Object> body = new java.util.HashMap<>(createBody("C02迁移保护"));
+        body.put("expectedVersion", 0);
+        body.put("deptId", Long.toString(DEPT_B));
+        String onlyOriginal = scopedAdminToken(DEPT_A, "biz:station:edit");
+        assertEquals(403, rest.exchange(url("/api/admin/stations/" + original), HttpMethod.PUT, admin(body, onlyOriginal), String.class).getStatusCode().value());
+        String onlyTarget = scopedAdminToken(DEPT_B, "biz:station:edit");
+        assertEquals(404, rest.exchange(url("/api/admin/stations/" + original), HttpMethod.PUT, admin(body, onlyTarget), String.class).getStatusCode().value());
+        assertEquals(DEPT_A, jdbc.queryForObject("SELECT dept_id FROM vi_station WHERE id=?", Long.class, original));
+        assertEquals(0, jdbc.queryForObject("SELECT COUNT(*) FROM vi_idempotency", Integer.class));
+        assertEquals(0, jdbc.queryForObject("SELECT COUNT(*) FROM vi_outbox WHERE aggregate_type='VI_STATION'", Integer.class));
+        assertEquals(2, jdbc.queryForObject("SELECT COUNT(*) FROM vi_event_log WHERE action='STATION_UPDATE_REJECTED'", Integer.class));
+    }
+
+    @Test
+    void 并发重复创建只提交一次() throws Exception {
+        String token = adminToken();
+        HttpEntity<Object> request = admin(createBody("C02并发创建"), token);
+        var pool = java.util.concurrent.Executors.newFixedThreadPool(2);
+        var start = new java.util.concurrent.CountDownLatch(1);
+        try {
+            java.util.concurrent.Callable<ResponseEntity<String>> call = () -> {
+                start.await();
+                return rest.exchange(url("/api/admin/stations"), HttpMethod.POST, request, String.class);
+            };
+            var a = pool.submit(call);
+            var b = pool.submit(call);
+            start.countDown();
+            var first = a.get(10, java.util.concurrent.TimeUnit.SECONDS);
+            var second = b.get(10, java.util.concurrent.TimeUnit.SECONDS);
+            assertEquals(200, first.getStatusCode().value(), first.getBody());
+            assertEquals(200, second.getStatusCode().value(), second.getBody());
+            assertEquals(ViJson.tree(first.getBody()), ViJson.tree(second.getBody()));
+            assertEquals(1, jdbc.queryForObject("SELECT COUNT(*) FROM vi_station WHERE name='C02并发创建'", Integer.class));
+            assertEquals(1, jdbc.queryForObject("SELECT COUNT(*) FROM vi_event_log WHERE action='STATION_CREATE'", Integer.class));
+        } finally {
+            pool.shutdownNow();
+        }
+    }
+
 }

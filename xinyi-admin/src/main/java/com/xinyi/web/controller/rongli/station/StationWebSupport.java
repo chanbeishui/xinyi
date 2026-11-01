@@ -4,6 +4,7 @@ import com.xinyi.rongli.platform.error.ViErrorCode;
 import com.xinyi.rongli.platform.error.ViException;
 import com.xinyi.rongli.station.dto.GeoPoint;
 import com.xinyi.rongli.station.dto.StationInput;
+import com.xinyi.rongli.core.ViId;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -32,7 +33,14 @@ final class StationWebSupport {
         }
         GeoPoint location = parseLocation(body.get("location"));
         Long expectedVersion = body.get("expectedVersion") instanceof Number n ? n.longValue() : null;
-        Long deptId = allowDeptId && body.get("deptId") instanceof Number dn ? dn.longValue() : null;
+        Long deptId = null;
+        if (allowDeptId && body.containsKey("deptId")) {
+            try {
+                deptId = ViId.parse(String.valueOf(body.get("deptId")));
+            } catch (RuntimeException e) {
+                throw new ViException(ViErrorCode.VI_REQUEST_INVALID, "部门ID须为有效的十进制字符串");
+            }
+        }
         return new StationInput(
                 str(body.get("name")), str(body.get("address")), location, str(body.get("contactPhone")),
                 body.get("enabled") instanceof Boolean b ? b : null,

@@ -53,7 +53,7 @@ public class StationAdminController {
             @RequestBody Map<String, Object> body) {
         requireIdem(idem);
         StationInput in = StationWebSupport.parse(body, false, true);
-        return noStore(ViSuccess.ok(stationService.create(in)));
+        return noStore(ViSuccess.ok(stationService.create(in, idem)));
     }
 
     @PutMapping("/{stationId}")
@@ -63,7 +63,7 @@ public class StationAdminController {
             @RequestBody Map<String, Object> body) {
         requireIdem(idem);
         StationInput in = StationWebSupport.parse(body, true, true);
-        return noStore(ViSuccess.ok(stationService.adminUpdate(parseId(stationId), in)));
+        return noStore(ViSuccess.ok(stationService.adminUpdate(parseId(stationId), in, idem)));
     }
 
     private long parseId(String v) {

@@ -3729,5 +3729,18 @@
     "path": "/api/admin/integrations/test-recipients/{recipientId}/revoke",
     "summary": "撤销测试收件人",
     "taskId": "X01"
+  },
+  {
+    "implementationStatus": "NOT_ASSESSED",
+    "controllerFile": null,
+    "serviceFile": null,
+    "mapperFile": null,
+    "testFiles": [],
+    "reviewEvidence": null,
+    "operationId": "V64_post_api_admin_capacity",
+    "method": "POST",
+    "path": "/api/admin/capacity",
+    "summary": "新增站点未来供给时段",
+    "taskId": "C03"
   }
 ]

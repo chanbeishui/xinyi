@@ -1,0 +1,82 @@
+{
+  "taskId": "C03",
+  "implementer": "Codex-20261101",
+  "scopeRevision": "V6.4-STATION-QUOTA-20261101",
+  "baseCommit": "d520801728ffada2c4715129ab94c8540ec8f197",
+  "codeCommit": "本次本地提交；源文件SHA-256见sourceDigests",
+  "codeFiles": [
+    "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/capacity/CapacityController.java",
+    "xinyi-admin/src/test/java/com/xinyi/web/viit/C03CapacityIT.java",
+    "xinyi-admin/src/test/java/com/xinyi/web/viit/E08PlatformIT.java",
+    "xinyi-miniapp/src/features/capacity/api.ts",
+    "xinyi-miniapp/src/pages/capacity/list.vue",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/capacity/domain/ViQuotaSlot.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/capacity/dto/CapacityChange.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/capacity/dto/CapacityCreate.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/capacity/dto/CapacityQuery.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/capacity/dto/CapacityView.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/capacity/mapper/ViQuotaSlotMapper.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/capacity/service/CapacityService.java",
+    "xinyi-rongli/src/main/resources/mapper/rongli/capacity/ViQuotaSlotMapper.xml",
+    "xinyi-ui/src/api/rongli/capacity.ts",
+    "xinyi-ui/src/views/rongli/capacity/capacity.vue"
+  ],
+  "sourceDigests": {
+    "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/capacity/CapacityController.java": "d20673080dda7bb8fcef4b9ade6a41e410a174e7fc4b224a9c559c8dfdd77028",
+    "xinyi-admin/src/test/java/com/xinyi/web/viit/C03CapacityIT.java": "791c56c392771e100ce115735a456273dc4cebcb733df2749949bf197217371c",
+    "xinyi-admin/src/test/java/com/xinyi/web/viit/E08PlatformIT.java": "4d748df280f06e36b840213ae78452c77b88d57e5a4ef3369bd008623223fe3d",
+    "xinyi-miniapp/src/features/capacity/api.ts": "14dd0aca957b487c26b7ea4b2ae11190359577cd2044c7ee7636b61fcf1035f0",
+    "xinyi-miniapp/src/pages/capacity/list.vue": "7dc0f04269d7ed612f1b0176e58f11c22fb5df1d49376ef296ac4ece9ed8a872",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/capacity/domain/ViQuotaSlot.java": "77ddd8d85220e121ed367691c4f449ab5f6d9ad2f03e23f0632c024dd3305336",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/capacity/dto/CapacityChange.java": "18c96ca3b8d3d611d46c2534a2f30cd253e7ae4ee20bb2b4a5ce5a65243fb2ca",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/capacity/dto/CapacityCreate.java": "f7ceacbbd737d0de7adf36ec7957ae2618eacca4cb44a32c763845a855313bbf",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/capacity/dto/CapacityQuery.java": "aa00cec9771fd12f07fe6a6933eabe28e3799187997093dc240b416d971d21f0",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/capacity/dto/CapacityView.java": "6b166775204e6965a2500ca773565b63d4f34301ba708d5cf2e1a8e2236e43cc",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/capacity/mapper/ViQuotaSlotMapper.java": "5cab4507af523420613e7dbf3f4a9986e915d4a0251717ec6535c0819b259cc2",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/capacity/service/CapacityService.java": "3dfac2b9adf37f33257ac934c019f0b6c71c6e288ff6ed5dc7cf726bd1b3b310",
+    "xinyi-rongli/src/main/resources/mapper/rongli/capacity/ViQuotaSlotMapper.xml": "2d0ddad0185a7384c6d8c6ad189cf45e1536cd5ee4642cfdf173d286e576af2c",
+    "xinyi-ui/src/api/rongli/capacity.ts": "678319ebe33bba85163f0a435679cc8172452d898c221c6db5b43c876eea279c",
+    "xinyi-ui/src/views/rongli/capacity/capacity.vue": "c364915444806099e856549052deeb4d6763c7cb1d125ee8779427ced50e3a96"
+  },
+  "runs": [
+    {
+      "command": "JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk-21.jdk/Contents/Home VI_PYTHON=.vi-local/venv/bin/python mvn -o -pl xinyi-admin -am -Pvi-it -Dit.test=E06PlatformIT,E07TestingIT,E08PlatformIT,I01IdentityIT,I02IdentityIT,I03IdentityIT,I04IdentityIT,I05IdentityIT,I06ScopeIT,A02AddressIT,A01VehicleIT,C01ConfigIT,A03OwnerIT,C02StationIT,C03CapacityIT verify",
+      "exitCode": 0,
+      "layer": "LIVE_HTTP_MYSQL",
+      "testsRun": 130,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "reportPath": "docs/implementation/vehicle/C03/full-regression-20261101.json"
+    },
+    {
+      "command": "npm --prefix xinyi-ui run build:prod",
+      "exitCode": 0,
+      "layer": "BUILD",
+      "testsRun": 1,
+      "skipped": 0,
+      "reportPath": "docs/implementation/vehicle/C03/report.md"
+    },
+    {
+      "command": "npm --prefix xinyi-miniapp run type-check && npm --prefix xinyi-miniapp run build:mp-weixin",
+      "exitCode": 0,
+      "layer": "BUILD",
+      "testsRun": 1,
+      "skipped": 0,
+      "reportPath": "docs/implementation/vehicle/C03/report.md"
+    }
+  ],
+  "review": {
+    "reviewer": null,
+    "approved": false,
+    "reportPath": null
+  },
+  "thirdPartyStub": "SIMULATOR；UI API夹具单独验证；无真实微信/支付/短信/真机/生产操作",
+  "at": "2026-11-01T14:47:56.397894+00:00",
+  "environment": {
+    "database": "xinyi_vi_it_e07",
+    "testControlKeySource": ".env.vi.local 中已存在的测试控制密钥，仅注入进程，不输出或改写",
+    "JDK": "21.0.8 / release17",
+    "realProviders": "NOT_RUN"
+  }
+}
