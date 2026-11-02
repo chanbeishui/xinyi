@@ -1,0 +1,105 @@
+{
+  "passed": true,
+  "checks": [
+    {
+      "schema": "AdminOrderView",
+      "sample": "b04-AdminOrderView.json",
+      "passed": true
+    },
+    {
+      "schema": "OwnerOrderView",
+      "sample": "b04-OwnerOrderView-live.json",
+      "passed": true
+    },
+    {
+      "schema": "OwnerOrderSummary",
+      "sample": "b04-OwnerOrderSummary.json",
+      "passed": true
+    },
+    {
+      "schema": "DriverOrderSummary",
+      "sample": "b04-DriverOrderSummary.json",
+      "passed": true
+    },
+    {
+      "schema": "AdminOrderSummary",
+      "sample": "b04-AdminOrderSummary.json",
+      "passed": true
+    },
+    {
+      "schema": "DriverOrderView",
+      "sample": "b04-DriverOrderView.json",
+      "passed": true
+    },
+    {
+      "schema": "DriverOrderView",
+      "sample": "b04-DriverOrderView-history.json",
+      "passed": true
+    },
+    {
+      "schema": "OwnerOrderView",
+      "sample": "b04-OwnerOrderView.json",
+      "passed": true
+    },
+    {
+      "schema": "StationOrderSummary",
+      "sample": "b04-StationOrderSummary.json",
+      "passed": true
+    },
+    {
+      "schema": "StationOrderView",
+      "sample": "b04-StationOrderView.json",
+      "passed": true
+    },
+    {
+      "schema": "OrderTimelinePublic",
+      "sample": "b04-OrderTimelinePublic.json",
+      "passed": true
+    },
+    {
+      "endpoint": "/api/app/owner/orders",
+      "envelope": true,
+      "passed": true
+    },
+    {
+      "endpoint": "/api/app/owner/orders/{orderNo}",
+      "envelope": true,
+      "passed": true
+    },
+    {
+      "endpoint": "/api/app/owner/orders/{orderNo}/timeline",
+      "envelope": true,
+      "passed": true
+    },
+    {
+      "endpoint": "/api/app/driver/orders",
+      "envelope": true,
+      "passed": true
+    },
+    {
+      "endpoint": "/api/app/driver/orders/{orderNo}",
+      "envelope": true,
+      "passed": true
+    },
+    {
+      "endpoint": "/api/app/station/orders",
+      "envelope": true,
+      "passed": true
+    },
+    {
+      "endpoint": "/api/app/station/orders/{orderNo}",
+      "envelope": true,
+      "passed": true
+    },
+    {
+      "endpoint": "/api/admin/orders",
+      "envelope": true,
+      "passed": true
+    },
+    {
+      "endpoint": "/api/admin/orders/{orderNo}",
+      "envelope": true,
+      "passed": true
+    }
+  ]
+}

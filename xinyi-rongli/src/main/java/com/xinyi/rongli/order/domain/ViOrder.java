@@ -50,4 +50,16 @@ public class ViOrder extends ViRecord {
  private String termsVersion;
  public String getTermsVersion(){return termsVersion;}
  public void setTermsVersion(String v){termsVersion=v;}
+ private Long activeAssignmentId;
+ public Long getActiveAssignmentId(){return activeAssignmentId;}
+ public void setActiveAssignmentId(Long value){activeAssignmentId=value;}
+ private Instant returnedAt;
+ public Instant getReturnedAt(){return returnedAt;}
+ public void setReturnedAt(Instant value){returnedAt=value;}
+ private Instant dispatchAt;
+ public Instant getDispatchAt(){return dispatchAt;}
+ public void setDispatchAt(Instant value){dispatchAt=value;}
+ private Instant autoConfirmAt;
+ public Instant getAutoConfirmAt(){return autoConfirmAt;}
+ public void setAutoConfirmAt(Instant value){autoConfirmAt=value;}
 }

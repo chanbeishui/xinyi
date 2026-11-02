@@ -120,6 +120,7 @@ async function submitOrder() {
     }
   } finally { busy.value = false; }
 }
+function openOrder() { if (order.value) uni.navigateTo({ url: '/pages/order/detail?orderNo=' + encodeURIComponent(order.value.orderNo) }); }
 </script>
 <template>
   <view class="screen">
@@ -168,6 +169,7 @@ async function submitOrder() {
       <button :disabled="busy || uncertain" @click="step = 2; invalidate()">修改信息并重新报价</button>
     </template>
     <template v-if="step === 5 && order">
+      <button @click="openOrder">查看订单详情与进度</button>
       <text class="title">订单已创建，待付款</text><text class="order-no">订单号：{{ order.orderNo }}</text>
       <text>{{ order.station.name }} · {{ order.vehicle.plateNo }}</text>
       <text>应付：{{ (order.money.totalAmount / 100).toFixed(2) }} 元</text><text>已付：{{ (order.money.paidAmount / 100).toFixed(2) }} 元</text>

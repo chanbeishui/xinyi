@@ -28,15 +28,15 @@ import java.util.*;
 @Service
 public class OrderService {
  private static final String ACTION="POST /api/app/owner/orders";
- private final OrderMapper mapper;private final QuoteMapper quoteMapper;private final QuoteService quotes;
+ private final OrderProjection projection;private final OrderMapper mapper;private final QuoteMapper quoteMapper;private final QuoteService quotes;
  private final ViStationMapper stations;private final ViQuotaSlotMapper slots;private final PaymentPolicyGateway payments;
  private final EmployeeDirectoryGuardMapper directory;private final ViAccountMapper accounts;private final com.xinyi.rongli.identity.mapper.ViSessionMapper sessions;private final BusinessActorResolver actors;
  private final AddressCrypto crypto;private final PhoneCrypto phones;private final IdempotencyService idem;
  private final AuditService audit;private final OutboxService outbox;private final TransactionTemplate tx;
- public OrderService(OrderMapper mapper,QuoteMapper quoteMapper,QuoteService quotes,ViStationMapper stations,ViQuotaSlotMapper slots,
+ public OrderService(OrderProjection projection,OrderMapper mapper,QuoteMapper quoteMapper,QuoteService quotes,ViStationMapper stations,ViQuotaSlotMapper slots,
  PaymentPolicyGateway payments,EmployeeDirectoryGuardMapper directory,ViAccountMapper accounts,com.xinyi.rongli.identity.mapper.ViSessionMapper sessions,BusinessActorResolver actors,
  AddressCrypto crypto,PhoneCrypto phones,IdempotencyService idem,AuditService audit,OutboxService outbox,PlatformTransactionManager manager){
-  this.mapper=mapper;this.quoteMapper=quoteMapper;this.quotes=quotes;this.stations=stations;this.slots=slots;this.payments=payments;
+  this.projection=projection;this.mapper=mapper;this.quoteMapper=quoteMapper;this.quotes=quotes;this.stations=stations;this.slots=slots;this.payments=payments;
   this.directory=directory;this.accounts=accounts;this.sessions=sessions;this.actors=actors;this.crypto=crypto;this.phones=phones;this.idem=idem;this.audit=audit;this.outbox=outbox;
   tx=new TransactionTemplate(manager);tx.setIsolationLevel(org.springframework.transaction.TransactionDefinition.ISOLATION_READ_COMMITTED);
  }
@@ -95,11 +95,7 @@ public class OrderService {
  }
  private OwnerOrderView view(long owner,long id){
   ViOrder row=mapper.find(id);if(row==null||!Objects.equals(owner,row.getOwnerAccountId()))throw new ViException(ViErrorCode.VI_RESOURCE_NOT_VISIBLE);
-  var snap=mapper.snapshot(id);var pay=mapper.payment(id);if(snap==null||pay==null)throw new ViException(ViErrorCode.VI_STATE_CONFLICT,"订单快照缺失，请联系管理员核查");
-  var vehicle=ViJson.tree(row.getVehicleSnapshot());var draft=vehicle.path("draft");var contact=ViJson.tree(crypto.decrypt(snap.getContactCipher()));var address=ViJson.tree(crypto.decrypt(snap.getAddressCipher()));
-  var addressView=new OwnerOrderView.Address(address.path("address").asText(),ViJson.read(address.path("location").toString(),GeoPoint.class),new OwnerOrderView.Contact(contact.path("displayName").asText(),PhoneCrypto.mask(contact.path("phone").asText()),false));
-  var quote=quoteMapper.find(row.getQuoteId());var fees=Arrays.asList(ViJson.read(ViJson.tree(quote.getItemsJson()).path("items").toString(),QuoteView.FeeItem[].class));
-  return new OwnerOrderView(row.getOrderNo(),row.getFulfillmentStatus(),"PENDING_PAY".equals(row.getFulfillmentStatus())?"待付款":row.getFulfillmentStatus(),row.getCancelStatus(),row.getCustodyType(),new OwnerOrderView.Vehicle(row.getVehicleId()==null?null:row.getVehicleId().toString(),vehicle.path("plateNo").asText(),vehicle.path("vehicleTypeCode").asText(),vehicle.path("vehicleTypeLabel").asText(),nullable(vehicle.has("brandModel")?vehicle:draft,"brandModel"),nullable(vehicle.has("vinLast4")?vehicle:draft,"vinLast4")),ViJson.read(snap.getStationSnapshot(),OwnerOrderView.Station.class),row.getPickupStartsAt().toString(),row.getPickupEndsAt().toString(),null,row.getVersion(),"OWNER",pay.getStatus(),"NONE","NONE",addressView,addressView,null,null,row.getPayExpiresAt().toString(),null,new OwnerOrderView.Money(fees,row.getTotalFen(),pay.getPaidFen(),pay.getRefundedFen()),new OwnerOrderView.Mileage(null,null,null,false,null),null,List.of());
+  return projection.owner(row);
  }
  private static String nullable(com.fasterxml.jackson.databind.JsonNode node,String key){return node.hasNonNull(key)?node.get(key).asText():null;}
  private static void one(int n){if(n!=1)throw new ViException(ViErrorCode.VI_STATE_CONFLICT,"名额或报价已变化，请重新报价");}

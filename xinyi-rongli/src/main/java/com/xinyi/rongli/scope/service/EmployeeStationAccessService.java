@@ -15,7 +15,7 @@ import java.util.Set;
 @Service
 public class EmployeeStationAccessService {
     private static final Set<String> ALLOWED = Set.of("biz:station:query", "biz:station:edit",
-            "biz:capacity:list", "biz:capacity:edit");
+            "biz:capacity:list", "biz:capacity:edit", "biz:order:list", "biz:order:query");
     private final BusinessActorResolver actors;
     private final EmployeeStationAccessMapper mapper;
     private final AuditService audit;

@@ -347,11 +347,13 @@
     "verificationEvidence": "docs/implementation/vehicle/evidence/B03-20261102.json"
   },
   {
-    "implementationStatus": "NOT_ASSESSED",
-    "controllerFile": null,
-    "serviceFile": null,
-    "mapperFile": null,
-    "testFiles": [],
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/order/controller/OrderReadController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/order/service/OrderReadService.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/order/OrderReadMapper.xml",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/B04OrderIT.java"
+    ],
     "reviewEvidence": null,
     "operationId": "API_026_get",
     "method": "GET",
@@ -360,11 +362,13 @@
     "taskId": "B04"
   },
   {
-    "implementationStatus": "NOT_ASSESSED",
-    "controllerFile": null,
-    "serviceFile": null,
-    "mapperFile": null,
-    "testFiles": [],
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/order/controller/OrderReadController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/order/service/OrderReadService.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/order/OrderReadMapper.xml",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/B04OrderIT.java"
+    ],
     "reviewEvidence": null,
     "operationId": "API_027_get",
     "method": "GET",
@@ -373,11 +377,13 @@
     "taskId": "B04"
   },
   {
-    "implementationStatus": "NOT_ASSESSED",
-    "controllerFile": null,
-    "serviceFile": null,
-    "mapperFile": null,
-    "testFiles": [],
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/order/controller/OrderReadController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/order/service/OrderReadService.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/order/OrderReadMapper.xml",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/B04OrderIT.java"
+    ],
     "reviewEvidence": null,
     "operationId": "API_028_get",
     "method": "GET",
@@ -685,11 +691,13 @@
     "taskId": "D04"
   },
   {
-    "implementationStatus": "NOT_ASSESSED",
-    "controllerFile": null,
-    "serviceFile": null,
-    "mapperFile": null,
-    "testFiles": [],
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/order/controller/OrderReadController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/order/service/OrderReadService.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/order/OrderReadMapper.xml",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/B04OrderIT.java"
+    ],
     "reviewEvidence": null,
     "operationId": "API_055_get",
     "method": "GET",
@@ -698,11 +706,13 @@
     "taskId": "B04"
   },
   {
-    "implementationStatus": "NOT_ASSESSED",
-    "controllerFile": null,
-    "serviceFile": null,
-    "mapperFile": null,
-    "testFiles": [],
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/order/controller/OrderReadController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/order/service/OrderReadService.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/order/OrderReadMapper.xml",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/B04OrderIT.java"
+    ],
     "reviewEvidence": null,
     "operationId": "API_056_get",
     "method": "GET",
@@ -906,11 +916,13 @@
     "taskId": "F03"
   },
   {
-    "implementationStatus": "NOT_ASSESSED",
-    "controllerFile": null,
-    "serviceFile": null,
-    "mapperFile": null,
-    "testFiles": [],
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/order/controller/OrderReadController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/order/service/OrderReadService.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/order/OrderReadMapper.xml",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/B04OrderIT.java"
+    ],
     "reviewEvidence": null,
     "operationId": "API_072_get",
     "method": "GET",
@@ -919,11 +931,13 @@
     "taskId": "B04"
   },
   {
-    "implementationStatus": "NOT_ASSESSED",
-    "controllerFile": null,
-    "serviceFile": null,
-    "mapperFile": null,
-    "testFiles": [],
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/order/controller/OrderReadController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/order/service/OrderReadService.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/order/OrderReadMapper.xml",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/B04OrderIT.java"
+    ],
     "reviewEvidence": null,
     "operationId": "API_073_get",
     "method": "GET",
@@ -1053,11 +1067,13 @@
     "taskId": "C03"
   },
   {
-    "implementationStatus": "NOT_ASSESSED",
-    "controllerFile": null,
-    "serviceFile": null,
-    "mapperFile": null,
-    "testFiles": [],
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/order/controller/OrderReadController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/order/service/OrderReadService.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/order/OrderReadMapper.xml",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/B04OrderIT.java"
+    ],
     "reviewEvidence": null,
     "operationId": "API_083_get",
     "method": "GET",
@@ -1066,11 +1082,13 @@
     "taskId": "B04"
   },
   {
-    "implementationStatus": "NOT_ASSESSED",
-    "controllerFile": null,
-    "serviceFile": null,
-    "mapperFile": null,
-    "testFiles": [],
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/order/controller/OrderReadController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/order/service/OrderReadService.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/order/OrderReadMapper.xml",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/B04OrderIT.java"
+    ],
     "reviewEvidence": null,
     "operationId": "API_084_get",
     "method": "GET",

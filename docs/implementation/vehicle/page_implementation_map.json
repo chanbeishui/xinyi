@@ -161,53 +161,88 @@
     "taskId": "P01"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "PARTIAL",
+    "implementationFile": "xinyi-miniapp/src/pages/order/detail.vue",
+    "evidence": [
+      "docs/implementation/vehicle/B04/ui-qa.json",
+      "docs/implementation/vehicle/B04/design.md"
+    ],
     "boardId": "O14",
-    "taskId": "B04"
+    "taskId": "B04",
+    "implementedScope": "四端只读投影、列表或状态展示；仅已实现VIEW_DETAIL动作",
+    "remainingScope": "原画板业务写动作、未在主OpenAPI提供的搜索条件及专用待办由后续任务交付；不宣称完整画板验收"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "PARTIAL",
+    "implementationFile": "xinyi-miniapp/src/pages/order/detail.vue",
+    "evidence": [
+      "docs/implementation/vehicle/B04/ui-qa.json",
+      "docs/implementation/vehicle/B04/design.md"
+    ],
     "boardId": "O14-cancel-return",
-    "taskId": "B04"
+    "taskId": "B04",
+    "implementedScope": "四端只读投影、列表或状态展示；仅已实现VIEW_DETAIL动作",
+    "remainingScope": "原画板业务写动作、未在主OpenAPI提供的搜索条件及专用待办由后续任务交付；不宣称完整画板验收"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "PARTIAL",
+    "implementationFile": "xinyi-miniapp/src/pages/order/detail.vue",
+    "evidence": [
+      "docs/implementation/vehicle/B04/ui-qa.json",
+      "docs/implementation/vehicle/B04/design.md"
+    ],
     "boardId": "O14-cancel-review",
-    "taskId": "B04"
+    "taskId": "B04",
+    "implementedScope": "四端只读投影、列表或状态展示；仅已实现VIEW_DETAIL动作",
+    "remainingScope": "原画板业务写动作、未在主OpenAPI提供的搜索条件及专用待办由后续任务交付；不宣称完整画板验收"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "PARTIAL",
+    "implementationFile": "xinyi-miniapp/src/pages/order/detail.vue",
+    "evidence": [
+      "docs/implementation/vehicle/B04/ui-qa.json",
+      "docs/implementation/vehicle/B04/design.md"
+    ],
     "boardId": "O14-cancelled",
-    "taskId": "B04"
+    "taskId": "B04",
+    "implementedScope": "四端只读投影、列表或状态展示；仅已实现VIEW_DETAIL动作",
+    "remainingScope": "原画板业务写动作、未在主OpenAPI提供的搜索条件及专用待办由后续任务交付；不宣称完整画板验收"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "PARTIAL",
+    "implementationFile": "xinyi-miniapp/src/pages/order/detail.vue",
+    "evidence": [
+      "docs/implementation/vehicle/B04/ui-qa.json",
+      "docs/implementation/vehicle/B04/design.md"
+    ],
     "boardId": "O14-dispatching",
-    "taskId": "B04"
+    "taskId": "B04",
+    "implementedScope": "四端只读投影、列表或状态展示；仅已实现VIEW_DETAIL动作",
+    "remainingScope": "原画板业务写动作、未在主OpenAPI提供的搜索条件及专用待办由后续任务交付；不宣称完整画板验收"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "PARTIAL",
+    "implementationFile": "xinyi-miniapp/src/pages/order/detail.vue",
+    "evidence": [
+      "docs/implementation/vehicle/B04/ui-qa.json",
+      "docs/implementation/vehicle/B04/design.md"
+    ],
     "boardId": "O14-manual",
-    "taskId": "B04"
+    "taskId": "B04",
+    "implementedScope": "四端只读投影、列表或状态展示；仅已实现VIEW_DETAIL动作",
+    "remainingScope": "原画板业务写动作、未在主OpenAPI提供的搜索条件及专用待办由后续任务交付；不宣称完整画板验收"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "PARTIAL",
+    "implementationFile": "xinyi-miniapp/src/pages/order/detail.vue",
+    "evidence": [
+      "docs/implementation/vehicle/B04/ui-qa.json",
+      "docs/implementation/vehicle/B04/design.md"
+    ],
     "boardId": "O15",
-    "taskId": "B04"
+    "taskId": "B04",
+    "implementedScope": "四端只读投影、列表或状态展示；仅已实现VIEW_DETAIL动作",
+    "remainingScope": "原画板业务写动作、未在主OpenAPI提供的搜索条件及专用待办由后续任务交付；不宣称完整画板验收"
   },
   {
     "status": "NOT_ASSESSED",
@@ -345,32 +380,52 @@
     "taskId": "I02"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "PARTIAL",
+    "implementationFile": "xinyi-miniapp/src/pages/order/list.vue",
+    "evidence": [
+      "docs/implementation/vehicle/B04/ui-qa.json",
+      "docs/implementation/vehicle/B04/design.md"
+    ],
     "boardId": "O26",
-    "taskId": "B04"
+    "taskId": "B04",
+    "implementedScope": "四端只读投影、列表或状态展示；仅已实现VIEW_DETAIL动作",
+    "remainingScope": "原画板业务写动作、未在主OpenAPI提供的搜索条件及专用待办由后续任务交付；不宣称完整画板验收"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "IMPLEMENTED",
+    "implementationFile": "xinyi-miniapp/src/pages/order/list.vue",
+    "evidence": [
+      "docs/implementation/vehicle/B04/ui-qa.json",
+      "docs/implementation/vehicle/B04/design.md"
+    ],
     "boardId": "O26-empty",
-    "taskId": "B04"
+    "taskId": "B04",
+    "implementedScope": "四端只读投影、列表或状态展示；仅已实现VIEW_DETAIL动作",
+    "remainingScope": "独立复核与微信真机验证"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "IMPLEMENTED",
+    "implementationFile": "xinyi-miniapp/src/pages/order/list.vue",
+    "evidence": [
+      "docs/implementation/vehicle/B04/ui-qa.json",
+      "docs/implementation/vehicle/B04/design.md"
+    ],
     "boardId": "O26-error",
-    "taskId": "B04"
+    "taskId": "B04",
+    "implementedScope": "四端只读投影、列表或状态展示；仅已实现VIEW_DETAIL动作",
+    "remainingScope": "独立复核与微信真机验证"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "IMPLEMENTED",
+    "implementationFile": "xinyi-miniapp/src/pages/order/list.vue",
+    "evidence": [
+      "docs/implementation/vehicle/B04/ui-qa.json",
+      "docs/implementation/vehicle/B04/design.md"
+    ],
     "boardId": "O26-loading",
-    "taskId": "B04"
+    "taskId": "B04",
+    "implementedScope": "四端只读投影、列表或状态展示；仅已实现VIEW_DETAIL动作",
+    "remainingScope": "独立复核与微信真机验证"
   },
   {
     "status": "IMPLEMENTED",
@@ -612,11 +667,16 @@
     "taskId": "D04"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "PARTIAL",
+    "implementationFile": "xinyi-miniapp/src/pages/order/detail.vue",
+    "evidence": [
+      "docs/implementation/vehicle/B04/ui-qa.json",
+      "docs/implementation/vehicle/B04/design.md"
+    ],
     "boardId": "D09",
-    "taskId": "B04"
+    "taskId": "B04",
+    "implementedScope": "四端只读投影、列表或状态展示；仅已实现VIEW_DETAIL动作",
+    "remainingScope": "原画板业务写动作、未在主OpenAPI提供的搜索条件及专用待办由后续任务交付；不宣称完整画板验收"
   },
   {
     "status": "NOT_ASSESSED",
@@ -787,18 +847,28 @@
     "taskId": "S04"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "PARTIAL",
+    "implementationFile": "xinyi-miniapp/src/pages/order/detail.vue",
+    "evidence": [
+      "docs/implementation/vehicle/B04/ui-qa.json",
+      "docs/implementation/vehicle/B04/design.md"
+    ],
     "boardId": "D25",
-    "taskId": "B04"
+    "taskId": "B04",
+    "implementedScope": "四端只读投影、列表或状态展示；仅已实现VIEW_DETAIL动作",
+    "remainingScope": "原画板业务写动作、未在主OpenAPI提供的搜索条件及专用待办由后续任务交付；不宣称完整画板验收"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "PARTIAL",
+    "implementationFile": "xinyi-miniapp/src/pages/order/detail.vue",
+    "evidence": [
+      "docs/implementation/vehicle/B04/ui-qa.json",
+      "docs/implementation/vehicle/B04/design.md"
+    ],
     "boardId": "D25-cancelled",
-    "taskId": "B04"
+    "taskId": "B04",
+    "implementedScope": "四端只读投影、列表或状态展示；仅已实现VIEW_DETAIL动作",
+    "remainingScope": "原画板业务写动作、未在主OpenAPI提供的搜索条件及专用待办由后续任务交付；不宣称完整画板验收"
   },
   {
     "status": "NOT_ASSESSED",
@@ -871,11 +941,16 @@
     "taskId": "D06"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "PARTIAL",
+    "implementationFile": "xinyi-miniapp/src/pages/order/list.vue",
+    "evidence": [
+      "docs/implementation/vehicle/B04/ui-qa.json",
+      "docs/implementation/vehicle/B04/design.md"
+    ],
     "boardId": "D36",
-    "taskId": "B04"
+    "taskId": "B04",
+    "implementedScope": "四端只读投影、列表或状态展示；仅已实现VIEW_DETAIL动作",
+    "remainingScope": "原画板业务写动作、未在主OpenAPI提供的搜索条件及专用待办由后续任务交付；不宣称完整画板验收"
   },
   {
     "status": "NOT_ASSESSED",
@@ -913,39 +988,64 @@
     "taskId": "I01"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "PARTIAL",
+    "implementationFile": "xinyi-miniapp/src/pages/order/list.vue",
+    "evidence": [
+      "docs/implementation/vehicle/B04/ui-qa.json",
+      "docs/implementation/vehicle/B04/design.md"
+    ],
     "boardId": "S02",
-    "taskId": "B04"
+    "taskId": "B04",
+    "implementedScope": "四端只读投影、列表或状态展示；仅已实现VIEW_DETAIL动作",
+    "remainingScope": "原画板业务写动作、未在主OpenAPI提供的搜索条件及专用待办由后续任务交付；不宣称完整画板验收"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "PARTIAL",
+    "implementationFile": "xinyi-miniapp/src/pages/order/list.vue",
+    "evidence": [
+      "docs/implementation/vehicle/B04/ui-qa.json",
+      "docs/implementation/vehicle/B04/design.md"
+    ],
     "boardId": "S03",
-    "taskId": "B04"
+    "taskId": "B04",
+    "implementedScope": "四端只读投影、列表或状态展示；仅已实现VIEW_DETAIL动作",
+    "remainingScope": "原画板业务写动作、未在主OpenAPI提供的搜索条件及专用待办由后续任务交付；不宣称完整画板验收"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "PARTIAL",
+    "implementationFile": "xinyi-miniapp/src/pages/order/detail.vue",
+    "evidence": [
+      "docs/implementation/vehicle/B04/ui-qa.json",
+      "docs/implementation/vehicle/B04/design.md"
+    ],
     "boardId": "S04",
-    "taskId": "B04"
+    "taskId": "B04",
+    "implementedScope": "四端只读投影、列表或状态展示；仅已实现VIEW_DETAIL动作",
+    "remainingScope": "原画板业务写动作、未在主OpenAPI提供的搜索条件及专用待办由后续任务交付；不宣称完整画板验收"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "PARTIAL",
+    "implementationFile": "xinyi-miniapp/src/pages/order/detail.vue",
+    "evidence": [
+      "docs/implementation/vehicle/B04/ui-qa.json",
+      "docs/implementation/vehicle/B04/design.md"
+    ],
     "boardId": "S05",
-    "taskId": "B04"
+    "taskId": "B04",
+    "implementedScope": "四端只读投影、列表或状态展示；仅已实现VIEW_DETAIL动作",
+    "remainingScope": "原画板业务写动作、未在主OpenAPI提供的搜索条件及专用待办由后续任务交付；不宣称完整画板验收"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "PARTIAL",
+    "implementationFile": "xinyi-miniapp/src/pages/order/detail.vue",
+    "evidence": [
+      "docs/implementation/vehicle/B04/ui-qa.json",
+      "docs/implementation/vehicle/B04/design.md"
+    ],
     "boardId": "S06",
-    "taskId": "B04"
+    "taskId": "B04",
+    "implementedScope": "四端只读投影、列表或状态展示；仅已实现VIEW_DETAIL动作",
+    "remainingScope": "原画板业务写动作、未在主OpenAPI提供的搜索条件及专用待办由后续任务交付；不宣称完整画板验收"
   },
   {
     "status": "NOT_ASSESSED",
@@ -1144,53 +1244,88 @@
     "taskId": "O01"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "PARTIAL",
+    "implementationFile": "xinyi-ui/src/views/rongli/order/order.vue",
+    "evidence": [
+      "docs/implementation/vehicle/B04/ui-qa.json",
+      "docs/implementation/vehicle/B04/design.md"
+    ],
     "boardId": "B03",
-    "taskId": "B04"
+    "taskId": "B04",
+    "implementedScope": "四端只读投影、列表或状态展示；仅已实现VIEW_DETAIL动作",
+    "remainingScope": "原画板业务写动作、未在主OpenAPI提供的搜索条件及专用待办由后续任务交付；不宣称完整画板验收"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "IMPLEMENTED",
+    "implementationFile": "xinyi-ui/src/views/rongli/order/order.vue",
+    "evidence": [
+      "docs/implementation/vehicle/B04/ui-qa.json",
+      "docs/implementation/vehicle/B04/design.md"
+    ],
     "boardId": "B03-empty",
-    "taskId": "B04"
+    "taskId": "B04",
+    "implementedScope": "四端只读投影、列表或状态展示；仅已实现VIEW_DETAIL动作",
+    "remainingScope": "独立复核与微信真机验证"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "IMPLEMENTED",
+    "implementationFile": "xinyi-ui/src/views/rongli/order/order.vue",
+    "evidence": [
+      "docs/implementation/vehicle/B04/ui-qa.json",
+      "docs/implementation/vehicle/B04/design.md"
+    ],
     "boardId": "B03-error",
-    "taskId": "B04"
+    "taskId": "B04",
+    "implementedScope": "四端只读投影、列表或状态展示；仅已实现VIEW_DETAIL动作",
+    "remainingScope": "独立复核与微信真机验证"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "IMPLEMENTED",
+    "implementationFile": "xinyi-ui/src/views/rongli/order/order.vue",
+    "evidence": [
+      "docs/implementation/vehicle/B04/ui-qa.json",
+      "docs/implementation/vehicle/B04/design.md"
+    ],
     "boardId": "B03-forbidden",
-    "taskId": "B04"
+    "taskId": "B04",
+    "implementedScope": "四端只读投影、列表或状态展示；仅已实现VIEW_DETAIL动作",
+    "remainingScope": "独立复核与微信真机验证"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "IMPLEMENTED",
+    "implementationFile": "xinyi-ui/src/views/rongli/order/order.vue",
+    "evidence": [
+      "docs/implementation/vehicle/B04/ui-qa.json",
+      "docs/implementation/vehicle/B04/design.md"
+    ],
     "boardId": "B03-loading",
-    "taskId": "B04"
+    "taskId": "B04",
+    "implementedScope": "四端只读投影、列表或状态展示；仅已实现VIEW_DETAIL动作",
+    "remainingScope": "独立复核与微信真机验证"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "PARTIAL",
+    "implementationFile": "xinyi-ui/src/views/rongli/order/order.vue",
+    "evidence": [
+      "docs/implementation/vehicle/B04/ui-qa.json",
+      "docs/implementation/vehicle/B04/design.md"
+    ],
     "boardId": "B04",
-    "taskId": "B04"
+    "taskId": "B04",
+    "implementedScope": "四端只读投影、列表或状态展示；仅已实现VIEW_DETAIL动作",
+    "remainingScope": "原画板业务写动作、未在主OpenAPI提供的搜索条件及专用待办由后续任务交付；不宣称完整画板验收"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "PARTIAL",
+    "implementationFile": "xinyi-ui/src/views/rongli/order/order.vue",
+    "evidence": [
+      "docs/implementation/vehicle/B04/ui-qa.json",
+      "docs/implementation/vehicle/B04/design.md"
+    ],
     "boardId": "B04-returned",
-    "taskId": "B04"
+    "taskId": "B04",
+    "implementedScope": "四端只读投影、列表或状态展示；仅已实现VIEW_DETAIL动作",
+    "remainingScope": "原画板业务写动作、未在主OpenAPI提供的搜索条件及专用待办由后续任务交付；不宣称完整画板验收"
   },
   {
     "status": "NOT_ASSESSED",
@@ -1291,9 +1426,14 @@
   {
     "status": "NOT_ASSESSED",
     "implementationFile": null,
-    "evidence": [],
+    "evidence": [
+      "docs/implementation/vehicle/B04/ui-qa.json",
+      "docs/implementation/vehicle/B04/design.md"
+    ],
     "boardId": "B10",
-    "taskId": "B04"
+    "taskId": "B04",
+    "implementedScope": "本轮未实现检测结果待办专页",
+    "remainingScope": "后续检测任务实现B08/B11关联待办"
   },
   {
     "status": "NOT_ASSESSED",

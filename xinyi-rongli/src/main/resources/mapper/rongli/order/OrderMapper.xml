@@ -19,6 +19,10 @@
 <result property="payExpiresAt" column="pay_expires_at" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
 <result property="totalFen" column="total_fen"/>
 <result property="termsVersion" column="terms_version"/>
+<result property="activeAssignmentId" column="active_assignment_id"/>
+<result property="returnedAt" column="returned_at" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+<result property="dispatchAt" column="dispatch_at" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+<result property="autoConfirmAt" column="auto_confirm_at" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
 </resultMap>
 <insert id="insert" useGeneratedKeys="true" keyProperty="id">INSERT INTO vi_order (order_no,owner_account_id,vehicle_id,station_id,dept_id,quote_id,vehicle_snapshot,fulfillment_status,cancel_status,custody_type,custody_ref_id,pickup_starts_at,pickup_ends_at,pay_expires_at,total_fen,terms_version) VALUES (#{orderNo},#{ownerAccountId},#{vehicleId},#{stationId},#{deptId},#{quoteId},#{vehicleSnapshot},#{fulfillmentStatus},#{cancelStatus},#{custodyType},#{custodyRefId},#{pickupStartsAt,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler},#{pickupEndsAt,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler},#{payExpiresAt,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler},#{totalFen},#{termsVersion})</insert>
 <select id="find" resultMap="Order">SELECT * FROM vi_order WHERE id=#{id}</select>

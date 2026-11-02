@@ -21,7 +21,7 @@
 ## 代码落位
 `xinyi-rongli/src/main/java/com/xinyi/rongli/order/`
 `xinyi-rongli/src/main/resources/mapper/rongli/order/`
-`xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/order/`
+`xinyi-rongli/src/main/java/com/xinyi/rongli/order/controller/`
 `xinyi-ui/src/views/rongli/order/`
 `xinyi-ui/src/api/rongli/order.ts`
 `xinyi-miniapp/src/features/order/`

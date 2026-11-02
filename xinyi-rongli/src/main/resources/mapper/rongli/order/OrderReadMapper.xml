@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xinyi.rongli.order.mapper.OrderReadMapper">
+<resultMap id="order" type="com.xinyi.rongli.order.domain.ViOrder" extends="com.xinyi.rongli.order.mapper.OrderMapper.Order">
+<result property="activeAssignmentId" column="active_assignment_id"/>
+<result property="returnedAt" column="returned_at" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+<result property="dispatchAt" column="dispatch_at" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+<result property="autoConfirmAt" column="auto_confirm_at" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+</resultMap>
+<resultMap id="assignment" type="com.xinyi.rongli.order.domain.OrderAssignment">
+<constructor><idArg column="id" javaType="java.lang.Long"/><arg column="order_id" javaType="java.lang.Long"/><arg column="driver_id" javaType="java.lang.Long"/><arg column="ended_at" javaType="java.time.Instant" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/></constructor>
+</resultMap>
+<sql id="scope">
+ <choose>
+ <when test="scope.view == 'OWNER'">AND o.owner_account_id=#{scope.accountId}</when>
+ <when test="scope.view == 'DRIVER'">AND EXISTS(SELECT 1 FROM vi_driver_assignment a WHERE a.order_id=o.id AND a.driver_id=#{scope.driverId})</when>
+ <when test="scope.view == 'STATION'">AND o.station_id=#{scope.stationId}</when>
+ <when test="scope.view == 'ADMIN'"></when><otherwise>AND 1=0</otherwise>
+ </choose>
+ <if test="scope.departments != null"><choose><when test="scope.departments.size()==0">AND 1=0</when><otherwise>AND o.dept_id IN <foreach collection="scope.departments" item="dept" open="(" close=")" separator=",">#{dept}</foreach></otherwise></choose></if>
+</sql>
+<sql id="filter">
+ <if test="query.status != null">AND o.fulfillment_status=#{query.status}</if>
+ <if test="query.startAt != null">AND o.pickup_starts_at &gt;= #{query.startAt,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler}</if>
+ <if test="query.endAt != null">AND o.pickup_starts_at &lt; #{query.endAt,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler}</if>
+</sql>
+<select id="list" resultMap="order">SELECT o.* FROM vi_order o WHERE 1=1 <include refid="scope"/><include refid="filter"/> ORDER BY o.created_at DESC,o.id DESC LIMIT #{query.pageSize} OFFSET #{query.offset}</select>
+<select id="count" resultType="long">SELECT COUNT(*) FROM vi_order o WHERE 1=1 <include refid="scope"/><include refid="filter"/></select>
+<select id="detail" resultMap="order">SELECT o.* FROM vi_order o WHERE o.order_no=#{orderNo} <include refid="scope"/></select>
+<select id="driverId" resultType="long">SELECT id FROM vi_driver_profile WHERE account_id=#{accountId}</select>
+<select id="ownAssignment" resultMap="assignment">SELECT id,order_id,driver_id,ended_at FROM vi_driver_assignment WHERE order_id=#{orderId} AND driver_id=#{driverId} ORDER BY accepted_at DESC,id DESC LIMIT 1</select>
+<select id="activeAssignment" resultMap="assignment">SELECT id,order_id,driver_id,ended_at FROM vi_driver_assignment WHERE id=#{assignmentId} AND order_id=#{orderId} AND ended_at IS NULL</select>
+<select id="driverPublic" resultType="map">SELECT a.nickname FROM vi_driver_profile d JOIN vi_account a ON a.id=d.account_id WHERE d.id=#{driverId}</select>
+<select id="afterSale" resultType="map">SELECT id,kind,case_status,approved_fen,return_state,refund_state,version FROM vi_aftersale_case WHERE order_id=#{orderId} ORDER BY id DESC LIMIT 1</select>
+<select id="dispute" resultType="string">SELECT status FROM vi_dispute WHERE order_id=#{orderId} ORDER BY CASE status WHEN 'OPEN' THEN 0 WHEN 'PROCESSING' THEN 1 ELSE 2 END,id DESC LIMIT 1</select>
+<select id="license" resultType="string">SELECT review_status FROM vi_vehicle_license WHERE order_id=#{orderId} ORDER BY id DESC LIMIT 1</select>
+<select id="result" resultType="string">SELECT conclusion FROM vi_inspection_result WHERE order_id=#{orderId} AND superseded_at IS NULL</select>
+<select id="mileage" resultType="map">SELECT h.handover_type,e.mileage_km FROM vi_handover h JOIN vi_evidence_group e ON e.id=h.evidence_group_id WHERE h.order_id=#{orderId} AND e.order_id=h.order_id AND e.assignment_id=h.assignment_id AND e.status='SEALED' AND h.status='CONFIRMED' AND h.handover_type IN ('OWNER_TO_DRIVER','DRIVER_TO_OWNER') AND NOT EXISTS (SELECT 1 FROM vi_handover newer WHERE newer.order_id=h.order_id AND newer.handover_type=h.handover_type AND newer.status='CONFIRMED' AND (newer.confirmed_at&gt;h.confirmed_at OR (newer.confirmed_at=h.confirmed_at AND newer.id&gt;h.id)))</select>
+<sql id="publicEvents">WHERE (order_id=#{orderId} OR (aggregate_type='VI_ORDER' AND aggregate_id=#{orderId})) AND action IN <foreach collection="actions" item="action" open="(" close=")" separator=",">#{action}</foreach></sql>
+<select id="timeline" resultType="map">SELECT id,action,acting_role,DATE_FORMAT(created_at,'%Y-%m-%dT%H:%i:%s.%fZ') AS at FROM vi_event_log <include refid="publicEvents"/> ORDER BY created_at,id LIMIT #{limit} OFFSET #{offset}</select>
+<select id="timelineCount" resultType="long">SELECT COUNT(*) FROM vi_event_log <include refid="publicEvents"/></select>
+<select id="stationSnapshot" resultType="string">SELECT station_snapshot FROM vi_order_snapshot WHERE order_id=#{orderId}</select>
+<select id="contactCipher" resultMap="com.xinyi.rongli.order.mapper.OrderMapper.OrderSnapshot">SELECT contact_cipher FROM vi_order_snapshot WHERE order_id=#{orderId}</select>
+</mapper>

@@ -1,0 +1,149 @@
+{
+  "taskId": "B04",
+  "implementer": "Codex",
+  "scopeRevision": "V6.1-UNCHANGED",
+  "at": "2026-11-02T14:29:01.243983+00:00",
+  "codeFiles": [
+    "sql/migration_20261102_02_order_read_permissions.sql",
+    "sql/ry_20260417.sql",
+    "xinyi-admin/src/test/java/com/xinyi/web/viit/B04OrderIT.java",
+    "xinyi-miniapp/src/features/order/api.ts",
+    "xinyi-miniapp/src/pages.json",
+    "xinyi-miniapp/src/pages/booking/start.vue",
+    "xinyi-miniapp/src/pages/identity/switch.vue",
+    "xinyi-miniapp/src/pages/order/detail.vue",
+    "xinyi-miniapp/src/pages/order/list.vue",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/order/controller/OrderReadController.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/order/domain/OrderAssignment.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/order/domain/ViOrder.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/order/dto/OrderQuery.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/order/dto/OrderViews.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/order/mapper/OrderReadMapper.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/order/service/OrderProjection.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/order/service/OrderReadScope.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/order/service/OrderReadService.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/order/service/OrderService.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/scope/mapper/EmployeeStationAccessMapper.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/scope/service/EmployeeStationAccessService.java",
+    "xinyi-rongli/src/main/resources/mapper/rongli/order/OrderMapper.xml",
+    "xinyi-rongli/src/main/resources/mapper/rongli/order/OrderReadMapper.xml",
+    "xinyi-rongli/src/main/resources/mapper/rongli/scope/EmployeeStationAccessMapper.xml",
+    "xinyi-ui/src/api/rongli/order.ts",
+    "xinyi-ui/src/views/rongli/order/order.vue"
+  ],
+  "sourceDigests": {
+    "sql/migration_20261102_02_order_read_permissions.sql": "c16719c091b447f557d3516cbd142f50612f1c40c6bdde36b8599563b1df0527",
+    "sql/ry_20260417.sql": "dc7f4edb92a1d47745988a339a34038637fb7c83ef309b07ebab9540e907286a",
+    "xinyi-admin/src/test/java/com/xinyi/web/viit/B04OrderIT.java": "796387b9a7455ff8845eaf852da56bfeefc1998a631afba26a62c4dcadbb5b23",
+    "xinyi-miniapp/src/features/order/api.ts": "f60275752e3cdae1e82738883e98b45f7bc70cd0fde9a1b29efacd0be7b6bab0",
+    "xinyi-miniapp/src/pages.json": "483110076bf83896f564e40845fb65ac868d9f0f089bb22f93589f09172d270e",
+    "xinyi-miniapp/src/pages/booking/start.vue": "b154af3e474afe0c40665425c30839c56535094291cdb9ab5f8f9130347acf68",
+    "xinyi-miniapp/src/pages/identity/switch.vue": "d8946fc9759adbf78ff0a5929e39bbadecccc7acb3dcd399b524ea885b66ef53",
+    "xinyi-miniapp/src/pages/order/detail.vue": "127f2b52078b89849547a30925d70f72fec70b86fe21a433001e9cb9a89603b1",
+    "xinyi-miniapp/src/pages/order/list.vue": "e7ef003fab6a5d282f0e9c710f013d4323aaf5f814cbc8ea4f157dfb2013c4ef",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/order/controller/OrderReadController.java": "ca562d87f6dbc39e61627f6f218ae6e78c1a94ceb9cb8a18b6d056a8a79c184d",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/order/domain/OrderAssignment.java": "d2955147fec49c99265b83f6a5291973212247a605629ae39a2cebfded8a7b11",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/order/domain/ViOrder.java": "2176df9ef98afab93c81ad78ab14a1a461fefb656d4da22c0d927adf33e3199e",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/order/dto/OrderQuery.java": "69e78e25141d511e9901a4837e622ea7d73cc33dcfd247d11cd18cdfb0c4010c",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/order/dto/OrderViews.java": "fbca25458cdaaf218b4a1d49cae3039483962a3b7d1ee7a36cc796af70e216f3",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/order/mapper/OrderReadMapper.java": "cfa563c09a070e2c13b24b02383f36ee30305703f4b6e259068b477e487d90ed",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/order/service/OrderProjection.java": "bf70f48a9178593eb3e2a3886167e3d138edec07ae7a45363c154acd1a13796b",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/order/service/OrderReadScope.java": "bdccd440cdbbc82ada5081e209cfb9e4bce850f817b6a67514bb7f341bc5a4a6",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/order/service/OrderReadService.java": "e8ea1b4d8a1481bc36beaa0d010cf4f94a9bd0ec0da9f63e3e0632c44a02308d",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/order/service/OrderService.java": "e3475e01009a8b34b420f2b67951ae22420017919652321bc464604e5b4b73fd",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/scope/mapper/EmployeeStationAccessMapper.java": "3c9773c4a367a9a8356334a35dc2217492b2bd2cbc00f5661fefb547238d7384",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/scope/service/EmployeeStationAccessService.java": "7216a50393ce7ca0846e13f803d9e5c51760774612da61cb6156bd36f0d556f3",
+    "xinyi-rongli/src/main/resources/mapper/rongli/order/OrderMapper.xml": "64a74e8c15733e026f72a5f30042127abf2c7e46a9e500965d982b0f0b2947e6",
+    "xinyi-rongli/src/main/resources/mapper/rongli/order/OrderReadMapper.xml": "2faaf4fd3aff1dc4e7ac6699c6a69d60a1a25319b7d7c5ab5e54e04bdb77d809",
+    "xinyi-rongli/src/main/resources/mapper/rongli/scope/EmployeeStationAccessMapper.xml": "09080c574cb4058acf83978ed49be8cc2c7bfd1146fa37b559fbb7a106e8d929",
+    "xinyi-ui/src/api/rongli/order.ts": "59a873f94d3fc5eef1cdce55553bd703328cd750c96b218b81d2bba4a4a3a00b",
+    "xinyi-ui/src/views/rongli/order/order.vue": "07212af2782563eea4cd036841365f5a331acd69d5f00c351494df2147eb4805"
+  },
+  "runs": [
+    {
+      "command": "mvn -o -pl xinyi-admin -am -Pvi-it -Dit.test=<E06..B04共21类> verify",
+      "layer": "LIVE_HTTP_MYSQL",
+      "testsRun": 177,
+      "skipped": 0,
+      "exitCode": 0,
+      "reportPath": "docs/implementation/vehicle/B04/full-regression.json"
+    },
+    {
+      "command": "mvn test 基线及verify生命周期",
+      "layer": "UNIT",
+      "testsRun": 31,
+      "skipped": 0,
+      "exitCode": 0,
+      "reportPath": "docs/implementation/vehicle/B04/unit-junit.xml"
+    },
+    {
+      "command": "隔离MySQL增量/完整初始化/重复/冲突校验",
+      "layer": "DATABASE_MIGRATION",
+      "testsRun": 4,
+      "skipped": 0,
+      "exitCode": 0,
+      "reportPath": "docs/implementation/vehicle/B04/schema-verification.json"
+    },
+    {
+      "command": "小程序类型检查、微信构建、PC生产构建",
+      "layer": "BUILD",
+      "testsRun": 3,
+      "skipped": 0,
+      "exitCode": 0,
+      "reportPath": "docs/implementation/vehicle/B04/builds.json"
+    },
+    {
+      "command": "Playwright四端实际页面与明确API夹具",
+      "layer": "UI",
+      "testsRun": 5,
+      "skipped": 0,
+      "exitCode": 0,
+      "reportPath": "docs/implementation/vehicle/B04/ui-qa.json"
+    },
+    {
+      "command": "pytest test_contract_regression.py -q",
+      "layer": "CONTRACT",
+      "testsRun": 18,
+      "skipped": 0,
+      "exitCode": 0,
+      "reportPath": "docs/implementation/vehicle/B04/contract.txt"
+    },
+    {
+      "command": "verify_response_contract.py 实际HTTP投影和信封",
+      "layer": "CONTRACT",
+      "testsRun": 20,
+      "skipped": 0,
+      "exitCode": 0,
+      "reportPath": "docs/implementation/vehicle/B04/response-contract.json"
+    },
+    {
+      "command": "check_engineering.py",
+      "layer": "STATIC",
+      "testsRun": 34,
+      "skipped": 0,
+      "exitCode": 0,
+      "reportPath": "docs/implementation/vehicle/B04/engineering.json"
+    },
+    {
+      "command": "check_package.py",
+      "layer": "STATIC",
+      "testsRun": 42,
+      "skipped": 0,
+      "exitCode": 0,
+      "reportPath": "docs/implementation/vehicle/B04/package.json"
+    }
+  ],
+  "review": {
+    "approved": false,
+    "reviewer": null
+  },
+  "notRun": [
+    "独立复核",
+    "真实供应商",
+    "微信真机",
+    "生产部署",
+    "原画板中后续业务写动作/搜索/导出/检测待办"
+  ],
+  "compatibilityDebt": "后台未认证仍沿用框架HTTP200+code401，已验证无数据；未标为标准ApiError验证通过",
+  "preexistingWork": "保留既有Controller迁移，测试基于当前实际工作区；不混入迁移提交"
+}

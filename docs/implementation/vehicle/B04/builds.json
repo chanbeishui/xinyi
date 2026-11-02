@@ -1,0 +1,18 @@
+{
+  "at": "2026-11-02T14:29:01.243983+00:00",
+  "checks": [
+    {
+      "command": "npm --prefix xinyi-miniapp run type-check",
+      "exitCode": 0
+    },
+    {
+      "command": "npm --prefix xinyi-miniapp run build:mp-weixin",
+      "exitCode": 0
+    },
+    {
+      "command": "npm --prefix xinyi-ui run build:prod",
+      "exitCode": 0
+    }
+  ],
+  "warnings": "既有Sass legacy API、大包与AppID统计提示；未进行微信真机验证"
+}
