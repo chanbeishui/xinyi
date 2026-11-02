@@ -17,7 +17,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
 /**
- * vi 域错误信封渲染（V6.4 留给"首个 vi Controller 任务"= I01）。仅作用于 com.xinyi.web.controller.rongli
+ * vi 域错误信封渲染。兼容迁移前后的荣利控制器包，使新业务可独立提交。
  * 下的控制器（basePackages 限定），@Order(0) 优先于框架未排序的 GlobalExceptionHandler，
  * 确保 vi 端点用【真实 HTTP 状态 + ApiError】而非框架 sys 的"恒 200 + body.code"。
  *
@@ -25,7 +25,7 @@ import java.util.UUID;
  * 经 ResponseEntity 返回 401 时响应体在安全链回卷中可能被剥离，直写可稳定输出 ApiError 信封。
  * 身份/交易响应 no-store；429/503 带 Retry-After；未预期异常统一 500，不泄露堆栈/SQL/令牌。
  */
-@RestControllerAdvice(basePackages = "com.xinyi.web.controller.rongli")
+@RestControllerAdvice(basePackages = {"com.xinyi.rongli", "com.xinyi.web.controller.rongli"})
 @Order(0)
 public class ViApiErrorAdvice {
 

@@ -517,8 +517,8 @@ paths:
       - VI_UPSTREAM_UNAVAILABLE
       x-error-policy: OBJECT_404_HIDES_EXISTENCE
       x-sensitive-response: true
-      x-idempotency: NO_PLAINTEXT_RESPONSE_CACHE; domain dedupe only; on lost credential
-        response reissue/refresh through controlled protocol
+      x-idempotency: NO_PLAINTEXT_RESPONSE_CACHE; domain dedupe only; on lost credential response reissue/refresh through
+        controlled protocol
       x-contract-baseline: V6.4
       x-permission: biz:order:contact
 components:
@@ -1123,6 +1123,7 @@ components:
           pattern: ^[1-9][0-9]{0,18}$
           maxLength: 19
           description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+          nullable: true
         plateNo:
           type: string
           description: 本人/有效服务对象完整车牌；历史仅保留业务核对所需车牌
@@ -1144,7 +1145,7 @@ components:
       - vehicleTypeLabel
       - brandModel
       - vinLast4
-      description: 订单时点车辆快照；无车主账号、证件原图、密文、内备注或全VIN
+      description: 订单时点车辆快照；无车主账号、证件原图、密文、内备注或全VIN 临时车辆仅在订单保存快照，vehicleId为null，不暗中创建常用车辆。
     CustodyType:
       type: string
       description: 当前实物保管方类型

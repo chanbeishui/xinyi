@@ -1,0 +1,191 @@
+{
+  "at": "2026-11-02T13:28:54.057619+00:00",
+  "environment": "本机MySQL9.6 xinyi_vi_it_e07（XINYI_VEHICLE_ISOLATED），JDK21/release17；外部微信与腾讯路线为本机协议替身",
+  "businessOrProductionChanged": false,
+  "review": "PENDING",
+  "scope": "V6.4-COMPANY-COLLECTION-20261102",
+  "full": {
+    "exitCode": 0,
+    "testsRun": 168,
+    "suites": [
+      {
+        "suite": "com.xinyi.web.viit.I03IdentityIT",
+        "tests": 10,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "com.xinyi.web.viit.E06PlatformIT",
+        "tests": 10,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "com.xinyi.web.viit.C01ConfigIT",
+        "tests": 6,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "com.xinyi.web.viit.C04LivePricingIT",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "com.xinyi.web.viit.A03OwnerIT",
+        "tests": 7,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "com.xinyi.web.viit.B03OrderIT",
+        "tests": 14,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "com.xinyi.web.viit.B01BookingIT",
+        "tests": 3,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "com.xinyi.web.viit.I04IdentityIT",
+        "tests": 10,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "com.xinyi.web.viit.I05IdentityIT",
+        "tests": 20,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "com.xinyi.web.viit.E07TestingIT",
+        "tests": 5,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "com.xinyi.web.viit.A01VehicleIT",
+        "tests": 7,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "com.xinyi.web.viit.B02BookingIT",
+        "tests": 6,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "com.xinyi.web.viit.I02IdentityIT",
+        "tests": 9,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "com.xinyi.web.viit.E08PlatformIT",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "com.xinyi.web.viit.A02AddressIT",
+        "tests": 7,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "com.xinyi.web.viit.C03CapacityIT",
+        "tests": 6,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "com.xinyi.web.viit.C02StationIT",
+        "tests": 13,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "com.xinyi.web.viit.C04PricingIT",
+        "tests": 14,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "com.xinyi.web.viit.I01IdentityIT",
+        "tests": 9,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "com.xinyi.web.viit.I06ScopeIT",
+        "tests": 10,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    ],
+    "forkExitDiagnostic": "测试完成后JVM退出超过30秒，Surefire回收；Maven实际退出0",
+    "finishedAt": "2026-11-02T21:21:32+08:00"
+  },
+  "finalTargeted": {
+    "exitCode": 0,
+    "testsRun": 20,
+    "suites": [
+      {
+        "suite": "com.xinyi.web.viit.B03OrderIT",
+        "tests": 14,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "com.xinyi.web.viit.B02BookingIT",
+        "tests": 6,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    ],
+    "forkExitDiagnostic": "测试完成后JVM退出超过30秒，Surefire回收；Maven实际退出0",
+    "finishedAt": "2026-11-02T21:25:34+08:00"
+  },
+  "regression": {
+    "testsRun": 168,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "note": "最新各类JUnit；B02/B03含最终定向复跑，完整回归数量另以full-maven-summary为准"
+  },
+  "unit": {
+    "testsRun": 31,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "note": "最新各类JUnit；B02/B03含最终定向复跑，完整回归数量另以full-maven-summary为准"
+  }
+}

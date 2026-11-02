@@ -2616,7 +2616,8 @@
     ],
     "deliverables": [
       "只按报价创建订单/支付信息/预约预占/30分钟截止",
-      "协议接受记录"
+      "协议接受记录",
+      "同公司统一收款；消费已发布支付策略；加密联系人/地址/备注及完整协议接受快照"
     ],
     "negative_checks": [
       "同键同体复用",
@@ -2629,19 +2630,20 @@
     "page_ids": [],
     "tables": [
       "vi_order",
-      "vi_quota_reservation"
+      "vi_quota_reservation",
+      "vi_order_snapshot"
     ],
     "case_ids": [],
     "scope": "DEVELOPMENT",
     "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
-    "status": "NOT_ASSESSED",
+    "status": "VERIFIED",
     "code_paths": [
       "xinyi-rongli/src/main/java/com/xinyi/rongli/order/",
       "xinyi-rongli/src/main/resources/mapper/rongli/order/",
-      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/order/",
       "xinyi-ui/src/views/rongli/order/",
       "xinyi-ui/src/api/rongli/order.ts",
-      "xinyi-miniapp/src/features/order/"
+      "xinyi-miniapp/src/features/order/",
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/order/controller/"
     ],
     "test_class": "B03OrderIT",
     "commands": [
@@ -2661,12 +2663,19 @@
       "access": "不得绕过限制；保存恢复点",
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
-    "scopeRevision": "V6.1-UNCHANGED",
-    "definitionHash": "35e1c7094b5ce27e35bd40e9ce565a7c61782f76d1c8aee4ae328747a2134d1d",
-    "evidence": [],
+    "scopeRevision": "V6.4-COMPANY-COLLECTION-20261102",
+    "definitionHash": "c0338b91dc05c23897184573a4ab2e18da73ef7623c25a0732c484a41cb4ff53",
+    "evidence": [
+      {
+        "path": "docs/implementation/vehicle/evidence/B03-20261102.json",
+        "sha256": "b6809b4fee596d2747c7360c7b959ff8bd8468219b5ab1cefe3df77c191e3bf9"
+      }
+    ],
     "implementation": null,
     "review": null,
-    "blocker": null
+    "blocker": null,
+    "updatedAt": "2026-11-02T13:30:56.654176+00:00",
+    "needsAdaptation": false
   },
   {
     "id": "B04",

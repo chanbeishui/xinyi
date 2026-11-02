@@ -99,9 +99,11 @@ public class QuoteService {
   var receive=slots.stream().filter(q->"STATION_RECEIVE".equals(q.getQuotaType())&&!q.getStartsAt().isAfter(arrivalStart)&&!q.getEndsAt().isBefore(arrivalEnd)).toList();
   if(pickup.size()!=1||receive.size()!=1)unavailable();
   PriceTrial price=pricing.quoteForStation(station.getId(),data.vehicleType,input.inspectionTypeCode(),anchor.getStartsAt(),route.distanceMeter());
-  String fingerprint=Base64.getEncoder().encodeToString(idem.mac(ViJson.write(List.of(data,policy,station.getId(),station.getVersion(),pickup.get(0).getId(),pickup.get(0).getVersion(),receive.get(0).getId(),receive.get(0).getVersion(),price))));
+  String fingerprint=Base64.getEncoder().encodeToString(idem.mac(ViJson.write(List.of(data,policy,station.getId(),station.getVersion(),capacityShape(pickup.get(0)),capacityShape(receive.get(0)),price))));
   return new Plan(station,pickup.get(0),receive.get(0),route,price,policy,data,fingerprint);
  }
+ /** 其他订单的占额只改变余量；配置字段改变才使尚有余量的报价失效。 */
+ private List<Object> capacityShape(ViQuotaSlot slot){return List.of(slot.getId(),slot.getStationId(),slot.getQuotaType(),slot.getStartsAt().toString(),slot.getEndsAt().toString(),slot.getTotalQuota(),slot.isEnabled());}
  private boolean basic(ViStation station,Inputs data){
   if(station==null||!Integer.valueOf(1).equals(station.getEnabled())||mapper.activeDepartment(station.getDeptId())!=1)return false;
   return ViJson.read(station.getSupportedVehicleCodes(),List.class).contains(data.vehicleType);
@@ -118,7 +120,7 @@ public class QuoteService {
  private Inputs inputs(long owner,QuoteInput input){
   if((input.vehicleId()==null)==(input.vehicleDraft()==null)||(input.addressId()==null)==(input.addressDraft()==null))invalid("已有资料与临时资料必须二选一");
   Map<String,Object> vehicle=new LinkedHashMap<>(),address=new LinkedHashMap<>();String type;
-  if(input.vehicleId()!=null){var v=vehicles.selectById(id(input.vehicleId()));if(v==null||!Objects.equals(v.getOwnerAccountId(),owner)||v.getDeletedAt()!=null)invisible();vehicle.put("sourceId",v.getId());vehicle.put("sourceVersion",v.getVersion());vehicle.put("plateNo",v.getPlateNo());type=v.getVehicleTypeCode();}
+  if(input.vehicleId()!=null){var v=vehicles.selectById(id(input.vehicleId()));if(v==null||!Objects.equals(v.getOwnerAccountId(),owner)||v.getDeletedAt()!=null)invisible();vehicle.put("sourceId",v.getId());vehicle.put("sourceVersion",v.getVersion());vehicle.put("plateNo",v.getPlateNo());if(v.getBrandModel()!=null)vehicle.put("brandModel",v.getBrandModel());if(v.getVinLast4()!=null)vehicle.put("vinLast4",v.getVinLast4());type=v.getVehicleTypeCode();}
   else{var v=input.vehicleDraft();vehicle.put("draft",v);if(v.plateNo()==null||v.plateNo().isBlank()||v.plateNo().length()>20)invalid("车牌必填且不超过20字符");vehicle.put("plateNo",v.plateNo().trim().toUpperCase(Locale.ROOT));type=v.vehicleTypeCode();}
   String label=mapper.dictLabel("vi_vehicle_type",type);if(label==null||mapper.dictLabel("vi_inspection_type",input.inspectionTypeCode())==null)invalid("车型或检测类型尚未启用");vehicle.put("vehicleTypeCode",type);vehicle.put("vehicleTypeLabel",label);
   GeoPoint point;String text;

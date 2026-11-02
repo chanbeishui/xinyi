@@ -6636,4 +6636,68 @@
 </tr>
 </tbody>
 </table>
+<h2>vi_order_snapshot · 建单私有及协议快照</h2>
+<p>与父订单同事务创建后不可覆盖；查询和写入均按父订单真实owner_account_id/dept_id校验。历史缺少证据只报告，不猜测回填。联系人、地址、备注密文，显式协议接受与完整文本永久关联。</p>
+<p>主键order_id，不生成独立ID。</p>
+<table>
+<thead>
+<tr>
+  <th>字段</th>
+  <th>SQL类型</th>
+  <th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><code>order_id</code></td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>父订单；权限按vi_order.owner_account_id与真实dept_id校验</td>
+</tr>
+<tr>
+  <td><code>address_cipher</code></td>
+  <td><code>LONGBLOB NOT NULL</code></td>
+  <td>订单时点接车及默认返还地址密文</td>
+</tr>
+<tr>
+  <td><code>contact_cipher</code></td>
+  <td><code>LONGBLOB NOT NULL</code></td>
+  <td>服务端已核验联系人及手机号密文</td>
+</tr>
+<tr>
+  <td><code>remark_cipher</code></td>
+  <td><code>LONGBLOB NULL</code></td>
+  <td>客户备注密文；不进入审计或幂等结果</td>
+</tr>
+<tr>
+  <td><code>station_snapshot</code></td>
+  <td><code>JSON NOT NULL</code></td>
+  <td>创建时公开站点资料</td>
+</tr>
+<tr>
+  <td><code>agreement_snapshot</code></td>
+  <td><code>JSON NOT NULL</code></td>
+  <td>显式接受的服务及隐私协议版本与完整内容</td>
+</tr>
+<tr>
+  <td><code>accepted_at</code></td>
+  <td><code>DATETIME(3) NOT NULL</code></td>
+  <td>数据库UTC接受时刻，与建单同事务</td>
+</tr>
+<tr>
+  <td><code>created_at</code></td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>UTC创建时间</td>
+</tr>
+<tr>
+  <td><code>updated_at</code></td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>UTC更新时间；不可覆盖原快照</td>
+</tr>
+<tr>
+  <td><code>version</code></td>
+  <td><code>BIGINT NOT NULL DEFAULT 0</code></td>
+  <td>不可变快照版本</td>
+</tr>
+</tbody>
+</table>
 </main></body></html>

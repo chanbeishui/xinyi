@@ -1,0 +1,14 @@
+{
+  "kind": "B03_MYSQL_MIGRATION_AND_FULL_INIT",
+  "passed": true,
+  "upgradeEqualsFull": true,
+  "testSchemaEqualsFull": true,
+  "columns": 10,
+  "indexes": 1,
+  "constraints": 1,
+  "legacyRowsReported": 0,
+  "legacyNotInvented": true,
+  "businessOrProductionChanged": false,
+  "migration": "sql/migration_20261102_01_order_snapshot.sql",
+  "at": "2026-11-02T13:00:32.856492+00:00"
+}

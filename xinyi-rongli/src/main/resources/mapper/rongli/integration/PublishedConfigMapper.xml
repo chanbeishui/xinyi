@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xinyi.rongli.integration.mapper.PublishedConfigMapper">
+<select id="companyPolicies" resultType="long">
+ SELECT p.id FROM vi_integration_profile p JOIN sys_dept company ON company.dept_id=p.owner_dept_id AND company.status='0' AND company.del_flag='0'
+ JOIN vi_station s ON s.id=#{stationId} AND s.enabled=1 JOIN sys_dept d ON d.dept_id=s.dept_id AND d.status='0' AND d.del_flag='0'
+ WHERE p.kind='PAYMENT_POLICY' AND p.config_key='DEFAULT' AND p.environment=#{environment} AND p.lifecycle!='RETIRED'
+ AND (company.dept_id=d.dept_id OR FIND_IN_SET(company.dept_id,d.ancestors)&gt;0) ORDER BY p.id
+</select>
+<select id="lockPublished" resultType="map">
+ SELECT p.id,p.owner_dept_id,p.kind,p.environment,p.lifecycle,p.active_revision_id,r.config_json,r.secret_refs_json,r.content_hash
+ FROM vi_integration_profile p JOIN vi_integration_revision r ON r.id=p.active_revision_id AND r.profile_id=p.id
+ WHERE p.id=#{id} AND p.lifecycle='ACTIVE' FOR UPDATE
+</select>
+<select id="publicationValid" resultType="int">
+ SELECT COUNT(*) FROM vi_integration_publication p JOIN vi_integration_check c ON c.id=p.check_id
+ WHERE p.target_type='PROFILE' AND p.target_id=#{profileId} AND p.revision_id=#{revisionId}
+ AND c.target_type='PROFILE' AND c.target_id=p.target_id AND c.revision_id=p.revision_id AND c.content_hash=#{hash}
+ AND c.status='PASS' AND c.checked_at &lt;= p.published_at AND c.expires_at &gt;= p.published_at
+</select>
+<select id="usableSecret" resultType="int">
+ SELECT COUNT(*) FROM vi_integration_secret WHERE id=#{id} AND profile_id=#{profileId} AND slot_name=#{slot} AND credential_kind=#{kind}
+ AND lifecycle='ACTIVE' AND (expires_at IS NULL OR expires_at &gt; UTC_TIMESTAMP(3))
+ AND LENGTH(ciphertext)&gt;16 AND LENGTH(nonce)&gt;=12 AND LENGTH(key_version)&gt;0 AND LENGTH(aad_context)&gt;0
+</select>
+</mapper>

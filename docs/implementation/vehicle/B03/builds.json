@@ -1,0 +1,19 @@
+{
+  "at": "2026-11-02T13:28:54.057619+00:00",
+  "exitCode": 0,
+  "checks": [
+    {
+      "command": "npm --prefix xinyi-miniapp run type-check",
+      "exitCode": 0
+    },
+    {
+      "command": "npm --prefix xinyi-miniapp run build:mp-weixin",
+      "exitCode": 0
+    },
+    {
+      "command": "npm --prefix xinyi-ui run build:prod",
+      "exitCode": 0
+    }
+  ],
+  "notes": "现有Sass旧API和大包告警；Browser插件不可用，临时Playwright验证H5夹具，不是微信真机。"
+}

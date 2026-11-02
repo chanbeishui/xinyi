@@ -1,9 +1,10 @@
 # B03 · 原子建单与预占
 
 阶段：M2；责任域：order；前置：B02, E06。
-范围版本：`V6.1-UNCHANGED`；definitionHash：`35e1c7094b5ce27e35bd40e9ce565a7c61782f76d1c8aee4ae328747a2134d1d`。
+范围版本：`V6.4-COMPANY-COLLECTION-20261102`；definitionHash：`c0338b91dc05c23897184573a4ab2e18da73ef7623c25a0732c484a41cb4ff53`。
 
 ## 本任务交付
+- 同公司唯一已发布收款配置；联系人/地址/备注密文及完整协议接受快照
 - 只按报价创建订单/支付信息/预约预占/30分钟截止
 - 协议接受记录
 
@@ -16,13 +17,13 @@
 主源：04_接口/openapi_V6.4.yaml、05_数据设计/data_model_V6.4.json、06_验收/test_cases_V6.4.json。本目录派生，不独立维护。
 接口：API_025_post
 画板：无
-主责任表：vi_order, vi_quota_reservation
+主责任表：vi_order, vi_quota_reservation, vi_order_snapshot
 验收：无
 
 ## 代码落位
 `xinyi-rongli/src/main/java/com/xinyi/rongli/order/`
 `xinyi-rongli/src/main/resources/mapper/rongli/order/`
-`xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/order/`
+`xinyi-rongli/src/main/java/com/xinyi/rongli/order/controller/`
 `xinyi-ui/src/views/rongli/order/`
 `xinyi-ui/src/api/rongli/order.ts`
 `xinyi-miniapp/src/features/order/`

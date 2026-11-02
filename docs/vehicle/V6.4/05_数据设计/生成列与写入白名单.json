@@ -9418,5 +9418,85 @@
       }
     },
     "rule": "真实测试先单独提示费用并明确确认；白名单不是订阅授权的替代。只给有test权限者使用。"
+  },
+  {
+    "table": "vi_order_snapshot",
+    "writeMode": "IMMUTABLE_ORDER_SNAPSHOT",
+    "generatedColumns": [],
+    "insertColumns": [
+      "order_id",
+      "address_cipher",
+      "contact_cipher",
+      "remark_cipher",
+      "station_snapshot",
+      "agreement_snapshot",
+      "accepted_at"
+    ],
+    "updateColumns": [],
+    "columnRules": {
+      "order_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "address_cipher": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "contact_cipher": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "remark_cipher": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "station_snapshot": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "agreement_snapshot": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "accepted_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "created_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "updated_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "version": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      }
+    },
+    "rule": "与父订单同事务创建后不可覆盖；查询和写入均按父订单真实owner_account_id/dept_id校验。历史缺少证据只报告，不猜测回填。联系人、地址、备注密文，显式协议接受与完整文本永久关联。"
   }
 ]

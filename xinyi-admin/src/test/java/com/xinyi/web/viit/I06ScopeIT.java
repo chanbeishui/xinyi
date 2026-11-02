@@ -458,15 +458,20 @@ class I06ScopeIT {
         long emp = seedEmployee(expectedPhone("p06-list-" + System.nanoTime()), "lst" + System.nanoTime());
         String admin = adminToken();
         putGrant(admin, emp, List.of(S1), 0);
-        ResponseEntity<String> r = rest.exchange(url("/api/admin/station-grants?pageNum=1&pageSize=50"), HttpMethod.GET,
-                admin(null, admin), String.class);
-        assertEquals(200, r.getStatusCode().value());
-        JsonNode list = ViJson.tree(r.getBody()).get("data");
         boolean found = false;
-        for (JsonNode n : list) {
-            if (n.get("employeeUserId").asText().equals(Long.toString(emp))) {
-                found = true;
-                assertEquals("NOT_LOGGED_IN_OR_UNLINKED", n.get("wechatLinkStatus").asText());
+        int count = jdbc.queryForObject("SELECT COUNT(*) FROM sys_user WHERE status='0' AND del_flag='0'", Integer.class);
+        // 隔离库可以重复执行多组用例；新员工不一定还在第一页，实际翻页核验而非依赖空库。
+        for (int page = 1; page <= count / 50 + 1 && !found; page++) {
+            ResponseEntity<String> r = rest.exchange(url("/api/admin/station-grants?pageNum=" + page + "&pageSize=50"), HttpMethod.GET,
+                    admin(null, admin), String.class);
+            assertEquals(200, r.getStatusCode().value());
+            JsonNode list = ViJson.tree(r.getBody()).get("data");
+            assertTrue(list.size() <= 50, "单页不超过请求大小");
+            for (JsonNode n : list) {
+                if (n.get("employeeUserId").asText().equals(Long.toString(emp))) {
+                    found = true;
+                    assertEquals("NOT_LOGGED_IN_OR_UNLINKED", n.get("wechatLinkStatus").asText());
+                }
             }
         }
         assertTrue(found, "列表含该员工");

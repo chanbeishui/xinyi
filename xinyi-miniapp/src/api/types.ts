@@ -313,7 +313,7 @@ export type PhotoType = "FRONT" | "BACK" | "LEFT" | "RIGHT" | "DASHBOARD" | "INT
 
 export type InviteStatus = "WAIT_RESPONSE" | "ACCEPTED" | "REJECTED" | "EXPIRED" | "REVOKED";
 
-export type OrderVehicleView = { "vehicleId": string; "plateNo": string; "vehicleTypeCode": string; "vehicleTypeLabel": string; "brandModel": (string) | null; "vinLast4": (string) | null };
+export type OrderVehicleView = { "vehicleId": (string) | null; "plateNo": string; "vehicleTypeCode": string; "vehicleTypeLabel": string; "brandModel": (string) | null; "vinLast4": (string) | null };
 
 export type OrderStationView = { "stationId": string; "name": string; "publicAddress": string; "location": GeoPoint; "servicePhone": (string) | null };
 

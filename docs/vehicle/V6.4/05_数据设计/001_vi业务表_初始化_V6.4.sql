@@ -1791,3 +1791,18 @@ CREATE TABLE `vi_integration_test_recipient` (
   CONSTRAINT ck_recipient_shape CHECK ((kind='PHONE' AND phone_cipher IS NOT NULL AND account_id IS NULL) OR (kind='MINI_ACCOUNT' AND phone_cipher IS NULL AND account_id IS NOT NULL AND app_profile_id IS NOT NULL))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='第三方测试收件人白名单';
 
+
+CREATE TABLE `vi_order_snapshot` (
+  `order_id` BIGINT NOT NULL COMMENT '父订单；权限按vi_order.owner_account_id与真实dept_id校验',
+  `address_cipher` LONGBLOB NOT NULL COMMENT '订单时点接车及默认返还地址密文',
+  `contact_cipher` LONGBLOB NOT NULL COMMENT '服务端已核验联系人及手机号密文',
+  `remark_cipher` LONGBLOB NULL COMMENT '客户备注密文；不进入审计或幂等结果',
+  `station_snapshot` JSON NOT NULL COMMENT '创建时公开站点资料',
+  `agreement_snapshot` JSON NOT NULL COMMENT '显式接受的服务及隐私协议版本与完整内容',
+  `accepted_at` DATETIME(3) NOT NULL COMMENT '数据库UTC接受时刻，与建单同事务',
+  `created_at` DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3)) COMMENT 'UTC创建时间',
+  `updated_at` DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3)) COMMENT 'UTC更新时间；不可覆盖原快照',
+  `version` BIGINT NOT NULL DEFAULT 0 COMMENT '不可变快照版本',
+  PRIMARY KEY (`order_id`),
+  CONSTRAINT ck_order_snapshot_ver CHECK (version >= 0)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='建单私有及协议快照';
