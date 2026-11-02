@@ -3440,121 +3440,148 @@
     "taskId": "I05"
   },
   {
-    "implementationStatus": "NOT_ASSESSED",
-    "controllerFile": null,
-    "serviceFile": null,
-    "mapperFile": null,
-    "testFiles": [],
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/integration/controller/IntegrationController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/integration/service/IntegrationService.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/integration/IntegrationMapper.xml",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/X01IntegrationIT.java"
+    ],
     "reviewEvidence": null,
     "operationId": "V64_get_api_admin_integrations_profiles",
     "method": "GET",
     "path": "/api/admin/integrations/profiles",
     "summary": "第三方配置列表",
-    "taskId": "X01"
+    "taskId": "X01",
+    "evidence": "docs/implementation/vehicle/evidence/X01-20261102.json"
   },
   {
-    "implementationStatus": "NOT_ASSESSED",
-    "controllerFile": null,
-    "serviceFile": null,
-    "mapperFile": null,
-    "testFiles": [],
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/integration/controller/IntegrationController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/integration/service/IntegrationService.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/integration/IntegrationMapper.xml",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/X01IntegrationIT.java"
+    ],
     "reviewEvidence": null,
     "operationId": "V64_post_api_admin_integrations_profiles",
     "method": "POST",
     "path": "/api/admin/integrations/profiles",
     "summary": "新建配置档案",
-    "taskId": "X01"
+    "taskId": "X01",
+    "evidence": "docs/implementation/vehicle/evidence/X01-20261102.json"
   },
   {
-    "implementationStatus": "NOT_ASSESSED",
-    "controllerFile": null,
-    "serviceFile": null,
-    "mapperFile": null,
-    "testFiles": [],
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/integration/controller/IntegrationController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/integration/service/IntegrationService.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/integration/IntegrationMapper.xml",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/X01IntegrationIT.java"
+    ],
     "reviewEvidence": null,
     "operationId": "V64_get_api_admin_integrations_profiles_profileId",
     "method": "GET",
     "path": "/api/admin/integrations/profiles/{profileId}",
     "summary": "读取脱敏配置与生效版本",
-    "taskId": "X01"
+    "taskId": "X01",
+    "evidence": "docs/implementation/vehicle/evidence/X01-20261102.json"
   },
   {
-    "implementationStatus": "NOT_ASSESSED",
-    "controllerFile": null,
-    "serviceFile": null,
-    "mapperFile": null,
-    "testFiles": [],
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/integration/controller/IntegrationController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/integration/service/IntegrationService.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/integration/IntegrationMapper.xml",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/X01IntegrationIT.java"
+    ],
     "reviewEvidence": null,
     "operationId": "V64_put_api_admin_integrations_profiles_profileId_draft",
     "method": "PUT",
     "path": "/api/admin/integrations/profiles/{profileId}/draft",
     "summary": "保存不生效草稿",
-    "taskId": "X01"
+    "taskId": "X01",
+    "evidence": "docs/implementation/vehicle/evidence/X01-20261102.json"
   },
   {
-    "implementationStatus": "NOT_ASSESSED",
-    "controllerFile": null,
-    "serviceFile": null,
-    "mapperFile": null,
-    "testFiles": [],
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/integration/controller/IntegrationController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/integration/service/IntegrationService.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/integration/IntegrationMapper.xml",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/X01IntegrationIT.java"
+    ],
     "reviewEvidence": null,
     "operationId": "V64_post_api_admin_integrations_profiles_profileId_checks",
     "method": "POST",
     "path": "/api/admin/integrations/profiles/{profileId}/checks",
     "summary": "校验指定配置版本",
-    "taskId": "X01"
+    "taskId": "X01",
+    "evidence": "docs/implementation/vehicle/evidence/X01-20261102.json"
   },
   {
-    "implementationStatus": "NOT_ASSESSED",
-    "controllerFile": null,
-    "serviceFile": null,
-    "mapperFile": null,
-    "testFiles": [],
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/integration/controller/IntegrationController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/integration/service/IntegrationService.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/integration/IntegrationMapper.xml",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/X01IntegrationIT.java"
+    ],
     "reviewEvidence": null,
     "operationId": "V64_post_api_admin_integrations_profiles_profileId_publish",
     "method": "POST",
     "path": "/api/admin/integrations/profiles/{profileId}/publish",
     "summary": "发布配置并原子切换生效指针",
-    "taskId": "X01"
+    "taskId": "X01",
+    "evidence": "docs/implementation/vehicle/evidence/X01-20261102.json"
   },
   {
-    "implementationStatus": "NOT_ASSESSED",
-    "controllerFile": null,
-    "serviceFile": null,
-    "mapperFile": null,
-    "testFiles": [],
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/integration/controller/IntegrationController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/integration/service/IntegrationService.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/integration/IntegrationMapper.xml",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/X01IntegrationIT.java"
+    ],
     "reviewEvidence": null,
     "operationId": "V64_get_api_admin_integrations_profiles_profileId_publications",
     "method": "GET",
     "path": "/api/admin/integrations/profiles/{profileId}/publications",
     "summary": "配置发布审计",
-    "taskId": "X01"
+    "taskId": "X01",
+    "evidence": "docs/implementation/vehicle/evidence/X01-20261102.json"
   },
   {
-    "implementationStatus": "NOT_ASSESSED",
-    "controllerFile": null,
-    "serviceFile": null,
-    "mapperFile": null,
-    "testFiles": [],
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/integration/controller/IntegrationController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/integration/service/IntegrationService.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/integration/IntegrationMapper.xml",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/X01IntegrationIT.java"
+    ],
     "reviewEvidence": null,
     "operationId": "V64_post_api_admin_integrations_profiles_profileId_rollback",
     "method": "POST",
     "path": "/api/admin/integrations/profiles/{profileId}/rollback",
     "summary": "重新验证并发布历史版本",
-    "taskId": "X01"
+    "taskId": "X01",
+    "evidence": "docs/implementation/vehicle/evidence/X01-20261102.json"
   },
   {
-    "implementationStatus": "NOT_ASSESSED",
-    "controllerFile": null,
-    "serviceFile": null,
-    "mapperFile": null,
-    "testFiles": [],
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/integration/controller/IntegrationController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/integration/service/IntegrationService.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/integration/IntegrationMapper.xml",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/X01IntegrationIT.java"
+    ],
     "reviewEvidence": null,
     "operationId": "V64_get_api_admin_integrations_profiles_profileId_revisions",
     "method": "GET",
     "path": "/api/admin/integrations/profiles/{profileId}/revisions",
     "summary": "脱敏配置版本记录",
-    "taskId": "X01"
+    "taskId": "X01",
+    "evidence": "docs/implementation/vehicle/evidence/X01-20261102.json"
   },
   {
     "implementationStatus": "NOT_ASSESSED",
@@ -3856,43 +3883,52 @@
     "taskId": "X05"
   },
   {
-    "implementationStatus": "NOT_ASSESSED",
-    "controllerFile": null,
-    "serviceFile": null,
-    "mapperFile": null,
-    "testFiles": [],
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/integration/controller/IntegrationController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/integration/service/IntegrationService.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/integration/IntegrationMapper.xml",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/X01IntegrationIT.java"
+    ],
     "reviewEvidence": null,
     "operationId": "V64_get_api_admin_integrations_test_recipients",
     "method": "GET",
     "path": "/api/admin/integrations/test-recipients",
     "summary": "受控测试收件人白名单",
-    "taskId": "X01"
+    "taskId": "X01",
+    "evidence": "docs/implementation/vehicle/evidence/X01-20261102.json"
   },
   {
-    "implementationStatus": "NOT_ASSESSED",
-    "controllerFile": null,
-    "serviceFile": null,
-    "mapperFile": null,
-    "testFiles": [],
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/integration/controller/IntegrationController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/integration/service/IntegrationService.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/integration/IntegrationMapper.xml",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/X01IntegrationIT.java"
+    ],
     "reviewEvidence": null,
     "operationId": "V64_post_api_admin_integrations_test_recipients",
     "method": "POST",
     "path": "/api/admin/integrations/test-recipients",
     "summary": "登记受控测试收件人",
-    "taskId": "X01"
+    "taskId": "X01",
+    "evidence": "docs/implementation/vehicle/evidence/X01-20261102.json"
   },
   {
-    "implementationStatus": "NOT_ASSESSED",
-    "controllerFile": null,
-    "serviceFile": null,
-    "mapperFile": null,
-    "testFiles": [],
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/integration/controller/IntegrationController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/integration/service/IntegrationService.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/integration/IntegrationMapper.xml",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/X01IntegrationIT.java"
+    ],
     "reviewEvidence": null,
     "operationId": "V64_post_api_admin_integrations_test_recipients_recipientId_revoke",
     "method": "POST",
     "path": "/api/admin/integrations/test-recipients/{recipientId}/revoke",
     "summary": "撤销测试收件人",
-    "taskId": "X01"
+    "taskId": "X01",
+    "evidence": "docs/implementation/vehicle/evidence/X01-20261102.json"
   },
   {
     "implementationStatus": "VERIFIED",

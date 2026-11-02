@@ -51,6 +51,11 @@ public class LoginUser implements UserDetails
      */
     private Long loginTime;
 
+    /** 本次真实认证时刻，Token续期不能延长敏感操作窗口。 */
+    private Long authenticatedAt;
+    public Long getAuthenticatedAt(){return authenticatedAt;}
+    public void setAuthenticatedAt(Long value){authenticatedAt=value;}
+
     /**
      * 过期时间
      */

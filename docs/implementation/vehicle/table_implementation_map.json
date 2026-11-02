@@ -569,42 +569,52 @@
     "taskId": "I05"
   },
   {
-    "status": "NOT_ASSESSED",
-    "entityFile": null,
-    "mapperFile": null,
-    "evidence": [],
+    "status": "VERIFIED",
+    "entityFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/integration/domain/IntegrationProfile.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/integration/IntegrationMapper.xml",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/X01-20261102.json"
+    ],
     "table": "vi_integration_profile",
     "taskId": "X01"
   },
   {
-    "status": "NOT_ASSESSED",
-    "entityFile": null,
-    "mapperFile": null,
-    "evidence": [],
+    "status": "VERIFIED",
+    "entityFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/integration/domain/IntegrationRevision.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/integration/IntegrationMapper.xml",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/X01-20261102.json"
+    ],
     "table": "vi_integration_revision",
     "taskId": "X01"
   },
   {
-    "status": "NOT_ASSESSED",
-    "entityFile": null,
-    "mapperFile": null,
-    "evidence": [],
+    "status": "VERIFIED",
+    "entityFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/integration/domain/IntegrationSecret.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/integration/IntegrationMapper.xml",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/X01-20261102.json"
+    ],
     "table": "vi_integration_secret",
     "taskId": "X01"
   },
   {
-    "status": "NOT_ASSESSED",
-    "entityFile": null,
-    "mapperFile": null,
-    "evidence": [],
+    "status": "VERIFIED",
+    "entityFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/integration/domain/IntegrationCheck.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/integration/IntegrationMapper.xml",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/X01-20261102.json"
+    ],
     "table": "vi_integration_check",
     "taskId": "X01"
   },
   {
-    "status": "NOT_ASSESSED",
-    "entityFile": null,
-    "mapperFile": null,
-    "evidence": [],
+    "status": "VERIFIED",
+    "entityFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/integration/domain/IntegrationPublication.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/integration/IntegrationMapper.xml",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/X01-20261102.json"
+    ],
     "table": "vi_integration_publication",
     "taskId": "X01"
   },
@@ -657,10 +667,12 @@
     "taskId": "X03"
   },
   {
-    "status": "NOT_ASSESSED",
-    "entityFile": null,
-    "mapperFile": null,
-    "evidence": [],
+    "status": "VERIFIED",
+    "entityFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/integration/domain/IntegrationRecipient.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/integration/IntegrationMapper.xml",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/X01-20261102.json"
+    ],
     "table": "vi_integration_test_recipient",
     "taskId": "X01"
   },

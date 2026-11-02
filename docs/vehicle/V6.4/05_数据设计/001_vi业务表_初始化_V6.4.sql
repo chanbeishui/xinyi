@@ -1552,6 +1552,7 @@ CREATE TABLE `vi_integration_check` (
   `target_type` VARCHAR(16) NOT NULL COMMENT 'IntegrationTargetType: PROFILE,TEMPLATE；',
   `target_id` BIGINT NOT NULL COMMENT '',
   `revision_id` BIGINT NOT NULL COMMENT '',
+  `target_version` BIGINT NULL COMMENT '校验时根版本；旧记录NULL仅保留历史证据不可授权新发布',
   `content_hash` VARCHAR(64) NOT NULL COMMENT '',
   `check_level` VARCHAR(24) NOT NULL COMMENT 'IntegrationCheckLevel: LOCAL,READ_ONLY,LIVE_EVIDENCE；',
   `status` VARCHAR(16) NOT NULL COMMENT 'IntegrationCheckStatus: NOT_RUN,PASS,FAIL,PARTIAL；',

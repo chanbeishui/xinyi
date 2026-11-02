@@ -1,0 +1,19 @@
+package com.xinyi.rongli.integration.service;
+import com.xinyi.rongli.integration.domain.*;
+import com.xinyi.rongli.integration.mapper.IntegrationMapper;
+import com.xinyi.rongli.platform.json.ViJson;
+import org.springframework.stereotype.Component;
+import java.util.*;
+@Component
+public class IntegrationViews {
+ private final IntegrationMapper mapper;private final IntegrationSecrets secrets;private final IntegrationCrypto crypto;
+ public IntegrationViews(IntegrationMapper mapper,IntegrationSecrets secrets,IntegrationCrypto crypto){this.mapper=mapper;this.secrets=secrets;this.crypto=crypto;}
+ public static Map<String,Object> map(Object...args){var m=new LinkedHashMap<String,Object>();for(int i=0;i<args.length;i+=2)m.put((String)args[i],args[i+1]);return m;}
+ private static String id(Long v){return v==null?null:v.toString();}
+ public Map<String,Object> revision(IntegrationProfile p,IntegrationRevision r){if(r==null)return null;return map("revisionId",id(r.getId()),"profileId",id(p.getId()),"revision",r.getRevisionNo(),"contentHash",r.getContentHash(),"createdAt",r.getCreatedAt().toString(),"createdBy",id(r.getCreatedBy()),"reason",r.getReason(),"settings",map("kind",p.getKind(),"config",ViJson.read(r.getConfigJson(),Map.class),"credentialStates",secrets.states(p,r)));}
+ public Map<String,Object> profile(IntegrationProfile p,boolean detail){var m=map("profileId",id(p.getId()),"kind",p.getKind(),"name",p.getDisplayName(),"scope",map("ownerDeptId",id(p.getOwnerDeptId()),"environment",p.getEnvironment()),"lifecycle",p.getLifecycle(),"version",p.getVersion(),"activeRevisionId",id(p.getActiveRevisionId()),"draftRevisionId",id(p.getDraftRevisionId()),"validationIssues",List.of());if(detail){if(p.getDraftRevisionId()!=null){var check=mapper.latestCheck(p.getId(),p.getDraftRevisionId());if(check!=null&&Objects.equals(check.getTargetVersion(),p.getVersion()))m.put("validationIssues",ViJson.read(check.getIssuesJson(),List.class));}m.put("active",p.getActiveRevisionId()==null?null:revision(p,mapper.revision(p.getId(),p.getActiveRevisionId())));m.put("draft",p.getDraftRevisionId()==null?null:revision(p,mapper.revision(p.getId(),p.getDraftRevisionId())));}return m;}
+ public Map<String,Object> check(IntegrationCheck c){return map("checkId",id(c.getId()),"profileId",id(c.getTargetId()),"revisionId",id(c.getRevisionId()),"contentHash",c.getContentHash(),"level",c.getCheckLevel(),"status",c.getStatus(),"issues",ViJson.read(c.getIssuesJson(),List.class),"checkedAt",c.getCheckedAt().toString(),"expiresAt",c.getExpiresAt().toString(),"realPaymentVerified",false);}
+ public Map<String,Object> publication(IntegrationPublication p){return map("publicationId",id(p.getId()),"profileId",id(p.getTargetId()),"revisionId",id(p.getRevisionId()),"previousRevisionId",id(p.getPreviousRevisionId()),"version",p.getTargetVersion(),"action",p.getAction(),"reason",p.getReason(),"publishedAt",p.getPublishedAt().toString(),"publishedBy",id(p.getPublishedBy()),"effectiveFor","NEW_OPERATIONS","historicalHandling","历史业务沿用原配置版本与凭据引用");}
+ public static String recipientAad(IntegrationRecipient r){return "VI_RECIPIENT:"+r.getId()+":"+r.getOwnerDeptId()+":"+r.getEnvironment();}
+ public Map<String,Object> recipient(IntegrationRecipient r){var m=map("recipientId",id(r.getId()),"name",r.getName(),"kind",r.getKind(),"ownerDeptId",id(r.getOwnerDeptId()),"environment",r.getEnvironment(),"version",r.getVersion(),"enabled",r.getEnabled());if("PHONE".equals(r.getKind())){String phone=crypto.unenvelope(r.getPhoneCipher(),recipientAad(r));m.put("phoneMask",phone.substring(0,3)+"****"+phone.substring(phone.length()-4));}else{m.put("accountId",id(r.getAccountId()));String app=mapper.accountApp(r.getAccountId());if(app!=null)m.put("appId",app);}return m;}
+}

@@ -1,6 +1,6 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TASK</title><style>body{font:16px/1.75 -apple-system,BlinkMacSystemFont,"Microsoft YaHei",sans-serif;color:#202632;margin:0;background:#f6f7f9}header{padding:14px 24px;background:white;border-bottom:1px solid #ddd}main{max-width:1120px;margin:24px auto;padding:30px;background:white}h1{font-size:30px}h2{margin-top:36px}a{color:#0661bd}table{border-collapse:collapse;width:100%;display:block;overflow:auto;font-size:14px}td,th{border:1px solid #dde2ea;padding:10px;vertical-align:top}th{background:#f1f5fb}pre{padding:15px;background:#f2f4f7;overflow:auto}img{max-width:100%;height:auto}blockquote{padding:10px 20px;border-left:3px solid #2571be;background:#f4f8fc}@media(max-width:700px){main{padding:15px;margin:8px}h1{font-size:25px}}</style></head><body><header><a href="../../../00_开始.html">V6.4 完整资料</a>　<a href="../../../02_UI/index.html">交互原型</a>　T3.4</header><main><h1>X01 · 配置版本、密钥保管与发布事务</h1>
 <p>阶段：M2；责任域：integration；前置：E06, E07。
-范围版本：<code>V6.4-CONFIG-20261022</code>；definitionHash：<code>d645e4a1406930527637e4456ef6987327d51d7005b8876d8fd1e65b38883546</code>。</p>
+范围版本：<code>V6.4-CONFIG-20261022</code>；definitionHash：<code>06762c94b4fef9a0958c68f6af27a9629509bc1e354d79732b86891e2b5828b9</code>。</p>
 <h2>本任务交付</h2>
 <ul>
 <li>实现五类配置专用DTO、秘密KEEP/REPLACE/CLEAR、只读脱敏</li>
@@ -20,14 +20,14 @@
 验收：TC-CFG-001, TC-CFG-002, TC-CFG-003, TC-CFG-004, TC-CFG-005, TC-CFG-006, TC-CFG-007, TC-CFG-008, TC-CFG-009, TC-CFG-010</p>
 <h2>代码落位</h2>
 <p><code>xinyi-rongli/src/main/java/com/xinyi/rongli/integration/</code>
-<code>xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/</code>
-<code>xinyi-ui/src/views/rongli/integrations/</code>
-<code>xinyi-miniapp/src/</code>
-<code>sql/migration_YYYYMMDD_integration_config.sql</code></p>
+<code>xinyi-rongli/src/main/resources/mapper/rongli/integration/</code>
+<code>xinyi-rongli/src/main/resources/integration/</code>
+<code>xinyi-admin/src/test/java/com/xinyi/web/viit/X01IntegrationIT.java</code>
+<code>sql/migration_20261102_03_integration_control.sql</code></p>
 <h2>验证命令</h2>
-<pre><code class="language-bash">mvn -pl xinyi-admin -am test
+<pre><code class="language-bash">mvn -pl xinyi-admin -am -Pvi-it -Dit.test=X01IntegrationIT verify
 python docs/vehicle/V6.4/11_工具/test_integration_policy.py
-python -m pytest docs/vehicle/V6.4/13_真实集成测试/live/test_integration_config_live.py -q
+python -m pytest docs/vehicle/V6.4/13_真实集成测试/live/test_integration_config.py -q（通过X01IntegrationIT启动真实HTTP及限定测试夹具）
 </code></pre>
 <h2>完成标准</h2>
 <ul>

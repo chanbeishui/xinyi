@@ -106,6 +106,7 @@ public class TokenService implements SessionInvalidator
         ensureCurrentAuthorization(loginUser);
         String token = IdUtils.fastUUID();
         loginUser.setToken(token);
+        loginUser.setAuthenticatedAt(System.currentTimeMillis());
         setUserAgent(loginUser);
         refreshToken(loginUser);
         try

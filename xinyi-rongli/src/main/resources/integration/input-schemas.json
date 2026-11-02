@@ -1,0 +1,824 @@
+{
+  "AliyunSmsConfig": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "accessKeyId": {
+        "type": "string",
+        "maxLength": 128
+      },
+      "region": {
+        "type": "string",
+        "maxLength": 64
+      },
+      "apiVersion": {
+        "type": "string",
+        "enum": [
+          "2017-05-25"
+        ]
+      },
+      "signName": {
+        "type": "string",
+        "maxLength": 100
+      },
+      "enabled": {
+        "type": "boolean"
+      }
+    },
+    "required": [
+      "apiVersion",
+      "enabled"
+    ],
+    "description": "国内短信，固定官方端点；AccessKeySecret在credentials中写入。"
+  },
+  "AliyunSmsConfigDraftRequest": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "kind": {
+        "type": "string",
+        "enum": [
+          "ALIYUN_SMS"
+        ]
+      },
+      "expectedVersion": {
+        "type": "integer",
+        "format": "int64",
+        "minimum": 0
+      },
+      "config": {
+        "$ref": "#/components/schemas/AliyunSmsConfig"
+      },
+      "credentials": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "accessKeySecret": {
+            "$ref": "#/components/schemas/SecretMutation"
+          }
+        }
+      },
+      "reason": {
+        "type": "string",
+        "minLength": 2,
+        "maxLength": 500
+      }
+    },
+    "required": [
+      "kind",
+      "expectedVersion",
+      "config",
+      "reason"
+    ],
+    "description": "保存为不可变新草稿版本，不改变线上生效版本；密钥提交不回显。"
+  },
+  "ConfigReference": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "profileId": {
+        "type": "string",
+        "description": "内部Long对外十进制字符串",
+        "pattern": "^[1-9][0-9]{0,18}$"
+      },
+      "revisionId": {
+        "type": "string",
+        "description": "内部Long对外十进制字符串",
+        "pattern": "^[1-9][0-9]{0,18}$"
+      }
+    },
+    "required": [
+      "profileId",
+      "revisionId"
+    ],
+    "description": "引用已发布版本；服务端验证同环境/公司/应用和用途。"
+  },
+  "IntegrationCheckLevel": {
+    "type": "string",
+    "enum": [
+      "LOCAL",
+      "READ_ONLY",
+      "LIVE_EVIDENCE"
+    ]
+  },
+  "IntegrationCheckRequest": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "revisionId": {
+        "type": "string",
+        "description": "内部Long对外十进制字符串",
+        "pattern": "^[1-9][0-9]{0,18}$"
+      },
+      "expectedVersion": {
+        "type": "integer",
+        "format": "int64",
+        "minimum": 0
+      },
+      "level": {
+        "$ref": "#/components/schemas/IntegrationCheckLevel"
+      }
+    },
+    "required": [
+      "revisionId",
+      "expectedVersion",
+      "level"
+    ]
+  },
+  "IntegrationDraftRequest": {
+    "oneOf": [
+      {
+        "$ref": "#/components/schemas/PaymentPolicyConfigDraftRequest"
+      },
+      {
+        "$ref": "#/components/schemas/WechatPayConfigDraftRequest"
+      },
+      {
+        "$ref": "#/components/schemas/TencentSmsConfigDraftRequest"
+      },
+      {
+        "$ref": "#/components/schemas/AliyunSmsConfigDraftRequest"
+      },
+      {
+        "$ref": "#/components/schemas/WechatAppConfigDraftRequest"
+      }
+    ],
+    "discriminator": {
+      "propertyName": "kind",
+      "mapping": {
+        "PAYMENT_POLICY": "#/components/schemas/PaymentPolicyConfigDraftRequest",
+        "WECHAT_PAY": "#/components/schemas/WechatPayConfigDraftRequest",
+        "TENCENT_SMS": "#/components/schemas/TencentSmsConfigDraftRequest",
+        "ALIYUN_SMS": "#/components/schemas/AliyunSmsConfigDraftRequest",
+        "WECHAT_APP": "#/components/schemas/WechatAppConfigDraftRequest"
+      }
+    }
+  },
+  "IntegrationEnvironment": {
+    "type": "string",
+    "enum": [
+      "TEST",
+      "LIVE"
+    ]
+  },
+  "IntegrationKind": {
+    "type": "string",
+    "enum": [
+      "PAYMENT_POLICY",
+      "WECHAT_PAY",
+      "TENCENT_SMS",
+      "ALIYUN_SMS",
+      "WECHAT_APP"
+    ]
+  },
+  "IntegrationProfileCreate": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "kind": {
+        "$ref": "#/components/schemas/IntegrationKind"
+      },
+      "name": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 100
+      },
+      "scope": {
+        "$ref": "#/components/schemas/IntegrationScope"
+      }
+    },
+    "required": [
+      "kind",
+      "name",
+      "scope"
+    ]
+  },
+  "IntegrationPublishRequest": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "revisionId": {
+        "type": "string",
+        "description": "内部Long对外十进制字符串",
+        "pattern": "^[1-9][0-9]{0,18}$"
+      },
+      "expectedVersion": {
+        "type": "integer",
+        "format": "int64",
+        "minimum": 0
+      },
+      "contentHash": {
+        "type": "string",
+        "pattern": "^[a-f0-9]{64}$"
+      },
+      "checkId": {
+        "type": "string",
+        "description": "内部Long对外十进制字符串",
+        "pattern": "^[1-9][0-9]{0,18}$"
+      },
+      "reason": {
+        "type": "string",
+        "minLength": 2,
+        "maxLength": 500
+      },
+      "acknowledgeNoPaymentMethods": {
+        "type": "boolean"
+      },
+      "expectedDependencyVersions": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/ConfigReference"
+        }
+      }
+    },
+    "required": [
+      "revisionId",
+      "expectedVersion",
+      "contentHash",
+      "checkId",
+      "reason"
+    ],
+    "description": "完整性与依赖版本服务端再次校验；两个开关都关需明确确认。失效的check不得发布。"
+  },
+  "IntegrationRollbackRequest": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "targetRevisionId": {
+        "type": "string",
+        "description": "内部Long对外十进制字符串",
+        "pattern": "^[1-9][0-9]{0,18}$"
+      },
+      "expectedVersion": {
+        "type": "integer",
+        "format": "int64",
+        "minimum": 0
+      },
+      "reason": {
+        "type": "string",
+        "minLength": 2,
+        "maxLength": 500
+      },
+      "checkId": {
+        "type": "string",
+        "description": "内部Long对外十进制字符串",
+        "pattern": "^[1-9][0-9]{0,18}$"
+      }
+    },
+    "required": [
+      "targetRevisionId",
+      "expectedVersion",
+      "reason",
+      "checkId"
+    ],
+    "description": "回滚形成新发布，重新验证目标密钥/模板有效性，不复活撤销凭据。"
+  },
+  "IntegrationScope": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "ownerDeptId": {
+        "type": "string",
+        "description": "内部Long对外十进制字符串",
+        "pattern": "^[1-9][0-9]{0,18}$"
+      },
+      "environment": {
+        "$ref": "#/components/schemas/IntegrationEnvironment"
+      }
+    },
+    "required": [
+      "ownerDeptId",
+      "environment"
+    ],
+    "description": "配置归属使用服务器校验的公司/收款主体对应部门，不取客户端role为依据。"
+  },
+  "IntegrationTestRecipientInput": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "name": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 80
+      },
+      "kind": {
+        "type": "string",
+        "enum": [
+          "PHONE",
+          "MINI_ACCOUNT"
+        ]
+      },
+      "phone": {
+        "type": "string",
+        "description": "敏感输入仅密文保存",
+        "writeOnly": true,
+        "maxLength": 32
+      },
+      "accountId": {
+        "type": "string",
+        "description": "内部Long对外十进制字符串",
+        "pattern": "^[1-9][0-9]{0,18}$"
+      },
+      "appProfileId": {
+        "type": "string",
+        "description": "内部Long对外十进制字符串",
+        "pattern": "^[1-9][0-9]{0,18}$"
+      },
+      "ownerDeptId": {
+        "type": "string",
+        "description": "内部Long对外十进制字符串",
+        "pattern": "^[1-9][0-9]{0,18}$"
+      },
+      "environment": {
+        "$ref": "#/components/schemas/IntegrationEnvironment"
+      },
+      "reason": {
+        "type": "string",
+        "minLength": 2,
+        "maxLength": 500
+      }
+    },
+    "required": [
+      "name",
+      "kind",
+      "ownerDeptId",
+      "environment",
+      "reason"
+    ],
+    "oneOf": [
+      {
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "PHONE"
+            ]
+          }
+        },
+        "required": [
+          "phone"
+        ],
+        "not": {
+          "required": [
+            "accountId"
+          ]
+        }
+      },
+      {
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "MINI_ACCOUNT"
+            ]
+          }
+        },
+        "required": [
+          "accountId",
+          "appProfileId"
+        ],
+        "not": {
+          "required": [
+            "phone"
+          ]
+        }
+      }
+    ]
+  },
+  "PaymentPolicyConfig": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "offlineEnabled": {
+        "type": "boolean"
+      },
+      "wechatEnabled": {
+        "type": "boolean"
+      },
+      "wechatMerchant": {
+        "$ref": "#/components/schemas/ConfigReference"
+      },
+      "offlineInstructions": {
+        "type": "string",
+        "maxLength": 1000
+      },
+      "offlineCollectionMode": {
+        "type": "string",
+        "enum": [
+          "PREPAID_MANUAL_VERIFIED"
+        ]
+      },
+      "offlineReceiverName": {
+        "type": "string",
+        "maxLength": 200
+      },
+      "offlineBankName": {
+        "type": "string",
+        "maxLength": 100
+      },
+      "offlineMethods": {
+        "type": "array",
+        "items": {
+          "type": "string",
+          "enum": [
+            "CASH",
+            "BANK_TRANSFER"
+          ]
+        },
+        "uniqueItems": true,
+        "maxItems": 2,
+        "description": "启用线下时至少一种；CASH可在公司柜台办理，不允许个人代收"
+      },
+      "offlineContactName": {
+        "type": "string",
+        "maxLength": 80
+      },
+      "offlineContactPhone": {
+        "type": "string",
+        "maxLength": 30,
+        "description": "正式公开企业服务电话，不使用员工隐私号码"
+      },
+      "offlineAccountName": {
+        "type": "string",
+        "maxLength": 200
+      }
+    },
+    "required": [
+      "offlineEnabled",
+      "wechatEnabled",
+      "offlineCollectionMode"
+    ],
+    "description": "两个开关独立；本期仅企业预收核实，不做先服务后付。银行账号单独密文管理，只在本人支付选项必要时返回。 发布时线下开关为真必须完整设置offlineMethods/联系人/说明；BANK_TRANSFER还需开户行、对公户名及已配置银行账号。支持方式与相关字段草稿阶段可不完整。"
+  },
+  "PaymentPolicyConfigDraftRequest": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "kind": {
+        "type": "string",
+        "enum": [
+          "PAYMENT_POLICY"
+        ]
+      },
+      "expectedVersion": {
+        "type": "integer",
+        "format": "int64",
+        "minimum": 0
+      },
+      "config": {
+        "$ref": "#/components/schemas/PaymentPolicyConfig"
+      },
+      "credentials": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "offlineBankAccount": {
+            "$ref": "#/components/schemas/SecretMutation"
+          }
+        }
+      },
+      "reason": {
+        "type": "string",
+        "minLength": 2,
+        "maxLength": 500
+      }
+    },
+    "required": [
+      "kind",
+      "expectedVersion",
+      "config",
+      "reason"
+    ],
+    "description": "保存为不可变新草稿版本，不改变线上生效版本；密钥提交不回显。"
+  },
+  "SecretMutation": {
+    "oneOf": [
+      {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "KEEP"
+            ]
+          }
+        },
+        "required": [
+          "action"
+        ]
+      },
+      {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "REPLACE"
+            ]
+          },
+          "value": {
+            "type": "string",
+            "description": "只写，TLS提交后立即密文入库；日志和幂等响应不得保留原文",
+            "minLength": 1,
+            "maxLength": 32768,
+            "writeOnly": true
+          }
+        },
+        "required": [
+          "action",
+          "value"
+        ]
+      },
+      {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "CLEAR"
+            ]
+          }
+        },
+        "required": [
+          "action"
+        ]
+      }
+    ],
+    "description": "不传字段与KEEP等效。REPLACE不能传掩码。CLEAR若被有效配置或历史交易依赖则拒绝。"
+  },
+  "TencentSmsConfig": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "secretId": {
+        "type": "string",
+        "maxLength": 128
+      },
+      "region": {
+        "type": "string",
+        "maxLength": 64
+      },
+      "smsSdkAppId": {
+        "type": "string",
+        "pattern": "^[0-9]+$"
+      },
+      "apiVersion": {
+        "type": "string",
+        "enum": [
+          "2021-01-11"
+        ]
+      },
+      "signName": {
+        "type": "string",
+        "maxLength": 100
+      },
+      "enabled": {
+        "type": "boolean"
+      }
+    },
+    "required": [
+      "apiVersion",
+      "enabled"
+    ],
+    "description": "国内短信；SignName为已审核签名内容。SecretKey在credentials中写入；端点由服务器固定。"
+  },
+  "TencentSmsConfigDraftRequest": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "kind": {
+        "type": "string",
+        "enum": [
+          "TENCENT_SMS"
+        ]
+      },
+      "expectedVersion": {
+        "type": "integer",
+        "format": "int64",
+        "minimum": 0
+      },
+      "config": {
+        "$ref": "#/components/schemas/TencentSmsConfig"
+      },
+      "credentials": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "secretKey": {
+            "$ref": "#/components/schemas/SecretMutation"
+          }
+        }
+      },
+      "reason": {
+        "type": "string",
+        "minLength": 2,
+        "maxLength": 500
+      }
+    },
+    "required": [
+      "kind",
+      "expectedVersion",
+      "config",
+      "reason"
+    ],
+    "description": "保存为不可变新草稿版本，不改变线上生效版本；密钥提交不回显。"
+  },
+  "TestRecipientRevoke": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "expectedVersion": {
+        "type": "integer",
+        "format": "int64",
+        "minimum": 0
+      },
+      "reason": {
+        "type": "string",
+        "minLength": 2,
+        "maxLength": 500
+      }
+    },
+    "required": [
+      "expectedVersion",
+      "reason"
+    ]
+  },
+  "WechatAppConfig": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "appId": {
+        "type": "string",
+        "pattern": "^wx[0-9A-Za-z]{16}$"
+      },
+      "appName": {
+        "type": "string",
+        "maxLength": 100
+      },
+      "enabled": {
+        "type": "boolean"
+      }
+    },
+    "required": [
+      "enabled"
+    ],
+    "description": "登录、手机号、订阅共用应用凭据；AppSecret不同于支付APIv3Key。AppID变更需新配置与新身份域，不自动合并OpenID。"
+  },
+  "WechatAppConfigDraftRequest": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "kind": {
+        "type": "string",
+        "enum": [
+          "WECHAT_APP"
+        ]
+      },
+      "expectedVersion": {
+        "type": "integer",
+        "format": "int64",
+        "minimum": 0
+      },
+      "config": {
+        "$ref": "#/components/schemas/WechatAppConfig"
+      },
+      "credentials": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "appSecret": {
+            "$ref": "#/components/schemas/SecretMutation"
+          }
+        }
+      },
+      "reason": {
+        "type": "string",
+        "minLength": 2,
+        "maxLength": 500
+      }
+    },
+    "required": [
+      "kind",
+      "expectedVersion",
+      "config",
+      "reason"
+    ],
+    "description": "保存为不可变新草稿版本，不改变线上生效版本；密钥提交不回显。"
+  },
+  "WechatPayConfig": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "merchantName": {
+        "type": "string",
+        "maxLength": 200
+      },
+      "mchid": {
+        "type": "string",
+        "pattern": "^[0-9]{8,32}$"
+      },
+      "appProfile": {
+        "$ref": "#/components/schemas/ConfigReference"
+      },
+      "merchantCertificateSerial": {
+        "type": "string",
+        "maxLength": 128
+      },
+      "verificationMode": {
+        "type": "string",
+        "enum": [
+          "WECHATPAY_PUBLIC_KEY",
+          "PLATFORM_CERT"
+        ]
+      },
+      "wechatPayPublicKeyId": {
+        "type": "string",
+        "maxLength": 128
+      },
+      "wechatPayPublicKeyPem": {
+        "type": "string",
+        "maxLength": 16384
+      },
+      "platformCertificates": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "serial": {
+              "type": "string"
+            },
+            "pem": {
+              "type": "string",
+              "maxLength": 32768
+            }
+          },
+          "required": [
+            "serial",
+            "pem"
+          ]
+        }
+      },
+      "merchantCertificatePem": {
+        "type": "string",
+        "maxLength": 32768
+      },
+      "bindingAcknowledged": {
+        "type": "boolean"
+      },
+      "bindingEvidenceId": {
+        "type": "string",
+        "description": "内部Long对外十进制字符串",
+        "pattern": "^[1-9][0-9]{0,18}$"
+      }
+    },
+    "description": "mchid/appProfile是资金身份，关联交易后不得原位改为别家；此处校验是本地格式，不证明商户资格。回调地址由部署生成。"
+  },
+  "WechatPayConfigDraftRequest": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "kind": {
+        "type": "string",
+        "enum": [
+          "WECHAT_PAY"
+        ]
+      },
+      "expectedVersion": {
+        "type": "integer",
+        "format": "int64",
+        "minimum": 0
+      },
+      "config": {
+        "$ref": "#/components/schemas/WechatPayConfig"
+      },
+      "credentials": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "merchantPrivateKey": {
+            "$ref": "#/components/schemas/SecretMutation"
+          },
+          "apiV3Key": {
+            "$ref": "#/components/schemas/SecretMutation"
+          }
+        }
+      },
+      "reason": {
+        "type": "string",
+        "minLength": 2,
+        "maxLength": 500
+      }
+    },
+    "required": [
+      "kind",
+      "expectedVersion",
+      "config",
+      "reason"
+    ],
+    "description": "保存为不可变新草稿版本，不改变线上生效版本；密钥提交不回显。"
+  }
+}

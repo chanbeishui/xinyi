@@ -6228,6 +6228,11 @@ CONSTRAINT ck_83aefc040222fa CHECK (`lifecycle` IN ('ACTIVE','RETIRED','REVOKED'
   <td></td>
 </tr>
 <tr>
+  <td><code>target_version</code></td>
+  <td><code>BIGINT NULL</code></td>
+  <td>校验时根版本；旧记录NULL仅保留历史证据不可授权新发布</td>
+</tr>
+<tr>
   <td><code>content_hash</code></td>
   <td><code>VARCHAR(64) NOT NULL</code></td>
   <td></td>

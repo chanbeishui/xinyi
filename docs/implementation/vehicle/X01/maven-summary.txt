@@ -1,0 +1,56 @@
+FULL RUN (before final X01 refinements)
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.544 s -- in com.xinyi.system.service.impl.DeptScopeServiceImplTest
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.046 s -- in com.xinyi.framework.web.service.TokenServiceTest
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.216 s -- in com.xinyi.rongli.booking.TencentRouteGatewayTest
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.383 s -- in com.xinyi.rongli.platform.IdempotencyMacTest
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.083 s -- in com.xinyi.rongli.platform.PlatformPrimitivesTest
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.006 s -- in com.xinyi.rongli.platform.SecretGuardTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.001 s -- in com.xinyi.rongli.pricing.PriceEnvironmentTest
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.006 s -- in com.xinyi.rongli.pricing.PriceCalculatorTest
+[INFO] Tests run: 25, Failures: 0, Errors: 0, Skipped: 0
+[INFO] Tests run: 10, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 4.533 s -- in com.xinyi.web.viit.I03IdentityIT
+[INFO] Tests run: 10, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.128 s -- in com.xinyi.web.viit.E06PlatformIT
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.822 s -- in com.xinyi.web.viit.C01ConfigIT
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.836 s -- in com.xinyi.web.viit.C04LivePricingIT
+[INFO] Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.119 s -- in com.xinyi.web.viit.A03OwnerIT
+[INFO] Tests run: 14, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 3.824 s -- in com.xinyi.web.viit.B03OrderIT
+[INFO] Tests run: 9, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 2.750 s -- in com.xinyi.web.viit.B04OrderIT
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.668 s -- in com.xinyi.web.viit.B01BookingIT
+[INFO] Tests run: 10, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.071 s -- in com.xinyi.web.viit.I04IdentityIT
+[INFO] Tests run: 20, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.760 s -- in com.xinyi.web.viit.I05IdentityIT
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.629 s -- in com.xinyi.web.viit.E07TestingIT
+[INFO] Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.902 s -- in com.xinyi.web.viit.A01VehicleIT
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.361 s -- in com.xinyi.web.viit.B02BookingIT
+[INFO] Tests run: 9, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.876 s -- in com.xinyi.web.viit.I02IdentityIT
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.036 s -- in com.xinyi.web.viit.E08PlatformIT
+[INFO] Tests run: 18, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 4.912 s -- in com.xinyi.web.viit.X01IntegrationIT
+[INFO] Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.838 s -- in com.xinyi.web.viit.A02AddressIT
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.862 s -- in com.xinyi.web.viit.C03CapacityIT
+[INFO] Tests run: 13, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.046 s -- in com.xinyi.web.viit.C02StationIT
+[INFO] Tests run: 14, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.399 s -- in com.xinyi.web.viit.C04PricingIT
+[INFO] Tests run: 9, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.727 s -- in com.xinyi.web.viit.I01IdentityIT
+[INFO] Tests run: 10, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.131 s -- in com.xinyi.web.viit.I06ScopeIT
+[ERROR] Surefire is going to kill self fork JVM. The exit has elapsed 30 seconds after System.exit(0).
+[INFO] Tests run: 195, Failures: 0, Errors: 0, Skipped: 0
+[INFO] BUILD SUCCESS
+[INFO] Finished at: 2026-11-02T23:10:13+08:00
+FINAL X01 TARGETED RUN
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.495 s -- in com.xinyi.system.service.impl.DeptScopeServiceImplTest
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.047 s -- in com.xinyi.framework.web.service.TokenServiceTest
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.178 s -- in com.xinyi.rongli.booking.TencentRouteGatewayTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.020 s -- in com.xinyi.rongli.integration.IntegrationInputTest
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.367 s -- in com.xinyi.rongli.platform.IdempotencyMacTest
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.081 s -- in com.xinyi.rongli.platform.PlatformPrimitivesTest
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.007 s -- in com.xinyi.rongli.platform.SecretGuardTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.002 s -- in com.xinyi.rongli.pricing.PriceEnvironmentTest
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.007 s -- in com.xinyi.rongli.pricing.PriceCalculatorTest
+[INFO] Tests run: 28, Failures: 0, Errors: 0, Skipped: 0
+X01_SOURCE_PYTEST: 9 passed; 12 response schemas checked
+[INFO] Tests run: 19, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 9.654 s -- in com.xinyi.web.viit.X01IntegrationIT
+[INFO] Tests run: 19, Failures: 0, Errors: 0, Skipped: 0
+[INFO] BUILD SUCCESS
+[INFO] Finished at: 2026-11-02T23:20:34+08:00

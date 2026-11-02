@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xinyi.rongli.integration.mapper.IntegrationMapper">
+<resultMap id="Profile" type="com.xinyi.rongli.integration.domain.IntegrationProfile">
+<id property="id" column="id"/>
+<result property="createdAt" column="created_at" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+<result property="updatedAt" column="updated_at" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+<result property="version" column="version"/>
+<result property="kind" column="kind"/>
+<result property="ownerDeptId" column="owner_dept_id"/>
+<result property="environment" column="environment"/>
+<result property="configKey" column="config_key"/>
+<result property="displayName" column="display_name"/>
+<result property="lifecycle" column="lifecycle"/>
+<result property="activeRevisionId" column="active_revision_id"/>
+<result property="draftRevisionId" column="draft_revision_id"/>
+<result property="revisionSeq" column="revision_seq"/>
+<result property="createdBy" column="created_by"/>
+<result property="lastPublishedBy" column="last_published_by"/>
+</resultMap>
+<resultMap id="Revision" type="com.xinyi.rongli.integration.domain.IntegrationRevision">
+<id property="id" column="id"/>
+<result property="createdAt" column="created_at" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+<result property="updatedAt" column="updated_at" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+<result property="version" column="version"/>
+<result property="profileId" column="profile_id"/>
+<result property="revisionNo" column="revision_no"/>
+<result property="configJson" column="config_json"/>
+<result property="secretRefsJson" column="secret_refs_json"/>
+<result property="contentHash" column="content_hash"/>
+<result property="createdBy" column="created_by"/>
+<result property="reason" column="reason"/>
+</resultMap>
+<resultMap id="Secret" type="com.xinyi.rongli.integration.domain.IntegrationSecret">
+<id property="id" column="id"/>
+<result property="createdAt" column="created_at" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+<result property="updatedAt" column="updated_at" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+<result property="version" column="version"/>
+<result property="profileId" column="profile_id"/>
+<result property="slotName" column="slot_name"/>
+<result property="credentialKind" column="credential_kind"/>
+<result property="ciphertext" column="ciphertext"/>
+<result property="nonce" column="nonce"/>
+<result property="keyVersion" column="key_version"/>
+<result property="aadContext" column="aad_context"/>
+<result property="fingerprint" column="fingerprint"/>
+<result property="lifecycle" column="lifecycle"/>
+<result property="expiresAt" column="expires_at" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+<result property="createdBy" column="created_by"/>
+</resultMap>
+<resultMap id="Check" type="com.xinyi.rongli.integration.domain.IntegrationCheck">
+<id property="id" column="id"/>
+<result property="createdAt" column="created_at" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+<result property="updatedAt" column="updated_at" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+<result property="version" column="version"/>
+<result property="targetType" column="target_type"/>
+<result property="targetId" column="target_id"/>
+<result property="revisionId" column="revision_id"/>
+<result property="contentHash" column="content_hash"/>
+<result property="checkLevel" column="check_level"/>
+<result property="status" column="status"/>
+<result property="issuesJson" column="issues_json"/>
+<result property="checkedAt" column="checked_at" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+<result property="expiresAt" column="expires_at" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+<result property="checkedBy" column="checked_by"/>
+<result property="realPaymentVerified" column="real_payment_verified"/>
+<result property="targetVersion" column="target_version"/>
+</resultMap>
+<resultMap id="Publication" type="com.xinyi.rongli.integration.domain.IntegrationPublication">
+<id property="id" column="id"/>
+<result property="createdAt" column="created_at" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+<result property="updatedAt" column="updated_at" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+<result property="version" column="version"/>
+<result property="targetType" column="target_type"/>
+<result property="targetId" column="target_id"/>
+<result property="revisionId" column="revision_id"/>
+<result property="previousRevisionId" column="previous_revision_id"/>
+<result property="checkId" column="check_id"/>
+<result property="action" column="action"/>
+<result property="publishedBy" column="published_by"/>
+<result property="publishedAt" column="published_at" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+<result property="reason" column="reason"/>
+<result property="dependencyVersions" column="dependency_versions"/>
+<result property="targetVersion" column="target_version"/>
+</resultMap>
+<resultMap id="Recipient" type="com.xinyi.rongli.integration.domain.IntegrationRecipient">
+<id property="id" column="id"/>
+<result property="createdAt" column="created_at" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+<result property="updatedAt" column="updated_at" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+<result property="version" column="version"/>
+<result property="name" column="name"/>
+<result property="kind" column="kind"/>
+<result property="ownerDeptId" column="owner_dept_id"/>
+<result property="environment" column="environment"/>
+<result property="phoneCipher" column="phone_cipher"/>
+<result property="accountId" column="account_id"/>
+<result property="appProfileId" column="app_profile_id"/>
+<result property="enabled" column="enabled"/>
+<result property="createdBy" column="created_by"/>
+<result property="reason" column="reason"/>
+</resultMap>
+<sql id="scope"><if test="departments!=null"><choose><when test="departments.size()==0">AND 1=0</when><otherwise>AND p.owner_dept_id IN <foreach collection="departments" item="d" open="(" close=")" separator=",">#{d}</foreach></otherwise></choose></if></sql>
+<sql id="profileWhere">WHERE p.environment=#{environment}<include refid="scope"/><if test="query.kind!=null">AND p.kind=#{query.kind}</if><if test="query.ownerDeptId!=null">AND p.owner_dept_id=#{query.ownerDeptId}</if></sql>
+<select id="profiles" resultMap="Profile">SELECT p.* FROM vi_integration_profile p <include refid="profileWhere"/> ORDER BY p.id DESC LIMIT #{query.pageSize} OFFSET #{query.offset}</select>
+<select id="countProfiles" resultType="long">SELECT COUNT(*) FROM vi_integration_profile p <include refid="profileWhere"/></select>
+<select id="profile" resultMap="Profile">SELECT * FROM vi_integration_profile WHERE id=#{id}</select>
+<select id="lockProfile" resultMap="Profile">SELECT * FROM vi_integration_profile WHERE id=#{id} FOR UPDATE</select>
+<insert id="insertProfile" useGeneratedKeys="true" keyProperty="id">INSERT INTO vi_integration_profile(kind,owner_dept_id,environment,config_key,display_name,lifecycle,created_by) VALUES(#{kind},#{ownerDeptId},#{environment},#{configKey},#{displayName},'DRAFT',#{createdBy})</insert>
+<select id="revision" resultMap="Revision">SELECT * FROM vi_integration_revision WHERE id=#{id} AND profile_id=#{profileId}</select>
+<select id="revisionByHash" resultMap="Revision">SELECT * FROM vi_integration_revision WHERE profile_id=#{profileId} AND content_hash=#{hash}</select>
+<select id="revisions" resultMap="Revision">SELECT * FROM vi_integration_revision WHERE profile_id=#{profileId} ORDER BY revision_no DESC LIMIT #{limit} OFFSET #{offset}</select>
+<select id="countRevisions" resultType="long">SELECT COUNT(*) FROM vi_integration_revision WHERE profile_id=#{id}</select>
+<insert id="insertRevision" useGeneratedKeys="true" keyProperty="id">INSERT INTO vi_integration_revision(profile_id,revision_no,config_json,secret_refs_json,content_hash,created_by,reason) VALUES(#{profileId},#{revisionNo},#{configJson},#{secretRefsJson},#{contentHash},#{createdBy},#{reason})</insert>
+<update id="pointDraft">UPDATE vi_integration_profile SET draft_revision_id=#{revisionId},revision_seq=GREATEST(revision_seq,#{sequence}),version=version+1,updated_at=UTC_TIMESTAMP(3) WHERE id=#{id} AND version=#{expectedVersion}</update>
+<update id="pointActive">UPDATE vi_integration_profile SET active_revision_id=#{revisionId},lifecycle='ACTIVE',last_published_by=#{userId},version=version+1,updated_at=UTC_TIMESTAMP(3) WHERE id=#{id} AND version=#{expectedVersion}</update>
+<select id="secret" resultMap="Secret">SELECT * FROM vi_integration_secret WHERE id=#{id} AND profile_id=#{profileId} AND slot_name=#{slot}</select>
+<insert id="insertSecret" useGeneratedKeys="true" keyProperty="id">INSERT INTO vi_integration_secret(profile_id,slot_name,credential_kind,ciphertext,nonce,key_version,aad_context,fingerprint,lifecycle,created_by) VALUES(#{profileId},#{slotName},#{credentialKind},#{ciphertext},#{nonce},#{keyVersion},#{aadContext},#{fingerprint},'ACTIVE',#{createdBy})</insert>
+<update id="clearSecret">UPDATE vi_integration_secret SET lifecycle='REVOKED',retired_at=UTC_TIMESTAMP(3),retired_by=#{userId},retire_reason='清除未发布草稿凭据',version=version+1,updated_at=UTC_TIMESTAMP(3) WHERE id=#{id} AND profile_id=#{profileId} AND lifecycle='ACTIVE'</update>
+<select id="wasPublished" resultType="int">SELECT COUNT(*) FROM vi_integration_publication WHERE target_type='PROFILE' AND target_id=#{profileId} AND revision_id=#{revisionId}</select>
+<select id="publishedRevisions" resultMap="Revision">SELECT r.* FROM vi_integration_revision r WHERE r.profile_id=#{profileId} AND EXISTS(SELECT 1 FROM vi_integration_publication p WHERE p.target_type='PROFILE' AND p.target_id=r.profile_id AND p.revision_id=r.id)</select>
+<select id="check" resultMap="Check">SELECT * FROM vi_integration_check WHERE id=#{id} AND target_type='PROFILE' AND target_id=#{profileId}</select>
+<select id="latestCheck" resultMap="Check">SELECT * FROM vi_integration_check WHERE target_type='PROFILE' AND target_id=#{profileId} AND revision_id=#{revisionId} ORDER BY id DESC LIMIT 1</select>
+<insert id="insertCheck" useGeneratedKeys="true" keyProperty="id">INSERT INTO vi_integration_check(target_type,target_id,revision_id,content_hash,check_level,status,issues_json,checked_at,expires_at,checked_by,real_payment_verified,target_version) VALUES('PROFILE',#{targetId},#{revisionId},#{contentHash},#{checkLevel},#{status},#{issuesJson},#{checkedAt,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler},#{expiresAt,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler},#{checkedBy},0,#{targetVersion})</insert>
+<insert id="insertPublication" useGeneratedKeys="true" keyProperty="id">INSERT INTO vi_integration_publication(target_type,target_id,revision_id,previous_revision_id,check_id,action,published_by,published_at,reason,dependency_versions,target_version) VALUES('PROFILE',#{targetId},#{revisionId},#{previousRevisionId},#{checkId},#{action},#{publishedBy},#{publishedAt,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler},#{reason},#{dependencyVersions},#{targetVersion})</insert>
+<select id="publication" resultMap="Publication">SELECT * FROM vi_integration_publication WHERE id=#{id} AND target_type='PROFILE' AND target_id=#{profileId}</select>
+<select id="publications" resultMap="Publication">SELECT * FROM vi_integration_publication WHERE target_type='PROFILE' AND target_id=#{profileId} ORDER BY id DESC LIMIT #{limit} OFFSET #{offset}</select>
+<select id="countPublications" resultType="long">SELECT COUNT(*) FROM vi_integration_publication WHERE target_type='PROFILE' AND target_id=#{id}</select>
+<select id="recipients" resultMap="Recipient">SELECT p.* FROM vi_integration_test_recipient p WHERE p.environment=#{environment}<include refid="scope"/> ORDER BY p.id DESC LIMIT #{limit} OFFSET #{offset}</select>
+<select id="countRecipients" resultType="long">SELECT COUNT(*) FROM vi_integration_test_recipient p WHERE p.environment=#{environment}<include refid="scope"/></select>
+<select id="recipient" resultMap="Recipient">SELECT * FROM vi_integration_test_recipient WHERE id=#{id}</select>
+<select id="lockRecipient" resultMap="Recipient">SELECT * FROM vi_integration_test_recipient WHERE id=#{id} FOR UPDATE</select>
+<insert id="insertRecipient" useGeneratedKeys="true" keyProperty="id">INSERT INTO vi_integration_test_recipient(name,kind,owner_dept_id,environment,phone_cipher,account_id,app_profile_id,enabled,created_by,reason) VALUES(#{name},#{kind},#{ownerDeptId},#{environment},#{phoneCipher},#{accountId},#{appProfileId},1,#{createdBy},#{reason})</insert>
+<update id="setRecipientCipher">UPDATE vi_integration_test_recipient SET phone_cipher=#{cipher} WHERE id=#{id} AND kind='PHONE'</update>
+<update id="revokeRecipient">UPDATE vi_integration_test_recipient SET enabled=0,version=version+1,updated_at=UTC_TIMESTAMP(3) WHERE id=#{id} AND version=#{expectedVersion} AND enabled=1</update>
+<select id="accountApp" resultType="string">SELECT app_id FROM vi_account WHERE id=#{id} AND status='ACTIVE'</select>
+<select id="accountCount" resultType="long">SELECT COUNT(*) FROM vi_account WHERE app_id=#{appId}</select>
+<select id="paymentCount" resultType="long">SELECT COUNT(*) FROM vi_payment_order WHERE merchant_profile_id=#{id} OR policy_revision_id IN(SELECT id FROM vi_integration_revision WHERE profile_id=#{id})</select>
+<select id="lockUser" resultType="map">SELECT auth_version,status,del_flag FROM sys_user WHERE user_id=#{id} FOR UPDATE</select>
+<select id="lockDept" resultType="map">SELECT dept_id,status,del_flag FROM sys_dept WHERE dept_id=#{id} FOR UPDATE</select>
+<select id="now" resultType="string">SELECT DATE_FORMAT(UTC_TIMESTAMP(3),'%Y-%m-%dT%H:%i:%s.%fZ')</select>
+</mapper>

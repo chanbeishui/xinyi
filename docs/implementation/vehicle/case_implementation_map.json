@@ -2904,74 +2904,104 @@
     "testMethod": "I04IdentityIT#待审账号切代驾拒绝且刷新不审批_TC_R63_010_R63_016"
   },
   {
-    "status": "NOT_ASSESSED",
-    "testFiles": [],
-    "evidence": [],
+    "status": "PASS",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/X01IntegrationIT.java"
+    ],
+    "evidence": "docs/implementation/vehicle/evidence/X01-20261102.json",
     "caseId": "TC-CFG-001",
-    "taskId": "X01"
+    "taskId": "X01",
+    "testMethod": "X01IntegrationIT#draftAndPublicationAreSeparateAndRuntimeUsesDatabase"
   },
   {
-    "status": "NOT_ASSESSED",
-    "testFiles": [],
-    "evidence": [],
+    "status": "PASS",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/X01IntegrationIT.java"
+    ],
+    "evidence": "docs/implementation/vehicle/evidence/X01-20261102.json",
     "caseId": "TC-CFG-002",
-    "taskId": "X01"
+    "taskId": "X01",
+    "testMethod": "X01IntegrationIT#idempotentReplayAndParallelPublication"
   },
   {
-    "status": "NOT_ASSESSED",
-    "testFiles": [],
-    "evidence": [],
+    "status": "PASS",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/X01IntegrationIT.java"
+    ],
+    "evidence": "docs/implementation/vehicle/evidence/X01-20261102.json",
     "caseId": "TC-CFG-003",
-    "taskId": "X01"
+    "taskId": "X01",
+    "testMethod": "X01IntegrationIT#staleVersionAndIdenticalContentStillInvalidateCheck"
   },
   {
-    "status": "NOT_ASSESSED",
-    "testFiles": [],
-    "evidence": [],
+    "status": "PASS",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/X01IntegrationIT.java"
+    ],
+    "evidence": "docs/implementation/vehicle/evidence/X01-20261102.json",
     "caseId": "TC-CFG-004",
-    "taskId": "X01"
+    "taskId": "X01",
+    "testMethod": "X01IntegrationIT#secretsEncryptedMaskedKeepClearAndMissingKeyFailClosed"
   },
   {
-    "status": "NOT_ASSESSED",
-    "testFiles": [],
-    "evidence": [],
+    "status": "PASS",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/X01IntegrationIT.java"
+    ],
+    "evidence": "docs/implementation/vehicle/evidence/X01-20261102.json",
     "caseId": "TC-CFG-005",
-    "taskId": "X01"
+    "taskId": "X01",
+    "testMethod": "X01IntegrationIT#secretsEncryptedMaskedKeepClearAndMissingKeyFailClosed"
   },
   {
-    "status": "NOT_ASSESSED",
-    "testFiles": [],
-    "evidence": [],
+    "status": "PASS",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/X01IntegrationIT.java"
+    ],
+    "evidence": "docs/implementation/vehicle/evidence/X01-20261102.json",
     "caseId": "TC-CFG-006",
-    "taskId": "X01"
+    "taskId": "X01",
+    "testMethod": "X01IntegrationIT#secretsEncryptedMaskedKeepClearAndMissingKeyFailClosed"
   },
   {
-    "status": "NOT_ASSESSED",
-    "testFiles": [],
-    "evidence": [],
+    "status": "PASS",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/X01IntegrationIT.java"
+    ],
+    "evidence": "docs/implementation/vehicle/evidence/X01-20261102.json",
     "caseId": "TC-CFG-007",
-    "taskId": "X01"
+    "taskId": "X01",
+    "testMethod": "X01IntegrationIT#keyRotationKeepsOldVersionsAndFailsWhenOldKeyUnavailable"
   },
   {
-    "status": "NOT_ASSESSED",
-    "testFiles": [],
-    "evidence": [],
+    "status": "PASS",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/X01IntegrationIT.java"
+    ],
+    "evidence": "docs/implementation/vehicle/evidence/X01-20261102.json",
     "caseId": "TC-CFG-008",
-    "taskId": "X01"
+    "taskId": "X01",
+    "testMethod": "X01IntegrationIT#scopeEnvironmentAndUntrustedFieldsFailClosed"
   },
   {
-    "status": "NOT_ASSESSED",
-    "testFiles": [],
-    "evidence": [],
+    "status": "PASS",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/X01IntegrationIT.java"
+    ],
+    "evidence": "docs/implementation/vehicle/evidence/X01-20261102.json",
     "caseId": "TC-CFG-009",
-    "taskId": "X01"
+    "taskId": "X01",
+    "testMethod": "X01IntegrationIT#publishedSecretsRetainedAndRevokedSecretCannotRollback"
   },
   {
-    "status": "NOT_ASSESSED",
-    "testFiles": [],
-    "evidence": [],
+    "status": "PASS",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/X01IntegrationIT.java"
+    ],
+    "evidence": "docs/implementation/vehicle/evidence/X01-20261102.json",
     "caseId": "TC-CFG-010",
-    "taskId": "X01"
+    "taskId": "X01",
+    "testMethod": "X01IntegrationIT#redisConnectionFailureCannotOverrideDatabasePublication"
   },
   {
     "status": "NOT_ASSESSED",

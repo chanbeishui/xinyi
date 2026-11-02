@@ -1,0 +1,167 @@
+{
+  "at": "2026-11-02T15:25:02.922466+00:00",
+  "exitCode": 0,
+  "testsRun": 195,
+  "suites": [
+    {
+      "suite": "com.xinyi.web.viit.I03IdentityIT",
+      "testsRun": 10,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "com.xinyi.web.viit.E06PlatformIT",
+      "testsRun": 10,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "com.xinyi.web.viit.C01ConfigIT",
+      "testsRun": 6,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "com.xinyi.web.viit.C04LivePricingIT",
+      "testsRun": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "com.xinyi.web.viit.A03OwnerIT",
+      "testsRun": 7,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "com.xinyi.web.viit.B03OrderIT",
+      "testsRun": 14,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "com.xinyi.web.viit.B04OrderIT",
+      "testsRun": 9,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "com.xinyi.web.viit.B01BookingIT",
+      "testsRun": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "com.xinyi.web.viit.I04IdentityIT",
+      "testsRun": 10,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "com.xinyi.web.viit.I05IdentityIT",
+      "testsRun": 20,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "com.xinyi.web.viit.E07TestingIT",
+      "testsRun": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "com.xinyi.web.viit.A01VehicleIT",
+      "testsRun": 7,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "com.xinyi.web.viit.B02BookingIT",
+      "testsRun": 6,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "com.xinyi.web.viit.I02IdentityIT",
+      "testsRun": 9,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "com.xinyi.web.viit.E08PlatformIT",
+      "testsRun": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "com.xinyi.web.viit.X01IntegrationIT",
+      "testsRun": 18,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "com.xinyi.web.viit.A02AddressIT",
+      "testsRun": 7,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "com.xinyi.web.viit.C03CapacityIT",
+      "testsRun": 6,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "com.xinyi.web.viit.C02StationIT",
+      "testsRun": 13,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "com.xinyi.web.viit.C04PricingIT",
+      "testsRun": 14,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "com.xinyi.web.viit.I01IdentityIT",
+      "testsRun": 9,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "com.xinyi.web.viit.I06ScopeIT",
+      "testsRun": 10,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  ],
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "scope": "22类真实HTTP/MySQL全量回归；后续仅X01投影/审计/输入边界及补充测试变更已专项复跑",
+  "forkExitDiagnostic": "测试成功后JVM退出超过30秒；Surefire回收，Maven退出0",
+  "productionChanged": false
+}

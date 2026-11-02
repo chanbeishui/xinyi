@@ -1,0 +1,26 @@
+{
+  "at": "2026-11-02T15:25:02.922466+00:00",
+  "exitCode": 0,
+  "testsRun": 19,
+  "suites": [
+    {
+      "suite": "com.xinyi.web.viit.X01IntegrationIT",
+      "testsRun": 19,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  ],
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "sourcePytest": {
+    "testsRun": 9,
+    "originalSourceTests": 8,
+    "additionalAllTwelveSchemas": 1,
+    "businessBackend": "real SpringBoot HTTP/MySQL",
+    "fixtureAdapter": "src/test/resources/integration/x01-conftest.py; only isolated DB/real issued tokens, no fake business server"
+  },
+  "redisFailure": "测试进程连接不可达端口；不停止原Redis；停用后的旧配置未复活",
+  "productionChanged": false
+}

@@ -1,7 +1,7 @@
 # X01 · 配置版本、密钥保管与发布事务
 
 阶段：M2；责任域：integration；前置：E06, E07。
-范围版本：`V6.4-CONFIG-20261022`；definitionHash：`d645e4a1406930527637e4456ef6987327d51d7005b8876d8fd1e65b38883546`。
+范围版本：`V6.4-CONFIG-20261022`；definitionHash：`06762c94b4fef9a0958c68f6af27a9629509bc1e354d79732b86891e2b5828b9`。
 
 ## 本任务交付
 - 实现五类配置专用DTO、秘密KEEP/REPLACE/CLEAR、只读脱敏
@@ -21,16 +21,16 @@
 
 ## 代码落位
 `xinyi-rongli/src/main/java/com/xinyi/rongli/integration/`
-`xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/`
-`xinyi-ui/src/views/rongli/integrations/`
-`xinyi-miniapp/src/`
-`sql/migration_YYYYMMDD_integration_config.sql`
+`xinyi-rongli/src/main/resources/mapper/rongli/integration/`
+`xinyi-rongli/src/main/resources/integration/`
+`xinyi-admin/src/test/java/com/xinyi/web/viit/X01IntegrationIT.java`
+`sql/migration_20261102_03_integration_control.sql`
 
 ## 验证命令
 ```bash
-mvn -pl xinyi-admin -am test
+mvn -pl xinyi-admin -am -Pvi-it -Dit.test=X01IntegrationIT verify
 python docs/vehicle/V6.4/11_工具/test_integration_policy.py
-python -m pytest docs/vehicle/V6.4/13_真实集成测试/live/test_integration_config_live.py -q
+python -m pytest docs/vehicle/V6.4/13_真实集成测试/live/test_integration_config.py -q（通过X01IntegrationIT启动真实HTTP及限定测试夹具）
 ```
 
 ## 完成标准

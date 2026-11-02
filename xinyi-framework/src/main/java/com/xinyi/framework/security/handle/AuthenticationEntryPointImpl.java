@@ -27,6 +27,17 @@ public class AuthenticationEntryPointImpl implements AuthenticationEntryPoint, S
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException e)
             throws IOException
     {
+        if (request.getRequestURI().startsWith(request.getContextPath() + "/api/admin/"))
+        {
+            java.util.Map<String,Object> body = new java.util.LinkedHashMap<>();
+            body.put("code", 401); body.put("errorCode", "VI_AUTH_REQUIRED");
+            body.put("msg", "需要有效的后台登录态"); body.put("requestId", java.util.UUID.randomUUID().toString());
+            body.put("retryable", false); body.put("retryAfterSeconds", null); body.put("data", java.util.Map.of());
+            response.setStatus(401); response.setContentType("application/json;charset=UTF-8");
+            response.setHeader("Cache-Control", "no-store");
+            response.getWriter().write(JSON.toJSONString(body, com.alibaba.fastjson2.JSONWriter.Feature.WriteNulls));
+            return;
+        }
         int code = HttpStatus.UNAUTHORIZED;
         String msg = StringUtils.format("请求访问：{}，认证失败，无法访问系统资源", request.getRequestURI());
         ServletUtils.renderString(response, JSON.toJSONString(AjaxResult.error(code, msg)));

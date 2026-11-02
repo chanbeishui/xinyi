@@ -5267,16 +5267,16 @@
     "status": "NOT_ASSESSED",
     "code_paths": [
       "xinyi-rongli/src/main/java/com/xinyi/rongli/integration/",
-      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/",
-      "xinyi-ui/src/views/rongli/integrations/",
-      "xinyi-miniapp/src/",
-      "sql/migration_YYYYMMDD_integration_config.sql"
+      "xinyi-rongli/src/main/resources/mapper/rongli/integration/",
+      "xinyi-rongli/src/main/resources/integration/",
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/X01IntegrationIT.java",
+      "sql/migration_20261102_03_integration_control.sql"
     ],
     "test_class": "X01IntegrationIT",
     "commands": [
-      "mvn -pl xinyi-admin -am test",
+      "mvn -pl xinyi-admin -am -Pvi-it -Dit.test=X01IntegrationIT verify",
       "python docs/vehicle/V6.4/11_工具/test_integration_policy.py",
-      "python -m pytest docs/vehicle/V6.4/13_真实集成测试/live/test_integration_config_live.py -q"
+      "python -m pytest docs/vehicle/V6.4/13_真实集成测试/live/test_integration_config.py -q（通过X01IntegrationIT启动真实HTTP及限定测试夹具）"
     ],
     "done_when": [
       "主契约与状态机所有本任务分支实现，无固定Ack/假成功",
@@ -5292,7 +5292,7 @@
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
     "scopeRevision": "V6.4-CONFIG-20261022",
-    "definitionHash": "d645e4a1406930527637e4456ef6987327d51d7005b8876d8fd1e65b38883546"
+    "definitionHash": "06762c94b4fef9a0958c68f6af27a9629509bc1e354d79732b86891e2b5828b9"
   },
   {
     "id": "X02",

@@ -1,0 +1,5 @@
+# X01 独立复核
+
+PENDING。实现者测试、自检与契约核验已完成，不代替独立审核，不标REVIEWED，不推送、合并或部署。
+
+复核入口：IntegrationAuthority多部门/环境和等待锁后的auth_version；IntegrationService的CAS/检查根版本/依赖/审计-outbox事务；IntegrationCrypto与IntegrationSecrets的AAD、轮换和历史引用；IntegrationRuntime及PublishedPaymentPolicy的主库与解密门禁；IntegrationController输入和响应白名单；X01IntegrationIT真实HTTP/MySQL/Redis失败测试及原资料Python测试。特别核对旧校验NULL不能授权新发布、无默认密钥、所有菜单无默认角色授权、真实供应商状态未冒充通过。

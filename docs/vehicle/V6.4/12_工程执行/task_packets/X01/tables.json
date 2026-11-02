@@ -589,6 +589,11 @@
         ""
       ],
       [
+        "target_version",
+        "BIGINT NULL",
+        "校验时根版本；旧记录NULL仅保留历史证据不可授权新发布"
+      ],
+      [
         "content_hash",
         "VARCHAR(64) NOT NULL",
         ""
@@ -747,6 +752,12 @@
       "version": {
         "generated": false,
         "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "target_version": {
+        "generated": false,
+        "insertable": true,
         "updatable": false,
         "clientWritable": false
       }

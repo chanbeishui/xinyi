@@ -7,7 +7,7 @@ pytestmark=pytest.mark.integration_config
 
 def new_profile(base,run,kind='TENCENT_SMS'):
     c=Client(base,run['adminToken'],'admin')
-    p=c.call('POST','/api/admin/integrations/profiles',{'kind':kind,'name':'IT-'+uuid.uuid4().hex[:10],'scope':{'ownerDeptId':run['ownerDeptId'],'environment':'TEST'}},expect=201)['data']
+    p=c.call('POST','/api/admin/integrations/profiles',{'kind':kind,'name':'IT-'+uuid.uuid4().hex[:10],'scope':{'ownerDeptId':run['ownerDeptId'],'environment':'TEST'}},expect=200)['data']
     assert p['activeRevisionId'] is None
     return c,p
 

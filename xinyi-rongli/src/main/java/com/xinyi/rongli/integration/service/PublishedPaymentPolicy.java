@@ -13,8 +13,8 @@ import java.util.*;
 /** B03只读消费发布指针；草稿、开关或测试成功都不能自行发布支付能力。 */
 @Service
 public class PublishedPaymentPolicy implements PaymentPolicyGateway {
- private final PublishedConfigMapper mapper;private final String environment;
- public PublishedPaymentPolicy(PublishedConfigMapper mapper,@Value("${vi.environment:local}")String deployment,@Value("${vi.integration.environment:}")String explicit){this.mapper=mapper;environment=PriceEnvironment.resolve(deployment,explicit);}
+ private final PublishedConfigMapper mapper;private final String environment;private final com.xinyi.rongli.integration.mapper.IntegrationMapper configs;private final IntegrationSecrets credentials;
+ public PublishedPaymentPolicy(PublishedConfigMapper mapper,com.xinyi.rongli.integration.mapper.IntegrationMapper configs,IntegrationSecrets credentials,@Value("${vi.environment:local}")String deployment,@Value("${vi.integration.environment:}")String explicit){this.mapper=mapper;this.configs=configs;this.credentials=credentials;environment=PriceEnvironment.resolve(deployment,explicit);}
  private record Published(long id,long owner,long revision,JsonNode config,JsonNode secrets){}
  public Policy requireForStation(long stationId,String appId){
   var ids=mapper.companyPolicies(stationId,environment);
@@ -50,7 +50,7 @@ public class PublishedPaymentPolicy implements PaymentPolicyGateway {
  }
  private Published reference(JsonNode reference,String kind,long owner){
   try{Published p=published(ViId.parse(reference.path("profileId").asText()),kind,owner);if(p.revision!=ViId.parse(reference.path("revisionId").asText()))invalid();return p;}
-  catch(RuntimeException e){throw new ViException(ViErrorCode.VI_CONFIG_INVALID,"支付依赖配置未发布或不匹配");}
+  catch(ViException e){if(e.getErrorCode()==ViErrorCode.VI_SECRET_UNAVAILABLE)throw e;throw new ViException(ViErrorCode.VI_CONFIG_INVALID,"支付依赖配置未发布或不匹配");}catch(RuntimeException e){throw new ViException(ViErrorCode.VI_CONFIG_INVALID,"支付依赖配置未发布或不匹配");}
  }
  private Published published(long id,String kind,Long owner){
   Map<String,Object> row=mapper.lockPublished(id);if(row==null||!kind.equals(row.get("kind"))||!environment.equals(row.get("environment")))invalid();
@@ -58,7 +58,7 @@ public class PublishedPaymentPolicy implements PaymentPolicyGateway {
   if(owner!=null&&owner!=dept||mapper.publicationValid(id,revision,(String)row.get("content_hash"))<1)invalid();
   return new Published(id,dept,revision,ViJson.tree((String)row.get("config_json")),ViJson.tree((String)row.get("secret_refs_json")));
  }
- private boolean secret(Published p,String slot,String kind){try{return mapper.usableSecret(p.id,ViId.parse(p.secrets.path(slot).asText()),slot,kind)==1;}catch(RuntimeException e){return false;}}
+ private boolean secret(Published p,String slot,String kind){try{if(mapper.usableSecret(p.id,ViId.parse(p.secrets.path(slot).asText()),slot,kind)!=1)return false;byte[] plain=credentials.read(configs.profile(p.id),configs.revision(p.id,p.revision),slot);try{return plain.length>0;}finally{Arrays.fill(plain,(byte)0);}}catch(ViException e){if(e.getErrorCode()==ViErrorCode.VI_SECRET_UNAVAILABLE)throw e;return false;}catch(RuntimeException e){return false;}}
  private static boolean text(JsonNode n,String f){return n.path(f).isTextual()&&!n.path(f).asText().isBlank();}
  private static void invalid(){throw new ViException(ViErrorCode.VI_CONFIG_INVALID,"公司支付配置或已发布依赖未完成校验");}
 }

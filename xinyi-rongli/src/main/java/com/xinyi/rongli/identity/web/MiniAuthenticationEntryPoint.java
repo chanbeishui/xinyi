@@ -1,7 +1,6 @@
 package com.xinyi.rongli.identity.web;
 
-import com.alibaba.fastjson2.JSON;
-import com.alibaba.fastjson2.JSONWriter;
+import com.xinyi.rongli.platform.json.ViJson;
 import com.xinyi.rongli.identity.dto.ApiError;
 import com.xinyi.rongli.platform.error.ViErrorCode;
 import jakarta.servlet.http.HttpServletRequest;
@@ -31,7 +30,7 @@ public class MiniAuthenticationEntryPoint implements AuthenticationEntryPoint {
         response.setCharacterEncoding(StandardCharsets.UTF_8.name());
         response.setHeader("Cache-Control", "no-store");
         response.setHeader("WWW-Authenticate", "Bearer realm=\"mini\"");
-        byte[] out = JSON.toJSONString(body, JSONWriter.Feature.WriteNulls)
+        byte[] out = ViJson.write(body)
                 .getBytes(StandardCharsets.UTF_8);
         response.setContentLength(out.length);
         response.getOutputStream().write(out);
