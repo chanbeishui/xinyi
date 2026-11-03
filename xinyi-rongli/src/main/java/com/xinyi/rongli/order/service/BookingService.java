@@ -1,9 +1,12 @@
 package com.xinyi.rongli.order.service;
 
 import com.xinyi.rongli.common.service.EventService;
+import com.xinyi.rongli.common.support.ViBool;
 import com.xinyi.rongli.common.support.WechatPayClient;
 import com.xinyi.rongli.dispatch.service.DispatchService;
+import com.xinyi.rongli.order.domain.QuotaSlot;
 import com.xinyi.rongli.payment.service.PayConfigService;
+import com.xinyi.rongli.station.domain.Station;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -105,22 +108,21 @@ public class BookingService
         ensurePickupSlots();
         LocalDateTime from = ViTime.now();
         LocalDateTime to = from.plusDays(8);
-        List<Map<String, Object>> rows = stationMapper.listSlots("PICKUP", null, from, to);
+        List<QuotaSlot> rows = stationMapper.listSlots("PICKUP", null, from, to);
         List<Map<String, Object>> out = new ArrayList<>();
-        for (Map<String, Object> r : rows)
+        for (QuotaSlot row : rows)
         {
-            Row row = Row.of(r);
-            int remaining = row.intg("total_quota", 0) - row.intg("held_quota", 0)
-                    - row.intg("confirmed_quota", 0) - row.intg("consumed_quota", 0);
+            int remaining = row.getTotalQuota() - row.getHeldQuota()
+                    - row.getConfirmedQuota() - row.getConsumedQuota();
             Map<String, Object> item = new LinkedHashMap<>();
-            item.put("slotId", String.valueOf(row.lng("id")));
-            item.put("startsAt", ViTime.iso(row.time("starts_at")));
-            item.put("endsAt", ViTime.iso(row.time("ends_at")));
-            item.put("label", ViTime.shanghaiText(row.time("starts_at")) + " - "
-                    + ViTime.shanghaiText(row.time("ends_at")).substring(11));
+            item.put("slotId", String.valueOf(row.getId()));
+            item.put("startsAt", ViTime.iso(row.getStartsAt()));
+            item.put("endsAt", ViTime.iso(row.getEndsAt()));
+            item.put("label", ViTime.shanghaiText(row.getStartsAt()) + " - "
+                    + ViTime.shanghaiText(row.getEndsAt()).substring(11));
             item.put("remaining", Math.max(remaining, 0));
-            item.put("selectable", row.bool("enabled") && remaining > 0
-                    && row.time("starts_at").isAfter(ViTime.now().plusMinutes(30)));
+            item.put("selectable", ViBool.of(row.getEnabled()) && remaining > 0
+                    && row.getStartsAt().isAfter(ViTime.now().plusMinutes(30)));
             out.add(item);
         }
         return out;
@@ -130,18 +132,17 @@ public class BookingService
     public List<Map<String, Object>> visibleStations()
     {
         List<Map<String, Object>> out = new ArrayList<>();
-        for (Map<String, Object> s : stationMapper.listEnabled())
+        for (Station st : stationMapper.listEnabled())
         {
-            Row st = Row.of(s);
             Map<String, Object> item = new LinkedHashMap<>();
-            item.put("stationId", String.valueOf(st.lng("id")));
-            item.put("name", st.str("name"));
-            item.put("address", st.str("address"));
-            item.put("lng", st.dec("lng"));
-            item.put("lat", st.dec("lat"));
-            item.put("serviceRadiusMeter", st.intg("service_radius_meter"));
-            item.put("supportedVehicleCodes", Json.read(st.json("supported_vehicle_codes")));
-            item.put("businessHours", Json.read(st.json("business_hours")));
+            item.put("stationId", String.valueOf(st.getId()));
+            item.put("name", st.getName());
+            item.put("address", st.getAddress());
+            item.put("lng", st.getLng());
+            item.put("lat", st.getLat());
+            item.put("serviceRadiusMeter", st.getServiceRadiusMeter());
+            item.put("supportedVehicleCodes", Json.read(st.getSupportedVehicleCodes()));
+            item.put("businessHours", Json.read(st.getBusinessHours()));
             out.add(item);
         }
         return out;
@@ -163,13 +164,12 @@ public class BookingService
                 {
                     continue;
                 }
-                Map<String, Object> row = new LinkedHashMap<>();
-                row.put("quotaType", "PICKUP");
-                row.put("scopeKey", "CITY");
-                row.put("stationId", null);
-                row.put("startsAt", start);
-                row.put("endsAt", end);
-                row.put("totalQuota", 10);
+                QuotaSlot row = new QuotaSlot();
+                row.setQuotaType("PICKUP");
+                row.setScopeKey("CITY");
+                row.setStartsAt(start);
+                row.setEndsAt(end);
+                row.setTotalQuota(10);
                 stationMapper.insertSlot(row);
             }
         }
@@ -210,21 +210,19 @@ public class BookingService
         double lng = address.getDoubleValue("lng");
         double lat = address.getDoubleValue("lat");
 
-        Map<String, Object> station = matchStation(vehicleType, lng, lat);
-        Row st = Row.of(station);
-        Long stationId = st.lng("id");
+        Station station = matchStation(vehicleType, lng, lat);
+        Long stationId = station.getId();
 
-        Map<String, Object> slot = req.pickupSlotId == null ? null : stationMapper.findSlot(req.pickupSlotId);
+        QuotaSlot slot = req.pickupSlotId == null ? null : stationMapper.findSlot(req.pickupSlotId);
         if (slot == null)
         {
             throw ApiException.validation("请先选择上门接车时段");
         }
-        Row slotRow = Row.of(slot);
-        if (!"PICKUP".equals(slotRow.str("quota_type")) || !slotRow.bool("enabled"))
+        if (!"PICKUP".equals(slot.getQuotaType()) || !ViBool.of(slot.getEnabled()))
         {
             throw ApiException.unprocessable(Codes.Error.NOT_SERVICEABLE, "所选时段不可预约，请重新选择");
         }
-        if (slotRow.time("starts_at").isBefore(ViTime.now().plusMinutes(30)))
+        if (slot.getStartsAt().isBefore(ViTime.now().plusMinutes(30)))
         {
             throw ApiException.unprocessable(Codes.Error.NOT_SERVICEABLE, "所选时段过近，请选择更晚的时间");
         }
@@ -239,7 +237,7 @@ public class BookingService
         Row ruleRow = Row.of(rule);
         JSONObject ruleConfig = Json.read(ruleRow.json("config_json"));
 
-        double distance = haversine(lng, lat, st.dec("lng").doubleValue(), st.dec("lat").doubleValue());
+        double distance = haversine(lng, lat, station.getLng().doubleValue(), station.getLat().doubleValue());
         int distanceMeters = (int) Math.round(distance);
         long amountFen = calculate(ruleConfig, distanceMeters);
 
@@ -267,7 +265,7 @@ public class BookingService
         row.put("stationId", stationId);
         row.put("vehicleSnapshot", vehicleSnapshot.toJSONString());
         row.put("addressCipher", crypto.encrypt(address.toJSONString()));
-        row.put("pickupSlotId", slotRow.lng("id"));
+        row.put("pickupSlotId", slot.getId());
         row.put("receiveSlotId", null);
         row.put("ruleId", ruleRow.lng("id"));
         row.put("routeSnapshot", route.toJSONString());
@@ -282,34 +280,34 @@ public class BookingService
         view.put("amountFen", amountFen);
         view.put("amountYuan", BigDecimal.valueOf(amountFen).movePointLeft(2).setScale(2, RoundingMode.HALF_UP));
         view.put("stationId", String.valueOf(stationId));
-        view.put("stationName", st.str("name"));
+        view.put("stationName", station.getName());
         view.put("vehicleTypeCode", vehicleType);
         view.put("vehicleTypeName", dictLabel("vehicle_type", vehicleType));
         view.put("distanceMeters", distanceMeters);
         view.put("items", items);
         view.put("ruleId", String.valueOf(ruleRow.lng("id")));
         view.put("expiresAt", ViTime.iso(ViTime.now().plusMinutes(QUOTE_TTL_MINUTES)));
-        view.put("pickupSlotId", String.valueOf(slotRow.lng("id")));
+        view.put("pickupSlotId", String.valueOf(slot.getId()));
         return view;
     }
 
     /** 取最近且支持该车型、在服务半径内的已启用检测点 */
-    private Map<String, Object> matchStation(String vehicleType, double lng, double lat)
+    private Station matchStation(String vehicleType, double lng, double lat)
     {
-        Map<String, Object> best = null;
+        Station best = null;
         double bestDistance = Double.MAX_VALUE;
         boolean typeSupported = false;
-        for (Map<String, Object> s : stationMapper.listEnabled())
+        for (Station s : stationMapper.listEnabled())
         {
-            Row row = Row.of(s);
-            JSONArray supported = JSON.parseArray(row.json("supported_vehicle_codes"));
+            JSONArray supported = JSON.parseArray(s.getSupportedVehicleCodes());
             if (supported == null || !supported.contains(vehicleType))
             {
                 continue;
             }
             typeSupported = true;
-            double d = haversine(lng, lat, row.dec("lng").doubleValue(), row.dec("lat").doubleValue());
-            if (d > row.intg("service_radius_meter", 30000))
+            double d = haversine(lng, lat, s.getLng().doubleValue(), s.getLat().doubleValue());
+            int radius = s.getServiceRadiusMeter() == null ? 30000 : s.getServiceRadiusMeter();
+            if (d > radius)
             {
                 continue;
             }
@@ -410,12 +408,11 @@ public class BookingService
         }
 
         Long stationId = quote.lng("station_id");
-        Map<String, Object> station = stationMapper.findEnabled(stationId);
+        Station station = stationMapper.findEnabled(stationId);
         if (station == null)
         {
             throw ApiException.unprocessable(Codes.Error.NOT_SERVICEABLE, "检测点当前不可预约");
         }
-        Row st = Row.of(station);
 
         JSONObject address = resolveAddress(p.accountId, req.addressId, req.addressDraft);
         if (address == null)
@@ -432,8 +429,14 @@ public class BookingService
 
         LocalDateTime now = ViTime.now();
         LocalDateTime payExpiresAt = now.plusMinutes(config.payExpireMinutes());
-        LocalDateTime pickupStart = Row.of(stationMapper.findSlot(pickupSlotId)).time("starts_at");
-        LocalDateTime pickupEnd = Row.of(stationMapper.findSlot(pickupSlotId)).time("ends_at");
+        // 预占成功后时段必然存在，一次查出起止时间，避免此前两次重复查询
+        QuotaSlot pickupSlot = stationMapper.findSlot(pickupSlotId);
+        if (pickupSlot == null)
+        {
+            throw ApiException.unprocessable(Codes.Error.NOT_SERVICEABLE, "所选时段不存在，请重新选择");
+        }
+        LocalDateTime pickupStart = pickupSlot.getStartsAt();
+        LocalDateTime pickupEnd = pickupSlot.getEndsAt();
         LocalDateTime dispatchAt = pickupStart.minusMinutes(config.dispatchLeadMinutes());
 
         JSONObject vehicleSnapshot = Json.read(quote.json("vehicle_snapshot"));
@@ -455,7 +458,7 @@ public class BookingService
         orderRow.put("ownerAccountId", p.accountId);
         orderRow.put("vehicleId", req.vehicleId);
         orderRow.put("stationId", stationId);
-        orderRow.put("deptId", st.lng("dept_id"));
+        orderRow.put("deptId", station.getDeptId());
         orderRow.put("quoteId", quote.lng("id"));
         orderRow.put("vehicleSnapshot", vehicleSnapshot.toJSONString());
         orderRow.put("pickupStartsAt", pickupStart);
@@ -486,7 +489,7 @@ public class BookingService
         // V6.4：支付方式先为“未选择”，由 O10 支付页首次选择时 CAS 锁定；
         // 收款主体在创建时按订单归属快照固定，之后不允许跟随配置变更。
         payment.put("paymentMethod", "UNSELECTED");
-        payment.put("receiverDeptId", st.lng("dept_id"));
+        payment.put("receiverDeptId", station.getDeptId());
         payment.put("capacityResolution", "HELD");
         payMapper.insertPayment(payment);
 

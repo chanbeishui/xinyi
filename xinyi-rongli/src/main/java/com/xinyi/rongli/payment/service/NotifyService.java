@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
 import com.xinyi.rongli.payment.mapper.PayMapper;
+import com.xinyi.rongli.station.domain.Station;
 import com.xinyi.rongli.station.mapper.StationMapper;
 import com.xinyi.rongli.common.support.ApiException;
 import com.xinyi.rongli.common.support.BizConfig;
@@ -255,14 +256,13 @@ public class NotifyService
         view.put("inviteExpireSeconds", config.inviteExpireSeconds());
         view.put("supportHint", "如遇车辆交接或检测问题，可在订单内发起售后，我们会统一审核取消与退款");
         List<Map<String, Object>> stations = new ArrayList<>();
-        for (Map<String, Object> s : stationMapper.listEnabled())
+        for (Station st : stationMapper.listEnabled())
         {
-            Row st = Row.of(s);
             Map<String, Object> item = new LinkedHashMap<>();
-            item.put("stationId", String.valueOf(st.lng("id")));
-            item.put("name", st.str("name"));
-            item.put("address", st.str("address"));
-            item.put("businessHours", st.str("business_hours"));
+            item.put("stationId", String.valueOf(st.getId()));
+            item.put("name", st.getName());
+            item.put("address", st.getAddress());
+            item.put("businessHours", st.getBusinessHours());
             stations.add(item);
         }
         view.put("stations", stations);

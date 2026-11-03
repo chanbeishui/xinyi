@@ -1,7 +1,10 @@
 package com.xinyi.rongli.station.service;
 
 import com.xinyi.rongli.common.service.EventService;
+import com.xinyi.rongli.common.support.ViBool;
+import com.xinyi.rongli.order.domain.QuotaSlot;
 import com.xinyi.rongli.order.service.BookingService;
+import com.xinyi.rongli.station.domain.Station;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -92,8 +95,8 @@ public class StationService
     public Map<String, Object> stationInfo()
     {
         MiniPrincipal p = requireStationRole();
-        Row station = Row.of(stationMapper.find(p.requireStation()));
-        if (station.isEmpty())
+        Station station = stationMapper.find(p.requireStation());
+        if (station == null)
         {
             throw ApiException.notFound("检测点不存在");
         }
@@ -104,42 +107,61 @@ public class StationService
     public Map<String, Object> updateStationInfo(DriverDtos.StationUpdateReq req)
     {
         MiniPrincipal p = requireStationRole();
-        Row existing = Row.of(stationMapper.find(p.requireStation()));
-        if (existing.isEmpty())
+        Station existing = stationMapper.find(p.requireStation());
+        if (existing == null)
         {
             throw ApiException.notFound("检测点不存在");
         }
-        Map<String, Object> row = new LinkedHashMap<>();
-        row.put("id", existing.lng("id"));
-        row.put("name", req.name == null ? existing.str("name") : req.name);
-        row.put("deptId", existing.lng("dept_id"));
-        row.put("address", req.address == null ? existing.str("address") : req.address);
-        row.put("lng", req.lng == null ? existing.dec("lng") : req.lng);
-        row.put("lat", req.lat == null ? existing.dec("lat") : req.lat);
-        row.put("serviceRadiusMeter", req.serviceRadiusMeter == null ? existing.intg("service_radius_meter")
-                : req.serviceRadiusMeter);
-        row.put("supportedVehicleCodes", req.supportedVehicleCodes == null ? existing.json("supported_vehicle_codes")
-                : req.supportedVehicleCodes);
-        row.put("businessHours", req.businessHours == null ? existing.json("business_hours") : req.businessHours);
-        row.put("enabled", req.enabled == null ? existing.bool("enabled") : req.enabled);
-        stationMapper.update(row);
-        eventService.record("STATION", existing.lng("id"), "STATION_UPDATED", null);
-        return stationView(Row.of(stationMapper.find(existing.lng("id"))));
+        if (req.name != null)
+        {
+            existing.setName(req.name);
+        }
+        if (req.address != null)
+        {
+            existing.setAddress(req.address);
+        }
+        if (req.lng != null)
+        {
+            existing.setLng(req.lng);
+        }
+        if (req.lat != null)
+        {
+            existing.setLat(req.lat);
+        }
+        if (req.serviceRadiusMeter != null)
+        {
+            existing.setServiceRadiusMeter(req.serviceRadiusMeter);
+        }
+        if (req.supportedVehicleCodes != null)
+        {
+            existing.setSupportedVehicleCodes(req.supportedVehicleCodes);
+        }
+        if (req.businessHours != null)
+        {
+            existing.setBusinessHours(req.businessHours);
+        }
+        if (req.enabled != null)
+        {
+            existing.setEnabled(ViBool.toInt(req.enabled));
+        }
+        stationMapper.update(existing);
+        eventService.record("STATION", existing.getId(), "STATION_UPDATED", null);
+        return stationView(stationMapper.find(existing.getId()));
     }
 
-    private Map<String, Object> stationView(Row s)
+    private Map<String, Object> stationView(Station s)
     {
         Map<String, Object> view = new LinkedHashMap<>();
-        view.put("stationId", String.valueOf(s.lng("id")));
-        view.put("name", s.str("name"));
-        view.put("address", s.str("address"));
-        view.put("lng", s.dec("lng"));
-        view.put("lat", s.dec("lat"));
-        view.put("serviceRadiusMeter", s.intg("service_radius_meter"));
-        view.put("supportedVehicleCodes", s.json("supported_vehicle_codes"));
-        view.put("businessHours", s.json("business_hours"));
-        view.put("enabled", s.bool("enabled"));
-        view.put("version", s.lng("version"));
+        view.put("stationId", String.valueOf(s.getId()));
+        view.put("name", s.getName());
+        view.put("address", s.getAddress());
+        view.put("lng", s.getLng());
+        view.put("lat", s.getLat());
+        view.put("serviceRadiusMeter", s.getServiceRadiusMeter());
+        view.put("supportedVehicleCodes", s.getSupportedVehicleCodes());
+        view.put("businessHours", s.getBusinessHours());
+        view.put("enabled", ViBool.of(s.getEnabled()));
+        view.put("version", s.getVersion());
         return view;
     }
 
@@ -577,20 +599,19 @@ public class StationService
         LocalDateTime from = ViTime.now();
         LocalDateTime to = from.plusDays(7);
         List<Map<String, Object>> out = new ArrayList<>();
-        for (Map<String, Object> r : stationMapper.listSlots("STATION_RECEIVE", String.valueOf(stationId), from, to))
+        for (QuotaSlot slot : stationMapper.listSlots("STATION_RECEIVE", String.valueOf(stationId), from, to))
         {
-            Row slot = Row.of(r);
             Map<String, Object> item = new LinkedHashMap<>();
-            item.put("slotId", String.valueOf(slot.lng("id")));
-            item.put("startsAt", ViTime.iso(slot.time("starts_at")));
-            item.put("endsAt", ViTime.iso(slot.time("ends_at")));
-            item.put("label", ViTime.shanghaiText(slot.time("starts_at")));
-            item.put("totalQuota", slot.intg("total_quota"));
-            item.put("heldQuota", slot.intg("held_quota"));
-            item.put("confirmedQuota", slot.intg("confirmed_quota"));
-            item.put("consumedQuota", slot.intg("consumed_quota"));
-            item.put("usedQuota", slot.intg("held_quota") + slot.intg("confirmed_quota") + slot.intg("consumed_quota"));
-            item.put("enabled", slot.bool("enabled"));
+            item.put("slotId", String.valueOf(slot.getId()));
+            item.put("startsAt", ViTime.iso(slot.getStartsAt()));
+            item.put("endsAt", ViTime.iso(slot.getEndsAt()));
+            item.put("label", ViTime.shanghaiText(slot.getStartsAt()));
+            item.put("totalQuota", slot.getTotalQuota());
+            item.put("heldQuota", slot.getHeldQuota());
+            item.put("confirmedQuota", slot.getConfirmedQuota());
+            item.put("consumedQuota", slot.getConsumedQuota());
+            item.put("usedQuota", slot.getHeldQuota() + slot.getConfirmedQuota() + slot.getConsumedQuota());
+            item.put("enabled", ViBool.of(slot.getEnabled()));
             out.add(item);
         }
         Map<String, Object> view = new LinkedHashMap<>();
@@ -613,13 +634,13 @@ public class StationService
                 {
                     continue;
                 }
-                Map<String, Object> row = new LinkedHashMap<>();
-                row.put("quotaType", "STATION_RECEIVE");
-                row.put("scopeKey", String.valueOf(stationId));
-                row.put("stationId", stationId);
-                row.put("startsAt", start);
-                row.put("endsAt", end);
-                row.put("totalQuota", 5);
+                QuotaSlot row = new QuotaSlot();
+                row.setQuotaType("STATION_RECEIVE");
+                row.setScopeKey(String.valueOf(stationId));
+                row.setStationId(stationId);
+                row.setStartsAt(start);
+                row.setEndsAt(end);
+                row.setTotalQuota(5);
                 stationMapper.insertSlot(row);
             }
         }
@@ -635,22 +656,22 @@ public class StationService
     @Transactional
     public Map<String, Object> adminUpdateCapacity(Long slotId, DriverDtos.CapacityChangeReq req)
     {
-        Row slot = Row.of(stationMapper.findSlot(slotId));
-        if (slot.isEmpty())
+        QuotaSlot slot = stationMapper.findSlot(slotId);
+        if (slot == null)
         {
             throw ApiException.notFound("容量时段不存在");
         }
-        return updateCapacityOf(slotId, req, slot.lng("station_id"));
+        return updateCapacityOf(slotId, req, slot.getStationId());
     }
 
     private Map<String, Object> updateCapacityOf(Long slotId, DriverDtos.CapacityChangeReq req, Long stationId)
     {
-        Row slot = Row.of(stationMapper.findSlot(slotId));
-        if (slot.isEmpty() || !Objects.equals(slot.lng("station_id"), stationId))
+        QuotaSlot slot = stationMapper.findSlot(slotId);
+        if (slot == null || !Objects.equals(slot.getStationId(), stationId))
         {
             throw ApiException.notFound("容量时段不存在");
         }
-        if (!"STATION_RECEIVE".equals(slot.str("quota_type")))
+        if (!"STATION_RECEIVE".equals(slot.getQuotaType()))
         {
             throw ApiException.validation("只能维护本站接收容量");
         }
@@ -658,12 +679,12 @@ public class StationService
         {
             throw ApiException.validation("请填写有效容量");
         }
-        int used = slot.intg("held_quota") + slot.intg("confirmed_quota") + slot.intg("consumed_quota");
+        int used = slot.getHeldQuota() + slot.getConfirmedQuota() + slot.getConsumedQuota();
         if (req.totalQuota < used)
         {
             throw ApiException.stateConflict("已占用 " + used + " 个名额，容量不能小于已占用数");
         }
-        boolean enabled = req.enabled == null ? slot.bool("enabled") : req.enabled;
+        boolean enabled = req.enabled == null ? ViBool.of(slot.getEnabled()) : req.enabled;
         if (stationMapper.updateSlotCapacity(slotId, req.totalQuota, enabled) == 0)
         {
             throw ApiException.conflict(Codes.Error.VERSION_CONFLICT, "容量已变化，请刷新后重试");

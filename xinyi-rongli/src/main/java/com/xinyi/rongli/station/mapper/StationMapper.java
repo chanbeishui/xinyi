@@ -1,5 +1,7 @@
 package com.xinyi.rongli.station.mapper;
 
+import com.xinyi.rongli.order.domain.QuotaSlot;
+import com.xinyi.rongli.station.domain.Station;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -20,13 +22,13 @@ public interface StationMapper
             SELECT id, name, address, lng, lat, service_radius_meter, supported_vehicle_codes, business_hours, enabled
             FROM vi_station WHERE enabled = 1 ORDER BY id
             """)
-    List<Map<String, Object>> listEnabled();
+    List<Station> listEnabled();
 
     @Select("SELECT * FROM vi_station WHERE id = #{id}")
-    Map<String, Object> find(@Param("id") Long id);
+    Station find(@Param("id") Long id);
 
     @Select("SELECT * FROM vi_station WHERE id = #{id} AND enabled = 1")
-    Map<String, Object> findEnabled(@Param("id") Long id);
+    Station findEnabled(@Param("id") Long id);
 
     @Select("""
             <script>
@@ -49,7 +51,7 @@ public interface StationMapper
                    #{supportedVehicleCodes}, #{businessHours}, #{enabled}, UTC_TIMESTAMP(3), UTC_TIMESTAMP(3), 0)
             """)
     @Options(useGeneratedKeys = true, keyProperty = "id")
-    int insert(Map<String, Object> row);
+    int insert(Station row);
 
     @Update("""
             UPDATE vi_station SET name = #{name}, dept_id = #{deptId}, address = #{address}, lng = #{lng},
@@ -58,7 +60,7 @@ public interface StationMapper
                    enabled = #{enabled}, updated_at = UTC_TIMESTAMP(3), version = version + 1
             WHERE id = #{id}
             """)
-    int update(Map<String, Object> row);
+    int update(Station row);
 
     // ------------------------------------------------------------------ 员工站点授权
 
@@ -109,17 +111,17 @@ public interface StationMapper
             ORDER BY starts_at LIMIT 500
             </script>
             """)
-    List<Map<String, Object>> listSlots(@Param("quotaType") String quotaType, @Param("scopeKey") String scopeKey,
+    List<QuotaSlot> listSlots(@Param("quotaType") String quotaType, @Param("scopeKey") String scopeKey,
             @Param("from") LocalDateTime from, @Param("to") LocalDateTime to);
 
     @Select("SELECT * FROM vi_quota_slot WHERE id = #{id}")
-    Map<String, Object> findSlot(@Param("id") Long id);
+    QuotaSlot findSlot(@Param("id") Long id);
 
     @Select("""
             SELECT * FROM vi_quota_slot
             WHERE quota_type = #{quotaType} AND scope_key = #{scopeKey} AND starts_at = #{startsAt} AND ends_at = #{endsAt}
             """)
-    Map<String, Object> findSlotExact(@Param("quotaType") String quotaType, @Param("scopeKey") String scopeKey,
+    QuotaSlot findSlotExact(@Param("quotaType") String quotaType, @Param("scopeKey") String scopeKey,
             @Param("startsAt") LocalDateTime startsAt, @Param("endsAt") LocalDateTime endsAt);
 
     @Insert("""
@@ -130,7 +132,7 @@ public interface StationMapper
             ON DUPLICATE KEY UPDATE updated_at = UTC_TIMESTAMP(3)
             """)
     @Options(useGeneratedKeys = true, keyProperty = "id")
-    int insertSlot(Map<String, Object> row);
+    int insertSlot(QuotaSlot row);
 
     /** 原子预占：容量不足时受影响行数为 0 */
     @Update("""

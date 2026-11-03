@@ -1,9 +1,11 @@
 package com.xinyi.rongli.station.service;
 
 import com.xinyi.rongli.common.service.EventService;
+import com.xinyi.rongli.common.support.ViBool;
 import com.xinyi.rongli.dispatch.service.DispatchService;
 import com.xinyi.rongli.ledger.service.LedgerService;
 import com.xinyi.rongli.order.service.BookingService;
+import com.xinyi.rongli.station.domain.Station;
 import com.xinyi.rongli.station.service.StationService;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -81,27 +83,26 @@ public class StationAdminService
         {
             throw ApiException.validation("请填写检测点经纬度");
         }
-        Map<String, Object> row = new LinkedHashMap<>();
-        row.put("name", req.name.trim());
-        row.put("deptId", null);
-        row.put("address", req.address);
-        row.put("lng", req.lng);
-        row.put("lat", req.lat);
-        row.put("serviceRadiusMeter", req.serviceRadiusMeter == null ? 8000 : req.serviceRadiusMeter);
-        row.put("supportedVehicleCodes", req.supportedVehicleCodes == null
+        Station row = new Station();
+        row.setName(req.name.trim());
+        row.setAddress(req.address);
+        row.setLng(req.lng);
+        row.setLat(req.lat);
+        row.setServiceRadiusMeter(req.serviceRadiusMeter == null ? 8000 : req.serviceRadiusMeter);
+        row.setSupportedVehicleCodes(req.supportedVehicleCodes == null
                 ? "[\"SMALL_CAR\"]" : req.supportedVehicleCodes);
-        row.put("businessHours", req.businessHours == null ? "[]" : req.businessHours);
-        row.put("enabled", req.enabled == null || req.enabled);
+        row.setBusinessHours(req.businessHours == null ? "[]" : req.businessHours);
+        row.setEnabled(req.enabled == null || req.enabled ? 1 : 0);
         stationMapper.insert(row);
-        Long id = ((Number) row.get("id")).longValue();
+        Long id = row.getId();
         eventService.record("STATION", id, "STATION_CREATED", null, null, Map.of("name", req.name), null);
         return stationInfo(id);
     }
     @Transactional
     public Map<String, Object> updateStation(Long stationId, com.xinyi.rongli.driver.dto.DriverDtos.StationUpdateReq req)
     {
-        Row existing = Row.of(stationMapper.find(stationId));
-        if (existing.isEmpty())
+        Station existing = stationMapper.find(stationId);
+        if (existing == null)
         {
             throw ApiException.notFound("检测点不存在");
         }
@@ -109,44 +110,65 @@ public class StationAdminService
         {
             throw ApiException.validation("缺少站点信息");
         }
-        Map<String, Object> row = new LinkedHashMap<>();
-        row.put("id", stationId);
-        row.put("name", req.name == null ? existing.str("name") : req.name);
-        row.put("deptId", existing.lng("dept_id"));
-        row.put("address", req.address == null ? existing.str("address") : req.address);
-        row.put("lng", req.lng == null ? existing.dec("lng") : req.lng);
-        row.put("lat", req.lat == null ? existing.dec("lat") : req.lat);
-        row.put("serviceRadiusMeter", req.serviceRadiusMeter == null
-                ? existing.intg("service_radius_meter") : req.serviceRadiusMeter);
-        row.put("supportedVehicleCodes", req.supportedVehicleCodes == null
-                ? existing.json("supported_vehicle_codes") : req.supportedVehicleCodes);
-        row.put("businessHours", req.businessHours == null ? existing.json("business_hours") : req.businessHours);
-        row.put("enabled", req.enabled == null ? existing.bool("enabled") : req.enabled);
-        stationMapper.update(row);
+        // 就地修改实体，事件快照需要先留存改前的值
+        boolean beforeEnabled = ViBool.of(existing.getEnabled());
+        if (req.name != null)
+        {
+            existing.setName(req.name);
+        }
+        if (req.address != null)
+        {
+            existing.setAddress(req.address);
+        }
+        if (req.lng != null)
+        {
+            existing.setLng(req.lng);
+        }
+        if (req.lat != null)
+        {
+            existing.setLat(req.lat);
+        }
+        if (req.serviceRadiusMeter != null)
+        {
+            existing.setServiceRadiusMeter(req.serviceRadiusMeter);
+        }
+        if (req.supportedVehicleCodes != null)
+        {
+            existing.setSupportedVehicleCodes(req.supportedVehicleCodes);
+        }
+        if (req.businessHours != null)
+        {
+            existing.setBusinessHours(req.businessHours);
+        }
+        if (req.enabled != null)
+        {
+            existing.setEnabled(ViBool.toInt(req.enabled));
+        }
+        stationMapper.update(existing);
         eventService.record("STATION", stationId, "STATION_UPDATED", null,
-                Map.of("enabled", String.valueOf(existing.bool("enabled"))),
-                Map.of("enabled", String.valueOf(row.get("enabled"))), null);
+                Map.of("enabled", String.valueOf(beforeEnabled)),
+                Map.of("enabled", String.valueOf(ViBool.of(existing.getEnabled()))), null);
         return stationInfo(stationId);
     }
     public Map<String, Object> stationInfo(Long stationId)
     {
-        Row s = Row.of(stationMapper.find(stationId));
-        if (s.isEmpty())
+        Station s = stationMapper.find(stationId);
+        if (s == null)
         {
             throw ApiException.notFound("检测点不存在");
         }
         Map<String, Object> view = new LinkedHashMap<>();
         view.put("stationId", String.valueOf(stationId));
-        view.put("name", s.str("name"));
-        view.put("deptId", s.lng("dept_id"));
-        view.put("address", s.str("address"));
-        view.put("lng", s.dec("lng"));
-        view.put("lat", s.dec("lat"));
-        view.put("serviceRadiusMeter", s.intg("service_radius_meter"));
-        view.put("supportedVehicleCodes", s.json("supported_vehicle_codes"));
-        view.put("businessHours", s.json("business_hours"));
-        view.put("enabled", s.bool("enabled"));
-        view.put("version", s.lng("version"));
+        view.put("name", s.getName());
+        view.put("deptId", s.getDeptId());
+        view.put("address", s.getAddress());
+        view.put("lng", s.getLng());
+        view.put("lat", s.getLat());
+        view.put("serviceRadiusMeter", s.getServiceRadiusMeter());
+        view.put("supportedVehicleCodes", s.getSupportedVehicleCodes());
+        view.put("businessHours", s.getBusinessHours());
+        view.put("enabled", ViBool.of(s.getEnabled()));
+        view.put("version", s.getVersion());
         return view;
     }
     public Map<String, Object> stationGrants(int pageNum, int pageSize)
@@ -191,8 +213,8 @@ public class StationAdminService
         {
             throw ApiException.notFound("员工不存在");
         }
-        Row station = Row.of(stationMapper.find(stationId));
-        if (station.isEmpty())
+        Station station = stationMapper.find(stationId);
+        if (station == null)
         {
             throw ApiException.notFound("检测点不存在");
         }
