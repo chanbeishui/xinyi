@@ -32,11 +32,15 @@ import com.xinyi.system.service.ISysDictTypeService;
 import com.xinyi.rongli.common.support.MiniAuthInterceptor;
 
 /**
- * common 域接口。由原跨域控制器按端点路径拆分而来，URL 保持不变。
+ * 小程序公共字典与站点列表。
+ *
+ * <p>类名加 Vi 前缀是为了与 RuoYi 自带的 com.xinyi.web.controller.common.CommonController
+ * 区分：两者简单类名相同会导致默认 bean 名都是 commonController，组件扫描直接抛
+ * ConflictingBeanDefinitionException。URL 前缀仍是 /api/common，不受影响。</p>
  */
 @RestController
 @RequestMapping("/api/common")
-public class CommonController
+public class ViCommonController
 {
     @Autowired
     private BookingService bookingService;

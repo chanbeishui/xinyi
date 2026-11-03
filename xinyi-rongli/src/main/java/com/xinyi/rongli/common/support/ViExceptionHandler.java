@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
  * 依据状态码触发令牌续期。这里用最高优先级把荣利控制器包内的异常收回来。</p>
  */
 @Order(Ordered.HIGHEST_PRECEDENCE)
-@RestControllerAdvice(basePackages = "com.xinyi.rongli.controller")
+@RestControllerAdvice(basePackages = "com.xinyi.rongli")
 public class ViExceptionHandler
 {
     private static final Logger log = LoggerFactory.getLogger(ViExceptionHandler.class);
