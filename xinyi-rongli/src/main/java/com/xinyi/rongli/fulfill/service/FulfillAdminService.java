@@ -19,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
 import com.xinyi.rongli.auth.mapper.AccountMapper;
-import com.xinyi.rongli.admin.mapper.AdminMapper;
+
 import com.xinyi.rongli.aftersale.mapper.AfterSaleMapper;
 import com.xinyi.rongli.dispatch.mapper.DispatchMapper;
 import com.xinyi.rongli.ledger.mapper.LedgerMapper;
@@ -36,6 +36,7 @@ import com.xinyi.rongli.common.support.Crypto;
 import com.xinyi.rongli.common.support.Json;
 import com.xinyi.rongli.common.support.Row;
 import com.xinyi.rongli.common.support.ViTime;
+import com.xinyi.rongli.fulfill.mapper.AdminFulfillMapper;
 
 /**
  * 管理端 fulfill 域服务。由原 AdminService 按功能域拆分而来，方法体与 SQL 保持原样。
@@ -44,7 +45,7 @@ import com.xinyi.rongli.common.support.ViTime;
 public class FulfillAdminService
 {
     @Autowired
-    private AdminMapper adminMapper;
+    private AdminFulfillMapper adminFulfillMapper;
     @Autowired
     private OrderMapper orderMapper;
     @Autowired
@@ -112,21 +113,21 @@ public class FulfillAdminService
         int limit = Math.min(Math.max(pageSize, 1), 100);
         int offset = (Math.max(pageNum, 1) - 1) * limit;
         List<Map<String, Object>> rows = new ArrayList<>();
-        for (Map<String, Object> c : adminMapper.listCorrections(status, offset, limit))
+        for (Map<String, Object> c : adminFulfillMapper.listCorrections(status, offset, limit))
         {
             rows.add(correctionView(Row.of(c)));
         }
         Map<String, Object> view = new LinkedHashMap<>();
         view.put("pageNum", pageNum);
         view.put("pageSize", limit);
-        view.put("total", adminMapper.countCorrections(status));
+        view.put("total", adminFulfillMapper.countCorrections(status));
         view.put("rows", rows);
         return view;
     }
     @Transactional
     public Map<String, Object> auditCorrection(Long correctionId, boolean approve, String opinion, Long userId)
     {
-        Row c = Row.of(adminMapper.findCorrection(correctionId));
+        Row c = Row.of(adminFulfillMapper.findCorrection(correctionId));
         if (c.isEmpty())
         {
             throw ApiException.notFound("更正申请不存在");
@@ -140,13 +141,13 @@ public class FulfillAdminService
             throw ApiException.validation("驳回必须写明理由");
         }
         String status = approve ? "APPROVED" : "REJECTED";
-        if (adminMapper.auditCorrection(correctionId, status, userId, opinion) == 0)
+        if (adminFulfillMapper.auditCorrection(correctionId, status, userId, opinion) == 0)
         {
             throw ApiException.stateConflict("更正申请状态已变化，请刷新");
         }
         eventService.record("ORDER", c.lng("order_id"), "RESULT_CORRECTION_" + status, c.lng("order_id"), null,
                 Map.of("correctionId", String.valueOf(correctionId)), opinion);
-        return correctionView(Row.of(adminMapper.findCorrection(correctionId)));
+        return correctionView(Row.of(adminFulfillMapper.findCorrection(correctionId)));
     }
     private Map<String, Object> correctionView(Row c)
     {

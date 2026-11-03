@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.alibaba.fastjson2.JSONObject;
 import com.xinyi.rongli.driver.dto.DriverDtos;
 import com.xinyi.rongli.auth.mapper.AccountMapper;
-import com.xinyi.rongli.admin.mapper.AdminMapper;
+
 import com.xinyi.rongli.dispatch.mapper.DispatchMapper;
 import com.xinyi.rongli.common.support.ApiException;
 import com.xinyi.rongli.common.support.BizConfig;
@@ -24,6 +24,7 @@ import com.xinyi.rongli.common.support.MiniContext;
 import com.xinyi.rongli.common.support.MiniPrincipal;
 import com.xinyi.rongli.common.support.Row;
 import com.xinyi.rongli.common.support.ViTime;
+import com.xinyi.rongli.driver.mapper.AdminDriverMapper;
 
 /**
  * 代驾资格、听单状态、位置打点与实名活体核验。
@@ -35,10 +36,9 @@ import com.xinyi.rongli.common.support.ViTime;
 public class DriverQualificationService
 {
     @Autowired
-    private AccountMapper accountMapper;
-
+    private AdminDriverMapper adminDriverMapper;
     @Autowired
-    private AdminMapper adminMapper;
+    private AccountMapper accountMapper;
 
     @Autowired
     private DispatchMapper dispatchMapper;
@@ -294,7 +294,7 @@ public class DriverQualificationService
         row.put("launchPayloadCipher", crypto.encrypt(JSONObject.of("verificationId", verificationId).toJSONString()));
         row.put("consentVersion", consentVersion == null ? "v1" : consentVersion);
         row.put("expiresAt", ViTime.now().plusMinutes(15));
-        adminMapper.insertFaceSession(row);
+        adminDriverMapper.insertFaceSession(row);
         eventService.record("DRIVER", driver.lng("id"), "FACE_SESSION_CREATED", null,
                 Map.of("verificationId", verificationId), null, "创建实名活体核验会话");
         Map<String, Object> view = new LinkedHashMap<>();
@@ -311,7 +311,7 @@ public class DriverQualificationService
     @Transactional
     public Map<String, Object> completeFaceSessionMock(String verificationId)
     {
-        Row session = Row.of(adminMapper.findFaceSession(verificationId));
+        Row session = Row.of(adminDriverMapper.findFaceSession(verificationId));
         if (session.isEmpty())
         {
             throw ApiException.notFound("核验会话不存在");
@@ -325,16 +325,16 @@ public class DriverQualificationService
         {
             throw ApiException.stateConflict("核验会话已过期，请重新发起");
         }
-        adminMapper.updateFaceResult(session.lng("id"), true, "PASSED", null);
+        adminDriverMapper.updateFaceResult(session.lng("id"), true, "PASSED", null);
         Row driver = requireDriver();
         eventService.record("DRIVER", driver.lng("id"), "FACE_VERIFIED", null,
                 Map.of("verificationId", verificationId), null, "联调环境模拟核验通过");
-        return faceSessionView(Row.of(adminMapper.findFaceSession(verificationId)));
+        return faceSessionView(Row.of(adminDriverMapper.findFaceSession(verificationId)));
     }
 
     public Map<String, Object> faceSession(String verificationId)
     {
-        Row session = Row.of(adminMapper.findFaceSession(verificationId));
+        Row session = Row.of(adminDriverMapper.findFaceSession(verificationId));
         if (session.isEmpty())
         {
             throw ApiException.notFound("核验会话不存在");

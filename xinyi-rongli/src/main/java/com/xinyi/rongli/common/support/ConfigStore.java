@@ -7,9 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import com.xinyi.common.constant.CacheConstants;
 import com.xinyi.common.core.redis.RedisCache;
-import com.xinyi.rongli.admin.mapper.AdminMapper;
+
 import com.xinyi.system.domain.SysConfig;
 import com.xinyi.system.service.ISysConfigService;
+import com.xinyi.rongli.admin.mapper.AdminOpsMapper;
 
 /**
  * 配置写入器：管理端保存配置后立即可被业务读到。
@@ -21,10 +22,9 @@ import com.xinyi.system.service.ISysConfigService;
 @Component
 public class ConfigStore
 {
-    private static final Logger log = LoggerFactory.getLogger(ConfigStore.class);
-
     @Autowired
-    private AdminMapper adminMapper;
+    private AdminOpsMapper adminOpsMapper;
+    private static final Logger log = LoggerFactory.getLogger(ConfigStore.class);
 
     @Autowired
     private ISysConfigService configService;
@@ -39,7 +39,7 @@ public class ConfigStore
     public void put(String key, String value)
     {
         String text = value == null ? "" : value;
-        var existing = adminMapper.findConfigByKey(key);
+        var existing = adminOpsMapper.findConfigByKey(key);
         if (existing == null)
         {
             SysConfig entity = new SysConfig();
@@ -56,7 +56,7 @@ public class ConfigStore
         {
             return;
         }
-        adminMapper.updateConfigValue(key, text);
+        adminOpsMapper.updateConfigValue(key, text);
         evict(key);
     }
 

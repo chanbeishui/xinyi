@@ -8,7 +8,7 @@ import java.util.Objects;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.xinyi.rongli.admin.mapper.AdminMapper;
+
 import com.xinyi.rongli.common.mapper.MiscMapper;
 import com.xinyi.rongli.common.support.ApiException;
 import com.xinyi.rongli.common.support.Crypto;
@@ -16,6 +16,7 @@ import com.xinyi.rongli.common.support.MiniContext;
 import com.xinyi.rongli.common.support.MiniPrincipal;
 import com.xinyi.rongli.common.support.Row;
 import com.xinyi.rongli.common.support.ViTime;
+import com.xinyi.rongli.admin.mapper.GovernanceMapper;
 
 /**
  * 站内消息与隐私请求。
@@ -24,10 +25,9 @@ import com.xinyi.rongli.common.support.ViTime;
 public class MessageService
 {
     @Autowired
-    private MiscMapper miscMapper;
-
+    private GovernanceMapper governanceMapper;
     @Autowired
-    private AdminMapper adminMapper;
+    private MiscMapper miscMapper;
 
     @Autowired
     private Crypto crypto;
@@ -102,9 +102,9 @@ public class MessageService
                 "channel", "MINI"))));
         row.put("reason", reason.length() > 500 ? reason.substring(0, 500) : reason);
         row.put("expiresAt", ViTime.now().plusDays(30));
-        adminMapper.insertGovernance(row);
+        governanceMapper.insertGovernance(row);
         Long caseId = ((Number) row.get("id")).longValue();
-        return privacyView(Row.of(adminMapper.findGovernance(caseId)), false);
+        return privacyView(Row.of(governanceMapper.findGovernance(caseId)), false);
     }
 
     public Map<String, Object> myPrivacyCases(int pageNum, int pageSize)
@@ -113,7 +113,7 @@ public class MessageService
         int limit = Math.min(Math.max(pageSize, 1), 100);
         int offset = (Math.max(pageNum, 1) - 1) * limit;
         List<Map<String, Object>> rows = new ArrayList<>();
-        for (Map<String, Object> c : adminMapper.listGovernanceOfAccount("PRIVACY", p.accountId, offset, limit))
+        for (Map<String, Object> c : governanceMapper.listGovernanceOfAccount("PRIVACY", p.accountId, offset, limit))
         {
             rows.add(privacyView(Row.of(c), false));
         }
@@ -129,14 +129,14 @@ public class MessageService
         int limit = Math.min(Math.max(pageSize, 1), 100);
         int offset = (Math.max(pageNum, 1) - 1) * limit;
         List<Map<String, Object>> rows = new ArrayList<>();
-        for (Map<String, Object> c : adminMapper.listGovernance("PRIVACY", status, null, offset, limit))
+        for (Map<String, Object> c : governanceMapper.listGovernance("PRIVACY", status, null, offset, limit))
         {
             rows.add(privacyView(Row.of(c), true));
         }
         Map<String, Object> result = new LinkedHashMap<>();
         result.put("pageNum", pageNum);
         result.put("pageSize", limit);
-        result.put("total", adminMapper.countGovernance("PRIVACY", status, null));
+        result.put("total", governanceMapper.countGovernance("PRIVACY", status, null));
         result.put("rows", rows);
         return result;
     }
@@ -144,7 +144,7 @@ public class MessageService
     @Transactional
     public Map<String, Object> resolvePrivacyCase(Long caseId, String status, String conclusion, Long userId)
     {
-        Row c = Row.of(adminMapper.findGovernance(caseId));
+        Row c = Row.of(governanceMapper.findGovernance(caseId));
         if (c.isEmpty() || !"PRIVACY".equals(c.str("case_type")))
         {
             throw ApiException.notFound("隐私请求不存在");
@@ -154,8 +154,8 @@ public class MessageService
         {
             throw ApiException.validation("处理结论只能是 PROCESSING / COMPLETED / REJECTED");
         }
-        adminMapper.updateGovernance(caseId, target, userId, conclusion, null, null);
-        return privacyView(Row.of(adminMapper.findGovernance(caseId)), true);
+        governanceMapper.updateGovernance(caseId, target, userId, conclusion, null, null);
+        return privacyView(Row.of(governanceMapper.findGovernance(caseId)), true);
     }
 
     private Map<String, Object> privacyView(Row c, boolean admin)
@@ -191,7 +191,7 @@ public class MessageService
     /** 隐私请求详情（本人或管理端） */
     public Map<String, Object> privacyDetail(Long caseId, boolean admin)
     {
-        Row c = Row.of(adminMapper.findGovernance(caseId));
+        Row c = Row.of(governanceMapper.findGovernance(caseId));
         if (c.isEmpty() || !"PRIVACY".equals(c.str("case_type")))
         {
             throw ApiException.notFound("隐私请求不存在");

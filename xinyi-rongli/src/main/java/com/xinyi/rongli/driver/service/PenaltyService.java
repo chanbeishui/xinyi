@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.xinyi.rongli.auth.mapper.AccountMapper;
-import com.xinyi.rongli.admin.mapper.AdminMapper;
+
 import com.xinyi.rongli.common.mapper.MiscMapper;
 import com.xinyi.rongli.common.support.ApiException;
 import com.xinyi.rongli.common.support.Codes;
@@ -18,6 +18,7 @@ import com.xinyi.rongli.common.support.MiniPrincipal;
 import com.xinyi.rongli.common.support.Row;
 import com.xinyi.rongli.common.support.ViTime;
 import com.xinyi.rongli.common.service.EventService;
+import com.xinyi.rongli.driver.mapper.AdminDriverMapper;
 
 /**
  * 取消处罚与停单申诉。
@@ -29,7 +30,7 @@ import com.xinyi.rongli.common.service.EventService;
 public class PenaltyService
 {
     @Autowired
-    private AdminMapper adminMapper;
+    private AdminDriverMapper adminDriverMapper;
 
     @Autowired
     private MiscMapper miscMapper;
@@ -48,14 +49,14 @@ public class PenaltyService
         int limit = Math.min(Math.max(pageSize, 1), 50);
         int offset = (Math.max(pageNum, 1) - 1) * limit;
         List<Map<String, Object>> rows = new ArrayList<>();
-        for (Map<String, Object> p : adminMapper.listPenalties(driver.lng("id"), null, offset, limit))
+        for (Map<String, Object> p : adminDriverMapper.listPenalties(driver.lng("id"), null, offset, limit))
         {
             rows.add(penaltyView(Row.of(p), false));
         }
         Map<String, Object> result = new LinkedHashMap<>();
         result.put("pageNum", pageNum);
         result.put("pageSize", limit);
-        result.put("total", adminMapper.countPenalties(driver.lng("id"), null));
+        result.put("total", adminDriverMapper.countPenalties(driver.lng("id"), null));
         result.put("rows", rows);
         return result;
     }
@@ -70,7 +71,7 @@ public class PenaltyService
         }
         Map<String, Object> view = penaltyView(p, false);
         List<Map<String, Object>> appeals = new ArrayList<>();
-        for (Map<String, Object> a : adminMapper.listAppeals(driver.lng("id"), null, 0, 50))
+        for (Map<String, Object> a : adminDriverMapper.listAppeals(driver.lng("id"), null, 0, 50))
         {
             Row ap = Row.of(a);
             if (Objects.equals(ap.lng("penalty_id"), penaltyId))
@@ -105,7 +106,7 @@ public class PenaltyService
         {
             throw ApiException.validation("申诉理由不能超过 1000 字");
         }
-        for (Map<String, Object> a : adminMapper.listAppeals(driver.lng("id"), "SUBMITTED", 0, 50))
+        for (Map<String, Object> a : adminDriverMapper.listAppeals(driver.lng("id"), "SUBMITTED", 0, 50))
         {
             if (Objects.equals(Row.of(a).lng("penalty_id"), penaltyId))
             {
@@ -121,7 +122,7 @@ public class PenaltyService
         Long appealId = ((Number) row.get("id")).longValue();
         eventService.record("PENALTY", penaltyId, "APPEAL_SUBMITTED", null, null,
                 Map.of("appealId", String.valueOf(appealId)), reason);
-        return appealView(Row.of(adminMapper.findAppealDetail(appealId)), false);
+        return appealView(Row.of(adminDriverMapper.findAppealDetail(appealId)), false);
     }
 
     public Map<String, Object> myAppeals(int pageNum, int pageSize)
@@ -130,14 +131,14 @@ public class PenaltyService
         int limit = Math.min(Math.max(pageSize, 1), 50);
         int offset = (Math.max(pageNum, 1) - 1) * limit;
         List<Map<String, Object>> rows = new ArrayList<>();
-        for (Map<String, Object> a : adminMapper.listAppeals(driver.lng("id"), null, offset, limit))
+        for (Map<String, Object> a : adminDriverMapper.listAppeals(driver.lng("id"), null, offset, limit))
         {
             rows.add(appealView(Row.of(a), false));
         }
         Map<String, Object> result = new LinkedHashMap<>();
         result.put("pageNum", pageNum);
         result.put("pageSize", limit);
-        result.put("total", adminMapper.countAppeals(driver.lng("id"), null));
+        result.put("total", adminDriverMapper.countAppeals(driver.lng("id"), null));
         result.put("rows", rows);
         return result;
     }
@@ -145,7 +146,7 @@ public class PenaltyService
     public Map<String, Object> myAppeal(Long appealId)
     {
         Row driver = requireDriver();
-        Row ap = Row.of(adminMapper.findAppealDetail(appealId));
+        Row ap = Row.of(adminDriverMapper.findAppealDetail(appealId));
         if (ap.isEmpty() || !Objects.equals(driver.lng("id"), ap.lng("driver_id")))
         {
             throw ApiException.notFound("申诉记录不存在");
@@ -160,14 +161,14 @@ public class PenaltyService
         int limit = Math.min(Math.max(pageSize, 1), 100);
         int offset = (Math.max(pageNum, 1) - 1) * limit;
         List<Map<String, Object>> rows = new ArrayList<>();
-        for (Map<String, Object> p : adminMapper.listPenalties(driverId, status, offset, limit))
+        for (Map<String, Object> p : adminDriverMapper.listPenalties(driverId, status, offset, limit))
         {
             rows.add(penaltyView(Row.of(p), true));
         }
         Map<String, Object> result = new LinkedHashMap<>();
         result.put("pageNum", pageNum);
         result.put("pageSize", limit);
-        result.put("total", adminMapper.countPenalties(driverId, status));
+        result.put("total", adminDriverMapper.countPenalties(driverId, status));
         result.put("rows", rows);
         return result;
     }
@@ -181,7 +182,7 @@ public class PenaltyService
         }
         Map<String, Object> view = penaltyView(p, true);
         List<Map<String, Object>> appeals = new ArrayList<>();
-        for (Map<String, Object> a : adminMapper.listAppeals(p.lng("driver_id"), null, 0, 50))
+        for (Map<String, Object> a : adminDriverMapper.listAppeals(p.lng("driver_id"), null, 0, 50))
         {
             Row ap = Row.of(a);
             if (Objects.equals(ap.lng("penalty_id"), penaltyId))
@@ -198,21 +199,21 @@ public class PenaltyService
         int limit = Math.min(Math.max(pageSize, 1), 100);
         int offset = (Math.max(pageNum, 1) - 1) * limit;
         List<Map<String, Object>> rows = new ArrayList<>();
-        for (Map<String, Object> a : adminMapper.listAppeals(driverId, status, offset, limit))
+        for (Map<String, Object> a : adminDriverMapper.listAppeals(driverId, status, offset, limit))
         {
             rows.add(appealView(Row.of(a), true));
         }
         Map<String, Object> result = new LinkedHashMap<>();
         result.put("pageNum", pageNum);
         result.put("pageSize", limit);
-        result.put("total", adminMapper.countAppeals(driverId, status));
+        result.put("total", adminDriverMapper.countAppeals(driverId, status));
         result.put("rows", rows);
         return result;
     }
 
     public Map<String, Object> adminAppeal(Long appealId)
     {
-        Row ap = Row.of(adminMapper.findAppealDetail(appealId));
+        Row ap = Row.of(adminDriverMapper.findAppealDetail(appealId));
         if (ap.isEmpty())
         {
             throw ApiException.notFound("申诉记录不存在");
@@ -226,7 +227,7 @@ public class PenaltyService
     @Transactional
     public Map<String, Object> auditAppeal(Long appealId, boolean approve, String opinion, Long reviewerUserId)
     {
-        Row ap = Row.of(adminMapper.findAppealDetail(appealId));
+        Row ap = Row.of(adminDriverMapper.findAppealDetail(appealId));
         if (ap.isEmpty())
         {
             throw ApiException.notFound("申诉记录不存在");
@@ -253,7 +254,7 @@ public class PenaltyService
         eventService.notify(Row.of(accountMapper.findDriverById(ap.lng("driver_id"))).lng("account_id"),
                 Codes.Role.DRIVER, null, "APPEAL_" + status,
                 "您的停单申诉" + (approve ? "已通过，处罚已撤销" : "未通过") + "：" + opinion);
-        return appealView(Row.of(adminMapper.findAppealDetail(appealId)), true);
+        return appealView(Row.of(adminDriverMapper.findAppealDetail(appealId)), true);
     }
 
     // ------------------------------------------------------------------ 视图与工具

@@ -15,7 +15,7 @@ import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
 import com.xinyi.rongli.driver.dto.DriverDtos;
 import com.xinyi.rongli.auth.mapper.AccountMapper;
-import com.xinyi.rongli.admin.mapper.AdminMapper;
+
 import com.xinyi.rongli.common.mapper.MiscMapper;
 import com.xinyi.rongli.common.support.ApiException;
 import com.xinyi.rongli.common.support.BizConfig;
@@ -26,6 +26,7 @@ import com.xinyi.rongli.common.support.MiniPrincipal;
 import com.xinyi.rongli.common.support.Row;
 import com.xinyi.rongli.common.support.ViTime;
 import com.xinyi.rongli.common.service.EventService;
+import com.xinyi.rongli.driver.mapper.AdminDriverMapper;
 
 /**
  * 代驾资格培训与考试。
@@ -36,10 +37,9 @@ import com.xinyi.rongli.common.service.EventService;
 @Service
 public class TrainingService
 {
-    private static final int SESSION_MINUTES = 60;
-
     @Autowired
-    private AdminMapper adminMapper;
+    private AdminDriverMapper adminDriverMapper;
+    private static final int SESSION_MINUTES = 60;
 
     @Autowired
     private MiscMapper miscMapper;
@@ -136,12 +136,12 @@ public class TrainingService
 
         String sessionId = crypto.randomToken().substring(0, 32);
         // 同一进度只保留一个有效会话，避免多端并行刷时长
-        adminMapper.expirePlaybacks(progress.lng("id"));
+        adminDriverMapper.expirePlaybacks(progress.lng("id"));
         Map<String, Object> playback = new LinkedHashMap<>();
         playback.put("progressId", progress.lng("id"));
         playback.put("sessionId", sessionId);
         playback.put("expiresAt", ViTime.now().plusMinutes(SESSION_MINUTES));
-        adminMapper.insertPlayback(playback);
+        adminDriverMapper.insertPlayback(playback);
 
         Map<String, Object> view = new LinkedHashMap<>();
         view.put("sessionId", sessionId);
@@ -180,7 +180,7 @@ public class TrainingService
         {
             throw ApiException.stateConflict("请先开始学习会话");
         }
-        Row playback = Row.of(adminMapper.findPlaybackBySession(progress.lng("id"), req.sessionId.trim()));
+        Row playback = Row.of(adminDriverMapper.findPlaybackBySession(progress.lng("id"), req.sessionId.trim()));
         if (playback.isEmpty())
         {
             throw ApiException.stateConflict("学习会话无效，请重新开始学习");
@@ -239,7 +239,7 @@ public class TrainingService
         }
         position = Math.max(position, lastPosition);
 
-        adminMapper.touchPlayback(playback.lng("id"), sequence, position);
+        adminDriverMapper.touchPlayback(playback.lng("id"), sequence, position);
         int required = course.intg("required_duration_seconds", 0);
         miscMapper.addProgress(progress.lng("id"), allowance, position, required);
         Row after = Row.of(miscMapper.findProgress(applicationId, trainingId));
@@ -347,7 +347,7 @@ public class TrainingService
         }
         if (attempt.time("expires_at") != null && attempt.time("expires_at").isBefore(ViTime.now()))
         {
-            adminMapper.closeAttempt(req.attemptId, "EXPIRED", null, 0);
+            adminDriverMapper.closeAttempt(req.attemptId, "EXPIRED", null, 0);
             throw ApiException.stateConflict("本次考试已超时，请重新开考");
         }
         Long trainingId = attempt.lng("training_id");
@@ -387,7 +387,7 @@ public class TrainingService
         int score = questions.isEmpty() ? 0 : Math.round(100f * correct / questions.size());
         int passScore = course.intg("pass_score", 80);
         String status = score >= passScore ? "PASSED" : "FAILED";
-        if (adminMapper.closeAttempt(req.attemptId, status, JSON.toJSONString(answers), score) == 0)
+        if (adminDriverMapper.closeAttempt(req.attemptId, status, JSON.toJSONString(answers), score) == 0)
         {
             throw ApiException.stateConflict("该次考试已提交，请刷新");
         }
@@ -396,7 +396,7 @@ public class TrainingService
             Row progress = Row.of(miscMapper.findProgress(attempt.lng("application_id"), trainingId));
             if (!progress.isEmpty())
             {
-                adminMapper.setProgress(progress.lng("id"), progress.intg("verified_duration_seconds", 0),
+                adminDriverMapper.setProgress(progress.lng("id"), progress.intg("verified_duration_seconds", 0),
                         progress.intg("last_position_seconds", 0), "PASSED");
             }
             eventService.record("TRAINING", trainingId, "EXAM_PASSED", null, null,
@@ -460,14 +460,14 @@ public class TrainingService
         int limit = Math.min(Math.max(pageSize, 1), 100);
         int offset = (Math.max(pageNum, 1) - 1) * limit;
         List<Map<String, Object>> rows = new ArrayList<>();
-        for (Map<String, Object> c : adminMapper.listCourses(status, offset, limit))
+        for (Map<String, Object> c : adminDriverMapper.listCourses(status, offset, limit))
         {
             rows.add(courseView(Row.of(c)));
         }
         Map<String, Object> result = new LinkedHashMap<>();
         result.put("pageNum", pageNum);
         result.put("pageSize", limit);
-        result.put("total", adminMapper.countCourses(status));
+        result.put("total", adminDriverMapper.countCourses(status));
         result.put("rows", rows);
         return result;
     }
@@ -493,14 +493,14 @@ public class TrainingService
                     ? "COURSE_" + crypto.randomDigits(6) : req.courseKey.trim().toUpperCase();
             Map<String, Object> row = new LinkedHashMap<>();
             row.put("courseKey", key);
-            row.put("courseVersion", adminMapper.maxCourseVersion(key) + 1);
+            row.put("courseVersion", adminDriverMapper.maxCourseVersion(key) + 1);
             row.put("title", req.title.trim());
             row.put("description", req.description);
             row.put("mediaFileId", req.mediaFileId);
             row.put("requiredDurationSeconds", req.requiredDurationSeconds);
             row.put("passScore", req.passScore == null ? 80 : req.passScore);
             row.put("attemptTimeLimitSeconds", req.attemptTimeLimitSeconds == null ? 1800 : req.attemptTimeLimitSeconds);
-            adminMapper.insertCourse(row);
+            adminDriverMapper.insertCourse(row);
             Long id = ((Number) row.get("id")).longValue();
             if (req.questions != null)
             {
@@ -526,7 +526,7 @@ public class TrainingService
         row.put("passScore", req.passScore == null ? existing.intg("pass_score", 80) : req.passScore);
         row.put("attemptTimeLimitSeconds", req.attemptTimeLimitSeconds == null
                 ? existing.intg("attempt_time_limit_seconds", 1800) : req.attemptTimeLimitSeconds);
-        adminMapper.updateCourse(row);
+        adminDriverMapper.updateCourse(row);
         if (req.questions != null)
         {
             saveQuestions(trainingId, req.questions);
@@ -537,7 +537,7 @@ public class TrainingService
     private void saveQuestions(Long trainingId, List<DriverDtos.TrainingQuestionReq> questions)
     {
         // 草稿课程按提交内容整体替换题库：既支持删题，也避免重复保存撞唯一键
-        adminMapper.deleteQuestions(trainingId);
+        adminDriverMapper.deleteQuestions(trainingId);
         int sort = 1;
         for (DriverDtos.TrainingQuestionReq q : questions)
         {
@@ -554,7 +554,7 @@ public class TrainingService
             row.put("optionsJson", normalizeOptions(q.options));
             row.put("correctOptionCodes", q.correctOptionCodes.trim().toUpperCase());
             row.put("sortNo", q.sortNo == null ? sort : q.sortNo);
-            adminMapper.insertQuestion(row);
+            adminDriverMapper.insertQuestion(row);
             sort++;
         }
     }
@@ -601,7 +601,7 @@ public class TrainingService
         {
             throw ApiException.stateConflict("课程尚未配置考试题目，不能发布");
         }
-        adminMapper.publishCourse(trainingId, userId);
+        adminDriverMapper.publishCourse(trainingId, userId);
         eventService.record("TRAINING", trainingId, "COURSE_PUBLISHED", null, null,
                 Map.of("courseKey", course.str("course_key"),
                         "version", String.valueOf(course.intg("course_version"))), null);

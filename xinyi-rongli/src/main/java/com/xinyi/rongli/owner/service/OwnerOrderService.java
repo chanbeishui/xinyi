@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.alibaba.fastjson2.JSONObject;
 import com.xinyi.rongli.common.dto.MiniDtos;
 import com.xinyi.rongli.auth.mapper.AccountMapper;
-import com.xinyi.rongli.admin.mapper.AdminMapper;
+
 import com.xinyi.rongli.dispatch.mapper.DispatchMapper;
 import com.xinyi.rongli.fulfill.mapper.FulfillMapper;
 import com.xinyi.rongli.common.mapper.MiscMapper;
@@ -26,6 +26,8 @@ import com.xinyi.rongli.common.support.Row;
 import com.xinyi.rongli.common.support.ViTime;
 import com.xinyi.rongli.common.service.EventService;
 import com.xinyi.rongli.order.service.BookingService;
+import com.xinyi.rongli.aftersale.mapper.AdminAfterSaleMapper;
+import com.xinyi.rongli.fulfill.mapper.AdminFulfillMapper;
 
 /**
  * 车主侧订单延伸能力：时间轴、可信支付结果、结构化检测结果、服务争议与评价。
@@ -35,6 +37,11 @@ import com.xinyi.rongli.order.service.BookingService;
 @Service
 public class OwnerOrderService
 {
+    @Autowired
+    private AdminAfterSaleMapper adminAfterSaleMapper;
+
+    @Autowired
+    private AdminFulfillMapper adminFulfillMapper;
     @Autowired
     private OrderMapper orderMapper;
 
@@ -46,9 +53,6 @@ public class OwnerOrderService
 
     @Autowired
     private MiscMapper miscMapper;
-
-    @Autowired
-    private AdminMapper adminMapper;
 
     @Autowired
     private AccountMapper accountMapper;
@@ -285,7 +289,7 @@ public class OwnerOrderService
         view.put("items", items);
         view.put("inspectedAt", ViTime.iso(current.time("inspected_at")));
         view.put("stationName", order.str("station_name"));
-        boolean corrected = !adminMapper.listCorrectionsOfOrder(order.lng("id")).isEmpty();
+        boolean corrected = !adminFulfillMapper.listCorrectionsOfOrder(order.lng("id")).isEmpty();
         view.put("hasCorrectionRequest", corrected);
         view.put("hint", "如对检测结论有异议，可在订单内发起服务争议");
         return view;
@@ -329,7 +333,7 @@ public class OwnerOrderService
         MiniPrincipal p = MiniContext.require();
         Row order = bookingService.requireOwnerOrder(orderNo, p.accountId);
         List<Map<String, Object>> rows = new ArrayList<>();
-        for (Map<String, Object> d : adminMapper.listDisputesOfOrder(order.lng("id")))
+        for (Map<String, Object> d : adminAfterSaleMapper.listDisputesOfOrder(order.lng("id")))
         {
             rows.add(disputeView(Row.of(d)));
         }

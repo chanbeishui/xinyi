@@ -19,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
 import com.xinyi.rongli.auth.mapper.AccountMapper;
-import com.xinyi.rongli.admin.mapper.AdminMapper;
+
 import com.xinyi.rongli.aftersale.mapper.AfterSaleMapper;
 import com.xinyi.rongli.dispatch.mapper.DispatchMapper;
 import com.xinyi.rongli.ledger.mapper.LedgerMapper;
@@ -36,6 +36,7 @@ import com.xinyi.rongli.common.support.Crypto;
 import com.xinyi.rongli.common.support.Json;
 import com.xinyi.rongli.common.support.Row;
 import com.xinyi.rongli.common.support.ViTime;
+import com.xinyi.rongli.admin.mapper.GovernanceMapper;
 
 /**
  * 管理端 ledger 域服务。由原 AdminService 按功能域拆分而来，方法体与 SQL 保持原样。
@@ -44,7 +45,7 @@ import com.xinyi.rongli.common.support.ViTime;
 public class LedgerAdminService
 {
     @Autowired
-    private AdminMapper adminMapper;
+    private GovernanceMapper governanceMapper;
     @Autowired
     private PriceMapper priceMapper;
     @Autowired
@@ -203,35 +204,35 @@ public class LedgerAdminService
         int limit = Math.min(Math.max(pageSize, 1), 100);
         int offset = (Math.max(pageNum, 1) - 1) * limit;
         List<Map<String, Object>> rows = new ArrayList<>();
-        for (Map<String, Object> g : adminMapper.listGovernance("RECONCILE", status, keyword, offset, limit))
+        for (Map<String, Object> g : governanceMapper.listGovernance("RECONCILE", status, keyword, offset, limit))
         {
             rows.add(governanceView(Row.of(g), true));
         }
         Map<String, Object> view = new LinkedHashMap<>();
         view.put("pageNum", pageNum);
         view.put("pageSize", limit);
-        view.put("total", adminMapper.countGovernance("RECONCILE", status, keyword));
+        view.put("total", governanceMapper.countGovernance("RECONCILE", status, keyword));
         view.put("rows", rows);
         return view;
     }
     @Transactional
     public Map<String, Object> queryReconciliation(Long caseId)
     {
-        Row g = Row.of(adminMapper.findGovernance(caseId));
+        Row g = Row.of(governanceMapper.findGovernance(caseId));
         if (g.isEmpty() || !"RECONCILE".equals(g.str("case_type")))
         {
             throw ApiException.notFound("对账异常不存在");
         }
-        adminMapper.updateGovernance(caseId, "CHECKING", null, null, null, null);
+        governanceMapper.updateGovernance(caseId, "CHECKING", null, null, null, null);
         eventService.record("RECONCILE", caseId, "RECONCILE_QUERY", g.lng("order_id"), null, null, "重查渠道状态");
-        Map<String, Object> view = governanceView(Row.of(adminMapper.findGovernance(caseId)), true);
+        Map<String, Object> view = governanceView(Row.of(governanceMapper.findGovernance(caseId)), true);
         view.put("hint", "已发起渠道重查，请以渠道流水为准登记结论");
         return view;
     }
     @Transactional
     public Map<String, Object> resolveReconciliation(Long caseId, String conclusion, Long userId)
     {
-        Row g = Row.of(adminMapper.findGovernance(caseId));
+        Row g = Row.of(governanceMapper.findGovernance(caseId));
         if (g.isEmpty() || !"RECONCILE".equals(g.str("case_type")))
         {
             throw ApiException.notFound("对账异常不存在");
@@ -240,10 +241,10 @@ public class LedgerAdminService
         {
             throw ApiException.validation("请填写对账结论与依据");
         }
-        adminMapper.concludeGovernance(caseId, "RESOLVED", userId, conclusion);
+        governanceMapper.concludeGovernance(caseId, "RESOLVED", userId, conclusion);
         eventService.record("RECONCILE", caseId, "RECONCILE_RESOLVED", g.lng("order_id"), null,
                 Map.of("status", "RESOLVED"), conclusion);
-        return governanceView(Row.of(adminMapper.findGovernance(caseId)), true);
+        return governanceView(Row.of(governanceMapper.findGovernance(caseId)), true);
     }
     public Map<String, Object> driverReconciliationOverview(Long driverId)
     {

@@ -19,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
 import com.xinyi.rongli.auth.mapper.AccountMapper;
-import com.xinyi.rongli.admin.mapper.AdminMapper;
+
 import com.xinyi.rongli.aftersale.mapper.AfterSaleMapper;
 import com.xinyi.rongli.dispatch.mapper.DispatchMapper;
 import com.xinyi.rongli.ledger.mapper.LedgerMapper;
@@ -36,6 +36,7 @@ import com.xinyi.rongli.common.support.Crypto;
 import com.xinyi.rongli.common.support.Json;
 import com.xinyi.rongli.common.support.Row;
 import com.xinyi.rongli.common.support.ViTime;
+import com.xinyi.rongli.admin.mapper.AdminOpsMapper;
 
 /**
  * 管理端 dispatch 域服务。由原 AdminService 按功能域拆分而来，方法体与 SQL 保持原样。
@@ -44,7 +45,7 @@ import com.xinyi.rongli.common.support.ViTime;
 public class DispatchAdminService
 {
     @Autowired
-    private AdminMapper adminMapper;
+    private AdminOpsMapper adminOpsMapper;
     @Autowired
     private OrderMapper orderMapper;
     @Autowired
@@ -256,7 +257,7 @@ public class DispatchAdminService
                     throw ApiException.validation(e.getKey() + " 超出允许范围");
                 }
             }
-            Map<String, Object> existing = adminMapper.findConfigByKey(e.getValue());
+            Map<String, Object> existing = adminOpsMapper.findConfigByKey(e.getValue());
             if (existing == null)
             {
                 com.xinyi.system.domain.SysConfig entity = new com.xinyi.system.domain.SysConfig();
@@ -268,7 +269,7 @@ public class DispatchAdminService
             }
             else
             {
-                adminMapper.updateConfigValue(e.getValue(), text);
+                adminOpsMapper.updateConfigValue(e.getValue(), text);
             }
             eventService.record("CONFIG", null, "CONFIG_CHANGED", null,
                     Map.of("key", e.getValue()), Map.of("value", text), "管理端保存业务配置");

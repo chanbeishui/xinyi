@@ -19,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
 import com.xinyi.rongli.auth.mapper.AccountMapper;
-import com.xinyi.rongli.admin.mapper.AdminMapper;
+
 import com.xinyi.rongli.aftersale.mapper.AfterSaleMapper;
 import com.xinyi.rongli.dispatch.mapper.DispatchMapper;
 import com.xinyi.rongli.ledger.mapper.LedgerMapper;
@@ -36,6 +36,8 @@ import com.xinyi.rongli.common.support.Crypto;
 import com.xinyi.rongli.common.support.Json;
 import com.xinyi.rongli.common.support.Row;
 import com.xinyi.rongli.common.support.ViTime;
+import com.xinyi.rongli.admin.mapper.AdminOpsMapper;
+import com.xinyi.rongli.admin.mapper.GovernanceMapper;
 
 /**
  * 管理端 admin 域服务。由原 AdminService 按功能域拆分而来，方法体与 SQL 保持原样。
@@ -44,7 +46,10 @@ import com.xinyi.rongli.common.support.ViTime;
 public class OpsAdminService
 {
     @Autowired
-    private AdminMapper adminMapper;
+    private AdminOpsMapper adminOpsMapper;
+
+    @Autowired
+    private GovernanceMapper governanceMapper;
     @Autowired
     private OrderMapper orderMapper;
     @Autowired
@@ -62,7 +67,7 @@ public class OpsAdminService
     {
         List<Long> deptIds = deptScope.visibleDeptIds();
         Row base = Row.of(orderMapper.dashboard(deptIds));
-        Row extra = Row.of(adminMapper.statisticsOverview(ViTime.shanghaiDate(ViTime.now()).toString(), deptIds));
+        Row extra = Row.of(adminOpsMapper.statisticsOverview(ViTime.shanghaiDate(ViTime.now()).toString(), deptIds));
         Map<String, Object> view = new LinkedHashMap<>();
         view.put("activeOrders", base.lng("active_orders", 0L));
         view.put("ordersToday", extra.lng("orders_today", 0L));
@@ -84,14 +89,14 @@ public class OpsAdminService
         int limit = Math.min(Math.max(pageSize, 1), 100);
         int offset = (Math.max(pageNum, 1) - 1) * limit;
         List<Map<String, Object>> rows = new ArrayList<>();
-        for (Map<String, Object> g : adminMapper.listGovernance("EXPORT", status, null, offset, limit))
+        for (Map<String, Object> g : governanceMapper.listGovernance("EXPORT", status, null, offset, limit))
         {
             rows.add(governanceView(Row.of(g), true));
         }
         Map<String, Object> view = new LinkedHashMap<>();
         view.put("pageNum", pageNum);
         view.put("pageSize", limit);
-        view.put("total", adminMapper.countGovernance("EXPORT", status, null));
+        view.put("total", governanceMapper.countGovernance("EXPORT", status, null));
         view.put("rows", rows);
         return view;
     }
@@ -117,16 +122,16 @@ public class OpsAdminService
         row.put("payloadCipher", crypto.encrypt(payload.toJSONString()));
         row.put("reason", str(req.get("reason")));
         row.put("expiresAt", ViTime.now().plusHours(24));
-        adminMapper.insertGovernance(row);
+        governanceMapper.insertGovernance(row);
         Long caseId = ((Number) row.get("id")).longValue();
         eventService.record("EXPORT", caseId, "EXPORT_REQUESTED", null, null,
                 Map.of("from", String.valueOf(payload.get("from"))), str(req.get("reason")));
-        return governanceView(Row.of(adminMapper.findGovernance(caseId)), true);
+        return governanceView(Row.of(governanceMapper.findGovernance(caseId)), true);
     }
     @Transactional
     public Map<String, Object> auditExport(Long caseId, boolean approve, String opinion, Long userId)
     {
-        Row g = Row.of(adminMapper.findGovernance(caseId));
+        Row g = Row.of(governanceMapper.findGovernance(caseId));
         if (g.isEmpty() || !"EXPORT".equals(g.str("case_type")))
         {
             throw ApiException.notFound("导出任务不存在");
@@ -143,15 +148,15 @@ public class OpsAdminService
         {
             throw ApiException.validation("驳回必须写明理由");
         }
-        adminMapper.updateGovernance(caseId, approve ? "APPROVED" : "REJECTED", userId, opinion, null,
+        governanceMapper.updateGovernance(caseId, approve ? "APPROVED" : "REJECTED", userId, opinion, null,
                 approve ? ViTime.now().plusHours(24) : null);
         eventService.record("EXPORT", caseId, approve ? "EXPORT_APPROVED" : "EXPORT_REJECTED", null, null, null,
                 opinion);
-        return governanceView(Row.of(adminMapper.findGovernance(caseId)), true);
+        return governanceView(Row.of(governanceMapper.findGovernance(caseId)), true);
     }
     public Map<String, Object> exportTask(Long caseId)
     {
-        Row g = Row.of(adminMapper.findGovernance(caseId));
+        Row g = Row.of(governanceMapper.findGovernance(caseId));
         if (g.isEmpty() || !"EXPORT".equals(g.str("case_type")))
         {
             throw ApiException.notFound("导出任务不存在");
@@ -192,7 +197,7 @@ public class OpsAdminService
         int limit = Math.min(Math.max(pageSize, 1), 200);
         int offset = (Math.max(pageNum, 1) - 1) * limit;
         List<Map<String, Object>> rows = new ArrayList<>();
-        for (Map<String, Object> e : adminMapper.listEvents(orderId, aggregateType, action, offset, limit))
+        for (Map<String, Object> e : adminOpsMapper.listEvents(orderId, aggregateType, action, offset, limit))
         {
             Row ev = Row.of(e);
             Map<String, Object> item = new LinkedHashMap<>();
@@ -216,7 +221,7 @@ public class OpsAdminService
         Map<String, Object> view = new LinkedHashMap<>();
         view.put("pageNum", pageNum);
         view.put("pageSize", limit);
-        view.put("total", adminMapper.countEvents(orderId, aggregateType, action));
+        view.put("total", adminOpsMapper.countEvents(orderId, aggregateType, action));
         view.put("rows", rows);
         return view;
     }
@@ -237,10 +242,10 @@ public class OpsAdminService
         java.time.LocalDateTime from = ViTime.now().minusDays(span);
         List<Long> deptIds = deptScope.visibleDeptIds();
         List<Map<String, Object>> daily = orderMapper.dailyStats(from, deptIds);
-        Row overview = Row.of(adminMapper.statisticsOverview(ViTime.shanghaiDate(ViTime.now()).toString(), deptIds));
+        Row overview = Row.of(adminOpsMapper.statisticsOverview(ViTime.shanghaiDate(ViTime.now()).toString(), deptIds));
         Row dash = Row.of(orderMapper.dashboard(deptIds));
-        Row orderKpi = Row.of(adminMapper.statisticsOrderKpi(deptIds));
-        Row payKpi = Row.of(adminMapper.statisticsPaymentKpi(deptIds));
+        Row orderKpi = Row.of(adminOpsMapper.statisticsOrderKpi(deptIds));
+        Row payKpi = Row.of(adminOpsMapper.statisticsPaymentKpi(deptIds));
         Map<String, Object> view = new LinkedHashMap<>();
         view.put("rangeDays", span);
         view.put("range", scope == null ? "DAY" : scope);
@@ -311,7 +316,7 @@ public class OpsAdminService
 
         // ---- 按站点服务概况
         List<Map<String, Object>> stationStats = new ArrayList<>();
-        for (Map<String, Object> s : adminMapper.statisticsByStation(deptIds))
+        for (Map<String, Object> s : adminOpsMapper.statisticsByStation(deptIds))
         {
             Row row = Row.of(s);
             Map<String, Object> item = new LinkedHashMap<>();
@@ -333,7 +338,7 @@ public class OpsAdminService
         int limit = Math.min(Math.max(pageSize, 1), 100);
         int offset = (Math.max(pageNum, 1) - 1) * limit;
         List<Map<String, Object>> rows = new ArrayList<>();
-        for (Map<String, Object> o : adminMapper.listOutbox(offset, limit))
+        for (Map<String, Object> o : adminOpsMapper.listOutbox(offset, limit))
         {
             Row job = Row.of(o);
             Map<String, Object> item = new LinkedHashMap<>();
@@ -350,14 +355,14 @@ public class OpsAdminService
         Map<String, Object> view = new LinkedHashMap<>();
         view.put("pageNum", pageNum);
         view.put("pageSize", limit);
-        view.put("total", adminMapper.countOutbox());
+        view.put("total", adminOpsMapper.countOutbox());
         view.put("rows", rows);
         return view;
     }
     @Transactional
     public Map<String, Object> retryJob(Long taskId)
     {
-        Row job = Row.of(adminMapper.findOutbox(taskId));
+        Row job = Row.of(adminOpsMapper.findOutbox(taskId));
         if (job.isEmpty())
         {
             throw ApiException.notFound("补偿任务不存在");
@@ -366,7 +371,7 @@ public class OpsAdminService
         {
             throw ApiException.stateConflict("该任务已完成，无需重试");
         }
-        adminMapper.retryOutbox(taskId);
+        adminOpsMapper.retryOutbox(taskId);
         eventService.record("JOB", taskId, "JOB_RETRIED", null, null,
                 Map.of("status", "READY"), "人工受控重试");
         Map<String, Object> view = new LinkedHashMap<>();
@@ -400,7 +405,7 @@ public class OpsAdminService
         effective.put("rongli.handover.mutualConfirmTypes",
                 String.join(",", config.handoverMutualConfirmTypes()));
         view.put("effective", effective);
-        view.put("stored", adminMapper.listRongliConfigs());
+        view.put("stored", adminOpsMapper.listRongliConfigs());
         view.put("paymentChannelLocked", false);
         view.put("hint", "支付通道与商户参数在「系统设置 → 微信支付」维护；短信通道、订阅消息各有独立配置页，保存后即时生效。");
         return view;
@@ -410,7 +415,7 @@ public class OpsAdminService
         List<Map<String, Object>> rows = new ArrayList<>();
         for (Map.Entry<String, String> e : defaultTemplates().entrySet())
         {
-            Row stored = Row.of(adminMapper.findConfigByKey("rongli.notify.template." + e.getKey()));
+            Row stored = Row.of(adminOpsMapper.findConfigByKey("rongli.notify.template." + e.getKey()));
             Map<String, Object> item = new LinkedHashMap<>();
             item.put("templateId", e.getKey());
             item.put("scene", e.getKey());
@@ -440,7 +445,7 @@ public class OpsAdminService
             throw ApiException.validation("模板内容不能超过 300 字");
         }
         String key = "rongli.notify.template." + templateId;
-        Map<String, Object> existing = adminMapper.findConfigByKey(key);
+        Map<String, Object> existing = adminOpsMapper.findConfigByKey(key);
         if (existing == null)
         {
             com.xinyi.system.domain.SysConfig entity = new com.xinyi.system.domain.SysConfig();
@@ -452,7 +457,7 @@ public class OpsAdminService
         }
         else
         {
-            adminMapper.updateConfigValue(key, content);
+            adminOpsMapper.updateConfigValue(key, content);
         }
         eventService.record("NOTIFY_TEMPLATE", null, "TEMPLATE_UPDATED", null,
                 Map.of("templateId", templateId), Map.of("length", String.valueOf(content.length())), null);

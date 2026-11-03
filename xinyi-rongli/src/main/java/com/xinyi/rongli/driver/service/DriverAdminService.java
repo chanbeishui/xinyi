@@ -19,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
 import com.xinyi.rongli.auth.mapper.AccountMapper;
-import com.xinyi.rongli.admin.mapper.AdminMapper;
+
 import com.xinyi.rongli.aftersale.mapper.AfterSaleMapper;
 import com.xinyi.rongli.dispatch.mapper.DispatchMapper;
 import com.xinyi.rongli.ledger.mapper.LedgerMapper;
@@ -36,6 +36,7 @@ import com.xinyi.rongli.common.support.Crypto;
 import com.xinyi.rongli.common.support.Json;
 import com.xinyi.rongli.common.support.Row;
 import com.xinyi.rongli.common.support.ViTime;
+import com.xinyi.rongli.driver.mapper.AdminDriverMapper;
 
 /**
  * 管理端 driver 域服务。由原 AdminService 按功能域拆分而来，方法体与 SQL 保持原样。
@@ -44,7 +45,7 @@ import com.xinyi.rongli.common.support.ViTime;
 public class DriverAdminService
 {
     @Autowired
-    private AdminMapper adminMapper;
+    private AdminDriverMapper adminDriverMapper;
     @Autowired
     private DispatchMapper dispatchMapper;
     @Autowired
@@ -121,7 +122,7 @@ public class DriverAdminService
             view.put("sensitiveHint", "管理端只展示脱敏信息，原件在独立档案中受控访问");
         }
         List<Map<String, Object>> courses = new ArrayList<>();
-        for (Map<String, Object> p : adminMapper.listProgressOfApplication(applicationId))
+        for (Map<String, Object> p : adminDriverMapper.listProgressOfApplication(applicationId))
         {
             Row pr = Row.of(p);
             courses.add(Map.of("trainingId", String.valueOf(pr.lng("training_id")),

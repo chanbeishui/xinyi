@@ -19,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
 import com.xinyi.rongli.auth.mapper.AccountMapper;
-import com.xinyi.rongli.admin.mapper.AdminMapper;
+
 import com.xinyi.rongli.aftersale.mapper.AfterSaleMapper;
 import com.xinyi.rongli.dispatch.mapper.DispatchMapper;
 import com.xinyi.rongli.ledger.mapper.LedgerMapper;
@@ -36,6 +36,7 @@ import com.xinyi.rongli.common.support.Crypto;
 import com.xinyi.rongli.common.support.Json;
 import com.xinyi.rongli.common.support.Row;
 import com.xinyi.rongli.common.support.ViTime;
+import com.xinyi.rongli.aftersale.mapper.AdminAfterSaleMapper;
 
 /**
  * 管理端 aftersale 域服务。由原 AdminService 按功能域拆分而来，方法体与 SQL 保持原样。
@@ -44,7 +45,7 @@ import com.xinyi.rongli.common.support.ViTime;
 public class AfterSaleAdminService
 {
     @Autowired
-    private AdminMapper adminMapper;
+    private AdminAfterSaleMapper adminAfterSaleMapper;
     @Autowired
     private MiscMapper miscMapper;
     @Autowired
@@ -64,13 +65,13 @@ public class AfterSaleAdminService
         Map<String, Object> view = new LinkedHashMap<>();
         view.put("pageNum", pageNum);
         view.put("pageSize", limit);
-        view.put("total", adminMapper.countDisputes(status));
+        view.put("total", adminAfterSaleMapper.countDisputes(status));
         view.put("rows", rows);
         return view;
     }
     public Map<String, Object> disputeDetail(Long disputeId)
     {
-        Row d = Row.of(adminMapper.findDisputeDetail(disputeId));
+        Row d = Row.of(adminAfterSaleMapper.findDisputeDetail(disputeId));
         if (d.isEmpty())
         {
             throw ApiException.notFound("争议不存在");
@@ -80,7 +81,7 @@ public class AfterSaleAdminService
     @Transactional
     public Map<String, Object> resolveDispute(Long disputeId, String conclusion, Long userId)
     {
-        Row d = Row.of(adminMapper.findDisputeDetail(disputeId));
+        Row d = Row.of(adminAfterSaleMapper.findDisputeDetail(disputeId));
         if (d.isEmpty())
         {
             throw ApiException.notFound("争议不存在");
@@ -99,7 +100,7 @@ public class AfterSaleAdminService
         Row order = Row.of(orderMapper.findDetailById(d.lng("order_id")));
         eventService.notify(order.lng("owner_account_id"), Codes.Role.OWNER, order.lng("order_id"),
                 "DISPUTE_RESOLVED", "您的服务争议已处理：" + conclusion);
-        return disputeView(Row.of(adminMapper.findDisputeDetail(disputeId)));
+        return disputeView(Row.of(adminAfterSaleMapper.findDisputeDetail(disputeId)));
     }
     public Map<String, Object> exceptions(String status, int pageNum, int pageSize)
     {
@@ -126,14 +127,14 @@ public class AfterSaleAdminService
         Map<String, Object> view = new LinkedHashMap<>();
         view.put("pageNum", pageNum);
         view.put("pageSize", limit);
-        view.put("total", adminMapper.countExceptions(status));
+        view.put("total", adminAfterSaleMapper.countExceptions(status));
         view.put("rows", rows);
         return view;
     }
     @Transactional
     public Map<String, Object> resolveException(Long exceptionId, String resolution, Long userId)
     {
-        Row e = Row.of(adminMapper.findExceptionDetail(exceptionId));
+        Row e = Row.of(adminAfterSaleMapper.findExceptionDetail(exceptionId));
         if (e.isEmpty())
         {
             throw ApiException.notFound("异常不存在");
