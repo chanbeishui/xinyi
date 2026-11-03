@@ -267,11 +267,21 @@ def stage_routes(token):
     # 小程序侧 /api/common/* 的鉴权拦截器先于路由执行，HTTP 层看不出来，
     # 因此改为代码级断言：控制器里不能再出现这三个映射。
     root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    common = os.path.join(root, "xinyi-rongli", "src", "main", "java", "com", "xinyi", "rongli",
-                          "controller", "CommonController.java")
-    with open(common, "r", encoding="utf-8") as f:
-        common_src = f.read()
-    leftovers = [p for p in ("/employee-binding\"", "/employee-binding-requests\"") if p in common_src]
+    # 控制器已按功能域分散在 <domain>/controller 下，不能再按固定路径取单个文件：
+    # 路径一旦不存在，这里会抛 FileNotFoundError，后续断言被静默跳过而报告仍显示通过。
+    ctrl_root = os.path.join(root, "xinyi-rongli", "src", "main", "java", "com", "xinyi", "rongli")
+    ctrl_srcs = {}
+    for dirpath, _, files in os.walk(ctrl_root):
+        if os.path.basename(dirpath) != "controller":
+            continue
+        for name in files:
+            if name.endswith("Controller.java"):
+                with open(os.path.join(dirpath, name), "r", encoding="utf-8") as f:
+                    ctrl_srcs[name] = f.read()
+    if not ctrl_srcs:
+        raise FileNotFoundError(f"未在 {ctrl_root} 下找到任何 controller，扫描规则需同步更新")
+    leftovers = [n for n, s in ctrl_srcs.items()
+                 if "/employee-binding\"" in s or "/employee-binding-requests\"" in s]
     check("R5 小程序侧绑定声明/兑换端点已从控制器移除", not leftovers,
           f"残留={leftovers}（鉴权拦截器先于路由，HTTP 层无法判定）")
 
@@ -415,8 +425,15 @@ def StringLike(value):
 def stage_money_redline(token):
     print("\n== N 段：资金与重发红线（代码级断言）==")
     root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    pkg = os.path.join(root, "xinyi-rongli", "src", "main", "java", "com", "xinyi", "rongli", "integration")
-    with open(os.path.join(pkg, "IntegrationPaymentService.java"), "r", encoding="utf-8") as f:
+    # 按文件名递归定位：服务类已随功能域迁移到 integration/service 等目录。
+    def _find_source(filename):
+        base = os.path.join(root, "xinyi-rongli", "src", "main", "java")
+        for dirpath, _, files in os.walk(base):
+            if filename in files:
+                return os.path.join(dirpath, filename)
+        raise FileNotFoundError(f"未找到 {filename}；包结构可能已调整，请同步更新扫描规则")
+
+    with open(_find_source("IntegrationPaymentService.java"), "r", encoding="utf-8") as f:
         pay_src = f.read()
     check("N1 核实人不得为登记人（服务端 403，前端不放行）",
           "登记人不能核实自己登记的收款" in pay_src,
@@ -425,7 +442,7 @@ def stage_money_redline(token):
           "少款/多款走人工差错处理" in pay_src,
           "IntegrationPaymentService.registerProof")
 
-    with open(os.path.join(pkg, "IntegrationMessageService.java"), "r", encoding="utf-8") as f:
+    with open(_find_source("IntegrationMessageService.java"), "r", encoding="utf-8") as f:
         msg_src = f.read()
     check("N3 只有 FAILED 才允许重试，UNKNOWN 只查回执",
           "UNKNOWN/ACCEPTED 重试会造成重复发送" in msg_src

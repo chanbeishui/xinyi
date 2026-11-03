@@ -1,33 +1,33 @@
 # 验收执行台账
 
-生成时间：2026-11-03T10:40:02+08:00
+生成时间：2026-11-03T12:16:12+08:00
 
 ## 一、自动化断言
 
-共 316 条断言：通过 315，失败 0，跳过 1（通过率 99.7%）
+共 335 条断言：通过 335，失败 0，跳过 0（通过率 100.0%）
 
 | 断言 | 模块 | 级别 | 结果 | 断言项 | 说明 |
 |---|---|---|---|---|---|
 | ST-001 | 接口契约 | P0 | PASS | OK：两端接口路径与请求方法完全一致 |  |
-| SS-001 | 数据访问 | P0 | PASS | OK：15 个 Mapper 的 SQL 与表结构一致 |  |
-| SDM-001 | 数据权限 | P0 | PASS | 管理员可登录  200 {'msg': '操作成功', 'code': 200, 'token': 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImxvZ2luX3VzZXJfa2V5IjoiMDk4Y2RmMDUtNjhh |  |
-| SDM-002 | 数据权限 | P0 | PASS | 多部门账号可登录  200 {'msg': '操作成功', 'code': 200, 'token': 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJyeSIsImxvZ2luX3VzZXJfa2V5IjoiOTAxNzhhOWYtODIxMy00 |  |
-| SDM-003 | 数据权限 | P0 | PASS | 超管订单数等于全量（不受部门限制）  接口=35 全量=35 |  |
-| SDM-004 | 数据权限 | P0 | PASS | 多部门账号订单数等于任职部门并集  接口=35 期望=35 部门=[100, 101, 105] |  |
-| SDM-005 | 数据权限 | P0 | PASS | 可见范围不再等于主部门（多部门已展开）  主部门口径=0 任职并集=35 |  |
-| SDM-006 | 数据权限 | P0 | PASS | 多部门账号车辆数与任职部门并集一致  接口=47 期望=47 |  |
+| SS-001 | 数据访问 | P0 | PASS | OK：24 个 Mapper 的 SQL 与表结构一致 |  |
+| SDM-001 | 数据权限 | P0 | PASS | 管理员可登录  200 {'msg': '操作成功', 'code': 200, 'token': 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImxvZ2luX3VzZXJfa2V5IjoiNmZmODQwYzctMTE3 |  |
+| SDM-002 | 数据权限 | P0 | PASS | 多部门账号可登录  200 {'msg': '操作成功', 'code': 200, 'token': 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJyeSIsImxvZ2luX3VzZXJfa2V5IjoiMWFkODJjNzYtMjQwYi00 |  |
+| SDM-003 | 数据权限 | P0 | PASS | 超管订单数等于全量（不受部门限制）  接口=37 全量=37 |  |
+| SDM-004 | 数据权限 | P0 | PASS | 多部门账号订单数等于任职部门并集  接口=37 期望=37 部门=[100, 101, 105] |  |
+| SDM-005 | 数据权限 | P0 | PASS | 可见范围不再等于主部门（多部门已展开）  主部门口径=0 任职并集=37 |  |
+| SDM-006 | 数据权限 | P0 | PASS | 多部门账号车辆数与任职部门并集一致  接口=49 期望=49 |  |
 | SDM-007 | 数据权限 | P0 | PASS | 多部门账号售后数与任职部门并集一致  接口=3 期望=3 |  |
-| SDM-008 | 数据权限 | P0 | PASS | 统计卡样本订单数不超过可见订单数  统计=35 列表=35 |  |
+| SDM-008 | 数据权限 | P0 | PASS | 统计卡样本订单数不超过可见订单数  统计=37 列表=37 |  |
 | SW-001 | 小程序构建 | P1 | PASS | 结论: OK |  |
 | SG-001 | 侧栏与统计 | P1 | PASS | 侧栏存在 /rongli 目录 |  |
 | SG-002 | 侧栏与统计 | P1 | PASS | 菜单 业务统计 指向 rongli/statistics/index |  |
 | SG-003 | 侧栏与统计 | P1 | PASS | 菜单 支付渠道核对 指向 rongli/paymentReconcile/index |  |
 | SG-004 | 侧栏与统计 | P1 | PASS | 统计接口可用  200 ['rangeDays', 'range', 'from', 'overview'] |  |
-| SG-005 | 侧栏与统计 | P1 | PASS | 统计卡 4 张  样本服务订单=35 / 已支付金额=¥11550.00 / 已归还司机任务=0 / 待支付订单=0 |  |
+| SG-005 | 侧栏与统计 | P1 | PASS | 统计卡 4 张  样本服务订单=37 / 已支付金额=¥12210.00 / 已归还司机任务=0 / 待支付订单=0 |  |
 | SG-006 | 侧栏与统计 | P1 | PASS | 近7日趋势 7 个点 |  |
 | SG-007 | 侧栏与统计 | P1 | PASS | 指标口径 5 条 |  |
 | SG-008 | 侧栏与统计 | P1 | PASS | 按站点概况有数据  1 个站点 |  |
-| SG-009 | 侧栏与统计 | P1 | PASS | kpi 字段齐全  {'sampleOrders': 35, 'paidFen': 1155000, 'paidOrders': 35, 'refundedFen': 33000, 'netPaidFen': 1122000, 'returnedAssignments': 0, 'pendingPayOrders': 0} |  |
+| SG-009 | 侧栏与统计 | P1 | PASS | kpi 字段齐全  {'sampleOrders': 37, 'paidFen': 1221000, 'paidOrders': 37, 'refundedFen': 33000, 'netPaidFen': 1188000, 'returnedAssignments': 0, 'pendingPayOrders': 0} |  |
 | SG-010 | 侧栏与统计 | P1 | PASS | daily 旧字段保留 |  |
 | SG-011 | 侧栏与统计 | P1 | PASS | range=WEEK 生效  rangeDays=30 |  |
 | SG-012 | 侧栏与统计 | P1 | PASS | 旧调用 days=14 不回归  rangeDays=14 |  |
@@ -41,10 +41,29 @@
 | SG-020 | 侧栏与统计 | P1 | PASS | 核对退款登记结论可用  200 status=RESOLVED |  |
 | SG-021 | 侧栏与统计 | P1 | PASS | 登记结论不覆盖问题类型  problemType=关单与支付通知竞态 conclusion=渠道确认为支付成功，按关闭订单退款处理 |  |
 | SG-022 | 侧栏与统计 | P1 | PASS | 空结论被拒绝  400 |  |
-| SP-000 | 后台页面 | P1 | SKIP | logs/check_admin_pages.py | http://127.0.0.1:8080 不可达，未执行 |
+| SP-001 | 后台页面 | P1 | PASS | 统计概览 /api/admin/statistics  http=200 daily=4 |  |
+| SP-002 | 后台页面 | P1 | PASS | 导出任务列表 /api/admin/exports  http=200 total=0 |  |
+| SP-003 | 后台页面 | P1 | PASS | 培训课程列表 /api/admin/training-courses  http=200 total=1 |  |
+| SP-004 | 后台页面 | P1 | PASS | 课程题库详情（选项为 {code,text}）  http=200 questions=3 |  |
+| SP-005 | 后台页面 | P1 | PASS | 处罚记录 /api/admin/penalties  http=200 total=0 |  |
+| SP-006 | 后台页面 | P1 | PASS | 申诉列表 /api/admin/penalty-appeals  http=200 total=0 |  |
+| SP-007 | 后台页面 | P1 | PASS | 通知模板 /api/admin/notification-templates  http=200 total=7 |  |
+| SP-008 | 后台页面 | P1 | PASS | 补偿任务 /api/admin/jobs  http=200 total=0 |  |
+| SP-009 | 后台页面 | P1 | PASS | 隐私案件 /api/admin/privacy-cases  http=200 total=0 |  |
+| SP-010 | 后台页面 | P1 | PASS | 员工绑定申请接口已退役（V6.4 改手机号自动关联）  http=200 msg=No static resource api/admin/employee-binding-requests for request '/api/admin/employee-binding-requests'. |  |
+| SP-011 | 后台页面 | P1 | PASS | 服务争议 /api/admin/disputes  http=200 total=0 |  |
+| SP-012 | 后台页面 | P1 | PASS | 服务异常 /api/admin/exceptions  http=200 total=0 |  |
+| SP-013 | 后台页面 | P1 | PASS | 结果更正 /api/admin/result-corrections  http=200 total=0 |  |
+| SP-014 | 后台页面 | P1 | PASS | 支付对账异常 /api/admin/reconciliation  http=200 total=2 |  |
+| SP-015 | 后台页面 | P1 | PASS | 小程序培训列表 /api/app/driver/qualification/training  http=200 rows=1 |  |
+| SP-016 | 后台页面 | P1 | PASS | 小程序课程详情  http=200 questionCount=3 |  |
+| SP-017 | 后台页面 | P1 | PASS | 小程序处罚列表 /api/app/driver/penalties  http=200 |  |
+| SP-018 | 后台页面 | P1 | PASS | 小程序申诉列表 /api/app/driver/penalty-appeals  http=200 |  |
+| SP-019 | 后台页面 | P1 | PASS | 小程序对账明细 /api/app/driver/reconciliation-entries  http=200 rows=3 |  |
+| SP-020 | 后台页面 | P1 | PASS | 小程序收款记录 /api/app/driver/payment-records  http=200 |  |
 | SK-001 | 存量接口 | P1 | PASS | 治理与导出列表 /api/admin/exports  rows=0 total=0 |  |
 | SK-002 | 存量接口 | P1 | PASS | 隐私案件列表 /api/admin/privacy-cases  rows=0 total=0 |  |
-| SK-003 | 存量接口 | P1 | PASS | 审计事件 /api/admin/audit-events  rows=10 total=2408 |  |
+| SK-003 | 存量接口 | P1 | PASS | 审计事件 /api/admin/audit-events  rows=10 total=2530 |  |
 | SK-004 | 存量接口 | P1 | PASS | 业务统计 /api/admin/statistics  keys=['rangeDays', 'range', 'from', 'overview'] |  |
 | SK-005 | 存量接口 | P1 | PASS | 支付渠道核对 /api/admin/reconciliation  rows=2 total=2 |  |
 | SK-006 | 存量接口 | P1 | PASS | 争议列表 /api/admin/disputes  rows=0 total=0 |  |
@@ -67,8 +86,8 @@
 | SK-023 | 存量接口 | P1 | PASS | 计价规则 /api/admin/prices  rows=5 total=5 |  |
 | SK-024 | 存量接口 | P1 | PASS | 代驾认证 /api/admin/driver-qualifications  rows=1 total=1 |  |
 | SK-025 | 存量接口 | P1 | PASS | 代驾档案 /api/admin/drivers  rows=3 total=3 |  |
-| SK-026 | 存量接口 | P1 | PASS | 订单列表 /api/admin/orders  rows=10 total=35 |  |
-| SK-027 | 存量接口 | P1 | PASS | 车辆列表 /api/admin/vehicles  rows=10 total=47 |  |
+| SK-026 | 存量接口 | P1 | PASS | 订单列表 /api/admin/orders  rows=10 total=37 |  |
+| SK-027 | 存量接口 | P1 | PASS | 车辆列表 /api/admin/vehicles  rows=10 total=49 |  |
 | SK-028 | 存量接口 | P1 | PASS | 车主列表 /api/admin/owners  rows=4 total=4 |  |
 | SR-001 | 本轮新增 | P0 | PASS | 派单配置下发半径阶梯 |  |
 | SR-002 | 本轮新增 | P0 | PASS | 扩圈阶梯可通过管理端配置 |  |
@@ -109,17 +128,17 @@
 | SR-037 | 本轮新增 | P0 | PASS | 工作台指标按部门收敛 |  |
 | SR-038 | 本轮新增 | P0 | PASS | 司机主数据共享池保持可见（dept_id 为空不收敛） |  |
 | SR-039 | 本轮新增 | P0 | PASS | 车辆主数据共享池保持可见 |  |
-| STK-001 | 令牌续期 | P0 | PASS | 登录返回访问令牌与刷新令牌  sessionId=702 |  |
+| STK-001 | 令牌续期 | P0 | PASS | 登录返回访问令牌与刷新令牌  sessionId=738 |  |
 | STK-002 | 令牌续期 | P0 | PASS | 新签发的访问令牌可用  HTTP=200 |  |
 | STK-003 | 令牌续期 | P0 | PASS | 切换角色成功  HTTP=200 |  |
 | STK-004 | 令牌续期 | P0 | PASS | 切换角色返回了新令牌  ctx=2 |  |
 | STK-005 | 令牌续期 | P0 | PASS | 切换后的旧访问令牌立即失效  HTTP=401 {'code': 'UNAUTHORIZED', 'message': '登录令牌已失效', 'msg': '登录令牌已失效'} |  |
-| STK-006 | 令牌续期 | P0 | PASS | 切换后的新访问令牌可用（前端必须落盘）  HTTP=200 {'sessionId': '702', 'activeRole': 'OWNER', 'stationId': None, 'contextVersion': 2, 'absoluteExpiresAt': '2026-12-03T02:39:48.824Z', 'profile': {'accountId': '1', 'nickname': '演示车主', 'phoneBound': True, 'status': 'ACTIVE', 'roles': ['OWNER', 'DRIVER'], 'serviceName': '车主_001', 'driverQualificationStatus': 'APPROVED', 'driverListeningEnabled': True, 'employeeBound': False, 'employeeStationCount': 0, 'employeeBindSource': None}, 'stations': []} |  |
+| STK-006 | 令牌续期 | P0 | PASS | 切换后的新访问令牌可用（前端必须落盘）  HTTP=200 {'sessionId': '738', 'activeRole': 'OWNER', 'stationId': None, 'contextVersion': 2, 'absoluteExpiresAt': '2026-12-03T04:15:59.006Z', 'profile': {'accountId': '1', 'nickname': '演示车主', 'phoneBound': True, 'status': 'ACTIVE', 'roles': ['OWNER', 'DRIVER'], 'serviceName': '车主_001', 'driverQualificationStatus': 'APPROVED', 'driverListeningEnabled': True, 'employeeBound': False, 'employeeStationCount': 0, 'employeeBindSource': None}, 'stations': []} |  |
 | STK-007 | 令牌续期 | P0 | PASS | 旧刷新令牌已被撤销，无法续期（不落盘就无法自愈）  HTTP=401 {'code': 'UNAUTHORIZED', 'message': '刷新令牌已失效，请重新进入小程序', 'msg': '刷新令牌已失效，请重新进入小程序'} |  |
 | STK-008 | 令牌续期 | P0 | PASS | 新刷新令牌可正常续期  HTTP=200 |  |
 | STK-009 | 令牌续期 | P0 | PASS | 并发刷新恰好一个成功、一个被拒  HTTP 分布=[200, 401] |  |
 | STK-010 | 令牌续期 | P0 | PASS | 失败方给出明确的重复使用提示  {"code": "UNAUTHORIZED", "message": "刷新令牌已被使用，请重新进入小程序", "msg": "刷新令牌已被使用，请重新进入小程序"} |  |
-| STK-011 | 令牌续期 | P0 | PASS | 并发中成功签发的令牌未被对方撤销  HTTP=200 {'sessionId': '702', 'activeRole': 'OWNER', 'stationId': None, 'contextVersion': 2, 'absoluteExpiresAt': '2026-12-03T02:39:48.824Z', 'profile': {'accountId': '1', 'nickname': '演示车主', 'phoneBound': True, 'status': 'ACTIVE', 'roles': ['OWNER', 'DRIVER'], 'serviceName': '车主_001', 'driverQualificationStatus': 'APPROVED', 'driverListeningEnabled': True, 'employeeBound': False, 'employeeStationCount': 0, 'employeeBindSource': None}, 'stations': []} |  |
+| STK-011 | 令牌续期 | P0 | PASS | 并发中成功签发的令牌未被对方撤销  HTTP=200 {'sessionId': '738', 'activeRole': 'OWNER', 'stationId': None, 'contextVersion': 2, 'absoluteExpiresAt': '2026-12-03T04:15:59.006Z', 'profile': {'accountId': '1', 'nickname': '演示车主', 'phoneBound': True, 'status': 'ACTIVE', 'roles': ['OWNER', 'DRIVER'], 'serviceName': '车主_001', 'driverQualificationStatus': 'APPROVED', 'driverListeningEnabled': True, 'employeeBound': False, 'employeeStationCount': 0, 'employeeBindSource': None}, 'stations': []} |  |
 | STK-012 | 令牌续期 | P0 | PASS | 刷新后上一代访问令牌按预期失效  HTTP=401 |  |
 | STK-013 | 令牌续期 | P0 | PASS | 迟到 401 用当前令牌重放即可成功  stale=True replay=200 |  |
 | STK-014 | 令牌续期 | P0 | PASS | 未发生多余轮换，刷新令牌仍然有效  HTTP=200 |  |
@@ -222,15 +241,15 @@
 | SAF-023 | 售后申诉对账 | P0 | PASS | 200 代驾账号登录 |  |
 | SAF-024 | 售后申诉对账 | P0 | PASS | 200 代驾资格档案 |  |
 | SAF-025 | 售后申诉对账 | P0 | PASS | 200 切换代驾视角 |  |
-| SAF-026 | 售后申诉对账 | P0 | PASS | --- 罚款记录已生成  penaltyId=26 |  |
+| SAF-026 | 售后申诉对账 | P0 | PASS | --- 罚款记录已生成  penaltyId=28 |  |
 | SAF-027 | 售后申诉对账 | P0 | PASS | 200 代驾查看罚款列表 |  |
 | SAF-028 | 售后申诉对账 | P0 | PASS | --- 罚款出现在代驾端列表 |  |
 | SAF-029 | 售后申诉对账 | P0 | PASS | 200 提交申诉 |  |
-| SAF-030 | 售后申诉对账 | P0 | PASS | --- 申诉已受理  appealId=26 |  |
+| SAF-030 | 售后申诉对账 | P0 | PASS | --- 申诉已受理  appealId=28 |  |
 | SAF-031 | 售后申诉对账 | P0 | PASS | 200 后台申诉列表 |  |
 | SAF-032 | 售后申诉对账 | P0 | PASS | 200 审核申诉（通过） |  |
 | SAF-033 | 售后申诉对账 | P0 | PASS | --- 处罚已撤销  status=REVOKED |  |
-| SAF-034 | 售后申诉对账 | P0 | PASS | --- 对账异常单已创建  caseId=30 |  |
+| SAF-034 | 售后申诉对账 | P0 | PASS | --- 对账异常单已创建  caseId=32 |  |
 | SAF-035 | 售后申诉对账 | P0 | PASS | 200 对账异常列表 |  |
 | SAF-036 | 售后申诉对账 | P0 | PASS | --- 异常单出现在对账列表 |  |
 | SAF-037 | 售后申诉对账 | P0 | PASS | 200 发起渠道重查 |  |
@@ -299,12 +318,12 @@
 | SIC-010 | 第三方配置 | P0 | PASS | S8 多出的表都已在迁移脚本里声明（退役表/本地扩展）  — extra=['vi_sms_send_log'] |  |
 | SIC-011 | 第三方配置 | P0 | PASS | 后台登录  — admin |  |
 | SIC-012 | 第三方配置 | P0 | PASS | R1 35 个新增端点都已注册（不是被静态资源兜底吞掉）  — not-ok=0 [] |  |
-| SIC-013 | 第三方配置 | P0 | PASS | R2 配置档案列表可读  — http=200 total=23 |  |
+| SIC-013 | 第三方配置 | P0 | PASS | R2 配置档案列表可读  — http=200 total=25 |  |
 | SIC-014 | 第三方配置 | P0 | PASS | R3 未登录访问被拒（业务码 401/403，不是静默放行）  — http=200 bodyCode=401 msg=请求访问：/api/admin/integrations/profiles，认证失败，无法访问系统资源 |  |
 | SIC-015 | 第三方配置 | P0 | PASS | R4 退役的后台绑定接口确实下线  — 仍可访问=[] |  |
 | SIC-016 | 第三方配置 | P0 | PASS | R5 小程序侧绑定声明/兑换端点已从控制器移除  — 残留=[]（鉴权拦截器先于路由，HTTP 层无法判定） |  |
 | SIC-017 | 第三方配置 | P0 | PASS | L1 TEST 环境支付策略档案已存在（复用）  — profileId=1 |  |
-| SIC-018 | 第三方配置 | P0 | PASS | L2 保存双关草稿  — revision=1 hash=c1ddf8ee9231 version=46 |  |
+| SIC-018 | 第三方配置 | P0 | PASS | L2 保存双关草稿  — revision=1 hash=c1ddf8ee9231 version=50 |  |
 | SIC-019 | 第三方配置 | P0 | PASS | L3 未校验不允许发布  — http=422 code=VI_CONFIG_CHECK_REQUIRED msg=发布前必须先执行校验 |  |
 | SIC-020 | 第三方配置 | P0 | PASS | L4 本地校验通过（双关本身是合法状态）  — http=200 status=PASS issues=2 |  |
 | SIC-021 | 第三方配置 | P0 | PASS | L5 双关发布必须显式确认（不是免费模式）  — http=422 code=VI_CONFIG_INVALID msg=两种支付方式都关闭会暂停新付费预约，请勾选确认后再发布 |  |
@@ -316,12 +335,12 @@
 | SIC-027 | 第三方配置 | P0 | PASS | N3 只有 FAILED 才允许重试，UNKNOWN 只查回执  — IntegrationMessageService.queryReceipt/retryDelivery |  |
 | SND-001 | 消息自动下发 | P0 | PASS | 验收账号可登录 | 200 |
 | SND-002 | 消息自动下发 | P0 | PASS | 验收账号已绑定手机号 | ['1'] |
-| SND-003 | 消息自动下发 | P0 | PASS | 下单并支付成功 | RL202611031040017604 |
-| SND-004 | 消息自动下发 | P0 | PASS | 支付成功触发了第三方通道投递记录 | ['SKIPPED\tTENCENT_SMS\tBOOKING_CONFIRMED\tVI_NOTIF_NO_PROFILE\t19'] |
-| SND-005 | 消息自动下发 | P0 | PASS | 投递走了配置的短信通道 | ['SKIPPED', 'TENCENT_SMS', 'BOOKING_CONFIRMED', 'VI_NOTIF_NO_PROFILE', '19'] |
-| SND-006 | 消息自动下发 | P0 | PASS | 通道未生效时判 SKIPPED 而非静默丢弃或 FAILED | ['SKIPPED', 'TENCENT_SMS', 'BOOKING_CONFIRMED', 'VI_NOTIF_NO_PROFILE', '19'] |
-| SND-007 | 消息自动下发 | P0 | PASS | 跳过原因可读（通道档案未生效） | ['SKIPPED', 'TENCENT_SMS', 'BOOKING_CONFIRMED', 'VI_NOTIF_NO_PROFILE', '19'] |
-| SND-008 | 消息自动下发 | P0 | PASS | 投递记录回指到配置的那条模板 | ['SKIPPED', 'TENCENT_SMS', 'BOOKING_CONFIRMED', 'VI_NOTIF_NO_PROFILE', '19'] |
+| SND-003 | 消息自动下发 | P0 | PASS | 下单并支付成功 | RL202611031216110157 |
+| SND-004 | 消息自动下发 | P0 | PASS | 支付成功触发了第三方通道投递记录 | ['SKIPPED\tTENCENT_SMS\tBOOKING_CONFIRMED\tVI_NOTIF_NO_PROFILE\t21'] |
+| SND-005 | 消息自动下发 | P0 | PASS | 投递走了配置的短信通道 | ['SKIPPED', 'TENCENT_SMS', 'BOOKING_CONFIRMED', 'VI_NOTIF_NO_PROFILE', '21'] |
+| SND-006 | 消息自动下发 | P0 | PASS | 通道未生效时判 SKIPPED 而非静默丢弃或 FAILED | ['SKIPPED', 'TENCENT_SMS', 'BOOKING_CONFIRMED', 'VI_NOTIF_NO_PROFILE', '21'] |
+| SND-007 | 消息自动下发 | P0 | PASS | 跳过原因可读（通道档案未生效） | ['SKIPPED', 'TENCENT_SMS', 'BOOKING_CONFIRMED', 'VI_NOTIF_NO_PROFILE', '21'] |
+| SND-008 | 消息自动下发 | P0 | PASS | 投递记录回指到配置的那条模板 | ['SKIPPED', 'TENCENT_SMS', 'BOOKING_CONFIRMED', 'VI_NOTIF_NO_PROFILE', '21'] |
 | SND-009 | 消息自动下发 | P0 | PASS | 通知未发出不影响业务：订单照常推进 | SCHEDULED |
 | SND-010 | 消息自动下发 | P0 | PASS | 同一事件不会产生第二条投递 | before=1 after=1 |
 
