@@ -36,6 +36,7 @@ CASES_PATH = os.path.join(ROOT, "docs", "acceptance", "test_cases_V6.0.json")
 SUITES = [
     ("ST", "logs/check_api_routes.py",       "接口契约",   "P0", False, 180),
     ("SS", "logs/check_mapper_schema.py",    "数据访问",   "P0", False, 180),
+    ("SDM", "logs/verify_dept_scope.py",     "数据权限",   "P0", True,  180),
     ("SW", "logs/check_wxml.py",             "小程序构建", "P1", False, 180),
     ("SG", "logs/verify_groups_stats.py",    "侧栏与统计", "P1", True,  180),
     ("SP", "logs/check_admin_pages.py",      "后台页面",   "P1", True,  180),

@@ -117,13 +117,17 @@ def fixture(token=None):
     if token:
         set_config(token, radiusSteps=DEFAULT_STEPS, subscribeTemplateDispatchInvite="",
                    subscribeEnabled="true")
-    # 4) 部门权限测试账号：独立角色授予全部菜单权限，但 user_id != 1 不触发超管旁路
+    # 4) 部门权限测试账号：独立角色授予全部菜单权限，但 user_id != 1 不触发超管旁路。
+    #    数据范围必须是「本部门」(3)：早期写的是「全部数据」(1)，与「按部门收敛」自相矛盾，
+    #    只是在非超管一律按主部门过滤的旧实现下才碰巧通过。
     if sql("SELECT COUNT(1) FROM sys_role WHERE role_id = 9102") == "0":
         sql("""INSERT INTO sys_role (role_id, role_name, role_key, role_sort, data_scope,
                      menu_check_strictly, dept_check_strictly, status, del_flag, create_by, create_time, remark)
-               VALUES (9102, '部门范围测试', 'scope_test', 999, '1', 1, 1, '0', '0', 'admin', UTC_TIMESTAMP(),
+               VALUES (9102, '部门范围测试', 'scope_test', 999, '3', 1, 1, '0', '0', 'admin', UTC_TIMESTAMP(),
                        '自动化验收临时角色')""")
         sql("INSERT INTO sys_role_menu (role_id, menu_id) SELECT 9102, menu_id FROM sys_menu")
+    else:
+        sql("UPDATE sys_role SET data_scope = '3' WHERE role_id = 9102")
     if sql("SELECT COUNT(1) FROM sys_user WHERE user_id = 9101") == "0":
         pwd = sql("SELECT password FROM sys_user WHERE user_id = 1")
         sql(f"""INSERT INTO sys_user (user_id, dept_id, user_name, nick_name, user_type, password, status,

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-23T16:23:42+08:00",
+  "generatedAt": "2026-11-03T10:24:02+08:00",
   "environment": {
     "root": "E:\\codex\\xinyi",
     "python": "3.13.14",
@@ -13,8 +13,8 @@
     }
   },
   "totals": {
-    "total": 327,
-    "passed": 327,
+    "total": 335,
+    "passed": 335,
     "failed": 0,
     "skipped": 0,
     "passRate": 100.0
@@ -31,6 +31,12 @@
       "module": "数据访问",
       "priority": "P0",
       "needsServer": false
+    },
+    {
+      "script": "logs/verify_dept_scope.py",
+      "module": "数据权限",
+      "priority": "P0",
+      "needsServer": true
     },
     {
       "script": "logs/check_wxml.py",
@@ -120,7 +126,7 @@
       "status": "PASS",
       "detail": "",
       "suite": "logs/check_api_routes.py",
-      "durationMs": 361
+      "durationMs": 236
     },
     {
       "id": "SS-001",
@@ -130,7 +136,87 @@
       "status": "PASS",
       "detail": "",
       "suite": "logs/check_mapper_schema.py",
-      "durationMs": 545
+      "durationMs": 311
+    },
+    {
+      "id": "SDM-001",
+      "module": "数据权限",
+      "priority": "P0",
+      "title": "管理员可登录  200 {'msg': '操作成功', 'code': 200, 'token': 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImxvZ2luX3VzZXJfa2V5IjoiZDI3YmQ4ZDEtZGU1",
+      "status": "PASS",
+      "detail": "",
+      "suite": "logs/verify_dept_scope.py",
+      "durationMs": null
+    },
+    {
+      "id": "SDM-002",
+      "module": "数据权限",
+      "priority": "P0",
+      "title": "多部门账号可登录  200 {'msg': '操作成功', 'code': 200, 'token': 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJyeSIsImxvZ2luX3VzZXJfa2V5IjoiNTBhODFkZTUtNWFjMS00",
+      "status": "PASS",
+      "detail": "",
+      "suite": "logs/verify_dept_scope.py",
+      "durationMs": null
+    },
+    {
+      "id": "SDM-003",
+      "module": "数据权限",
+      "priority": "P0",
+      "title": "超管订单数等于全量（不受部门限制）  接口=34 全量=34",
+      "status": "PASS",
+      "detail": "",
+      "suite": "logs/verify_dept_scope.py",
+      "durationMs": null
+    },
+    {
+      "id": "SDM-004",
+      "module": "数据权限",
+      "priority": "P0",
+      "title": "多部门账号订单数等于任职部门并集  接口=34 期望=34 部门=[100, 101, 105]",
+      "status": "PASS",
+      "detail": "",
+      "suite": "logs/verify_dept_scope.py",
+      "durationMs": null
+    },
+    {
+      "id": "SDM-005",
+      "module": "数据权限",
+      "priority": "P0",
+      "title": "可见范围不再等于主部门（多部门已展开）  主部门口径=0 任职并集=34",
+      "status": "PASS",
+      "detail": "",
+      "suite": "logs/verify_dept_scope.py",
+      "durationMs": null
+    },
+    {
+      "id": "SDM-006",
+      "module": "数据权限",
+      "priority": "P0",
+      "title": "多部门账号车辆数与任职部门并集一致  接口=46 期望=46",
+      "status": "PASS",
+      "detail": "",
+      "suite": "logs/verify_dept_scope.py",
+      "durationMs": null
+    },
+    {
+      "id": "SDM-007",
+      "module": "数据权限",
+      "priority": "P0",
+      "title": "多部门账号售后数与任职部门并集一致  接口=3 期望=3",
+      "status": "PASS",
+      "detail": "",
+      "suite": "logs/verify_dept_scope.py",
+      "durationMs": null
+    },
+    {
+      "id": "SDM-008",
+      "module": "数据权限",
+      "priority": "P0",
+      "title": "统计卡样本订单数不超过可见订单数  统计=34 列表=34",
+      "status": "PASS",
+      "detail": "",
+      "suite": "logs/verify_dept_scope.py",
+      "durationMs": null
     },
     {
       "id": "SW-001",
@@ -140,7 +226,7 @@
       "status": "PASS",
       "detail": "",
       "suite": "logs/check_wxml.py",
-      "durationMs": 357
+      "durationMs": 246
     },
     {
       "id": "SG-001",
@@ -186,7 +272,7 @@
       "id": "SG-005",
       "module": "侧栏与统计",
       "priority": "P1",
-      "title": "统计卡 4 张  样本服务订单=31 / 已支付金额=¥10230.00 / 已归还司机任务=0 / 待支付订单=0",
+      "title": "统计卡 4 张  样本服务订单=34 / 已支付金额=¥11220.00 / 已归还司机任务=0 / 待支付订单=0",
       "status": "PASS",
       "detail": "",
       "suite": "logs/verify_groups_stats.py",
@@ -226,7 +312,7 @@
       "id": "SG-009",
       "module": "侧栏与统计",
       "priority": "P1",
-      "title": "kpi 字段齐全  {'sampleOrders': 31, 'paidFen': 1023000, 'paidOrders': 31, 'refundedFen': 33000, 'netPaidFen': 990000, 'returnedAssignments': 0, 'pendingPayOrders': 0}",
+      "title": "kpi 字段齐全  {'sampleOrders': 34, 'paidFen': 1122000, 'paidOrders': 34, 'refundedFen': 33000, 'netPaidFen': 1089000, 'returnedAssignments': 0, 'pendingPayOrders': 0}",
       "status": "PASS",
       "detail": "",
       "suite": "logs/verify_groups_stats.py",
@@ -366,7 +452,7 @@
       "id": "SP-001",
       "module": "后台页面",
       "priority": "P1",
-      "title": "统计概览 /api/admin/statistics  http=200 daily=3",
+      "title": "统计概览 /api/admin/statistics  http=200 daily=4",
       "status": "PASS",
       "detail": "",
       "suite": "logs/check_admin_pages.py",
@@ -436,7 +522,7 @@
       "id": "SP-008",
       "module": "后台页面",
       "priority": "P1",
-      "title": "补偿任务 /api/admin/jobs  http=200 total=6",
+      "title": "补偿任务 /api/admin/jobs  http=200 total=0",
       "status": "PASS",
       "detail": "",
       "suite": "logs/check_admin_pages.py",
@@ -586,7 +672,7 @@
       "id": "SK-003",
       "module": "存量接口",
       "priority": "P1",
-      "title": "审计事件 /api/admin/audit-events  rows=10 total=2169",
+      "title": "审计事件 /api/admin/audit-events  rows=10 total=2347",
       "status": "PASS",
       "detail": "",
       "suite": "logs/smoke_regression_rongli.py",
@@ -656,7 +742,7 @@
       "id": "SK-010",
       "module": "存量接口",
       "priority": "P1",
-      "title": "补偿任务 /api/admin/jobs  rows=6 total=6",
+      "title": "补偿任务 /api/admin/jobs  rows=0 total=0",
       "status": "PASS",
       "detail": "",
       "suite": "logs/smoke_regression_rongli.py",
@@ -816,7 +902,7 @@
       "id": "SK-026",
       "module": "存量接口",
       "priority": "P1",
-      "title": "订单列表 /api/admin/orders  rows=10 total=31",
+      "title": "订单列表 /api/admin/orders  rows=10 total=34",
       "status": "PASS",
       "detail": "",
       "suite": "logs/smoke_regression_rongli.py",
@@ -826,7 +912,7 @@
       "id": "SK-027",
       "module": "存量接口",
       "priority": "P1",
-      "title": "车辆列表 /api/admin/vehicles  rows=10 total=44",
+      "title": "车辆列表 /api/admin/vehicles  rows=10 total=46",
       "status": "PASS",
       "detail": "",
       "suite": "logs/smoke_regression_rongli.py",
@@ -1236,7 +1322,7 @@
       "id": "STK-001",
       "module": "令牌续期",
       "priority": "P0",
-      "title": "登录返回访问令牌与刷新令牌  sessionId=641",
+      "title": "登录返回访问令牌与刷新令牌  sessionId=685",
       "status": "PASS",
       "detail": "",
       "suite": "logs/verify_token_refresh.py",
@@ -1286,7 +1372,7 @@
       "id": "STK-006",
       "module": "令牌续期",
       "priority": "P0",
-      "title": "切换后的新访问令牌可用（前端必须落盘）  HTTP=200 {'sessionId': '641', 'activeRole': 'OWNER', 'stationId': None, 'contextVersion': 2, 'absoluteExpiresAt': '2026-11-22T08:23:13.609Z', 'profile': {'accountId': '1', 'nickname': '演示车主', 'phoneBound': True, 'status': 'ACTIVE', 'roles': ['OWNER', 'DRIVER'], 'serviceName': '车主_001', 'driverQualificationStatus': 'APPROVED', 'driverListeningEnabled': True, 'employeeBound': False, 'employeeStationCount': 0, 'employeeBindSource': None}, 'stations': []}",
+      "title": "切换后的新访问令牌可用（前端必须落盘）  HTTP=200 {'sessionId': '685', 'activeRole': 'OWNER', 'stationId': None, 'contextVersion': 2, 'absoluteExpiresAt': '2026-12-03T02:23:49.315Z', 'profile': {'accountId': '1', 'nickname': '演示车主', 'phoneBound': True, 'status': 'ACTIVE', 'roles': ['OWNER', 'DRIVER'], 'serviceName': '车主_001', 'driverQualificationStatus': 'APPROVED', 'driverListeningEnabled': True, 'employeeBound': False, 'employeeStationCount': 0, 'employeeBindSource': None}, 'stations': []}",
       "status": "PASS",
       "detail": "",
       "suite": "logs/verify_token_refresh.py",
@@ -1336,7 +1422,7 @@
       "id": "STK-011",
       "module": "令牌续期",
       "priority": "P0",
-      "title": "并发中成功签发的令牌未被对方撤销  HTTP=200 {'sessionId': '641', 'activeRole': 'OWNER', 'stationId': None, 'contextVersion': 2, 'absoluteExpiresAt': '2026-11-22T08:23:13.609Z', 'profile': {'accountId': '1', 'nickname': '演示车主', 'phoneBound': True, 'status': 'ACTIVE', 'roles': ['OWNER', 'DRIVER'], 'serviceName': '车主_001', 'driverQualificationStatus': 'APPROVED', 'driverListeningEnabled': True, 'employeeBound': False, 'employeeStationCount': 0, 'employeeBindSource': None}, 'stations': []}",
+      "title": "并发中成功签发的令牌未被对方撤销  HTTP=200 {'sessionId': '685', 'activeRole': 'OWNER', 'stationId': None, 'contextVersion': 2, 'absoluteExpiresAt': '2026-12-03T02:23:49.315Z', 'profile': {'accountId': '1', 'nickname': '演示车主', 'phoneBound': True, 'status': 'ACTIVE', 'roles': ['OWNER', 'DRIVER'], 'serviceName': '车主_001', 'driverQualificationStatus': 'APPROVED', 'driverListeningEnabled': True, 'employeeBound': False, 'employeeStationCount': 0, 'employeeBindSource': None}, 'stations': []}",
       "status": "PASS",
       "detail": "",
       "suite": "logs/verify_token_refresh.py",
@@ -2366,7 +2452,7 @@
       "id": "SAF-026",
       "module": "售后申诉对账",
       "priority": "P0",
-      "title": "--- 罚款记录已生成  penaltyId=23",
+      "title": "--- 罚款记录已生成  penaltyId=25",
       "status": "PASS",
       "detail": "",
       "suite": "logs/verify_aftersale_flow.py",
@@ -2406,7 +2492,7 @@
       "id": "SAF-030",
       "module": "售后申诉对账",
       "priority": "P0",
-      "title": "--- 申诉已受理  appealId=23",
+      "title": "--- 申诉已受理  appealId=25",
       "status": "PASS",
       "detail": "",
       "suite": "logs/verify_aftersale_flow.py",
@@ -2446,7 +2532,7 @@
       "id": "SAF-034",
       "module": "售后申诉对账",
       "priority": "P0",
-      "title": "--- 对账异常单已创建  caseId=27",
+      "title": "--- 对账异常单已创建  caseId=29",
       "status": "PASS",
       "detail": "",
       "suite": "logs/verify_aftersale_flow.py",
@@ -2786,7 +2872,7 @@
       "id": "STM-002",
       "module": "时间口径",
       "priority": "P0",
-      "title": "派单队列可读  → 共 3 条",
+      "title": "派单队列可读  → 共 16 条",
       "status": "PASS",
       "detail": "",
       "suite": "logs/verify_time_display.py",
@@ -2856,7 +2942,7 @@
       "id": "STM-009",
       "module": "时间口径",
       "priority": "P0",
-      "title": "订单列表有上门时段文案  → 示例 '2026-10-24 15:00 - 17:00'",
+      "title": "订单列表有上门时段文案  → 示例 '2026-11-03 13:00 - 15:00'",
       "status": "PASS",
       "detail": "",
       "suite": "logs/verify_time_display.py",
@@ -3136,7 +3222,7 @@
       "id": "SIC-013",
       "module": "第三方配置",
       "priority": "P0",
-      "title": "R2 配置档案列表可读  — http=200 total=20",
+      "title": "R2 配置档案列表可读  — http=200 total=22",
       "status": "PASS",
       "detail": "",
       "suite": "logs/verify_integration_config.py",
@@ -3186,7 +3272,7 @@
       "id": "SIC-018",
       "module": "第三方配置",
       "priority": "P0",
-      "title": "L2 保存双关草稿  — revision=1 hash=c1ddf8ee9231 version=39",
+      "title": "L2 保存双关草稿  — revision=1 hash=c1ddf8ee9231 version=44",
       "status": "PASS",
       "detail": "",
       "suite": "logs/verify_integration_config.py",
@@ -3308,7 +3394,7 @@
       "priority": "P0",
       "title": "下单并支付成功",
       "status": "PASS",
-      "detail": "RL202610231623418157",
+      "detail": "RL202611031024015579",
       "suite": "logs/verify_notification_dispatch.py",
       "durationMs": null
     },
@@ -3318,7 +3404,7 @@
       "priority": "P0",
       "title": "支付成功触发了第三方通道投递记录",
       "status": "PASS",
-      "detail": "['SKIPPED\\tTENCENT_SMS\\tBOOKING_CONFIRMED\\tVI_NOTIF_NO_PROFILE\\t15']",
+      "detail": "['SKIPPED\\tTENCENT_SMS\\tBOOKING_CONFIRMED\\tVI_NOTIF_NO_PROFILE\\t18']",
       "suite": "logs/verify_notification_dispatch.py",
       "durationMs": null
     },
@@ -3328,7 +3414,7 @@
       "priority": "P0",
       "title": "投递走了配置的短信通道",
       "status": "PASS",
-      "detail": "['SKIPPED', 'TENCENT_SMS', 'BOOKING_CONFIRMED', 'VI_NOTIF_NO_PROFILE', '15']",
+      "detail": "['SKIPPED', 'TENCENT_SMS', 'BOOKING_CONFIRMED', 'VI_NOTIF_NO_PROFILE', '18']",
       "suite": "logs/verify_notification_dispatch.py",
       "durationMs": null
     },
@@ -3338,7 +3424,7 @@
       "priority": "P0",
       "title": "通道未生效时判 SKIPPED 而非静默丢弃或 FAILED",
       "status": "PASS",
-      "detail": "['SKIPPED', 'TENCENT_SMS', 'BOOKING_CONFIRMED', 'VI_NOTIF_NO_PROFILE', '15']",
+      "detail": "['SKIPPED', 'TENCENT_SMS', 'BOOKING_CONFIRMED', 'VI_NOTIF_NO_PROFILE', '18']",
       "suite": "logs/verify_notification_dispatch.py",
       "durationMs": null
     },
@@ -3348,7 +3434,7 @@
       "priority": "P0",
       "title": "跳过原因可读（通道档案未生效）",
       "status": "PASS",
-      "detail": "['SKIPPED', 'TENCENT_SMS', 'BOOKING_CONFIRMED', 'VI_NOTIF_NO_PROFILE', '15']",
+      "detail": "['SKIPPED', 'TENCENT_SMS', 'BOOKING_CONFIRMED', 'VI_NOTIF_NO_PROFILE', '18']",
       "suite": "logs/verify_notification_dispatch.py",
       "durationMs": null
     },
@@ -3358,7 +3444,7 @@
       "priority": "P0",
       "title": "投递记录回指到配置的那条模板",
       "status": "PASS",
-      "detail": "['SKIPPED', 'TENCENT_SMS', 'BOOKING_CONFIRMED', 'VI_NOTIF_NO_PROFILE', '15']",
+      "detail": "['SKIPPED', 'TENCENT_SMS', 'BOOKING_CONFIRMED', 'VI_NOTIF_NO_PROFILE', '18']",
       "suite": "logs/verify_notification_dispatch.py",
       "durationMs": null
     },
