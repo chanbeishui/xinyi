@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.xinyi.rongli.common.mapper.MiscMapper;
 import com.xinyi.rongli.common.support.ApiException;
 import com.xinyi.rongli.common.support.Crypto;
 import com.xinyi.rongli.common.support.MiniContext;
@@ -17,6 +16,7 @@ import com.xinyi.rongli.common.support.MiniPrincipal;
 import com.xinyi.rongli.common.support.Row;
 import com.xinyi.rongli.common.support.ViTime;
 import com.xinyi.rongli.admin.mapper.GovernanceMapper;
+import com.xinyi.rongli.notification.mapper.NotificationMapper;
 
 /**
  * 站内消息与隐私请求。
@@ -25,9 +25,9 @@ import com.xinyi.rongli.admin.mapper.GovernanceMapper;
 public class MessageService
 {
     @Autowired
-    private GovernanceMapper governanceMapper;
+    private NotificationMapper notificationMapper;
     @Autowired
-    private MiscMapper miscMapper;
+    private GovernanceMapper governanceMapper;
 
     @Autowired
     private Crypto crypto;
@@ -38,7 +38,7 @@ public class MessageService
         int limit = Math.min(Math.max(pageSize, 1), 100);
         int offset = (Math.max(pageNum, 1) - 1) * limit;
         List<Map<String, Object>> rows = new ArrayList<>();
-        for (Map<String, Object> m : miscMapper.listNotifications(p.accountId, p.role, offset, limit))
+        for (Map<String, Object> m : notificationMapper.listNotifications(p.accountId, p.role, offset, limit))
         {
             Row n = Row.of(m);
             if (unreadOnly && n.time("read_at") != null)
@@ -60,7 +60,7 @@ public class MessageService
         Map<String, Object> result = new LinkedHashMap<>();
         result.put("pageNum", pageNum);
         result.put("pageSize", limit);
-        result.put("unread", miscMapper.countUnread(p.accountId));
+        result.put("unread", notificationMapper.countUnread(p.accountId));
         result.put("rows", rows);
         return result;
     }
@@ -69,7 +69,7 @@ public class MessageService
     public Map<String, Object> markRead(Long messageId)
     {
         MiniPrincipal p = MiniContext.require();
-        int n = miscMapper.markNotificationRead(messageId, p.accountId);
+        int n = notificationMapper.markNotificationRead(messageId, p.accountId);
         Map<String, Object> result = new LinkedHashMap<>();
         result.put("messageId", String.valueOf(messageId));
         result.put("read", true);

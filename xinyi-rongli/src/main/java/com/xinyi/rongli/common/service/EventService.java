@@ -6,11 +6,12 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.xinyi.common.utils.SecurityUtils;
-import com.xinyi.rongli.common.mapper.MiscMapper;
 import com.xinyi.rongli.common.support.Codes;
 import com.xinyi.rongli.common.support.Json;
 import com.xinyi.rongli.common.support.MiniContext;
 import com.xinyi.rongli.common.support.MiniPrincipal;
+import com.xinyi.rongli.common.mapper.EventMapper;
+import com.xinyi.rongli.notification.mapper.NotificationMapper;
 
 /**
  * 业务事实留痕：事件流水、可靠异步消息(outbox)与站内通知。
@@ -21,7 +22,10 @@ import com.xinyi.rongli.common.support.MiniPrincipal;
 public class EventService
 {
     @Autowired
-    private MiscMapper miscMapper;
+    private EventMapper eventMapper;
+
+    @Autowired
+    private NotificationMapper notificationMapper;
 
     @Autowired
     private com.xinyi.rongli.common.support.BizConfig config;
@@ -78,7 +82,7 @@ public class EventService
             row.put("sessionId", null);
             row.put("contextVersion", null);
         }
-        miscMapper.insertEvent(row);
+        eventMapper.insertEvent(row);
     }
 
     public void record(String aggregateType, Long aggregateId, String action, Long orderId)
@@ -95,7 +99,7 @@ public class EventService
         row.put("aggregateId", aggregateId);
         row.put("eventType", eventType);
         row.put("payload", payload == null ? "{}" : Json.write(payload));
-        miscMapper.insertOutbox(row);
+        eventMapper.insertOutbox(row);
     }
 
     /** 站内消息（MINI 角色维度）；若该场景配置了订阅模板，同一事务内追加 outbox 推送 */
@@ -111,7 +115,7 @@ public class EventService
         row.put("orderId", orderId);
         row.put("scene", scene);
         row.put("content", content);
-        miscMapper.insertNotification(row);
+        notificationMapper.insertNotification(row);
         queueSubscribePush(row, accountId, orderId, scene, content);
         dispatchIntegration(row, accountId, role, orderId, scene);
     }

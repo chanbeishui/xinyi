@@ -7,10 +7,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.xinyi.rongli.common.mapper.MiscMapper;
 import com.xinyi.rongli.common.support.Json;
 import com.xinyi.rongli.common.support.Row;
 import com.xinyi.rongli.notification.service.SubscribeService;
+import com.xinyi.rongli.common.mapper.EventMapper;
 
 /**
  * outbox 可靠异步消费。
@@ -22,10 +22,9 @@ import com.xinyi.rongli.notification.service.SubscribeService;
 @Service
 public class OutboxConsumer
 {
-    private static final Logger log = LoggerFactory.getLogger(OutboxConsumer.class);
-
     @Autowired
-    private MiscMapper miscMapper;
+    private EventMapper eventMapper;
+    private static final Logger log = LoggerFactory.getLogger(OutboxConsumer.class);
 
     @Autowired
     private SubscribeService subscribeService;
@@ -38,7 +37,7 @@ public class OutboxConsumer
      */
     public int consume()
     {
-        List<Map<String, Object>> due = miscMapper.listDueOutbox(BATCH);
+        List<Map<String, Object>> due = eventMapper.listDueOutbox(BATCH);
         int done = 0;
         for (Map<String, Object> item : due)
         {
@@ -47,13 +46,13 @@ public class OutboxConsumer
             try
             {
                 deliver(row);
-                miscMapper.markOutboxDone(id);
+                eventMapper.markOutboxDone(id);
                 done++;
             }
             catch (RuntimeException e)
             {
                 log.warn("outbox 投递失败 id={} type={}", id, row.str("event_type"), e);
-                miscMapper.markOutboxRetry(id);
+                eventMapper.markOutboxRetry(id);
             }
         }
         return done;
@@ -91,6 +90,6 @@ public class OutboxConsumer
     /** 死信列表（管理端观测） */
     public List<Map<String, Object>> deadLetters(int pageNum, int pageSize)
     {
-        return miscMapper.listOutbox("FAILED", (Math.max(pageNum, 1) - 1) * pageSize, pageSize);
+        return eventMapper.listOutbox("FAILED", (Math.max(pageNum, 1) - 1) * pageSize, pageSize);
     }
 }

@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.xinyi.rongli.auth.mapper.AccountMapper;
 
-import com.xinyi.rongli.common.mapper.MiscMapper;
 import com.xinyi.rongli.common.support.ApiException;
 import com.xinyi.rongli.common.support.Codes;
 import com.xinyi.rongli.common.support.MiniContext;
@@ -19,6 +18,7 @@ import com.xinyi.rongli.common.support.Row;
 import com.xinyi.rongli.common.support.ViTime;
 import com.xinyi.rongli.common.service.EventService;
 import com.xinyi.rongli.driver.mapper.AdminDriverMapper;
+import com.xinyi.rongli.driver.mapper.PenaltyMapper;
 
 /**
  * 取消处罚与停单申诉。
@@ -30,10 +30,9 @@ import com.xinyi.rongli.driver.mapper.AdminDriverMapper;
 public class PenaltyService
 {
     @Autowired
-    private AdminDriverMapper adminDriverMapper;
-
+    private PenaltyMapper penaltyMapper;
     @Autowired
-    private MiscMapper miscMapper;
+    private AdminDriverMapper adminDriverMapper;
 
     @Autowired
     private AccountMapper accountMapper;
@@ -64,7 +63,7 @@ public class PenaltyService
     public Map<String, Object> myPenalty(Long penaltyId)
     {
         Row driver = requireDriver();
-        Row p = Row.of(miscMapper.findPenalty(penaltyId));
+        Row p = Row.of(penaltyMapper.findPenalty(penaltyId));
         if (p.isEmpty() || !Objects.equals(driver.lng("id"), p.lng("driver_id")))
         {
             throw ApiException.notFound("处罚记录不存在");
@@ -89,7 +88,7 @@ public class PenaltyService
     public Map<String, Object> submitAppeal(Long penaltyId, String reason, String evidenceFileIds)
     {
         Row driver = requireDriver();
-        Row p = Row.of(miscMapper.findPenalty(penaltyId));
+        Row p = Row.of(penaltyMapper.findPenalty(penaltyId));
         if (p.isEmpty() || !Objects.equals(driver.lng("id"), p.lng("driver_id")))
         {
             throw ApiException.notFound("处罚记录不存在");
@@ -118,7 +117,7 @@ public class PenaltyService
         row.put("driverId", driver.lng("id"));
         row.put("reason", reason);
         row.put("evidenceFileIds", evidenceFileIds);
-        miscMapper.insertAppeal(row);
+        penaltyMapper.insertAppeal(row);
         Long appealId = ((Number) row.get("id")).longValue();
         eventService.record("PENALTY", penaltyId, "APPEAL_SUBMITTED", null, null,
                 Map.of("appealId", String.valueOf(appealId)), reason);
@@ -175,7 +174,7 @@ public class PenaltyService
 
     public Map<String, Object> adminPenalty(Long penaltyId)
     {
-        Row p = Row.of(miscMapper.findPenalty(penaltyId));
+        Row p = Row.of(penaltyMapper.findPenalty(penaltyId));
         if (p.isEmpty())
         {
             throw ApiException.notFound("处罚记录不存在");
@@ -241,13 +240,13 @@ public class PenaltyService
             throw ApiException.validation("请填写处理意见，该意见会公示给代驾");
         }
         String status = approve ? "APPROVED" : "REJECTED";
-        if (miscMapper.auditAppeal(appealId, status, reviewerUserId, opinion) == 0)
+        if (penaltyMapper.auditAppeal(appealId, status, reviewerUserId, opinion) == 0)
         {
             throw ApiException.stateConflict("申诉状态已变化，请刷新");
         }
         if (approve)
         {
-            miscMapper.revokePenalty(ap.lng("penalty_id"));
+            penaltyMapper.revokePenalty(ap.lng("penalty_id"));
             eventService.record("PENALTY", ap.lng("penalty_id"), "PENALTY_REVOKED_BY_APPEAL", null, null,
                     Map.of("appealId", String.valueOf(appealId)), opinion);
         }

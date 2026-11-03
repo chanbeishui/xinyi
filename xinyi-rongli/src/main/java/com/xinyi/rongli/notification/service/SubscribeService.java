@@ -11,12 +11,12 @@ import org.springframework.stereotype.Service;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
 import com.xinyi.rongli.auth.mapper.AccountMapper;
-import com.xinyi.rongli.common.mapper.MiscMapper;
 import com.xinyi.rongli.common.support.BizConfig;
 import com.xinyi.rongli.common.support.Row;
 import com.xinyi.rongli.common.support.SubscribeSettings;
 import com.xinyi.rongli.common.support.ViTime;
 import com.xinyi.rongli.common.support.WechatMiniClient;
+import com.xinyi.rongli.notification.mapper.NotificationMapper;
 
 /**
  * 微信订阅消息（N01）。
@@ -33,6 +33,8 @@ import com.xinyi.rongli.common.support.WechatMiniClient;
 @Service
 public class SubscribeService
 {
+    @Autowired
+    private NotificationMapper notificationMapper;
     private static final Logger log = LoggerFactory.getLogger(SubscribeService.class);
 
     private static final String SEND_URL = "https://api.weixin.qq.com/cgi-bin/message/subscribe/send";
@@ -42,9 +44,6 @@ public class SubscribeService
 
     @Autowired
     private AccountMapper accountMapper;
-
-    @Autowired
-    private MiscMapper miscMapper;
 
     @Autowired
     private BizConfig config;
@@ -134,7 +133,7 @@ public class SubscribeService
         {
             return;
         }
-        miscMapper.markNotificationChannel(notificationId, channel);
+        notificationMapper.markNotificationChannel(notificationId, channel);
     }
 
     /**

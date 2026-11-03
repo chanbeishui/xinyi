@@ -23,7 +23,6 @@ import com.xinyi.rongli.auth.mapper.AccountMapper;
 import com.xinyi.rongli.aftersale.mapper.AfterSaleMapper;
 import com.xinyi.rongli.dispatch.mapper.DispatchMapper;
 import com.xinyi.rongli.ledger.mapper.LedgerMapper;
-import com.xinyi.rongli.common.mapper.MiscMapper;
 import com.xinyi.rongli.order.mapper.OrderMapper;
 import com.xinyi.rongli.order.mapper.PriceMapper;
 import com.xinyi.rongli.station.mapper.StationMapper;

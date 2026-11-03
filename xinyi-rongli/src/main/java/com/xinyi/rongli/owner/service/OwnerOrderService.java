@@ -14,7 +14,6 @@ import com.xinyi.rongli.auth.mapper.AccountMapper;
 
 import com.xinyi.rongli.dispatch.mapper.DispatchMapper;
 import com.xinyi.rongli.fulfill.mapper.FulfillMapper;
-import com.xinyi.rongli.common.mapper.MiscMapper;
 import com.xinyi.rongli.order.mapper.OrderMapper;
 import com.xinyi.rongli.payment.mapper.PayMapper;
 import com.xinyi.rongli.common.support.ApiException;
@@ -28,6 +27,8 @@ import com.xinyi.rongli.common.service.EventService;
 import com.xinyi.rongli.order.service.BookingService;
 import com.xinyi.rongli.aftersale.mapper.AdminAfterSaleMapper;
 import com.xinyi.rongli.fulfill.mapper.AdminFulfillMapper;
+import com.xinyi.rongli.aftersale.mapper.AfterSaleCaseMapper;
+import com.xinyi.rongli.common.mapper.EventMapper;
 
 /**
  * 车主侧订单延伸能力：时间轴、可信支付结果、结构化检测结果、服务争议与评价。
@@ -37,6 +38,11 @@ import com.xinyi.rongli.fulfill.mapper.AdminFulfillMapper;
 @Service
 public class OwnerOrderService
 {
+    @Autowired
+    private AfterSaleCaseMapper afterSaleCaseMapper;
+
+    @Autowired
+    private EventMapper eventMapper;
     @Autowired
     private AdminAfterSaleMapper adminAfterSaleMapper;
 
@@ -50,9 +56,6 @@ public class OwnerOrderService
 
     @Autowired
     private FulfillMapper fulfillMapper;
-
-    @Autowired
-    private MiscMapper miscMapper;
 
     @Autowired
     private AccountMapper accountMapper;
@@ -73,7 +76,7 @@ public class OwnerOrderService
         MiniPrincipal p = MiniContext.require();
         Row order = bookingService.requireOwnerOrder(orderNo, p.accountId);
         List<Map<String, Object>> nodes = new ArrayList<>();
-        for (Map<String, Object> e : miscMapper.timelineEvents(order.lng("id")))
+        for (Map<String, Object> e : eventMapper.timelineEvents(order.lng("id")))
         {
             Row ev = Row.of(e);
             Map<String, Object> node = new LinkedHashMap<>();
@@ -310,7 +313,7 @@ public class OwnerOrderService
         {
             throw ApiException.validation("问题描述不能超过 1000 字");
         }
-        Map<String, Object> existing = miscMapper.findLatestDispute(order.lng("id"));
+        Map<String, Object> existing = afterSaleCaseMapper.findLatestDispute(order.lng("id"));
         if (existing != null && "OPEN".equals(Row.of(existing).str("status")))
         {
             throw ApiException.stateConflict("本单已有处理中的争议，请等待处理结果");
@@ -320,12 +323,12 @@ public class OwnerOrderService
         row.put("type", req.type == null ? "SERVICE" : req.type.toUpperCase());
         row.put("description", req.description.trim());
         row.put("fileIds", req.fileIds);
-        miscMapper.insertDispute(row);
+        afterSaleCaseMapper.insertDispute(row);
         Long disputeId = ((Number) row.get("id")).longValue();
         eventService.record("ORDER", order.lng("id"), "DISPUTE_CREATED", order.lng("id"), null,
                 Map.of("disputeId", String.valueOf(disputeId)), req.description);
         eventService.publish("DISPUTE", disputeId, "DISPUTE_CREATED", Map.of("orderNo", orderNo));
-        return disputeView(Row.of(miscMapper.findDispute(disputeId)));
+        return disputeView(Row.of(afterSaleCaseMapper.findDispute(disputeId)));
     }
 
     public Map<String, Object> listDisputes(String orderNo)
@@ -388,10 +391,10 @@ public class OwnerOrderService
         row.put("tags", req.tags);
         row.put("content", req.content == null ? null
                 : req.content.substring(0, Math.min(req.content.length(), 500)));
-        miscMapper.insertReview(row);
+        afterSaleCaseMapper.insertReview(row);
         eventService.record("ORDER", order.lng("id"), "REVIEW_SUBMITTED", order.lng("id"), null,
                 Map.of("score", String.valueOf(req.score)), null);
-        Row saved = Row.of(miscMapper.findReview(order.lng("id")));
+        Row saved = Row.of(afterSaleCaseMapper.findReview(order.lng("id")));
         Map<String, Object> view = new LinkedHashMap<>();
         view.put("orderNo", orderNo);
         view.put("score", saved.intg("score", req.score));
@@ -415,7 +418,7 @@ public class OwnerOrderService
             view.put("driverName", driver.str("nickname"));
             view.put("acceptedAt", ViTime.iso(assignment.time("accepted_at")));
         }
-        Row review = Row.of(miscMapper.findReview(order.lng("id")));
+        Row review = Row.of(afterSaleCaseMapper.findReview(order.lng("id")));
         view.put("reviewed", !review.isEmpty() && Objects.nonNull(review.get("score")));
         return view;
     }

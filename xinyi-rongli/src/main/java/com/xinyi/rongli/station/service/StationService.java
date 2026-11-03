@@ -21,7 +21,6 @@ import com.xinyi.rongli.driver.dto.DriverDtos;
 import com.xinyi.rongli.auth.mapper.AccountMapper;
 import com.xinyi.rongli.dispatch.mapper.DispatchMapper;
 import com.xinyi.rongli.fulfill.mapper.FulfillMapper;
-import com.xinyi.rongli.common.mapper.MiscMapper;
 import com.xinyi.rongli.order.mapper.OrderMapper;
 import com.xinyi.rongli.station.mapper.StationMapper;
 import com.xinyi.rongli.common.support.ApiException;
@@ -33,6 +32,7 @@ import com.xinyi.rongli.common.support.MiniContext;
 import com.xinyi.rongli.common.support.MiniPrincipal;
 import com.xinyi.rongli.common.support.Row;
 import com.xinyi.rongli.common.support.ViTime;
+import com.xinyi.rongli.aftersale.mapper.AfterSaleCaseMapper;
 
 /**
  * 检测点工作台：待收车/检测中订单、行驶证复核、结构化结果登记与容量维护。
@@ -42,6 +42,8 @@ import com.xinyi.rongli.common.support.ViTime;
 @Service
 public class StationService
 {
+    @Autowired
+    private AfterSaleCaseMapper afterSaleCaseMapper;
     @Autowired
     private DeptScope deptScope;
 
@@ -59,9 +61,6 @@ public class StationService
 
     @Autowired
     private AccountMapper accountMapper;
-
-    @Autowired
-    private MiscMapper miscMapper;
 
     @Autowired
     private BookingService bookingService;
@@ -693,7 +692,7 @@ public class StationService
         row.put("type", req.type);
         row.put("description", req.description);
         row.put("fileIds", req.fileIds);
-        miscMapper.insertException(row);
+        afterSaleCaseMapper.insertException(row);
         eventService.record("ORDER", order.lng("id"), "EXCEPTION_REPORTED", order.lng("id"), null,
                 Map.of("type", req.type), req.description);
         Map<String, Object> view = new LinkedHashMap<>();

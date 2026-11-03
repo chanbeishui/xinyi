@@ -23,7 +23,6 @@ import com.xinyi.rongli.auth.mapper.AccountMapper;
 import com.xinyi.rongli.aftersale.mapper.AfterSaleMapper;
 import com.xinyi.rongli.dispatch.mapper.DispatchMapper;
 import com.xinyi.rongli.ledger.mapper.LedgerMapper;
-import com.xinyi.rongli.common.mapper.MiscMapper;
 import com.xinyi.rongli.order.mapper.OrderMapper;
 import com.xinyi.rongli.order.mapper.PriceMapper;
 import com.xinyi.rongli.station.mapper.StationMapper;
@@ -37,6 +36,7 @@ import com.xinyi.rongli.common.support.Json;
 import com.xinyi.rongli.common.support.Row;
 import com.xinyi.rongli.common.support.ViTime;
 import com.xinyi.rongli.aftersale.mapper.AdminAfterSaleMapper;
+import com.xinyi.rongli.aftersale.mapper.AfterSaleCaseMapper;
 
 /**
  * 管理端 aftersale 域服务。由原 AdminService 按功能域拆分而来，方法体与 SQL 保持原样。
@@ -45,9 +45,9 @@ import com.xinyi.rongli.aftersale.mapper.AdminAfterSaleMapper;
 public class AfterSaleAdminService
 {
     @Autowired
-    private AdminAfterSaleMapper adminAfterSaleMapper;
+    private AfterSaleCaseMapper afterSaleCaseMapper;
     @Autowired
-    private MiscMapper miscMapper;
+    private AdminAfterSaleMapper adminAfterSaleMapper;
     @Autowired
     private OrderMapper orderMapper;
     @Autowired
@@ -58,7 +58,7 @@ public class AfterSaleAdminService
         int limit = Math.min(Math.max(pageSize, 1), 100);
         int offset = (Math.max(pageNum, 1) - 1) * limit;
         List<Map<String, Object>> rows = new ArrayList<>();
-        for (Map<String, Object> d : miscMapper.listDisputes(status, offset, limit))
+        for (Map<String, Object> d : afterSaleCaseMapper.listDisputes(status, offset, limit))
         {
             rows.add(disputeView(Row.of(d)));
         }
@@ -94,7 +94,7 @@ public class AfterSaleAdminService
         {
             throw ApiException.validation("请填写处理结论");
         }
-        miscMapper.resolveDispute(disputeId, conclusion, userId);
+        afterSaleCaseMapper.resolveDispute(disputeId, conclusion, userId);
         eventService.record("DISPUTE", disputeId, "DISPUTE_RESOLVED", d.lng("order_id"), null,
                 Map.of("status", "RESOLVED"), conclusion);
         Row order = Row.of(orderMapper.findDetailById(d.lng("order_id")));
@@ -107,7 +107,7 @@ public class AfterSaleAdminService
         int limit = Math.min(Math.max(pageSize, 1), 100);
         int offset = (Math.max(pageNum, 1) - 1) * limit;
         List<Map<String, Object>> rows = new ArrayList<>();
-        for (Map<String, Object> e : miscMapper.listExceptions(status, offset, limit))
+        for (Map<String, Object> e : afterSaleCaseMapper.listExceptions(status, offset, limit))
         {
             Row ex = Row.of(e);
             Map<String, Object> item = new LinkedHashMap<>();
@@ -147,7 +147,7 @@ public class AfterSaleAdminService
         {
             throw ApiException.validation("请填写处理结论");
         }
-        miscMapper.resolveException(exceptionId, resolution, userId);
+        afterSaleCaseMapper.resolveException(exceptionId, resolution, userId);
         eventService.record("EXCEPTION", exceptionId, "EXCEPTION_RESOLVED", e.lng("order_id"), null,
                 Map.of("status", "RESOLVED"), resolution);
         Map<String, Object> view = new LinkedHashMap<>();

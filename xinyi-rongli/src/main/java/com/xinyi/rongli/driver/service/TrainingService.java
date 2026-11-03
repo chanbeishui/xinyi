@@ -16,7 +16,6 @@ import com.alibaba.fastjson2.JSONObject;
 import com.xinyi.rongli.driver.dto.DriverDtos;
 import com.xinyi.rongli.auth.mapper.AccountMapper;
 
-import com.xinyi.rongli.common.mapper.MiscMapper;
 import com.xinyi.rongli.common.support.ApiException;
 import com.xinyi.rongli.common.support.BizConfig;
 import com.xinyi.rongli.common.support.Codes;
@@ -27,6 +26,7 @@ import com.xinyi.rongli.common.support.Row;
 import com.xinyi.rongli.common.support.ViTime;
 import com.xinyi.rongli.common.service.EventService;
 import com.xinyi.rongli.driver.mapper.AdminDriverMapper;
+import com.xinyi.rongli.driver.mapper.TrainingMapper;
 
 /**
  * 代驾资格培训与考试。
@@ -38,11 +38,10 @@ import com.xinyi.rongli.driver.mapper.AdminDriverMapper;
 public class TrainingService
 {
     @Autowired
+    private TrainingMapper trainingMapper;
+    @Autowired
     private AdminDriverMapper adminDriverMapper;
     private static final int SESSION_MINUTES = 60;
-
-    @Autowired
-    private MiscMapper miscMapper;
 
     @Autowired
     private AccountMapper accountMapper;
@@ -64,11 +63,11 @@ public class TrainingService
         Row application = Row.of(accountMapper.findLatestApplication(driver.lng("id")));
         Long applicationId = application.isEmpty() ? null : application.lng("id");
         List<Map<String, Object>> rows = new ArrayList<>();
-        for (Map<String, Object> c : miscMapper.listPublishedCourses())
+        for (Map<String, Object> c : trainingMapper.listPublishedCourses())
         {
             Row course = Row.of(c);
             Row progress = applicationId == null ? Row.empty()
-                    : Row.of(miscMapper.findProgress(applicationId, course.lng("id")));
+                    : Row.of(trainingMapper.findProgress(applicationId, course.lng("id")));
             Map<String, Object> item = new LinkedHashMap<>();
             item.put("trainingId", String.valueOf(course.lng("id")));
             item.put("courseKey", course.str("course_key"));
@@ -98,7 +97,7 @@ public class TrainingService
         Row application = Row.of(accountMapper.findLatestApplication(driver.lng("id")));
         Long applicationId = application.isEmpty() ? null : application.lng("id");
         Row progress = applicationId == null ? Row.empty()
-                : Row.of(miscMapper.findProgress(applicationId, trainingId));
+                : Row.of(trainingMapper.findProgress(applicationId, trainingId));
 
         Map<String, Object> view = new LinkedHashMap<>();
         view.put("trainingId", String.valueOf(trainingId));
@@ -114,7 +113,7 @@ public class TrainingService
         view.put("verifiedSeconds", progress.isEmpty() ? 0 : progress.intg("verified_duration_seconds", 0));
         view.put("progressStatus", progress.isEmpty() ? "NOT_STARTED" : progress.str("status"));
         view.put("lastPositionSeconds", progress.isEmpty() ? 0 : progress.intg("last_position_seconds", 0));
-        view.put("questionCount", miscMapper.listQuestions(trainingId).size());
+        view.put("questionCount", trainingMapper.listQuestions(trainingId).size());
         view.put("canExam", !progress.isEmpty()
                 && ("READY_FOR_EXAM".equals(progress.str("status")) || "PASSED".equals(progress.str("status"))));
         return view;
@@ -131,8 +130,8 @@ public class TrainingService
         progressRow.put("applicationId", applicationId);
         progressRow.put("driverId", driver.lng("id"));
         progressRow.put("trainingId", trainingId);
-        miscMapper.ensureProgress(progressRow);
-        Row progress = Row.of(miscMapper.findProgress(applicationId, trainingId));
+        trainingMapper.ensureProgress(progressRow);
+        Row progress = Row.of(trainingMapper.findProgress(applicationId, trainingId));
 
         String sessionId = crypto.randomToken().substring(0, 32);
         // 同一进度只保留一个有效会话，避免多端并行刷时长
@@ -175,7 +174,7 @@ public class TrainingService
             throw ApiException.validation("缺少学习会话");
         }
         Long applicationId = requireApplicationId(driver);
-        Row progress = Row.of(miscMapper.findProgress(applicationId, trainingId));
+        Row progress = Row.of(trainingMapper.findProgress(applicationId, trainingId));
         if (progress.isEmpty())
         {
             throw ApiException.stateConflict("请先开始学习会话");
@@ -206,7 +205,7 @@ public class TrainingService
         // 乱序或重放：幂等返回当前状态，不累加学时
         if (sequence <= lastSequence)
         {
-            return progressView(trainingId, Row.of(miscMapper.findProgress(applicationId, trainingId)),
+            return progressView(trainingId, Row.of(trainingMapper.findProgress(applicationId, trainingId)),
                     course.intg("required_duration_seconds", 0), 0, "DUPLICATE", lastPosition);
         }
 
@@ -241,8 +240,8 @@ public class TrainingService
 
         adminDriverMapper.touchPlayback(playback.lng("id"), sequence, position);
         int required = course.intg("required_duration_seconds", 0);
-        miscMapper.addProgress(progress.lng("id"), allowance, position, required);
-        Row after = Row.of(miscMapper.findProgress(applicationId, trainingId));
+        trainingMapper.addProgress(progress.lng("id"), allowance, position, required);
+        Row after = Row.of(trainingMapper.findProgress(applicationId, trainingId));
         if ("READY_FOR_EXAM".equals(after.str("status")) && !"READY_FOR_EXAM".equals(progress.str("status")))
         {
             eventService.record("TRAINING", trainingId, "TRAINING_COMPLETED", null, null,
@@ -273,18 +272,18 @@ public class TrainingService
         Row driver = requireDriver();
         Row course = requireCourse(trainingId);
         Long applicationId = requireApplicationId(driver);
-        Row progress = Row.of(miscMapper.findProgress(applicationId, trainingId));
+        Row progress = Row.of(trainingMapper.findProgress(applicationId, trainingId));
         if (progress.isEmpty() || (!"READY_FOR_EXAM".equals(progress.str("status"))
                 && !"PASSED".equals(progress.str("status"))))
         {
             throw ApiException.stateConflict("有效学时未达标，暂不能参加考试");
         }
-        Map<String, Object> open = miscMapper.findOpenAttempt(applicationId, trainingId);
+        Map<String, Object> open = trainingMapper.findOpenAttempt(applicationId, trainingId);
         if (open != null)
         {
             return attemptView(Row.of(open), course);
         }
-        List<Map<String, Object>> questions = miscMapper.listQuestions(trainingId);
+        List<Map<String, Object>> questions = trainingMapper.listQuestions(trainingId);
         if (questions.isEmpty())
         {
             throw ApiException.stateConflict("该课程尚未配置考试题目");
@@ -301,7 +300,7 @@ public class TrainingService
                     : JSON.parseArray(question.json("options_json")));
             snapshot.add(item);
         }
-        int attemptNo = miscMapper.maxAttemptNo(applicationId, trainingId) + 1;
+        int attemptNo = trainingMapper.maxAttemptNo(applicationId, trainingId) + 1;
         int limit = course.intg("attempt_time_limit_seconds", 1800);
         Map<String, Object> row = new LinkedHashMap<>();
         row.put("applicationId", applicationId);
@@ -310,15 +309,15 @@ public class TrainingService
         row.put("attemptNo", attemptNo);
         row.put("questionSnapshot", snapshot.toJSONString());
         row.put("expiresAt", ViTime.now().plusSeconds(limit));
-        miscMapper.insertAttempt(row);
+        trainingMapper.insertAttempt(row);
         Long attemptId = ((Number) row.get("id")).longValue();
-        return attemptView(Row.of(miscMapper.findAttempt(attemptId)), course);
+        return attemptView(Row.of(trainingMapper.findAttempt(attemptId)), course);
     }
 
     public Map<String, Object> attemptDetail(Long attemptId)
     {
         Row driver = requireDriver();
-        Row attempt = Row.of(miscMapper.findAttempt(attemptId));
+        Row attempt = Row.of(trainingMapper.findAttempt(attemptId));
         if (attempt.isEmpty() || !Objects.equals(driver.lng("id"), attempt.lng("driver_id")))
         {
             throw ApiException.notFound("考试尝试不存在");
@@ -336,7 +335,7 @@ public class TrainingService
         {
             throw ApiException.validation("缺少考试尝试");
         }
-        Row attempt = Row.of(miscMapper.findAttempt(req.attemptId));
+        Row attempt = Row.of(trainingMapper.findAttempt(req.attemptId));
         if (attempt.isEmpty() || !Objects.equals(driver.lng("id"), attempt.lng("driver_id")))
         {
             throw ApiException.notFound("考试尝试不存在");
@@ -360,7 +359,7 @@ public class TrainingService
                 answers.put(e.getKey(), e.getValue() == null ? "" : e.getValue().trim().toUpperCase());
             }
         }
-        List<Map<String, Object>> questions = miscMapper.listQuestions(trainingId);
+        List<Map<String, Object>> questions = trainingMapper.listQuestions(trainingId);
         int correct = 0;
         JSONArray detail = new JSONArray();
         for (Map<String, Object> q : questions)
@@ -393,7 +392,7 @@ public class TrainingService
         }
         if ("PASSED".equals(status))
         {
-            Row progress = Row.of(miscMapper.findProgress(attempt.lng("application_id"), trainingId));
+            Row progress = Row.of(trainingMapper.findProgress(attempt.lng("application_id"), trainingId));
             if (!progress.isEmpty())
             {
                 adminDriverMapper.setProgress(progress.lng("id"), progress.intg("verified_duration_seconds", 0),
@@ -506,9 +505,9 @@ public class TrainingService
             {
                 saveQuestions(id, req.questions);
             }
-            return courseView(Row.of(miscMapper.findCourse(id)));
+            return courseView(Row.of(trainingMapper.findCourse(id)));
         }
-        Row existing = Row.of(miscMapper.findCourse(trainingId));
+        Row existing = Row.of(trainingMapper.findCourse(trainingId));
         if (existing.isEmpty())
         {
             throw ApiException.notFound("培训课程不存在");
@@ -531,7 +530,7 @@ public class TrainingService
         {
             saveQuestions(trainingId, req.questions);
         }
-        return courseView(Row.of(miscMapper.findCourse(trainingId)));
+        return courseView(Row.of(trainingMapper.findCourse(trainingId)));
     }
 
     private void saveQuestions(Long trainingId, List<DriverDtos.TrainingQuestionReq> questions)
@@ -588,7 +587,7 @@ public class TrainingService
     @Transactional
     public Map<String, Object> publishCourse(Long trainingId, Long userId)
     {
-        Row course = Row.of(miscMapper.findCourse(trainingId));
+        Row course = Row.of(trainingMapper.findCourse(trainingId));
         if (course.isEmpty())
         {
             throw ApiException.notFound("培训课程不存在");
@@ -597,7 +596,7 @@ public class TrainingService
         {
             throw ApiException.stateConflict("该课程已发布");
         }
-        if (miscMapper.listQuestions(trainingId).isEmpty())
+        if (trainingMapper.listQuestions(trainingId).isEmpty())
         {
             throw ApiException.stateConflict("课程尚未配置考试题目，不能发布");
         }
@@ -605,19 +604,19 @@ public class TrainingService
         eventService.record("TRAINING", trainingId, "COURSE_PUBLISHED", null, null,
                 Map.of("courseKey", course.str("course_key"),
                         "version", String.valueOf(course.intg("course_version"))), null);
-        return courseView(Row.of(miscMapper.findCourse(trainingId)));
+        return courseView(Row.of(trainingMapper.findCourse(trainingId)));
     }
 
     public Map<String, Object> adminCourse(Long trainingId)
     {
-        Row course = Row.of(miscMapper.findCourse(trainingId));
+        Row course = Row.of(trainingMapper.findCourse(trainingId));
         if (course.isEmpty())
         {
             throw ApiException.notFound("培训课程不存在");
         }
         Map<String, Object> view = courseView(course);
         List<Map<String, Object>> questions = new ArrayList<>();
-        for (Map<String, Object> q : miscMapper.listQuestions(trainingId))
+        for (Map<String, Object> q : trainingMapper.listQuestions(trainingId))
         {
             questions.add(questionView(Row.of(q)));
         }
@@ -663,7 +662,7 @@ public class TrainingService
 
     private Row requireCourse(Long trainingId)
     {
-        Row course = Row.of(miscMapper.findCourse(trainingId));
+        Row course = Row.of(trainingMapper.findCourse(trainingId));
         if (course.isEmpty())
         {
             throw ApiException.notFound("培训课程不存在");
