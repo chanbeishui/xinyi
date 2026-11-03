@@ -13,8 +13,11 @@ PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
         <setting name="defaultExecutorType"      value="SIMPLE" />
 		<!-- 指定 MyBatis 所用日志的具体实现 -->
         <setting name="logImpl"                  value="SLF4J"  />
-        <!-- 使用驼峰命名法转换字段 -->
-		<!-- <setting name="mapUnderscoreToCamelCase" value="true"/> -->
+        <!-- 使用驼峰命名法转换字段
+             荣利模块的实体类按 Java 驼峰命名，数据库为 snake_case，依赖本开关完成自动映射。
+             显式声明 resultMap 的 XML mapper 不受影响（resultMap 优先），
+             autoMappingBehavior 保持默认 PARTIAL，仅映射未显式声明的列。 -->
+        <setting name="mapUnderscoreToCamelCase" value="true"   />
 	</settings>
 	
 </configuration>
