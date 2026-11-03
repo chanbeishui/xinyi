@@ -64,13 +64,21 @@ public class AuthService
     @Autowired
     private com.xinyi.rongli.support.WechatMiniClient wechatClient;
 
-    @Value("${rongli.wechat.mock:true}")
-    private boolean wechatMock;
-
     @Value("${rongli.wechat.appId:wxdev000000000000}")
     private String defaultAppId;
 
     // ------------------------------------------------------------------ 登录
+
+    /** 生效的小程序 appId：配置页（rongli.mini.appId）→ yml（rongli.wechat.appId）→ 开发号兜底 */
+    private String loginAppId()
+    {
+        String fromConfig = wechatClient.effectiveAppId();
+        if (fromConfig != null && !fromConfig.isBlank())
+        {
+            return fromConfig.trim();
+        }
+        return defaultAppId;
+    }
 
     @Transactional
     public Map<String, Object> login(MiniDtos.LoginReq req)
@@ -79,7 +87,10 @@ public class AuthService
         {
             throw ApiException.validation("缺少微信登录 code");
         }
-        String appId = req.appId == null || req.appId.isBlank() ? defaultAppId : req.appId.trim();
+        // 真实联调时 appId 必须与 AppSecret、支付商户号同主体：优先用后台「订阅消息」页配置的
+        // rongli.mini.appId，其次 yml 的 rongli.wechat.appId，最后才是历史开发号兜底。
+        // 若这里仍取 yml 的开发号，jscode2session 会稳定返回 invalid appid（40125）。
+        String appId = req.appId == null || req.appId.isBlank() ? loginAppId() : req.appId.trim();
         com.xinyi.rongli.support.WechatMiniClient.WechatSession wechat =
                 wechatClient.resolveOpenId(appId, req.code);
         String openId = wechat.openId();

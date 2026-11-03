@@ -59,7 +59,26 @@ public class WechatMiniClient
     {
     }
 
+    /**
+     * 是否处于联调模式。
+     *
+     * <p>优先级：{@code sys_config} 的 {@code rongli.mini.mock}（后台可切换，保存即生效）
+     * → application.yml 的 {@code rongli.wechat.mock} → 默认 true。
+     * 之所以允许后台覆盖，是因为真实联调时若只能改 yml，就必须重启才能让
+     * 「订阅消息真实下发 / 微信登录 / 手机号授权」脱离 mock，凭据填了也验证不了。</p>
+     */
     public boolean isMock()
+    {
+        String fromConfig = bizConfig == null ? "" : bizConfig.get("rongli.mini.mock", "");
+        if ("true".equalsIgnoreCase(fromConfig) || "false".equalsIgnoreCase(fromConfig))
+        {
+            return Boolean.parseBoolean(fromConfig.trim());
+        }
+        return mock;
+    }
+
+    /** yml 里的原始开关值，供体检页展示「配置来源」 */
+    public boolean ymlMock()
     {
         return mock;
     }
@@ -102,7 +121,7 @@ public class WechatMiniClient
             return null;
         }
         String code = phoneCode.trim();
-        if (mock)
+        if (isMock())
         {
             // 联调模式没有真实 code：约定直接传 11 位手机号，避免开发者工具无法验证绑定链路
             if (!code.matches("\\d{11}"))
@@ -154,7 +173,7 @@ public class WechatMiniClient
         {
             throw ApiException.validation("缺少微信登录 code");
         }
-        if (mock)
+        if (isMock())
         {
             String openId = code.startsWith("dev_") ? code : "dev_" + code;
             return new WechatSession(openId, null);

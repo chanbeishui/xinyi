@@ -43,6 +43,8 @@ public class WechatPayClient
 
     private static final String PATH_REFUND = "/v3/refund/domestic/refunds";
 
+    private static final String PATH_CERTIFICATES = "/v3/certificates";
+
     private final HttpClient http = HttpClient.newBuilder()
             .connectTimeout(Duration.ofSeconds(5))
             .build();
@@ -145,6 +147,81 @@ public class WechatPayClient
         view.put("status", resp.getString("status"));
         view.put("channel", "WECHAT");
         return view;
+    }
+
+    /**
+     * 拉取微信支付平台证书（{@code GET /v3/certificates}）并解密。
+     *
+     * <p>回调验签必须用平台证书，而证书在商户平台只能手工下载、且每年轮换。这里直接用
+     * 商户私钥签名请求接口，再用 APIv3 密钥解出证书明文，省掉"粘贴错/过期没换导致验签失败"
+     * 这类联调最常见的坑。仅需商户号 + 证书序列号 + 商户私钥 + APIv3 密钥，不需要 AppID。</p>
+     *
+     * @return 按到期时间倒序的证书清单；至少一项
+     */
+    public java.util.List<Map<String, Object>> fetchPlatformCertificates(PaySettings settings)
+    {
+        java.util.List<String> missing = credentialMissing(settings);
+        if (!missing.isEmpty())
+        {
+            throw new ApiException(HttpStatus.SERVICE_UNAVAILABLE, Codes.Error.CHANNEL_UNAVAILABLE,
+                    "拉取平台证书需要先补全：" + String.join("、", missing));
+        }
+        JSONObject resp = request(settings, "GET", PATH_CERTIFICATES, "");
+        com.alibaba.fastjson2.JSONArray data = resp.getJSONArray("data");
+        java.util.List<Map<String, Object>> out = new java.util.ArrayList<>();
+        if (data == null)
+        {
+            return out;
+        }
+        for (int i = 0; i < data.size(); i++)
+        {
+            JSONObject item = data.getJSONObject(i);
+            JSONObject enc = item.getJSONObject("encrypt_certificate");
+            if (enc == null)
+            {
+                continue;
+            }
+            String pem = decryptResource(settings.apiV3Key(), enc.getString("associated_data"),
+                    enc.getString("nonce"), enc.getString("ciphertext"));
+            Map<String, Object> view = new LinkedHashMap<>();
+            view.put("serialNo", item.getString("serial_no"));
+            view.put("effectiveTime", item.getString("effective_time"));
+            view.put("expireTime", item.getString("expire_time"));
+            view.put("algorithm", enc.getString("algorithm"));
+            view.put("certificate", pem);
+            out.add(view);
+        }
+        // 新的在前：取第一个即为当前应配置的验签证书
+        out.sort((a, b) -> String.valueOf(b.get("expireTime")).compareTo(String.valueOf(a.get("expireTime"))));
+        return out;
+    }
+
+    /**
+     * 拉取证书所需的凭据缺失清单。
+     *
+     * <p>与 {@link PaySettings#missingFields()} 的区别：不要求 AppID/回调地址/商品描述，
+     * 因为"取证书"这一步恰恰是配置回调验签之前要做的事。</p>
+     */
+    public java.util.List<String> credentialMissing(PaySettings settings)
+    {
+        java.util.List<String> missing = new java.util.ArrayList<>();
+        if (settings.mchId() == null || !PaySettings.MCH_ID.matcher(settings.mchId().trim()).matches())
+        {
+            missing.add("商户号");
+        }
+        if (settings.serialNo() == null || !PaySettings.SERIAL_NO.matcher(settings.serialNo().trim()).matches())
+        {
+            missing.add("商户证书序列号");
+        }
+        if (settings.privateKey() == null)
+        {
+            missing.add("商户私钥");
+        }
+        if (settings.apiV3Key() == null || !PaySettings.API_V3_KEY.matcher(settings.apiV3Key().trim()).matches())
+        {
+            missing.add("APIv3 密钥");
+        }
+        return missing;
     }
 
     /**

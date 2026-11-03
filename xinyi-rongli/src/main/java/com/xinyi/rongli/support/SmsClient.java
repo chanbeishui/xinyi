@@ -132,7 +132,9 @@ public class SmsClient
             canonical.append(percentEncode(e.getKey())).append('=').append(percentEncode(e.getValue()));
         }
         String stringToSign = "GET&" + percentEncode("/") + "&" + percentEncode(canonical.toString());
-        String signature = hmacBase64(settings.accessKeySecret() + "&", stringToSign);
+        // 阿里云 RPC 签名固定 HMAC-SHA1（不是 SHA256）：算法名与 SignatureMethod 参数必须一致，
+        // 否则真实 AccessKeySecret 下会稳定返回 SignatureDoesNotMatch
+        String signature = hmacBase64("HmacSHA1", settings.accessKeySecret() + "&", stringToSign);
 
         StringBuilder url = new StringBuilder(ALIYUN_ENDPOINT).append('?');
         for (Map.Entry<String, String> e : q.entrySet())
@@ -277,22 +279,28 @@ public class SmsClient
         }
     }
 
-    private static String hmacBase64(String key, String message)
+    private static String hmacBase64(String algorithm, String key, String message)
     {
-        return Base64.getEncoder().encodeToString(hmac(key.getBytes(StandardCharsets.UTF_8), message));
+        return Base64.getEncoder().encodeToString(hmac(algorithm, key.getBytes(StandardCharsets.UTF_8), message));
     }
 
+    /** 腾讯云 TC3 固定 HmacSHA256 */
     private static byte[] hmac(byte[] key, String message)
+    {
+        return hmac("HmacSHA256", key, message);
+    }
+
+    private static byte[] hmac(String algorithm, byte[] key, String message)
     {
         try
         {
-            Mac mac = Mac.getInstance("HmacSHA256");
-            mac.init(new SecretKeySpec(key, "HmacSHA256"));
+            Mac mac = Mac.getInstance(algorithm);
+            mac.init(new SecretKeySpec(key, algorithm));
             return mac.doFinal(message.getBytes(StandardCharsets.UTF_8));
         }
         catch (Exception e)
         {
-            throw new IllegalStateException("HMAC-SHA256 不可用", e);
+            throw new IllegalStateException(algorithm + " 不可用", e);
         }
     }
 

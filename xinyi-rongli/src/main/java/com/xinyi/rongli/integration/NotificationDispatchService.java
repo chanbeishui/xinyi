@@ -399,7 +399,9 @@ public class NotificationDispatchService
         }
 
         JSONObject options = Json.read(revision.str("optionsJson"));
-        String page = options == null ? null : options.getString("page");
+        // 模板发布时跳转页存在 pageRoute；历史数据可能写成 page，两者都要认。
+        // 取不到 page 时微信仍会下发，但用户点开消息没有落地页，体验上等于白推。
+        String page = options == null ? null : firstText(options.getString("pageRoute"), options.getString("page"));
         try
         {
             SubscribeService.Result result = subscribeService.sendPublished(appId, openId,
@@ -481,5 +483,18 @@ public class NotificationDispatchService
     private static String safe(String value)
     {
         return value == null ? "UNKNOWN" : value;
+    }
+
+    /** 取第一个非空白值，用于兼容同一含义的多个历史键名 */
+    private static String firstText(String... values)
+    {
+        for (String value : values)
+        {
+            if (value != null && !value.isBlank())
+            {
+                return value.trim();
+            }
+        }
+        return null;
     }
 }
