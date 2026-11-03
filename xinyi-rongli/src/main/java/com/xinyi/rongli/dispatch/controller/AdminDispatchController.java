@@ -10,7 +10,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import com.xinyi.rongli.admin.service.AdminService;
+import com.xinyi.rongli.dispatch.service.DispatchAdminService;
+import com.xinyi.rongli.admin.service.OpsAdminService;
 
 /**
  * 管理端工作台与派单调度。
@@ -20,27 +21,29 @@ import com.xinyi.rongli.admin.service.AdminService;
 public class AdminDispatchController
 {
     @Autowired
-    private AdminService adminService;
+    private DispatchAdminService dispatchAdminService;
+    @Autowired
+    private OpsAdminService opsAdminService;
 
     @GetMapping("/dashboard")
     @PreAuthorize("@ss.hasPermi('biz:statistics:list')")
     public Map<String, Object> dashboard()
     {
-        return adminService.dashboard();
+        return opsAdminService.dashboard();
     }
 
     @GetMapping("/dispatch/queue")
     @PreAuthorize("@ss.hasPermi('biz:dispatch:list')")
     public Map<String, Object> queue()
     {
-        return adminService.dispatchQueue();
+        return dispatchAdminService.dispatchQueue();
     }
 
     @GetMapping("/dispatch/candidates")
     @PreAuthorize("@ss.hasPermi('biz:dispatch:list')")
     public Map<String, Object> candidates(@RequestParam(required = false) String keyword)
     {
-        return adminService.dispatchCandidates(keyword);
+        return dispatchAdminService.dispatchCandidates(keyword);
     }
 
     @PostMapping("/dispatch/manual-invites")
@@ -55,7 +58,7 @@ public class AdminDispatchController
         {
             throw com.xinyi.rongli.common.support.ApiException.validation("请指定订单与代驾");
         }
-        return adminService.manualInvite(orderNo, driverId, reason);
+        return dispatchAdminService.manualInvite(orderNo, driverId, reason);
     }
 
     /** 立即派单：跳过「接车前提前量」的等待，按自动派单规则当场发起一轮邀约 */
@@ -63,7 +66,7 @@ public class AdminDispatchController
     @PreAuthorize("@ss.hasPermi('biz:dispatch:create')")
     public Map<String, Object> dispatchNow(@org.springframework.web.bind.annotation.PathVariable String orderNo)
     {
-        return adminService.dispatchNow(orderNo);
+        return dispatchAdminService.dispatchNow(orderNo);
     }
 
     @GetMapping("/dispatch/invites")
@@ -75,21 +78,21 @@ public class AdminDispatchController
             @RequestParam(defaultValue = "1") int pageNum,
             @RequestParam(defaultValue = "20") int pageSize)
     {
-        return adminService.dispatchInvites(orderId, driverId, status, keyword, pageNum, pageSize);
+        return dispatchAdminService.dispatchInvites(orderId, driverId, status, keyword, pageNum, pageSize);
     }
 
     @GetMapping("/dispatch/config")
     @PreAuthorize("@ss.hasPermi('biz:dispatch:query')")
     public Map<String, Object> config()
     {
-        return adminService.dispatchConfig();
+        return dispatchAdminService.dispatchConfig();
     }
 
     @PutMapping("/dispatch/config")
     @PreAuthorize("@ss.hasPermi('biz:dispatch:edit')")
     public Map<String, Object> saveConfig(@RequestBody Map<String, Object> body)
     {
-        return adminService.saveDispatchConfig(body);
+        return dispatchAdminService.saveDispatchConfig(body);
     }
 
     @PostMapping("/dispatch/plans/preview")
@@ -98,7 +101,7 @@ public class AdminDispatchController
     {
         Integer lead = body == null || body.get("leadMinutes") == null ? null
                 : Integer.valueOf(String.valueOf(body.get("leadMinutes")));
-        return adminService.previewDispatchPlan(lead);
+        return dispatchAdminService.previewDispatchPlan(lead);
     }
 
     @PostMapping("/dispatch/plans/{taskId}/apply")
@@ -108,7 +111,7 @@ public class AdminDispatchController
     {
         Integer lead = body == null || body.get("leadMinutes") == null ? null
                 : Integer.valueOf(String.valueOf(body.get("leadMinutes")));
-        return adminService.applyDispatchPlan(lead);
+        return dispatchAdminService.applyDispatchPlan(lead);
     }
 
     private String str(Object v)

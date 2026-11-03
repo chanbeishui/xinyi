@@ -12,10 +12,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.xinyi.common.utils.SecurityUtils;
 import com.xinyi.rongli.driver.dto.DriverDtos;
-import com.xinyi.rongli.admin.service.AdminService;
 import com.xinyi.rongli.common.service.EventService;
 import com.xinyi.rongli.fulfill.service.FulfillService;
 import com.xinyi.rongli.media.service.MediaService;
+import com.xinyi.rongli.fulfill.service.FulfillAdminService;
 
 /**
  * 后台收车与检测待办（B07 / B08 / B10 / B11）。
@@ -29,7 +29,7 @@ import com.xinyi.rongli.media.service.MediaService;
 public class AdminFulfillController
 {
     @Autowired
-    private AdminService adminService;
+    private FulfillAdminService fulfillAdminService;
 
     @Autowired
     private FulfillService fulfillService;
@@ -48,7 +48,7 @@ public class AdminFulfillController
             @RequestParam(defaultValue = "1") int pageNum,
             @RequestParam(defaultValue = "10") int pageSize)
     {
-        return adminService.receivingBoard(stationId, keyword, pageNum, pageSize);
+        return fulfillAdminService.receivingBoard(stationId, keyword, pageNum, pageSize);
     }
 
     /** B07 单笔收车详情：司机、节点2证据、站点侧交接码状态 */
@@ -77,7 +77,7 @@ public class AdminFulfillController
             @RequestParam(defaultValue = "1") int pageNum,
             @RequestParam(defaultValue = "10") int pageSize)
     {
-        return adminService.inspectionTodoBoard(stationId, keyword, bucket, pageNum, pageSize);
+        return fulfillAdminService.inspectionTodoBoard(stationId, keyword, bucket, pageNum, pageSize);
     }
 
     /**

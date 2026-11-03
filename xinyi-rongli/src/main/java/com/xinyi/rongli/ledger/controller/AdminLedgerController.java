@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.xinyi.common.utils.SecurityUtils;
-import com.xinyi.rongli.admin.service.AdminService;
 import com.xinyi.rongli.ledger.service.LedgerService;
+import com.xinyi.rongli.ledger.service.LedgerAdminService;
 
 /**
  * 管理端代驾费用：费用规则、台账与对账单、行内核价、整单复核、付款登记与核实、调差。
@@ -25,10 +25,9 @@ import com.xinyi.rongli.ledger.service.LedgerService;
 public class AdminLedgerController
 {
     @Autowired
-    private LedgerService ledgerService;
-
+    private LedgerAdminService ledgerAdminService;
     @Autowired
-    private AdminService adminService;
+    private LedgerService ledgerService;
 
     // ------------------------------------------------------------------ 费用规则
 
@@ -113,7 +112,7 @@ public class AdminLedgerController
             @RequestParam(defaultValue = "1") int pageNum,
             @RequestParam(defaultValue = "10") int pageSize)
     {
-        return adminService.statements(driverId, status, pageNum, pageSize);
+        return ledgerAdminService.statements(driverId, status, pageNum, pageSize);
     }
 
     @GetMapping("/driver-statements/{statementId}")
@@ -127,7 +126,7 @@ public class AdminLedgerController
     @PreAuthorize("@ss.hasPermi('biz:driverstatement:query')")
     public Map<String, Object> statementRevision(@PathVariable Long statementId, @PathVariable int revision)
     {
-        return adminService.statementRevision(statementId, revision);
+        return ledgerAdminService.statementRevision(statementId, revision);
     }
 
     @PostMapping("/driver-statements/{statementId}/lines/add")
@@ -246,7 +245,7 @@ public class AdminLedgerController
             @RequestParam(defaultValue = "1") int pageNum,
             @RequestParam(defaultValue = "10") int pageSize)
     {
-        return adminService.statementDifferences(status, pageNum, pageSize);
+        return ledgerAdminService.statementDifferences(status, pageNum, pageSize);
     }
 
     @PostMapping("/statement-differences/{differenceId}/resolve")
@@ -255,7 +254,7 @@ public class AdminLedgerController
             @RequestBody Map<String, Object> body)
     {
         boolean resend = body.get("resend") != null && Boolean.parseBoolean(String.valueOf(body.get("resend")));
-        return adminService.resolveDifference(differenceId, str(body.get("resolution")), resend,
+        return ledgerAdminService.resolveDifference(differenceId, str(body.get("resolution")), resend,
                 SecurityUtils.getUserId());
     }
 
@@ -265,7 +264,7 @@ public class AdminLedgerController
             @RequestParam(defaultValue = "1") int pageNum,
             @RequestParam(defaultValue = "10") int pageSize)
     {
-        return adminService.feeAdjustments(status, pageNum, pageSize);
+        return ledgerAdminService.feeAdjustments(status, pageNum, pageSize);
     }
 
     @PostMapping("/driver-fee-adjustments")
@@ -302,14 +301,14 @@ public class AdminLedgerController
             @RequestParam(defaultValue = "1") int pageNum,
             @RequestParam(defaultValue = "10") int pageSize)
     {
-        return adminService.paymentRecords(status, statementId, pageNum, pageSize);
+        return ledgerAdminService.paymentRecords(status, statementId, pageNum, pageSize);
     }
 
     @GetMapping("/driver-payment-records/{recordId}")
     @PreAuthorize("@ss.hasPermi('biz:driverpayment:query')")
     public Map<String, Object> payment(@PathVariable Long recordId)
     {
-        return adminService.paymentRecordDetail(recordId);
+        return ledgerAdminService.paymentRecordDetail(recordId);
     }
 
     @PostMapping("/driver-payment-records")
@@ -343,7 +342,7 @@ public class AdminLedgerController
     @PreAuthorize("@ss.hasPermi('biz:driverstatement:list')")
     public Map<String, Object> overview(@PathVariable Long driverId)
     {
-        return adminService.driverReconciliationOverview(driverId);
+        return ledgerAdminService.driverReconciliationOverview(driverId);
     }
 
     @GetMapping("/drivers/{driverId}/reconciliation-entries")
@@ -354,7 +353,7 @@ public class AdminLedgerController
             @RequestParam(required = false) String keyword,
             @RequestParam(defaultValue = "false") boolean onlySelectable)
     {
-        return adminService.driverReconciliationEntries(driverId, from, to, keyword, onlySelectable);
+        return ledgerAdminService.driverReconciliationEntries(driverId, from, to, keyword, onlySelectable);
     }
 
     private Long requireDriverId(Map<String, Object> body)

@@ -14,8 +14,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.xinyi.common.utils.SecurityUtils;
 import com.xinyi.rongli.driver.dto.DriverDtos;
 import com.xinyi.rongli.common.dto.MiniDtos;
-import com.xinyi.rongli.admin.service.AdminService;
 import com.xinyi.rongli.aftersale.service.AfterSaleService;
+import com.xinyi.rongli.fulfill.service.FulfillAdminService;
+import com.xinyi.rongli.order.service.OrderAdminService;
+import com.xinyi.rongli.station.service.StationAdminService;
 
 /**
  * 管理端订单与售后：与检测员工端复用同一套履约口径，只是去掉了站点归属限制。
@@ -25,7 +27,11 @@ import com.xinyi.rongli.aftersale.service.AfterSaleService;
 public class AdminOrderController
 {
     @Autowired
-    private AdminService adminService;
+    private FulfillAdminService fulfillAdminService;
+    @Autowired
+    private OrderAdminService orderAdminService;
+    @Autowired
+    private StationAdminService stationAdminService;
 
     @Autowired
     private AfterSaleService afterSaleService;
@@ -43,7 +49,7 @@ public class AdminOrderController
             @RequestParam(defaultValue = "1") int pageNum,
             @RequestParam(defaultValue = "10") int pageSize)
     {
-        return adminService.orders(status, group, keyword, stationId,
+        return orderAdminService.orders(status, group, keyword, stationId,
                 com.xinyi.rongli.common.support.ViTime.parseFlexible(from),
                 com.xinyi.rongli.common.support.ViTime.parseFlexible(to),
                 pageNum, pageSize);
@@ -53,14 +59,14 @@ public class AdminOrderController
     @PreAuthorize("@ss.hasPermi('biz:order:query')")
     public Map<String, Object> order(@PathVariable String orderNo)
     {
-        return adminService.orderDetail(orderNo);
+        return orderAdminService.orderDetail(orderNo);
     }
 
     @GetMapping("/orders/{orderNo}/license")
     @PreAuthorize("@ss.hasPermi('biz:license:list')")
     public Map<String, Object> license(@PathVariable String orderNo)
     {
-        return adminService.license(orderNo);
+        return fulfillAdminService.license(orderNo);
     }
 
     @PutMapping("/orders/{orderNo}/license")
@@ -68,14 +74,14 @@ public class AdminOrderController
     public Map<String, Object> saveLicense(@PathVariable String orderNo,
             @RequestBody DriverDtos.LicenseReviewReq req)
     {
-        return adminService.saveLicense(orderNo, req, SecurityUtils.getUserId());
+        return fulfillAdminService.saveLicense(orderNo, req, SecurityUtils.getUserId());
     }
 
     @GetMapping("/orders/{orderNo}/results")
     @PreAuthorize("@ss.hasPermi('biz:result:list')")
     public Map<String, Object> results(@PathVariable String orderNo)
     {
-        return adminService.results(orderNo);
+        return fulfillAdminService.results(orderNo);
     }
 
     @PostMapping("/orders/{orderNo}/results")
@@ -83,7 +89,7 @@ public class AdminOrderController
     public Map<String, Object> submitResult(@PathVariable String orderNo,
             @RequestBody DriverDtos.ResultReq req)
     {
-        return adminService.submitResult(orderNo, req);
+        return fulfillAdminService.submitResult(orderNo, req);
     }
 
     @PostMapping("/orders/{orderNo}/result-corrections")
@@ -91,14 +97,14 @@ public class AdminOrderController
     public Map<String, Object> correction(@PathVariable String orderNo,
             @RequestBody DriverDtos.CorrectionReq req)
     {
-        return adminService.applyCorrection(orderNo, req);
+        return fulfillAdminService.applyCorrection(orderNo, req);
     }
 
     @PostMapping("/orders/{orderNo}/pickup-notification")
     @PreAuthorize("@ss.hasPermi('biz:order:create')")
     public Map<String, Object> pickupNotification(@PathVariable String orderNo)
     {
-        return adminService.resendPickupNotification(orderNo);
+        return fulfillAdminService.resendPickupNotification(orderNo);
     }
 
     @PostMapping("/orders/{orderNo}/exceptions")
@@ -106,14 +112,14 @@ public class AdminOrderController
     public Map<String, Object> exception(@PathVariable String orderNo,
             @RequestBody DriverDtos.ExceptionReq req)
     {
-        return adminService.reportException(orderNo, req);
+        return fulfillAdminService.reportException(orderNo, req);
     }
 
     @GetMapping("/capacity")
     @PreAuthorize("@ss.hasPermi('biz:capacity:list')")
     public Map<String, Object> capacity(@RequestParam Long stationId)
     {
-        return adminService.capacity(stationId);
+        return stationAdminService.capacity(stationId);
     }
 
     @PutMapping("/capacity/{slotId}")
@@ -121,7 +127,7 @@ public class AdminOrderController
     public Map<String, Object> updateCapacity(@PathVariable Long slotId,
             @RequestBody DriverDtos.CapacityChangeReq req)
     {
-        return adminService.updateCapacity(slotId, req);
+        return stationAdminService.updateCapacity(slotId, req);
     }
 
     // ------------------------------------------------------------------ 售后
