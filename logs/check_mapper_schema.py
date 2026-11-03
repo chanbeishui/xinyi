@@ -17,7 +17,7 @@ from pathlib import Path
 MYSQL = r"D:/Program Files/MySQL/MySQL Server 8.0/bin/mysql.exe"
 DB_ARGS = ["-h127.0.0.1", "-P3307", "-uroot", "-pchenbeishui",
            "--default-character-set=utf8mb4", "-N", "-B", "xinyi"]
-MAPPER_DIR = Path(r"E:/codex/xinyi/xinyi-rongli/src/main/java/com/xinyi/rongli/mapper")
+MODULE_DIR = Path(r"E:/codex/xinyi/xinyi-rongli/src/main/java/com/xinyi/rongli")
 
 SQL_KEYWORDS = {
     "select", "from", "where", "and", "or", "not", "insert", "into", "update", "set",
@@ -126,7 +126,12 @@ def main():
     schema, tables = load_schema()
     print(f"已加载 {len(tables)} 张表的表结构")
     problems = []
-    files = sorted(MAPPER_DIR.glob("*.java"))
+    # 包结构按功能域纵向切分后，mapper 分散在各域的同名子目录下，必须递归扫描。
+    # 用单层 glob 会在目录变更后匹配到 0 个文件，套件静默退化成"通过"。
+    files = sorted(MODULE_DIR.rglob("mapper/*.java"))
+    if not files:
+        print(f"FAIL：未在 {MODULE_DIR} 下找到任何 mapper 目录，请检查包结构或扫描规则")
+        return 1
     for f in files:
         text = f.read_text(encoding="utf-8")
         for i, sql in enumerate(extract_sql_strings(text)):
