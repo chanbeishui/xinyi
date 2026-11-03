@@ -112,16 +112,15 @@ public interface VehicleMapper
             <if test="verificationStatus != null and verificationStatus != ''">
               AND v.verification_status = #{verificationStatus}
             </if>
-            <if test="deptId != null">
-              AND (v.dept_id IS NULL OR v.dept_id IN (SELECT dept_id FROM sys_dept
-                                     WHERE dept_id = #{deptId} OR FIND_IN_SET(#{deptId}, ancestors)))
+            <if test="deptIds != null and deptIds.size() > 0">
+              AND (v.dept_id IS NULL OR v.dept_id IN <foreach collection="deptIds" item="scopeDeptId" open="(" separator="," close=")">#{scopeDeptId}</foreach>)
             </if>
             ORDER BY v.id DESC LIMIT #{offset}, #{limit}
             </script>
             """)
     List<Map<String, Object>> adminList(@Param("keyword") String keyword, @Param("vehicleTypeCode") String vehicleTypeCode,
             @Param("verificationStatus") String verificationStatus,
-            @Param("deptId") Long deptId,
+            @Param("deptIds") List<Long> deptIds,
             @Param("offset") int offset, @Param("limit") int limit);
 
     @Select("""
@@ -137,15 +136,14 @@ public interface VehicleMapper
             <if test="verificationStatus != null and verificationStatus != ''">
               AND v.verification_status = #{verificationStatus}
             </if>
-            <if test="deptId != null">
-              AND (v.dept_id IS NULL OR v.dept_id IN (SELECT dept_id FROM sys_dept
-                                     WHERE dept_id = #{deptId} OR FIND_IN_SET(#{deptId}, ancestors)))
+            <if test="deptIds != null and deptIds.size() > 0">
+              AND (v.dept_id IS NULL OR v.dept_id IN <foreach collection="deptIds" item="scopeDeptId" open="(" separator="," close=")">#{scopeDeptId}</foreach>)
             </if>
             </script>
             """)
     long adminCount(@Param("keyword") String keyword, @Param("vehicleTypeCode") String vehicleTypeCode,
             @Param("verificationStatus") String verificationStatus,
-            @Param("deptId") Long deptId);
+            @Param("deptIds") List<Long> deptIds);
 
     // ------------------------------------------------------------------ 地址
 
@@ -243,15 +241,14 @@ public interface VehicleMapper
             <if test="status != null and status != ''">
               AND d.qualification_status = #{status}
             </if>
-            <if test="deptId != null">
-              AND (d.dept_id IS NULL OR d.dept_id IN (SELECT dept_id FROM sys_dept
-                                     WHERE dept_id = #{deptId} OR FIND_IN_SET(#{deptId}, ancestors)))
+            <if test="deptIds != null and deptIds.size() > 0">
+              AND (d.dept_id IS NULL OR d.dept_id IN <foreach collection="deptIds" item="scopeDeptId" open="(" separator="," close=")">#{scopeDeptId}</foreach>)
             </if>
             ORDER BY d.id DESC LIMIT #{offset}, #{limit}
             </script>
             """)
     List<Map<String, Object>> adminDriverList(@Param("keyword") String keyword, @Param("status") String status,
-            @Param("deptId") Long deptId,
+            @Param("deptIds") List<Long> deptIds,
             @Param("offset") int offset, @Param("limit") int limit);
 
     @Select("""
@@ -264,14 +261,13 @@ public interface VehicleMapper
             <if test="status != null and status != ''">
               AND d.qualification_status = #{status}
             </if>
-            <if test="deptId != null">
-              AND (d.dept_id IS NULL OR d.dept_id IN (SELECT dept_id FROM sys_dept
-                                     WHERE dept_id = #{deptId} OR FIND_IN_SET(#{deptId}, ancestors)))
+            <if test="deptIds != null and deptIds.size() > 0">
+              AND (d.dept_id IS NULL OR d.dept_id IN <foreach collection="deptIds" item="scopeDeptId" open="(" separator="," close=")">#{scopeDeptId}</foreach>)
             </if>
             </script>
             """)
     long adminDriverCount(@Param("keyword") String keyword, @Param("status") String status,
-            @Param("deptId") Long deptId);
+            @Param("deptIds") List<Long> deptIds);
 
     @Select("""
             SELECT d.*, a.nickname, a.status, a.created_at AS account_created_at,

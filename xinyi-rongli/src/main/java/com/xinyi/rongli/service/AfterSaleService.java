@@ -35,6 +35,9 @@ import com.xinyi.rongli.support.ViTime;
 public class AfterSaleService
 {
     @Autowired
+    private DeptScope deptScope;
+
+    @Autowired
     private AfterSaleMapper afterSaleMapper;
 
     @Autowired
@@ -188,15 +191,15 @@ public class AfterSaleService
         int limit = Math.min(Math.max(pageSize, 1), 100);
         int offset = (Math.max(pageNum, 1) - 1) * limit;
         List<Map<String, Object>> list = new ArrayList<>();
-        Long deptId = DeptScope.scopedDeptId();
-        for (Map<String, Object> c : afterSaleMapper.adminList(status, kind, deptId, offset, limit))
+        List<Long> deptIds = deptScope.visibleDeptIds();
+        for (Map<String, Object> c : afterSaleMapper.adminList(status, kind, deptIds, offset, limit))
         {
             list.add(summary(Row.of(c)));
         }
         Map<String, Object> result = new LinkedHashMap<>();
         result.put("pageNum", pageNum);
         result.put("pageSize", limit);
-        result.put("total", afterSaleMapper.adminCount(status, kind, deptId));
+        result.put("total", afterSaleMapper.adminCount(status, kind, deptIds));
         result.put("rows", list);
         return result;
     }
@@ -207,8 +210,8 @@ public class AfterSaleService
      */
     private void assertAdminDept(Long caseId)
     {
-        Long deptId = DeptScope.scopedDeptId();
-        if (deptId != null && afterSaleMapper.countInDept(caseId, deptId) == 0)
+        List<Long> deptIds = deptScope.visibleDeptIds();
+        if (deptIds != null && afterSaleMapper.countInDept(caseId, deptIds) == 0)
         {
             throw ApiException.forbidden("该售后单不在您的部门数据范围内");
         }

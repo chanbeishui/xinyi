@@ -464,45 +464,45 @@ public interface AdminMapper
             SELECT
               (SELECT COUNT(1) FROM vi_order o
                  WHERE o.fulfillment_status NOT IN ('COMPLETED','CANCELLED','CLOSED')
-                 <if test="deptId != null">
-                   AND o.dept_id IN (SELECT dept_id FROM sys_dept WHERE dept_id = #{deptId} OR FIND_IN_SET(#{deptId}, ancestors))
+                 <if test="deptIds != null and deptIds.size() > 0">
+                   AND o.dept_id IN <foreach collection="deptIds" item="scopeDeptId" open="(" separator="," close=")">#{scopeDeptId}</foreach>
                  </if>) AS active_orders,
               (SELECT COUNT(1) FROM vi_order o
                  WHERE DATE(CONVERT_TZ(o.created_at,'+00:00','+08:00')) = #{bizDate}
-                 <if test="deptId != null">
-                   AND o.dept_id IN (SELECT dept_id FROM sys_dept WHERE dept_id = #{deptId} OR FIND_IN_SET(#{deptId}, ancestors))
+                 <if test="deptIds != null and deptIds.size() > 0">
+                   AND o.dept_id IN <foreach collection="deptIds" item="scopeDeptId" open="(" separator="," close=")">#{scopeDeptId}</foreach>
                  </if>) AS orders_today,
               (SELECT COUNT(1) FROM vi_aftersale_case c JOIN vi_order o ON o.id = c.order_id
                  WHERE c.case_status = 'PENDING_REVIEW'
-                 <if test="deptId != null">
-                   AND o.dept_id IN (SELECT dept_id FROM sys_dept WHERE dept_id = #{deptId} OR FIND_IN_SET(#{deptId}, ancestors))
+                 <if test="deptIds != null and deptIds.size() > 0">
+                   AND o.dept_id IN <foreach collection="deptIds" item="scopeDeptId" open="(" separator="," close=")">#{scopeDeptId}</foreach>
                  </if>) AS aftersale_pending,
               (SELECT COUNT(1) FROM vi_dispute d JOIN vi_order o ON o.id = d.order_id
                  WHERE d.status IN ('OPEN','PROCESSING')
-                 <if test="deptId != null">
-                   AND o.dept_id IN (SELECT dept_id FROM sys_dept WHERE dept_id = #{deptId} OR FIND_IN_SET(#{deptId}, ancestors))
+                 <if test="deptIds != null and deptIds.size() > 0">
+                   AND o.dept_id IN <foreach collection="deptIds" item="scopeDeptId" open="(" separator="," close=")">#{scopeDeptId}</foreach>
                  </if>) AS dispute_open,
               (SELECT COUNT(1) FROM vi_service_exception e JOIN vi_order o ON o.id = e.order_id
                  WHERE e.status IN ('OPEN','PROCESSING')
-                 <if test="deptId != null">
-                   AND o.dept_id IN (SELECT dept_id FROM sys_dept WHERE dept_id = #{deptId} OR FIND_IN_SET(#{deptId}, ancestors))
+                 <if test="deptIds != null and deptIds.size() > 0">
+                   AND o.dept_id IN <foreach collection="deptIds" item="scopeDeptId" open="(" separator="," close=")">#{scopeDeptId}</foreach>
                  </if>) AS exception_open,
               (SELECT COUNT(1) FROM vi_result_correction r JOIN vi_order o ON o.id = r.order_id
                  WHERE r.status = 'APPLIED'
-                 <if test="deptId != null">
-                   AND o.dept_id IN (SELECT dept_id FROM sys_dept WHERE dept_id = #{deptId} OR FIND_IN_SET(#{deptId}, ancestors))
+                 <if test="deptIds != null and deptIds.size() > 0">
+                   AND o.dept_id IN <foreach collection="deptIds" item="scopeDeptId" open="(" separator="," close=")">#{scopeDeptId}</foreach>
                  </if>) AS correction_pending,
               (SELECT COUNT(1) FROM vi_penalty_appeal WHERE status = 'SUBMITTED') AS appeal_pending,
               (SELECT COUNT(1) FROM vi_driver_application WHERE status = 'SUBMITTED') AS qualification_pending,
               (SELECT COUNT(1) FROM vi_aftersale_case c JOIN vi_order o ON o.id = c.order_id
                  WHERE c.case_status = 'EXECUTING' AND c.return_state = 'WAIT_RETURN'
-                 <if test="deptId != null">
-                   AND o.dept_id IN (SELECT dept_id FROM sys_dept WHERE dept_id = #{deptId} OR FIND_IN_SET(#{deptId}, ancestors))
+                 <if test="deptIds != null and deptIds.size() > 0">
+                   AND o.dept_id IN <foreach collection="deptIds" item="scopeDeptId" open="(" separator="," close=")">#{scopeDeptId}</foreach>
                  </if>) AS cancel_return_waiting,
               (SELECT COUNT(1) FROM vi_driver_statement WHERE status IN ('INTERNAL_REVIEW','SENT','DISPUTED')) AS statement_pending
             </script>
             """)
-    Map<String, Object> statisticsOverview(@Param("bizDate") String bizDate, @Param("deptId") Long deptId);
+    Map<String, Object> statisticsOverview(@Param("bizDate") String bizDate, @Param("deptIds") List<Long> deptIds);
 
     /** B23 统计卡片：样本订单、已归还任务、待支付订单一眼可见 */
     @Select("""
@@ -512,13 +512,13 @@ public interface AdminMapper
                    COALESCE(SUM(fulfillment_status = 'PENDING_PAY'), 0) AS pending_pay_orders
             FROM vi_order
             <where>
-              <if test="deptId != null">
-                dept_id IN (SELECT dept_id FROM sys_dept WHERE dept_id = #{deptId} OR FIND_IN_SET(#{deptId}, ancestors))
+              <if test="deptIds != null and deptIds.size() > 0">
+                dept_id IN <foreach collection="deptIds" item="scopeDeptId" open="(" separator="," close=")">#{scopeDeptId}</foreach>
               </if>
             </where>
             </script>
             """)
-    Map<String, Object> statisticsOrderKpi(@Param("deptId") Long deptId);
+    Map<String, Object> statisticsOrderKpi(@Param("deptIds") List<Long> deptIds);
 
     /** B23 已支付金额：只认渠道支付成功的支付单，关闭/待支付不计入 */
     @Select("""
@@ -527,16 +527,16 @@ public interface AdminMapper
                    COALESCE(COUNT(1), 0) AS paid_orders,
                    COALESCE(SUM(p.refunded_fen), 0) AS refunded_fen
             FROM vi_payment_order p
-            <if test="deptId != null">
+            <if test="deptIds != null and deptIds.size() > 0">
               JOIN vi_order o ON o.id = p.order_id
             </if>
             WHERE p.status = 'SUCCESS'
-            <if test="deptId != null">
-              AND o.dept_id IN (SELECT dept_id FROM sys_dept WHERE dept_id = #{deptId} OR FIND_IN_SET(#{deptId}, ancestors))
+            <if test="deptIds != null and deptIds.size() > 0">
+              AND o.dept_id IN <foreach collection="deptIds" item="scopeDeptId" open="(" separator="," close=")">#{scopeDeptId}</foreach>
             </if>
             </script>
             """)
-    Map<String, Object> statisticsPaymentKpi(@Param("deptId") Long deptId);
+    Map<String, Object> statisticsPaymentKpi(@Param("deptIds") List<Long> deptIds);
 
     /** B23 按站点服务概况：预约、已付款、未付款、在手车辆、已归还 */
     @Select("""
@@ -551,18 +551,18 @@ public interface AdminMapper
                    COALESCE(SUM(CASE WHEN o.returned_at IS NOT NULL THEN 1 ELSE 0 END), 0) AS returned
             FROM vi_station s
             LEFT JOIN vi_order o ON o.station_id = s.id
-            <if test="deptId != null">
-              AND o.dept_id IN (SELECT dept_id FROM sys_dept WHERE dept_id = #{deptId} OR FIND_IN_SET(#{deptId}, ancestors))
+            <if test="deptIds != null and deptIds.size() > 0">
+              AND o.dept_id IN <foreach collection="deptIds" item="scopeDeptId" open="(" separator="," close=")">#{scopeDeptId}</foreach>
             </if>
             LEFT JOIN vi_payment_order p ON p.order_id = o.id
             <where>
-              <if test="deptId != null">
-                s.dept_id IN (SELECT dept_id FROM sys_dept WHERE dept_id = #{deptId} OR FIND_IN_SET(#{deptId}, ancestors))
+              <if test="deptIds != null and deptIds.size() > 0">
+                s.dept_id IN <foreach collection="deptIds" item="scopeDeptId" open="(" separator="," close=")">#{scopeDeptId}</foreach>
               </if>
             </where>
             GROUP BY s.id, s.name
             ORDER BY s.id
             </script>
             """)
-    List<Map<String, Object>> statisticsByStation(@Param("deptId") Long deptId);
+    List<Map<String, Object>> statisticsByStation(@Param("deptIds") List<Long> deptIds);
 }

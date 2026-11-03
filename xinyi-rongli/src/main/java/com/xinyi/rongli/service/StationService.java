@@ -40,6 +40,9 @@ import com.xinyi.rongli.support.ViTime;
 public class StationService
 {
     @Autowired
+    private DeptScope deptScope;
+
+    @Autowired
     private OrderMapper orderMapper;
 
     @Autowired
@@ -151,11 +154,12 @@ public class StationService
     public Map<String, Object> adminOrders(String status, String group, String keyword, Long stationId,
             LocalDateTime from, LocalDateTime to, int pageNum, int pageSize)
     {
-        return listOrders(stationId, status, group, keyword, from, to, pageNum, pageSize, DeptScope.scopedDeptId());
+        return listOrders(stationId, status, group, keyword, from, to, pageNum, pageSize,
+                deptScope.visibleDeptIds());
     }
 
     private Map<String, Object> listOrders(Long stationId, String status, String group, String keyword,
-            LocalDateTime from, LocalDateTime to, int pageNum, int pageSize, Long deptId)
+            LocalDateTime from, LocalDateTime to, int pageNum, int pageSize, List<Long> deptIds)
     {
         String filter = status;
         if (filter == null || filter.isBlank())
@@ -175,7 +179,7 @@ public class StationService
         int limit = Math.min(Math.max(pageSize, 1), 100);
         int offset = Math.max(0, (Math.max(pageNum, 1) - 1) * limit);
         List<Map<String, Object>> rows = orderMapper.adminList(filter, groupFilter, stationId, kw, from, to,
-                deptId, offset, limit);
+                deptIds, offset, limit);
         List<Map<String, Object>> out = new ArrayList<>();
         for (Map<String, Object> r : rows)
         {
@@ -208,7 +212,7 @@ public class StationService
         }
         Map<String, Object> page = new LinkedHashMap<>();
         page.put("rows", out);
-        page.put("total", orderMapper.adminCount(filter, groupFilter, stationId, kw, from, to, deptId));
+        page.put("total", orderMapper.adminCount(filter, groupFilter, stationId, kw, from, to, deptIds));
         page.put("pageNum", pageNum);
         page.put("pageSize", limit);
         return page;

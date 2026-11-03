@@ -89,13 +89,16 @@ public class AdminService
     @Autowired
     private Crypto crypto;
 
+    @Autowired
+    private DeptScope deptScope;
+
     // ------------------------------------------------------------------ 工作台
 
     public Map<String, Object> dashboard()
     {
-        Long deptId = DeptScope.scopedDeptId();
-        Row base = Row.of(orderMapper.dashboard(deptId));
-        Row extra = Row.of(adminMapper.statisticsOverview(ViTime.shanghaiDate(ViTime.now()).toString(), deptId));
+        List<Long> deptIds = deptScope.visibleDeptIds();
+        Row base = Row.of(orderMapper.dashboard(deptIds));
+        Row extra = Row.of(adminMapper.statisticsOverview(ViTime.shanghaiDate(ViTime.now()).toString(), deptIds));
         Map<String, Object> view = new LinkedHashMap<>();
         view.put("activeOrders", base.lng("active_orders", 0L));
         view.put("ordersToday", extra.lng("orders_today", 0L));
@@ -259,9 +262,9 @@ public class AdminService
     {
         int limit = Math.min(Math.max(pageSize, 1), 100);
         int offset = (Math.max(pageNum, 1) - 1) * limit;
-        Long deptId = DeptScope.scopedDeptId();
+        List<Long> deptIds = deptScope.visibleDeptIds();
         List<Map<String, Object>> out = new ArrayList<>();
-        for (Map<String, Object> r : orderMapper.adminFulfillBoard(statuses, stationId, keyword, deptId,
+        for (Map<String, Object> r : orderMapper.adminFulfillBoard(statuses, stationId, keyword, deptIds,
                 licensePending, resultMissing, offset, limit))
         {
             Row o = Row.of(r);
@@ -310,7 +313,7 @@ public class AdminService
         }
         Map<String, Object> page = new LinkedHashMap<>();
         page.put("rows", out);
-        page.put("total", orderMapper.adminFulfillBoardCount(statuses, stationId, keyword, deptId,
+        page.put("total", orderMapper.adminFulfillBoardCount(statuses, stationId, keyword, deptIds,
                 licensePending, resultMissing));
         page.put("pageNum", pageNum);
         page.put("pageSize", limit);
@@ -1126,9 +1129,9 @@ public class AdminService
         Map<String, Object> view = new LinkedHashMap<>();
         view.put("pageNum", pageNum);
         view.put("pageSize", limit);
-        Long deptId = DeptScope.scopedDeptId();
-        view.put("total", vehicleMapper.adminDriverCount(keyword, status, deptId));
-        view.put("rows", vehicleMapper.adminDriverList(keyword, status, deptId, offset, limit));
+        List<Long> deptIds = deptScope.visibleDeptIds();
+        view.put("total", vehicleMapper.adminDriverCount(keyword, status, deptIds));
+        view.put("rows", vehicleMapper.adminDriverList(keyword, status, deptIds, offset, limit));
         return view;
     }
 
@@ -1205,10 +1208,10 @@ public class AdminService
         Map<String, Object> view = new LinkedHashMap<>();
         view.put("pageNum", pageNum);
         view.put("pageSize", limit);
-        Long deptId = DeptScope.scopedDeptId();
-        view.put("total", vehicleMapper.adminCount(keyword, vehicleTypeCode, verificationStatus, deptId));
+        List<Long> deptIds = deptScope.visibleDeptIds();
+        view.put("total", vehicleMapper.adminCount(keyword, vehicleTypeCode, verificationStatus, deptIds));
         view.put("rows", camelRows(
-                vehicleMapper.adminList(keyword, vehicleTypeCode, verificationStatus, deptId, offset, limit)));
+                vehicleMapper.adminList(keyword, vehicleTypeCode, verificationStatus, deptIds, offset, limit)));
         return view;
     }
 
@@ -1857,7 +1860,7 @@ public class AdminService
         List<Map<String, Object>> rows = new ArrayList<>();
         for (Map<String, Object> o : orderMapper.adminList(payload.getString("status"), null,
                 payload.getString("stationId") == null ? null : Long.valueOf(payload.getString("stationId")),
-                null, null, null, DeptScope.scopedDeptId(), 0, 500))
+                null, null, null, deptScope.visibleDeptIds(), 0, 500))
         {
             Row order = Row.of(o);
             JSONObject snapshot = Json.read(order.json("vehicle_snapshot"));
@@ -2038,12 +2041,12 @@ public class AdminService
             default -> Math.min(Math.max(days, 1), 90);
         };
         java.time.LocalDateTime from = ViTime.now().minusDays(span);
-        Long deptId = DeptScope.scopedDeptId();
-        List<Map<String, Object>> daily = orderMapper.dailyStats(from, deptId);
-        Row overview = Row.of(adminMapper.statisticsOverview(ViTime.shanghaiDate(ViTime.now()).toString(), deptId));
-        Row dash = Row.of(orderMapper.dashboard(deptId));
-        Row orderKpi = Row.of(adminMapper.statisticsOrderKpi(deptId));
-        Row payKpi = Row.of(adminMapper.statisticsPaymentKpi(deptId));
+        List<Long> deptIds = deptScope.visibleDeptIds();
+        List<Map<String, Object>> daily = orderMapper.dailyStats(from, deptIds);
+        Row overview = Row.of(adminMapper.statisticsOverview(ViTime.shanghaiDate(ViTime.now()).toString(), deptIds));
+        Row dash = Row.of(orderMapper.dashboard(deptIds));
+        Row orderKpi = Row.of(adminMapper.statisticsOrderKpi(deptIds));
+        Row payKpi = Row.of(adminMapper.statisticsPaymentKpi(deptIds));
         Map<String, Object> view = new LinkedHashMap<>();
         view.put("rangeDays", span);
         view.put("range", scope == null ? "DAY" : scope);
@@ -2114,7 +2117,7 @@ public class AdminService
 
         // ---- 按站点服务概况
         List<Map<String, Object>> stationStats = new ArrayList<>();
-        for (Map<String, Object> s : adminMapper.statisticsByStation(deptId))
+        for (Map<String, Object> s : adminMapper.statisticsByStation(deptIds))
         {
             Row row = Row.of(s);
             Map<String, Object> item = new LinkedHashMap<>();

@@ -215,9 +215,8 @@ public interface OrderMapper
             </if>
             <if test="from != null"> AND o.created_at &gt;= #{from} </if>
             <if test="to != null"> AND o.created_at &lt; #{to} </if>
-            <if test="deptId != null">
-              AND o.dept_id IN (SELECT dept_id FROM sys_dept
-                                WHERE dept_id = #{deptId} OR FIND_IN_SET(#{deptId}, ancestors))
+            <if test="deptIds != null and deptIds.size() > 0">
+              AND o.dept_id IN <foreach collection="deptIds" item="scopeDeptId" open="(" separator="," close=")">#{scopeDeptId}</foreach>
             </if>
             ORDER BY o.id DESC LIMIT #{offset}, #{limit}
             </script>
@@ -225,7 +224,7 @@ public interface OrderMapper
     List<Map<String, Object>> adminList(@Param("status") String status, @Param("group") String group,
             @Param("stationId") Long stationId,
             @Param("keyword") String keyword, @Param("from") LocalDateTime from, @Param("to") LocalDateTime to,
-            @Param("deptId") Long deptId,
+            @Param("deptIds") List<Long> deptIds,
             @Param("offset") int offset, @Param("limit") int limit);
 
     @Select("""
@@ -250,16 +249,15 @@ public interface OrderMapper
             </if>
             <if test="from != null"> AND o.created_at &gt;= #{from} </if>
             <if test="to != null"> AND o.created_at &lt; #{to} </if>
-            <if test="deptId != null">
-              AND o.dept_id IN (SELECT dept_id FROM sys_dept
-                                WHERE dept_id = #{deptId} OR FIND_IN_SET(#{deptId}, ancestors))
+            <if test="deptIds != null and deptIds.size() > 0">
+              AND o.dept_id IN <foreach collection="deptIds" item="scopeDeptId" open="(" separator="," close=")">#{scopeDeptId}</foreach>
             </if>
             </script>
             """)
     long adminCount(@Param("status") String status, @Param("group") String group,
             @Param("stationId") Long stationId,
             @Param("keyword") String keyword, @Param("from") LocalDateTime from, @Param("to") LocalDateTime to,
-            @Param("deptId") Long deptId);
+            @Param("deptIds") List<Long> deptIds);
 
     /**
      * 后台履约看板：一次取齐 B07 收车登记与 B10 检测结果待办所需的订单侧字段。
@@ -301,9 +299,8 @@ public interface OrderMapper
                    OR JSON_UNQUOTE(JSON_EXTRACT(o.vehicle_snapshot, '$.plateNo')) LIKE CONCAT('%', #{keyword}, '%')
                    OR da.nickname LIKE CONCAT('%', #{keyword}, '%'))
             </if>
-            <if test="deptId != null">
-              AND o.dept_id IN (SELECT dept_id FROM sys_dept
-                                WHERE dept_id = #{deptId} OR FIND_IN_SET(#{deptId}, ancestors))
+            <if test="deptIds != null and deptIds.size() > 0">
+              AND o.dept_id IN <foreach collection="deptIds" item="scopeDeptId" open="(" separator="," close=")">#{scopeDeptId}</foreach>
             </if>
             <if test="licensePending != null and licensePending">
               AND (lic.review_status IS NULL OR lic.review_status &lt;&gt; 'VERIFIED')
@@ -318,7 +315,7 @@ public interface OrderMapper
             """)
     List<Map<String, Object>> adminFulfillBoard(@Param("statuses") List<String> statuses,
             @Param("stationId") Long stationId, @Param("keyword") String keyword,
-            @Param("deptId") Long deptId, @Param("licensePending") Boolean licensePending,
+            @Param("deptIds") List<Long> deptIds, @Param("licensePending") Boolean licensePending,
             @Param("resultMissing") Boolean resultMissing,
             @Param("offset") int offset, @Param("limit") int limit);
 
@@ -338,9 +335,8 @@ public interface OrderMapper
                    OR JSON_UNQUOTE(JSON_EXTRACT(o.vehicle_snapshot, '$.plateNo')) LIKE CONCAT('%', #{keyword}, '%')
                    OR da.nickname LIKE CONCAT('%', #{keyword}, '%'))
             </if>
-            <if test="deptId != null">
-              AND o.dept_id IN (SELECT dept_id FROM sys_dept
-                                WHERE dept_id = #{deptId} OR FIND_IN_SET(#{deptId}, ancestors))
+            <if test="deptIds != null and deptIds.size() > 0">
+              AND o.dept_id IN <foreach collection="deptIds" item="scopeDeptId" open="(" separator="," close=")">#{scopeDeptId}</foreach>
             </if>
             <if test="licensePending != null and licensePending">
               AND (lic.review_status IS NULL OR lic.review_status &lt;&gt; 'VERIFIED')
@@ -353,7 +349,7 @@ public interface OrderMapper
             """)
     long adminFulfillBoardCount(@Param("statuses") List<String> statuses,
             @Param("stationId") Long stationId, @Param("keyword") String keyword,
-            @Param("deptId") Long deptId, @Param("licensePending") Boolean licensePending,
+            @Param("deptIds") List<Long> deptIds, @Param("licensePending") Boolean licensePending,
             @Param("resultMissing") Boolean resultMissing);
 
     @Select("""
@@ -383,13 +379,13 @@ public interface OrderMapper
               COALESCE(SUM(CASE WHEN fulfillment_status NOT IN ('CANCELLED','CLOSED') THEN total_fen ELSE 0 END), 0) AS gmv_fen
             FROM vi_order
             <where>
-              <if test="deptId != null">
-                dept_id IN (SELECT dept_id FROM sys_dept WHERE dept_id = #{deptId} OR FIND_IN_SET(#{deptId}, ancestors))
+              <if test="deptIds != null and deptIds.size() > 0">
+                dept_id IN <foreach collection="deptIds" item="scopeDeptId" open="(" separator="," close=")">#{scopeDeptId}</foreach>
               </if>
             </where>
             </script>
             """)
-    Map<String, Object> dashboard(@Param("deptId") Long deptId);
+    Map<String, Object> dashboard(@Param("deptIds") List<Long> deptIds);
 
     @Select("""
             SELECT COUNT(1) FROM vi_order WHERE cancel_status = 'APPLIED'
@@ -411,13 +407,13 @@ public interface OrderMapper
             SELECT DATE_FORMAT(CONVERT_TZ(created_at, '+00:00', '+08:00'), '%Y-%m-%d') AS day,
                    COUNT(*) AS orders, COALESCE(SUM(total_fen), 0) AS amount_fen
             FROM vi_order WHERE created_at &gt;= #{from}
-            <if test="deptId != null">
-              AND dept_id IN (SELECT dept_id FROM sys_dept WHERE dept_id = #{deptId} OR FIND_IN_SET(#{deptId}, ancestors))
+            <if test="deptIds != null and deptIds.size() > 0">
+              AND dept_id IN <foreach collection="deptIds" item="scopeDeptId" open="(" separator="," close=")">#{scopeDeptId}</foreach>
             </if>
             GROUP BY day ORDER BY day
             </script>
             """)
-    List<Map<String, Object>> dailyStats(@Param("from") LocalDateTime from, @Param("deptId") Long deptId);
+    List<Map<String, Object>> dailyStats(@Param("from") LocalDateTime from, @Param("deptIds") List<Long> deptIds);
 
     // ------------------------------------------------------------------ 额度凭证
 

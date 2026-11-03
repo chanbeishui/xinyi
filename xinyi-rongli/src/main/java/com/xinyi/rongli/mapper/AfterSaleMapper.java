@@ -46,15 +46,14 @@ public interface AfterSaleMapper
             WHERE 1 = 1
             <if test="status != null and status != ''"> AND c.case_status = #{status} </if>
             <if test="kind != null and kind != ''"> AND c.kind = #{kind} </if>
-            <if test="deptId != null">
-              AND o.dept_id IN (SELECT dept_id FROM sys_dept
-                                WHERE dept_id = #{deptId} OR FIND_IN_SET(#{deptId}, ancestors))
+            <if test="deptIds != null and deptIds.size() > 0">
+              AND o.dept_id IN <foreach collection="deptIds" item="scopeDeptId" open="(" separator="," close=")">#{scopeDeptId}</foreach>
             </if>
             ORDER BY c.id DESC LIMIT #{offset}, #{limit}
             </script>
             """)
     List<Map<String, Object>> adminList(@Param("status") String status, @Param("kind") String kind,
-            @Param("deptId") Long deptId,
+            @Param("deptIds") List<Long> deptIds,
             @Param("offset") int offset, @Param("limit") int limit);
 
     @Select("""
@@ -62,23 +61,21 @@ public interface AfterSaleMapper
             SELECT COUNT(1) FROM vi_aftersale_case c JOIN vi_order o ON o.id = c.order_id WHERE 1 = 1
             <if test="status != null and status != ''"> AND c.case_status = #{status} </if>
             <if test="kind != null and kind != ''"> AND c.kind = #{kind} </if>
-            <if test="deptId != null">
-              AND o.dept_id IN (SELECT dept_id FROM sys_dept
-                                WHERE dept_id = #{deptId} OR FIND_IN_SET(#{deptId}, ancestors))
+            <if test="deptIds != null and deptIds.size() > 0">
+              AND o.dept_id IN <foreach collection="deptIds" item="scopeDeptId" open="(" separator="," close=")">#{scopeDeptId}</foreach>
             </if>
             </script>
             """)
     long adminCount(@Param("status") String status, @Param("kind") String kind,
-            @Param("deptId") Long deptId);
+            @Param("deptIds") List<Long> deptIds);
 
     /** 二次授权：该售后单是否落在当前部门数据范围内 */
     @Select("""
             SELECT COUNT(1) FROM vi_aftersale_case c JOIN vi_order o ON o.id = c.order_id
             WHERE c.id = #{caseId}
-              AND o.dept_id IN (SELECT dept_id FROM sys_dept
-                                WHERE dept_id = #{deptId} OR FIND_IN_SET(#{deptId}, ancestors))
+              AND o.dept_id IN <foreach collection="deptIds" item="scopeDeptId" open="(" separator="," close=")">#{scopeDeptId}</foreach>
             """)
-    long countInDept(@Param("caseId") Long caseId, @Param("deptId") Long deptId);
+    long countInDept(@Param("caseId") Long caseId, @Param("deptIds") List<Long> deptIds);
 
     @Select("""
             SELECT c.*, o.order_no, o.fulfillment_status, o.vehicle_snapshot

@@ -32,6 +32,9 @@ public class IntegrationPaymentService
     private static final List<String> DIRECTIONS = List.of("COLLECTION", "REFUND");
 
     @Autowired
+    private DeptScope deptScope;
+
+    @Autowired
     private IntegrationMapper mapper;
 
     @Autowired
@@ -201,14 +204,14 @@ public class IntegrationPaymentService
         int page = pageNum == null || pageNum < 1 ? 1 : pageNum;
         int size = pageSize == null || pageSize < 1 || pageSize > 200 ? 20 : pageSize;
         Long deptId = IntegrationConfigService.longOrNull(ownerDeptId);
-        Long scope = DeptScope.scopedDeptId();
-        if (scope != null)
+        List<Long> assigned = deptScope.assignedDeptIds();
+        if (assigned != null)
         {
-            if (deptId != null && !deptId.equals(scope))
+            if (deptId != null && !assigned.contains(deptId))
             {
-                throw ApiException.forbidden("只能查看本主体的线下资金凭证");
+                throw ApiException.forbidden("只能查看本人任职部门的线下资金凭证");
             }
-            deptId = scope;
+            deptId = deptId == null ? deptScope.primaryAssignedDeptId() : deptId;
         }
         List<Map<String, Object>> rows = new ArrayList<>();
         for (Map<String, Object> row : mapper.listOfflineRecords(deptId, blank(status), blank(direction),
@@ -343,11 +346,7 @@ public class IntegrationPaymentService
         {
             throw ApiException.notFound("凭证不存在");
         }
-        Long scope = DeptScope.scopedDeptId();
-        if (scope != null && !scope.equals(proof.lng("ownerDeptId")))
-        {
-            throw ApiException.forbidden("无权核实其它主体的线下资金");
-        }
+        deptScope.requireAssigned(proof.lng("ownerDeptId"), "无权核实其它主体的线下资金");
         long expectedVersion = IntegrationConfigService.longOf(body.get("expectedVersion"), -1);
         if (expectedVersion != proof.lng("version", 0L))
         {
@@ -556,11 +555,7 @@ public class IntegrationPaymentService
         {
             throw ApiException.notFound("凭证不存在");
         }
-        Long scope = DeptScope.scopedDeptId();
-        if (scope != null && !scope.equals(row.lng("ownerDeptId")))
-        {
-            throw ApiException.forbidden("无权查看其它主体的线下资金凭证");
-        }
+        deptScope.requireAssigned(row.lng("ownerDeptId"), "无权查看其它主体的线下资金凭证");
         return row;
     }
 

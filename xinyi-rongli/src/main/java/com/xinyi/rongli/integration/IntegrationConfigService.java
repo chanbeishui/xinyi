@@ -45,6 +45,9 @@ public class IntegrationConfigService
     private static final String TARGET_TEMPLATE = "TEMPLATE";
 
     @Autowired
+    private DeptScope deptScope;
+
+    @Autowired
     private IntegrationMapper mapper;
 
     @Autowired
@@ -1003,60 +1006,39 @@ public class IntegrationConfigService
         }
     }
 
+    /** 默认落到主部门；显式指定时必须落在本人任职部门内，多部门账号可切换查看 */
     private Long scopedDept(String requested)
     {
         Long deptId = longOrNull(requested);
-        Long scope = DeptScope.scopedDeptId();
-        if (scope != null)
+        List<Long> assigned = deptScope.assignedDeptIds();
+        if (assigned == null)
         {
-            if (deptId != null && !deptId.equals(scope))
-            {
-                throw ApiException.forbidden("只能查看本部门的第三方配置");
-            }
-            return scope;
+            return deptId;
         }
-        return deptId;
+        if (deptId != null)
+        {
+            if (!assigned.contains(deptId))
+            {
+                throw ApiException.forbidden("只能查看本人任职部门的第三方配置");
+            }
+            return deptId;
+        }
+        return deptScope.primaryAssignedDeptId();
     }
 
     private Long resolveDeptForWrite(String requested)
     {
-        Long requestedId = longOrNull(requested);
-        Long scope = DeptScope.scopedDeptId();
-        if (scope != null)
+        Long dept = deptScope.writeDeptId(longOrNull(requested), "只能维护本人任职部门的第三方配置");
+        if (dept == null)
         {
-            if (requestedId != null && !requestedId.equals(scope))
-            {
-                throw ApiException.forbidden("只能维护本部门的第三方配置");
-            }
-            return scope;
+            throw ApiException.validation("请指定归属主体部门");
         }
-        if (requestedId == null)
-        {
-            Long current = null;
-            try
-            {
-                current = SecurityUtils.getDeptId();
-            }
-            catch (Exception ignored)
-            {
-                current = null;
-            }
-            if (current == null)
-            {
-                throw ApiException.validation("请指定归属主体部门");
-            }
-            return current;
-        }
-        return requestedId;
+        return dept;
     }
 
     public void assertScope(Row profile)
     {
-        Long scope = DeptScope.scopedDeptId();
-        if (scope != null && !scope.equals(profile.lng("ownerDeptId")))
-        {
-            throw ApiException.forbidden("无权访问其它主体/部门的第三方配置");
-        }
+        deptScope.requireAssigned(profile.lng("ownerDeptId"), "无权访问其它主体/部门的第三方配置");
     }
 
     public Long currentUserId()
