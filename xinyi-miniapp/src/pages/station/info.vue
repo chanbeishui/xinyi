@@ -14,7 +14,7 @@ const supportedCodes = ref('');
 const radius = ref(0);
 
 function uuid(): string {
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
     const r = (Math.random() * 16) | 0;
     return (c === 'x' ? r : (r & 0x3) | 0x8).toString(16);
   });
@@ -41,19 +41,26 @@ function startEdit() {
   editing.value = true;
 }
 
+// 维护范围由服务端当前工作站点确定；仅提交允许编辑的公开资料与原记录版本。
 async function save() {
   const s = station.value;
   if (!s) return;
   try {
-    station.value = await updateOwnStation({
-      name: name.value.trim(),
-      address: address.value.trim(),
-      location: { lng: s.location.lng, lat: s.location.lat, coordinateSystem: 'GCJ02' },
-      supportedVehicleTypeCodes: supportedCodes.value.split(',').map(x => x.trim()).filter(Boolean),
-      businessHours: businessHours.value || undefined,
-      serviceRadiusMeter: Number(radius.value),
-      expectedVersion: s.version
-    }, uuid());
+    station.value = await updateOwnStation(
+      {
+        name: name.value.trim(),
+        address: address.value.trim(),
+        location: { lng: s.location.lng, lat: s.location.lat, coordinateSystem: 'GCJ02' },
+        supportedVehicleTypeCodes: supportedCodes.value
+          .split(',')
+          .map((x) => x.trim())
+          .filter(Boolean),
+        businessHours: businessHours.value || undefined,
+        serviceRadiusMeter: Number(radius.value),
+        expectedVersion: s.version
+      },
+      uuid()
+    );
     editing.value = false;
     message.value = '';
   } catch (err) {
@@ -98,13 +105,48 @@ onShow(load);
 </template>
 
 <style scoped>
-.screen { padding: 32px 22px; display: flex; flex-direction: column; gap: 16px; }
-.title { font-size: 24px; font-weight: 600; }
-.card { background: #fff; border-radius: 14px; padding: 18px; display: flex; flex-direction: column; gap: 8px; }
-.row { font-size: 15px; color: #333; }
-.ops { display: flex; gap: 16px; }
-.input { border: 1px solid #ddd; border-radius: 8px; padding: 8px; font-size: 15px; }
-.warn { font-size: 15px; color: #c0392b; }
-.primary { background: #005fcb; color: #fff; }
-.plain { background: #eef2f7; color: #005fcb; }
+.screen {
+  padding: 32px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.title {
+  font-size: 24px;
+  font-weight: 600;
+}
+.card {
+  background: #fff;
+  border-radius: 14px;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.row {
+  font-size: 15px;
+  color: #333;
+}
+.ops {
+  display: flex;
+  gap: 16px;
+}
+.input {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 8px;
+  font-size: 15px;
+}
+.warn {
+  font-size: 15px;
+  color: #c0392b;
+}
+.primary {
+  background: #005fcb;
+  color: #fff;
+}
+.plain {
+  background: #eef2f7;
+  color: #005fcb;
+}
 </style>

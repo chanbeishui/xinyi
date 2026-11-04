@@ -1,0 +1,58 @@
+{
+  "url": "http://127.0.0.1:5174/#/pages/booking/start",
+  "errors": [],
+  "overlay": 0,
+  "quotes": [
+    {
+      "body": {
+        "slotId": "1",
+        "inspectionTypeCode": "CAR",
+        "vehicleId": "1",
+        "addressId": "1",
+        "stationId": "12"
+      },
+      "key": "3feb7ded-8e9e-4e59-9694-bf1be7cabb13"
+    },
+    {
+      "body": {
+        "slotId": "1",
+        "inspectionTypeCode": "CAR",
+        "vehicleId": "1",
+        "addressId": "1",
+        "stationId": "12"
+      },
+      "key": "3feb7ded-8e9e-4e59-9694-bf1be7cabb13"
+    }
+  ],
+  "orders": [
+    {
+      "body": {
+        "quoteId": "99",
+        "termsVersion": "v1",
+        "privacyVersion": "p1",
+        "acceptedTerms": true,
+        "remark": "界面验证预约"
+      },
+      "key": "da93647d-b7e3-4c02-98ff-d88f7c5453ab"
+    },
+    {
+      "body": {
+        "quoteId": "99",
+        "termsVersion": "v1",
+        "privacyVersion": "p1",
+        "acceptedTerms": true,
+        "remark": "界面验证预约"
+      },
+      "key": "da93647d-b7e3-4c02-98ff-d88f7c5453ab"
+    }
+  ],
+  "checks": [
+    "协议默认未勾选禁用提交",
+    "已发布协议正文可读",
+    "显式同意及版本随quoteId提交",
+    "503同体同键重试",
+    "创建后显示待付及实付0元",
+    "创建成功移除重复提交入口"
+  ],
+  "mode": "H5明确UI API夹具；业务另由真实HTTP/MySQL验证，未执行微信真机"
+}

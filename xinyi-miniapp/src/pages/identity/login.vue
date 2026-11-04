@@ -1,12 +1,15 @@
 <script setup lang="ts">
 import { useIdentityLogin } from '../../features/identity/useIdentityLogin';
+// 登录状态由统一组合逻辑驱动；页面不能根据微信客户端结果自行授予业务身份。
 const { state, message, session, employeeHint, login, enterApp } = useIdentityLogin();
 </script>
 
 <template>
   <view class="screen">
     <text class="title">机动车检测预约</text>
-    <text class="desc">微信一键登录，首次进入默认为车主。代驾需申请审核，检测员工由后台配置站点授权。</text>
+    <text class="desc"
+      >微信一键登录，首次进入默认为车主。代驾需申请审核，检测员工由后台配置站点授权。</text
+    >
 
     <block v-if="state === 'IDLE' || state === 'DENIED' || state === 'ERROR'">
       <button class="primary" :disabled="false" @click="login">微信登录</button>
@@ -29,9 +32,31 @@ const { state, message, session, employeeHint, login, enterApp } = useIdentityLo
 </template>
 
 <style scoped>
-.screen { padding: 32px 22px; display: flex; flex-direction: column; gap: 18px; }
-.title { font-size: 26px; font-weight: 600; }
-.desc, .status, .kv { font-size: 16px; line-height: 1.7; color: #333; }
-.warn { font-size: 15px; color: #c0392b; line-height: 1.6; }
-.primary { margin: 8px 0; background: #005fcb; color: #fff; }
+.screen {
+  padding: 32px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.title {
+  font-size: 26px;
+  font-weight: 600;
+}
+.desc,
+.status,
+.kv {
+  font-size: 16px;
+  line-height: 1.7;
+  color: #333;
+}
+.warn {
+  font-size: 15px;
+  color: #c0392b;
+  line-height: 1.6;
+}
+.primary {
+  margin: 8px 0;
+  background: #005fcb;
+  color: #fff;
+}
 </style>

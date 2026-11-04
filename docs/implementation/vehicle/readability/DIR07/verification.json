@@ -1,0 +1,48 @@
+{
+  "at": "2026-11-04T16:15:29.983901+00:00",
+  "taskId": "DIR07",
+  "files": 26,
+  "tests": [],
+  "integrationTests": 0,
+  "unitTests": 0,
+  "frontend": {
+    "typeCheck": "PASS",
+    "formatTypesCheck": "PASS",
+    "mpWeixinBuild": "PASS",
+    "h5Build": "PASS",
+    "browser": "预约建单/订单查询/支付回归通过；补充12个页面渲染及选定交互通过",
+    "nativeWechat": "未执行真机登录、手机号授权及真实渠道支付",
+    "browserTool": "无可用Browser插件，使用既有Playwright与Chrome；全部业务请求为明确API夹具",
+    "evidence": {
+      "booking-browser.json": "/private/tmp/b03-ui.json",
+      "order-browser.json": "/private/tmp/b04-ui.json",
+      "payment-browser.json": "/private/tmp/p02-browser.json",
+      "mini-browser.json": "/private/tmp/DIR07-mini-browser.json",
+      "identity-switch.png": "/private/tmp/DIR07-identity-switch.png",
+      "vehicle-list.png": "/private/tmp/DIR07-vehicle-list.png",
+      "station-info.png": "/private/tmp/DIR07-station-info.png",
+      "format-check.txt": "/private/tmp/DIR07-format.log",
+      "type-check.txt": "/private/tmp/DIR07-type.log",
+      "mp-build.txt": "/private/tmp/DIR07-mp.log",
+      "h5-build.txt": "/private/tmp/DIR07-h5.log"
+    }
+  },
+  "databaseStructureChanged": false,
+  "businessBehaviorChanged": false,
+  "independentReview": "PENDING",
+  "supportFiles": [
+    {
+      "file": "xinyi-miniapp/package.json",
+      "sha256": "e0bd19c05d655598b67d62ec30c3ea65e13cd4cde6a055fa6afe33dd1674fdfd"
+    },
+    {
+      "file": "xinyi-miniapp/package-lock.json",
+      "sha256": "017f410e85ee0284bdb197a766967c0c4035b3f67f4179403c29b0bceb5eeca7"
+    },
+    {
+      "file": "xinyi-miniapp/FORMATTING.md",
+      "sha256": "2d70a7514e32228281becb82f7f3ccf2fbc781063b5e621ea250f30c1a50119d"
+    }
+  ],
+  "backendTests": "NOT_RERUN_FRONTEND_ONLY"
+}

@@ -5,110 +5,317 @@ import { currentSession } from '../../services/http';
 import { listSlots, getQuote, availableStations } from '../../features/booking/api';
 import { listAddresses, type Address } from '../../features/address/api';
 import { listVehicles, type Vehicle } from '../../features/vehicle/api';
-import { getDict, getPublicServiceConfig, type PublicServiceConfig, type DictItem } from '../../features/config/api';
+import {
+  getDict,
+  getPublicServiceConfig,
+  type PublicServiceConfig,
+  type DictItem
+} from '../../features/config/api';
 import { createOrder } from '../../features/order/api';
-import type { OrderCreate, OwnerOrderView, Slot, Quote, QuoteRequest, StationSelectionRequest, AvailableStation } from '../../api/types';
-const step = ref(0), busy = ref(false), message = ref('');
+import type {
+  OrderCreate,
+  OwnerOrderView,
+  Slot,
+  Quote,
+  QuoteRequest,
+  StationSelectionRequest,
+  AvailableStation
+} from '../../api/types';
+const step = ref(0),
+  busy = ref(false),
+  message = ref('');
 const date = ref(new Date(Date.now() + 8 * 3600000).toISOString().slice(0, 10));
-const slots = ref<Slot[]>([]), slot = ref<Slot | null>(null), total = ref(0), page = ref(1);
-const addresses = ref<Address[]>([]), vehicles = ref<Vehicle[]>([]), types = ref<DictItem[]>([]), inspections = ref<DictItem[]>([]);
-const addressId = ref(''), address = ref(''), lng = ref(''), lat = ref('');
-const vehicleId = ref(''), plate = ref(''), vehicleType = ref(''), inspection = ref('');
+const slots = ref<Slot[]>([]),
+  slot = ref<Slot | null>(null),
+  total = ref(0),
+  page = ref(1);
+const addresses = ref<Address[]>([]),
+  vehicles = ref<Vehicle[]>([]),
+  types = ref<DictItem[]>([]),
+  inspections = ref<DictItem[]>([]);
+const addressId = ref(''),
+  address = ref(''),
+  lng = ref(''),
+  lat = ref('');
+const vehicleId = ref(''),
+  plate = ref(''),
+  vehicleType = ref(''),
+  inspection = ref('');
 const quote = ref<Quote | null>(null);
-const agreements = ref<PublicServiceConfig | null>(null), accepted = ref(false), remark = ref('');
-const order = ref<OwnerOrderView | null>(null), uncertain = ref(false);
+const agreements = ref<PublicServiceConfig | null>(null),
+  accepted = ref(false),
+  remark = ref('');
+const order = ref<OwnerOrderView | null>(null),
+  uncertain = ref(false);
 let orderAttempt: { input: OrderCreate; key: string } | null = null;
-const stationOptions = ref<AvailableStation[]>([]), selectedStation = ref('');
-let sessionId = '', sequence = 0, attempt: { body: string; key: string } | null = null;
-const displayTime = (utc: string) => new Date(Date.parse(utc) + 8 * 3600000).toISOString().slice(0, 19).replace('T', ' ') + '（北京时间）';
-const error = (e: unknown) => { message.value = e instanceof Error ? e.message : '请求未完成，请重试'; };
-function invalidate() { accepted.value = false; agreements.value = null; orderAttempt = null; uncertain.value = false; sequence++; quote.value = null; attempt = null; stationOptions.value = []; selectedStation.value = ''; if (step.value >= 3) step.value = 2; }
-watch([date, slot, addressId, address, lng, lat, vehicleId, plate, vehicleType, inspection], invalidate, { flush: 'sync' });
+const stationOptions = ref<AvailableStation[]>([]),
+  selectedStation = ref('');
+let sessionId = '',
+  sequence = 0,
+  attempt: { body: string; key: string } | null = null;
+const displayTime = (utc: string) =>
+  new Date(Date.parse(utc) + 8 * 3600000).toISOString().slice(0, 19).replace('T', ' ') +
+  '（北京时间）';
+const error = (e: unknown) => {
+  message.value = e instanceof Error ? e.message : '请求未完成，请重试';
+};
+// 车辆、地址、时段等变化会使报价和协议确认失效；旧请求返回后也不能恢复旧报价。
+function invalidate() {
+  accepted.value = false;
+  agreements.value = null;
+  orderAttempt = null;
+  uncertain.value = false;
+  sequence++;
+  quote.value = null;
+  attempt = null;
+  stationOptions.value = [];
+  selectedStation.value = '';
+  if (step.value >= 3) step.value = 2;
+}
+watch(
+  [date, slot, addressId, address, lng, lat, vehicleId, plate, vehicleType, inspection],
+  invalidate,
+  { flush: 'sync' }
+);
 onShow(async () => {
   const id = currentSession()?.sessionId || '';
-  if (!id || currentSession()?.activeRole !== 'OWNER') { uni.redirectTo({ url: '/pages/identity/login' }); return; }
+  if (!id || currentSession()?.activeRole !== 'OWNER') {
+    uni.redirectTo({ url: '/pages/identity/login' });
+    return;
+  }
   if (sessionId && sessionId !== id) {
-    order.value = null; remark.value = '';
-    slot.value = null; addressId.value = ''; address.value = ''; lng.value = ''; lat.value = '';
-    vehicleId.value = ''; plate.value = ''; vehicleType.value = ''; inspection.value = ''; step.value = 0; invalidate();
+    order.value = null;
+    remark.value = '';
+    slot.value = null;
+    addressId.value = '';
+    address.value = '';
+    lng.value = '';
+    lat.value = '';
+    vehicleId.value = '';
+    plate.value = '';
+    vehicleType.value = '';
+    inspection.value = '';
+    step.value = 0;
+    invalidate();
   }
   sessionId = id;
   await loadSlots();
-  const result = await Promise.allSettled([listAddresses(), listVehicles(), getDict('vi_vehicle_type'), getDict('vi_inspection_type')]);
+  const result = await Promise.allSettled([
+    listAddresses(),
+    listVehicles(),
+    getDict('vi_vehicle_type'),
+    getDict('vi_inspection_type')
+  ]);
   if (sessionId !== currentSession()?.sessionId) return;
   if (result[0].status === 'fulfilled') addresses.value = result[0].value;
   if (result[1].status === 'fulfilled') vehicles.value = result[1].value;
-  if (result[2].status === 'fulfilled') types.value = result[2].value.filter(x => x.enabled);
-  if (result[3].status === 'fulfilled') inspections.value = result[3].value.filter(x => x.enabled);
-  if (result.some(x => x.status === 'rejected')) message.value = '部分资料加载失败，请返回后重试；请勿使用未核实的信息';
+  if (result[2].status === 'fulfilled') types.value = result[2].value.filter((x) => x.enabled);
+  if (result[3].status === 'fulfilled')
+    inspections.value = result[3].value.filter((x) => x.enabled);
+  if (result.some((x) => x.status === 'rejected'))
+    message.value = '部分资料加载失败，请返回后重试；请勿使用未核实的信息';
 });
 let loadSequence = 0;
 async function loadSlots() {
-  const ticket = ++loadSequence; busy.value = true; message.value = '';
-  try { const r = await listSlots(date.value, page.value); if (ticket !== loadSequence) return; slots.value = r.rows; total.value = r.total; }
-  catch (e) { if (ticket === loadSequence) { slots.value = []; error(e); } }
-  finally { if (ticket === loadSequence) busy.value = false; }
+  const ticket = ++loadSequence;
+  busy.value = true;
+  message.value = '';
+  try {
+    const r = await listSlots(date.value, page.value);
+    if (ticket !== loadSequence) return;
+    slots.value = r.rows;
+    total.value = r.total;
+  } catch (e) {
+    if (ticket === loadSequence) {
+      slots.value = [];
+      error(e);
+    }
+  } finally {
+    if (ticket === loadSequence) busy.value = false;
+  }
 }
-function changeDate(e: any) { date.value = e.detail.value; slot.value = null; page.value = 1; loadSlots(); }
-function chooseSlot(s: Slot) { slot.value = s; step.value = 1; message.value = ''; }
+function changeDate(e: any) {
+  date.value = e.detail.value;
+  slot.value = null;
+  page.value = 1;
+  loadSlots();
+}
+function chooseSlot(s: Slot) {
+  slot.value = s;
+  step.value = 1;
+  message.value = '';
+}
 function locate() {
-  uni.chooseLocation({ success: r => { addressId.value = ''; address.value = r.address || r.name; lng.value = String(r.longitude); lat.value = String(r.latitude); }, fail: () => { message.value = '定位未成功，可选已有地址或手动填写完整地址和经纬度'; } });
+  uni.chooseLocation({
+    success: (r) => {
+      addressId.value = '';
+      address.value = r.address || r.name;
+      lng.value = String(r.longitude);
+      lat.value = String(r.latitude);
+    },
+    fail: () => {
+      message.value = '定位未成功，可选已有地址或手动填写完整地址和经纬度';
+    }
+  });
 }
 function nextAddress() {
-  if (!addressId.value && (!address.value.trim() || !lng.value.trim() || !lat.value.trim() || !Number.isFinite(Number(lng.value)) || !Number.isFinite(Number(lat.value)) || Math.abs(Number(lng.value)) > 180 || Math.abs(Number(lat.value)) > 90)) { message.value = '请选择已有地址，或填写完整地址及有效坐标'; return; }
-  message.value = ''; step.value = 2;
+  if (
+    !addressId.value &&
+    (!address.value.trim() ||
+      !lng.value.trim() ||
+      !lat.value.trim() ||
+      !Number.isFinite(Number(lng.value)) ||
+      !Number.isFinite(Number(lat.value)) ||
+      Math.abs(Number(lng.value)) > 180 ||
+      Math.abs(Number(lat.value)) > 90)
+  ) {
+    message.value = '请选择已有地址，或填写完整地址及有效坐标';
+    return;
+  }
+  message.value = '';
+  step.value = 2;
 }
-function uuid() { return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => { const n = Math.floor(Math.random() * 16); return (c === 'x' ? n : (n & 3) | 8).toString(16); }); }
+function uuid() {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+    const n = Math.floor(Math.random() * 16);
+    return (c === 'x' ? n : (n & 3) | 8).toString(16);
+  });
+}
 async function calculate() {
-  if (!slot.value || !inspection.value || (!vehicleId.value && (!plate.value.trim() || !vehicleType.value))) { message.value = '请补齐车辆、车型和检测类型'; return; }
-  busy.value = true; message.value = ''; quote.value = null; const ticket = ++sequence;
-  const input: StationSelectionRequest = { slotId: slot.value.slotId, inspectionTypeCode: inspection.value,
-    ...(vehicleId.value ? { vehicleId: vehicleId.value } : { vehicleDraft: { plateNo: plate.value.trim(), vehicleTypeCode: vehicleType.value } }),
-    ...(addressId.value ? { addressId: addressId.value } : { addressDraft: { address: address.value.trim(), location: { lng: Number(lng.value), lat: Number(lat.value), coordinateSystem: 'GCJ02' as const } } }) };
+  if (
+    !slot.value ||
+    !inspection.value ||
+    (!vehicleId.value && (!plate.value.trim() || !vehicleType.value))
+  ) {
+    message.value = '请补齐车辆、车型和检测类型';
+    return;
+  }
+  busy.value = true;
+  message.value = '';
+  quote.value = null;
+  const ticket = ++sequence;
+  const input: StationSelectionRequest = {
+    slotId: slot.value.slotId,
+    inspectionTypeCode: inspection.value,
+    ...(vehicleId.value
+      ? { vehicleId: vehicleId.value }
+      : { vehicleDraft: { plateNo: plate.value.trim(), vehicleTypeCode: vehicleType.value } }),
+    ...(addressId.value
+      ? { addressId: addressId.value }
+      : {
+          addressDraft: {
+            address: address.value.trim(),
+            location: {
+              lng: Number(lng.value),
+              lat: Number(lat.value),
+              coordinateSystem: 'GCJ02' as const
+            }
+          }
+        })
+  };
   try {
     const result = await availableStations(input);
     if (ticket !== sequence) return;
-    stationOptions.value = result; selectedStation.value = ''; step.value = 3;
+    stationOptions.value = result;
+    selectedStation.value = '';
+    step.value = 3;
     if (!result.length) message.value = '当前地址、车型和时段暂无可用站点，请修改信息后重试';
     pendingInput = input;
-  } catch (e) { if (ticket === sequence) error(e); }
-  finally { busy.value = false; }
+  } catch (e) {
+    if (ticket === sequence) error(e);
+  } finally {
+    busy.value = false;
+  }
 }
 let pendingInput: StationSelectionRequest | null = null;
-function selectStation(id: string) { selectedStation.value = id; quote.value = null; attempt = null; sequence++; }
+function selectStation(id: string) {
+  selectedStation.value = id;
+  quote.value = null;
+  attempt = null;
+  sequence++;
+}
+// 车主主动选站后才生成正式报价，同时核对展示协议版本与报价采用的配置版本。
 async function confirmStation() {
-  if (!pendingInput || !selectedStation.value) { message.value = '请选择可用站点'; return; }
-  const input: QuoteRequest = { ...pendingInput, stationId: selectedStation.value };
-  const body = JSON.stringify(input), ticket = ++sequence;
-  if (!attempt || attempt.body !== body) attempt = { body, key: uuid() };
-  busy.value = true; quote.value = null; message.value = '';
-  try {
-    const [result, config] = await Promise.all([getQuote(input, attempt.key), getPublicServiceConfig()]);
-    if (ticket !== sequence) return;
-    if (!config.termsText || !config.privacyText || config.termsVersion !== result.termsVersion || config.version !== result.quotaPlanVersion) {
-      attempt = null; throw new Error('协议或配置已变化，请重新获取报价');
-    }
-    quote.value = result; agreements.value = config; accepted.value = false; orderAttempt = null; step.value = 4;
+  if (!pendingInput || !selectedStation.value) {
+    message.value = '请选择可用站点';
+    return;
   }
-  catch (e: any) {
+  const input: QuoteRequest = { ...pendingInput, stationId: selectedStation.value };
+  const body = JSON.stringify(input),
+    ticket = ++sequence;
+  if (!attempt || attempt.body !== body) attempt = { body, key: uuid() };
+  busy.value = true;
+  quote.value = null;
+  message.value = '';
+  try {
+    const [result, config] = await Promise.all([
+      getQuote(input, attempt.key),
+      getPublicServiceConfig()
+    ]);
+    if (ticket !== sequence) return;
+    if (
+      !config.termsText ||
+      !config.privacyText ||
+      config.termsVersion !== result.termsVersion ||
+      config.version !== result.quotaPlanVersion
+    ) {
+      attempt = null;
+      throw new Error('协议或配置已变化，请重新获取报价');
+    }
+    quote.value = result;
+    agreements.value = config;
+    accepted.value = false;
+    orderAttempt = null;
+    step.value = 4;
+  } catch (e: any) {
     if (ticket === sequence) {
       error(e);
-      if (['VI_STATE_CONFLICT', 'VI_CONFIG_CHANGED', 'VI_VERSION_CONFLICT', 'VI_SERVICE_UNAVAILABLE'].includes(e?.errorCode)) { attempt = null; stationOptions.value = []; selectedStation.value = ''; step.value = 2; }
+      if (
+        [
+          'VI_STATE_CONFLICT',
+          'VI_CONFIG_CHANGED',
+          'VI_VERSION_CONFLICT',
+          'VI_SERVICE_UNAVAILABLE'
+        ].includes(e?.errorCode)
+      ) {
+        attempt = null;
+        stationOptions.value = [];
+        selectedStation.value = '';
+        step.value = 2;
+      }
     }
-  } finally { busy.value = false; }
-
+  } finally {
+    busy.value = false;
+  }
 }
+// 网络失败或5xx表示结果未知；保留本次请求和幂等键，避免创建重复订单或重复占额。
 async function submitOrder() {
   if (busy.value || order.value) return;
   if (!orderAttempt) {
-    if (!quote.value || !agreements.value || !accepted.value) { message.value = '请阅读并主动同意服务协议与隐私政策'; return; }
-    orderAttempt = { input: { quoteId: quote.value.quoteId, termsVersion: agreements.value.termsVersion, privacyVersion: agreements.value.privacyVersion, acceptedTerms: true, remark: remark.value }, key: uuid() };
+    if (!quote.value || !agreements.value || !accepted.value) {
+      message.value = '请阅读并主动同意服务协议与隐私政策';
+      return;
+    }
+    orderAttempt = {
+      input: {
+        quoteId: quote.value.quoteId,
+        termsVersion: agreements.value.termsVersion,
+        privacyVersion: agreements.value.privacyVersion,
+        acceptedTerms: true,
+        remark: remark.value
+      },
+      key: uuid()
+    };
   }
-  busy.value = true; message.value = ''; const ticket = ++sequence;
+  busy.value = true;
+  message.value = '';
+  const ticket = ++sequence;
   try {
     const result = await createOrder(orderAttempt.input, orderAttempt.key);
     if (ticket !== sequence) return;
-    order.value = result; uncertain.value = false; step.value = 5;
+    order.value = result;
+    uncertain.value = false;
+    step.value = 5;
   } catch (e: any) {
     if (ticket !== sequence) return;
     error(e);
@@ -116,73 +323,260 @@ async function submitOrder() {
     if (uncertain.value) message.value += '。结果尚未确认，请用下方按钮重试同一次提交。';
     else {
       orderAttempt = null;
-      if (['VI_CONFIG_CHANGED', 'VI_STATE_CONFLICT', 'VI_SERVICE_UNAVAILABLE'].includes(e?.errorCode)) invalidate();
+      if (
+        ['VI_CONFIG_CHANGED', 'VI_STATE_CONFLICT', 'VI_SERVICE_UNAVAILABLE'].includes(e?.errorCode)
+      )
+        invalidate();
     }
-  } finally { busy.value = false; }
+  } finally {
+    busy.value = false;
+  }
 }
-function openOrder() { if (order.value) uni.navigateTo({ url: '/pages/order/detail?orderNo=' + encodeURIComponent(order.value.orderNo) }); }
+function openOrder() {
+  if (order.value)
+    uni.navigateTo({
+      url: '/pages/order/detail?orderNo=' + encodeURIComponent(order.value.orderNo)
+    });
+}
 </script>
 <template>
   <view class="screen">
     <text class="title">预约上门检测</text>
-    <text class="muted">{{ ['1 选择上门时段', '2 填写接车地址', '3 确认车辆', '4 选择服务站点', '5 核对报价', '6 订单已创建'][step] }}</text>
+    <text class="muted">{{
+      [
+        '1 选择上门时段',
+        '2 填写接车地址',
+        '3 确认车辆',
+        '4 选择服务站点',
+        '5 核对报价',
+        '6 订单已创建'
+      ][step]
+    }}</text>
     <view v-if="message" class="notice">{{ message }}</view>
     <template v-if="step === 0">
-      <picker mode="date" :value="date" @change="changeDate"><view class="picker-value">{{ date }} · 更换日期</view></picker>
+      <picker mode="date" :value="date" @change="changeDate"
+        ><view class="picker-value">{{ date }} · 更换日期</view></picker
+      >
       <text class="muted">先选候选时间，再核实地址和可服务站点；此处不占名额。</text>
       <text v-if="!busy && !slots.length">当天暂无可选时段，请更换日期。</text>
       <button v-for="s in slots" :key="s.slotId" @click="chooseSlot(s)">{{ s.displayText }}</button>
-      <view class="row"><button :disabled="page <= 1 || busy" @click="page--; loadSlots()">上一页</button><button :disabled="page * 20 >= total || busy" @click="page++; loadSlots()">下一页</button></view>
+      <view class="row"
+        ><button
+          :disabled="page <= 1 || busy"
+          @click="
+            page--;
+            loadSlots();
+          "
+        >
+          上一页</button
+        ><button
+          :disabled="page * 20 >= total || busy"
+          @click="
+            page++;
+            loadSlots();
+          "
+        >
+          下一页
+        </button></view
+      >
       <button :loading="busy" @click="loadSlots">刷新时段</button>
     </template>
     <template v-if="step === 1">
       <text>{{ slot?.displayText }}</text>
-      <button v-for="a in addresses" :key="a.addressId" @click="addressId = a.addressId">{{ addressId === a.addressId ? '已选：' : '' }}{{ a.address }}</button>
+      <button v-for="a in addresses" :key="a.addressId" @click="addressId = a.addressId">
+        {{ addressId === a.addressId ? '已选：' : '' }}{{ a.address }}
+      </button>
       <button @click="addressId = ''">使用本次临时地址</button>
-      <template v-if="!addressId"><button @click="locate">地图选择接车位置</button><input v-model="address" placeholder="完整接车地址" /><input v-model="lng" type="text" placeholder="经度（地图坐标）" /><input v-model="lat" type="text" placeholder="纬度（地图坐标）" /></template>
+      <template v-if="!addressId"
+        ><button @click="locate">地图选择接车位置</button
+        ><input v-model="address" placeholder="完整接车地址" /><input
+          v-model="lng"
+          type="text"
+          placeholder="经度（地图坐标）" /><input
+          v-model="lat"
+          type="text"
+          placeholder="纬度（地图坐标）"
+      /></template>
       <button class="primary" @click="nextAddress">下一步，确认车辆</button>
     </template>
     <template v-if="step === 2">
-      <button v-for="v in vehicles" :key="v.vehicleId" @click="vehicleId = v.vehicleId">{{ vehicleId === v.vehicleId ? '已选：' : '' }}{{ v.plateNo }} · {{ v.vehicleTypeLabel || v.vehicleTypeCode }}</button>
+      <button v-for="v in vehicles" :key="v.vehicleId" @click="vehicleId = v.vehicleId">
+        {{ vehicleId === v.vehicleId ? '已选：' : '' }}{{ v.plateNo }} ·
+        {{ v.vehicleTypeLabel || v.vehicleTypeCode }}
+      </button>
       <button @click="vehicleId = ''">使用本次临时车辆</button>
-      <template v-if="!vehicleId"><input v-model="plate" placeholder="车牌号" /><text class="muted">选择车型</text><button v-for="t in types" :key="t.code" @click="vehicleType = t.code">{{ vehicleType === t.code ? '已选：' : '' }}{{ t.label }}</button></template>
-      <text class="muted">选择检测类型</text><button v-for="t in inspections" :key="t.code" @click="inspection = t.code">{{ inspection === t.code ? '已选：' : '' }}{{ t.label }}</button>
+      <template v-if="!vehicleId"
+        ><input v-model="plate" placeholder="车牌号" /><text class="muted">选择车型</text
+        ><button v-for="t in types" :key="t.code" @click="vehicleType = t.code">
+          {{ vehicleType === t.code ? '已选：' : '' }}{{ t.label }}
+        </button></template
+      >
+      <text class="muted">选择检测类型</text
+      ><button v-for="t in inspections" :key="t.code" @click="inspection = t.code">
+        {{ inspection === t.code ? '已选：' : '' }}{{ t.label }}
+      </button>
       <text class="muted">地址与车辆修改后须重新核实可用站点、名额和价格。</text>
-      <button class="primary" :loading="busy" :disabled="busy" @click="calculate">查询可用站点</button>
+      <button class="primary" :loading="busy" :disabled="busy" @click="calculate">
+        查询可用站点
+      </button>
     </template>
     <template v-if="step === 3">
       <text class="muted">请选择本次服务站点；选择后再次校验费用和名额。</text>
-      <button v-for="s in stationOptions" :key="s.stationId" :disabled="busy" @click="selectStation(s.stationId)">{{ selectedStation === s.stationId ? '已选：' : '' }}{{ s.name }} · {{ (s.routeDistanceMeter / 1000).toFixed(1) }} 公里
-{{ s.address }}</button>
-      <button class="primary" :disabled="busy || !selectedStation" :loading="busy" @click="confirmStation">确认站点并获取报价</button>
+      <button
+        v-for="s in stationOptions"
+        :key="s.stationId"
+        :disabled="busy"
+        @click="selectStation(s.stationId)"
+      >
+        {{ selectedStation === s.stationId ? '已选：' : '' }}{{ s.name }} ·
+        {{ (s.routeDistanceMeter / 1000).toFixed(1) }} 公里 {{ s.address }}
+      </button>
+      <button
+        class="primary"
+        :disabled="busy || !selectedStation"
+        :loading="busy"
+        @click="confirmStation"
+      >
+        确认站点并获取报价
+      </button>
     </template>
     <template v-if="step === 4 && quote">
-      <text>{{ quote.stationName }}</text><text>服务总价：{{ (quote.totalAmount / 100).toFixed(2) }} 元</text><text>报价有效至 {{ displayTime(quote.expiresAt) }}</text><text v-for="item in quote.items" :key="item.feeCode">{{ item.name }}：{{ (item.amount / 100).toFixed(2) }} 元 · {{ item.calculation }}</text>
+      <text>{{ quote.stationName }}</text
+      ><text>服务总价：{{ (quote.totalAmount / 100).toFixed(2) }} 元</text
+      ><text>报价有效至 {{ displayTime(quote.expiresAt) }}</text
+      ><text v-for="item in quote.items" :key="item.feeCode"
+        >{{ item.name }}：{{ (item.amount / 100).toFixed(2) }} 元 · {{ item.calculation }}</text
+      >
       <text class="muted">报价未占用名额，提交预约时仍须校验。</text>
       <view v-if="agreements" class="agreement">
-        <text class="agreement-title">服务协议（{{ agreements.termsVersion }}）</text><text>{{ agreements.termsText }}</text>
-        <text class="agreement-title">隐私政策（{{ agreements.privacyVersion }}）</text><text>{{ agreements.privacyText }}</text>
+        <text class="agreement-title">服务协议（{{ agreements.termsVersion }}）</text
+        ><text>{{ agreements.termsText }}</text>
+        <text class="agreement-title">隐私政策（{{ agreements.privacyVersion }}）</text
+        ><text>{{ agreements.privacyText }}</text>
       </view>
-      <checkbox-group @change="accepted = $event.detail.value.includes('accept')"><label><checkbox value="accept" :checked="accepted" :disabled="busy || uncertain" />我已阅读并同意上述服务协议与隐私政策</label></checkbox-group>
-      <textarea v-model="remark" :maxlength="500" :disabled="busy || uncertain" placeholder="预约备注（选填，最多500字）" />
-      <button class="primary" :loading="busy" :disabled="busy || (!accepted && !uncertain)" @click="submitOrder">{{ uncertain ? '重试确认本次预约' : '确认预约，创建待付款订单' }}</button>
-      <button :disabled="busy || uncertain" @click="step = 2; invalidate()">修改信息并重新报价</button>
+      <checkbox-group @change="accepted = $event.detail.value.includes('accept')"
+        ><label
+          ><checkbox
+            value="accept"
+            :checked="accepted"
+            :disabled="busy || uncertain"
+          />我已阅读并同意上述服务协议与隐私政策</label
+        ></checkbox-group
+      >
+      <textarea
+        v-model="remark"
+        :maxlength="500"
+        :disabled="busy || uncertain"
+        placeholder="预约备注（选填，最多500字）"
+      />
+      <button
+        class="primary"
+        :loading="busy"
+        :disabled="busy || (!accepted && !uncertain)"
+        @click="submitOrder"
+      >
+        {{ uncertain ? '重试确认本次预约' : '确认预约，创建待付款订单' }}
+      </button>
+      <button
+        :disabled="busy || uncertain"
+        @click="
+          step = 2;
+          invalidate();
+        "
+      >
+        修改信息并重新报价
+      </button>
     </template>
     <template v-if="step === 5 && order">
       <button @click="openOrder">查看订单详情与进度</button>
-      <text class="title">订单已创建，待付款</text><text class="order-no">订单号：{{ order.orderNo }}</text>
+      <text class="title">订单已创建，待付款</text
+      ><text class="order-no">订单号：{{ order.orderNo }}</text>
       <text>{{ order.station.name }} · {{ order.vehicle.plateNo }}</text>
-      <text>应付：{{ (order.money.totalAmount / 100).toFixed(2) }} 元</text><text>已付：{{ (order.money.paidAmount / 100).toFixed(2) }} 元</text>
+      <text>应付：{{ (order.money.totalAmount / 100).toFixed(2) }} 元</text
+      ><text>已付：{{ (order.money.paidAmount / 100).toFixed(2) }} 元</text>
       <text>付款截止：{{ displayTime(order.payExpireAt) }}</text>
       <text class="muted">接车与接收名额已预留。订单仍待付款，付款完成后再安排服务。</text>
     </template>
-    <button v-if="step > 0 && step < 5" :disabled="busy || uncertain" @click="step--; invalidate()">上一步</button>
+    <button
+      v-if="step > 0 && step < 5"
+      :disabled="busy || uncertain"
+      @click="
+        step--;
+        invalidate();
+      "
+    >
+      上一步
+    </button>
   </view>
 </template>
 <style scoped>
-.screen { padding: 24px 20px; display: flex; flex-direction: column; gap: 16px; }
-.title { font-size: 25px; font-weight: 600; }.muted { color: #667085; font-size: 14px; line-height: 1.7; }
-.agreement { display: flex; flex-direction: column; gap: 12px; padding: 14px; background: white; white-space: pre-wrap; line-height: 1.7; }.agreement-title { font-weight: 600; }.order-no { overflow-wrap: anywhere; }textarea { box-sizing: border-box; width: 100%; background: white; padding: 12px; border: 1px solid #d9dfe8; border-radius: 8px; }
-.notice { background: #fff4e5; padding: 14px; border-radius: 10px; }input { background: white; padding: 14px; border: 1px solid #d9dfe8; border-radius: 8px; }
-button { width: 100%; margin: 0; font-size: 15px; }.picker-value { padding: 14px; border: 1px solid #d9dfe8; border-radius: 8px; background: white; text-align: center; }.primary { background: #005fcb; color: white; }.row { display: flex; gap: 12px; }
+.screen {
+  padding: 24px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.title {
+  font-size: 25px;
+  font-weight: 600;
+}
+.muted {
+  color: #667085;
+  font-size: 14px;
+  line-height: 1.7;
+}
+.agreement {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 14px;
+  background: white;
+  white-space: pre-wrap;
+  line-height: 1.7;
+}
+.agreement-title {
+  font-weight: 600;
+}
+.order-no {
+  overflow-wrap: anywhere;
+}
+textarea {
+  box-sizing: border-box;
+  width: 100%;
+  background: white;
+  padding: 12px;
+  border: 1px solid #d9dfe8;
+  border-radius: 8px;
+}
+.notice {
+  background: #fff4e5;
+  padding: 14px;
+  border-radius: 10px;
+}
+input {
+  background: white;
+  padding: 14px;
+  border: 1px solid #d9dfe8;
+  border-radius: 8px;
+}
+button {
+  width: 100%;
+  margin: 0;
+  font-size: 15px;
+}
+.picker-value {
+  padding: 14px;
+  border: 1px solid #d9dfe8;
+  border-radius: 8px;
+  background: white;
+  text-align: center;
+}
+.primary {
+  background: #005fcb;
+  color: white;
+}
+.row {
+  display: flex;
+  gap: 12px;
+}
 </style>

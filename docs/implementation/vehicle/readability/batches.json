@@ -103,7 +103,7 @@
     {
       "taskId": "DIR07",
       "title": "小程序与生成类型可读性整理",
-      "status": "PENDING",
+      "status": "VERIFIED",
       "files": [
         "xinyi-miniapp/src/api/types.ts",
         "xinyi-miniapp/src/pages/booking/start.vue",
@@ -131,7 +131,14 @@
         "xinyi-miniapp/src/main.ts",
         "xinyi-miniapp/src/features/scope/api.ts",
         "xinyi-miniapp/src/App.vue"
-      ]
+      ],
+      "supportFiles": [
+        "xinyi-miniapp/package.json",
+        "xinyi-miniapp/package-lock.json",
+        "xinyi-miniapp/FORMATTING.md"
+      ],
+      "evidence": "docs/implementation/vehicle/readability/DIR07/verification.json",
+      "versionTag": "vehicle-DIR07-readability-20261105"
     }
   ]
 }

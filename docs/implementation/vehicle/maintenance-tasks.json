@@ -128,5 +128,25 @@
     },
     "independentReview": "PENDING",
     "affectsBusinessTaskCount": false
+  },
+  {
+    "taskId": "DIR07",
+    "title": "小程序与生成类型可读性整理",
+    "category": "MAINTENANCE",
+    "status": "VERIFIED",
+    "implementationCommit": null,
+    "versionTag": "vehicle-DIR07-readability-20261105",
+    "evidence": [
+      "docs/implementation/vehicle/readability/DIR07/report.md",
+      "docs/implementation/vehicle/readability/DIR07/verification.json"
+    ],
+    "verification": {
+      "files": 26,
+      "integrationTests": 0,
+      "unitTests": 0,
+      "databaseChanged": false
+    },
+    "independentReview": "PENDING",
+    "affectsBusinessTaskCount": false
   }
 ]

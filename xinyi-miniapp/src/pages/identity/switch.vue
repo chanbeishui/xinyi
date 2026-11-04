@@ -27,6 +27,7 @@ async function load() {
   }
 }
 
+// 页面只展示已有资格；切换结果以服务端新上下文为准，不在前端添加可用角色。
 async function doSwitch(role: MiniRole) {
   const s = currentSession();
   if (!s || busy.value) return;
@@ -47,14 +48,19 @@ async function doSwitch(role: MiniRole) {
 function applyDriver() {
   // 代驾申请属资格任务；此处仅提示状态，不重复引导已批准账号
   const q = view.value?.driverQualification;
-  uni.showToast({ title: q === 'APPROVED' ? '已具备代驾资格' : '审核通过后才开通正式代驾身份', icon: 'none' });
+  uni.showToast({
+    title: q === 'APPROVED' ? '已具备代驾资格' : '审核通过后才开通正式代驾身份',
+    icon: 'none'
+  });
 }
 
 function viewLink() {
   uni.navigateTo({ url: '/pages/identity/phone' });
 }
 
-function orders() { uni.navigateTo({ url: '/pages/order/list' }); }
+function orders() {
+  uni.navigateTo({ url: '/pages/order/list' });
+}
 
 function back() {
   uni.reLaunch({ url: '/pages/index/index' });
@@ -94,14 +100,20 @@ function back() {
       <view class="row switchable" @click="applyDriver">
         <view>
           <text class="role">申请成为代驾</text>
-          <text class="sub">{{ view && view.driverQualification === 'APPROVED' ? '已审核通过，可切换代驾身份' : '审核通过后才开通正式代驾身份' }}</text>
+          <text class="sub">{{
+            view && view.driverQualification === 'APPROVED'
+              ? '已审核通过，可切换代驾身份'
+              : '审核通过后才开通正式代驾身份'
+          }}</text>
         </view>
         <text class="chev">›</text>
       </view>
       <view class="row switchable" @click="viewLink">
         <view>
           <text class="role">员工关联</text>
-          <text class="sub">{{ view && view.employeeLink.status === 'LINKED' ? '已关联员工' : '未关联员工' }}</text>
+          <text class="sub">{{
+            view && view.employeeLink.status === 'LINKED' ? '已关联员工' : '未关联员工'
+          }}</text>
         </view>
         <text class="chev">›</text>
       </view>
@@ -118,19 +130,76 @@ function back() {
 </template>
 
 <style scoped>
-.screen { padding: 32px 22px; display: flex; flex-direction: column; gap: 18px; }
-.title { font-size: 24px; font-weight: 600; }
-.desc, .sub { font-size: 15px; line-height: 1.7; color: #666; }
-.card { background: #fff; border-radius: 14px; padding: 18px; display: flex; flex-direction: column; gap: 14px; }
-.current { border: 1px solid #005fcb; background: #eef5ff; }
-.section { font-size: 17px; font-weight: 600; }
-.row { display: flex; justify-content: space-between; align-items: center; }
-.role { font-size: 17px; font-weight: 600; display: block; }
-.badge { color: #005fcb; font-size: 15px; }
-.chev { color: #999; font-size: 20px; }
-.switchable { padding: 6px 0; }
-.note { background: #eef2f7; border-radius: 12px; padding: 14px; font-size: 14px; color: #555; line-height: 1.6; }
-.warn { font-size: 15px; color: #c0392b; }
-.plain { background: #eef2f7; color: #333; }
-.bottom { margin-top: 12px; }
+.screen {
+  padding: 32px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.title {
+  font-size: 24px;
+  font-weight: 600;
+}
+.desc,
+.sub {
+  font-size: 15px;
+  line-height: 1.7;
+  color: #666;
+}
+.card {
+  background: #fff;
+  border-radius: 14px;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.current {
+  border: 1px solid #005fcb;
+  background: #eef5ff;
+}
+.section {
+  font-size: 17px;
+  font-weight: 600;
+}
+.row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.role {
+  font-size: 17px;
+  font-weight: 600;
+  display: block;
+}
+.badge {
+  color: #005fcb;
+  font-size: 15px;
+}
+.chev {
+  color: #999;
+  font-size: 20px;
+}
+.switchable {
+  padding: 6px 0;
+}
+.note {
+  background: #eef2f7;
+  border-radius: 12px;
+  padding: 14px;
+  font-size: 14px;
+  color: #555;
+  line-height: 1.6;
+}
+.warn {
+  font-size: 15px;
+  color: #c0392b;
+}
+.plain {
+  background: #eef2f7;
+  color: #333;
+}
+.bottom {
+  margin-top: 12px;
+}
 </style>

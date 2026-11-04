@@ -1,0 +1,109 @@
+{
+  "mode": "H5明确API夹具；原生微信登录及手机号授权仅检查初始展示，不冒充真机验证",
+  "results": [
+    {
+      "route": "identity/switch",
+      "checks": [
+        "页面渲染",
+        "切换车主并刷新当前身份"
+      ],
+      "errors": [],
+      "unknown": []
+    },
+    {
+      "route": "identity/station",
+      "checks": [
+        "页面渲染",
+        "切换授权站点并更新当前标识"
+      ],
+      "errors": [],
+      "unknown": []
+    },
+    {
+      "route": "identity/phone",
+      "checks": [
+        "页面渲染"
+      ],
+      "errors": [],
+      "unknown": []
+    },
+    {
+      "route": "identity/link",
+      "checks": [
+        "页面渲染"
+      ],
+      "errors": [],
+      "unknown": []
+    },
+    {
+      "route": "identity/login",
+      "checks": [
+        "页面渲染"
+      ],
+      "errors": [],
+      "unknown": []
+    },
+    {
+      "route": "identity/no-access",
+      "checks": [
+        "页面渲染"
+      ],
+      "errors": [],
+      "unknown": []
+    },
+    {
+      "route": "vehicle/list",
+      "checks": [
+        "页面渲染",
+        "列表及新增表单输入"
+      ],
+      "errors": [],
+      "unknown": []
+    },
+    {
+      "route": "address/list",
+      "checks": [
+        "页面渲染",
+        "列表及地址表单输入"
+      ],
+      "errors": [],
+      "unknown": []
+    },
+    {
+      "route": "scope/stations",
+      "checks": [
+        "页面渲染",
+        "获授权站点显示"
+      ],
+      "errors": [],
+      "unknown": []
+    },
+    {
+      "route": "station/info",
+      "checks": [
+        "页面渲染",
+        "编辑取消保留原资料且无写请求"
+      ],
+      "errors": [],
+      "unknown": []
+    },
+    {
+      "route": "capacity/list",
+      "checks": [
+        "页面渲染",
+        "容量编辑取消且无写请求"
+      ],
+      "errors": [],
+      "unknown": []
+    },
+    {
+      "route": "index/index",
+      "checks": [
+        "页面渲染",
+        "联通检查结果"
+      ],
+      "errors": [],
+      "unknown": []
+    }
+  ]
+}

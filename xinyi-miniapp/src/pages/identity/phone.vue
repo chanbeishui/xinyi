@@ -49,6 +49,7 @@ async function poll() {
   }
 }
 
+// 按本次核验请求ID查询回执，不重新消费微信一次性手机号凭据。
 async function refresh() {
   if (!requestId) return;
   try {
@@ -68,10 +69,14 @@ function back() {
 <template>
   <view class="screen">
     <text class="title">手机号授权</text>
-    <text class="desc">用于识别你是否为检测员工。手机号核验与员工关联结果分开，不会影响你的车主身份。</text>
+    <text class="desc"
+      >用于识别你是否为检测员工。手机号核验与员工关联结果分开，不会影响你的车主身份。</text
+    >
 
     <block v-if="state === 'IDLE' || state === 'DENIED' || state === 'FAILED'">
-      <button class="primary" open-type="getPhoneNumber" @getphonenumber="onGetPhone">微信手机号一键授权</button>
+      <button class="primary" open-type="getPhoneNumber" @getphonenumber="onGetPhone">
+        微信手机号一键授权
+      </button>
       <text v-if="state === 'DENIED'" class="warn">{{ message }}</text>
       <text v-if="state === 'FAILED'" class="warn">{{ message || '授权失败，请重试' }}</text>
     </block>
@@ -96,10 +101,36 @@ function back() {
 </template>
 
 <style scoped>
-.screen { padding: 32px 22px; display: flex; flex-direction: column; gap: 18px; }
-.title { font-size: 24px; font-weight: 600; }
-.desc, .status, .kv { font-size: 16px; line-height: 1.7; color: #333; }
-.warn { font-size: 15px; color: #c0392b; line-height: 1.6; }
-.primary { margin: 8px 0; background: #005fcb; color: #fff; }
-.plain { margin: 8px 0; background: #eef2f7; color: #005fcb; }
+.screen {
+  padding: 32px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.title {
+  font-size: 24px;
+  font-weight: 600;
+}
+.desc,
+.status,
+.kv {
+  font-size: 16px;
+  line-height: 1.7;
+  color: #333;
+}
+.warn {
+  font-size: 15px;
+  color: #c0392b;
+  line-height: 1.6;
+}
+.primary {
+  margin: 8px 0;
+  background: #005fcb;
+  color: #fff;
+}
+.plain {
+  margin: 8px 0;
+  background: #eef2f7;
+  color: #005fcb;
+}
 </style>

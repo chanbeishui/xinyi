@@ -26,6 +26,7 @@ async function load() {
   }
 }
 
+// 只提交授权列表中的目标及当前上下文版本；服务端成功后才替换访问会话并重载站点。
 async function doSwitch(stationId: string) {
   const s = currentSession();
   if (!s || busy.value) return;
@@ -55,11 +56,17 @@ function back() {
 <template>
   <view class="screen">
     <text class="title">切换检测点</text>
-    <view class="note"><text>仅列出获授权的可操作站点。切换后业务数据和待办随当前站点更新。</text></view>
+    <view class="note"
+      ><text>仅列出获授权的可操作站点。切换后业务数据和待办随当前站点更新。</text></view
+    >
 
-    <view v-for="id in view?.stationIds || []" :key="id"
-          class="card" :class="{ current: id === view?.stationId }"
-          @click="id !== view?.stationId && doSwitch(id)">
+    <view
+      v-for="id in view?.stationIds || []"
+      :key="id"
+      class="card"
+      :class="{ current: id === view?.stationId }"
+      @click="id !== view?.stationId && doSwitch(id)"
+    >
       <view class="row">
         <view>
           <text class="role">检测站 #{{ id }}</text>
@@ -78,18 +85,70 @@ function back() {
 </template>
 
 <style scoped>
-.screen { padding: 32px 22px; display: flex; flex-direction: column; gap: 18px; }
-.title { font-size: 24px; font-weight: 600; }
-.card { background: #fff; border-radius: 14px; padding: 18px; }
-.current { border: 1px solid #005fcb; background: #eef5ff; }
-.row { display: flex; justify-content: space-between; align-items: center; }
-.role { font-size: 17px; font-weight: 600; display: block; }
-.sub { font-size: 14px; color: #666; line-height: 1.6; }
-.badge { color: #005fcb; font-size: 15px; }
-.chev { color: #999; font-size: 20px; }
-.note { background: #eef2f7; border-radius: 12px; padding: 14px; font-size: 14px; color: #555; line-height: 1.6; }
-.link { color: #005fcb; font-size: 15px; text-align: center; }
-.warn { font-size: 15px; color: #c0392b; }
-.plain { background: #eef2f7; color: #333; }
-.bottom { margin-top: 12px; }
+.screen {
+  padding: 32px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.title {
+  font-size: 24px;
+  font-weight: 600;
+}
+.card {
+  background: #fff;
+  border-radius: 14px;
+  padding: 18px;
+}
+.current {
+  border: 1px solid #005fcb;
+  background: #eef5ff;
+}
+.row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.role {
+  font-size: 17px;
+  font-weight: 600;
+  display: block;
+}
+.sub {
+  font-size: 14px;
+  color: #666;
+  line-height: 1.6;
+}
+.badge {
+  color: #005fcb;
+  font-size: 15px;
+}
+.chev {
+  color: #999;
+  font-size: 20px;
+}
+.note {
+  background: #eef2f7;
+  border-radius: 12px;
+  padding: 14px;
+  font-size: 14px;
+  color: #555;
+  line-height: 1.6;
+}
+.link {
+  color: #005fcb;
+  font-size: 15px;
+  text-align: center;
+}
+.warn {
+  font-size: 15px;
+  color: #c0392b;
+}
+.plain {
+  background: #eef2f7;
+  color: #333;
+}
+.bottom {
+  margin-top: 12px;
+}
 </style>

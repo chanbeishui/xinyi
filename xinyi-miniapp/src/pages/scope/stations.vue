@@ -9,6 +9,7 @@ const message = ref('');
 
 onShow(load);
 
+// 只展示当前账号获授权站点，不由客户端拼接部门范围或推断其他站点数据。
 async function load() {
   try {
     stations.value = await getAuthorizedStations();
@@ -31,9 +32,32 @@ async function load() {
 </template>
 
 <style scoped>
-.screen { padding: 32px 22px; display: flex; flex-direction: column; gap: 16px; }
-.title { font-size: 24px; font-weight: 600; }
-.card { background: #fff; border-radius: 14px; padding: 18px; display: flex; flex-direction: column; gap: 6px; }
-.name { font-size: 17px; font-weight: 600; }
-.addr, .desc { font-size: 15px; color: #666; line-height: 1.6; }
+.screen {
+  padding: 32px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.title {
+  font-size: 24px;
+  font-weight: 600;
+}
+.card {
+  background: #fff;
+  border-radius: 14px;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.name {
+  font-size: 17px;
+  font-weight: 600;
+}
+.addr,
+.desc {
+  font-size: 15px;
+  color: #666;
+  line-height: 1.6;
+}
 </style>

@@ -1,0 +1,5 @@
+> xinyi-miniapp@0.1.0 format:types:check
+> prettier --single-quote --print-width 100 --trailing-comma none --check src/api/types.ts
+
+Checking formatting...
+All matched files use Prettier code style!

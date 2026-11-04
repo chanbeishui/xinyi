@@ -1,0 +1,22 @@
+{
+  "passed": true,
+  "browser": "Browser plugin not available; Playwright + local Chrome",
+  "api": "明确UI夹具；后端另有真实HTTP/MySQL验证",
+  "checks": [
+    "取消关闭不提交",
+    "未知保留待确认且不显示成功",
+    "可信关闭后不可续付",
+    "晚到付款不误报预约恢复",
+    "刷新可信结果后显示预约成功",
+    "移动端与桌面有内容且无框架错误"
+  ],
+  "errors": [],
+  "payReads": 5,
+  "closeCalls": 2,
+  "url": "http://127.0.0.1:5174/#/pages/payment/index?orderNo=VIF77C561F0DE94703893DC2A15DB84D1C",
+  "title": "预约付款",
+  "viewports": [
+    "390x844",
+    "1280x900"
+  ]
+}

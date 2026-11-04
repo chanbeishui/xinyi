@@ -28,6 +28,7 @@ async function load() {
   }
 }
 
+// 重新读取/核对已有员工关联，不创建员工申请，也不能直接恢复暂停或解除的工作权限。
 async function reconcile() {
   const s = currentSession();
   if (!s) return;
@@ -59,19 +60,53 @@ function contactAdmin() {
     </view>
 
     <button class="plain" @click="reconcile">刷新权限</button>
-    <button v-if="link && link.canReverifyPhone" class="primary" @click="reverify">重新授权手机号</button>
+    <button v-if="link && link.canReverifyPhone" class="primary" @click="reverify">
+      重新授权手机号
+    </button>
     <button class="plain" @click="contactAdmin">联系管理员</button>
     <text v-if="message" class="warn">{{ message }}</text>
   </view>
 </template>
 
 <style scoped>
-.screen { padding: 32px 22px; display: flex; flex-direction: column; gap: 18px; }
-.title { font-size: 24px; font-weight: 600; }
-.card { background: #fff; border-radius: 14px; padding: 18px; display: flex; flex-direction: column; gap: 10px; }
-.status { font-size: 18px; font-weight: 600; }
-.desc, .kv { font-size: 15px; color: #555; line-height: 1.6; }
-.warn { font-size: 15px; color: #c0392b; }
-.primary { background: #005fcb; color: #fff; }
-.plain { background: #eef2f7; color: #005fcb; }
+.screen {
+  padding: 32px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.title {
+  font-size: 24px;
+  font-weight: 600;
+}
+.card {
+  background: #fff;
+  border-radius: 14px;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.status {
+  font-size: 18px;
+  font-weight: 600;
+}
+.desc,
+.kv {
+  font-size: 15px;
+  color: #555;
+  line-height: 1.6;
+}
+.warn {
+  font-size: 15px;
+  color: #c0392b;
+}
+.primary {
+  background: #005fcb;
+  color: #fff;
+}
+.plain {
+  background: #eef2f7;
+  color: #005fcb;
+}
 </style>

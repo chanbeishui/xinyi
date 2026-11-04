@@ -1,7 +1,13 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { onShow } from '@dcloudio/uni-app';
-import { listAddresses, createAddress, setDefaultAddress, removeAddress, type Address } from '../../features/address/api';
+import {
+  listAddresses,
+  createAddress,
+  setDefaultAddress,
+  removeAddress,
+  type Address
+} from '../../features/address/api';
 
 // A02 地址簿：地图失败可手填地址+坐标；设常用/删除；临时地址不强制先保存。
 const addresses = ref<Address[]>([]);
@@ -15,7 +21,7 @@ const lat = ref('30.0');
 onShow(load);
 
 function uuid(): string {
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
     const r = (Math.random() * 16) | 0;
     return (c === 'x' ? r : (r & 0x3) | 0x8).toString(16);
   });
@@ -31,8 +37,14 @@ async function load() {
 
 async function add() {
   try {
-    await createAddress({ label: label.value || undefined, address: text.value,
-      location: { lng: Number(lng.value), lat: Number(lat.value), coordinateSystem: 'GCJ02' } }, uuid());
+    await createAddress(
+      {
+        label: label.value || undefined,
+        address: text.value,
+        location: { lng: Number(lng.value), lat: Number(lat.value), coordinateSystem: 'GCJ02' }
+      },
+      uuid()
+    );
     showForm.value = false;
     text.value = '';
     await load();
@@ -41,6 +53,7 @@ async function add() {
   }
 }
 
+// 默认地址变更携带原记录版本，账号归属与唯一默认规则交由服务端事务保证。
 async function setDefault(a: Address) {
   try {
     await setDefaultAddress(a.addressId, a.version, '设为常用', uuid());
@@ -85,16 +98,59 @@ async function remove(a: Address) {
 </template>
 
 <style scoped>
-.screen { padding: 32px 22px; display: flex; flex-direction: column; gap: 16px; }
-.title { font-size: 24px; font-weight: 600; }
-.card { background: #fff; border-radius: 14px; padding: 18px; display: flex; flex-direction: column; gap: 8px; }
-.addr { font-size: 16px; font-weight: 600; }
-.tag { color: #005fcb; font-size: 13px; }
-.ops { display: flex; gap: 16px; }
-.op { color: #005fcb; font-size: 14px; }
-.del { color: #c0392b; }
-.input { border: 1px solid #ddd; border-radius: 8px; padding: 8px; font-size: 15px; }
-.warn { font-size: 15px; color: #c0392b; }
-.primary { background: #005fcb; color: #fff; }
-.plain { background: #eef2f7; color: #005fcb; }
+.screen {
+  padding: 32px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.title {
+  font-size: 24px;
+  font-weight: 600;
+}
+.card {
+  background: #fff;
+  border-radius: 14px;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.addr {
+  font-size: 16px;
+  font-weight: 600;
+}
+.tag {
+  color: #005fcb;
+  font-size: 13px;
+}
+.ops {
+  display: flex;
+  gap: 16px;
+}
+.op {
+  color: #005fcb;
+  font-size: 14px;
+}
+.del {
+  color: #c0392b;
+}
+.input {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 8px;
+  font-size: 15px;
+}
+.warn {
+  font-size: 15px;
+  color: #c0392b;
+}
+.primary {
+  background: #005fcb;
+  color: #fff;
+}
+.plain {
+  background: #eef2f7;
+  color: #005fcb;
+}
 </style>
