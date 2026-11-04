@@ -2474,6 +2474,11 @@ CONSTRAINT ck_ver_result_correction CHECK (version &gt;= 0)
   <td><code>BIGINT NOT NULL DEFAULT 0</code></td>
   <td>乐观锁版本</td>
 </tr>
+<tr><td><code>prepay_state</code></td><td><code>VARCHAR(16) NOT NULL DEFAULT &#x27;NONE&#x27;</code></td><td>预支付 NONE/REQUESTING/READY/UNKNOWN，不代表付款成功</td></tr>
+<tr><td><code>prepay_request_cipher</code></td><td><code>MEDIUMBLOB NULL</code></td><td>不可变预下单请求，加密绑定支付单ID</td></tr>
+<tr><td><code>prepay_result_cipher</code></td><td><code>MEDIUMBLOB NULL</code></td><td>预支付ID加密存储，不存客户端签名</td></tr>
+<tr><td><code>prepay_lease_token</code></td><td><code>VARCHAR(36) NULL</code></td><td>外部请求租约令牌</td></tr>
+<tr><td><code>prepay_lease_until</code></td><td><code>DATETIME(3) NULL</code></td><td>外部请求租约截止UTC</td></tr>
 </tbody>
 </table>
 <pre><code class="language-sql">UNIQUE KEY uk_trade (out_trade_no)

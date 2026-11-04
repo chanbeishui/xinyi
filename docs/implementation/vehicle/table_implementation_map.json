@@ -231,12 +231,15 @@
     "taskId": "F05"
   },
   {
-    "status": "NOT_ASSESSED",
-    "entityFile": null,
-    "mapperFile": null,
-    "evidence": [],
+    "status": "VERIFIED",
+    "entityFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/payment/domain/PaymentTransaction.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/payment/PaymentMapper.xml",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/P01-20261104.json"
+    ],
     "table": "vi_payment_order",
-    "taskId": "P01"
+    "taskId": "P01",
+    "implementationNote": "P01字段与写入已验证；支付成功/退款等后续写入按相应任务继续"
   },
   {
     "status": "NOT_ASSESSED",

@@ -2283,6 +2283,11 @@
   <td><code>BIGINT NOT NULL DEFAULT 0</code></td>
   <td>乐观锁版本</td>
 </tr>
+<tr><td>prepay_state</td><td><code>VARCHAR(16) NOT NULL DEFAULT &#x27;NONE&#x27;</code></td><td>预支付 NONE/REQUESTING/READY/UNKNOWN，不代表付款成功</td></tr>
+<tr><td>prepay_request_cipher</td><td><code>MEDIUMBLOB NULL</code></td><td>不可变预下单请求，加密绑定支付单ID</td></tr>
+<tr><td>prepay_result_cipher</td><td><code>MEDIUMBLOB NULL</code></td><td>预支付ID加密存储，不存客户端签名</td></tr>
+<tr><td>prepay_lease_token</td><td><code>VARCHAR(36) NULL</code></td><td>外部请求租约令牌</td></tr>
+<tr><td>prepay_lease_until</td><td><code>DATETIME(3) NULL</code></td><td>外部请求租约截止UTC</td></tr>
 </tbody>
 </table>
 <h2>vi_refund_order · 稳定退款单及渠道执行</h2>

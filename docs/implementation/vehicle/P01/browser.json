@@ -1,0 +1,20 @@
+{
+  "passed": true,
+  "browser": "Browser plugin unavailable; Playwright + local Chrome",
+  "mode": "实际Vue页面与明确API夹具；不等于微信真机验证",
+  "checks": [
+    "detailEntry",
+    "h5CannotInitiateWechat",
+    "UNKNOWN",
+    "SUCCESS",
+    "CLOSED",
+    "errorRetry"
+  ],
+  "calls": 10,
+  "errors": [],
+  "expectedErrors": [
+    "Failed to load resource: the server responded with a status of 503 (Service Unavailable)"
+  ],
+  "url": "http://127.0.0.1:5174/#/pages/payment/index?orderNo=VI36008325E0E541DE97948285E49BB5E5",
+  "title": "预约付款"
+}

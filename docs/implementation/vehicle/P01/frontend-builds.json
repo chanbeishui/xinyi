@@ -1,0 +1,19 @@
+{
+  "at": "2026-11-04T13:53:13.595670+00:00",
+  "passed": true,
+  "commands": [
+    {
+      "command": "npm --prefix xinyi-miniapp run type-check",
+      "exitCode": 0
+    },
+    {
+      "command": "npm --prefix xinyi-miniapp run build:mp-weixin",
+      "exitCode": 0
+    },
+    {
+      "command": "npm --prefix xinyi-ui run build:prod",
+      "exitCode": 0
+    }
+  ],
+  "warning": "小程序未注入正式AppID，未做微信真机或商户联调"
+}

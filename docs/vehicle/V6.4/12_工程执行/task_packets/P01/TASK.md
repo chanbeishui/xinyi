@@ -1,7 +1,7 @@
 # P01 · 支付适配器与预支付
 
 阶段：M2；责任域：payment；前置：B03, E07, X01。
-范围版本：`V6.4-CONFIG-20261022`；definitionHash：`671dab6604be5bce96eb2ca5f200d2965a084ff729488d3acbca8c5de46bc305`。
+范围版本：`V6.4-CONFIG-20261022`；definitionHash：`78457adc8a9156e127ef8fdcaca27a8e883c494c51532b1e588030327f6faef7`。
 
 ## 本任务交付
 - 微信APIv3 SDK适配+测试网关，支付单商户快照和预支付状态
@@ -22,10 +22,11 @@
 ## 代码落位
 `xinyi-rongli/src/main/java/com/xinyi/rongli/payment/`
 `xinyi-rongli/src/main/resources/mapper/rongli/payment/`
-`xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/payment/`
-`xinyi-ui/src/views/rongli/payment/`
-`xinyi-ui/src/api/rongli/payment.ts`
+`xinyi-rongli/src/main/java/com/xinyi/rongli/payment/controller/`
 `xinyi-miniapp/src/features/payment/`
+`xinyi-miniapp/src/pages/payment/`
+`xinyi-admin/src/test/java/com/xinyi/web/viit/P01PaymentIT.java`
+`sql/migration_20261104_01_payment_prepay.sql`
 
 ## 验证命令
 ```bash

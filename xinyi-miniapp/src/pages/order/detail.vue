@@ -21,6 +21,7 @@ async function timeline(run = seq) {
   finally { if (run === seq) timelineBusy.value = false; }
 }
 const statusLabel = (value: string) => ({'PENDING': '待处理','PAID': '已付款','CLOSED': '已关闭','NONE': '无','NOT_REQUIRED': '无需退款','WAIT_RETURN': '待还车','READY': '待执行','PROCESSING': '处理中','SUCCESS': '已完成','UNKNOWN': '结果待确认','ABNORMAL': '待核查','PENDING_REVIEW': '待审核','EXECUTING': '执行中','REJECTED': '未通过','MISSING': '未提交','VERIFIED': '已核验','PASS': '合格','FAIL': '不合格'} as Record<string, string>)[value] || value;
+function payment(no: string) { uni.navigateTo({ url: "/pages/payment/index?orderNo=" + encodeURIComponent(no) }); }
 </script>
 <template>
   <view class="screen">
@@ -39,6 +40,7 @@ const statusLabel = (value: string) => ({'PENDING': '待处理','PAID': '已付�
       </template>
       <template v-if="order.view === 'OWNER'">
         <view class="card"><text class="section">客户费用</text><view v-for="item in order.money.items" :key="item.feeCode" class="line"><text>{{ item.name }}</text><text>¥{{ yuan(item.amount) }}</text></view><text>应付 ¥{{ yuan(order.money.totalAmount) }} · 已付 ¥{{ yuan(order.money.paidAmount) }}</text><text>已退 ¥{{ yuan(order.money.refundedAmount) }}</text><text class="muted">支付 {{ statusLabel(order.paymentStatus) }} · 退款 {{ statusLabel(order.refundStatus) }}</text><text v-if="order.paymentStatus === 'PENDING'">付款截止：{{ orderTime(order.payExpireAt) }}</text></view>
+        <button v-if="['PENDING', 'UNKNOWN'].includes(order.paymentStatus)" @click="payment(order.orderNo)">查看付款</button>
         <view v-if="order.afterSale" class="card"><text class="section">售后进度</text><text>{{ statusLabel(order.afterSale.caseStatus) }} · {{ statusLabel(order.afterSale.refundState) }}</text><text v-if="order.afterSale.publicOpinion">{{ order.afterSale.publicOpinion }}</text></view>
         <view class="card"><text class="section">服务进度</text><view v-for="event in events" :key="event.eventId" class="event"><text>{{ event.displayText }}</text><text class="muted">{{ event.actorLabel }} · {{ orderTime(event.at) }}</text></view><text v-if="!events.length && !timelineError">暂无公开进度</text><text v-if="timelineError" class="error">{{ timelineError }}</text><button v-if="timelineError || events.length < total" :disabled="timelineBusy" @click="timeline()">{{ timelineError ? '重试加载进度' : '更多进度' }}</button></view>
       </template>

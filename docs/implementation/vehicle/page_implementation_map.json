@@ -126,39 +126,59 @@
     "taskId": "N02"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "PARTIAL",
+    "implementationFile": "xinyi-miniapp/src/pages/payment/index.vue",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/P01-20261104.json"
+    ],
     "boardId": "O10",
-    "taskId": "P01"
+    "taskId": "P01",
+    "implemented": "预支付入口与服务端支付状态展示，微信目标构建及H5界面验证",
+    "remaining": "微信真机；回调/主动查单/超时关单由P02；线下确认由X06。O10线下操作尚不可用，不将完整画板算完成"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "PARTIAL",
+    "implementationFile": "xinyi-miniapp/src/pages/payment/index.vue",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/P01-20261104.json"
+    ],
     "boardId": "O11",
-    "taskId": "P01"
+    "taskId": "P01",
+    "implemented": "预支付入口与服务端支付状态展示，微信目标构建及H5界面验证",
+    "remaining": "微信真机；回调/主动查单/超时关单由P02；线下确认由X06。O10线下操作尚不可用，不将完整画板算完成"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "PARTIAL",
+    "implementationFile": "xinyi-miniapp/src/pages/payment/index.vue",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/P01-20261104.json"
+    ],
     "boardId": "O12",
-    "taskId": "P01"
+    "taskId": "P01",
+    "implemented": "预支付入口与服务端支付状态展示，微信目标构建及H5界面验证",
+    "remaining": "微信真机；回调/主动查单/超时关单由P02；线下确认由X06。O10线下操作尚不可用，不将完整画板算完成"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "PARTIAL",
+    "implementationFile": "xinyi-miniapp/src/pages/payment/index.vue",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/P01-20261104.json"
+    ],
     "boardId": "O13",
-    "taskId": "P01"
+    "taskId": "P01",
+    "implemented": "预支付入口与服务端支付状态展示，微信目标构建及H5界面验证",
+    "remaining": "微信真机；回调/主动查单/超时关单由P02；线下确认由X06。O10线下操作尚不可用，不将完整画板算完成"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "PARTIAL",
+    "implementationFile": "xinyi-miniapp/src/pages/payment/index.vue",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/P01-20261104.json"
+    ],
     "boardId": "O13-closed",
-    "taskId": "P01"
+    "taskId": "P01",
+    "implemented": "预支付入口与服务端支付状态展示，微信目标构建及H5界面验证",
+    "remaining": "微信真机；回调/主动查单/超时关单由P02；线下确认由X06。O10线下操作尚不可用，不将完整画板算完成"
   },
   {
     "status": "PARTIAL",

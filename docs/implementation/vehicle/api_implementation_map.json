@@ -392,17 +392,21 @@
     "taskId": "B04"
   },
   {
-    "implementationStatus": "NOT_ASSESSED",
-    "controllerFile": null,
-    "serviceFile": null,
-    "mapperFile": null,
-    "testFiles": [],
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/payment/controller/PaymentController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/payment/service/PaymentService.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/payment/PaymentMapper.xml",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/P01PaymentIT.java"
+    ],
     "reviewEvidence": null,
     "operationId": "API_029_post",
     "method": "POST",
     "path": "/api/app/owner/orders/{orderNo}/prepay",
     "summary": "微信预支付",
-    "taskId": "P01"
+    "taskId": "P01",
+    "evidence": "docs/implementation/vehicle/evidence/P01-20261104.json",
+    "implementationNote": "仅预支付；不修改paid/订单履约状态"
   },
   {
     "implementationStatus": "NOT_ASSESSED",
@@ -3779,17 +3783,21 @@
     "taskId": "X04"
   },
   {
-    "implementationStatus": "NOT_ASSESSED",
-    "controllerFile": null,
-    "serviceFile": null,
-    "mapperFile": null,
-    "testFiles": [],
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/payment/controller/PaymentController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/payment/service/PaymentService.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/payment/PaymentMapper.xml",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/P01PaymentIT.java"
+    ],
     "reviewEvidence": null,
     "operationId": "V64_get_api_app_owner_orders_orderNo_payment_options",
     "method": "GET",
     "path": "/api/app/owner/orders/{orderNo}/payment-options",
     "summary": "本人订单可用支付方式",
-    "taskId": "X02"
+    "taskId": "X02",
+    "evidence": "docs/implementation/vehicle/evidence/P01-20261104.json",
+    "implementationNote": "P01所需支付版本读取提前实现；X02完整任务未完成"
   },
   {
     "implementationStatus": "NOT_ASSESSED",

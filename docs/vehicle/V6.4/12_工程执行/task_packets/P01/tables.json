@@ -117,6 +117,31 @@
         "version",
         "BIGINT NOT NULL DEFAULT 0",
         "乐观锁版本"
+      ],
+      [
+        "prepay_state",
+        "VARCHAR(16) NOT NULL DEFAULT 'NONE'",
+        "预支付 NONE/REQUESTING/READY/UNKNOWN，不代表付款成功"
+      ],
+      [
+        "prepay_request_cipher",
+        "MEDIUMBLOB NULL",
+        "不可变预下单请求，加密绑定支付单ID"
+      ],
+      [
+        "prepay_result_cipher",
+        "MEDIUMBLOB NULL",
+        "预支付ID加密存储，不存客户端签名"
+      ],
+      [
+        "prepay_lease_token",
+        "VARCHAR(36) NULL",
+        "外部请求租约令牌"
+      ],
+      [
+        "prepay_lease_until",
+        "DATETIME(3) NULL",
+        "外部请求租约截止UTC"
       ]
     ],
     "indexes": [
@@ -275,6 +300,36 @@
         "updatable": true,
         "clientWritable": false,
         "enumRef": "PaymentCapacityResolution"
+      },
+      "prepay_state": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "prepay_request_cipher": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "prepay_result_cipher": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "prepay_lease_token": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "prepay_lease_until": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
       }
     },
     "checks": [

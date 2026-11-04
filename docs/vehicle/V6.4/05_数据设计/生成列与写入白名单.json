@@ -3101,7 +3101,12 @@
       "app_id",
       "mchid",
       "method_locked_at",
-      "capacity_resolution"
+      "capacity_resolution",
+      "prepay_state",
+      "prepay_request_cipher",
+      "prepay_result_cipher",
+      "prepay_lease_token",
+      "prepay_lease_until"
     ],
     "updateColumns": [
       "order_id",
@@ -3122,7 +3127,12 @@
       "app_id",
       "mchid",
       "method_locked_at",
-      "capacity_resolution"
+      "capacity_resolution",
+      "prepay_state",
+      "prepay_request_cipher",
+      "prepay_result_cipher",
+      "prepay_lease_token",
+      "prepay_lease_until"
     ],
     "columnRules": {
       "id": {

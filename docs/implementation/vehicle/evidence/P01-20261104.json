@@ -1,0 +1,146 @@
+{
+  "taskId": "P01",
+  "implementer": "Codex",
+  "scopeRevision": "V6.4-CONFIG-20261022",
+  "at": "2026-11-04T13:53:13.595670+00:00",
+  "codeFiles": [
+    "sql/migration_20261104_01_payment_prepay.sql",
+    "sql/ry_20260417.sql",
+    "xinyi-admin/src/main/resources/application.yml",
+    "xinyi-admin/src/test/java/com/xinyi/web/viit/P01PaymentIT.java",
+    "xinyi-admin/src/test/resources/integration/p01_contract.py",
+    "xinyi-miniapp/src/features/payment/api.ts",
+    "xinyi-miniapp/src/pages.json",
+    "xinyi-miniapp/src/pages/order/detail.vue",
+    "xinyi-miniapp/src/pages/payment/index.vue",
+    "xinyi-rongli/pom.xml",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/order/service/OrderService.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/payment/controller/PaymentController.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/payment/domain/PaymentTransaction.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/payment/dto/PaymentIntent.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/payment/dto/PrepaySnapshot.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/payment/gateway/WechatPrepayGateway.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/payment/mapper/PaymentMapper.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/payment/service/PaymentConfiguration.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/payment/service/PaymentService.java",
+    "xinyi-rongli/src/main/resources/mapper/rongli/payment/PaymentMapper.xml",
+    "xinyi-rongli/src/test/java/com/xinyi/rongli/payment/PaymentEnvironmentTest.java"
+  ],
+  "sourceDigests": {
+    "sql/migration_20261104_01_payment_prepay.sql": "67a8df5d38b6c1e1381db72b1b2f8b83f1b6d6da6554ad82e9c5162a188b2be4",
+    "sql/ry_20260417.sql": "915624d068410eb4f75298b8f2766131162a7626a76c52c10d82793211827f7f",
+    "xinyi-admin/src/main/resources/application.yml": "746db86f460b7826f5773ac90ddf75391507d310304b95526866c52c3fd95042",
+    "xinyi-admin/src/test/java/com/xinyi/web/viit/P01PaymentIT.java": "d512a4ad6f1585df0410353835edf642eae766f3b12918bfcb652845d3e0e804",
+    "xinyi-admin/src/test/resources/integration/p01_contract.py": "717b91d2c992e4102b43401740544277637a2de6b0c8f91f56a666a42967599a",
+    "xinyi-miniapp/src/features/payment/api.ts": "b0abefb6cf56b747aa8735ec90a73127cb87e465edfc99f64ec18a342de160d3",
+    "xinyi-miniapp/src/pages.json": "f9c6bb520d0ec562a9aaa45f1b8900ff511d7bcd54cd2194d468eaccf0b7fe0f",
+    "xinyi-miniapp/src/pages/order/detail.vue": "a67acca95b8f1bf540f6c3f899054d49fab3e142437c6bccc81f66ec7733a017",
+    "xinyi-miniapp/src/pages/payment/index.vue": "71247288af1707e1c8245aad295ff022dffb041b30e829491c5869d53fcee622",
+    "xinyi-rongli/pom.xml": "fa2c9b1d7c2384035414dd9c9b9aef5e707c684b41cfc5601017fb8dbac1edfa",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/order/service/OrderService.java": "551a432138a3c724e2292efb206b77f7e8019e3c89ac4357738ce7e0cadf60cd",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/payment/controller/PaymentController.java": "e6f9983be273fbe89077745af80c5862f83e29a125c3a89d04d716748fe46348",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/payment/domain/PaymentTransaction.java": "b84fd973812924316e7998ba84a2ae18a23a02591bb914adf195798f7d1f341c",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/payment/dto/PaymentIntent.java": "a807fc0e69c3300b35309e4c57d3290f931b8ba045f8b8387dba05d06b5e32e9",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/payment/dto/PrepaySnapshot.java": "ff605dd8ac9269b635093642f3122cb4bc49779095c3bd843bdec0431201c31b",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/payment/gateway/WechatPrepayGateway.java": "4985e0197f07695ee88715e0c586bfd609e8be6efab270cf466763483eb2c00d",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/payment/mapper/PaymentMapper.java": "2f23058f4df12393489976c257e22ac1d47e05be832d9a3dae8c98eb3a1bd8dd",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/payment/service/PaymentConfiguration.java": "7c632c052074bfa1f472316666bc26209d2271216a4b813a1a0b1d54130eeb48",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/payment/service/PaymentService.java": "ba54d80828aa270040e4615d0a946dea5f44b000e0a5e78f3c5e57dc9defd520",
+    "xinyi-rongli/src/main/resources/mapper/rongli/payment/PaymentMapper.xml": "fc22b293408bedf5984755229a51e76a368f24230f105e89058ae73751d30c30",
+    "xinyi-rongli/src/test/java/com/xinyi/rongli/payment/PaymentEnvironmentTest.java": "e80053de901a6a0ee52751363590ff93ee609579ef87a68e02af7999a728d4bb"
+  },
+  "runs": [
+    {
+      "command": "mvn -o -pl xinyi-admin -am -Pvi-it -Dit.test=<23类> verify",
+      "layer": "LIVE_HTTP_MYSQL",
+      "testsRun": 209,
+      "skipped": 0,
+      "exitCode": 0,
+      "reportPath": "docs/implementation/vehicle/P01/full-regression.json"
+    },
+    {
+      "command": "mvn -o -pl xinyi-admin -am -Pvi-it -Dit.test=P01PaymentIT verify",
+      "layer": "LIVE_HTTP_MYSQL",
+      "testsRun": 14,
+      "skipped": 0,
+      "exitCode": 0,
+      "reportPath": "docs/implementation/vehicle/P01/targeted-regression.json"
+    },
+    {
+      "command": "mvn verify lifecycle unit",
+      "layer": "UNIT",
+      "testsRun": 36,
+      "skipped": 0,
+      "exitCode": 0,
+      "reportPath": "docs/implementation/vehicle/P01/unit-junit.xml"
+    },
+    {
+      "command": "两个真实接口主OpenAPI响应校验",
+      "layer": "CONTRACT",
+      "testsRun": 2,
+      "skipped": 0,
+      "exitCode": 0,
+      "reportPath": "docs/implementation/vehicle/P01/targeted-regression.json"
+    },
+    {
+      "command": "隔离MySQL增量及完整初始化对照/历史回填",
+      "layer": "DATABASE_MIGRATION",
+      "testsRun": 4,
+      "skipped": 0,
+      "exitCode": 0,
+      "reportPath": "docs/implementation/vehicle/P01/schema-verification.json"
+    },
+    {
+      "command": "frontend type-check and builds",
+      "layer": "BUILD",
+      "testsRun": 3,
+      "skipped": 0,
+      "exitCode": 0,
+      "reportPath": "docs/implementation/vehicle/P01/frontend-builds.json"
+    },
+    {
+      "command": "真实Vue页面+API测试夹具 Playwright",
+      "layer": "BROWSER",
+      "testsRun": 6,
+      "skipped": 0,
+      "exitCode": 0,
+      "reportPath": "docs/implementation/vehicle/P01/browser.json"
+    },
+    {
+      "command": "pytest test_contract_regression.py",
+      "layer": "CONTRACT",
+      "testsRun": 18,
+      "skipped": 0,
+      "exitCode": 0,
+      "reportPath": "docs/implementation/vehicle/P01/contract.txt"
+    },
+    {
+      "command": "check_engineering.py",
+      "layer": "STATIC",
+      "testsRun": 34,
+      "skipped": 0,
+      "exitCode": 0,
+      "reportPath": "docs/implementation/vehicle/P01/engineering.json"
+    },
+    {
+      "command": "check_package.py",
+      "layer": "STATIC",
+      "testsRun": 42,
+      "skipped": 0,
+      "exitCode": 0,
+      "reportPath": "docs/implementation/vehicle/P01/package.json"
+    }
+  ],
+  "review": {
+    "approved": false,
+    "reviewer": null
+  },
+  "notRun": [
+    "独立复核",
+    "真实微信支付与真机",
+    "生产部署",
+    "P02回调/查单/关单",
+    "X02完整支付设置和X06线下意图"
+  ],
+  "preexistingWork": "保留既有Controller迁移；测试基于当前工作区，不混入本次提交"
+}
