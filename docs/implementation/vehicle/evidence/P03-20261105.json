@@ -1,0 +1,124 @@
+{
+  "taskId": "P03",
+  "scopeRevision": "V6.1-UNCHANGED",
+  "at": "2026-11-04T16:44:25.529894+00:00",
+  "implementer": "Codex",
+  "baselineCommit": "1038ab1",
+  "codeFiles": [
+    "xinyi-admin/src/main/resources/application.yml",
+    "xinyi-admin/src/test/java/com/xinyi/web/viit/B03OrderIT.java",
+    "xinyi-admin/src/test/java/com/xinyi/web/viit/P02PaymentIT.java",
+    "xinyi-admin/src/test/java/com/xinyi/web/viit/P03JobsIT.java",
+    "xinyi-admin/src/test/java/com/xinyi/web/viit/PaymentHttpFixture.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/config/service/ConfigService.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/jobs/config/DeadlineClockConfiguration.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/jobs/mapper/DispatchDeadlineMapper.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/jobs/service/DispatchDeadlineJob.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/jobs/service/DispatchDeadlineService.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/jobs/service/DispatchPlan.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/jobs/service/DispatchTimerDispatcher.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/order/domain/ViOrder.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/order/service/OrderService.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/payment/service/PaymentLifecycleService.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/platform/mapper/ViOutboxMapper.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/platform/service/OutboxService.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/platform/service/ViOutboxRelay.java",
+    "xinyi-rongli/src/main/resources/mapper/rongli/ViOutboxMapper.xml",
+    "xinyi-rongli/src/main/resources/mapper/rongli/jobs/DispatchDeadlineMapper.xml",
+    "xinyi-rongli/src/main/resources/mapper/rongli/order/OrderMapper.xml"
+  ],
+  "sourceDigests": {
+    "xinyi-admin/src/main/resources/application.yml": "709e98e2ef445c9c06a6f5e053413764d54e39189eb28b6ef8ff692cdc930a04",
+    "xinyi-admin/src/test/java/com/xinyi/web/viit/B03OrderIT.java": "566b9c1befa50c67e62538e5cd7380e1179ae5f5469a2166019307cb0440c7fb",
+    "xinyi-admin/src/test/java/com/xinyi/web/viit/P02PaymentIT.java": "deaf3203298157908b682f2edb5480ca419403defd69ceb77d7f97b0d29fe1dd",
+    "xinyi-admin/src/test/java/com/xinyi/web/viit/P03JobsIT.java": "b7f759ca749ff44bbaa9ce1954e8596cb2b3ebf88cfab6bd5ed1156422ce9759",
+    "xinyi-admin/src/test/java/com/xinyi/web/viit/PaymentHttpFixture.java": "ee7631d48f5b5cf9d1164dd6fdd7e6e8e84c6984b425d30cda02d3910f2a2734",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/config/service/ConfigService.java": "7c57318b6c8616fb5c3900756c867b6f39cd3bffb1fe3c8c9f82c1eb78e7e457",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/jobs/config/DeadlineClockConfiguration.java": "a39a56addbe782c8436d0a135a1f876107b47395240a8f4f907ecb1ed661c630",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/jobs/mapper/DispatchDeadlineMapper.java": "96008486fa0ec484acd863c52c6a293912923c4f31bb3e046113a05df88e6ac7",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/jobs/service/DispatchDeadlineJob.java": "ea3409be8a8013ddb52076d11548e6caee6ec8e95e97b2279611d4a4dc7fa727",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/jobs/service/DispatchDeadlineService.java": "db1634b597fc2a4056037cec86fe609ec6ae8641e9c0d3c42b510d83932719d7",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/jobs/service/DispatchPlan.java": "4b3b77b485d5351b162570a81b81141239e8cf640b3fc8f0910b6d8d6eb01930",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/jobs/service/DispatchTimerDispatcher.java": "1f053fbbd042859d57e3e1c028a70aaefeb8fc042d9e35c9bbac3fae037c2b2b",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/order/domain/ViOrder.java": "d9ba5d196303d2c6ce901fb49196154dcb55d4fd9bb2480746347fbf66a18349",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/order/service/OrderService.java": "94d26b902ac1def3ee0c1a8953e538352370766d6a73f65d3e24359165b63f53",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/payment/service/PaymentLifecycleService.java": "54f38745fc743ec5bf3db43db3ed9283afe94f2a4f00c5c81ca550fdeb6c7755",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/platform/mapper/ViOutboxMapper.java": "8109ff561ec17372b6fc429a2e25e7ae6a2522393917a7a8a5d0a16b450eb720",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/platform/service/OutboxService.java": "3d94fdd0db0d06d20f37650626d7ccf1f727884a16bfa94f261980d0d6f632d5",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/platform/service/ViOutboxRelay.java": "ff41caa42eebda0be0f6069ef1e3b76934aa5f094ed063bff755ee08f7a924ae",
+    "xinyi-rongli/src/main/resources/mapper/rongli/ViOutboxMapper.xml": "ade9af92a0fb0a69442b81b731181b9b61629760742dfb90a7a1ac427ed88a08",
+    "xinyi-rongli/src/main/resources/mapper/rongli/jobs/DispatchDeadlineMapper.xml": "d457fa51fd135f3737e723bfab0042be2f8334a69efae087bd46f836ec15406e",
+    "xinyi-rongli/src/main/resources/mapper/rongli/order/OrderMapper.xml": "7acb65a0258058182c385856eb53ef87b28873f21cf754249cf664930a77eb86"
+  },
+  "runs": [
+    {
+      "command": "mvn -o -pl xinyi-admin -am -Pvi-it -Dit.test=当前26类 verify",
+      "layer": "LIVE_HTTP_MYSQL",
+      "exitCode": 0,
+      "testsRun": 263,
+      "skipped": 0,
+      "reportPath": "docs/implementation/vehicle/P03/full-regression.json"
+    },
+    {
+      "command": "mvn verify 单元测试阶段",
+      "layer": "UNIT",
+      "exitCode": 0,
+      "testsRun": 36,
+      "skipped": 0,
+      "reportPath": "docs/implementation/vehicle/P03/unit-junit.xml"
+    },
+    {
+      "command": "P03JobsIT,B03OrderIT,E06PlatformIT,P02PaymentIT 专项",
+      "layer": "LIVE_HTTP_MYSQL",
+      "exitCode": 0,
+      "testsRun": 62,
+      "skipped": 0,
+      "reportPath": "docs/implementation/vehicle/P03/targeted-regression.json"
+    },
+    {
+      "command": "npm --prefix xinyi-ui run build:prod",
+      "layer": "BUILD",
+      "exitCode": 0,
+      "checksRun": 1,
+      "skipped": 0,
+      "reportPath": "docs/implementation/vehicle/P03/pc-build.txt"
+    },
+    {
+      "command": "npm --prefix xinyi-miniapp run type-check",
+      "layer": "BUILD",
+      "exitCode": 0,
+      "checksRun": 1,
+      "skipped": 0,
+      "reportPath": "docs/implementation/vehicle/P03/type-check.txt"
+    },
+    {
+      "command": "npm --prefix xinyi-miniapp run build:mp-weixin",
+      "layer": "BUILD",
+      "exitCode": 0,
+      "checksRun": 1,
+      "skipped": 0,
+      "reportPath": "docs/implementation/vehicle/P03/mp-build.txt"
+    },
+    {
+      "command": ".vi-local/venv/bin/python engineer.py check --repo .",
+      "layer": "ENGINEERING_ENVIRONMENT",
+      "exitCode": 0,
+      "checksRun": 34,
+      "skipped": 0,
+      "reportPath": "docs/implementation/vehicle/P03/engineering.json"
+    }
+  ],
+  "review": {
+    "approved": false,
+    "status": "PENDING",
+    "reportPath": "docs/implementation/vehicle/P03/review.md"
+  },
+  "databaseStructureChanged": false,
+  "realVendors": "NOT_RUN",
+  "productionDeploy": "NOT_RUN",
+  "boundaries": [
+    "P03只登记待派单，D02负责实际司机邀约",
+    "工作者重建模拟重启，不冒充实际杀死生产JVM",
+    "生产N不默认取测试值，需C01管理员配置"
+  ]
+}

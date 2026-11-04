@@ -14,10 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.Instant;
 
 /**
- * outbox 发布（ADR-05/08）。必须在业务 @Transactional 内调用，与业务写同事务提交：
- * 业务回滚则事件不发出，杜绝“成功事件先于业务落库”。
- * event_key 唯一约束防重（自然源事件）：重复发布同一 event_key 视为已登记，幂等忽略。
- * payload 为最小必要载荷，经 SecretGuard 校验不含明文机密。
+ * outbox 发布（ADR-05/08）。必须在业务 @Transactional 内调用，与业务写同事务提交： 业务回滚则事件不发出，杜绝“成功事件先于业务落库”。 event_key
+ * 唯一约束防重（自然源事件）：重复发布同一 event_key 视为已登记，幂等忽略。 payload 为最小必要载荷，经 SecretGuard 校验不含明文机密。
  */
 @Service
 public class OutboxService {
@@ -26,7 +24,8 @@ public class OutboxService {
     private final SecretGuard secretGuard;
     private final ViPlatformProperties properties;
 
-    public OutboxService(ViOutboxMapper mapper, SecretGuard secretGuard, ViPlatformProperties properties) {
+    public OutboxService(
+            ViOutboxMapper mapper, SecretGuard secretGuard, ViPlatformProperties properties) {
         this.mapper = mapper;
         this.secretGuard = secretGuard;
         this.properties = properties;
@@ -38,8 +37,25 @@ public class OutboxService {
      * @return true=新登记；false=event_key 已存在（幂等忽略）
      */
     @Transactional
-    public boolean publish(String eventKey, String aggregateType, long aggregateId,
-                           String eventType, Object payload) {
+    public boolean publish(
+            String eventKey,
+            String aggregateType,
+            long aggregateId,
+            String eventType,
+            Object payload) {
+        return publishAt(eventKey, aggregateType, aggregateId, eventType, payload, Instant.now());
+    }
+
+    /** 业务事务内登记绝对到期时间；重复源事件不改写已有计划、重试次数或处理状态。 */
+    @Transactional
+    public boolean publishAt(
+            String eventKey,
+            String aggregateType,
+            long aggregateId,
+            String eventType,
+            Object payload,
+            Instant dueAt) {
+        if (dueAt == null) throw new ViException(ViErrorCode.VI_REQUEST_INVALID);
         if (isBlank(eventKey) || isBlank(aggregateType) || isBlank(eventType)) {
             throw new ViException(ViErrorCode.VI_REQUEST_INVALID, "outbox 事件键/聚合/类型不可为空");
         }
@@ -54,7 +70,7 @@ public class OutboxService {
         record.setPayload(json);
         record.setStatus(OutboxStatus.READY);
         record.setAttempts(0);
-        record.setNextAttemptAt(Instant.now());
+        record.setNextAttemptAt(dueAt);
         record.setLeaseUntil(null);
         try {
             mapper.insert(record);

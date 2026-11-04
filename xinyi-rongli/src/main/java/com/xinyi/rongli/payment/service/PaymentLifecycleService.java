@@ -22,6 +22,7 @@ import java.security.MessageDigest;
 /** 所有可信资金结论经同一事务落库；网络请求在事务外，不以客户端状态推进资金。 */
 @Service
 public class PaymentLifecycleService {
+    private final com.xinyi.rongli.jobs.service.DispatchDeadlineService dispatch;
     private final PaymentMapper payments;
     private final PaymentLifecycleMapper mapper;
     private final PaymentService intents;
@@ -36,6 +37,7 @@ public class PaymentLifecycleService {
     private final TransactionTemplate tx;
 
     public PaymentLifecycleService(
+            com.xinyi.rongli.jobs.service.DispatchDeadlineService dispatch,
             PaymentMapper payments,
             PaymentLifecycleMapper mapper,
             PaymentService intents,
@@ -48,6 +50,7 @@ public class PaymentLifecycleService {
             IdempotencyService idem,
             OrderReadService orders,
             PlatformTransactionManager manager) {
+        this.dispatch = dispatch;
         this.payments = payments;
         this.mapper = mapper;
         this.intents = intents;
@@ -305,7 +308,10 @@ public class PaymentLifecycleService {
                         || !o.getPickupStartsAt().isAfter(Instant.parse(payments.now()));
         if (!conflict) moveQuota(o.getId(), true);
         one(mapper.paid(p.getId(), transactionId, paidAt, conflict));
-        if (!conflict) one(mapper.orderState(o.getId(), "SCHEDULED"));
+        if (!conflict) {
+            one(mapper.orderState(o.getId(), "SCHEDULED"));
+            dispatch.onPaid(o.getId());
+        }
         String action = conflict ? "PAYMENT_LATE_SUCCESS_CONFLICT" : "PAYMENT_CONFIRMED";
         audit.recordSuccess(
                 actor,

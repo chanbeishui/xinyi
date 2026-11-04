@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xinyi.rongli.jobs.mapper.DispatchDeadlineMapper">
+    <select id="missingTimers" resultType="long">
+        SELECT o.id FROM vi_order o
+        JOIN vi_payment_order p ON p.order_id = o.id AND p.status = 'SUCCESS'
+        WHERE o.fulfillment_status = 'SCHEDULED'
+          AND NOT EXISTS (
+              SELECT 1 FROM vi_outbox e WHERE e.event_key = CONCAT('DISPATCH_TIMER:', o.id)
+                 OR e.event_key = CONCAT('DISPATCH_PLAN_MISSING:', o.id)
+          )
+        ORDER BY o.id LIMIT 100
+    </select>
+    <select id="stationAvailable" resultType="int">
+        SELECT COUNT(*) FROM vi_station s JOIN sys_dept d ON d.dept_id = s.dept_id
+        WHERE s.id = #{stationId} AND s.dept_id = #{deptId} AND s.enabled = 1
+          AND d.status = '0' AND d.del_flag = '0'
+    </select>
+    <select id="confirmedReservations" resultType="int">
+        SELECT COUNT(DISTINCT s.quota_type) FROM vi_quota_reservation r
+        JOIN vi_quota_slot s ON s.id = r.slot_id
+        JOIN vi_order o ON o.id = r.order_id AND s.station_id = o.station_id
+        WHERE r.order_id = #{orderId} AND r.status = 'CONFIRMED' AND r.quantity = 1
+          AND s.quota_type IN ('PICKUP', 'STATION_RECEIVE')
+    </select>
+    <select id="pendingRefund" resultType="int">
+        SELECT COUNT(*) FROM vi_payment_order WHERE order_id = #{orderId}
+          AND (refund_reserved_fen &gt; 0 OR refunded_fen &gt; 0)
+    </select>
+    <select id="quotePolicy" resultType="string">
+        SELECT items_json FROM vi_quote WHERE id = #{quoteId}
+    </select>
+    <update id="transition">
+        UPDATE vi_order SET fulfillment_status = #{state}, version = version + 1,
+            updated_at = UTC_TIMESTAMP(3)
+        WHERE id = #{id} AND version = #{version} AND fulfillment_status = 'SCHEDULED'
+          AND cancel_status = 'NONE' AND active_assignment_id IS NULL
+    </update>
+</mapper>

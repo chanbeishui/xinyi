@@ -3073,8 +3073,11 @@
     "case_ids": [],
     "scope": "DEVELOPMENT",
     "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
-    "status": "NOT_ASSESSED",
+    "status": "VERIFIED",
     "code_paths": [
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/jobs/",
+      "xinyi-rongli/src/main/resources/mapper/rongli/jobs/",
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/P03JobsIT.java",
       "docs/implementation/vehicle/P03/"
     ],
     "test_class": "P03JobsIT",
@@ -3097,10 +3100,17 @@
     },
     "scopeRevision": "V6.1-UNCHANGED",
     "definitionHash": "76bee9ed8e68821b5572e1aeee89fc61ed243df5e96c6cf34fc195e79f39918f",
-    "evidence": [],
+    "evidence": [
+      {
+        "path": "docs/implementation/vehicle/evidence/P03-20261105.json",
+        "sha256": "2babde5f27a5cf8e8c111f298021e44d5db21a8c6c0ad3835f9ace1d3b61b793"
+      }
+    ],
     "implementation": null,
     "review": null,
-    "blocker": null
+    "blocker": null,
+    "needsAdaptation": false,
+    "updatedAt": "2026-11-04T16:44:25.563045+00:00"
   },
   {
     "id": "D01",

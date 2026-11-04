@@ -213,6 +213,11 @@ class B03OrderIT {
         jdbc.execute(
                 "INSERT INTO sys_dict_data(dict_label,dict_value,dict_type,status) VALUES"
                     + " ('测试车型','B03_CAR','vi_vehicle_type','0'),('测试检测','B03_ANNUAL','vi_inspection_type','0')");
+        // 生产无默认派单提前量；建单夹具显式配置30分钟并验证订单快照。
+        jdbc.update("DELETE FROM sys_config WHERE config_key='vi.biz.dispatch.lead.minutes'");
+        jdbc.update(
+                "INSERT INTO sys_config(config_name,config_key,config_value,config_type) "
+                        + "VALUES('测试派单提前量','vi.biz.dispatch.lead.minutes','30','N')");
         for (var entry :
                 Map.of(
                                 "vi.biz.booking.enabled",
@@ -252,9 +257,8 @@ class B03OrderIT {
             for (String type : List.of("PICKUP", "STATION_RECEIVE"))
                 jdbc.update(
                         "INSERT INTO"
-                            + " vi_quota_slot(quota_type,scope_key,station_id,starts_at,ends_at,total_quota,held_quota,"
-                            + "confirmed_quota,consumed_quota,enabled) VALUES (?,?,"
-                            + " ?,?,?,5,0,0,0,1)",
+                            + " vi_quota_slot(quota_type,scope_key,station_id,starts_at,ends_at,total_quota,held_quota,confirmed_quota,consumed_quota,enabled)"
+                            + " VALUES (?,?, ?,?,?,5,0,0,0,1)",
                         type,
                         "station:" + station,
                         station,
@@ -734,6 +738,60 @@ class B03OrderIT {
                 jdbc.queryForObject(
                         "SELECT COUNT(*) FROM vi_outbox WHERE aggregate_type='VI_ORDER' AND"
                                 + " aggregate_id=? AND event_type='ORDER_CREATED'",
+                        Integer.class,
+                        id));
+    }
+
+    @Test
+    void 派单计划缺配置拒绝且修改参数不追改已有订单() {
+        String token = verifiedLogin("OWNER_A").path("token").asText();
+        var input = orderInput(quote(token));
+        jdbc.update("DELETE FROM sys_config WHERE config_key='vi.biz.dispatch.lead.minutes'");
+        assertEquals(
+                409, create(input, token, UUID.randomUUID().toString()).getStatusCode().value());
+        emptyOrders();
+        jdbc.update(
+                "INSERT INTO sys_config(config_name,config_key,config_value,config_type) "
+                        + "VALUES('测试派单提前量','vi.biz.dispatch.lead.minutes','30','N')");
+        var first = good(create(input, token, UUID.randomUUID().toString()));
+        long id =
+                jdbc.queryForObject(
+                        "SELECT id FROM vi_order WHERE order_no=?",
+                        Long.class,
+                        first.path("orderNo").asText());
+        assertEquals(
+                1800,
+                jdbc.queryForObject(
+                        "SELECT TIMESTAMPDIFF(SECOND,dispatch_at,pickup_starts_at) "
+                                + "FROM vi_order WHERE id=?",
+                        Integer.class,
+                        id));
+        long version =
+                jdbc.queryForObject(
+                        "SELECT dispatch_config_version FROM vi_order WHERE id=?", Long.class, id);
+        jdbc.update(
+                "UPDATE sys_config SET config_value='60' WHERE"
+                    + " config_key='vi.biz.dispatch.lead.minutes'");
+        jdbc.update(
+                "UPDATE sys_config SET config_value=config_value+1 WHERE"
+                    + " config_key='vi.config.version'");
+        var second = good(create(orderInput(quote(token)), token, UUID.randomUUID().toString()));
+        assertEquals(
+                3600,
+                jdbc.queryForObject(
+                        "SELECT TIMESTAMPDIFF(SECOND,dispatch_at,pickup_starts_at) "
+                                + "FROM vi_order WHERE order_no=?",
+                        Integer.class,
+                        second.path("orderNo").asText()));
+        assertEquals(
+                version,
+                jdbc.queryForObject(
+                        "SELECT dispatch_config_version FROM vi_order WHERE id=?", Long.class, id));
+        assertEquals(
+                1800,
+                jdbc.queryForObject(
+                        "SELECT TIMESTAMPDIFF(SECOND,dispatch_at,pickup_starts_at) "
+                                + "FROM vi_order WHERE id=?",
                         Integer.class,
                         id));
     }

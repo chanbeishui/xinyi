@@ -1,62 +1,186 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.xinyi.rongli.order.mapper.OrderMapper">
-<resultMap id="Order" type="com.xinyi.rongli.order.domain.ViOrder">
-<id property="id" column="id"/><result property="version" column="version"/>
-<result property="orderNo" column="order_no"/>
-<result property="ownerAccountId" column="owner_account_id"/>
-<result property="vehicleId" column="vehicle_id"/>
-<result property="stationId" column="station_id"/>
-<result property="deptId" column="dept_id"/>
-<result property="quoteId" column="quote_id"/>
-<result property="vehicleSnapshot" column="vehicle_snapshot"/>
-<result property="fulfillmentStatus" column="fulfillment_status"/>
-<result property="cancelStatus" column="cancel_status"/>
-<result property="custodyType" column="custody_type"/>
-<result property="custodyRefId" column="custody_ref_id"/>
-<result property="pickupStartsAt" column="pickup_starts_at" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
-<result property="pickupEndsAt" column="pickup_ends_at" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
-<result property="payExpiresAt" column="pay_expires_at" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
-<result property="totalFen" column="total_fen"/>
-<result property="termsVersion" column="terms_version"/>
-<result property="activeAssignmentId" column="active_assignment_id"/>
-<result property="returnedAt" column="returned_at" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
-<result property="dispatchAt" column="dispatch_at" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
-<result property="autoConfirmAt" column="auto_confirm_at" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
-</resultMap>
-<insert id="insert" useGeneratedKeys="true" keyProperty="id">INSERT INTO vi_order (order_no,owner_account_id,vehicle_id,station_id,dept_id,quote_id,vehicle_snapshot,fulfillment_status,cancel_status,custody_type,custody_ref_id,pickup_starts_at,pickup_ends_at,pay_expires_at,total_fen,terms_version) VALUES (#{orderNo},#{ownerAccountId},#{vehicleId},#{stationId},#{deptId},#{quoteId},#{vehicleSnapshot},#{fulfillmentStatus},#{cancelStatus},#{custodyType},#{custodyRefId},#{pickupStartsAt,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler},#{pickupEndsAt,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler},#{payExpiresAt,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler},#{totalFen},#{termsVersion})</insert>
-<select id="find" resultMap="Order">SELECT * FROM vi_order WHERE id=#{id}</select>
-<resultMap id="OrderSnapshot" type="com.xinyi.rongli.order.domain.ViOrderSnapshot">
-<result property="orderId" column="order_id"/>
-<result property="addressCipher" column="address_cipher"/>
-<result property="contactCipher" column="contact_cipher"/>
-<result property="remarkCipher" column="remark_cipher"/>
-<result property="stationSnapshot" column="station_snapshot"/>
-<result property="agreementSnapshot" column="agreement_snapshot"/>
-<result property="acceptedAt" column="accepted_at" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
-</resultMap>
-<insert id="insertSnapshot">INSERT INTO vi_order_snapshot (order_id,address_cipher,contact_cipher,remark_cipher,station_snapshot,agreement_snapshot,accepted_at) VALUES (#{orderId},#{addressCipher},#{contactCipher},#{remarkCipher},#{stationSnapshot},#{agreementSnapshot},#{acceptedAt,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler})</insert>
-<select id="snapshot" resultMap="OrderSnapshot">SELECT * FROM vi_order_snapshot WHERE order_id=#{id}</select>
-<resultMap id="PaymentOrder" type="com.xinyi.rongli.order.domain.ViPaymentOrder">
-<id property="id" column="id"/><result property="version" column="version"/>
-<result property="orderId" column="order_id"/>
-<result property="outTradeNo" column="out_trade_no"/>
-<result property="status" column="status"/>
-<result property="totalFen" column="total_fen"/>
-<result property="paidFen" column="paid_fen"/>
-<result property="refundedFen" column="refunded_fen"/>
-<result property="expiresAt" column="expires_at" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
-<result property="paymentMethod" column="payment_method"/>
-<result property="receiverDeptId" column="receiver_dept_id"/>
-<result property="policyRevisionId" column="policy_revision_id"/>
-<result property="capacityResolution" column="capacity_resolution"/>
-</resultMap>
-<insert id="insertPayment" useGeneratedKeys="true" keyProperty="id">INSERT INTO vi_payment_order (order_id,out_trade_no,status,total_fen,paid_fen,refunded_fen,expires_at,payment_method,receiver_dept_id,policy_revision_id,capacity_resolution) VALUES (#{orderId},#{outTradeNo},#{status},#{totalFen},#{paidFen},#{refundedFen},#{expiresAt,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler},#{paymentMethod},#{receiverDeptId},#{policyRevisionId},#{capacityResolution})</insert>
-<select id="payment" resultMap="PaymentOrder">SELECT * FROM vi_payment_order WHERE order_id=#{id}</select>
-<select id="now" resultType="java.lang.String">SELECT DATE_FORMAT(UTC_TIMESTAMP(3),'%Y-%m-%dT%H:%i:%s.%fZ')</select>
-<select id="lockQuote" resultMap="com.xinyi.rongli.booking.mapper.QuoteMapper.quote">SELECT * FROM vi_quote WHERE id=#{id} FOR UPDATE</select>
-<update id="consumeQuote">UPDATE vi_quote SET used_order_id=#{orderId},version=version+1,updated_at=UTC_TIMESTAMP(3) WHERE id=#{id} AND version=#{version} AND used_order_id IS NULL AND expires_at &gt; UTC_TIMESTAMP(3)</update>
-<update id="hold">UPDATE vi_quota_slot SET held_quota=held_quota+1,version=version+1,updated_at=UTC_TIMESTAMP(3) WHERE id=#{slotId} AND version=#{version} AND enabled=1 AND starts_at &gt; UTC_TIMESTAMP(3) AND total_quota &gt; held_quota+confirmed_quota+consumed_quota</update>
-<insert id="reserve">INSERT INTO vi_quota_reservation(order_id,slot_id,status,quantity,expires_at) VALUES (#{orderId},#{slotId},'HELD',1,#{expires,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler})</insert>
-<select id="lockSecurity" resultMap="com.xinyi.rongli.identity.mapper.ViAccountSecurityMapper.ViAccountSecurityMap">SELECT * FROM vi_account_security WHERE account_id=#{accountId} FOR UPDATE</select>
+    <resultMap id="Order" type="com.xinyi.rongli.order.domain.ViOrder">
+        <id property="id" column="id" />
+        <result property="version" column="version" />
+        <result property="orderNo" column="order_no" />
+        <result property="ownerAccountId" column="owner_account_id" />
+        <result property="vehicleId" column="vehicle_id" />
+        <result property="stationId" column="station_id" />
+        <result property="deptId" column="dept_id" />
+        <result property="quoteId" column="quote_id" />
+        <result property="vehicleSnapshot" column="vehicle_snapshot" />
+        <result property="fulfillmentStatus" column="fulfillment_status" />
+        <result property="cancelStatus" column="cancel_status" />
+        <result property="custodyType" column="custody_type" />
+        <result property="custodyRefId" column="custody_ref_id" />
+        <result property="pickupStartsAt" column="pickup_starts_at" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler" />
+        <result property="pickupEndsAt" column="pickup_ends_at" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler" />
+        <result property="payExpiresAt" column="pay_expires_at" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler" />
+        <result property="totalFen" column="total_fen" />
+        <result property="termsVersion" column="terms_version" />
+        <result property="activeAssignmentId" column="active_assignment_id" />
+        <result property="returnedAt" column="returned_at" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler" />
+        <result property="dispatchConfigVersion" column="dispatch_config_version" />
+        <result property="dispatchAt" column="dispatch_at" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler" />
+        <result property="autoConfirmAt" column="auto_confirm_at" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler" />
+    </resultMap>
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO vi_order (order_no,
+        owner_account_id,
+        vehicle_id,
+        station_id,
+        dept_id,
+        quote_id,
+        vehicle_snapshot,
+        fulfillment_status,
+        cancel_status,
+        custody_type,
+        custody_ref_id,
+        pickup_starts_at,
+        pickup_ends_at,
+        pay_expires_at,
+        total_fen,
+        terms_version,
+        dispatch_at,
+        dispatch_config_version)
+        VALUES (#{orderNo},
+        #{ownerAccountId},
+        #{vehicleId},
+        #{stationId},
+        #{deptId},
+        #{quoteId},
+        #{vehicleSnapshot},
+        #{fulfillmentStatus},
+        #{cancelStatus},
+        #{custodyType},
+        #{custodyRefId},
+        #{pickupStartsAt,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler},
+        #{pickupEndsAt,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler},
+        #{payExpiresAt,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler},
+        #{totalFen},
+        #{termsVersion},
+        #{dispatchAt,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler},
+        #{dispatchConfigVersion})
+    </insert>
+    <select id="find" resultMap="Order">
+        SELECT *
+        FROM vi_order
+        WHERE id=#{id}
+    </select>
+    <resultMap id="OrderSnapshot" type="com.xinyi.rongli.order.domain.ViOrderSnapshot">
+        <result property="orderId" column="order_id" />
+        <result property="addressCipher" column="address_cipher" />
+        <result property="contactCipher" column="contact_cipher" />
+        <result property="remarkCipher" column="remark_cipher" />
+        <result property="stationSnapshot" column="station_snapshot" />
+        <result property="agreementSnapshot" column="agreement_snapshot" />
+        <result property="acceptedAt" column="accepted_at" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler" />
+    </resultMap>
+    <insert id="insertSnapshot">
+        INSERT INTO vi_order_snapshot (order_id,
+        address_cipher,
+        contact_cipher,
+        remark_cipher,
+        station_snapshot,
+        agreement_snapshot,
+        accepted_at)
+        VALUES (#{orderId},
+        #{addressCipher},
+        #{contactCipher},
+        #{remarkCipher},
+        #{stationSnapshot},
+        #{agreementSnapshot},
+        #{acceptedAt,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler})
+    </insert>
+    <select id="snapshot" resultMap="OrderSnapshot">
+        SELECT *
+        FROM vi_order_snapshot
+        WHERE order_id=#{id}
+    </select>
+    <resultMap id="PaymentOrder" type="com.xinyi.rongli.order.domain.ViPaymentOrder">
+        <id property="id" column="id" />
+        <result property="version" column="version" />
+        <result property="orderId" column="order_id" />
+        <result property="outTradeNo" column="out_trade_no" />
+        <result property="status" column="status" />
+        <result property="totalFen" column="total_fen" />
+        <result property="paidFen" column="paid_fen" />
+        <result property="refundedFen" column="refunded_fen" />
+        <result property="expiresAt" column="expires_at" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler" />
+        <result property="paymentMethod" column="payment_method" />
+        <result property="receiverDeptId" column="receiver_dept_id" />
+        <result property="policyRevisionId" column="policy_revision_id" />
+        <result property="capacityResolution" column="capacity_resolution" />
+    </resultMap>
+    <insert id="insertPayment" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO vi_payment_order (order_id,
+        out_trade_no,
+        status,
+        total_fen,
+        paid_fen,
+        refunded_fen,
+        expires_at,
+        payment_method,
+        receiver_dept_id,
+        policy_revision_id,
+        capacity_resolution)
+        VALUES (#{orderId},
+        #{outTradeNo},
+        #{status},
+        #{totalFen},
+        #{paidFen},
+        #{refundedFen},
+        #{expiresAt,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler},
+        #{paymentMethod},
+        #{receiverDeptId},
+        #{policyRevisionId},
+        #{capacityResolution})
+    </insert>
+    <select id="payment" resultMap="PaymentOrder">
+        SELECT *
+        FROM vi_payment_order
+        WHERE order_id=#{id}
+    </select>
+    <select id="now" resultType="java.lang.String">
+        SELECT DATE_FORMAT(UTC_TIMESTAMP(3),
+        '%Y-%m-%dT%H:%i:%s.%fZ')
+    </select>
+    <select id="lockQuote" resultMap="com.xinyi.rongli.booking.mapper.QuoteMapper.quote">
+        SELECT *
+        FROM vi_quote
+        WHERE id=#{id} FOR UPDATE
+    </select>
+    <update id="consumeQuote">
+        UPDATE vi_quote
+        SET used_order_id=#{orderId},
+        version=version+1,
+        updated_at=UTC_TIMESTAMP(3)
+        WHERE id=#{id} AND version=#{version} AND used_order_id IS NULL AND expires_at &gt; UTC_TIMESTAMP(3)
+    </update>
+    <update id="hold">
+        UPDATE vi_quota_slot
+        SET held_quota=held_quota+1,
+        version=version+1,
+        updated_at=UTC_TIMESTAMP(3)
+        WHERE id=#{slotId} AND version=#{version} AND enabled=1 AND starts_at &gt; UTC_TIMESTAMP(3) AND total_quota &gt; held_quota+confirmed_quota+consumed_quota
+    </update>
+    <insert id="reserve">
+        INSERT INTO vi_quota_reservation(order_id,
+        slot_id,
+        status,
+        quantity,
+        expires_at)
+        VALUES (#{orderId},
+        #{slotId},
+        'HELD',
+        1,
+        #{expires,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler})
+    </insert>
+    <select id="lockSecurity" resultMap="com.xinyi.rongli.identity.mapper.ViAccountSecurityMapper.ViAccountSecurityMap">
+        SELECT *
+        FROM vi_account_security
+        WHERE account_id=#{accountId} FOR UPDATE
+    </select>
 </mapper>

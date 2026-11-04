@@ -41,16 +41,23 @@ class P02PaymentIT extends PaymentHttpFixture {
                         Map.of("lng", 110, "lat", 21, "coordinateSystem", "GCJ02"));
         byte[] cipher = addressCrypto.encrypt(ViJson.write(address));
         jdbc.update(
-                "INSERT INTO vi_quote(id,owner_account_id,station_id,vehicle_snapshot,address_snapshot_cipher,pickup_slot_id,rule_id,route_snapshot,amount_fen,items_json,expires_at) VALUES(?,?,?,'{}',?,1,1,'{}',12345,'{\"items\":[]}',DATE_ADD(UTC_TIMESTAMP(3),INTERVAL 1 HOUR))",
+                "INSERT INTO"
+                    + " vi_quote(id,owner_account_id,station_id,vehicle_snapshot,address_snapshot_cipher,pickup_slot_id,rule_id,route_snapshot,amount_fen,items_json,expires_at)"
+                    + " VALUES(?,?,?,'{}',?,1,1,'{}',12345,'{\"items\":[]}',DATE_ADD(UTC_TIMESTAMP(3),INTERVAL"
+                    + " 1 HOUR))",
                 quote,
                 account,
                 station,
                 cipher);
         jdbc.update(
-                "UPDATE vi_order SET vehicle_snapshot='{\"plateNo\":\"粤A12345\",\"vehicleTypeCode\":\"C04_CAR\",\"vehicleTypeLabel\":\"测试车型\"}' WHERE id=?",
+                "UPDATE vi_order SET"
+                    + " vehicle_snapshot='{\"plateNo\":\"粤A12345\",\"vehicleTypeCode\":\"C04_CAR\",\"vehicleTypeLabel\":\"测试车型\"}'"
+                    + " WHERE id=?",
                 orderId);
         jdbc.update(
-                "INSERT INTO vi_order_snapshot(order_id,address_cipher,contact_cipher,station_snapshot,agreement_snapshot,accepted_at) VALUES(?,?,?,?, '{}',UTC_TIMESTAMP(3))",
+                "INSERT INTO"
+                    + " vi_order_snapshot(order_id,address_cipher,contact_cipher,station_snapshot,agreement_snapshot,accepted_at)"
+                    + " VALUES(?,?,?,?, '{}',UTC_TIMESTAMP(3))",
                 orderId,
                 cipher,
                 addressCrypto.encrypt(
@@ -68,22 +75,21 @@ class P02PaymentIT extends PaymentHttpFixture {
         for (String type : List.of("PICKUP", "STATION_RECEIVE")) {
             long slot = SEQ.incrementAndGet();
             jdbc.update(
-                    "INSERT INTO vi_quota_slot(id,quota_type,scope_key,station_id,starts_at,ends_at,total_quota,held_quota) VALUES(?,?,?, ?,DATE_ADD(UTC_TIMESTAMP(3),INTERVAL 2 DAY),DATE_ADD(UTC_TIMESTAMP(3),INTERVAL 3 DAY),5,1)",
+                    "INSERT INTO"
+                        + " vi_quota_slot(id,quota_type,scope_key,station_id,starts_at,ends_at,total_quota,held_quota)"
+                        + " VALUES(?,?,?, ?,DATE_ADD(UTC_TIMESTAMP(3),INTERVAL 2"
+                        + " DAY),DATE_ADD(UTC_TIMESTAMP(3),INTERVAL 3 DAY),5,1)",
                     slot,
                     type,
                     "station:" + station,
                     station);
             jdbc.update(
-                    "INSERT INTO vi_quota_reservation(order_id,slot_id,status,quantity,expires_at) SELECT ?,?,'HELD',1,expires_at FROM vi_payment_order WHERE order_id=?",
+                    "INSERT INTO vi_quota_reservation(order_id,slot_id,status,quantity,expires_at)"
+                        + " SELECT ?,?,'HELD',1,expires_at FROM vi_payment_order WHERE order_id=?",
                     orderId,
                     slot,
                     orderId);
         }
-    }
-
-    @AfterAll
-    static void stopServer() {
-        server.stop(0);
     }
 
     void startPay() {
@@ -92,7 +98,8 @@ class P02PaymentIT extends PaymentHttpFixture {
 
     void expire() {
         jdbc.update(
-                "UPDATE vi_payment_order SET expires_at=DATE_SUB(UTC_TIMESTAMP(3),INTERVAL 1 SECOND),next_query_at=NULL WHERE order_id=?",
+                "UPDATE vi_payment_order SET expires_at=DATE_SUB(UTC_TIMESTAMP(3),INTERVAL 1"
+                    + " SECOND),next_query_at=NULL WHERE order_id=?",
                 orderId);
     }
 
@@ -217,7 +224,8 @@ class P02PaymentIT extends PaymentHttpFixture {
         assertEquals(
                 0,
                 jdbc.queryForObject(
-                        "SELECT COUNT(*) FROM vi_order WHERE id=? AND fulfillment_status='SCHEDULED'",
+                        "SELECT COUNT(*) FROM vi_order WHERE id=? AND"
+                            + " fulfillment_status='SCHEDULED'",
                         Integer.class,
                         orderId));
         assertEquals(
@@ -289,7 +297,8 @@ class P02PaymentIT extends PaymentHttpFixture {
         assertEquals(
                 4,
                 jdbc.queryForObject(
-                        "SELECT COUNT(*) FROM vi_event_log WHERE action='PAYMENT_CALLBACK_REJECTED'",
+                        "SELECT COUNT(*) FROM vi_event_log WHERE"
+                            + " action='PAYMENT_CALLBACK_REJECTED'",
                         Integer.class));
         assertEquals(
                 1,
@@ -419,7 +428,8 @@ class P02PaymentIT extends PaymentHttpFixture {
         assertEquals(
                 1,
                 jdbc.queryForObject(
-                        "SELECT COUNT(*) FROM vi_outbox WHERE event_type='PAYMENT_LATE_SUCCESS_CONFLICT'",
+                        "SELECT COUNT(*) FROM vi_outbox WHERE"
+                            + " event_type='PAYMENT_LATE_SUCCESS_CONFLICT'",
                         Integer.class));
         assertTrue(data(payment()).path("queryRequired").asBoolean());
     }
@@ -428,7 +438,8 @@ class P02PaymentIT extends PaymentHttpFixture {
     void persistenceRollbackNeverAcknowledges() throws Exception {
         startPay();
         jdbc.execute(
-                "CREATE TRIGGER p02_fail_event BEFORE INSERT ON vi_channel_event FOR EACH ROW SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='isolated rollback'");
+                "CREATE TRIGGER p02_fail_event BEFORE INSERT ON vi_channel_event FOR EACH ROW"
+                    + " SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='isolated rollback'");
         try {
             assertEquals(500, notify(fact(), "rollback").getStatusCode().value());
             assertEquals("0", state("paid_fen"));
@@ -479,7 +490,9 @@ class P02PaymentIT extends PaymentHttpFixture {
     void activePrepayLeaseBlocksClosingAndNewPayment() {
         startPay();
         jdbc.update(
-                "UPDATE vi_payment_order SET prepay_state='REQUESTING',prepay_lease_until=DATE_ADD(UTC_TIMESTAMP(3),INTERVAL 1 MINUTE) WHERE order_id=?",
+                "UPDATE vi_payment_order SET"
+                    + " prepay_state='REQUESTING',prepay_lease_until=DATE_ADD(UTC_TIMESTAMP(3),INTERVAL"
+                    + " 1 MINUTE) WHERE order_id=?",
                 orderId);
         assertEquals(
                 "PENDING_PAY",
@@ -487,7 +500,8 @@ class P02PaymentIT extends PaymentHttpFixture {
         assertEquals(2, quota("HELD"));
         assertEquals(409, pay(intent(), UUID.randomUUID().toString()).getStatusCode().value());
         jdbc.update(
-                "UPDATE vi_payment_order SET prepay_lease_until=DATE_SUB(UTC_TIMESTAMP(3),INTERVAL 1 SECOND) WHERE order_id=?",
+                "UPDATE vi_payment_order SET prepay_lease_until=DATE_SUB(UTC_TIMESTAMP(3),INTERVAL"
+                    + " 1 SECOND) WHERE order_id=?",
                 orderId);
         lifecycle.runDue();
         assertEquals("CLOSED", state("status"));
@@ -513,7 +527,9 @@ class P02PaymentIT extends PaymentHttpFixture {
                 jdbc.queryForObject(
                         "SELECT id FROM vi_payment_order WHERE order_id=?", Long.class, orderId);
         jdbc.update(
-                "INSERT INTO vi_refund_order(case_id,review_revision,payment_id,out_refund_no,amount_fen,status,payment_method,execution_mode) VALUES(1,1,?,'REF_P02',100,'PROCESSING','WECHAT','WECHAT_API')",
+                "INSERT INTO"
+                    + " vi_refund_order(case_id,review_revision,payment_id,out_refund_no,amount_fen,status,payment_method,execution_mode)"
+                    + " VALUES(1,1,?,'REF_P02',100,'PROCESSING','WECHAT','WECHAT_API')",
                 payment);
         var f = new LinkedHashMap<>(fact());
         f.remove("appid");

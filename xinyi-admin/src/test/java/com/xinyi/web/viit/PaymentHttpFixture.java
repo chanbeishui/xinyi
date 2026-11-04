@@ -168,6 +168,9 @@ abstract class PaymentHttpFixture extends PricingHttpFixture {
                         }
                     });
             server.start();
+            // 多个测试类共用同一供应商端口；不能在首个测试类结束时关闭后续类的替身。
+            Runtime.getRuntime()
+                    .addShutdownHook(new Thread(() -> server.stop(0), "payment-fixture-stop"));
         } catch (Exception e) {
             throw new ExceptionInInitializerError(e);
         }
@@ -275,7 +278,11 @@ abstract class PaymentHttpFixture extends PricingHttpFixture {
         no = "X02" + UUID.randomUUID().toString().replace("-", "");
         long station = station(SITE_DEPT);
         jdbc.update(
-                "INSERT INTO vi_order(order_no,owner_account_id,station_id,dept_id,quote_id,vehicle_snapshot,fulfillment_status,custody_type,custody_ref_id,pickup_starts_at,pickup_ends_at,pay_expires_at,total_fen,terms_version) VALUES(?,?,?,?,?,'{}','PENDING_PAY','OWNER',?,DATE_ADD(UTC_TIMESTAMP(3),INTERVAL 2 DAY),DATE_ADD(UTC_TIMESTAMP(3),INTERVAL 3 DAY),DATE_ADD(UTC_TIMESTAMP(3),INTERVAL 30 MINUTE),12345,'test')",
+                "INSERT INTO"
+                    + " vi_order(order_no,owner_account_id,station_id,dept_id,quote_id,vehicle_snapshot,fulfillment_status,custody_type,custody_ref_id,pickup_starts_at,pickup_ends_at,pay_expires_at,total_fen,terms_version)"
+                    + " VALUES(?,?,?,?,?,'{}','PENDING_PAY','OWNER',?,DATE_ADD(UTC_TIMESTAMP(3),INTERVAL"
+                    + " 2 DAY),DATE_ADD(UTC_TIMESTAMP(3),INTERVAL 3"
+                    + " DAY),DATE_ADD(UTC_TIMESTAMP(3),INTERVAL 30 MINUTE),12345,'test')",
                 no,
                 account,
                 station,
@@ -284,7 +291,10 @@ abstract class PaymentHttpFixture extends PricingHttpFixture {
                 account);
         orderId = jdbc.queryForObject("SELECT id FROM vi_order WHERE order_no=?", Long.class, no);
         jdbc.update(
-                "INSERT INTO vi_payment_order(order_id,out_trade_no,status,total_fen,expires_at,payment_method,receiver_dept_id,policy_revision_id,capacity_resolution) SELECT id,?,'PENDING',total_fen,pay_expires_at,'UNSELECTED',?,?,'HELD' FROM vi_order WHERE id=?",
+                "INSERT INTO"
+                    + " vi_payment_order(order_id,out_trade_no,status,total_fen,expires_at,payment_method,receiver_dept_id,policy_revision_id,capacity_resolution)"
+                    + " SELECT id,?,'PENDING',total_fen,pay_expires_at,'UNSELECTED',?,?,'HELD' FROM"
+                    + " vi_order WHERE id=?",
                 UUID.randomUUID().toString().replace("-", ""),
                 COMPANY_A,
                 policy.path("activeRevisionId").asLong(),
@@ -489,12 +499,14 @@ abstract class PaymentHttpFixture extends PricingHttpFixture {
     String mini() {
         String open = "x01-" + UUID.randomUUID();
         jdbc.update(
-                "INSERT INTO vi_account(app_id,open_id,status) VALUES('wx0000000000000000',?,'ACTIVE')",
+                "INSERT INTO vi_account(app_id,open_id,status)"
+                    + " VALUES('wx0000000000000000',?,'ACTIVE')",
                 open);
         long account =
                 jdbc.queryForObject("SELECT id FROM vi_account WHERE open_id=?", Long.class, open);
         jdbc.update(
-                "INSERT INTO vi_account_security(account_id,changed_at) VALUES (?,UTC_TIMESTAMP(3))",
+                "INSERT INTO vi_account_security(account_id,changed_at) VALUES"
+                    + " (?,UTC_TIMESTAMP(3))",
                 account);
         var session = new com.xinyi.rongli.identity.domain.ViSession();
         session.setAccountId(account);

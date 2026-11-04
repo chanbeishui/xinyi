@@ -1,0 +1,30 @@
+{
+  "taskId": "P03",
+  "apiChanges": [],
+  "pageChanges": [],
+  "databaseChanges": [],
+  "reusedTables": {
+    "vi_order": "dispatch_at/dispatch_config_version及履约状态",
+    "vi_outbox": "next_attempt_at/lease_until/version/永久event_key",
+    "vi_event_log": "计划异常与到期待派单审计",
+    "vi_payment_order": "权威支付、退款预留与资金冲突",
+    "vi_quota_reservation": "原订单双额度正式凭证"
+  },
+  "relatedCases": {
+    "TC-050": "支付成功保存未来计划，复用P02",
+    "TC-051": "到点进入待派单及唯一请求已完成；司机邀约留待D02",
+    "TC-052": "过点付款立即进入待派单/协调已完成；司机邀约留待D02",
+    "TC-053": "新单读取新N，旧单快照不变",
+    "TC-054": "受控重排仍未实现，属D02后续"
+  },
+  "entrypoints": [
+    "DispatchPlan.snapshot",
+    "DispatchDeadlineService.onPaid",
+    "DispatchDeadlineService.repairMissing",
+    "DispatchDeadlineService.execute",
+    "DispatchDeadlineJob.runOnce"
+  ],
+  "planParameter": "vi.biz.dispatch.lead.minutes",
+  "scanFlag": "VI_DISPATCH_JOBS_ENABLED",
+  "productionDefaultLead": null
+}

@@ -55,6 +55,15 @@
         FOR UPDATE SKIP LOCKED
     </select>
 
+    <select id="selectTypedDueForUpdate" resultMap="ViOutboxMap">
+        SELECT <include refid="cols"/> FROM vi_outbox
+        WHERE status = 'READY' AND event_type = #{eventType}
+          AND next_attempt_at &lt;= #{now,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler}
+        ORDER BY next_attempt_at, id
+        LIMIT #{limit}
+        FOR UPDATE SKIP LOCKED
+    </select>
+
     <update id="claim">
         UPDATE vi_outbox
         SET status = 'PROCESSING', lease_until = #{leaseUntil,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler},

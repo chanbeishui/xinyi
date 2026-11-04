@@ -433,28 +433,46 @@
     "testMethod": "validCallbackConfirmsOnceAndSchedules"
   },
   {
-    "status": "NOT_RUN",
-    "testFiles": [],
-    "evidence": null,
+    "status": "PARTIAL",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/P03JobsIT.java"
+    ],
+    "evidence": "docs/implementation/vehicle/evidence/P03-20261105.json",
     "caseId": "TC-051",
     "taskId": "D02",
-    "testMethod": "test_tc_051"
+    "testMethod": "beforeDueDoesNotDispatchAtDueExactlyOnce",
+    "relatedTasks": [
+      "P03"
+    ],
+    "note": "计划时间/请求已验证，真实司机邀约仍待D02"
   },
   {
-    "status": "NOT_RUN",
-    "testFiles": [],
-    "evidence": null,
+    "status": "PARTIAL",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/P03JobsIT.java"
+    ],
+    "evidence": "docs/implementation/vehicle/evidence/P03-20261105.json",
     "caseId": "TC-052",
     "taskId": "D02",
-    "testMethod": "test_tc_052"
+    "testMethod": "paymentAfterDueImmediatelyRequestsDispatch",
+    "relatedTasks": [
+      "P03"
+    ],
+    "note": "计划时间/请求已验证，真实司机邀约仍待D02"
   },
   {
-    "status": "NOT_RUN",
-    "testFiles": [],
-    "evidence": null,
+    "status": "PASS",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/B03OrderIT.java"
+    ],
+    "evidence": "docs/implementation/vehicle/evidence/P03-20261105.json",
     "caseId": "TC-053",
     "taskId": "D02",
-    "testMethod": "test_tc_053"
+    "testMethod": "派单计划缺配置拒绝且修改参数不追改已有订单",
+    "relatedTasks": [
+      "P03"
+    ],
+    "note": "新单读取新参数且旧单快照不变已验证"
   },
   {
     "status": "NOT_RUN",

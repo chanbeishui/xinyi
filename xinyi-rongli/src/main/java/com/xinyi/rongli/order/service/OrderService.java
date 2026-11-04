@@ -28,6 +28,7 @@ import java.util.*;
 @Service
 public class OrderService {
     private static final String ACTION = "POST /api/app/owner/orders";
+    private final com.xinyi.rongli.jobs.service.DispatchPlan dispatchPlan;
     private final OrderProjection projection;
     private final OrderMapper mapper;
     private final QuoteMapper quoteMapper;
@@ -47,6 +48,7 @@ public class OrderService {
     private final TransactionTemplate tx;
 
     public OrderService(
+            com.xinyi.rongli.jobs.service.DispatchPlan dispatchPlan,
             OrderProjection projection,
             OrderMapper mapper,
             QuoteMapper quoteMapper,
@@ -64,6 +66,7 @@ public class OrderService {
             AuditService audit,
             OutboxService outbox,
             PlatformTransactionManager manager) {
+        this.dispatchPlan = dispatchPlan;
         this.projection = projection;
         this.mapper = mapper;
         this.quoteMapper = quoteMapper;
@@ -233,6 +236,7 @@ public class OrderService {
                                             row.setPayExpiresAt(expires);
                                             row.setTotalFen(quote.getAmountFen());
                                             row.setTermsVersion(input.termsVersion());
+                                            dispatchPlan.snapshot(row);
                                             mapper.insert(row);
                                             var stationView =
                                                     new OwnerOrderView.Station(

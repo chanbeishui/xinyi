@@ -161,3 +161,7 @@ security:
 vi:
   payment:
     reconciliation-enabled: ${VI_PAYMENT_RECONCILIATION_ENABLED:false}
+  jobs:
+    # 计划持久化不依赖扫描开关；启用后才消费到期任务及补偿缺失任务。
+    dispatch-enabled: ${VI_DISPATCH_JOBS_ENABLED:false}
+    dispatch-delay-ms: ${VI_DISPATCH_JOBS_DELAY_MS:5000}
