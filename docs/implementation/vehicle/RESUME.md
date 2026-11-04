@@ -11,3 +11,7 @@ P01已实现官方APIv3 SDK、本人订单预支付、支持性payment-options�
 SQL顺序：原V6.4及20261102_01/02/03 → sql/migration_20261104_01_payment_prepay.sql → 重启后端。备份vi_payment_order，DDL不可重复。隔离库升级/初始化一致；只修正未交易长编号，其余异常报告。原始业务库未修改。部署需私有根密钥与可信HTTPS public-origin；回调闭环尚待P02，不可据P01上线收款。
 
 当前27任务VERIFIED、1 IMPLEMENTED；接口94/292 VERIFIED。B01仍IMPLEMENTED。保留原有Controller迁移，不重置、不推送或部署。
+
+## 已有目录调整记录
+
+2026-11-02 目录调整：用户要求荣利 Controller 迁入 `xinyi-rongli`，当前包名为 `com.xinyi.rongli.<业务>.controller`，后续接口沿用该结构。24 个 Controller 与 1 个辅助类已迁移；干净构建、31 单元、154 集成及 34 工程检查通过。路径映射与验证见 `controller-relocation/report.md`，历史证据保留，任务完成状态不变。测试 JVM 退出超时诊断见报告；本次没有新增实现阻塞。

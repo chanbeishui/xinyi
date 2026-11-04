@@ -4,7 +4,8 @@
 
 本仓库包含 Java 17 Spring Boot 后端和 Vue 3 TypeScript 前端。
 
-- `xinyi-admin/`：后端启动模块，包含控制器和运行配置。
+- `xinyi-admin/`：后端启动模块，包含平台控制器和运行配置。
+- `xinyi-rongli/`：荣利业务模块，Controller、Service、Mapper、实体和 DTO 按业务集中管理；Controller 位于 `com.xinyi.rongli.<业务>.controller`。
 - `xinyi-framework/`：安全、配置、数据源、Web 基础能力。
 - `xinyi-system/`、`xinyi-quartz/`、`xinyi-generator/`、`xinyi-common/`：系统业务、定时任务、代码生成和通用工具。
 - `xinyi-ui/`：Vue 3、Vite、TypeScript、Pinia、Vue Router、Element Plus 前端。
@@ -13,6 +14,15 @@
 - `bin/`：打包、运行等辅助脚本。
 
 Java 代码位于各模块的 `src/main/java`，资源和 MyBatis XML 位于 `src/main/resources`。前端页面在 `xinyi-ui/src/views`，接口封装在 `xinyi-ui/src/api`，组件在 `xinyi-ui/src/components`，静态资源在 `xinyi-ui/src/assets`。
+
+## 后续业务开发目录约定
+
+后续新增、修改和代码生成统一按业务模块集中管理。同一业务的 Controller、Service、Mapper、实体和 DTO 放在所属业务模块内，并按业务域分包。
+
+- 荣利功能统一放在 `xinyi-rongli`，使用 `com.xinyi.rongli.<业务>.controller`、`.service`、`.mapper`、`.domain`、`.dto`；MyBatis XML 放在该模块的 `src/main/resources/mapper/rongli/<业务>/`。
+- `xinyi-admin` 承担启动装配、应用运行配置及既有平台接口；新增荣利 Controller 必须放入所属业务域的 `controller` 包。
+- 依赖方向保持启动模块依赖业务模块，业务模块不得反向依赖 `xinyi-admin`。Controller 负责接口适配，业务规则、数据权限、事务及审计继续在统一 Service 中执行。
+- 任务切片、历史文档或生成模板中的旧 Controller 路径按本约定适配；新增或移动接口时同步当前任务目标及实现映射，历史验证证据保留并提供路径追溯。
 
 ## 构建、测试与本地开发
 

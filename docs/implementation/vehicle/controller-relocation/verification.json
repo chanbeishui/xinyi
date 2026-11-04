@@ -1,0 +1,249 @@
+{
+  "date": "2026-11-02",
+  "runtimeJdk": "21.0.8",
+  "buildExitCode": 0,
+  "cleanBuild": true,
+  "movedControllers": 24,
+  "movedSupportClasses": 1,
+  "businessDomains": [
+    "address",
+    "booking",
+    "capacity",
+    "config",
+    "identity",
+    "owner",
+    "pricing",
+    "scope",
+    "station",
+    "vehicle"
+  ],
+  "layers": {
+    "unit": {
+      "suites": 8,
+      "tests": 31,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "results": [
+        {
+          "suite": "com.xinyi.framework.web.service.TokenServiceTest",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "suite": "com.xinyi.rongli.booking.TencentRouteGatewayTest",
+          "tests": 2,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "suite": "com.xinyi.rongli.platform.IdempotencyMacTest",
+          "tests": 5,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "suite": "com.xinyi.rongli.platform.PlatformPrimitivesTest",
+          "tests": 6,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "suite": "com.xinyi.rongli.platform.SecretGuardTest",
+          "tests": 5,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "suite": "com.xinyi.rongli.pricing.PriceCalculatorTest",
+          "tests": 5,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "suite": "com.xinyi.rongli.pricing.PriceEnvironmentTest",
+          "tests": 2,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "suite": "com.xinyi.system.service.impl.DeptScopeServiceImplTest",
+          "tests": 5,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        }
+      ]
+    },
+    "integration": {
+      "suites": 19,
+      "tests": 154,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "results": [
+        {
+          "suite": "com.xinyi.web.viit.A01VehicleIT",
+          "tests": 7,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "suite": "com.xinyi.web.viit.A02AddressIT",
+          "tests": 7,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "suite": "com.xinyi.web.viit.A03OwnerIT",
+          "tests": 7,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "suite": "com.xinyi.web.viit.B01BookingIT",
+          "tests": 3,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "suite": "com.xinyi.web.viit.B02BookingIT",
+          "tests": 6,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "suite": "com.xinyi.web.viit.C01ConfigIT",
+          "tests": 6,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "suite": "com.xinyi.web.viit.C02StationIT",
+          "tests": 13,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "suite": "com.xinyi.web.viit.C03CapacityIT",
+          "tests": 6,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "suite": "com.xinyi.web.viit.C04LivePricingIT",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "suite": "com.xinyi.web.viit.C04PricingIT",
+          "tests": 14,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "suite": "com.xinyi.web.viit.E06PlatformIT",
+          "tests": 10,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "suite": "com.xinyi.web.viit.E07TestingIT",
+          "tests": 5,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "suite": "com.xinyi.web.viit.E08PlatformIT",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "suite": "com.xinyi.web.viit.I01IdentityIT",
+          "tests": 9,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "suite": "com.xinyi.web.viit.I02IdentityIT",
+          "tests": 9,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "suite": "com.xinyi.web.viit.I03IdentityIT",
+          "tests": 10,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "suite": "com.xinyi.web.viit.I04IdentityIT",
+          "tests": 10,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "suite": "com.xinyi.web.viit.I05IdentityIT",
+          "tests": 20,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "suite": "com.xinyi.web.viit.I06ScopeIT",
+          "tests": 10,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        }
+      ]
+    }
+  },
+  "checks": {
+    "packageOnlyRelocation": true,
+    "apiMappingsResolve": 70,
+    "taskAndApiStatusesPreserved": true,
+    "oldControllerClassesAbsent": true,
+    "rongliJarClassesPresent": 25,
+    "adminBootJarEmbedsRongli": true,
+    "gitDiffCheck": true
+  },
+  "notes": [
+    "初次受限基线遇到Mockito动态附加及本机端口绑定限制，显式启动Mockito javaagent并按工具审批在沙箱外运行后31项基线通过。",
+    "迁移后clean verify退出0，所有测试断言通过；测试JVM退出阶段超过30秒，由Surefire回收。未据此忽略任何失败或跳过测试。",
+    "历史证据和源码摘要保持原样；moves.json记录迁移前后SHA256及路径。",
+    "真实渠道、微信真机、生产部署、独立复核未执行；没有改变主线业务任务状态。"
+  ],
+  "commands": {
+    "baseline": "JAVA_HOME=<JDK21> mvn -o test -DargLine=-javaagent:<local-mockito-core-5.20.0.jar>",
+    "afterRelocation": "JAVA_HOME=<JDK21> VI_PYTHON=<repo>/.vi-local/venv/bin/python VI_REPO_ROOT=<repo> mvn -o clean verify -pl xinyi-admin -am -Pvi-it -Dit.test=E06PlatformIT,E07TestingIT,E08PlatformIT,I01IdentityIT,I02IdentityIT,I03IdentityIT,I04IdentityIT,I05IdentityIT,I06ScopeIT,A02AddressIT,A01VehicleIT,C01ConfigIT,A03OwnerIT,C02StationIT,C03CapacityIT,C04PricingIT,C04LivePricingIT,B01BookingIT,B02BookingIT -DargLine=-javaagent:<local-mockito-core-5.20.0.jar>",
+    "engineering": ".vi-local/venv/bin/python docs/vehicle/V6.4/12_工程执行/engineer.py check --repo ."
+  }
+}

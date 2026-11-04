@@ -1,0 +1,181 @@
+{
+  "date": "2026-11-02",
+  "files": [
+    {
+      "from": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/address/AddressController.java",
+      "to": "xinyi-rongli/src/main/java/com/xinyi/rongli/address/controller/AddressController.java",
+      "beforeSha256": "2666ecde2e0a4ba4daa1225f6a697a5882a7a361c239905aac37559d42b480ce",
+      "afterSha256": "ea102d907acdffbe2ad22c7bc734b0fe418b4aceb06c7fdfc76279c2aafffc64",
+      "onlyPackageDeclarationChanged": true
+    },
+    {
+      "from": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/booking/QuoteController.java",
+      "to": "xinyi-rongli/src/main/java/com/xinyi/rongli/booking/controller/QuoteController.java",
+      "beforeSha256": "09a66dd7102276cc0fe82e888c2e5260c4321fad2ffad8679d31a1441ca1813d",
+      "afterSha256": "52ec0719aba9c0ea1c047bb6711e7d0a211b44387d5413800c12f8165ac2133f",
+      "onlyPackageDeclarationChanged": true
+    },
+    {
+      "from": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/booking/ScheduleController.java",
+      "to": "xinyi-rongli/src/main/java/com/xinyi/rongli/booking/controller/ScheduleController.java",
+      "beforeSha256": "d6a6a367adcd79878dbdee224d6154876cfcaa10eb84f0af58a1d89bc80f7af5",
+      "afterSha256": "39d738a4aaa3e1a2bc275956ef9d4d972f28195055f8fdd915bdd883b3813ff1",
+      "onlyPackageDeclarationChanged": true
+    },
+    {
+      "from": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/capacity/CapacityController.java",
+      "to": "xinyi-rongli/src/main/java/com/xinyi/rongli/capacity/controller/CapacityController.java",
+      "beforeSha256": "d20673080dda7bb8fcef4b9ade6a41e410a174e7fc4b224a9c559c8dfdd77028",
+      "afterSha256": "a108703e296153ebc24da60362dc9a34286e556d585062c660fc368481c71923",
+      "onlyPackageDeclarationChanged": true
+    },
+    {
+      "from": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/config/ConfigAdminController.java",
+      "to": "xinyi-rongli/src/main/java/com/xinyi/rongli/config/controller/ConfigAdminController.java",
+      "beforeSha256": "fdb12438b72fb01e3b65e43ac40fce993cd75ede74382a2d40b280f7d58aa428",
+      "afterSha256": "1771caf41c5ac4a72463700854847649f769fa9fe59908a7ef25bdb2370d68d1",
+      "onlyPackageDeclarationChanged": true
+    },
+    {
+      "from": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/config/DictController.java",
+      "to": "xinyi-rongli/src/main/java/com/xinyi/rongli/config/controller/DictController.java",
+      "beforeSha256": "d8e33d61853f9a0f956e07b4a229c5c859a05d2d5a47dfeb9a4a1a716eacb807",
+      "afterSha256": "0cdbffcb2cbef4330f028f541a4388428bf8abafb4b8aa7bc872b74dc225894a",
+      "onlyPackageDeclarationChanged": true
+    },
+    {
+      "from": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/config/PublicConfigController.java",
+      "to": "xinyi-rongli/src/main/java/com/xinyi/rongli/config/controller/PublicConfigController.java",
+      "beforeSha256": "349b018ba7f06b6b7e1bf8fa28c8f0f829f0d2ce1d4b2ba8206f348bf20118f8",
+      "afterSha256": "e60ef4a45fd71744cd1df89985e09191bc1a2798c91329042e9b099f64e9ff89",
+      "onlyPackageDeclarationChanged": true
+    },
+    {
+      "from": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/identity/EmployeeLinkAdminController.java",
+      "to": "xinyi-rongli/src/main/java/com/xinyi/rongli/identity/controller/EmployeeLinkAdminController.java",
+      "beforeSha256": "b36acc41da5471cd17027b0c63005b7cc809241e7ec038ddfe4e070fd07f88c8",
+      "afterSha256": "2498338f0d8f37791d39bc34f1f70d5e348680d078022289acec177e9f968b37",
+      "onlyPackageDeclarationChanged": true
+    },
+    {
+      "from": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/identity/EmployeeLinkController.java",
+      "to": "xinyi-rongli/src/main/java/com/xinyi/rongli/identity/controller/EmployeeLinkController.java",
+      "beforeSha256": "0b045015d06dd061746498e33b3e20f42bb61df8d920bd409917ee9655023e1a",
+      "afterSha256": "28e110bf4282db48012958c0f1c59c3cf338aa9c4972ce99d5558a528840f473",
+      "onlyPackageDeclarationChanged": true
+    },
+    {
+      "from": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/identity/LoginController.java",
+      "to": "xinyi-rongli/src/main/java/com/xinyi/rongli/identity/controller/LoginController.java",
+      "beforeSha256": "02a63c08db577d06d29a69da27cef40bfe46bc1307755cee57b95f8eb2e48bec",
+      "afterSha256": "8288d8969f34eee99f618606dd9fd990b9294d37eb1ea521734122d73c31c001",
+      "onlyPackageDeclarationChanged": true
+    },
+    {
+      "from": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/identity/OwnerProfileController.java",
+      "to": "xinyi-rongli/src/main/java/com/xinyi/rongli/identity/controller/OwnerProfileController.java",
+      "beforeSha256": "9aab61a6cd4bed75e780fe1a1465baaa30c62eabdf53844c6b001c30e86a0f09",
+      "afterSha256": "8252f920ca28c9d1edc3d6e417110795468e5fe4fecdde8c55433969bb975ec6",
+      "onlyPackageDeclarationChanged": true
+    },
+    {
+      "from": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/identity/PhoneController.java",
+      "to": "xinyi-rongli/src/main/java/com/xinyi/rongli/identity/controller/PhoneController.java",
+      "beforeSha256": "75dbcbbae803dea54fa57439fc87317e5bf34dc0218dc1ca2d3218d46c36ad27",
+      "afterSha256": "d3fdb9929e913686acb555130c96bbc9aee0dd80e2bd19c87362a3576d0602a8",
+      "onlyPackageDeclarationChanged": true
+    },
+    {
+      "from": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/identity/ProfileController.java",
+      "to": "xinyi-rongli/src/main/java/com/xinyi/rongli/identity/controller/ProfileController.java",
+      "beforeSha256": "e31666a2d52d8ed5782e559ae7cb324bab6778e42cf516d6bcbd0d0c48e8b172",
+      "afterSha256": "b04ffcaf228a545b0851c13cb19ab3c14c1f93ce8ba214004edaa3753c51e683",
+      "onlyPackageDeclarationChanged": true
+    },
+    {
+      "from": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/identity/SessionController.java",
+      "to": "xinyi-rongli/src/main/java/com/xinyi/rongli/identity/controller/SessionController.java",
+      "beforeSha256": "369d8a9b52bd69526152e6a95215266c12b44260ee801c138413dfdac9c9037e",
+      "afterSha256": "dd3e9695f1ad4dd35d7c9e324b420ebbe198fd32dcb0454d1cabf11bf9169dcf",
+      "onlyPackageDeclarationChanged": true
+    },
+    {
+      "from": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/identity/SessionSwitchController.java",
+      "to": "xinyi-rongli/src/main/java/com/xinyi/rongli/identity/controller/SessionSwitchController.java",
+      "beforeSha256": "eba397d5e225d5b0d12ad33213e0683700eec677e229171b568521b5d2e0a5e8",
+      "afterSha256": "5c56cccbf6de74bdef3fef23e808fcfa72d88693ce10fdb8a0f99c201c1f2fe0",
+      "onlyPackageDeclarationChanged": true
+    },
+    {
+      "from": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/owner/OwnerAdminController.java",
+      "to": "xinyi-rongli/src/main/java/com/xinyi/rongli/owner/controller/OwnerAdminController.java",
+      "beforeSha256": "e8f2935e273d96d42b81fe9bfee007f20358e126a49773eb19195f2133459bec",
+      "afterSha256": "dce97eeb79f320b68b99e16d1e3ec79496b6e9aa5a4d3d94bc9a3bee6e9a55e7",
+      "onlyPackageDeclarationChanged": true
+    },
+    {
+      "from": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/pricing/PricingController.java",
+      "to": "xinyi-rongli/src/main/java/com/xinyi/rongli/pricing/controller/PricingController.java",
+      "beforeSha256": "8f88c19c1bff354013e978913ba68f31dddb1616bb974f9fbc6131f75f616844",
+      "afterSha256": "156a18fadb9ef0c392746de4cfbaa0bee45157d8675f57471e8c22d2b2e2b3b5",
+      "onlyPackageDeclarationChanged": true
+    },
+    {
+      "from": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/scope/AuthorizedStationController.java",
+      "to": "xinyi-rongli/src/main/java/com/xinyi/rongli/scope/controller/AuthorizedStationController.java",
+      "beforeSha256": "08f95abab30ec966f07caab894f668f6a97ba9691af4acf05047e72769f5220d",
+      "afterSha256": "621e9f4a946709fdd7cc7b4cb6bf1b7400facce72b763874ba16662db4029a56",
+      "onlyPackageDeclarationChanged": true
+    },
+    {
+      "from": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/scope/StationGrantAdminController.java",
+      "to": "xinyi-rongli/src/main/java/com/xinyi/rongli/scope/controller/StationGrantAdminController.java",
+      "beforeSha256": "86209c6b088c4d7dcf4cd707c1079178c10a9088ec9a630957d8c28001f3dbaf",
+      "afterSha256": "afa269e0ad2b60178f2d32cd00eb0da177795aef7f57aad072943e00a4b866bc",
+      "onlyPackageDeclarationChanged": true
+    },
+    {
+      "from": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/station/StationAdminController.java",
+      "to": "xinyi-rongli/src/main/java/com/xinyi/rongli/station/controller/StationAdminController.java",
+      "beforeSha256": "e8efe2fe7ee2fcd8e8b3675d8dffd9b8e83ddea03fb5dbecc8b98b276c590f47",
+      "afterSha256": "b42c9b0bb415e19064da7c52a307abd0eb81687e04386a57c0a7d39aacfd5e32",
+      "onlyPackageDeclarationChanged": true
+    },
+    {
+      "from": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/station/StationCommonController.java",
+      "to": "xinyi-rongli/src/main/java/com/xinyi/rongli/station/controller/StationCommonController.java",
+      "beforeSha256": "090844b5d650a662385f1bde59c34e8452fbf114b3a4d1c6a68f34b751d912a3",
+      "afterSha256": "5ee57ed40c99a18d17cec10d26a10fa4c38b462751999d561ec113867b2d62cd",
+      "onlyPackageDeclarationChanged": true
+    },
+    {
+      "from": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/station/StationInfoController.java",
+      "to": "xinyi-rongli/src/main/java/com/xinyi/rongli/station/controller/StationInfoController.java",
+      "beforeSha256": "6f544c4d36c0e4da0c2bba757a60a430b8adf2a20366c80191bda839612e5874",
+      "afterSha256": "d7602938443fccd7ea558541db958a58cbe4ec3bf64243fc018c97e5c4cbdcce",
+      "onlyPackageDeclarationChanged": true
+    },
+    {
+      "from": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/station/StationWebSupport.java",
+      "to": "xinyi-rongli/src/main/java/com/xinyi/rongli/station/controller/StationWebSupport.java",
+      "beforeSha256": "4ccb3368ae18d13b4e4caa9490bd076096b932f671ca8dd99993edcfa9ac668e",
+      "afterSha256": "802aa7c74f7dd725b2c8c99f2fc496fc0bb8bd0228ff6c6225055f534cf31f1e",
+      "onlyPackageDeclarationChanged": true
+    },
+    {
+      "from": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/vehicle/VehicleAdminController.java",
+      "to": "xinyi-rongli/src/main/java/com/xinyi/rongli/vehicle/controller/VehicleAdminController.java",
+      "beforeSha256": "9e072c1204885589ae1814acef95a3ceda253bf87679391281ffd2fd402f8a28",
+      "afterSha256": "f4cb0432dc59ae0f7158aea1fe7d4528f78ac799dc7be3cfeb10c263a0554ba8",
+      "onlyPackageDeclarationChanged": true
+    },
+    {
+      "from": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/vehicle/VehicleController.java",
+      "to": "xinyi-rongli/src/main/java/com/xinyi/rongli/vehicle/controller/VehicleController.java",
+      "beforeSha256": "90aba8523de49f376fdfe4cc394d5d720028e40a60c2487f5b3327a6e815edf5",
+      "afterSha256": "4f909953a00aa524126de0accc235f2dbc850bf5f58fcee3b396797dc5efc233",
+      "onlyPackageDeclarationChanged": true
+    }
+  ],
+  "historicalEvidence": "历史证据路径与源码摘要保留，使用本映射追溯当前路径。"
+}

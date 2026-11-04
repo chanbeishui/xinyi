@@ -1,7 +1,7 @@
 [
   {
     "implementationStatus": "VERIFIED",
-    "controllerFile": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/identity/LoginController.java",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/identity/controller/LoginController.java",
     "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/identity/service/MiniLoginService.java",
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/identity/ViAccountMapper.xml",
     "testFiles": [
@@ -16,7 +16,7 @@
   },
   {
     "implementationStatus": "VERIFIED",
-    "controllerFile": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/identity/PhoneController.java",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/identity/controller/PhoneController.java",
     "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/identity/service/PhoneBindService.java",
     "mapperFile": null,
     "testFiles": [
@@ -31,7 +31,7 @@
   },
   {
     "implementationStatus": "VERIFIED",
-    "controllerFile": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/identity/PhoneController.java",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/identity/controller/PhoneController.java",
     "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/identity/service/SmsService.java",
     "mapperFile": null,
     "testFiles": [
@@ -46,7 +46,7 @@
   },
   {
     "implementationStatus": "VERIFIED",
-    "controllerFile": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/identity/PhoneController.java",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/identity/controller/PhoneController.java",
     "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/identity/service/SmsService.java",
     "mapperFile": null,
     "testFiles": [
@@ -61,7 +61,7 @@
   },
   {
     "implementationStatus": "VERIFIED",
-    "controllerFile": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/identity/ProfileController.java",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/identity/controller/ProfileController.java",
     "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/identity/service/ProfileService.java",
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/identity/ViAccountMapper.xml",
     "testFiles": [
@@ -76,7 +76,7 @@
   },
   {
     "implementationStatus": "VERIFIED",
-    "controllerFile": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/identity/SessionSwitchController.java",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/identity/controller/SessionSwitchController.java",
     "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/identity/service/SessionSwitchService.java",
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/identity/ViSessionMapper.xml",
     "testFiles": [
@@ -91,7 +91,7 @@
   },
   {
     "implementationStatus": "VERIFIED",
-    "controllerFile": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/identity/SessionSwitchController.java",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/identity/controller/SessionSwitchController.java",
     "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/identity/service/SessionSwitchService.java",
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/identity/ViSessionMapper.xml",
     "testFiles": [
@@ -106,7 +106,7 @@
   },
   {
     "implementationStatus": "VERIFIED",
-    "controllerFile": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/config/DictController.java",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/config/controller/DictController.java",
     "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/config/service/ConfigService.java",
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/config/ConfigMapper.xml",
     "testFiles": [
@@ -121,7 +121,7 @@
   },
   {
     "implementationStatus": "VERIFIED",
-    "controllerFile": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/station/StationCommonController.java",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/station/controller/StationCommonController.java",
     "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/station/service/StationService.java",
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/station/ViStationMapper.xml",
     "testFiles": [
@@ -136,7 +136,7 @@
   },
   {
     "implementationStatus": "VERIFIED",
-    "controllerFile": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/identity/OwnerProfileController.java",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/identity/controller/OwnerProfileController.java",
     "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/identity/service/ProfilePatchService.java",
     "mapperFile": null,
     "testFiles": [
@@ -151,7 +151,7 @@
   },
   {
     "implementationStatus": "VERIFIED",
-    "controllerFile": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/vehicle/VehicleController.java",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/vehicle/controller/VehicleController.java",
     "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/vehicle/service/VehicleService.java",
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/vehicle/ViVehicleMapper.xml",
     "testFiles": [
@@ -166,7 +166,7 @@
   },
   {
     "implementationStatus": "VERIFIED",
-    "controllerFile": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/vehicle/VehicleController.java",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/vehicle/controller/VehicleController.java",
     "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/vehicle/service/VehicleService.java",
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/vehicle/ViVehicleMapper.xml",
     "testFiles": [
@@ -181,7 +181,7 @@
   },
   {
     "implementationStatus": "VERIFIED",
-    "controllerFile": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/vehicle/VehicleController.java",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/vehicle/controller/VehicleController.java",
     "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/vehicle/service/VehicleService.java",
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/vehicle/ViVehicleMapper.xml",
     "testFiles": [
@@ -196,7 +196,7 @@
   },
   {
     "implementationStatus": "VERIFIED",
-    "controllerFile": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/vehicle/VehicleController.java",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/vehicle/controller/VehicleController.java",
     "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/vehicle/service/VehicleService.java",
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/vehicle/ViVehicleMapper.xml",
     "testFiles": [
@@ -211,7 +211,7 @@
   },
   {
     "implementationStatus": "VERIFIED",
-    "controllerFile": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/vehicle/VehicleController.java",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/vehicle/controller/VehicleController.java",
     "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/vehicle/service/VehicleService.java",
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/vehicle/ViVehicleMapper.xml",
     "testFiles": [
@@ -226,7 +226,7 @@
   },
   {
     "implementationStatus": "VERIFIED",
-    "controllerFile": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/address/AddressController.java",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/address/controller/AddressController.java",
     "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/address/service/AddressService.java",
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/address/ViAddressMapper.xml",
     "testFiles": [
@@ -241,7 +241,7 @@
   },
   {
     "implementationStatus": "VERIFIED",
-    "controllerFile": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/address/AddressController.java",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/address/controller/AddressController.java",
     "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/address/service/AddressService.java",
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/address/ViAddressMapper.xml",
     "testFiles": [
@@ -256,7 +256,7 @@
   },
   {
     "implementationStatus": "VERIFIED",
-    "controllerFile": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/address/AddressController.java",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/address/controller/AddressController.java",
     "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/address/service/AddressService.java",
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/address/ViAddressMapper.xml",
     "testFiles": [
@@ -271,7 +271,7 @@
   },
   {
     "implementationStatus": "VERIFIED",
-    "controllerFile": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/address/AddressController.java",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/address/controller/AddressController.java",
     "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/address/service/AddressService.java",
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/address/ViAddressMapper.xml",
     "testFiles": [
@@ -286,7 +286,7 @@
   },
   {
     "implementationStatus": "VERIFIED",
-    "controllerFile": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/address/AddressController.java",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/address/controller/AddressController.java",
     "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/address/service/AddressService.java",
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/address/ViAddressMapper.xml",
     "testFiles": [
@@ -301,7 +301,7 @@
   },
   {
     "implementationStatus": "VERIFIED",
-    "controllerFile": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/booking/ScheduleController.java",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/booking/controller/ScheduleController.java",
     "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/booking/service/ScheduleService.java",
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/booking/ScheduleMapper.xml",
     "testFiles": [
@@ -316,7 +316,7 @@
   },
   {
     "implementationStatus": "VERIFIED",
-    "controllerFile": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/booking/QuoteController.java",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/booking/controller/QuoteController.java",
     "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/booking/service/QuoteService.java",
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/booking/QuoteMapper.xml",
     "testFiles": [
@@ -1042,7 +1042,7 @@
   },
   {
     "implementationStatus": "VERIFIED",
-    "controllerFile": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/capacity/CapacityController.java",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/capacity/controller/CapacityController.java",
     "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/capacity/service/CapacityService.java",
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/capacity/ViQuotaSlotMapper.xml",
     "testFiles": [
@@ -1057,7 +1057,7 @@
   },
   {
     "implementationStatus": "VERIFIED",
-    "controllerFile": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/capacity/CapacityController.java",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/capacity/controller/CapacityController.java",
     "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/capacity/service/CapacityService.java",
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/capacity/ViQuotaSlotMapper.xml",
     "testFiles": [
@@ -1193,7 +1193,7 @@
   },
   {
     "implementationStatus": "VERIFIED",
-    "controllerFile": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/capacity/CapacityController.java",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/capacity/controller/CapacityController.java",
     "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/capacity/service/CapacityService.java",
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/capacity/ViQuotaSlotMapper.xml",
     "testFiles": [
@@ -1208,7 +1208,7 @@
   },
   {
     "implementationStatus": "VERIFIED",
-    "controllerFile": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/capacity/CapacityController.java",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/capacity/controller/CapacityController.java",
     "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/capacity/service/CapacityService.java",
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/capacity/ViQuotaSlotMapper.xml",
     "testFiles": [
@@ -1223,7 +1223,7 @@
   },
   {
     "implementationStatus": "VERIFIED",
-    "controllerFile": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/scope/AuthorizedStationController.java",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/scope/controller/AuthorizedStationController.java",
     "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/scope/service/StationGrantService.java",
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/scope/StationGrantMapper.xml",
     "testFiles": [
@@ -1238,7 +1238,7 @@
   },
   {
     "implementationStatus": "VERIFIED",
-    "controllerFile": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/station/StationInfoController.java",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/station/controller/StationInfoController.java",
     "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/station/service/StationService.java",
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/station/ViStationMapper.xml",
     "testFiles": [
@@ -1253,7 +1253,7 @@
   },
   {
     "implementationStatus": "VERIFIED",
-    "controllerFile": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/station/StationInfoController.java",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/station/controller/StationInfoController.java",
     "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/station/service/StationService.java",
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/station/ViStationMapper.xml",
     "testFiles": [
@@ -1528,7 +1528,7 @@
   },
   {
     "implementationStatus": "VERIFIED",
-    "controllerFile": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/owner/OwnerAdminController.java",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/owner/controller/OwnerAdminController.java",
     "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/owner/service/OwnerAdminService.java",
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/owner/OwnerAdminReadMapper.xml",
     "testFiles": [
@@ -1582,7 +1582,7 @@
   },
   {
     "implementationStatus": "VERIFIED",
-    "controllerFile": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/station/StationAdminController.java",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/station/controller/StationAdminController.java",
     "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/station/service/StationService.java",
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/station/ViStationMapper.xml",
     "testFiles": [
@@ -1597,7 +1597,7 @@
   },
   {
     "implementationStatus": "VERIFIED",
-    "controllerFile": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/station/StationAdminController.java",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/station/controller/StationAdminController.java",
     "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/station/service/StationService.java",
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/station/ViStationMapper.xml",
     "testFiles": [
@@ -1612,7 +1612,7 @@
   },
   {
     "implementationStatus": "VERIFIED",
-    "controllerFile": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/station/StationAdminController.java",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/station/controller/StationAdminController.java",
     "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/station/service/StationService.java",
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/station/ViStationMapper.xml",
     "testFiles": [
@@ -1627,7 +1627,7 @@
   },
   {
     "implementationStatus": "VERIFIED",
-    "controllerFile": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/scope/StationGrantAdminController.java",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/scope/controller/StationGrantAdminController.java",
     "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/scope/service/StationGrantService.java",
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/scope/StationGrantSetMapper.xml",
     "testFiles": [
@@ -1642,7 +1642,7 @@
   },
   {
     "implementationStatus": "VERIFIED",
-    "controllerFile": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/scope/StationGrantAdminController.java",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/scope/controller/StationGrantAdminController.java",
     "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/scope/service/StationGrantService.java",
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/scope/StationGrantSetMapper.xml",
     "testFiles": [
@@ -1657,7 +1657,7 @@
   },
   {
     "implementationStatus": "VERIFIED",
-    "controllerFile": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/scope/StationGrantAdminController.java",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/scope/controller/StationGrantAdminController.java",
     "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/scope/service/StationGrantService.java",
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/scope/StationGrantSetMapper.xml",
     "testFiles": [
@@ -1672,7 +1672,7 @@
   },
   {
     "implementationStatus": "VERIFIED",
-    "controllerFile": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/pricing/PricingController.java",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/pricing/controller/PricingController.java",
     "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/pricing/service/PricingService.java",
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/pricing/ViPriceRuleMapper.xml",
     "testFiles": [
@@ -1689,7 +1689,7 @@
   },
   {
     "implementationStatus": "VERIFIED",
-    "controllerFile": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/pricing/PricingController.java",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/pricing/controller/PricingController.java",
     "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/pricing/service/PricingService.java",
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/pricing/ViPriceRuleMapper.xml",
     "testFiles": [
@@ -1706,7 +1706,7 @@
   },
   {
     "implementationStatus": "VERIFIED",
-    "controllerFile": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/pricing/PricingController.java",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/pricing/controller/PricingController.java",
     "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/pricing/service/PricingService.java",
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/pricing/ViPriceRuleMapper.xml",
     "testFiles": [
@@ -1723,7 +1723,7 @@
   },
   {
     "implementationStatus": "VERIFIED",
-    "controllerFile": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/pricing/PricingController.java",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/pricing/controller/PricingController.java",
     "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/pricing/service/PricingService.java",
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/pricing/ViPriceRuleMapper.xml",
     "testFiles": [
@@ -1740,7 +1740,7 @@
   },
   {
     "implementationStatus": "VERIFIED",
-    "controllerFile": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/pricing/PricingController.java",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/pricing/controller/PricingController.java",
     "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/pricing/service/PricingService.java",
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/pricing/ViPriceRuleMapper.xml",
     "testFiles": [
@@ -1757,7 +1757,7 @@
   },
   {
     "implementationStatus": "VERIFIED",
-    "controllerFile": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/pricing/PricingController.java",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/pricing/controller/PricingController.java",
     "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/pricing/service/PricingService.java",
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/pricing/ViPriceRuleMapper.xml",
     "testFiles": [
@@ -1982,7 +1982,7 @@
   },
   {
     "implementationStatus": "VERIFIED",
-    "controllerFile": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/config/ConfigAdminController.java",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/config/controller/ConfigAdminController.java",
     "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/config/service/ConfigService.java",
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/config/ConfigMapper.xml",
     "testFiles": [
@@ -1997,7 +1997,7 @@
   },
   {
     "implementationStatus": "VERIFIED",
-    "controllerFile": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/config/ConfigAdminController.java",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/config/controller/ConfigAdminController.java",
     "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/config/service/ConfigService.java",
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/config/ConfigMapper.xml",
     "testFiles": [
@@ -2298,7 +2298,7 @@
   },
   {
     "implementationStatus": "VERIFIED",
-    "controllerFile": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/vehicle/VehicleAdminController.java",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/vehicle/controller/VehicleAdminController.java",
     "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/vehicle/service/VehicleAdminService.java",
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/vehicle/ViVehicleMapper.xml",
     "testFiles": [
@@ -2313,7 +2313,7 @@
   },
   {
     "implementationStatus": "VERIFIED",
-    "controllerFile": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/vehicle/VehicleAdminController.java",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/vehicle/controller/VehicleAdminController.java",
     "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/vehicle/service/VehicleAdminService.java",
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/vehicle/ViVehicleMapper.xml",
     "testFiles": [
@@ -2328,7 +2328,7 @@
   },
   {
     "implementationStatus": "VERIFIED",
-    "controllerFile": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/vehicle/VehicleAdminController.java",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/vehicle/controller/VehicleAdminController.java",
     "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/vehicle/service/VehicleAdminService.java",
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/vehicle/ViVehicleMapper.xml",
     "testFiles": [
@@ -2343,7 +2343,7 @@
   },
   {
     "implementationStatus": "VERIFIED",
-    "controllerFile": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/owner/OwnerAdminController.java",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/owner/controller/OwnerAdminController.java",
     "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/owner/service/OwnerAdminService.java",
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/owner/OwnerAdminReadMapper.xml",
     "testFiles": [
@@ -2358,7 +2358,7 @@
   },
   {
     "implementationStatus": "VERIFIED",
-    "controllerFile": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/owner/OwnerAdminController.java",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/owner/controller/OwnerAdminController.java",
     "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/owner/service/OwnerAdminService.java",
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/owner/OwnerAdminReadMapper.xml",
     "testFiles": [
@@ -2399,7 +2399,7 @@
   },
   {
     "implementationStatus": "VERIFIED",
-    "controllerFile": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/vehicle/VehicleAdminController.java",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/vehicle/controller/VehicleAdminController.java",
     "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/vehicle/service/VehicleAdminService.java",
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/vehicle/ViVehicleMapper.xml",
     "testFiles": [
@@ -2414,7 +2414,7 @@
   },
   {
     "implementationStatus": "VERIFIED",
-    "controllerFile": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/vehicle/VehicleAdminController.java",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/vehicle/controller/VehicleAdminController.java",
     "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/vehicle/service/VehicleAdminService.java",
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/vehicle/ViVehicleMapper.xml",
     "testFiles": [
@@ -2429,7 +2429,7 @@
   },
   {
     "implementationStatus": "VERIFIED",
-    "controllerFile": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/owner/OwnerAdminController.java",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/owner/controller/OwnerAdminController.java",
     "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/owner/service/OwnerAdminService.java",
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/owner/OwnerAdminReadMapper.xml",
     "testFiles": [
@@ -2444,7 +2444,7 @@
   },
   {
     "implementationStatus": "VERIFIED",
-    "controllerFile": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/owner/OwnerAdminController.java",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/owner/controller/OwnerAdminController.java",
     "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/owner/service/OwnerAdminService.java",
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/owner/OwnerAdminReadMapper.xml",
     "testFiles": [
@@ -2810,7 +2810,7 @@
   },
   {
     "implementationStatus": "VERIFIED",
-    "controllerFile": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/identity/SessionController.java",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/identity/controller/SessionController.java",
     "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/identity/service/MiniSessionService.java",
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/identity/ViSessionTokenMapper.xml",
     "testFiles": [
@@ -2825,7 +2825,7 @@
   },
   {
     "implementationStatus": "VERIFIED",
-    "controllerFile": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/identity/SessionController.java",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/identity/controller/SessionController.java",
     "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/identity/service/MiniSessionService.java",
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/identity/ViSessionMapper.xml",
     "testFiles": [
@@ -2840,7 +2840,7 @@
   },
   {
     "implementationStatus": "VERIFIED",
-    "controllerFile": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/identity/SessionController.java",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/identity/controller/SessionController.java",
     "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/identity/service/MiniSessionService.java",
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/identity/ViSessionMapper.xml",
     "testFiles": [
@@ -3310,7 +3310,7 @@
   },
   {
     "implementationStatus": "VERIFIED",
-    "controllerFile": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/config/PublicConfigController.java",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/config/controller/PublicConfigController.java",
     "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/config/service/ConfigService.java",
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/config/ConfigMapper.xml",
     "testFiles": [
@@ -3325,7 +3325,7 @@
   },
   {
     "implementationStatus": "VERIFIED",
-    "controllerFile": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/identity/EmployeeLinkController.java",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/identity/controller/EmployeeLinkController.java",
     "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/identity/service/EmployeeLinkService.java",
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/identity/ViEmployeeBindingMapper.xml",
     "testFiles": [
@@ -3340,7 +3340,7 @@
   },
   {
     "implementationStatus": "VERIFIED",
-    "controllerFile": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/identity/EmployeeLinkController.java",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/identity/controller/EmployeeLinkController.java",
     "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/identity/service/EmployeeLinkService.java",
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/identity/ViEmployeeBindingMapper.xml",
     "testFiles": [
@@ -3355,7 +3355,7 @@
   },
   {
     "implementationStatus": "VERIFIED",
-    "controllerFile": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/identity/PhoneController.java",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/identity/controller/PhoneController.java",
     "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/identity/service/PhoneBindService.java",
     "mapperFile": null,
     "testFiles": [
@@ -3370,7 +3370,7 @@
   },
   {
     "implementationStatus": "VERIFIED",
-    "controllerFile": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/identity/EmployeeLinkAdminController.java",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/identity/controller/EmployeeLinkAdminController.java",
     "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/identity/service/EmployeeLinkAdminService.java",
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/identity/ViEmployeeBindingMapper.xml",
     "testFiles": [
@@ -3385,7 +3385,7 @@
   },
   {
     "implementationStatus": "VERIFIED",
-    "controllerFile": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/identity/EmployeeLinkAdminController.java",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/identity/controller/EmployeeLinkAdminController.java",
     "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/identity/service/EmployeeLinkAdminService.java",
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/identity/ViEmployeeBindingMapper.xml",
     "testFiles": [
@@ -3400,7 +3400,7 @@
   },
   {
     "implementationStatus": "VERIFIED",
-    "controllerFile": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/identity/EmployeeLinkAdminController.java",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/identity/controller/EmployeeLinkAdminController.java",
     "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/identity/service/EmployeeLinkAdminService.java",
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/identity/ViEmployeeBindingMapper.xml",
     "testFiles": [
@@ -3415,7 +3415,7 @@
   },
   {
     "implementationStatus": "VERIFIED",
-    "controllerFile": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/identity/EmployeeLinkAdminController.java",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/identity/controller/EmployeeLinkAdminController.java",
     "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/identity/service/EmployeeLinkAdminService.java",
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/identity/ViEmployeeBindingMapper.xml",
     "testFiles": [
@@ -3430,7 +3430,7 @@
   },
   {
     "implementationStatus": "VERIFIED",
-    "controllerFile": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/identity/EmployeeLinkAdminController.java",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/identity/controller/EmployeeLinkAdminController.java",
     "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/identity/service/EmployeeLinkAdminService.java",
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/identity/ViEmployeeBindingMapper.xml",
     "testFiles": [
@@ -3940,7 +3940,7 @@
   },
   {
     "implementationStatus": "VERIFIED",
-    "controllerFile": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/capacity/CapacityController.java",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/capacity/controller/CapacityController.java",
     "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/capacity/service/CapacityService.java",
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/capacity/ViQuotaSlotMapper.xml",
     "testFiles": [
@@ -3955,7 +3955,7 @@
   },
   {
     "implementationStatus": "VERIFIED",
-    "controllerFile": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/pricing/PricingController.java",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/pricing/controller/PricingController.java",
     "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/pricing/service/PricingService.java",
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/pricing/ViPriceRuleMapper.xml",
     "testFiles": [
@@ -3972,7 +3972,7 @@
   },
   {
     "implementationStatus": "VERIFIED",
-    "controllerFile": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/pricing/PricingController.java",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/pricing/controller/PricingController.java",
     "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/pricing/service/PricingService.java",
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/pricing/ViPriceRuleMapper.xml",
     "testFiles": [
@@ -3989,7 +3989,7 @@
   },
   {
     "implementationStatus": "VERIFIED",
-    "controllerFile": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/pricing/PricingController.java",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/pricing/controller/PricingController.java",
     "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/pricing/service/PricingService.java",
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/pricing/ViPriceRuleMapper.xml",
     "testFiles": [
@@ -4011,7 +4011,7 @@
     "summary": "按本次资料查询可服务站点，由车主明确选择",
     "taskId": "B02",
     "implementationStatus": "VERIFIED",
-    "controllerFile": "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/booking/QuoteController.java",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/booking/controller/QuoteController.java",
     "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/booking/service/QuoteService.java",
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/booking/QuoteMapper.xml",
     "testFiles": [

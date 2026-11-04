@@ -772,7 +772,7 @@
     "code_paths": [
       "xinyi-rongli/src/main/java/com/xinyi/rongli/identity/",
       "xinyi-rongli/src/main/resources/mapper/rongli/identity/",
-      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/identity/",
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/identity/controller/",
       "xinyi-ui/src/views/rongli/identity/",
       "xinyi-ui/src/api/rongli/identity.ts",
       "xinyi-miniapp/src/features/identity/"
@@ -872,7 +872,7 @@
     "code_paths": [
       "xinyi-rongli/src/main/java/com/xinyi/rongli/identity/",
       "xinyi-rongli/src/main/resources/mapper/rongli/identity/",
-      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/identity/",
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/identity/controller/",
       "xinyi-ui/src/views/rongli/identity/",
       "xinyi-ui/src/api/rongli/identity.ts",
       "xinyi-miniapp/src/features/identity/"
@@ -955,7 +955,7 @@
     "code_paths": [
       "xinyi-rongli/src/main/java/com/xinyi/rongli/identity/",
       "xinyi-rongli/src/main/resources/mapper/rongli/identity/",
-      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/identity/",
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/identity/controller/",
       "xinyi-ui/src/views/rongli/identity/",
       "xinyi-ui/src/api/rongli/identity.ts",
       "xinyi-miniapp/src/features/identity/"
@@ -1047,7 +1047,7 @@
     "code_paths": [
       "xinyi-rongli/src/main/java/com/xinyi/rongli/identity/",
       "xinyi-rongli/src/main/resources/mapper/rongli/identity/",
-      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/identity/",
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/identity/controller/",
       "xinyi-ui/src/views/rongli/identity/",
       "xinyi-ui/src/api/rongli/identity.ts",
       "xinyi-miniapp/src/features/identity/"
@@ -1175,7 +1175,7 @@
     "code_paths": [
       "xinyi-rongli/src/main/java/com/xinyi/rongli/identity/",
       "xinyi-rongli/src/main/resources/mapper/rongli/identity/",
-      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/identity/",
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/identity/controller/",
       "xinyi-ui/src/views/rongli/identity/",
       "xinyi-ui/src/api/rongli/identity.ts",
       "xinyi-miniapp/src/features/identity/"
@@ -1277,7 +1277,7 @@
     "code_paths": [
       "xinyi-rongli/src/main/java/com/xinyi/rongli/scope/",
       "xinyi-rongli/src/main/resources/mapper/rongli/scope/",
-      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/scope/",
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/scope/controller/",
       "xinyi-ui/src/views/rongli/scope/",
       "xinyi-ui/src/api/rongli/scope.ts",
       "xinyi-miniapp/src/features/scope/"
@@ -1376,7 +1376,7 @@
     "code_paths": [
       "xinyi-rongli/src/main/java/com/xinyi/rongli/vehicle/",
       "xinyi-rongli/src/main/resources/mapper/rongli/vehicle/",
-      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/vehicle/",
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/vehicle/controller/",
       "xinyi-ui/src/views/rongli/vehicle/",
       "xinyi-ui/src/api/rongli/vehicle.ts",
       "xinyi-miniapp/src/features/vehicle/"
@@ -1448,7 +1448,7 @@
     "code_paths": [
       "xinyi-rongli/src/main/java/com/xinyi/rongli/address/",
       "xinyi-rongli/src/main/resources/mapper/rongli/address/",
-      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/address/",
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/address/controller/",
       "xinyi-ui/src/views/rongli/address/",
       "xinyi-ui/src/api/rongli/address.ts",
       "xinyi-miniapp/src/features/address/"
@@ -1527,7 +1527,7 @@
     "code_paths": [
       "xinyi-rongli/src/main/java/com/xinyi/rongli/owner/",
       "xinyi-rongli/src/main/resources/mapper/rongli/owner/",
-      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/owner/",
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/owner/controller/",
       "xinyi-ui/src/views/rongli/owner/",
       "xinyi-ui/src/api/rongli/owner.ts",
       "xinyi-miniapp/src/features/owner/"
@@ -1606,7 +1606,7 @@
     "code_paths": [
       "xinyi-rongli/src/main/java/com/xinyi/rongli/driver/",
       "xinyi-rongli/src/main/resources/mapper/rongli/driver/",
-      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/driver/",
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/driver/controller/",
       "xinyi-ui/src/views/rongli/driver/",
       "xinyi-ui/src/api/rongli/driver.ts",
       "xinyi-miniapp/src/features/driver/"
@@ -1674,7 +1674,7 @@
     "code_paths": [
       "xinyi-rongli/src/main/java/com/xinyi/rongli/config/",
       "xinyi-rongli/src/main/resources/mapper/rongli/config/",
-      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/config/",
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/config/controller/",
       "xinyi-ui/src/views/rongli/config/",
       "xinyi-ui/src/api/rongli/config.ts",
       "xinyi-miniapp/src/features/config/"
@@ -1782,7 +1782,7 @@
     "code_paths": [
       "xinyi-rongli/src/main/java/com/xinyi/rongli/station/",
       "xinyi-rongli/src/main/resources/mapper/rongli/station/",
-      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/station/",
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/station/controller/",
       "xinyi-ui/src/views/rongli/station/",
       "xinyi-ui/src/api/rongli/station.ts",
       "xinyi-miniapp/src/features/station/"
@@ -1874,7 +1874,7 @@
     "code_paths": [
       "xinyi-rongli/src/main/java/com/xinyi/rongli/capacity/",
       "xinyi-rongli/src/main/resources/mapper/rongli/capacity/",
-      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/capacity/",
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/capacity/controller/",
       "xinyi-ui/src/views/rongli/capacity/",
       "xinyi-ui/src/api/rongli/capacity.ts",
       "xinyi-miniapp/src/features/capacity/"
@@ -1959,7 +1959,7 @@
     "code_paths": [
       "xinyi-rongli/src/main/java/com/xinyi/rongli/pricing/",
       "xinyi-rongli/src/main/resources/mapper/rongli/pricing/",
-      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/pricing/",
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/pricing/controller/",
       "xinyi-ui/src/views/rongli/pricing/",
       "xinyi-ui/src/api/rongli/pricing.ts"
     ],
@@ -2038,7 +2038,7 @@
     "code_paths": [
       "xinyi-rongli/src/main/java/com/xinyi/rongli/driverfee/",
       "xinyi-rongli/src/main/resources/mapper/rongli/driverfee/",
-      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/driverfee/",
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/driverfee/controller/",
       "xinyi-ui/src/views/rongli/driverfee/",
       "xinyi-ui/src/api/rongli/driverfee.ts",
       "xinyi-miniapp/src/features/driverfee/"
@@ -2116,7 +2116,7 @@
     "code_paths": [
       "xinyi-rongli/src/main/java/com/xinyi/rongli/qualification/",
       "xinyi-rongli/src/main/resources/mapper/rongli/qualification/",
-      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/qualification/",
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/qualification/controller/",
       "xinyi-ui/src/views/rongli/qualification/",
       "xinyi-ui/src/api/rongli/qualification.ts",
       "xinyi-miniapp/src/features/qualification/"
@@ -2194,7 +2194,7 @@
     "code_paths": [
       "xinyi-rongli/src/main/java/com/xinyi/rongli/training/",
       "xinyi-rongli/src/main/resources/mapper/rongli/training/",
-      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/training/",
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/training/controller/",
       "xinyi-ui/src/views/rongli/training/",
       "xinyi-ui/src/api/rongli/training.ts",
       "xinyi-miniapp/src/features/training/"
@@ -2273,7 +2273,7 @@
     "code_paths": [
       "xinyi-rongli/src/main/java/com/xinyi/rongli/training/",
       "xinyi-rongli/src/main/resources/mapper/rongli/training/",
-      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/training/",
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/training/controller/",
       "xinyi-ui/src/views/rongli/training/",
       "xinyi-ui/src/api/rongli/training.ts",
       "xinyi-miniapp/src/features/training/"
@@ -2338,7 +2338,7 @@
     "code_paths": [
       "xinyi-rongli/src/main/java/com/xinyi/rongli/verification/",
       "xinyi-rongli/src/main/resources/mapper/rongli/verification/",
-      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/verification/",
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/verification/controller/",
       "xinyi-ui/src/views/rongli/verification/",
       "xinyi-ui/src/api/rongli/verification.ts",
       "xinyi-miniapp/src/features/verification/"
@@ -2404,7 +2404,7 @@
     "code_paths": [
       "xinyi-rongli/src/main/java/com/xinyi/rongli/qualification/",
       "xinyi-rongli/src/main/resources/mapper/rongli/qualification/",
-      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/qualification/",
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/qualification/controller/",
       "xinyi-ui/src/views/rongli/qualification/",
       "xinyi-ui/src/api/rongli/qualification.ts",
       "xinyi-miniapp/src/features/qualification/"
@@ -2496,7 +2496,7 @@
     "code_paths": [
       "xinyi-rongli/src/main/java/com/xinyi/rongli/booking/",
       "xinyi-rongli/src/main/resources/mapper/rongli/booking/",
-      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/booking/",
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/booking/controller/",
       "xinyi-ui/src/views/rongli/booking/",
       "xinyi-ui/src/api/rongli/booking.ts",
       "xinyi-miniapp/src/features/booking/"
@@ -2568,7 +2568,7 @@
     "code_paths": [
       "xinyi-rongli/src/main/java/com/xinyi/rongli/booking/",
       "xinyi-rongli/src/main/resources/mapper/rongli/booking/",
-      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/booking/",
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/booking/controller/",
       "xinyi-ui/src/views/rongli/booking/",
       "xinyi-ui/src/api/rongli/booking.ts",
       "xinyi-miniapp/src/features/booking/"
@@ -2922,7 +2922,7 @@
     "code_paths": [
       "xinyi-rongli/src/main/java/com/xinyi/rongli/payment/",
       "xinyi-rongli/src/main/resources/mapper/rongli/payment/",
-      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/payment/",
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/payment/controller/",
       "xinyi-ui/src/views/rongli/payment/",
       "xinyi-ui/src/api/rongli/payment.ts",
       "xinyi-miniapp/src/features/payment/"
@@ -2999,7 +2999,7 @@
     "code_paths": [
       "xinyi-rongli/src/main/java/com/xinyi/rongli/refund/",
       "xinyi-rongli/src/main/resources/mapper/rongli/refund/",
-      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/refund/",
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/refund/controller/",
       "xinyi-ui/src/views/rongli/refund/",
       "xinyi-ui/src/api/rongli/refund.ts",
       "xinyi-miniapp/src/features/refund/"
@@ -3128,7 +3128,7 @@
     "code_paths": [
       "xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/",
       "xinyi-rongli/src/main/resources/mapper/rongli/dispatch/",
-      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/dispatch/",
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/controller/",
       "xinyi-ui/src/views/rongli/dispatch/",
       "xinyi-ui/src/api/rongli/dispatch.ts",
       "xinyi-miniapp/src/features/dispatch/"
@@ -3274,7 +3274,7 @@
     "code_paths": [
       "xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/",
       "xinyi-rongli/src/main/resources/mapper/rongli/dispatch/",
-      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/dispatch/",
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/controller/",
       "xinyi-ui/src/views/rongli/dispatch/",
       "xinyi-ui/src/api/rongli/dispatch.ts",
       "xinyi-miniapp/src/features/dispatch/"
@@ -3341,7 +3341,7 @@
     "code_paths": [
       "xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/",
       "xinyi-rongli/src/main/resources/mapper/rongli/dispatch/",
-      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/dispatch/",
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/controller/",
       "xinyi-ui/src/views/rongli/dispatch/",
       "xinyi-ui/src/api/rongli/dispatch.ts",
       "xinyi-miniapp/src/features/dispatch/"
@@ -3410,7 +3410,7 @@
     "code_paths": [
       "xinyi-rongli/src/main/java/com/xinyi/rongli/fulfillment/",
       "xinyi-rongli/src/main/resources/mapper/rongli/fulfillment/",
-      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/fulfillment/",
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/fulfillment/controller/",
       "xinyi-ui/src/views/rongli/fulfillment/",
       "xinyi-ui/src/api/rongli/fulfillment.ts",
       "xinyi-miniapp/src/features/fulfillment/"
@@ -3492,7 +3492,7 @@
     "code_paths": [
       "xinyi-rongli/src/main/java/com/xinyi/rongli/fulfillment/",
       "xinyi-rongli/src/main/resources/mapper/rongli/fulfillment/",
-      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/fulfillment/",
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/fulfillment/controller/",
       "xinyi-ui/src/views/rongli/fulfillment/",
       "xinyi-ui/src/api/rongli/fulfillment.ts",
       "xinyi-miniapp/src/features/fulfillment/"
@@ -3568,7 +3568,7 @@
     "code_paths": [
       "xinyi-rongli/src/main/java/com/xinyi/rongli/penalty/",
       "xinyi-rongli/src/main/resources/mapper/rongli/penalty/",
-      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/penalty/",
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/penalty/controller/",
       "xinyi-ui/src/views/rongli/penalty/",
       "xinyi-ui/src/api/rongli/penalty.ts",
       "xinyi-miniapp/src/features/penalty/"
@@ -3632,7 +3632,7 @@
     "code_paths": [
       "xinyi-rongli/src/main/java/com/xinyi/rongli/file/",
       "xinyi-rongli/src/main/resources/mapper/rongli/file/",
-      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/file/",
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/file/controller/",
       "xinyi-ui/src/views/rongli/file/",
       "xinyi-ui/src/api/rongli/file.ts",
       "xinyi-miniapp/src/features/file/"
@@ -3708,7 +3708,7 @@
     "code_paths": [
       "xinyi-rongli/src/main/java/com/xinyi/rongli/evidence/",
       "xinyi-rongli/src/main/resources/mapper/rongli/evidence/",
-      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/evidence/",
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/evidence/controller/",
       "xinyi-ui/src/views/rongli/evidence/",
       "xinyi-ui/src/api/rongli/evidence.ts",
       "xinyi-miniapp/src/features/evidence/"
@@ -3789,7 +3789,7 @@
     "code_paths": [
       "xinyi-rongli/src/main/java/com/xinyi/rongli/handover/",
       "xinyi-rongli/src/main/resources/mapper/rongli/handover/",
-      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/handover/",
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/handover/controller/",
       "xinyi-ui/src/views/rongli/handover/",
       "xinyi-ui/src/api/rongli/handover.ts",
       "xinyi-miniapp/src/features/handover/"
@@ -3864,7 +3864,7 @@
     "code_paths": [
       "xinyi-rongli/src/main/java/com/xinyi/rongli/inspection/",
       "xinyi-rongli/src/main/resources/mapper/rongli/inspection/",
-      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/inspection/",
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/inspection/controller/",
       "xinyi-ui/src/views/rongli/inspection/",
       "xinyi-ui/src/api/rongli/inspection.ts",
       "xinyi-miniapp/src/features/inspection/"
@@ -3979,7 +3979,7 @@
     "code_paths": [
       "xinyi-rongli/src/main/java/com/xinyi/rongli/inspection/",
       "xinyi-rongli/src/main/resources/mapper/rongli/inspection/",
-      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/inspection/",
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/inspection/controller/",
       "xinyi-ui/src/views/rongli/inspection/",
       "xinyi-ui/src/api/rongli/inspection.ts",
       "xinyi-miniapp/src/features/inspection/"
@@ -4115,7 +4115,7 @@
     "code_paths": [
       "xinyi-rongli/src/main/java/com/xinyi/rongli/aftersale/",
       "xinyi-rongli/src/main/resources/mapper/rongli/aftersale/",
-      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/aftersale/",
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/aftersale/controller/",
       "xinyi-ui/src/views/rongli/aftersale/",
       "xinyi-ui/src/api/rongli/aftersale.ts",
       "xinyi-miniapp/src/features/aftersale/"
@@ -4211,7 +4211,7 @@
     "code_paths": [
       "xinyi-rongli/src/main/java/com/xinyi/rongli/aftersale/",
       "xinyi-rongli/src/main/resources/mapper/rongli/aftersale/",
-      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/aftersale/",
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/aftersale/controller/",
       "xinyi-ui/src/views/rongli/aftersale/",
       "xinyi-ui/src/api/rongli/aftersale.ts",
       "xinyi-miniapp/src/features/aftersale/"
@@ -4363,7 +4363,7 @@
     "code_paths": [
       "xinyi-rongli/src/main/java/com/xinyi/rongli/support/",
       "xinyi-rongli/src/main/resources/mapper/rongli/support/",
-      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/support/",
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/support/controller/",
       "xinyi-ui/src/views/rongli/support/",
       "xinyi-ui/src/api/rongli/support.ts",
       "xinyi-miniapp/src/features/support/"
@@ -4450,7 +4450,7 @@
     "code_paths": [
       "xinyi-rongli/src/main/java/com/xinyi/rongli/review/",
       "xinyi-rongli/src/main/resources/mapper/rongli/review/",
-      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/review/",
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/review/controller/",
       "xinyi-ui/src/views/rongli/review/",
       "xinyi-ui/src/api/rongli/review.ts",
       "xinyi-miniapp/src/features/review/"
@@ -4536,7 +4536,7 @@
     "code_paths": [
       "xinyi-rongli/src/main/java/com/xinyi/rongli/notification/",
       "xinyi-rongli/src/main/resources/mapper/rongli/notification/",
-      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/notification/",
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/notification/controller/",
       "xinyi-ui/src/views/rongli/notification/",
       "xinyi-ui/src/api/rongli/notification.ts",
       "xinyi-miniapp/src/features/notification/"
@@ -4623,7 +4623,7 @@
     "code_paths": [
       "xinyi-rongli/src/main/java/com/xinyi/rongli/privacy/",
       "xinyi-rongli/src/main/resources/mapper/rongli/privacy/",
-      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/privacy/",
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/privacy/controller/",
       "xinyi-ui/src/views/rongli/privacy/",
       "xinyi-ui/src/api/rongli/privacy.ts",
       "xinyi-miniapp/src/features/privacy/"
@@ -4699,7 +4699,7 @@
     "code_paths": [
       "xinyi-rongli/src/main/java/com/xinyi/rongli/governance/",
       "xinyi-rongli/src/main/resources/mapper/rongli/governance/",
-      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/governance/",
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/governance/controller/",
       "xinyi-ui/src/views/rongli/governance/",
       "xinyi-ui/src/api/rongli/governance.ts",
       "xinyi-miniapp/src/features/governance/"
@@ -4761,7 +4761,7 @@
     "code_paths": [
       "xinyi-rongli/src/main/java/com/xinyi/rongli/driverfee/",
       "xinyi-rongli/src/main/resources/mapper/rongli/driverfee/",
-      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/driverfee/",
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/driverfee/controller/",
       "xinyi-ui/src/views/rongli/driverfee/",
       "xinyi-ui/src/api/rongli/driverfee.ts",
       "xinyi-miniapp/src/features/driverfee/"
@@ -4871,7 +4871,7 @@
     "code_paths": [
       "xinyi-rongli/src/main/java/com/xinyi/rongli/statement/",
       "xinyi-rongli/src/main/resources/mapper/rongli/statement/",
-      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/statement/",
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/statement/controller/",
       "xinyi-ui/src/views/rongli/statement/",
       "xinyi-ui/src/api/rongli/statement.ts",
       "xinyi-miniapp/src/features/statement/"
@@ -4995,7 +4995,7 @@
     "code_paths": [
       "xinyi-rongli/src/main/java/com/xinyi/rongli/statement/",
       "xinyi-rongli/src/main/resources/mapper/rongli/statement/",
-      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/statement/",
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/statement/controller/",
       "xinyi-ui/src/views/rongli/statement/",
       "xinyi-ui/src/api/rongli/statement.ts",
       "xinyi-miniapp/src/features/statement/"
@@ -5078,7 +5078,7 @@
     "code_paths": [
       "xinyi-rongli/src/main/java/com/xinyi/rongli/statement/",
       "xinyi-rongli/src/main/resources/mapper/rongli/statement/",
-      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/statement/",
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/statement/controller/",
       "xinyi-ui/src/views/rongli/statement/",
       "xinyi-ui/src/api/rongli/statement.ts",
       "xinyi-miniapp/src/features/statement/"
@@ -5143,7 +5143,7 @@
     "code_paths": [
       "xinyi-rongli/src/main/java/com/xinyi/rongli/adjustment/",
       "xinyi-rongli/src/main/resources/mapper/rongli/adjustment/",
-      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/adjustment/",
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/adjustment/controller/",
       "xinyi-ui/src/views/rongli/adjustment/",
       "xinyi-ui/src/api/rongli/adjustment.ts",
       "xinyi-miniapp/src/features/adjustment/"
@@ -5235,7 +5235,7 @@
     "code_paths": [
       "xinyi-rongli/src/main/java/com/xinyi/rongli/externalpayment/",
       "xinyi-rongli/src/main/resources/mapper/rongli/externalpayment/",
-      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/externalpayment/",
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/externalpayment/controller/",
       "xinyi-ui/src/views/rongli/externalpayment/",
       "xinyi-ui/src/api/rongli/externalpayment.ts",
       "xinyi-miniapp/src/features/externalpayment/"
@@ -5301,7 +5301,7 @@
     "code_paths": [
       "xinyi-rongli/src/main/java/com/xinyi/rongli/operations/",
       "xinyi-rongli/src/main/resources/mapper/rongli/operations/",
-      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/operations/",
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/operations/controller/",
       "xinyi-ui/src/views/rongli/operations/",
       "xinyi-ui/src/api/rongli/operations.ts",
       "xinyi-miniapp/src/features/operations/"
@@ -5362,7 +5362,7 @@
     "code_paths": [
       "xinyi-rongli/src/main/java/com/xinyi/rongli/jobs/",
       "xinyi-rongli/src/main/resources/mapper/rongli/jobs/",
-      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/jobs/",
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/jobs/controller/",
       "xinyi-ui/src/views/rongli/jobs/",
       "xinyi-ui/src/api/rongli/jobs.ts",
       "xinyi-miniapp/src/features/jobs/"
@@ -6243,7 +6243,7 @@
     "status": "NOT_ASSESSED",
     "code_paths": [
       "xinyi-rongli/src/main/java/com/xinyi/rongli/integration/",
-      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/",
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/",
       "xinyi-ui/src/views/rongli/integrations/",
       "xinyi-miniapp/src/",
       "sql/migration_YYYYMMDD_integration_config.sql"
@@ -6323,7 +6323,7 @@
     "status": "NOT_ASSESSED",
     "code_paths": [
       "xinyi-rongli/src/main/java/com/xinyi/rongli/integration/",
-      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/",
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/",
       "xinyi-ui/src/views/rongli/integrations/",
       "xinyi-miniapp/src/",
       "sql/migration_YYYYMMDD_integration_config.sql"
@@ -6413,7 +6413,7 @@
     "status": "NOT_ASSESSED",
     "code_paths": [
       "xinyi-rongli/src/main/java/com/xinyi/rongli/integration/",
-      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/",
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/",
       "xinyi-ui/src/views/rongli/integrations/",
       "xinyi-miniapp/src/",
       "sql/migration_YYYYMMDD_integration_config.sql"
@@ -6487,7 +6487,7 @@
     "status": "NOT_ASSESSED",
     "code_paths": [
       "xinyi-rongli/src/main/java/com/xinyi/rongli/integration/",
-      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/",
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/",
       "xinyi-ui/src/views/rongli/integrations/",
       "xinyi-miniapp/src/",
       "sql/migration_YYYYMMDD_integration_config.sql"
@@ -6592,7 +6592,7 @@
     "status": "NOT_ASSESSED",
     "code_paths": [
       "xinyi-rongli/src/main/java/com/xinyi/rongli/integration/",
-      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/",
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/",
       "xinyi-ui/src/views/rongli/integrations/",
       "xinyi-miniapp/src/",
       "sql/migration_YYYYMMDD_integration_config.sql"
@@ -6657,7 +6657,7 @@
     "status": "NOT_ASSESSED",
     "code_paths": [
       "xinyi-rongli/src/main/java/com/xinyi/rongli/integration/",
-      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/",
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/",
       "xinyi-ui/src/views/rongli/integrations/",
       "xinyi-miniapp/src/",
       "sql/migration_YYYYMMDD_integration_config.sql"
