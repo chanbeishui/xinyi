@@ -1,0 +1,29 @@
+[
+  {
+    "taskId": "DIR01",
+    "title": "荣利Controller目录迁移及历史未提交文件归档",
+    "category": "MAINTENANCE",
+    "status": "VERIFIED",
+    "implementationCommit": "b6e410a53111653d48d383d1720dbd866d601ab2",
+    "versionTag": "vehicle-controller-relocation-20261104",
+    "included": [
+      "24个荣利Controller与1个辅助类迁入业务模块",
+      "根AGENTS业务模块路径约定",
+      "任务/接口路径映射与恢复记录",
+      "历史和2026-11-04重新验证证据"
+    ],
+    "evidence": [
+      "docs/implementation/vehicle/controller-relocation/report.md",
+      "docs/implementation/vehicle/controller-relocation/version-verification-20261104.json"
+    ],
+    "verification": {
+      "integrationTests": 210,
+      "unitTests": 36,
+      "movedFiles": 25,
+      "sourceEquivalentAfterPackageNormalization": true,
+      "databaseChanged": false
+    },
+    "independentReview": "PENDING",
+    "affectsBusinessTaskCount": false
+  }
+]
