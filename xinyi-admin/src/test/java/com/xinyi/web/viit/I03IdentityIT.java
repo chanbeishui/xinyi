@@ -46,29 +46,32 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
- * I03 刷新、退出和多设备会话 真实集成测试（HTTP+SpringSecurity(MINI链)+MyBatis+隔离库 MySQL+provider 模拟器）。
- * 仅微信渠道为 SIMULATOR 替身（L01 另验真实渠道）。覆盖：
- * 刷新单次轮换/新令牌可用、重用已消费刷新撤销会话族且持久化（事务提交后报错）、并发刷新仅一条成功、
- * 会话绝对到期不滑动、当前会话只读无令牌且实时重算角色、退出当前会话保留车辆任务重登恢复（TC-R63-008）、
- * 全部设备退出递增 session_epoch 撤全部会话、退出幂等键校验、MINI 鉴权数据库权威即时拒绝（不依赖 Redis）。
- * 模拟器 openId=sim_{run}_{persona}：重登同一账号须复用同一 runId+persona。
+ * I03 刷新、退出和多设备会话 真实集成测试（HTTP+SpringSecurity(MINI链)+MyBatis+隔离库 MySQL+provider 模拟器）。 仅微信渠道为
+ * SIMULATOR 替身（L01 另验真实渠道）。覆盖： 刷新单次轮换/新令牌可用、重用已消费刷新撤销会话族且持久化（事务提交后报错）、并发刷新仅一条成功、
+ * 会话绝对到期不滑动、当前会话只读无令牌且实时重算角色、退出当前会话保留车辆任务重登恢复（TC-R63-008）、 全部设备退出递增 session_epoch
+ * 撤全部会话、退出幂等键校验、MINI 鉴权数据库权威即时拒绝（不依赖 Redis）。 模拟器 openId=sim_{run}_{persona}：重登同一账号须复用同一
+ * runId+persona。
  */
-@SpringBootTest(classes = RuoYiApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
+@SpringBootTest(
+        classes = RuoYiApplication.class,
+        webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
         properties = {
-                "spring.datasource.druid.master.url=jdbc:mysql://localhost:3306/xinyi_vi_it_e07?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8",
-                "vi.environment=integration",
-                "vi.providers.mode=SIMULATOR",
-                "vi.outbox-relay-enabled=false",
-                "server.address=127.0.0.1"
+            "spring.datasource.druid.master.url=jdbc:mysql://localhost:3306/xinyi_vi_it_e07?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8",
+            "vi.environment=integration",
+            "vi.providers.mode=SIMULATOR",
+            "vi.outbox-relay-enabled=false",
+            "server.address=127.0.0.1"
         })
 @ActiveProfiles("druid")
+/** 验证当前身份切换与会话上下文更新；客户端角色不能自行授予司机或员工权限。 */
 class I03IdentityIT {
 
     private static Process simProcess;
     private static int simPort;
     private static String simSecret;
     private static Path simDb;
-    private static final java.net.http.HttpClient SIM_HTTP = java.net.http.HttpClient.newHttpClient();
+    private static final java.net.http.HttpClient SIM_HTTP =
+            java.net.http.HttpClient.newHttpClient();
 
     static {
         try {
@@ -97,14 +100,24 @@ class I03IdentityIT {
         simDb = Files.createTempFile("i03-sim-", ".sqlite");
         Files.deleteIfExists(simDb);
         String python = System.getenv().getOrDefault("VI_PYTHON", "python3");
-        Path sim = repoRoot().resolve("docs/vehicle/V6.4/13_真实集成测试/provider_simulator/simulator.py");
-        ProcessBuilder pb = new ProcessBuilder(python, sim.toString(),
-                "--host", "127.0.0.1", "--port", "0", "--db", simDb.toString());
+        Path sim =
+                repoRoot().resolve("docs/vehicle/V6.4/13_真实集成测试/provider_simulator/simulator.py");
+        ProcessBuilder pb =
+                new ProcessBuilder(
+                        python,
+                        sim.toString(),
+                        "--host",
+                        "127.0.0.1",
+                        "--port",
+                        "0",
+                        "--db",
+                        simDb.toString());
         pb.environment().put("VI_SIM_SECRET", simSecret);
         pb.redirectErrorStream(true);
         simProcess = pb.start();
-        BufferedReader reader = new BufferedReader(
-                new InputStreamReader(simProcess.getInputStream(), StandardCharsets.UTF_8));
+        BufferedReader reader =
+                new BufferedReader(
+                        new InputStreamReader(simProcess.getInputStream(), StandardCharsets.UTF_8));
         String line = reader.readLine();
         if (line == null) {
             throw new IllegalStateException("模拟器无启动输出");
@@ -136,26 +149,37 @@ class I03IdentityIT {
         }
     }
 
-    @LocalServerPort
-    int port;
+    @LocalServerPort int port;
 
-    @Autowired
-    JdbcTemplate jdbc;
+    @Autowired JdbcTemplate jdbc;
 
-    private final RestTemplate rest = new RestTemplate(new org.springframework.http.client.JdkClientHttpRequestFactory()) {{
-        setErrorHandler(new DefaultResponseErrorHandler() {
-            @Override
-            public boolean hasError(ClientHttpResponse response) {
-                return false;
-            }
-        });
-    }};
+    private final RestTemplate rest =
+            new RestTemplate(new org.springframework.http.client.JdkClientHttpRequestFactory()) {
+                {
+                    setErrorHandler(
+                            new DefaultResponseErrorHandler() {
+                                @Override
+                                public boolean hasError(ClientHttpResponse response) {
+                                    return false;
+                                }
+                            });
+                }
+            };
 
     @BeforeEach
     void clean() {
-        for (String t : List.of("vi_driver_assignment", "vi_driver_profile", "vi_phone_verification_receipt",
-                "vi_employee_binding", "vi_session_token", "vi_session", "vi_account_security", "vi_account",
-                "vi_station_grant", "vi_owner_profile")) {
+        for (String t :
+                List.of(
+                        "vi_driver_assignment",
+                        "vi_driver_profile",
+                        "vi_phone_verification_receipt",
+                        "vi_employee_binding",
+                        "vi_session_token",
+                        "vi_session",
+                        "vi_account_security",
+                        "vi_account",
+                        "vi_station_grant",
+                        "vi_owner_profile")) {
             jdbc.execute("DELETE FROM " + t);
         }
     }
@@ -164,13 +188,24 @@ class I03IdentityIT {
     private Map<String, Object> simPost(String path, Map<String, Object> body) {
         try {
             String json = ViJson.write(body);
-            java.net.http.HttpRequest req = java.net.http.HttpRequest.newBuilder(
-                            java.net.URI.create("http://127.0.0.1:" + simPort + path))
-                    .header("Content-Type", "application/json").header("X-Sim-Secret", simSecret)
-                    .POST(java.net.http.HttpRequest.BodyPublishers.ofString(json, StandardCharsets.UTF_8)).build();
+            java.net.http.HttpRequest req =
+                    java.net.http.HttpRequest.newBuilder(
+                                    java.net.URI.create("http://127.0.0.1:" + simPort + path))
+                            .header("Content-Type", "application/json")
+                            .header("X-Sim-Secret", simSecret)
+                            .POST(
+                                    java.net.http.HttpRequest.BodyPublishers.ofString(
+                                            json, StandardCharsets.UTF_8))
+                            .build();
             java.net.http.HttpResponse<String> resp =
-                    SIM_HTTP.send(req, java.net.http.HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
-            assertEquals(200, resp.statusCode(), "模拟器 " + path + " 应200，实际" + resp.statusCode() + " " + resp.body());
+                    SIM_HTTP.send(
+                            req,
+                            java.net.http.HttpResponse.BodyHandlers.ofString(
+                                    StandardCharsets.UTF_8));
+            assertEquals(
+                    200,
+                    resp.statusCode(),
+                    "模拟器 " + path + " 应200，实际" + resp.statusCode() + " " + resp.body());
             return ViJson.read(resp.body(), Map.class);
         } catch (java.io.IOException | InterruptedException e) {
             throw new IllegalStateException("模拟器调用失败 " + path, e);
@@ -210,8 +245,12 @@ class I03IdentityIT {
     /** 指定 run+persona 登录；同 run+persona 复登命中同一账号（openId=sim_run_persona），新建会话。 */
     private JsonNode login(String runId, String persona) {
         String code = newCode(runId, persona, "wechat");
-        ResponseEntity<String> resp = rest.exchange(url("/api/common/login/wechat"), HttpMethod.POST,
-                entity(Map.of("code", code), null, null), String.class);
+        ResponseEntity<String> resp =
+                rest.exchange(
+                        url("/api/common/login/wechat"),
+                        HttpMethod.POST,
+                        entity(Map.of("code", code), null, null),
+                        String.class);
         assertEquals(200, resp.getStatusCode().value(), "登录应200 " + resp.getBody());
         return ViJson.tree(resp.getBody()).get("data");
     }
@@ -228,11 +267,19 @@ class I03IdentityIT {
         if (extra != null) {
             body.putAll(extra);
         }
-        return rest.exchange(url("/api/common/token/refresh"), HttpMethod.POST, entity(body, null, null), String.class);
+        return rest.exchange(
+                url("/api/common/token/refresh"),
+                HttpMethod.POST,
+                entity(body, null, null),
+                String.class);
     }
 
     private ResponseEntity<String> session(String token) {
-        return rest.exchange(url("/api/common/session"), HttpMethod.GET, entity(null, token, null), String.class);
+        return rest.exchange(
+                url("/api/common/session"),
+                HttpMethod.GET,
+                entity(null, token, null),
+                String.class);
     }
 
     private ResponseEntity<String> logout(String token, Boolean allDevices, String idem) {
@@ -240,20 +287,33 @@ class I03IdentityIT {
         if (allDevices != null) {
             body.put("allDevices", allDevices);
         }
-        return rest.exchange(url("/api/common/session/logout"), HttpMethod.POST, entity(body, token, idem), String.class);
+        return rest.exchange(
+                url("/api/common/session/logout"),
+                HttpMethod.POST,
+                entity(body, token, idem),
+                String.class);
     }
 
     private void seedDriverProfile(long accountId) {
-        jdbc.update("INSERT INTO vi_driver_profile (account_id, qualification_status, license_long_term, "
-                + "new_assignment_enabled, listening_enabled) VALUES (?, 'APPROVED', 1, 1, 1)", accountId);
+        jdbc.update(
+                "INSERT INTO vi_driver_profile (account_id, qualification_status,"
+                    + " license_long_term, new_assignment_enabled, listening_enabled) VALUES (?,"
+                    + " 'APPROVED', 1, 1, 1)",
+                accountId);
     }
 
     private long seedActiveAssignment(long accountId) {
         long synthetic = 900000000L + (accountId % 1000000);
-        jdbc.update("INSERT INTO vi_driver_assignment (order_id, driver_id, invite_id, accepted_at) "
-                + "VALUES (?, ?, ?, UTC_TIMESTAMP(3))", synthetic, accountId, synthetic);
-        return jdbc.queryForObject("SELECT id FROM vi_driver_assignment WHERE driver_id = ? AND ended_at IS NULL",
-                Long.class, accountId);
+        jdbc.update(
+                "INSERT INTO vi_driver_assignment (order_id, driver_id, invite_id, accepted_at) "
+                        + "VALUES (?, ?, ?, UTC_TIMESTAMP(3))",
+                synthetic,
+                accountId,
+                synthetic);
+        return jdbc.queryForObject(
+                "SELECT id FROM vi_driver_assignment WHERE driver_id = ? AND ended_at IS NULL",
+                Long.class,
+                accountId);
     }
 
     // ---------- 用例 ----------
@@ -279,11 +339,20 @@ class I03IdentityIT {
         // 新访问令牌可用
         assertEquals(200, session(newAccess).getStatusCode().value(), "新访问令牌应可读取会话");
         // 代际递增、父令牌链接
-        assertEquals(1, jdbc.queryForObject("SELECT COUNT(*) FROM vi_session_token WHERE session_id = ? "
-                + "AND token_type = 'REFRESH' AND generation = 1 AND parent_token_id IS NOT NULL", Integer.class, sessionId),
+        assertEquals(
+                1,
+                jdbc.queryForObject(
+                        "SELECT COUNT(*) FROM vi_session_token WHERE session_id = ? AND token_type"
+                                + " = 'REFRESH' AND generation = 1 AND parent_token_id IS NOT NULL",
+                        Integer.class,
+                        sessionId),
                 "新刷新令牌 generation=1 且链接父令牌");
-        assertNotNull(jdbc.queryForObject("SELECT consumed_at FROM vi_session_token WHERE session_id = ? "
-                + "AND token_type = 'REFRESH' AND generation = 0", java.sql.Timestamp.class, sessionId),
+        assertNotNull(
+                jdbc.queryForObject(
+                        "SELECT consumed_at FROM vi_session_token WHERE session_id = ? "
+                                + "AND token_type = 'REFRESH' AND generation = 0",
+                        java.sql.Timestamp.class,
+                        sessionId),
                 "旧刷新令牌已原子消费");
     }
 
@@ -302,10 +371,19 @@ class I03IdentityIT {
         ResponseEntity<String> reuse = refresh(oldRefresh, null);
         assertEquals(401, reuse.getStatusCode().value(), "重用应401 " + reuse.getBody());
         assertEquals("VI_REFRESH_REUSED", ViJson.tree(reuse.getBody()).get("errorCode").asText());
-        assertEquals("REVOKED", jdbc.queryForObject("SELECT status FROM vi_session WHERE id = ?", String.class, sessionId),
+        assertEquals(
+                "REVOKED",
+                jdbc.queryForObject(
+                        "SELECT status FROM vi_session WHERE id = ?", String.class, sessionId),
                 "会话族撤销须持久化");
-        assertEquals(0, jdbc.queryForObject("SELECT COUNT(*) FROM vi_session_token WHERE session_id = ? "
-                + "AND revoked_at IS NULL", Integer.class, sessionId), "会话全部令牌须撤销");
+        assertEquals(
+                0,
+                jdbc.queryForObject(
+                        "SELECT COUNT(*) FROM vi_session_token WHERE session_id = ? "
+                                + "AND revoked_at IS NULL",
+                        Integer.class,
+                        sessionId),
+                "会话全部令牌须撤销");
         // 已轮换的新令牌亦被撤销（族撤销）
         assertEquals(401, session(newAccess).getStatusCode().value(), "新访问令牌随族撤销失效");
         assertEquals(401, refresh(newRefresh, null).getStatusCode().value(), "新刷新令牌随族撤销失效");
@@ -320,21 +398,32 @@ class I03IdentityIT {
         CountDownLatch gate = new CountDownLatch(1);
         List<Future<Integer>> futures = new ArrayList<>();
         for (int i = 0; i < 2; i++) {
-            futures.add(pool.submit(() -> {
-                gate.await();
-                return refresh(oldRefresh, null).getStatusCode().value();
-            }));
+            futures.add(
+                    pool.submit(
+                            () -> {
+                                gate.await();
+                                return refresh(oldRefresh, null).getStatusCode().value();
+                            }));
         }
         gate.countDown();
         int c1 = futures.get(0).get(30, TimeUnit.SECONDS);
         int c2 = futures.get(1).get(30, TimeUnit.SECONDS);
         pool.shutdownNow();
-        assertTrue((c1 == 200 && c2 == 401) || (c1 == 401 && c2 == 200),
+        assertTrue(
+                (c1 == 200 && c2 == 401) || (c1 == 401 && c2 == 200),
                 "并发刷新仅一条成功，实际 " + c1 + "/" + c2);
-        assertEquals("REVOKED", jdbc.queryForObject("SELECT status FROM vi_session WHERE id = ?", String.class, sessionId),
+        assertEquals(
+                "REVOKED",
+                jdbc.queryForObject(
+                        "SELECT status FROM vi_session WHERE id = ?", String.class, sessionId),
                 "重用触发会话族撤销");
-        assertEquals(1, jdbc.queryForObject("SELECT COUNT(*) FROM vi_session_token WHERE session_id = ? "
-                + "AND token_type = 'REFRESH' AND consumed_at IS NOT NULL", Integer.class, sessionId),
+        assertEquals(
+                1,
+                jdbc.queryForObject(
+                        "SELECT COUNT(*) FROM vi_session_token WHERE session_id = ? "
+                                + "AND token_type = 'REFRESH' AND consumed_at IS NOT NULL",
+                        Integer.class,
+                        sessionId),
                 "旧刷新仅被消费一次");
     }
 
@@ -344,18 +433,32 @@ class I03IdentityIT {
         String oldRefresh = s.get("refreshToken").asText();
         long sessionId = Long.parseLong(s.get("sessionId").asText());
         // 模拟绝对到期（不等待7天）：会话与刷新令牌截止置过去
-        jdbc.update("UPDATE vi_session SET absolute_expires_at = DATE_SUB(UTC_TIMESTAMP(3), INTERVAL 1 HOUR) WHERE id = ?",
+        jdbc.update(
+                "UPDATE vi_session SET absolute_expires_at = DATE_SUB(UTC_TIMESTAMP(3), INTERVAL 1"
+                        + " HOUR) WHERE id = ?",
                 sessionId);
-        jdbc.update("UPDATE vi_session_token SET expires_at = DATE_SUB(UTC_TIMESTAMP(3), INTERVAL 1 HOUR) "
-                + "WHERE session_id = ? AND token_type = 'REFRESH'", sessionId);
+        jdbc.update(
+                "UPDATE vi_session_token SET expires_at = DATE_SUB(UTC_TIMESTAMP(3), INTERVAL 1"
+                        + " HOUR) WHERE session_id = ? AND token_type = 'REFRESH'",
+                sessionId);
         ResponseEntity<String> r = refresh(oldRefresh, null);
         assertEquals(401, r.getStatusCode().value(), "绝对到期应401 " + r.getBody());
         assertEquals("VI_AUTH_REQUIRED", ViJson.tree(r.getBody()).get("errorCode").asText());
-        assertEquals(0, jdbc.queryForObject("SELECT COUNT(*) FROM vi_session_token WHERE session_id = ? "
-                + "AND token_type = 'REFRESH' AND generation = 1", Integer.class, sessionId),
+        assertEquals(
+                0,
+                jdbc.queryForObject(
+                        "SELECT COUNT(*) FROM vi_session_token WHERE session_id = ? "
+                                + "AND token_type = 'REFRESH' AND generation = 1",
+                        Integer.class,
+                        sessionId),
                 "到期不得轮换出新令牌");
-        assertTrue(jdbc.queryForObject("SELECT absolute_expires_at FROM vi_session WHERE id = ?",
-                java.sql.Timestamp.class, sessionId).toInstant().isBefore(java.time.Instant.now()),
+        assertTrue(
+                jdbc.queryForObject(
+                                "SELECT absolute_expires_at FROM vi_session WHERE id = ?",
+                                java.sql.Timestamp.class,
+                                sessionId)
+                        .toInstant()
+                        .isBefore(java.time.Instant.now()),
                 "绝对截止不被滑动延长");
     }
 
@@ -393,7 +496,12 @@ class I03IdentityIT {
         long sessionId = Long.parseLong(s.get("sessionId").asText());
         seedDriverProfile(accountId);
         long assignmentId = seedActiveAssignment(accountId);
-        assertTrue(ViJson.tree(session(token).getBody()).get("data").get("availableRoles").toString().contains("DRIVER"),
+        assertTrue(
+                ViJson.tree(session(token).getBody())
+                        .get("data")
+                        .get("availableRoles")
+                        .toString()
+                        .contains("DRIVER"),
                 "退出前司机有有效资格与在手任务");
 
         ResponseEntity<String> out = logout(token, false, UUID.randomUUID().toString());
@@ -405,12 +513,24 @@ class I03IdentityIT {
 
         // 旧令牌失效
         assertEquals(401, session(token).getStatusCode().value(), "退出后旧访问令牌须失效");
-        assertEquals("REVOKED", jdbc.queryForObject("SELECT status FROM vi_session WHERE id = ?", String.class, sessionId));
+        assertEquals(
+                "REVOKED",
+                jdbc.queryForObject(
+                        "SELECT status FROM vi_session WHERE id = ?", String.class, sessionId));
         // 在手承接与历史资格保留（不动车辆任务）
-        assertNull(jdbc.queryForObject("SELECT ended_at FROM vi_driver_assignment WHERE id = ?",
-                java.sql.Timestamp.class, assignmentId), "退出不得结束在手承接");
-        assertEquals("APPROVED", jdbc.queryForObject("SELECT qualification_status FROM vi_driver_profile WHERE account_id = ?",
-                String.class, accountId), "退出不得撤销历史资格");
+        assertNull(
+                jdbc.queryForObject(
+                        "SELECT ended_at FROM vi_driver_assignment WHERE id = ?",
+                        java.sql.Timestamp.class,
+                        assignmentId),
+                "退出不得结束在手承接");
+        assertEquals(
+                "APPROVED",
+                jdbc.queryForObject(
+                        "SELECT qualification_status FROM vi_driver_profile WHERE account_id = ?",
+                        String.class,
+                        accountId),
+                "退出不得撤销历史资格");
 
         // 重登恢复真实资格（同 run+persona 命中同一账号）
         JsonNode relogin = login(run, persona);
@@ -419,8 +539,14 @@ class I03IdentityIT {
         JsonNode rd = ViJson.tree(session(newToken).getBody()).get("data");
         assertTrue(rd.get("availableRoles").toString().contains("DRIVER"), "重登恢复DRIVER资格");
         assertEquals("APPROVED", rd.get("driverQualification").asText());
-        assertEquals(1, jdbc.queryForObject("SELECT COUNT(*) FROM vi_driver_assignment WHERE id = ? AND ended_at IS NULL",
-                Integer.class, assignmentId), "在手承接始终保留");
+        assertEquals(
+                1,
+                jdbc.queryForObject(
+                        "SELECT COUNT(*) FROM vi_driver_assignment WHERE id = ? AND ended_at IS"
+                                + " NULL",
+                        Integer.class,
+                        assignmentId),
+                "在手承接始终保留");
     }
 
     @Test
@@ -434,14 +560,20 @@ class I03IdentityIT {
         long accountId = Long.parseLong(a.get("accountId").asText());
         assertNotEquals(a.get("sessionId").asText(), b.get("sessionId").asText(), "两次登录产生两个会话");
         assertEquals(200, session(tokenB).getStatusCode().value(), "退出前两会话均可用");
-        long epochBefore = jdbc.queryForObject("SELECT session_epoch FROM vi_account_security WHERE account_id = ?",
-                Long.class, accountId);
+        long epochBefore =
+                jdbc.queryForObject(
+                        "SELECT session_epoch FROM vi_account_security WHERE account_id = ?",
+                        Long.class,
+                        accountId);
 
         ResponseEntity<String> out = logout(tokenA, true, UUID.randomUUID().toString());
         assertEquals(200, out.getStatusCode().value(), "全部退出应200 " + out.getBody());
         assertEquals("ALL", ViJson.tree(out.getBody()).get("data").get("scope").asText());
-        long epochAfter = jdbc.queryForObject("SELECT session_epoch FROM vi_account_security WHERE account_id = ?",
-                Long.class, accountId);
+        long epochAfter =
+                jdbc.queryForObject(
+                        "SELECT session_epoch FROM vi_account_security WHERE account_id = ?",
+                        Long.class,
+                        accountId);
         assertEquals(epochBefore + 1, epochAfter, "全部退出递增 session_epoch");
         assertEquals(401, session(tokenA).getStatusCode().value(), "会话A令牌失效");
         assertEquals(401, session(tokenB).getStatusCode().value(), "另一设备会话B令牌亦失效");
@@ -455,10 +587,18 @@ class I03IdentityIT {
     void 退出幂等键缺失或过短及未知字段拒绝() {
         JsonNode s = login("p03-idem-" + System.nanoTime());
         String token = s.get("token").asText();
-        assertEquals(400, logout(token, false, null).getStatusCode().value(), "缺 Idempotency-Key 应400");
+        assertEquals(
+                400, logout(token, false, null).getStatusCode().value(), "缺 Idempotency-Key 应400");
         assertEquals(400, logout(token, false, "short").getStatusCode().value(), "过短幂等键应400");
-        ResponseEntity<String> unknown = rest.exchange(url("/api/common/session/logout"), HttpMethod.POST,
-                entity(Map.of("allDevices", false, "accountId", "1"), token, UUID.randomUUID().toString()), String.class);
+        ResponseEntity<String> unknown =
+                rest.exchange(
+                        url("/api/common/session/logout"),
+                        HttpMethod.POST,
+                        entity(
+                                Map.of("allDevices", false, "accountId", "1"),
+                                token,
+                                UUID.randomUUID().toString()),
+                        String.class);
         assertEquals(400, unknown.getStatusCode().value(), "退出请求未知字段应400");
         // 会话未被上述被拒请求撤销
         assertEquals(200, session(token).getStatusCode().value(), "被拒请求不得撤销会话");
@@ -473,8 +613,10 @@ class I03IdentityIT {
         long sessionId = Long.parseLong(s.get("sessionId").asText());
         assertEquals(200, session(token).getStatusCode().value(), "撤销前令牌可用");
         // 直接在权威库撤销会话（模拟任何来源的权威撤权，不经缓存）
-        jdbc.update("UPDATE vi_session SET status = 'REVOKED', revoked_at = UTC_TIMESTAMP(3), version = version + 1 "
-                + "WHERE id = ?", sessionId);
+        jdbc.update(
+                "UPDATE vi_session SET status = 'REVOKED', revoked_at = UTC_TIMESTAMP(3), version ="
+                        + " version + 1 WHERE id = ?",
+                sessionId);
         ResponseEntity<String> r = session(token);
         assertEquals(401, r.getStatusCode().value(), "数据库权威撤销须即时拒绝 " + r.getBody());
         assertEquals("VI_AUTH_REQUIRED", ViJson.tree(r.getBody()).get("errorCode").asText());
@@ -485,13 +627,20 @@ class I03IdentityIT {
         JsonNode s = login("p03-badrefresh-" + System.nanoTime());
         String access = s.get("token").asText();
         // 未知字段
-        assertEquals(400, refresh(s.get("refreshToken").asText(), Map.of("role", "DRIVER")).getStatusCode().value(),
+        assertEquals(
+                400,
+                refresh(s.get("refreshToken").asText(), Map.of("role", "DRIVER"))
+                        .getStatusCode()
+                        .value(),
                 "刷新混入未知字段应400");
         // 过短令牌
-        assertEquals(400, refresh("too-short", null).getStatusCode().value(), "过短 refreshToken 应400");
+        assertEquals(
+                400, refresh("too-short", null).getStatusCode().value(), "过短 refreshToken 应400");
         // 未知随机令牌（长度合法但无匹配摘要）
-        String unknown = java.util.Base64.getUrlEncoder().withoutPadding()
-                .encodeToString(new SecureRandom().generateSeed(32));
+        String unknown =
+                java.util.Base64.getUrlEncoder()
+                        .withoutPadding()
+                        .encodeToString(new SecureRandom().generateSeed(32));
         ResponseEntity<String> r = refresh(unknown, null);
         assertEquals(401, r.getStatusCode().value(), "未知刷新令牌应401");
         assertEquals("VI_AUTH_REQUIRED", ViJson.tree(r.getBody()).get("errorCode").asText());

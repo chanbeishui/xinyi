@@ -45,28 +45,32 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
- * I02 手机号验证回执与自动关联 真实集成测试（HTTP+SpringSecurity(MINI链)+MyBatis+隔离库 MySQL+provider 模拟器）。
- * 仅微信渠道为 SIMULATOR 替身（L01 另验）。覆盖 I02 直接可测用例：
- * TC-R62-008（裸字段拒绝）、014（回执查询/安全重试）、021（无效凭据失败不假成功）、025（手机号与员工结果分开/重号）、
- * 031（同 requestId 并发一次消费）、TC-R63-012（未核验不开 STATION）；唯一匹配 LINKED+STATION；SMS 未配置拒绝；档案 PATCH CAS。
+ * I02 手机号验证回执与自动关联 真实集成测试（HTTP+SpringSecurity(MINI链)+MyBatis+隔离库 MySQL+provider 模拟器）。 仅微信渠道为
+ * SIMULATOR 替身（L01 另验）。覆盖 I02 直接可测用例：
+ * TC-R62-008（裸字段拒绝）、014（回执查询/安全重试）、021（无效凭据失败不假成功）、025（手机号与员工结果分开/重号）、 031（同 requestId
+ * 并发一次消费）、TC-R63-012（未核验不开 STATION）；唯一匹配 LINKED+STATION；SMS 未配置拒绝；档案 PATCH CAS。
  * TC-R62-029（订单联系人）属订单任务、TC-R62-030（SMS 成功路径）依赖 X01–X07 配置，本 IT 不伪造（仅验证未配置拒绝与不关联原则）。
  */
-@SpringBootTest(classes = RuoYiApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
+@SpringBootTest(
+        classes = RuoYiApplication.class,
+        webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
         properties = {
-                "spring.datasource.druid.master.url=jdbc:mysql://localhost:3306/xinyi_vi_it_e07?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8",
-                "vi.environment=integration",
-                "vi.providers.mode=SIMULATOR",
-                "vi.outbox-relay-enabled=false",
-                "server.address=127.0.0.1"
+            "spring.datasource.druid.master.url=jdbc:mysql://localhost:3306/xinyi_vi_it_e07?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8",
+            "vi.environment=integration",
+            "vi.providers.mode=SIMULATOR",
+            "vi.outbox-relay-enabled=false",
+            "server.address=127.0.0.1"
         })
 @ActiveProfiles("druid")
+/** 验证微信身份登录、会话与重复请求边界；外部身份响应为隔离替身，数据库与安全链保持真实。 */
 class I02IdentityIT {
 
     private static Process simProcess;
     private static int simPort;
     private static String simSecret;
     private static Path simDb;
-    private static final java.net.http.HttpClient SIM_HTTP = java.net.http.HttpClient.newHttpClient();
+    private static final java.net.http.HttpClient SIM_HTTP =
+            java.net.http.HttpClient.newHttpClient();
 
     static {
         try {
@@ -96,14 +100,24 @@ class I02IdentityIT {
         simDb = Files.createTempFile("i02-sim-", ".sqlite");
         Files.deleteIfExists(simDb);
         String python = System.getenv().getOrDefault("VI_PYTHON", "python3");
-        Path sim = repoRoot().resolve("docs/vehicle/V6.4/13_真实集成测试/provider_simulator/simulator.py");
-        ProcessBuilder pb = new ProcessBuilder(python, sim.toString(),
-                "--host", "127.0.0.1", "--port", "0", "--db", simDb.toString());
+        Path sim =
+                repoRoot().resolve("docs/vehicle/V6.4/13_真实集成测试/provider_simulator/simulator.py");
+        ProcessBuilder pb =
+                new ProcessBuilder(
+                        python,
+                        sim.toString(),
+                        "--host",
+                        "127.0.0.1",
+                        "--port",
+                        "0",
+                        "--db",
+                        simDb.toString());
         pb.environment().put("VI_SIM_SECRET", simSecret);
         pb.redirectErrorStream(true);
         simProcess = pb.start();
-        BufferedReader reader = new BufferedReader(
-                new InputStreamReader(simProcess.getInputStream(), StandardCharsets.UTF_8));
+        BufferedReader reader =
+                new BufferedReader(
+                        new InputStreamReader(simProcess.getInputStream(), StandardCharsets.UTF_8));
         String line = reader.readLine();
         if (line == null) {
             throw new IllegalStateException("模拟器无启动输出");
@@ -135,25 +149,35 @@ class I02IdentityIT {
         }
     }
 
-    @LocalServerPort
-    int port;
+    @LocalServerPort int port;
 
-    @Autowired
-    JdbcTemplate jdbc;
+    @Autowired JdbcTemplate jdbc;
 
-    private final RestTemplate rest = new RestTemplate(new org.springframework.http.client.JdkClientHttpRequestFactory()) {{
-        setErrorHandler(new DefaultResponseErrorHandler() {
-            @Override
-            public boolean hasError(ClientHttpResponse response) {
-                return false;
-            }
-        });
-    }};
+    private final RestTemplate rest =
+            new RestTemplate(new org.springframework.http.client.JdkClientHttpRequestFactory()) {
+                {
+                    setErrorHandler(
+                            new DefaultResponseErrorHandler() {
+                                @Override
+                                public boolean hasError(ClientHttpResponse response) {
+                                    return false;
+                                }
+                            });
+                }
+            };
 
     @BeforeEach
     void clean() {
-        for (String t : List.of("vi_phone_verification_receipt", "vi_employee_binding", "vi_session_token",
-                "vi_session", "vi_account_security", "vi_account", "vi_station_grant", "vi_owner_profile")) {
+        for (String t :
+                List.of(
+                        "vi_phone_verification_receipt",
+                        "vi_employee_binding",
+                        "vi_session_token",
+                        "vi_session",
+                        "vi_account_security",
+                        "vi_account",
+                        "vi_station_grant",
+                        "vi_owner_profile")) {
             jdbc.execute("DELETE FROM " + t);
         }
         jdbc.execute("DELETE FROM sys_user WHERE user_name LIKE 'i02emp\\_%'");
@@ -163,13 +187,24 @@ class I02IdentityIT {
     private Map<String, Object> simPost(String path, Map<String, Object> body) {
         try {
             String json = ViJson.write(body);
-            java.net.http.HttpRequest req = java.net.http.HttpRequest.newBuilder(
-                            java.net.URI.create("http://127.0.0.1:" + simPort + path))
-                    .header("Content-Type", "application/json").header("X-Sim-Secret", simSecret)
-                    .POST(java.net.http.HttpRequest.BodyPublishers.ofString(json, StandardCharsets.UTF_8)).build();
+            java.net.http.HttpRequest req =
+                    java.net.http.HttpRequest.newBuilder(
+                                    java.net.URI.create("http://127.0.0.1:" + simPort + path))
+                            .header("Content-Type", "application/json")
+                            .header("X-Sim-Secret", simSecret)
+                            .POST(
+                                    java.net.http.HttpRequest.BodyPublishers.ofString(
+                                            json, StandardCharsets.UTF_8))
+                            .build();
             java.net.http.HttpResponse<String> resp =
-                    SIM_HTTP.send(req, java.net.http.HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
-            assertEquals(200, resp.statusCode(), "模拟器 " + path + " 应200，实际" + resp.statusCode() + " " + resp.body());
+                    SIM_HTTP.send(
+                            req,
+                            java.net.http.HttpResponse.BodyHandlers.ofString(
+                                    StandardCharsets.UTF_8));
+            assertEquals(
+                    200,
+                    resp.statusCode(),
+                    "模拟器 " + path + " 应200，实际" + resp.statusCode() + " " + resp.body());
             return ViJson.read(resp.body(), Map.class);
         } catch (java.io.IOException | InterruptedException e) {
             throw new IllegalStateException("模拟器调用失败 " + path, e);
@@ -191,7 +226,9 @@ class I02IdentityIT {
     /** 复算模拟器 /phone/exchange 的 verifiedPhone：'199' + (sha256(persona)[:10] hex % 1e8) 8位。 */
     private static String expectedPhone(String persona) {
         try {
-            byte[] h = MessageDigest.getInstance("SHA-256").digest(persona.getBytes(StandardCharsets.UTF_8));
+            byte[] h =
+                    MessageDigest.getInstance("SHA-256")
+                            .digest(persona.getBytes(StandardCharsets.UTF_8));
             StringBuilder hex = new StringBuilder();
             for (byte b : h) {
                 hex.append(String.format("%02x", b));
@@ -224,26 +261,42 @@ class I02IdentityIT {
     private JsonNode login(String persona) {
         String run = newRun();
         String code = newCode(run, persona, "wechat");
-        ResponseEntity<String> resp = rest.exchange(url("/api/common/login/wechat"), HttpMethod.POST,
-                entity(Map.of("code", code), null, null), String.class);
+        ResponseEntity<String> resp =
+                rest.exchange(
+                        url("/api/common/login/wechat"),
+                        HttpMethod.POST,
+                        entity(Map.of("code", code), null, null),
+                        String.class);
         assertEquals(200, resp.getStatusCode().value(), "登录应200 " + resp.getBody());
         return ViJson.tree(resp.getBody()).get("data");
     }
 
     private long seedEmployee(String phone, String suffix) {
         String userName = "i02emp_" + suffix;
-        jdbc.update("INSERT INTO sys_user (user_name, nick_name, phonenumber, status, del_flag, auth_version, password) "
-                + "VALUES (?, ?, ?, '0', '0', 0, 'x')", userName, "员工" + suffix, phone);
-        return jdbc.queryForObject("SELECT user_id FROM sys_user WHERE user_name = ?", Long.class, userName);
+        jdbc.update(
+                "INSERT INTO sys_user (user_name, nick_name, phonenumber, status, del_flag,"
+                        + " auth_version, password) VALUES (?, ?, ?, '0', '0', 0, 'x')",
+                userName,
+                "员工" + suffix,
+                phone);
+        return jdbc.queryForObject(
+                "SELECT user_id FROM sys_user WHERE user_name = ?", Long.class, userName);
     }
 
     private void seedGrant(long sysUserId, long stationId) {
-        jdbc.update("INSERT INTO vi_station_grant (sys_user_id, station_id, enabled, granted_by, reason) "
-                + "VALUES (?, ?, 1, 1, 'I02 测试授权')", sysUserId, stationId);
+        jdbc.update(
+                "INSERT INTO vi_station_grant (sys_user_id, station_id, enabled, granted_by,"
+                        + " reason) VALUES (?, ?, 1, 1, 'I02 测试授权')",
+                sysUserId,
+                stationId);
     }
 
-    private ResponseEntity<String> bind(String token, long accountVersion, String phoneCode,
-                                        String requestId, Map<String, Object> extra) {
+    private ResponseEntity<String> bind(
+            String token,
+            long accountVersion,
+            String phoneCode,
+            String requestId,
+            Map<String, Object> extra) {
         Map<String, Object> body = new HashMap<>();
         body.put("phoneCode", phoneCode);
         body.put("expectedAccountVersion", accountVersion);
@@ -251,7 +304,11 @@ class I02IdentityIT {
         if (extra != null) {
             body.putAll(extra);
         }
-        return rest.exchange(url("/api/common/phone/bind"), HttpMethod.POST, entity(body, token, null), String.class);
+        return rest.exchange(
+                url("/api/common/phone/bind"),
+                HttpMethod.POST,
+                entity(body, token, null),
+                String.class);
     }
 
     // ---------- 用例 ----------
@@ -265,17 +322,38 @@ class I02IdentityIT {
         String persona = "p02-forged2-" + System.nanoTime();
         String code = newCode(run, persona, "phone");
 
-        ResponseEntity<String> r1 = bind(token, ver, code, UUID.randomUUID().toString(), Map.of("phone", "13800000000"));
+        ResponseEntity<String> r1 =
+                bind(
+                        token,
+                        ver,
+                        code,
+                        UUID.randomUUID().toString(),
+                        Map.of("phone", "13800000000"));
         assertEquals(400, r1.getStatusCode().value(), "混入裸 phone 应400 " + r1.getBody());
-        ResponseEntity<String> r2 = bind(token, ver, newCode(run, persona, "phone"),
-                UUID.randomUUID().toString(), Map.of("sysUserId", "1"));
+        ResponseEntity<String> r2 =
+                bind(
+                        token,
+                        ver,
+                        newCode(run, persona, "phone"),
+                        UUID.randomUUID().toString(),
+                        Map.of("sysUserId", "1"));
         assertEquals(400, r2.getStatusCode().value(), "混入 sysUserId 应400");
-        ResponseEntity<String> r3 = bind(token, ver, newCode(run, persona, "phone"),
-                UUID.randomUUID().toString(), Map.of("openId", "fake"));
+        ResponseEntity<String> r3 =
+                bind(
+                        token,
+                        ver,
+                        newCode(run, persona, "phone"),
+                        UUID.randomUUID().toString(),
+                        Map.of("openId", "fake"));
         assertEquals(400, r3.getStatusCode().value(), "混入 openId 应400");
-        assertEquals(0, jdbc.queryForObject("SELECT COUNT(*) FROM vi_phone_verification_receipt", Integer.class),
+        assertEquals(
+                0,
+                jdbc.queryForObject(
+                        "SELECT COUNT(*) FROM vi_phone_verification_receipt", Integer.class),
                 "被拒请求不得登记回执");
-        assertEquals(0, jdbc.queryForObject("SELECT COUNT(*) FROM vi_employee_binding", Integer.class),
+        assertEquals(
+                0,
+                jdbc.queryForObject("SELECT COUNT(*) FROM vi_employee_binding", Integer.class),
                 "不得建立员工关联");
     }
 
@@ -296,17 +374,30 @@ class I02IdentityIT {
         assertTrue(d1.get("phoneBound").asBoolean());
 
         // 响应丢失场景：按原 requestId 查询回执（不重复消费凭据）
-        ResponseEntity<String> q = rest.exchange(url("/api/common/phone/verifications/" + requestId),
-                HttpMethod.GET, entity(null, token, null), String.class);
+        ResponseEntity<String> q =
+                rest.exchange(
+                        url("/api/common/phone/verifications/" + requestId),
+                        HttpMethod.GET,
+                        entity(null, token, null),
+                        String.class);
         assertEquals(200, q.getStatusCode().value());
-        assertEquals("VERIFIED", ViJson.tree(q.getBody()).get("data").get("verificationStatus").asText());
+        assertEquals(
+                "VERIFIED",
+                ViJson.tree(q.getBody()).get("data").get("verificationStatus").asText());
 
         // 同 requestId 安全重试：幂等返回，不重复消费、不新建回执
         ResponseEntity<String> retry = bind(token, ver, code, requestId, null);
         assertEquals(200, retry.getStatusCode().value());
-        assertEquals("VERIFIED", ViJson.tree(retry.getBody()).get("data").get("verificationStatus").asText());
-        assertEquals(1, jdbc.queryForObject("SELECT COUNT(*) FROM vi_phone_verification_receipt WHERE account_id = ?",
-                Integer.class, accountId), "同 requestId 只一条回执");
+        assertEquals(
+                "VERIFIED",
+                ViJson.tree(retry.getBody()).get("data").get("verificationStatus").asText());
+        assertEquals(
+                1,
+                jdbc.queryForObject(
+                        "SELECT COUNT(*) FROM vi_phone_verification_receipt WHERE account_id = ?",
+                        Integer.class,
+                        accountId),
+                "同 requestId 只一条回执");
     }
 
     @Test
@@ -314,16 +405,25 @@ class I02IdentityIT {
         JsonNode session = login("p02-fail-" + System.nanoTime());
         String token = session.get("token").asText();
         long ver = session.get("accountVersion").asLong();
-        ResponseEntity<String> resp = bind(token, ver, "not-a-provisioned-phone-code",
-                UUID.randomUUID().toString(), null);
+        ResponseEntity<String> resp =
+                bind(
+                        token,
+                        ver,
+                        "not-a-provisioned-phone-code",
+                        UUID.randomUUID().toString(),
+                        null);
         assertEquals(200, resp.getStatusCode().value(), "失败也返回200+状态FAILED " + resp.getBody());
         JsonNode d = ViJson.tree(resp.getBody()).get("data");
         assertEquals("FAILED", d.get("verificationStatus").asText(), "无效凭据应FAILED不假成功");
         assertFalse(d.get("phoneBound").asBoolean());
         assertEquals("UNLINKED", d.get("employeeLink").get("status").asText());
         // 未核验不得开通 STATION
-        ResponseEntity<String> profile = rest.exchange(url("/api/common/profile"), HttpMethod.GET,
-                entity(null, token, null), String.class);
+        ResponseEntity<String> profile =
+                rest.exchange(
+                        url("/api/common/profile"),
+                        HttpMethod.GET,
+                        entity(null, token, null),
+                        String.class);
         JsonNode roles = ViJson.tree(profile.getBody()).get("data").get("availableRoles");
         assertFalse(roles.toString().contains("STATION"), "未核验手机号不得开通STATION");
     }
@@ -342,9 +442,18 @@ class I02IdentityIT {
         assertTrue(d.get("phoneBound").asBoolean(), "手机号核验成功");
         assertEquals("UNLINKED", d.get("employeeLink").get("status").asText(), "无员工匹配不影响手机号验证");
         // OWNER 不受影响
-        ResponseEntity<String> profile = rest.exchange(url("/api/common/profile"), HttpMethod.GET,
-                entity(null, token, null), String.class);
-        assertTrue(ViJson.tree(profile.getBody()).get("data").get("availableRoles").toString().contains("OWNER"));
+        ResponseEntity<String> profile =
+                rest.exchange(
+                        url("/api/common/profile"),
+                        HttpMethod.GET,
+                        entity(null, token, null),
+                        String.class);
+        assertTrue(
+                ViJson.tree(profile.getBody())
+                        .get("data")
+                        .get("availableRoles")
+                        .toString()
+                        .contains("OWNER"));
     }
 
     @Test
@@ -363,8 +472,13 @@ class I02IdentityIT {
         JsonNode d = ViJson.tree(resp.getBody()).get("data");
         assertEquals("VERIFIED", d.get("verificationStatus").asText(), "重号不推翻手机号验证");
         assertTrue(d.get("phoneBound").asBoolean());
-        assertEquals("NEEDS_ADMIN", d.get("employeeLink").get("status").asText(), "重号粗粒度NEEDS_ADMIN不泄细节");
-        assertEquals(0, jdbc.queryForObject("SELECT COUNT(*) FROM vi_employee_binding", Integer.class),
+        assertEquals(
+                "NEEDS_ADMIN",
+                d.get("employeeLink").get("status").asText(),
+                "重号粗粒度NEEDS_ADMIN不泄细节");
+        assertEquals(
+                0,
+                jdbc.queryForObject("SELECT COUNT(*) FROM vi_employee_binding", Integer.class),
                 "重号不得自动建立绑定");
     }
 
@@ -386,12 +500,28 @@ class I02IdentityIT {
         assertEquals("VERIFIED", d.get("verificationStatus").asText());
         assertEquals("LINKED", d.get("employeeLink").get("status").asText());
         assertTrue(d.get("requiresSessionRefresh").asBoolean(), "关联成功须刷新会话");
-        assertEquals(1, jdbc.queryForObject("SELECT COUNT(*) FROM vi_employee_binding WHERE account_id = ? AND sys_user_id = ?",
-                Integer.class, accountId, sysUserId), "应建立唯一绑定");
+        assertEquals(
+                1,
+                jdbc.queryForObject(
+                        "SELECT COUNT(*) FROM vi_employee_binding WHERE account_id = ? AND"
+                                + " sys_user_id = ?",
+                        Integer.class,
+                        accountId,
+                        sysUserId),
+                "应建立唯一绑定");
         // 刷新会话后档案含 STATION（permission_version 已递增）
-        ResponseEntity<String> profile = rest.exchange(url("/api/common/profile"), HttpMethod.GET,
-                entity(null, token, null), String.class);
-        assertTrue(ViJson.tree(profile.getBody()).get("data").get("availableRoles").toString().contains("STATION"),
+        ResponseEntity<String> profile =
+                rest.exchange(
+                        url("/api/common/profile"),
+                        HttpMethod.GET,
+                        entity(null, token, null),
+                        String.class);
+        assertTrue(
+                ViJson.tree(profile.getBody())
+                        .get("data")
+                        .get("availableRoles")
+                        .toString()
+                        .contains("STATION"),
                 "有效员工+站点授权应可STATION");
     }
 
@@ -408,11 +538,13 @@ class I02IdentityIT {
         CountDownLatch gate = new CountDownLatch(1);
         List<Future<Integer>> futures = new ArrayList<>();
         for (int i = 0; i < 2; i++) {
-            futures.add(pool.submit(() -> {
-                gate.await();
-                ResponseEntity<String> r = bind(token, ver, code, requestId, null);
-                return r.getStatusCode().value();
-            }));
+            futures.add(
+                    pool.submit(
+                            () -> {
+                                gate.await();
+                                ResponseEntity<String> r = bind(token, ver, code, requestId, null);
+                                return r.getStatusCode().value();
+                            }));
         }
         gate.countDown();
         int c1 = futures.get(0).get(30, TimeUnit.SECONDS);
@@ -420,23 +552,44 @@ class I02IdentityIT {
         pool.shutdownNow();
         assertEquals(200, c1);
         assertEquals(200, c2);
-        assertEquals(1, jdbc.queryForObject("SELECT COUNT(*) FROM vi_phone_verification_receipt WHERE account_id = ?",
-                Integer.class, accountId), "并发同 requestId 只一条回执（一次外部消费）");
-        ResponseEntity<String> q = rest.exchange(url("/api/common/phone/verifications/" + requestId),
-                HttpMethod.GET, entity(null, token, null), String.class);
-        assertEquals("VERIFIED", ViJson.tree(q.getBody()).get("data").get("verificationStatus").asText());
+        assertEquals(
+                1,
+                jdbc.queryForObject(
+                        "SELECT COUNT(*) FROM vi_phone_verification_receipt WHERE account_id = ?",
+                        Integer.class,
+                        accountId),
+                "并发同 requestId 只一条回执（一次外部消费）");
+        ResponseEntity<String> q =
+                rest.exchange(
+                        url("/api/common/phone/verifications/" + requestId),
+                        HttpMethod.GET,
+                        entity(null, token, null),
+                        String.class);
+        assertEquals(
+                "VERIFIED",
+                ViJson.tree(q.getBody()).get("data").get("verificationStatus").asText());
     }
 
     @Test
     void 短信兜底未配置拒绝且不关联_TC_R62_030原则() {
         JsonNode session = login("p02-sms-" + System.nanoTime());
         String token = session.get("token").asText();
-        ResponseEntity<String> resp = rest.exchange(url("/api/common/phone/sms/send"), HttpMethod.POST,
-                entity(Map.of("phone", "13800000000", "scene", "BIND_PHONE"), token, UUID.randomUUID().toString()),
-                String.class);
+        ResponseEntity<String> resp =
+                rest.exchange(
+                        url("/api/common/phone/sms/send"),
+                        HttpMethod.POST,
+                        entity(
+                                Map.of("phone", "13800000000", "scene", "BIND_PHONE"),
+                                token,
+                                UUID.randomUUID().toString()),
+                        String.class);
         assertEquals(422, resp.getStatusCode().value(), "未配置短信路由应422拒绝 " + resp.getBody());
-        assertEquals("VI_CAPABILITY_NOT_CONFIGURED", ViJson.tree(resp.getBody()).get("errorCode").asText());
-        assertEquals(0, jdbc.queryForObject("SELECT COUNT(*) FROM vi_employee_binding", Integer.class),
+        assertEquals(
+                "VI_CAPABILITY_NOT_CONFIGURED",
+                ViJson.tree(resp.getBody()).get("errorCode").asText());
+        assertEquals(
+                0,
+                jdbc.queryForObject("SELECT COUNT(*) FROM vi_employee_binding", Integer.class),
                 "短信路径绝不建立员工关联");
     }
 
@@ -445,15 +598,27 @@ class I02IdentityIT {
         JsonNode session = login("p02-patch-" + System.nanoTime());
         String token = session.get("token").asText();
         long ver = session.get("accountVersion").asLong();
-        ResponseEntity<String> ok = rest.exchange(url("/api/app/owner/profile"), HttpMethod.PATCH,
-                entity(Map.of("nickname", "新昵称", "expectedVersion", ver), token, UUID.randomUUID().toString()),
-                String.class);
+        ResponseEntity<String> ok =
+                rest.exchange(
+                        url("/api/app/owner/profile"),
+                        HttpMethod.PATCH,
+                        entity(
+                                Map.of("nickname", "新昵称", "expectedVersion", ver),
+                                token,
+                                UUID.randomUUID().toString()),
+                        String.class);
         assertEquals(200, ok.getStatusCode().value(), "档案PATCH应200 " + ok.getBody());
         assertEquals("新昵称", ViJson.tree(ok.getBody()).get("data").get("nickname").asText());
         // 旧版本 CAS 冲突
-        ResponseEntity<String> conflict = rest.exchange(url("/api/app/owner/profile"), HttpMethod.PATCH,
-                entity(Map.of("nickname", "再次", "expectedVersion", ver), token, UUID.randomUUID().toString()),
-                String.class);
+        ResponseEntity<String> conflict =
+                rest.exchange(
+                        url("/api/app/owner/profile"),
+                        HttpMethod.PATCH,
+                        entity(
+                                Map.of("nickname", "再次", "expectedVersion", ver),
+                                token,
+                                UUID.randomUUID().toString()),
+                        String.class);
         assertEquals(409, conflict.getStatusCode().value(), "旧版本应409冲突");
     }
 }

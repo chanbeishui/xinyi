@@ -49,27 +49,30 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
- * I05 手机号自动关联员工与后台异常管理 真实集成测试（HTTP+双安全链+MyBatis+隔离库 MySQL+provider 模拟器）。
- * 微信渠道为 SIMULATOR 替身（L01 另验）；ADMIN 令牌经框架 TokenService 铸造（测试夹具，非真实登录）。
- * 覆盖：唯一匹配无凭证、重号/多部门去重/抢占/转移拒绝、并发唯一、停用/换号钩子失权、revoke 防复绑、
- * allow-rematch 不直接恢复、无关联不能暂停、MINI 不获 ADMIN、退役旧路由拒绝、reconcile 窗口内/外。
+ * I05 手机号自动关联员工与后台异常管理 真实集成测试（HTTP+双安全链+MyBatis+隔离库 MySQL+provider 模拟器）。 微信渠道为 SIMULATOR 替身（L01
+ * 另验）；ADMIN 令牌经框架 TokenService 铸造（测试夹具，非真实登录）。 覆盖：唯一匹配无凭证、重号/多部门去重/抢占/转移拒绝、并发唯一、停用/换号钩子失权、revoke
+ * 防复绑、 allow-rematch 不直接恢复、无关联不能暂停、MINI 不获 ADMIN、退役旧路由拒绝、reconcile 窗口内/外。
  */
-@SpringBootTest(classes = RuoYiApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
+@SpringBootTest(
+        classes = RuoYiApplication.class,
+        webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
         properties = {
-                "spring.datasource.druid.master.url=jdbc:mysql://localhost:3306/xinyi_vi_it_e07?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8",
-                "vi.environment=integration",
-                "vi.providers.mode=SIMULATOR",
-                "vi.outbox-relay-enabled=false",
-                "server.address=127.0.0.1"
+            "spring.datasource.druid.master.url=jdbc:mysql://localhost:3306/xinyi_vi_it_e07?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8",
+            "vi.environment=integration",
+            "vi.providers.mode=SIMULATOR",
+            "vi.outbox-relay-enabled=false",
+            "server.address=127.0.0.1"
         })
 @ActiveProfiles("druid")
+/** 手机号授权后仅唯一有效员工自动关联；重号、暂停、解绑及权限撤销不能被再次登录绕过。 */
 class I05IdentityIT {
 
     private static Process simProcess;
     private static int simPort;
     private static String simSecret;
     private static Path simDb;
-    private static final java.net.http.HttpClient SIM_HTTP = java.net.http.HttpClient.newHttpClient();
+    private static final java.net.http.HttpClient SIM_HTTP =
+            java.net.http.HttpClient.newHttpClient();
 
     static {
         try {
@@ -98,14 +101,24 @@ class I05IdentityIT {
         simDb = Files.createTempFile("i05-sim-", ".sqlite");
         Files.deleteIfExists(simDb);
         String python = System.getenv().getOrDefault("VI_PYTHON", "python3");
-        Path sim = repoRoot().resolve("docs/vehicle/V6.4/13_真实集成测试/provider_simulator/simulator.py");
-        ProcessBuilder pb = new ProcessBuilder(python, sim.toString(),
-                "--host", "127.0.0.1", "--port", "0", "--db", simDb.toString());
+        Path sim =
+                repoRoot().resolve("docs/vehicle/V6.4/13_真实集成测试/provider_simulator/simulator.py");
+        ProcessBuilder pb =
+                new ProcessBuilder(
+                        python,
+                        sim.toString(),
+                        "--host",
+                        "127.0.0.1",
+                        "--port",
+                        "0",
+                        "--db",
+                        simDb.toString());
         pb.environment().put("VI_SIM_SECRET", simSecret);
         pb.redirectErrorStream(true);
         simProcess = pb.start();
-        BufferedReader reader = new BufferedReader(
-                new InputStreamReader(simProcess.getInputStream(), StandardCharsets.UTF_8));
+        BufferedReader reader =
+                new BufferedReader(
+                        new InputStreamReader(simProcess.getInputStream(), StandardCharsets.UTF_8));
         String line = reader.readLine();
         if (line == null) {
             throw new IllegalStateException("模拟器无启动输出");
@@ -136,33 +149,44 @@ class I05IdentityIT {
         }
     }
 
-    @LocalServerPort
-    int port;
+    @LocalServerPort int port;
 
-    @Autowired
-    JdbcTemplate jdbc;
-    @Autowired
-    TokenService tokenService;
-    @Autowired
-    ISysUserService userService;
+    @Autowired JdbcTemplate jdbc;
+    @Autowired TokenService tokenService;
+    @Autowired ISysUserService userService;
 
-    private final RestTemplate rest = new RestTemplate(new org.springframework.http.client.JdkClientHttpRequestFactory()) {{
-        setErrorHandler(new DefaultResponseErrorHandler() {
-            @Override
-            public boolean hasError(ClientHttpResponse response) {
-                return false;
-            }
-        });
-    }};
+    private final RestTemplate rest =
+            new RestTemplate(new org.springframework.http.client.JdkClientHttpRequestFactory()) {
+                {
+                    setErrorHandler(
+                            new DefaultResponseErrorHandler() {
+                                @Override
+                                public boolean hasError(ClientHttpResponse response) {
+                                    return false;
+                                }
+                            });
+                }
+            };
 
     @BeforeEach
     void clean() {
-        for (String t : List.of("vi_driver_assignment", "vi_driver_profile", "vi_phone_verification_receipt",
-                "vi_employee_binding", "vi_session_token", "vi_session", "vi_account_security", "vi_account",
-                "vi_station_grant", "vi_owner_profile")) {
+        for (String t :
+                List.of(
+                        "vi_driver_assignment",
+                        "vi_driver_profile",
+                        "vi_phone_verification_receipt",
+                        "vi_employee_binding",
+                        "vi_session_token",
+                        "vi_session",
+                        "vi_account_security",
+                        "vi_account",
+                        "vi_station_grant",
+                        "vi_owner_profile")) {
             jdbc.execute("DELETE FROM " + t);
         }
-        jdbc.execute("DELETE FROM sys_user_dept WHERE user_id IN (SELECT user_id FROM sys_user WHERE user_name LIKE 'i05emp\\_%')");
+        jdbc.execute(
+                "DELETE FROM sys_user_dept WHERE user_id IN (SELECT user_id FROM sys_user WHERE"
+                        + " user_name LIKE 'i05emp\\_%')");
         jdbc.execute("DELETE FROM sys_user WHERE user_name LIKE 'i05emp\\_%'");
     }
 
@@ -170,12 +194,20 @@ class I05IdentityIT {
     private Map<String, Object> simPost(String path, Map<String, Object> body) {
         try {
             String json = ViJson.write(body);
-            java.net.http.HttpRequest req = java.net.http.HttpRequest.newBuilder(
-                            java.net.URI.create("http://127.0.0.1:" + simPort + path))
-                    .header("Content-Type", "application/json").header("X-Sim-Secret", simSecret)
-                    .POST(java.net.http.HttpRequest.BodyPublishers.ofString(json, StandardCharsets.UTF_8)).build();
+            java.net.http.HttpRequest req =
+                    java.net.http.HttpRequest.newBuilder(
+                                    java.net.URI.create("http://127.0.0.1:" + simPort + path))
+                            .header("Content-Type", "application/json")
+                            .header("X-Sim-Secret", simSecret)
+                            .POST(
+                                    java.net.http.HttpRequest.BodyPublishers.ofString(
+                                            json, StandardCharsets.UTF_8))
+                            .build();
             java.net.http.HttpResponse<String> resp =
-                    SIM_HTTP.send(req, java.net.http.HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
+                    SIM_HTTP.send(
+                            req,
+                            java.net.http.HttpResponse.BodyHandlers.ofString(
+                                    StandardCharsets.UTF_8));
             assertEquals(200, resp.statusCode(), "模拟器 " + path + " 应200 " + resp.body());
             return ViJson.read(resp.body(), Map.class);
         } catch (java.io.IOException | InterruptedException e) {
@@ -197,7 +229,9 @@ class I05IdentityIT {
 
     private static String expectedPhone(String persona) {
         try {
-            byte[] h = MessageDigest.getInstance("SHA-256").digest(persona.getBytes(StandardCharsets.UTF_8));
+            byte[] h =
+                    MessageDigest.getInstance("SHA-256")
+                            .digest(persona.getBytes(StandardCharsets.UTF_8));
             StringBuilder hex = new StringBuilder();
             for (byte b : h) {
                 hex.append(String.format("%02x", b));
@@ -226,11 +260,16 @@ class I05IdentityIT {
 
     private String adminToken() {
         SysUser admin = userService.selectUserByUserName("admin");
-        Long authVersion = jdbc.queryForObject("SELECT auth_version FROM sys_user WHERE user_id = ?", Long.class, admin.getUserId());
+        Long authVersion =
+                jdbc.queryForObject(
+                        "SELECT auth_version FROM sys_user WHERE user_id = ?",
+                        Long.class,
+                        admin.getUserId());
         LoginUser lu = new LoginUser(admin, Set.of("*:*:*"));
         lu.setUserId(admin.getUserId());
         lu.setAuthVersion(authVersion);
-        org.springframework.mock.web.MockHttpServletRequest req = new org.springframework.mock.web.MockHttpServletRequest();
+        org.springframework.mock.web.MockHttpServletRequest req =
+                new org.springframework.mock.web.MockHttpServletRequest();
         req.addHeader("User-Agent", "vi-it");
         org.springframework.web.context.request.RequestContextHolder.setRequestAttributes(
                 new org.springframework.web.context.request.ServletRequestAttributes(req));
@@ -252,8 +291,12 @@ class I05IdentityIT {
         // 模拟器 openId=sim_run_persona：同 persona 复用同一 run 才能重登命中同一账号
         String run = personaRuns.computeIfAbsent(persona, k -> newRun());
         String code = newCode(run, persona, "wechat");
-        ResponseEntity<String> r = rest.exchange(url("/api/common/login/wechat"), HttpMethod.POST,
-                mini(Map.of("code", code), null), String.class);
+        ResponseEntity<String> r =
+                rest.exchange(
+                        url("/api/common/login/wechat"),
+                        HttpMethod.POST,
+                        mini(Map.of("code", code), null),
+                        String.class);
         assertEquals(200, r.getStatusCode().value(), "登录应200 " + r.getBody());
         return ViJson.tree(r.getBody()).get("data");
     }
@@ -262,37 +305,64 @@ class I05IdentityIT {
 
     private JsonNode bind(JsonNode session, String persona) {
         long accountId = Long.parseLong(session.get("accountId").asText());
-        long version = jdbc.queryForObject("SELECT version FROM vi_account WHERE id = ?", Long.class, accountId);
+        long version =
+                jdbc.queryForObject(
+                        "SELECT version FROM vi_account WHERE id = ?", Long.class, accountId);
         String code = newCode(newRun(), persona, "phone");
-        ResponseEntity<String> r = rest.exchange(url("/api/common/phone/bind"), HttpMethod.POST,
-                mini(Map.of("phoneCode", code, "expectedAccountVersion", version,
-                        "verificationRequestId", UUID.randomUUID().toString()), session.get("token").asText()), String.class);
+        ResponseEntity<String> r =
+                rest.exchange(
+                        url("/api/common/phone/bind"),
+                        HttpMethod.POST,
+                        mini(
+                                Map.of(
+                                        "phoneCode",
+                                        code,
+                                        "expectedAccountVersion",
+                                        version,
+                                        "verificationRequestId",
+                                        UUID.randomUUID().toString()),
+                                session.get("token").asText()),
+                        String.class);
         assertEquals(200, r.getStatusCode().value(), "绑定应200 " + r.getBody());
         return ViJson.tree(r.getBody()).get("data");
     }
 
     private JsonNode link(String token) {
-        ResponseEntity<String> r = rest.exchange(url("/api/common/employee-link"), HttpMethod.GET,
-                mini(null, token), String.class);
+        ResponseEntity<String> r =
+                rest.exchange(
+                        url("/api/common/employee-link"),
+                        HttpMethod.GET,
+                        mini(null, token),
+                        String.class);
         assertEquals(200, r.getStatusCode().value());
         return ViJson.tree(r.getBody()).get("data");
     }
 
     private long seedEmployee(String phone, String suffix) {
         String userName = "i05emp_" + suffix;
-        jdbc.update("INSERT INTO sys_user (user_name, nick_name, phonenumber, status, del_flag, auth_version, password) "
-                + "VALUES (?, ?, ?, '0', '0', 0, 'x')", userName, "员工" + suffix, phone);
-        return jdbc.queryForObject("SELECT user_id FROM sys_user WHERE user_name = ?", Long.class, userName);
+        jdbc.update(
+                "INSERT INTO sys_user (user_name, nick_name, phonenumber, status, del_flag,"
+                        + " auth_version, password) VALUES (?, ?, ?, '0', '0', 0, 'x')",
+                userName,
+                "员工" + suffix,
+                phone);
+        return jdbc.queryForObject(
+                "SELECT user_id FROM sys_user WHERE user_name = ?", Long.class, userName);
     }
 
     private void seedGrant(long sysUserId, long stationId) {
-        jdbc.update("INSERT INTO vi_station_grant (sys_user_id, station_id, enabled, granted_by, reason) "
-                + "VALUES (?, ?, 1, 1, 'I05 测试授权')", sysUserId, stationId);
+        jdbc.update(
+                "INSERT INTO vi_station_grant (sys_user_id, station_id, enabled, granted_by,"
+                        + " reason) VALUES (?, ?, 1, 1, 'I05 测试授权')",
+                sysUserId,
+                stationId);
     }
 
     private long bindingIdOf(long accountId) {
-        return jdbc.queryForObject("SELECT id FROM vi_employee_binding WHERE account_id = ? ORDER BY id DESC LIMIT 1",
-                Long.class, accountId);
+        return jdbc.queryForObject(
+                "SELECT id FROM vi_employee_binding WHERE account_id = ? ORDER BY id DESC LIMIT 1",
+                Long.class,
+                accountId);
     }
 
     // ---------- 用例 ----------
@@ -306,8 +376,12 @@ class I05IdentityIT {
         JsonNode r = bind(s, persona);
         assertEquals("LINKED", r.get("employeeLink").get("status").asText());
         long accountId = Long.parseLong(s.get("accountId").asText());
-        assertEquals("WECHAT_PHONE_MATCH", jdbc.queryForObject("SELECT source FROM vi_employee_binding WHERE account_id = ?",
-                String.class, accountId));
+        assertEquals(
+                "WECHAT_PHONE_MATCH",
+                jdbc.queryForObject(
+                        "SELECT source FROM vi_employee_binding WHERE account_id = ?",
+                        String.class,
+                        accountId));
         assertNullBoundBy(accountId);
         JsonNode l = link(s.get("token").asText());
         assertTrue(l.get("workAccessEnabled").asBoolean());
@@ -315,8 +389,14 @@ class I05IdentityIT {
     }
 
     private void assertNullBoundBy(long accountId) {
-        assertEquals(0, jdbc.queryForObject("SELECT COUNT(*) FROM vi_employee_binding WHERE account_id = ? AND bound_by IS NOT NULL",
-                Integer.class, accountId), "自动关联 bound_by 须为 NULL（无申请/签发/消费）");
+        assertEquals(
+                0,
+                jdbc.queryForObject(
+                        "SELECT COUNT(*) FROM vi_employee_binding WHERE account_id = ? AND bound_by"
+                                + " IS NOT NULL",
+                        Integer.class,
+                        accountId),
+                "自动关联 bound_by 须为 NULL（无申请/签发/消费）");
     }
 
     @Test
@@ -328,7 +408,8 @@ class I05IdentityIT {
         JsonNode s = login(persona);
         JsonNode r = bind(s, persona);
         assertEquals("NEEDS_ADMIN", r.get("employeeLink").get("status").asText());
-        assertEquals(0, jdbc.queryForObject("SELECT COUNT(*) FROM vi_employee_binding", Integer.class));
+        assertEquals(
+                0, jdbc.queryForObject("SELECT COUNT(*) FROM vi_employee_binding", Integer.class));
         assertFalse(r.toString().contains("sysUserId"), "不泄员工名单/ID");
     }
 
@@ -336,8 +417,10 @@ class I05IdentityIT {
     void 多部门join按主键去重_TC_R62_010() {
         String persona = "p05-dept-" + System.nanoTime();
         long sysUserId = seedEmployee(expectedPhone(persona), "d" + System.nanoTime());
-        jdbc.update("INSERT INTO sys_user_dept (user_id, dept_id) VALUES (?, 100), (?, 101)",
-                sysUserId, sysUserId);
+        jdbc.update(
+                "INSERT INTO sys_user_dept (user_id, dept_id) VALUES (?, 100), (?, 101)",
+                sysUserId,
+                sysUserId);
         JsonNode s = login(persona);
         JsonNode r = bind(s, persona);
         assertEquals("LINKED", r.get("employeeLink").get("status").asText(), "多部门任职不误判多名");
@@ -358,13 +441,23 @@ class I05IdentityIT {
         // 故改目录 empA 号码为 B 的核验号不可行；改为断言 countActiveByAppUser 保护：B 用同号 persona 不可能。
         // 采用：把 empA 的目录号码改成 B 核验号后 A 已绑（phone_lookup 旧），B 授权新号匹配 empA → USER_ALREADY_LINKED。
         String personaB = "p05-second-" + System.nanoTime();
-        jdbc.update("UPDATE sys_user SET phonenumber = ? WHERE user_id = ?", expectedPhone(personaB), empA);
+        jdbc.update(
+                "UPDATE sys_user SET phonenumber = ? WHERE user_id = ?",
+                expectedPhone(personaB),
+                empA);
         JsonNode sb = login(personaB);
         JsonNode rb = bind(sb, personaB);
-        assertEquals("NEEDS_ADMIN", rb.get("employeeLink").get("status").asText(), "员工已被其他微信占用拒绝覆盖");
+        assertEquals(
+                "NEEDS_ADMIN", rb.get("employeeLink").get("status").asText(), "员工已被其他微信占用拒绝覆盖");
         long accountIdA = Long.parseLong(sa.get("accountId").asText());
-        assertEquals(1, jdbc.queryForObject("SELECT COUNT(*) FROM vi_employee_binding WHERE sys_user_id = ? AND revoked_at IS NULL",
-                Integer.class, empA), "原关联保留唯一");
+        assertEquals(
+                1,
+                jdbc.queryForObject(
+                        "SELECT COUNT(*) FROM vi_employee_binding WHERE sys_user_id = ? AND"
+                                + " revoked_at IS NULL",
+                        Integer.class,
+                        empA),
+                "原关联保留唯一");
     }
 
     @Test
@@ -379,8 +472,14 @@ class I05IdentityIT {
         JsonNode r = bind(s, personaB);
         assertEquals("NEEDS_ADMIN", r.get("employeeLink").get("status").asText());
         long accountId = Long.parseLong(s.get("accountId").asText());
-        assertEquals(empA, jdbc.queryForObject("SELECT sys_user_id FROM vi_employee_binding WHERE account_id = ? AND revoked_at IS NULL",
-                Long.class, accountId), "不自动转移身份");
+        assertEquals(
+                empA,
+                jdbc.queryForObject(
+                        "SELECT sys_user_id FROM vi_employee_binding WHERE account_id = ? AND"
+                                + " revoked_at IS NULL",
+                        Long.class,
+                        accountId),
+                "不自动转移身份");
     }
 
     @Test
@@ -397,13 +496,30 @@ class I05IdentityIT {
         CountDownLatch gate = new CountDownLatch(1);
         List<Future<String>> fs = new java.util.ArrayList<>();
         for (String code : List.of(code1, code2)) {
-            fs.add(pool.submit(() -> {
-                gate.await();
-                ResponseEntity<String> r = rest.exchange(url("/api/common/phone/bind"), HttpMethod.POST,
-                        mini(Map.of("phoneCode", code, "expectedAccountVersion", a.get("accountVersion").asLong(),
-                                "verificationRequestId", UUID.randomUUID().toString()), a.get("token").asText()), String.class);
-                return ViJson.tree(r.getBody()).get("data").get("employeeLink").get("status").asText();
-            }));
+            fs.add(
+                    pool.submit(
+                            () -> {
+                                gate.await();
+                                ResponseEntity<String> r =
+                                        rest.exchange(
+                                                url("/api/common/phone/bind"),
+                                                HttpMethod.POST,
+                                                mini(
+                                                        Map.of(
+                                                                "phoneCode",
+                                                                code,
+                                                                "expectedAccountVersion",
+                                                                a.get("accountVersion").asLong(),
+                                                                "verificationRequestId",
+                                                                UUID.randomUUID().toString()),
+                                                        a.get("token").asText()),
+                                                String.class);
+                                return ViJson.tree(r.getBody())
+                                        .get("data")
+                                        .get("employeeLink")
+                                        .get("status")
+                                        .asText();
+                            }));
         }
         gate.countDown();
         String r1 = fs.get(0).get(30, TimeUnit.SECONDS);
@@ -411,8 +527,14 @@ class I05IdentityIT {
         pool.shutdownNow();
         assertTrue(r1.equals("LINKED") || r2.equals("LINKED"));
         long accountId = Long.parseLong(a.get("accountId").asText());
-        assertEquals(1, jdbc.queryForObject("SELECT COUNT(*) FROM vi_employee_binding WHERE account_id = ? AND revoked_at IS NULL",
-                Integer.class, accountId), "并发只一条有效关联");
+        assertEquals(
+                1,
+                jdbc.queryForObject(
+                        "SELECT COUNT(*) FROM vi_employee_binding WHERE account_id = ? AND"
+                                + " revoked_at IS NULL",
+                        Integer.class,
+                        accountId),
+                "并发只一条有效关联");
     }
 
     @Test
@@ -425,17 +547,34 @@ class I05IdentityIT {
         String token = s.get("token").asText();
         assertTrue(link(token).get("workAccessEnabled").asBoolean());
         String admin = adminToken();
-        ResponseEntity<String> r = rest.exchange(url("/system/user/changeStatus"), HttpMethod.PUT,
-                admin(Map.of("userId", emp, "status", "1", "reason", "停用测试"), admin), String.class);
+        ResponseEntity<String> r =
+                rest.exchange(
+                        url("/system/user/changeStatus"),
+                        HttpMethod.PUT,
+                        admin(Map.of("userId", emp, "status", "1", "reason", "停用测试"), admin),
+                        String.class);
         assertEquals(200, r.getStatusCode().value(), "停用应200 " + r.getBody());
         JsonNode l = link(token);
         assertFalse(l.get("workAccessEnabled").asBoolean(), "停用后旧会话失权");
-        JsonNode sess = ViJson.tree(rest.exchange(url("/api/common/session"), HttpMethod.GET, mini(null, token), String.class)
-                .getBody()).get("data");
+        JsonNode sess =
+                ViJson.tree(
+                                rest.exchange(
+                                                url("/api/common/session"),
+                                                HttpMethod.GET,
+                                                mini(null, token),
+                                                String.class)
+                                        .getBody())
+                        .get("data");
         assertFalse(sess.get("availableRoles").toString().contains("STATION"));
         assertTrue(sess.get("availableRoles").toString().contains("OWNER"), "个人车主不删除");
-        assertEquals("SUSPENDED", jdbc.queryForObject("SELECT status FROM vi_employee_binding WHERE sys_user_id = ? AND revoked_at IS NULL",
-                String.class, emp), "钩子暂停绑定");
+        assertEquals(
+                "SUSPENDED",
+                jdbc.queryForObject(
+                        "SELECT status FROM vi_employee_binding WHERE sys_user_id = ? AND"
+                                + " revoked_at IS NULL",
+                        String.class,
+                        emp),
+                "钩子暂停绑定");
     }
 
     @Test
@@ -448,12 +587,31 @@ class I05IdentityIT {
         String token = s.get("token").asText();
         String admin = adminToken();
         String newPhone = "199" + String.format("%08d", (System.nanoTime() % 100000000L));
-        ResponseEntity<String> r = rest.exchange(url("/system/user"), HttpMethod.PUT,
-                admin(Map.of("userId", emp, "phonenumber", newPhone, "nickName", "员工换号", "reason", "换号测试"), admin), String.class);
+        ResponseEntity<String> r =
+                rest.exchange(
+                        url("/system/user"),
+                        HttpMethod.PUT,
+                        admin(
+                                Map.of(
+                                        "userId",
+                                        emp,
+                                        "phonenumber",
+                                        newPhone,
+                                        "nickName",
+                                        "员工换号",
+                                        "reason",
+                                        "换号测试"),
+                                admin),
+                        String.class);
         assertEquals(200, r.getStatusCode().value(), "换号应200 " + r.getBody());
         assertFalse(link(token).get("workAccessEnabled").asBoolean(), "换号后旧能力暂停");
-        assertEquals("SUSPENDED", jdbc.queryForObject("SELECT status FROM vi_employee_binding WHERE sys_user_id = ? AND revoked_at IS NULL",
-                String.class, emp));
+        assertEquals(
+                "SUSPENDED",
+                jdbc.queryForObject(
+                        "SELECT status FROM vi_employee_binding WHERE sys_user_id = ? AND"
+                                + " revoked_at IS NULL",
+                        String.class,
+                        emp));
     }
 
     @Test
@@ -465,9 +623,17 @@ class I05IdentityIT {
         long accountId = Long.parseLong(s.get("accountId").asText());
         long bindingId = bindingIdOf(accountId);
         String admin = adminToken();
-        long ver = jdbc.queryForObject("SELECT version FROM vi_employee_binding WHERE id = ?", Long.class, bindingId);
-        ResponseEntity<String> r = rest.exchange(url("/api/admin/employee-links/" + bindingId + "/revoke"), HttpMethod.POST,
-                admin(Map.of("expectedVersion", ver, "reason", "管理员解除"), admin), String.class);
+        long ver =
+                jdbc.queryForObject(
+                        "SELECT version FROM vi_employee_binding WHERE id = ?",
+                        Long.class,
+                        bindingId);
+        ResponseEntity<String> r =
+                rest.exchange(
+                        url("/api/admin/employee-links/" + bindingId + "/revoke"),
+                        HttpMethod.POST,
+                        admin(Map.of("expectedVersion", ver, "reason", "管理员解除"), admin),
+                        String.class);
         assertEquals(200, r.getStatusCode().value(), "revoke应200 " + r.getBody());
         assertEquals("REVOKED", ViJson.tree(r.getBody()).get("data").get("status").asText());
         // 重新登录+授权同号 → 不自动复绑（U02 仍 REVOKED，OWNER 手机号核验可用）
@@ -475,8 +641,12 @@ class I05IdentityIT {
         JsonNode r2 = bind(s2, persona);
         assertTrue(r2.get("phoneBound").asBoolean(), "OWNER 手机号核验仍可用");
         assertEquals("REVOKED", link(s2.get("token").asText()).get("status").asText(), "不自动悄悄复绑");
-        assertEquals(1, jdbc.queryForObject("SELECT auto_rebind_blocked FROM vi_employee_binding WHERE id = ?",
-                Integer.class, bindingId));
+        assertEquals(
+                1,
+                jdbc.queryForObject(
+                        "SELECT auto_rebind_blocked FROM vi_employee_binding WHERE id = ?",
+                        Integer.class,
+                        bindingId));
     }
 
     @Test
@@ -488,12 +658,27 @@ class I05IdentityIT {
         long accountId = Long.parseLong(s.get("accountId").asText());
         long bindingId = bindingIdOf(accountId);
         String admin = adminToken();
-        long ver = jdbc.queryForObject("SELECT version FROM vi_employee_binding WHERE id = ?", Long.class, bindingId);
-        rest.exchange(url("/api/admin/employee-links/" + bindingId + "/revoke"), HttpMethod.POST,
-                admin(Map.of("expectedVersion", ver, "reason", "解除"), admin), String.class);
-        long ver2 = jdbc.queryForObject("SELECT version FROM vi_employee_binding WHERE id = ?", Long.class, bindingId);
-        ResponseEntity<String> r = rest.exchange(url("/api/admin/employee-links/" + bindingId + "/allow-rematch"), HttpMethod.POST,
-                admin(Map.of("expectedVersion", ver2, "reason", "允许重核"), admin), String.class);
+        long ver =
+                jdbc.queryForObject(
+                        "SELECT version FROM vi_employee_binding WHERE id = ?",
+                        Long.class,
+                        bindingId);
+        rest.exchange(
+                url("/api/admin/employee-links/" + bindingId + "/revoke"),
+                HttpMethod.POST,
+                admin(Map.of("expectedVersion", ver, "reason", "解除"), admin),
+                String.class);
+        long ver2 =
+                jdbc.queryForObject(
+                        "SELECT version FROM vi_employee_binding WHERE id = ?",
+                        Long.class,
+                        bindingId);
+        ResponseEntity<String> r =
+                rest.exchange(
+                        url("/api/admin/employee-links/" + bindingId + "/allow-rematch"),
+                        HttpMethod.POST,
+                        admin(Map.of("expectedVersion", ver2, "reason", "允许重核"), admin),
+                        String.class);
         assertEquals(200, r.getStatusCode().value(), r.getBody());
         JsonNode d = ViJson.tree(r.getBody()).get("data");
         assertTrue(d.get("requiresNewPhoneAuthorization").asBoolean());
@@ -507,10 +692,17 @@ class I05IdentityIT {
     @Test
     void 无关联不能暂停或解除_TC_R63_011() {
         String admin = adminToken();
-        ResponseEntity<String> r = rest.exchange(url("/api/admin/employee-links/999999999/suspend"), HttpMethod.POST,
-                admin(Map.of("expectedVersion", 0, "reason", "无目标"), admin), String.class);
+        ResponseEntity<String> r =
+                rest.exchange(
+                        url("/api/admin/employee-links/999999999/suspend"),
+                        HttpMethod.POST,
+                        admin(Map.of("expectedVersion", 0, "reason", "无目标"), admin),
+                        String.class);
         assertEquals(404, r.getStatusCode().value(), "无关联暂停应404 " + r.getBody());
-        assertEquals(0, jdbc.queryForObject("SELECT COUNT(*) FROM vi_employee_binding", Integer.class), "不制造已暂停绑定");
+        assertEquals(
+                0,
+                jdbc.queryForObject("SELECT COUNT(*) FROM vi_employee_binding", Integer.class),
+                "不制造已暂停绑定");
     }
 
     @Test
@@ -520,22 +712,37 @@ class I05IdentityIT {
         JsonNode s = login(persona);
         bind(s, persona);
         // MINI 令牌访问后台接口 → 拒绝（框架链不认 MINI 不透明令牌）
-        ResponseEntity<String> r = rest.exchange(url("/api/admin/employee-links"), HttpMethod.GET,
-                mini(null, s.get("token").asText()), String.class);
+        ResponseEntity<String> r =
+                rest.exchange(
+                        url("/api/admin/employee-links"),
+                        HttpMethod.GET,
+                        mini(null, s.get("token").asText()),
+                        String.class);
         JsonNode body = ViJson.tree(r.getBody());
-        assertTrue(r.getStatusCode().value() == 401 || body.path("code").asInt() == 401, "MINI 不获 ADMIN");
-        assertFalse(link(s.get("token").asText()).toString().contains("biz:employeebinding"), "不获后台权限");
+        assertTrue(
+                r.getStatusCode().value() == 401 || body.path("code").asInt() == 401,
+                "MINI 不获 ADMIN");
+        assertFalse(
+                link(s.get("token").asText()).toString().contains("biz:employeebinding"), "不获后台权限");
     }
 
     @Test
     void 退役旧绑定申请路由拒绝无副作用_TC_R62_026_R63_015() {
         JsonNode s = login("p05-old-" + System.nanoTime());
-        ResponseEntity<String> r = rest.exchange(url("/api/common/employee-binding/request"), HttpMethod.POST,
-                mini(Map.of("requestReason", "x"), s.get("token").asText()), String.class);
+        ResponseEntity<String> r =
+                rest.exchange(
+                        url("/api/common/employee-binding/request"),
+                        HttpMethod.POST,
+                        mini(Map.of("requestReason", "x"), s.get("token").asText()),
+                        String.class);
         int code = ViJson.tree(r.getBody()).path("code").asInt(0);
-        assertTrue(r.getStatusCode().value() >= 400 || code >= 400, "旧路由不存在/拒绝，实际 "
-                + r.getStatusCode() + " " + r.getBody());
-        assertEquals(0, jdbc.queryForObject("SELECT COUNT(*) FROM vi_employee_binding", Integer.class), "无授权写入");
+        assertTrue(
+                r.getStatusCode().value() >= 400 || code >= 400,
+                "旧路由不存在/拒绝，实际 " + r.getStatusCode() + " " + r.getBody());
+        assertEquals(
+                0,
+                jdbc.queryForObject("SELECT COUNT(*) FROM vi_employee_binding", Integer.class),
+                "无授权写入");
     }
 
     @Test
@@ -547,9 +754,16 @@ class I05IdentityIT {
         long accountId = Long.parseLong(s.get("accountId").asText());
         long bindingId = bindingIdOf(accountId);
         String admin = adminToken();
-        long ver = jdbc.queryForObject("SELECT version FROM vi_employee_binding WHERE id = ?", Long.class, bindingId);
-        rest.exchange(url("/api/admin/employee-links/" + bindingId + "/suspend"), HttpMethod.POST,
-                admin(Map.of("expectedVersion", ver, "reason", "暂停"), admin), String.class);
+        long ver =
+                jdbc.queryForObject(
+                        "SELECT version FROM vi_employee_binding WHERE id = ?",
+                        Long.class,
+                        bindingId);
+        rest.exchange(
+                url("/api/admin/employee-links/" + bindingId + "/suspend"),
+                HttpMethod.POST,
+                admin(Map.of("expectedVersion", ver, "reason", "暂停"), admin),
+                String.class);
         // 重新登录+授权同号 → 仍 SUSPENDED，无 STATION，不影响 OWNER
         JsonNode s2 = login(persona);
         bind(s2, persona);
@@ -567,17 +781,28 @@ class I05IdentityIT {
         // 目录后建员工（同核验号）→ reconcile 窗口内重试 → LINKED
         seedEmployee(expectedPhone(persona), "rec" + System.nanoTime());
         long ctx = s.get("contextVersion").asLong();
-        ResponseEntity<String> r = rest.exchange(url("/api/common/employee-link/reconcile"), HttpMethod.POST,
-                mini(Map.of("expectedContextVersion", ctx), s.get("token").asText()), String.class);
+        ResponseEntity<String> r =
+                rest.exchange(
+                        url("/api/common/employee-link/reconcile"),
+                        HttpMethod.POST,
+                        mini(Map.of("expectedContextVersion", ctx), s.get("token").asText()),
+                        String.class);
         assertEquals(200, r.getStatusCode().value(), r.getBody());
         assertEquals("LINKED", ViJson.tree(r.getBody()).get("data").get("status").asText());
         // 窗口外：把回执 verified_at 置 11 分钟前 → 422
-        jdbc.update("UPDATE vi_phone_verification_receipt SET verified_at = DATE_SUB(UTC_TIMESTAMP(3), INTERVAL 11 MINUTE) "
-                + "WHERE account_id = ?", accountId);
-        ResponseEntity<String> r2 = rest.exchange(url("/api/common/employee-link/reconcile"), HttpMethod.POST,
-                mini(Map.of("expectedContextVersion", ctx), s.get("token").asText()), String.class);
+        jdbc.update(
+                "UPDATE vi_phone_verification_receipt SET verified_at = DATE_SUB(UTC_TIMESTAMP(3),"
+                        + " INTERVAL 11 MINUTE) WHERE account_id = ?",
+                accountId);
+        ResponseEntity<String> r2 =
+                rest.exchange(
+                        url("/api/common/employee-link/reconcile"),
+                        HttpMethod.POST,
+                        mini(Map.of("expectedContextVersion", ctx), s.get("token").asText()),
+                        String.class);
         assertEquals(422, r2.getStatusCode().value(), "窗口外应422 " + r2.getBody());
-        assertEquals("VI_PHONE_PROOF_REQUIRED", ViJson.tree(r2.getBody()).get("errorCode").asText());
+        assertEquals(
+                "VI_PHONE_PROOF_REQUIRED", ViJson.tree(r2.getBody()).get("errorCode").asText());
     }
 
     @Test
@@ -587,7 +812,12 @@ class I05IdentityIT {
         JsonNode s = login(persona);
         bind(s, persona);
         String admin = adminToken();
-        ResponseEntity<String> r = rest.exchange(url("/api/admin/employee-links"), HttpMethod.GET, admin(null, admin), String.class);
+        ResponseEntity<String> r =
+                rest.exchange(
+                        url("/api/admin/employee-links"),
+                        HttpMethod.GET,
+                        admin(null, admin),
+                        String.class);
         assertEquals(200, r.getStatusCode().value());
         JsonNode list = ViJson.tree(r.getBody()).get("data");
         assertTrue(list.toString().contains(Long.toString(emp)));
@@ -595,9 +825,15 @@ class I05IdentityIT {
         assertTrue(item.has("phoneMask") && item.has("openIdMask"));
         assertTrue(item.get("openIdMask").asText().contains("****"), "openId 脱敏不泄完整标识");
         long bindingId = Long.parseLong(item.get("bindingId").asText());
-        ResponseEntity<String> d = rest.exchange(url("/api/admin/employee-links/" + bindingId), HttpMethod.GET, admin(null, admin), String.class);
+        ResponseEntity<String> d =
+                rest.exchange(
+                        url("/api/admin/employee-links/" + bindingId),
+                        HttpMethod.GET,
+                        admin(null, admin),
+                        String.class);
         assertEquals(200, d.getStatusCode().value());
-        assertEquals(Long.toString(emp), ViJson.tree(d.getBody()).get("data").get("sysUserId").asText());
+        assertEquals(
+                Long.toString(emp), ViJson.tree(d.getBody()).get("data").get("sysUserId").asText());
     }
 
     @Test
@@ -611,8 +847,14 @@ class I05IdentityIT {
         JsonNode r = bind(s, persona);
         assertEquals("LINKED", r.get("employeeLink").get("status").asText(), "仅按有效员工范围匹配");
         long accountId = Long.parseLong(s.get("accountId").asText());
-        assertEquals(cur, jdbc.queryForObject("SELECT sys_user_id FROM vi_employee_binding WHERE account_id = ? AND revoked_at IS NULL",
-                Long.class, accountId), "不匹配停用旧员工");
+        assertEquals(
+                cur,
+                jdbc.queryForObject(
+                        "SELECT sys_user_id FROM vi_employee_binding WHERE account_id = ? AND"
+                                + " revoked_at IS NULL",
+                        Long.class,
+                        accountId),
+                "不匹配停用旧员工");
     }
 
     @Test
@@ -624,14 +866,39 @@ class I05IdentityIT {
         long accountId = Long.parseLong(s.get("accountId").asText());
         String admin = adminToken();
         String newPhone = "199" + String.format("%08d", (System.nanoTime() % 100000000L));
-        rest.exchange(url("/system/user"), HttpMethod.PUT,
-                admin(Map.of("userId", emp, "phonenumber", newPhone, "nickName", "改号", "reason", "并发改号"), admin), String.class);
+        rest.exchange(
+                url("/system/user"),
+                HttpMethod.PUT,
+                admin(
+                        Map.of(
+                                "userId",
+                                emp,
+                                "phonenumber",
+                                newPhone,
+                                "nickName",
+                                "改号",
+                                "reason",
+                                "并发改号"),
+                        admin),
+                String.class);
         // 改号后旧核验号在目录已无有效员工；再绑定不得把关联提交到已变化身份
         bind(s, persona);
-        assertEquals(1, jdbc.queryForObject("SELECT COUNT(*) FROM vi_employee_binding WHERE account_id = ? AND revoked_at IS NULL",
-                Integer.class, accountId), "不产生第二条有效关联");
-        assertEquals("SUSPENDED", jdbc.queryForObject("SELECT status FROM vi_employee_binding WHERE account_id = ? AND revoked_at IS NULL",
-                String.class, accountId), "旧关联被钩子暂停而非转移到新号");
+        assertEquals(
+                1,
+                jdbc.queryForObject(
+                        "SELECT COUNT(*) FROM vi_employee_binding WHERE account_id = ? AND"
+                                + " revoked_at IS NULL",
+                        Integer.class,
+                        accountId),
+                "不产生第二条有效关联");
+        assertEquals(
+                "SUSPENDED",
+                jdbc.queryForObject(
+                        "SELECT status FROM vi_employee_binding WHERE account_id = ? AND revoked_at"
+                                + " IS NULL",
+                        String.class,
+                        accountId),
+                "旧关联被钩子暂停而非转移到新号");
     }
 
     @Test
@@ -640,15 +907,34 @@ class I05IdentityIT {
         long emp = seedEmployee(expectedPhone(persona), "self" + System.nanoTime());
         JsonNode s = login(persona);
         bind(s, persona);
-        String before = jdbc.queryForObject("SELECT phonenumber FROM sys_user WHERE user_id = ?", String.class, emp);
+        String before =
+                jdbc.queryForObject(
+                        "SELECT phonenumber FROM sys_user WHERE user_id = ?", String.class, emp);
         // MINI 令牌不能调用后台改号入口
-        ResponseEntity<String> r = rest.exchange(url("/system/user"), HttpMethod.PUT,
-                mini(Map.of("userId", emp, "phonenumber", "19900000000", "reason", "自改"), s.get("token").asText()), String.class);
-        assertTrue(r.getStatusCode().value() == 401 || ViJson.tree(r.getBody()).path("code").asInt() == 401, "MINI 不获后台改号");
+        ResponseEntity<String> r =
+                rest.exchange(
+                        url("/system/user"),
+                        HttpMethod.PUT,
+                        mini(
+                                Map.of("userId", emp, "phonenumber", "19900000000", "reason", "自改"),
+                                s.get("token").asText()),
+                        String.class);
+        assertTrue(
+                r.getStatusCode().value() == 401
+                        || ViJson.tree(r.getBody()).path("code").asInt() == 401,
+                "MINI 不获后台改号");
         // 个人资料自助修改不改变目录手机号
-        rest.exchange(url("/system/user/profile"), HttpMethod.PUT,
-                mini(Map.of("nickName", "本人", "phonenumber", "19900000000"), s.get("token").asText()), String.class);
-        assertEquals(before, jdbc.queryForObject("SELECT phonenumber FROM sys_user WHERE user_id = ?", String.class, emp),
+        rest.exchange(
+                url("/system/user/profile"),
+                HttpMethod.PUT,
+                mini(
+                        Map.of("nickName", "本人", "phonenumber", "19900000000"),
+                        s.get("token").asText()),
+                String.class);
+        assertEquals(
+                before,
+                jdbc.queryForObject(
+                        "SELECT phonenumber FROM sys_user WHERE user_id = ?", String.class, emp),
                 "自改不成为自动关联可信目录值");
     }
 
@@ -665,12 +951,24 @@ class I05IdentityIT {
         long idA = bindingIdOf(Long.parseLong(sa.get("accountId").asText()));
         long idB = bindingIdOf(Long.parseLong(sb.get("accountId").asText()));
         String admin = adminToken();
-        long verB = jdbc.queryForObject("SELECT version FROM vi_employee_binding WHERE id = ?", Long.class, idB);
-        ResponseEntity<String> r = rest.exchange(url("/api/admin/employee-links/" + idB + "/suspend"), HttpMethod.POST,
-                admin(Map.of("expectedVersion", verB, "reason", "暂停B"), admin), String.class);
+        long verB =
+                jdbc.queryForObject(
+                        "SELECT version FROM vi_employee_binding WHERE id = ?", Long.class, idB);
+        ResponseEntity<String> r =
+                rest.exchange(
+                        url("/api/admin/employee-links/" + idB + "/suspend"),
+                        HttpMethod.POST,
+                        admin(Map.of("expectedVersion", verB, "reason", "暂停B"), admin),
+                        String.class);
         assertEquals(200, r.getStatusCode().value());
-        assertEquals("SUSPENDED", jdbc.queryForObject("SELECT status FROM vi_employee_binding WHERE id = ?", String.class, idB));
-        assertEquals("ACTIVE", jdbc.queryForObject("SELECT status FROM vi_employee_binding WHERE id = ?", String.class, idA),
+        assertEquals(
+                "SUSPENDED",
+                jdbc.queryForObject(
+                        "SELECT status FROM vi_employee_binding WHERE id = ?", String.class, idB));
+        assertEquals(
+                "ACTIVE",
+                jdbc.queryForObject(
+                        "SELECT status FROM vi_employee_binding WHERE id = ?", String.class, idA),
                 "不得处理A");
     }
 }

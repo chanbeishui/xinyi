@@ -45,25 +45,28 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * C01 字典/公开条款/参数配置 真实集成测试（HTTP+双安全链+MyBatis+隔离库 MySQL+provider 模拟器）。
- * 覆盖：公开配置匿名+白名单+缺协议不开放下单+不宣称可支付、ADMIN配置CAS+固定安全项拒绝、
- * 发布协议后开放下单、字典车型/检测类型、新车型无价格不能0元（价格守卫）、生产不采用测试主体。
+ * 覆盖：公开配置匿名+白名单+缺协议不开放下单+不宣称可支付、ADMIN配置CAS+固定安全项拒绝、 发布协议后开放下单、字典车型/检测类型、新车型无价格不能0元（价格守卫）、生产不采用测试主体。
  */
-@SpringBootTest(classes = RuoYiApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
+@SpringBootTest(
+        classes = RuoYiApplication.class,
+        webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
         properties = {
-                "spring.datasource.druid.master.url=jdbc:mysql://localhost:3306/xinyi_vi_it_e07?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8",
-                "vi.environment=integration",
-                "vi.providers.mode=SIMULATOR",
-                "vi.outbox-relay-enabled=false",
-                "server.address=127.0.0.1"
+            "spring.datasource.druid.master.url=jdbc:mysql://localhost:3306/xinyi_vi_it_e07?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8",
+            "vi.environment=integration",
+            "vi.providers.mode=SIMULATOR",
+            "vi.outbox-relay-enabled=false",
+            "server.address=127.0.0.1"
         })
 @ActiveProfiles("druid")
+/** 验证业务配置白名单、版本CAS和字典计价守卫；普通配置不能改写固定安全项或外部凭据。 */
 class C01ConfigIT {
 
     private static Process simProcess;
     private static int simPort;
     private static String simSecret;
     private static Path simDb;
-    private static final java.net.http.HttpClient SIM_HTTP = java.net.http.HttpClient.newHttpClient();
+    private static final java.net.http.HttpClient SIM_HTTP =
+            java.net.http.HttpClient.newHttpClient();
 
     static {
         try {
@@ -92,14 +95,24 @@ class C01ConfigIT {
         simDb = Files.createTempFile("c01-sim-", ".sqlite");
         Files.deleteIfExists(simDb);
         String python = System.getenv().getOrDefault("VI_PYTHON", "python3");
-        Path sim = repoRoot().resolve("docs/vehicle/V6.4/13_真实集成测试/provider_simulator/simulator.py");
-        ProcessBuilder pb = new ProcessBuilder(python, sim.toString(),
-                "--host", "127.0.0.1", "--port", "0", "--db", simDb.toString());
+        Path sim =
+                repoRoot().resolve("docs/vehicle/V6.4/13_真实集成测试/provider_simulator/simulator.py");
+        ProcessBuilder pb =
+                new ProcessBuilder(
+                        python,
+                        sim.toString(),
+                        "--host",
+                        "127.0.0.1",
+                        "--port",
+                        "0",
+                        "--db",
+                        simDb.toString());
         pb.environment().put("VI_SIM_SECRET", simSecret);
         pb.redirectErrorStream(true);
         simProcess = pb.start();
-        BufferedReader reader = new BufferedReader(
-                new InputStreamReader(simProcess.getInputStream(), StandardCharsets.UTF_8));
+        BufferedReader reader =
+                new BufferedReader(
+                        new InputStreamReader(simProcess.getInputStream(), StandardCharsets.UTF_8));
         String line = reader.readLine();
         if (line == null) {
             throw new IllegalStateException("模拟器无启动输出");
@@ -130,30 +143,31 @@ class C01ConfigIT {
         }
     }
 
-    @LocalServerPort
-    int port;
-    @Autowired
-    JdbcTemplate jdbc;
-    @Autowired
-    TokenService tokenService;
-    @Autowired
-    ISysUserService userService;
-    @Autowired
-    ConfigService configService;
+    @LocalServerPort int port;
+    @Autowired JdbcTemplate jdbc;
+    @Autowired TokenService tokenService;
+    @Autowired ISysUserService userService;
+    @Autowired ConfigService configService;
 
-    private final RestTemplate rest = new RestTemplate(new org.springframework.http.client.JdkClientHttpRequestFactory()) {{
-        setErrorHandler(new DefaultResponseErrorHandler() {
-            @Override
-            public boolean hasError(ClientHttpResponse response) {
-                return false;
-            }
-        });
-    }};
+    private final RestTemplate rest =
+            new RestTemplate(new org.springframework.http.client.JdkClientHttpRequestFactory()) {
+                {
+                    setErrorHandler(
+                            new DefaultResponseErrorHandler() {
+                                @Override
+                                public boolean hasError(ClientHttpResponse response) {
+                                    return false;
+                                }
+                            });
+                }
+            };
 
     @BeforeEach
     void clean() {
         jdbc.execute("DELETE FROM sys_config WHERE config_key LIKE 'vi.%'");
-        jdbc.execute("DELETE FROM sys_dict_data WHERE dict_type IN ('vi_vehicle_type','vi_inspection_type')");
+        jdbc.execute(
+                "DELETE FROM sys_dict_data WHERE dict_type IN"
+                        + " ('vi_vehicle_type','vi_inspection_type')");
         jdbc.execute("DELETE FROM vi_price_rule");
         jdbc.execute("DELETE FROM vi_session_token");
         jdbc.execute("DELETE FROM vi_session");
@@ -164,12 +178,20 @@ class C01ConfigIT {
     private Map<String, Object> simPost(String path, Map<String, Object> body) {
         try {
             String json = ViJson.write(body);
-            java.net.http.HttpRequest req = java.net.http.HttpRequest.newBuilder(
-                            java.net.URI.create("http://127.0.0.1:" + simPort + path))
-                    .header("Content-Type", "application/json").header("X-Sim-Secret", simSecret)
-                    .POST(java.net.http.HttpRequest.BodyPublishers.ofString(json, StandardCharsets.UTF_8)).build();
+            java.net.http.HttpRequest req =
+                    java.net.http.HttpRequest.newBuilder(
+                                    java.net.URI.create("http://127.0.0.1:" + simPort + path))
+                            .header("Content-Type", "application/json")
+                            .header("X-Sim-Secret", simSecret)
+                            .POST(
+                                    java.net.http.HttpRequest.BodyPublishers.ofString(
+                                            json, StandardCharsets.UTF_8))
+                            .build();
             java.net.http.HttpResponse<String> resp =
-                    SIM_HTTP.send(req, java.net.http.HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
+                    SIM_HTTP.send(
+                            req,
+                            java.net.http.HttpResponse.BodyHandlers.ofString(
+                                    StandardCharsets.UTF_8));
             assertEquals(200, resp.statusCode(), "模拟器 " + path + " 应200 " + resp.body());
             return ViJson.read(resp.body(), Map.class);
         } catch (java.io.IOException | InterruptedException e) {
@@ -193,11 +215,16 @@ class C01ConfigIT {
 
     private String adminToken() {
         SysUser admin = userService.selectUserByUserName("admin");
-        Long av = jdbc.queryForObject("SELECT auth_version FROM sys_user WHERE user_id = ?", Long.class, admin.getUserId());
+        Long av =
+                jdbc.queryForObject(
+                        "SELECT auth_version FROM sys_user WHERE user_id = ?",
+                        Long.class,
+                        admin.getUserId());
         LoginUser lu = new LoginUser(admin, Set.of("*:*:*"));
         lu.setUserId(admin.getUserId());
         lu.setAuthVersion(av);
-        org.springframework.mock.web.MockHttpServletRequest req = new org.springframework.mock.web.MockHttpServletRequest();
+        org.springframework.mock.web.MockHttpServletRequest req =
+                new org.springframework.mock.web.MockHttpServletRequest();
         req.addHeader("User-Agent", "vi-it");
         org.springframework.web.context.request.RequestContextHolder.setRequestAttributes(
                 new org.springframework.web.context.request.ServletRequestAttributes(req));
@@ -218,21 +245,57 @@ class C01ConfigIT {
     }
 
     private JsonNode publicConfig() {
-        ResponseEntity<String> r = rest.exchange(url("/api/public/service-config"), HttpMethod.GET, mini(null, null), String.class);
+        ResponseEntity<String> r =
+                rest.exchange(
+                        url("/api/public/service-config"),
+                        HttpMethod.GET,
+                        mini(null, null),
+                        String.class);
         assertEquals(200, r.getStatusCode().value(), "公开配置应匿名200 " + r.getBody());
         return ViJson.tree(r.getBody()).get("data");
     }
 
-    private ResponseEntity<String> putConfig(String admin, List<Map<String, String>> items, long expectedVersion) {
-        return rest.exchange(url("/api/admin/config"), HttpMethod.PUT,
-                admin(Map.of("items", items, "expectedVersion", expectedVersion, "reason", "配置测试"), admin), String.class);
+    private ResponseEntity<String> putConfig(
+            String admin, List<Map<String, String>> items, long expectedVersion) {
+        return rest.exchange(
+                url("/api/admin/config"),
+                HttpMethod.PUT,
+                admin(
+                        Map.of(
+                                "items",
+                                items,
+                                "expectedVersion",
+                                expectedVersion,
+                                "reason",
+                                "配置测试"),
+                        admin),
+                String.class);
     }
 
     private String loginToken() {
         String run = (String) simPost("/control/runs", Map.of()).get("runId");
-        String code = (String) simPost("/control/codes", Map.of("runId", run, "persona", "c01-" + System.nanoTime(), "kind", "wechat")).get("code");
-        return ViJson.tree(rest.exchange(url("/api/common/login/wechat"), HttpMethod.POST,
-                mini(Map.of("code", code), null), String.class).getBody()).get("data").get("token").asText();
+        String code =
+                (String)
+                        simPost(
+                                        "/control/codes",
+                                        Map.of(
+                                                "runId",
+                                                run,
+                                                "persona",
+                                                "c01-" + System.nanoTime(),
+                                                "kind",
+                                                "wechat"))
+                                .get("code");
+        return ViJson.tree(
+                        rest.exchange(
+                                        url("/api/common/login/wechat"),
+                                        HttpMethod.POST,
+                                        mini(Map.of("code", code), null),
+                                        String.class)
+                                .getBody())
+                .get("data")
+                .get("token")
+                .asText();
     }
 
     // ---------- 用例 ----------
@@ -241,7 +304,8 @@ class C01ConfigIT {
     void 公开配置匿名白名单缺协议不开放下单不宣称可支付() {
         JsonNode pc = publicConfig();
         assertFalse(pc.get("bookingEnabled").asBoolean(), "缺已发布协议不开放下单");
-        assertFalse(pc.get("availablePaymentMethods").toString().contains("WECHAT"), "第三方未配置不宣称可支付");
+        assertFalse(
+                pc.get("availablePaymentMethods").toString().contains("WECHAT"), "第三方未配置不宣称可支付");
         assertFalse(pc.toString().contains("merchant"), "不泄商户密钥");
         assertTrue(pc.has("companyName") && pc.has("termsVersion") && pc.has("privacyVersion"));
     }
@@ -249,27 +313,71 @@ class C01ConfigIT {
     @Test
     void ADMIN配置CAS与固定安全项拒绝() {
         String admin = adminToken();
-        ResponseEntity<String> g = rest.exchange(url("/api/admin/config"), HttpMethod.GET, admin(null, admin), String.class);
+        ResponseEntity<String> g =
+                rest.exchange(
+                        url("/api/admin/config"), HttpMethod.GET, admin(null, admin), String.class);
         assertEquals(200, g.getStatusCode().value());
         long v0 = ViJson.tree(g.getBody()).get("data").get("version").asLong();
-        assertEquals(200, putConfig(admin, List.of(Map.of("key", "vi.biz.company.name", "value", "荣利检测")), v0).getStatusCode().value());
-        assertEquals(409, putConfig(admin, List.of(Map.of("key", "vi.biz.company.name", "value", "X")), v0).getStatusCode().value(), "旧版本CAS409");
-        assertEquals(403, putConfig(admin, List.of(Map.of("key", "vi.biz.payment.cap.minutes", "value", "99")), v0 + 1).getStatusCode().value(), "固定安全项不可绕过");
-        assertEquals(403, putConfig(admin, List.of(Map.of("key", "vi.internal.secret", "value", "x")), v0 + 1).getStatusCode().value(), "非白名单拒绝");
+        assertEquals(
+                200,
+                putConfig(admin, List.of(Map.of("key", "vi.biz.company.name", "value", "荣利检测")), v0)
+                        .getStatusCode()
+                        .value());
+        assertEquals(
+                409,
+                putConfig(admin, List.of(Map.of("key", "vi.biz.company.name", "value", "X")), v0)
+                        .getStatusCode()
+                        .value(),
+                "旧版本CAS409");
+        assertEquals(
+                403,
+                putConfig(
+                                admin,
+                                List.of(Map.of("key", "vi.biz.payment.cap.minutes", "value", "99")),
+                                v0 + 1)
+                        .getStatusCode()
+                        .value(),
+                "固定安全项不可绕过");
+        assertEquals(
+                403,
+                putConfig(admin, List.of(Map.of("key", "vi.internal.secret", "value", "x")), v0 + 1)
+                        .getStatusCode()
+                        .value(),
+                "非白名单拒绝");
     }
 
     @Test
     void 发布协议后开放下单且公开配置反映() {
         String admin = adminToken();
-        long v = ViJson.tree(rest.exchange(url("/api/admin/config"), HttpMethod.GET, admin(null, admin), String.class)
-                .getBody()).get("data").get("version").asLong();
-        assertEquals(200, putConfig(admin, List.of(
-                Map.of("key", "vi.biz.terms.version", "value", "t1"),
-                Map.of("key", "vi.biz.terms.text", "value", "服务条款"),
-                Map.of("key", "vi.biz.privacy.version", "value", "p1"),
-                Map.of("key", "vi.biz.privacy.text", "value", "隐私政策"),
-                Map.of("key", "vi.biz.booking.enabled", "value", "true"),
-                Map.of("key", "vi.biz.service.cities", "value", "[\"杭州\"]")), v).getStatusCode().value());
+        long v =
+                ViJson.tree(
+                                rest.exchange(
+                                                url("/api/admin/config"),
+                                                HttpMethod.GET,
+                                                admin(null, admin),
+                                                String.class)
+                                        .getBody())
+                        .get("data")
+                        .get("version")
+                        .asLong();
+        assertEquals(
+                200,
+                putConfig(
+                                admin,
+                                List.of(
+                                        Map.of("key", "vi.biz.terms.version", "value", "t1"),
+                                        Map.of("key", "vi.biz.terms.text", "value", "服务条款"),
+                                        Map.of("key", "vi.biz.privacy.version", "value", "p1"),
+                                        Map.of("key", "vi.biz.privacy.text", "value", "隐私政策"),
+                                        Map.of("key", "vi.biz.booking.enabled", "value", "true"),
+                                        Map.of(
+                                                "key",
+                                                "vi.biz.service.cities",
+                                                "value",
+                                                "[\"杭州\"]")),
+                                v)
+                        .getStatusCode()
+                        .value());
         JsonNode pc = publicConfig();
         assertTrue(pc.get("bookingEnabled").asBoolean(), "发布协议后开放下单");
         assertEquals("t1", pc.get("termsVersion").asText());
@@ -278,10 +386,19 @@ class C01ConfigIT {
 
     @Test
     void 字典车型与检测类型() {
-        jdbc.update("INSERT INTO sys_dict_data (dict_sort, dict_label, dict_value, dict_type, status) VALUES (1, '小型车', 'SMALL_CAR', 'vi_vehicle_type', '0')");
-        jdbc.update("INSERT INTO sys_dict_data (dict_sort, dict_label, dict_value, dict_type, status) VALUES (1, '年检', 'ANNUAL', 'vi_inspection_type', '0')");
+        jdbc.update(
+                "INSERT INTO sys_dict_data (dict_sort, dict_label, dict_value, dict_type, status)"
+                        + " VALUES (1, '小型车', 'SMALL_CAR', 'vi_vehicle_type', '0')");
+        jdbc.update(
+                "INSERT INTO sys_dict_data (dict_sort, dict_label, dict_value, dict_type, status)"
+                        + " VALUES (1, '年检', 'ANNUAL', 'vi_inspection_type', '0')");
         String token = loginToken();
-        ResponseEntity<String> r = rest.exchange(url("/api/common/dict/vi_vehicle_type"), HttpMethod.GET, mini(null, token), String.class);
+        ResponseEntity<String> r =
+                rest.exchange(
+                        url("/api/common/dict/vi_vehicle_type"),
+                        HttpMethod.GET,
+                        mini(null, token),
+                        String.class);
         assertEquals(200, r.getStatusCode().value());
         JsonNode body = ViJson.tree(r.getBody());
         JsonNode list = body.get("rows");
@@ -289,18 +406,31 @@ class C01ConfigIT {
         assertEquals(1, list.size());
         assertEquals("SMALL_CAR", list.get(0).get("code").asText());
         assertEquals("小型车", list.get(0).get("label").asText());
-        assertEquals(404, rest.exchange(url("/api/common/dict/unknown_type"), HttpMethod.GET, mini(null, token), String.class).getStatusCode().value());
+        assertEquals(
+                404,
+                rest.exchange(
+                                url("/api/common/dict/unknown_type"),
+                                HttpMethod.GET,
+                                mini(null, token),
+                                String.class)
+                        .getStatusCode()
+                        .value());
     }
 
     @Test
     void 新车型无价格不能0元下单() {
         // 字典新增车型但无已发布价格 → 价格守卫拒绝（防0元）
-        jdbc.update("INSERT INTO sys_dict_data (dict_sort, dict_label, dict_value, dict_type, status) VALUES (1, '新车', 'NEW_TYPE', 'vi_vehicle_type', '0')");
-        ViException ex = assertThrows(ViException.class, () -> configService.assertPriced("NEW_TYPE"));
+        jdbc.update(
+                "INSERT INTO sys_dict_data (dict_sort, dict_label, dict_value, dict_type, status)"
+                        + " VALUES (1, '新车', 'NEW_TYPE', 'vi_vehicle_type', '0')");
+        ViException ex =
+                assertThrows(ViException.class, () -> configService.assertPriced("NEW_TYPE"));
         assertEquals("VI_SERVICE_UNAVAILABLE", ex.getErrorCode().name());
         // 旧的无公司/环境/审核绑定记录不能因PUBLISHED标记就放行
-        jdbc.update("INSERT INTO vi_price_rule (rule_key, revision, vehicle_type_code, inspection_type_code, status, config_json) "
-                + "VALUES ('k1', 1, 'SMALL_CAR', 'ANNUAL', 'PUBLISHED', '{}')");
+        jdbc.update(
+                "INSERT INTO vi_price_rule (rule_key, revision, vehicle_type_code,"
+                    + " inspection_type_code, status, config_json) VALUES ('k1', 1, 'SMALL_CAR',"
+                    + " 'ANNUAL', 'PUBLISHED', '{}')");
         assertThrows(ViException.class, () -> configService.assertPriced("SMALL_CAR"));
     }
 

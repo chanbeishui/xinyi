@@ -40,28 +40,31 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
- * I04 角色与站点上下文切换 真实集成测试（HTTP+Security(MINI链)+MyBatis+隔离库 MySQL+provider 模拟器）。
- * 仅微信渠道为 SIMULATOR 替身（L01 另验）。覆盖：
- * OWNER→DRIVER 切换成功+旧上下文令牌失效、待审切代驾拒绝且刷新不审批（TC-R63-010/016）、已批准我的入口（TC-R63-009）、
- * 员工站点同源一致切 STATION（TC-R63-001，真实手机号绑定）、越权站点/0授权拒绝（S22）、切换不释放 assignment（TC-R62-024）、
- * 旧检测权限失效仍可切回 OWNER、上下文版本冲突 409、非法字段/角色拒绝、切换仅影响本设备。
+ * I04 角色与站点上下文切换 真实集成测试（HTTP+Security(MINI链)+MyBatis+隔离库 MySQL+provider 模拟器）。 仅微信渠道为 SIMULATOR
+ * 替身（L01 另验）。覆盖： OWNER→DRIVER 切换成功+旧上下文令牌失效、待审切代驾拒绝且刷新不审批（TC-R63-010/016）、已批准我的入口（TC-R63-009）、
+ * 员工站点同源一致切 STATION（TC-R63-001，真实手机号绑定）、越权站点/0授权拒绝（S22）、切换不释放 assignment（TC-R62-024）、 旧检测权限失效仍可切回
+ * OWNER、上下文版本冲突 409、非法字段/角色拒绝、切换仅影响本设备。
  */
-@SpringBootTest(classes = RuoYiApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
+@SpringBootTest(
+        classes = RuoYiApplication.class,
+        webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
         properties = {
-                "spring.datasource.druid.master.url=jdbc:mysql://localhost:3306/xinyi_vi_it_e07?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8",
-                "vi.environment=integration",
-                "vi.providers.mode=SIMULATOR",
-                "vi.outbox-relay-enabled=false",
-                "server.address=127.0.0.1"
+            "spring.datasource.druid.master.url=jdbc:mysql://localhost:3306/xinyi_vi_it_e07?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8",
+            "vi.environment=integration",
+            "vi.providers.mode=SIMULATOR",
+            "vi.outbox-relay-enabled=false",
+            "server.address=127.0.0.1"
         })
 @ActiveProfiles("druid")
+/** 验证代驾申请及资格状态流转；未通过审核不得产生正式代驾工作能力。 */
 class I04IdentityIT {
 
     private static Process simProcess;
     private static int simPort;
     private static String simSecret;
     private static Path simDb;
-    private static final java.net.http.HttpClient SIM_HTTP = java.net.http.HttpClient.newHttpClient();
+    private static final java.net.http.HttpClient SIM_HTTP =
+            java.net.http.HttpClient.newHttpClient();
 
     static {
         try {
@@ -90,14 +93,24 @@ class I04IdentityIT {
         simDb = Files.createTempFile("i04-sim-", ".sqlite");
         Files.deleteIfExists(simDb);
         String python = System.getenv().getOrDefault("VI_PYTHON", "python3");
-        Path sim = repoRoot().resolve("docs/vehicle/V6.4/13_真实集成测试/provider_simulator/simulator.py");
-        ProcessBuilder pb = new ProcessBuilder(python, sim.toString(),
-                "--host", "127.0.0.1", "--port", "0", "--db", simDb.toString());
+        Path sim =
+                repoRoot().resolve("docs/vehicle/V6.4/13_真实集成测试/provider_simulator/simulator.py");
+        ProcessBuilder pb =
+                new ProcessBuilder(
+                        python,
+                        sim.toString(),
+                        "--host",
+                        "127.0.0.1",
+                        "--port",
+                        "0",
+                        "--db",
+                        simDb.toString());
         pb.environment().put("VI_SIM_SECRET", simSecret);
         pb.redirectErrorStream(true);
         simProcess = pb.start();
-        BufferedReader reader = new BufferedReader(
-                new InputStreamReader(simProcess.getInputStream(), StandardCharsets.UTF_8));
+        BufferedReader reader =
+                new BufferedReader(
+                        new InputStreamReader(simProcess.getInputStream(), StandardCharsets.UTF_8));
         String line = reader.readLine();
         if (line == null) {
             throw new IllegalStateException("模拟器无启动输出");
@@ -129,26 +142,37 @@ class I04IdentityIT {
         }
     }
 
-    @LocalServerPort
-    int port;
+    @LocalServerPort int port;
 
-    @Autowired
-    JdbcTemplate jdbc;
+    @Autowired JdbcTemplate jdbc;
 
-    private final RestTemplate rest = new RestTemplate(new org.springframework.http.client.JdkClientHttpRequestFactory()) {{
-        setErrorHandler(new DefaultResponseErrorHandler() {
-            @Override
-            public boolean hasError(ClientHttpResponse response) {
-                return false;
-            }
-        });
-    }};
+    private final RestTemplate rest =
+            new RestTemplate(new org.springframework.http.client.JdkClientHttpRequestFactory()) {
+                {
+                    setErrorHandler(
+                            new DefaultResponseErrorHandler() {
+                                @Override
+                                public boolean hasError(ClientHttpResponse response) {
+                                    return false;
+                                }
+                            });
+                }
+            };
 
     @BeforeEach
     void clean() {
-        for (String t : List.of("vi_driver_assignment", "vi_driver_profile", "vi_phone_verification_receipt",
-                "vi_employee_binding", "vi_session_token", "vi_session", "vi_account_security", "vi_account",
-                "vi_station_grant", "vi_owner_profile")) {
+        for (String t :
+                List.of(
+                        "vi_driver_assignment",
+                        "vi_driver_profile",
+                        "vi_phone_verification_receipt",
+                        "vi_employee_binding",
+                        "vi_session_token",
+                        "vi_session",
+                        "vi_account_security",
+                        "vi_account",
+                        "vi_station_grant",
+                        "vi_owner_profile")) {
             jdbc.execute("DELETE FROM " + t);
         }
         jdbc.execute("DELETE FROM sys_user WHERE user_name LIKE 'i04emp\\_%'");
@@ -158,13 +182,24 @@ class I04IdentityIT {
     private Map<String, Object> simPost(String path, Map<String, Object> body) {
         try {
             String json = ViJson.write(body);
-            java.net.http.HttpRequest req = java.net.http.HttpRequest.newBuilder(
-                            java.net.URI.create("http://127.0.0.1:" + simPort + path))
-                    .header("Content-Type", "application/json").header("X-Sim-Secret", simSecret)
-                    .POST(java.net.http.HttpRequest.BodyPublishers.ofString(json, StandardCharsets.UTF_8)).build();
+            java.net.http.HttpRequest req =
+                    java.net.http.HttpRequest.newBuilder(
+                                    java.net.URI.create("http://127.0.0.1:" + simPort + path))
+                            .header("Content-Type", "application/json")
+                            .header("X-Sim-Secret", simSecret)
+                            .POST(
+                                    java.net.http.HttpRequest.BodyPublishers.ofString(
+                                            json, StandardCharsets.UTF_8))
+                            .build();
             java.net.http.HttpResponse<String> resp =
-                    SIM_HTTP.send(req, java.net.http.HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
-            assertEquals(200, resp.statusCode(), "模拟器 " + path + " 应200，实际" + resp.statusCode() + " " + resp.body());
+                    SIM_HTTP.send(
+                            req,
+                            java.net.http.HttpResponse.BodyHandlers.ofString(
+                                    StandardCharsets.UTF_8));
+            assertEquals(
+                    200,
+                    resp.statusCode(),
+                    "模拟器 " + path + " 应200，实际" + resp.statusCode() + " " + resp.body());
             return ViJson.read(resp.body(), Map.class);
         } catch (java.io.IOException | InterruptedException e) {
             throw new IllegalStateException("模拟器调用失败 " + path, e);
@@ -185,7 +220,9 @@ class I04IdentityIT {
 
     private static String expectedPhone(String persona) {
         try {
-            byte[] h = MessageDigest.getInstance("SHA-256").digest(persona.getBytes(StandardCharsets.UTF_8));
+            byte[] h =
+                    MessageDigest.getInstance("SHA-256")
+                            .digest(persona.getBytes(StandardCharsets.UTF_8));
             StringBuilder hex = new StringBuilder();
             for (byte b : h) {
                 hex.append(String.format("%02x", b));
@@ -214,8 +251,12 @@ class I04IdentityIT {
 
     private JsonNode login(String runId, String persona) {
         String code = newCode(runId, persona, "wechat");
-        ResponseEntity<String> resp = rest.exchange(url("/api/common/login/wechat"), HttpMethod.POST,
-                entity(Map.of("code", code), null), String.class);
+        ResponseEntity<String> resp =
+                rest.exchange(
+                        url("/api/common/login/wechat"),
+                        HttpMethod.POST,
+                        entity(Map.of("code", code), null),
+                        String.class);
         assertEquals(200, resp.getStatusCode().value(), "登录应200 " + resp.getBody());
         return ViJson.tree(resp.getBody()).get("data");
     }
@@ -225,51 +266,79 @@ class I04IdentityIT {
     }
 
     private ResponseEntity<String> session(String token) {
-        return rest.exchange(url("/api/common/session"), HttpMethod.GET, entity(null, token), String.class);
+        return rest.exchange(
+                url("/api/common/session"), HttpMethod.GET, entity(null, token), String.class);
     }
 
     private ResponseEntity<String> profile(String token) {
-        return rest.exchange(url("/api/common/profile"), HttpMethod.GET, entity(null, token), String.class);
+        return rest.exchange(
+                url("/api/common/profile"), HttpMethod.GET, entity(null, token), String.class);
     }
 
-    private ResponseEntity<String> switchRole(String token, String role, long ctx, Map<String, Object> extra) {
+    private ResponseEntity<String> switchRole(
+            String token, String role, long ctx, Map<String, Object> extra) {
         Map<String, Object> body = new HashMap<>();
         body.put("role", role);
         body.put("expectedContextVersion", ctx);
         if (extra != null) {
             body.putAll(extra);
         }
-        return rest.exchange(url("/api/common/session/role"), HttpMethod.POST, entity(body, token), String.class);
+        return rest.exchange(
+                url("/api/common/session/role"),
+                HttpMethod.POST,
+                entity(body, token),
+                String.class);
     }
 
     private ResponseEntity<String> switchStation(String token, String stationId, long ctx) {
-        return rest.exchange(url("/api/common/session/station"), HttpMethod.POST,
-                entity(Map.of("stationId", stationId, "expectedContextVersion", ctx), token), String.class);
+        return rest.exchange(
+                url("/api/common/session/station"),
+                HttpMethod.POST,
+                entity(Map.of("stationId", stationId, "expectedContextVersion", ctx), token),
+                String.class);
     }
 
     private void seedDriverProfile(long accountId, String status) {
-        jdbc.update("INSERT INTO vi_driver_profile (account_id, qualification_status, license_long_term, "
-                + "new_assignment_enabled, listening_enabled) VALUES (?, ?, 1, 1, 1)", accountId, status);
+        jdbc.update(
+                "INSERT INTO vi_driver_profile (account_id, qualification_status,"
+                    + " license_long_term, new_assignment_enabled, listening_enabled) VALUES (?, ?,"
+                    + " 1, 1, 1)",
+                accountId,
+                status);
     }
 
     private long seedActiveAssignment(long accountId) {
         long synthetic = 900000000L + (accountId % 1000000);
-        jdbc.update("INSERT INTO vi_driver_assignment (order_id, driver_id, invite_id, accepted_at) "
-                + "VALUES (?, ?, ?, UTC_TIMESTAMP(3))", synthetic, accountId, synthetic);
-        return jdbc.queryForObject("SELECT id FROM vi_driver_assignment WHERE driver_id = ? AND ended_at IS NULL",
-                Long.class, accountId);
+        jdbc.update(
+                "INSERT INTO vi_driver_assignment (order_id, driver_id, invite_id, accepted_at) "
+                        + "VALUES (?, ?, ?, UTC_TIMESTAMP(3))",
+                synthetic,
+                accountId,
+                synthetic);
+        return jdbc.queryForObject(
+                "SELECT id FROM vi_driver_assignment WHERE driver_id = ? AND ended_at IS NULL",
+                Long.class,
+                accountId);
     }
 
     private long seedEmployee(String phone, String suffix) {
         String userName = "i04emp_" + suffix;
-        jdbc.update("INSERT INTO sys_user (user_name, nick_name, phonenumber, status, del_flag, auth_version, password) "
-                + "VALUES (?, ?, ?, '0', '0', 0, 'x')", userName, "员工" + suffix, phone);
-        return jdbc.queryForObject("SELECT user_id FROM sys_user WHERE user_name = ?", Long.class, userName);
+        jdbc.update(
+                "INSERT INTO sys_user (user_name, nick_name, phonenumber, status, del_flag,"
+                        + " auth_version, password) VALUES (?, ?, ?, '0', '0', 0, 'x')",
+                userName,
+                "员工" + suffix,
+                phone);
+        return jdbc.queryForObject(
+                "SELECT user_id FROM sys_user WHERE user_name = ?", Long.class, userName);
     }
 
     private long seedGrant(long sysUserId, long stationId) {
-        jdbc.update("INSERT INTO vi_station_grant (sys_user_id, station_id, enabled, granted_by, reason) "
-                + "VALUES (?, ?, 1, 1, 'I04 测试授权')", sysUserId, stationId);
+        jdbc.update(
+                "INSERT INTO vi_station_grant (sys_user_id, station_id, enabled, granted_by,"
+                        + " reason) VALUES (?, ?, 1, 1, 'I04 测试授权')",
+                sysUserId,
+                stationId);
         return stationId;
     }
 
@@ -284,19 +353,39 @@ class I04IdentityIT {
         String token = s.get("token").asText();
         long ver = s.get("accountVersion").asLong();
         String code = newCode(newRun(), persona, "phone");
-        ResponseEntity<String> bind = rest.exchange(url("/api/common/phone/bind"), HttpMethod.POST,
-                entity(Map.of("phoneCode", code, "expectedAccountVersion", ver,
-                        "verificationRequestId", UUID.randomUUID().toString()), token), String.class);
+        ResponseEntity<String> bind =
+                rest.exchange(
+                        url("/api/common/phone/bind"),
+                        HttpMethod.POST,
+                        entity(
+                                Map.of(
+                                        "phoneCode",
+                                        code,
+                                        "expectedAccountVersion",
+                                        ver,
+                                        "verificationRequestId",
+                                        UUID.randomUUID().toString()),
+                                token),
+                        String.class);
         assertEquals(200, bind.getStatusCode().value(), "绑定应200 " + bind.getBody());
-        assertEquals("LINKED", ViJson.tree(bind.getBody()).get("data").get("employeeLink").get("status").asText());
+        assertEquals(
+                "LINKED",
+                ViJson.tree(bind.getBody()).get("data").get("employeeLink").get("status").asText());
         return s;
     }
 
     private long grantedStationOf(long accountId) {
-        Long sysUserId = jdbc.queryForObject("SELECT sys_user_id FROM vi_employee_binding WHERE account_id = ? "
-                + "AND revoked_at IS NULL LIMIT 1", Long.class, accountId);
-        return jdbc.queryForObject("SELECT station_id FROM vi_station_grant WHERE sys_user_id = ? AND enabled = 1 "
-                + "ORDER BY station_id LIMIT 1", Long.class, sysUserId);
+        Long sysUserId =
+                jdbc.queryForObject(
+                        "SELECT sys_user_id FROM vi_employee_binding WHERE account_id = ? "
+                                + "AND revoked_at IS NULL LIMIT 1",
+                        Long.class,
+                        accountId);
+        return jdbc.queryForObject(
+                "SELECT station_id FROM vi_station_grant WHERE sys_user_id = ? AND enabled = 1 "
+                        + "ORDER BY station_id LIMIT 1",
+                Long.class,
+                sysUserId);
     }
 
     // ---------- 用例 ----------
@@ -333,20 +422,39 @@ class I04IdentityIT {
         long ctx = s.get("contextVersion").asLong();
         seedDriverProfile(accountId, "SUBMITTED");
 
-        assertFalse(ViJson.tree(session(token).getBody()).get("data").get("availableRoles").toString().contains("DRIVER"),
+        assertFalse(
+                ViJson.tree(session(token).getBody())
+                        .get("data")
+                        .get("availableRoles")
+                        .toString()
+                        .contains("DRIVER"),
                 "待审无DRIVER");
         ResponseEntity<String> r = switchRole(token, "DRIVER", ctx, null);
         assertEquals(403, r.getStatusCode().value(), "待审切代驾应403拒绝 " + r.getBody());
         assertEquals("VI_FORBIDDEN", ViJson.tree(r.getBody()).get("errorCode").asText());
         // 刷新不会审批：仍无 DRIVER
         String refresh = s.get("refreshToken").asText();
-        ResponseEntity<String> refreshed = rest.exchange(url("/api/common/token/refresh"), HttpMethod.POST,
-                entity(Map.of("refreshToken", refresh), null), String.class);
+        ResponseEntity<String> refreshed =
+                rest.exchange(
+                        url("/api/common/token/refresh"),
+                        HttpMethod.POST,
+                        entity(Map.of("refreshToken", refresh), null),
+                        String.class);
         assertEquals(200, refreshed.getStatusCode().value());
-        assertFalse(ViJson.tree(refreshed.getBody()).get("data").get("availableRoles").toString().contains("DRIVER"),
+        assertFalse(
+                ViJson.tree(refreshed.getBody())
+                        .get("data")
+                        .get("availableRoles")
+                        .toString()
+                        .contains("DRIVER"),
                 "刷新不改变审核状态");
-        assertEquals("SUBMITTED", jdbc.queryForObject("SELECT qualification_status FROM vi_driver_profile WHERE account_id = ?",
-                String.class, accountId), "刷新不得审批资格");
+        assertEquals(
+                "SUBMITTED",
+                jdbc.queryForObject(
+                        "SELECT qualification_status FROM vi_driver_profile WHERE account_id = ?",
+                        String.class,
+                        accountId),
+                "刷新不得审批资格");
     }
 
     @Test
@@ -358,7 +466,11 @@ class I04IdentityIT {
         JsonNode d = ViJson.tree(session(token).getBody()).get("data");
         assertEquals("APPROVED", d.get("driverQualification").asText(), "显示已批准资格（非首次申请引导）");
         assertTrue(d.get("availableRoles").toString().contains("DRIVER"), "可切换代驾身份");
-        assertEquals(200, switchRole(token, "DRIVER", d.get("contextVersion").asLong(), null).getStatusCode().value());
+        assertEquals(
+                200,
+                switchRole(token, "DRIVER", d.get("contextVersion").asLong(), null)
+                        .getStatusCode()
+                        .value());
     }
 
     @Test
@@ -376,7 +488,10 @@ class I04IdentityIT {
         assertEquals("LINKED", sess.get("employeeLink").get("status").asText());
         assertEquals("LINKED", prof.get("employeeLink").get("status").asText(), "关联页与会话同源");
         assertTrue(sess.get("availableRoles").toString().contains("STATION"));
-        assertEquals(sess.get("availableRoles").toString(), prof.get("availableRoles").toString(), "会话与档案可用角色一致");
+        assertEquals(
+                sess.get("availableRoles").toString(),
+                prof.get("availableRoles").toString(),
+                "会话与档案可用角色一致");
         assertTrue(sess.get("stationIds").toString().contains(Long.toString(station)), "可用站点一致");
 
         long ctx = sess.get("contextVersion").asLong();
@@ -410,10 +525,17 @@ class I04IdentityIT {
         assertEquals(0, d0.get("stationIds").size(), "0授权站点集合为空");
         assertTrue(d0.get("workAccessDisabled").asBoolean());
         long ctx0 = d0.get("contextVersion").asLong();
-        assertEquals(403, switchStation(token0, Long.toString(granted), ctx0).getStatusCode().value(), "0授权切站点拒绝");
-        assertEquals(403, switchRole(token0, "STATION", ctx0, null).getStatusCode().value(), "0授权切STATION拒绝");
+        assertEquals(
+                403,
+                switchStation(token0, Long.toString(granted), ctx0).getStatusCode().value(),
+                "0授权切站点拒绝");
+        assertEquals(
+                403,
+                switchRole(token0, "STATION", ctx0, null).getStatusCode().value(),
+                "0授权切STATION拒绝");
         // 仍可切回 OWNER（安全视角）
-        assertEquals(200, switchRole(token0, "OWNER", ctx0, null).getStatusCode().value(), "0授权仍可OWNER");
+        assertEquals(
+                200, switchRole(token0, "OWNER", ctx0, null).getStatusCode().value(), "0授权仍可OWNER");
     }
 
     @Test
@@ -429,17 +551,36 @@ class I04IdentityIT {
         assertEquals(200, toDriver.getStatusCode().value());
         String driverToken = ViJson.tree(toDriver.getBody()).get("data").get("token").asText();
         long ctx2 = ViJson.tree(toDriver.getBody()).get("data").get("contextVersion").asLong();
-        assertNull(jdbc.queryForObject("SELECT ended_at FROM vi_driver_assignment WHERE id = ?",
-                java.sql.Timestamp.class, assignmentId), "切DRIVER不释放承接");
+        assertNull(
+                jdbc.queryForObject(
+                        "SELECT ended_at FROM vi_driver_assignment WHERE id = ?",
+                        java.sql.Timestamp.class,
+                        assignmentId),
+                "切DRIVER不释放承接");
 
         ResponseEntity<String> toOwner = switchRole(driverToken, "OWNER", ctx2, null);
         assertEquals(200, toOwner.getStatusCode().value());
-        assertNull(jdbc.queryForObject("SELECT ended_at FROM vi_driver_assignment WHERE id = ?",
-                java.sql.Timestamp.class, assignmentId), "切回OWNER不释放承接");
-        assertEquals("APPROVED", jdbc.queryForObject("SELECT qualification_status FROM vi_driver_profile WHERE account_id = ?",
-                String.class, accountId), "切换不改资格");
-        assertEquals(1, jdbc.queryForObject("SELECT COUNT(*) FROM vi_driver_assignment WHERE id = ? AND ended_at IS NULL",
-                Integer.class, assignmentId), "在手承接占用始终保留");
+        assertNull(
+                jdbc.queryForObject(
+                        "SELECT ended_at FROM vi_driver_assignment WHERE id = ?",
+                        java.sql.Timestamp.class,
+                        assignmentId),
+                "切回OWNER不释放承接");
+        assertEquals(
+                "APPROVED",
+                jdbc.queryForObject(
+                        "SELECT qualification_status FROM vi_driver_profile WHERE account_id = ?",
+                        String.class,
+                        accountId),
+                "切换不改资格");
+        assertEquals(
+                1,
+                jdbc.queryForObject(
+                        "SELECT COUNT(*) FROM vi_driver_assignment WHERE id = ? AND ended_at IS"
+                                + " NULL",
+                        Integer.class,
+                        assignmentId),
+                "在手承接占用始终保留");
     }
 
     @Test
@@ -456,8 +597,11 @@ class I04IdentityIT {
         long ctx2 = ViJson.tree(toStation.getBody()).get("data").get("contextVersion").asLong();
 
         // 后台撤销站点授权 → 旧检测权限失效
-        jdbc.update("UPDATE vi_station_grant SET enabled = 0 WHERE station_id = ? AND sys_user_id = "
-                + "(SELECT sys_user_id FROM vi_employee_binding WHERE account_id = ? LIMIT 1)", station, accountId);
+        jdbc.update(
+                "UPDATE vi_station_grant SET enabled = 0 WHERE station_id = ? AND sys_user_id ="
+                    + " (SELECT sys_user_id FROM vi_employee_binding WHERE account_id = ? LIMIT 1)",
+                station,
+                accountId);
         JsonNode now = ViJson.tree(session(stationToken).getBody()).get("data");
         assertFalse(now.get("availableRoles").toString().contains("STATION"), "撤权后无STATION");
         assertTrue(now.get("workAccessDisabled").asBoolean());
@@ -468,7 +612,10 @@ class I04IdentityIT {
         // 再切 STATION 已不可用
         long ctx3 = ViJson.tree(back.getBody()).get("data").get("contextVersion").asLong();
         String ownerToken = ViJson.tree(back.getBody()).get("data").get("token").asText();
-        assertEquals(403, switchRole(ownerToken, "STATION", ctx3, null).getStatusCode().value(), "失权后不可再切STATION");
+        assertEquals(
+                403,
+                switchRole(ownerToken, "STATION", ctx3, null).getStatusCode().value(),
+                "失权后不可再切STATION");
     }
 
     @Test
@@ -492,15 +639,24 @@ class I04IdentityIT {
         JsonNode s = login("p04-bad-" + System.nanoTime());
         String token = s.get("token").asText();
         long ctx = s.get("contextVersion").asLong();
-        assertEquals(400, switchRole(token, "OWNER", ctx, Map.of("accountId", "1")).getStatusCode().value(), "未知字段400");
+        assertEquals(
+                400,
+                switchRole(token, "OWNER", ctx, Map.of("accountId", "1")).getStatusCode().value(),
+                "未知字段400");
         assertEquals(400, switchRole(token, "ADMIN", ctx, null).getStatusCode().value(), "非法角色400");
-        assertEquals(400, switchStation(token, "abc", ctx).getStatusCode().value(), "非法stationId 400");
-        assertEquals(400, switchRole(token, "OWNER", -1, null).getStatusCode().value(), "负上下文版本400");
+        assertEquals(
+                400, switchStation(token, "abc", ctx).getStatusCode().value(), "非法stationId 400");
+        assertEquals(
+                400, switchRole(token, "OWNER", -1, null).getStatusCode().value(), "负上下文版本400");
         HttpHeaders h = new HttpHeaders();
         h.set("Content-Type", "application/json");
         h.set("Authorization", "Bearer " + token);
-        ResponseEntity<String> noClient = rest.exchange(url("/api/common/session/role"), HttpMethod.POST,
-                new HttpEntity<>(Map.of("role", "OWNER", "expectedContextVersion", ctx), h), String.class);
+        ResponseEntity<String> noClient =
+                rest.exchange(
+                        url("/api/common/session/role"),
+                        HttpMethod.POST,
+                        new HttpEntity<>(Map.of("role", "OWNER", "expectedContextVersion", ctx), h),
+                        String.class);
         assertEquals(400, noClient.getStatusCode().value(), "缺X-Client-Type 400");
     }
 

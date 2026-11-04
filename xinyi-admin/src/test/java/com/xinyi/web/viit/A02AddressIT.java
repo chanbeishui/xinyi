@@ -43,25 +43,29 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * A02 地址簿与位置输入 真实集成测试（HTTP+MINI链+MyBatis+隔离库 MySQL+provider 模拟器）。
- * 覆盖：CRUD+版本返回、设常用并发唯一默认、创建即默认清旧、越权404、CAS冲突409、删除默认不残留、非法输入拒绝。
- * 临时地址不强制先保存属预约（B 系列）草稿语义，本任务仅管理已保存地址（list 空可用）。
+ * 覆盖：CRUD+版本返回、设常用并发唯一默认、创建即默认清旧、越权404、CAS冲突409、删除默认不残留、非法输入拒绝。 临时地址不强制先保存属预约（B
+ * 系列）草稿语义，本任务仅管理已保存地址（list 空可用）。
  */
-@SpringBootTest(classes = RuoYiApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
+@SpringBootTest(
+        classes = RuoYiApplication.class,
+        webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
         properties = {
-                "spring.datasource.druid.master.url=jdbc:mysql://localhost:3306/xinyi_vi_it_e07?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8",
-                "vi.environment=integration",
-                "vi.providers.mode=SIMULATOR",
-                "vi.outbox-relay-enabled=false",
-                "server.address=127.0.0.1"
+            "spring.datasource.druid.master.url=jdbc:mysql://localhost:3306/xinyi_vi_it_e07?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8",
+            "vi.environment=integration",
+            "vi.providers.mode=SIMULATOR",
+            "vi.outbox-relay-enabled=false",
+            "server.address=127.0.0.1"
         })
 @ActiveProfiles("druid")
+/** 验证本人地址的增改查与跨账号拒绝；敏感地址加密及默认地址并发规则由实际数据库断言。 */
 class A02AddressIT {
 
     private static Process simProcess;
     private static int simPort;
     private static String simSecret;
     private static Path simDb;
-    private static final java.net.http.HttpClient SIM_HTTP = java.net.http.HttpClient.newHttpClient();
+    private static final java.net.http.HttpClient SIM_HTTP =
+            java.net.http.HttpClient.newHttpClient();
 
     static {
         try {
@@ -90,14 +94,24 @@ class A02AddressIT {
         simDb = Files.createTempFile("a02-sim-", ".sqlite");
         Files.deleteIfExists(simDb);
         String python = System.getenv().getOrDefault("VI_PYTHON", "python3");
-        Path sim = repoRoot().resolve("docs/vehicle/V6.4/13_真实集成测试/provider_simulator/simulator.py");
-        ProcessBuilder pb = new ProcessBuilder(python, sim.toString(),
-                "--host", "127.0.0.1", "--port", "0", "--db", simDb.toString());
+        Path sim =
+                repoRoot().resolve("docs/vehicle/V6.4/13_真实集成测试/provider_simulator/simulator.py");
+        ProcessBuilder pb =
+                new ProcessBuilder(
+                        python,
+                        sim.toString(),
+                        "--host",
+                        "127.0.0.1",
+                        "--port",
+                        "0",
+                        "--db",
+                        simDb.toString());
         pb.environment().put("VI_SIM_SECRET", simSecret);
         pb.redirectErrorStream(true);
         simProcess = pb.start();
-        BufferedReader reader = new BufferedReader(
-                new InputStreamReader(simProcess.getInputStream(), StandardCharsets.UTF_8));
+        BufferedReader reader =
+                new BufferedReader(
+                        new InputStreamReader(simProcess.getInputStream(), StandardCharsets.UTF_8));
         String line = reader.readLine();
         if (line == null) {
             throw new IllegalStateException("模拟器无启动输出");
@@ -128,23 +142,31 @@ class A02AddressIT {
         }
     }
 
-    @LocalServerPort
-    int port;
-    @Autowired
-    JdbcTemplate jdbc;
+    @LocalServerPort int port;
+    @Autowired JdbcTemplate jdbc;
 
-    private final RestTemplate rest = new RestTemplate(new org.springframework.http.client.JdkClientHttpRequestFactory()) {{
-        setErrorHandler(new DefaultResponseErrorHandler() {
-            @Override
-            public boolean hasError(ClientHttpResponse response) {
-                return false;
-            }
-        });
-    }};
+    private final RestTemplate rest =
+            new RestTemplate(new org.springframework.http.client.JdkClientHttpRequestFactory()) {
+                {
+                    setErrorHandler(
+                            new DefaultResponseErrorHandler() {
+                                @Override
+                                public boolean hasError(ClientHttpResponse response) {
+                                    return false;
+                                }
+                            });
+                }
+            };
 
     @BeforeEach
     void clean() {
-        for (String t : List.of("vi_address", "vi_session_token", "vi_session", "vi_account_security", "vi_account")) {
+        for (String t :
+                List.of(
+                        "vi_address",
+                        "vi_session_token",
+                        "vi_session",
+                        "vi_account_security",
+                        "vi_account")) {
             jdbc.execute("DELETE FROM " + t);
         }
     }
@@ -152,12 +174,20 @@ class A02AddressIT {
     private Map<String, Object> simPost(String path, Map<String, Object> body) {
         try {
             String json = ViJson.write(body);
-            java.net.http.HttpRequest req = java.net.http.HttpRequest.newBuilder(
-                            java.net.URI.create("http://127.0.0.1:" + simPort + path))
-                    .header("Content-Type", "application/json").header("X-Sim-Secret", simSecret)
-                    .POST(java.net.http.HttpRequest.BodyPublishers.ofString(json, StandardCharsets.UTF_8)).build();
+            java.net.http.HttpRequest req =
+                    java.net.http.HttpRequest.newBuilder(
+                                    java.net.URI.create("http://127.0.0.1:" + simPort + path))
+                            .header("Content-Type", "application/json")
+                            .header("X-Sim-Secret", simSecret)
+                            .POST(
+                                    java.net.http.HttpRequest.BodyPublishers.ofString(
+                                            json, StandardCharsets.UTF_8))
+                            .build();
             java.net.http.HttpResponse<String> resp =
-                    SIM_HTTP.send(req, java.net.http.HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
+                    SIM_HTTP.send(
+                            req,
+                            java.net.http.HttpResponse.BodyHandlers.ofString(
+                                    StandardCharsets.UTF_8));
             assertEquals(200, resp.statusCode(), "模拟器 " + path + " 应200 " + resp.body());
             return ViJson.read(resp.body(), Map.class);
         } catch (java.io.IOException | InterruptedException e) {
@@ -182,9 +212,18 @@ class A02AddressIT {
 
     private JsonNode login(String persona) {
         String run = (String) simPost("/control/runs", Map.of()).get("runId");
-        String code = (String) simPost("/control/codes", Map.of("runId", run, "persona", persona, "kind", "wechat")).get("code");
-        ResponseEntity<String> r = rest.exchange(url("/api/common/login/wechat"), HttpMethod.POST,
-                mini(Map.of("code", code), null), String.class);
+        String code =
+                (String)
+                        simPost(
+                                        "/control/codes",
+                                        Map.of("runId", run, "persona", persona, "kind", "wechat"))
+                                .get("code");
+        ResponseEntity<String> r =
+                rest.exchange(
+                        url("/api/common/login/wechat"),
+                        HttpMethod.POST,
+                        mini(Map.of("code", code), null),
+                        String.class);
         assertEquals(200, r.getStatusCode().value(), "登录应200 " + r.getBody());
         return ViJson.tree(r.getBody()).get("data");
     }
@@ -194,20 +233,43 @@ class A02AddressIT {
     }
 
     private JsonNode create(String token, String label, boolean isDefault) {
-        ResponseEntity<String> r = rest.exchange(url("/api/app/owner/addresses"), HttpMethod.POST,
-                mini(Map.of("label", label, "address", "工业大道12号", "location", loc(120.1, 30.2), "isDefault", isDefault), token), String.class);
+        ResponseEntity<String> r =
+                rest.exchange(
+                        url("/api/app/owner/addresses"),
+                        HttpMethod.POST,
+                        mini(
+                                Map.of(
+                                        "label",
+                                        label,
+                                        "address",
+                                        "工业大道12号",
+                                        "location",
+                                        loc(120.1, 30.2),
+                                        "isDefault",
+                                        isDefault),
+                                token),
+                        String.class);
         assertEquals(200, r.getStatusCode().value(), "创建应200 " + r.getBody());
         return ViJson.tree(r.getBody()).get("data");
     }
 
     private JsonNode list(String token) {
-        return ViJson.tree(rest.exchange(url("/api/app/owner/addresses"), HttpMethod.GET, mini(null, token), String.class)
-                .getBody()).get("data");
+        return ViJson.tree(
+                        rest.exchange(
+                                        url("/api/app/owner/addresses"),
+                                        HttpMethod.GET,
+                                        mini(null, token),
+                                        String.class)
+                                .getBody())
+                .get("data");
     }
 
     private long defaultCount(long accountId) {
-        return jdbc.queryForObject("SELECT COUNT(*) FROM vi_address WHERE owner_account_id = ? AND is_default = 1 AND deleted_at IS NULL",
-                Long.class, accountId);
+        return jdbc.queryForObject(
+                "SELECT COUNT(*) FROM vi_address WHERE owner_account_id = ? AND is_default = 1 AND"
+                        + " deleted_at IS NULL",
+                Long.class,
+                accountId);
     }
 
     // ---------- 用例 ----------
@@ -223,12 +285,30 @@ class A02AddressIT {
         assertEquals(120.1, a.get("location").get("lng").asDouble(), 1e-6);
         String id = a.get("addressId").asText();
         assertEquals(1, list(token).size());
-        ResponseEntity<String> up = rest.exchange(url("/api/app/owner/addresses/" + id), HttpMethod.PUT,
-                mini(Map.of("label", "公司", "address", "北环路26号", "location", loc(120.2, 30.3), "expectedVersion", 0), token), String.class);
+        ResponseEntity<String> up =
+                rest.exchange(
+                        url("/api/app/owner/addresses/" + id),
+                        HttpMethod.PUT,
+                        mini(
+                                Map.of(
+                                        "label",
+                                        "公司",
+                                        "address",
+                                        "北环路26号",
+                                        "location",
+                                        loc(120.2, 30.3),
+                                        "expectedVersion",
+                                        0),
+                                token),
+                        String.class);
         assertEquals(200, up.getStatusCode().value(), up.getBody());
         assertEquals(1, ViJson.tree(up.getBody()).get("data").get("version").asLong());
-        ResponseEntity<String> del = rest.exchange(url("/api/app/owner/addresses/" + id), HttpMethod.DELETE,
-                mini(Map.of("expectedVersion", 1, "reason", "搬家"), token), String.class);
+        ResponseEntity<String> del =
+                rest.exchange(
+                        url("/api/app/owner/addresses/" + id),
+                        HttpMethod.DELETE,
+                        mini(Map.of("expectedVersion", 1, "reason", "搬家"), token),
+                        String.class);
         assertEquals(200, del.getStatusCode().value(), del.getBody());
         assertTrue(ViJson.tree(del.getBody()).get("data").get("accepted").asBoolean());
         assertEquals(0, list(token).size());
@@ -245,12 +325,29 @@ class A02AddressIT {
         CountDownLatch gate = new CountDownLatch(1);
         List<Future<Integer>> fs = new java.util.ArrayList<>();
         for (String id : List.of(idA, idB)) {
-            fs.add(pool.submit(() -> {
-                gate.await();
-                long v = jdbc.queryForObject("SELECT version FROM vi_address WHERE id = ?", Long.class, Long.parseLong(id));
-                return rest.exchange(url("/api/app/owner/addresses/" + id + "/default"), HttpMethod.POST,
-                        mini(Map.of("expectedVersion", v, "reason", "常用"), token), String.class).getStatusCode().value();
-            }));
+            fs.add(
+                    pool.submit(
+                            () -> {
+                                gate.await();
+                                long v =
+                                        jdbc.queryForObject(
+                                                "SELECT version FROM vi_address WHERE id = ?",
+                                                Long.class,
+                                                Long.parseLong(id));
+                                return rest.exchange(
+                                                url("/api/app/owner/addresses/" + id + "/default"),
+                                                HttpMethod.POST,
+                                                mini(
+                                                        Map.of(
+                                                                "expectedVersion",
+                                                                v,
+                                                                "reason",
+                                                                "常用"),
+                                                        token),
+                                                String.class)
+                                        .getStatusCode()
+                                        .value();
+                            }));
         }
         gate.countDown();
         int c1 = fs.get(0).get(30, TimeUnit.SECONDS);
@@ -279,12 +376,41 @@ class A02AddressIT {
         JsonNode s2 = login("a02-other-" + System.nanoTime());
         String id = create(s1.get("token").asText(), "A", false).get("addressId").asText();
         String t2 = s2.get("token").asText();
-        assertEquals(404, rest.exchange(url("/api/app/owner/addresses/" + id), HttpMethod.PUT,
-                mini(Map.of("address", "x", "location", loc(1, 1), "expectedVersion", 0), t2), String.class).getStatusCode().value());
-        assertEquals(404, rest.exchange(url("/api/app/owner/addresses/" + id + "/default"), HttpMethod.POST,
-                mini(Map.of("expectedVersion", 0, "reason", "x"), t2), String.class).getStatusCode().value());
-        assertEquals(404, rest.exchange(url("/api/app/owner/addresses/" + id), HttpMethod.DELETE,
-                mini(Map.of("expectedVersion", 0, "reason", "x"), t2), String.class).getStatusCode().value());
+        assertEquals(
+                404,
+                rest.exchange(
+                                url("/api/app/owner/addresses/" + id),
+                                HttpMethod.PUT,
+                                mini(
+                                        Map.of(
+                                                "address",
+                                                "x",
+                                                "location",
+                                                loc(1, 1),
+                                                "expectedVersion",
+                                                0),
+                                        t2),
+                                String.class)
+                        .getStatusCode()
+                        .value());
+        assertEquals(
+                404,
+                rest.exchange(
+                                url("/api/app/owner/addresses/" + id + "/default"),
+                                HttpMethod.POST,
+                                mini(Map.of("expectedVersion", 0, "reason", "x"), t2),
+                                String.class)
+                        .getStatusCode()
+                        .value());
+        assertEquals(
+                404,
+                rest.exchange(
+                                url("/api/app/owner/addresses/" + id),
+                                HttpMethod.DELETE,
+                                mini(Map.of("expectedVersion", 0, "reason", "x"), t2),
+                                String.class)
+                        .getStatusCode()
+                        .value());
         assertEquals(0, list(t2).size());
     }
 
@@ -293,10 +419,40 @@ class A02AddressIT {
         JsonNode s = login("a02-cas-" + System.nanoTime());
         String token = s.get("token").asText();
         String id = create(token, "A", false).get("addressId").asText();
-        assertEquals(200, rest.exchange(url("/api/app/owner/addresses/" + id), HttpMethod.PUT,
-                mini(Map.of("address", "x", "location", loc(1, 1), "expectedVersion", 0), token), String.class).getStatusCode().value());
-        assertEquals(409, rest.exchange(url("/api/app/owner/addresses/" + id), HttpMethod.PUT,
-                mini(Map.of("address", "y", "location", loc(1, 1), "expectedVersion", 0), token), String.class).getStatusCode().value());
+        assertEquals(
+                200,
+                rest.exchange(
+                                url("/api/app/owner/addresses/" + id),
+                                HttpMethod.PUT,
+                                mini(
+                                        Map.of(
+                                                "address",
+                                                "x",
+                                                "location",
+                                                loc(1, 1),
+                                                "expectedVersion",
+                                                0),
+                                        token),
+                                String.class)
+                        .getStatusCode()
+                        .value());
+        assertEquals(
+                409,
+                rest.exchange(
+                                url("/api/app/owner/addresses/" + id),
+                                HttpMethod.PUT,
+                                mini(
+                                        Map.of(
+                                                "address",
+                                                "y",
+                                                "location",
+                                                loc(1, 1),
+                                                "expectedVersion",
+                                                0),
+                                        token),
+                                String.class)
+                        .getStatusCode()
+                        .value());
     }
 
     @Test
@@ -306,8 +462,11 @@ class A02AddressIT {
         long accountId = Long.parseLong(s.get("accountId").asText());
         String id = create(token, "A", true).get("addressId").asText();
         assertEquals(1, defaultCount(accountId));
-        rest.exchange(url("/api/app/owner/addresses/" + id), HttpMethod.DELETE,
-                mini(Map.of("expectedVersion", 0, "reason", "删"), token), String.class);
+        rest.exchange(
+                url("/api/app/owner/addresses/" + id),
+                HttpMethod.DELETE,
+                mini(Map.of("expectedVersion", 0, "reason", "删"), token),
+                String.class);
         assertEquals(0, defaultCount(accountId), "删除默认不残留");
     }
 
@@ -315,10 +474,32 @@ class A02AddressIT {
     void 非法位置与未知字段拒绝() {
         JsonNode s = login("a02-bad-" + System.nanoTime());
         String token = s.get("token").asText();
-        assertEquals(422, rest.exchange(url("/api/app/owner/addresses"), HttpMethod.POST,
-                mini(Map.of("address", "x", "location", loc(1, 999)), token), String.class).getStatusCode().value());
-        assertEquals(400, rest.exchange(url("/api/app/owner/addresses"), HttpMethod.POST,
-                mini(Map.of("address", "x", "location", loc(1, 1), "ownerAccountId", "1"), token), String.class).getStatusCode().value());
+        assertEquals(
+                422,
+                rest.exchange(
+                                url("/api/app/owner/addresses"),
+                                HttpMethod.POST,
+                                mini(Map.of("address", "x", "location", loc(1, 999)), token),
+                                String.class)
+                        .getStatusCode()
+                        .value());
+        assertEquals(
+                400,
+                rest.exchange(
+                                url("/api/app/owner/addresses"),
+                                HttpMethod.POST,
+                                mini(
+                                        Map.of(
+                                                "address",
+                                                "x",
+                                                "location",
+                                                loc(1, 1),
+                                                "ownerAccountId",
+                                                "1"),
+                                        token),
+                                String.class)
+                        .getStatusCode()
+                        .value());
         assertEquals(0, list(token).size(), "空列表可用（临时地址不强制先保存）");
     }
 }

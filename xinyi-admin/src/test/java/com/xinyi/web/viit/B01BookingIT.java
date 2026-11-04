@@ -47,22 +47,26 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /** B01真实HTTP/MySQL候选时段验证，登录仅外部微信使用测试模拟器。 */
-@SpringBootTest(classes = RuoYiApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
+@SpringBootTest(
+        classes = RuoYiApplication.class,
+        webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
         properties = {
-                "spring.datasource.druid.master.url=jdbc:mysql://localhost:3306/xinyi_vi_it_e07?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8",
-                "vi.environment=integration",
-                "vi.providers.mode=SIMULATOR",
-                "vi.outbox-relay-enabled=false",
-                "server.address=127.0.0.1"
+            "spring.datasource.druid.master.url=jdbc:mysql://localhost:3306/xinyi_vi_it_e07?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8",
+            "vi.environment=integration",
+            "vi.providers.mode=SIMULATOR",
+            "vi.outbox-relay-enabled=false",
+            "server.address=127.0.0.1"
         })
 @ActiveProfiles("druid")
+/** 候选日期/时段验证；候选不构成站点选定或额度预留，后续地址报价还需重新匹配。 */
 class B01BookingIT {
 
     private static Process simProcess;
     private static int simPort;
     private static String simSecret;
     private static Path simDb;
-    private static final java.net.http.HttpClient SIM_HTTP = java.net.http.HttpClient.newHttpClient();
+    private static final java.net.http.HttpClient SIM_HTTP =
+            java.net.http.HttpClient.newHttpClient();
 
     static {
         try {
@@ -91,14 +95,24 @@ class B01BookingIT {
         simDb = Files.createTempFile("b01-sim-", ".sqlite");
         Files.deleteIfExists(simDb);
         String python = System.getenv().getOrDefault("VI_PYTHON", "python3");
-        Path sim = repoRoot().resolve("docs/vehicle/V6.4/13_真实集成测试/provider_simulator/simulator.py");
-        ProcessBuilder pb = new ProcessBuilder(python, sim.toString(),
-                "--host", "127.0.0.1", "--port", "0", "--db", simDb.toString());
+        Path sim =
+                repoRoot().resolve("docs/vehicle/V6.4/13_真实集成测试/provider_simulator/simulator.py");
+        ProcessBuilder pb =
+                new ProcessBuilder(
+                        python,
+                        sim.toString(),
+                        "--host",
+                        "127.0.0.1",
+                        "--port",
+                        "0",
+                        "--db",
+                        simDb.toString());
         pb.environment().put("VI_SIM_SECRET", simSecret);
         pb.redirectErrorStream(true);
         simProcess = pb.start();
-        BufferedReader reader = new BufferedReader(
-                new InputStreamReader(simProcess.getInputStream(), StandardCharsets.UTF_8));
+        BufferedReader reader =
+                new BufferedReader(
+                        new InputStreamReader(simProcess.getInputStream(), StandardCharsets.UTF_8));
         String line = reader.readLine();
         if (line == null) {
             throw new IllegalStateException("模拟器无启动输出");
@@ -129,40 +143,57 @@ class B01BookingIT {
         }
     }
 
-    @LocalServerPort
-    int port;
-    @Autowired
-    JdbcTemplate jdbc;
-    @Autowired
-    TokenService tokenService;
-    @Autowired
-    ISysUserService userService;
+    @LocalServerPort int port;
+    @Autowired JdbcTemplate jdbc;
+    @Autowired TokenService tokenService;
+    @Autowired ISysUserService userService;
 
-    private final RestTemplate rest = new RestTemplate(new org.springframework.http.client.JdkClientHttpRequestFactory()) {{
-        setErrorHandler(new DefaultResponseErrorHandler() {
-            @Override
-            public boolean hasError(ClientHttpResponse response) {
-                return false;
-            }
-        });
-    }};
+    private final RestTemplate rest =
+            new RestTemplate(new org.springframework.http.client.JdkClientHttpRequestFactory()) {
+                {
+                    setErrorHandler(
+                            new DefaultResponseErrorHandler() {
+                                @Override
+                                public boolean hasError(ClientHttpResponse response) {
+                                    return false;
+                                }
+                            });
+                }
+            };
 
-    @BeforeEach void clean() {
-        assertEquals("xinyi_vi_it_e07",jdbc.queryForObject("SELECT DATABASE()",String.class));
-        assertEquals("XINYI_VEHICLE_ISOLATED",jdbc.queryForObject("SELECT kind FROM test_environment_guard WHERE id=1",String.class));
+    @BeforeEach
+    void clean() {
+        assertEquals("xinyi_vi_it_e07", jdbc.queryForObject("SELECT DATABASE()", String.class));
+        assertEquals(
+                "XINYI_VEHICLE_ISOLATED",
+                jdbc.queryForObject(
+                        "SELECT kind FROM test_environment_guard WHERE id=1", String.class));
         jdbc.execute("DELETE FROM vi_quota_slot WHERE scope_key LIKE 'b01:%'");
         jdbc.execute("DELETE FROM vi_station WHERE id IN (995001,995002)");
-        jdbc.execute("INSERT INTO vi_station (id,name,dept_id,address,lng,lat,service_radius_meter,supported_vehicle_codes,business_hours,enabled) VALUES (995001,'B01测试',100,'测试',110,21,1000,'[]','{}',1),(995002,'B01测试',100,'测试',110,21,1000,'[]','{}',1)");
+        jdbc.execute(
+                "INSERT INTO vi_station"
+                    + " (id,name,dept_id,address,lng,lat,service_radius_meter,supported_vehicle_codes,business_hours,enabled)"
+                    + " VALUES"
+                    + " (995001,'B01测试',100,'测试',110,21,1000,'[]','{}',1),(995002,'B01测试',100,'测试',110,21,1000,'[]','{}',1)");
     }
+
     private Map<String, Object> simPost(String path, Map<String, Object> body) {
         try {
             String json = ViJson.write(body);
-            java.net.http.HttpRequest req = java.net.http.HttpRequest.newBuilder(
-                            java.net.URI.create("http://127.0.0.1:" + simPort + path))
-                    .header("Content-Type", "application/json").header("X-Sim-Secret", simSecret)
-                    .POST(java.net.http.HttpRequest.BodyPublishers.ofString(json, StandardCharsets.UTF_8)).build();
+            java.net.http.HttpRequest req =
+                    java.net.http.HttpRequest.newBuilder(
+                                    java.net.URI.create("http://127.0.0.1:" + simPort + path))
+                            .header("Content-Type", "application/json")
+                            .header("X-Sim-Secret", simSecret)
+                            .POST(
+                                    java.net.http.HttpRequest.BodyPublishers.ofString(
+                                            json, StandardCharsets.UTF_8))
+                            .build();
             java.net.http.HttpResponse<String> resp =
-                    SIM_HTTP.send(req, java.net.http.HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
+                    SIM_HTTP.send(
+                            req,
+                            java.net.http.HttpResponse.BodyHandlers.ofString(
+                                    StandardCharsets.UTF_8));
             assertEquals(200, resp.statusCode(), "模拟器 " + path + " 应200 " + resp.body());
             return ViJson.read(resp.body(), Map.class);
         } catch (java.io.IOException | InterruptedException e) {
@@ -187,11 +218,16 @@ class B01BookingIT {
 
     private String adminToken() {
         SysUser admin = userService.selectUserByUserName("admin");
-        Long av = jdbc.queryForObject("SELECT auth_version FROM sys_user WHERE user_id = ?", Long.class, admin.getUserId());
+        Long av =
+                jdbc.queryForObject(
+                        "SELECT auth_version FROM sys_user WHERE user_id = ?",
+                        Long.class,
+                        admin.getUserId());
         LoginUser lu = new LoginUser(admin, Set.of("*:*:*"));
         lu.setUserId(admin.getUserId());
         lu.setAuthVersion(av);
-        org.springframework.mock.web.MockHttpServletRequest req = new org.springframework.mock.web.MockHttpServletRequest();
+        org.springframework.mock.web.MockHttpServletRequest req =
+                new org.springframework.mock.web.MockHttpServletRequest();
         req.addHeader("User-Agent", "vi-it");
         org.springframework.web.context.request.RequestContextHolder.setRequestAttributes(
                 new org.springframework.web.context.request.ServletRequestAttributes(req));
@@ -212,34 +248,95 @@ class B01BookingIT {
 
     private JsonNode login(String persona) {
         String run = (String) simPost("/control/runs", Map.of()).get("runId");
-        String code = (String) simPost("/control/codes", Map.of("runId", run, "persona", persona, "kind", "wechat")).get("code");
-        ResponseEntity<String> r = rest.exchange(url("/api/common/login/wechat"), HttpMethod.POST,
-                mini(Map.of("code", code), null), String.class);
+        String code =
+                (String)
+                        simPost(
+                                        "/control/codes",
+                                        Map.of("runId", run, "persona", persona, "kind", "wechat"))
+                                .get("code");
+        ResponseEntity<String> r =
+                rest.exchange(
+                        url("/api/common/login/wechat"),
+                        HttpMethod.POST,
+                        mini(Map.of("code", code), null),
+                        String.class);
         assertEquals(200, r.getStatusCode().value(), "登录应200 " + r.getBody());
         return ViJson.tree(r.getBody()).get("data");
     }
 
+    String day =
+            java.time.LocalDate.now(java.time.ZoneId.of("Asia/Shanghai")).plusDays(2).toString();
 
-    String day=java.time.LocalDate.now(java.time.ZoneId.of("Asia/Shanghai")).plusDays(2).toString();
-    void slot(long station,String type,int total,int held,boolean enabled) {
-        jdbc.update("INSERT INTO vi_quota_slot (quota_type,scope_key,station_id,starts_at,ends_at,total_quota,held_quota,confirmed_quota,consumed_quota,enabled) VALUES (?,?,?,CONVERT_TZ(CONCAT(?,' 10:00:00'),'+08:00','+00:00'),CONVERT_TZ(CONCAT(?,' 11:00:00'),'+08:00','+00:00'),?,?,0,0,?)",type,"b01:"+UUID.randomUUID(),station,day,day,total,held,enabled);
+    void slot(long station, String type, int total, int held, boolean enabled) {
+        jdbc.update(
+                "INSERT INTO vi_quota_slot"
+                    + " (quota_type,scope_key,station_id,starts_at,ends_at,total_quota,held_quota,confirmed_quota,consumed_quota,enabled)"
+                    + " VALUES (?,?,?,CONVERT_TZ(CONCAT(?,'"
+                    + " 10:00:00'),'+08:00','+00:00'),CONVERT_TZ(CONCAT(?,'"
+                    + " 11:00:00'),'+08:00','+00:00'),?,?,0,0,?)",
+                type,
+                "b01:" + UUID.randomUUID(),
+                station,
+                day,
+                day,
+                total,
+                held,
+                enabled);
     }
-    ResponseEntity<String> get(String token,String extra){return rest.exchange(url("/api/app/owner/schedule/slots?date="+day+extra),HttpMethod.GET,mini(null,token),String.class);}
-    @Test void 同时段合并且不暴露站点或扣减名额() {
-        slot(995001,"PICKUP",5,1,true);slot(995002,"PICKUP",5,2,true);
-        String token=login("OWNER_A").get("token").asText();var result=get(token,"");assertEquals(200,result.getStatusCode().value(),result.getBody());
-        JsonNode data=ViJson.tree(result.getBody());assertEquals(1,data.get("total").asInt());JsonNode row=data.get("rows").get(0);
-        assertTrue(row.get("candidateOnly").asBoolean());assertEquals("CANDIDATE",row.get("status").asText());assertFalse(row.has("stationId"));assertFalse(row.has("remainQuota"));
-        assertTrue(row.get("startAt").asText().endsWith("02:00:00Z"));get(token,"");
-        assertEquals(3,jdbc.queryForObject("SELECT SUM(held_quota) FROM vi_quota_slot WHERE scope_key LIKE 'b01:%'",Integer.class));
+
+    ResponseEntity<String> get(String token, String extra) {
+        return rest.exchange(
+                url("/api/app/owner/schedule/slots?date=" + day + extra),
+                HttpMethod.GET,
+                mini(null, token),
+                String.class);
     }
-    @Test void 停约满额停用站点和接收额度不充当候选() {
-        String token=login("OWNER_A").get("token").asText();slot(995001,"STATION_RECEIVE",5,0,true);slot(995001,"PICKUP",5,5,true);slot(995001,"PICKUP",5,0,false);slot(995002,"PICKUP",5,0,true);
-        jdbc.update("UPDATE vi_station SET enabled=0 WHERE id=995002");assertEquals(0,ViJson.tree(get(token,"").getBody()).get("total").asInt());
+
+    @Test
+    void 同时段合并且不暴露站点或扣减名额() {
+        slot(995001, "PICKUP", 5, 1, true);
+        slot(995002, "PICKUP", 5, 2, true);
+        String token = login("OWNER_A").get("token").asText();
+        var result = get(token, "");
+        assertEquals(200, result.getStatusCode().value(), result.getBody());
+        JsonNode data = ViJson.tree(result.getBody());
+        assertEquals(1, data.get("total").asInt());
+        JsonNode row = data.get("rows").get(0);
+        assertTrue(row.get("candidateOnly").asBoolean());
+        assertEquals("CANDIDATE", row.get("status").asText());
+        assertFalse(row.has("stationId"));
+        assertFalse(row.has("remainQuota"));
+        assertTrue(row.get("startAt").asText().endsWith("02:00:00Z"));
+        get(token, "");
+        assertEquals(
+                3,
+                jdbc.queryForObject(
+                        "SELECT SUM(held_quota) FROM vi_quota_slot WHERE scope_key LIKE 'b01:%'",
+                        Integer.class));
     }
-    @Test void 非法筛选与跨域身份不能绕过() {
-        String token=login("OWNER_A").get("token").asText();
-        for(String q:List.of("&pageSize=0","&pageNum=-1","&serviceAreaCode=forged","&params.dataScope=1"))assertEquals(400,get(token,q).getStatusCode().value());
-        assertEquals(401,get(null,"").getStatusCode().value());assertTrue(get(adminToken(),"").getStatusCode().value()!=200);
+
+    @Test
+    void 停约满额停用站点和接收额度不充当候选() {
+        String token = login("OWNER_A").get("token").asText();
+        slot(995001, "STATION_RECEIVE", 5, 0, true);
+        slot(995001, "PICKUP", 5, 5, true);
+        slot(995001, "PICKUP", 5, 0, false);
+        slot(995002, "PICKUP", 5, 0, true);
+        jdbc.update("UPDATE vi_station SET enabled=0 WHERE id=995002");
+        assertEquals(0, ViJson.tree(get(token, "").getBody()).get("total").asInt());
+    }
+
+    @Test
+    void 非法筛选与跨域身份不能绕过() {
+        String token = login("OWNER_A").get("token").asText();
+        for (String q :
+                List.of(
+                        "&pageSize=0",
+                        "&pageNum=-1",
+                        "&serviceAreaCode=forged",
+                        "&params.dataScope=1"))
+            assertEquals(400, get(token, q).getStatusCode().value());
+        assertEquals(401, get(null, "").getStatusCode().value());
+        assertTrue(get(adminToken(), "").getStatusCode().value() != 200);
     }
 }

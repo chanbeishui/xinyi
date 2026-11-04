@@ -46,25 +46,29 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * A03 车主档案管理 真实集成测试（HTTP+双安全链+MyBatis+隔离库 MySQL+provider 模拟器）。
- * 覆盖：列表/详情脱敏与档案投影、维护仅运营字段+CAS+手机不可改、跨公司历史不因一条订单暴露（部门数据范围）、
- * 无订单车主受限不可见 fail-closed、关联车辆/订单投影、MINI 不获 ADMIN、非超管无功能权限 403。
+ * 覆盖：列表/详情脱敏与档案投影、维护仅运营字段+CAS+手机不可改、跨公司历史不因一条订单暴露（部门数据范围）、 无订单车主受限不可见 fail-closed、关联车辆/订单投影、MINI 不获
+ * ADMIN、非超管无功能权限 403。
  */
-@SpringBootTest(classes = RuoYiApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
+@SpringBootTest(
+        classes = RuoYiApplication.class,
+        webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
         properties = {
-                "spring.datasource.druid.master.url=jdbc:mysql://localhost:3306/xinyi_vi_it_e07?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8",
-                "vi.environment=integration",
-                "vi.providers.mode=SIMULATOR",
-                "vi.outbox-relay-enabled=false",
-                "server.address=127.0.0.1"
+            "spring.datasource.druid.master.url=jdbc:mysql://localhost:3306/xinyi_vi_it_e07?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8",
+            "vi.environment=integration",
+            "vi.providers.mode=SIMULATOR",
+            "vi.outbox-relay-enabled=false",
+            "server.address=127.0.0.1"
         })
 @ActiveProfiles("druid")
+/** 后台车主运营档案以真实订单部门限定范围；维护不覆盖微信身份、核验手机号或历史快照。 */
 class A03OwnerIT {
 
     private static Process simProcess;
     private static int simPort;
     private static String simSecret;
     private static Path simDb;
-    private static final java.net.http.HttpClient SIM_HTTP = java.net.http.HttpClient.newHttpClient();
+    private static final java.net.http.HttpClient SIM_HTTP =
+            java.net.http.HttpClient.newHttpClient();
     private static final AtomicLong SEQ = new AtomicLong(System.nanoTime());
     private static final long DEPT_A = 990001L;
     private static final long DEPT_B = 990002L;
@@ -97,14 +101,24 @@ class A03OwnerIT {
         simDb = Files.createTempFile("a03-sim-", ".sqlite");
         Files.deleteIfExists(simDb);
         String python = System.getenv().getOrDefault("VI_PYTHON", "python3");
-        Path sim = repoRoot().resolve("docs/vehicle/V6.4/13_真实集成测试/provider_simulator/simulator.py");
-        ProcessBuilder pb = new ProcessBuilder(python, sim.toString(),
-                "--host", "127.0.0.1", "--port", "0", "--db", simDb.toString());
+        Path sim =
+                repoRoot().resolve("docs/vehicle/V6.4/13_真实集成测试/provider_simulator/simulator.py");
+        ProcessBuilder pb =
+                new ProcessBuilder(
+                        python,
+                        sim.toString(),
+                        "--host",
+                        "127.0.0.1",
+                        "--port",
+                        "0",
+                        "--db",
+                        simDb.toString());
         pb.environment().put("VI_SIM_SECRET", simSecret);
         pb.redirectErrorStream(true);
         simProcess = pb.start();
-        BufferedReader reader = new BufferedReader(
-                new InputStreamReader(simProcess.getInputStream(), StandardCharsets.UTF_8));
+        BufferedReader reader =
+                new BufferedReader(
+                        new InputStreamReader(simProcess.getInputStream(), StandardCharsets.UTF_8));
         String line = reader.readLine();
         if (line == null) {
             throw new IllegalStateException("模拟器无启动输出");
@@ -135,25 +149,24 @@ class A03OwnerIT {
         }
     }
 
-    @LocalServerPort
-    int port;
-    @Autowired
-    JdbcTemplate jdbc;
-    @Autowired
-    TokenService tokenService;
-    @Autowired
-    ISysUserService userService;
-    @Autowired
-    PhoneCrypto crypto;
+    @LocalServerPort int port;
+    @Autowired JdbcTemplate jdbc;
+    @Autowired TokenService tokenService;
+    @Autowired ISysUserService userService;
+    @Autowired PhoneCrypto crypto;
 
-    private final RestTemplate rest = new RestTemplate(new org.springframework.http.client.JdkClientHttpRequestFactory()) {{
-        setErrorHandler(new DefaultResponseErrorHandler() {
-            @Override
-            public boolean hasError(ClientHttpResponse response) {
-                return false;
-            }
-        });
-    }};
+    private final RestTemplate rest =
+            new RestTemplate(new org.springframework.http.client.JdkClientHttpRequestFactory()) {
+                {
+                    setErrorHandler(
+                            new DefaultResponseErrorHandler() {
+                                @Override
+                                public boolean hasError(ClientHttpResponse response) {
+                                    return false;
+                                }
+                            });
+                }
+            };
 
     @BeforeEach
     void clean() {
@@ -166,24 +179,37 @@ class A03OwnerIT {
         jdbc.execute("DELETE FROM vi_session");
         jdbc.execute("DELETE FROM vi_account_security");
         jdbc.execute("DELETE FROM vi_account");
-        jdbc.execute("DELETE FROM sys_user_dept WHERE user_id IN (SELECT user_id FROM sys_user WHERE user_name LIKE 'a03scoped\\_%')");
+        jdbc.execute(
+                "DELETE FROM sys_user_dept WHERE user_id IN (SELECT user_id FROM sys_user WHERE"
+                        + " user_name LIKE 'a03scoped\\_%')");
         jdbc.execute("DELETE FROM sys_user WHERE user_name LIKE 'a03scoped\\_%'");
         jdbc.execute("DELETE FROM sys_dept WHERE dept_id IN (990001,990002,990003)");
         for (long d : List.of(DEPT_A, DEPT_B, DEPT_C)) {
-            jdbc.update("INSERT INTO sys_dept (dept_id, parent_id, ancestors, dept_name, order_num, status, del_flag) "
-                    + "VALUES (?, 0, '0', ?, 0, '0', '0')", d, "公司" + d);
+            jdbc.update(
+                    "INSERT INTO sys_dept (dept_id, parent_id, ancestors, dept_name, order_num,"
+                            + " status, del_flag) VALUES (?, 0, '0', ?, 0, '0', '0')",
+                    d,
+                    "公司" + d);
         }
     }
 
     private Map<String, Object> simPost(String path, Map<String, Object> body) {
         try {
             String json = ViJson.write(body);
-            java.net.http.HttpRequest req = java.net.http.HttpRequest.newBuilder(
-                            java.net.URI.create("http://127.0.0.1:" + simPort + path))
-                    .header("Content-Type", "application/json").header("X-Sim-Secret", simSecret)
-                    .POST(java.net.http.HttpRequest.BodyPublishers.ofString(json, StandardCharsets.UTF_8)).build();
+            java.net.http.HttpRequest req =
+                    java.net.http.HttpRequest.newBuilder(
+                                    java.net.URI.create("http://127.0.0.1:" + simPort + path))
+                            .header("Content-Type", "application/json")
+                            .header("X-Sim-Secret", simSecret)
+                            .POST(
+                                    java.net.http.HttpRequest.BodyPublishers.ofString(
+                                            json, StandardCharsets.UTF_8))
+                            .build();
             java.net.http.HttpResponse<String> resp =
-                    SIM_HTTP.send(req, java.net.http.HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
+                    SIM_HTTP.send(
+                            req,
+                            java.net.http.HttpResponse.BodyHandlers.ofString(
+                                    StandardCharsets.UTF_8));
             assertEquals(200, resp.statusCode(), "模拟器 " + path + " 应200 " + resp.body());
             return ViJson.read(resp.body(), Map.class);
         } catch (java.io.IOException | InterruptedException e) {
@@ -216,7 +242,11 @@ class A03OwnerIT {
 
     private String adminToken() {
         SysUser admin = userService.selectUserByUserName("admin");
-        Long av = jdbc.queryForObject("SELECT auth_version FROM sys_user WHERE user_id = ?", Long.class, admin.getUserId());
+        Long av =
+                jdbc.queryForObject(
+                        "SELECT auth_version FROM sys_user WHERE user_id = ?",
+                        Long.class,
+                        admin.getUserId());
         LoginUser lu = new LoginUser(admin, Set.of("*:*:*"));
         lu.setUserId(admin.getUserId());
         lu.setAuthVersion(av);
@@ -226,9 +256,14 @@ class A03OwnerIT {
     /** 非超管受限管理员：真实 sys_user + 任职部门 + 角色 dataScope=本部门（3）；perms 为功能权限集合。 */
     private String scopedAdminToken(long deptId, String... perms) {
         String userName = "a03scoped_" + SEQ.incrementAndGet();
-        jdbc.update("INSERT INTO sys_user (user_name, nick_name, status, del_flag, auth_version, password) "
-                + "VALUES (?, ?, '0', '0', 0, 'x')", userName, "受限" + deptId);
-        long userId = jdbc.queryForObject("SELECT user_id FROM sys_user WHERE user_name = ?", Long.class, userName);
+        jdbc.update(
+                "INSERT INTO sys_user (user_name, nick_name, status, del_flag, auth_version,"
+                        + " password) VALUES (?, ?, '0', '0', 0, 'x')",
+                userName,
+                "受限" + deptId);
+        long userId =
+                jdbc.queryForObject(
+                        "SELECT user_id FROM sys_user WHERE user_name = ?", Long.class, userName);
         jdbc.update("INSERT INTO sys_user_dept (user_id, dept_id) VALUES (?, ?)", userId, deptId);
         SysUser u = userService.selectUserByUserName(userName);
         SysRole role = new SysRole();
@@ -245,7 +280,8 @@ class A03OwnerIT {
     }
 
     private String mintToken(LoginUser lu) {
-        org.springframework.mock.web.MockHttpServletRequest req = new org.springframework.mock.web.MockHttpServletRequest();
+        org.springframework.mock.web.MockHttpServletRequest req =
+                new org.springframework.mock.web.MockHttpServletRequest();
         req.addHeader("User-Agent", "vi-it");
         org.springframework.web.context.request.RequestContextHolder.setRequestAttributes(
                 new org.springframework.web.context.request.ServletRequestAttributes(req));
@@ -258,48 +294,90 @@ class A03OwnerIT {
 
     private JsonNode login(String persona) {
         String run = (String) simPost("/control/runs", Map.of()).get("runId");
-        String code = (String) simPost("/control/codes", Map.of("runId", run, "persona", persona, "kind", "wechat")).get("code");
-        ResponseEntity<String> r = rest.exchange(url("/api/common/login/wechat"), HttpMethod.POST,
-                mini(Map.of("code", code), null), String.class);
+        String code =
+                (String)
+                        simPost(
+                                        "/control/codes",
+                                        Map.of("runId", run, "persona", persona, "kind", "wechat"))
+                                .get("code");
+        ResponseEntity<String> r =
+                rest.exchange(
+                        url("/api/common/login/wechat"),
+                        HttpMethod.POST,
+                        mini(Map.of("code", code), null),
+                        String.class);
         assertEquals(200, r.getStatusCode().value(), "登录应200 " + r.getBody());
         return ViJson.tree(r.getBody()).get("data");
     }
 
     private long seedStation(long deptId) {
         long id = SEQ.incrementAndGet();
-        jdbc.update("INSERT INTO vi_station (id, name, dept_id, address, lng, lat, enabled, supported_vehicle_codes, "
-                + "business_hours, service_radius_meter, version) VALUES (?, ?, ?, '公开地址', 120.0, 30.0, 1, '[]', '[]', 5000, 0)",
-                id, "检测站" + id, deptId);
+        jdbc.update(
+                "INSERT INTO vi_station (id, name, dept_id, address, lng, lat, enabled,"
+                        + " supported_vehicle_codes, business_hours, service_radius_meter, version)"
+                        + " VALUES (?, ?, ?, '公开地址', 120.0, 30.0, 1, '[]', '[]', 5000, 0)",
+                id,
+                "检测站" + id,
+                deptId);
         return id;
     }
 
     private long seedProfile(long accountId, String remark) {
-        jdbc.update("INSERT INTO vi_owner_profile (account_id, service_name, service_flag, internal_remark, version) "
-                + "VALUES (?, '称呼', 'NORMAL', ?, 0)", accountId, remark);
-        return jdbc.queryForObject("SELECT id FROM vi_owner_profile WHERE account_id = ?", Long.class, accountId);
+        jdbc.update(
+                "INSERT INTO vi_owner_profile (account_id, service_name, service_flag,"
+                        + " internal_remark, version) VALUES (?, '称呼', 'NORMAL', ?, 0)",
+                accountId,
+                remark);
+        return jdbc.queryForObject(
+                "SELECT id FROM vi_owner_profile WHERE account_id = ?", Long.class, accountId);
     }
 
     /** 模拟认证服务已核验手机：写入密文与核验时刻（运营维护不可覆盖）。 */
     private void seedPhone(long accountId, String phone) {
-        jdbc.update("UPDATE vi_account SET phone_cipher = ?, phone_verified_at = UTC_TIMESTAMP(3) WHERE id = ?",
-                crypto.encrypt(phone), accountId);
+        jdbc.update(
+                "UPDATE vi_account SET phone_cipher = ?, phone_verified_at = UTC_TIMESTAMP(3) WHERE"
+                        + " id = ?",
+                crypto.encrypt(phone),
+                accountId);
     }
 
     private long seedVehicle(long accountId, String plate) {
-        jdbc.update("INSERT INTO vi_vehicle (owner_account_id, plate_no, vehicle_type_code, brand_model, vin_last4, "
-                + "verification_status, is_default, version) VALUES (?, ?, 'SMALL_CAR', '品牌', '1234', 'VERIFIED', 0, 0)",
-                accountId, plate);
-        return jdbc.queryForObject("SELECT id FROM vi_vehicle WHERE owner_account_id = ? AND plate_no = ?", Long.class, accountId, plate);
+        jdbc.update(
+                "INSERT INTO vi_vehicle (owner_account_id, plate_no, vehicle_type_code,"
+                    + " brand_model, vin_last4, verification_status, is_default, version) VALUES"
+                    + " (?, ?, 'SMALL_CAR', '品牌', '1234', 'VERIFIED', 0, 0)",
+                accountId,
+                plate);
+        return jdbc.queryForObject(
+                "SELECT id FROM vi_vehicle WHERE owner_account_id = ? AND plate_no = ?",
+                Long.class,
+                accountId,
+                plate);
     }
 
-    private long seedOrder(long accountId, long vehicleId, long stationId, long deptId, String plate) {
+    private long seedOrder(
+            long accountId, long vehicleId, long stationId, long deptId, String plate) {
         long q = SEQ.incrementAndGet();
-        String snapshot = "{\"vehicleId\":\"" + vehicleId + "\",\"plateNo\":\"" + plate + "\",\"vehicleTypeCode\":\"SMALL_CAR\","
-                + "\"vehicleTypeLabel\":\"小型车\",\"brandModel\":\"品牌\",\"vinLast4\":\"1234\"}";
-        jdbc.update("INSERT INTO vi_order (order_no, owner_account_id, station_id, dept_id, quote_id, vehicle_snapshot, "
-                + "fulfillment_status, custody_type, custody_ref_id, pickup_starts_at, pickup_ends_at, pay_expires_at, total_fen, terms_version, vehicle_id) "
-                + "VALUES (?, ?, ?, ?, ?, ?, 'SCHEDULED', 'OWNER', 0, UTC_TIMESTAMP(3), UTC_TIMESTAMP(3), UTC_TIMESTAMP(3), 100, 'v1', ?)",
-                "A03" + q, accountId, stationId, deptId, q, snapshot, vehicleId);
+        String snapshot =
+                "{\"vehicleId\":\""
+                        + vehicleId
+                        + "\",\"plateNo\":\""
+                        + plate
+                        + "\",\"vehicleTypeCode\":\"SMALL_CAR\","
+                        + "\"vehicleTypeLabel\":\"小型车\",\"brandModel\":\"品牌\",\"vinLast4\":\"1234\"}";
+        jdbc.update(
+                "INSERT INTO vi_order (order_no, owner_account_id, station_id, dept_id, quote_id,"
+                    + " vehicle_snapshot, fulfillment_status, custody_type, custody_ref_id,"
+                    + " pickup_starts_at, pickup_ends_at, pay_expires_at, total_fen, terms_version,"
+                    + " vehicle_id) VALUES (?, ?, ?, ?, ?, ?, 'SCHEDULED', 'OWNER', 0,"
+                    + " UTC_TIMESTAMP(3), UTC_TIMESTAMP(3), UTC_TIMESTAMP(3), 100, 'v1', ?)",
+                "A03" + q,
+                accountId,
+                stationId,
+                deptId,
+                q,
+                snapshot,
+                vehicleId);
         return jdbc.queryForObject("SELECT id FROM vi_order WHERE quote_id = ?", Long.class, q);
     }
 
@@ -320,7 +398,9 @@ class A03OwnerIT {
         long vehicle = seedVehicle(accountId, "浙A12345");
         seedOrder(accountId, vehicle, station, DEPT_A, "浙A12345");
         String admin = adminToken();
-        ResponseEntity<String> lr = rest.exchange(url("/api/admin/owners"), HttpMethod.GET, admin(null, admin), String.class);
+        ResponseEntity<String> lr =
+                rest.exchange(
+                        url("/api/admin/owners"), HttpMethod.GET, admin(null, admin), String.class);
         JsonNode list = rows(lr);
         assertTrue(list.size() >= 1);
         JsonNode o = null;
@@ -338,7 +418,12 @@ class A03OwnerIT {
         assertEquals(1, o.get("orderCount").asLong());
         assertEquals("NORMAL", o.get("serviceFlag").asText());
         assertNotNull(o.get("lastServiceAt").asText());
-        ResponseEntity<String> dr = rest.exchange(url("/api/admin/owners/" + profileId), HttpMethod.GET, admin(null, admin), String.class);
+        ResponseEntity<String> dr =
+                rest.exchange(
+                        url("/api/admin/owners/" + profileId),
+                        HttpMethod.GET,
+                        admin(null, admin),
+                        String.class);
         assertEquals(200, dr.getStatusCode().value());
         JsonNode d = ViJson.tree(dr.getBody()).get("data");
         assertEquals("内部备注X", d.get("internalRemark").asText());
@@ -356,26 +441,95 @@ class A03OwnerIT {
         long vehicle = seedVehicle(accountId, "浙B00001");
         seedOrder(accountId, vehicle, station, DEPT_A, "浙B00001");
         String admin = adminToken();
-        ResponseEntity<String> ok = rest.exchange(url("/api/admin/owners/" + profileId), HttpMethod.PATCH,
-                admin(Map.of("expectedVersion", 0, "serviceName", "新称呼", "serviceFlag", "VERIFY_AGAIN",
-                        "internalRemark", "新备注", "reason", "维护"), admin), String.class);
+        ResponseEntity<String> ok =
+                rest.exchange(
+                        url("/api/admin/owners/" + profileId),
+                        HttpMethod.PATCH,
+                        admin(
+                                Map.of(
+                                        "expectedVersion",
+                                        0,
+                                        "serviceName",
+                                        "新称呼",
+                                        "serviceFlag",
+                                        "VERIFY_AGAIN",
+                                        "internalRemark",
+                                        "新备注",
+                                        "reason",
+                                        "维护"),
+                                admin),
+                        String.class);
         assertEquals(200, ok.getStatusCode().value(), ok.getBody());
         JsonNode d = ViJson.tree(ok.getBody()).get("data");
         assertEquals("新称呼", d.get("serviceName").asText());
         assertEquals("VERIFY_AGAIN", d.get("serviceFlag").asText());
         assertEquals(1, d.get("version").asLong());
         // 手机号/核验结果不可由运营维护覆盖（未知字段拒绝）
-        assertEquals(400, rest.exchange(url("/api/admin/owners/" + profileId), HttpMethod.PATCH,
-                admin(Map.of("expectedVersion", 1, "phoneVerified", false, "reason", "改核验"), admin), String.class).getStatusCode().value());
-        assertEquals(400, rest.exchange(url("/api/admin/owners/" + profileId), HttpMethod.PATCH,
-                admin(Map.of("expectedVersion", 1, "phone", "13800000000", "reason", "改手机"), admin), String.class).getStatusCode().value());
+        assertEquals(
+                400,
+                rest.exchange(
+                                url("/api/admin/owners/" + profileId),
+                                HttpMethod.PATCH,
+                                admin(
+                                        Map.of(
+                                                "expectedVersion",
+                                                1,
+                                                "phoneVerified",
+                                                false,
+                                                "reason",
+                                                "改核验"),
+                                        admin),
+                                String.class)
+                        .getStatusCode()
+                        .value());
+        assertEquals(
+                400,
+                rest.exchange(
+                                url("/api/admin/owners/" + profileId),
+                                HttpMethod.PATCH,
+                                admin(
+                                        Map.of(
+                                                "expectedVersion",
+                                                1,
+                                                "phone",
+                                                "13800000000",
+                                                "reason",
+                                                "改手机"),
+                                        admin),
+                                String.class)
+                        .getStatusCode()
+                        .value());
         // 旧版本 CAS 409
-        assertEquals(409, rest.exchange(url("/api/admin/owners/" + profileId), HttpMethod.PATCH,
-                admin(Map.of("expectedVersion", 0, "serviceName", "X", "reason", "旧版本"), admin), String.class).getStatusCode().value());
+        assertEquals(
+                409,
+                rest.exchange(
+                                url("/api/admin/owners/" + profileId),
+                                HttpMethod.PATCH,
+                                admin(
+                                        Map.of(
+                                                "expectedVersion",
+                                                0,
+                                                "serviceName",
+                                                "X",
+                                                "reason",
+                                                "旧版本"),
+                                        admin),
+                                String.class)
+                        .getStatusCode()
+                        .value());
         // 核验状态不因维护改变（登录账户手机核验时刻仍由认证服务维护）
-        assertEquals(d.get("phoneVerified").asBoolean(),
-                ViJson.tree(rest.exchange(url("/api/admin/owners/" + profileId), HttpMethod.GET, admin(null, admin), String.class)
-                        .getBody()).get("data").get("phoneVerified").asBoolean());
+        assertEquals(
+                d.get("phoneVerified").asBoolean(),
+                ViJson.tree(
+                                rest.exchange(
+                                                url("/api/admin/owners/" + profileId),
+                                                HttpMethod.GET,
+                                                admin(null, admin),
+                                                String.class)
+                                        .getBody())
+                        .get("data")
+                        .get("phoneVerified")
+                        .asBoolean());
     }
 
     @Test
@@ -389,7 +543,12 @@ class A03OwnerIT {
         long orderA = seedOrder(accountId, vehicle, stationA, DEPT_A, "浙C00002");
         long orderB = seedOrder(accountId, vehicle, stationB, DEPT_B, "浙C00002");
         String adminA = scopedAdminToken(DEPT_A, "biz:owner:list", "biz:owner:query");
-        ResponseEntity<String> ra = rest.exchange(url("/api/admin/owners/" + profileId + "/orders"), HttpMethod.GET, admin(null, adminA), String.class);
+        ResponseEntity<String> ra =
+                rest.exchange(
+                        url("/api/admin/owners/" + profileId + "/orders"),
+                        HttpMethod.GET,
+                        admin(null, adminA),
+                        String.class);
         JsonNode rowsA = rows(ra);
         assertEquals(1, rowsA.size(), "A公司只见本公司订单");
         assertEquals(orderNoOf(orderA), rowsA.get(0).get("orderNo").asText());
@@ -398,25 +557,51 @@ class A03OwnerIT {
         assertTrue(rowsA.get(0).get("slotStartAt").asText().endsWith("Z"));
         assertNotNull(rowsA.get(0).get("station").get("stationId"));
         // A公司详情可见（有本公司订单），orderCount 仅本公司
-        ResponseEntity<String> da = rest.exchange(url("/api/admin/owners/" + profileId), HttpMethod.GET, admin(null, adminA), String.class);
+        ResponseEntity<String> da =
+                rest.exchange(
+                        url("/api/admin/owners/" + profileId),
+                        HttpMethod.GET,
+                        admin(null, adminA),
+                        String.class);
         assertEquals(200, da.getStatusCode().value());
         assertEquals(1, ViJson.tree(da.getBody()).get("data").get("orderCount").asLong());
         // B公司只见B订单
         String adminB = scopedAdminToken(DEPT_B, "biz:owner:list", "biz:owner:query");
-        JsonNode rowsB = rows(rest.exchange(url("/api/admin/owners/" + profileId + "/orders"), HttpMethod.GET, admin(null, adminB), String.class));
+        JsonNode rowsB =
+                rows(
+                        rest.exchange(
+                                url("/api/admin/owners/" + profileId + "/orders"),
+                                HttpMethod.GET,
+                                admin(null, adminB),
+                                String.class));
         assertEquals(1, rowsB.size());
         assertEquals(orderNoOf(orderB), rowsB.get(0).get("orderNo").asText());
         // C公司无订单 → 详情不可见404，列表不含
         String adminC = scopedAdminToken(DEPT_C, "biz:owner:list", "biz:owner:query");
-        assertEquals(404, rest.exchange(url("/api/admin/owners/" + profileId), HttpMethod.GET, admin(null, adminC), String.class).getStatusCode().value());
+        assertEquals(
+                404,
+                rest.exchange(
+                                url("/api/admin/owners/" + profileId),
+                                HttpMethod.GET,
+                                admin(null, adminC),
+                                String.class)
+                        .getStatusCode()
+                        .value());
         // 超管全量见两条
         String admin = adminToken();
-        JsonNode all = rows(rest.exchange(url("/api/admin/owners/" + profileId + "/orders"), HttpMethod.GET, admin(null, admin), String.class));
+        JsonNode all =
+                rows(
+                        rest.exchange(
+                                url("/api/admin/owners/" + profileId + "/orders"),
+                                HttpMethod.GET,
+                                admin(null, admin),
+                                String.class));
         assertEquals(2, all.size());
     }
 
     private String orderNoOf(long orderId) {
-        return jdbc.queryForObject("SELECT order_no FROM vi_order WHERE id = ?", String.class, orderId);
+        return jdbc.queryForObject(
+                "SELECT order_no FROM vi_order WHERE id = ?", String.class, orderId);
     }
 
     @Test
@@ -425,14 +610,36 @@ class A03OwnerIT {
         long accountId = s.get("accountId").asLong();
         long profileId = seedProfile(accountId, "无订单");
         String adminA = scopedAdminToken(DEPT_A, "biz:owner:list", "biz:owner:query");
-        assertEquals(404, rest.exchange(url("/api/admin/owners/" + profileId), HttpMethod.GET, admin(null, adminA), String.class).getStatusCode().value());
-        JsonNode list = rows(rest.exchange(url("/api/admin/owners"), HttpMethod.GET, admin(null, adminA), String.class));
+        assertEquals(
+                404,
+                rest.exchange(
+                                url("/api/admin/owners/" + profileId),
+                                HttpMethod.GET,
+                                admin(null, adminA),
+                                String.class)
+                        .getStatusCode()
+                        .value());
+        JsonNode list =
+                rows(
+                        rest.exchange(
+                                url("/api/admin/owners"),
+                                HttpMethod.GET,
+                                admin(null, adminA),
+                                String.class));
         for (JsonNode n : list) {
             assertFalse(n.get("ownerId").asText().equals(String.valueOf(profileId)), "受限列表不含无订单车主");
         }
         // 超管全量可见
         String admin = adminToken();
-        assertEquals(200, rest.exchange(url("/api/admin/owners/" + profileId), HttpMethod.GET, admin(null, admin), String.class).getStatusCode().value());
+        assertEquals(
+                200,
+                rest.exchange(
+                                url("/api/admin/owners/" + profileId),
+                                HttpMethod.GET,
+                                admin(null, admin),
+                                String.class)
+                        .getStatusCode()
+                        .value());
     }
 
     @Test
@@ -444,7 +651,12 @@ class A03OwnerIT {
         long vehicle = seedVehicle(accountId, "浙D00003");
         seedOrder(accountId, vehicle, station, DEPT_A, "浙D00003");
         String admin = adminToken();
-        ResponseEntity<String> vr = rest.exchange(url("/api/admin/owners/" + profileId + "/vehicles"), HttpMethod.GET, admin(null, admin), String.class);
+        ResponseEntity<String> vr =
+                rest.exchange(
+                        url("/api/admin/owners/" + profileId + "/vehicles"),
+                        HttpMethod.GET,
+                        admin(null, admin),
+                        String.class);
         assertEquals(200, vr.getStatusCode().value());
         JsonNode body = ViJson.tree(vr.getBody());
         assertEquals(1, body.get("total").asLong());
@@ -459,12 +671,19 @@ class A03OwnerIT {
     void MINI令牌不获ADMIN() {
         JsonNode s = login("a03-mini-" + System.nanoTime());
         String miniToken = s.get("token").asText();
-        ResponseEntity<String> r = rest.exchange(url("/api/admin/owners"), HttpMethod.GET, mini(null, miniToken), String.class);
+        ResponseEntity<String> r =
+                rest.exchange(
+                        url("/api/admin/owners"),
+                        HttpMethod.GET,
+                        mini(null, miniToken),
+                        String.class);
         JsonNode body = ViJson.tree(r.getBody());
         int sc = r.getStatusCode().value();
         int bc = body.path("code").asInt();
-        assertFalse(sc == 200 && bc == 200 && body.has("rows"), "MINI 不得获得 ADMIN 车主列表: " + r.getBody());
-        assertTrue(sc == 401 || sc == 403 || bc == 401 || bc == 403,
+        assertFalse(
+                sc == 200 && bc == 200 && body.has("rows"), "MINI 不得获得 ADMIN 车主列表: " + r.getBody());
+        assertTrue(
+                sc == 401 || sc == 403 || bc == 401 || bc == 403,
                 "MINI 令牌不获 ADMIN，status=" + sc + " body=" + r.getBody());
     }
 
@@ -478,6 +697,14 @@ class A03OwnerIT {
         seedOrder(accountId, vehicle, station, DEPT_A, "浙E00004");
         // 有部门数据范围但无 biz:owner:list 功能权限
         String noPerm = scopedAdminToken(DEPT_A);
-        assertEquals(403, rest.exchange(url("/api/admin/owners"), HttpMethod.GET, admin(null, noPerm), String.class).getStatusCode().value());
+        assertEquals(
+                403,
+                rest.exchange(
+                                url("/api/admin/owners"),
+                                HttpMethod.GET,
+                                admin(null, noPerm),
+                                String.class)
+                        .getStatusCode()
+                        .value());
     }
 }
