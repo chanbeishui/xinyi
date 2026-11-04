@@ -1,0 +1,15 @@
+{
+  "at": "2026-11-04T14:34:07.732003+00:00",
+  "exitCode": 0,
+  "testsRun": 15,
+  "suites": [
+    {
+      "testsRun": 15,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "suite": "com.xinyi.web.viit.X02PaymentIT"
+    }
+  ],
+  "change": "补充纯线下配置不引用微信商户的回归；生产代码与48项专项一致"
+}

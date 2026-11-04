@@ -1,7 +1,7 @@
 # X02 · 支付方式与微信商户运行时接入
 
 阶段：M2；责任域：payment；前置：X01, P01。
-范围版本：`V6.4-CONFIG-20261022`；definitionHash：`b9ba71ab92f05ff295ee8fe1b40952c854b85f120df3f1022690e52e5ba123df`。
+范围版本：`V6.4-CONFIG-20261022`；definitionHash：`78087a373447e21db5eefdeda888c90e2f3830dd61eacdc047339a8401fc8164`。
 
 ## 本任务交付
 - 接入独立开关、mchid/appId/签名/验签配置及必填提示
@@ -20,17 +20,23 @@
 验收：TC-CFG-011, TC-CFG-012, TC-CFG-013, TC-CFG-014, TC-CFG-015, TC-CFG-016, TC-CFG-017, TC-CFG-018, TC-CFG-019, TC-CFG-020, TC-CFG-021, TC-CFG-022
 
 ## 代码落位
+`xinyi-rongli/src/main/java/com/xinyi/rongli/payment/`
 `xinyi-rongli/src/main/java/com/xinyi/rongli/integration/`
-`xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/`
+`xinyi-rongli/src/main/resources/mapper/rongli/payment/`
 `xinyi-ui/src/views/rongli/integrations/`
-`xinyi-miniapp/src/`
-`sql/migration_YYYYMMDD_integration_config.sql`
+`xinyi-ui/src/api/rongli/integrations.ts`
+`xinyi-miniapp/src/features/payment/`
+`xinyi-miniapp/src/pages/payment/`
+`xinyi-admin/src/test/java/com/xinyi/web/viit/X02PaymentIT.java`
+`sql/migration_20261104_02_payment_settings_menu.sql`
 
 ## 验证命令
 ```bash
-mvn -pl xinyi-admin -am test
+mvn -pl xinyi-admin -am -Pvi-it -Dit.test=X02PaymentIT,P01PaymentIT,X01IntegrationIT verify
+npm --prefix xinyi-ui run build:prod
+npm --prefix xinyi-miniapp run type-check
+npm --prefix xinyi-miniapp run build:mp-weixin
 python docs/vehicle/V6.4/11_工具/test_integration_policy.py
-python -m pytest docs/vehicle/V6.4/13_真实集成测试/live/test_integration_config_live.py -q
 ```
 
 ## 完成标准

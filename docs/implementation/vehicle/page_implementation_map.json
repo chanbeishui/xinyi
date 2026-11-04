@@ -129,12 +129,13 @@
     "status": "PARTIAL",
     "implementationFile": "xinyi-miniapp/src/pages/payment/index.vue",
     "evidence": [
-      "docs/implementation/vehicle/evidence/P01-20261104.json"
+      "docs/implementation/vehicle/evidence/P01-20261104.json",
+      "docs/implementation/vehicle/evidence/X02-20261104.json"
     ],
     "boardId": "O10",
     "taskId": "P01",
-    "implemented": "预支付入口与服务端支付状态展示，微信目标构建及H5界面验证",
-    "remaining": "微信真机；回调/主动查单/超时关单由P02；线下确认由X06。O10线下操作尚不可用，不将完整画板算完成"
+    "implemented": "服务端支付选项与线下意图；原账号/截止、选择不等于已付；实际Vue浏览器验证",
+    "remaining": "P02回调/主动查单/超时关单；X06线下凭证登记与独立核实；真机及完整画板验收"
   },
   {
     "status": "PARTIAL",
@@ -2534,18 +2535,26 @@
     "taskId": "I01"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "PARTIAL",
+    "implementationFile": "xinyi-ui/src/views/rongli/integrations/payment.vue",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/X02-20261104.json"
+    ],
     "boardId": "B46",
-    "taskId": "X06"
+    "taskId": "X06",
+    "implemented": "X02支持页面：同公司配置、凭据只写、草稿/校验/发布、回调只读、历史查看及浏览器交互验证",
+    "remaining": "保留源任务X06归属；全画板验收、X07联合场景、真实渠道及独立复核尚未完成"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "PARTIAL",
+    "implementationFile": "xinyi-ui/src/views/rongli/integrations/payment.vue",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/X02-20261104.json"
+    ],
     "boardId": "B47",
-    "taskId": "X06"
+    "taskId": "X06",
+    "implemented": "X02支持页面：同公司配置、凭据只写、草稿/校验/发布、回调只读、历史查看及浏览器交互验证",
+    "remaining": "保留源任务X06归属；全画板验收、X07联合场景、真实渠道及独立复核尚未完成"
   },
   {
     "status": "NOT_ASSESSED",
@@ -2583,11 +2592,15 @@
     "taskId": "X06"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "PARTIAL",
+    "implementationFile": "xinyi-ui/src/views/rongli/integrations/payment.vue",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/X02-20261104.json"
+    ],
     "boardId": "B53",
-    "taskId": "X06"
+    "taskId": "X06",
+    "implemented": "X02支持页面：同公司配置、凭据只写、草稿/校验/发布、回调只读、历史查看及浏览器交互验证",
+    "remaining": "保留源任务X06归属；全画板验收、X07联合场景、真实渠道及独立复核尚未完成"
   },
   {
     "status": "NOT_ASSESSED",
@@ -2772,11 +2785,15 @@
     "taskId": "X06"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "PARTIAL",
+    "implementationFile": "xinyi-miniapp/src/pages/payment/index.vue",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/X02-20261104.json"
+    ],
     "boardId": "O10-offline",
-    "taskId": "X06"
+    "taskId": "X06",
+    "implemented": "服务端支付选项与线下意图；原账号/截止、选择不等于已付；实际Vue浏览器验证",
+    "remaining": "P02回调/主动查单/超时关单；X06线下凭证登记与独立核实；真机及完整画板验收"
   },
   {
     "status": "NOT_ASSESSED",

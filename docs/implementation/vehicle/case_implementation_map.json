@@ -3004,88 +3004,124 @@
     "testMethod": "X01IntegrationIT#redisConnectionFailureCannotOverrideDatabasePublication"
   },
   {
-    "status": "NOT_ASSESSED",
-    "testFiles": [],
-    "evidence": [],
+    "status": "PASS",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/X02PaymentIT.java"
+    ],
+    "evidence": "docs/implementation/vehicle/evidence/X02-20261104.json",
     "caseId": "TC-CFG-011",
-    "taskId": "X02"
+    "taskId": "X02",
+    "testMethod": "X02PaymentIT#onlyOfflineDoesNotNeedMerchantAndSelectionIsNotPaid"
   },
   {
-    "status": "NOT_ASSESSED",
-    "testFiles": [],
-    "evidence": [],
+    "status": "PASS",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/X02PaymentIT.java"
+    ],
+    "evidence": "docs/implementation/vehicle/evidence/X02-20261104.json",
     "caseId": "TC-CFG-012",
-    "taskId": "X02"
+    "taskId": "X02",
+    "testMethod": "X02PaymentIT#onlyWechatAndBothEnabledAreIndependent"
   },
   {
-    "status": "NOT_ASSESSED",
-    "testFiles": [],
-    "evidence": [],
+    "status": "PASS",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/X02PaymentIT.java"
+    ],
+    "evidence": "docs/implementation/vehicle/evidence/X02-20261104.json",
     "caseId": "TC-CFG-013",
-    "taskId": "X02"
+    "taskId": "X02",
+    "testMethod": "X02PaymentIT#offlineUnknownWechatRaceHasOneWinner"
   },
   {
-    "status": "NOT_ASSESSED",
-    "testFiles": [],
-    "evidence": [],
+    "status": "PASS",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/X02PaymentIT.java"
+    ],
+    "evidence": "docs/implementation/vehicle/evidence/X02-20261104.json",
     "caseId": "TC-CFG-014",
-    "taskId": "X02"
+    "taskId": "X02",
+    "testMethod": "X02PaymentIT#bothOffNeedsConfirmationAndStopsBookingNotFree"
   },
   {
-    "status": "NOT_ASSESSED",
-    "testFiles": [],
-    "evidence": [],
+    "status": "PASS",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/X02PaymentIT.java"
+    ],
+    "evidence": "docs/implementation/vehicle/evidence/X02-20261104.json",
     "caseId": "TC-CFG-015",
-    "taskId": "X02"
+    "taskId": "X02",
+    "testMethod": "X02PaymentIT#secretFieldsValidateWithoutProviderTraffic"
   },
   {
-    "status": "NOT_ASSESSED",
-    "testFiles": [],
-    "evidence": [],
+    "status": "PASS",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/X02PaymentIT.java"
+    ],
+    "evidence": "docs/implementation/vehicle/evidence/X02-20261104.json",
     "caseId": "TC-CFG-016",
-    "taskId": "X02"
+    "taskId": "X02",
+    "testMethod": "X02PaymentIT#secretFieldsValidateWithoutProviderTraffic"
   },
   {
-    "status": "NOT_ASSESSED",
-    "testFiles": [],
-    "evidence": [],
+    "status": "PASS",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/X02PaymentIT.java"
+    ],
+    "evidence": "docs/implementation/vehicle/evidence/X02-20261104.json",
     "caseId": "TC-CFG-017",
-    "taskId": "X02"
+    "taskId": "X02",
+    "testMethod": "X02PaymentIT#merchantCertificateMustMatchSignatureKey"
   },
   {
-    "status": "NOT_ASSESSED",
-    "testFiles": [],
-    "evidence": [],
+    "status": "PASS",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/X02PaymentIT.java"
+    ],
+    "evidence": "docs/implementation/vehicle/evidence/X02-20261104.json",
     "caseId": "TC-CFG-018",
-    "taskId": "X02"
+    "taskId": "X02",
+    "testMethod": "X02PaymentIT#appMismatchAndNewPrepayAfterSwitchOffDoNotReachProvider"
   },
   {
-    "status": "NOT_ASSESSED",
-    "testFiles": [],
-    "evidence": [],
+    "status": "PASS",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/X02PaymentIT.java"
+    ],
+    "evidence": "docs/implementation/vehicle/evidence/X02-20261104.json",
     "caseId": "TC-CFG-019",
-    "taskId": "X02"
+    "taskId": "X02",
+    "testMethod": "X02PaymentIT#disabledPolicyStillValidatesAndDecryptsOriginalCallback;refundQueryRetainsMerchantAfterSwitchOff"
   },
   {
-    "status": "NOT_ASSESSED",
-    "testFiles": [],
-    "evidence": [],
+    "status": "PASS",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/X02PaymentIT.java"
+    ],
+    "evidence": "docs/implementation/vehicle/evidence/X02-20261104.json",
     "caseId": "TC-CFG-020",
-    "taskId": "X02"
+    "taskId": "X02",
+    "testMethod": "X02PaymentIT#appMismatchAndNewPrepayAfterSwitchOffDoNotReachProvider"
   },
   {
-    "status": "NOT_ASSESSED",
-    "testFiles": [],
-    "evidence": [],
+    "status": "PASS",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/X02PaymentIT.java"
+    ],
+    "evidence": "docs/implementation/vehicle/evidence/X02-20261104.json",
     "caseId": "TC-CFG-021",
-    "taskId": "X02"
+    "taskId": "X02",
+    "testMethod": "X02PaymentIT#disabledPolicyKeepsOriginalQueryAndValidRotatedSigningKey"
   },
   {
-    "status": "NOT_ASSESSED",
-    "testFiles": [],
-    "evidence": [],
+    "status": "PASS",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/X02PaymentIT.java"
+    ],
+    "evidence": "docs/implementation/vehicle/evidence/X02-20261104.json",
     "caseId": "TC-CFG-022",
-    "taskId": "X02"
+    "taskId": "X02",
+    "testMethod": "X02PaymentIT#secretFieldsValidateWithoutProviderTraffic"
   },
   {
     "status": "NOT_ASSESSED",

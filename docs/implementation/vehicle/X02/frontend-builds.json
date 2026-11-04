@@ -1,0 +1,21 @@
+{
+  "at": "2026-11-04T14:34:07.732003+00:00",
+  "runs": [
+    {
+      "command": "npm --prefix xinyi-ui run build:prod",
+      "exitCode": 0
+    },
+    {
+      "command": "npm --prefix xinyi-miniapp run type-check",
+      "exitCode": 0
+    },
+    {
+      "command": "npm --prefix xinyi-miniapp run build:mp-weixin",
+      "exitCode": 0
+    }
+  ],
+  "warnings": [
+    "既有前端chunk体积提示",
+    "小程序未配置真实AppID；未执行微信真机支付"
+  ]
+}

@@ -6240,19 +6240,25 @@
     ],
     "scope": "DEVELOPMENT",
     "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
-    "status": "NOT_ASSESSED",
+    "status": "VERIFIED",
     "code_paths": [
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/payment/",
       "xinyi-rongli/src/main/java/com/xinyi/rongli/integration/",
-      "xinyi-rongli/src/main/java/com/xinyi/rongli/",
+      "xinyi-rongli/src/main/resources/mapper/rongli/payment/",
       "xinyi-ui/src/views/rongli/integrations/",
-      "xinyi-miniapp/src/",
-      "sql/migration_YYYYMMDD_integration_config.sql"
+      "xinyi-ui/src/api/rongli/integrations.ts",
+      "xinyi-miniapp/src/features/payment/",
+      "xinyi-miniapp/src/pages/payment/",
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/X02PaymentIT.java",
+      "sql/migration_20261104_02_payment_settings_menu.sql"
     ],
-    "test_class": "X02IntegrationIT",
+    "test_class": "X02PaymentIT",
     "commands": [
-      "mvn -pl xinyi-admin -am test",
-      "python docs/vehicle/V6.4/11_工具/test_integration_policy.py",
-      "python -m pytest docs/vehicle/V6.4/13_真实集成测试/live/test_integration_config_live.py -q"
+      "mvn -pl xinyi-admin -am -Pvi-it -Dit.test=X02PaymentIT,P01PaymentIT,X01IntegrationIT verify",
+      "npm --prefix xinyi-ui run build:prod",
+      "npm --prefix xinyi-miniapp run type-check",
+      "npm --prefix xinyi-miniapp run build:mp-weixin",
+      "python docs/vehicle/V6.4/11_工具/test_integration_policy.py"
     ],
     "done_when": [
       "主契约与状态机所有本任务分支实现，无固定Ack/假成功",
@@ -6268,11 +6274,18 @@
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
     "scopeRevision": "V6.4-CONFIG-20261022",
-    "definitionHash": "b9ba71ab92f05ff295ee8fe1b40952c854b85f120df3f1022690e52e5ba123df",
-    "evidence": [],
+    "definitionHash": "78087a373447e21db5eefdeda888c90e2f3830dd61eacdc047339a8401fc8164",
+    "evidence": [
+      {
+        "path": "docs/implementation/vehicle/evidence/X02-20261104.json",
+        "sha256": "f346eb4e4dc6d9cab39e5a8891756d09ed30774562774e563671901546326ed5"
+      }
+    ],
     "implementation": null,
     "review": null,
-    "blocker": null
+    "blocker": null,
+    "needsAdaptation": false,
+    "updatedAt": "2026-11-04T14:34:08.009115+00:00"
   },
   {
     "id": "X03",

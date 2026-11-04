@@ -1,0 +1,83 @@
+full: [INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.579 s -- in com.xinyi.system.service.impl.DeptScopeServiceImplTest
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.045 s -- in com.xinyi.framework.web.service.TokenServiceTest
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.233 s -- in com.xinyi.rongli.booking.TencentRouteGatewayTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.031 s -- in com.xinyi.rongli.integration.IntegrationInputTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.082 s -- in com.xinyi.rongli.payment.PaymentEnvironmentTest
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.392 s -- in com.xinyi.rongli.platform.IdempotencyMacTest
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.084 s -- in com.xinyi.rongli.platform.PlatformPrimitivesTest
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.006 s -- in com.xinyi.rongli.platform.SecretGuardTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.001 s -- in com.xinyi.rongli.pricing.PriceEnvironmentTest
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.005 s -- in com.xinyi.rongli.pricing.PriceCalculatorTest
+[INFO] Tests run: 30, Failures: 0, Errors: 0, Skipped: 0
+[INFO] Tests run: 10, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 4.316 s -- in com.xinyi.web.viit.I03IdentityIT
+[INFO] Tests run: 10, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.045 s -- in com.xinyi.web.viit.E06PlatformIT
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.688 s -- in com.xinyi.web.viit.C01ConfigIT
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.191 s -- in com.xinyi.web.viit.C04LivePricingIT
+[INFO] Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.975 s -- in com.xinyi.web.viit.A03OwnerIT
+[INFO] Tests run: 14, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 3.403 s -- in com.xinyi.web.viit.B03OrderIT
+[INFO] Tests run: 9, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 2.436 s -- in com.xinyi.web.viit.B04OrderIT
+[INFO] Tests run: 14, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 15.05 s -- in com.xinyi.web.viit.P01PaymentIT
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.795 s -- in com.xinyi.web.viit.B01BookingIT
+[INFO] Tests run: 10, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.080 s -- in com.xinyi.web.viit.I04IdentityIT
+[INFO] Tests run: 20, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.678 s -- in com.xinyi.web.viit.I05IdentityIT
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.571 s -- in com.xinyi.web.viit.E07TestingIT
+[INFO] Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.808 s -- in com.xinyi.web.viit.A01VehicleIT
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.333 s -- in com.xinyi.web.viit.B02BookingIT
+[INFO] Tests run: 9, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.877 s -- in com.xinyi.web.viit.I02IdentityIT
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.036 s -- in com.xinyi.web.viit.E08PlatformIT
+[INFO] Tests run: 19, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 5.086 s -- in com.xinyi.web.viit.X01IntegrationIT
+[INFO] Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.729 s -- in com.xinyi.web.viit.A02AddressIT
+[INFO] Tests run: 15, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 4.491 s -- in com.xinyi.web.viit.X02PaymentIT
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.877 s -- in com.xinyi.web.viit.C03CapacityIT
+[INFO] Tests run: 13, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.929 s -- in com.xinyi.web.viit.C02StationIT
+[INFO] Tests run: 14, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.455 s -- in com.xinyi.web.viit.C04PricingIT
+[INFO] Tests run: 9, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.712 s -- in com.xinyi.web.viit.I01IdentityIT
+[INFO] Tests run: 10, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.411 s -- in com.xinyi.web.viit.I06ScopeIT
+[INFO] Tests run: 225, Failures: 0, Errors: 0, Skipped: 0
+[INFO] BUILD SUCCESS
+[INFO] Total time:  01:30 min
+[INFO] Finished at: 2026-11-04T22:21:07+08:00
+
+it: [INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.509 s -- in com.xinyi.system.service.impl.DeptScopeServiceImplTest
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.041 s -- in com.xinyi.framework.web.service.TokenServiceTest
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.204 s -- in com.xinyi.rongli.booking.TencentRouteGatewayTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.021 s -- in com.xinyi.rongli.integration.IntegrationInputTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.038 s -- in com.xinyi.rongli.payment.PaymentEnvironmentTest
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.371 s -- in com.xinyi.rongli.platform.IdempotencyMacTest
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.077 s -- in com.xinyi.rongli.platform.PlatformPrimitivesTest
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.006 s -- in com.xinyi.rongli.platform.SecretGuardTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.001 s -- in com.xinyi.rongli.pricing.PriceEnvironmentTest
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.005 s -- in com.xinyi.rongli.pricing.PriceCalculatorTest
+[INFO] Tests run: 30, Failures: 0, Errors: 0, Skipped: 0
+[INFO] Tests run: 14, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 21.08 s -- in com.xinyi.web.viit.P01PaymentIT
+[INFO] Tests run: 19, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 5.485 s -- in com.xinyi.web.viit.X01IntegrationIT
+[INFO] Tests run: 15, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 5.057 s -- in com.xinyi.web.viit.X02PaymentIT
+[INFO] Tests run: 48, Failures: 0, Errors: 0, Skipped: 0
+[INFO] BUILD SUCCESS
+[INFO] Total time:  01:08 min
+[INFO] Finished at: 2026-11-04T22:30:37+08:00
+
+final: [INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.524 s -- in com.xinyi.system.service.impl.DeptScopeServiceImplTest
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.044 s -- in com.xinyi.framework.web.service.TokenServiceTest
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.215 s -- in com.xinyi.rongli.booking.TencentRouteGatewayTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.022 s -- in com.xinyi.rongli.integration.IntegrationInputTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.036 s -- in com.xinyi.rongli.payment.PaymentEnvironmentTest
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.388 s -- in com.xinyi.rongli.platform.IdempotencyMacTest
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.080 s -- in com.xinyi.rongli.platform.PlatformPrimitivesTest
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.006 s -- in com.xinyi.rongli.platform.SecretGuardTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.002 s -- in com.xinyi.rongli.pricing.PriceEnvironmentTest
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.006 s -- in com.xinyi.rongli.pricing.PriceCalculatorTest
+[INFO] Tests run: 30, Failures: 0, Errors: 0, Skipped: 0
+[INFO] Tests run: 15, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 11.31 s -- in com.xinyi.web.viit.X02PaymentIT
+[INFO] Tests run: 15, Failures: 0, Errors: 0, Skipped: 0
+[INFO] BUILD SUCCESS
+[INFO] Total time:  17.784 s
+[INFO] Finished at: 2026-11-04T22:32:00+08:00
+
+全量与48项专项退出阶段诊断（测试已全部完成，BUILD SUCCESS）：Surefire is going to kill self fork JVM. The exit has elapsed 30 seconds after System.exit(0).

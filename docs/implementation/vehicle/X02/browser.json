@@ -1,0 +1,35 @@
+{
+  "passed": true,
+  "browser": "Browser plugin not available; Playwright + local Chrome",
+  "api": "Explicit UI fixtures; backend independently tested with real HTTP/MySQL",
+  "checks": [
+    "draftDoesNotPublish",
+    "doubleOffConfirmation",
+    "reasonDoesNotInvalidateCheck",
+    "independentSwitches",
+    "publishedMerchantReference",
+    "secretInputCleared",
+    "merchantFieldsAndGeneratedCallback",
+    "publicationHistory",
+    "mobileLayout",
+    "offlineSelectionConfirmation",
+    "originalBankInformation",
+    "selectionNotPaid"
+  ],
+  "errors": [],
+  "viewports": [
+    "1440x1000",
+    "390x844"
+  ],
+  "urls": [
+    "http://127.0.0.1:5173/integrations/payment",
+    "http://127.0.0.1:5174/#/pages/payment/index?orderNo=VI6FBEDAB154E94C9885A8D08ACAEF4A5B"
+  ],
+  "titles": [
+    "集信国控检测管理系统",
+    "预约付款"
+  ],
+  "writes": 3,
+  "published": 1,
+  "selectionCalls": 1
+}

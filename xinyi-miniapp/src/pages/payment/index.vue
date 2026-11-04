@@ -2,15 +2,16 @@
 import { ref, computed } from 'vue';
 import { onLoad, onShow, onUnload } from '@dcloudio/uni-app';
 import { getOrder, orderTime, yuan } from '../../features/order/api';
-import { paymentOptions, prepay, type PaymentOptions, type PaymentIntent } from '../../features/payment/api';
+import { paymentOptions, prepay, offlinePayment, type PaymentOptions, type PaymentIntent } from '../../features/payment/api';
 import { currentSession } from '../../services/http';
 import type { OwnerOrderView, Prepay } from '../../api/types';
 const order = ref<OwnerOrderView | null>(null), options = ref<PaymentOptions | null>(null), loading = ref(false), busy = ref(false), error = ref(''), notice = ref('');
-let orderNo = '', seq = 0, alive = true, attempt: { input: PaymentIntent; key: string } | null = null;
+let orderNo = '', seq = 0, alive = true, attempt: { input: PaymentIntent; key: string; method: 'WECHAT' | 'OFFLINE' } | null = null;
+const offlineOption = computed(() => options.value?.options.find(v => v.method === 'OFFLINE'));
 const closed = computed(() => order.value?.paymentStatus === 'CLOSED' || order.value?.fulfillmentStatus === 'CLOSED');
 const paid = computed(() => order.value?.paymentStatus === 'SUCCESS');
 const available = computed(() => !closed.value && !paid.value && options.value?.newPaymentAllowed && options.value.options.some(v => v.method === 'WECHAT' && v.available));
-const title = computed(() => closed.value ? '订单已关闭' : paid.value ? '预约成功' : order.value?.paymentStatus === 'UNKNOWN' || notice.value === '支付确认中' || notice.value.includes('结果待确认') ? '支付确认中' : notice.value.startsWith('支付未完成') ? '支付未完成' : '确认付款');
+const title = computed(() => closed.value ? '订单已关闭' : paid.value ? '预约成功' : order.value?.paymentStatus === 'UNKNOWN' || notice.value === '支付确认中' || notice.value.includes('结果待确认') ? '支付确认中' : notice.value.startsWith('支付未完成') ? '支付未完成' : options.value?.lockedMethod === 'OFFLINE' ? '线下待付款' : '确认付款');
 onLoad(q => { orderNo = String(q?.orderNo || ''); });
 onShow(() => { if (!busy.value) load(); });
 onUnload(() => { alive = false; seq++; attempt = null; order.value = null; options.value = null; });
@@ -29,7 +30,7 @@ async function pay() {
   // #endif
   // #ifdef MP-WEIXIN
   busy.value = true; error.value = ''; const session = currentSession();
-  if (!attempt) attempt = { input: { expectedVersion: selected!.paymentVersion, expectedPolicyRevisionId: selected!.policyRevisionId }, key: uuid() };
+  if (attempt?.method !== 'WECHAT') attempt = { method: 'WECHAT', input: { expectedVersion: selected!.paymentVersion, expectedPolicyRevisionId: selected!.policyRevisionId }, key: uuid() };
   try {
     const params = await prepay(orderNo, attempt!.input, attempt!.key);
     if (!alive || currentSession()?.sessionId !== session?.sessionId || currentSession()?.contextVersion !== session?.contextVersion) return;
@@ -41,6 +42,17 @@ async function pay() {
     error.value = failure.message || '';
   } finally { if (alive) { busy.value = false; await load(); } }
   // #endif
+}
+async function chooseOffline() {
+  const selected = options.value;
+  if (busy.value || !selected || selected.lockedMethod !== 'UNSELECTED' || !offlineOption.value?.available) return;
+  const confirmation = await new Promise<boolean>(resolve => uni.showModal({ title: '选择企业线下付款', content: '选择后本订单不能直接改为微信支付。请按公司收款说明付款，实际收款需由财务独立核实，选择本身不算付款。', success: r => resolve(r.confirm), fail: () => resolve(false) }));
+  if (!confirmation || !alive) return;
+  busy.value = true; error.value = '';
+  if (!attempt || attempt.method !== 'OFFLINE') attempt = { method: 'OFFLINE', input: { expectedVersion: selected.paymentVersion, expectedPolicyRevisionId: selected.policyRevisionId }, key: uuid() };
+  try { await offlinePayment(orderNo, attempt.input, attempt.key); notice.value = '已选择企业线下付款，尚未确认实收。请按原收款信息办理。'; }
+  catch (e) { const failure = e as { errorCode?: string; message?: string }; if (failure.errorCode === 'VI_CONFIG_CHANGED' || failure.errorCode === 'VI_STATE_CONFLICT') attempt = null; notice.value = failure.message || '选择结果待确认，请刷新订单后再操作'; }
+  finally { if (alive) { busy.value = false; await load(); } }
 }
 function launch(p: Prepay): Promise<void> { return new Promise((resolve, reject) => uni.requestPayment({ provider: 'wxpay', timeStamp: p.timeStamp, nonceStr: p.nonceStr, package: p.package, signType: 'RSA', paySign: p.paySign, success: () => resolve(), fail: reject })); }
 function detail() { uni.navigateTo({ url: '/pages/order/detail?orderNo=' + encodeURIComponent(orderNo) }); }
@@ -62,9 +74,17 @@ function bookAgain() { uni.navigateTo({ url: '/pages/booking/start' }); }
     <view v-if="order?.paymentStatus === 'UNKNOWN' && !closed" class="notice">正在确认付款结果。请勿重复创建订单，稍后刷新查看。</view>
     <view v-if="options && !paid && !closed" class="card">
       <text class="section">支付方式</text>
-      <view v-for="method in options.options" :key="method.method" class="method"><text>{{ method.label }}</text><text class="muted">{{ method.method === 'OFFLINE' && method.available ? '暂不可操作' : method.available ? '可使用' : '不可使用' }}</text></view>
+      <view v-for="method in options.options" :key="method.method" class="method"><text>{{ method.label }}</text><text class="muted">{{ method.available ? options.lockedMethod === method.method ? '已选择' : '可使用' : '不可使用' }}</text></view>
       <text v-if="!options.newPaymentAllowed" class="notice">当前不能发起付款，请刷新查看订单结果。</text>
       <button v-if="available" class="primary" :disabled="busy || loading" :loading="busy" @click="pay">{{ options.lockedMethod === 'WECHAT' ? '继续微信支付' : '微信支付' }}</button>
+      <button v-if="offlineOption?.available && options.lockedMethod === 'UNSELECTED'" :disabled="busy || loading" @click="chooseOffline">选择企业线下付款</button>
+      <view v-if="options.lockedMethod === 'OFFLINE' && offlineOption" class="offline-info">
+        <text>企业收款主体：{{ offlineOption.receiverName }}</text><text>{{ offlineOption.instructions }}</text>
+        <text v-if="offlineOption.offlineMethods?.includes('CASH')">可在公司柜台支付现金，不允许代驾个人代收。</text>
+        <template v-if="offlineOption.receiverAccountDisplay"><text>对公户名：{{ offlineOption.bankAccountName }}</text><text>开户行：{{ offlineOption.bankName }}</text><text class="account">企业账号：{{ offlineOption.receiverAccountDisplay }}</text></template>
+        <text>企业联系人：{{ offlineOption.contactName }} {{ offlineOption.contactPhone }}</text>
+        <text class="notice">线下选择不等于付款成功，实际收款凭证须由财务登记并独立核实。请在原付款期限内办理。</text>
+      </view>
       <text class="muted">付款结果以订单确认状态为准。</text>
     </view>
     <text v-if="error" class="error">{{ error }}</text>
@@ -74,5 +94,5 @@ function bookAgain() { uni.navigateTo({ url: '/pages/booking/start' }); }
   </view>
 </template>
 <style scoped>
-.screen { padding: 24px 18px; display: flex; flex-direction: column; gap: 16px; }.heading { font-size: 26px; font-weight: 600; }.card { display: flex; flex-direction: column; gap: 14px; padding: 22px 18px; border-radius: 14px; background: white; line-height: 1.6; font-size: 15px; }.amount { font-size: 40px; font-weight: 600; color: #005fcb; }.muted { color: #64748b; font-size: 13px; }.deadline { color: #854d0e; }.section { font-size: 17px; font-weight: 600; }.method { display: flex; justify-content: space-between; gap: 12px; }.notice { padding: 14px; background: #fff4e5; border-radius: 10px; color: #854d0e; line-height: 1.6; }.primary { background: #005fcb; color: white; }.error { color: #b42318; }button { width: 100%; font-size: 15px; }
+.offline-info { display: flex; flex-direction: column; gap: 10px; }.account { overflow-wrap: anywhere; }.screen { padding: 24px 18px; display: flex; flex-direction: column; gap: 16px; }.heading { font-size: 26px; font-weight: 600; }.card { display: flex; flex-direction: column; gap: 14px; padding: 22px 18px; border-radius: 14px; background: white; line-height: 1.6; font-size: 15px; }.amount { font-size: 40px; font-weight: 600; color: #005fcb; }.muted { color: #64748b; font-size: 13px; }.deadline { color: #854d0e; }.section { font-size: 17px; font-weight: 600; }.method { display: flex; justify-content: space-between; gap: 12px; }.notice { padding: 14px; background: #fff4e5; border-radius: 10px; color: #854d0e; line-height: 1.6; }.primary { background: #005fcb; color: white; }.error { color: #b42318; }button { width: 100%; font-size: 15px; }
 </style>

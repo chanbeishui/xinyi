@@ -9,7 +9,9 @@ public interface PaymentMapper {
  PaymentTransaction lockPayment(long orderId);
  IntegrationProfile policyProfile(long revisionId);
  int freeze(PaymentTransaction row);
+ int freezeOffline(PaymentTransaction row);
  int claim(@Param("id")long id,@Param("version")long version,@Param("token")String token);
  int finish(@Param("id")long id,@Param("version")long version,@Param("token")String token,@Param("cipher")byte[] cipher);
+ java.util.Map<String,Object> refund(long refundId);
  String now();
 }

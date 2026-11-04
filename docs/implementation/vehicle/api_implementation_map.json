@@ -3788,7 +3788,7 @@
     "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/payment/service/PaymentService.java",
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/payment/PaymentMapper.xml",
     "testFiles": [
-      "xinyi-admin/src/test/java/com/xinyi/web/viit/P01PaymentIT.java"
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/X02PaymentIT.java"
     ],
     "reviewEvidence": null,
     "operationId": "V64_get_api_app_owner_orders_orderNo_payment_options",
@@ -3797,20 +3797,24 @@
     "summary": "本人订单可用支付方式",
     "taskId": "X02",
     "evidence": "docs/implementation/vehicle/evidence/P01-20261104.json",
-    "implementationNote": "P01所需支付版本读取提前实现；X02完整任务未完成"
+    "implementationNote": "P01所需支付版本读取提前实现；X02完整任务未完成",
+    "verificationEvidence": "docs/implementation/vehicle/evidence/X02-20261104.json"
   },
   {
-    "implementationStatus": "NOT_ASSESSED",
-    "controllerFile": null,
-    "serviceFile": null,
-    "mapperFile": null,
-    "testFiles": [],
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/payment/controller/PaymentController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/payment/service/PaymentService.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/payment/PaymentMapper.xml",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/X02PaymentIT.java"
+    ],
     "reviewEvidence": null,
     "operationId": "V64_post_api_app_owner_orders_orderNo_offline_payment",
     "method": "POST",
     "path": "/api/app/owner/orders/{orderNo}/offline-payment",
     "summary": "选择线下方式不标记已付款",
-    "taskId": "X02"
+    "taskId": "X02",
+    "verificationEvidence": "docs/implementation/vehicle/evidence/X02-20261104.json"
   },
   {
     "implementationStatus": "NOT_ASSESSED",
