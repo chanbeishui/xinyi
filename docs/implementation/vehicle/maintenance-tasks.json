@@ -108,5 +108,25 @@
     },
     "independentReview": "PENDING",
     "affectsBusinessTaskCount": false
+  },
+  {
+    "taskId": "DIR06",
+    "title": "历史集成测试可读性整理",
+    "category": "MAINTENANCE",
+    "status": "VERIFIED",
+    "implementationCommit": "a5603d05e584eb488a1a10ffa01dc0be2ab98986",
+    "versionTag": "vehicle-DIR06-readability-20261105",
+    "evidence": [
+      "docs/implementation/vehicle/readability/DIR06/report.md",
+      "docs/implementation/vehicle/readability/DIR06/verification.json"
+    ],
+    "verification": {
+      "files": 26,
+      "integrationTests": 244,
+      "unitTests": 36,
+      "databaseChanged": false
+    },
+    "independentReview": "PENDING",
+    "affectsBusinessTaskCount": false
   }
 ]

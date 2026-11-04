@@ -68,7 +68,7 @@
     {
       "taskId": "DIR06",
       "title": "历史集成测试可读性整理",
-      "status": "PENDING",
+      "status": "VERIFIED",
       "files": [
         "xinyi-admin/src/test/java/com/xinyi/web/viit/B04OrderIT.java",
         "xinyi-admin/src/test/java/com/xinyi/web/viit/B03OrderIT.java",
@@ -96,7 +96,9 @@
         "xinyi-admin/src/test/java/com/xinyi/web/viit/I06ScopeIT.java",
         "xinyi-admin/src/test/java/com/xinyi/web/viit/A03OwnerIT.java",
         "xinyi-admin/src/test/java/com/xinyi/web/viit/C01ConfigIT.java"
-      ]
+      ],
+      "evidence": "docs/implementation/vehicle/readability/DIR06/verification.json",
+      "versionTag": "vehicle-DIR06-readability-20261105"
     },
     {
       "taskId": "DIR07",
