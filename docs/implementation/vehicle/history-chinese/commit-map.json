@@ -1,0 +1,153 @@
+{
+  "originalHead": "62dc3ee508149a212175fc7fa5a540eae8485331",
+  "newHead": "2169c6ae044804122087993b1b1a41a7a2b2d0c8",
+  "scope": "当前开发分支祖先提交及3个本地任务标签；不改变远端/其他分支",
+  "allTreesIdentical": true,
+  "translatedMessages": [
+    {
+      "old": "c544f7ce878f680166b864d8b6e37071cc8f6d81",
+      "new": "733d73abec4f836777299200eb6438ae3dc13103",
+      "oldDescription": "Initial commit",
+      "description": "初始化仓库"
+    },
+    {
+      "old": "cb0fe777f65a1f1cc2b9939f548fda3ecb98a1f6",
+      "new": "6905b9b313b2cf4dcae1c22b155bdc70becf97c0",
+      "oldDescription": "Merge branch 'simple-multi-dept' of https://github.com/chanbeishui/xinyi into simple-multi-dept",
+      "description": "合并远端多部门任职分支"
+    },
+    {
+      "old": "a43be1ad47bfbc457e6f2143eb153d6c437b6867",
+      "new": "969780d46f69317baa34087d89955981d245d2bb",
+      "oldDescription": "Add station capacity management and harden access",
+      "description": "实现站点额度管理并加强访问权限"
+    },
+    {
+      "old": "2f9afd7f118c7c05f9fe8397a5429396eba363e7",
+      "new": "231f76811614f5fcda19edce8fae6a09c48cc1da",
+      "oldDescription": "Add company pricing review and trial calculations",
+      "description": "实现公司统一计价审核与试算"
+    },
+    {
+      "old": "f44203658e5cdf6e7b563e13e3a8241fb7fa99c7",
+      "new": "06a6dc539eb7be2fc6fb8caa6fa01ee80d70386a",
+      "oldDescription": "Add owner schedule candidates and booking draft flow",
+      "description": "实现车主预约时段候选和预约草稿流程"
+    },
+    {
+      "old": "31b64c2122e41e7494cfe9f4becac0ccf95e770a",
+      "new": "e727919ad7706ef7a5fa152982933524a3e2d759",
+      "oldDescription": "Add owner station selection and quote snapshots",
+      "description": "实现车主选站与报价快照"
+    },
+    {
+      "old": "e8160440530de3e83cab21a9a3f06cbfe33253e3",
+      "new": "e42f80ca81962cf59496639b8be3e5f8a4227c90",
+      "oldDescription": "Add atomic booking orders and dual quota reservations",
+      "description": "实现原子建单和双额度预占"
+    },
+    {
+      "old": "201ce694c71012e5da28bd4b903b52bb54037569",
+      "new": "693c816b6dadb0410ea147fad4bb61a8e2ac06df",
+      "oldDescription": "Add scoped order views and public timeline",
+      "description": "实现按权限范围读取订单及公开时间线"
+    },
+    {
+      "old": "81d66c70814ff4935a851d63e360aea6bac00625",
+      "new": "3d0cdc57378b8b92320eff64526732826995533e",
+      "oldDescription": "Add versioned integration configuration management",
+      "description": "实现带版本管理的第三方接入配置"
+    },
+    {
+      "old": "4d150ad019d78a445d4c77757ff7a75215ebe12a",
+      "new": "dae0d3b8ca9d53e0b9e98c86348a860325f6ef52",
+      "oldDescription": "Add P01 WeChat prepayment with immutable payment intent",
+      "description": "实现P01微信预支付与不可变支付意图"
+    },
+    {
+      "old": "d0b3fbbd46b5467fa4783e1357224bf78c9a71fd",
+      "new": "0bcb85333e41caa2ae82c15dcab04f898c0b2fcb",
+      "oldDescription": "Record P01 task version and verification",
+      "description": "登记P01任务版本与验证结果"
+    },
+    {
+      "old": "b6e410a53111653d48d383d1720dbd866d601ab2",
+      "new": "94bccc459e1feb63bbfdc8ee658cbdac869818fa",
+      "oldDescription": "Archive controller relocation as a verified maintenance task",
+      "description": "将控制器目录迁移归档为已验证维护任务"
+    },
+    {
+      "old": "dd6ecec0d351b150690f751dd633bb26c1940bf4",
+      "new": "1095469376c634659a91b2ad53e08cfd3a204d05",
+      "oldDescription": "Add X02 payment settings and merchant configuration",
+      "description": "实现X02支付设置与微信商户配置"
+    },
+    {
+      "old": "8417e9be9c481d4ac201538fa8e07f4acc040188",
+      "new": "1291edb156aaaacedcd3c9715b062546fdcae08a",
+      "oldDescription": "Record X02 and controller relocation task versions",
+      "description": "登记X02与控制器目录迁移的任务版本"
+    },
+    {
+      "old": "62dc3ee508149a212175fc7fa5a540eae8485331",
+      "new": "2169c6ae044804122087993b1b1a41a7a2b2d0c8",
+      "oldDescription": "Fix task version table formatting",
+      "description": "修正任务版本表格排版"
+    }
+  ],
+  "mapping": {
+    "c544f7ce878f680166b864d8b6e37071cc8f6d81": "733d73abec4f836777299200eb6438ae3dc13103",
+    "fce97d680ca648d8ca976feaebf9718fd24d57e5": "db4947b0a672d0f4666ff34c16d30cc32a4a27e1",
+    "fffc782f74e729ac40bbbb4f0f01bbd9b7758f35": "4b2d6edfba1350a7a854f525f6167b5977983b8d",
+    "a7e836497886514517437de12d44afb73d19d102": "a6aa54286836d5ece2ce4d434c713f14b8702f06",
+    "8c3d057f3b1fd7eda603bc6306d7521ce7f9d4bd": "33158112af395bb563fe07513940e84ed572fc83",
+    "863c376f7ecfb6741dc233450cd90808dcfd4db7": "c4ee93f72a7a943bcdbad92952f19a87ca276735",
+    "583e1bee8fa8618b220190a367a12646a91d6411": "2f3189b0036fa59b810862c192553953de59eda1",
+    "0f8991f719f2ed8a1939e21da67138013013e42c": "458c6fdda59ecad740403b8f5a46b7fecf4c3bfa",
+    "2ec614784358bfeb2a0831501218c32bcbde2e58": "657b0ebd399724e09bb1187e3c7b877f3281cd7f",
+    "fec58b86ebdfd5b0ee04b12750a843ffe703bfc3": "c87d243609571d1908ada9a6b0c1a8219191f326",
+    "ecaa05cebf075675b72a8e56a635bedd5ae8f106": "7e2c524d3a1861d97ceb2e33cbf09326417246b4",
+    "cb0fe777f65a1f1cc2b9939f548fda3ecb98a1f6": "6905b9b313b2cf4dcae1c22b155bdc70becf97c0",
+    "3e7453ef2b27f4edbecf3cca2a3593166f34d010": "5d6eb86f81b4cc6230cab5b3012d52ac36aac7b9",
+    "1c5a805e0b832a314a7a430248dccfadc7f08e34": "b4315b2f92981d54fef76b8fda7740d62fb2232e",
+    "1e976dd7025409b1d14fc14621275a55bba67717": "9a7196dc253d6241fc550f5cbc6c9f4a1fb9f3fa",
+    "890cfbbfc5e0db404a932ab5ef8b449d07c7f444": "0908458425c91430f4a231df9c932be8c8844d8c",
+    "18b5ce4e424211dc9711dffcf428fd4125f341cf": "6233eb007eabaebe5fef39ebcfb6718ca7823aed",
+    "44e143291823e6cab7238a066d9c6951214e6bac": "bb372994325b445b2b46c574d24005f708b57e7e",
+    "ff169760031bd710b8ac40bba06aba099421fd11": "2b36aae44e04714e65af177971a78191ecb1cc38",
+    "83d6b37cc21a8dd77215f6bd6e3c44b1fecaf8ed": "083bb0115568fecba36c194d169c0bf9dda193d6",
+    "0687e3fd4b27c1ed0e269e191da5c846b2caaedf": "08910b056c1a3122fbd339b3a1b3f0566bea4a65",
+    "6b6e945315b04e7fe35ebd1e649becc98421e0b7": "8c8f8c81fcb3a3b8762ad2156f852cd980545b67",
+    "c0e3b264db779fe9a885d6f501a0876fea880f1f": "ce5ec82ba809aa6e83668edb3084c1888a9dd812",
+    "7895c00b2f70d4b117e575287d9e63d538ae9df1": "1e4f5d5b82974ce8d33f4ee26a5ee546d1424154",
+    "340ad01a2e60971ab7a0506c4fb8b97c0ac02ead": "89e2dd5aeb76c2ad94613ef60407089749c7c893",
+    "96072f4724c4146b39261c835c24cbc997ed428e": "6fe72dafae81064330910df7a716e334dadb0d4d",
+    "665b9b047e176a1bcf9318f770a1424b859872cd": "ed81daa299aa5356994df132bb0a9c7af28f54ba",
+    "ed71ee41924bfd1dcf7b2d7ff9d626309de7997a": "8ba8c4b6a72c1666e75a4004c562af3800c9f035",
+    "73ac5d64cb762274fcdc3e16699244c7a08a5d26": "5d112023d692f74d9368fa680b94c571e163b176",
+    "8259480d72676f68c8205cab311c4cb71726b020": "a238bb26b64015c6bb0a0838af7f632ee2432857",
+    "c0519e04a37711073737ce7b3c2cd47bb5c762c2": "d8e9b515b0338d15e64ab535bbaae2727d3a0c52",
+    "5fd04054370ec608cd0017d53f0bdd12de9a49a5": "7e1c42cbade697d71f1520b341142d9aab5b3e58",
+    "5240b56edc4d2cbfdc981ce56a7af342840c1e83": "3fac2a2b6c5e910467a227c3c5fbae8920d45f59",
+    "3874b983803123132e32641d12c46a8a69355ecc": "6823d57ac00e0eee1d485c8eab1ee0de0048210f",
+    "ed0d741ec8a846cb41d1cace893f12de82e545b4": "8ed5a11c6c16daf04e86e86c80b60a683b53e244",
+    "2784b298bed3fab91df6eac5449be641e50b0ab6": "32a3a0957fe1d41a3d55ad173eed8e3ddfa6bab1",
+    "713dcf73715ba15911c5c318c19074a0b5d5cad6": "724e8e08847c6377450a7c970f69a3214b94698c",
+    "72724f7344c82c57779c9dafd30359a9ffe0c687": "0c9353ac6b9ff8ea5d9c571dc4b636e5911b8b38",
+    "387823e213fe331bdd916dd6d53b833b5bb83c0b": "6b0e0d09d62dfae2306589aee74fe4afaf927b75",
+    "d520801728ffada2c4715129ab94c8540ec8f197": "f104af371106c9e8bd6597302a67a86ce03c35d1",
+    "a43be1ad47bfbc457e6f2143eb153d6c437b6867": "969780d46f69317baa34087d89955981d245d2bb",
+    "2f9afd7f118c7c05f9fe8397a5429396eba363e7": "231f76811614f5fcda19edce8fae6a09c48cc1da",
+    "f44203658e5cdf6e7b563e13e3a8241fb7fa99c7": "06a6dc539eb7be2fc6fb8caa6fa01ee80d70386a",
+    "31b64c2122e41e7494cfe9f4becac0ccf95e770a": "e727919ad7706ef7a5fa152982933524a3e2d759",
+    "e8160440530de3e83cab21a9a3f06cbfe33253e3": "e42f80ca81962cf59496639b8be3e5f8a4227c90",
+    "201ce694c71012e5da28bd4b903b52bb54037569": "693c816b6dadb0410ea147fad4bb61a8e2ac06df",
+    "81d66c70814ff4935a851d63e360aea6bac00625": "3d0cdc57378b8b92320eff64526732826995533e",
+    "4d150ad019d78a445d4c77757ff7a75215ebe12a": "dae0d3b8ca9d53e0b9e98c86348a860325f6ef52",
+    "d0b3fbbd46b5467fa4783e1357224bf78c9a71fd": "0bcb85333e41caa2ae82c15dcab04f898c0b2fcb",
+    "b6e410a53111653d48d383d1720dbd866d601ab2": "94bccc459e1feb63bbfdc8ee658cbdac869818fa",
+    "dd6ecec0d351b150690f751dd633bb26c1940bf4": "1095469376c634659a91b2ad53e08cfd3a204d05",
+    "8417e9be9c481d4ac201538fa8e07f4acc040188": "1291edb156aaaacedcd3c9715b062546fdcae08a",
+    "62dc3ee508149a212175fc7fa5a540eae8485331": "2169c6ae044804122087993b1b1a41a7a2b2d0c8"
+  }
+}
