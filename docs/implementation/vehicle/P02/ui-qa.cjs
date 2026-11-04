@@ -1,4 +1,177 @@
-const{chromium}=require('playwright'),fs=require('fs');
-(async()=>{const browser=await chromium.launch({headless:true,executablePath:'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'});const checks=[],errors=[];try{const p=await browser.newPage({viewport:{width:390,height:844}});p.on('pageerror',e=>errors.push(e.message));p.on('console',m=>{if(m.type()==='error')errors.push(m.text())});await p.addInitScript(()=>localStorage.setItem('vi.session.local.http://127.0.0.1:8080',JSON.stringify({type:'object',data:{sessionId:'1',activeRole:'OWNER',contextVersion:1,token:'fixture'}})));const owner=JSON.parse(fs.readFileSync('/Users/chenbeishui/Downloads/code_project/xinyi/.vi-local/b04-OwnerOrderView.json'));let mode='pending',closeMode='unknown',closeCalls=0,payReads=0;owner.payExpireAt=new Date(Date.now()+1800000).toISOString();const view=()=>({...owner,fulfillmentStatus:mode==='closed'||mode==='conflict'?'CLOSED':mode==='success'?'SCHEDULED':'PENDING_PAY',paymentStatus:mode==='closed'?'CLOSED':mode==='conflict'||mode==='success'?'SUCCESS':mode==='unknown'?'UNKNOWN':'PENDING'});
-await p.route('http://127.0.0.1:8080/api/**',async r=>{const path=new URL(r.request().url()).pathname;let data=view();if(path.endsWith('/payment')){payReads++;data={paymentMethod:'WECHAT',methodLocked:true,version:1,payStatus:view().paymentStatus,paidAmount:mode==='success'||mode==='conflict'?24200:0,capacityResolution:mode==='conflict'?'MANUAL_CONFLICT':mode==='closed'?'RELEASED':'HELD',queryRequired:mode==='unknown'||mode==='conflict'};}else if(path.endsWith('/payment-options'))data={orderNo:owner.orderNo,paymentVersion:1,policyRevisionId:'1',lockedMethod:'WECHAT',expiresAt:owner.payExpireAt,newPaymentAllowed:mode==='pending',options:[{method:'WECHAT',label:'微信支付',available:mode==='pending'}]};else if(path.endsWith('/close-unpaid')){closeCalls++;const body=r.request().postDataJSON();if(body.expectedVersion!==owner.version||!body.reason||!r.request().headers()['idempotency-key'])throw Error('missing close fields');mode=closeMode;data=view();}await r.fulfill({json:{code:200,msg:'操作成功',data},headers:{'access-control-allow-origin':'*','access-control-allow-headers':'*'}});});
-await p.goto('http://127.0.0.1:5174/#/pages/payment/index?orderNo='+owner.orderNo);await p.locator('uni-button').filter({hasText:/^\s*关闭未付款预约\s*$/}).waitFor();await p.locator('uni-button').filter({hasText:/^\s*关闭未付款预约\s*$/}).click();await p.getByText('取消',{exact:true}).click();if(closeCalls)throw Error('cancel submitted');checks.push('取消关闭不提交');await p.locator('uni-button').filter({hasText:/^\s*关闭未付款预约\s*$/}).click();await p.getByText('确定',{exact:true}).click();await p.getByText('支付确认中',{exact:true}).waitFor();await p.getByText('关闭结果待确认，请稍后刷新；不能认定未扣款。',{exact:true}).waitFor();await p.waitForFunction(()=>!document.querySelector('uni-button[disabled]'));await p.screenshot({path:'/private/tmp/p02-unknown.png',fullPage:true});if(await p.getByText('预约成功',{exact:true}).count())throw Error('unknown paid');checks.push('未知保留待确认且不显示成功');closeMode='closed';await p.locator('uni-button').filter({hasText:/^\s*关闭未付款预约\s*$/}).click();await p.getByText('确定',{exact:true}).click();await p.getByText('订单已关闭',{exact:true}).waitFor();await p.waitForFunction(()=>!document.querySelector('uni-button[disabled]'));await p.screenshot({path:'/private/tmp/p02-closed.png',fullPage:true});if(await p.getByText('继续微信支付',{exact:true}).count())throw Error('closed payable');checks.push('可信关闭后不可续付');mode='conflict';await p.getByText('刷新订单状态',{exact:true}).click();await p.getByText('付款需核实',{exact:true}).waitFor();await p.getByText('付款已到账，但预约额度已释放或需人工核查。请联系企业处理，当前不会自动恢复预约。',{exact:true}).waitFor();if(await p.getByText('预约成功',{exact:true}).count())throw Error('conflict reopened');await p.waitForFunction(()=>!document.querySelector('uni-button[disabled]'));await p.screenshot({path:'/private/tmp/p02-conflict.png',fullPage:true});checks.push('晚到付款不误报预约恢复');mode='success';await p.getByText('刷新订单状态',{exact:true}).click();await p.getByText('预约成功',{exact:true}).waitFor();await p.waitForFunction(()=>!document.querySelector('uni-button[disabled]'));await p.setViewportSize({width:1280,height:900});await p.waitForTimeout(400);await p.screenshot({path:'/private/tmp/p02-success-desktop.png',fullPage:true});checks.push('刷新可信结果后显示预约成功','移动端与桌面有内容且无框架错误');if(errors.length||await p.locator('vite-error-overlay').count())throw Error(errors.join('\n'));fs.writeFileSync('/private/tmp/p02-browser.json',JSON.stringify({passed:true,browser:'Browser plugin not available; Playwright + local Chrome',api:'明确UI夹具；后端另有真实HTTP/MySQL验证',checks,errors,payReads,closeCalls,url:p.url(),title:await p.title(),viewports:['390x844','1280x900']},null,2));console.log('P02 UI PASS');}finally{await browser.close()}})().catch(e=>{console.error(e);process.exit(1)});
+const { chromium } = require('playwright'),
+  fs = require('fs');
+(async () => {
+  const browser = await chromium.launch({
+    headless: true,
+    executablePath: '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
+  });
+  const checks = [],
+    errors = [];
+  try {
+    const p = await browser.newPage({ viewport: { width: 390, height: 844 } });
+    p.on('pageerror', (e) => errors.push(e.message));
+    p.on('console', (m) => {
+      if (m.type() === 'error') errors.push(m.text());
+    });
+    await p.addInitScript(() =>
+      localStorage.setItem(
+        'vi.session.local.http://127.0.0.1:8080',
+        JSON.stringify({
+          type: 'object',
+          data: { sessionId: '1', activeRole: 'OWNER', contextVersion: 1, token: 'fixture' }
+        })
+      )
+    );
+    const owner = JSON.parse(
+      fs.readFileSync(
+        '/Users/chenbeishui/Downloads/code_project/xinyi/.vi-local/b04-OwnerOrderView.json'
+      )
+    );
+    let mode = 'pending',
+      closeMode = 'unknown',
+      closeCalls = 0,
+      payReads = 0;
+    owner.payExpireAt = new Date(Date.now() + 1800000).toISOString();
+    const view = () => ({
+      ...owner,
+      fulfillmentStatus:
+        mode === 'closed' || mode === 'conflict'
+          ? 'CLOSED'
+          : mode === 'success'
+            ? 'SCHEDULED'
+            : 'PENDING_PAY',
+      paymentStatus:
+        mode === 'closed'
+          ? 'CLOSED'
+          : mode === 'conflict' || mode === 'success'
+            ? 'SUCCESS'
+            : mode === 'unknown'
+              ? 'UNKNOWN'
+              : 'PENDING'
+    });
+    await p.route('http://127.0.0.1:8080/api/**', async (r) => {
+      const path = new URL(r.request().url()).pathname;
+      let data = view();
+      if (path.endsWith('/payment')) {
+        payReads++;
+        data = {
+          paymentMethod: 'WECHAT',
+          methodLocked: true,
+          version: 1,
+          payStatus: view().paymentStatus,
+          paidAmount: mode === 'success' || mode === 'conflict' ? 24200 : 0,
+          capacityResolution:
+            mode === 'conflict' ? 'MANUAL_CONFLICT' : mode === 'closed' ? 'RELEASED' : 'HELD',
+          queryRequired: mode === 'unknown' || mode === 'conflict'
+        };
+      } else if (path.endsWith('/payment-options'))
+        data = {
+          orderNo: owner.orderNo,
+          paymentVersion: 1,
+          policyRevisionId: '1',
+          lockedMethod: 'WECHAT',
+          expiresAt: owner.payExpireAt,
+          newPaymentAllowed: mode === 'pending',
+          options: [{ method: 'WECHAT', label: '微信支付', available: mode === 'pending' }]
+        };
+      else if (path.endsWith('/close-unpaid')) {
+        closeCalls++;
+        const body = r.request().postDataJSON();
+        if (
+          body.expectedVersion !== owner.version ||
+          !body.reason ||
+          !r.request().headers()['idempotency-key']
+        )
+          throw Error('missing close fields');
+        mode = closeMode;
+        data = view();
+      }
+      await r.fulfill({
+        json: { code: 200, msg: '操作成功', data },
+        headers: { 'access-control-allow-origin': '*', 'access-control-allow-headers': '*' }
+      });
+    });
+    await p.goto('http://127.0.0.1:5174/#/pages/payment/index?orderNo=' + owner.orderNo);
+    await p
+      .locator('uni-button')
+      .filter({ hasText: /^\s*关闭未付款预约\s*$/ })
+      .waitFor();
+    await p
+      .locator('uni-button')
+      .filter({ hasText: /^\s*关闭未付款预约\s*$/ })
+      .click();
+    await p.getByText('取消', { exact: true }).click();
+    if (closeCalls) throw Error('cancel submitted');
+    checks.push('取消关闭不提交');
+    await p
+      .locator('uni-button')
+      .filter({ hasText: /^\s*关闭未付款预约\s*$/ })
+      .click();
+    await p.getByText('确定', { exact: true }).click();
+    await p.getByText('支付确认中', { exact: true }).waitFor();
+    await p.getByText('关闭结果待确认，请稍后刷新；不能认定未扣款。', { exact: true }).waitFor();
+    await p.waitForFunction(() => !document.querySelector('uni-button[disabled]'));
+    await p.screenshot({ path: '/private/tmp/p02-unknown.png', fullPage: true });
+    if (await p.getByText('预约成功', { exact: true }).count()) throw Error('unknown paid');
+    checks.push('未知保留待确认且不显示成功');
+    closeMode = 'closed';
+    await p
+      .locator('uni-button')
+      .filter({ hasText: /^\s*关闭未付款预约\s*$/ })
+      .click();
+    await p.getByText('确定', { exact: true }).click();
+    await p.getByText('订单已关闭', { exact: true }).waitFor();
+    await p.waitForFunction(() => !document.querySelector('uni-button[disabled]'));
+    await p.screenshot({ path: '/private/tmp/p02-closed.png', fullPage: true });
+    if (await p.getByText('继续微信支付', { exact: true }).count()) throw Error('closed payable');
+    checks.push('可信关闭后不可续付');
+    mode = 'conflict';
+    await p.getByText('刷新订单状态', { exact: true }).click();
+    await p.getByText('付款需核实', { exact: true }).waitFor();
+    await p
+      .getByText(
+        '付款已到账，但预约额度已释放或需人工核查。请联系企业处理，当前不会自动恢复预约。',
+        { exact: true }
+      )
+      .waitFor();
+    if (await p.getByText('预约成功', { exact: true }).count()) throw Error('conflict reopened');
+    await p.waitForFunction(() => !document.querySelector('uni-button[disabled]'));
+    await p.screenshot({ path: '/private/tmp/p02-conflict.png', fullPage: true });
+    checks.push('晚到付款不误报预约恢复');
+    mode = 'success';
+    await p.getByText('刷新订单状态', { exact: true }).click();
+    await p.getByText('预约成功', { exact: true }).waitFor();
+    await p.waitForFunction(() => !document.querySelector('uni-button[disabled]'));
+    await p.setViewportSize({ width: 1280, height: 900 });
+    await p.waitForTimeout(400);
+    await p.screenshot({ path: '/private/tmp/p02-success-desktop.png', fullPage: true });
+    checks.push('刷新可信结果后显示预约成功', '移动端与桌面有内容且无框架错误');
+    if (errors.length || (await p.locator('vite-error-overlay').count()))
+      throw Error(errors.join('\n'));
+    fs.writeFileSync(
+      '/private/tmp/p02-browser.json',
+      JSON.stringify(
+        {
+          passed: true,
+          browser: 'Browser plugin not available; Playwright + local Chrome',
+          api: '明确UI夹具；后端另有真实HTTP/MySQL验证',
+          checks,
+          errors,
+          payReads,
+          closeCalls,
+          url: p.url(),
+          title: await p.title(),
+          viewports: ['390x844', '1280x900']
+        },
+        null,
+        2
+      )
+    );
+    console.log('P02 UI PASS');
+  } finally {
+    await browser.close();
+  }
+})().catch((e) => {
+  console.error(e);
+  process.exit(1);
+});

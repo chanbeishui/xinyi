@@ -2,7 +2,7 @@
   "taskId": "P02",
   "implementer": "Codex",
   "scopeRevision": "V6.4-CONFIG-20261022",
-  "at": "2026-11-04T15:35:14.552445+00:00",
+  "at": "2026-11-04T15:40:02.568504+00:00",
   "codeFiles": [
     "sql/migration_20261104_03_payment_reconciliation.sql",
     "sql/ry_20260417.sql",
@@ -32,7 +32,7 @@
     "xinyi-admin/src/main/resources/application.yml": "df6c0f5d6134c59804713384af40cdcdfe00d4a4d0b375380384d0765eed5c6f",
     "xinyi-admin/src/test/java/com/xinyi/web/viit/P02PaymentIT.java": "f9fa4fd7cef75181c8f4ea1613f39af9c2caf52d9c5176da78cef2815857e694",
     "xinyi-admin/src/test/java/com/xinyi/web/viit/PaymentHttpFixture.java": "276158e87b1bda108d4a71047f38e122b5e6600ab63338048205a1aafe4320dc",
-    "xinyi-admin/src/test/resources/integration/p02_contract.py": "08af1b000da2f5b7890d3ee2f6015d46c695cc32140348837243673771032132",
+    "xinyi-admin/src/test/resources/integration/p02_contract.py": "4e943542dcbd2283874c0885324e530b2e5af3bf95bd97eb9b2738fe59759d29",
     "xinyi-miniapp/src/api/types.ts": "d887549ede9022f8218cbd77c0a399fec5aa58f340edba97e755b7ef8e9d0b1e",
     "xinyi-miniapp/src/features/payment/api.ts": "e0004a044087e0781b1222aeb084ee5bb2b7aa50f50718b92a1a18cdc4310219",
     "xinyi-miniapp/src/pages/payment/index.vue": "9da14348e384639528813d3fc9e7f8b45a1c575b7ecf549b02eb1889244ad48e",
@@ -152,5 +152,6 @@
     "X06线下凭证核实"
   ],
   "historyTranslation": "15条历史英文提交及3条标签说明已转换，原代码树一致，旧新SHA可追溯，无远端操作",
-  "readability": "支付相关源码展开、补充关键中文注释、关闭意图方法拆分；其余Java词法保持一致，MyBatis标签/SQL token保持一致；全库检查另见readability/report.md"
+  "readability": "支付相关源码展开、补充关键中文注释、关闭意图方法拆分；其余Java词法保持一致，MyBatis标签/SQL token保持一致；全库检查另见readability/report.md",
+  "validationScriptFormatting": "契约脚本仅排版及中文注释，忽略模块说明/import排版后AST一致；浏览器脚本展开后再次运行6项通过"
 }

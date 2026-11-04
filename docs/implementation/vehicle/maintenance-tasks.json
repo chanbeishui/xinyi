@@ -25,5 +25,48 @@
     },
     "independentReview": "PENDING",
     "affectsBusinessTaskCount": false
+  },
+  {
+    "taskId": "DIR02",
+    "title": "历史版本描述中文化",
+    "category": "MAINTENANCE",
+    "status": "VERIFIED",
+    "implementationCommit": "55794b92a000898e84b5748d4b4b6cb1f8686c47",
+    "versionTag": "vehicle-history-chinese-20261104",
+    "evidence": [
+      "docs/implementation/vehicle/history-chinese/report.md",
+      "docs/implementation/vehicle/history-chinese/commit-map.json"
+    ],
+    "verification": {
+      "translatedCommits": 15,
+      "translatedTags": 3,
+      "allTreesIdentical": true,
+      "remoteChanged": false
+    },
+    "independentReview": "PENDING",
+    "affectsBusinessTaskCount": false
+  },
+  {
+    "taskId": "DIR03",
+    "title": "全库可读性检查与排版注释约束",
+    "category": "MAINTENANCE",
+    "status": "VERIFIED",
+    "implementationCommit": "a4f81f035e77b105571e9e7cb980f74074c1b606",
+    "versionTag": "vehicle-readability-20261104",
+    "evidence": [
+      "docs/implementation/vehicle/readability/report.md",
+      "docs/implementation/vehicle/readability/all-source-scan.json",
+      "docs/implementation/vehicle/readability/payment-changes.json"
+    ],
+    "verification": {
+      "scannedFiles": 1194,
+      "paymentIntegrationTests": 48,
+      "unitTests": 36,
+      "browserChecks": 6,
+      "remainingCandidateFiles": 97,
+      "wholeRepositoryReformatted": false
+    },
+    "independentReview": "PENDING",
+    "affectsBusinessTaskCount": false
   }
 ]
