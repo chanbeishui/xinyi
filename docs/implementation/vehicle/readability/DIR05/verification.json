@@ -1,0 +1,171 @@
+{
+  "at": "2026-11-04T15:55:50.261216+00:00",
+  "taskId": "DIR05",
+  "files": 29,
+  "tests": [
+    {
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "suite": "com.xinyi.system.service.impl.DeptScopeServiceImplTest"
+    },
+    {
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "suite": "com.xinyi.framework.web.service.TokenServiceTest"
+    },
+    {
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "suite": "com.xinyi.rongli.booking.TencentRouteGatewayTest"
+    },
+    {
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "suite": "com.xinyi.rongli.integration.IntegrationInputTest"
+    },
+    {
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "suite": "com.xinyi.rongli.payment.PaymentEnvironmentTest"
+    },
+    {
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "suite": "com.xinyi.rongli.platform.IdempotencyMacTest"
+    },
+    {
+      "tests": 6,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "suite": "com.xinyi.rongli.platform.PlatformPrimitivesTest"
+    },
+    {
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "suite": "com.xinyi.rongli.platform.SecretGuardTest"
+    },
+    {
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "suite": "com.xinyi.rongli.pricing.PriceEnvironmentTest"
+    },
+    {
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "suite": "com.xinyi.rongli.pricing.PriceCalculatorTest"
+    },
+    {
+      "tests": 6,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "suite": "com.xinyi.web.viit.C01ConfigIT"
+    },
+    {
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "suite": "com.xinyi.web.viit.C04LivePricingIT"
+    },
+    {
+      "tests": 7,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "suite": "com.xinyi.web.viit.A03OwnerIT"
+    },
+    {
+      "tests": 14,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "suite": "com.xinyi.web.viit.B03OrderIT"
+    },
+    {
+      "tests": 9,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "suite": "com.xinyi.web.viit.B04OrderIT"
+    },
+    {
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "suite": "com.xinyi.web.viit.B01BookingIT"
+    },
+    {
+      "tests": 6,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "suite": "com.xinyi.web.viit.B02BookingIT"
+    },
+    {
+      "tests": 6,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "suite": "com.xinyi.web.viit.C03CapacityIT"
+    },
+    {
+      "tests": 13,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "suite": "com.xinyi.web.viit.C02StationIT"
+    },
+    {
+      "tests": 14,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "suite": "com.xinyi.web.viit.C04PricingIT"
+    },
+    {
+      "tests": 10,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "suite": "com.xinyi.web.viit.I06ScopeIT"
+    }
+  ],
+  "integrationTests": 89,
+  "unitTests": 36,
+  "frontend": {
+    "buildProd": true,
+    "browserScripts": 5,
+    "adminPages": 7,
+    "evidence": {
+      "pricing-browser.json": "/private/tmp/xinyi-pricing-qa.json",
+      "capacity-browser.json": "/private/tmp/xinyi-capacity-qa.json",
+      "station-browser.json": "/private/tmp/xinyi-station-qa.json",
+      "order-browser.json": "/private/tmp/b04-ui.json",
+      "other-admin-browser.json": "/private/tmp/DIR05-admin-browser.json"
+    }
+  },
+  "databaseStructureChanged": false,
+  "businessBehaviorChanged": false,
+  "independentReview": "PENDING"
+}

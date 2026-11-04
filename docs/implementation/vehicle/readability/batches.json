@@ -30,7 +30,7 @@
     {
       "taskId": "DIR05",
       "title": "报价建单与后台业务可读性整理",
-      "status": "PENDING",
+      "status": "VERIFIED",
       "files": [
         "xinyi-rongli/src/main/java/com/xinyi/rongli/booking/service/QuoteService.java",
         "xinyi-rongli/src/main/java/com/xinyi/rongli/order/service/OrderProjection.java",
@@ -61,7 +61,9 @@
         "xinyi-rongli/src/main/java/com/xinyi/rongli/booking/dto/QuoteInput.java",
         "xinyi-rongli/src/main/java/com/xinyi/rongli/capacity/controller/CapacityController.java",
         "xinyi-rongli/src/main/java/com/xinyi/rongli/order/dto/OrderQuery.java"
-      ]
+      ],
+      "evidence": "docs/implementation/vehicle/readability/DIR05/verification.json",
+      "versionTag": "vehicle-DIR05-readability-20261104"
     },
     {
       "taskId": "DIR06",

@@ -1,0 +1,51 @@
+{
+  "url": "http://127.0.0.1:5173/rongli/stations",
+  "title": "集信国控检测管理系统",
+  "nonblank": true,
+  "overlay": 0,
+  "errors": [],
+  "expectedNetworkErrors": [
+    "Failed to load resource: the server responded with a status of 503 (Service Unavailable)"
+  ],
+  "requests": [
+    {
+      "body": {
+        "deptId": "990101",
+        "name": "测试检测点",
+        "address": "测试地址",
+        "location": {
+          "lng": 120,
+          "lat": 30,
+          "coordinateSystem": "GCJ02"
+        },
+        "enabled": false,
+        "supportedVehicleTypeCodes": [
+          "SMALL_CAR"
+        ],
+        "serviceRadiusMeter": 5000
+      },
+      "key": "5c817963-ecb0-458c-bf42-d7050c14d405"
+    },
+    {
+      "body": {
+        "deptId": "990101",
+        "name": "测试检测点",
+        "address": "测试地址",
+        "location": {
+          "lng": 120,
+          "lat": 30,
+          "coordinateSystem": "GCJ02"
+        },
+        "enabled": false,
+        "supportedVehicleTypeCodes": [
+          "SMALL_CAR"
+        ],
+        "serviceRadiusMeter": 5000
+      },
+      "key": "5c817963-ecb0-458c-bf42-d7050c14d405"
+    }
+  ],
+  "viewport": "1440x1050",
+  "browser": "Browser plugin not available; Playwright + installed Chrome",
+  "mode": "UI API fixtures; real service authorization tested separately by HTTP/MySQL IT"
+}

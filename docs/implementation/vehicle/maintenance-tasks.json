@@ -88,5 +88,25 @@
     },
     "independentReview": "PENDING",
     "affectsBusinessTaskCount": false
+  },
+  {
+    "taskId": "DIR05",
+    "title": "报价建单与后台业务可读性整理",
+    "category": "MAINTENANCE",
+    "status": "VERIFIED",
+    "implementationCommit": null,
+    "versionTag": "vehicle-DIR05-readability-20261104",
+    "evidence": [
+      "docs/implementation/vehicle/readability/DIR05/report.md",
+      "docs/implementation/vehicle/readability/DIR05/verification.json"
+    ],
+    "verification": {
+      "files": 29,
+      "integrationTests": 89,
+      "unitTests": 36,
+      "databaseChanged": false
+    },
+    "independentReview": "PENDING",
+    "affectsBusinessTaskCount": false
   }
 ]

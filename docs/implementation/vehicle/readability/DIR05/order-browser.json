@@ -1,0 +1,42 @@
+{
+  "passed": true,
+  "browser": "Browser plugin not available; temporary Playwright + local Chrome",
+  "mode": "真实页面+明确API界面夹具；后端业务另由MySQL/HTTP集成验证",
+  "checks": [
+    {
+      "role": "OWNER",
+      "url": "http://127.0.0.1:5174/#/pages/order/detail?orderNo=VI0CCF5BFBC2634C7790B898C710826DFD",
+      "title": "订单详情",
+      "listCalls": 1,
+      "detailRefresh": true,
+      "redaction": true
+    },
+    {
+      "empty": true,
+      "errorRetry": true
+    },
+    {
+      "role": "DRIVER",
+      "url": "http://127.0.0.1:5174/#/pages/order/detail?orderNo=VI0CCF5BFBC2634C7790B898C710826DFD",
+      "title": "订单详情",
+      "listCalls": 1,
+      "detailRefresh": true,
+      "redaction": true
+    },
+    {
+      "role": "STATION",
+      "url": "http://127.0.0.1:5174/#/pages/order/detail?orderNo=VI0CCF5BFBC2634C7790B898C710826DFD",
+      "title": "订单详情",
+      "listCalls": 1,
+      "detailRefresh": true,
+      "redaction": true
+    },
+    {
+      "role": "ADMIN",
+      "url": "http://127.0.0.1:5173/rongli-orders/index",
+      "title": "集信国控检测管理系统",
+      "restrictedThenFull": true
+    }
+  ],
+  "errors": []
+}
