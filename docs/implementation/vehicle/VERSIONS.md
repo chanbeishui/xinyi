@@ -19,3 +19,5 @@ DIR01是维护任务，不计入85项业务任务。历史未提交文件已按�
 P02详情见[P02/report.md](P02/report.md)，可读性原因与剩余清单见[readability/report.md](readability/report.md)。DIR02标签指向其实现提交；P02和DIR03标签包含本轮最终验证脚本整理与记账提交。所有版本描述使用中文，未推送。
 
 | 2026-11-04 | DIR04 第三方配置与支付入口可读性整理 | `c2d51b0e53871168ffaed51f70be5f34b4e1a7d9` | `vehicle-DIR04-readability-20261104` | 16文件；67集成、36单元、PC构建、12项浏览器通过；Java词法/前端AST与模板样式等价。 |
+
+| 2026-11-04 | DIR05 报价建单与后台业务可读性整理 | `0914d000735249d1b8f271c54273c10f69e74361` | `vehicle-DIR05-readability-20261104` | 29文件；89集成、36单元；前端/等价验证见readability/DIR05/report.md。 |
