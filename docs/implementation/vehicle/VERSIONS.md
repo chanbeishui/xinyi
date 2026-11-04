@@ -23,3 +23,5 @@ P02详情见[P02/report.md](P02/report.md)，可读性原因与剩余清单见[r
 | 2026-11-04 | DIR05 报价建单与后台业务可读性整理 | `0914d000735249d1b8f271c54273c10f69e74361` | `vehicle-DIR05-readability-20261104` | 29文件；89集成、36单元；前端/等价验证见readability/DIR05/report.md。 |
 
 | 2026-11-05 | DIR06 历史集成测试可读性整理 | `a5603d05e584eb488a1a10ffa01dc0be2ab98986` | `vehicle-DIR06-readability-20261105` | 26文件；当前25类244集成及36单元通过；断言与常量内容保持一致。 |
+
+| 2026-11-05 | DIR07 小程序与生成类型可读性整理 | `eae47bded1ae16b61b506518e7f4b627b6ae9951` | `vehicle-DIR07-readability-20261105` | 26文件；0集成、0单元；前端/等价验证见readability/DIR07/report.md。 |
