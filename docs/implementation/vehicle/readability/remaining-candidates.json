@@ -64,8 +64,10 @@
       31,
       32
     ],
-    "status": "待人工复核/分批整理",
-    "note": "生成类型文件应同步生成流程；密集行指标可能包含字面量或正常for语句"
+    "status": "COMPLETED",
+    "note": "生成类型文件应同步生成流程；密集行指标可能包含字面量或正常for语句",
+    "batch": "DIR04",
+    "evidence": "docs/implementation/vehicle/readability/DIR04/files.json"
   },
   {
     "file": "xinyi-admin/src/test/java/com/xinyi/web/viit/B02BookingIT.java",
@@ -200,8 +202,10 @@
       22,
       23
     ],
-    "status": "待人工复核/分批整理",
-    "note": "生成类型文件应同步生成流程；密集行指标可能包含字面量或正常for语句"
+    "status": "COMPLETED",
+    "note": "生成类型文件应同步生成流程；密集行指标可能包含字面量或正常for语句",
+    "batch": "DIR04",
+    "evidence": "docs/implementation/vehicle/readability/DIR04/files.json"
   },
   {
     "file": "xinyi-rongli/src/main/java/com/xinyi/rongli/order/service/OrderProjection.java",
@@ -259,8 +263,10 @@
       26,
       29
     ],
-    "status": "待人工复核/分批整理",
-    "note": "生成类型文件应同步生成流程；密集行指标可能包含字面量或正常for语句"
+    "status": "COMPLETED",
+    "note": "生成类型文件应同步生成流程；密集行指标可能包含字面量或正常for语句",
+    "batch": "DIR04",
+    "evidence": "docs/implementation/vehicle/readability/DIR04/files.json"
   },
   {
     "file": "xinyi-rongli/src/main/java/com/xinyi/rongli/order/service/OrderReadService.java",
@@ -293,8 +299,10 @@
       28,
       31
     ],
-    "status": "待人工复核/分批整理",
-    "note": "生成类型文件应同步生成流程；密集行指标可能包含字面量或正常for语句"
+    "status": "COMPLETED",
+    "note": "生成类型文件应同步生成流程；密集行指标可能包含字面量或正常for语句",
+    "batch": "DIR04",
+    "evidence": "docs/implementation/vehicle/readability/DIR04/files.json"
   },
   {
     "file": "xinyi-miniapp/src/pages/capacity/list.vue",
@@ -340,8 +348,10 @@
       30,
       32
     ],
-    "status": "待人工复核/分批整理",
-    "note": "生成类型文件应同步生成流程；密集行指标可能包含字面量或正常for语句"
+    "status": "COMPLETED",
+    "note": "生成类型文件应同步生成流程；密集行指标可能包含字面量或正常for语句",
+    "batch": "DIR04",
+    "evidence": "docs/implementation/vehicle/readability/DIR04/files.json"
   },
   {
     "file": "xinyi-rongli/src/main/java/com/xinyi/rongli/integration/service/IntegrationSecrets.java",
@@ -357,8 +367,10 @@
       24,
       27
     ],
-    "status": "待人工复核/分批整理",
-    "note": "生成类型文件应同步生成流程；密集行指标可能包含字面量或正常for语句"
+    "status": "COMPLETED",
+    "note": "生成类型文件应同步生成流程；密集行指标可能包含字面量或正常for语句",
+    "batch": "DIR04",
+    "evidence": "docs/implementation/vehicle/readability/DIR04/files.json"
   },
   {
     "file": "xinyi-rongli/src/main/java/com/xinyi/rongli/integration/service/IntegrationAuthority.java",
@@ -373,8 +385,10 @@
       21,
       22
     ],
-    "status": "待人工复核/分批整理",
-    "note": "生成类型文件应同步生成流程；密集行指标可能包含字面量或正常for语句"
+    "status": "COMPLETED",
+    "note": "生成类型文件应同步生成流程；密集行指标可能包含字面量或正常for语句",
+    "batch": "DIR04",
+    "evidence": "docs/implementation/vehicle/readability/DIR04/files.json"
   },
   {
     "file": "xinyi-miniapp/src/pages/identity/station.vue",
@@ -425,8 +439,10 @@
       24,
       25
     ],
-    "status": "待人工复核/分批整理",
-    "note": "生成类型文件应同步生成流程；密集行指标可能包含字面量或正常for语句"
+    "status": "COMPLETED",
+    "note": "生成类型文件应同步生成流程；密集行指标可能包含字面量或正常for语句",
+    "batch": "DIR04",
+    "evidence": "docs/implementation/vehicle/readability/DIR04/files.json"
   },
   {
     "file": "xinyi-rongli/src/main/java/com/xinyi/rongli/integration/controller/IntegrationController.java",
@@ -442,8 +458,10 @@
       22,
       23
     ],
-    "status": "待人工复核/分批整理",
-    "note": "生成类型文件应同步生成流程；密集行指标可能包含字面量或正常for语句"
+    "status": "COMPLETED",
+    "note": "生成类型文件应同步生成流程；密集行指标可能包含字面量或正常for语句",
+    "batch": "DIR04",
+    "evidence": "docs/implementation/vehicle/readability/DIR04/files.json"
   },
   {
     "file": "xinyi-admin/src/test/java/com/xinyi/web/viit/C03CapacityIT.java",
@@ -502,8 +520,10 @@
       21,
       24
     ],
-    "status": "待人工复核/分批整理",
-    "note": "生成类型文件应同步生成流程；密集行指标可能包含字面量或正常for语句"
+    "status": "COMPLETED",
+    "note": "生成类型文件应同步生成流程；密集行指标可能包含字面量或正常for语句",
+    "batch": "DIR04",
+    "evidence": "docs/implementation/vehicle/readability/DIR04/files.json"
   },
   {
     "file": "xinyi-miniapp/src/features/address/api.ts",
@@ -538,8 +558,10 @@
       16,
       18
     ],
-    "status": "待人工复核/分批整理",
-    "note": "生成类型文件应同步生成流程；密集行指标可能包含字面量或正常for语句"
+    "status": "COMPLETED",
+    "note": "生成类型文件应同步生成流程；密集行指标可能包含字面量或正常for语句",
+    "batch": "DIR04",
+    "evidence": "docs/implementation/vehicle/readability/DIR04/files.json"
   },
   {
     "file": "xinyi-rongli/src/main/java/com/xinyi/rongli/integration/service/PublishedPaymentPolicy.java",
@@ -554,8 +576,10 @@
       53,
       61
     ],
-    "status": "待人工复核/分批整理",
-    "note": "生成类型文件应同步生成流程；密集行指标可能包含字面量或正常for语句"
+    "status": "COMPLETED",
+    "note": "生成类型文件应同步生成流程；密集行指标可能包含字面量或正常for语句",
+    "batch": "DIR04",
+    "evidence": "docs/implementation/vehicle/readability/DIR04/files.json"
   },
   {
     "file": "xinyi-admin/src/test/java/com/xinyi/web/viit/ViIntegrationTestConfiguration.java",
@@ -637,8 +661,10 @@
       12,
       14
     ],
-    "status": "待人工复核/分批整理",
-    "note": "生成类型文件应同步生成流程；密集行指标可能包含字面量或正常for语句"
+    "status": "COMPLETED",
+    "note": "生成类型文件应同步生成流程；密集行指标可能包含字面量或正常for语句",
+    "batch": "DIR04",
+    "evidence": "docs/implementation/vehicle/readability/DIR04/files.json"
   },
   {
     "file": "xinyi-rongli/src/main/java/com/xinyi/rongli/pricing/controller/PricingController.java",
@@ -711,8 +737,10 @@
       15,
       16
     ],
-    "status": "待人工复核/分批整理",
-    "note": "生成类型文件应同步生成流程；密集行指标可能包含字面量或正常for语句"
+    "status": "COMPLETED",
+    "note": "生成类型文件应同步生成流程；密集行指标可能包含字面量或正常for语句",
+    "batch": "DIR04",
+    "evidence": "docs/implementation/vehicle/readability/DIR04/files.json"
   },
   {
     "file": "xinyi-rongli/src/main/java/com/xinyi/rongli/order/controller/OrderReadController.java",
@@ -947,8 +975,10 @@
       9,
       10
     ],
-    "status": "待人工复核/分批整理",
-    "note": "生成类型文件应同步生成流程；密集行指标可能包含字面量或正常for语句"
+    "status": "COMPLETED",
+    "note": "生成类型文件应同步生成流程；密集行指标可能包含字面量或正常for语句",
+    "batch": "DIR04",
+    "evidence": "docs/implementation/vehicle/readability/DIR04/files.json"
   },
   {
     "file": "xinyi-rongli/src/main/java/com/xinyi/rongli/booking/dto/QuoteView.java",
@@ -1136,8 +1166,10 @@
       8,
       9
     ],
-    "status": "待人工复核/分批整理",
-    "note": "生成类型文件应同步生成流程；密集行指标可能包含字面量或正常for语句"
+    "status": "COMPLETED",
+    "note": "生成类型文件应同步生成流程；密集行指标可能包含字面量或正常for语句",
+    "batch": "DIR04",
+    "evidence": "docs/implementation/vehicle/readability/DIR04/files.json"
   },
   {
     "file": "xinyi-rongli/src/main/java/com/xinyi/rongli/core/ViId.java",

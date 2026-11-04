@@ -68,5 +68,25 @@
     },
     "independentReview": "PENDING",
     "affectsBusinessTaskCount": false
+  },
+  {
+    "taskId": "DIR04",
+    "title": "第三方配置与支付入口可读性整理",
+    "category": "MAINTENANCE",
+    "status": "VERIFIED",
+    "implementationCommit": null,
+    "versionTag": "vehicle-DIR04-readability-20261104",
+    "evidence": [
+      "docs/implementation/vehicle/readability/DIR04/report.md",
+      "docs/implementation/vehicle/readability/DIR04/verification.json"
+    ],
+    "verification": {
+      "files": 16,
+      "integrationTests": 67,
+      "unitTests": 36,
+      "databaseChanged": false
+    },
+    "independentReview": "PENDING",
+    "affectsBusinessTaskCount": false
   }
 ]

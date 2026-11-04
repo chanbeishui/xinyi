@@ -1,0 +1,117 @@
+{
+  "at": "2026-11-04T15:49:36.162333+00:00",
+  "taskId": "DIR04",
+  "files": 16,
+  "tests": [
+    {
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "suite": "com.xinyi.system.service.impl.DeptScopeServiceImplTest"
+    },
+    {
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "suite": "com.xinyi.framework.web.service.TokenServiceTest"
+    },
+    {
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "suite": "com.xinyi.rongli.booking.TencentRouteGatewayTest"
+    },
+    {
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "suite": "com.xinyi.rongli.integration.IntegrationInputTest"
+    },
+    {
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "suite": "com.xinyi.rongli.payment.PaymentEnvironmentTest"
+    },
+    {
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "suite": "com.xinyi.rongli.platform.IdempotencyMacTest"
+    },
+    {
+      "tests": 6,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "suite": "com.xinyi.rongli.platform.PlatformPrimitivesTest"
+    },
+    {
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "suite": "com.xinyi.rongli.platform.SecretGuardTest"
+    },
+    {
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "suite": "com.xinyi.rongli.pricing.PriceEnvironmentTest"
+    },
+    {
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "suite": "com.xinyi.rongli.pricing.PriceCalculatorTest"
+    },
+    {
+      "tests": 14,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "suite": "com.xinyi.web.viit.P01PaymentIT"
+    },
+    {
+      "tests": 19,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "suite": "com.xinyi.web.viit.P02PaymentIT"
+    },
+    {
+      "tests": 19,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "suite": "com.xinyi.web.viit.X01IntegrationIT"
+    },
+    {
+      "tests": 15,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "suite": "com.xinyi.web.viit.X02PaymentIT"
+    }
+  ],
+  "integrationTests": 67,
+  "unitTests": 36,
+  "frontend": {
+    "buildProd": true,
+    "browserChecks": 12,
+    "evidence": {
+      "browser.json": "/private/tmp/x02-browser.json"
+    }
+  },
+  "databaseStructureChanged": false,
+  "businessBehaviorChanged": false,
+  "independentReview": "PENDING"
+}
