@@ -87,7 +87,12 @@
       "databaseChanged": false
     },
     "independentReview": "PENDING",
-    "affectsBusinessTaskCount": false
+    "affectsBusinessTaskCount": false,
+    "completionAudit": {
+      "tag": "vehicle-readability-complete-20261105",
+      "evidence": "docs/implementation/vehicle/readability/completion.json",
+      "status": "VERIFIED"
+    }
   },
   {
     "taskId": "DIR05",
@@ -107,7 +112,12 @@
       "databaseChanged": false
     },
     "independentReview": "PENDING",
-    "affectsBusinessTaskCount": false
+    "affectsBusinessTaskCount": false,
+    "completionAudit": {
+      "tag": "vehicle-readability-complete-20261105",
+      "evidence": "docs/implementation/vehicle/readability/completion.json",
+      "status": "VERIFIED"
+    }
   },
   {
     "taskId": "DIR06",
@@ -127,7 +137,12 @@
       "databaseChanged": false
     },
     "independentReview": "PENDING",
-    "affectsBusinessTaskCount": false
+    "affectsBusinessTaskCount": false,
+    "completionAudit": {
+      "tag": "vehicle-readability-complete-20261105",
+      "evidence": "docs/implementation/vehicle/readability/completion.json",
+      "status": "VERIFIED"
+    }
   },
   {
     "taskId": "DIR07",
@@ -147,6 +162,11 @@
       "databaseChanged": false
     },
     "independentReview": "PENDING",
-    "affectsBusinessTaskCount": false
+    "affectsBusinessTaskCount": false,
+    "completionAudit": {
+      "tag": "vehicle-readability-complete-20261105",
+      "evidence": "docs/implementation/vehicle/readability/completion.json",
+      "status": "VERIFIED"
+    }
   }
 ]

@@ -1,0 +1,850 @@
+{
+  "at": "2026-11-04T16:18:01.958170+00:00",
+  "baselineCommit": "9a910943021bd693a1bd6a48a3554033c9a7f679",
+  "scope": "原remaining-candidates.json的97个文件，支持工具另外列入DIR07证据",
+  "candidateCount": 97,
+  "completedCount": 97,
+  "unresolvedCount": 0,
+  "duplicates": 0,
+  "allSourceFilesScanned": 1198,
+  "javaEquivalence": "忽略注释空白、归一化字符串常量拼接后词法一致",
+  "frontendEquivalence": "脚本及插值AST、模板结构、规范化样式一致",
+  "finalUnitTests": 36,
+  "finalTag": "vehicle-readability-complete-20261105",
+  "reviewedStaticSignals": [
+    {
+      "file": "xinyi-admin/src/test/java/com/xinyi/web/viit/A01VehicleIT.java",
+      "line": 58,
+      "reason": "完整测试数据库URL字面量，保留连续文本便于复制核对；不含密码"
+    },
+    {
+      "file": "xinyi-admin/src/test/java/com/xinyi/web/viit/A02AddressIT.java",
+      "line": 53,
+      "reason": "完整测试数据库URL字面量，保留连续文本便于复制核对；不含密码"
+    },
+    {
+      "file": "xinyi-admin/src/test/java/com/xinyi/web/viit/A03OwnerIT.java",
+      "line": 56,
+      "reason": "完整测试数据库URL字面量，保留连续文本便于复制核对；不含密码"
+    },
+    {
+      "file": "xinyi-admin/src/test/java/com/xinyi/web/viit/B01BookingIT.java",
+      "line": 54,
+      "reason": "完整测试数据库URL字面量，保留连续文本便于复制核对；不含密码"
+    },
+    {
+      "file": "xinyi-admin/src/test/java/com/xinyi/web/viit/B02BookingIT.java",
+      "line": 54,
+      "reason": "完整测试数据库URL字面量，保留连续文本便于复制核对；不含密码"
+    },
+    {
+      "file": "xinyi-admin/src/test/java/com/xinyi/web/viit/B02BookingIT.java",
+      "line": 670,
+      "reason": "测试回滚触发器SQL字面量内分号，不是连续Java语句"
+    },
+    {
+      "file": "xinyi-admin/src/test/java/com/xinyi/web/viit/B03OrderIT.java",
+      "line": 54,
+      "reason": "完整测试数据库URL字面量，保留连续文本便于复制核对；不含密码"
+    },
+    {
+      "file": "xinyi-admin/src/test/java/com/xinyi/web/viit/B04OrderIT.java",
+      "line": 54,
+      "reason": "完整测试数据库URL字面量，保留连续文本便于复制核对；不含密码"
+    },
+    {
+      "file": "xinyi-admin/src/test/java/com/xinyi/web/viit/C01ConfigIT.java",
+      "line": 54,
+      "reason": "完整测试数据库URL字面量，保留连续文本便于复制核对；不含密码"
+    },
+    {
+      "file": "xinyi-admin/src/test/java/com/xinyi/web/viit/C02StationIT.java",
+      "line": 54,
+      "reason": "完整测试数据库URL字面量，保留连续文本便于复制核对；不含密码"
+    },
+    {
+      "file": "xinyi-admin/src/test/java/com/xinyi/web/viit/C03CapacityIT.java",
+      "line": 51,
+      "reason": "完整测试数据库URL字面量，保留连续文本便于复制核对；不含密码"
+    },
+    {
+      "file": "xinyi-admin/src/test/java/com/xinyi/web/viit/C04LivePricingIT.java",
+      "line": 14,
+      "reason": "完整测试数据库URL字面量，保留连续文本便于复制核对；不含密码"
+    },
+    {
+      "file": "xinyi-admin/src/test/java/com/xinyi/web/viit/C04PricingIT.java",
+      "line": 17,
+      "reason": "完整测试数据库URL字面量，保留连续文本便于复制核对；不含密码"
+    },
+    {
+      "file": "xinyi-admin/src/test/java/com/xinyi/web/viit/C04PricingIT.java",
+      "line": 535,
+      "reason": "测试回滚触发器SQL字面量内分号，不是连续Java语句"
+    },
+    {
+      "file": "xinyi-admin/src/test/java/com/xinyi/web/viit/E07TestingIT.java",
+      "line": 45,
+      "reason": "完整测试数据库URL字面量，保留连续文本便于复制核对；不含密码"
+    },
+    {
+      "file": "xinyi-admin/src/test/java/com/xinyi/web/viit/I01IdentityIT.java",
+      "line": 59,
+      "reason": "完整测试数据库URL字面量，保留连续文本便于复制核对；不含密码"
+    },
+    {
+      "file": "xinyi-admin/src/test/java/com/xinyi/web/viit/I02IdentityIT.java",
+      "line": 58,
+      "reason": "完整测试数据库URL字面量，保留连续文本便于复制核对；不含密码"
+    },
+    {
+      "file": "xinyi-admin/src/test/java/com/xinyi/web/viit/I03IdentityIT.java",
+      "line": 59,
+      "reason": "完整测试数据库URL字面量，保留连续文本便于复制核对；不含密码"
+    },
+    {
+      "file": "xinyi-admin/src/test/java/com/xinyi/web/viit/I04IdentityIT.java",
+      "line": 52,
+      "reason": "完整测试数据库URL字面量，保留连续文本便于复制核对；不含密码"
+    },
+    {
+      "file": "xinyi-admin/src/test/java/com/xinyi/web/viit/I05IdentityIT.java",
+      "line": 60,
+      "reason": "完整测试数据库URL字面量，保留连续文本便于复制核对；不含密码"
+    },
+    {
+      "file": "xinyi-admin/src/test/java/com/xinyi/web/viit/I06ScopeIT.java",
+      "line": 54,
+      "reason": "完整测试数据库URL字面量，保留连续文本便于复制核对；不含密码"
+    },
+    {
+      "file": "xinyi-admin/src/test/java/com/xinyi/web/viit/P01PaymentIT.java",
+      "line": 25,
+      "reason": "完整测试数据库URL字面量，保留连续文本便于复制核对；不含密码"
+    },
+    {
+      "file": "xinyi-admin/src/test/java/com/xinyi/web/viit/X01IntegrationIT.java",
+      "line": 21,
+      "reason": "完整测试数据库URL字面量，保留连续文本便于复制核对；不含密码"
+    },
+    {
+      "file": "xinyi-admin/src/test/java/com/xinyi/web/viit/X02PaymentIT.java",
+      "line": 25,
+      "reason": "完整测试数据库URL字面量，保留连续文本便于复制核对；不含密码"
+    },
+    {
+      "file": "xinyi-miniapp/src/api/types.ts",
+      "line": 3,
+      "reason": "TypeScript内联结构类型声明，按100字符参考宽度格式化；分号是字段分隔符"
+    },
+    {
+      "file": "xinyi-miniapp/src/api/types.ts",
+      "line": 158,
+      "reason": "TypeScript内联结构类型声明，按100字符参考宽度格式化；分号是字段分隔符"
+    },
+    {
+      "file": "xinyi-miniapp/src/api/types.ts",
+      "line": 230,
+      "reason": "TypeScript内联结构类型声明，按100字符参考宽度格式化；分号是字段分隔符"
+    },
+    {
+      "file": "xinyi-miniapp/src/api/types.ts",
+      "line": 243,
+      "reason": "TypeScript内联结构类型声明，按100字符参考宽度格式化；分号是字段分隔符"
+    },
+    {
+      "file": "xinyi-miniapp/src/api/types.ts",
+      "line": 321,
+      "reason": "TypeScript内联结构类型声明，按100字符参考宽度格式化；分号是字段分隔符"
+    },
+    {
+      "file": "xinyi-miniapp/src/api/types.ts",
+      "line": 472,
+      "reason": "TypeScript内联结构类型声明，按100字符参考宽度格式化；分号是字段分隔符"
+    },
+    {
+      "file": "xinyi-miniapp/src/api/types.ts",
+      "line": 484,
+      "reason": "TypeScript内联结构类型声明，按100字符参考宽度格式化；分号是字段分隔符"
+    },
+    {
+      "file": "xinyi-miniapp/src/api/types.ts",
+      "line": 548,
+      "reason": "TypeScript内联结构类型声明，按100字符参考宽度格式化；分号是字段分隔符"
+    },
+    {
+      "file": "xinyi-miniapp/src/api/types.ts",
+      "line": 611,
+      "reason": "TypeScript内联结构类型声明，按100字符参考宽度格式化；分号是字段分隔符"
+    },
+    {
+      "file": "xinyi-miniapp/src/api/types.ts",
+      "line": 621,
+      "reason": "TypeScript内联结构类型声明，按100字符参考宽度格式化；分号是字段分隔符"
+    },
+    {
+      "file": "xinyi-miniapp/src/api/types.ts",
+      "line": 669,
+      "reason": "TypeScript内联结构类型声明，按100字符参考宽度格式化；分号是字段分隔符"
+    },
+    {
+      "file": "xinyi-miniapp/src/api/types.ts",
+      "line": 671,
+      "reason": "TypeScript内联结构类型声明，按100字符参考宽度格式化；分号是字段分隔符"
+    },
+    {
+      "file": "xinyi-miniapp/src/api/types.ts",
+      "line": 1409,
+      "reason": "TypeScript内联结构类型声明，按100字符参考宽度格式化；分号是字段分隔符"
+    },
+    {
+      "file": "xinyi-miniapp/src/api/types.ts",
+      "line": 2009,
+      "reason": "TypeScript内联结构类型声明，按100字符参考宽度格式化；分号是字段分隔符"
+    },
+    {
+      "file": "xinyi-miniapp/src/api/types.ts",
+      "line": 2447,
+      "reason": "TypeScript内联结构类型声明，按100字符参考宽度格式化；分号是字段分隔符"
+    },
+    {
+      "file": "xinyi-miniapp/src/features/address/api.ts",
+      "line": 28,
+      "reason": "TypeScript内联结构类型声明，按100字符参考宽度格式化；分号是字段分隔符"
+    },
+    {
+      "file": "xinyi-miniapp/src/features/capacity/api.ts",
+      "line": 26,
+      "reason": "TypeScript内联结构类型声明，按100字符参考宽度格式化；分号是字段分隔符"
+    },
+    {
+      "file": "xinyi-miniapp/src/features/config/api.ts",
+      "line": 40,
+      "reason": "TypeScript内联结构类型声明，按100字符参考宽度格式化；分号是字段分隔符"
+    },
+    {
+      "file": "xinyi-miniapp/src/features/scope/api.ts",
+      "line": 9,
+      "reason": "TypeScript内联结构类型声明，按100字符参考宽度格式化；分号是字段分隔符"
+    },
+    {
+      "file": "xinyi-miniapp/src/features/station/api.ts",
+      "line": 43,
+      "reason": "TypeScript内联结构类型声明，按100字符参考宽度格式化；分号是字段分隔符"
+    },
+    {
+      "file": "xinyi-miniapp/src/pages/capacity/list.vue",
+      "line": 16,
+      "reason": "TypeScript内联结构类型声明，按100字符参考宽度格式化；分号是字段分隔符"
+    },
+    {
+      "file": "xinyi-rongli/src/main/java/com/xinyi/rongli/integration/service/IntegrationViews.java",
+      "line": 29,
+      "reason": "短for循环头及单条循环体，分号启发式误报"
+    },
+    {
+      "file": "xinyi-ui/src/views/rongli/capacity/capacity.vue",
+      "line": 148,
+      "reason": "TypeScript内联结构类型声明，按100字符参考宽度格式化；分号是字段分隔符"
+    },
+    {
+      "file": "xinyi-ui/src/views/rongli/capacity/capacity.vue",
+      "line": 221,
+      "reason": "容量预览中文模板字符串，保留单条表达式与原输出文本"
+    },
+    {
+      "file": "xinyi-ui/src/views/rongli/integrations/payment.vue",
+      "line": 29,
+      "reason": "TypeScript内联结构类型声明，按100字符参考宽度格式化；分号是字段分隔符"
+    }
+  ],
+  "files": [
+    {
+      "file": "xinyi-rongli/src/main/java/com/xinyi/rongli/integration/service/IntegrationService.java",
+      "batch": "DIR04",
+      "sha256": "cd617cb4470f12d3a6ec18449ee80b3babf766fdd9f0a16ec2c14ea1fcff827e",
+      "status": "COMPLETED"
+    },
+    {
+      "file": "xinyi-ui/src/views/rongli/integrations/payment.vue",
+      "batch": "DIR04",
+      "sha256": "3c1fc465cd97328e30f870ecd22e65af0679537a46a4969059575d7d9f9caa90",
+      "status": "COMPLETED"
+    },
+    {
+      "file": "xinyi-rongli/src/main/java/com/xinyi/rongli/integration/service/IntegrationInput.java",
+      "batch": "DIR04",
+      "sha256": "87f19c81aa36467c21922e98686fd2cfa81e77a78f036c59f8a41bd8f74862d4",
+      "status": "COMPLETED"
+    },
+    {
+      "file": "xinyi-rongli/src/main/java/com/xinyi/rongli/integration/service/IntegrationValidation.java",
+      "batch": "DIR04",
+      "sha256": "29d98155654009f0409ac8d501020c98acb4840d0c31a4d160a7ea0d45d7953f",
+      "status": "COMPLETED"
+    },
+    {
+      "file": "xinyi-rongli/src/main/java/com/xinyi/rongli/payment/gateway/WechatPrepayGateway.java",
+      "batch": "DIR04",
+      "sha256": "7d029663aa3bb4cd1a9c4a05a8c05ea1f0f53f4b02224359eaa70df548d6d66a",
+      "status": "COMPLETED"
+    },
+    {
+      "file": "xinyi-rongli/src/main/java/com/xinyi/rongli/integration/service/IntegrationSecrets.java",
+      "batch": "DIR04",
+      "sha256": "8419eeddd4a157153551b39eb412449525fe5aec77170c4c0aa18a917480847e",
+      "status": "COMPLETED"
+    },
+    {
+      "file": "xinyi-rongli/src/main/java/com/xinyi/rongli/integration/service/IntegrationAuthority.java",
+      "batch": "DIR04",
+      "sha256": "d553387625989ea9bbb7474e19031cc07c4a01d1f1999f9e1054dc950f24efa7",
+      "status": "COMPLETED"
+    },
+    {
+      "file": "xinyi-rongli/src/main/java/com/xinyi/rongli/integration/service/IntegrationCrypto.java",
+      "batch": "DIR04",
+      "sha256": "ea8188aebf95461119bd7be0692030fc9f126cf2ce0400e63f03894caf16c6e5",
+      "status": "COMPLETED"
+    },
+    {
+      "file": "xinyi-rongli/src/main/java/com/xinyi/rongli/integration/controller/IntegrationController.java",
+      "batch": "DIR04",
+      "sha256": "1ecd511e2011e7bc1d9156f35a4fb582d72fd4f8d57b8ff03241a882e55baeb5",
+      "status": "COMPLETED"
+    },
+    {
+      "file": "xinyi-rongli/src/main/java/com/xinyi/rongli/integration/mapper/IntegrationMapper.java",
+      "batch": "DIR04",
+      "sha256": "f9fd8605943c3ff3998741f77fbd69cb49657017f0e6c26ad3aab912c3379cb4",
+      "status": "COMPLETED"
+    },
+    {
+      "file": "xinyi-rongli/src/main/java/com/xinyi/rongli/integration/service/IntegrationViews.java",
+      "batch": "DIR04",
+      "sha256": "b759f84386d80f8b1a6cc3d4968313132c9b6f91aca708bd6b1f89ed8cbe40bf",
+      "status": "COMPLETED"
+    },
+    {
+      "file": "xinyi-rongli/src/main/java/com/xinyi/rongli/integration/service/PublishedPaymentPolicy.java",
+      "batch": "DIR04",
+      "sha256": "069c6be384cdae2c5df75f58681373b70d70ce25f1f62d4f3fc210abf6a62482",
+      "status": "COMPLETED"
+    },
+    {
+      "file": "xinyi-rongli/src/main/java/com/xinyi/rongli/integration/service/IntegrationRuntime.java",
+      "batch": "DIR04",
+      "sha256": "9f1fe8ff16b2bc285701257b76c0a5c7e2777483c806a7b0b06b56ed47e63687",
+      "status": "COMPLETED"
+    },
+    {
+      "file": "xinyi-rongli/src/main/java/com/xinyi/rongli/payment/controller/PaymentController.java",
+      "batch": "DIR04",
+      "sha256": "06bea1d95ec61d9e360d948a28837d1926fb1fde675946acf17115bf04fe86ef",
+      "status": "COMPLETED"
+    },
+    {
+      "file": "xinyi-rongli/src/main/java/com/xinyi/rongli/integration/dto/IntegrationSettings.java",
+      "batch": "DIR04",
+      "sha256": "c08d14596e1e5d83d087596d0612299ed0c01579ce78e7f075a398a1d9d7a6bb",
+      "status": "COMPLETED"
+    },
+    {
+      "file": "xinyi-rongli/src/main/java/com/xinyi/rongli/integration/dto/IntegrationRequests.java",
+      "batch": "DIR04",
+      "sha256": "dfdb660478011b4b50e8dc60cf5cb330b6eb798544d6a96c49af2b12f6f8a61f",
+      "status": "COMPLETED"
+    },
+    {
+      "file": "xinyi-rongli/src/main/java/com/xinyi/rongli/booking/service/QuoteService.java",
+      "batch": "DIR05",
+      "sha256": "7628fbba29b90ee4c8ffd86b9fe04b3303a1fbf2d895eb03d73182dc17e9a4ae",
+      "status": "COMPLETED"
+    },
+    {
+      "file": "xinyi-rongli/src/main/java/com/xinyi/rongli/order/service/OrderProjection.java",
+      "batch": "DIR05",
+      "sha256": "a445f3e53fc893ee15d94488ad531acce711c58d615f5ff87bf2d939898ddf89",
+      "status": "COMPLETED"
+    },
+    {
+      "file": "xinyi-rongli/src/main/java/com/xinyi/rongli/order/service/OrderService.java",
+      "batch": "DIR05",
+      "sha256": "0a9c01120cecf4719a8c1cdcf9e726a6e51d3b07c3d4e40a2411d2810402259e",
+      "status": "COMPLETED"
+    },
+    {
+      "file": "xinyi-rongli/src/main/java/com/xinyi/rongli/pricing/service/PricingService.java",
+      "batch": "DIR05",
+      "sha256": "866067f96c9d59908723598914c3d30d807591738b67dd12c383cb275d30898f",
+      "status": "COMPLETED"
+    },
+    {
+      "file": "xinyi-rongli/src/main/java/com/xinyi/rongli/order/service/OrderReadService.java",
+      "batch": "DIR05",
+      "sha256": "c05c932d2e9758a602a80bc328c871b39cc81656e20997707a77053c43f7102f",
+      "status": "COMPLETED"
+    },
+    {
+      "file": "xinyi-ui/src/views/rongli/pricing/pricing.vue",
+      "batch": "DIR05",
+      "sha256": "41490e810df166921aadf1d89d778756e104ae1c7ba310c2680c263194ca5660",
+      "status": "COMPLETED"
+    },
+    {
+      "file": "xinyi-ui/src/views/rongli/order/order.vue",
+      "batch": "DIR05",
+      "sha256": "7b2f3ee31e2ea15f3116c609153b70cd6c15d754abba47bbf75483f5fd256703",
+      "status": "COMPLETED"
+    },
+    {
+      "file": "xinyi-rongli/src/main/java/com/xinyi/rongli/pricing/controller/PricingController.java",
+      "batch": "DIR05",
+      "sha256": "bc7d22e3e046bd7d4826676fbaa17bfb2bd5d22117a42ca44a253d2055354270",
+      "status": "COMPLETED"
+    },
+    {
+      "file": "xinyi-rongli/src/main/java/com/xinyi/rongli/order/controller/OrderReadController.java",
+      "batch": "DIR05",
+      "sha256": "9506061638afcae19f7c0e6d3e225284f952eee44287aaf9dd143c2ce3cd07b3",
+      "status": "COMPLETED"
+    },
+    {
+      "file": "xinyi-ui/src/views/rongli/capacity/capacity.vue",
+      "batch": "DIR05",
+      "sha256": "37f24a570a029259ccdeac195cb2ea799c0ca788abb2729996644da91f4edff3",
+      "status": "COMPLETED"
+    },
+    {
+      "file": "xinyi-ui/src/views/rongli/owner/owner.vue",
+      "batch": "DIR05",
+      "sha256": "756ebde3431885d2c72811e224dd4a802cde00c25c15606049e15e652ebae9ed",
+      "status": "COMPLETED"
+    },
+    {
+      "file": "xinyi-rongli/src/main/java/com/xinyi/rongli/order/mapper/OrderMapper.java",
+      "batch": "DIR05",
+      "sha256": "fe84d318dd68f74438fdac4c17f146817b6ddc64074d05a0b4fbbf7c40fd7548",
+      "status": "COMPLETED"
+    },
+    {
+      "file": "xinyi-rongli/src/main/java/com/xinyi/rongli/booking/controller/QuoteController.java",
+      "batch": "DIR05",
+      "sha256": "d0ddaa5b444b309565b615351b963be18a6aa997a9d63a9ae3330e95d88f05cb",
+      "status": "COMPLETED"
+    },
+    {
+      "file": "xinyi-rongli/src/main/java/com/xinyi/rongli/booking/controller/ScheduleController.java",
+      "batch": "DIR05",
+      "sha256": "11512398ab557d46d6dc6451a6dbac22e96bcf2a81fe55d58efa00e578ade319",
+      "status": "COMPLETED"
+    },
+    {
+      "file": "xinyi-rongli/src/main/java/com/xinyi/rongli/order/controller/OrderController.java",
+      "batch": "DIR05",
+      "sha256": "6d84431dd7042ac53464517f5bf80643c591c0a9a9a5bd8a59576506e9c71e1e",
+      "status": "COMPLETED"
+    },
+    {
+      "file": "xinyi-rongli/src/main/java/com/xinyi/rongli/order/mapper/OrderReadMapper.java",
+      "batch": "DIR05",
+      "sha256": "bfc08544cc0c7cd47f7e6217e33e3886af83e9d5052903a11856593f90b2d30f",
+      "status": "COMPLETED"
+    },
+    {
+      "file": "xinyi-ui/src/views/rongli/config/config.vue",
+      "batch": "DIR05",
+      "sha256": "4fbed65a30df8c78f4afd46df326c70e098b81df3262c07dac682e25f0554521",
+      "status": "COMPLETED"
+    },
+    {
+      "file": "xinyi-ui/src/views/rongli/config/dict.vue",
+      "batch": "DIR05",
+      "sha256": "d608ef26cc25df36fbf30cb7c4d897d916b83069e6b4c4f7e27a5fd854bd2db4",
+      "status": "COMPLETED"
+    },
+    {
+      "file": "xinyi-rongli/src/main/java/com/xinyi/rongli/core/ViRecord.java",
+      "batch": "DIR05",
+      "sha256": "78e0bc6d8f25d5b7039ae9c43da20d3511cdad2e4cc010c5856c5c8112e5095e",
+      "status": "COMPLETED"
+    },
+    {
+      "file": "xinyi-rongli/src/main/java/com/xinyi/rongli/order/dto/OrderViews.java",
+      "batch": "DIR05",
+      "sha256": "9b503cacb31ad0fadf184be875611d4c563ac71e806d9aff70e3cea2c5f14423",
+      "status": "COMPLETED"
+    },
+    {
+      "file": "xinyi-rongli/src/main/java/com/xinyi/rongli/booking/dto/QuoteView.java",
+      "batch": "DIR05",
+      "sha256": "17ac0795fd70f71fa14930fbc5530b21edc5634ac4522ebdef7ac37f531d6d41",
+      "status": "COMPLETED"
+    },
+    {
+      "file": "xinyi-rongli/src/main/java/com/xinyi/rongli/booking/service/ScheduleService.java",
+      "batch": "DIR05",
+      "sha256": "c724088f72663df57b880aaa8d6a4cfaa02fd9e6f6f33645fba57cc34001e716",
+      "status": "COMPLETED"
+    },
+    {
+      "file": "xinyi-rongli/src/main/java/com/xinyi/rongli/capacity/dto/CapacityView.java",
+      "batch": "DIR05",
+      "sha256": "223222df6cfe85b7afad0a4f6d68bb83bf1245bfb6f9ca4fe3da26f2382d7c63",
+      "status": "COMPLETED"
+    },
+    {
+      "file": "xinyi-ui/src/views/rongli/station/station.vue",
+      "batch": "DIR05",
+      "sha256": "6b657de0aee23a7a5e1e658ed383b92b50dd960d95042593f913783446f6bc89",
+      "status": "COMPLETED"
+    },
+    {
+      "file": "xinyi-rongli/src/main/java/com/xinyi/rongli/order/service/OrderReadScope.java",
+      "batch": "DIR05",
+      "sha256": "141c165633a9054df6f2e7a0b3b077cf82670115bcb7c2eafd886123b4d9b5e2",
+      "status": "COMPLETED"
+    },
+    {
+      "file": "xinyi-rongli/src/main/java/com/xinyi/rongli/core/ViId.java",
+      "batch": "DIR05",
+      "sha256": "873297bf4fbab037eaba28f8d324289585a198036ecef023a69888557e91b166",
+      "status": "COMPLETED"
+    },
+    {
+      "file": "xinyi-rongli/src/main/java/com/xinyi/rongli/booking/dto/QuoteInput.java",
+      "batch": "DIR05",
+      "sha256": "146630981d115e643a9c62debc012bb0504c21208a6f6f7479062173d89a2283",
+      "status": "COMPLETED"
+    },
+    {
+      "file": "xinyi-rongli/src/main/java/com/xinyi/rongli/capacity/controller/CapacityController.java",
+      "batch": "DIR05",
+      "sha256": "539c6fe0151d47ec3c12c4891f1615802e4870c3cb344fdbcdcec567f2cef708",
+      "status": "COMPLETED"
+    },
+    {
+      "file": "xinyi-rongli/src/main/java/com/xinyi/rongli/order/dto/OrderQuery.java",
+      "batch": "DIR05",
+      "sha256": "78d0699d7626da3aa0cb24c22412e8146f015f60411cb191540810e70ac7a1c2",
+      "status": "COMPLETED"
+    },
+    {
+      "file": "xinyi-admin/src/test/java/com/xinyi/web/viit/B04OrderIT.java",
+      "batch": "DIR06",
+      "sha256": "20cecd3d6529fb850ae06b58f137a15adcebaf1477496ed831333499e544458c",
+      "status": "COMPLETED"
+    },
+    {
+      "file": "xinyi-admin/src/test/java/com/xinyi/web/viit/B03OrderIT.java",
+      "batch": "DIR06",
+      "sha256": "565259ccc508e5d4d695c21fa0345a810defddedd378a3fd47aec1893ab98ca3",
+      "status": "COMPLETED"
+    },
+    {
+      "file": "xinyi-admin/src/test/java/com/xinyi/web/viit/B02BookingIT.java",
+      "batch": "DIR06",
+      "sha256": "e079b22867d2c667b21984a5f6e799eafe9f78c6b184932eee8e14643b053f5b",
+      "status": "COMPLETED"
+    },
+    {
+      "file": "xinyi-admin/src/test/java/com/xinyi/web/viit/X02PaymentIT.java",
+      "batch": "DIR06",
+      "sha256": "03ba4c725799bd3b268de70ce3862fd3b6e6a767272a460400c29df18dca2d3e",
+      "status": "COMPLETED"
+    },
+    {
+      "file": "xinyi-admin/src/test/java/com/xinyi/web/viit/X01IntegrationIT.java",
+      "batch": "DIR06",
+      "sha256": "364c3046f21f55a43b6de46397bd755a96be7487f4d879789ec1188c319c9402",
+      "status": "COMPLETED"
+    },
+    {
+      "file": "xinyi-admin/src/test/java/com/xinyi/web/viit/P01PaymentIT.java",
+      "batch": "DIR06",
+      "sha256": "7f627ef1f2d8e87d5560aa0126d4b40b97cca31cf5bb44c73d2ab1ac6a8a3f91",
+      "status": "COMPLETED"
+    },
+    {
+      "file": "xinyi-admin/src/test/java/com/xinyi/web/viit/C04PricingIT.java",
+      "batch": "DIR06",
+      "sha256": "b3ceee03361cc73b2f5bc7f0f5b8a76a5511af9bc2f6e966012c77b47f680f51",
+      "status": "COMPLETED"
+    },
+    {
+      "file": "xinyi-admin/src/test/java/com/xinyi/web/viit/C03CapacityIT.java",
+      "batch": "DIR06",
+      "sha256": "a9256a39579d8c5f5de2ed8cd9019888020e0300594a9f0c2dd6daf0ddf31538",
+      "status": "COMPLETED"
+    },
+    {
+      "file": "xinyi-admin/src/test/java/com/xinyi/web/viit/PricingHttpFixture.java",
+      "batch": "DIR06",
+      "sha256": "d29bf82f9032ca5a66bfda14fa5511a6ce014c80d577e19e6c6a8e3ea21c4a40",
+      "status": "COMPLETED"
+    },
+    {
+      "file": "xinyi-admin/src/test/java/com/xinyi/web/viit/ViIntegrationTestConfiguration.java",
+      "batch": "DIR06",
+      "sha256": "1eff091eed0c18234f7362cbe0f6c258a9abd42dc13b4ea2fdb6a6ddea8c5997",
+      "status": "COMPLETED"
+    },
+    {
+      "file": "xinyi-admin/src/test/java/com/xinyi/web/viit/B01BookingIT.java",
+      "batch": "DIR06",
+      "sha256": "411172b0da30e7c883edbd1dae00fb6da9bbebcf5dd8b3a861123313cec012aa",
+      "status": "COMPLETED"
+    },
+    {
+      "file": "xinyi-admin/src/test/java/com/xinyi/web/viit/E06PlatformIT.java",
+      "batch": "DIR06",
+      "sha256": "2607d797f5901884eb378350f40fbd178cabdb7d3afd791337cb8bc5f6ca1b9c",
+      "status": "COMPLETED"
+    },
+    {
+      "file": "xinyi-admin/src/test/java/com/xinyi/web/viit/ViHttpSuiteIT.java",
+      "batch": "DIR06",
+      "sha256": "001aecf7069167cf48e94feda88f291506128ba6188636583d2c6bc4c60c9116",
+      "status": "COMPLETED"
+    },
+    {
+      "file": "xinyi-admin/src/test/java/com/xinyi/web/viit/C04LivePricingIT.java",
+      "batch": "DIR06",
+      "sha256": "6727d4e865552ac39c668b6c95cfc34c9f0659ec1b4297dd9759485c2295de41",
+      "status": "COMPLETED"
+    },
+    {
+      "file": "xinyi-admin/src/test/java/com/xinyi/web/viit/I05IdentityIT.java",
+      "batch": "DIR06",
+      "sha256": "37abcdd43d9bf4c1894bc30d0bcc3a695f1a07f9857127d723efac8b4f30460f",
+      "status": "COMPLETED"
+    },
+    {
+      "file": "xinyi-admin/src/test/java/com/xinyi/web/viit/I02IdentityIT.java",
+      "batch": "DIR06",
+      "sha256": "cfd64fd3ca5bd887e8241844622e97780627262d2455b983c706b5cca5834e7f",
+      "status": "COMPLETED"
+    },
+    {
+      "file": "xinyi-admin/src/test/java/com/xinyi/web/viit/A02AddressIT.java",
+      "batch": "DIR06",
+      "sha256": "81028e3e58328e4553cf4ff5f15628a87d8bc1216d6c2e46816458e666b30fa0",
+      "status": "COMPLETED"
+    },
+    {
+      "file": "xinyi-admin/src/test/java/com/xinyi/web/viit/I03IdentityIT.java",
+      "batch": "DIR06",
+      "sha256": "f7fa3c4f66bbbea6812cb41d0128415fec5a766fbac347368fc5c5d6f1a1cb17",
+      "status": "COMPLETED"
+    },
+    {
+      "file": "xinyi-admin/src/test/java/com/xinyi/web/viit/I04IdentityIT.java",
+      "batch": "DIR06",
+      "sha256": "0aa3d63da6166c999f73ed7fd7c99cd6303ab7fe0b3a6e8911a45a3ca4f9cee8",
+      "status": "COMPLETED"
+    },
+    {
+      "file": "xinyi-admin/src/test/java/com/xinyi/web/viit/I01IdentityIT.java",
+      "batch": "DIR06",
+      "sha256": "486c0e560780061ecd180946b091c0ff60dbc2a96d894772c0ab571deac3cd7c",
+      "status": "COMPLETED"
+    },
+    {
+      "file": "xinyi-admin/src/test/java/com/xinyi/web/viit/C02StationIT.java",
+      "batch": "DIR06",
+      "sha256": "098c1c13400dcbc0f58e7b8a827bd1aa7da44bee3150efa20bddae932f6e51cf",
+      "status": "COMPLETED"
+    },
+    {
+      "file": "xinyi-admin/src/test/java/com/xinyi/web/viit/A01VehicleIT.java",
+      "batch": "DIR06",
+      "sha256": "57288dd950a43c2503c616836e36b6cc524e018c5ec49ff7c55ef7e3e1bcec16",
+      "status": "COMPLETED"
+    },
+    {
+      "file": "xinyi-admin/src/test/java/com/xinyi/web/viit/E07TestingIT.java",
+      "batch": "DIR06",
+      "sha256": "91072602aea5fdf1f49062fba7fb043a10ca6fa610ae2a9bcafe4123814ebd30",
+      "status": "COMPLETED"
+    },
+    {
+      "file": "xinyi-admin/src/test/java/com/xinyi/web/viit/I06ScopeIT.java",
+      "batch": "DIR06",
+      "sha256": "d89a8f3184645900875aad1a2f87c6ece0760ea715bca36635f95b165ed3d934",
+      "status": "COMPLETED"
+    },
+    {
+      "file": "xinyi-admin/src/test/java/com/xinyi/web/viit/A03OwnerIT.java",
+      "batch": "DIR06",
+      "sha256": "1b73a10b01fb49c8e9a08b4e5e4d439962f40356bbe60652ebda78e6947bd9f3",
+      "status": "COMPLETED"
+    },
+    {
+      "file": "xinyi-admin/src/test/java/com/xinyi/web/viit/C01ConfigIT.java",
+      "batch": "DIR06",
+      "sha256": "4f5b27431737c924b4ec2d2cb116a9ca9624b14358813f9297112e733e1cb510",
+      "status": "COMPLETED"
+    },
+    {
+      "file": "xinyi-miniapp/src/api/types.ts",
+      "batch": "DIR07",
+      "sha256": "893c4bfbaf8096450e4145b3fb95c886d6d8245cd63e786bab4d59f865322ed6",
+      "status": "COMPLETED"
+    },
+    {
+      "file": "xinyi-miniapp/src/pages/booking/start.vue",
+      "batch": "DIR07",
+      "sha256": "918bf66c215b6b39f57c0b67dc6ce32b1645e94a9045c37c80effce7e99df4b1",
+      "status": "COMPLETED"
+    },
+    {
+      "file": "xinyi-miniapp/src/pages/capacity/list.vue",
+      "batch": "DIR07",
+      "sha256": "67d413eaf2bab04b143f5c6bf3749e6ccd820e21ef16cc0bcc5cf306908d9e25",
+      "status": "COMPLETED"
+    },
+    {
+      "file": "xinyi-miniapp/src/pages/identity/station.vue",
+      "batch": "DIR07",
+      "sha256": "0a2786d6031de893ed38cd6504c27388cbff14df5ea27d47eea37d02dd9b1b20",
+      "status": "COMPLETED"
+    },
+    {
+      "file": "xinyi-miniapp/src/pages/order/detail.vue",
+      "batch": "DIR07",
+      "sha256": "d16592503775fe963001bc6272beec69458051227138acabdc6c92fce5f87dac",
+      "status": "COMPLETED"
+    },
+    {
+      "file": "xinyi-miniapp/src/pages/order/list.vue",
+      "batch": "DIR07",
+      "sha256": "bb3b719b07c81780b9d13d23ba47ea30f1f3452559a66e150dc9d4c021538494",
+      "status": "COMPLETED"
+    },
+    {
+      "file": "xinyi-miniapp/src/features/vehicle/api.ts",
+      "batch": "DIR07",
+      "sha256": "a99f8092b609bdc2811ed231643f032dc04d4d582edd00e5ea5c2cae886e1f2b",
+      "status": "COMPLETED"
+    },
+    {
+      "file": "xinyi-miniapp/src/features/address/api.ts",
+      "batch": "DIR07",
+      "sha256": "2a4060abc87129493d172a06a42f0ac6fb7989276d81644966b5c073fae26592",
+      "status": "COMPLETED"
+    },
+    {
+      "file": "xinyi-miniapp/src/pages/identity/switch.vue",
+      "batch": "DIR07",
+      "sha256": "f76b85538a95880a16d762a9e90e10c12ddea23faff74760b738a2006129f483",
+      "status": "COMPLETED"
+    },
+    {
+      "file": "xinyi-miniapp/src/pages/identity/phone.vue",
+      "batch": "DIR07",
+      "sha256": "a2cb181da2f783d2590bc98b42801700568c8d9b507a8c31034d722e44ea014e",
+      "status": "COMPLETED"
+    },
+    {
+      "file": "xinyi-miniapp/src/pages/identity/no-access.vue",
+      "batch": "DIR07",
+      "sha256": "7ee381f645da59ee7b2eb5ab09f4082ba22de50dce391f379677e71ebe359d5b",
+      "status": "COMPLETED"
+    },
+    {
+      "file": "xinyi-miniapp/src/pages/identity/login.vue",
+      "batch": "DIR07",
+      "sha256": "c28c0a5c361d1978ebf6bdcec00ef1a6dd8c317cb86f05bac05d9918f503c4f7",
+      "status": "COMPLETED"
+    },
+    {
+      "file": "xinyi-miniapp/src/pages/address/list.vue",
+      "batch": "DIR07",
+      "sha256": "709402a77308f7b4fcdcc828adbbd21b7a7505b1630bbd0d7fc6a9db32799083",
+      "status": "COMPLETED"
+    },
+    {
+      "file": "xinyi-miniapp/src/pages/vehicle/list.vue",
+      "batch": "DIR07",
+      "sha256": "fbc4803a95352114ff3dc222275ecab8f38bebee50a49756e2861244d174f0a6",
+      "status": "COMPLETED"
+    },
+    {
+      "file": "xinyi-miniapp/src/features/station/api.ts",
+      "batch": "DIR07",
+      "sha256": "74ae5355130bae3224f3e5fb27c47223e5d35d745f2b91a7c348c4894496da0e",
+      "status": "COMPLETED"
+    },
+    {
+      "file": "xinyi-miniapp/src/pages/identity/link.vue",
+      "batch": "DIR07",
+      "sha256": "6a93c01905f5669afe740a95cb77bc977e882b6e6e067b03e791dae2b94bb3d9",
+      "status": "COMPLETED"
+    },
+    {
+      "file": "xinyi-miniapp/src/pages/scope/stations.vue",
+      "batch": "DIR07",
+      "sha256": "d7bf653f584d42f39dfb1ac1de45e6497aa1082e32e0ba2961287e5aacb1c374",
+      "status": "COMPLETED"
+    },
+    {
+      "file": "xinyi-miniapp/src/pages/station/info.vue",
+      "batch": "DIR07",
+      "sha256": "c81acf8efe2334d638ba43877975efc74d47fb0db6a62b54b0e9c6d9f741909f",
+      "status": "COMPLETED"
+    },
+    {
+      "file": "xinyi-miniapp/src/features/capacity/api.ts",
+      "batch": "DIR07",
+      "sha256": "a2359efcc1366dffae5ef4484b453b764c819949f1ac5c1084fb1fb3854c7d32",
+      "status": "COMPLETED"
+    },
+    {
+      "file": "xinyi-miniapp/src/pages/index/index.vue",
+      "batch": "DIR07",
+      "sha256": "b30fb6bcd921631e8637309f0e2c9cd6a147bffd216ae75b8ede377dca88aaee",
+      "status": "COMPLETED"
+    },
+    {
+      "file": "xinyi-miniapp/src/services/http.ts",
+      "batch": "DIR07",
+      "sha256": "aac45a0f54a52bd5e6e5570ce2d50e81287978063761ff505c81c9065160ea35",
+      "status": "COMPLETED"
+    },
+    {
+      "file": "xinyi-miniapp/src/features/config/api.ts",
+      "batch": "DIR07",
+      "sha256": "64884777bc9bf17b6785bf7bcaa1f250ed142dd7b312c3910b42e8686d8dbd28",
+      "status": "COMPLETED"
+    },
+    {
+      "file": "xinyi-miniapp/src/env.d.ts",
+      "batch": "DIR07",
+      "sha256": "ea1570c6d5d40c97112aa346894db5cb43fc2b85564af7512afbeaa358f47dc8",
+      "status": "COMPLETED"
+    },
+    {
+      "file": "xinyi-miniapp/src/main.ts",
+      "batch": "DIR07",
+      "sha256": "4878e5e18c0b9ecb2d9719d50cbbb529dfc9bb5d489e31efcb6979bf832ddc05",
+      "status": "COMPLETED"
+    },
+    {
+      "file": "xinyi-miniapp/src/features/scope/api.ts",
+      "batch": "DIR07",
+      "sha256": "82bb38d159efc348586b081fa09460a681f9b17a5547230f2a7768eb53a323cc",
+      "status": "COMPLETED"
+    },
+    {
+      "file": "xinyi-miniapp/src/App.vue",
+      "batch": "DIR07",
+      "sha256": "ac46c254b222e4492641f5eaf21a6dd4f011f53b78796d9ea317d9783192a7ba",
+      "status": "COMPLETED"
+    }
+  ],
+  "limitations": [
+    "并非全仓库逐行业务语义审查",
+    "未执行真机、真实支付/短信或生产部署",
+    "独立复核仍PENDING，业务任务进度保持原状"
+  ]
+}

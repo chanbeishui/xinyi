@@ -56,7 +56,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
             "server.address=127.0.0.1"
         })
 @ActiveProfiles("druid")
-/** 验证代驾申请及资格状态流转；未通过审核不得产生正式代驾工作能力。 */
+/** 验证已有资格下的身份/站点切换与上下文版本；未审核资格不能因切换或刷新获得工作能力。 */
 class I04IdentityIT {
 
     private static Process simProcess;

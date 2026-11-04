@@ -63,7 +63,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
             "server.address=127.0.0.1"
         })
 @ActiveProfiles("druid")
-/** 验证当前身份切换与会话上下文更新；客户端角色不能自行授予司机或员工权限。 */
+/** 验证刷新令牌轮换、重用撤销、绝对过期和单/多设备退出；会话撤销以数据库代际为准。 */
 class I03IdentityIT {
 
     private static Process simProcess;

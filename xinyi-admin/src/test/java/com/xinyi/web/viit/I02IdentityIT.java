@@ -62,7 +62,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
             "server.address=127.0.0.1"
         })
 @ActiveProfiles("druid")
-/** 验证微信身份登录、会话与重复请求边界；外部身份响应为隔离替身，数据库与安全链保持真实。 */
+/** 验证手机号授权回执、一次性凭据消费与员工匹配；并发重试不能重复消费或扩大身份权限。 */
 class I02IdentityIT {
 
     private static Process simProcess;

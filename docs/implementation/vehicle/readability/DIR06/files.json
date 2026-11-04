@@ -182,14 +182,16 @@
   {
     "file": "xinyi-admin/src/test/java/com/xinyi/web/viit/I02IdentityIT.java",
     "beforeSha256": "57795d113f603d4350973af5f8b20a137b025581df15f5b34780d79234cc72da",
-    "afterSha256": "a250d6acc0969cb605f8b7905b0c5a03314bd8615c524fdd34058a34840f4fd6",
+    "afterSha256": "cfd64fd3ca5bd887e8241844622e97780627262d2455b983c706b5cca5834e7f",
     "beforeLines": 459,
     "afterLines": 624,
     "maxLineBefore": 206,
     "maxLineAfter": 202,
     "javaTokensEquivalent": true,
     "commentReview": "关键规则中文说明已核对；普通访问器及无额外业务规则的声明保留简洁",
-    "status": "COMPLETED"
+    "status": "COMPLETED",
+    "batchVersionSha256": "a250d6acc0969cb605f8b7905b0c5a03314bd8615c524fdd34058a34840f4fd6",
+    "closureCommentCorrection": "按实际测试方法更正场景说明，词法内容及断言不变；最终标签vehicle-readability-complete-20261105"
   },
   {
     "file": "xinyi-admin/src/test/java/com/xinyi/web/viit/A02AddressIT.java",
@@ -206,26 +208,30 @@
   {
     "file": "xinyi-admin/src/test/java/com/xinyi/web/viit/I03IdentityIT.java",
     "beforeSha256": "7caee53ea144a62ad00cac2e9d5711cba0fb94816ffe25bcf7870fbb52fc9e03",
-    "afterSha256": "d09a1130a7e7b3c598dca205ee89cfec71f2f8e3a0dbf50345e3dde3e42cdd56",
+    "afterSha256": "f7fa3c4f66bbbea6812cb41d0128415fec5a766fbac347368fc5c5d6f1a1cb17",
     "beforeLines": 501,
     "afterLines": 650,
     "maxLineBefore": 206,
     "maxLineAfter": 202,
     "javaTokensEquivalent": true,
     "commentReview": "关键规则中文说明已核对；普通访问器及无额外业务规则的声明保留简洁",
-    "status": "COMPLETED"
+    "status": "COMPLETED",
+    "batchVersionSha256": "d09a1130a7e7b3c598dca205ee89cfec71f2f8e3a0dbf50345e3dde3e42cdd56",
+    "closureCommentCorrection": "按实际测试方法更正场景说明，词法内容及断言不变；最终标签vehicle-readability-complete-20261105"
   },
   {
     "file": "xinyi-admin/src/test/java/com/xinyi/web/viit/I04IdentityIT.java",
     "beforeSha256": "27e1ee50d71c0dfbd4c0564706e951ec012f79361d94c96306f6c37e90ee34ea",
-    "afterSha256": "c5006c6462e93b43b7b6d49b05844ae41a576d26e1e4d3ea26ce753252bf2778",
+    "afterSha256": "0aa3d63da6166c999f73ed7fd7c99cd6303ab7fe0b3a6e8911a45a3ca4f9cee8",
     "beforeLines": 529,
     "afterLines": 685,
     "maxLineBefore": 206,
     "maxLineAfter": 202,
     "javaTokensEquivalent": true,
     "commentReview": "关键规则中文说明已核对；普通访问器及无额外业务规则的声明保留简洁",
-    "status": "COMPLETED"
+    "status": "COMPLETED",
+    "batchVersionSha256": "c5006c6462e93b43b7b6d49b05844ae41a576d26e1e4d3ea26ce753252bf2778",
+    "closureCommentCorrection": "按实际测试方法更正场景说明，词法内容及断言不变；最终标签vehicle-readability-complete-20261105"
   },
   {
     "file": "xinyi-admin/src/test/java/com/xinyi/web/viit/I01IdentityIT.java",
