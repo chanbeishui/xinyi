@@ -1,0 +1,130 @@
+[
+  {
+    "file": "xinyi-admin/src/test/java/com/xinyi/web/viit/P02PaymentIT.java",
+    "beforeLines": 61,
+    "afterLines": 605,
+    "beforeLongest": 1273,
+    "afterLongest": 279,
+    "javaTokensUnchangedExceptComments": true
+  },
+  {
+    "file": "xinyi-admin/src/test/java/com/xinyi/web/viit/PaymentHttpFixture.java",
+    "beforeLines": 59,
+    "afterLines": 512,
+    "beforeLongest": 2810,
+    "afterLongest": 419,
+    "javaTokensUnchangedExceptComments": true
+  },
+  {
+    "file": "xinyi-rongli/src/main/java/com/xinyi/rongli/identity/config/MiniSecurityConfig.java",
+    "beforeLines": 47,
+    "afterLines": 60,
+    "beforeLongest": 147,
+    "afterLongest": 100,
+    "javaTokensUnchangedExceptComments": true
+  },
+  {
+    "file": "xinyi-rongli/src/main/java/com/xinyi/rongli/payment/controller/PaymentLifecycleController.java",
+    "beforeLines": 19,
+    "afterLines": 63,
+    "beforeLongest": 894,
+    "afterLongest": 97,
+    "javaTokensUnchangedExceptComments": true
+  },
+  {
+    "file": "xinyi-rongli/src/main/java/com/xinyi/rongli/payment/controller/PaymentNotificationController.java",
+    "beforeLines": 28,
+    "afterLines": 65,
+    "beforeLongest": 262,
+    "afterLongest": 98,
+    "javaTokensUnchangedExceptComments": true
+  },
+  {
+    "file": "xinyi-rongli/src/main/java/com/xinyi/rongli/payment/domain/PaymentTransaction.java",
+    "beforeLines": 72,
+    "afterLines": 246,
+    "beforeLongest": 127,
+    "afterLongest": 58,
+    "javaTokensUnchangedExceptComments": true
+  },
+  {
+    "file": "xinyi-rongli/src/main/java/com/xinyi/rongli/payment/mapper/PaymentLifecycleMapper.java",
+    "beforeLines": 31,
+    "afterLines": 64,
+    "beforeLongest": 160,
+    "afterLongest": 97,
+    "javaTokensUnchangedExceptComments": true
+  },
+  {
+    "file": "xinyi-rongli/src/main/java/com/xinyi/rongli/payment/service/PaymentConfiguration.java",
+    "beforeLines": 37,
+    "afterLines": 296,
+    "beforeLongest": 1174,
+    "afterLongest": 100,
+    "javaTokensUnchangedExceptComments": true
+  },
+  {
+    "file": "xinyi-rongli/src/main/java/com/xinyi/rongli/payment/service/PaymentHistoryGateway.java",
+    "beforeLines": 31,
+    "afterLines": 147,
+    "beforeLongest": 644,
+    "afterLongest": 100,
+    "javaTokensUnchangedExceptComments": true
+  },
+  {
+    "file": "xinyi-rongli/src/main/java/com/xinyi/rongli/payment/service/PaymentLifecycleService.java",
+    "beforeLines": 116,
+    "afterLines": 608,
+    "beforeLongest": 794,
+    "afterLongest": 100,
+    "javaTokensUnchangedExceptComments": false
+  },
+  {
+    "file": "xinyi-rongli/src/main/java/com/xinyi/rongli/payment/service/PaymentReconciliationJob.java",
+    "beforeLines": 15,
+    "afterLines": 25,
+    "beforeLongest": 177,
+    "afterLongest": 83,
+    "javaTokensUnchangedExceptComments": true
+  },
+  {
+    "file": "xinyi-rongli/src/main/java/com/xinyi/rongli/payment/service/PaymentService.java",
+    "beforeLines": 66,
+    "afterLines": 478,
+    "beforeLongest": 1095,
+    "afterLongest": 100,
+    "javaTokensUnchangedExceptComments": true
+  },
+  {
+    "file": "xinyi-miniapp/src/features/payment/api.ts",
+    "beforeLines": 15,
+    "afterLines": 54,
+    "beforeLongest": 473,
+    "afterLongest": 98,
+    "javaTokensUnchangedExceptComments": null
+  },
+  {
+    "file": "xinyi-miniapp/src/pages/payment/index.vue",
+    "beforeLines": 114,
+    "afterLines": 414,
+    "beforeLongest": 851,
+    "afterLongest": 97,
+    "javaTokensUnchangedExceptComments": null
+  },
+  {
+    "file": "xinyi-rongli/src/main/resources/mapper/rongli/payment/PaymentMapper.xml",
+    "beforeLines": 41,
+    "afterLines": 41,
+    "beforeLongest": 546,
+    "afterLongest": 546,
+    "javaTokensUnchangedExceptComments": null
+  },
+  {
+    "file": "xinyi-rongli/src/main/resources/mapper/rongli/payment/PaymentLifecycleMapper.xml",
+    "beforeLines": 25,
+    "afterLines": 230,
+    "beforeLongest": 463,
+    "afterLongest": 107,
+    "javaTokensUnchangedExceptComments": null
+  }
+]
