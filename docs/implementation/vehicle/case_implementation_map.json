@@ -292,116 +292,145 @@
     "testMethod": "test_tc_036"
   },
   {
-    "status": "NOT_RUN",
-    "testFiles": [],
-    "evidence": null,
+    "status": "PASS",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/P02PaymentIT.java"
+    ],
+    "evidence": "docs/implementation/vehicle/evidence/P02-20261104.json",
     "caseId": "TC-037",
     "taskId": "P02",
-    "testMethod": "test_tc_037"
+    "testMethod": "deadlineAndClientSuccessCannotPay"
   },
   {
-    "status": "NOT_RUN",
-    "testFiles": [],
-    "evidence": null,
+    "status": "PASS",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/P02PaymentIT.java"
+    ],
+    "evidence": "docs/implementation/vehicle/evidence/P02-20261104.json",
     "caseId": "TC-038",
     "taskId": "P02",
-    "testMethod": "test_tc_038"
+    "testMethod": "deadlineAndClientSuccessCannotPay"
   },
   {
-    "status": "NOT_RUN",
-    "testFiles": [],
-    "evidence": null,
+    "status": "PASS",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/P02PaymentIT.java"
+    ],
+    "evidence": "docs/implementation/vehicle/evidence/P02-20261104.json",
     "caseId": "TC-039",
     "taskId": "P02",
-    "testMethod": "test_tc_039"
+    "testMethod": "validCallbackConfirmsOnceAndSchedules"
   },
   {
-    "status": "NOT_RUN",
-    "testFiles": [],
-    "evidence": null,
+    "status": "PASS",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/P02PaymentIT.java"
+    ],
+    "evidence": "docs/implementation/vehicle/evidence/P02-20261104.json",
     "caseId": "TC-040",
     "taskId": "P02",
-    "testMethod": "test_tc_040"
+    "testMethod": "validCallbackConfirmsOnceAndSchedules"
   },
   {
-    "status": "NOT_RUN",
-    "testFiles": [],
-    "evidence": null,
+    "status": "PASS",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/P02PaymentIT.java"
+    ],
+    "evidence": "docs/implementation/vehicle/evidence/P02-20261104.json",
     "caseId": "TC-041",
     "taskId": "P02",
-    "testMethod": "test_tc_041"
+    "testMethod": "badAmountMerchantAppAndSignatureFailClosed"
   },
   {
-    "status": "NOT_RUN",
-    "testFiles": [],
-    "evidence": null,
+    "status": "PASS",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/P02PaymentIT.java"
+    ],
+    "evidence": "docs/implementation/vehicle/evidence/P02-20261104.json",
     "caseId": "TC-042",
     "taskId": "P02",
-    "testMethod": "test_tc_042"
+    "testMethod": "badAmountMerchantAppAndSignatureFailClosed"
   },
   {
-    "status": "NOT_RUN",
-    "testFiles": [],
-    "evidence": null,
+    "status": "PASS",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/P02PaymentIT.java"
+    ],
+    "evidence": "docs/implementation/vehicle/evidence/P02-20261104.json",
     "caseId": "TC-043",
     "taskId": "P02",
-    "testMethod": "test_tc_043"
+    "testMethod": "timeoutClosesOnlyAfterChannelConfirmation"
   },
   {
-    "status": "NOT_RUN",
-    "testFiles": [],
-    "evidence": null,
+    "status": "PASS",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/P02PaymentIT.java"
+    ],
+    "evidence": "docs/implementation/vehicle/evidence/P02-20261104.json",
     "caseId": "TC-044",
     "taskId": "P02",
-    "testMethod": "test_tc_044"
+    "testMethod": "callbackAndCloserRaceOnlyOneQuotaOutcome;providerPaidDuringCloseWins"
   },
   {
-    "status": "NOT_RUN",
-    "testFiles": [],
-    "evidence": null,
+    "status": "PASS",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/P02PaymentIT.java"
+    ],
+    "evidence": "docs/implementation/vehicle/evidence/P02-20261104.json",
     "caseId": "TC-045",
     "taskId": "P02",
-    "testMethod": "test_tc_045"
+    "testMethod": "lateSuccessDoesNotReopenReleasedOrder"
   },
   {
-    "status": "NOT_RUN",
-    "testFiles": [],
-    "evidence": null,
+    "status": "PASS",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/P02PaymentIT.java"
+    ],
+    "evidence": "docs/implementation/vehicle/evidence/P02-20261104.json",
     "caseId": "TC-046",
     "taskId": "P02",
-    "testMethod": "test_tc_046"
+    "testMethod": "channelFailureRetainsQuotaAndRetrySurvives"
   },
   {
-    "status": "NOT_RUN",
-    "testFiles": [],
-    "evidence": null,
+    "status": "PASS",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/P02PaymentIT.java"
+    ],
+    "evidence": "docs/implementation/vehicle/evidence/P02-20261104.json",
     "caseId": "TC-047",
     "taskId": "P02",
-    "testMethod": "test_tc_047"
+    "testMethod": "timeoutClosesOnlyAfterChannelConfirmation"
   },
   {
-    "status": "NOT_RUN",
-    "testFiles": [],
-    "evidence": null,
+    "status": "PASS",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/P02PaymentIT.java",
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/P01PaymentIT.java"
+    ],
+    "evidence": "docs/implementation/vehicle/evidence/P02-20261104.json",
     "caseId": "TC-048",
     "taskId": "P02",
-    "testMethod": "test_tc_048"
+    "testMethod": "P01PaymentIT#realSdkSignedRequestResponseAndLaunchReplayKeepDeadline;P02PaymentIT#activePrepayLeaseBlocksClosingAndNewPayment"
   },
   {
-    "status": "NOT_RUN",
-    "testFiles": [],
-    "evidence": null,
+    "status": "PASS",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/P02PaymentIT.java"
+    ],
+    "evidence": "docs/implementation/vehicle/evidence/P02-20261104.json",
     "caseId": "TC-049",
     "taskId": "P02",
-    "testMethod": "test_tc_049"
+    "testMethod": "persistenceRollbackNeverAcknowledges"
   },
   {
-    "status": "NOT_RUN",
-    "testFiles": [],
-    "evidence": null,
+    "status": "PASS",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/P02PaymentIT.java"
+    ],
+    "evidence": "docs/implementation/vehicle/evidence/P02-20261104.json",
     "caseId": "TC-050",
     "taskId": "P02",
-    "testMethod": "test_tc_050"
+    "testMethod": "validCallbackConfirmsOnceAndSchedules"
   },
   {
     "status": "NOT_RUN",

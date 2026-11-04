@@ -3106,7 +3106,9 @@
       "prepay_request_cipher",
       "prepay_result_cipher",
       "prepay_lease_token",
-      "prepay_lease_until"
+      "prepay_lease_until",
+      "close_requested_at",
+      "next_query_at"
     ],
     "updateColumns": [
       "order_id",
@@ -3132,7 +3134,9 @@
       "prepay_request_cipher",
       "prepay_result_cipher",
       "prepay_lease_token",
-      "prepay_lease_until"
+      "prepay_lease_until",
+      "close_requested_at",
+      "next_query_at"
     ],
     "columnRules": {
       "id": {
@@ -3277,6 +3281,18 @@
         "updatable": true,
         "clientWritable": false,
         "enumRef": "PaymentCapacityResolution"
+      },
+      "close_requested_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "next_query_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
       }
     },
     "rule": "预支付重试复用稳定商户单；退款批准时锁支付记录预留额度；V6.4：WECHAT/OFFLINE均统一资金事实，不混用渠道；关闭方式仅影响新意图，历史处理持续。未知/待人工核实不当成功，不自动切方法。"

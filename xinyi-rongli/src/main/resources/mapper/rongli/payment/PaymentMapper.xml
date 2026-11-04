@@ -23,6 +23,10 @@
 <result property="prepayResultCipher" column="prepay_result_cipher"/>
 <result property="prepayLeaseToken" column="prepay_lease_token"/>
 <result property="prepayLeaseUntil" column="prepay_lease_until" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+<result property="closeRequestedAt" column="close_requested_at" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+<result property="nextQueryAt" column="next_query_at" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+<result property="paidAt" column="paid_at" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+<result property="transactionId" column="transaction_id"/>
 </resultMap>
 <select id="lockOwnedOrder" resultMap="com.xinyi.rongli.order.mapper.OrderMapper.Order">SELECT * FROM vi_order WHERE order_no=#{orderNo} AND owner_account_id=#{owner} FOR UPDATE</select>
 <select id="lockOrder" resultMap="com.xinyi.rongli.order.mapper.OrderMapper.Order">SELECT * FROM vi_order WHERE id=#{id} FOR UPDATE</select>

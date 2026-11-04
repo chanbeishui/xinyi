@@ -156,3 +156,8 @@ security:
   outbox:
     fixed-delay: 5000
   user-dept-integrity-cron: "0 30 2 * * ?"
+
+# 支付查单与超时关闭；部署经验证后显式启用，隔离测试直接调用同一服务。
+vi:
+  payment:
+    reconciliation-enabled: ${VI_PAYMENT_RECONCILIATION_ENABLED:false}

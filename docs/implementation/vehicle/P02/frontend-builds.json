@@ -1,0 +1,23 @@
+{
+  "at": "2026-11-04T15:14:47.991983+00:00",
+  "runs": [
+    {
+      "command": "npm --prefix xinyi-ui run build:prod",
+      "exitCode": 0
+    },
+    {
+      "command": "npm --prefix xinyi-miniapp run type-check",
+      "exitCode": 0
+    },
+    {
+      "command": "npm --prefix xinyi-miniapp run build:mp-weixin",
+      "exitCode": 0
+    }
+  ],
+  "warnings": [
+    "既有前端chunk体积提示",
+    "小程序真实AppID/真机未配置，未验证实际支付"
+  ],
+  "finalMiniReverifiedAt": "2026-11-04T15:35:14.552445+00:00",
+  "finalMiniLogs": "排版后 type-check 与 build:mp-weixin 均退出0；PC源码未改变，原构建有效"
+}

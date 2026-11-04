@@ -4860,13 +4860,24 @@
         "prepay_lease_until",
         "DATETIME(3) NULL",
         "外部请求租约截止UTC"
+      ],
+      [
+        "close_requested_at",
+        "DATETIME(3) NULL",
+        "首次未付关单意图，写入后禁止再次预支付"
+      ],
+      [
+        "next_query_at",
+        "DATETIME(3) NULL",
+        "数据库UTC查单/关单租约或重试时点"
       ]
     ],
     "indexes": [
       "UNIQUE KEY uk_trade (out_trade_no)",
       "UNIQUE KEY uk_transaction (transaction_id)",
       "UNIQUE KEY uk_order (order_id)",
-      "CONSTRAINT ck_refund_balance CHECK (paid_fen>=0 AND refund_reserved_fen>=0 AND refunded_fen>=0 AND refund_reserved_fen+refunded_fen<=paid_fen)"
+      "CONSTRAINT ck_refund_balance CHECK (paid_fen>=0 AND refund_reserved_fen>=0 AND refunded_fen>=0 AND refund_reserved_fen+refunded_fen<=paid_fen)",
+      "KEY ix_payment_reconcile(status,next_query_at,expires_at)"
     ],
     "rule": "预支付重试复用稳定商户单；退款批准时锁支付记录预留额度；V6.4：WECHAT/OFFLINE均统一资金事实，不混用渠道；关闭方式仅影响新意图，历史处理持续。未知/待人工核实不当成功，不自动切方法。",
     "primaryKey": [
@@ -5044,6 +5055,18 @@
         "clientWritable": false
       },
       "prepay_lease_until": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "close_requested_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "next_query_at": {
         "generated": false,
         "insertable": true,
         "updatable": true,

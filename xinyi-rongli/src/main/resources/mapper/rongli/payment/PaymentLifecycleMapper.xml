@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xinyi.rongli.payment.mapper.PaymentLifecycleMapper">
+  <select id="callbackRoutes" resultMap="com.xinyi.rongli.payment.mapper.PaymentMapper.payment">
+    SELECT p.*
+    FROM vi_payment_order p
+    JOIN (
+      SELECT MIN(id) id
+      FROM vi_payment_order
+      WHERE payment_method  =  'WECHAT'
+      GROUP BY merchant_profile_id, mchid, app_id
+    ) r ON r.id  =  p.id
+    ORDER BY p.id
+  </select>
+
+  <select id="orderByTrade" resultType="long">
+    SELECT order_id
+    FROM vi_payment_order
+    WHERE out_trade_no = #{trade}
+  </select>
+
+  <!-- 只扫描未得出最终结论的支付；数据库重试时点支持进程重启和多实例领取。 -->
+  <select id="due" resultType="long">
+    SELECT order_id
+    FROM vi_payment_order
+    WHERE status IN ('PENDING','UNKNOWN')
+      AND (next_query_at IS NULL
+      OR next_query_at &lt;= UTC_TIMESTAMP(3))
+      AND (payment_method = 'WECHAT'
+      OR expires_at &lt;= UTC_TIMESTAMP(3)
+      OR close_requested_at IS NOT NULL)
+    ORDER BY COALESCE(next_query_at, expires_at), id
+    LIMIT 25
+  </select>
+
+  <update id="claimQuery">
+    UPDATE vi_payment_order
+    SET next_query_at = DATE_ADD(UTC_TIMESTAMP(3), INTERVAL 30 SECOND),
+      version = version+1,
+      updated_at = UTC_TIMESTAMP(3)
+    WHERE id = #{id}
+      AND status IN ('PENDING','UNKNOWN')
+      AND (next_query_at IS NULL
+      OR next_query_at &lt;= UTC_TIMESTAMP(3))
+  </update>
+
+  <update id="requestClose">
+    UPDATE vi_payment_order
+    SET close_requested_at = COALESCE(close_requested_at, UTC_TIMESTAMP(3)),
+      version = version+1,
+      updated_at = UTC_TIMESTAMP(3)
+    WHERE id = #{id}
+      AND status IN ('PENDING','UNKNOWN')
+      AND paid_fen = 0
+  </update>
+
+  <update id="pending">
+    UPDATE vi_payment_order
+    SET status = 'PENDING',
+      next_query_at = DATE_ADD(UTC_TIMESTAMP(3), INTERVAL 30 SECOND),
+      version = version+1,
+      updated_at = UTC_TIMESTAMP(3)
+    WHERE id = #{id}
+      AND status IN ('PENDING','UNKNOWN')
+      AND paid_fen = 0
+  </update>
+
+  <update id="unknown">
+    UPDATE vi_payment_order
+    SET status = 'UNKNOWN',
+      next_query_at = DATE_ADD(UTC_TIMESTAMP(3), INTERVAL 30 SECOND),
+      version = version+1,
+      updated_at = UTC_TIMESTAMP(3)
+    WHERE id = #{id}
+      AND status IN ('PENDING','UNKNOWN')
+      AND paid_fen = 0
+  </update>
+
+  <!-- CAS 条件防止重复入账；晚到付款保留到账事实并标记人工核查。 -->
+  <update id="paid">
+    UPDATE vi_payment_order
+    SET status = 'SUCCESS',
+      transaction_id = #{transactionId},
+      paid_fen = total_fen,
+      paid_at = #{paidAt,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler},
+      capacity_resolution =
+      <choose>
+        <when test="conflict">'MANUAL_CONFLICT'</when>
+        <otherwise>'HELD'</otherwise>
+      </choose>,
+    next_query_at = NULL,
+    version = version+1,
+    updated_at = UTC_TIMESTAMP(3)
+    WHERE id = #{id}
+      AND paid_fen = 0
+      AND status IN ('PENDING','UNKNOWN','CLOSED')
+  </update>
+
+  <update id="closed">
+    UPDATE vi_payment_order
+    SET status = 'CLOSED',
+      capacity_resolution = 'RELEASED',
+      next_query_at = NULL,
+      version = version+1,
+      updated_at = UTC_TIMESTAMP(3)
+    WHERE id = #{id}
+      AND status IN ('PENDING','UNKNOWN')
+      AND paid_fen = 0
+  </update>
+
+  <update id="orderState">
+    UPDATE vi_order
+    SET fulfillment_status = #{state},
+      version = version+1,
+      updated_at = UTC_TIMESTAMP(3)
+    WHERE id = #{id}
+      AND fulfillment_status = 'PENDING_PAY'
+  </update>
+
+  <select id="reservations" resultType="map">
+    SELECT id,
+      slot_id,
+      quantity,
+      status
+    FROM vi_quota_reservation
+    WHERE order_id = #{orderId}
+    ORDER BY slot_id
+    FOR UPDATE
+  </select>
+
+  <update id="confirmSlot">
+    UPDATE vi_quota_slot
+    SET held_quota = held_quota-#{quantity},
+      confirmed_quota = confirmed_quota+#{quantity},
+      version = version+1,
+      updated_at = UTC_TIMESTAMP(3)
+    WHERE id = #{slotId}
+      AND held_quota &gt;= #{quantity}
+  </update>
+
+  <update id="releaseSlot">
+    UPDATE vi_quota_slot
+    SET held_quota = held_quota-#{quantity},
+      version = version+1,
+      updated_at = UTC_TIMESTAMP(3)
+    WHERE id = #{slotId}
+      AND held_quota &gt;= #{quantity}
+  </update>
+
+  <update id="reserveState">
+    UPDATE vi_quota_reservation
+    SET status = #{state},
+      expires_at = NULL,
+      released_at = CASE WHEN #{state} = 'RELEASED' THEN UTC_TIMESTAMP(3) ELSE NULL END,
+      version = version+1,
+      updated_at = UTC_TIMESTAMP(3)
+    WHERE id = #{id}
+      AND status = 'HELD'
+  </update>
+
+  <!-- 渠道事件永久留存去重，与业务幂等键的生命周期不同。 -->
+  <select id="event" resultType="map">
+    SELECT trade_no,
+      event_type,
+      verified_digest
+    FROM vi_channel_event
+    WHERE provider = #{provider}
+      AND event_key = #{key}
+    FOR UPDATE
+  </select>
+
+  <insert id="eventInsert">
+    INSERT INTO vi_channel_event(provider, event_key, trade_no, event_type, verified_digest, processed_at)
+    VALUES(#{provider},#{key},#{trade},#{type},#{digest}, UTC_TIMESTAMP(3))
+  </insert>
+
+  <select id="refundByNo" resultType="map">
+    SELECT r.id,
+      p.order_id
+    FROM vi_refund_order r
+    JOIN vi_payment_order p ON p.id = r.payment_id
+    WHERE r.out_refund_no = #{no}
+      AND r.payment_method = 'WECHAT'
+      AND r.execution_mode = 'WECHAT_API'
+  </select>
+
+  <select id="lockRefund" resultType="map">
+    SELECT *
+    FROM vi_refund_order
+    WHERE id = #{id}
+    FOR UPDATE
+  </select>
+
+  <update id="refundSuccess">
+    UPDATE vi_refund_order
+    SET status = 'SUCCESS',
+      channel_refund_id = #{channelId},
+      success_at = #{at,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler},
+      next_query_at = NULL,
+      version = version+1,
+      updated_at = UTC_TIMESTAMP(3)
+    WHERE id = #{id}
+      AND status IN ('CREATED','PROCESSING','UNKNOWN','ABNORMAL')
+  </update>
+
+  <update id="refundState">
+    UPDATE vi_refund_order
+    SET status = #{state},
+      version = version+1,
+      updated_at = UTC_TIMESTAMP(3)
+    WHERE id = #{id}
+      AND status IN ('CREATED','PROCESSING','UNKNOWN','ABNORMAL')
+  </update>
+
+  <update id="refundBalance">
+    UPDATE vi_payment_order
+    SET refund_reserved_fen = refund_reserved_fen-#{amount},
+      refunded_fen = refunded_fen+
+      <choose>
+        <when test="success">#{amount}</when>
+        <otherwise>0</otherwise>
+      </choose>,
+    version = version+1,
+    updated_at = UTC_TIMESTAMP(3)
+    WHERE id = #{paymentId}
+      AND refund_reserved_fen &gt;= #{amount}
+      AND paid_fen &gt;= refunded_fen+#{amount}
+  </update>
+
+</mapper>

@@ -130,56 +130,61 @@
     "implementationFile": "xinyi-miniapp/src/pages/payment/index.vue",
     "evidence": [
       "docs/implementation/vehicle/evidence/P01-20261104.json",
-      "docs/implementation/vehicle/evidence/X02-20261104.json"
+      "docs/implementation/vehicle/evidence/X02-20261104.json",
+      "docs/implementation/vehicle/evidence/P02-20261104.json"
     ],
     "boardId": "O10",
     "taskId": "P01",
-    "implemented": "服务端支付选项与线下意图；原账号/截止、选择不等于已付；实际Vue浏览器验证",
-    "remaining": "P02回调/主动查单/超时关单；X06线下凭证登记与独立核实；真机及完整画板验收"
+    "implemented": "可信GET查单、未付关闭确认、UNKNOWN/关闭/晚到付款额度冲突及成功显示；浏览器与微信构建通过",
+    "remaining": "P03计划派单、微信真机/全画板验收；X06线下凭证核实"
   },
   {
     "status": "PARTIAL",
     "implementationFile": "xinyi-miniapp/src/pages/payment/index.vue",
     "evidence": [
-      "docs/implementation/vehicle/evidence/P01-20261104.json"
+      "docs/implementation/vehicle/evidence/P01-20261104.json",
+      "docs/implementation/vehicle/evidence/P02-20261104.json"
     ],
     "boardId": "O11",
     "taskId": "P01",
-    "implemented": "预支付入口与服务端支付状态展示，微信目标构建及H5界面验证",
-    "remaining": "微信真机；回调/主动查单/超时关单由P02；线下确认由X06。O10线下操作尚不可用，不将完整画板算完成"
+    "implemented": "可信GET查单、未付关闭确认、UNKNOWN/关闭/晚到付款额度冲突及成功显示；浏览器与微信构建通过",
+    "remaining": "P03计划派单、微信真机/全画板验收；X06线下凭证核实"
   },
   {
     "status": "PARTIAL",
     "implementationFile": "xinyi-miniapp/src/pages/payment/index.vue",
     "evidence": [
-      "docs/implementation/vehicle/evidence/P01-20261104.json"
+      "docs/implementation/vehicle/evidence/P01-20261104.json",
+      "docs/implementation/vehicle/evidence/P02-20261104.json"
     ],
     "boardId": "O12",
     "taskId": "P01",
-    "implemented": "预支付入口与服务端支付状态展示，微信目标构建及H5界面验证",
-    "remaining": "微信真机；回调/主动查单/超时关单由P02；线下确认由X06。O10线下操作尚不可用，不将完整画板算完成"
+    "implemented": "可信GET查单、未付关闭确认、UNKNOWN/关闭/晚到付款额度冲突及成功显示；浏览器与微信构建通过",
+    "remaining": "P03计划派单、微信真机/全画板验收；X06线下凭证核实"
   },
   {
     "status": "PARTIAL",
     "implementationFile": "xinyi-miniapp/src/pages/payment/index.vue",
     "evidence": [
-      "docs/implementation/vehicle/evidence/P01-20261104.json"
+      "docs/implementation/vehicle/evidence/P01-20261104.json",
+      "docs/implementation/vehicle/evidence/P02-20261104.json"
     ],
     "boardId": "O13",
     "taskId": "P01",
-    "implemented": "预支付入口与服务端支付状态展示，微信目标构建及H5界面验证",
-    "remaining": "微信真机；回调/主动查单/超时关单由P02；线下确认由X06。O10线下操作尚不可用，不将完整画板算完成"
+    "implemented": "可信GET查单、未付关闭确认、UNKNOWN/关闭/晚到付款额度冲突及成功显示；浏览器与微信构建通过",
+    "remaining": "P03计划派单、微信真机/全画板验收；X06线下凭证核实"
   },
   {
     "status": "PARTIAL",
     "implementationFile": "xinyi-miniapp/src/pages/payment/index.vue",
     "evidence": [
-      "docs/implementation/vehicle/evidence/P01-20261104.json"
+      "docs/implementation/vehicle/evidence/P01-20261104.json",
+      "docs/implementation/vehicle/evidence/P02-20261104.json"
     ],
     "boardId": "O13-closed",
     "taskId": "P01",
-    "implemented": "预支付入口与服务端支付状态展示，微信目标构建及H5界面验证",
-    "remaining": "微信真机；回调/主动查单/超时关单由P02；线下确认由X06。O10线下操作尚不可用，不将完整画板算完成"
+    "implemented": "可信GET查单、未付关闭确认、UNKNOWN/关闭/晚到付款额度冲突及成功显示；浏览器与微信构建通过",
+    "remaining": "P03计划派单、微信真机/全画板验收；X06线下凭证核实"
   },
   {
     "status": "PARTIAL",
@@ -1836,18 +1841,26 @@
     "taskId": "F05"
   },
   {
-    "status": "NOT_ASSESSED",
+    "status": "PARTIAL",
     "implementationFile": null,
-    "evidence": [],
+    "evidence": [
+      "docs/implementation/vehicle/evidence/P02-20261104.json"
+    ],
     "boardId": "B31",
-    "taskId": "P02"
+    "taskId": "P02",
+    "implemented": "P02提供可信查询/通知/异常outbox基础，无独立后台画板实现",
+    "remaining": "B31列表/人工查询/核实API_141～143归属P04；界面与其真实权限/接口在P04一起实现，不用模拟页面冒充完成"
   },
   {
-    "status": "NOT_ASSESSED",
+    "status": "PARTIAL",
     "implementationFile": null,
-    "evidence": [],
+    "evidence": [
+      "docs/implementation/vehicle/evidence/P02-20261104.json"
+    ],
     "boardId": "B31-query",
-    "taskId": "P02"
+    "taskId": "P02",
+    "implemented": "P02提供可信查询/通知/异常outbox基础，无独立后台画板实现",
+    "remaining": "B31列表/人工查询/核实API_141～143归属P04；界面与其真实权限/接口在P04一起实现，不用模拟页面冒充完成"
   },
   {
     "status": "NOT_ASSESSED",

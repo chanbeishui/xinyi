@@ -1,0 +1,101 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><testsuite xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-failsafe-plugin/xsd/failsafe-test-report.xsd" version="3.0.2" name="com.xinyi.web.viit.P01PaymentIT" time="20.633" tests="14" errors="0" skipped="0" failures="0">
+  <testcase name="successOrCloseRacingProviderIsNeverOverwritten" classname="com.xinyi.web.viit.P01PaymentIT" time="3.127">
+    </testcase>
+  <testcase name="expiredReplayAndForeignOwnerDenied" classname="com.xinyi.web.viit.P01PaymentIT" time="0.301">
+    </testcase>
+  <testcase name="logoutWhileProviderPendingCapturesResultButDoesNotReturnSecrets" classname="com.xinyi.web.viit.P01PaymentIT" time="1.464">
+    </testcase>
+  <testcase name="providerTimeoutPreservesDeadlineAndUnknown" classname="com.xinyi.web.viit.P01PaymentIT" time="6.289">
+    </testcase>
+  <testcase name="outboxFailureRollsBackFinalizationAndLeaseRetryIsStable" classname="com.xinyi.web.viit.P01PaymentIT" time="0.827">
+    </testcase>
+  <testcase name="credentialRotationUsesOriginalIdentityAndChangedMerchantFailsClosed" classname="com.xinyi.web.viit.P01PaymentIT" time="0.356">
+    </testcase>
+  <testcase name="closingSwitchBlocksNewButPreservesIssuedPrepay" classname="com.xinyi.web.viit.P01PaymentIT" time="0.283">
+    </testcase>
+  <testcase name="badSignatureIsUnknownAndStableRetryNeverUnlocks" classname="com.xinyi.web.viit.P01PaymentIT" time="0.25">
+    </testcase>
+  <testcase name="actualHttpEnvelopesMatchPrimaryOpenApi" classname="com.xinyi.web.viit.P01PaymentIT" time="1.339">
+    </testcase>
+  <testcase name="staleVersionPolicyAndUntrustedAmountsRejected" classname="com.xinyi.web.viit.P01PaymentIT" time="0.203">
+    </testcase>
+  <testcase name="missingRootKeyAndOfflineLockCannotStartProvider" classname="com.xinyi.web.viit.P01PaymentIT" time="0.21">
+    </testcase>
+  <testcase name="realSdkSignedRequestResponseAndLaunchReplayKeepDeadline" classname="com.xinyi.web.viit.P01PaymentIT" time="0.196">
+    </testcase>
+  <testcase name="concurrentRequestsUseSingleLease" classname="com.xinyi.web.viit.P01PaymentIT" time="1.412">
+    </testcase>
+  <testcase name="unknownCannotRetryAfterSwitchOff" classname="com.xinyi.web.viit.P01PaymentIT" time="0.266">
+    </testcase>
+</testsuite><testsuite xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-failsafe-plugin/xsd/failsafe-test-report.xsd" version="3.0.2" name="com.xinyi.web.viit.P02PaymentIT" time="6.199" tests="19" errors="0" skipped="0" failures="0">
+  <testcase name="providerPaidDuringCloseWins" classname="com.xinyi.web.viit.P02PaymentIT" time="0.273">
+    </testcase>
+  <testcase name="revokedSessionCannotCloseOrRead" classname="com.xinyi.web.viit.P02PaymentIT" time="0.188">
+    </testcase>
+  <testcase name="offlineSelectionExpiresWithoutCallingWechat" classname="com.xinyi.web.viit.P02PaymentIT" time="0.167">
+    </testcase>
+  <testcase name="callbackAndCloserRaceOnlyOneQuotaOutcome" classname="com.xinyi.web.viit.P02PaymentIT" time="0.202">
+    </testcase>
+  <testcase name="badAmountMerchantAppAndSignatureFailClosed" classname="com.xinyi.web.viit.P02PaymentIT" time="0.245">
+    </testcase>
+  <testcase name="unauthenticatedMalformedCallbackUsesWechatProtocol" classname="com.xinyi.web.viit.P02PaymentIT" time="0.19">
+    </testcase>
+  <testcase name="validCallbackConfirmsOnceAndSchedules" classname="com.xinyi.web.viit.P02PaymentIT" time="0.218">
+    </testcase>
+  <testcase name="activePrepayLeaseBlocksClosingAndNewPayment" classname="com.xinyi.web.viit.P02PaymentIT" time="0.309">
+    </testcase>
+  <testcase name="timeoutClosesOnlyAfterChannelConfirmation" classname="com.xinyi.web.viit.P02PaymentIT" time="0.297">
+    </testcase>
+  <testcase name="actualResponsesMatchPrimaryContract" classname="com.xinyi.web.viit.P02PaymentIT" time="1.433">
+    </testcase>
+  <testcase name="channelFailureRetainsQuotaAndRetrySurvives" classname="com.xinyi.web.viit.P02PaymentIT" time="0.249">
+    </testcase>
+  <testcase name="replayWindowAndEventCollisionRejected" classname="com.xinyi.web.viit.P02PaymentIT" time="0.215">
+    </testcase>
+  <testcase name="deadlineAndClientSuccessCannotPay" classname="com.xinyi.web.viit.P02PaymentIT" time="0.209">
+    </testcase>
+  <testcase name="lateSuccessDoesNotReopenReleasedOrder" classname="com.xinyi.web.viit.P02PaymentIT" time="0.236">
+    </testcase>
+  <testcase name="queryRepairsMissingCallbackAndRespectsSwitchOff" classname="com.xinyi.web.viit.P02PaymentIT" time="0.21">
+    </testcase>
+  <testcase name="failedQueryCloseReturnsPendingWithoutFalseSuccess" classname="com.xinyi.web.viit.P02PaymentIT" time="0.177">
+    </testcase>
+  <testcase name="closeOwnerScopeVersionIdempotencyAndInFlightLease" classname="com.xinyi.web.viit.P02PaymentIT" time="0.17">
+    </testcase>
+  <testcase name="refundNotificationUpdatesReservedBalanceExactlyOnce" classname="com.xinyi.web.viit.P02PaymentIT" time="0.177">
+    </testcase>
+  <testcase name="persistenceRollbackNeverAcknowledges" classname="com.xinyi.web.viit.P02PaymentIT" time="0.168">
+    </testcase>
+</testsuite><testsuite xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-failsafe-plugin/xsd/failsafe-test-report.xsd" version="3.0.2" name="com.xinyi.web.viit.X02PaymentIT" time="4.645" tests="15" errors="0" skipped="0" failures="0">
+  <testcase name="actualOfflineResponseMatchesPrimaryContract" classname="com.xinyi.web.viit.X02PaymentIT" time="1.26">
+    </testcase>
+  <testcase name="disabledPolicyStillValidatesAndDecryptsOriginalCallback" classname="com.xinyi.web.viit.X02PaymentIT" time="0.275">
+    </testcase>
+  <testcase name="disabledPolicyKeepsOriginalQueryAndValidRotatedSigningKey" classname="com.xinyi.web.viit.X02PaymentIT" time="0.315">
+    </testcase>
+  <testcase name="onlyOfflineDoesNotNeedMerchantAndSelectionIsNotPaid" classname="com.xinyi.web.viit.X02PaymentIT" time="0.168">
+    </testcase>
+  <testcase name="bothOffNeedsConfirmationAndStopsBookingNotFree" classname="com.xinyi.web.viit.X02PaymentIT" time="0.164">
+    </testcase>
+  <testcase name="merchantCertificateMustMatchSignatureKey" classname="com.xinyi.web.viit.X02PaymentIT" time="0.159">
+    </testcase>
+  <testcase name="unknownWechatCannotBecomeOffline" classname="com.xinyi.web.viit.X02PaymentIT" time="0.206">
+    </testcase>
+  <testcase name="bankAccountOnlyForOwnerAfterSelectionAndOriginalRevisionSurvivesChanges" classname="com.xinyi.web.viit.X02PaymentIT" time="0.204">
+    </testcase>
+  <testcase name="onlyWechatAndBothEnabledAreIndependent" classname="com.xinyi.web.viit.X02PaymentIT" time="0.168">
+    </testcase>
+  <testcase name="offlineUnknownWechatRaceHasOneWinner" classname="com.xinyi.web.viit.X02PaymentIT" time="0.154">
+    </testcase>
+  <testcase name="secretFieldsValidateWithoutProviderTraffic" classname="com.xinyi.web.viit.X02PaymentIT" time="0.148">
+    </testcase>
+  <testcase name="merchantReadOnlyCallbacksComeFromDeployment" classname="com.xinyi.web.viit.X02PaymentIT" time="0.137">
+    </testcase>
+  <testcase name="appMismatchAndNewPrepayAfterSwitchOffDoNotReachProvider" classname="com.xinyi.web.viit.X02PaymentIT" time="0.144">
+    </testcase>
+  <testcase name="refundQueryRetainsMerchantAfterSwitchOff" classname="com.xinyi.web.viit.X02PaymentIT" time="0.17">
+    </testcase>
+  <testcase name="offlineRejectsStaleForeignExpiredAndRollsBackOutbox" classname="com.xinyi.web.viit.X02PaymentIT" time="0.183">
+    </testcase>
+</testsuite></testsuites>

@@ -1,0 +1,29 @@
+{
+  "at": "2026-11-04T15:35:14.552445+00:00",
+  "exitCode": 0,
+  "testsRun": 48,
+  "suites": [
+    {
+      "testsRun": 14,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "suite": "com.xinyi.web.viit.P01PaymentIT"
+    },
+    {
+      "testsRun": 19,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "suite": "com.xinyi.web.viit.P02PaymentIT"
+    },
+    {
+      "testsRun": 15,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "suite": "com.xinyi.web.viit.X02PaymentIT"
+    }
+  ],
+  "scope": "NOTPAY 状态区分、支付代码排版/关键注释及关闭意图方法拆分后的最终回归"
+}

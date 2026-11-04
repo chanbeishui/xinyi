@@ -1,7 +1,7 @@
 # P02 · 支付可信通知、查单与关单
 
-阶段：M2；责任域：payment；前置：P01, E06。
-范围版本：`V6.4-CONFIG-20261022`；definitionHash：`db2ef1a5925d5397c48dc793b910ba249a2acb7ba30747511258c73a16a3bcb2`。
+阶段：M2；责任域：payment；前置：P01, E06, X02。
+范围版本：`V6.4-CONFIG-20261022`；definitionHash：`1265bde7fec79cb17dcaeae8cca7722c48fd27506e56f41d60beb7f8b6149842`。
 
 ## 本任务交付
 - 原始body验签/解密/金额商户一致、查单补偿、30分钟可信关单
@@ -22,10 +22,12 @@
 ## 代码落位
 `xinyi-rongli/src/main/java/com/xinyi/rongli/payment/`
 `xinyi-rongli/src/main/resources/mapper/rongli/payment/`
-`xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/payment/`
-`xinyi-ui/src/views/rongli/payment/`
-`xinyi-ui/src/api/rongli/payment.ts`
+`xinyi-rongli/src/main/java/com/xinyi/rongli/payment/controller/`
 `xinyi-miniapp/src/features/payment/`
+`xinyi-admin/src/test/java/com/xinyi/web/viit/P02PaymentIT.java`
+`sql/migration_20261104_03_payment_reconciliation.sql`
+`xinyi-miniapp/src/pages/payment/`
+`xinyi-admin/src/test/java/com/xinyi/web/viit/PaymentHttpFixture.java`
 
 ## 验证命令
 ```bash

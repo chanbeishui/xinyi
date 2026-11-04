@@ -1,0 +1,156 @@
+{
+  "taskId": "P02",
+  "implementer": "Codex",
+  "scopeRevision": "V6.4-CONFIG-20261022",
+  "at": "2026-11-04T15:35:14.552445+00:00",
+  "codeFiles": [
+    "sql/migration_20261104_03_payment_reconciliation.sql",
+    "sql/ry_20260417.sql",
+    "xinyi-admin/src/main/resources/application.yml",
+    "xinyi-admin/src/test/java/com/xinyi/web/viit/P02PaymentIT.java",
+    "xinyi-admin/src/test/java/com/xinyi/web/viit/PaymentHttpFixture.java",
+    "xinyi-admin/src/test/resources/integration/p02_contract.py",
+    "xinyi-miniapp/src/api/types.ts",
+    "xinyi-miniapp/src/features/payment/api.ts",
+    "xinyi-miniapp/src/pages/payment/index.vue",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/identity/config/MiniSecurityConfig.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/payment/controller/PaymentLifecycleController.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/payment/controller/PaymentNotificationController.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/payment/domain/PaymentTransaction.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/payment/mapper/PaymentLifecycleMapper.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/payment/service/PaymentConfiguration.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/payment/service/PaymentHistoryGateway.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/payment/service/PaymentLifecycleService.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/payment/service/PaymentReconciliationJob.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/payment/service/PaymentService.java",
+    "xinyi-rongli/src/main/resources/mapper/rongli/payment/PaymentLifecycleMapper.xml",
+    "xinyi-rongli/src/main/resources/mapper/rongli/payment/PaymentMapper.xml"
+  ],
+  "sourceDigests": {
+    "sql/migration_20261104_03_payment_reconciliation.sql": "0139df182321f0668dfa276b2f1ad743c6c2f9000684323cea1da478e8854ddf",
+    "sql/ry_20260417.sql": "a0322c38bf953194311e27004154b02b4585ddb1cc1e2b3e5d43df3a76d3b1c1",
+    "xinyi-admin/src/main/resources/application.yml": "df6c0f5d6134c59804713384af40cdcdfe00d4a4d0b375380384d0765eed5c6f",
+    "xinyi-admin/src/test/java/com/xinyi/web/viit/P02PaymentIT.java": "f9fa4fd7cef75181c8f4ea1613f39af9c2caf52d9c5176da78cef2815857e694",
+    "xinyi-admin/src/test/java/com/xinyi/web/viit/PaymentHttpFixture.java": "276158e87b1bda108d4a71047f38e122b5e6600ab63338048205a1aafe4320dc",
+    "xinyi-admin/src/test/resources/integration/p02_contract.py": "08af1b000da2f5b7890d3ee2f6015d46c695cc32140348837243673771032132",
+    "xinyi-miniapp/src/api/types.ts": "d887549ede9022f8218cbd77c0a399fec5aa58f340edba97e755b7ef8e9d0b1e",
+    "xinyi-miniapp/src/features/payment/api.ts": "e0004a044087e0781b1222aeb084ee5bb2b7aa50f50718b92a1a18cdc4310219",
+    "xinyi-miniapp/src/pages/payment/index.vue": "9da14348e384639528813d3fc9e7f8b45a1c575b7ecf549b02eb1889244ad48e",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/identity/config/MiniSecurityConfig.java": "9c87a8a7087718eb1e4846d8ad38e44520d2737303fdca4b9f78c51bc0f8998e",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/payment/controller/PaymentLifecycleController.java": "f0d1d33b78449da8d2fc25218e67002074a6aa022dce65873d181a6879bdbf84",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/payment/controller/PaymentNotificationController.java": "67d8efdf823a4c8eee38023c8428a6efaf9ead95fffbeffdacd757d7d3790aea",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/payment/domain/PaymentTransaction.java": "8d4740bf3ce2526ecd39cbe32f0d46d8d4d8d599aa5517d451b59603643644fa",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/payment/mapper/PaymentLifecycleMapper.java": "e91916e59842a53e2132f7df52f1a6d67f71d180071bde748ca1f0aa78213f21",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/payment/service/PaymentConfiguration.java": "b0177da9464766e925483fda04eabc51eb77b747837336a3099928979c58fbeb",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/payment/service/PaymentHistoryGateway.java": "325840bad7f0d91e6645def65286f1923a9d1f704cdc2745a060bde0d2393f5c",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/payment/service/PaymentLifecycleService.java": "1db6d29626174fc33780e39f50584435aaa8f349a9a230c7e36b21d32d391eaa",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/payment/service/PaymentReconciliationJob.java": "56ebb3d502a9a87bdd5108e892c9d342292d25f22c8f23b3f2d6aee84a75d8f9",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/payment/service/PaymentService.java": "c37bab3c88002bea1501d25c6f9984859580d24f425a9ffbb3251f4b0fa4304d",
+    "xinyi-rongli/src/main/resources/mapper/rongli/payment/PaymentLifecycleMapper.xml": "e13d61a89f00954ce6cced4eb3d0f1235c81aad67c4d8e84e9a4742563009a9d",
+    "xinyi-rongli/src/main/resources/mapper/rongli/payment/PaymentMapper.xml": "bc0bf61c258d3525483897b17cd1648c9a3dc6e46fa2dfc897f8ce7a3d53dfe1"
+  },
+  "runs": [
+    {
+      "command": "mvn verify：25类真实HTTP/MySQL全量",
+      "layer": "LIVE_HTTP_MYSQL",
+      "testsRun": 244,
+      "skipped": 0,
+      "exitCode": 0,
+      "reportPath": "docs/implementation/vehicle/P02/full-regression.json"
+    },
+    {
+      "command": "最终代码 P01/P02/X02 真实HTTP/MySQL专项",
+      "layer": "LIVE_HTTP_MYSQL",
+      "testsRun": 48,
+      "skipped": 0,
+      "exitCode": 0,
+      "reportPath": "docs/implementation/vehicle/P02/final-regression.json"
+    },
+    {
+      "command": "mvn verify：P02PaymentIT",
+      "layer": "LIVE_HTTP_MYSQL",
+      "testsRun": 19,
+      "skipped": 0,
+      "exitCode": 0,
+      "reportPath": "docs/implementation/vehicle/P02/targeted-regression.json"
+    },
+    {
+      "command": "mvn verify生命周期单元测试",
+      "layer": "UNIT",
+      "testsRun": 36,
+      "skipped": 0,
+      "exitCode": 0,
+      "reportPath": "docs/implementation/vehicle/P02/unit-junit.xml"
+    },
+    {
+      "command": "actualResponsesMatchPrimaryContract",
+      "layer": "CONTRACT",
+      "testsRun": 2,
+      "skipped": 0,
+      "exitCode": 0,
+      "reportPath": "docs/implementation/vehicle/P02/targeted-regression.json"
+    },
+    {
+      "command": "隔离库增量/完整初始化列与索引对照",
+      "layer": "DATABASE_MIGRATION",
+      "testsRun": 2,
+      "skipped": 0,
+      "exitCode": 0,
+      "reportPath": "docs/implementation/vehicle/P02/schema-verification.json"
+    },
+    {
+      "command": "PC build:prod；mini type-check/build:mp-weixin",
+      "layer": "BUILD",
+      "testsRun": 3,
+      "skipped": 0,
+      "exitCode": 0,
+      "reportPath": "docs/implementation/vehicle/P02/frontend-builds.json"
+    },
+    {
+      "command": "真实Vue页面+明确API夹具Playwright",
+      "layer": "BROWSER",
+      "testsRun": 6,
+      "skipped": 0,
+      "exitCode": 0,
+      "reportPath": "docs/implementation/vehicle/P02/browser.json"
+    },
+    {
+      "command": "pytest test_contract_regression.py",
+      "layer": "CONTRACT",
+      "testsRun": 18,
+      "skipped": 0,
+      "exitCode": 0,
+      "reportPath": "docs/implementation/vehicle/P02/contract.txt"
+    },
+    {
+      "command": "check_engineering.py",
+      "layer": "STATIC",
+      "testsRun": 34,
+      "skipped": 0,
+      "exitCode": 0,
+      "reportPath": "docs/implementation/vehicle/P02/engineering.json"
+    },
+    {
+      "command": "check_package.py",
+      "layer": "STATIC",
+      "testsRun": 42,
+      "skipped": 0,
+      "exitCode": 0,
+      "reportPath": "docs/implementation/vehicle/P02/package.json"
+    }
+  ],
+  "review": {
+    "approved": false,
+    "reviewer": null
+  },
+  "notRun": [
+    "独立复核",
+    "真实支付/退款及微信真机",
+    "生产MySQL8.4与部署",
+    "P03计划派单",
+    "P04退款执行及完整B31/B31-query对账画板",
+    "X06线下凭证核实"
+  ],
+  "historyTranslation": "15条历史英文提交及3条标签说明已转换，原代码树一致，旧新SHA可追溯，无远端操作",
+  "readability": "支付相关源码展开、补充关键中文注释、关闭意图方法拆分；其余Java词法保持一致，MyBatis标签/SQL token保持一致；全库检查另见readability/report.md"
+}

@@ -409,30 +409,36 @@
     "implementationNote": "仅预支付；不修改paid/订单履约状态"
   },
   {
-    "implementationStatus": "NOT_ASSESSED",
-    "controllerFile": null,
-    "serviceFile": null,
-    "mapperFile": null,
-    "testFiles": [],
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/payment/controller/PaymentLifecycleController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/payment/service/PaymentLifecycleService.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/payment/PaymentLifecycleMapper.xml",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/P02PaymentIT.java"
+    ],
     "reviewEvidence": null,
     "operationId": "API_030_get",
     "method": "GET",
     "path": "/api/app/owner/orders/{orderNo}/payment",
     "summary": "可信支付结果",
-    "taskId": "P02"
+    "taskId": "P02",
+    "verificationEvidence": "docs/implementation/vehicle/evidence/P02-20261104.json"
   },
   {
-    "implementationStatus": "NOT_ASSESSED",
-    "controllerFile": null,
-    "serviceFile": null,
-    "mapperFile": null,
-    "testFiles": [],
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/payment/controller/PaymentLifecycleController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/payment/service/PaymentLifecycleService.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/payment/PaymentLifecycleMapper.xml",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/P02PaymentIT.java"
+    ],
     "reviewEvidence": null,
     "operationId": "API_031_post",
     "method": "POST",
     "path": "/api/app/owner/orders/{orderNo}/close-unpaid",
     "summary": "未支付主动关闭",
-    "taskId": "P02"
+    "taskId": "P02",
+    "verificationEvidence": "docs/implementation/vehicle/evidence/P02-20261104.json"
   },
   {
     "implementationStatus": "NOT_ASSESSED",
@@ -2115,30 +2121,36 @@
     "taskId": "N02"
   },
   {
-    "implementationStatus": "NOT_ASSESSED",
-    "controllerFile": null,
-    "serviceFile": null,
-    "mapperFile": null,
-    "testFiles": [],
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/payment/controller/PaymentNotificationController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/payment/service/PaymentLifecycleService.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/payment/PaymentLifecycleMapper.xml",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/P02PaymentIT.java"
+    ],
     "reviewEvidence": null,
     "operationId": "API_165_post",
     "method": "POST",
     "path": "/api/notify/wechat/pay",
     "summary": "微信支付通知",
-    "taskId": "P02"
+    "taskId": "P02",
+    "verificationEvidence": "docs/implementation/vehicle/evidence/P02-20261104.json"
   },
   {
-    "implementationStatus": "NOT_ASSESSED",
-    "controllerFile": null,
-    "serviceFile": null,
-    "mapperFile": null,
-    "testFiles": [],
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/payment/controller/PaymentNotificationController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/payment/service/PaymentLifecycleService.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/payment/PaymentLifecycleMapper.xml",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/P02PaymentIT.java"
+    ],
     "reviewEvidence": null,
     "operationId": "API_166_post",
     "method": "POST",
     "path": "/api/notify/wechat/refund",
     "summary": "微信退款通知",
-    "taskId": "P02"
+    "taskId": "P02",
+    "verificationEvidence": "docs/implementation/vehicle/evidence/P02-20261104.json"
   },
   {
     "implementationStatus": "NOT_ASSESSED",

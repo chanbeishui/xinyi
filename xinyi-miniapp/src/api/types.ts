@@ -55,7 +55,7 @@ export type OrderCreate = { "quoteId": string; "termsVersion": string; "privacyV
 
 export type Prepay = { "timeStamp": string; "nonceStr": string; "package": string; "signType": string; "paySign": string; "payExpireAt"?: string };
 
-export type Payment = { "merchantTradeNo"?: string; "payStatus"?: "PENDING" | "SUCCESS" | "CLOSED" | "UNKNOWN"; "paidAmount"?: number; "paidAt"?: string; "queryRequired"?: boolean };
+export type Payment = { "merchantTradeNo"?: string; "payStatus"?: PaymentStatus; "paidAmount"?: number; "paidAt"?: string; "queryRequired"?: boolean; "paymentMethod": PaymentMethod; "paymentPolicyRevisionId"?: string; "merchantProfileRevisionId"?: string | null; "methodLocked": boolean; "capacityResolution"?: "HELD" | "RELEASED" | "REACQUIRED" | "MANUAL_CONFLICT"; "offlineProofStatus"?: (OfflineProofStatus) | null; "version": number };
 
 export type ActionRequest = { "assignmentId": string; "expectedVersion": number; "location": Location; "reason"?: string };
 
@@ -295,7 +295,7 @@ export type CancelStatus = "NONE" | "APPLIED" | "REJECTED" | "APPROVED_WAIT_RETU
 
 export type CustodyType = "OWNER" | "DRIVER" | "STATION";
 
-export type PaymentStatus = "PENDING" | "SUCCESS" | "CLOSED" | "UNKNOWN";
+export type PaymentStatus = "PENDING" | "REVIEW_PENDING" | "SUCCESS" | "CLOSED" | "UNKNOWN";
 
 export type RefundStatus = "NONE" | "NOT_REQUIRED" | "WAIT_RETURN" | "READY" | "PROCESSING" | "SUCCESS" | "UNKNOWN" | "ABNORMAL" | "CLOSED";
 
@@ -581,3 +581,7 @@ export type PriceMatchTrialRequest = { "stationId": string; "vehicleTypeCode": s
 export type PriceTrial = { "ruleId": string; "revision": number; "version": number; "ownerDeptId": string; "environment": "TEST" | "LIVE"; "matchedPublished": boolean; "routeBasis": "ONE_WAY" | "ROUND_TRIP"; "distanceRounding": "CEIL_UNIT" | "EXACT_PRORATA"; "chargedUnits": string; "contentHash": string; "oneWayDistanceMeter": number; "billableDistanceMeter": number; "includedDistanceMeter": number; "excessDistanceMeter": number; "inspectionFee": number; "driverBaseFee": number; "distanceFee": number; "totalFen": number };
 
 export type AvailableStation = { stationId: string; name: string; address: string; routeDistanceMeter: number; estimatedDurationSecond: number };
+
+export type PaymentMethod = "UNSELECTED" | "WECHAT" | "OFFLINE";
+
+export type OfflineProofStatus = "SUBMITTED" | "VERIFIED" | "REJECTED";
