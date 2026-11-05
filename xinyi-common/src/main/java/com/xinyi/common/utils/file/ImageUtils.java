@@ -1,7 +1,6 @@
 package com.xinyi.common.utils.file;
 
 import java.io.ByteArrayInputStream;
-import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
@@ -9,9 +8,7 @@ import java.util.Arrays;
 import org.apache.poi.util.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.xinyi.common.config.RuoYiConfig;
-import com.xinyi.common.constant.Constants;
-import com.xinyi.common.utils.StringUtils;
+import com.xinyi.common.utils.spring.SpringUtils;
 
 /**
  * 图片处理工具类
@@ -78,10 +75,8 @@ public class ImageUtils
             }
             else
             {
-                // 本机地址
-                String localPath = RuoYiConfig.getProfile();
-                String downloadPath = localPath + StringUtils.substringAfter(url, Constants.RESOURCE_PREFIX);
-                in = new FileInputStream(downloadPath);
+                // 对象存储（本地磁盘已不保存用户文件）
+                in = SpringUtils.getBean(OssFileService.class).openStream(url);
             }
             return IOUtils.toByteArray(in);
         }

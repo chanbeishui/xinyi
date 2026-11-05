@@ -234,7 +234,7 @@ npm run build:mp-weixin       # 产物 dist/build/mp-weixin
 
 - [ ] 域名 HTTPS 可访问，证书有效且自动续期
 - [ ] 刷新任意子页面不 404
-- [ ] 上传附件成功，后台富文本/头像落 `/home/xinyi/upload`
+- [ ] 上传附件成功，后台富文本/头像返回 OSS 地址，服务器本地不产生文件
 - [ ] 荣利影像上传成功且落在 OSS（`vi_file.object_key` 能在 bucket 里找到对应对象）
 - [ ] 8081 临时入口已关闭
 

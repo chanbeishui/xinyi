@@ -1,24 +1,25 @@
 package com.xinyi.common.utils.file;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Paths;
 import java.util.Objects;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.web.multipart.MultipartFile;
-import com.xinyi.common.config.RuoYiConfig;
-import com.xinyi.common.constant.Constants;
 import com.xinyi.common.exception.file.FileNameLengthLimitExceededException;
 import com.xinyi.common.exception.file.FileSizeLimitExceededException;
 import com.xinyi.common.exception.file.InvalidExtensionException;
 import com.xinyi.common.utils.DateUtils;
 import com.xinyi.common.utils.StringUtils;
+import com.xinyi.common.utils.spring.SpringUtils;
 import com.xinyi.common.utils.uuid.IdUtils;
 import com.xinyi.common.utils.uuid.Seq;
 
 /**
  * 文件上传工具类
- * 
+ *
+ * <p>只做「校验 + 命名 + 转发」，落地一律交给 {@link OssFileService}。
+ * 服务器本地磁盘不保存任何用户文件，所以这里不再有 baseDir 目录的概念，
+ * 参数 {@code dir} 表示对象存储里的逻辑前缀（upload / avatar / import）。</p>
+ *
  * @author ruoyi
  */
 public class FileUploadUtils
@@ -34,32 +35,17 @@ public class FileUploadUtils
     public static final int DEFAULT_FILE_NAME_LENGTH = 100;
 
     /**
-     * 默认上传的地址
-     */
-    private static String defaultBaseDir = RuoYiConfig.getProfile();
-
-    public static void setDefaultBaseDir(String defaultBaseDir)
-    {
-        FileUploadUtils.defaultBaseDir = defaultBaseDir;
-    }
-
-    public static String getDefaultBaseDir()
-    {
-        return defaultBaseDir;
-    }
-
-    /**
      * 以默认配置进行文件上传
      *
      * @param file 上传的文件
-     * @return 文件名称
+     * @return 文件的可访问地址
      * @throws Exception
      */
     public static final String upload(MultipartFile file) throws IOException
     {
         try
         {
-            return upload(getDefaultBaseDir(), file, MimeTypeUtils.DEFAULT_ALLOWED_EXTENSION);
+            return upload(OssFileService.DIR_UPLOAD, file, MimeTypeUtils.DEFAULT_ALLOWED_EXTENSION);
         }
         catch (Exception e)
         {
@@ -68,18 +54,18 @@ public class FileUploadUtils
     }
 
     /**
-     * 根据文件路径上传
+     * 上传到指定逻辑目录
      *
-     * @param baseDir 相对应用的基目录
+     * @param dir  逻辑目录（upload / avatar / import）
      * @param file 上传的文件
-     * @return 文件名称
+     * @return 文件的可访问地址
      * @throws IOException
      */
-    public static final String upload(String baseDir, MultipartFile file) throws IOException
+    public static final String upload(String dir, MultipartFile file) throws IOException
     {
         try
         {
-            return upload(baseDir, file, MimeTypeUtils.DEFAULT_ALLOWED_EXTENSION);
+            return upload(dir, file, MimeTypeUtils.DEFAULT_ALLOWED_EXTENSION);
         }
         catch (Exception e)
         {
@@ -90,36 +76,28 @@ public class FileUploadUtils
     /**
      * 文件上传
      *
-     * @param baseDir 相对应用的基目录
+     * @param dir 逻辑目录
      * @param file 上传的文件
      * @param allowedExtension 上传文件类型
-     * @return 返回上传成功的文件名
-     * @throws FileSizeLimitExceededException 如果超出最大大小
-     * @throws FileNameLengthLimitExceededException 文件名太长
-     * @throws IOException 比如读写文件出错时
-     * @throws InvalidExtensionException 文件校验异常
+     * @return 返回上传成功后的访问地址
      */
-    public static final String upload(String baseDir, MultipartFile file, String[] allowedExtension)
+    public static final String upload(String dir, MultipartFile file, String[] allowedExtension)
             throws FileSizeLimitExceededException, IOException, FileNameLengthLimitExceededException,
             InvalidExtensionException
     {
-        return upload(baseDir, file, allowedExtension, false);
+        return upload(dir, file, allowedExtension, false);
     }
-    
+
     /**
      * 文件上传
      *
-     * @param baseDir 相对应用的基目录
+     * @param dir 逻辑目录
      * @param file 上传的文件
      * @param useCustomNaming 系统自定义文件名
      * @param allowedExtension 上传文件类型
-     * @return 返回上传成功的文件名
-     * @throws FileSizeLimitExceededException 如果超出最大大小
-     * @throws FileNameLengthLimitExceededException 文件名太长
-     * @throws IOException 比如读写文件出错时
-     * @throws InvalidExtensionException 文件校验异常
+     * @return 返回上传成功后的访问地址
      */
-    public static final String upload(String baseDir, MultipartFile file, String[] allowedExtension, boolean useCustomNaming)
+    public static final String upload(String dir, MultipartFile file, String[] allowedExtension, boolean useCustomNaming)
             throws FileSizeLimitExceededException, IOException, FileNameLengthLimitExceededException,
             InvalidExtensionException
     {
@@ -128,14 +106,30 @@ public class FileUploadUtils
         {
             throw new FileNameLengthLimitExceededException(FileUploadUtils.DEFAULT_FILE_NAME_LENGTH);
         }
+        return SpringUtils.getBean(OssFileService.class)
+                .upload(file, logicalDir(dir), allowedExtension, useCustomNaming);
+    }
 
-        assertAllowed(file, allowedExtension);
-
-        String fileName = useCustomNaming ? uuidFilename(file) : extractFilename(file);
-
-        String absPath = getAbsoluteFile(baseDir, fileName).getAbsolutePath();
-        file.transferTo(Paths.get(absPath));
-        return getPathFileName(baseDir, fileName);
+    /**
+     * 把历史调用方传进来的绝对路径收敛成逻辑目录。
+     *
+     * <p>改造前调用点传的是 {@code D:/ruoyi/uploadPath/upload} 这种本地路径，
+     * 现在只取最后一段作为 OSS 前缀，避免把整串磁盘路径写进对象 key。</p>
+     */
+    private static String logicalDir(String dir)
+    {
+        if (StringUtils.isEmpty(dir))
+        {
+            return OssFileService.DIR_UPLOAD;
+        }
+        String d = dir.replace('\\', '/').replaceAll("/+$", "");
+        int i = d.lastIndexOf('/');
+        String last = i < 0 ? d : d.substring(i + 1);
+        if (StringUtils.isEmpty(last) || last.contains(":"))
+        {
+            return OssFileService.DIR_UPLOAD;
+        }
+        return last;
     }
 
     /**
@@ -154,34 +148,12 @@ public class FileUploadUtils
         return StringUtils.format("{}/{}.{}", DateUtils.datePath(), IdUtils.fastSimpleUUID(), getExtension(file));
     }
 
-    public static final File getAbsoluteFile(String uploadDir, String fileName) throws IOException
-    {
-        File desc = new File(uploadDir + File.separator + fileName);
-
-        if (!desc.exists())
-        {
-            if (!desc.getParentFile().exists())
-            {
-                desc.getParentFile().mkdirs();
-            }
-        }
-        return desc;
-    }
-
-    public static final String getPathFileName(String uploadDir, String fileName) throws IOException
-    {
-        int dirLastIndex = RuoYiConfig.getProfile().length() + 1;
-        String currentDir = StringUtils.substring(uploadDir, dirLastIndex);
-        return Constants.RESOURCE_PREFIX + "/" + currentDir + "/" + fileName;
-    }
-
     /**
      * 文件大小校验
      *
      * @param file 上传的文件
-     * @return
-     * @throws FileSizeLimitExceededException 如果超出最大大小
-     * @throws InvalidExtensionException
+     * @throws FileSizeLimitExceededException 超出最大大小
+     * @throws InvalidExtensionException 类型不允许
      */
     public static final void assertAllowed(MultipartFile file, String[] allowedExtension)
             throws FileSizeLimitExceededException, InvalidExtensionException
@@ -225,10 +197,6 @@ public class FileUploadUtils
 
     /**
      * 判断MIME类型是否是允许的MIME类型
-     *
-     * @param extension
-     * @param allowedExtension
-     * @return
      */
     public static final boolean isAllowedExtension(String extension, String[] allowedExtension)
     {
@@ -244,9 +212,6 @@ public class FileUploadUtils
 
     /**
      * 获取文件名的后缀
-     * 
-     * @param file 表单文件
-     * @return 后缀名
      */
     public static final String getExtension(MultipartFile file)
     {

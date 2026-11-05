@@ -177,14 +177,16 @@ SELECT user_id, user_name, status FROM sys_user WHERE user_name='admin';
 /home/xinyi/
 ├── app/
 │   ├── xinyi-admin.jar
-│   ├── .env                      # 600 权限，含数据库/Redis 密码
+│   ├── .env                      # 600 权限，含数据库/Redis/OSS 凭据
 │   └── config/application-prod.yml
-├── upload/                       # ruoyi.profile 指向这里
 ├── logs/                         # LOG_PATH
 ├── web/                          # 前端 dist
 ├── sql/                          # 迁移脚本留档
 └── backup/
 ```
+
+用户文件（头像、富文本图片、附件、导出文件、业务影像）全部在阿里云 OSS，服务器上没有 upload 目录，
+也不需要提前 mkdir / chown。
 
 ### 5.2 安装 JDK 与建用户
 
@@ -296,6 +298,14 @@ curl -s -o /dev/null -w '%{http_code}\n' http://127.0.0.1:8080/captchaImage
 `Bucket → 数据安全 → 跨域设置 → 创建规则`：来源 `*`，Methods 勾 `GET/HEAD/PUT/POST`，Headers `*`，暴露 Headers `ETag,x-oss-request-id`，缓存 600 秒。
 （来源 `*` 配合私有 Bucket 是安全的：没有签名参数一律 403。）
 
+**⑤ 关掉「阻止公共访问」（重要）**
+
+后台通用上传的对象（用户头像、富文本图片、Excel 导入提取的图片）**按对象设 `public-read`**：这些地址要长期存在数据库里、直接喂给 `<img src>`，签名一过期头像就裂。
+
+所以 `Bucket → 权限控制 → 阻止公共访问` 必须是**关闭**状态，否则上传时会报 `AccessDenied`，表现为"头像传不上去"。
+
+注意这两件事不冲突：Bucket 整体保持**私有**，只有这些不带隐私的通用资源在对象级别放开读；荣利业务影像仍然是私有对象 + 后端签发短链（10 分钟有效），不会因为这一步被公开。
+
 #### 5.6.2 写进运行环境
 
 编辑 `/home/xinyi/app/.env`，把这六项填上（模板见 `deploy/prod/xinyi.env.example`）：
@@ -320,7 +330,15 @@ chmod 600 /home/xinyi/app/.env        # 含明文 Secret，别让其他用户读
 systemctl restart xinyi-admin
 ```
 
-#### 5.6.3 配置自检（不启动后端也能验）
+#### 5.6.3 历史图片地址的兼容
+
+改造前数据库里存的是 `/profile/upload/2026/01/01/a.png` 这种本地相对地址。现在本地没有这个目录了，但后端保留了同一个路径 `/profile/**` 作为**读取代理**：请求进来后按对象 key 从 OSS 取内容返回，所以老数据不用改字段也能显示。
+
+代价是这类历史图片会走一次服务器转发。新上传的文件返回的是 OSS 直链，不经过后端。
+
+如果确认没有历史图片需要兼容（全新部署），这段逻辑留着也无害，不会访问本地磁盘。
+
+#### 5.6.4 配置自检（不启动后端也能验）
 
 ```bash
 python3 logs/check_oss.py --env-file /home/xinyi/app/.env
@@ -345,7 +363,7 @@ python3 logs/check_oss.py --env-file /home/xinyi/app/.env
 | `AccessDenied` | AK 有效但策略没给到该 Bucket |
 | `NoSuchBucket` | Bucket 名错，或 endpoint 地域与 Bucket 地域不一致 |
 
-#### 5.6.4 成本
+#### 5.6.5 成本
 
 标准存储 0.12 元/GB/月，上传流量免费，公网下行 0.25–0.5 元/GB。按检测站日均几十张照片估算，一个月不到 1 元。要更省可以在 Bucket 上配生命周期：90 天未访问转低频（0.08 元/GB/月），低频仍是实时读取，只对提前删除收费。
 
@@ -401,7 +419,7 @@ chmod 700 /home/xinyi/bin/backup-xinyi.sh
 1Panel → 计划任务 → Shell 脚本，每天 `02:30` 执行上面的脚本。
 
 再补两条：
-- 每周打包一次 `/home/xinyi/upload`（已含在上面的脚本里）
+- 每周打包一次 MySQL 全库（脚本已包含）；用户文件在 OSS，不需要单独备份
 - **异地副本**：备份留在同一台机器上等于没有备份，务必 `ossutil` 推到 OSS 内网端点（轻量服务器外网流量有限，别走公网）
 
 **恢复演练**（上线前做一次，别等真出事才试）：
@@ -420,7 +438,7 @@ gunzip -c xinyi_2026-11-04_0230.sql.gz | \
 - [ ] `admin` 能登录，登录后**立即改默认密码**
 - [ ] 左侧菜单完整渲染（说明动态路由与 `sys_menu` 数据正常，不是前端写死）
 - [ ] 刷新任意子页面不 404（`try_files` 生效）
-- [ ] 上传一个附件成功，且 `/home/xinyi/upload` 出现文件
+- [ ] 上传一个附件成功，返回的是 OSS 地址（`https://<bucket>.oss-...`），服务器本地没有新增文件
 - [ ] 新建/编辑一条业务数据成功（验证写权限与事务）
 - [ ] 定时任务页面能打开（验证 `QRTZ_*` 表已导入）
 - [ ] 用无权账号访问越权数据被拒绝（多部门数据权限生效）
@@ -440,7 +458,7 @@ gunzip -c xinyi_2026-11-04_0230.sql.gz | \
 | 接口全 404 但后端正常 | 反代少了尾斜杠，`/prod-api` 前缀没被剥掉 |
 | 刷新子页面 404 | 站点缺 `try_files $uri $uri/ /index.html` |
 | 定时任务页 500 | `quartz.sql` 没导入 |
-| 上传报错 | `/home/xinyi/upload` 不存在或属主不是 `xinyi` |
+| 上传报错 | OSS 未配置或凭据无效，先跑 `python3 logs/check_oss.py --env-file /home/xinyi/app/.env` |
 | 时间差 8 小时 | 容器 MySQL `default-time-zone` 没设，仍是 UTC |
 | 隔几天服务被杀 | 内存不足触发 OOM，检查 `dmesg | grep -i oom`，压 `-Xmx` 或加 swap |
 | Redis 连不上 | 密码没填 / 容器重启后端口变了，1Panel 应用详情核对端口 |

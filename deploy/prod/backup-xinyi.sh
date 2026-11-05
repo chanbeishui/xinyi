@@ -37,14 +37,11 @@ gzip -t "$OUT"
 gzip -dc "$OUT" | tail -1 | grep -q "Dump completed" \
   || { echo "[ERROR] $(date '+%F %T') dump 不完整: $OUT"; exit 1; }
 
-# 后台通用上传目录（富文本图/头像/导入模板）同步一份；荣利业务影像在 OSS，不在此目录
-if [ -d /home/xinyi/upload ]; then
-  tar -czf "$BACKUP_DIR/upload_${TS}.tar.gz" -C /home/xinyi upload 2>/dev/null || true
-fi
+# 用户文件全部在阿里云 OSS，本地没有 upload 目录需要打包；
+# 如果要异地副本，用 ossutil 把 db 备份推到 OSS 即可（见下方示例）
 
 # 保留策略
 find "$BACKUP_DIR" -name 'xinyi_*.sql.gz'   -mtime +"$KEEP_DAYS" -delete
-find "$BACKUP_DIR" -name 'upload_*.tar.gz'  -mtime +"$KEEP_DAYS" -delete
 
 echo "[OK] $(date '+%F %T') $(ls -lh "$OUT" | awk '{print $5, $9}')"
 

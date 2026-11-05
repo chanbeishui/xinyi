@@ -6,12 +6,18 @@ ruoyi:
   version: 3.9.2
   # 版权年份
   copyrightYear: 2026
-  # 文件路径 示例（ Windows配置D:/ruoyi/uploadPath，Linux配置 /home/ruoyi/uploadPath）
-  profile: D:/ruoyi/uploadPath
   # 获取ip地址开关
   addressEnabled: false
   # 验证码类型 math 数字计算 char 字符验证
   captchaType: math
+
+# 通用上传（头像、富文本图片、导入提取的图片、导出文件）全部走对象存储
+xinyi:
+  oss:
+    # 通用上传对象的 ACL。这些地址要长期存进数据库、直接喂给 <img src>，
+    # 所以必须公共读；留空则跟随 Bucket（私有，图片会 403）。
+    # 注意：Bucket 若开启了「阻止公共访问」，这里设 public-read 会失败，需要在控制台关掉该开关。
+    public-acl: public-read
 
 # 开发环境配置
 server:

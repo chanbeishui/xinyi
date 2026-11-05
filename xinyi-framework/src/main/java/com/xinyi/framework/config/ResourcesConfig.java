@@ -11,8 +11,6 @@ import org.springframework.web.filter.CorsFilter;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import com.xinyi.common.config.RuoYiConfig;
-import com.xinyi.common.constant.Constants;
 import com.xinyi.framework.interceptor.RepeatSubmitInterceptor;
 
 /**
@@ -29,9 +27,10 @@ public class ResourcesConfig implements WebMvcConfigurer
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry)
     {
-        /** 本地文件上传路径 */
-        registry.addResourceHandler(Constants.RESOURCE_PREFIX + "/**")
-                .addResourceLocations("file:" + RuoYiConfig.getProfile() + "/");
+        /**
+         * 不再注册 /profile/** 的本地目录映射：用户文件全部在对象存储，
+         * 由数据库里保存的 OSS 直链直接访问，本地磁盘没有可映射的目录。
+         */
 
         /** swagger配置 */
         registry.addResourceHandler("/swagger-ui/**")

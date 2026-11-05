@@ -1,10 +1,8 @@
 package com.xinyi.common.utils.poi;
 
-import java.io.File;
-import java.io.FileOutputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
@@ -74,7 +72,6 @@ import com.xinyi.common.annotation.Excel;
 import com.xinyi.common.annotation.Excel.ColumnType;
 import com.xinyi.common.annotation.Excel.Type;
 import com.xinyi.common.annotation.Excels;
-import com.xinyi.common.config.RuoYiConfig;
 import com.xinyi.common.core.domain.AjaxResult;
 import com.xinyi.common.core.text.Convert;
 import com.xinyi.common.exception.UtilException;
@@ -84,7 +81,9 @@ import com.xinyi.common.utils.StringUtils;
 import com.xinyi.common.utils.file.FileTypeUtils;
 import com.xinyi.common.utils.file.FileUtils;
 import com.xinyi.common.utils.file.ImageUtils;
+import com.xinyi.common.utils.file.OssFileService;
 import com.xinyi.common.utils.reflect.ReflectUtils;
+import com.xinyi.common.utils.spring.SpringUtils;
 
 /**
  * Excel相关处理
@@ -628,14 +627,17 @@ public class ExcelUtil<T>
             return AjaxResult.error("导出数据不能为空");
         }
         SXSSFWorkbook wb = buildWorkbook(sheets);
-        OutputStream out = null;
+        ByteArrayOutputStream out = null;
         try
         {
             ExcelUtil firstUtil = new ExcelUtil(sheets.get(0).getClazz());
             String filename = firstUtil.encodingFilename(sheets.get(0).getSheetName());
-            out = new FileOutputStream(firstUtil.getAbsoluteFile(filename));
+            out = new ByteArrayOutputStream();
             wb.write(out);
-            return AjaxResult.success(filename);
+            // 不再写服务器本地 download 目录，直接进对象存储
+            String url = SpringUtils.getBean(OssFileService.class)
+                    .uploadBytesNamed(out.toByteArray(), OssFileService.DIR_DOWNLOAD, filename);
+            return AjaxResult.success(url);
         }
         catch (Exception e)
         {
@@ -775,14 +777,17 @@ public class ExcelUtil<T>
      */
     public AjaxResult exportExcel()
     {
-        OutputStream out = null;
+        ByteArrayOutputStream out = null;
         try
         {
             writeSheet();
             String filename = encodingFilename(sheetName);
-            out = new FileOutputStream(getAbsoluteFile(filename));
+            out = new ByteArrayOutputStream();
             wb.write(out);
-            return AjaxResult.success(filename);
+            // 不再写服务器本地 download 目录，直接进对象存储
+            String url = SpringUtils.getBean(OssFileService.class)
+                    .uploadBytesNamed(out.toByteArray(), OssFileService.DIR_DOWNLOAD, filename);
+            return AjaxResult.success(url);
         }
         catch (Exception e)
         {
@@ -1621,13 +1626,8 @@ public class ExcelUtil<T>
      */
     public String getAbsoluteFile(String filename)
     {
-        String downloadPath = RuoYiConfig.getDownloadPath() + filename;
-        File desc = new File(downloadPath);
-        if (!desc.getParentFile().exists())
-        {
-            desc.getParentFile().mkdirs();
-        }
-        return downloadPath;
+        // 已废弃：导出文件不再落本地磁盘，统一走对象存储；保留方法仅为外部调用不报编译错
+        return filename;
     }
 
     /**

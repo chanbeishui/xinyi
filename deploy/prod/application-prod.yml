@@ -60,9 +60,8 @@ spring:
           max-wait: 3000ms
 
 ruoyi:
-  # 仅承载后台通用上传（富文本图片、用户头像、导入模板）；荣利业务影像已全部走 OSS，不落这里
-  # 提前 mkdir 并 chown 给运行用户，否则后台富文本上传报错
-  profile: /home/xinyi/upload
+  # 不再配置 profile：用户文件（头像、富文本图片、导入提取图片、导出文件）全部落 OSS，
+  # 服务器本地没有 upload 目录，也不需要提前 mkdir / chown
 
 token:
   # 换密钥会让所有已登录会话立即失效（含小程序端），上线后不要随意改

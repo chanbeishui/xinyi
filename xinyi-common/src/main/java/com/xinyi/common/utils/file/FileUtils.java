@@ -1,9 +1,5 @@
 package com.xinyi.common.utils.file;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
@@ -14,15 +10,16 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.ArrayUtils;
-import com.xinyi.common.config.RuoYiConfig;
 import com.xinyi.common.constant.Constants;
-import com.xinyi.common.utils.DateUtils;
 import com.xinyi.common.utils.StringUtils;
-import com.xinyi.common.utils.uuid.IdUtils;
+import com.xinyi.common.utils.spring.SpringUtils;
 
 /**
  * 文件处理工具类
- * 
+ *
+ * <p>读写一律走对象存储（{@link OssFileService}），本地磁盘不再存任何用户文件。
+ * 方法名保留 {@code writeBytes} 是为了不动历史调用点。</p>
+ *
  * @author ruoyi
  */
 public class FileUtils
@@ -30,78 +27,47 @@ public class FileUtils
     public static String FILENAME_PATTERN = "[a-zA-Z0-9_\\-\\|\\.\\u4e00-\\u9fa5]+";
 
     /**
-     * 输出指定文件的byte数组
-     * 
-     * @param filePath 文件路径
+     * 输出指定文件的内容到响应流
+     *
+     * @param filePath 文件地址（完整 URL、旧的 /profile 路径或裸对象 key）
      * @param os 输出流
-     * @return
      */
     public static void writeBytes(String filePath, OutputStream os) throws IOException
     {
-        FileInputStream fis = null;
         try
         {
-            File file = new File(filePath);
-            if (!file.exists())
-            {
-                throw new FileNotFoundException(filePath);
-            }
-            fis = new FileInputStream(file);
-            byte[] b = new byte[1024];
-            int length;
-            while ((length = fis.read(b)) > 0)
-            {
-                os.write(b, 0, length);
-            }
-        }
-        catch (IOException e)
-        {
-            throw e;
+            SpringUtils.getBean(OssFileService.class).writeTo(filePath, os);
         }
         finally
         {
             IOUtils.close(os);
-            IOUtils.close(fis);
         }
     }
 
     /**
-     * 写数据到文件中
+     * 写数据到对象存储（Excel 导入时从单元格抽出的图片走这里）
      *
      * @param data 数据
-     * @return 目标文件
+     * @return 文件的可访问地址
      * @throws IOException IO异常
      */
     public static String writeImportBytes(byte[] data) throws IOException
     {
-        return writeBytes(data, RuoYiConfig.getImportPath());
+        return writeBytes(data, OssFileService.DIR_IMPORT);
     }
 
     /**
-     * 写数据到文件中
+     * 写数据到对象存储
      *
      * @param data 数据
-     * @param uploadDir 目标文件
-     * @return 目标文件
+     * @param uploadDir 逻辑目录（upload / avatar / import）
+     * @return 文件的可访问地址
      * @throws IOException IO异常
      */
     public static String writeBytes(byte[] data, String uploadDir) throws IOException
     {
-        FileOutputStream fos = null;
-        String pathName = "";
-        try
-        {
-            String extension = getFileExtendName(data);
-            pathName = DateUtils.datePath() + "/" + IdUtils.fastUUID() + "." + extension;
-            File file = FileUploadUtils.getAbsoluteFile(uploadDir, pathName);
-            fos = new FileOutputStream(file);
-            fos.write(data);
-        }
-        finally
-        {
-            IOUtils.close(fos);
-        }
-        return FileUploadUtils.getPathFileName(uploadDir, pathName);
+        String extension = getFileExtendName(data);
+        return SpringUtils.getBean(OssFileService.class).uploadBytes(data, uploadDir, extension);
     }
 
     /**
@@ -117,20 +83,13 @@ public class FileUtils
 
     /**
      * 删除文件
-     * 
-     * @param filePath 文件
-     * @return
+     *
+     * @param filePath 文件地址（完整 URL、旧的 /profile 路径或裸对象 key）
+     * @return 是否删除成功
      */
     public static boolean deleteFile(String filePath)
     {
-        boolean flag = false;
-        File file = new File(filePath);
-        // 路径为文件且不为空则进行删除
-        if (file.isFile() && file.exists())
-        {
-            flag = file.delete();
-        }
-        return flag;
+        return SpringUtils.getBean(OssFileService.class).delete(filePath);
     }
 
     /**

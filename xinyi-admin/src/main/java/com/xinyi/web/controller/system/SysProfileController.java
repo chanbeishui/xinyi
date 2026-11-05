@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import com.xinyi.common.annotation.Log;
-import com.xinyi.common.config.RuoYiConfig;
 import com.xinyi.common.core.controller.BaseController;
 import com.xinyi.common.core.domain.AjaxResult;
 import com.xinyi.common.core.domain.entity.SysUser;
@@ -24,6 +23,7 @@ import com.xinyi.common.utils.StringUtils;
 import com.xinyi.common.utils.file.FileUploadUtils;
 import com.xinyi.common.utils.file.FileUtils;
 import com.xinyi.common.utils.file.MimeTypeUtils;
+import com.xinyi.common.utils.file.OssFileService;
 import com.xinyi.framework.web.service.TokenService;
 import com.xinyi.system.domain.dto.SysUserProfileUpdateRequest;
 import com.xinyi.system.service.ISysUserService;
@@ -131,13 +131,14 @@ public class SysProfileController extends BaseController
         if (!file.isEmpty())
         {
             LoginUser loginUser = getLoginUser();
-            String avatar = FileUploadUtils.upload(RuoYiConfig.getAvatarPath(), file, MimeTypeUtils.IMAGE_EXTENSION, true);
+            String avatar = FileUploadUtils.upload(OssFileService.DIR_AVATAR, file, MimeTypeUtils.IMAGE_EXTENSION, true);
             if (userService.updateUserAvatar(loginUser.getUserId(), avatar))
             {
                 String oldAvatar = loginUser.getUser().getAvatar();
                 if (StringUtils.isNotEmpty(oldAvatar))
                 {
-                    FileUtils.deleteFile(RuoYiConfig.getProfile() + FileUtils.stripPrefix(oldAvatar));
+                    // 旧头像可能是历史 /profile 路径，也可能是 OSS 地址，统一交给对象存储删除
+                    FileUtils.deleteFile(oldAvatar);
                 }
                 AjaxResult ajax = AjaxResult.success();
                 ajax.put("imgUrl", avatar);

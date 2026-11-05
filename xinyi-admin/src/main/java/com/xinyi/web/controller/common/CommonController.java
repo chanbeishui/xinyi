@@ -6,23 +6,23 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import com.xinyi.common.config.RuoYiConfig;
 import com.xinyi.common.core.domain.AjaxResult;
 import com.xinyi.common.utils.StringUtils;
 import com.xinyi.common.utils.file.FileUploadUtils;
 import com.xinyi.common.utils.file.FileUtils;
-import com.xinyi.framework.config.ServerConfig;
+import com.xinyi.common.utils.file.OssFileService;
 
 /**
  * 通用请求处理
- * 
+ *
+ * <p>上传与下载都走对象存储，服务器本地磁盘不落地。</p>
+ *
  * @author ruoyi
  */
 @RestController
@@ -31,15 +31,12 @@ public class CommonController
 {
     private static final Logger log = LoggerFactory.getLogger(CommonController.class);
 
-    @Autowired
-    private ServerConfig serverConfig;
-
     private static final String FILE_DELIMITER = ",";
 
     /**
      * 通用下载请求
-     * 
-     * @param fileName 文件名称
+     *
+     * @param fileName 对象 key 或完整地址
      * @param delete 是否删除
      */
     @GetMapping("/download")
@@ -47,19 +44,19 @@ public class CommonController
     {
         try
         {
-            if (!FileUtils.checkAllowDownload(fileName))
+            // fileName 现在是对象地址（可能是完整 URL），校验扩展名只看最后一段
+            if (!FileUtils.checkAllowDownload(FileUtils.getName(fileName)))
             {
                 throw new Exception(StringUtils.format("文件名称({})非法，不允许下载。 ", fileName));
             }
-            String realFileName = System.currentTimeMillis() + fileName.substring(fileName.indexOf("_") + 1);
-            String filePath = RuoYiConfig.getDownloadPath() + fileName;
+            String realFileName = System.currentTimeMillis() + "_" + fileName.substring(fileName.lastIndexOf('/') + 1);
 
             response.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE);
             FileUtils.setAttachmentResponseHeader(response, realFileName);
-            FileUtils.writeBytes(filePath, response.getOutputStream());
+            FileUtils.writeBytes(fileName, response.getOutputStream());
             if (delete)
             {
-                FileUtils.deleteFile(filePath);
+                FileUtils.deleteFile(fileName);
             }
         }
         catch (Exception e)
@@ -76,15 +73,12 @@ public class CommonController
     {
         try
         {
-            // 上传文件路径
-            String filePath = RuoYiConfig.getUploadPath();
-            // 上传并返回新文件名称
-            String fileName = FileUploadUtils.upload(filePath, file);
-            String url = serverConfig.getUrl() + fileName;
+            // 上传到对象存储，返回可直接访问的完整地址
+            String url = FileUploadUtils.upload(OssFileService.DIR_UPLOAD, file);
             AjaxResult ajax = AjaxResult.success();
             ajax.put("url", url);
-            ajax.put("fileName", fileName);
-            ajax.put("newFileName", FileUtils.getName(fileName));
+            ajax.put("fileName", url);
+            ajax.put("newFileName", FileUtils.getName(url));
             ajax.put("originalFilename", file.getOriginalFilename());
             return ajax;
         }
@@ -102,20 +96,16 @@ public class CommonController
     {
         try
         {
-            // 上传文件路径
-            String filePath = RuoYiConfig.getUploadPath();
             List<String> urls = new ArrayList<String>();
             List<String> fileNames = new ArrayList<String>();
             List<String> newFileNames = new ArrayList<String>();
             List<String> originalFilenames = new ArrayList<String>();
             for (MultipartFile file : files)
             {
-                // 上传并返回新文件名称
-                String fileName = FileUploadUtils.upload(filePath, file);
-                String url = serverConfig.getUrl() + fileName;
+                String url = FileUploadUtils.upload(OssFileService.DIR_UPLOAD, file);
                 urls.add(url);
-                fileNames.add(fileName);
-                newFileNames.add(FileUtils.getName(fileName));
+                fileNames.add(url);
+                newFileNames.add(FileUtils.getName(url));
                 originalFilenames.add(file.getOriginalFilename());
             }
             AjaxResult ajax = AjaxResult.success();
@@ -132,7 +122,9 @@ public class CommonController
     }
 
     /**
-     * 本地资源通用下载
+     * 资源通用下载
+     *
+     * @param resource 对象 key 或完整地址
      */
     @GetMapping("/download/resource")
     public void resourceDownload(String resource, HttpServletRequest request, HttpServletResponse response)
@@ -140,19 +132,14 @@ public class CommonController
     {
         try
         {
-            if (!FileUtils.checkAllowDownload(resource))
+            if (!FileUtils.checkAllowDownload(FileUtils.getName(resource)))
             {
                 throw new Exception(StringUtils.format("资源文件({})非法，不允许下载。 ", resource));
             }
-            // 本地资源路径
-            String localPath = RuoYiConfig.getProfile();
-            // 数据库资源地址
-            String downloadPath = localPath + FileUtils.stripPrefix(resource);
-            // 下载名称
-            String downloadName = StringUtils.substringAfterLast(downloadPath, "/");
+            String downloadName = StringUtils.substringAfterLast(resource, "/");
             response.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE);
             FileUtils.setAttachmentResponseHeader(response, downloadName);
-            FileUtils.writeBytes(downloadPath, response.getOutputStream());
+            FileUtils.writeBytes(resource, response.getOutputStream());
         }
         catch (Exception e)
         {
