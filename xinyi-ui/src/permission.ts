@@ -39,7 +39,6 @@ router.beforeEach(async (to, from) => {
       return { path: '/' }
     }
     if (useUserStore().roles.length === 0) {
-      isRelogin.show = true
       try {
         // 拉取user_info信息
         await useUserStore().getInfo()
@@ -54,6 +53,11 @@ router.beforeEach(async (to, from) => {
         // 重新导航到目标路由，确保动态路由已注册
         return { ...to, replace: true }
       } catch (err) {
+        // 401 由 request 层统一处理：已清本地凭据并带着当前地址跳登录页，
+        // 这里再 logOut/跳转只会和它抢导航，直接中止即可。
+        if (isRelogin.show) {
+          return false
+        }
         await useUserStore().logOut()
         ElMessage.error(err)
         return { path: '/' }

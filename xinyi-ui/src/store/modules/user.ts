@@ -87,17 +87,14 @@ const useUserStore = defineStore(
       },
       // 退出系统
       logOut() {
-        return new Promise<void>((resolve, reject) => {
-          logout().then(() => {
-            this.token = ''
-            this.roles = []
-            this.permissions = []
-            removeToken()
-            resolve()
-          }).catch((error: any) => {
-            reject(error)
-          })
-        })
+        // 先清本地再通知服务端：token 可能已经被判定失效（401），此时 /logout 必然失败，
+        // 若等它返回再清凭据，调用方会卡在"已登出但 cookie 还在"的中间态。
+        this.token = ''
+        this.roles = []
+        this.permissions = []
+        removeToken()
+        logout().catch(() => {})
+        return Promise.resolve()
       }
     }
   })

@@ -1,16 +1,38 @@
 import axios from 'axios'
-import { ElNotification , ElMessageBox, ElMessage, ElLoading } from 'element-plus'
-import { getToken } from '@/utils/auth'
+import { ElNotification , ElMessage, ElLoading } from 'element-plus'
+import { getToken, removeToken } from '@/utils/auth'
 import errorCode from '@/utils/errorCode'
 import { tansParams, blobValidate } from '@/utils/ruoyi'
 import { normalizeTimeStrings } from '@/utils/datetime'
 import cache from '@/plugins/cache'
 import { saveAs } from 'file-saver'
-import useUserStore from '@/store/modules/user'
 
 let downloadLoadingInstance: ReturnType<typeof ElLoading.service>
 // 是否显示重新登录
 export const isRelogin = { show: false }
+
+/**
+ * 会话已被服务端判定失效：本地凭据必须同步清掉并回到登录页。
+ *
+ * 不能调 logOut() 走 /logout：此时 token 在服务端已经删除或版本已变更，
+ * 再请求 /logout 仍然会 401，登出动作会被 reject 卡住，页面停在"每个请求都失败"的假死状态。
+ * redirect 保留当前地址，重新登录后能回到原页面。
+ */
+function handleSessionExpired(message?: string) {
+  if (isRelogin.show) {
+    return
+  }
+  isRelogin.show = true
+  removeToken()
+  const current = window.location.pathname + window.location.search + window.location.hash
+  const target = current.indexOf('/login') === 0
+    ? '/login'
+    : '/login?redirect=' + encodeURIComponent(current)
+  ElMessage({ message: message || '登录状态已失效，请重新登录', type: 'warning', duration: 3000 })
+  setTimeout(() => {
+    window.location.href = target
+  }, 600)
+}
 
 axios.defaults.headers['Content-Type'] = 'application/json;charset=utf-8'
 // 创建axios实例
@@ -84,17 +106,7 @@ service.interceptors.response.use((res: any) => {
       return res.data
     }
     if (code === 401) {
-      if (!isRelogin.show) {
-        isRelogin.show = true
-        ElMessageBox.confirm('登录状态已过期，您可以继续留在该页面，或者重新登录', '系统提示', { confirmButtonText: '重新登录', cancelButtonText: '取消', type: 'warning' }).then(() => {
-          isRelogin.show = false
-          useUserStore().logOut().then(() => {
-            location.href = '/index'
-          })
-      }).catch(() => {
-        isRelogin.show = false
-      })
-    }
+      handleSessionExpired(res.data.msg)
       return Promise.reject('无效的会话，或者会话已过期，请重新登录。')
     } else if (code === 500) {
       ElMessage({ message: msg, type: 'error' })
@@ -117,6 +129,12 @@ service.interceptors.response.use((res: any) => {
     // 荣利业务接口按语义返回 4xx，真实原因在响应体里；不读出来会只剩"系统接口xxx异常"
     const payload = error && error.response && error.response.data
     const serverMsg = payload && (payload.msg || payload.message)
+    // 权限版本变更或账号停用时，过滤器返回的是 HTTP 401（不是响应体 code=401），
+    // 这类请求拿不到任何业务数据，提示后必须回登录页，不能只弹一条消息留在死页面。
+    if (error && error.response && error.response.status === 401) {
+      handleSessionExpired(typeof serverMsg === 'string' ? serverMsg : undefined)
+      return Promise.reject(error)
+    }
     if (serverMsg && typeof serverMsg === 'string') {
       ElMessage({ message: serverMsg, type: 'error', duration: 5 * 1000 })
       return Promise.reject(error)
