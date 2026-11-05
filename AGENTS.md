@@ -100,7 +100,7 @@ PR 应说明改动摘要、影响模块、测试或构建结果、关联 issue�
 不要提交凭据、本地数据库密码、构建产物或 IDE 元数据。环境相关后端配置放在对应的 `application*.yml` 中；前端代理或接口路径变更需同步检查 `xinyi-ui/vite.config.ts`。
 
 - 图片上传按文件头（魔数）校验，扩展名必须与真实内容一致。**任何在浏览器里转码/裁剪后再上传的组件（cropper、压缩、截图）都必须按 Blob 的真实 MIME 重新命名**，不要沿用用户原始文件名，否则会出现「PNG 字节 + .jpg 后缀」被拒收。
-- 用户文件一律存 OSS。需要在本端 `<canvas>` 里读取像素（裁剪、水印、转码）的图片，不能直接用 OSS 直链——桶未配置 CORS，直链在 `crossOrigin=anonymous` 下加载失败；请改走同源的 `/profile/<key>` 兼容层。
+- 用户文件一律存 OSS。需要在本端 `<canvas>` 里读取像素（裁剪、水印、转码）的图片，不能直接用 OSS 直链——桶未配置 CORS 时，直链在 `crossOrigin=anonymous` 下加载失败；请改走同源的 `/profile/<key>` 兼容层。Bucket 级 CORS 由 `logs/set_oss_cors.py` 幂等维护（默认 dry-run，先读后合并）。注意 `?cors` 属 **Bucket 级动作**，RAM 需单独授 `oss:GetBucketCors` / `oss:PutBucketCors`（Resource 写 `acs:oss:*:*:<bucket>`，不带 `/*`）；缺这两条时 OSS 返回的是误导性的 `AccessDenied: The bucket you access does not belong to you`，别误判成 bucket 名或签名写错——判据是同一把 AK 读对象能通、所有 `?xxx` 子资源全 403。
 
 ## 数据库变更同步规范
 
