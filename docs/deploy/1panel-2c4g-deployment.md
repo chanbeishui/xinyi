@@ -381,6 +381,42 @@ python3 logs/check_oss.py --env-file /home/xinyi/app/.env
 
 标准存储 0.12 元/GB/月，上传流量免费，公网下行 0.25–0.5 元/GB。按检测站日均几十张照片估算，一个月不到 1 元。要更省可以在 Bucket 上配生命周期：90 天未访问转低频（0.08 元/GB/月），低频仍是实时读取，只对提前删除收费。
 
+#### 5.6.6 目录规划与生命周期清理
+
+桶里的层级是固定的，写清理脚本、算容量、排查问题时按这张表看：
+
+| 前缀 | 内容 | 谁写的 |
+| --- | --- | --- |
+| `avatar/yyyy/MM/dd/` | 用户头像（UUID 命名） | `/system/user/profile/avatar` |
+| `upload/rich-text/yyyy/MM/dd/` | 富文本编辑器插入的图 | 编辑器组件带 `?biz=rich-text` |
+| `upload/image/yyyy/MM/dd/` | 表单里的图片 | ImageUpload 组件带 `?biz=image` |
+| `upload/file/yyyy/MM/dd/` | 附件（文档、压缩包） | FileUpload 组件带 `?biz=file` |
+| `upload/yyyy/MM/dd/` | 未声明用途的通用上传（兼容旧数据） | 直接调 `/common/upload` 不带 biz |
+| `import/yyyy/MM/dd/` | Excel 导入时从单元格抽出的图片 | `ExcelUtil` 导入分支 |
+| `download/yyyy/MM/dd/` | 导出文件 | `ExcelUtil` 的 AjaxResult 导出变体 |
+| `<用途>/[ord-订单号/]yyyy/MM/dd/` | 荣利业务影像（私有） | 小程序申请上传 |
+
+通用上传的前缀由 `/common/upload?biz=xxx` 决定，三个上传组件已经各自带上，不需要额外配置。`biz` 只影响新对象落在哪个前缀，**库里已有地址不受影响**。
+
+业务影像的订单号排在日期之前（`evidence_photo/ord-RL20261105001/2026/11/05/...`），目的是能用一次前缀删除清掉整单影像；放到日期后面就只能一个日期一个日期地删。
+
+**导出目录需要配过期清理**，否则只增不减：
+
+```bash
+# 先 dry-run，只会读取现有规则并打印将要提交的内容
+python3 logs/set_oss_lifecycle.py --env-file /home/xinyi/app/.env
+
+# 确认无误再提交
+python3 logs/set_oss_lifecycle.py --env-file /home/xinyi/app/.env --apply
+```
+
+默认给 `download/` 加「7 天后删除」。两点必须知道：
+
+- 脚本需要**Bucket 级**动作 `oss:GetBucketLifecycle` / `oss:PutBucketLifecycle`，`Resource` 写 `acs:oss:*:*:<bucket>`（**不带** `/*`），和对象级那四条动作是两套写法。没授权时脚本会明确报 `AccessDenied`，不影响业务上传下载。
+- `PutBucketLifecycle` 是**整份替换**语义，所以脚本先 GET 再合并、只增改自己那条 `xinyi-download-expire`，不会冲掉别的规则。若不想跑脚本，也可以在控制台「数据管理 → 生命周期」里手工加同样一条。
+
+> 现状说明：后台各模块的导出（用户、日志、字典等）是直接写 HTTP 响应流的，不落对象存储，因此 `download/` 目前通常为空；这条规则是给「导出返回 OSS 地址」那条链路（生成代码/后续模块会用）兜底。
+
 ---
 
 ## 6. 前端部署

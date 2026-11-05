@@ -237,6 +237,7 @@ npm run build:mp-weixin       # 产物 dist/build/mp-weixin
 - [ ] 上传附件成功，后台富文本/头像返回 OSS 地址，服务器本地不产生文件
 - [ ] 清掉浏览器缓存后头像仍是完整图片（验证 public-read 生效，不是靠签名临时地址）
 - [ ] 荣利影像上传成功且落在 OSS（`vi_file.object_key` 能在 bucket 里找到对应对象）
+- [ ] OSS 生命周期规则已生效：`download/` 前缀 N 天后过期（`python3 logs/set_oss_lifecycle.py --env-file ... --apply`，或控制台手工加）
 - [ ] 8081 临时入口已关闭
 
 **小程序**
