@@ -6,7 +6,7 @@
         <el-col :xs="24" :md="12" :style="{ height: '350px' }">
           <vue-cropper
             ref="cropper"
-            :img="options.img"
+            :img="cropImg"
             :info="true"
             :autoCrop="options.autoCrop"
             :autoCropWidth="options.autoCropWidth"
@@ -71,6 +71,8 @@ const { proxy } = getCurrentInstance()
 const open = ref<boolean>(false)
 const visible = ref<boolean>(false)
 const title = ref<string>("修改头像")
+/** 交给裁剪器的图片地址，与页面展示用的 options.img 分开 */
+const cropImg = ref<string>("")
 
 //图片裁剪数据
 const options = reactive<any>({
@@ -80,12 +82,48 @@ const options = reactive<any>({
   autoCropHeight: 200,       // 默认生成截图框高度
   fixedBox: true,            // 固定截图框大小 不允许改变
   outputType: "png",         // 默认生成截图为PNG格式
-  filename: 'avatar',        // 文件名称
   previews: {}               //预览数据
 })
 
+/**
+ * 裁剪器加载图片时会带 crossOrigin=anonymous（它要读 canvas 像素才能导出截图），
+ * 而 OSS 直链没有返回 Access-Control-Allow-Origin，跨域头像在裁剪区会加载失败：
+ * 左边一片空白、右边预览也是空的，但页面上那张 <img> 却能正常显示（它不需要 CORS）。
+ *
+ * 所以裁剪时改用同源的 /profile 兼容层取同一个对象（后端从 OSS 读流返回），
+ * 绕开 CORS 又不用改桶配置。页面展示仍然用 OSS 直链。
+ */
+function sameOriginImage(url: string): string {
+  if (!url || !isExternal(url)) return url
+  try {
+    const key = new URL(url).pathname.replace(/^\/+/, "")
+    return key ? `${import.meta.env.VITE_APP_BASE_API}/profile/${key}` : url
+  } catch {
+    return url
+  }
+}
+
+/**
+ * 裁剪器输出固定是 PNG（options.outputType），但 FormData 里若沿用用户选的原始文件名，
+ * 就会出现「PNG 字节 + .jpg 后缀」；后端按魔数核对后判为名实不符直接拒收（提示还是「后缀不正确」），
+ * 看起来像用户传错了格式。这里按 Blob 的真实类型重新命名。
+ */
+function avatarFileName(blob: Blob): string {
+  switch ((blob.type || "").toLowerCase()) {
+    case "image/jpeg":
+      return "avatar.jpg"
+    case "image/gif":
+      return "avatar.gif"
+    case "image/bmp":
+      return "avatar.bmp"
+    default:
+      return "avatar.png"
+  }
+}
+
 /** 编辑头像 */
 function editCropper() {
+  cropImg.value = sameOriginImage(userStore.avatar)
   open.value = true
 }
 
@@ -121,8 +159,7 @@ function beforeUpload(file: File) {
     const reader = new FileReader()
     reader.readAsDataURL(file)
     reader.onload = () => {
-      options.img = reader.result
-      options.filename = file.name
+      cropImg.value = String(reader.result || "")
     }
   }
 }
@@ -131,7 +168,7 @@ function beforeUpload(file: File) {
 function uploadImg() {
   proxy.$refs.cropper.getCropBlob((data: Blob) => {
     const formData = new FormData()
-    formData.append("avatarfile", data, options.filename)
+    formData.append("avatarfile", data, avatarFileName(data))
     uploadAvatar(formData).then(response => {
       open.value = false
       // 后端返回的 imgUrl 改走 OSS 后是完整直链，只有历史的 /profile/... 相对地址才需要拼接口前缀。
@@ -154,7 +191,7 @@ function realTime(data: any) {
 /** 关闭窗口 */
 function closeDialog() {
   options.img = userStore.avatar
-  options.visible = false
+  cropImg.value = sameOriginImage(userStore.avatar)
 }
 </script>
 

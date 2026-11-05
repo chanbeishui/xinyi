@@ -40,6 +40,8 @@ public class FileUploadUtils
 
     /** 能靠文件头识别真伪的图片扩展名；不在此列的扩展名不做内容校验 */
     private static final Set<String> IMAGE_SIGNATURE_EXTENSIONS = Set.of("bmp", "gif", "jpg", "jpeg", "png");
+    // 识别实际类型时的顺序固定下来，避免 Set 迭代顺序让同一种图片时而是 jpg、时而是 jpeg
+    private static final String[] IMAGE_SIGNATURE_CANDIDATES = { "jpg", "png", "gif", "bmp" };
 
     /**
      * 以默认配置进行文件上传
@@ -233,12 +235,33 @@ public class FileUploadUtils
         {
             return;
         }
-        if (matchesImageSignature(readHead(file, 12), ext))
+        byte[] head = readHead(file, 12);
+        if (matchesImageSignature(head, ext))
         {
             return;
         }
+        String detected = detectImageExtension(head);
+        if (detected != null)
+        {
+            // 后缀在允许列表里、内容却是另一种图片：把真实类型说出来，别让用户以为是自己传错了格式
+            throw InvalidExtensionException.imageContentMismatch(MimeTypeUtils.IMAGE_EXTENSION, extension,
+                    detected, file.getOriginalFilename());
+        }
         throw new InvalidExtensionException.InvalidImageExtensionException(MimeTypeUtils.IMAGE_EXTENSION, extension,
                 file.getOriginalFilename());
+    }
+
+    /** 按文件头判断实际是哪一种图片；认不出来返回 null */
+    private static String detectImageExtension(byte[] head)
+    {
+        for (String candidate : IMAGE_SIGNATURE_CANDIDATES)
+        {
+            if (matchesImageSignature(head, candidate))
+            {
+                return candidate;
+            }
+        }
+        return null;
     }
 
     /** 读文件头若干字节；读不满（极小文件）时按实际长度返回 */
