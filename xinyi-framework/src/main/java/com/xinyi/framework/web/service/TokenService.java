@@ -56,6 +56,12 @@ public class TokenService implements SessionInvalidator
     @Autowired
     private ISysUserService userService;
 
+    /**
+     * 会话重载时复用登录侧的快照构建逻辑，避免权限取数口径出现第二套实现。
+     */
+    @Autowired
+    private UserDetailsServiceImpl userDetailsService;
+
     public LoginUser getLoginUser(HttpServletRequest request)
     {
         String token = getToken(request);
@@ -177,19 +183,154 @@ public class TokenService implements SessionInvalidator
         loginUser.setOs(UserAgentUtils.getOperatingSystem(userAgent));
     }
 
+    /**
+     * 只淘汰授权快照已过期的会话。
+     *
+     * <p>旧实现无条件删除该用户的全部 token，连操作者自己刚刚完成变更的会话一起删掉，
+     * 于是"管理员改了自己的部门"要重新登录。现在按 auth_version / 状态逐个比对：
+     * 已经与数据库一致的会话（例如被 {@link #refreshCurrentSessionAuthorization(Long)}
+     * 刚刚重载过的那一个）保留，其余删除。</p>
+     *
+     * <p>读取权威状态失败时退化为"全部删除"，宁可多踢一次也不留下旧权限会话。</p>
+     */
     @Override
     public void forceLogoutByUserId(Long userId)
     {
         String indexKey = getUserTokenKey(userId);
         Set<String> tokens = redisCache.getCacheSet(indexKey);
-        if (tokens != null)
+        if (tokens == null || tokens.isEmpty())
         {
-            for (String token : tokens)
-            {
-                redisCache.deleteObject(getTokenKey(token));
-            }
+            redisCache.deleteObject(indexKey);
+            return;
         }
-        redisCache.deleteObject(indexKey);
+        SysUserAuthState state = null;
+        try
+        {
+            state = userService.selectAuthStateByUserId(userId);
+        }
+        catch (RuntimeException ex)
+        {
+            log.warn("用户[{}]授权状态读取失败，按全部失效处理: {}", userId, ex.getMessage());
+        }
+        boolean anyRetained = false;
+        for (String token : tokens)
+        {
+            if (state != null && isSessionCurrent(token, state))
+            {
+                anyRetained = true;
+                continue;
+            }
+            redisCache.deleteObject(getTokenKey(token));
+            redisCache.removeCacheSetValue(indexKey, token);
+        }
+        if (!anyRetained)
+        {
+            redisCache.deleteObject(indexKey);
+        }
+    }
+
+    /**
+     * 用数据库中的最新数据重建操作者当前会话的登录快照。
+     *
+     * <p>与登录走同一条构建路径（{@code UserDetailsServiceImpl#createLoginUser}），
+     * 保证角色、权限码、任职部门与 authVersion 的取数口径完全一致。
+     * token 与剩余有效期都保留，只换内容。</p>
+     */
+    @Override
+    public void refreshCurrentSessionAuthorization(Long userId)
+    {
+        String currentToken = currentSessionId();
+        if (StringUtils.isEmpty(currentToken))
+        {
+            // 不在请求线程内（例如定时任务触发），或 token 无法解析，交给全量失效兜底
+            log.warn("用户[{}]无法定位当前会话标识，本次不保留当前会话", userId);
+            return;
+        }
+        String userKey = getTokenKey(currentToken);
+        LoginUser cached = redisCache.getCacheObject(userKey);
+        if (cached == null || userId == null || !userId.equals(cached.getUserId()))
+        {
+            return;
+        }
+        SysUserAuthState state;
+        try
+        {
+            state = userService.selectAuthStateByUserId(userId);
+        }
+        catch (RuntimeException ex)
+        {
+            log.warn("用户[{}]授权状态读取失败，跳过会话重载: {}", userId, ex.getMessage());
+            return;
+        }
+        // 停用、删除后的账号不允许续命，直接留给 forceLogout 清掉
+        if (state == null || !"0".equals(state.getStatus()) || !"0".equals(state.getDelFlag()))
+        {
+            return;
+        }
+        SysUser fresh = userService.selectUserByUserName(cached.getUsername());
+        if (fresh == null)
+        {
+            return;
+        }
+        long remainingSeconds = redisCache.getExpire(userKey);
+        if (remainingSeconds <= 0)
+        {
+            return;
+        }
+        LoginUser rebuilt = (LoginUser) userDetailsService.createLoginUser(fresh);
+        rebuilt.setToken(currentToken);
+        rebuilt.setLoginTime(cached.getLoginTime());
+        rebuilt.setExpireTime(cached.getExpireTime());
+        rebuilt.setIpaddr(cached.getIpaddr());
+        rebuilt.setLoginLocation(cached.getLoginLocation());
+        rebuilt.setBrowser(cached.getBrowser());
+        rebuilt.setOs(cached.getOs());
+        rebuilt.setDeptId(fresh.getDeptId());
+        // 用剩余 TTL 回写，不因为一次权限调整顺带把会话续期
+        redisCache.setCacheObject(userKey, rebuilt, (int) remainingSeconds, TimeUnit.SECONDS);
+    }
+
+    private boolean isSessionCurrent(String token, SysUserAuthState state)
+    {
+        try
+        {
+            LoginUser cached = redisCache.getCacheObject(getTokenKey(token));
+            return isCurrentAuthorization(cached, state);
+        }
+        catch (RuntimeException ex)
+        {
+            log.warn("会话快照读取失败，按失效处理: {}", ex.getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * 取当前请求对应的会话标识。
+     *
+     * <p>注意是 JWT 里的 {@code login_user_key}（uuid），不是请求头里的 JWT 原文——
+     * Redis 的 {@code login_tokens:} 键用的是 uuid，拿 JWT 去拼会永远取不到会话。</p>
+     */
+    private String currentSessionId()
+    {
+        try
+        {
+            HttpServletRequest request = ServletUtils.getRequest();
+            if (request == null)
+            {
+                return null;
+            }
+            String token = getToken(request);
+            if (StringUtils.isEmpty(token))
+            {
+                return null;
+            }
+            Claims claims = parseToken(token);
+            return (String) claims.get(Constants.LOGIN_USER_KEY);
+        }
+        catch (Exception ex)
+        {
+            return null;
+        }
     }
 
     /**

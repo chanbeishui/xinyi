@@ -152,6 +152,10 @@ PR 应说明改动摘要、影响模块、测试或构建结果、关联 issue�
 - `PLATFORM` 账号的后台资料、部门、岗位、角色、状态、密码重置和删除仅最高管理员可操作。
 - 普通管理员不得修改自己的任职部门或角色；最高管理员可以，否则在没有第二最高管理员时同样会锁死。代重置密码一律不得作用于本人（自助改密要验旧密码）。
 - 用户任职、角色、状态、密码重置和删除必须在同一事务递增 `auth_version` 并写安全 outbox。
+- **授权变更要保留操作者本人的当前会话**：`auth_version` 递增后由 `scheduleForceLogout` 在提交后先 `refreshCurrentSessionAuthorization` 重载当前请求的会话（角色、权限、部门、版本，保留 token 与剩余 TTL），再 `forceLogoutByUserId` 淘汰其余会话。这样"管理员把自己的部门从 A 调到 B"不会把自己踢下线，而其他设备仍然立即失效。
+- `forceLogoutByUserId` 的语义是"淘汰授权快照已过期的会话"：逐个比对 `auth_version` 与账号状态，已与数据库一致的会话保留。安全 outbox 重试靠这条语义天然幂等，不会把刚重载过的会话再删一次。
+- **凭据类与可用性类变更永不保留当前会话**：本人改密、代重置密码、停用、删除、导入覆盖（`SESSION_MUST_DIE_EVENTS`）。密码变了或账号不可用了，任何还活着的 token 都不该继续有效——包括发起变更的那个。
+- 改自己的角色后前端要重新生成菜单（`authRole.vue` 整页刷新）；改自己的部门只同步 `userStore` 即可，部门不参与菜单构建。
 - 修改角色权限、角色状态、角色 DataScope、角色菜单或部门状态时，必须递增所有受影响用户的 `auth_version`。
 - `sys_user_dept`、`sys_user_role`、`auth_version`、安全 outbox 和审计表只能通过统一授权服务写入。
 

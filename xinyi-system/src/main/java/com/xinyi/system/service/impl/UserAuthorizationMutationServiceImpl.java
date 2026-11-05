@@ -68,6 +68,16 @@ public class UserAuthorizationMutationServiceImpl implements IUserAuthorizationM
     /** 内置超级管理员角色 ID。持有该角色即视为最高管理员，与 {@code user_id=1} 等价。 */
     private static final Long SUPER_ADMIN_ROLE_ID = 1L;
 
+    /**
+     * 这些变更即便作用于操作者本人，也必须让他的会话立即失效。
+     *
+     * <p>密码变了、账号不可用了，任何还活着的 token 都不能继续用——包括发起这次变更的那个。
+     * 角色/部门/管理范围不在此列：那是权限快照更新，重载即可。</p>
+     */
+    private static final Set<String> SESSION_MUST_DIE_EVENTS = Set.of(
+            "USER_PASSWORD_CHANGE_SELF", "USER_PASSWORD_RESET", "USER_STATUS_UPDATE", "USER_DELETE",
+            "USER_IMPORT_OVERWRITE");
+
     private final SysUserMapper userMapper;
     private final SysUserDeptMapper userDeptMapper;
     private final SysUserRoleMapper userRoleMapper;
@@ -203,7 +213,7 @@ public class UserAuthorizationMutationServiceImpl implements IUserAuthorizationM
             createOutbox(user.getUserId(), 0L, event);
             auditService.recordSuccess(event, user.getUserId(), "后台新增用户", null,
                     authorizationSnapshot(user.getUserId()), null, 0L);
-            scheduleForceLogout(user.getUserId());
+            scheduleForceLogout(user.getUserId(), event);
             return user.getUserId();
         }
         catch (RuntimeException ex)
@@ -926,7 +936,7 @@ public class UserAuthorizationMutationServiceImpl implements IUserAuthorizationM
             throw new ServiceException("无法读取更新后的授权版本");
         }
         createOutbox(userId, state.getAuthVersion(), eventType);
-        scheduleForceLogout(userId);
+        scheduleForceLogout(userId, eventType);
         return state.getAuthVersion();
     }
 
@@ -939,12 +949,23 @@ public class UserAuthorizationMutationServiceImpl implements IUserAuthorizationM
         outboxMapper.insert(event);
     }
 
-    private void scheduleForceLogout(Long userId)
+    /**
+     * 提交后撤销会话。
+     *
+     * <p>当被改的人就是操作者本人时，保留他当前这个会话、只重载授权快照，
+     * 其余设备上的会话照旧淘汰：他是这次变更的操作者，已经在一次已认证请求里完成校验，
+     * 没必要因为把自己的部门从 A 调到 B 就重新登录一次。</p>
+     *
+     * <p>凭据类（改密）、可用性类（停用/删除）的变更永远不保留当前会话——
+     * 密码变了、账号不可用了，任何还活着的 token 都不该继续有效。</p>
+     */
+    private void scheduleForceLogout(Long userId, String eventType)
     {
         if (!TransactionSynchronizationManager.isSynchronizationActive())
         {
             return;
         }
+        final boolean keepActorSession = shouldKeepActorSession(userId, eventType);
         TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization()
         {
             @Override
@@ -954,6 +975,18 @@ public class UserAuthorizationMutationServiceImpl implements IUserAuthorizationM
                 if (invalidator == null)
                 {
                     return;
+                }
+                if (keepActorSession)
+                {
+                    try
+                    {
+                        // 必须先把当前会话刷到新版本，否则紧接着的淘汰会把它当旧快照删掉
+                        invalidator.refreshCurrentSessionAuthorization(userId);
+                    }
+                    catch (RuntimeException ex)
+                    {
+                        log.warn("用户[{}]当前会话重载失败，将退回重新登录: {}", userId, ex.getMessage());
+                    }
                 }
                 try
                 {
@@ -965,6 +998,21 @@ public class UserAuthorizationMutationServiceImpl implements IUserAuthorizationM
                 }
             }
         });
+    }
+
+    /**
+     * 是否保留操作者本人的当前会话。
+     *
+     * @param userId    被变更的用户
+     * @param eventType 变更类型
+     */
+    private boolean shouldKeepActorSession(Long userId, String eventType)
+    {
+        if (userId == null || !userId.equals(SecurityUtils.getUserId()))
+        {
+            return false;
+        }
+        return !SESSION_MUST_DIE_EVENTS.contains(eventType);
     }
 
     /**
