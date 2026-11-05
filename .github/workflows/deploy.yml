@@ -1,0 +1,199 @@
+name: deploy
+
+# 生产部署流水线
+#   1) 手动触发（推荐）：Actions → deploy → Run workflow，可选 all/backend/frontend
+#   2) 打 tag 自动触发：git tag v1.2.3 && git push origin v1.2.3
+#
+# 需要的 Secrets（Settings → Secrets and variables → Actions）：
+#   DEPLOY_HOST     服务器 IP 或域名
+#   DEPLOY_USER     部署用户（建议 root 或具备 systemctl 权限的账号）
+#   DEPLOY_SSH_KEY  部署用私钥（ed25519，公钥已写入服务器 authorized_keys）
+#   DEPLOY_PORT     SSH 端口，可选，默认 22
+# 需要的 Variables（可选，覆盖默认路径）：
+#   DEPLOY_APP_DIR  默认 /home/xinyi/app
+#   DEPLOY_WEB_DIR  默认 /home/xinyi/web
+#
+# 建议在 Settings → Environments 建 production 环境并开启 Required reviewers，
+# 这样点下 Run workflow 后仍需人工批准，避免误发。
+
+on:
+  workflow_dispatch:
+    inputs:
+      scope:
+        description: "部署范围"
+        type: choice
+        options: [all, backend, frontend]
+        default: all
+      ref:
+        description: "分支 / tag / commit SHA（留空 = 当前提交）"
+        required: false
+      skip_tests:
+        description: "跳过后端单元测试（仅在紧急修复时勾选）"
+        type: boolean
+        default: false
+  push:
+    tags:
+      - "v*"
+
+# 部署必须串行：两个发布同时跑会互相覆盖 jar 与 web 目录
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+env:
+  DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+  DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+  DEPLOY_PORT: ${{ secrets.DEPLOY_PORT || '22' }}
+  APP_DIR: ${{ vars.DEPLOY_APP_DIR || '/home/xinyi/app' }}
+  WEB_DIR: ${{ vars.DEPLOY_WEB_DIR || '/home/xinyi/web' }}
+  STAGE_DIR: /tmp/xinyi-deploy
+  SERVICE: xinyi-admin
+
+jobs:
+  build:
+    name: 构建与测试
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    outputs:
+      sha: ${{ steps.meta.outputs.sha }}
+      scope: ${{ steps.meta.outputs.scope }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref || github.ref }}
+
+      - name: 记录版本信息
+        id: meta
+        run: |
+          echo "sha=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
+          echo "scope=${{ inputs.scope || 'all' }}" >> "$GITHUB_OUTPUT"
+          {
+            echo "### 构建信息"
+            echo ""
+            echo "| 项 | 值 |"
+            echo "|---|---|"
+            echo "| 提交 | \`$(git rev-parse --short HEAD)\` $(git log -1 --pretty=%s) |"
+            echo "| 分支/标签 | \`${GITHUB_REF_NAME}\` |"
+            echo "| 范围 | ${{ inputs.scope || 'all' }} |"
+            echo "| 触发 | ${GITHUB_ACTOR} |"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+          cache: maven
+
+      # 只在真跑测试时执行；紧急修复可用 skip_tests 跳过并自行承担风险
+      - name: 后端单元测试
+        if: ${{ inputs.skip_tests != true }}
+        run: mvn -B -ntp -pl xinyi-framework,xinyi-system -am test
+
+      - name: 打包后端
+        run: mvn -B -ntp -DskipTests package
+
+      - name: 上传 jar
+        uses: actions/upload-artifact@v4
+        with:
+          name: deploy-jar
+          path: xinyi-admin/target/xinyi-admin.jar
+          retention-days: 7
+          if-no-files-found: error
+
+      - name: Set up Node 20
+        if: ${{ (inputs.scope || 'all') != 'backend' }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+          cache-dependency-path: xinyi-ui/package-lock.json
+
+      - name: 构建前端
+        if: ${{ (inputs.scope || 'all') != 'backend' }}
+        working-directory: xinyi-ui
+        run: |
+          npm ci --no-audit --no-fund
+          npm run build:prod
+
+      - name: 上传前端产物
+        if: ${{ (inputs.scope || 'all') != 'backend' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: deploy-dist
+          path: xinyi-ui/dist
+          retention-days: 7
+
+  deploy:
+    name: 发布到生产
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    # 需在仓库 Settings → Environments 里创建 production 并配置审批人
+    environment:
+      name: production
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref || github.ref }}
+
+      - name: 下载 jar
+        uses: actions/download-artifact@v4
+        with:
+          name: deploy-jar
+          path: deploy-artifacts
+
+      - name: 下载前端产物
+        if: ${{ needs.build.outputs.scope != 'backend' }}
+        uses: actions/download-artifact@v4
+        with:
+          name: deploy-dist
+          path: deploy-artifacts/dist
+
+      - name: 配置 SSH
+        run: |
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -p "$DEPLOY_PORT" -H "$DEPLOY_HOST" >> ~/.ssh/known_hosts 2>/dev/null
+
+      - name: 上传产物到暂存目录
+        run: |
+          SSH_OPTS="-i ~/.ssh/id_ed25519 -p $DEPLOY_PORT -o ConnectTimeout=15"
+          ssh $SSH_OPTS "$DEPLOY_USER@$DEPLOY_HOST" "mkdir -p $STAGE_DIR"
+          if [ "${{ needs.build.outputs.scope }}" != "frontend" ]; then
+            scp $SSH_OPTS deploy-artifacts/xinyi-admin.jar "$DEPLOY_USER@$DEPLOY_HOST:$STAGE_DIR/"
+          fi
+          if [ "${{ needs.build.outputs.scope }}" != "backend" ]; then
+            tar -czf /tmp/dist.tar.gz -C deploy-artifacts/dist .
+            scp $SSH_OPTS /tmp/dist.tar.gz "$DEPLOY_USER@$DEPLOY_HOST:$STAGE_DIR/"
+          fi
+
+      - name: 执行原子部署（健康检查失败自动回滚）
+        run: |
+          SSH_OPTS="-i ~/.ssh/id_ed25519 -p $DEPLOY_PORT -o ConnectTimeout=15"
+          DO_BACKEND=0; DO_FRONTEND=0
+          [ "${{ needs.build.outputs.scope }}" != "frontend" ] && DO_BACKEND=1
+          [ "${{ needs.build.outputs.scope }}" != "backend" ]  && DO_FRONTEND=1
+          ssh $SSH_OPTS "$DEPLOY_USER@$DEPLOY_HOST" \
+            "STAGE_DIR=$STAGE_DIR APP_DIR=$APP_DIR WEB_DIR=$WEB_DIR SERVICE=$SERVICE \
+             DO_BACKEND=$DO_BACKEND DO_FRONTEND=$DO_FRONTEND \
+             GIT_SHA=${{ needs.build.outputs.sha }} GIT_REF=${GITHUB_REF_NAME} \
+             OPERATOR=github-actions/${GITHUB_ACTOR} bash -s" \
+            < deploy/prod/remote-deploy.sh
+
+      - name: 部署摘要
+        if: always()
+        run: |
+          {
+            echo "### 部署结果：${{ job.status }}"
+            echo ""
+            echo "| 项 | 值 |"
+            echo "|---|---|"
+            echo "| 提交 | \`${{ needs.build.outputs.sha }}\` |"
+            echo "| 范围 | ${{ needs.build.outputs.scope }} |"
+            echo "| 回滚方式 | 后端 \`mv xinyi-admin.jar.prev xinyi-admin.jar\`；前端 \`mv $WEB_DIR.old $WEB_DIR\` |"
+          } >> "$GITHUB_STEP_SUMMARY"

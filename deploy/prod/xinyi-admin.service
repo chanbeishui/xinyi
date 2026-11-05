@@ -1,0 +1,58 @@
+# =====================================================================
+# xinyi 后端 systemd 服务单元
+#
+# 安装：
+#   sudo cp deploy/prod/xinyi-admin.service /etc/systemd/system/
+#   sudo systemctl daemon-reload
+#   sudo systemctl enable --now xinyi-admin
+#
+# 查看状态 / 日志：
+#   systemctl status xinyi-admin
+#   journalctl -u xinyi-admin -f
+#   tail -f /home/xinyi/logs/stdout.log
+# =====================================================================
+
+[Unit]
+Description=xinyi-admin backend
+# 数据库/Redis 跑在 1Panel 的容器里，必须等 docker 起来，否则首连失败
+After=network-online.target docker.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=xinyi
+Group=xinyi
+WorkingDirectory=/home/xinyi/app
+
+# 数据库/Redis 密码、token 密钥从这里注入；文件权限 600
+EnvironmentFile=/home/xinyi/app/.env
+# logback.xml 用 ${LOG_PATH:-logs}，这里显式指到绝对路径，避免落到工作目录相对路径
+Environment="LOG_PATH=/home/xinyi/logs"
+Environment="TZ=Asia/Shanghai"
+
+# 2C4G 机器堆内存给到 1536m：留 ~1G 给 MySQL 容器、~128M Redis、其余给系统
+# G1 在小堆上停顿更稳；OOM 时留 heap dump 便于定位
+ExecStart=/usr/bin/java \
+  -Xms512m -Xmx1536m \
+  -XX:MaxMetaspaceSize=320m \
+  -XX:+UseG1GC \
+  -XX:+HeapDumpOnOutOfMemoryError \
+  -XX:HeapDumpPath=/home/xinyi/logs \
+  -Duser.timezone=Asia/Shanghai \
+  -Dfile.encoding=UTF-8 \
+  -jar /home/xinyi/app/xinyi-admin.jar \
+  --spring.profiles.active=druid,prod
+
+# Spring Boot 收到 SIGTERM 正常退出码是 143，不标记为失败
+SuccessExitStatus=143
+Restart=on-failure
+RestartSec=10
+
+# 文件句柄：上传 + 数据库连接 + 日志滚动都需要
+LimitNOFILE=65535
+
+StandardOutput=append:/home/xinyi/logs/stdout.log
+StandardError=append:/home/xinyi/logs/stderr.log
+
+[Install]
+WantedBy=multi-user.target

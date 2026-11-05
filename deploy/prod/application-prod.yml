@@ -1,0 +1,105 @@
+# =====================================================================
+# 生产环境配置（1Panel + 应用商店 MySQL8 / Redis7，服务器 2 核 4G）
+#
+# 启动方式：
+#   java -jar xinyi-admin.jar --spring.profiles.active=druid,prod
+#
+# ⚠️ profile 顺序不能反：
+#   application-druid.yml 里写的是开发机库地址（localhost:3307 + 本机密码），
+#   必须让它先加载、prod 后加载，prod 才能覆盖；写成 prod,druid 会被开发地址盖回去，
+#   现象是启动时连 3307 失败或连到错误的库。
+#
+# ⚠️ 密钥一律走环境变量，本文件不写明文：
+#   systemd 用 EnvironmentFile 注入，模板见 deploy/prod/xinyi.env.example
+#
+# 放置位置：/home/xinyi/app/config/application-prod.yml
+#   Spring Boot 会自动扫描 jar 同级的 config/ 目录，改配置不用重新打包。
+# =====================================================================
+
+server:
+  port: 8080
+
+spring:
+  # 生产关闭热部署
+  devtools:
+    restart:
+      enabled: false
+
+  datasource:
+    druid:
+      master:
+        # 1Panel 应用商店 MySQL 发布到宿主机的端口；在「数据库」详情页的
+        # 连接信息里核对实际端口，不要照抄示例。
+        # useSSL=false：同机回环连接无需 TLS；allowPublicKeyRetrieval 为 MySQL8 必须
+        # serverTimezone=Asia/Shanghai：与 application.yml 的 jackson GMT+8 保持一致
+        url: jdbc:mysql://127.0.0.1:3306/xinyi?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai
+        username: ${XINYI_DB_USER:xinyi}
+        password: ${XINYI_DB_PASSWORD}
+      # 生产关闭 Druid 监控台，避免 /druid/* 暴露在外网
+      statViewServlet:
+        enabled: false
+      # 2C4G 机器连接池不宜大：Spring 侧 30 已足够，MySQL 侧 max_connections 同步配 150
+      initialSize: 5
+      minIdle: 5
+      maxActive: 30
+      maxWait: 30000
+
+  data:
+    redis:
+      host: 127.0.0.1
+      # 1Panel Redis 应用发布到宿主机的端口，按实际改
+      port: 6379
+      database: 0
+      password: ${XINYI_REDIS_PASSWORD}
+      timeout: 10s
+      lettuce:
+        pool:
+          min-idle: 0
+          max-idle: 8
+          max-active: 16
+          max-wait: 3000ms
+
+ruoyi:
+  # 仅承载后台通用上传（富文本图片、用户头像、导入模板）；荣利业务影像已全部走 OSS，不落这里
+  # 提前 mkdir 并 chown 给运行用户，否则后台富文本上传报错
+  profile: /home/xinyi/upload
+
+token:
+  # 换密钥会让所有已登录会话立即失效（含小程序端），上线后不要随意改
+  secret: ${XINYI_TOKEN_SECRET}
+  # 令牌有效期（分钟）。小程序端会话续期压力与这个值相关，不建议低于 30
+  expireTime: 60
+
+logging:
+  level:
+    # 开发配置是 debug，生产必须收敛，否则日志量会把磁盘写满
+    com.xinyi: info
+    org.springframework: warn
+
+# 生产关闭接口文档，避免接口结构对外暴露
+springdoc:
+  api-docs:
+    enabled: false
+  swagger-ui:
+    enabled: false
+
+# 多部门数据权限开关：生产必须保持开启（关闭等于所有部门数据全可见）
+security:
+  multi-dept-query-enabled: true
+  multi-dept-write-enabled: true
+
+# 荣利影像对象存储：生产必须开启，否则上传直接报「对象存储未启用」
+# 凭据只从 /home/xinyi/app/.env 注入，不要写死在这个文件里
+dromara:
+  x-file-storage:
+    default-platform: aliyun-oss-1
+    aliyun-oss:
+      - platform: aliyun-oss-1
+        enable-storage: ${RONGLI_OSS_ENABLED:false}
+        enable-access: false
+        access-key: ${RONGLI_OSS_ACCESS_KEY:}
+        secret-key: ${RONGLI_OSS_SECRET_KEY:}
+        end-point: ${RONGLI_OSS_ENDPOINT:}
+        bucket-name: ${RONGLI_OSS_BUCKET:}
+        domain: ${RONGLI_OSS_DOMAIN:}
+        base-path: ""

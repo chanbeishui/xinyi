@@ -104,3 +104,29 @@
 - 档案室页面：`src/views/archiveRoom/`，3 个档案室可切换，SVG 平面图 + fuse.js 搜索
 - BI 看板页面：`src/views/dataScreen/`，ECharts 图表
 - 两页面均为纯前端静态数据，未接后端 API
+
+## 生产部署（阿里云轻量 2C4G + 1Panel，2026-11-04 定案）
+- 目标环境：Ubuntu 22.04 + 1Panel 托管 MySQL8/Redis7（容器），后端 jar 用 systemd 常驻，
+  前端静态站 + OpenResty 反代 `/prod-api/` → 127.0.0.1:8080
+- 产物：`docs/deploy/1panel-2c4g-deployment.md`、`deploy/prod/{application-prod.yml,xinyi.env.example,xinyi-admin.service,nginx-xinyi.conf,backup-xinyi.sh}`
+- **启动 profile 必须 `druid,prod`**：druid 配置在 `application-druid.yml`（开发库 localhost:3307），
+  顺序反了会被覆盖回开发库；后加载的 profile 优先
+- **`sql/quartz.sql` 必须单独导入**：`ry_20260417.sql` 不含 `QRTZ_*` 表，根 docker-compose
+  也没挂载它，漏导则定时任务模块报错
+- 生产**不要**导 `seed_20261021_rongli_demo_accounts.sql`、`seed_20261022_rongli_reconcile_demo.sql`（演示数据）
+- MySQL 必须 8.0（`utf8mb4_0900_ai_ci`），容器需设 `default-time-zone=+08:00`
+- Docker 发布端口绕过 ufw，端口管控只能靠阿里云控制台防火墙
+
+## 影像存储（x-file-storage 2.3.0 + 阿里云 OSS，2026-11-04）
+- **只有对象存储，没有本地磁盘兜底**：`rongli.media.root`、`~/rongli-uploads`、`FileStorage`/`MediaStorage`
+  那套自建门面全部作废。上传/下载一律 `FileStorageService`，凭据走 `RONGLI_OSS_*` 环境变量
+- **`@EnableFileStorage` 必须按文档写在启动类** `com.xinyi.RuoYiApplication` 上。
+  不要再在业务模块建只含注解的空 `@Configuration`——技术上等价的实现细节，不足以成为偏离文档的理由
+- 依赖放 **`xinyi-common`**（与 `FileUploadUtils`/`FileUtils` 同层），版本在根 pom 的 `dependencyManagement`。
+  **不要放业务模块**：`generator`、`quartz` 只依赖 common，放 rongli 会让脚手架反向依赖业务模块（分层倒置）。
+  「放 common 会把云 SDK 扩散到 codegen/quartz 撑大包体」是伪论据——单体部署所有模块进同一个 fat jar，
+  实测挪位置前后 jar 只差 232 字节；且 `x-file-storage-spring` 只带自己的 core，其他厂商 SDK 都是 optional
+- **`FileInfo` 必须显式 `setPlatform(默认平台)`**：download/exists/delete 直查平台、不回退
+  `default-platform`，不设就报 `没有找到对应的存储平台！platform:null`（HTTP 422）。
+  `default-platform` 只在上传的 `of()` 生效——读写两条路口径不一致，这是最容易踩的坑
+- 读取前先 `exists`/HEAD 再写响应字节：响应一旦开始输出，就没法再返回 JSON 错误
