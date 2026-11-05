@@ -38,6 +38,8 @@
             <artifactId>mybatis-spring-boot-starter</artifactId>
         </dependency>
 
+        <!-- 对象存储由 xinyi-common 统一提供（全项目共享的基础设施），此处不重复声明 -->
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>

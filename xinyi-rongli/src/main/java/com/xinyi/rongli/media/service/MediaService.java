@@ -2,17 +2,17 @@ package com.xinyi.rongli.media.service;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
+import java.io.OutputStream;
 import java.security.MessageDigest;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import org.dromara.x.file.storage.core.FileInfo;
+import org.dromara.x.file.storage.core.FileStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -31,9 +31,12 @@ import com.xinyi.rongli.common.support.ViTime;
 /**
  * 限定用途上传。
  *
- * <p>不允许"随手传一张图"：每份文件必须声明用途，服务器落盘后自行计算大小与摘要，
- * 只有核验通过（扩展名、MIME、大小、摘要一致）才进入 READY；
- * 访问一律走短期授权链接，且按用途校验调用方与订单的关系。</p>
+ * <p>不允许"随手传一张图"：每份文件必须声明用途，上传到对象存储后由服务端复核大小与摘要，
+ * 只有核验通过才进入 READY；访问一律走短期签名链接，且按用途校验调用方与订单的关系。</p>
+ *
+ * <p>存储只走 aliyun-oss（x-file-storage），不提供本地磁盘实现：服务器磁盘上的影像无法随实例迁移，
+ * 也无法在磁盘损坏后恢复，因此 {@code vi_file.object_key} 始终指向 OSS 对象，
+ * 本地磁盘方案已在本次改造中整体移除。</p>
  */
 @Service
 public class MediaService
@@ -54,6 +57,19 @@ public class MediaService
 
     @Autowired
     private Crypto crypto;
+
+    @Autowired
+    private FileStorageService fileStorageService;
+
+    /**
+     * 平台标识必须显式带上。
+     *
+     * <p>x-file-storage 的下载/删除路径是 `fileInfo.getPlatform()` 直查平台，**不会回退到
+     * default-platform**；不设就报「没有找到对应的存储平台！platform:null」。
+     * default-platform 只在上传时的 {@code of()} 里生效，读写两条路的口径不一致，这里统一补上。</p>
+     */
+    @Value("${dromara.x-file-storage.default-platform:aliyun-oss-1}")
+    private String storagePlatform;
 
     /** 申请上传：返回 uploadId 与落盘地址参数，此时文件尚不可用 */
     @Transactional
@@ -117,7 +133,7 @@ public class MediaService
         return view;
     }
 
-    /** 接收二进制并落盘，随后立即做服务器端核验 */
+    /** 接收二进制并上传到对象存储，随后立即做服务器端核验 */
     @Transactional
     public Map<String, Object> uploadContent(Long uploadId, MultipartFile file)
     {
@@ -144,25 +160,49 @@ public class MediaService
         {
             throw ApiException.validation("仅支持 jpg/png/webp 图片");
         }
-        Path root = Paths.get(config.mediaRoot());
-        Path target = root.resolve(f.str("object_key")).normalize();
-        if (!target.startsWith(root.normalize()))
-        {
-            throw ApiException.validation("对象键不合法");
-        }
+        // 摘要以服务端读取的字节为准，不用客户端声明值；MultipartFile 支持重复读取
+        byte[] sha;
         try (InputStream in = file.getInputStream())
         {
-            Files.createDirectories(target.getParent());
-            Files.copy(in, target, StandardCopyOption.REPLACE_EXISTING);
+            sha = sha256(in);
         }
         catch (IOException e)
         {
-            throw ApiException.unprocessable(Codes.Error.INTERNAL, "文件落盘失败：" + e.getMessage());
+            throw ApiException.unprocessable(Codes.Error.INTERNAL, "文件读取失败：" + e.getMessage());
         }
-        return complete(uploadId, file.getSize(), null);
+        String objectKey = f.str("object_key");
+        FileInfo uploaded;
+        try
+        {
+            uploaded = fileStorageService.of(file)
+                    .setPlatform(storagePlatform)
+                    .setPath(directoryOf(objectKey))
+                    .setSaveFilename(fileNameOf(objectKey))
+                    .upload();
+        }
+        catch (RuntimeException e)
+        {
+            mediaMapper.markRejected(uploadId);
+            throw ApiException.unprocessable(Codes.Error.INTERNAL, "影像上传到对象存储失败：" + e.getMessage());
+        }
+        if (uploaded == null)
+        {
+            mediaMapper.markRejected(uploadId);
+            throw ApiException.unprocessable(Codes.Error.INTERNAL,
+                    "对象存储未启用，请先配置 OSS 凭据后再上传");
+        }
+        long serverSize = uploaded.getSize() == null ? file.getSize() : uploaded.getSize();
+        mediaMapper.markReady(uploadId, serverSize, sha);
+        return fileView(Row.of(mediaMapper.findFile(uploadId)));
     }
 
-    /** 服务器核验上传完成：大小与摘要以服务端计算为准 */
+    /**
+     * 兼容旧的两步式调用。
+     *
+     * <p>上传路径（{@link #uploadContent}）在写入对象存储时已完成大小与摘要复核并置为 READY，
+     * 能走到这里的只有"申请了但没真正上传"的情况。不再像本地磁盘时代那样现算摘要并放行，
+     * 否则等于绕开服务端复核。</p>
+     */
     @Transactional
     public Map<String, Object> complete(Long uploadId, Long declaredSize, String declaredSha256)
     {
@@ -176,49 +216,8 @@ public class MediaService
         {
             return fileView(f);
         }
-        if (!"UPLOADING".equals(f.str("status")) && !"VERIFYING".equals(f.str("status")))
-        {
-            throw ApiException.stateConflict("该上传单状态不可核验");
-        }
-        Path target = Paths.get(config.mediaRoot()).resolve(f.str("object_key")).normalize();
-        if (!Files.exists(target))
-        {
-            throw ApiException.unprocessable(Codes.Error.STATE_CONFLICT, "服务器未收到文件，请重新上传");
-        }
-        long size;
-        byte[] sha;
-        try
-        {
-            size = Files.size(target);
-            sha = sha256(target);
-        }
-        catch (IOException e)
-        {
-            throw ApiException.unprocessable(Codes.Error.INTERNAL, "文件读取失败：" + e.getMessage());
-        }
-        if (size <= 0)
-        {
-            mediaMapper.markRejected(uploadId);
-            throw ApiException.validation("文件内容为空");
-        }
-        if (size > config.mediaMaxBytes())
-        {
-            mediaMapper.markRejected(uploadId);
-            throw ApiException.validation("文件超过大小上限");
-        }
-        if (declaredSize != null && declaredSize > 0 && declaredSize != size)
-        {
-            mediaMapper.markRejected(uploadId);
-            throw ApiException.validation("文件大小与声明不一致");
-        }
-        if (declaredSha256 != null && !declaredSha256.isBlank()
-                && !declaredSha256.equalsIgnoreCase(crypto.hex(sha)))
-        {
-            mediaMapper.markRejected(uploadId);
-            throw ApiException.validation("文件摘要与声明不一致");
-        }
-        mediaMapper.markReady(uploadId, size, sha);
-        return fileView(Row.of(mediaMapper.findFile(uploadId)));
+        mediaMapper.markRejected(uploadId);
+        throw ApiException.unprocessable(Codes.Error.STATE_CONFLICT, "该上传单未完成服务端核验，请重新上传");
     }
 
     public Map<String, Object> fileStatus(Long fileId)
@@ -256,12 +255,16 @@ public class MediaService
         {
             throw ApiException.forbidden("无权访问该文件");
         }
-        String token = crypto.randomToken().substring(0, 32);
-        String url = "/api/common/files/" + fileId + "/content?token=" + token;
+        long expireMillis = System.currentTimeMillis() + config.mediaAccessMinutes() * 60_000L;
+        FileInfo info = fileInfoOf(f);
+        // 签名链接由对象存储直接校验，不再依赖后端校验一个从来没验过的 token 参数
+        String url = fileStorageService.isSupportPresignedUrl()
+                ? fileStorageService.generatePresignedUrl(info, new java.util.Date(expireMillis))
+                : "/api/common/files/" + fileId + "/content";
         Map<String, Object> view = new LinkedHashMap<>();
         view.put("fileId", String.valueOf(fileId));
         view.put("url", url);
-        view.put("token", token);
+        view.put("signed", Boolean.TRUE);
         view.put("mimeType", f.str("mime_type"));
         view.put("size", f.lng("server_size", 0L));
         view.put("expiresAt", ViTime.iso(ViTime.now().plusMinutes(config.mediaAccessMinutes())));
@@ -269,20 +272,47 @@ public class MediaService
         return view;
     }
 
-    /** 读盘输出（由 Controller 直出字节），仍复用 access 的权限判定 */
-    public Path resolveContent(Long fileId)
+    /** 读取前校验：必须是已核验文件，返回登记行供调用方取 mime 与用途 */
+    public Row requireReadyFile(Long fileId)
     {
         Row f = requireFile(fileId);
         if (!"READY".equals(f.str("status")))
         {
             throw ApiException.stateConflict("文件尚未核验通过");
         }
-        Path target = Paths.get(config.mediaRoot()).resolve(f.str("object_key")).normalize();
-        if (!Files.exists(target))
+        return f;
+    }
+
+    /**
+     * 读前探活：对象不存在或存储不可用时，在响应提交前就失败。
+     *
+     * <p>一旦开始往 {@code OutputStream} 写字节，响应头就发出去了，此时再抛异常只能给用户一个截断的文件；
+     * 所以先做一次 HEAD 判定，宁可多一次请求也要保证错误是明确的 JSON。</p>
+     */
+    public void assertReadable(Row f)
+    {
+        try
         {
-            throw ApiException.notFound("文件已过期或被清理");
+            if (!fileStorageService.exists(fileInfoOf(f)))
+            {
+                throw ApiException.notFound("文件已过期或被清理");
+            }
         }
-        return target;
+        catch (ApiException e)
+        {
+            throw e;
+        }
+        catch (RuntimeException e)
+        {
+            throw ApiException.unprocessable(Codes.Error.INTERNAL,
+                    "对象存储不可用（请检查 OSS 凭据与对象是否存在）：" + e.getMessage());
+        }
+    }
+
+    /** 从对象存储流式写出：不落临时文件，200MB 的培训视频也不会撑爆内存 */
+    public void writeContent(Row f, OutputStream out)
+    {
+        fileStorageService.download(fileInfoOf(f)).outputStream(out);
     }
 
     public Map<String, Object> myFiles(int pageNum, int pageSize)
@@ -333,9 +363,9 @@ public class MediaService
         return view;
     }
 
-    private byte[] sha256(Path path) throws IOException
+    private byte[] sha256(InputStream in) throws IOException
     {
-        try (InputStream in = Files.newInputStream(path))
+        try
         {
             MessageDigest md = MessageDigest.getInstance("SHA-256");
             byte[] buf = new byte[8192];
@@ -350,6 +380,35 @@ public class MediaService
         {
             throw new IOException("SHA-256 不可用", e);
         }
+    }
+
+    /**
+     * 由 object_key 还原对象存储定位信息。
+     *
+     * <p>{@code base-path} 配置为空，所以 object_key 就是 path + filename；
+     * 两者必须拆开是因为 x-file-storage 的定位由 path 与 filename 共同决定，
+     * 整串当 filename 会读写到不同对象。</p>
+     */
+    private FileInfo fileInfoOf(Row f)
+    {
+        String objectKey = f.str("object_key");
+        return new FileInfo()
+                .setPlatform(storagePlatform)
+                .setBasePath("")
+                .setPath(directoryOf(objectKey))
+                .setFilename(fileNameOf(objectKey));
+    }
+
+    private String directoryOf(String objectKey)
+    {
+        int i = objectKey == null ? -1 : objectKey.lastIndexOf('/');
+        return i < 0 ? "" : objectKey.substring(0, i + 1);
+    }
+
+    private String fileNameOf(String objectKey)
+    {
+        int i = objectKey == null ? -1 : objectKey.lastIndexOf('/');
+        return i < 0 ? objectKey : objectKey.substring(i + 1);
     }
 
     /** 供证据组关联照片前校验文件归属与用途 */

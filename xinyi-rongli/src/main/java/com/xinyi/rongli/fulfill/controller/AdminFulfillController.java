@@ -1,7 +1,10 @@
 package com.xinyi.rongli.fulfill.controller;
 
+import java.io.IOException;
 import java.util.Map;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.xinyi.common.utils.SecurityUtils;
 import com.xinyi.rongli.driver.dto.DriverDtos;
 import com.xinyi.rongli.common.service.EventService;
+import com.xinyi.rongli.common.support.Row;
 import com.xinyi.rongli.fulfill.service.FulfillService;
 import com.xinyi.rongli.media.service.MediaService;
 import com.xinyi.rongli.fulfill.service.FulfillAdminService;
@@ -88,31 +92,15 @@ public class AdminFulfillController
      */
     @GetMapping("/files/{fileId}/content")
     @PreAuthorize("@ss.hasPermi('biz:sensitive:access')")
-    public org.springframework.http.ResponseEntity<org.springframework.core.io.Resource> sensitiveFile(
-            @PathVariable Long fileId)
+    public void sensitiveFile(@PathVariable Long fileId, HttpServletResponse response) throws IOException
     {
-        java.nio.file.Path path = mediaService.resolveContent(fileId);
+        Row f = mediaService.requireReadyFile(fileId);
+        mediaService.assertReadable(f);
         // 先留痕再返回字节，保证「看过」一定被记录，不依赖前端埋点
         eventService.record("FILE", fileId, "SENSITIVE_VIEW", null, null,
                 Map.of("operator", String.valueOf(SecurityUtils.getUserId())), "后台查看证件原图");
-        org.springframework.core.io.Resource resource =
-                new org.springframework.core.io.FileSystemResource(path);
-        org.springframework.http.MediaType type = org.springframework.http.MediaType.APPLICATION_OCTET_STREAM;
-        try
-        {
-            String probed = java.nio.file.Files.probeContentType(path);
-            if (probed != null)
-            {
-                type = org.springframework.http.MediaType.parseMediaType(probed);
-            }
-        }
-        catch (Exception ignored)
-        {
-            // 探测失败按二进制返回，不影响可读性
-        }
-        return org.springframework.http.ResponseEntity.ok()
-                .contentType(type)
-                .header(org.springframework.http.HttpHeaders.CACHE_CONTROL, "no-store")
-                .body(resource);
+        response.setContentType(f.str("mime_type", "application/octet-stream"));
+        response.setHeader(HttpHeaders.CACHE_CONTROL, "no-store");
+        mediaService.writeContent(f, response.getOutputStream());
     }
 }

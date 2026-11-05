@@ -155,3 +155,19 @@ security:
   outbox:
     fixed-delay: 5000
   user-dept-integrity-cron: "0 30 2 * * ?"
+
+# 荣利影像对象存储（唯一存储方式，不提供本地磁盘兜底）
+# 凭据全部走环境变量，禁止写进版本库；enable-storage 为 false 时上传会明确报“存储平台未启用”
+dromara:
+  x-file-storage:
+    default-platform: aliyun-oss-1
+    aliyun-oss:
+      - platform: aliyun-oss-1
+        enable-storage: ${RONGLI_OSS_ENABLED:false}
+        enable-access: false
+        access-key: ${RONGLI_OSS_ACCESS_KEY:}
+        secret-key: ${RONGLI_OSS_SECRET_KEY:}
+        end-point: ${RONGLI_OSS_ENDPOINT:}
+        bucket-name: ${RONGLI_OSS_BUCKET:}
+        domain: ${RONGLI_OSS_DOMAIN:}
+        base-path: ""

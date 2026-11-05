@@ -1,24 +1,19 @@
 package com.xinyi.rongli.media.controller;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -26,6 +21,7 @@ import com.xinyi.rongli.driver.dto.DriverDtos;
 import com.xinyi.rongli.common.dto.MiniDtos;
 import com.xinyi.rongli.auth.service.AuthService;
 import com.xinyi.rongli.order.service.BookingService;
+import com.xinyi.rongli.common.support.Row;
 import com.xinyi.rongli.media.service.MediaService;
 import com.xinyi.rongli.notification.service.MessageService;
 import com.xinyi.system.service.ISysDictTypeService;
@@ -72,28 +68,19 @@ public class MediaController
     {
         return mediaService.access(fileId);
     }
+    /**
+     * 直出文件内容。
+     *
+     * <p>正常路径是 {@code access} 返回的 OSS 预签名链接由客户端直连；
+     * 这个端点保留给不支持直连的场景（如内部预览），由后端从对象存储流式转发。</p>
+     */
     @GetMapping("/files/{fileId}/content")
-    public ResponseEntity<Resource> fileContent(@PathVariable Long fileId,
-            @RequestParam(required = false) String token)
+    public void fileContent(@PathVariable Long fileId, HttpServletResponse response) throws IOException
     {
-        Path path = mediaService.resolveContent(fileId);
-        Resource resource = new FileSystemResource(path);
-        MediaType type = MediaType.APPLICATION_OCTET_STREAM;
-        try
-        {
-            String probed = Files.probeContentType(path);
-            if (probed != null)
-            {
-                type = MediaType.parseMediaType(probed);
-            }
-        }
-        catch (Exception ignored)
-        {
-            // 探测失败按二进制下载，不影响访问
-        }
-        return ResponseEntity.ok()
-                .contentType(type)
-                .header(HttpHeaders.CACHE_CONTROL, "private, max-age=60")
-                .body(resource);
+        Row f = mediaService.requireReadyFile(fileId);
+        mediaService.assertReadable(f);
+        response.setContentType(f.str("mime_type", "application/octet-stream"));
+        response.setHeader(HttpHeaders.CACHE_CONTROL, "private, max-age=60");
+        mediaService.writeContent(f, response.getOutputStream());
     }
 }
