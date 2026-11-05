@@ -54,7 +54,11 @@ import com.xinyi.system.service.ISysRoleService;
 import com.xinyi.system.service.IUserAuthorizationMutationService;
 
 /**
- * 对用户、任职和角色变更执行行锁、全量校验、版本递增、审计和会话撤销。
+ * 对用户、任职和角色变更执行行锁、全量校验、审计和会话处理。
+ *
+ * <p>会话处理按变更性质分档：只有影响权限判定（角色/部门/管理范围/角色配置）、
+ * 登录凭据（密码）或账号可用性（状态/删除）的变更才递增 {@code auth_version} 并强退；
+ * 昵称、邮箱、手机号、性别、备注、岗位这类展示字段只刷新在线快照。</p>
  */
 @Service
 public class UserAuthorizationMutationServiceImpl implements IUserAuthorizationMutationService
@@ -240,7 +244,7 @@ public class UserAuthorizationMutationServiceImpl implements IUserAuthorizationM
             {
                 throw new ServiceException("邮箱已存在");
             }
-            Object before = authorizationSnapshot(target.getUserId());
+            Object before = profileSnapshot(target);
 
             SysUser update = new SysUser();
             update.setUserId(target.getUserId());
@@ -252,9 +256,13 @@ public class UserAuthorizationMutationServiceImpl implements IUserAuthorizationM
             update.setUpdateBy(SecurityUtils.getUsername());
             int rows = userMapper.updateUser(update);
             replacePosts(target.getUserId(), normalize(request.getPostIds()));
-            long version = bumpVersion(target.getUserId(), event);
+            // 本方法能改的只有昵称、邮箱、手机号、性别、备注和岗位：既不是权限载体，也不是登录凭据
+            //（岗位不参与 @DataScope，权限只由角色与部门决定），因此不递增 auth_version。
+            // 递增会把"管理员改个昵称"变成"该用户全部会话被强退"，是这里唯一会误伤人的写入口。
+            // 版本不动，但 LoginUser 里的用户对象是登录时刻的副本，仍需刷新，否则页面一直显示旧资料。
+            scheduleProfileRefresh(target.getUserId());
             auditService.recordSuccess(event, target.getUserId(), request.getReason(),
-                    before, authorizationSnapshot(target.getUserId()), target.getAuthVersion(), version);
+                    before, profileSnapshot(request), target.getAuthVersion(), target.getAuthVersion());
             return rows;
         }
         catch (RuntimeException ex)
@@ -957,6 +965,61 @@ public class UserAuthorizationMutationServiceImpl implements IUserAuthorizationM
                 }
             }
         });
+    }
+
+    /**
+     * 资料变更不踢会话，提交后只把展示字段同步到在线副本。
+     */
+    private void scheduleProfileRefresh(Long userId)
+    {
+        if (!TransactionSynchronizationManager.isSynchronizationActive())
+        {
+            return;
+        }
+        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization()
+        {
+            @Override
+            public void afterCommit()
+            {
+                SessionInvalidator invalidator = sessionInvalidatorProvider.getIfAvailable();
+                if (invalidator == null)
+                {
+                    return;
+                }
+                try
+                {
+                    invalidator.refreshUserProfileSnapshot(userId);
+                }
+                catch (RuntimeException ex)
+                {
+                    // 快照只用于页面回显，刷新失败不影响资料落库，下次登录自然恢复
+                    log.warn("用户[{}]资料快照刷新失败: {}", userId, ex.getMessage());
+                }
+            }
+        });
+    }
+
+    private Map<String, Object> profileSnapshot(SysUser user)
+    {
+        Map<String, Object> snapshot = new LinkedHashMap<>();
+        snapshot.put("nickName", user.getNickName());
+        snapshot.put("email", user.getEmail());
+        snapshot.put("phonenumber", user.getPhonenumber());
+        snapshot.put("sex", user.getSex());
+        snapshot.put("remark", user.getRemark());
+        return snapshot;
+    }
+
+    private Map<String, Object> profileSnapshot(SysUserUpdateRequest request)
+    {
+        Map<String, Object> snapshot = new LinkedHashMap<>();
+        snapshot.put("nickName", request.getNickName());
+        snapshot.put("email", request.getEmail());
+        snapshot.put("phonenumber", request.getPhonenumber());
+        snapshot.put("sex", request.getSex());
+        snapshot.put("remark", request.getRemark());
+        snapshot.put("postIds", request.getPostIds());
+        return snapshot;
     }
 
     private Map<String, Object> authorizationSnapshot(Long userId)

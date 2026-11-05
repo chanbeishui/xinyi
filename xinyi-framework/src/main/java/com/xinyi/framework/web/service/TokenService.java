@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import com.xinyi.common.constant.CacheConstants;
 import com.xinyi.common.constant.Constants;
+import com.xinyi.common.core.domain.entity.SysUser;
 import com.xinyi.common.core.domain.model.LoginUser;
 import com.xinyi.common.core.redis.RedisCache;
 import com.xinyi.common.exception.ServiceException;
@@ -189,6 +190,50 @@ public class TokenService implements SessionInvalidator
             }
         }
         redisCache.deleteObject(indexKey);
+    }
+
+    /**
+     * 只替换展示型资料字段，权限快照、authVersion 和会话有效期都保持原样。
+     *
+     * <p>用剩余 TTL 回写而不是 30 分钟，避免"改个昵称顺手把别人会话续期"。
+     * 剩余 TTL 已过期（-1/-2）时直接跳过，交给过滤器按失效处理。</p>
+     */
+    @Override
+    public void refreshUserProfileSnapshot(Long userId)
+    {
+        Set<String> tokens = redisCache.getCacheSet(getUserTokenKey(userId));
+        if (tokens == null || tokens.isEmpty())
+        {
+            return;
+        }
+        SysUser fresh = userService.selectUserById(userId);
+        if (fresh == null)
+        {
+            return;
+        }
+        for (String token : tokens)
+        {
+            String userKey = getTokenKey(token);
+            LoginUser loginUser = redisCache.getCacheObject(userKey);
+            if (loginUser == null || loginUser.getUser() == null)
+            {
+                continue;
+            }
+            long remainingSeconds = redisCache.getExpire(userKey);
+            if (remainingSeconds <= 0)
+            {
+                continue;
+            }
+            SysUser cached = loginUser.getUser();
+            cached.setNickName(fresh.getNickName());
+            cached.setEmail(fresh.getEmail());
+            cached.setPhonenumber(fresh.getPhonenumber());
+            cached.setSex(fresh.getSex());
+            cached.setRemark(fresh.getRemark());
+            cached.setAvatar(fresh.getAvatar());
+            // token 有效期最多 expireTime 分钟，remainingSeconds 不会溢出 int
+            redisCache.setCacheObject(userKey, loginUser, (int) remainingSeconds, TimeUnit.SECONDS);
+        }
     }
 
     public boolean isCurrentAuthorization(LoginUser loginUser, SysUserAuthState state)
