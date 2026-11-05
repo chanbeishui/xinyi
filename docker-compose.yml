@@ -49,6 +49,8 @@ services:
       - ./sql/migration_multi_dept_authorization.sql:/docker-entrypoint-initdb.d/50_multi_dept_authz.sql:ro
       # docx 的 MIME 有 71 字符，超过 vi_file.mime_type 原有的 64
       - ./sql/migration_20261104_01_vi_file_mime_type_widen.sql:/docker-entrypoint-initdb.d/51_vi_file_mime_widen.sql:ro
+      # 头像存对象存储直链，100 字符不够
+      - ./sql/migration_20261105_01_sys_user_avatar_widen.sql:/docker-entrypoint-initdb.d/52_sys_user_avatar_widen.sql:ro
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-pxinyi_dev"]
       interval: 10s

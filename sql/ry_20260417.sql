@@ -50,7 +50,7 @@ create table sys_user (
   email             varchar(50)     default ''                 comment '用户邮箱',
   phonenumber       varchar(11)     default ''                 comment '手机号码',
   sex               char(1)         default '0'                comment '用户性别（0男 1女 2未知）',
-  avatar            varchar(100)    default ''                 comment '头像地址',
+  avatar            varchar(500)    default ''                 comment '头像地址（对象存储直链）',
   password          varchar(100)    default ''                 comment '密码',
   status            char(1)         default '0'                comment '账号状态（0正常 1停用）',
   del_flag          char(1)         default '0'                comment '删除标志（0代表存在 2代表删除）',
