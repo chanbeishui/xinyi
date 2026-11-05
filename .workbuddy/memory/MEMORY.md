@@ -142,6 +142,8 @@
   它不是本地目录映射，`ResourcesConfig` 里那条 `file:` 映射已删
 - `/common/download` 的 `checkAllowDownload` 必须传 `FileUtils.getName(url)`：完整 URL 带 query 会被判非法
 - **endpoint 必须公网节点**：短链由该节点签出，`-internal` 会让手机端打不开图片（现象：上传成功、图片全白）
+- **RAM 策略必须含 `oss:PutObjectAcl`**：x-file-storage 设 ACL 走 `SetObjectACL` 接口、不随 PUT 带 ACL 头，
+  只给 PutObject/GetObject/DeleteObject 时普通上传正常、传头像立刻 AccessDenied。自检脚本第 4 步专测这条
 
 ## 版本管理约定（2026-11-05 用户明确要求）
 - **每完成一次大修改就立刻提交**，不要攒着；提交描述**一律用中文**
