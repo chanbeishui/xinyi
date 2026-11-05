@@ -65,6 +65,7 @@
                 v-model="scope.row.status"
                 active-value="0"
                 inactive-value="1"
+                :disabled="isBuiltinAdmin(scope.row)"
                 @change="handleStatusChange(scope.row)"
               ></el-switch>
             </template>
@@ -76,19 +77,19 @@
           </el-table-column>
           <el-table-column label="操作" align="center" width="190" class-name="small-padding fixed-width">
             <template #default="scope">
-              <el-tooltip content="修改" placement="top" v-if="scope.row.userId !== 1">
+              <el-tooltip content="修改" placement="top" v-if="!isBuiltinAdmin(scope.row)">
                 <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)" v-hasPermi="['system:user:edit']"></el-button>
               </el-tooltip>
-              <el-tooltip content="删除" placement="top" v-if="scope.row.userId !== 1">
+              <el-tooltip content="删除" placement="top" v-if="!isBuiltinAdmin(scope.row)">
                 <el-button link type="primary" icon="Delete" @click="handleDelete(scope.row)" v-hasPermi="['system:user:remove']"></el-button>
               </el-tooltip>
-              <el-tooltip content="重置密码" placement="top" v-if="scope.row.userId !== 1">
+              <el-tooltip content="重置密码" placement="top" v-if="!isBuiltinAdmin(scope.row)">
                 <el-button link type="primary" icon="Key" @click="handleResetPwd(scope.row)" v-hasPermi="['system:user:resetPwd']"></el-button>
               </el-tooltip>
-              <el-tooltip content="分配角色" placement="top" v-if="scope.row.userId !== 1">
+              <el-tooltip content="分配角色" placement="top" v-if="!isBuiltinAdmin(scope.row)">
                 <el-button link type="primary" icon="CircleCheck" @click="handleAuthRole(scope.row)" v-hasPermi="['system:user:role:edit']"></el-button>
               </el-tooltip>
-              <el-tooltip content="任职部门" placement="top" v-if="scope.row.userId !== 1">
+              <el-tooltip content="任职部门" placement="top" v-if="!isBuiltinAdmin(scope.row)">
                 <el-button link type="primary" icon="OfficeBuilding" @click="handleDepartments(scope.row)" v-hasPermi="['system:user:dept:edit']"></el-button>
               </el-tooltip>
             </template>
@@ -231,6 +232,14 @@ const router = useRouter()
 const { proxy } = getCurrentInstance()
 const { pwdValidator, pwdPromptValidator } = usePasswordRule()
 const { sys_normal_disable, sys_user_sex } = useDict("sys_normal_disable", "sys_user_sex")
+
+/**
+ * 内置最高管理员（user_id = 1）只能由本人登录后在个人中心自助维护，列表里不给任何管理入口。
+ * 这里用 Number 比较而不是 === 1：后端一旦把 Long 序列化成字符串，严格比较会失效、按钮意外露出。
+ */
+function isBuiltinAdmin(row: SysUser): boolean {
+  return Number(row.userId) === 1
+}
 
 const userList = ref<SysUser[]>([])
 const open = ref<boolean>(false)

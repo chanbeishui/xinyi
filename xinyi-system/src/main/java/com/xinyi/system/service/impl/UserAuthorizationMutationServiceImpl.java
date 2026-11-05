@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionSynchronization;
@@ -218,7 +219,8 @@ public class UserAuthorizationMutationServiceImpl implements IUserAuthorizationM
         try
         {
             requireReason(request.getReason());
-            target = lockAndCheckTarget(request.getUserId(), true);
+            target = lockTarget(request.getUserId());
+            checkTargetWritable(target, true);
             deptScopeService.checkUserFullAccess(target.getUserId());
             SysUser phoneOwner = StringUtils.isEmpty(request.getPhonenumber()) ? null
                     : userMapper.checkPhoneUnique(request.getPhonenumber());
@@ -265,10 +267,13 @@ public class UserAuthorizationMutationServiceImpl implements IUserAuthorizationM
         try
         {
             requireReason(request.getReason());
-            target = lockAndCheckTarget(userId, true);
-            if (!SecurityUtils.isAdmin() && SecurityUtils.getUserId().equals(userId))
+            target = lockTarget(userId);
+            checkTargetWritable(target, true);
+            // 目标保护在上一步已经把内置超管挡住了；这里补的是"任何人不得给自己加授权"，
+            // 原来写成 !isAdmin() && 是给超管留的口子，而那个口子在第一步就进不来，属于虚假承诺。
+            if (SecurityUtils.getUserId().equals(userId))
             {
-                throw new ServiceException("普通管理员不能修改自己的任职部门");
+                throw new ServiceException("不能修改自己的任职部门，请由其他管理员操作");
             }
             Set<Long> oldIds = normalize(userDeptMapper.selectDeptIdsByUserId(userId));
             Set<Long> newIds = normalize(request.getDeptIds());
@@ -318,10 +323,12 @@ public class UserAuthorizationMutationServiceImpl implements IUserAuthorizationM
         try
         {
             requireReason(request.getReason());
-            target = lockAndCheckTarget(userId, true);
-            if (!SecurityUtils.isAdmin() && SecurityUtils.getUserId().equals(userId))
+            target = lockTarget(userId);
+            checkTargetWritable(target, true);
+            // 同上：不给任何人给自己改角色的机会，超管的口子本来就走不到。
+            if (SecurityUtils.getUserId().equals(userId))
             {
-                throw new ServiceException("普通管理员不能修改自己的角色");
+                throw new ServiceException("不能修改自己的角色，请由其他管理员操作");
             }
             Set<Long> oldIds = normalize(userRoleMapper.selectRoleIdsByUserId(userId));
             Set<Long> newIds = normalize(request.getRoleIds());
@@ -350,7 +357,9 @@ public class UserAuthorizationMutationServiceImpl implements IUserAuthorizationM
         {
             requireReason(request.getReason());
             requireHighestAdmin("只有最高平台管理员可以修改管理范围");
-            target = lockAndCheckTarget(userId, false);
+            // 本接口的服务对象就是 PLATFORM 账号（把它降级），所以第二层判定必须关掉
+            target = lockTarget(userId);
+            checkTargetWritable(target, false);
             if (!UserConstants.MANAGEMENT_SCOPE_DEPT.equals(request.getManagementScope()))
             {
                 throw new ServiceException("专用接口仅允许将 PLATFORM 显式降级为 DEPT");
@@ -388,7 +397,8 @@ public class UserAuthorizationMutationServiceImpl implements IUserAuthorizationM
         try
         {
             requireReason(request.getReason());
-            target = lockAndCheckTarget(request.getUserId(), true);
+            target = lockTarget(request.getUserId());
+            checkTargetWritable(target, true);
             deptScopeService.checkUserFullAccess(target.getUserId());
             String before = target.getStatus();
             int rows = userMapper.updateUserStatus(target.getUserId(), request.getStatus());
@@ -413,7 +423,8 @@ public class UserAuthorizationMutationServiceImpl implements IUserAuthorizationM
         try
         {
             requireReason(request.getReason());
-            target = lockAndCheckTarget(request.getUserId(), true);
+            target = lockTarget(request.getUserId());
+            checkTargetWritable(target, true);
             deptScopeService.checkUserFullAccess(target.getUserId());
             int rows = userMapper.resetUserPwd(target.getUserId(),
                     SecurityUtils.encryptPassword(request.getPassword()));
@@ -437,11 +448,9 @@ public class UserAuthorizationMutationServiceImpl implements IUserAuthorizationM
         SysUser target = null;
         try
         {
-            if (!SecurityUtils.getUserId().equals(userId))
-            {
-                throw new ServiceException("只能修改本人的密码");
-            }
-            target = lockAndCheckTarget(userId, false);
+            // 自助改密属于凭据维护，不是对账号的管理动作，因此不走 checkTargetWritable；
+            // 否则内置超管会被自己的目标保护拦住，永远改不了密码。
+            target = lockSelfTarget(userId);
             int rows = userMapper.resetUserPwd(userId, SecurityUtils.encryptPassword(newPassword));
             long version = bumpVersion(userId, event);
             auditService.recordSuccess(event, userId, "员工自助修改本人密码",
@@ -462,6 +471,8 @@ public class UserAuthorizationMutationServiceImpl implements IUserAuthorizationM
         String event = "USER_DELETE";
         requireReason(reason);
         List<SysUser> targets = new ArrayList<>();
+        // 记录当前正在处理的目标，拒绝发生时审计才有具体的 target 可还原
+        Long currentTargetId = null;
         try
         {
             Set<Long> ids = normalize(userIds);
@@ -471,7 +482,9 @@ public class UserAuthorizationMutationServiceImpl implements IUserAuthorizationM
             }
             for (Long userId : ids)
             {
-                SysUser target = lockAndCheckTarget(userId, true);
+                currentTargetId = userId;
+                SysUser target = lockTarget(userId);
+                checkTargetWritable(target, true);
                 deptScopeService.checkUserFullAccess(userId);
                 targets.add(target);
             }
@@ -490,7 +503,7 @@ public class UserAuthorizationMutationServiceImpl implements IUserAuthorizationM
         }
         catch (RuntimeException ex)
         {
-            auditService.recordFailure(event, null, reason,
+            auditService.recordFailure(event, currentTargetId, reason,
                     targets.stream().map(SysUser::getUserId).collect(Collectors.toList()),
                     userIds, failureCode(ex), ex.getMessage());
             throw ex;
@@ -524,11 +537,14 @@ public class UserAuthorizationMutationServiceImpl implements IUserAuthorizationM
         }
         List<SysUser> existingUsers = new ArrayList<>();
         Set<String> names = new LinkedHashSet<>();
+        // 导入是批量场景，失败时至少要留下"卡在哪一行"，否则审计里只有行数
+        String currentUserName = null;
         try
         {
             // 第一阶段只校验和加锁，任何一行失败都不会开始写入。
             for (SysUser row : users)
             {
+                currentUserName = row.getUserName();
                 if (StringUtils.isBlank(row.getUserName()) || !names.add(row.getUserName()))
                 {
                     throw new ServiceException("导入文件存在空账号或重复账号: " + row.getUserName());
@@ -541,7 +557,8 @@ public class UserAuthorizationMutationServiceImpl implements IUserAuthorizationM
                     {
                         throw new ServiceException("账号已存在且未确认覆盖: " + row.getUserName());
                     }
-                    existing = lockAndCheckTarget(existing.getUserId(), true);
+                    existing = lockTarget(existing.getUserId());
+                    checkTargetWritable(existing, true);
                     deptScopeService.checkUserFullAccess(existing.getUserId());
                     existingUsers.add(existing);
                 }
@@ -598,8 +615,11 @@ public class UserAuthorizationMutationServiceImpl implements IUserAuthorizationM
         }
         catch (RuntimeException ex)
         {
-            auditService.recordFailure(event, null, reason, null,
-                    Map.of("rowCount", users.size(), "updateSupport", updateSupport),
+            Map<String, Object> requested = new LinkedHashMap<>();
+            requested.put("rowCount", users.size());
+            requested.put("updateSupport", updateSupport);
+            requested.put("failedUserName", currentUserName);
+            auditService.recordFailure(event, null, reason, null, requested,
                     failureCode(ex), ex.getMessage());
             throw ex;
         }
@@ -642,15 +662,18 @@ public class UserAuthorizationMutationServiceImpl implements IUserAuthorizationM
         String event = grant ? "ROLE_GRANT_USERS" : "ROLE_REVOKE_USERS";
         requireReason(reason);
         List<SysUser> targets = new ArrayList<>();
+        Long currentTargetId = null;
         try
         {
             Set<Long> ids = normalize(userIds);
             for (Long userId : ids)
             {
-                SysUser target = lockAndCheckTarget(userId, true);
-                if (!SecurityUtils.isAdmin() && SecurityUtils.getUserId().equals(userId))
+                currentTargetId = userId;
+                SysUser target = lockTarget(userId);
+                checkTargetWritable(target, true);
+                if (SecurityUtils.getUserId().equals(userId))
                 {
-                    throw new ServiceException("普通管理员不能修改自己的角色");
+                    throw new ServiceException("不能修改自己的角色，请由其他管理员操作");
                 }
                 deptScopeService.checkUserFullAccess(userId);
                 Set<Long> oldRoles = normalize(userRoleMapper.selectRoleIdsByUserId(userId));
@@ -687,29 +710,70 @@ public class UserAuthorizationMutationServiceImpl implements IUserAuthorizationM
         }
         catch (RuntimeException ex)
         {
-            auditService.recordFailure(event, null, reason,
+            auditService.recordFailure(event, currentTargetId, reason,
                     targets.stream().map(SysUser::getUserId).collect(Collectors.toList()),
                     userIds, failureCode(ex), ex.getMessage());
             throw ex;
         }
     }
 
-    private SysUser lockAndCheckTarget(Long userId, boolean protectPlatform)
+    /**
+     * 锁定目标行并校验存在性，不含任何策略判定。
+     *
+     * <p>与 {@link #checkTargetWritable} 拆开是为了让策略拒绝发生在 target 已赋值之后：
+     * 否则拒绝时 catch 块只能拿到 null，失败审计的 target 字段永远是空的，事后无法还原"试图改谁"。</p>
+     */
+    private SysUser lockTarget(Long userId)
     {
         SysUser target = userMapper.selectUserByIdForUpdate(userId);
         if (target == null || !"0".equals(target.getDelFlag()))
         {
             throw new ServiceException("目标用户不存在或已删除");
         }
+        return target;
+    }
+
+    /**
+     * 目标账号可写性判定。与调用者身份正交：先问"这个对象能不能被业务接口改"，再问"你有没有权限改"。
+     *
+     * <p>请求被拒时用 403 表达策略拒绝，而不是 500。策略拒绝是预期内的结果，不应混进系统异常，
+     * 前端也能据此给出引导而不是"操作失败"。</p>
+     *
+     * @param protectPlatform 是否需要附加"平台管理账号仅最高平台管理员可操作"的第二层判定。
+     *        管理范围降级接口本身就是作用于 PLATFORM 账号的，必须传 false。
+     */
+    private void checkTargetWritable(SysUser target, boolean protectPlatform)
+    {
         if (target.isAdmin())
         {
-            throw new ServiceException("不允许通过业务接口操作最高平台管理员");
+            throw policyDenied("该账号是系统内置最高管理员，不通过用户管理修改；"
+                    + "如需变更昵称、手机号或密码，请用该账号登录后在「个人中心」自助处理");
         }
         if (protectPlatform && UserConstants.MANAGEMENT_SCOPE_PLATFORM.equals(target.getManagementScope()))
         {
             requireHighestAdmin("平台管理账号仅最高平台管理员可操作");
         }
-        return target;
+    }
+
+    /**
+     * 自助场景的目标加锁：只允许操作本人，且不受"内置超管禁用业务接口写入"约束。
+     *
+     * <p>内置超管的保护针对的是<b>管理属性</b>（昵称、手机号、状态、角色、部门、删除、代重置密码），
+     * 改自己的密码属于凭据自助维护，和个人中心改资料同一条旁路；若一并封禁，
+     * 超管将无法改密，只能绕过应用直接改库，反而削弱了审计。</p>
+     */
+    private SysUser lockSelfTarget(Long userId)
+    {
+        if (!SecurityUtils.getUserId().equals(userId))
+        {
+            throw policyDenied("自助操作仅允许作用于本人账号");
+        }
+        return lockTarget(userId);
+    }
+
+    private ServiceException policyDenied(String message)
+    {
+        return new ServiceException(message, HttpStatus.FORBIDDEN.value());
     }
 
     private void validatePrimaryDepartment(Long primaryDeptId, Set<Long> deptIds)
