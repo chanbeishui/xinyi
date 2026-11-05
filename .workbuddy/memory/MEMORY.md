@@ -145,6 +145,24 @@
 - **RAM 策略必须含 `oss:PutObjectAcl`**：x-file-storage 设 ACL 走 `SetObjectACL` 接口、不随 PUT 带 ACL 头，
   只给 PutObject/GetObject/DeleteObject 时普通上传正常、传头像立刻 AccessDenied。自检脚本第 4 步专测这条
 
+## 对象 key 与目录规范（2026-11-05，commit 16fdbef / a2afaf6）
+- 桶内分层固定：`avatar/`、`upload/rich-text|image|file/`、`upload/`（未声明用途，兼容旧数据）、
+  `import/`、`download/yyyy/MM/dd/`、业务影像 `<用途>/[ord-订单号/]yyyy/MM/dd/`，**日期统一 `yyyy/MM/dd`**
+- 通用上传的用途由 `/common/upload?biz=rich-text|image|file` 决定（三个上传组件已各自带上）；
+  映射在 `OssFileService.dirForBiz`，未知取值落 `upload/`，不能让上传失败
+- **`FileUploadUtils.logicalDir` 必须保留多级前缀**：旧实现只取路径最后一段，会把 `upload/rich-text`
+  压成 `rich-text`，分层直接失效。它只该剥掉磁盘路径（`D:/…/uploadPath/…`）和 `..`
+- 业务影像订单段**排在日期之前**：对象存储没有重命名，前缀删除是唯一批量手段，
+  放日期后面就只能一天一天删。订单号清洗成 `[A-Za-z0-9_-]`，为空退回订单 id，都没有就不带这段
+- 影像文件名 = `用途_12位随机串`（原先 24 位纯随机，桶里认不出是什么）。仍不可枚举
+- **上传类型按魔数校验**（jpg/png/gif/bmp）：只看扩展名时把 exe 改名 png 能过，文件会原样进桶，
+  直出即等于可执行文件托管。文档类扩展名不做此校验，避免误伤
+- 生命周期脚本 `logs/set_oss_lifecycle.py`：默认 dry-run，`--apply` 才写；`PutBucketLifecycle` 是
+  **整份替换**，必须先 GET 再合并。需要 **Bucket 级**动作 `oss:GetBucketLifecycle`/`PutBucketLifecycle`
+  （`Resource` 写 `acs:oss:*:*:<bucket>`，**不带** `/*`），与对象级那四条是两套写法
+- **OSS V1 签名的 CanonicalizedResource 是 `/<bucket>/<object>?<子资源>`**：请求走三级域名不含 bucket 段，
+  从 URL 里截会得到 `/?lifecycle`，签名必然 SignatureDoesNotMatch
+
 ## 版本管理约定（2026-11-05 用户明确要求）
 - **每完成一次大修改就立刻提交**，不要攒着；提交描述**一律用中文**
 - 一次提交只做一件事：工作区同时积压多批不相干改动时，按主题分批 `git add` 再分别提交，
