@@ -2,7 +2,7 @@
 
 复核结论：本任务后端业务、接口与数据库增量通过独立复核，`approved: true`。复核者为协作代理 `/root/f01_tests`，没有编写或修改 S01 生产代码和 S01 测试；前端构建、页面交互与浏览器证据由本任务交付记录单列，不能用本文件替代页面验收或生产批准。
 
-复核范围：`aftersale/service/AfterSaleService.java`、请求 DTO、Controller、MyBatis XML、`migration_20261105_02_aftersale_notes.sql`，以及与 F01 凭证校验的事务边界。未发现尚未解决的后端阻断问题。
+复核范围：`aftersale/service/AftersaleService.java`、请求 DTO、Controller、MyBatis XML、`migration_20261105_02_aftersale_notes.sql`，以及与 F01 凭证校验的事务边界。未发现尚未解决的后端阻断问题。
 
 ## 规则与权限复核
 
