@@ -251,7 +251,7 @@ curl -s -o /dev/null -w '%{http_code}\n' http://127.0.0.1:8080/captchaImage
 
 影像（检测照片、证件、凭证）**只存对象存储，没有本地磁盘兜底**。这一步没做完，小程序端上传会直接报「对象存储未启用」。
 
-#### 5.6.1 控制台要做的三件事
+#### 5.6.1 控制台要做的五件事
 
 **① 建 Bucket**
 
@@ -278,6 +278,7 @@ curl -s -o /dev/null -w '%{http_code}\n' http://127.0.0.1:8080/captchaImage
       "Effect": "Allow",
       "Action": [
         "oss:PutObject",
+        "oss:PutObjectAcl",
         "oss:GetObject",
         "oss:DeleteObject",
         "oss:AbortMultipartUpload",
@@ -290,6 +291,8 @@ curl -s -o /dev/null -w '%{http_code}\n' http://127.0.0.1:8080/captchaImage
 ```
 
 `Resource` 末尾的 `/*` 不能少（对象级权限），Bucket 名换成自己的。**不要给 `oss:*` 全资源**。
+
+其中 `oss:PutObjectAcl` 容易漏：头像、富文本图这类通用上传要按对象设 `public-read`，框架是通过 `SetObjectACL` 单独调的，不写在 PUT 里。少了这一条，普通上传成功、但一带 ACL 就 `AccessDenied`，表现为“头像传不上去、富文本插图失败”，排查时容易怀疑到别处。
 
 **④ Bucket 跨域（CORS）**
 
@@ -344,14 +347,23 @@ systemctl restart xinyi-admin
 python3 logs/check_oss.py --env-file /home/xinyi/app/.env
 ```
 
-脚本会真实上传、下载、删除一个测试对象，并打印一条预签名短链：
+脚本会真实上传、下载、删除一个测试对象，再用 `public-read` 传一个、匿名直链读一次，最后打印一条预签名短链：
 
 ```
 [OK]   上传成功（HTTP 200），对象 key = _selfcheck/check-1762xxxx.txt
 [OK]   下载成功，内容一致
 [OK]   预签名短链访问成功 —— 这条链接手机端也能打开
 [OK]   测试对象已删除，桶内无残留
+[OK]   带 ACL 上传成功（x-oss-object-acl: public-read）
+[OK]   匿名直链可读 —— 头像、富文本图片地址不依赖签名，长期有效
 ```
+
+第 5、6 条是通用上传（头像、富文本图）的专用链路，和业务影像的「私有 + 短链」分开。这两条失败时上传接口仍会返回 403，但**前面几条全绿**，很容易误判成别的毛病：
+
+| 现象 | 原因 |
+| --- | --- |
+| 带 ACL 上传就 `AccessDenied` | RAM 策略缺 `oss:PutObjectAcl` |
+| 带 ACL 能传，匿名直链 403 | Bucket「阻止公共访问」还开着 |
 
 **把那条短链粘到手机浏览器（关掉 WiFi 用 4G）打开**，能看到一行文字才算真正通了。在服务器上用 curl 通、手机上不通，基本就是 endpoint 写成了内网节点。
 

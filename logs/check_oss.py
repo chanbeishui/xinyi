@@ -165,7 +165,7 @@ def main():
     print("=" * 72)
 
     # ---------- 1. 变量齐全性 ----------
-    print("\n[1/4] 检查环境变量")
+    print("\n[1/5] 检查环境变量")
     missing = []
     for key, desc in VARS.items():
         val = cfg[key]
@@ -191,7 +191,7 @@ def main():
     domain = cfg["RONGLI_OSS_DOMAIN"]
 
     # ---------- 2. 形态检查 ----------
-    print("\n[2/4] 检查配置形态")
+    print("\n[2/5] 检查配置形态")
     if "-internal" in endpoint:
         warn("endpoint 是内网节点（%s）：后端上传更快且免费，但小程序拿到的短链也是这个域名，"
              "公网解析不到 —— 除非你确认客户端和服务端在同一 VPC，否则必须换成公网节点" % endpoint)
@@ -214,7 +214,7 @@ def main():
         fail("RONGLI_OSS_DOMAIN 必须带 http:// 或 https:// 前缀")
 
     # ---------- 3. 真实读写 ----------
-    print("\n[3/4] 用当前凭据真实上传 / 下载 / 删除一个测试对象")
+    print("\n[3/5] 用当前凭据真实上传 / 下载 / 删除一个测试对象")
     key = "_selfcheck/check-%d.txt" % int(time.time())
     body = ("rongli oss selfcheck %s\n" % time.strftime("%Y-%m-%d %H:%M:%S")).encode("utf-8")
     content_md5 = base64.b64encode(hashlib.md5(body).digest()).decode("ascii")
@@ -303,8 +303,69 @@ def main():
     else:
         ok("测试对象已删除，桶内无残留")
 
-    # ---------- 4. 交付说明 ----------
-    print("\n[4/4] 下一步")
+    # ---------- 4. 通用上传的 public-read ----------
+    # 头像/富文本图走对象级 ACL，直链要长期可访问；这条链路和业务影像的私有+短链是分开的，
+    # 单独失败不会在前面的 PUT/GET 里暴露出来，必须单独验一次。
+    print("\n[4/5] 验证通用上传的 public-read（头像、富文本图靠它）")
+    acl_key = "_selfcheck/acl-%d.txt" % int(time.time())
+    acr_header = "public-read"
+    content_md5 = base64.b64encode(hashlib.md5(body).digest()).decode("ascii")
+    date = formatdate(usegmt=True)
+    # 带 x-oss-* 头时，签名要把它按 "小写名:值\n" 拼进 CanonicalizedOSSHeaders 位置
+    sts = "PUT\n%s\n%s\n%s\nx-oss-object-acl:%s\n/%s/%s" % (
+        content_md5, content_type, date, acr_header, bucket, acl_key)
+    req = urllib.request.Request(
+        object_url(bucket, endpoint, acl_key),
+        data=body,
+        headers={
+            "Date": date,
+            "Content-Type": content_type,
+            "Content-MD5": content_md5,
+            "x-oss-object-acl": acr_header,
+            "Authorization": "OSS %s:%s" % (ak, sign(sk, sts)),
+        },
+        method="PUT",
+    )
+    status, _, err = do_request(req, "带 ACL 上传")
+    acl_ok = True
+    if err:
+        acl_ok = False
+        code, message, _ = err
+        fail("带 ACL 的普通上传失败：%s %s" % (code, message))
+        if code == "AccessDenied":
+            print("         两种可能，都要检查：")
+            print("         ① RAM 策略缺 oss:PutObjectAcl（框架设 ACL 是单独调 SetObjectACL，不随 PUT 走）")
+            print("         ② Bucket「权限控制 → 阻止公共访问」是开启状态，需关闭")
+    else:
+        ok("带 ACL 上传成功（x-oss-object-acl: %s）" % acr_header)
+
+    if acl_ok:
+        # 不带任何签名参数直接 GET，能读到才说明 ACL 真的生效、且公共访问没被拦
+        req = urllib.request.Request(object_url(bucket, endpoint, acl_key), method="GET")
+        status, got, err = do_request(req, "匿名读取")
+        if err:
+            code, message, _ = err
+            fail("匿名直链读不到对象：%s %s —— 头像/富文本图会显示为裂图" % (code, message))
+            print("         对象 ACL 设了 public-read 仍被拦，基本是 Bucket「阻止公共访问」还开着")
+        elif got != body:
+            fail("匿名读取内容不一致")
+        else:
+            ok("匿名直链可读 —— 头像、富文本图片地址不依赖签名，长期有效")
+
+        # 清理
+        date = formatdate(usegmt=True)
+        sts = "DELETE\n\n\n%s\n/%s/%s" % (date, bucket, acl_key)
+        req = urllib.request.Request(
+            object_url(bucket, endpoint, acl_key),
+            headers={"Date": date, "Authorization": "OSS %s:%s" % (ak, sign(sk, sts))},
+            method="DELETE",
+        )
+        _, _, err = do_request(req, "删除")
+        if err:
+            warn("ACL 测试对象未删掉，请手工清理 %s" % acl_key)
+
+    # ---------- 5. 交付说明 ----------
+    print("\n[5/5] 下一步")
     print("  短链样例（1 小时内有效，可直接粘到浏览器/手机验证）：")
     print("  " + presigned)
     print("")
