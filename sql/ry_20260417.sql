@@ -1719,6 +1719,7 @@ CREATE TABLE `vi_aftersale_case` (
   `applicant_id` BIGINT NOT NULL COMMENT '实际申请身份',
   `reason` VARCHAR(1000) NOT NULL COMMENT '原始申请说明',
   `reason_code` VARCHAR(64) NULL COMMENT '申请原因代码，原说明独立保留',
+  `public_opinion` VARCHAR(1000) NULL COMMENT '对申请人公开的审核说明，不包含内部审核意见',
   `evidence_ids` JSON COMMENT '关联证据文件ID',
   `resolved_at` DATETIME(3) COMMENT '业务及资金均已办结',
   `active_order` BIGINT GENERATED ALWAYS AS (IF(case_status IN ('PENDING_REVIEW','EXECUTING'),order_id,NULL)) STORED COMMENT '一个未办结申请',
@@ -1728,6 +1729,7 @@ CREATE TABLE `vi_aftersale_case` (
   PRIMARY KEY (`id`),
   UNIQUE KEY uk_case_no (case_no),
   UNIQUE KEY uk_active_order (active_order),
+  KEY ix_case_order_history (order_id,id),
   KEY ix_review (review_status,created_at),
   KEY ix_return (return_state,updated_at),
   CONSTRAINT ck_after_amount CHECK (requested_fen>=0 AND (approved_fen IS NULL OR approved_fen>=0)),
@@ -1740,13 +1742,22 @@ CREATE TABLE `vi_aftersale_case` (
 CREATE TABLE `vi_aftersale_note` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '补充记录ID，API十进制字符串',
   `case_id` BIGINT NOT NULL COMMENT '原售后申请；权限以原订单归属为准',
-  `account_id` BIGINT NOT NULL COMMENT '实际补充资料的车主账号',
+  `account_id` BIGINT NULL COMMENT '小程序贡献者，与后台贡献者互斥',
+  `user_id` BIGINT NULL COMMENT '后台实际补充人，与小程序贡献者互斥',
   `note` VARCHAR(1000) NOT NULL COMMENT '补充说明，追加后不可覆盖原申请',
   `evidence_ids` JSON COMMENT '已核验且归属原订单的私有文件ID',
   `created_at` DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3)) COMMENT 'UTC创建时间',
   PRIMARY KEY (`id`),
-  KEY ix_aftersale_note_case (case_id,id)
+  KEY ix_aftersale_note_case (case_id,id),
+  CONSTRAINT ck_aftersale_note_actor CHECK ((account_id IS NOT NULL AND user_id IS NULL) OR (account_id IS NULL AND user_id IS NOT NULL))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='车主售后补充资料追加历史';
+
+CREATE TABLE `vi_aftersale_participant_user` (
+  `case_id` BIGINT NOT NULL COMMENT '售后申请，覆盖申请和全部追加贡献者',
+  `user_id` BIGINT NOT NULL COMMENT '贡献时已知的可信员工同人关系，撤销绑定后仍排除自审',
+  `created_at` DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3)) COMMENT '关系冻结UTC时刻',
+  PRIMARY KEY (`case_id`,`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='追加式售后独立审核排除关系';
 
 CREATE TABLE `vi_aftersale_review` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',
@@ -1759,6 +1770,7 @@ CREATE TABLE `vi_aftersale_review` (
   `return_required` TINYINT NOT NULL COMMENT '由服务端产生',
   `reviewer_user_id` BIGINT NOT NULL COMMENT '不能与申请人为同一真实身份',
   `opinion` VARCHAR(1000) NOT NULL COMMENT '审核意见',
+  `public_opinion` VARCHAR(1000) NULL COMMENT '对申请人公开的决定说明，历史无明确公开依据保持NULL',
   `reviewed_at` DATETIME(3) NOT NULL COMMENT 'UTC',
   `created_at` DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3)) COMMENT 'UTC',
   `updated_at` DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3)) COMMENT 'UTC更新时间；Mapper每次修改显式SET updated_at=UTC_TIMESTAMP(3)，不依赖连接时区',
@@ -2739,3 +2751,34 @@ INSERT INTO f01_menu_guard SELECT COUNT(*) FROM sys_menu WHERE (menu_id=2970704 
 INSERT INTO sys_menu(menu_id,menu_name,parent_id,order_num,path,component,is_frame,is_cache,menu_type,visible,status,perms,icon,create_by,remark) SELECT 2970704,'查看私有凭证',2970700,70,'#',NULL,1,1,'F','1','0','biz:files:access','system','migration','F01服务端权限；不自动授权' WHERE NOT EXISTS(SELECT 1 FROM sys_menu WHERE menu_id=2970704);
 DROP TEMPORARY TABLE f01_menu_guard;
 SELECT menu_id,parent_id,perms FROM sys_menu WHERE menu_id BETWEEN 2970700 AND 2970704 ORDER BY menu_id;
+
+-- S02售后功能与资金权限稳定菜单，初始不自动授予角色。
+CREATE TEMPORARY TABLE s02_menu_guard (violations INT NOT NULL CHECK(violations=0));
+SELECT menu_id,parent_id,perms FROM sys_menu WHERE (menu_id=2970800 AND (parent_id<>0 OR COALESCE(perms,'')<>''));
+INSERT INTO s02_menu_guard SELECT COUNT(*) FROM sys_menu WHERE (menu_id=2970800 AND (parent_id<>0 OR COALESCE(perms,'')<>''));
+INSERT INTO sys_menu(menu_id,menu_name,parent_id,order_num,path,component,is_frame,is_cache,menu_type,visible,status,perms,icon,create_by,remark) SELECT 2970800,'取消与退款',0,80,'aftersale',NULL,1,1,'M','0','0','','documentation','migration','S02订单权限与收款主体资金权限分别校验；不自动授权' WHERE NOT EXISTS(SELECT 1 FROM sys_menu WHERE menu_id=2970800);
+SELECT menu_id,parent_id,perms FROM sys_menu WHERE (menu_id=2970801 AND (parent_id<>2970800 OR COALESCE(perms,'')<>'biz:aftersale:list')) OR (perms='biz:aftersale:list' AND menu_id<>2970801);
+INSERT INTO s02_menu_guard SELECT COUNT(*) FROM sys_menu WHERE (menu_id=2970801 AND (parent_id<>2970800 OR COALESCE(perms,'')<>'biz:aftersale:list')) OR (perms='biz:aftersale:list' AND menu_id<>2970801);
+INSERT INTO sys_menu(menu_id,menu_name,parent_id,order_num,path,component,is_frame,is_cache,menu_type,visible,status,perms,icon,create_by,remark) SELECT 2970801,'售后申请',2970800,80,'cases','rongli/aftersale/index',1,1,'C','0','0','biz:aftersale:list','documentation','migration','S02订单权限与收款主体资金权限分别校验；不自动授权' WHERE NOT EXISTS(SELECT 1 FROM sys_menu WHERE menu_id=2970801);
+SELECT menu_id,parent_id,perms FROM sys_menu WHERE (menu_id=2970802 AND (parent_id<>2970801 OR COALESCE(perms,'')<>'biz:aftersale:query')) OR (perms='biz:aftersale:query' AND menu_id<>2970802);
+INSERT INTO s02_menu_guard SELECT COUNT(*) FROM sys_menu WHERE (menu_id=2970802 AND (parent_id<>2970801 OR COALESCE(perms,'')<>'biz:aftersale:query')) OR (perms='biz:aftersale:query' AND menu_id<>2970802);
+INSERT INTO sys_menu(menu_id,menu_name,parent_id,order_num,path,component,is_frame,is_cache,menu_type,visible,status,perms,icon,create_by,remark) SELECT 2970802,'查看售后',2970801,80,'#',NULL,1,1,'F','0','0','biz:aftersale:query','documentation','migration','S02订单权限与收款主体资金权限分别校验；不自动授权' WHERE NOT EXISTS(SELECT 1 FROM sys_menu WHERE menu_id=2970802);
+SELECT menu_id,parent_id,perms FROM sys_menu WHERE (menu_id=2970803 AND (parent_id<>2970801 OR COALESCE(perms,'')<>'biz:aftersale:create')) OR (perms='biz:aftersale:create' AND menu_id<>2970803);
+INSERT INTO s02_menu_guard SELECT COUNT(*) FROM sys_menu WHERE (menu_id=2970803 AND (parent_id<>2970801 OR COALESCE(perms,'')<>'biz:aftersale:create')) OR (perms='biz:aftersale:create' AND menu_id<>2970803);
+INSERT INTO sys_menu(menu_id,menu_name,parent_id,order_num,path,component,is_frame,is_cache,menu_type,visible,status,perms,icon,create_by,remark) SELECT 2970803,'后台代办售后',2970801,80,'#',NULL,1,1,'F','0','0','biz:aftersale:create','documentation','migration','S02订单权限与收款主体资金权限分别校验；不自动授权' WHERE NOT EXISTS(SELECT 1 FROM sys_menu WHERE menu_id=2970803);
+SELECT menu_id,parent_id,perms FROM sys_menu WHERE (menu_id=2970804 AND (parent_id<>2970801 OR COALESCE(perms,'')<>'biz:aftersale:note')) OR (perms='biz:aftersale:note' AND menu_id<>2970804);
+INSERT INTO s02_menu_guard SELECT COUNT(*) FROM sys_menu WHERE (menu_id=2970804 AND (parent_id<>2970801 OR COALESCE(perms,'')<>'biz:aftersale:note')) OR (perms='biz:aftersale:note' AND menu_id<>2970804);
+INSERT INTO sys_menu(menu_id,menu_name,parent_id,order_num,path,component,is_frame,is_cache,menu_type,visible,status,perms,icon,create_by,remark) SELECT 2970804,'补充售后资料',2970801,80,'#',NULL,1,1,'F','0','0','biz:aftersale:note','documentation','migration','S02订单权限与收款主体资金权限分别校验；不自动授权' WHERE NOT EXISTS(SELECT 1 FROM sys_menu WHERE menu_id=2970804);
+SELECT menu_id,parent_id,perms FROM sys_menu WHERE (menu_id=2970805 AND (parent_id<>2970801 OR COALESCE(perms,'')<>'biz:aftersale:reviewpreview')) OR (perms='biz:aftersale:reviewpreview' AND menu_id<>2970805);
+INSERT INTO s02_menu_guard SELECT COUNT(*) FROM sys_menu WHERE (menu_id=2970805 AND (parent_id<>2970801 OR COALESCE(perms,'')<>'biz:aftersale:reviewpreview')) OR (perms='biz:aftersale:reviewpreview' AND menu_id<>2970805);
+INSERT INTO sys_menu(menu_id,menu_name,parent_id,order_num,path,component,is_frame,is_cache,menu_type,visible,status,perms,icon,create_by,remark) SELECT 2970805,'预览审核结果',2970801,80,'#',NULL,1,1,'F','0','0','biz:aftersale:reviewpreview','documentation','migration','S02订单权限与收款主体资金权限分别校验；不自动授权' WHERE NOT EXISTS(SELECT 1 FROM sys_menu WHERE menu_id=2970805);
+SELECT menu_id,parent_id,perms FROM sys_menu WHERE (menu_id=2970806 AND (parent_id<>2970801 OR COALESCE(perms,'')<>'biz:aftersale:review')) OR (perms='biz:aftersale:review' AND menu_id<>2970806);
+INSERT INTO s02_menu_guard SELECT COUNT(*) FROM sys_menu WHERE (menu_id=2970806 AND (parent_id<>2970801 OR COALESCE(perms,'')<>'biz:aftersale:review')) OR (perms='biz:aftersale:review' AND menu_id<>2970806);
+INSERT INTO sys_menu(menu_id,menu_name,parent_id,order_num,path,component,is_frame,is_cache,menu_type,visible,status,perms,icon,create_by,remark) SELECT 2970806,'统一售后审核',2970801,80,'#',NULL,1,1,'F','0','0','biz:aftersale:review','documentation','migration','S02订单权限与收款主体资金权限分别校验；不自动授权' WHERE NOT EXISTS(SELECT 1 FROM sys_menu WHERE menu_id=2970806);
+SELECT menu_id,parent_id,perms FROM sys_menu WHERE (menu_id=2970807 AND (parent_id<>2970801 OR COALESCE(perms,'')<>'biz:refund:query')) OR (perms='biz:refund:query' AND menu_id<>2970807);
+INSERT INTO s02_menu_guard SELECT COUNT(*) FROM sys_menu WHERE (menu_id=2970807 AND (parent_id<>2970801 OR COALESCE(perms,'')<>'biz:refund:query')) OR (perms='biz:refund:query' AND menu_id<>2970807);
+INSERT INTO sys_menu(menu_id,menu_name,parent_id,order_num,path,component,is_frame,is_cache,menu_type,visible,status,perms,icon,create_by,remark) SELECT 2970807,'查看客户退款资金',2970801,80,'#',NULL,1,1,'F','0','0','biz:refund:query','documentation','migration','S02订单权限与收款主体资金权限分别校验；不自动授权' WHERE NOT EXISTS(SELECT 1 FROM sys_menu WHERE menu_id=2970807);
+SELECT menu_id,parent_id,perms FROM sys_menu WHERE (menu_id=2970808 AND (parent_id<>2970801 OR COALESCE(perms,'')<>'biz:refund:approve')) OR (perms='biz:refund:approve' AND menu_id<>2970808);
+INSERT INTO s02_menu_guard SELECT COUNT(*) FROM sys_menu WHERE (menu_id=2970808 AND (parent_id<>2970801 OR COALESCE(perms,'')<>'biz:refund:approve')) OR (perms='biz:refund:approve' AND menu_id<>2970808);
+INSERT INTO sys_menu(menu_id,menu_name,parent_id,order_num,path,component,is_frame,is_cache,menu_type,visible,status,perms,icon,create_by,remark) SELECT 2970808,'批准客户退款资金',2970801,80,'#',NULL,1,1,'F','0','0','biz:refund:approve','documentation','migration','S02订单权限与收款主体资金权限分别校验；不自动授权' WHERE NOT EXISTS(SELECT 1 FROM sys_menu WHERE menu_id=2970808);
+DROP TEMPORARY TABLE s02_menu_guard;

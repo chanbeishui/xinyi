@@ -1,7 +1,7 @@
 # R02 · 个人汇总与明确勾选组单
 
 阶段：M5；责任域：statement；前置：R01, I06。
-范围版本：`V6.1-UNCHANGED`；definitionHash：`24cf053f7cda0d3a22c1cddd779496d59a217448b61c05ab16b14fdc2ff938bf`。
+范围版本：`V6.1-UNCHANGED`；definitionHash：`ab88d214049e37da3758cea7eac043121b04fd333b2722386797c0db0619aa01`。
 
 ## 本任务交付
 - 未结清/全部账单/付款三标签，跨页选择，按selectedEntries建草稿
@@ -16,7 +16,7 @@
 接口：V4_post_api_admin_driver_statements_preview, V4_post_api_admin_driver_statements, V4_get_api_admin_driver_statements, V4_get_api_admin_driver_statements__statementId, V4_post_api_admin_driver_statements__statementId__void, V42_get_api_admin_drivers__driverId__reconciliation_overview, V42_get_api_admin_drivers__driverId__reconciliation_entries, V42_get_api_app_driver_reconciliation_entries
 画板：B37, B42, B42-select, B42-selected, B42-generate, B42-conflict, B42-bills, B42-bills-partial, B42-payments, B42-empty, B42-forbidden
 主责任表：vi_driver_statement, vi_driver_statement_line, vi_driver_ledger_allocation
-验收：TC-R42-001, TC-R42-002, TC-R42-003, TC-R42-004, TC-R42-005, TC-R42-006, TC-R42-007, TC-R42-008, TC-R42-009, TC-R42-010, TC-R42-011, TC-R42-012, TC-R42-013, TC-R42-014, TC-R42-015, TC-R42-016, TC-R42-017, TC-R42-018, TC-R42-019, TC-R42-020, TC-R42-023, TC-R42-024, TC-R42-035, TC-R42-039, TC-R42-040, TC-R50-029, TC-R50-030
+验收：TC-R42-001, TC-R42-002, TC-R42-003, TC-R42-004, TC-R42-005, TC-R42-006, TC-R42-007, TC-R42-008, TC-R42-009, TC-R42-010, TC-R42-011, TC-R42-012, TC-R42-013, TC-R42-014, TC-R42-015, TC-R42-016, TC-R42-017, TC-R42-018, TC-R42-019, TC-R42-020, TC-R42-023, TC-R42-024, TC-R42-035, TC-R42-039, TC-R42-040, TC-R50-029, TC-R50-030, TC-171, TC-172, TC-173, TC-174
 
 ## 代码落位
 `xinyi-rongli/src/main/java/com/xinyi/rongli/statement/`

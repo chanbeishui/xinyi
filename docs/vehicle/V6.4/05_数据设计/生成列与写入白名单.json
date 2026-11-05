@@ -4641,25 +4641,19 @@
       "reason",
       "evidence_ids",
       "resolved_at",
-      "reason_code"
+      "reason_code",
+      "public_opinion"
     ],
     "updateColumns": [
       "case_no",
-      "order_id",
-      "payment_id",
-      "kind",
       "case_status",
       "review_status",
       "review_revision",
-      "requested_fen",
       "approved_fen",
       "return_state",
       "refund_state",
-      "applicant_type",
-      "applicant_id",
-      "reason",
-      "evidence_ids",
-      "resolved_at"
+      "resolved_at",
+      "public_opinion"
     ],
     "columnRules": {
       "id": {
@@ -4677,19 +4671,19 @@
       "order_id": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "payment_id": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "kind": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "case_status": {
@@ -4715,7 +4709,7 @@
       "requested_fen": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "approved_fen": {
@@ -4739,26 +4733,26 @@
       "applicant_type": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false,
         "enumRef": "ApplicantType"
       },
       "applicant_id": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "reason": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "evidence_ids": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "resolved_at": {
@@ -4798,6 +4792,12 @@
         "insertable": true,
         "updatable": false,
         "clientWritable": false
+      },
+      "public_opinion": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
       }
     },
     "rule": "审核时锁订单/支付/申请，预留退款；实际返还后继续同一决定，无二次默认退款审核。"
@@ -4816,20 +4816,10 @@
       "return_required",
       "reviewer_user_id",
       "opinion",
-      "reviewed_at"
+      "reviewed_at",
+      "public_opinion"
     ],
-    "updateColumns": [
-      "case_id",
-      "revision",
-      "decision",
-      "approved_fen",
-      "observed_order_version",
-      "custody_at_review",
-      "return_required",
-      "reviewer_user_id",
-      "opinion",
-      "reviewed_at"
-    ],
+    "updateColumns": [],
     "columnRules": {
       "id": {
         "generated": false,
@@ -4840,61 +4830,61 @@
       "case_id": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "revision": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "decision": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "approved_fen": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "observed_order_version": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "custody_at_review": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "return_required": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "reviewer_user_id": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "opinion": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "reviewed_at": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "created_at": {
@@ -4914,6 +4904,12 @@
       "version": {
         "generated": false,
         "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "public_opinion": {
+        "generated": false,
+        "insertable": true,
         "updatable": false,
         "clientWritable": false
       }
@@ -9585,7 +9581,8 @@
       "case_id",
       "account_id",
       "note",
-      "evidence_ids"
+      "evidence_ids",
+      "user_id"
     ],
     "updateColumns": [],
     "columnRules": {
@@ -9625,8 +9622,46 @@
         "updatable": false,
         "clientWritable": false,
         "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "user_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
       }
     },
     "rule": "以父售后订单owner_account_id为权威归属；本人追加不可覆盖或删除。整组凭证必须READY且同订单本人DISPUTE；与版本、成功审计和outbox同事务。"
+  },
+  {
+    "table": "vi_aftersale_participant_user",
+    "writeMode": "APPEND_ONLY",
+    "generatedColumns": [],
+    "columnRules": {
+      "case_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "user_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "created_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      }
+    },
+    "rule": "在申请/补充事务内从可信员工关系冻结贡献者排除集合；只追加，不因解绑/手机号修改移除；不能由客户端提交。",
+    "insertColumns": [
+      "case_id",
+      "user_id"
+    ],
+    "updateColumns": []
   }
 ]

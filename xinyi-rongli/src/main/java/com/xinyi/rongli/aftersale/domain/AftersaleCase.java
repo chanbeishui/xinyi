@@ -4,6 +4,16 @@ import com.xinyi.rongli.core.ViRecord;
 
 /** 持久化记录，禁止作为请求体或公开响应绑定。 */
 public class AftersaleCase extends ViRecord {
+    private String publicOpinion;
+
+    public String getPublicOpinion() {
+        return publicOpinion;
+    }
+
+    public void setPublicOpinion(String value) {
+        publicOpinion = value;
+    }
+
     private String caseNo;
 
     public String getCaseNo() {

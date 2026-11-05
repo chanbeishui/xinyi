@@ -3491,14 +3491,9 @@
     "tables": [],
     "case_ids": [
       "TC-090",
-      "TC-091",
-      "TC-092",
       "TC-093",
       "TC-094",
       "TC-095",
-      "TC-096",
-      "TC-097",
-      "TC-098",
       "TC-099",
       "TC-100",
       "TC-101",
@@ -3512,7 +3507,7 @@
     "code_paths": [
       "xinyi-rongli/src/main/java/com/xinyi/rongli/fulfillment/",
       "xinyi-rongli/src/main/resources/mapper/rongli/fulfillment/",
-      "xinyi-rongli/src/main/java/com/xinyi/rongli/fulfillment/controller/",
+      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/fulfillment/",
       "xinyi-ui/src/views/rongli/fulfillment/",
       "xinyi-ui/src/api/rongli/fulfillment.ts",
       "xinyi-miniapp/src/features/fulfillment/"
@@ -3536,7 +3531,7 @@
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
     "scopeRevision": "V6.1-UNCHANGED",
-    "definitionHash": "e8627703e9f2f6619e0db15891d149909a1a59f041f6bcb1b137a7860052cbfe",
+    "definitionHash": "80a20d6452bcaf577a2ae4a140972eaa65b21f522ed9f629169d16f79c201b70",
     "evidence": [],
     "implementation": null,
     "review": null,
@@ -3880,9 +3875,7 @@
       "vi_vehicle_license"
     ],
     "case_ids": [
-      "TC-145",
-      "TC-146",
-      "TC-147"
+      "TC-146"
     ],
     "scope": "DEVELOPMENT",
     "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
@@ -3890,7 +3883,7 @@
     "code_paths": [
       "xinyi-rongli/src/main/java/com/xinyi/rongli/inspection/",
       "xinyi-rongli/src/main/resources/mapper/rongli/inspection/",
-      "xinyi-rongli/src/main/java/com/xinyi/rongli/inspection/controller/",
+      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/inspection/",
       "xinyi-ui/src/views/rongli/inspection/",
       "xinyi-ui/src/api/rongli/inspection.ts",
       "xinyi-miniapp/src/features/inspection/"
@@ -3914,7 +3907,7 @@
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
     "scopeRevision": "V6.1-UNCHANGED",
-    "definitionHash": "fc521d74706ff596d9c96dafb1b50bb50a52c2f75b45796a94a7617df9e07014",
+    "definitionHash": "1880932fc2ddb8e68d2918971cbe2858ce7ff7ab21a1a0c28bfd623e21971e2b",
     "evidence": [],
     "implementation": null,
     "review": null,
@@ -4194,7 +4187,9 @@
     "deliverables": [
       "当前保管事实+可退额预览、批准/驳回",
       "已接车WAIT_RETURN",
-      "V6.4同步范围：第三方配置/支付method/外部路由/消息模板以主PRD23和X01–X07为准；旧静态配置不能形成旁路"
+      "V6.4同步范围：第三方配置/支付method/外部路由/消息模板以主PRD23和X01–X07为准；旧静态配置不能形成旁路",
+      "订单部门与原收款主体资金权限分别校验；后台代办与公开补充、可信同人贡献者不可自审",
+      "公开publicOpinion与内部opinion隔离；预览不写款，审核同事务预留与稳定原方式退款单，渠道执行交P04"
     ],
     "negative_checks": [
       "取消批准不释放持车司机",
@@ -4225,33 +4220,39 @@
       "B14-unknown"
     ],
     "tables": [
-      "vi_aftersale_review"
+      "vi_aftersale_review",
+      "vi_aftersale_participant_user"
     ],
     "case_ids": [
-      "TC-163",
-      "TC-164",
-      "TC-165",
-      "TC-166",
-      "TC-167",
-      "TC-168",
-      "TC-171",
-      "TC-172",
-      "TC-173",
-      "TC-174",
-      "TC-175",
-      "TC-176",
-      "TC-177"
+      "TC-091",
+      "TC-092",
+      "TC-096",
+      "TC-097",
+      "TC-098",
+      "TC-116",
+      "TC-117",
+      "TC-122",
+      "TC-126",
+      "TC-143",
+      "TC-144",
+      "TC-145",
+      "TC-147",
+      "TC-149",
+      "TC-150",
+      "TC-151",
+      "TC-152"
     ],
     "scope": "DEVELOPMENT",
     "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
-    "status": "NOT_ASSESSED",
+    "status": "VERIFIED",
     "code_paths": [
       "xinyi-rongli/src/main/java/com/xinyi/rongli/aftersale/",
       "xinyi-rongli/src/main/resources/mapper/rongli/aftersale/",
-      "xinyi-rongli/src/main/java/com/xinyi/rongli/aftersale/controller/",
       "xinyi-ui/src/views/rongli/aftersale/",
       "xinyi-ui/src/api/rongli/aftersale.ts",
-      "xinyi-miniapp/src/features/aftersale/"
+      "xinyi-miniapp/src/features/aftersale/",
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/aftersale/controller/",
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/S02AftersaleIT.java"
     ],
     "test_class": "S02AftersaleIT",
     "commands": [
@@ -4271,9 +4272,14 @@
       "access": "不得绕过限制；保存恢复点",
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
-    "scopeRevision": "V6.4-CONFIG-20261022",
-    "definitionHash": "6a697f99a82cb1afde32222416c500d90f89fda9a1879f761ac78f920b91728e",
-    "evidence": [],
+    "scopeRevision": "V6.4-AFTERSALE-REVIEW-20261106",
+    "definitionHash": "1cbea4eaf33807c569ce60206434b62bffae6d26c665768e94d457ca8336ccb2",
+    "evidence": [
+      {
+        "path": "docs/implementation/vehicle/evidence/S02-20261106.json",
+        "sha256": "2df61edcdc9a4f73ac9c6f80bc1e11e097dbba75b6f5639558c9fe956f0e2d29"
+      }
+    ],
     "implementation": null,
     "review": null,
     "blocker": null,
@@ -4286,7 +4292,9 @@
         "reason": "用户确认身份流程变更，保留代码和旧证据但需适配新范围",
         "at": "2026-10-22T14:48:23.198485+00:00"
       }
-    ]
+    ],
+    "needsAdaptation": false,
+    "updatedAt": "2026-11-05T16:32:15.200280+00:00"
   },
   {
     "id": "S03",
@@ -4459,24 +4467,14 @@
     ],
     "case_ids": [
       "TC-115",
-      "TC-116",
-      "TC-117",
       "TC-118",
       "TC-119",
       "TC-120",
       "TC-121",
-      "TC-122",
       "TC-123",
       "TC-124",
       "TC-125",
-      "TC-126",
-      "TC-143",
-      "TC-144",
       "TC-148",
-      "TC-149",
-      "TC-150",
-      "TC-151",
-      "TC-152",
       "TC-153",
       "TC-154",
       "TC-196"
@@ -4487,7 +4485,7 @@
     "code_paths": [
       "xinyi-rongli/src/main/java/com/xinyi/rongli/review/",
       "xinyi-rongli/src/main/resources/mapper/rongli/review/",
-      "xinyi-rongli/src/main/java/com/xinyi/rongli/review/controller/",
+      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/review/",
       "xinyi-ui/src/views/rongli/review/",
       "xinyi-ui/src/api/rongli/review.ts",
       "xinyi-miniapp/src/features/review/"
@@ -4511,7 +4509,7 @@
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
     "scopeRevision": "V6.1-UNCHANGED",
-    "definitionHash": "6c2634b1ef955a8f1720bc519cc45a477a2c59e0dcbce6bbf921e220707c3dd8",
+    "definitionHash": "e978a5bbd5279eb2901b1cff903e6b03936dda58f0ea9ca26dfac4494e39bce9",
     "evidence": [],
     "implementation": null,
     "review": null,
@@ -4791,14 +4789,21 @@
     "tables": [
       "vi_driver_fee_ledger"
     ],
-    "case_ids": [],
+    "case_ids": [
+      "TC-163",
+      "TC-164",
+      "TC-165",
+      "TC-166",
+      "TC-167",
+      "TC-168"
+    ],
     "scope": "DEVELOPMENT",
     "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
     "status": "NOT_ASSESSED",
     "code_paths": [
       "xinyi-rongli/src/main/java/com/xinyi/rongli/driverfee/",
       "xinyi-rongli/src/main/resources/mapper/rongli/driverfee/",
-      "xinyi-rongli/src/main/java/com/xinyi/rongli/driverfee/controller/",
+      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/driverfee/",
       "xinyi-ui/src/views/rongli/driverfee/",
       "xinyi-ui/src/api/rongli/driverfee.ts",
       "xinyi-miniapp/src/features/driverfee/"
@@ -4822,7 +4827,7 @@
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
     "scopeRevision": "V6.1-UNCHANGED",
-    "definitionHash": "2b6cf7f8d47273b86f6bc1cca762dd03269bee15f854b78334a9ec40770faf9b",
+    "definitionHash": "a9fbfcae4b3fe0aafaaee1512df76ef20b20583d2202d9d4d5cd02761a6bd2d4",
     "evidence": [],
     "implementation": null,
     "review": null,
@@ -4900,7 +4905,11 @@
       "TC-R42-039",
       "TC-R42-040",
       "TC-R50-029",
-      "TC-R50-030"
+      "TC-R50-030",
+      "TC-171",
+      "TC-172",
+      "TC-173",
+      "TC-174"
     ],
     "scope": "DEVELOPMENT",
     "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
@@ -4908,7 +4917,7 @@
     "code_paths": [
       "xinyi-rongli/src/main/java/com/xinyi/rongli/statement/",
       "xinyi-rongli/src/main/resources/mapper/rongli/statement/",
-      "xinyi-rongli/src/main/java/com/xinyi/rongli/statement/controller/",
+      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/statement/",
       "xinyi-ui/src/views/rongli/statement/",
       "xinyi-ui/src/api/rongli/statement.ts",
       "xinyi-miniapp/src/features/statement/"
@@ -4932,7 +4941,7 @@
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
     "scopeRevision": "V6.1-UNCHANGED",
-    "definitionHash": "24cf053f7cda0d3a22c1cddd779496d59a217448b61c05ab16b14fdc2ff938bf",
+    "definitionHash": "ab88d214049e37da3758cea7eac043121b04fd333b2722386797c0db0619aa01",
     "evidence": [],
     "implementation": null,
     "review": null,
@@ -5107,7 +5116,10 @@
       "TC-179",
       "TC-180",
       "TC-181",
-      "TC-182"
+      "TC-182",
+      "TC-175",
+      "TC-176",
+      "TC-177"
     ],
     "scope": "DEVELOPMENT",
     "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
@@ -5115,7 +5127,7 @@
     "code_paths": [
       "xinyi-rongli/src/main/java/com/xinyi/rongli/statement/",
       "xinyi-rongli/src/main/resources/mapper/rongli/statement/",
-      "xinyi-rongli/src/main/java/com/xinyi/rongli/statement/controller/",
+      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/statement/",
       "xinyi-ui/src/views/rongli/statement/",
       "xinyi-ui/src/api/rongli/statement.ts",
       "xinyi-miniapp/src/features/statement/"
@@ -5139,7 +5151,7 @@
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
     "scopeRevision": "V6.1-UNCHANGED",
-    "definitionHash": "86b3eddf7f5646828f630dbd3af8bc64ca780e6b736d1b6ef3098af69c09a9ba",
+    "definitionHash": "606119f0a47d265bebb5eb6b8cf781b4a6bd48b29acced081b52e105a760a96e",
     "evidence": [],
     "implementation": null,
     "review": null,

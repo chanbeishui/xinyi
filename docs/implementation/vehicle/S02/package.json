@@ -1,0 +1,23 @@
+{
+  "kind": "STATIC_DOCUMENT_CHECK",
+  "checkedAt": "2026-10-22",
+  "pass": 42,
+  "fail": 0,
+  "counts": {
+    "operations": 292,
+    "schemas": 385,
+    "tables": 82,
+    "generatedColumns": 16,
+    "screens": 355,
+    "cases": 412,
+    "flows": 48
+  },
+  "notCovered": [
+    "MySQL execution",
+    "xinyi build",
+    "runtime authorization",
+    "real payment/vendors",
+    "WeChat devices",
+    "full formal OpenAPI meta-schema validation"
+  ]
+}

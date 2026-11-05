@@ -907,6 +907,7 @@ CREATE TABLE `vi_aftersale_case` (
   `applicant_id` BIGINT NOT NULL COMMENT '实际申请身份',
   `reason` VARCHAR(1000) NOT NULL COMMENT '原始申请说明',
   `reason_code` VARCHAR(64) NULL COMMENT '申请原因代码，原说明独立保留',
+  `public_opinion` VARCHAR(1000) NULL COMMENT '对申请人公开的审核说明，不包含内部审核意见',
   `evidence_ids` JSON COMMENT '关联证据文件ID',
   `resolved_at` DATETIME(3) COMMENT '业务及资金均已办结',
   `active_order` BIGINT GENERATED ALWAYS AS (IF(case_status IN ('PENDING_REVIEW','EXECUTING'),order_id,NULL)) STORED COMMENT '一个未办结申请',
@@ -916,6 +917,7 @@ CREATE TABLE `vi_aftersale_case` (
   PRIMARY KEY (`id`),
   UNIQUE KEY uk_case_no (case_no),
   UNIQUE KEY uk_active_order (active_order),
+  KEY ix_case_order_history (order_id,id),
   KEY ix_review (review_status,created_at),
   KEY ix_return (return_state,updated_at),
   CONSTRAINT ck_after_amount CHECK (requested_fen>=0 AND (approved_fen IS NULL OR approved_fen>=0)),
@@ -928,13 +930,22 @@ CREATE TABLE `vi_aftersale_case` (
 CREATE TABLE `vi_aftersale_note` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '补充记录ID，API十进制字符串',
   `case_id` BIGINT NOT NULL COMMENT '原售后申请；权限以原订单归属为准',
-  `account_id` BIGINT NOT NULL COMMENT '实际补充资料的车主账号',
+  `account_id` BIGINT NULL COMMENT '小程序贡献者，与后台贡献者互斥',
+  `user_id` BIGINT NULL COMMENT '后台实际补充人，与小程序贡献者互斥',
   `note` VARCHAR(1000) NOT NULL COMMENT '补充说明，追加后不可覆盖原申请',
   `evidence_ids` JSON COMMENT '已核验且归属原订单的私有文件ID',
   `created_at` DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3)) COMMENT 'UTC创建时间',
   PRIMARY KEY (`id`),
-  KEY ix_aftersale_note_case (case_id,id)
+  KEY ix_aftersale_note_case (case_id,id),
+  CONSTRAINT ck_aftersale_note_actor CHECK ((account_id IS NOT NULL AND user_id IS NULL) OR (account_id IS NULL AND user_id IS NOT NULL))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='车主售后补充资料追加历史';
+
+CREATE TABLE `vi_aftersale_participant_user` (
+  `case_id` BIGINT NOT NULL COMMENT '售后申请，覆盖申请和全部追加贡献者',
+  `user_id` BIGINT NOT NULL COMMENT '贡献时已知的可信员工同人关系，撤销绑定后仍排除自审',
+  `created_at` DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3)) COMMENT '关系冻结UTC时刻',
+  PRIMARY KEY (`case_id`,`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='追加式售后独立审核排除关系';
 
 CREATE TABLE `vi_aftersale_review` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',
@@ -947,6 +958,7 @@ CREATE TABLE `vi_aftersale_review` (
   `return_required` TINYINT NOT NULL COMMENT '由服务端产生',
   `reviewer_user_id` BIGINT NOT NULL COMMENT '不能与申请人为同一真实身份',
   `opinion` VARCHAR(1000) NOT NULL COMMENT '审核意见',
+  `public_opinion` VARCHAR(1000) NULL COMMENT '对申请人公开的决定说明，历史无明确公开依据保持NULL',
   `reviewed_at` DATETIME(3) NOT NULL COMMENT 'UTC',
   `created_at` DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3)) COMMENT 'UTC',
   `updated_at` DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3)) COMMENT 'UTC更新时间；Mapper每次修改显式SET updated_at=UTC_TIMESTAMP(3)，不依赖连接时区',

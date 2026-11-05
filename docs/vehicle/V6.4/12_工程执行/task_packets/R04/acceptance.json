@@ -1,5 +1,44 @@
 [
   {
+    "id": "TC-175",
+    "priority": "P0",
+    "module": "代驾对账",
+    "flow": "F32",
+    "title": "无回应不自动确认",
+    "given": "SENT账单无人操作",
+    "when": "过了展示提醒时限",
+    "then": "仍SENT，不生成本人确认记录",
+    "status": "NOT_RUN",
+    "evidence": "",
+    "origin": "V6.4新业务完整验收规格；未绑定真实Step实现前不是自动化测试结果"
+  },
+  {
+    "id": "TC-176",
+    "priority": "P0",
+    "module": "代驾对账",
+    "flow": "F32",
+    "title": "本人版本确认",
+    "given": "账单更新revision",
+    "when": "用旧hash/版本确认",
+    "then": "409保留视图，重读后再确认",
+    "status": "NOT_RUN",
+    "evidence": "",
+    "origin": "V6.4新业务完整验收规格；未绑定真实Step实现前不是自动化测试结果"
+  },
+  {
+    "id": "TC-177",
+    "priority": "P0",
+    "module": "代驾对账",
+    "flow": "F32",
+    "title": "不允许他人确认",
+    "given": "司机A",
+    "when": "访问B账单及确认",
+    "then": "403/404，不暴露B费用",
+    "status": "NOT_RUN",
+    "evidence": "",
+    "origin": "V6.4新业务完整验收规格；未绑定真实Step实现前不是自动化测试结果"
+  },
+  {
     "id": "TC-178",
     "priority": "P0",
     "module": "代驾对账",

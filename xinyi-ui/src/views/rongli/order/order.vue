@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { onMounted, onBeforeUnmount, ref } from 'vue';
+import { useRouter } from 'vue-router';
 import {
   listOrders,
   getOrder,
   type AdminOrderSummary,
   type AdminOrderView
 } from '@/api/rongli/order';
+const router = useRouter();
 const rows = ref<AdminOrderSummary[]>([]),
   detail = ref<AdminOrderView | null>(null),
   total = ref(0),
@@ -57,6 +59,11 @@ async function show(orderNo: string) {
     if (run === detailSequence) detailError.value = e.msg || e.message || '详情加载失败';
   } finally {
     if (run === detailSequence) detailLoading.value = false;
+  }
+}
+function viewAfterSales() {
+  if (detail.value) {
+    router.push({ path: '/aftersale/cases', query: { orderNo: detail.value.orderNo } });
   }
 }
 function close() {
@@ -204,6 +211,9 @@ const statusLabel = (value: string) =>
             <p>派单：{{ time(detail.dispatchAt) }}</p>
             <p>自动确认：{{ time(detail.autoConfirmAt) }}</p>
           </section>
+          <el-button v-hasPermi="['biz:aftersale:list']" @click="viewAfterSales">
+            查看订单售后
+          </el-button>
           <el-button @click="show(detail.orderNo)">刷新详情</el-button>
         </template>
       </div>

@@ -2853,6 +2853,9 @@
       "F12",
       "F13",
       "F20"
+    ],
+    "additionalPermissions": [
+      "biz:refund:query"
     ]
   },
   {
@@ -2961,12 +2964,12 @@
     "path": "/api/admin/after-sales/{caseId}/notes",
     "operationId": "V4_post_api_admin_after_sales__caseId__notes",
     "summary": "补充售后说明",
-    "permission": "biz:aftersale:create",
+    "permission": "biz:aftersale:note",
     "capability": null,
     "authorization": {
       "realm": "ADMIN",
       "scope": "ORG_DEPT_STATION",
-      "permission": "biz:aftersale:create"
+      "permission": "biz:aftersale:note"
     },
     "flows": [
       "F20"
@@ -2988,6 +2991,9 @@
       "F12",
       "F13",
       "F20"
+    ],
+    "additionalPermissions": [
+      "biz:refund:query"
     ]
   },
   {
@@ -3006,6 +3012,9 @@
       "F12",
       "F13",
       "F20"
+    ],
+    "additionalPermissions": [
+      "biz:refund:approve"
     ]
   },
   {

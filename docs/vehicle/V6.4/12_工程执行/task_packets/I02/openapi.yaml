@@ -18,8 +18,7 @@ paths:
       summary: 核验手机号并自动识别已有员工
       tags:
       - ACCOUNT
-      description: 核验微信手机号→保存手机号验证事实→唯一有效员工自动关联；匹配失败/重号/旧绑定冲突不覆盖，不阻断OWNER。详见T3.4自动关联事务与恢复。
-        verificationRequestId使用专用凭据回执去重；不进入通用幂等响应缓存；一次性phoneCode只换取一次，失败未知查回执或新授权。
+      description: 核验微信手机号→保存手机号验证事实→唯一有效员工自动关联；匹配失败/重号/旧绑定冲突不覆盖，不阻断OWNER。详见T3.4自动关联事务与恢复。 verificationRequestId使用专用凭据回执去重；不进入通用幂等响应缓存；一次性phoneCode只换取一次，失败未知查回执或新授权。
       x-flow-ids:
       - F02
       security:
@@ -136,8 +135,7 @@ paths:
       - ACCOUNT
       description: '流程：F02。
 
-        参数校验、真实归属、服务端当前状态/版本先于写入；不接受主体伪造。；仅已有微信MINI会话的普通手机号兜底，不新增员工关联；改变验证号码须立即暂停旧员工工作能力。
-        V6.4：按当前已发布LOGIN_OTP/PHONE_VERIFY路由调用腾讯云或阿里云；未配置拒绝并提示，禁止固定成功；验证码限频/TTL/一次消费，明文不落日志；短信核验不触发员工自动关联。'
+        参数校验、真实归属、服务端当前状态/版本先于写入；不接受主体伪造。；仅已有微信MINI会话的普通手机号兜底，不新增员工关联；改变验证号码须立即暂停旧员工工作能力。 V6.4：按当前已发布LOGIN_OTP/PHONE_VERIFY路由调用腾讯云或阿里云；未配置拒绝并提示，禁止固定成功；验证码限频/TTL/一次消费，明文不落日志；短信核验不触发员工自动关联。'
       x-flow-ids:
       - F02
       security:
@@ -255,8 +253,7 @@ paths:
       - ACCOUNT
       description: '流程：F02。
 
-        参数校验、真实归属、服务端当前状态/版本先于写入；不接受主体伪造。；仅已有微信MINI会话的普通手机号兜底，不新增员工关联；改变验证号码须立即暂停旧员工工作能力。
-        V6.4：按当前已发布LOGIN_OTP/PHONE_VERIFY路由调用腾讯云或阿里云；未配置拒绝并提示，禁止固定成功；验证码限频/TTL/一次消费，明文不落日志；短信核验不触发员工自动关联。'
+        参数校验、真实归属、服务端当前状态/版本先于写入；不接受主体伪造。；仅已有微信MINI会话的普通手机号兜底，不新增员工关联；改变验证号码须立即暂停旧员工工作能力。 V6.4：按当前已发布LOGIN_OTP/PHONE_VERIFY路由调用腾讯云或阿里云；未配置拒绝并提示，禁止固定成功；验证码限频/TTL/一次消费，明文不落日志；短信核验不触发员工自动关联。'
       x-flow-ids:
       - F02
       security:
@@ -864,7 +861,7 @@ components:
         phoneMask:
           type: string
           nullable: true
-        accountVersion: &id001
+        accountVersion:
           type: integer
           format: int64
           minimum: 0
@@ -1028,6 +1025,7 @@ components:
       enum:
       - biz:aftersale:create
       - biz:aftersale:list
+      - biz:aftersale:note
       - biz:aftersale:query
       - biz:aftersale:review
       - biz:aftersale:reviewpreview
@@ -1143,6 +1141,7 @@ components:
       - biz:price:submit
       - biz:privacycase:list
       - biz:privacycase:resolve
+      - biz:refund:approve
       - biz:refund:query
       - biz:refund:retry
       - biz:result:create
@@ -1236,7 +1235,12 @@ components:
           minLength: 1
           maxLength: 512
           description: 用户主动获取的微信手机号临时凭据，服务端消费；不同于wx.login code；不可日志/持久保存原文
-        expectedAccountVersion: *id001
+        expectedAccountVersion:
+          type: integer
+          format: int64
+          minimum: 0
+          maximum: 9007199254740991
+          description: 最后读取的非负版本；更新CAS，冲突409
         verificationRequestId:
           type: string
           format: uuid

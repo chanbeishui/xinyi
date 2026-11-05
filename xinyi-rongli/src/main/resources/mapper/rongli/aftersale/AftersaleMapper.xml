@@ -19,9 +19,12 @@
         <result property="applicantId" column="applicant_id"/>
         <result property="reason" column="reason"/>
         <result property="reasonCode" column="reason_code"/>
+        <result property="publicOpinion" column="public_opinion"/>
         <result property="evidenceIds" column="evidence_ids"/>
-        <result property="createdAt" column="created_at" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
-        <result property="updatedAt" column="updated_at" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+        <result property="createdAt" column="created_at"
+                typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+        <result property="updatedAt" column="updated_at"
+                typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
     </resultMap>
     <select id="find" resultMap="Case">SELECT * FROM vi_aftersale_case WHERE id=#{id}</select>
     <select id="lock" resultMap="Case">SELECT * FROM vi_aftersale_case WHERE id=#{id} FOR UPDATE</select>
@@ -32,7 +35,8 @@
         INSERT INTO vi_aftersale_case(case_no,order_id,payment_id,kind,case_status,review_status,
             requested_fen,return_state,refund_state,applicant_type,applicant_id,reason,reason_code,evidence_ids)
         VALUES(#{caseNo},#{orderId},#{paymentId},#{kind},'PENDING_REVIEW','PENDING',
-            #{requestedFen},'UNDETERMINED','NONE','ACCOUNT',#{applicantId},#{reason},#{reasonCode},#{evidenceIds})
+            #{requestedFen},'UNDETERMINED','NONE',COALESCE(#{applicantType},'ACCOUNT'),
+            #{applicantId},#{reason},#{reasonCode},#{evidenceIds})
     </insert>
     <update id="markCancellation">
         UPDATE vi_order SET cancel_status='APPLIED',version=version+1,updated_at=UTC_TIMESTAMP(3)
@@ -67,7 +71,7 @@
         VALUES(#{caseId},#{accountId},#{note},#{evidence})
     </insert>
     <select id="notes" resultType="map">
-        SELECT id,note,evidence_ids,DATE_FORMAT(created_at,'%Y-%m-%dT%H:%i:%s.%fZ') created_iso
+        SELECT id,note,evidence_ids,user_id,DATE_FORMAT(created_at,'%Y-%m-%dT%H:%i:%s.%fZ') created_iso
         FROM vi_aftersale_note WHERE case_id=#{caseId} ORDER BY id
     </select>
     <select id="refundNo" resultType="string">

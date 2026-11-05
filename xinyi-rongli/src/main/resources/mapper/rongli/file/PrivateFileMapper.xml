@@ -84,4 +84,21 @@
           AND a.ended_at IS NULL AND o.returned_at IS NULL
           AND o.fulfillment_status NOT IN ('CLOSED','CANCELLED','COMPLETED')
     </select>
+    <!-- 仅明确提交到原单售后历史的公开凭证可供原车主读取，后台上传草稿不自动公开。 -->
+    <select id="aftersaleEvidence" resultType="int">
+        SELECT EXISTS (
+            SELECT 1
+            FROM vi_aftersale_case c
+            WHERE c.order_id=#{orderId}
+              AND (
+                JSON_CONTAINS(c.evidence_ids,JSON_QUOTE(CAST(#{fileId} AS CHAR)))=1
+                OR EXISTS (
+                    SELECT 1
+                    FROM vi_aftersale_note n
+                    WHERE n.case_id=c.id
+                      AND JSON_CONTAINS(n.evidence_ids,JSON_QUOTE(CAST(#{fileId} AS CHAR)))=1
+                )
+              )
+        )
+    </select>
 </mapper>

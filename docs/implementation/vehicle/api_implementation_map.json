@@ -2197,30 +2197,36 @@
     "evidence": "docs/implementation/vehicle/evidence/S01-20261105.json"
   },
   {
-    "implementationStatus": "NOT_ASSESSED",
-    "controllerFile": null,
-    "serviceFile": null,
-    "mapperFile": null,
-    "testFiles": [],
-    "reviewEvidence": null,
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/aftersale/controller/AdminAftersaleController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/aftersale/service/AdminAftersaleService.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/aftersale/AdminAftersaleMapper.xml",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/S02AftersaleIT.java"
+    ],
+    "reviewEvidence": "docs/implementation/vehicle/S02/review.md",
     "operationId": "V4_post_api_admin_orders__orderNo__after_sales",
     "method": "POST",
     "path": "/api/admin/orders/{orderNo}/after-sales",
     "summary": "创建统一取消与退款申请",
-    "taskId": "S02"
+    "taskId": "S02",
+    "evidence": "docs/implementation/vehicle/evidence/S02-20261106.json"
   },
   {
-    "implementationStatus": "NOT_ASSESSED",
-    "controllerFile": null,
-    "serviceFile": null,
-    "mapperFile": null,
-    "testFiles": [],
-    "reviewEvidence": null,
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/aftersale/controller/AdminAftersaleController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/aftersale/service/AdminAftersaleService.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/aftersale/AdminAftersaleMapper.xml",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/S02AftersaleIT.java"
+    ],
+    "reviewEvidence": "docs/implementation/vehicle/S02/review.md",
     "operationId": "V4_get_api_admin_orders__orderNo__after_sales",
     "method": "GET",
     "path": "/api/admin/orders/{orderNo}/after-sales",
     "summary": "查看本订单售后记录",
-    "taskId": "S02"
+    "taskId": "S02",
+    "evidence": "docs/implementation/vehicle/evidence/S02-20261106.json"
   },
   {
     "implementationStatus": "VERIFIED",
@@ -2271,69 +2277,84 @@
     "evidence": "docs/implementation/vehicle/evidence/S01-20261105.json"
   },
   {
-    "implementationStatus": "NOT_ASSESSED",
-    "controllerFile": null,
-    "serviceFile": null,
-    "mapperFile": null,
-    "testFiles": [],
-    "reviewEvidence": null,
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/aftersale/controller/AdminAftersaleController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/aftersale/service/AdminAftersaleService.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/aftersale/AdminAftersaleMapper.xml",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/S02AftersaleIT.java"
+    ],
+    "reviewEvidence": "docs/implementation/vehicle/S02/review.md",
     "operationId": "V4_get_api_admin_after_sales",
     "method": "GET",
     "path": "/api/admin/after-sales",
     "summary": "统一售后申请列表",
-    "taskId": "S02"
+    "taskId": "S02",
+    "evidence": "docs/implementation/vehicle/evidence/S02-20261106.json"
   },
   {
-    "implementationStatus": "NOT_ASSESSED",
-    "controllerFile": null,
-    "serviceFile": null,
-    "mapperFile": null,
-    "testFiles": [],
-    "reviewEvidence": null,
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/aftersale/controller/AdminAftersaleController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/aftersale/service/AdminAftersaleService.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/aftersale/AdminAftersaleMapper.xml",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/S02AftersaleIT.java"
+    ],
+    "reviewEvidence": "docs/implementation/vehicle/S02/review.md",
     "operationId": "V4_get_api_admin_after_sales__caseId",
     "method": "GET",
     "path": "/api/admin/after-sales/{caseId}",
     "summary": "统一售后详情",
-    "taskId": "S02"
+    "taskId": "S02",
+    "evidence": "docs/implementation/vehicle/evidence/S02-20261106.json"
   },
   {
-    "implementationStatus": "NOT_ASSESSED",
-    "controllerFile": null,
-    "serviceFile": null,
-    "mapperFile": null,
-    "testFiles": [],
-    "reviewEvidence": null,
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/aftersale/controller/AdminAftersaleController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/aftersale/service/AdminAftersaleService.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/aftersale/AdminAftersaleMapper.xml",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/S02AftersaleIT.java"
+    ],
+    "reviewEvidence": "docs/implementation/vehicle/S02/review.md",
     "operationId": "V4_post_api_admin_after_sales__caseId__notes",
     "method": "POST",
     "path": "/api/admin/after-sales/{caseId}/notes",
     "summary": "补充售后说明",
-    "taskId": "S02"
+    "taskId": "S02",
+    "evidence": "docs/implementation/vehicle/evidence/S02-20261106.json"
   },
   {
-    "implementationStatus": "NOT_ASSESSED",
-    "controllerFile": null,
-    "serviceFile": null,
-    "mapperFile": null,
-    "testFiles": [],
-    "reviewEvidence": null,
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/aftersale/controller/AdminAftersaleController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/aftersale/service/AdminAftersaleService.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/aftersale/AdminAftersaleMapper.xml",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/S02AftersaleIT.java"
+    ],
+    "reviewEvidence": "docs/implementation/vehicle/S02/review.md",
     "operationId": "V4_post_api_admin_after_sales__caseId__review_preview",
     "method": "POST",
     "path": "/api/admin/after-sales/{caseId}/review-preview",
     "summary": "预览当前取消及退款后果",
-    "taskId": "S02"
+    "taskId": "S02",
+    "evidence": "docs/implementation/vehicle/evidence/S02-20261106.json"
   },
   {
-    "implementationStatus": "NOT_ASSESSED",
-    "controllerFile": null,
-    "serviceFile": null,
-    "mapperFile": null,
-    "testFiles": [],
-    "reviewEvidence": null,
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/aftersale/controller/AdminAftersaleController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/aftersale/service/AdminAftersaleService.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/aftersale/AdminAftersaleMapper.xml",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/S02AftersaleIT.java"
+    ],
+    "reviewEvidence": "docs/implementation/vehicle/S02/review.md",
     "operationId": "V4_post_api_admin_after_sales__caseId__review",
     "method": "POST",
     "path": "/api/admin/after-sales/{caseId}/review",
     "summary": "提交一次统一审核",
-    "taskId": "S02"
+    "taskId": "S02",
+    "evidence": "docs/implementation/vehicle/evidence/S02-20261106.json"
   },
   {
     "implementationStatus": "VERIFIED",
@@ -2497,17 +2518,20 @@
     "taskId": "A03"
   },
   {
-    "implementationStatus": "NOT_ASSESSED",
-    "controllerFile": null,
-    "serviceFile": null,
-    "mapperFile": null,
-    "testFiles": [],
-    "reviewEvidence": null,
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/aftersale/controller/AdminAftersaleController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/aftersale/service/AdminAftersaleService.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/aftersale/AdminAftersaleMapper.xml",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/S02AftersaleIT.java"
+    ],
+    "reviewEvidence": "docs/implementation/vehicle/S02/review.md",
     "operationId": "V4_get_api_admin_owners__ownerId__after_sales",
     "method": "GET",
     "path": "/api/admin/owners/{ownerId}/after-sales",
     "summary": "车主关联after-sales",
-    "taskId": "S02"
+    "taskId": "S02",
+    "evidence": "docs/implementation/vehicle/evidence/S02-20261106.json"
   },
   {
     "implementationStatus": "NOT_ASSESSED",

@@ -1,7 +1,7 @@
 # F04 · 行驶证OCR和人工复核
 
 阶段：M3；责任域：inspection；前置：F01, F03。
-范围版本：`V6.1-UNCHANGED`；definitionHash：`fc521d74706ff596d9c96dafb1b50bb50a52c2f75b45796a94a7617df9e07014`。
+范围版本：`V6.1-UNCHANGED`；definitionHash：`1880932fc2ddb8e68d2918971cbe2858ce7ff7ab21a1a0c28bfd623e21971e2b`。
 
 ## 本任务交付
 - 行驶证文件、字段置信度、人工复核
@@ -17,7 +17,7 @@
 接口：API_074_get, API_075_put, API_085_get, API_086_put
 画板：S08, S08-manual, B07, B07-confirm, B08
 主责任表：vi_vehicle_license
-验收：TC-145, TC-146, TC-147
+验收：TC-146
 
 ## 代码落位
 `xinyi-rongli/src/main/java/com/xinyi/rongli/inspection/`

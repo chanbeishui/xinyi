@@ -3341,6 +3341,16 @@
   <td>原始申请说明</td>
 </tr>
 <tr>
+  <td>reason_code</td>
+  <td><code>VARCHAR(64) NULL</code></td>
+  <td>申请原因代码，原说明独立保留</td>
+</tr>
+<tr>
+  <td>public_opinion</td>
+  <td><code>VARCHAR(1000) NULL</code></td>
+  <td>对申请人公开的审核说明，不包含内部审核意见</td>
+</tr>
+<tr>
   <td>evidence_ids</td>
   <td><code>JSON</code></td>
   <td>关联证据文件ID</td>
@@ -3432,6 +3442,11 @@
   <td>opinion</td>
   <td><code>VARCHAR(1000) NOT NULL</code></td>
   <td>审核意见</td>
+</tr>
+<tr>
+  <td>public_opinion</td>
+  <td><code>VARCHAR(1000) NULL</code></td>
+  <td>对申请人公开的决定说明，历史无明确公开依据保持NULL</td>
 </tr>
 <tr>
   <td>reviewed_at</td>
@@ -6775,48 +6790,82 @@
 </tr>
 </tbody>
 </table>
-<h2>S01 售后追加资料</h2>
-<p>vi_aftersale_case新增reason_code VARCHAR(64) NULL，原reason/evidence_ids永久保留。</p>
+<h2>售后追加资料演进说明</h2>
+<p>S01增加原原因代码与不可覆盖的补充历史，S02继续支持MINI/ADMIN双域贡献者。当前列、约束和独立审核排除关系以本文件vi_aftersale_note及vi_aftersale_participant_user章节为准；S01原始验证证据保留在任务版本中。</p>
+<h2>vi_aftersale_note · 车主售后补充资料追加历史</h2>
+<p>以父售后订单owner_account_id为权威归属；本人追加不可覆盖或删除。整组凭证必须READY且同订单本人DISPUTE；与版本、成功审计和outbox同事务。</p>
 <table>
 <thead>
 <tr>
   <th>字段</th>
-  <th>类型</th>
+  <th>SQL类型与约束</th>
   <th>说明</th>
 </tr>
 </thead>
 <tbody>
 <tr>
   <td>id</td>
-  <td>BIGINT NOT NULL AUTO_INCREMENT</td>
+  <td><code>BIGINT NOT NULL AUTO_INCREMENT</code></td>
   <td>补充记录ID，API十进制字符串</td>
 </tr>
 <tr>
   <td>case_id</td>
-  <td>BIGINT NOT NULL</td>
+  <td><code>BIGINT NOT NULL</code></td>
   <td>原售后申请；权限以原订单归属为准</td>
 </tr>
 <tr>
   <td>account_id</td>
-  <td>BIGINT NOT NULL</td>
-  <td>实际补充资料的车主账号</td>
+  <td><code>BIGINT NULL</code></td>
+  <td>小程序贡献者，与后台贡献者互斥</td>
+</tr>
+<tr>
+  <td>user_id</td>
+  <td><code>BIGINT NULL</code></td>
+  <td>后台实际补充人，与小程序贡献者互斥</td>
 </tr>
 <tr>
   <td>note</td>
-  <td>VARCHAR(1000) NOT NULL</td>
+  <td><code>VARCHAR(1000) NOT NULL</code></td>
   <td>补充说明，追加后不可覆盖原申请</td>
 </tr>
 <tr>
   <td>evidence_ids</td>
-  <td>JSON</td>
+  <td><code>JSON</code></td>
   <td>已核验且归属原订单的私有文件ID</td>
 </tr>
 <tr>
   <td>created_at</td>
-  <td>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
   <td>UTC创建时间</td>
 </tr>
 </tbody>
 </table>
-<p>权限及事务：以父售后订单owner_account_id为权威归属；本人追加不可覆盖或删除。整组凭证必须READY且同订单本人DISPUTE；与版本、成功审计和outbox同事务。</p>
+<h2>vi_aftersale_participant_user · 追加式售后独立审核排除关系</h2>
+<p>在申请/补充事务内从可信员工关系冻结贡献者排除集合；只追加，不因解绑/手机号修改移除；不能由客户端提交。</p>
+<table>
+<thead>
+<tr>
+  <th>字段</th>
+  <th>SQL类型与约束</th>
+  <th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>case_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>售后申请，覆盖申请和全部追加贡献者</td>
+</tr>
+<tr>
+  <td>user_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>贡献时已知的可信员工同人关系，撤销绑定后仍排除自审</td>
+</tr>
+<tr>
+  <td>created_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>关系冻结UTC时刻</td>
+</tr>
+</tbody>
+</table>
 </main></body></html>

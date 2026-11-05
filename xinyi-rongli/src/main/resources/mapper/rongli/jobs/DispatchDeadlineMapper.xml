@@ -23,9 +23,28 @@
         WHERE r.order_id = #{orderId} AND r.status = 'CONFIRMED' AND r.quantity = 1
           AND s.quota_type IN ('PICKUP', 'STATION_RECEIVE')
     </select>
+    <!-- 仅退款不取消履约。只有原单同笔支付、同版批准决定能完整解释的资金才允许继续派单。 -->
     <select id="pendingRefund" resultType="int">
-        SELECT COUNT(*) FROM vi_payment_order WHERE order_id = #{orderId}
-          AND (refund_reserved_fen &gt; 0 OR refunded_fen &gt; 0)
+        SELECT COUNT(*)
+        FROM vi_payment_order p
+        LEFT JOIN (
+            SELECT r.payment_id,
+                SUM(CASE WHEN r.status IN ('CREATED','PROCESSING','UNKNOWN','ABNORMAL')
+                    THEN r.amount_fen ELSE 0 END) AS approved_reserved,
+                SUM(CASE WHEN r.status='SUCCESS' THEN r.amount_fen ELSE 0 END) AS approved_refunded
+            FROM vi_refund_order r
+            JOIN vi_aftersale_case c ON c.id=r.case_id AND c.payment_id=r.payment_id
+            JOIN vi_aftersale_review v ON v.case_id=c.id AND v.revision=r.review_revision
+            WHERE c.order_id=#{orderId}
+              AND c.kind='REFUND_ONLY' AND c.review_status='APPROVED'
+              AND c.case_status IN ('EXECUTING','CLOSED') AND c.return_state='NOT_REQUIRED'
+              AND c.review_revision=r.review_revision AND v.decision='APPROVE' AND v.return_required=0
+              AND r.amount_fen&gt;0 AND r.amount_fen=c.approved_fen AND r.amount_fen=v.approved_fen
+            GROUP BY r.payment_id
+        ) approved ON approved.payment_id=p.id
+        WHERE p.order_id=#{orderId}
+          AND (p.refund_reserved_fen&lt;&gt;COALESCE(approved.approved_reserved,0)
+            OR p.refunded_fen&lt;&gt;COALESCE(approved.approved_refunded,0))
     </select>
     <select id="quotePolicy" resultType="string">
         SELECT items_json FROM vi_quote WHERE id = #{quoteId}

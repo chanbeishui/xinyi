@@ -119,8 +119,8 @@ paths:
       - VI_AUTHORITY_UNAVAILABLE
       - VI_UPSTREAM_UNAVAILABLE
       x-error-policy: GLOBAL_FAILURES_NO_RESOURCE_404
-      x-idempotency: NO_PLAINTEXT_RESPONSE_CACHE; domain dedupe only; on lost credential
-        response reissue/refresh through controlled protocol
+      x-idempotency: NO_PLAINTEXT_RESPONSE_CACHE; domain dedupe only; on lost credential response reissue/refresh through
+        controlled protocol
       x-contract-baseline: V6.4
   /api/common/session/station:
     post:
@@ -229,8 +229,8 @@ paths:
       - VI_AUTHORITY_UNAVAILABLE
       - VI_UPSTREAM_UNAVAILABLE
       x-error-policy: GLOBAL_FAILURES_NO_RESOURCE_404
-      x-idempotency: NO_PLAINTEXT_RESPONSE_CACHE; domain dedupe only; on lost credential
-        response reissue/refresh through controlled protocol
+      x-idempotency: NO_PLAINTEXT_RESPONSE_CACHE; domain dedupe only; on lost credential response reissue/refresh through
+        controlled protocol
       x-contract-baseline: V6.4
 components:
   schemas:
@@ -636,6 +636,7 @@ components:
       enum:
       - biz:aftersale:create
       - biz:aftersale:list
+      - biz:aftersale:note
       - biz:aftersale:query
       - biz:aftersale:review
       - biz:aftersale:reviewpreview
@@ -751,6 +752,7 @@ components:
       - biz:price:submit
       - biz:privacycase:list
       - biz:privacycase:resolve
+      - biz:refund:approve
       - biz:refund:query
       - biz:refund:retry
       - biz:result:create

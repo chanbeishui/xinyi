@@ -372,12 +372,15 @@
     "taskId": "S01"
   },
   {
-    "status": "NOT_ASSESSED",
+    "status": "VERIFIED",
     "entityFile": null,
-    "mapperFile": null,
-    "evidence": [],
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/aftersale/AdminAftersaleMapper.xml",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/S02-20261106.json"
+    ],
     "table": "vi_aftersale_review",
-    "taskId": "S02"
+    "taskId": "S02",
+    "note": "统一Service受控追加/查询，审核与排除关系无通用更新删除入口。"
   },
   {
     "status": "NOT_ASSESSED",
@@ -708,5 +711,16 @@
       "docs/implementation/vehicle/evidence/S01-20261105.json"
     ],
     "note": "追加表使用Mapper受控Map投影，由AftersaleService转换公开记录，不生成通用更新/删除实体入口。"
+  },
+  {
+    "table": "vi_aftersale_participant_user",
+    "taskId": "S02",
+    "status": "VERIFIED",
+    "entityFile": null,
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/aftersale/AdminAftersaleMapper.xml",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/S02-20261106.json"
+    ],
+    "note": "统一Service受控追加/查询，审核与排除关系无通用更新删除入口。"
   }
 ]

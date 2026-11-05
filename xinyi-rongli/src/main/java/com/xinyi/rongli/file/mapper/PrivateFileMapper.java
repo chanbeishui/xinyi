@@ -29,4 +29,6 @@ public interface PrivateFileMapper {
     Long stationDept(long id);
 
     int activeDriver(@Param("orderId") long orderId, @Param("accountId") long accountId);
+
+    int aftersaleEvidence(@Param("orderId") long orderId, @Param("fileId") long fileId);
 }

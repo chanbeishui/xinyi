@@ -2830,14 +2830,9 @@
     "tables": [],
     "case_ids": [
       "TC-090",
-      "TC-091",
-      "TC-092",
       "TC-093",
       "TC-094",
       "TC-095",
-      "TC-096",
-      "TC-097",
-      "TC-098",
       "TC-099",
       "TC-100",
       "TC-101",
@@ -2875,7 +2870,7 @@
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
     "scopeRevision": "V6.1-UNCHANGED",
-    "definitionHash": "e8627703e9f2f6619e0db15891d149909a1a59f041f6bcb1b137a7860052cbfe"
+    "definitionHash": "80a20d6452bcaf577a2ae4a140972eaa65b21f522ed9f629169d16f79c201b70"
   },
   {
     "id": "D07",
@@ -3192,9 +3187,7 @@
       "vi_vehicle_license"
     ],
     "case_ids": [
-      "TC-145",
-      "TC-146",
-      "TC-147"
+      "TC-146"
     ],
     "scope": "DEVELOPMENT",
     "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
@@ -3226,7 +3219,7 @@
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
     "scopeRevision": "V6.1-UNCHANGED",
-    "definitionHash": "fc521d74706ff596d9c96dafb1b50bb50a52c2f75b45796a94a7617df9e07014"
+    "definitionHash": "1880932fc2ddb8e68d2918971cbe2858ce7ff7ab21a1a0c28bfd623e21971e2b"
   },
   {
     "id": "F05",
@@ -3483,7 +3476,9 @@
     "deliverables": [
       "当前保管事实+可退额预览、批准/驳回",
       "已接车WAIT_RETURN",
-      "V6.4同步范围：第三方配置/支付method/外部路由/消息模板以主PRD23和X01–X07为准；旧静态配置不能形成旁路"
+      "V6.4同步范围：第三方配置/支付method/外部路由/消息模板以主PRD23和X01–X07为准；旧静态配置不能形成旁路",
+      "订单部门与原收款主体资金权限分别校验；后台代办与公开补充、可信同人贡献者不可自审",
+      "公开publicOpinion与内部opinion隔离；预览不写款，审核同事务预留与稳定原方式退款单，渠道执行交P04"
     ],
     "negative_checks": [
       "取消批准不释放持车司机",
@@ -3514,22 +3509,27 @@
       "B14-unknown"
     ],
     "tables": [
-      "vi_aftersale_review"
+      "vi_aftersale_review",
+      "vi_aftersale_participant_user"
     ],
     "case_ids": [
-      "TC-163",
-      "TC-164",
-      "TC-165",
-      "TC-166",
-      "TC-167",
-      "TC-168",
-      "TC-171",
-      "TC-172",
-      "TC-173",
-      "TC-174",
-      "TC-175",
-      "TC-176",
-      "TC-177"
+      "TC-091",
+      "TC-092",
+      "TC-096",
+      "TC-097",
+      "TC-098",
+      "TC-116",
+      "TC-117",
+      "TC-122",
+      "TC-126",
+      "TC-143",
+      "TC-144",
+      "TC-145",
+      "TC-147",
+      "TC-149",
+      "TC-150",
+      "TC-151",
+      "TC-152"
     ],
     "scope": "DEVELOPMENT",
     "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
@@ -3537,10 +3537,11 @@
     "code_paths": [
       "xinyi-rongli/src/main/java/com/xinyi/rongli/aftersale/",
       "xinyi-rongli/src/main/resources/mapper/rongli/aftersale/",
-      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/aftersale/",
       "xinyi-ui/src/views/rongli/aftersale/",
       "xinyi-ui/src/api/rongli/aftersale.ts",
-      "xinyi-miniapp/src/features/aftersale/"
+      "xinyi-miniapp/src/features/aftersale/",
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/aftersale/controller/",
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/S02AftersaleIT.java"
     ],
     "test_class": "S02AftersaleIT",
     "commands": [
@@ -3560,8 +3561,18 @@
       "access": "不得绕过限制；保存恢复点",
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
-    "scopeRevision": "V6.4-CONFIG-20261022",
-    "definitionHash": "6a697f99a82cb1afde32222416c500d90f89fda9a1879f761ac78f920b91728e"
+    "scopeRevision": "V6.4-AFTERSALE-REVIEW-20261106",
+    "definitionHash": "1cbea4eaf33807c569ce60206434b62bffae6d26c665768e94d457ca8336ccb2",
+    "related_tables": [
+      "vi_aftersale_case",
+      "vi_aftersale_note",
+      "vi_payment_order",
+      "vi_refund_order",
+      "vi_driver_assignment",
+      "vi_driver_occupancy",
+      "vi_driver_invite",
+      "vi_capacity_reservation"
+    ]
   },
   {
     "id": "S03",
@@ -3716,24 +3727,14 @@
     ],
     "case_ids": [
       "TC-115",
-      "TC-116",
-      "TC-117",
       "TC-118",
       "TC-119",
       "TC-120",
       "TC-121",
-      "TC-122",
       "TC-123",
       "TC-124",
       "TC-125",
-      "TC-126",
-      "TC-143",
-      "TC-144",
       "TC-148",
-      "TC-149",
-      "TC-150",
-      "TC-151",
-      "TC-152",
       "TC-153",
       "TC-154",
       "TC-196"
@@ -3768,7 +3769,7 @@
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
     "scopeRevision": "V6.1-UNCHANGED",
-    "definitionHash": "6c2634b1ef955a8f1720bc519cc45a477a2c59e0dcbce6bbf921e220707c3dd8"
+    "definitionHash": "e978a5bbd5279eb2901b1cff903e6b03936dda58f0ea9ca26dfac4494e39bce9"
   },
   {
     "id": "N01",
@@ -4022,7 +4023,14 @@
     "tables": [
       "vi_driver_fee_ledger"
     ],
-    "case_ids": [],
+    "case_ids": [
+      "TC-163",
+      "TC-164",
+      "TC-165",
+      "TC-166",
+      "TC-167",
+      "TC-168"
+    ],
     "scope": "DEVELOPMENT",
     "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
     "status": "NOT_ASSESSED",
@@ -4053,7 +4061,7 @@
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
     "scopeRevision": "V6.1-UNCHANGED",
-    "definitionHash": "2b6cf7f8d47273b86f6bc1cca762dd03269bee15f854b78334a9ec40770faf9b"
+    "definitionHash": "a9fbfcae4b3fe0aafaaee1512df76ef20b20583d2202d9d4d5cd02761a6bd2d4"
   },
   {
     "id": "R02",
@@ -4127,7 +4135,11 @@
       "TC-R42-039",
       "TC-R42-040",
       "TC-R50-029",
-      "TC-R50-030"
+      "TC-R50-030",
+      "TC-171",
+      "TC-172",
+      "TC-173",
+      "TC-174"
     ],
     "scope": "DEVELOPMENT",
     "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
@@ -4159,7 +4171,7 @@
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
     "scopeRevision": "V6.1-UNCHANGED",
-    "definitionHash": "24cf053f7cda0d3a22c1cddd779496d59a217448b61c05ab16b14fdc2ff938bf"
+    "definitionHash": "ab88d214049e37da3758cea7eac043121b04fd333b2722386797c0db0619aa01"
   },
   {
     "id": "R03",
@@ -4326,7 +4338,10 @@
       "TC-179",
       "TC-180",
       "TC-181",
-      "TC-182"
+      "TC-182",
+      "TC-175",
+      "TC-176",
+      "TC-177"
     ],
     "scope": "DEVELOPMENT",
     "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
@@ -4358,7 +4373,7 @@
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
     "scopeRevision": "V6.1-UNCHANGED",
-    "definitionHash": "86b3eddf7f5646828f630dbd3af8bc64ca780e6b736d1b6ef3098af69c09a9ba"
+    "definitionHash": "606119f0a47d265bebb5eb6b8cf781b4a6bd48b29acced081b52e105a760a96e"
   },
   {
     "id": "R05",

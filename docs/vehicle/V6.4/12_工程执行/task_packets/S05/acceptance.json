@@ -13,32 +13,6 @@
     "origin": "V6.4新业务完整验收规格；未绑定真实Step实现前不是自动化测试结果"
   },
   {
-    "id": "TC-116",
-    "priority": "P0",
-    "module": "退款资金",
-    "flow": "F20",
-    "title": "禁止自审退款",
-    "given": "申请人与审核人同真实身份",
-    "when": "批准",
-    "then": "拒绝，角色切换不改变主体",
-    "status": "NOT_RUN",
-    "evidence": "",
-    "origin": "V6.4新业务完整验收规格；未绑定真实Step实现前不是自动化测试结果"
-  },
-  {
-    "id": "TC-117",
-    "priority": "P0",
-    "module": "退款资金",
-    "flow": "F20",
-    "title": "并发部分退款金额守恒",
-    "given": "实付10000已退2000处理中3000",
-    "when": "并发批准新6000",
-    "then": "拒绝超额；成功+预留≤实付",
-    "status": "NOT_RUN",
-    "evidence": "",
-    "origin": "V6.4新业务完整验收规格；未绑定真实Step实现前不是自动化测试结果"
-  },
-  {
     "id": "TC-118",
     "priority": "P0",
     "module": "退款资金",
@@ -91,19 +65,6 @@
     "origin": "V6.4新业务完整验收规格；未绑定真实Step实现前不是自动化测试结果"
   },
   {
-    "id": "TC-122",
-    "priority": "P0",
-    "module": "退款资金",
-    "flow": "F20",
-    "title": "零元取消无退款",
-    "given": "批准取消但退款金额0",
-    "when": "办结取消",
-    "then": "不创建金额0渠道退款，不阻止返还",
-    "status": "NOT_RUN",
-    "evidence": "",
-    "origin": "V6.4新业务完整验收规格；未绑定真实Step实现前不是自动化测试结果"
-  },
-  {
     "id": "TC-123",
     "priority": "P0",
     "module": "退款资金",
@@ -143,45 +104,6 @@
     "origin": "V6.4新业务完整验收规格；未绑定真实Step实现前不是自动化测试结果"
   },
   {
-    "id": "TC-126",
-    "priority": "P0",
-    "module": "退款资金",
-    "flow": "F20",
-    "title": "统一售后审核不是资金终审",
-    "given": "站点只有协助取消权限",
-    "when": "尝试执行退款",
-    "then": "要求独立资金功能权限",
-    "status": "NOT_RUN",
-    "evidence": "",
-    "origin": "V6.4新业务完整验收规格；未绑定真实Step实现前不是自动化测试结果"
-  },
-  {
-    "id": "TC-143",
-    "priority": "P0",
-    "module": "统一售后",
-    "flow": "F20",
-    "title": "同一申请一次审核",
-    "given": "客户需要取消并退费",
-    "when": "提交CANCEL_REFUND并一次批准",
-    "then": "只建立一份case与一条决定，不再建立独立退款审核",
-    "status": "NOT_RUN",
-    "evidence": "",
-    "origin": "V6.4新业务完整验收规格；未绑定真实Step实现前不是自动化测试结果"
-  },
-  {
-    "id": "TC-144",
-    "priority": "P0",
-    "module": "统一售后",
-    "flow": "F20",
-    "title": "仅退款不取消",
-    "given": "服务已完成或继续",
-    "when": "批准REFUND_ONLY",
-    "then": "履约与保管不变，不释放司机",
-    "status": "NOT_RUN",
-    "evidence": "",
-    "origin": "V6.4新业务完整验收规格；未绑定真实Step实现前不是自动化测试结果"
-  },
-  {
     "id": "TC-148",
     "priority": "P0",
     "module": "统一售后",
@@ -190,58 +112,6 @@
     "given": "订单已有未办结case",
     "when": "再次创建",
     "then": "返回原申请或409；不创建第二条",
-    "status": "NOT_RUN",
-    "evidence": "",
-    "origin": "V6.4新业务完整验收规格；未绑定真实Step实现前不是自动化测试结果"
-  },
-  {
-    "id": "TC-149",
-    "priority": "P0",
-    "module": "统一售后",
-    "flow": "F20",
-    "title": "统一金额授权",
-    "given": "只有旧取消权限",
-    "when": "尝试批准带退款",
-    "then": "拒绝，不自动提升资金权限",
-    "status": "NOT_RUN",
-    "evidence": "",
-    "origin": "V6.4新业务完整验收规格；未绑定真实Step实现前不是自动化测试结果"
-  },
-  {
-    "id": "TC-150",
-    "priority": "P0",
-    "module": "统一售后",
-    "flow": "F20",
-    "title": "不可本人审本人",
-    "given": "账号关联本人申请",
-    "when": "切后台角色审核",
-    "then": "仍拒绝",
-    "status": "NOT_RUN",
-    "evidence": "",
-    "origin": "V6.4新业务完整验收规格；未绑定真实Step实现前不是自动化测试结果"
-  },
-  {
-    "id": "TC-151",
-    "priority": "P0",
-    "module": "统一售后",
-    "flow": "F20",
-    "title": "并发金额预留",
-    "given": "可退100元，两请求各80元",
-    "when": "并发批准",
-    "then": "至多一笔通过，预留不会160元",
-    "status": "NOT_RUN",
-    "evidence": "",
-    "origin": "V6.4新业务完整验收规格；未绑定真实Step实现前不是自动化测试结果"
-  },
-  {
-    "id": "TC-152",
-    "priority": "P0",
-    "module": "统一售后",
-    "flow": "F20",
-    "title": "审批时发生接车",
-    "given": "预览为未接车",
-    "when": "接车完成后提交旧版本批准",
-    "then": "409或按重核规则重新确认，不按旧快照释放",
     "status": "NOT_RUN",
     "evidence": "",
     "origin": "V6.4新业务完整验收规格；未绑定真实Step实现前不是自动化测试结果"

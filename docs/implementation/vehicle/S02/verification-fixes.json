@@ -1,0 +1,23 @@
+{
+  "initialRuns": [
+    {
+      "command": "S02-targeted",
+      "integrationTests": 120,
+      "failures": 1,
+      "cause": "后台内部意见投影兼容字段未接通"
+    },
+    {
+      "command": "S02-targeted-final",
+      "integrationTests": 124,
+      "failures": 1,
+      "cause": "摘要测试夹具缺建单站点与加密私有快照"
+    }
+  ],
+  "fixedWithoutWeakeningAssertions": true,
+  "additionalFindings": [
+    "驳回预览明确decision",
+    "仅退款余额完整解释后允许继续到期派单",
+    "preview按契约绑定UUID幂等键且不缓存实时事实"
+  ],
+  "finalReport": "full-regression.json"
+}

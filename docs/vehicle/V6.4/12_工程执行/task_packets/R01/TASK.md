@@ -1,7 +1,7 @@
 # R01 · 承接结束费用事件与台账
 
 阶段：M5；责任域：driverfee；前置：C05, D06, F06。
-范围版本：`V6.1-UNCHANGED`；definitionHash：`2b6cf7f8d47273b86f6bc1cca762dd03269bee15f854b78334a9ec40770faf9b`。
+范围版本：`V6.1-UNCHANGED`；definitionHash：`a9fbfcae4b3fe0aafaaee1512df76ef20b20583d2202d9d4d5cd02761a6bd2d4`。
 
 ## 本任务交付
 - 真实结束事件唯一入账、规则快照、待核价NULL和后续差额结转
@@ -16,7 +16,7 @@
 接口：V4_get_api_admin_drivers__driverId__fee_ledger
 画板：无
 主责任表：vi_driver_fee_ledger
-验收：无
+验收：TC-163, TC-164, TC-165, TC-166, TC-167, TC-168
 
 ## 代码落位
 `xinyi-rongli/src/main/java/com/xinyi/rongli/driverfee/`

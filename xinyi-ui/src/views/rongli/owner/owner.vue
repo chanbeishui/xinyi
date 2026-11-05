@@ -77,6 +77,9 @@
             detail.serviceFlag === 'VERIFY_AGAIN' ? '二次核验（不封禁下单）' : '正常'
           }}　备注：{{ detail.internalRemark || '—' }}
         </p>
+        <el-button v-hasPermi="['biz:aftersale:list']" @click="viewAfterSales">
+          查看车主售后
+        </el-button>
         <el-divider>关联车辆</el-divider>
         <el-table :data="vehicles" size="small">
           <el-table-column label="车牌" prop="plateNo" />
@@ -126,6 +129,7 @@
 </template>
 
 <script setup lang="ts">
+import { useRouter } from 'vue-router';
 import { ref, reactive, onMounted } from 'vue';
 import { ElMessage } from 'element-plus';
 import {
@@ -140,6 +144,12 @@ import {
 } from '@/api/rongli/owner';
 import { isVersionConflict } from '@/api/rongli/viError';
 
+const router = useRouter();
+function viewAfterSales() {
+  if (detail.value) {
+    router.push({ path: '/aftersale/cases', query: { ownerId: detail.value.ownerId } });
+  }
+}
 const loading = ref(false);
 const saving = ref(false);
 const rows = ref<OwnerRecord[]>([]);

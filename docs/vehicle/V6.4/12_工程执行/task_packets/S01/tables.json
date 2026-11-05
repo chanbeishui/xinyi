@@ -84,6 +84,11 @@
         "申请原因代码，原说明独立保留"
       ],
       [
+        "public_opinion",
+        "VARCHAR(1000) NULL",
+        "对申请人公开的审核说明，不包含内部审核意见"
+      ],
+      [
         "evidence_ids",
         "JSON",
         "关联证据文件ID"
@@ -119,7 +124,8 @@
       "UNIQUE KEY uk_active_order (active_order)",
       "KEY ix_review (review_status,created_at)",
       "KEY ix_return (return_state,updated_at)",
-      "CONSTRAINT ck_after_amount CHECK (requested_fen>=0 AND (approved_fen IS NULL OR approved_fen>=0))"
+      "CONSTRAINT ck_after_amount CHECK (requested_fen>=0 AND (approved_fen IS NULL OR approved_fen>=0))",
+      "KEY ix_case_order_history(order_id,id)"
     ],
     "rule": "审核时锁订单/支付/申请，预留退款；实际返还后继续同一决定，无二次默认退款审核。",
     "primaryKey": [
@@ -144,19 +150,19 @@
       "order_id": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "payment_id": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "kind": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "case_status": {
@@ -182,7 +188,7 @@
       "requested_fen": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "approved_fen": {
@@ -206,26 +212,26 @@
       "applicant_type": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false,
         "enumRef": "ApplicantType"
       },
       "applicant_id": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "reason": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "evidence_ids": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "resolved_at": {
@@ -265,6 +271,12 @@
         "insertable": true,
         "updatable": false,
         "clientWritable": false
+      },
+      "public_opinion": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
       }
     },
     "checks": [
@@ -290,8 +302,13 @@
       ],
       [
         "account_id",
-        "BIGINT NOT NULL",
-        "实际补充资料的车主账号"
+        "BIGINT NULL",
+        "小程序贡献者，与后台贡献者互斥"
+      ],
+      [
+        "user_id",
+        "BIGINT NULL",
+        "后台实际补充人，与小程序贡献者互斥"
       ],
       [
         "note",
@@ -356,8 +373,16 @@
         "updatable": false,
         "clientWritable": false,
         "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "user_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
       }
     },
-    "checks": []
+    "checks": [
+      "CONSTRAINT ck_aftersale_note_actor CHECK ((account_id IS NOT NULL AND user_id IS NULL) OR (account_id IS NULL AND user_id IS NOT NULL))"
+    ]
   }
 ]

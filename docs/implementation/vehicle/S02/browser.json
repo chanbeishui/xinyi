@@ -1,0 +1,43 @@
+{
+  "mode": "Browser plugin not available；临时Playwright明确API夹具验证PC渲染和客户端交互，不替代真实HTTP/数据库及渠道验证",
+  "url": "http://127.0.0.1:5173/aftersale/cases",
+  "viewports": [
+    "1440x1000",
+    "390x844"
+  ],
+  "checks": [
+    "动态菜单真实加载新增页面，列表展示订单/车牌/客户/脱敏金额/状态",
+    "状态筛选发出正式枚举参数；所有预览请求均携带合法UUID幂等键",
+    "预览未返回时关闭再打开，旧请求失效且预览按钮恢复",
+    "持车取消预览显示WAIT_RETURN约束，保留当前司机承接",
+    "统一审核提交case/order双版本、内部意见、公开说明与幂等键；结果展示已预留待还车",
+    "HTTP409响应保留审核意见，阻止直接重试，刷新后按新保管与版本重新预览",
+    "网络未知结果锁定表单，重试保持完全相同body与Idempotency-Key",
+    "后台代办先核对原订单版本，原字节私有上传并核验；本人申请明确禁自审",
+    "凭证经同源带框架登录与文件票据下载为Blob预览，客户端未使用公共对象路径",
+    "后台追加记录明确车主可见，不覆盖原原因或作为内部意见",
+    "仅退款预览保留履约；驳回提交0元且不预留资金",
+    "持车取消选择驳回时预览decision=REJECT且amount=0，无WAIT_RETURN提示；提交后保管承接履约保持原状",
+    "指定订单与指定车主分别调用授权列表API",
+    "390px窄屏筛选换行，表格局部横向滚动而页面不溢出",
+    "只有预览与资金查询权限时可核对预览，缺少审核/退款批准权限仍禁止提交"
+  ],
+  "errors": [],
+  "expectedTransportErrors": [
+    {
+      "message": "Failed to load resource: the server responded with a status of 409 (Conflict)",
+      "url": "http://127.0.0.1:5173/dev-api/api/admin/after-sales/1/review"
+    },
+    {
+      "message": "Failed to load resource: net::ERR_FAILED",
+      "url": "http://127.0.0.1:5173/dev-api/api/admin/after-sales/1/review"
+    }
+  ],
+  "unknown": [],
+  "screenshots": [
+    "docs/implementation/vehicle/S02/ui-list-desktop.png",
+    "docs/implementation/vehicle/S02/ui-review-facts.png",
+    "docs/implementation/vehicle/S02/ui-review-preview.png",
+    "docs/implementation/vehicle/S02/ui-list-mobile.png"
+  ]
+}

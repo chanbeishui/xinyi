@@ -28,6 +28,7 @@ public class AftersaleService {
     private final PrivateFileService files;
     private final PaymentMapper payments;
     private final AftersaleMapper cases;
+    private final AftersaleParticipants participants;
     private final IdempotencyService idem;
     private final AuditService audit;
     private final OutboxService outbox;
@@ -39,6 +40,7 @@ public class AftersaleService {
             PrivateFileService files,
             PaymentMapper payments,
             AftersaleMapper cases,
+            AftersaleParticipants participants,
             IdempotencyService idem,
             AuditService audit,
             OutboxService outbox,
@@ -48,6 +50,7 @@ public class AftersaleService {
         this.files = files;
         this.payments = payments;
         this.cases = cases;
+        this.participants = participants;
         this.idem = idem;
         this.audit = audit;
         this.outbox = outbox;
@@ -134,6 +137,7 @@ public class AftersaleService {
         row.setReasonCode(request.reasonCode());
         row.setEvidenceIds(ViJson.write(externalIds(request.voucherFileIds())));
         cases.insert(row);
+        participants.account(row.getId(), actor.accountId());
         if ("CANCEL_REFUND".equals(request.kind())
                 && cases.markCancellation(order.getId(), order.getVersion()) != 1)
             throw new ViException(ViErrorCode.VI_VERSION_CONFLICT);
@@ -208,6 +212,7 @@ public class AftersaleService {
                 actor.accountId(),
                 request.note(),
                 ViJson.write(externalIds(request.voucherFileIds())));
+        participants.account(row.getId(), actor.accountId());
         audit.recordSuccess(
                 actor,
                 "AFTERSALE",
@@ -287,7 +292,7 @@ public class AftersaleService {
                                 }));
     }
 
-    private Map<String, Object> view(AftersaleCase row, ViOrder order) {
+    Map<String, Object> view(AftersaleCase row, ViOrder order) {
         Map<String, Object> result = new LinkedHashMap<>();
         result.put("caseId", row.getId().toString());
         result.put("orderNo", order.getOrderNo());
@@ -317,11 +322,14 @@ public class AftersaleService {
                                                 note.get("note"),
                                                 "voucherFileIds",
                                                 jsonIds((String) note.get("evidence_ids")),
+                                                "authorType",
+                                                note.get("user_id") == null ? "MINI" : "ADMIN",
                                                 "createdAt",
                                                 note.get("created_iso")))
                         .toList());
-        // 内部审核意见没有可公开字段，不能把 opinion 原文当公开说明。
-        result.put("publicOpinion", null);
+        // 只公开独立字段，不把内部 opinion 原文作为公开说明。
+        result.put("publicOpinion", row.getPublicOpinion());
+        result.put("requestSource", "SYS_USER".equals(row.getApplicantType()) ? "ADMIN" : "OWNER");
         result.put("version", row.getVersion());
         result.put("createdAt", row.getCreatedAt().toString());
         result.put("updatedAt", row.getUpdatedAt().toString());

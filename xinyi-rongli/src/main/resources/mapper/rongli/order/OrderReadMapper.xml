@@ -31,7 +31,13 @@
 <select id="ownAssignment" resultMap="assignment">SELECT id,order_id,driver_id,ended_at FROM vi_driver_assignment WHERE order_id=#{orderId} AND driver_id=#{driverId} ORDER BY accepted_at DESC,id DESC LIMIT 1</select>
 <select id="activeAssignment" resultMap="assignment">SELECT id,order_id,driver_id,ended_at FROM vi_driver_assignment WHERE id=#{assignmentId} AND order_id=#{orderId} AND ended_at IS NULL</select>
 <select id="driverPublic" resultType="map">SELECT a.nickname FROM vi_driver_profile d JOIN vi_account a ON a.id=d.account_id WHERE d.id=#{driverId}</select>
-<select id="afterSale" resultType="map">SELECT id,kind,case_status,approved_fen,return_state,refund_state,version FROM vi_aftersale_case WHERE order_id=#{orderId} ORDER BY id DESC LIMIT 1</select>
+<select id="afterSale" resultType="map">
+    SELECT id,kind,case_status,approved_fen,return_state,refund_state,public_opinion,version
+    FROM vi_aftersale_case
+    WHERE order_id=#{orderId}
+    ORDER BY id DESC
+    LIMIT 1
+</select>
 <select id="dispute" resultType="string">SELECT status FROM vi_dispute WHERE order_id=#{orderId} ORDER BY CASE status WHEN 'OPEN' THEN 0 WHEN 'PROCESSING' THEN 1 ELSE 2 END,id DESC LIMIT 1</select>
 <select id="license" resultType="string">SELECT review_status FROM vi_vehicle_license WHERE order_id=#{orderId} ORDER BY id DESC LIMIT 1</select>
 <select id="result" resultType="string">SELECT conclusion FROM vi_inspection_result WHERE order_id=#{orderId} AND superseded_at IS NULL</select>

@@ -1,7 +1,7 @@
 # D06 · 未接车解除与原订单重派
 
 阶段：M3；责任域：fulfillment；前置：D04, E06。
-范围版本：`V6.1-UNCHANGED`；definitionHash：`e8627703e9f2f6619e0db15891d149909a1a59f041f6bcb1b137a7860052cbfe`。
+范围版本：`V6.1-UNCHANGED`；definitionHash：`80a20d6452bcaf577a2ae4a140972eaa65b21f522ed9f629169d16f79c201b70`。
 
 ## 本任务交付
 - 解除指定承接/释放精确占用/保留支付预约/重派
@@ -17,7 +17,7 @@
 接口：API_060_post
 画板：D31, D32, D33, D34, D35
 主责任表：无
-验收：TC-090, TC-091, TC-092, TC-093, TC-094, TC-095, TC-096, TC-097, TC-098, TC-099, TC-100, TC-101, TC-102, TC-103, TC-104
+验收：TC-090, TC-093, TC-094, TC-095, TC-099, TC-100, TC-101, TC-102, TC-103, TC-104
 
 ## 代码落位
 `xinyi-rongli/src/main/java/com/xinyi/rongli/fulfillment/`

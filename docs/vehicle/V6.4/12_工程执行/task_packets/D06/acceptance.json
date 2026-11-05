@@ -13,32 +13,6 @@
     "origin": "V6.4新业务完整验收规格；未绑定真实Step实现前不是自动化测试结果"
   },
   {
-    "id": "TC-091",
-    "priority": "P0",
-    "module": "取消重派",
-    "flow": "F11 F12 F13",
-    "title": "未接车审核通过办结",
-    "given": "已付款车仍owner",
-    "when": "管理员批准",
-    "then": "CANCELLED+结束对应assignment+精确释放，退款另流程",
-    "status": "NOT_RUN",
-    "evidence": "",
-    "origin": "V6.4新业务完整验收规格；未绑定真实Step实现前不是自动化测试结果"
-  },
-  {
-    "id": "TC-092",
-    "priority": "P0",
-    "module": "取消重派",
-    "flow": "F11 F12 F13",
-    "title": "已接车批准待返还",
-    "given": "车在driver",
-    "when": "管理员批准取消",
-    "then": "APPROVED_WAIT_RETURN，保管与driver占用继续",
-    "status": "NOT_RUN",
-    "evidence": "",
-    "origin": "V6.4新业务完整验收规格；未绑定真实Step实现前不是自动化测试结果"
-  },
-  {
     "id": "TC-093",
     "priority": "P0",
     "module": "取消重派",
@@ -73,45 +47,6 @@
     "given": "接车后尚未到站",
     "when": "批准并返还",
     "then": "仅要求实际节点1/4，不造2/3照片",
-    "status": "NOT_RUN",
-    "evidence": "",
-    "origin": "V6.4新业务完整验收规格；未绑定真实Step实现前不是自动化测试结果"
-  },
-  {
-    "id": "TC-096",
-    "priority": "P0",
-    "module": "取消重派",
-    "flow": "F11 F12 F13",
-    "title": "取消驳回不回滚实际事实",
-    "given": "审核期间真实保管位置有变化",
-    "when": "驳回",
-    "then": "恢复合法动作，不把车辆/状态强行倒回申请时",
-    "status": "NOT_RUN",
-    "evidence": "",
-    "origin": "V6.4新业务完整验收规格；未绑定真实Step实现前不是自动化测试结果"
-  },
-  {
-    "id": "TC-097",
-    "priority": "P0",
-    "module": "取消重派",
-    "flow": "F11 F12 F13",
-    "title": "申请时未接车审核时已接车",
-    "given": "并发跨过接车",
-    "when": "审核取消通过",
-    "then": "按锁内custody走待返还，不直接释放",
-    "status": "NOT_RUN",
-    "evidence": "",
-    "origin": "V6.4新业务完整验收规格；未绑定真实Step实现前不是自动化测试结果"
-  },
-  {
-    "id": "TC-098",
-    "priority": "P0",
-    "module": "取消重派",
-    "flow": "F11 F12 F13",
-    "title": "归还先于统一售后审核",
-    "given": "取消挂起期间已归还",
-    "when": "管理员之后批准",
-    "then": "取消办结不需二次实物归还，也不二次释放司机",
     "status": "NOT_RUN",
     "evidence": "",
     "origin": "V6.4新业务完整验收规格；未绑定真实Step实现前不是自动化测试结果"

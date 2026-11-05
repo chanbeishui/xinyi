@@ -569,6 +569,9 @@ components:
           description: 最后读取版本，用于条件更新；409必须重新获取，不静默覆盖
         note:
           type: string
+          minLength: 1
+          maxLength: 1000
+          description: 公开补充说明，车主可见；追加不能覆盖原说明。
         voucherFileIds:
           type: array
           items:
@@ -849,6 +852,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/AfterSaleNotePublic'
+        requestSource:
+          type: string
+          enum:
+          - OWNER
+          - ADMIN
+          description: 本人申请或后台代办，实际操作者在内部审计记录。
       required:
       - caseId
       - orderNo
@@ -980,6 +989,12 @@ components:
         createdAt:
           type: string
           format: date-time
+        authorType:
+          type: string
+          enum:
+          - MINI
+          - ADMIN
+          description: 公开来源类别，不暴露后台人员ID。
   responses:
     UnprocessableEntity:
       description: 填写内容不符合要求。参见errorCode注册表；HTTP状态与code一致。

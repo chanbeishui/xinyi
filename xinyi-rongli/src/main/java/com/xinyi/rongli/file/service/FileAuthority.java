@@ -131,7 +131,10 @@ public class FileAuthority {
                         || !Set.of("VEHICLE_PHOTO", "VEHICLE_LICENSE", "DISPUTE", "RESULT_EVIDENCE")
                                 .contains(purpose)
                         || write && "RESULT_EVIDENCE".equals(purpose)
-                        || "DISPUTE".equals(purpose) && !uploader(actor, file)) denied();
+                        || "DISPUTE".equals(purpose)
+                                && !uploader(actor, file)
+                                && files.aftersaleEvidence(order.getId(), file.getId()) != 1)
+                    denied();
                 return;
             }
             if (actor.isMini() && "DRIVER".equals(actor.actingRole())) {

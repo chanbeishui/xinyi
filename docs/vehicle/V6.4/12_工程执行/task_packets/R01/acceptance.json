@@ -1,1 +1,80 @@
-[]
+[
+  {
+    "id": "TC-163",
+    "priority": "P0",
+    "module": "代驾费用",
+    "flow": "F32",
+    "title": "真实承接结束事件",
+    "given": "已实际归还",
+    "when": "重复结束消息",
+    "then": "一条基础费用事件，不重复计费",
+    "status": "NOT_RUN",
+    "evidence": "",
+    "origin": "V6.4新业务完整验收规格；未绑定真实Step实现前不是自动化测试结果"
+  },
+  {
+    "id": "TC-164",
+    "priority": "P0",
+    "module": "代驾费用",
+    "flow": "F32",
+    "title": "费用失败不阻断释放",
+    "given": "归还成功后费用服务异常",
+    "when": "台账写失败",
+    "then": "司机仍已释放，补偿台账任务重试",
+    "status": "NOT_RUN",
+    "evidence": "",
+    "origin": "V6.4新业务完整验收规格；未绑定真实Step实现前不是自动化测试结果"
+  },
+  {
+    "id": "TC-165",
+    "priority": "P0",
+    "module": "代驾费用",
+    "flow": "F32",
+    "title": "报酬与客户收费独立",
+    "given": "客户代驾服务费60元",
+    "when": "匹配45元报酬规则",
+    "then": "应付按45元规则，不默认60元",
+    "status": "NOT_RUN",
+    "evidence": "",
+    "origin": "V6.4新业务完整验收规格；未绑定真实Step实现前不是自动化测试结果"
+  },
+  {
+    "id": "TC-166",
+    "priority": "P0",
+    "module": "代驾费用",
+    "flow": "F32",
+    "title": "未核价不是零",
+    "given": "取消场景无规则",
+    "when": "产生费用条目",
+    "then": "PENDING_PRICING且amount=null，无法确认账单",
+    "status": "NOT_RUN",
+    "evidence": "",
+    "origin": "V6.4新业务完整验收规格；未绑定真实Step实现前不是自动化测试结果"
+  },
+  {
+    "id": "TC-167",
+    "priority": "P0",
+    "module": "代驾费用",
+    "flow": "F32",
+    "title": "明确零元合法",
+    "given": "接车前解除有0元规则",
+    "when": "核定费用",
+    "then": "记录明确0元与版本，不是缺规则",
+    "status": "NOT_RUN",
+    "evidence": "",
+    "origin": "V6.4新业务完整验收规格；未绑定真实Step实现前不是自动化测试结果"
+  },
+  {
+    "id": "TC-168",
+    "priority": "P0",
+    "module": "代驾费用",
+    "flow": "F32",
+    "title": "重派按承接核对",
+    "given": "A解除B完成",
+    "when": "形成服务记录",
+    "then": "A/B各自条目可追溯，不对两人重复记完整报酬",
+    "status": "NOT_RUN",
+    "evidence": "",
+    "origin": "V6.4新业务完整验收规格；未绑定真实Step实现前不是自动化测试结果"
+  }
+]

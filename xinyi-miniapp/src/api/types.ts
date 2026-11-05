@@ -748,6 +748,7 @@ export type AfterSaleReview = {
   decision: 'APPROVE' | 'REJECT';
   approvedAmount: number;
   opinion: string;
+  publicOpinion: string;
 };
 
 export type AfterSaleReviewPreview = {
@@ -755,7 +756,7 @@ export type AfterSaleReviewPreview = {
   caseVersion: number;
   orderVersion: number;
   custody?: 'OWNER' | 'DRIVER' | 'STATION';
-  assignmentId?: string;
+  assignmentId?: string | null;
   paidAmount?: number;
   refundedAmount?: number;
   reservedAmount?: number;
@@ -763,6 +764,7 @@ export type AfterSaleReviewPreview = {
   returnRequired: boolean;
   allowedActions?: Array<AllowedAction>;
   warnings?: Array<string>;
+  decision?: 'APPROVE' | 'REJECT';
 };
 
 export type AfterSale = {
@@ -772,8 +774,8 @@ export type AfterSale = {
   caseStatus: 'PENDING_REVIEW' | 'EXECUTING' | 'CLOSED' | 'REJECTED';
   reviewStatus: 'PENDING' | 'APPROVED' | 'REJECTED';
   reviewRevision?: number;
-  approvedAmount?: number;
-  requestedAmount?: number;
+  approvedAmount?: number | null;
+  requestedAmount?: number | null;
   returnState: 'UNDETERMINED' | 'NOT_REQUIRED' | 'WAIT_RETURN' | 'RETURNED';
   refundState:
     | 'NONE'
@@ -787,13 +789,32 @@ export type AfterSale = {
     | 'CLOSED';
   custody?: 'OWNER' | 'DRIVER' | 'STATION';
   fulfillmentStatus?: string;
-  assignmentId?: string;
+  assignmentId?: string | null;
   refundNo?: string;
-  opinion?: string;
+  opinion?: string | null;
   version: number;
   createdAt?: string;
   updatedAt?: string;
   allowedActions?: Array<AllowedAction>;
+  publicOpinion?: string | null;
+  reason?: string;
+  reasonCode?: string | null;
+  voucherFileIds?: Array<string>;
+  notes?: Array<AfterSaleNotePublic>;
+  requestSource?: 'OWNER' | 'ADMIN';
+  paidAmount?: number | null;
+  refundedAmount?: number | null;
+  reservedAmount?: number | null;
+  availableAmount?: number | null;
+  applicantType?: 'ACCOUNT' | 'SYS_USER';
+  applicantId?: string;
+  orderVersion?: number;
+  selfReviewDenied?: boolean;
+  financeVisible?: boolean;
+  reviews?: Array<AfterSaleReviewHistory>;
+  orderPlateNo?: string | null;
+  ownerAccountId?: string;
+  ownerLabel?: string;
 };
 
 export type AfterSaleNote = {
@@ -802,7 +823,11 @@ export type AfterSaleNote = {
   voucherFileIds?: Array<string>;
 };
 
-export type AfterSaleReviewPreviewInput = { expectedVersion: number; approvedAmount: number };
+export type AfterSaleReviewPreviewInput = {
+  expectedVersion: number;
+  approvedAmount: number;
+  decision?: 'APPROVE' | 'REJECT';
+};
 
 export type OwnerRecord = {
   ownerId: string;
@@ -1671,6 +1696,7 @@ export type AfterSalePublic = {
   reasonCode: string | null;
   voucherFileIds: Array<string>;
   notes: Array<AfterSaleNotePublic>;
+  requestSource?: 'OWNER' | 'ADMIN';
 };
 
 export type DriverStatementPaymentPublic = {
@@ -2070,6 +2096,7 @@ export type ApiError = {
 export type PermissionCode =
   | 'biz:aftersale:create'
   | 'biz:aftersale:list'
+  | 'biz:aftersale:note'
   | 'biz:aftersale:query'
   | 'biz:aftersale:review'
   | 'biz:aftersale:reviewpreview'
@@ -2080,6 +2107,8 @@ export type PermissionCode =
   | 'biz:config:edit'
   | 'biz:config:query'
   | 'biz:dashboard:list'
+  | 'biz:delivery:query'
+  | 'biz:delivery:retry'
   | 'biz:dispatch:create'
   | 'biz:dispatch:edit'
   | 'biz:dispatch:list'
@@ -2121,10 +2150,11 @@ export type PermissionCode =
   | 'biz:driverstatement:submitreview'
   | 'biz:driverstatement:void'
   | 'biz:driverstatement:withdraw'
-  | 'biz:employeebinding:create'
-  | 'biz:employeebinding:issue'
   | 'biz:employeebinding:list'
+  | 'biz:employeebinding:query'
+  | 'biz:employeebinding:rematch'
   | 'biz:employeebinding:revoke'
+  | 'biz:employeebinding:suspend'
   | 'biz:exception:list'
   | 'biz:exception:resolve'
   | 'biz:export:audit'
@@ -2135,18 +2165,32 @@ export type PermissionCode =
   | 'biz:handover:create'
   | 'biz:handover:query'
   | 'biz:handover:secret'
+  | 'biz:integration:check'
+  | 'biz:integration:create'
+  | 'biz:integration:edit'
+  | 'biz:integration:publish'
+  | 'biz:integration:query'
+  | 'biz:integration:test'
+  | 'biz:integration:testrecipient'
   | 'biz:job:list'
   | 'biz:job:retry'
   | 'biz:license:edit'
   | 'biz:license:list'
-  | 'biz:license:sensitive'
+  | 'biz:messageroute:edit'
+  | 'biz:messageroute:query'
+  | 'biz:messagetemplate:check'
+  | 'biz:messagetemplate:create'
+  | 'biz:messagetemplate:edit'
+  | 'biz:messagetemplate:publish'
+  | 'biz:messagetemplate:query'
   | 'biz:notificationtemplate:edit'
   | 'biz:notificationtemplate:list'
-  | 'biz:order:address'
+  | 'biz:offlinepayment:create'
+  | 'biz:offlinepayment:query'
+  | 'biz:offlinepayment:verify'
   | 'biz:order:contact'
   | 'biz:order:create'
   | 'biz:order:export'
-  | 'biz:order:finance'
   | 'biz:order:list'
   | 'biz:order:query'
   | 'biz:owner:edit'
@@ -2168,6 +2212,7 @@ export type PermissionCode =
   | 'biz:price:submit'
   | 'biz:privacycase:list'
   | 'biz:privacycase:resolve'
+  | 'biz:refund:approve'
   | 'biz:refund:query'
   | 'biz:refund:retry'
   | 'biz:result:create'
@@ -2773,4 +2818,14 @@ export type AfterSaleNotePublic = {
   note: string;
   voucherFileIds: Array<string>;
   createdAt: string;
+  authorType?: 'MINI' | 'ADMIN';
+};
+
+export type AfterSaleReviewHistory = {
+  decision: 'APPROVE' | 'REJECT';
+  approvedAmount: number | null;
+  opinion: string;
+  publicOpinion: string | null;
+  reviewedAt: string;
+  reviewerUserId: string;
 };

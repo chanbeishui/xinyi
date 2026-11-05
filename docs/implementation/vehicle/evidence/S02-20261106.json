@@ -1,0 +1,155 @@
+{
+  "taskId": "S02",
+  "scopeRevision": "V6.4-AFTERSALE-REVIEW-20261106",
+  "at": "2026-11-05T16:32:14.769446+00:00",
+  "implementer": "Codex",
+  "baselineCommit": "bbb9c33",
+  "codeFiles": [
+    "sql/migration_20261105_03_aftersale_review.sql",
+    "sql/ry_20260417.sql",
+    "xinyi-admin/src/test/java/com/xinyi/web/viit/S02AftersaleIT.java",
+    "xinyi-miniapp/src/api/types.ts",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/aftersale/controller/AdminAftersaleController.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/aftersale/domain/AftersaleCase.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/aftersale/dto/AdminAftersaleRequests.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/aftersale/mapper/AdminAftersaleMapper.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/aftersale/service/AdminAftersaleService.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/aftersale/service/AftersaleParticipants.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/aftersale/service/AftersaleService.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/file/mapper/PrivateFileMapper.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/file/service/FileAuthority.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/file/service/PrivateFileService.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/order/service/OrderProjection.java",
+    "xinyi-rongli/src/main/resources/mapper/rongli/aftersale/AdminAftersaleMapper.xml",
+    "xinyi-rongli/src/main/resources/mapper/rongli/aftersale/AftersaleMapper.xml",
+    "xinyi-rongli/src/main/resources/mapper/rongli/file/PrivateFileMapper.xml",
+    "xinyi-rongli/src/main/resources/mapper/rongli/jobs/DispatchDeadlineMapper.xml",
+    "xinyi-rongli/src/main/resources/mapper/rongli/order/OrderReadMapper.xml",
+    "xinyi-ui/src/api/rongli/aftersale.ts",
+    "xinyi-ui/src/api/rongli/privateFile.ts",
+    "xinyi-ui/src/views/rongli/aftersale/VoucherFiles.vue",
+    "xinyi-ui/src/views/rongli/aftersale/index.vue",
+    "xinyi-ui/src/views/rongli/order/order.vue",
+    "xinyi-ui/src/views/rongli/owner/owner.vue"
+  ],
+  "sourceDigests": {
+    "sql/migration_20261105_03_aftersale_review.sql": "67e594666f65a42884d87dba9df849fe92f77c314518f3cf82891f330b70cd15",
+    "sql/ry_20260417.sql": "f155fd7ac603fabb45684a24d9f65eb055450d548481a77c9a88a9124a6f9d57",
+    "xinyi-admin/src/test/java/com/xinyi/web/viit/S02AftersaleIT.java": "542d7b015490cf543809a8f2fa3871974084664ad768557739d7a0b36cab7d66",
+    "xinyi-miniapp/src/api/types.ts": "d7297afa553968cfc927b4133cc1f4190c6551b7ec3d8075a5431003e0ff317f",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/aftersale/controller/AdminAftersaleController.java": "b236c67adcf2426df72e154d652d0a512296704c910ad18aa19af1830e647834",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/aftersale/domain/AftersaleCase.java": "51e11f63e154e411905ec36e5d5eb954666fe674b3b47614361d3ecc5462ccc6",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/aftersale/dto/AdminAftersaleRequests.java": "b8f38fea55c2643027794346a56ebaef6b2c7f66c2a6621a830818a54179645f",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/aftersale/mapper/AdminAftersaleMapper.java": "41171847a2bf0ca8fcab0dd0e2bd987bf1f469b45c065dde5d2dace0b47e7aa7",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/aftersale/service/AdminAftersaleService.java": "5c91697650bf044743c54304fc69af0a3fd3cf9e86654e7a862fc0c184bec6a0",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/aftersale/service/AftersaleParticipants.java": "8c5bb1dcd68efa30b8a797f49b6623332012a76c46a8cb2eb687233fc60a777b",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/aftersale/service/AftersaleService.java": "d1b99f10944fa34edb6ba34160beeb73ec68a805a25a3f8e0b4af1b6719565fd",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/file/mapper/PrivateFileMapper.java": "bdf55da3a122a90e24bed2d48a1e9988791b8fde5436f981c49ae0a565c99f61",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/file/service/FileAuthority.java": "4aa066ed7f42ac825062c439ca0c8cb382533fd4b84351f7894daa2c90857f14",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/file/service/PrivateFileService.java": "058489aa181966fa8b533f01b0fd7e752e77a17bc7ac400194802c123673ab1a",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/order/service/OrderProjection.java": "042983c8169078385bd65fa640c892676d551316128b1f3e77800ddc66b34df0",
+    "xinyi-rongli/src/main/resources/mapper/rongli/aftersale/AdminAftersaleMapper.xml": "0bea4fa63b7b470f9dd9b265e17eb403996751cc2222d6c23e6818de9e8a2a54",
+    "xinyi-rongli/src/main/resources/mapper/rongli/aftersale/AftersaleMapper.xml": "8e93e318a890854c5c00696d5b8f3d77b99be9746f1cb02da34b7b6a07a60040",
+    "xinyi-rongli/src/main/resources/mapper/rongli/file/PrivateFileMapper.xml": "36a733ba4165c2793506189733a6589e95b9aacda0e6b07c30c519fa5e49ea9b",
+    "xinyi-rongli/src/main/resources/mapper/rongli/jobs/DispatchDeadlineMapper.xml": "4479a6d6c028614becf26393f3c23728cac6276494a855870a54d73f67ebadc0",
+    "xinyi-rongli/src/main/resources/mapper/rongli/order/OrderReadMapper.xml": "714277dc8e0ad81c8278cb385f03655062a138bafcddbf3d513de0613e556dde",
+    "xinyi-ui/src/api/rongli/aftersale.ts": "45ca4a5834f7ffd385f018ed53b01128edd730ffc71841995e3c920726ae8344",
+    "xinyi-ui/src/api/rongli/privateFile.ts": "bcaf1a4a714a69e2ff8d31b2450557865849047c9ba797c5cc9970e3fb839fac",
+    "xinyi-ui/src/views/rongli/aftersale/VoucherFiles.vue": "834ad22b9cd42389fcac43a0c10980700ea6445dc586345dfeeb93cb124da99f",
+    "xinyi-ui/src/views/rongli/aftersale/index.vue": "12814d6ee97a6ef2f55c905a26d8b7c0885bfa0952b130edeb7f06d7a9550e1a",
+    "xinyi-ui/src/views/rongli/order/order.vue": "d4c9680dbfd255e3a0c7c2e26e25790015b02fabafdb64ad733c3c3fdbcd9ff2",
+    "xinyi-ui/src/views/rongli/owner/owner.vue": "a806c4a680883cf1d7875a690a7a9b93915bc89e1df5853aa5f7301a33f0777e"
+  },
+  "runs": [
+    {
+      "command": "mvn -o -pl xinyi-admin -am -Pvi-it -Dit.test=当前29类 verify",
+      "layer": "LIVE_HTTP_MYSQL",
+      "exitCode": 0,
+      "testsRun": 353,
+      "skipped": 0,
+      "reportPath": "docs/implementation/vehicle/S02/full-regression.json"
+    },
+    {
+      "command": "同全量进程S02AftersaleIT子套件",
+      "layer": "LIVE_HTTP_MYSQL",
+      "exitCode": 0,
+      "testsRun": 43,
+      "skipped": 0,
+      "reportPath": "docs/implementation/vehicle/S02/integration-junit.xml"
+    },
+    {
+      "command": "后端单元测试",
+      "layer": "UNIT",
+      "exitCode": 0,
+      "testsRun": 37,
+      "skipped": 0,
+      "reportPath": "docs/implementation/vehicle/S02/unit-junit.xml"
+    }
+  ],
+  "additionalChecks": [
+    {
+      "command": "npm --prefix xinyi-ui run build:prod",
+      "layer": "BUILD",
+      "exitCode": 0,
+      "checksRun": 1,
+      "reportPath": "docs/implementation/vehicle/S02/pc-build.txt"
+    },
+    {
+      "command": "npm --prefix xinyi-miniapp run type-check",
+      "layer": "BUILD",
+      "exitCode": 0,
+      "checksRun": 1,
+      "reportPath": "docs/implementation/vehicle/S02/types-build.txt"
+    },
+    {
+      "command": "npm --prefix xinyi-miniapp run build:mp-weixin",
+      "layer": "BUILD",
+      "exitCode": 0,
+      "checksRun": 1,
+      "reportPath": "docs/implementation/vehicle/S02/mp-build.txt"
+    },
+    {
+      "command": "Playwright PC明确API夹具",
+      "layer": "BROWSER_SIMULATOR",
+      "exitCode": 0,
+      "checksRun": 15,
+      "reportPath": "docs/implementation/vehicle/S02/browser.json"
+    },
+    {
+      "command": "engineer.py check + check_package.py",
+      "layer": "STATIC_CONTRACT",
+      "exitCode": 0,
+      "checksRun": 76,
+      "reportPath": "docs/implementation/vehicle/S02/engineering.json"
+    },
+    {
+      "command": "vue-tsc --noEmit --pretty false -p xinyi-ui/tsconfig.json（额外检查）",
+      "layer": "OPTIONAL_PC_TYPECHECK",
+      "exitCode": 2,
+      "passed": false,
+      "reportPath": "docs/implementation/vehicle/S02/pc-typecheck.json",
+      "preExisting": true
+    }
+  ],
+  "review": {
+    "approved": true,
+    "status": "APPROVED_WITH_SCOPE_BOUNDARIES",
+    "reviewer": "/root/f01_tests",
+    "reportPath": "docs/implementation/vehicle/S02/review.md"
+  },
+  "databaseStructureChanged": true,
+  "migration": "sql/migration_20261105_03_aftersale_review.sql",
+  "databaseFiles": [
+    "sql/migration_20261105_03_aftersale_review.sql",
+    "sql/ry_20260417.sql",
+    "docs/vehicle/V6.4/05_数据设计/001_vi业务表_初始化_V6.4.sql"
+  ],
+  "realVendors": "NOT_RUN",
+  "wechatDevice": "NOT_RUN",
+  "productionDeploy": "NOT_RUN",
+  "boundaries": [
+    "P04执行渠道及售后资金结果归并尚待后续",
+    "H/F实际交接及返还仍待相应任务",
+    "PC额外全站类型检查有既有全局Vue声明等错误，见独立记录"
+  ]
+}

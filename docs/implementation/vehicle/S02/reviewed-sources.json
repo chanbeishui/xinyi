@@ -1,0 +1,53 @@
+{
+  "taskId": "S02",
+  "reviewer": "/root/f01_tests",
+  "approved": true,
+  "scope": "生产业务/安全代码、对应API与PC调用静态复核；运行页面证据由主任务单列",
+  "date": "2026-11-06",
+  "sources": {
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/aftersale/controller/AdminAftersaleController.java": "b236c67adcf2426df72e154d652d0a512296704c910ad18aa19af1830e647834",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/aftersale/dto/AdminAftersaleRequests.java": "b8f38fea55c2643027794346a56ebaef6b2c7f66c2a6621a830818a54179645f",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/aftersale/service/AdminAftersaleService.java": "5c91697650bf044743c54304fc69af0a3fd3cf9e86654e7a862fc0c184bec6a0",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/aftersale/service/AftersaleParticipants.java": "8c5bb1dcd68efa30b8a797f49b6623332012a76c46a8cb2eb687233fc60a777b",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/aftersale/service/AftersaleService.java": "d1b99f10944fa34edb6ba34160beeb73ec68a805a25a3f8e0b4af1b6719565fd",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/aftersale/mapper/AdminAftersaleMapper.java": "41171847a2bf0ca8fcab0dd0e2bd987bf1f469b45c065dde5d2dace0b47e7aa7",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/aftersale/domain/AftersaleCase.java": "51e11f63e154e411905ec36e5d5eb954666fe674b3b47614361d3ecc5462ccc6",
+    "xinyi-rongli/src/main/resources/mapper/rongli/aftersale/AdminAftersaleMapper.xml": "0bea4fa63b7b470f9dd9b265e17eb403996751cc2222d6c23e6818de9e8a2a54",
+    "xinyi-rongli/src/main/resources/mapper/rongli/aftersale/AftersaleMapper.xml": "8e93e318a890854c5c00696d5b8f3d77b99be9746f1cb02da34b7b6a07a60040",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/file/service/FileAuthority.java": "4aa066ed7f42ac825062c439ca0c8cb382533fd4b84351f7894daa2c90857f14",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/file/service/PrivateFileService.java": "058489aa181966fa8b533f01b0fd7e752e77a17bc7ac400194802c123673ab1a",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/file/mapper/PrivateFileMapper.java": "bdf55da3a122a90e24bed2d48a1e9988791b8fde5436f981c49ae0a565c99f61",
+    "xinyi-rongli/src/main/resources/mapper/rongli/file/PrivateFileMapper.xml": "36a733ba4165c2793506189733a6589e95b9aacda0e6b07c30c519fa5e49ea9b",
+    "xinyi-rongli/src/main/resources/mapper/rongli/jobs/DispatchDeadlineMapper.xml": "4479a6d6c028614becf26393f3c23728cac6276494a855870a54d73f67ebadc0",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/order/service/OrderProjection.java": "042983c8169078385bd65fa640c892676d551316128b1f3e77800ddc66b34df0",
+    "xinyi-rongli/src/main/resources/mapper/rongli/order/OrderReadMapper.xml": "714277dc8e0ad81c8278cb385f03655062a138bafcddbf3d513de0613e556dde",
+    "xinyi-ui/src/api/rongli/aftersale.ts": "45ca4a5834f7ffd385f018ed53b01128edd730ffc71841995e3c920726ae8344",
+    "xinyi-ui/src/views/rongli/aftersale/index.vue": "12814d6ee97a6ef2f55c905a26d8b7c0885bfa0952b130edeb7f06d7a9550e1a",
+    "xinyi-ui/src/views/rongli/aftersale/VoucherFiles.vue": "834ad22b9cd42389fcac43a0c10980700ea6445dc586345dfeeb93cb124da99f",
+    "sql/migration_20261105_03_aftersale_review.sql": "67e594666f65a42884d87dba9df849fe92f77c314518f3cf82891f330b70cd15",
+    "sql/ry_20260417.sql": "f155fd7ac603fabb45684a24d9f65eb055450d548481a77c9a88a9124a6f9d57",
+    "xinyi-admin/src/test/java/com/xinyi/web/viit/S02AftersaleIT.java": "542d7b015490cf543809a8f2fa3871974084664ad768557739d7a0b36cab7d66"
+  },
+  "testReport": {
+    "path": "xinyi-admin/target/failsafe-reports/TEST-com.xinyi.web.viit.S02AftersaleIT.xml",
+    "sha256": "263734db66ce4420edd9de4b3050dd109ee84a18eb01b9a2ea03071a4dd13826",
+    "tests": 43,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "deliveryReport": {
+    "path": "docs/implementation/vehicle/S02/report.md",
+    "sha256": "0f6ce318a0bd8622e8a70542ff8b5fb9dc3bd44f9e30f2e20c261c5a109131b3",
+    "reviewed": true
+  },
+  "typecheckBoundary": {
+    "path": "docs/implementation/vehicle/S02/pc-typecheck.json",
+    "sha256": "363ab53bbc835beba14c7dd49e576ef64762ba97d075b3202844879f4d010df3",
+    "passed": false,
+    "baselineErrors": 72,
+    "currentErrors": 80,
+    "newErrors": "8项来自相同既有Vue全局声明遮蔽；未宣称全站类型检查通过",
+    "businessTypeErrors": 0
+  }
+}

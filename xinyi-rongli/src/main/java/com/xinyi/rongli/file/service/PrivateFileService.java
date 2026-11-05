@@ -430,6 +430,14 @@ public class PrivateFileService {
         }
     }
 
+    /** 后台代办只能提交自己上传的已核验凭证；文件功能权和原单部门范围需独立校验。 */
+    public void validateAdminVouchers(Actor actor, long orderId, List<Long> ids) {
+        if (!actor.isAdmin()) throw new ViException(ViErrorCode.VI_FORBIDDEN);
+        if (ids.isEmpty()) return;
+        authority.guard(actor, "biz:files:query");
+        validateVouchers(actor, orderId, ids);
+    }
+
     private PrivateFile authorized(Actor actor, long id, String permission, boolean write) {
         // 先读定位父记录，再按父订单→文件顺序加锁；不允许文件锁反向等待订单锁。
         PrivateFile snapshot = files.find(id);

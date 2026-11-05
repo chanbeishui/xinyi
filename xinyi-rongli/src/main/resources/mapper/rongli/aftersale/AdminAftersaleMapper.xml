@@ -1,0 +1,332 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xinyi.rongli.aftersale.mapper.AdminAftersaleMapper">
+    <!-- null仅表示服务端确认全数据权限，空集合必须拒绝，查询归属始终使用原订单o.dept_id。 -->
+    <sql id="visible">
+        FROM vi_aftersale_case c
+        JOIN vi_order o ON o.id = c.order_id
+        WHERE 1 = 1
+        <if test="departments != null">
+            <choose>
+                <when test="departments.size() > 0">
+                    AND o.dept_id IN
+                    <foreach collection="departments" item="d" open="(" close=")" separator=",">
+                        #{d}
+                    </foreach>
+                </when>
+                <otherwise>
+                    AND 1 = 0
+                </otherwise>
+            </choose>
+        </if>
+        <if test="orderId != null">
+            AND o.id = #{orderId}
+        </if>
+        <if test="ownerId != null">
+            AND o.owner_account_id = #{ownerId}
+        </if>
+        <if test="query.keyword != null and query.keyword != ''">
+            AND (LOCATE(#{query.keyword}, o.order_no) &gt; 0
+                OR LOCATE(#{query.keyword}, c.case_no) &gt; 0)
+        </if>
+        <if test="query.status != null">
+            AND c.case_status = #{query.status}
+        </if>
+        <if test="query.kind != null">
+            AND c.kind = #{query.kind}
+        </if>
+        <if test="query.returnState != null">
+            AND c.return_state = #{query.returnState}
+        </if>
+        <if test="query.refundState != null">
+            AND c.refund_state = #{query.refundState}
+        </if>
+    </sql>
+
+    <select id="list" resultMap="com.xinyi.rongli.aftersale.mapper.AftersaleMapper.Case">
+        SELECT c.*
+        <include refid="visible"/>
+        ORDER BY c.created_at DESC, c.id DESC
+        LIMIT #{query.pageSize} OFFSET #{offset}
+    </select>
+
+    <select id="count" resultType="long">
+        SELECT COUNT(*)
+        <include refid="visible"/>
+    </select>
+
+    <select id="orderId" resultType="long">
+        SELECT id
+        FROM vi_order
+        WHERE order_no = #{no}
+    </select>
+
+    <insert id="insertNote">
+        INSERT INTO vi_aftersale_note(case_id, user_id, note, evidence_ids)
+        VALUES(#{caseId}, #{userId}, #{note}, #{evidence})
+    </insert>
+
+    <select id="contributorAccounts" resultType="long">
+        SELECT applicant_id
+        FROM vi_aftersale_case
+        WHERE id = #{caseId}
+            AND applicant_type = 'ACCOUNT'
+        UNION
+        SELECT o.owner_account_id
+        FROM vi_aftersale_case c
+        JOIN vi_order o ON o.id = c.order_id
+        WHERE c.id = #{caseId}
+        UNION
+        SELECT account_id
+        FROM vi_aftersale_note
+        WHERE case_id = #{caseId}
+            AND account_id IS NOT NULL
+    </select>
+
+    <!-- 历史关联不能按当前状态过滤；撤权不抹除已经参与申请的真实身份。 -->
+    <select id="boundUsers" resultType="long">
+        SELECT DISTINCT sys_user_id
+        FROM vi_employee_binding
+        WHERE account_id = #{accountId}
+    </select>
+
+    <select id="accountPhone" resultType="map">
+        SELECT phone_lookup
+        FROM vi_account
+        WHERE id = #{accountId}
+            AND phone_verified_at IS NOT NULL
+    </select>
+
+    <select id="usersWithPhone" resultType="map">
+        SELECT user_id, phonenumber
+        FROM sys_user
+        WHERE phonenumber IS NOT NULL
+            AND phonenumber &lt;&gt; ''
+    </select>
+
+    <select id="reviewerPhone" resultType="string">
+        SELECT phonenumber
+        FROM sys_user
+        WHERE user_id = #{userId}
+    </select>
+
+    <select id="contributor" resultType="int">
+        SELECT COUNT(*)
+        FROM (
+            SELECT user_id
+            FROM vi_aftersale_participant_user
+            WHERE case_id = #{caseId}
+                AND user_id = #{userId}
+            UNION
+            SELECT applicant_id
+            FROM vi_aftersale_case
+            WHERE id = #{caseId}
+                AND applicant_type = 'SYS_USER'
+                AND applicant_id = #{userId}
+            UNION
+            SELECT user_id
+            FROM vi_aftersale_note
+            WHERE case_id = #{caseId}
+                AND user_id = #{userId}
+        ) contributors
+    </select>
+
+    <insert id="addParticipant">
+        INSERT INTO vi_aftersale_participant_user(case_id, user_id)
+        VALUES(#{caseId}, #{userId})
+        ON DUPLICATE KEY UPDATE user_id = VALUES(user_id)
+    </insert>
+
+    <select id="ownerLabel" resultType="string">
+        SELECT COALESCE(NULLIF(nickname, ''), '车主')
+        FROM vi_account
+        WHERE id = #{accountId}
+    </select>
+
+    <select id="pickupHandover" resultType="int">
+        SELECT COUNT(*)
+        FROM vi_handover
+        WHERE order_id = #{orderId}
+            AND handover_type = 'OWNER_TO_DRIVER'
+            AND status = 'CONFIRMED'
+            AND confirmed_at IS NOT NULL
+    </select>
+
+    <select id="reviews" resultType="map">
+        SELECT decision, approved_fen, opinion, public_opinion, reviewer_user_id,
+            DATE_FORMAT(reviewed_at, '%Y-%m-%dT%H:%i:%s.%fZ') reviewed_iso
+        FROM vi_aftersale_review
+        WHERE case_id = #{caseId}
+        ORDER BY revision
+    </select>
+
+    <update id="reviewCase">
+        UPDATE vi_aftersale_case
+        SET case_status = #{caseStatus},
+            review_status = #{reviewStatus},
+            approved_fen = #{approvedFen},
+            return_state = #{returnState},
+            refund_state = #{refundState},
+            public_opinion = #{publicOpinion},
+            resolved_at = CASE
+                WHEN #{caseStatus} IN ('CLOSED', 'REJECTED') THEN UTC_TIMESTAMP(3)
+                ELSE NULL
+            END,
+            version = version + 1,
+            updated_at = UTC_TIMESTAMP(3)
+        WHERE id = #{id}
+            AND version = #{version}
+            AND case_status = 'PENDING_REVIEW'
+            AND review_status = 'PENDING'
+    </update>
+
+    <insert id="insertReview">
+        INSERT INTO vi_aftersale_review(
+            case_id, revision, decision, approved_fen, observed_order_version, custody_at_review,
+            return_required, reviewer_user_id, opinion, public_opinion, reviewed_at
+        )
+        VALUES(
+            #{row.id}, #{row.reviewRevision}, #{decision}, #{row.approvedFen}, #{orderVersion}, #{custody},
+            #{returnRequired}, #{reviewer}, #{opinion}, #{row.publicOpinion}, UTC_TIMESTAMP(3)
+        )
+    </insert>
+
+    <update id="reserve">
+        UPDATE vi_payment_order
+        SET refund_reserved_fen = refund_reserved_fen + #{amount},
+            version = version + 1,
+            updated_at = UTC_TIMESTAMP(3)
+        WHERE id = #{id}
+            AND status = 'SUCCESS'
+            AND paid_fen - refunded_fen - refund_reserved_fen &gt;= #{amount}
+    </update>
+
+    <insert id="createRefund">
+        INSERT INTO vi_refund_order(
+            case_id, review_revision, payment_id, out_refund_no, amount_fen,
+            status, payment_method, execution_mode
+        )
+        VALUES(
+            #{row.id}, #{row.reviewRevision}, #{row.paymentId}, #{refundNo}, #{row.approvedFen},
+            'CREATED', #{method}, #{mode}
+        )
+    </insert>
+
+    <update id="cancelOrder">
+        UPDATE vi_order
+        SET cancel_status =
+            <choose>
+                <when test="waitReturn">'APPROVED_WAIT_RETURN'</when>
+                <otherwise>'COMPLETED'</otherwise>
+            </choose>,
+            <if test="!waitReturn">
+                fulfillment_status = 'CANCELLED',
+                cancelled_at = UTC_TIMESTAMP(3),
+                active_assignment_id = NULL,
+            </if>
+            version = version + 1,
+            updated_at = UTC_TIMESTAMP(3)
+        WHERE id = #{id}
+            AND version = #{version}
+            AND cancel_status = 'APPLIED'
+    </update>
+
+    <update id="rejectCancellation">
+        UPDATE vi_order
+        SET cancel_status = 'NONE',
+            version = version + 1,
+            updated_at = UTC_TIMESTAMP(3)
+        WHERE id = #{id}
+            AND version = #{version}
+            AND cancel_status = 'APPLIED'
+    </update>
+
+    <select id="invites" resultType="map">
+        SELECT id, driver_id
+        FROM vi_dispatch_invite
+        WHERE order_id = #{orderId}
+            AND status = 'WAIT_RESPONSE'
+        ORDER BY driver_id, id
+        FOR UPDATE
+    </select>
+
+    <select id="assignments" resultType="map">
+        SELECT id, driver_id
+        FROM vi_driver_assignment
+        WHERE order_id = #{orderId}
+            AND ended_at IS NULL
+        ORDER BY driver_id, id
+        FOR UPDATE
+    </select>
+
+    <update id="revokeInvite">
+        UPDATE vi_dispatch_invite
+        SET status = 'REVOKED',
+            responded_at = UTC_TIMESTAMP(3),
+            version = version + 1,
+            updated_at = UTC_TIMESTAMP(3)
+        WHERE id = #{id}
+            AND order_id = #{orderId}
+            AND status = 'WAIT_RESPONSE'
+    </update>
+
+    <update id="endAssignment">
+        UPDATE vi_driver_assignment
+        SET ended_at = UTC_TIMESTAMP(3),
+            end_reason = 'CANCELLED',
+            version = version + 1,
+            updated_at = UTC_TIMESTAMP(3)
+        WHERE id = #{id}
+            AND order_id = #{orderId}
+            AND ended_at IS NULL
+    </update>
+
+    <!-- 驾驶员可能已经承接其他任务，删除必须同时命中原订单、具体holder和类型。 -->
+    <delete id="releaseOccupancy">
+        DELETE FROM vi_driver_occupancy
+        WHERE driver_id = #{driverId}
+            AND order_id = #{orderId}
+            AND holder_id = #{holderId}
+            AND holder_type = #{holderType}
+    </delete>
+
+    <select id="reservations" resultType="map">
+        SELECT id, slot_id, quantity, status
+        FROM vi_quota_reservation
+        WHERE order_id = #{orderId}
+        ORDER BY slot_id
+        FOR UPDATE
+    </select>
+
+    <update id="releaseQuota">
+        UPDATE vi_quota_slot
+        SET
+            <choose>
+                <when test="status == 'HELD'">
+                    held_quota = held_quota - #{quantity},
+                </when>
+                <otherwise>
+                    confirmed_quota = confirmed_quota - #{quantity},
+                </otherwise>
+            </choose>
+            version = version + 1,
+            updated_at = UTC_TIMESTAMP(3)
+        WHERE id = #{slotId}
+            AND
+            <choose>
+                <when test="status == 'HELD'">held_quota &gt;= #{quantity}</when>
+                <otherwise>confirmed_quota &gt;= #{quantity}</otherwise>
+            </choose>
+    </update>
+
+    <update id="releaseReservation">
+        UPDATE vi_quota_reservation
+        SET status = 'RELEASED',
+            expires_at = NULL,
+            released_at = UTC_TIMESTAMP(3),
+            version = version + 1,
+            updated_at = UTC_TIMESTAMP(3)
+        WHERE id = #{id}
+            AND status = #{status}
+    </update>
+</mapper>

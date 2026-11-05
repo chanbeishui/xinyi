@@ -168,6 +168,7 @@
     "PermissionCode": [
       "biz:aftersale:create",
       "biz:aftersale:list",
+      "biz:aftersale:note",
       "biz:aftersale:query",
       "biz:aftersale:review",
       "biz:aftersale:reviewpreview",
@@ -283,6 +284,7 @@
       "biz:price:submit",
       "biz:privacycase:list",
       "biz:privacycase:resolve",
+      "biz:refund:approve",
       "biz:refund:query",
       "biz:refund:retry",
       "biz:result:create",

@@ -1,7 +1,7 @@
 # R04 · 发布快照与本人确认差异
 
 阶段：M5；责任域：statement；前置：R03, I04。
-范围版本：`V6.1-UNCHANGED`；definitionHash：`86b3eddf7f5646828f630dbd3af8bc64ca780e6b736d1b6ef3098af69c09a9ba`。
+范围版本：`V6.1-UNCHANGED`；definitionHash：`606119f0a47d265bebb5eb6b8cf781b4a6bd48b29acced081b52e105a760a96e`。
 
 ## 本任务交付
 - 公开快照hash、SENT本人确认、差异说明、版本重发
@@ -16,7 +16,7 @@
 接口：V4_get_api_app_driver_statements, V4_get_api_app_driver_statements__statementId, V4_post_api_admin_driver_statements__statementId__send, V4_post_api_app_driver_statements__statementId__confirm, V4_post_api_app_driver_statements__statementId__differences, V4_get_api_admin_statement_differences, V4_post_api_admin_statement_differences__differenceId__resolve, V41_get_api_admin_driver_statements_statementId_revisions_revision
 画板：D37, D38, D38-confirmed, D38-difference, D37-services, D37-payments, D38-partial
 主责任表：vi_driver_statement_difference, vi_driver_statement_snapshot
-验收：TC-178, TC-179, TC-180, TC-181, TC-182
+验收：TC-178, TC-179, TC-180, TC-181, TC-182, TC-175, TC-176, TC-177
 
 ## 代码落位
 `xinyi-rongli/src/main/java/com/xinyi/rongli/statement/`

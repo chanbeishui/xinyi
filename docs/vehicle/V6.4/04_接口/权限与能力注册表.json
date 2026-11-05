@@ -7,8 +7,7 @@
       "action": "create",
       "description": "创建统一取消与退款申请",
       "operations": [
-        "POST /api/admin/orders/{orderNo}/after-sales",
-        "POST /api/admin/after-sales/{caseId}/notes"
+        "POST /api/admin/orders/{orderNo}/after-sales"
       ],
       "usage": "OPERATION"
     },
@@ -1213,7 +1212,9 @@
       "description": "渠道退款详情",
       "operations": [
         "GET /api/admin/refunds/{refundNo}",
-        "POST /api/admin/refunds/{refundNo}/query"
+        "POST /api/admin/refunds/{refundNo}/query",
+        "POST /api/admin/after-sales/{caseId}/review-preview",
+        "POST /api/admin/orders/{orderNo}/after-sales"
       ],
       "usage": "OPERATION"
     },
@@ -1474,6 +1475,26 @@
         "GET /api/admin/vehicles/{vehicleId}"
       ],
       "usage": "OPERATION"
+    },
+    {
+      "code": "biz:aftersale:note",
+      "resource": "aftersale",
+      "action": "note",
+      "description": "追加车主可见的售后资料",
+      "operations": [
+        "POST /api/admin/after-sales/{caseId}/notes"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:refund:approve",
+      "resource": "refund",
+      "action": "approve",
+      "description": "按原收款主体范围批准售后退款预留，仍须原订单统一审核权限",
+      "operations": [
+        "POST /api/admin/after-sales/{caseId}/review"
+      ],
+      "usage": "ADDITIONAL_PERMISSION"
     }
   ],
   "capabilities": [

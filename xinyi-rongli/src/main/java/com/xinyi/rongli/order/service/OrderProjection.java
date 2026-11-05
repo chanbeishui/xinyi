@@ -154,7 +154,7 @@ public class OrderProjection {
                         : null,
                 value(a, "return_state"),
                 value(a, "refund_state"),
-                null,
+                value(a, "public_opinion"),
                 ((Number) a.get("version")).longValue());
     }
 

@@ -24,7 +24,7 @@ paths:
       - F12
       - F13
       - F20
-      description: 执行前校验当前真实身份、功能权限与对象所属范围。所有金额来自服务端核对，不因UI显示可点而放行。
+      description: 执行前校验当前真实身份、功能权限与对象所属范围。所有金额来自服务端核对，不因UI显示可点而放行。 后台代办以实际ADMIN主体留痕；页面核对订单使用既有biz:order:query接口，不允许手填版本代替。
       parameters:
       - name: orderNo
         in: path
@@ -125,6 +125,11 @@ paths:
       - VI_UPSTREAM_UNAVAILABLE
       x-error-policy: OBJECT_404_HIDES_EXISTENCE
       x-contract-baseline: V6.4
+      x-additional-permissions:
+      - biz:refund:query
+      x-authority-sources:
+        business: vi_order.dept_id
+        funds: vi_payment_order.receiver_dept_id
     get:
       operationId: V4_get_api_admin_orders__orderNo__after_sales
       summary: 查看本订单售后记录
@@ -517,11 +522,11 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/AfterSaleNote'
-      x-permission: biz:aftersale:create
+      x-permission: biz:aftersale:note
       x-authorization:
         realm: ADMIN
         scope: ORG_DEPT_STATION
-        permission: biz:aftersale:create
+        permission: biz:aftersale:note
       x-error-codes:
       - VI_REQUEST_INVALID
       - VI_AUTH_REQUIRED
@@ -667,6 +672,11 @@ paths:
       - VI_UPSTREAM_UNAVAILABLE
       x-error-policy: OBJECT_404_HIDES_EXISTENCE
       x-contract-baseline: V6.4
+      x-additional-permissions:
+      - biz:refund:query
+      x-authority-sources:
+        business: vi_order.dept_id
+        funds: vi_payment_order.receiver_dept_id
   /api/admin/after-sales/{caseId}/review:
     post:
       operationId: V4_post_api_admin_after_sales__caseId__review
@@ -782,6 +792,11 @@ paths:
       - VI_UPSTREAM_UNAVAILABLE
       x-error-policy: OBJECT_404_HIDES_EXISTENCE
       x-contract-baseline: V6.4
+      x-additional-permissions:
+      - biz:refund:approve
+      x-authority-sources:
+        business: vi_order.dept_id
+        funds: vi_payment_order.receiver_dept_id
   /api/admin/owners/{ownerId}/after-sales:
     get:
       operationId: V4_get_api_admin_owners__ownerId__after_sales
@@ -1238,12 +1253,12 @@ components:
           type: integer
           format: int64
           minimum: 0
-          description: 人民币分
+          nullable: true
         requestedAmount:
           type: integer
           format: int64
           minimum: 0
-          description: 人民币分
+          nullable: true
         returnState:
           type: string
           enum:
@@ -1274,13 +1289,13 @@ components:
         assignmentId:
           type: string
           pattern: ^[1-9][0-9]{0,18}$
-          maxLength: 19
-          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+          nullable: true
         refundNo:
           type: string
           description: 服务端不透明主键，以字符串传输
         opinion:
           type: string
+          nullable: true
         version:
           type: integer
           format: int64
@@ -1300,6 +1315,81 @@ components:
           items:
             $ref: '#/components/schemas/AllowedAction'
           uniqueItems: true
+        publicOpinion:
+          type: string
+          nullable: true
+        reason:
+          type: string
+          minLength: 1
+          maxLength: 1000
+        reasonCode:
+          type: string
+          nullable: true
+          maxLength: 64
+        voucherFileIds:
+          type: array
+          maxItems: 9
+          items:
+            type: string
+            pattern: ^[1-9][0-9]{0,18}$
+        notes:
+          type: array
+          items:
+            $ref: '#/components/schemas/AfterSaleNotePublic'
+        requestSource:
+          type: string
+          enum:
+          - OWNER
+          - ADMIN
+          description: 本人申请或后台代办，实际操作者在内部审计记录。
+        paidAmount:
+          type: integer
+          format: int64
+          minimum: 0
+          nullable: true
+        refundedAmount:
+          type: integer
+          format: int64
+          minimum: 0
+          nullable: true
+        reservedAmount:
+          type: integer
+          format: int64
+          minimum: 0
+          nullable: true
+        availableAmount:
+          type: integer
+          format: int64
+          minimum: 0
+          nullable: true
+        applicantType:
+          type: string
+          enum:
+          - ACCOUNT
+          - SYS_USER
+        applicantId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+        orderVersion:
+          type: integer
+          format: int64
+          minimum: 0
+        selfReviewDenied:
+          type: boolean
+        financeVisible:
+          type: boolean
+        reviews:
+          type: array
+          items:
+            $ref: '#/components/schemas/AfterSaleReviewHistory'
+        orderPlateNo:
+          type: string
+          nullable: true
+        ownerAccountId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+        ownerLabel:
+          type: string
       required:
       - caseId
       - orderNo
@@ -1309,7 +1399,7 @@ components:
       - returnState
       - refundState
       - version
-      description: 审核和执行分开；批准后不得再制造独立退款审核。非终态退款异常保留原号、金额预留和同一申请。
+      description: 审核和执行分开；批准后不得再制造独立退款审核。非终态退款异常保留原号、金额预留和同一申请。 以原订单归属授权。financeVisible仅在biz:refund:query及原收款主体部门范围均满足时为true，否则所有结构化资金字段为null。后台notes为公开补充，reviews.opinion仅后台查看；公开说明单独维护。
     AllowedAction:
       type: string
       description: 服务端按当前角色、对象状态、版本和实时授权计算的可执行动作集合；不能由客户端授予
@@ -1391,14 +1481,22 @@ components:
           description: 人民币分
         opinion:
           type: string
-          description: 必填，1–1000字符
+          description: 后台内部审核意见，1–1000字符，不向车主展示。
+          minLength: 1
+          maxLength: 1000
+        publicOpinion:
+          type: string
+          minLength: 1
+          maxLength: 1000
+          description: 对车主可见的决定说明；不得使用内部opinion自动回填。
       required:
       - expectedVersion
       - observedOrderVersion
       - decision
       - approvedAmount
       - opinion
-      description: 一次决定取消和退款。驳回amount=0；仅退款批准amount>0；取消批准可为0。不可自审；金额和是否返还在同一事务依据实时事实重新校验。
+      - publicOpinion
+      description: 一次决定取消和退款。驳回amount=0；仅退款批准amount>0；取消批准可为0。不可自审；金额和是否返还在同一事务依据实时事实重新校验。 订单业务权限按原订单dept_id，资金批准权限biz:refund:approve按原支付receiver_dept_id分别检查；申请/补充贡献者及可信同人关系不得自审。内部及公开意见分开。
     AfterSaleReviewPreviewInput:
       type: object
       additionalProperties: false
@@ -1412,9 +1510,17 @@ components:
           format: int64
           minimum: 0
           description: 人民币分
+        decision:
+          type: string
+          enum:
+          - APPROVE
+          - REJECT
+          default: APPROVE
+          description: 预览明确批准或驳回；省略兼容旧客户端按批准处理。驳回金额必须0，不产生返还/退款动作。
       required:
       - expectedVersion
       - approvedAmount
+      description: 预览动作必须与最终决定相同；驳回时金额0，只核对当前事实，不预留或取消；批准仅退款必须正金额。
     AfterSaleReviewPreview:
       type: object
       additionalProperties: false
@@ -1443,6 +1549,7 @@ components:
           pattern: ^[1-9][0-9]{0,18}$
           maxLength: 19
           description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+          nullable: true
         paidAmount:
           type: integer
           format: int64
@@ -1474,13 +1581,18 @@ components:
           type: array
           items:
             type: string
+        decision:
+          type: string
+          enum:
+          - APPROVE
+          - REJECT
       required:
       - caseId
       - caseVersion
       - orderVersion
       - availableAmount
       - returnRequired
-      description: 预览不预留、不改变业务状态；提交仍会再次核对。
+      description: 预览不预留、不改变业务状态；提交仍会再次核对。 同时校验原订单审核预览权限与原收款主体资金查询权限，包含实际custody及assignment；不生成退款号或预留，提交仍须核对两个版本。
     AfterSaleNote:
       type: object
       additionalProperties: false
@@ -1491,6 +1603,9 @@ components:
           description: 最后读取版本，用于条件更新；409必须重新获取，不静默覆盖
         note:
           type: string
+          minLength: 1
+          maxLength: 1000
+          description: 公开补充说明，车主可见；追加不能覆盖原说明。
         voucherFileIds:
           type: array
           items:
@@ -1538,3 +1653,67 @@ components:
       - requestedAmount
       - expectedOrderVersion
       description: 以当前登录车主创建一次售后请求。同订单仅一个未办结申请，其他金额仍须资金锁与预留校验。
+    AfterSaleNotePublic:
+      type: object
+      additionalProperties: false
+      required:
+      - noteId
+      - note
+      - voucherFileIds
+      - createdAt
+      properties:
+        noteId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+        note:
+          type: string
+          minLength: 1
+          maxLength: 1000
+        voucherFileIds:
+          type: array
+          items:
+            type: string
+            pattern: ^[1-9][0-9]{0,18}$
+        createdAt:
+          type: string
+          format: date-time
+        authorType:
+          type: string
+          enum:
+          - MINI
+          - ADMIN
+          description: 公开来源类别，不暴露后台人员ID。
+    AfterSaleReviewHistory:
+      type: object
+      additionalProperties: false
+      required:
+      - decision
+      - approvedAmount
+      - opinion
+      - publicOpinion
+      - reviewedAt
+      - reviewerUserId
+      properties:
+        decision:
+          type: string
+          enum:
+          - APPROVE
+          - REJECT
+        approvedAmount:
+          type: integer
+          format: int64
+          minimum: 0
+          nullable: true
+        opinion:
+          type: string
+          maxLength: 1000
+        publicOpinion:
+          type: string
+          nullable: true
+          maxLength: 1000
+        reviewedAt:
+          type: string
+          format: date-time
+        reviewerUserId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$

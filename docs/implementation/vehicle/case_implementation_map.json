@@ -771,20 +771,26 @@
     "testMethod": "test_tc_090"
   },
   {
-    "status": "NOT_RUN",
-    "testFiles": [],
-    "evidence": null,
+    "status": "PASS",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/S02AftersaleIT.java"
+    ],
+    "evidence": "docs/implementation/vehicle/evidence/S02-20261106.json",
     "caseId": "TC-091",
-    "taskId": "D06",
-    "testMethod": "test_tc_091"
+    "taskId": "S02",
+    "testMethod": "S02AftersaleIT 审核矩阵/资金权限/独立审核/并发及真实事实核对",
+    "note": "给定状态由隔离夹具准备，验证S02决定；真实交接执行与渠道退款不计入本通过范围。"
   },
   {
-    "status": "NOT_RUN",
-    "testFiles": [],
-    "evidence": null,
+    "status": "PASS",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/S02AftersaleIT.java"
+    ],
+    "evidence": "docs/implementation/vehicle/evidence/S02-20261106.json",
     "caseId": "TC-092",
-    "taskId": "D06",
-    "testMethod": "test_tc_092"
+    "taskId": "S02",
+    "testMethod": "S02AftersaleIT 审核矩阵/资金权限/独立审核/并发及真实事实核对",
+    "note": "给定状态由隔离夹具准备，验证S02决定；真实交接执行与渠道退款不计入本通过范围。"
   },
   {
     "status": "NOT_RUN",
@@ -811,28 +817,37 @@
     "testMethod": "test_tc_095"
   },
   {
-    "status": "NOT_RUN",
-    "testFiles": [],
-    "evidence": null,
+    "status": "PASS",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/S02AftersaleIT.java"
+    ],
+    "evidence": "docs/implementation/vehicle/evidence/S02-20261106.json",
     "caseId": "TC-096",
-    "taskId": "D06",
-    "testMethod": "test_tc_096"
+    "taskId": "S02",
+    "testMethod": "S02AftersaleIT 审核矩阵/资金权限/独立审核/并发及真实事实核对",
+    "note": "给定状态由隔离夹具准备，验证S02决定；真实交接执行与渠道退款不计入本通过范围。"
   },
   {
-    "status": "NOT_RUN",
-    "testFiles": [],
-    "evidence": null,
+    "status": "PASS",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/S02AftersaleIT.java"
+    ],
+    "evidence": "docs/implementation/vehicle/evidence/S02-20261106.json",
     "caseId": "TC-097",
-    "taskId": "D06",
-    "testMethod": "test_tc_097"
+    "taskId": "S02",
+    "testMethod": "S02AftersaleIT 审核矩阵/资金权限/独立审核/并发及真实事实核对",
+    "note": "给定状态由隔离夹具准备，验证S02决定；真实交接执行与渠道退款不计入本通过范围。"
   },
   {
-    "status": "NOT_RUN",
-    "testFiles": [],
-    "evidence": null,
+    "status": "PASS",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/S02AftersaleIT.java"
+    ],
+    "evidence": "docs/implementation/vehicle/evidence/S02-20261106.json",
     "caseId": "TC-098",
-    "taskId": "D06",
-    "testMethod": "test_tc_098"
+    "taskId": "S02",
+    "testMethod": "S02AftersaleIT 审核矩阵/资金权限/独立审核/并发及真实事实核对",
+    "note": "给定状态由隔离夹具准备，验证S02决定；真实交接执行与渠道退款不计入本通过范围。"
   },
   {
     "status": "NOT_RUN",
@@ -971,20 +986,26 @@
     "testMethod": "test_tc_115"
   },
   {
-    "status": "NOT_RUN",
-    "testFiles": [],
-    "evidence": null,
+    "status": "PASS",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/S02AftersaleIT.java"
+    ],
+    "evidence": "docs/implementation/vehicle/evidence/S02-20261106.json",
     "caseId": "TC-116",
-    "taskId": "S05",
-    "testMethod": "test_tc_116"
+    "taskId": "S02",
+    "testMethod": "S02AftersaleIT 审核矩阵/资金权限/独立审核/并发及真实事实核对",
+    "note": "给定状态由隔离夹具准备，验证S02决定；真实交接执行与渠道退款不计入本通过范围。"
   },
   {
-    "status": "NOT_RUN",
-    "testFiles": [],
-    "evidence": null,
+    "status": "PASS",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/S02AftersaleIT.java"
+    ],
+    "evidence": "docs/implementation/vehicle/evidence/S02-20261106.json",
     "caseId": "TC-117",
-    "taskId": "S05",
-    "testMethod": "test_tc_117"
+    "taskId": "S02",
+    "testMethod": "S02AftersaleIT 审核矩阵/资金权限/独立审核/并发及真实事实核对",
+    "note": "给定状态由隔离夹具准备，验证S02决定；真实交接执行与渠道退款不计入本通过范围。"
   },
   {
     "status": "NOT_RUN",
@@ -1019,12 +1040,15 @@
     "testMethod": "test_tc_121"
   },
   {
-    "status": "NOT_RUN",
-    "testFiles": [],
-    "evidence": null,
+    "status": "PASS",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/S02AftersaleIT.java"
+    ],
+    "evidence": "docs/implementation/vehicle/evidence/S02-20261106.json",
     "caseId": "TC-122",
-    "taskId": "S05",
-    "testMethod": "test_tc_122"
+    "taskId": "S02",
+    "testMethod": "S02AftersaleIT 审核矩阵/资金权限/独立审核/并发及真实事实核对",
+    "note": "给定状态由隔离夹具准备，验证S02决定；真实交接执行与渠道退款不计入本通过范围。"
   },
   {
     "status": "NOT_RUN",
@@ -1051,12 +1075,15 @@
     "testMethod": "test_tc_125"
   },
   {
-    "status": "NOT_RUN",
-    "testFiles": [],
-    "evidence": null,
+    "status": "PASS",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/S02AftersaleIT.java"
+    ],
+    "evidence": "docs/implementation/vehicle/evidence/S02-20261106.json",
     "caseId": "TC-126",
-    "taskId": "S05",
-    "testMethod": "test_tc_126"
+    "taskId": "S02",
+    "testMethod": "S02AftersaleIT 审核矩阵/资金权限/独立审核/并发及真实事实核对",
+    "note": "给定状态由隔离夹具准备，验证S02决定；真实交接执行与渠道退款不计入本通过范围。"
   },
   {
     "status": "NOT_RUN",
@@ -1187,28 +1214,37 @@
     "testMethod": "test_tc_142"
   },
   {
-    "status": "NOT_RUN",
-    "testFiles": [],
-    "evidence": null,
+    "status": "PASS",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/S02AftersaleIT.java"
+    ],
+    "evidence": "docs/implementation/vehicle/evidence/S02-20261106.json",
     "caseId": "TC-143",
-    "taskId": "S05",
-    "testMethod": "test_tc_143"
+    "taskId": "S02",
+    "testMethod": "S02AftersaleIT 审核矩阵/资金权限/独立审核/并发及真实事实核对",
+    "note": "给定状态由隔离夹具准备，验证S02决定；真实交接执行与渠道退款不计入本通过范围。"
   },
   {
-    "status": "NOT_RUN",
-    "testFiles": [],
-    "evidence": null,
+    "status": "PASS",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/S02AftersaleIT.java"
+    ],
+    "evidence": "docs/implementation/vehicle/evidence/S02-20261106.json",
     "caseId": "TC-144",
-    "taskId": "S05",
-    "testMethod": "test_tc_144"
+    "taskId": "S02",
+    "testMethod": "S02AftersaleIT 审核矩阵/资金权限/独立审核/并发及真实事实核对",
+    "note": "给定状态由隔离夹具准备，验证S02决定；真实交接执行与渠道退款不计入本通过范围。"
   },
   {
-    "status": "NOT_RUN",
-    "testFiles": [],
-    "evidence": null,
+    "status": "PASS",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/S02AftersaleIT.java"
+    ],
+    "evidence": "docs/implementation/vehicle/evidence/S02-20261106.json",
     "caseId": "TC-145",
-    "taskId": "F04",
-    "testMethod": "test_tc_145"
+    "taskId": "S02",
+    "testMethod": "S02AftersaleIT 审核矩阵/资金权限/独立审核/并发及真实事实核对",
+    "note": "给定状态由隔离夹具准备，验证S02决定；真实交接执行与渠道退款不计入本通过范围。"
   },
   {
     "status": "NOT_RUN",
@@ -1219,12 +1255,15 @@
     "testMethod": "test_tc_146"
   },
   {
-    "status": "NOT_RUN",
-    "testFiles": [],
-    "evidence": null,
+    "status": "PASS",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/S02AftersaleIT.java"
+    ],
+    "evidence": "docs/implementation/vehicle/evidence/S02-20261106.json",
     "caseId": "TC-147",
-    "taskId": "F04",
-    "testMethod": "test_tc_147"
+    "taskId": "S02",
+    "testMethod": "S02AftersaleIT 审核矩阵/资金权限/独立审核/并发及真实事实核对",
+    "note": "给定状态由隔离夹具准备，验证S02决定；真实交接执行与渠道退款不计入本通过范围。"
   },
   {
     "status": "NOT_RUN",
@@ -1235,36 +1274,48 @@
     "testMethod": "test_tc_148"
   },
   {
-    "status": "NOT_RUN",
-    "testFiles": [],
-    "evidence": null,
+    "status": "PASS",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/S02AftersaleIT.java"
+    ],
+    "evidence": "docs/implementation/vehicle/evidence/S02-20261106.json",
     "caseId": "TC-149",
-    "taskId": "S05",
-    "testMethod": "test_tc_149"
+    "taskId": "S02",
+    "testMethod": "S02AftersaleIT 审核矩阵/资金权限/独立审核/并发及真实事实核对",
+    "note": "给定状态由隔离夹具准备，验证S02决定；真实交接执行与渠道退款不计入本通过范围。"
   },
   {
-    "status": "NOT_RUN",
-    "testFiles": [],
-    "evidence": null,
+    "status": "PASS",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/S02AftersaleIT.java"
+    ],
+    "evidence": "docs/implementation/vehicle/evidence/S02-20261106.json",
     "caseId": "TC-150",
-    "taskId": "S05",
-    "testMethod": "test_tc_150"
+    "taskId": "S02",
+    "testMethod": "S02AftersaleIT 审核矩阵/资金权限/独立审核/并发及真实事实核对",
+    "note": "给定状态由隔离夹具准备，验证S02决定；真实交接执行与渠道退款不计入本通过范围。"
   },
   {
-    "status": "NOT_RUN",
-    "testFiles": [],
-    "evidence": null,
+    "status": "PASS",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/S02AftersaleIT.java"
+    ],
+    "evidence": "docs/implementation/vehicle/evidence/S02-20261106.json",
     "caseId": "TC-151",
-    "taskId": "S05",
-    "testMethod": "test_tc_151"
+    "taskId": "S02",
+    "testMethod": "S02AftersaleIT 审核矩阵/资金权限/独立审核/并发及真实事实核对",
+    "note": "给定状态由隔离夹具准备，验证S02决定；真实交接执行与渠道退款不计入本通过范围。"
   },
   {
-    "status": "NOT_RUN",
-    "testFiles": [],
-    "evidence": null,
+    "status": "PASS",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/S02AftersaleIT.java"
+    ],
+    "evidence": "docs/implementation/vehicle/evidence/S02-20261106.json",
     "caseId": "TC-152",
-    "taskId": "S05",
-    "testMethod": "test_tc_152"
+    "taskId": "S02",
+    "testMethod": "S02AftersaleIT 审核矩阵/资金权限/独立审核/并发及真实事实核对",
+    "note": "给定状态由隔离夹具准备，验证S02决定；真实交接执行与渠道退款不计入本通过范围。"
   },
   {
     "status": "NOT_RUN",
@@ -1351,7 +1402,7 @@
     "testFiles": [],
     "evidence": null,
     "caseId": "TC-163",
-    "taskId": "S02",
+    "taskId": "R01",
     "testMethod": "test_tc_163"
   },
   {
@@ -1359,7 +1410,7 @@
     "testFiles": [],
     "evidence": null,
     "caseId": "TC-164",
-    "taskId": "S02",
+    "taskId": "R01",
     "testMethod": "test_tc_164"
   },
   {
@@ -1367,7 +1418,7 @@
     "testFiles": [],
     "evidence": null,
     "caseId": "TC-165",
-    "taskId": "S02",
+    "taskId": "R01",
     "testMethod": "test_tc_165"
   },
   {
@@ -1375,7 +1426,7 @@
     "testFiles": [],
     "evidence": null,
     "caseId": "TC-166",
-    "taskId": "S02",
+    "taskId": "R01",
     "testMethod": "test_tc_166"
   },
   {
@@ -1383,7 +1434,7 @@
     "testFiles": [],
     "evidence": null,
     "caseId": "TC-167",
-    "taskId": "S02",
+    "taskId": "R01",
     "testMethod": "test_tc_167"
   },
   {
@@ -1391,7 +1442,7 @@
     "testFiles": [],
     "evidence": null,
     "caseId": "TC-168",
-    "taskId": "S02",
+    "taskId": "R01",
     "testMethod": "test_tc_168"
   },
   {
@@ -1415,7 +1466,7 @@
     "testFiles": [],
     "evidence": null,
     "caseId": "TC-171",
-    "taskId": "S02",
+    "taskId": "R02",
     "testMethod": "test_tc_171"
   },
   {
@@ -1423,7 +1474,7 @@
     "testFiles": [],
     "evidence": null,
     "caseId": "TC-172",
-    "taskId": "S02",
+    "taskId": "R02",
     "testMethod": "test_tc_172"
   },
   {
@@ -1431,7 +1482,7 @@
     "testFiles": [],
     "evidence": null,
     "caseId": "TC-173",
-    "taskId": "S02",
+    "taskId": "R02",
     "testMethod": "test_tc_173"
   },
   {
@@ -1439,7 +1490,7 @@
     "testFiles": [],
     "evidence": null,
     "caseId": "TC-174",
-    "taskId": "S02",
+    "taskId": "R02",
     "testMethod": "test_tc_174"
   },
   {
@@ -1447,7 +1498,7 @@
     "testFiles": [],
     "evidence": null,
     "caseId": "TC-175",
-    "taskId": "S02",
+    "taskId": "R04",
     "testMethod": "test_tc_175"
   },
   {
@@ -1455,7 +1506,7 @@
     "testFiles": [],
     "evidence": null,
     "caseId": "TC-176",
-    "taskId": "S02",
+    "taskId": "R04",
     "testMethod": "test_tc_176"
   },
   {
@@ -1463,7 +1514,7 @@
     "testFiles": [],
     "evidence": null,
     "caseId": "TC-177",
-    "taskId": "S02",
+    "taskId": "R04",
     "testMethod": "test_tc_177"
   },
   {
