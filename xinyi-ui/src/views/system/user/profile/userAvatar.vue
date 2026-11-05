@@ -62,6 +62,7 @@
 import "vue-cropper/dist/index.css"
 import { VueCropper } from "vue-cropper"
 import { uploadAvatar } from "@/api/system/user"
+import { isExternal } from "@/utils/validate"
 import useUserStore from "@/store/modules/user"
 
 const userStore = useUserStore()
@@ -133,7 +134,11 @@ function uploadImg() {
     formData.append("avatarfile", data, options.filename)
     uploadAvatar(formData).then(response => {
       open.value = false
-      options.img = import.meta.env.VITE_APP_BASE_API + response.imgUrl
+      // 后端返回的 imgUrl 改走 OSS 后是完整直链，只有历史的 /profile/... 相对地址才需要拼接口前缀。
+      // 无条件拼会得到 /dev-apihttps://... 这种非法地址：上传当次头像裂图，刷新后 getInfo()
+      // 走 isHttp 分支直接用直链才恢复正常，很容易误判成 OSS 配置问题。
+      const imgUrl = response.imgUrl || ""
+      options.img = !imgUrl ? "" : (isExternal(imgUrl) ? imgUrl : import.meta.env.VITE_APP_BASE_API + imgUrl)
       userStore.avatar = options.img
       proxy.$modal.msgSuccess("修改成功")
       visible.value = false
