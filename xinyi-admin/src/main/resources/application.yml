@@ -158,6 +158,11 @@ security:
 
 # 荣利影像对象存储（唯一存储方式，不提供本地磁盘兜底）
 # 凭据全部走环境变量，禁止写进版本库；enable-storage 为 false 时上传会明确报“存储平台未启用”
+#
+# 配置步骤与自检见 docs/deploy/1panel-2c4g-deployment.md 第 8.5 节，
+# 填好后先跑 `python logs/check_oss.py` 验证凭据与公网可达性。
+# 注意 end-point 必须是【公网】节点（oss-cn-xxx.aliyuncs.com）：
+# 小程序拿到的访问短链由该节点签出，写成 -internal 内网节点会导致图片在手机上打不开。
 dromara:
   x-file-storage:
     default-platform: aliyun-oss-1

@@ -245,6 +245,110 @@ curl -s -o /dev/null -w '%{http_code}\n' http://127.0.0.1:8080/captchaImage
 # 连接被拒 = 没起来；502 = 起来了但 Nginx 反代配错
 ```
 
+### 5.6 配置阿里云 OSS（影像存储）
+
+影像（检测照片、证件、凭证）**只存对象存储，没有本地磁盘兜底**。这一步没做完，小程序端上传会直接报「对象存储未启用」。
+
+#### 5.6.1 控制台要做的三件事
+
+**① 建 Bucket**
+
+| 项 | 取值 |
+| --- | --- |
+| 地域 | 与 ECS 同地域（如华东1 杭州 → `oss-cn-hangzhou`），跨地域会明显变慢 |
+| Bucket 名称 | 全小写、无点，如 `xinyi-prod-media` |
+| 读写权限 | **私有**。照片是客户隐私，靠后端签发的短链访问，不要开公共读 |
+| 存储类型 | 标准存储（要随时读，别选归档） |
+| 版本控制 | 关闭（省空间） |
+
+**② 建 RAM 用户拿 AK**
+
+`RAM 访问控制 → 用户 → 创建用户`，勾选「使用永久 AccessKey 访问」，创建后**立刻保存 AK/SK**（Secret 只显示一次）。
+不要用主账号 AccessKey——主账号 AK 拥有全部云资源权限，泄露等于账号被接管。
+
+**③ 给 RAM 用户授权（自定义策略，最小权限）**
+
+```json
+{
+  "Version": "1",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "oss:PutObject",
+        "oss:GetObject",
+        "oss:DeleteObject",
+        "oss:AbortMultipartUpload",
+        "oss:ListParts"
+      ],
+      "Resource": ["acs:oss:*:*:xinyi-prod-media/*"]
+    }
+  ]
+}
+```
+
+`Resource` 末尾的 `/*` 不能少（对象级权限），Bucket 名换成自己的。**不要给 `oss:*` 全资源**。
+
+**④ Bucket 跨域（CORS）**
+
+后台管理端在浏览器里直接用短链预览图片时，`<img>` 不受同源限制可以不放行；但只要前端用 `fetch`/`canvas` 取字节就会撞 CORS。稳妥起见配上：
+
+`Bucket → 数据安全 → 跨域设置 → 创建规则`：来源 `*`，Methods 勾 `GET/HEAD/PUT/POST`，Headers `*`，暴露 Headers `ETag,x-oss-request-id`，缓存 600 秒。
+（来源 `*` 配合私有 Bucket 是安全的：没有签名参数一律 403。）
+
+#### 5.6.2 写进运行环境
+
+编辑 `/home/xinyi/app/.env`，把这六项填上（模板见 `deploy/prod/xinyi.env.example`）：
+
+```bash
+RONGLI_OSS_ENABLED=true
+RONGLI_OSS_ENDPOINT=oss-cn-hangzhou.aliyuncs.com
+RONGLI_OSS_BUCKET=xinyi-prod-media
+RONGLI_OSS_ACCESS_KEY=LTAI5t********
+RONGLI_OSS_SECRET_KEY=********
+RONGLI_OSS_DOMAIN=https://xinyi-prod-media.oss-cn-hangzhou.aliyuncs.com/
+```
+
+三个容易写错的地方：
+
+- **`ENDPOINT` 必须用公网节点**，不能写 `oss-cn-hangzhou-internal.aliyuncs.com`。小程序拿到的看图短链是后端用这个节点签出来的，内网域名手机侧解析不到，现象是「上传成功但图片全白」。
+- **`DOMAIN` 必须以 `/` 结尾**，且带 `https://`；它只影响直链拼接，不影响短链。
+- **`ENABLED` 必须是 `true`**，默认是 `false`（本地开发不配凭据时不至于启动失败）。
+
+```bash
+chmod 600 /home/xinyi/app/.env        # 含明文 Secret，别让其他用户读
+systemctl restart xinyi-admin
+```
+
+#### 5.6.3 配置自检（不启动后端也能验）
+
+```bash
+python3 logs/check_oss.py --env-file /home/xinyi/app/.env
+```
+
+脚本会真实上传、下载、删除一个测试对象，并打印一条预签名短链：
+
+```
+[OK]   上传成功（HTTP 200），对象 key = _selfcheck/check-1762xxxx.txt
+[OK]   下载成功，内容一致
+[OK]   预签名短链访问成功 —— 这条链接手机端也能打开
+[OK]   测试对象已删除，桶内无残留
+```
+
+**把那条短链粘到手机浏览器（关掉 WiFi 用 4G）打开**，能看到一行文字才算真正通了。在服务器上用 curl 通、手机上不通，基本就是 endpoint 写成了内网节点。
+
+失败时的错误码含义脚本会直接给中文提示，常见三类：
+
+| 错误码 | 含义 |
+| --- | --- |
+| `InvalidAccessKeyId` / `SignatureDoesNotMatch` | AK 或 SK 抄错，注意首尾空格 |
+| `AccessDenied` | AK 有效但策略没给到该 Bucket |
+| `NoSuchBucket` | Bucket 名错，或 endpoint 地域与 Bucket 地域不一致 |
+
+#### 5.6.4 成本
+
+标准存储 0.12 元/GB/月，上传流量免费，公网下行 0.25–0.5 元/GB。按检测站日均几十张照片估算，一个月不到 1 元。要更省可以在 Bucket 上配生命周期：90 天未访问转低频（0.08 元/GB/月），低频仍是实时读取，只对提前删除收费。
+
 ---
 
 ## 6. 前端部署
