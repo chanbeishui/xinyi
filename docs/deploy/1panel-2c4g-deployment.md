@@ -294,6 +294,8 @@ curl -s -o /dev/null -w '%{http_code}\n' http://127.0.0.1:8080/captchaImage
 
 其中 `oss:PutObjectAcl` 容易漏：头像、富文本图这类通用上传要按对象设 `public-read`，框架是通过 `SetObjectACL` 单独调的，不写在 PUT 里。少了这一条，普通上传成功、但一带 ACL 就 `AccessDenied`，表现为“头像传不上去、富文本插图失败”，排查时容易怀疑到别处。
 
+**绝对不要图省事给这个用户绑 `AdministratorAccess`，或任何 `Resource: "*"` 的账号级策略**（典型特征是 `NotAction` 只排除 `ram:*`、`bss:*` 之类）。应用的 AK 以明文存在 `.env` 里，账号级策略意味着一旦泄露，攻击者拿到的是整个云账号：ECS、RDS、其他 Bucket、VPC 全在里面，甚至能通过创建服务角色再提权。应用真正需要的只有上面那 4 个对象级动作。
+
 **④ Bucket 跨域（CORS）**
 
 后台管理端在浏览器里直接用短链预览图片时，`<img>` 不受同源限制可以不放行；但只要前端用 `fetch`/`canvas` 取字节就会撞 CORS。稳妥起见配上：
