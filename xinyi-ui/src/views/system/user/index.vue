@@ -255,6 +255,17 @@ function isSelf(row: SysUser): boolean {
   return Number(row.userId) === Number(userStore.id)
 }
 
+/**
+ * 改的是自己时，后端已把当前会话重载到新权限快照（不会踢人），
+ * 这里再同步一次前端 store，避免页头和个人中心还显示旧部门、旧角色。
+ */
+function syncSelfSession(userId?: number | string) {
+  if (!userId || String(userId) !== String(userStore.id)) {
+    return
+  }
+  userStore.getInfo().catch(() => {})
+}
+
 const userList = ref<SysUser[]>([])
 const open = ref<boolean>(false)
 const loading = ref<boolean>(true)
@@ -520,6 +531,8 @@ function submitForm() {
   proxy.$refs["userRef"].validate((valid: boolean) => {
     if (valid) {
       if (form.value.userId != undefined) {
+        // 保存成功后表单可能已被重置，先把目标 ID 固定下来
+        const editUserId = form.value.userId
         proxy.$prompt('请输入修改用户资料或岗位的原因', '安全审计', {
           confirmButtonText: '确认修改',
           cancelButtonText: '取消',
@@ -540,6 +553,7 @@ function submitForm() {
         }).then(() => {
             proxy.$modal.msgSuccess("修改成功")
             open.value = false
+            syncSelfSession(editUserId)
             getList()
           }).catch(() => {})
       } else {
@@ -583,6 +597,7 @@ function submitDepartments() {
   }).then(() => {
     proxy.$modal.msgSuccess('任职部门修改成功')
     deptOpen.value = false
+    syncSelfSession(deptTargetUserId.value)
     getList()
   })
 }

@@ -47,6 +47,7 @@
 
 <script setup lang="ts" name="AuthRole">
 import { getAuthRole, updateUserRoles } from "@/api/system/user"
+import useUserStore from "@/store/modules/user"
 import type { SysRole } from '@/types/api/system/role'
 import type { SysUser } from '@/types/api/system/user'
 
@@ -111,6 +112,11 @@ function submitForm() {
   }).then(() => {
       proxy.$modal.msgSuccess("授权成功")
       close()
+      // 给自己授权会改变本人权限集，后端保留会话但菜单要重新生成：整页刷新即可，
+      // 不需要重新登录（token 与 authVersion 已被后端刷到最新）
+      if (String(userId) === String(useUserStore().id)) {
+        window.location.reload()
+      }
     }).catch(() => {})
 }
 
