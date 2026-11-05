@@ -13,6 +13,7 @@ import com.xinyi.common.core.domain.entity.SysUser;
 import com.xinyi.common.utils.StringUtils;
 import com.xinyi.system.service.ISysMenuService;
 import com.xinyi.system.service.ISysRoleService;
+import com.xinyi.system.service.ISuperAdminService;
 
 /**
  * 用户权限处理
@@ -28,6 +29,9 @@ public class SysPermissionService
     @Autowired
     private ISysMenuService menuService;
 
+    @Autowired
+    private ISuperAdminService superAdminService;
+
     /**
      * 获取角色数据权限
      * 
@@ -37,8 +41,8 @@ public class SysPermissionService
     public Set<String> getRolePermission(SysUser user)
     {
         Set<String> roles = new HashSet<String>();
-        // 管理员拥有所有权限
-        if (user.isAdmin())
+        // 最高管理员（内置账号或持有超级管理员角色）拥有所有角色
+        if (superAdminService.isSuperAdmin(user.getUserId()))
         {
             roles.add(Constants.SUPER_ADMIN);
         }
@@ -58,8 +62,8 @@ public class SysPermissionService
     public Set<String> getMenuPermission(SysUser user)
     {
         Set<String> perms = new HashSet<String>();
-        // 管理员拥有所有权限
-        if (user.isAdmin())
+        // 最高管理员（内置账号或持有超级管理员角色）拥有所有权限
+        if (superAdminService.isSuperAdmin(user.getUserId()))
         {
             perms.add(Constants.ALL_PERMISSION);
         }

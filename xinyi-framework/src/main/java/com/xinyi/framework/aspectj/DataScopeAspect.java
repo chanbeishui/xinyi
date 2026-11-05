@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import com.xinyi.common.annotation.DataScope;
 import com.xinyi.common.core.domain.BaseEntity;
@@ -13,6 +14,7 @@ import com.xinyi.common.core.domain.model.LoginUser;
 import com.xinyi.common.utils.SecurityUtils;
 import com.xinyi.common.utils.StringUtils;
 import com.xinyi.framework.security.context.PermissionContextHolder;
+import com.xinyi.system.service.ISuperAdminService;
 import com.xinyi.system.domain.vo.DeptScopeResult;
 import com.xinyi.system.service.IDeptScopeService;
 
@@ -23,6 +25,9 @@ import com.xinyi.system.service.IDeptScopeService;
 @Component
 public class DataScopeAspect
 {
+
+    @Autowired
+    private ISuperAdminService superAdminService;
     public static final String DATA_SCOPE = "dataScope";
 
     private final IDeptScopeService deptScopeService;
@@ -42,7 +47,8 @@ public class DataScopeAspect
     protected void handleDataScope(JoinPoint joinPoint, DataScope annotation)
     {
         LoginUser loginUser = SecurityUtils.getLoginUser();
-        if (loginUser == null || loginUser.getUser() == null || loginUser.getUser().isAdmin())
+        if (loginUser == null || loginUser.getUser() == null
+                || superAdminService.isSuperAdmin(loginUser.getUserId()))
         {
             return;
         }

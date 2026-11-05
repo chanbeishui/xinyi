@@ -19,6 +19,7 @@ import com.xinyi.common.exception.ServiceException;
 import com.xinyi.common.utils.SecurityUtils;
 import com.xinyi.common.utils.StringUtils;
 import com.xinyi.common.utils.spring.SpringUtils;
+import com.xinyi.system.service.ISuperAdminService;
 import com.xinyi.system.mapper.SysDeptMapper;
 import com.xinyi.system.mapper.SysRoleMapper;
 import com.xinyi.system.mapper.SysUserMapper;
@@ -34,6 +35,9 @@ import com.xinyi.system.service.IUserAuthorizationMutationService;
 @Service
 public class SysDeptServiceImpl implements ISysDeptService
 {
+
+    @Autowired
+    private ISuperAdminService superAdminService;
     @Autowired
     private SysDeptMapper deptMapper;
 
@@ -204,7 +208,7 @@ public class SysDeptServiceImpl implements ISysDeptService
     @Override
     public void checkDeptDataScope(Long deptId)
     {
-        if (!SecurityUtils.isAdmin() && StringUtils.isNotNull(deptId))
+        if (!superAdminService.isCurrentUserSuperAdmin() && StringUtils.isNotNull(deptId))
         {
             SysDept dept = new SysDept();
             dept.setDeptId(deptId);

@@ -17,6 +17,7 @@ import com.xinyi.common.exception.ServiceException;
 import com.xinyi.common.utils.SecurityUtils;
 import com.xinyi.common.utils.StringUtils;
 import com.xinyi.common.utils.spring.SpringUtils;
+import com.xinyi.system.service.ISuperAdminService;
 import com.xinyi.system.domain.SysRoleDept;
 import com.xinyi.system.domain.SysRoleMenu;
 import com.xinyi.system.domain.SysUserRole;
@@ -36,6 +37,9 @@ import com.xinyi.system.service.IUserAuthorizationMutationService;
 @Service
 public class SysRoleServiceImpl implements ISysRoleService
 {
+
+    @Autowired
+    private ISuperAdminService superAdminService;
     @Autowired
     private SysRoleMapper roleMapper;
 
@@ -206,7 +210,7 @@ public class SysRoleServiceImpl implements ISysRoleService
     @Override
     public void checkRoleDataScope(Long... roleIds)
     {
-        if (!SecurityUtils.isAdmin())
+        if (!superAdminService.isCurrentUserSuperAdmin())
         {
             for (Long roleId : roleIds)
             {

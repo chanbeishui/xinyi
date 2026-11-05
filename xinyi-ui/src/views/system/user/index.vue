@@ -77,19 +77,19 @@
           </el-table-column>
           <el-table-column label="操作" align="center" width="190" class-name="small-padding fixed-width">
             <template #default="scope">
-              <el-tooltip content="修改" placement="top" v-if="!isBuiltinAdmin(scope.row)">
+              <el-tooltip content="修改" placement="top" v-if="!isBuiltinAdmin(scope.row) || isHighestAdmin">
                 <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)" v-hasPermi="['system:user:edit']"></el-button>
               </el-tooltip>
               <el-tooltip content="删除" placement="top" v-if="!isBuiltinAdmin(scope.row)">
                 <el-button link type="primary" icon="Delete" @click="handleDelete(scope.row)" v-hasPermi="['system:user:remove']"></el-button>
               </el-tooltip>
-              <el-tooltip content="重置密码" placement="top" v-if="!isBuiltinAdmin(scope.row)">
+              <el-tooltip content="重置密码" placement="top" v-if="(!isBuiltinAdmin(scope.row) || isHighestAdmin) && !isSelf(scope.row)">
                 <el-button link type="primary" icon="Key" @click="handleResetPwd(scope.row)" v-hasPermi="['system:user:resetPwd']"></el-button>
               </el-tooltip>
-              <el-tooltip content="分配角色" placement="top" v-if="!isBuiltinAdmin(scope.row)">
+              <el-tooltip content="分配角色" placement="top" v-if="!isBuiltinAdmin(scope.row) || isHighestAdmin">
                 <el-button link type="primary" icon="CircleCheck" @click="handleAuthRole(scope.row)" v-hasPermi="['system:user:role:edit']"></el-button>
               </el-tooltip>
-              <el-tooltip content="任职部门" placement="top" v-if="!isBuiltinAdmin(scope.row)">
+              <el-tooltip content="任职部门" placement="top" v-if="!isBuiltinAdmin(scope.row) || isHighestAdmin">
                 <el-button link type="primary" icon="OfficeBuilding" @click="handleDepartments(scope.row)" v-hasPermi="['system:user:dept:edit']"></el-button>
               </el-tooltip>
             </template>
@@ -222,6 +222,7 @@ import TreePanel from "@/components/TreePanel/index.vue"
 import ExcelImportDialog from "@/components/ExcelImportDialog/index.vue"
 import UserViewDrawer from "./view.vue"
 import { usePasswordRule } from "@/utils/passwordRule"
+import useUserStore from "@/store/modules/user"
 import { changeUserStatus, listUser, resetUserPwd, delUser, getUser, updateUser, addUser, deptTreeSelect, updateUserDepartments } from "@/api/system/user"
 import type { SysUser, UserQueryParams, UserFormDataResult } from '@/types/api/system/user'
 import type { SysRole } from '@/types/api/system/role'
@@ -233,12 +234,25 @@ const { proxy } = getCurrentInstance()
 const { pwdValidator, pwdPromptValidator } = usePasswordRule()
 const { sys_normal_disable, sys_user_sex } = useDict("sys_normal_disable", "sys_user_sex")
 
+const userStore = useUserStore()
+
 /**
- * 内置最高管理员（user_id = 1）只能由本人登录后在个人中心自助维护，列表里不给任何管理入口。
- * 这里用 Number 比较而不是 === 1：后端一旦把 Long 序列化成字符串，严格比较会失效、按钮意外露出。
+ * 内置最高管理员（user_id = 1）：资料与授权改为"仅最高管理员可维护"，
+ * 不再对所有人隐藏入口，否则昵称、手机号、角色、部门在界面上永远没有修改入口。
+ * 停用与删除仍然是红线，后端会拒，前端也不给按钮。
  */
 function isBuiltinAdmin(row: SysUser): boolean {
   return Number(row.userId) === 1
+}
+
+/** 当前登录者是否最高管理员：内置超管或持有超级管理员角色，与后端 isHighestAdmin() 同口径。 */
+const isHighestAdmin = computed(() => {
+  return Number(userStore.id) === 1 || (userStore.roles || []).includes("admin")
+})
+
+/** 是否为当前登录者本人：改密必须走个人中心（要验旧密码），列表里不给入口。 */
+function isSelf(row: SysUser): boolean {
+  return Number(row.userId) === Number(userStore.id)
 }
 
 const userList = ref<SysUser[]>([])

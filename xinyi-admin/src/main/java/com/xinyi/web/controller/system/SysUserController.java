@@ -28,6 +28,7 @@ import com.xinyi.common.enums.BusinessType;
 import com.xinyi.common.utils.SecurityUtils;
 import com.xinyi.common.utils.StringUtils;
 import com.xinyi.common.utils.poi.ExcelUtil;
+import com.xinyi.system.service.ISuperAdminService;
 import com.xinyi.system.domain.dto.SysUserCreateRequest;
 import com.xinyi.system.domain.dto.SysUserDeptUpdateRequest;
 import com.xinyi.system.domain.dto.SysUserManagementScopeRequest;
@@ -50,6 +51,9 @@ import com.xinyi.system.service.IUserImportService;
 @RequestMapping("/system/user")
 public class SysUserController extends BaseController
 {
+
+    @Autowired
+    private ISuperAdminService superAdminService;
     @Autowired
     private ISysUserService userService;
 
@@ -137,7 +141,7 @@ public class SysUserController extends BaseController
                     .collect(Collectors.toList()));
         }
         List<SysRole> roles = roleService.selectRoleAll();
-        ajax.put("roles", SecurityUtils.isAdmin(userId) ? roles
+        ajax.put("roles", superAdminService.isSuperAdmin(userId) ? roles
                 : roles.stream().filter(role -> !role.isAdmin()).collect(Collectors.toList()));
         ajax.put("posts", postService.selectPostAll());
         return ajax;
@@ -192,7 +196,7 @@ public class SysUserController extends BaseController
         SysUser user = userService.selectUserById(userId);
         List<SysRole> roles = roleService.selectRolesByUserId(userId);
         ajax.put("user", user);
-        ajax.put("roles", SecurityUtils.isAdmin(userId) ? roles
+        ajax.put("roles", superAdminService.isSuperAdmin(userId) ? roles
                 : roles.stream().filter(role -> !role.isAdmin()).collect(Collectors.toList()));
         return ajax;
     }

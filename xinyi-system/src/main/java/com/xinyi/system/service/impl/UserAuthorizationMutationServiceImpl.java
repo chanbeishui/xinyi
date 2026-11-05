@@ -49,6 +49,7 @@ import com.xinyi.system.mapper.SysUserRoleMapper;
 import com.xinyi.system.service.IDeptScopeService;
 import com.xinyi.system.service.ISecurityAuditService;
 import com.xinyi.system.service.ISysConfigService;
+import com.xinyi.system.service.ISuperAdminService;
 import com.xinyi.system.service.ISysRoleService;
 import com.xinyi.system.service.IUserAuthorizationMutationService;
 
@@ -59,6 +60,9 @@ import com.xinyi.system.service.IUserAuthorizationMutationService;
 public class UserAuthorizationMutationServiceImpl implements IUserAuthorizationMutationService
 {
     private static final Logger log = LoggerFactory.getLogger(UserAuthorizationMutationServiceImpl.class);
+
+    /** 内置超级管理员角色 ID。持有该角色即视为最高管理员，与 {@code user_id=1} 等价。 */
+    private static final Long SUPER_ADMIN_ROLE_ID = 1L;
 
     private final SysUserMapper userMapper;
     private final SysUserDeptMapper userDeptMapper;
@@ -71,6 +75,7 @@ public class UserAuthorizationMutationServiceImpl implements IUserAuthorizationM
     private final ISysConfigService configService;
     private final ObjectProvider<ISysRoleService> roleServiceProvider;
     private final ISecurityAuditService auditService;
+    private final ISuperAdminService superAdminService;
     private final ObjectProvider<SessionInvalidator> sessionInvalidatorProvider;
 
     @Value("${security.multi-dept-write-enabled:false}")
@@ -81,7 +86,7 @@ public class UserAuthorizationMutationServiceImpl implements IUserAuthorizationM
             SysUserPostMapper userPostMapper, SysRoleMapper roleMapper, SysDeptMapper deptMapper,
             SysSecurityOutboxMapper outboxMapper, IDeptScopeService deptScopeService,
             ISysConfigService configService, ObjectProvider<ISysRoleService> roleServiceProvider,
-            ISecurityAuditService auditService,
+            ISecurityAuditService auditService, ISuperAdminService superAdminService,
             ObjectProvider<SessionInvalidator> sessionInvalidatorProvider)
     {
         this.userMapper = userMapper;
@@ -95,6 +100,7 @@ public class UserAuthorizationMutationServiceImpl implements IUserAuthorizationM
         this.configService = configService;
         this.roleServiceProvider = roleServiceProvider;
         this.auditService = auditService;
+        this.superAdminService = superAdminService;
         this.sessionInvalidatorProvider = sessionInvalidatorProvider;
     }
 
@@ -269,11 +275,12 @@ public class UserAuthorizationMutationServiceImpl implements IUserAuthorizationM
             requireReason(request.getReason());
             target = lockTarget(userId);
             checkTargetWritable(target, true);
-            // 目标保护在上一步已经把内置超管挡住了；这里补的是"任何人不得给自己加授权"，
-            // 原来写成 !isAdmin() && 是给超管留的口子，而那个口子在第一步就进不来，属于虚假承诺。
-            if (SecurityUtils.getUserId().equals(userId))
+            // 防自我提权：普通管理员不能改自己的部门。最高管理员例外——内置超管是唯一最高管理员时，
+            // 若也禁止改自己，这个字段就永远无人可改；超管的部门只影响展示与数据范围归属，
+            // 其权限由 userId=1 / 超级管理员角色决定，改部门不产生提权。
+            if (SecurityUtils.getUserId().equals(userId) && !isHighestAdmin())
             {
-                throw new ServiceException("不能修改自己的任职部门，请由其他管理员操作");
+                throw policyDenied("普通管理员不能修改自己的任职部门，请由其他管理员操作");
             }
             Set<Long> oldIds = normalize(userDeptMapper.selectDeptIdsByUserId(userId));
             Set<Long> newIds = normalize(request.getDeptIds());
@@ -297,7 +304,9 @@ public class UserAuthorizationMutationServiceImpl implements IUserAuthorizationM
             update.setUserId(userId);
             update.setDeptId(request.getPrimaryDeptId());
             update.setUpdateBy(SecurityUtils.getUsername());
-            if (newIds.size() > 1)
+            // 内置超管不参与"多部门自动升级为 PLATFORM"：它的权限不依赖管理范围，
+            // 而一旦被标成 PLATFORM，反而会撞上"内置超管不允许降级"的红线，把自己锁死。
+            if (newIds.size() > 1 && !target.isAdmin())
             {
                 update.setManagementScope(UserConstants.MANAGEMENT_SCOPE_PLATFORM);
             }
@@ -325,13 +334,19 @@ public class UserAuthorizationMutationServiceImpl implements IUserAuthorizationM
             requireReason(request.getReason());
             target = lockTarget(userId);
             checkTargetWritable(target, true);
-            // 同上：不给任何人给自己改角色的机会，超管的口子本来就走不到。
-            if (SecurityUtils.getUserId().equals(userId))
+            // 防自我提权：普通管理员不能改自己的角色。最高管理员例外，否则内置超管的角色无人可改。
+            if (SecurityUtils.getUserId().equals(userId) && !isHighestAdmin())
             {
-                throw new ServiceException("不能修改自己的角色，请由其他管理员操作");
+                throw policyDenied("普通管理员不能修改自己的角色，请由其他管理员操作");
             }
             Set<Long> oldIds = normalize(userRoleMapper.selectRoleIdsByUserId(userId));
             Set<Long> newIds = normalize(request.getRoleIds());
+            // 自锁红线：内置超管的权限靠超级管理员角色承载，移除它等于让该账号失去全部菜单与接口权限，
+            // 且没有任何界面能再把角色加回来（能加的人都已经没有权限了）。
+            if (target.isAdmin() && !newIds.contains(SUPER_ADMIN_ROLE_ID))
+            {
+                throw policyDenied("内置最高管理员必须保留超级管理员角色，否则该账号将失去全部系统管理权限");
+            }
             validateRoles(oldIds, newIds);
             Map<String, Object> before = authorizationSnapshot(userId);
             replaceRoles(userId, newIds);
@@ -360,6 +375,10 @@ public class UserAuthorizationMutationServiceImpl implements IUserAuthorizationM
             // 本接口的服务对象就是 PLATFORM 账号（把它降级），所以第二层判定必须关掉
             target = lockTarget(userId);
             checkTargetWritable(target, false);
+            if (target.isAdmin())
+            {
+                throw policyDenied("内置最高管理员不允许降级管理范围");
+            }
             if (!UserConstants.MANAGEMENT_SCOPE_DEPT.equals(request.getManagementScope()))
             {
                 throw new ServiceException("专用接口仅允许将 PLATFORM 显式降级为 DEPT");
@@ -399,6 +418,12 @@ public class UserAuthorizationMutationServiceImpl implements IUserAuthorizationM
             requireReason(request.getReason());
             target = lockTarget(request.getUserId());
             checkTargetWritable(target, true);
+            // 红线（保留限制）：内置超管不允许停用。停用后会失去系统唯一管理入口，且只能改库恢复。
+            // 但允许把已停用的超管改回正常——那是纠错通道，不是放行破坏性操作。
+            if (target.isAdmin() && !UserConstants.NORMAL.equals(request.getStatus()))
+            {
+                throw policyDenied("内置最高管理员账号不允许停用；如需处置，请先把最高管理员角色授予另一位账号");
+            }
             deptScopeService.checkUserFullAccess(target.getUserId());
             String before = target.getStatus();
             int rows = userMapper.updateUserStatus(target.getUserId(), request.getStatus());
@@ -425,6 +450,11 @@ public class UserAuthorizationMutationServiceImpl implements IUserAuthorizationM
             requireReason(request.getReason());
             target = lockTarget(request.getUserId());
             checkTargetWritable(target, true);
+            // 重置自己必须走个人中心（要验旧密码），否则会话被人拿到就能直接改密、彻底接管账号。
+            if (SecurityUtils.getUserId().equals(target.getUserId()))
+            {
+                throw policyDenied("不能在用户管理中重置自己的密码，请使用个人中心修改");
+            }
             deptScopeService.checkUserFullAccess(target.getUserId());
             int rows = userMapper.resetUserPwd(target.getUserId(),
                     SecurityUtils.encryptPassword(request.getPassword()));
@@ -478,13 +508,19 @@ public class UserAuthorizationMutationServiceImpl implements IUserAuthorizationM
             Set<Long> ids = normalize(userIds);
             if (ids.contains(SecurityUtils.getUserId()))
             {
-                throw new ServiceException("当前用户不能删除自己");
+                throw policyDenied("当前用户不能删除自己");
             }
             for (Long userId : ids)
             {
                 currentTargetId = userId;
                 SysUser target = lockTarget(userId);
                 checkTargetWritable(target, true);
+                // 红线（保留限制）：内置超管不允许删除。删除不可逆，会让审计表里历史的操作者引用悬空，
+                // 而且删掉后没有任何界面能重建这个唯一入口。
+                if (target.isAdmin())
+                {
+                    throw policyDenied("内置最高管理员账号不允许删除；如需下线，请先把最高管理员角色授予另一位账号");
+                }
                 deptScopeService.checkUserFullAccess(userId);
                 targets.add(target);
             }
@@ -559,6 +595,12 @@ public class UserAuthorizationMutationServiceImpl implements IUserAuthorizationM
                     }
                     existing = lockTarget(existing.getUserId());
                     checkTargetWritable(existing, true);
+                    // 导入覆盖会一次性写入昵称、手机号、部门、状态，等于绕过各入口的逐项校验
+                    // （尤其是"内置超管不允许停用"这条红线），所以这里直接排除内置超管。
+                    if (existing.isAdmin())
+                    {
+                        throw policyDenied("内置最高管理员不允许通过批量导入覆盖，请使用用户管理逐项修改");
+                    }
                     deptScopeService.checkUserFullAccess(existing.getUserId());
                     existingUsers.add(existing);
                 }
@@ -671,9 +713,10 @@ public class UserAuthorizationMutationServiceImpl implements IUserAuthorizationM
                 currentTargetId = userId;
                 SysUser target = lockTarget(userId);
                 checkTargetWritable(target, true);
-                if (SecurityUtils.getUserId().equals(userId))
+                // 与 updateRoles 同口径：普通管理员不能给自己加/撤角色，最高管理员可以。
+                if (SecurityUtils.getUserId().equals(userId) && !isHighestAdmin())
                 {
-                    throw new ServiceException("不能修改自己的角色，请由其他管理员操作");
+                    throw policyDenied("普通管理员不能修改自己的角色，请由其他管理员操作");
                 }
                 deptScopeService.checkUserFullAccess(userId);
                 Set<Long> oldRoles = normalize(userRoleMapper.selectRoleIdsByUserId(userId));
@@ -685,6 +728,10 @@ public class UserAuthorizationMutationServiceImpl implements IUserAuthorizationM
                 else
                 {
                     newRoles.remove(roleId);
+                }
+                if (target.isAdmin() && !newRoles.contains(SUPER_ADMIN_ROLE_ID))
+                {
+                    throw policyDenied("内置最高管理员必须保留超级管理员角色，不能批量撤销");
                 }
                 validateRoles(oldRoles, newRoles);
                 targets.add(target);
@@ -736,6 +783,10 @@ public class UserAuthorizationMutationServiceImpl implements IUserAuthorizationM
     /**
      * 目标账号可写性判定。与调用者身份正交：先问"这个对象能不能被业务接口改"，再问"你有没有权限改"。
      *
+     * <p>内置超管不再"一律禁写"：一律拒绝会让昵称、手机号、角色、部门、代重置密码变成
+     * 实际无人能改的死字段（操作者只有 user_id=1 一人，而他又不能改自己）。
+     * 现在收窄为<b>仅最高管理员可写</b>，破坏性的停用与删除在各自入口单独拦。</p>
+     *
      * <p>请求被拒时用 403 表达策略拒绝，而不是 500。策略拒绝是预期内的结果，不应混进系统异常，
      * 前端也能据此给出引导而不是"操作失败"。</p>
      *
@@ -746,8 +797,10 @@ public class UserAuthorizationMutationServiceImpl implements IUserAuthorizationM
     {
         if (target.isAdmin())
         {
-            throw policyDenied("该账号是系统内置最高管理员，不通过用户管理修改；"
-                    + "如需变更昵称、手机号或密码，请用该账号登录后在「个人中心」自助处理");
+            // 内置超管只有最高管理员能维护；这里 return 是有意为之——
+            // 它比 PLATFORM 保护更严，不必再走第二层判定。
+            requireHighestAdmin("内置最高管理员账号仅最高管理员可维护");
+            return;
         }
         if (protectPlatform && UserConstants.MANAGEMENT_SCOPE_PLATFORM.equals(target.getManagementScope()))
         {
@@ -792,9 +845,9 @@ public class UserAuthorizationMutationServiceImpl implements IUserAuthorizationM
         {
             return;
         }
-        if (!SecurityUtils.isAdmin() && union.contains(1L))
+        if (!isHighestAdmin() && union.contains(SUPER_ADMIN_ROLE_ID))
         {
-            throw new ServiceException("普通管理员不能授予或撤销超级管理员角色");
+            throw policyDenied("普通管理员不能授予或撤销超级管理员角色");
         }
         for (Long roleId : union)
         {
@@ -946,11 +999,24 @@ public class UserAuthorizationMutationServiceImpl implements IUserAuthorizationM
                 .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
+    /**
+     * 当前操作者是否为最高管理员。
+     *
+     * <p>口径从"硬编码 user_id=1"扩展为"内置超管 <b>或</b> 持有超级管理员角色"。
+     * 只认 userId=1 会陷入死锁：内置超管是唯一最高管理员，而他又不能修改自己，
+     * 结果角色、部门这类没有自助入口的字段永远无人能改。角色才是权限载体，
+     * 持有 role_id=1（role_key=admin）的账号本就拥有全部权限，承认它是最高管理员不扩大攻击面。</p>
+     */
+    private boolean isHighestAdmin()
+    {
+        return superAdminService.isCurrentUserSuperAdmin();
+    }
+
     private void requireHighestAdmin(String message)
     {
-        if (!SecurityUtils.isAdmin())
+        if (!isHighestAdmin())
         {
-            throw new ServiceException(message);
+            throw policyDenied(message);
         }
     }
 

@@ -7,6 +7,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.CollectionUtils;
@@ -18,6 +19,7 @@ import com.xinyi.common.exception.ServiceException;
 import com.xinyi.common.utils.SecurityUtils;
 import com.xinyi.common.utils.StringUtils;
 import com.xinyi.common.core.text.Convert;
+import com.xinyi.system.service.ISuperAdminService;
 import com.xinyi.system.domain.dto.SysUserQuery;
 import com.xinyi.system.domain.dto.UserVisibilityContext;
 import com.xinyi.system.domain.vo.DeptScopeResult;
@@ -32,6 +34,9 @@ import com.xinyi.system.service.IDeptScopeService;
 @Service
 public class DeptScopeServiceImpl implements IDeptScopeService
 {
+
+    @Autowired
+    private ISuperAdminService superAdminService;
     private final SysUserDeptMapper userDeptMapper;
     private final SysDeptMapper deptMapper;
     private final SysRoleDeptMapper roleDeptMapper;
@@ -55,7 +60,7 @@ public class DeptScopeServiceImpl implements IDeptScopeService
         {
             return result;
         }
-        if (loginUser.getUser().isAdmin())
+        if (superAdminService.isSuperAdmin(loginUser.getUserId()))
         {
             result.setAllData(true);
             return result;
@@ -153,7 +158,7 @@ public class DeptScopeServiceImpl implements IDeptScopeService
         {
             throw new ServiceException("任职部门不存在、已删除或已停用");
         }
-        if (SecurityUtils.isAdmin())
+        if (superAdminService.isCurrentUserSuperAdmin())
         {
             return;
         }
@@ -167,7 +172,7 @@ public class DeptScopeServiceImpl implements IDeptScopeService
     @Override
     public void checkUserFullAccess(Long userId)
     {
-        if (SecurityUtils.isAdmin() || SecurityUtils.getUserId().equals(userId))
+        if (superAdminService.isCurrentUserSuperAdmin() || SecurityUtils.getUserId().equals(userId))
         {
             return;
         }

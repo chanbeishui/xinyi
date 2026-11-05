@@ -10,6 +10,7 @@ import java.util.Set;
 import java.util.Collections;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.xinyi.common.constant.CacheConstants;
@@ -19,6 +20,7 @@ import com.xinyi.common.core.redis.RedisCache;
 import com.xinyi.common.exception.ServiceException;
 import com.xinyi.common.utils.SecurityUtils;
 import com.xinyi.common.utils.StringUtils;
+import com.xinyi.system.service.ISuperAdminService;
 import com.xinyi.system.domain.vo.UserImportPreviewResult;
 import com.xinyi.system.mapper.SysUserMapper;
 import com.xinyi.system.service.IDeptScopeService;
@@ -32,6 +34,9 @@ import com.xinyi.system.service.IUserImportService;
 @Service
 public class UserImportServiceImpl implements IUserImportService
 {
+
+    @Autowired
+    private ISuperAdminService superAdminService;
     private static final int PREVIEW_MINUTES = 15;
 
     private final RedisCache redisCache;
@@ -84,7 +89,7 @@ public class UserImportServiceImpl implements IUserImportService
             if (UserConstants.MANAGEMENT_SCOPE_PLATFORM.equals(existing.getManagementScope()))
             {
                 platformCount++;
-                if (!SecurityUtils.isAdmin())
+                if (!superAdminService.isCurrentUserSuperAdmin())
                 {
                     throw new ServiceException("导入涉及PLATFORM账号，仅最高平台管理员可执行");
                 }

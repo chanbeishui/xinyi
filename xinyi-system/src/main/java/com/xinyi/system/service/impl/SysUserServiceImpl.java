@@ -18,6 +18,7 @@ import com.xinyi.common.exception.ServiceException;
 import com.xinyi.common.utils.SecurityUtils;
 import com.xinyi.common.utils.StringUtils;
 import com.xinyi.common.utils.spring.SpringUtils;
+import com.xinyi.system.service.ISuperAdminService;
 import com.xinyi.system.domain.SysPost;
 import com.xinyi.system.domain.SysUserAuthState;
 import com.xinyi.system.domain.SysUserDept;
@@ -40,6 +41,9 @@ import com.xinyi.system.service.ISysUserService;
 @Service
 public class SysUserServiceImpl implements ISysUserService
 {
+
+    @Autowired
+    private ISuperAdminService superAdminService;
     private static final Logger log = LoggerFactory.getLogger(SysUserServiceImpl.class);
 
     @Autowired
@@ -268,7 +272,7 @@ public class SysUserServiceImpl implements ISysUserService
             if (userId != null)
             {
                 SysUser target = userMapper.selectUserById(userId);
-                if (!SecurityUtils.isAdmin() && target != null
+                if (!superAdminService.isCurrentUserSuperAdmin() && target != null
                         && UserConstants.MANAGEMENT_SCOPE_PLATFORM.equals(target.getManagementScope()))
                 {
                     throw new ServiceException("平台管理账号仅最高平台管理员可查看完整后台资料");
@@ -276,7 +280,7 @@ public class SysUserServiceImpl implements ISysUserService
                 deptScopeService.checkUserFullAccess(userId);
                 return;
             }
-            if (!SecurityUtils.isAdmin())
+            if (!superAdminService.isCurrentUserSuperAdmin())
             {
                 SysUser user = new SysUser();
                 user.setUserId(userId);

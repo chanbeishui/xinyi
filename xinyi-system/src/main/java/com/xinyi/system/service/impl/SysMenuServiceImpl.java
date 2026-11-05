@@ -27,6 +27,7 @@ import com.xinyi.system.domain.vo.RouterVo;
 import com.xinyi.system.mapper.SysMenuMapper;
 import com.xinyi.system.mapper.SysRoleMapper;
 import com.xinyi.system.mapper.SysRoleMenuMapper;
+import com.xinyi.system.service.ISuperAdminService;
 import com.xinyi.system.service.ISysMenuService;
 
 /**
@@ -48,6 +49,9 @@ public class SysMenuServiceImpl implements ISysMenuService
 
     @Autowired
     private SysRoleMapper roleMapper;
+
+    @Autowired
+    private ISuperAdminService superAdminService;
 
     @Autowired
     private SysRoleMenuMapper roleMenuMapper;
@@ -74,8 +78,8 @@ public class SysMenuServiceImpl implements ISysMenuService
     public List<SysMenu> selectMenuList(SysMenu menu, Long userId)
     {
         List<SysMenu> menuList = null;
-        // 管理员显示所有菜单信息
-        if (SecurityUtils.isAdmin(userId))
+        // 最高管理员（内置账号或持有超级管理员角色）显示所有菜单信息
+        if (superAdminService.isSuperAdmin(userId))
         {
             menuList = menuMapper.selectMenuList(menu);
         }
@@ -139,7 +143,7 @@ public class SysMenuServiceImpl implements ISysMenuService
     public List<SysMenu> selectMenuTreeByUserId(Long userId)
     {
         List<SysMenu> menus = null;
-        if (SecurityUtils.isAdmin(userId))
+        if (superAdminService.isSuperAdmin(userId))
         {
             menus = menuMapper.selectMenuTreeAll();
         }
