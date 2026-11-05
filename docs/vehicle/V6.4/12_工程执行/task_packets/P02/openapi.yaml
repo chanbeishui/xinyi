@@ -782,6 +782,7 @@ components:
       - VIEW_EVIDENCE
       - VIEW_RESULT
       - VIEW_HANDOVER_SECRET
+      - VIEW_AFTERSALE
     OrderAfterSalePublic:
       type: object
       additionalProperties: false

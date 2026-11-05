@@ -1718,6 +1718,7 @@ CREATE TABLE `vi_aftersale_case` (
   `applicant_type` VARCHAR(16) NOT NULL COMMENT 'ApplicantType: ACCOUNT,SYS_USER',
   `applicant_id` BIGINT NOT NULL COMMENT '实际申请身份',
   `reason` VARCHAR(1000) NOT NULL COMMENT '原始申请说明',
+  `reason_code` VARCHAR(64) NULL COMMENT '申请原因代码，原说明独立保留',
   `evidence_ids` JSON COMMENT '关联证据文件ID',
   `resolved_at` DATETIME(3) COMMENT '业务及资金均已办结',
   `active_order` BIGINT GENERATED ALWAYS AS (IF(case_status IN ('PENDING_REVIEW','EXECUTING'),order_id,NULL)) STORED COMMENT '一个未办结申请',
@@ -1735,6 +1736,17 @@ CREATE TABLE `vi_aftersale_case` (
   CONSTRAINT ck_66_c205c5c1a697 CHECK (`applicant_type` IN ('ACCOUNT','SYS_USER')),
   CONSTRAINT ck_ver_aftersale_case CHECK (version >= 0)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='取消与退款的唯一申请与处理记录';
+
+CREATE TABLE `vi_aftersale_note` (
+  `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '补充记录ID，API十进制字符串',
+  `case_id` BIGINT NOT NULL COMMENT '原售后申请；权限以原订单归属为准',
+  `account_id` BIGINT NOT NULL COMMENT '实际补充资料的车主账号',
+  `note` VARCHAR(1000) NOT NULL COMMENT '补充说明，追加后不可覆盖原申请',
+  `evidence_ids` JSON COMMENT '已核验且归属原订单的私有文件ID',
+  `created_at` DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3)) COMMENT 'UTC创建时间',
+  PRIMARY KEY (`id`),
+  KEY ix_aftersale_note_case (case_id,id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='车主售后补充资料追加历史';
 
 CREATE TABLE `vi_aftersale_review` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',

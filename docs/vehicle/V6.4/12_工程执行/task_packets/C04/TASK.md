@@ -29,7 +29,6 @@
 `xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/pricing/`
 `xinyi-ui/src/views/rongli/pricing/`
 `xinyi-ui/src/api/rongli/pricing.ts`
-小程序报价入口由B02接入；本任务提供共享计价Service及生成契约类型，不伪造独立计价页。
 
 ## 验证命令
 ```bash

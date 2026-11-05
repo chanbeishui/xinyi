@@ -638,5 +638,13 @@
     "evidence": [],
     "table": "vi_order_snapshot",
     "taskId": "B03"
+  },
+  {
+    "table": "vi_aftersale_note",
+    "taskId": "S01",
+    "status": "NOT_ASSESSED",
+    "entityFile": null,
+    "mapperFile": null,
+    "evidence": []
   }
 ]

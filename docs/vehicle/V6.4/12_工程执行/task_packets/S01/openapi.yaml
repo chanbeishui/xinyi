@@ -574,6 +574,8 @@ components:
           items:
             type: string
             description: 服务端不透明主键，以字符串传输
+          maxItems: 9
+          uniqueItems: true
       required:
       - expectedVersion
       - note
@@ -771,6 +773,7 @@ components:
           format: int64
           minimum: 0
           description: 人民币分
+          nullable: true
         requestedAmount:
           type: integer
           format: int64
@@ -828,6 +831,24 @@ components:
         publicOpinion:
           type: string
           nullable: true
+        reason:
+          type: string
+          minLength: 1
+          maxLength: 1000
+        reasonCode:
+          type: string
+          nullable: true
+          maxLength: 64
+        voucherFileIds:
+          type: array
+          maxItems: 9
+          items:
+            type: string
+            pattern: ^[1-9][0-9]{0,18}$
+        notes:
+          type: array
+          items:
+            $ref: '#/components/schemas/AfterSaleNotePublic'
       required:
       - caseId
       - orderNo
@@ -837,7 +858,11 @@ components:
       - returnState
       - refundState
       - version
-      description: 车主本人售后，publicOpinion为对客户公开结论；内部审核意见另存，绝不盲映射
+      - reason
+      - reasonCode
+      - voucherFileIds
+      - notes
+      description: 本人申请公开投影；待审核approvedAmount为null，不把申请金额当成批准金额；原说明与凭证不可覆盖，补充资料按notes追加。退款执行及实际返还依赖后续审核与退款任务。
     AllowedAction:
       type: string
       description: 服务端按当前角色、对象状态、版本和实时授权计算的可执行动作集合；不能由客户端授予
@@ -893,6 +918,8 @@ components:
       - VIEW_RESULT
       - VOID_STATEMENT
       - WITHDRAW_STATEMENT
+      - ADD_NOTE
+      - VIEW_AFTERSALE
     AfterSaleApply:
       type: object
       additionalProperties: false
@@ -917,6 +944,8 @@ components:
           items:
             type: string
             description: 服务端不透明主键，以字符串传输
+          maxItems: 9
+          uniqueItems: true
         expectedOrderVersion:
           type: integer
           format: int64
@@ -927,6 +956,30 @@ components:
       - requestedAmount
       - expectedOrderVersion
       description: 以当前登录车主创建一次售后请求。同订单仅一个未办结申请，其他金额仍须资金锁与预留校验。
+    AfterSaleNotePublic:
+      type: object
+      additionalProperties: false
+      required:
+      - noteId
+      - note
+      - voucherFileIds
+      - createdAt
+      properties:
+        noteId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+        note:
+          type: string
+          minLength: 1
+          maxLength: 1000
+        voucherFileIds:
+          type: array
+          items:
+            type: string
+            pattern: ^[1-9][0-9]{0,18}$
+        createdAt:
+          type: string
+          format: date-time
   responses:
     UnprocessableEntity:
       description: 填写内容不符合要求。参见errorCode注册表；HTTP状态与code一致。

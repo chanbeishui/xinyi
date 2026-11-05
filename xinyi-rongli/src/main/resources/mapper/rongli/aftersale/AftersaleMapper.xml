@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xinyi.rongli.aftersale.mapper.AftersaleMapper">
+    <resultMap id="Case" type="com.xinyi.rongli.aftersale.domain.AftersaleCase">
+        <id property="id" column="id"/>
+        <result property="version" column="version"/>
+        <result property="caseNo" column="case_no"/>
+        <result property="orderId" column="order_id"/>
+        <result property="paymentId" column="payment_id"/>
+        <result property="kind" column="kind"/>
+        <result property="caseStatus" column="case_status"/>
+        <result property="reviewStatus" column="review_status"/>
+        <result property="reviewRevision" column="review_revision"/>
+        <result property="requestedFen" column="requested_fen"/>
+        <result property="approvedFen" column="approved_fen"/>
+        <result property="returnState" column="return_state"/>
+        <result property="refundState" column="refund_state"/>
+        <result property="applicantType" column="applicant_type"/>
+        <result property="applicantId" column="applicant_id"/>
+        <result property="reason" column="reason"/>
+        <result property="reasonCode" column="reason_code"/>
+        <result property="evidenceIds" column="evidence_ids"/>
+        <result property="createdAt" column="created_at" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+        <result property="updatedAt" column="updated_at" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+    </resultMap>
+    <select id="find" resultMap="Case">SELECT * FROM vi_aftersale_case WHERE id=#{id}</select>
+    <select id="lock" resultMap="Case">SELECT * FROM vi_aftersale_case WHERE id=#{id} FOR UPDATE</select>
+    <select id="active" resultMap="Case">
+        SELECT * FROM vi_aftersale_case WHERE active_order=#{orderId}
+    </select>
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO vi_aftersale_case(case_no,order_id,payment_id,kind,case_status,review_status,
+            requested_fen,return_state,refund_state,applicant_type,applicant_id,reason,reason_code,evidence_ids)
+        VALUES(#{caseNo},#{orderId},#{paymentId},#{kind},'PENDING_REVIEW','PENDING',
+            #{requestedFen},'UNDETERMINED','NONE','ACCOUNT',#{applicantId},#{reason},#{reasonCode},#{evidenceIds})
+    </insert>
+    <update id="markCancellation">
+        UPDATE vi_order SET cancel_status='APPLIED',version=version+1,updated_at=UTC_TIMESTAMP(3)
+        WHERE id=#{id} AND version=#{version} AND cancel_status='NONE'
+    </update>
+    <select id="balance" resultType="map">
+        SELECT paid_fen,refund_reserved_fen,refunded_fen FROM vi_payment_order WHERE id=#{paymentId}
+    </select>
+    <sql id="visible">
+        FROM vi_aftersale_case c JOIN vi_order o ON o.id=c.order_id
+        WHERE o.owner_account_id=#{owner}
+        <if test="orderId != null">AND o.id=#{orderId}</if>
+        <if test="query.keyword != null and query.keyword != ''">
+            AND (LOCATE(#{query.keyword},o.order_no)&gt;0 OR LOCATE(#{query.keyword},c.case_no)&gt;0)
+        </if>
+        <if test="query.status != null">AND c.case_status=#{query.status}</if>
+        <if test="query.kind != null">AND c.kind=#{query.kind}</if>
+        <if test="query.returnState != null">AND c.return_state=#{query.returnState}</if>
+        <if test="query.refundState != null">AND c.refund_state=#{query.refundState}</if>
+    </sql>
+    <select id="list" resultMap="Case">
+        SELECT c.* <include refid="visible"/>
+        ORDER BY c.created_at DESC,c.id DESC LIMIT #{query.pageSize} OFFSET #{offset}
+    </select>
+    <select id="count" resultType="long">SELECT COUNT(*) <include refid="visible"/></select>
+    <update id="increment">
+        UPDATE vi_aftersale_case SET version=version+1,updated_at=UTC_TIMESTAMP(3)
+        WHERE id=#{id} AND version=#{version} AND case_status IN ('PENDING_REVIEW','EXECUTING')
+    </update>
+    <insert id="insertNote">
+        INSERT INTO vi_aftersale_note(case_id,account_id,note,evidence_ids)
+        VALUES(#{caseId},#{accountId},#{note},#{evidence})
+    </insert>
+    <select id="notes" resultType="map">
+        SELECT id,note,evidence_ids,DATE_FORMAT(created_at,'%Y-%m-%dT%H:%i:%s.%fZ') created_iso
+        FROM vi_aftersale_note WHERE case_id=#{caseId} ORDER BY id
+    </select>
+    <select id="refundNo" resultType="string">
+        SELECT out_refund_no FROM vi_refund_order WHERE case_id=#{caseId} ORDER BY review_revision DESC LIMIT 1
+    </select>
+</mapper>

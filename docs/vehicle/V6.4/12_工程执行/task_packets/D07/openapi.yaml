@@ -1436,6 +1436,8 @@ components:
       - VIEW_RESULT
       - VOID_STATEMENT
       - WITHDRAW_STATEMENT
+      - ADD_NOTE
+      - VIEW_AFTERSALE
     PenaltyAppealStatus:
       type: string
       enum:

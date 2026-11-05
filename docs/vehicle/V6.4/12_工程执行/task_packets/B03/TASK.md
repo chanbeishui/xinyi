@@ -4,9 +4,9 @@
 范围版本：`V6.4-COMPANY-COLLECTION-20261102`；definitionHash：`c0338b91dc05c23897184573a4ab2e18da73ef7623c25a0732c484a41cb4ff53`。
 
 ## 本任务交付
-- 同公司唯一已发布收款配置；联系人/地址/备注密文及完整协议接受快照
 - 只按报价创建订单/支付信息/预约预占/30分钟截止
 - 协议接受记录
+- 同公司统一收款；消费已发布支付策略；加密联系人/地址/备注及完整协议接受快照
 
 ## 必测失败与并发
 - 同键同体复用
@@ -23,10 +23,10 @@
 ## 代码落位
 `xinyi-rongli/src/main/java/com/xinyi/rongli/order/`
 `xinyi-rongli/src/main/resources/mapper/rongli/order/`
-`xinyi-rongli/src/main/java/com/xinyi/rongli/order/controller/`
 `xinyi-ui/src/views/rongli/order/`
 `xinyi-ui/src/api/rongli/order.ts`
 `xinyi-miniapp/src/features/order/`
+`xinyi-rongli/src/main/java/com/xinyi/rongli/order/controller/`
 
 ## 验证命令
 ```bash

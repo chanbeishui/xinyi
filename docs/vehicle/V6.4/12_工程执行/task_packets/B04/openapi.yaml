@@ -2622,6 +2622,7 @@ components:
       - VIEW_EVIDENCE
       - VIEW_RESULT
       - VIEW_HANDOVER_SECRET
+      - VIEW_AFTERSALE
     OwnerOrderSummary:
       type: object
       additionalProperties: false

@@ -1,10 +1,11 @@
 # S01 · 统一售后申请和进度
 
-阶段：M2；责任域：aftersale；前置：B04, P02。
-范围版本：`V6.1-UNCHANGED`；definitionHash：`1239370e0a0a0e8c0ffaf87b6c8751a9987be3f9110470dec1f746eacfda9ebd`。
+阶段：M2；责任域：aftersale；前置：B04, P02, F01。
+范围版本：`V6.4-AFTERSALE-FILES-20261105`；definitionHash：`45fce013529424b9dafef76fbe929078800b7b27c4aee18e0ab51bfc8bf71509`。
 
 ## 本任务交付
 - 车主取消并退款/仅退款一次申请、草稿理由金额凭证、重复入口
+- 真实私有凭证上传及读取、不可覆盖的原申请与追加资料、待审核批准金额为null
 
 ## 必测失败与并发
 - 已支付未接车也人工审核
@@ -14,16 +15,17 @@
 主源：04_接口/openapi_V6.4.yaml、05_数据设计/data_model_V6.4.json、06_验收/test_cases_V6.4.json。本目录派生，不独立维护。
 接口：V4_post_api_app_owner_orders__orderNo__after_sales, V4_get_api_app_owner_orders__orderNo__after_sales, V4_get_api_app_owner_after_sales, V4_get_api_app_owner_after_sales__caseId, V4_post_api_app_owner_after_sales__caseId__notes
 画板：O19, O19-duplicate, O19-picked, O19-refund, O21, O21-abnormal, O21-return, O21-success
-主责任表：vi_aftersale_case
+主责任表：vi_aftersale_case, vi_aftersale_note
 验收：无
 
 ## 代码落位
 `xinyi-rongli/src/main/java/com/xinyi/rongli/aftersale/`
 `xinyi-rongli/src/main/resources/mapper/rongli/aftersale/`
-`xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/aftersale/`
 `xinyi-ui/src/views/rongli/aftersale/`
 `xinyi-ui/src/api/rongli/aftersale.ts`
 `xinyi-miniapp/src/features/aftersale/`
+`xinyi-rongli/src/main/java/com/xinyi/rongli/aftersale/controller/`
+`xinyi-admin/src/test/java/com/xinyi/web/viit/S01AftersaleIT.java`
 
 ## 验证命令
 ```bash

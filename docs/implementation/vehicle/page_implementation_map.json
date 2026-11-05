@@ -306,60 +306,84 @@
     "taskId": "F05"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "VERIFIED",
+    "implementationFile": "xinyi-miniapp/src/pages/aftersale/apply.vue",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/S01-20261105.json"
+    ],
     "boardId": "O19",
-    "taskId": "S01"
+    "taskId": "S01",
+    "testEvidence": "docs/implementation/vehicle/S01/browser.json"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "VERIFIED",
+    "implementationFile": "xinyi-miniapp/src/pages/aftersale/apply.vue",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/S01-20261105.json"
+    ],
     "boardId": "O19-duplicate",
-    "taskId": "S01"
+    "taskId": "S01",
+    "testEvidence": "docs/implementation/vehicle/S01/browser.json"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "VERIFIED",
+    "implementationFile": "xinyi-miniapp/src/pages/aftersale/apply.vue",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/S01-20261105.json"
+    ],
     "boardId": "O19-picked",
-    "taskId": "S01"
+    "taskId": "S01",
+    "testEvidence": "docs/implementation/vehicle/S01/browser.json"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "VERIFIED",
+    "implementationFile": "xinyi-miniapp/src/pages/aftersale/apply.vue",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/S01-20261105.json"
+    ],
     "boardId": "O19-refund",
-    "taskId": "S01"
+    "taskId": "S01",
+    "testEvidence": "docs/implementation/vehicle/S01/browser.json"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "VERIFIED",
+    "implementationFile": "xinyi-miniapp/src/pages/aftersale/detail.vue",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/S01-20261105.json"
+    ],
     "boardId": "O21",
-    "taskId": "S01"
+    "taskId": "S01",
+    "testEvidence": "docs/implementation/vehicle/S01/browser.json"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "VERIFIED",
+    "implementationFile": "xinyi-miniapp/src/pages/aftersale/detail.vue",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/S01-20261105.json"
+    ],
     "boardId": "O21-abnormal",
-    "taskId": "S01"
+    "taskId": "S01",
+    "testEvidence": "docs/implementation/vehicle/S01/browser.json"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "VERIFIED",
+    "implementationFile": "xinyi-miniapp/src/pages/aftersale/detail.vue",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/S01-20261105.json"
+    ],
     "boardId": "O21-return",
-    "taskId": "S01"
+    "taskId": "S01",
+    "testEvidence": "docs/implementation/vehicle/S01/browser.json"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "VERIFIED",
+    "implementationFile": "xinyi-miniapp/src/pages/aftersale/detail.vue",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/S01-20261105.json"
+    ],
     "boardId": "O21-success",
-    "taskId": "S01"
+    "taskId": "S01",
+    "testEvidence": "docs/implementation/vehicle/S01/browser.json"
   },
   {
     "status": "NOT_ASSESSED",

@@ -1,0 +1,29 @@
+{
+  "mode": "Browser plugin not available；临时 Playwright + 明确API夹具；仅验证H5渲染与客户端交互，不代表真实微信/供应商联调",
+  "url": "http://127.0.0.1:5175",
+  "viewports": [
+    "390x844",
+    "1280x900"
+  ],
+  "checks": [
+    "金额超过两位小数拒绝且没有写请求",
+    "选择图片→申请票据→带会话及文件票据PUT字节→服务端核验→显示已上传凭证",
+    "创建使用分整数/订单版本/幂等键/凭证ID，展示待人工审核且退款未发起",
+    "补充说明使用当前case版本，追加记录且原申请保持不变",
+    "重复入口显示原申请，不再显示提交表单",
+    "私有凭证查看通过带会话和短期票据的下载，再以临时文件预览",
+    "全局售后列表显示本人申请和分金额",
+    "进度状态 EXECUTING/WAIT_RETURN 文案与操作边界",
+    "进度状态 EXECUTING/ABNORMAL 文案与操作边界",
+    "进度状态 CLOSED/SUCCESS 文案与操作边界",
+    "提交回执丢失后锁定原请求，刷新找到原申请且没有重复创建",
+    "页面身份/非空/无框架错误遮罩/无相关控制台错误/无横向溢出"
+  ],
+  "errors": [],
+  "unknown": [],
+  "screenshots": [
+    "docs/implementation/vehicle/S01/ui-apply-mobile.png",
+    "docs/implementation/vehicle/S01/ui-detail-mobile.png",
+    "docs/implementation/vehicle/S01/ui-list-desktop.png"
+  ]
+}

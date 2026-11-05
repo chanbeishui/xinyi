@@ -1,0 +1,138 @@
+{
+  "taskId": "S01",
+  "scopeRevision": "V6.4-AFTERSALE-FILES-20261105",
+  "at": "2026-11-05T15:40:59.872318+00:00",
+  "implementer": "Codex",
+  "baselineCommit": "ff06fd1",
+  "codeFiles": [
+    "xinyi-admin/src/test/java/com/xinyi/web/viit/S01AftersaleIT.java",
+    "xinyi-admin/src/test/java/com/xinyi/web/viit/ViTestResourceCustomizerFactory.java",
+    "xinyi-admin/src/test/java/com/xinyi/web/viit/ViTestResourceCustomizerFactoryTest.java",
+    "xinyi-admin/src/test/resources/META-INF/spring.factories",
+    "xinyi-admin/src/test/resources/spring.properties",
+    "xinyi-miniapp/src/components/aftersale/VoucherPicker.vue",
+    "xinyi-miniapp/src/features/aftersale/api.ts",
+    "xinyi-miniapp/src/pages.json",
+    "xinyi-miniapp/src/pages/aftersale/apply.vue",
+    "xinyi-miniapp/src/pages/aftersale/detail.vue",
+    "xinyi-miniapp/src/pages/aftersale/list.vue",
+    "xinyi-miniapp/src/pages/order/detail.vue",
+    "xinyi-miniapp/src/pages/order/list.vue",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/aftersale/controller/AftersaleController.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/aftersale/domain/AftersaleCase.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/aftersale/dto/AftersaleRequests.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/aftersale/mapper/AftersaleMapper.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/aftersale/service/AftersaleService.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/order/service/OrderProjection.java",
+    "xinyi-rongli/src/main/resources/mapper/rongli/aftersale/AftersaleMapper.xml"
+  ],
+  "sourceDigests": {
+    "xinyi-admin/src/test/java/com/xinyi/web/viit/S01AftersaleIT.java": "a2ffdd10cdc1f9dd038da87ca77d47e70a5202156eae175d5272d501bf6dc395",
+    "xinyi-admin/src/test/java/com/xinyi/web/viit/ViTestResourceCustomizerFactory.java": "22b8a0da5b8ae488d8609992a4a845b088efc5b6f9ee4e4a0285515e15775609",
+    "xinyi-admin/src/test/java/com/xinyi/web/viit/ViTestResourceCustomizerFactoryTest.java": "d6b934223e739c1c9ac1322207774f5384ba73aee9ac83a1b69eb2e8c719721d",
+    "xinyi-admin/src/test/resources/META-INF/spring.factories": "ac04366c65b2d60ece3677aecf0d3e559b90d7eb29cf8260280892c217080e5e",
+    "xinyi-admin/src/test/resources/spring.properties": "dfc4f080a6d495fdfe0b8c620ca978284b21e9888d5e1e3e699f6ed0125bf4e4",
+    "xinyi-miniapp/src/components/aftersale/VoucherPicker.vue": "24338fc5cd8f4105d2d4d61db9f079e404349dee7a813b60935750c3fc668431",
+    "xinyi-miniapp/src/features/aftersale/api.ts": "0349ed77f7e05565d39d93ccb2539dbde32eaf9f98120847b42600d1d7c2a471",
+    "xinyi-miniapp/src/pages.json": "d3dee4b6381ab00ff852889174d88b3e10091173d54e6cb8b9a9f4b85fa825c0",
+    "xinyi-miniapp/src/pages/aftersale/apply.vue": "755c36a77815aabf149344662d13d887f01a60befbefaeb82f006899f000cbe5",
+    "xinyi-miniapp/src/pages/aftersale/detail.vue": "d5f62f6a54884af2bd4567ed60d41640da815f18b2e9b50f9f0f49e1d8d005d2",
+    "xinyi-miniapp/src/pages/aftersale/list.vue": "0caa7a7d0f2fa3ee50ae61fc2bcca64df0c8ff17274978a579b1a5f0af39fc02",
+    "xinyi-miniapp/src/pages/order/detail.vue": "62797f7fcf4e9e8f0ad1ab7e25be37ce60cdf8f910c1890edbdc062bdc18a5b0",
+    "xinyi-miniapp/src/pages/order/list.vue": "8655f2abd9410d80f45863a3ff9506e8ac018370ff71a66bf5b2590539b58258",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/aftersale/controller/AftersaleController.java": "ac17add8cf0c0a191736618dea2f839bc5c5dac6b40d55b9930fc62f0e6fe660",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/aftersale/domain/AftersaleCase.java": "aff1d652345c48ea179dc4768ea27c48b6806059a386f33504c3fc68ddd9022a",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/aftersale/dto/AftersaleRequests.java": "ba9bd5273556d3b8bd6f3165b2e807cf8980da1a9be064d636d584ac69561d79",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/aftersale/mapper/AftersaleMapper.java": "a9d962b64ace7484f9845a2b49fc4edefe45df2f6987f5ec455113384d03190c",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/aftersale/service/AftersaleService.java": "3a155f8ed27a3cac267a5c69a936ef3c251caaf0906833ac1cfab623a9787fdc",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/order/service/OrderProjection.java": "e1129006aeaa66bb4be1a7a61b75196e7c8e1eb5365f7a14cd958189dc937eec",
+    "xinyi-rongli/src/main/resources/mapper/rongli/aftersale/AftersaleMapper.xml": "2c4a4c2b2f330d5b98e4eb7031b0f691aee45ec11ac1bc71d66cf6ca0580b8a0"
+  },
+  "runs": [
+    {
+      "command": "mvn -o -pl xinyi-admin -am -Pvi-it -Dit.test=S01AftersaleIT verify（同最终全量进程）",
+      "layer": "LIVE_HTTP_MYSQL",
+      "exitCode": 0,
+      "testsRun": 17,
+      "skipped": 0,
+      "reportPath": "docs/implementation/vehicle/S01/integration-junit.xml"
+    },
+    {
+      "command": "当前全部28类集成回归",
+      "layer": "LIVE_HTTP_MYSQL",
+      "exitCode": 0,
+      "testsRun": 310,
+      "skipped": 0,
+      "reportPath": "docs/implementation/vehicle/S01/full-regression.json"
+    },
+    {
+      "command": "后端单元测试",
+      "layer": "UNIT",
+      "exitCode": 0,
+      "testsRun": 37,
+      "skipped": 0,
+      "reportPath": "docs/implementation/vehicle/S01/unit-junit.xml"
+    }
+  ],
+  "additionalChecks": [
+    {
+      "command": "npm --prefix xinyi-ui run build:prod",
+      "layer": "BUILD",
+      "exitCode": 0,
+      "checksRun": 1,
+      "skipped": 0,
+      "reportPath": "docs/implementation/vehicle/S01/pc-build.txt"
+    },
+    {
+      "command": "npm --prefix xinyi-miniapp run type-check",
+      "layer": "BUILD",
+      "exitCode": 0,
+      "checksRun": 1,
+      "skipped": 0,
+      "reportPath": "docs/implementation/vehicle/S01/types-build.txt"
+    },
+    {
+      "command": "npm --prefix xinyi-miniapp run build:mp-weixin",
+      "layer": "BUILD",
+      "exitCode": 0,
+      "checksRun": 1,
+      "skipped": 0,
+      "reportPath": "docs/implementation/vehicle/S01/mp-build.txt"
+    },
+    {
+      "command": "npm --prefix xinyi-miniapp run build:h5",
+      "layer": "BUILD",
+      "exitCode": 0,
+      "checksRun": 1,
+      "skipped": 0,
+      "reportPath": "docs/implementation/vehicle/S01/h5-build.txt"
+    },
+    {
+      "command": "engineer.py check + check_package.py",
+      "layer": "STATIC_CONTRACT",
+      "exitCode": 0,
+      "checksRun": 76,
+      "skipped": 0,
+      "reportPath": "docs/implementation/vehicle/S01/engineering.json"
+    },
+    {
+      "command": "Playwright H5 交互（明确API夹具）",
+      "layer": "BROWSER_SIMULATOR",
+      "exitCode": 0,
+      "checksRun": 12,
+      "skipped": 0,
+      "reportPath": "docs/implementation/vehicle/S01/browser.json"
+    }
+  ],
+  "review": {
+    "approved": true,
+    "status": "APPROVED_WITH_SCOPE_BOUNDARIES",
+    "reviewer": "/root/f01_tests",
+    "reportPath": "docs/implementation/vehicle/S01/review.md"
+  },
+  "databaseStructureChanged": true,
+  "migration": "sql/migration_20261105_02_aftersale_notes.sql",
+  "realVendors": "NOT_RUN",
+  "productionDeploy": "NOT_RUN",
+  "wechatDevice": "NOT_RUN"
+}

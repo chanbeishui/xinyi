@@ -115,8 +115,7 @@ paths:
       - VI_UPSTREAM_UNAVAILABLE
       x-error-policy: GLOBAL_FAILURES_NO_RESOURCE_404
       x-contract-baseline: V6.4
-      x-public-projection: DriverStatementPublic or publicly limited payment/service
-        view only
+      x-public-projection: DriverStatementPublic or publicly limited payment/service view only
   /api/app/driver/statements/{statementId}:
     get:
       operationId: V4_get_api_app_driver_statements__statementId
@@ -199,8 +198,7 @@ paths:
       - VI_UPSTREAM_UNAVAILABLE
       x-error-policy: OBJECT_404_HIDES_EXISTENCE
       x-contract-baseline: V6.4
-      x-public-projection: DriverStatementPublic or publicly limited payment/service
-        view only
+      x-public-projection: DriverStatementPublic or publicly limited payment/service view only
   /api/admin/driver-statements/{statementId}/send:
     post:
       operationId: V4_post_api_admin_driver_statements__statementId__send
@@ -427,8 +425,7 @@ paths:
       - VI_UPSTREAM_UNAVAILABLE
       x-error-policy: OBJECT_404_HIDES_EXISTENCE
       x-contract-baseline: V6.4
-      x-public-projection: DriverStatementPublic or publicly limited payment/service
-        view only
+      x-public-projection: DriverStatementPublic or publicly limited payment/service view only
   /api/app/driver/statements/{statementId}/differences:
     post:
       operationId: V4_post_api_app_driver_statements__statementId__differences
@@ -542,8 +539,7 @@ paths:
       - VI_UPSTREAM_UNAVAILABLE
       x-error-policy: OBJECT_404_HIDES_EXISTENCE
       x-contract-baseline: V6.4
-      x-public-projection: DriverStatementPublic or publicly limited payment/service
-        view only
+      x-public-projection: DriverStatementPublic or publicly limited payment/service view only
   /api/admin/statement-differences:
     get:
       operationId: V4_get_api_admin_statement_differences
@@ -1396,6 +1392,8 @@ components:
       - VIEW_RESULT
       - VOID_STATEMENT
       - WITHDRAW_STATEMENT
+      - ADD_NOTE
+      - VIEW_AFTERSALE
     DriverStatementLine:
       type: object
       additionalProperties: false

@@ -4640,7 +4640,8 @@
       "applicant_id",
       "reason",
       "evidence_ids",
-      "resolved_at"
+      "resolved_at",
+      "reason_code"
     ],
     "updateColumns": [
       "case_no",
@@ -4789,6 +4790,12 @@
       "version": {
         "generated": false,
         "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "reason_code": {
+        "generated": false,
+        "insertable": true,
         "updatable": false,
         "clientWritable": false
       }
@@ -9569,5 +9576,57 @@
       }
     },
     "rule": "与父订单同事务创建后不可覆盖；查询和写入均按父订单真实owner_account_id/dept_id校验。历史缺少证据只报告，不猜测回填。联系人、地址、备注密文，显式协议接受与完整文本永久关联。"
+  },
+  {
+    "table": "vi_aftersale_note",
+    "writeMode": "APPEND_ONLY",
+    "generatedColumns": [],
+    "insertColumns": [
+      "case_id",
+      "account_id",
+      "note",
+      "evidence_ids"
+    ],
+    "updateColumns": [],
+    "columnRules": {
+      "id": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "case_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "account_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "note": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "evidence_ids": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "created_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      }
+    },
+    "rule": "以父售后订单owner_account_id为权威归属；本人追加不可覆盖或删除。整组凭证必须READY且同订单本人DISPUTE；与版本、成功审计和outbox同事务。"
   }
 ]

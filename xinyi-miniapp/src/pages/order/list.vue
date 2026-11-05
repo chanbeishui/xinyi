@@ -56,6 +56,9 @@ function turn(delta: number) {
   page.value += delta;
   load();
 }
+function aftersales() {
+  uni.navigateTo({ url: '/pages/aftersale/list' });
+}
 function open(row: OrderSummary) {
   uni.navigateTo({ url: '/pages/order/detail?orderNo=' + encodeURIComponent(row.orderNo) });
 }
@@ -75,6 +78,7 @@ function open(row: OrderSummary) {
     <picker v-if="role === 'OWNER'" :range="filters" range-key="label" @change="filter"
       ><view class="filter">{{ filters.find((f) => f.value === status)?.label }} ▾</view></picker
     >
+    <button v-if="role === 'OWNER'" @click="aftersales">我的售后</button>
     <text v-if="loading" class="muted">正在加载订单…</text>
     <view v-else-if="error" class="error"
       ><text>{{ error }}</text

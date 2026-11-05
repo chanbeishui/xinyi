@@ -7287,4 +7287,48 @@ CONSTRAINT ck_recipient_shape CHECK ((kind='PHONE' AND phone_cipher IS NOT NULL 
 </tr>
 </tbody>
 </table>
+<h2>S01 售后追加资料</h2>
+<p>vi_aftersale_case新增reason_code VARCHAR(64) NULL，原reason/evidence_ids永久保留。</p>
+<table>
+<thead>
+<tr>
+  <th>字段</th>
+  <th>类型</th>
+  <th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>id</td>
+  <td>BIGINT NOT NULL AUTO_INCREMENT</td>
+  <td>补充记录ID，API十进制字符串</td>
+</tr>
+<tr>
+  <td>case_id</td>
+  <td>BIGINT NOT NULL</td>
+  <td>原售后申请；权限以原订单归属为准</td>
+</tr>
+<tr>
+  <td>account_id</td>
+  <td>BIGINT NOT NULL</td>
+  <td>实际补充资料的车主账号</td>
+</tr>
+<tr>
+  <td>note</td>
+  <td>VARCHAR(1000) NOT NULL</td>
+  <td>补充说明，追加后不可覆盖原申请</td>
+</tr>
+<tr>
+  <td>evidence_ids</td>
+  <td>JSON</td>
+  <td>已核验且归属原订单的私有文件ID</td>
+</tr>
+<tr>
+  <td>created_at</td>
+  <td>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</td>
+  <td>UTC创建时间</td>
+</tr>
+</tbody>
+</table>
+<p>权限及事务：以父售后订单owner_account_id为权威归属；本人追加不可覆盖或删除。整组凭证必须READY且同订单本人DISPUTE；与版本、成功审计和outbox同事务。</p>
 </main></body></html>

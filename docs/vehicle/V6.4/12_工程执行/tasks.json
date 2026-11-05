@@ -3405,10 +3405,12 @@
     "domain": "aftersale",
     "depends_on": [
       "B04",
-      "P02"
+      "P02",
+      "F01"
     ],
     "deliverables": [
-      "车主取消并退款/仅退款一次申请、草稿理由金额凭证、重复入口"
+      "车主取消并退款/仅退款一次申请、草稿理由金额凭证、重复入口",
+      "真实私有凭证上传及读取、不可覆盖的原申请与追加资料、待审核批准金额为null"
     ],
     "negative_checks": [
       "已支付未接车也人工审核",
@@ -3432,7 +3434,8 @@
       "O21-success"
     ],
     "tables": [
-      "vi_aftersale_case"
+      "vi_aftersale_case",
+      "vi_aftersale_note"
     ],
     "case_ids": [],
     "scope": "DEVELOPMENT",
@@ -3441,10 +3444,11 @@
     "code_paths": [
       "xinyi-rongli/src/main/java/com/xinyi/rongli/aftersale/",
       "xinyi-rongli/src/main/resources/mapper/rongli/aftersale/",
-      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/aftersale/",
       "xinyi-ui/src/views/rongli/aftersale/",
       "xinyi-ui/src/api/rongli/aftersale.ts",
-      "xinyi-miniapp/src/features/aftersale/"
+      "xinyi-miniapp/src/features/aftersale/",
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/aftersale/controller/",
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/S01AftersaleIT.java"
     ],
     "test_class": "S01AftersaleIT",
     "commands": [
@@ -3464,8 +3468,8 @@
       "access": "不得绕过限制；保存恢复点",
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
-    "scopeRevision": "V6.1-UNCHANGED",
-    "definitionHash": "1239370e0a0a0e8c0ffaf87b6c8751a9987be3f9110470dec1f746eacfda9ebd"
+    "scopeRevision": "V6.4-AFTERSALE-FILES-20261105",
+    "definitionHash": "45fce013529424b9dafef76fbe929078800b7b27c4aee18e0ab51bfc8bf71509"
   },
   {
     "id": "S02",
@@ -4928,7 +4932,7 @@
       "E06"
     ],
     "deliverables": [
-      "真实MySQL执行79表、主键/索引/CHECK/UTC/自增/生成列",
+      "真实MySQL执行81表、主键/索引/CHECK/UTC/自增/生成列",
       "初装与M0适配目标一致"
     ],
     "negative_checks": [
@@ -4964,7 +4968,7 @@
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
     "scopeRevision": "V6.4-IDENTITY-20261022",
-    "definitionHash": "d2f726ba641cefc427525718ce4e9f97460d4fb6ec2752e6d3eedec7ee859220"
+    "definitionHash": "386017fa54d1b52cddd2aea0d6da168bdf1c53a826e3c1b7a4c0797043fa0e23"
   },
   {
     "id": "T07",

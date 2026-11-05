@@ -7189,6 +7189,11 @@
         "原始申请说明"
       ],
       [
+        "reason_code",
+        "VARCHAR(64) NULL",
+        "申请原因代码，原说明独立保留"
+      ],
+      [
         "evidence_ids",
         "JSON",
         "关联证据文件ID"
@@ -7362,6 +7367,12 @@
       "version": {
         "generated": false,
         "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "reason_code": {
+        "generated": false,
+        "insertable": true,
         "updatable": false,
         "clientWritable": false
       }
@@ -14777,5 +14788,91 @@
     "checks": [
       "CONSTRAINT ck_order_snapshot_ver CHECK (version >= 0)"
     ]
+  },
+  {
+    "name": "vi_aftersale_note",
+    "comment": "车主售后补充资料追加历史",
+    "cols": [
+      [
+        "id",
+        "BIGINT NOT NULL AUTO_INCREMENT",
+        "补充记录ID，API十进制字符串"
+      ],
+      [
+        "case_id",
+        "BIGINT NOT NULL",
+        "原售后申请；权限以原订单归属为准"
+      ],
+      [
+        "account_id",
+        "BIGINT NOT NULL",
+        "实际补充资料的车主账号"
+      ],
+      [
+        "note",
+        "VARCHAR(1000) NOT NULL",
+        "补充说明，追加后不可覆盖原申请"
+      ],
+      [
+        "evidence_ids",
+        "JSON",
+        "已核验且归属原订单的私有文件ID"
+      ],
+      [
+        "created_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "UTC创建时间"
+      ]
+    ],
+    "indexes": [
+      "KEY ix_aftersale_note_case (case_id,id)"
+    ],
+    "rule": "以父售后订单owner_account_id为权威归属；本人追加不可覆盖或删除。整组凭证必须READY且同订单本人DISPUTE；与版本、成功审计和outbox同事务。",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "engine": "InnoDB",
+    "collation": "utf8mb4_0900_ai_ci",
+    "columnRules": {
+      "id": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "case_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "account_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "note": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "evidence_ids": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "created_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      }
+    },
+    "checks": []
   }
 ]

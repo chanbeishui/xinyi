@@ -1,0 +1,11 @@
+{
+  "integrationTests": 310,
+  "failures": 0,
+  "errors": 6,
+  "skipped": 0,
+  "affectedSuite": "I06ScopeIT",
+  "cause": "native-thread资源耗尽，后续HTTP selector关闭",
+  "businessAssertionFailures": 0,
+  "fixedBy": "测试上下文缓存4及JVM共享真实调度池",
+  "subsequentSuccessfulReport": "full-regression.json"
+}

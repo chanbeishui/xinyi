@@ -85,6 +85,9 @@ const statusLabel = (value: string) =>
       FAIL: '不合格'
     }) as Record<string, string>
   )[value] || value;
+function aftersale(no: string, mode: 'apply' | 'list') {
+  uni.navigateTo({ url: '/pages/aftersale/' + mode + '?orderNo=' + encodeURIComponent(no) });
+}
 function payment(no: string) {
   uni.navigateTo({ url: '/pages/payment/index?orderNo=' + encodeURIComponent(no) });
 }
@@ -166,6 +169,17 @@ function payment(no: string) {
         >
           查看付款
         </button>
+        <button
+          v-if="
+            order.allowedActions.some((value) =>
+              ['APPLY_AFTERSALE', 'APPLY_CANCEL_REFUND', 'APPLY_REFUND_ONLY'].includes(value)
+            )
+          "
+          @click="aftersale(order.orderNo, 'apply')"
+        >
+          申请售后
+        </button>
+        <button @click="aftersale(order.orderNo, 'list')">查看售后记录</button>
         <view v-if="order.afterSale" class="card"
           ><text class="section">售后进度</text
           ><text

@@ -34575,6 +34575,8 @@ components:
           items:
             type: string
             description: 服务端不透明主键，以字符串传输
+          maxItems: 9
+          uniqueItems: true
         expectedOrderVersion:
           type: integer
           format: int64
@@ -34807,6 +34809,8 @@ components:
           items:
             type: string
             description: 服务端不透明主键，以字符串传输
+          maxItems: 9
+          uniqueItems: true
       required:
       - expectedVersion
       - note
@@ -38275,6 +38279,7 @@ components:
           format: int64
           minimum: 0
           description: 人民币分
+          nullable: true
         requestedAmount:
           type: integer
           format: int64
@@ -38332,6 +38337,24 @@ components:
         publicOpinion:
           type: string
           nullable: true
+        reason:
+          type: string
+          minLength: 1
+          maxLength: 1000
+        reasonCode:
+          type: string
+          nullable: true
+          maxLength: 64
+        voucherFileIds:
+          type: array
+          maxItems: 9
+          items:
+            type: string
+            pattern: ^[1-9][0-9]{0,18}$
+        notes:
+          type: array
+          items:
+            $ref: '#/components/schemas/AfterSaleNotePublic'
       required:
       - caseId
       - orderNo
@@ -38341,7 +38364,11 @@ components:
       - returnState
       - refundState
       - version
-      description: 车主本人售后，publicOpinion为对客户公开结论；内部审核意见另存，绝不盲映射
+      - reason
+      - reasonCode
+      - voucherFileIds
+      - notes
+      description: 本人申请公开投影；待审核approvedAmount为null，不把申请金额当成批准金额；原说明与凭证不可覆盖，补充资料按notes追加。退款执行及实际返还依赖后续审核与退款任务。
     DriverStatementPaymentPublic:
       type: object
       additionalProperties: false
@@ -39984,6 +40011,8 @@ components:
       - VIEW_RESULT
       - VOID_STATEMENT
       - WITHDRAW_STATEMENT
+      - ADD_NOTE
+      - VIEW_AFTERSALE
     AccountStatus:
       type: string
       enum:
@@ -40906,6 +40935,7 @@ components:
       - VIEW_EVIDENCE
       - VIEW_RESULT
       - VIEW_HANDOVER_SECRET
+      - VIEW_AFTERSALE
     DriverOrderAction:
       type: string
       description: 动作仍需服务端逐次鉴权，不可把UI集合当授权凭证
@@ -43698,6 +43728,32 @@ components:
         estimatedDurationSecond:
           type: integer
           minimum: 1
+    AfterSaleNotePublic:
+      type: object
+      additionalProperties: false
+      required:
+      - noteId
+      - note
+      - voucherFileIds
+      - createdAt
+      properties:
+        noteId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+        note:
+          type: string
+          minLength: 1
+          maxLength: 1000
+        voucherFileIds:
+          type: array
+          items:
+            type: string
+            pattern: ^[1-9][0-9]{0,18}$
+        createdAt:
+          type: string
+          format: date-time
+
+
   responses:
     BadRequest:
       description: 请求格式不正确。参见errorCode注册表；HTTP状态与code一致。

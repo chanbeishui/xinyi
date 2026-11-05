@@ -232,7 +232,30 @@ public class OrderProjection {
                 money(row),
                 mileage(row),
                 afterSale(row, true),
-                List.of("VIEW_DETAIL"));
+                ownerActions(row));
+    }
+
+    /** 操作入口按真实收款与原申请判断；申请本身仍由售后事务重新校验金额、版本及凭证。 */
+    private List<String> ownerActions(ViOrder row) {
+        List<String> actions = new ArrayList<>();
+        actions.add("VIEW_DETAIL");
+        var existing = reads.afterSale(row.getId());
+        if (existing != null) actions.add("VIEW_AFTERSALE");
+        var paid = payment(row);
+        boolean activeCase =
+                existing != null
+                        && Set.of("PENDING_REVIEW", "EXECUTING")
+                                .contains(value(existing, "case_status"));
+        if (!activeCase
+                && "SUCCESS".equals(paid.getStatus())
+                && paid.getPaidFen() > paid.getRefundedFen()) {
+            actions.add("APPLY_REFUND_ONLY");
+            if ("NONE".equals(row.getCancelStatus())
+                    && !Set.of("CLOSED", "CANCELLED", "COMPLETED")
+                            .contains(row.getFulfillmentStatus()))
+                actions.add("APPLY_CANCEL_REFUND");
+        }
+        return List.copyOf(actions);
     }
 
     /** 分角色生成字段白名单；财务、地址和详情操作各自取权限交集，不能仅隐藏前端按钮。 */

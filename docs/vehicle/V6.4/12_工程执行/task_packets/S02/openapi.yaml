@@ -1365,6 +1365,8 @@ components:
       - VIEW_RESULT
       - VOID_STATEMENT
       - WITHDRAW_STATEMENT
+      - ADD_NOTE
+      - VIEW_AFTERSALE
     AfterSaleReview:
       type: object
       additionalProperties: false
@@ -1494,6 +1496,8 @@ components:
           items:
             type: string
             description: 服务端不透明主键，以字符串传输
+          maxItems: 9
+          uniqueItems: true
       required:
       - expectedVersion
       - note
@@ -1522,6 +1526,8 @@ components:
           items:
             type: string
             description: 服务端不透明主键，以字符串传输
+          maxItems: 9
+          uniqueItems: true
         expectedOrderVersion:
           type: integer
           format: int64

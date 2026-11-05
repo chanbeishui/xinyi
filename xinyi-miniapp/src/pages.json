@@ -95,6 +95,24 @@
       "style": {
         "navigationBarTitleText": "预约付款"
       }
+    },
+    {
+      "path": "pages/aftersale/apply",
+      "style": {
+        "navigationBarTitleText": "申请售后"
+      }
+    },
+    {
+      "path": "pages/aftersale/detail",
+      "style": {
+        "navigationBarTitleText": "售后进度"
+      }
+    },
+    {
+      "path": "pages/aftersale/list",
+      "style": {
+        "navigationBarTitleText": "我的售后"
+      }
     }
   ],
   "globalStyle": {

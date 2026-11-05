@@ -1,10 +1,10 @@
 # T06 · 结构、Mapper生成列和升级一致性
 
 阶段：M0；责任域：testing；前置：E03, E06。
-范围版本：`V6.4-IDENTITY-20261022`；definitionHash：`d2f726ba641cefc427525718ce4e9f97460d4fb6ec2752e6d3eedec7ee859220`。
+范围版本：`V6.4-IDENTITY-20261022`；definitionHash：`386017fa54d1b52cddd2aea0d6da168bdf1c53a826e3c1b7a4c0797043fa0e23`。
 
 ## 本任务交付
-- 真实MySQL执行79表、主键/索引/CHECK/UTC/自增/生成列
+- 真实MySQL执行81表、主键/索引/CHECK/UTC/自增/生成列
 - 初装与M0适配目标一致
 
 ## 必测失败与并发

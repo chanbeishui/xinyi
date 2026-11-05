@@ -1646,7 +1646,7 @@ export type AfterSalePublic = {
   kind: 'CANCEL_REFUND' | 'REFUND_ONLY';
   caseStatus: 'PENDING_REVIEW' | 'EXECUTING' | 'CLOSED' | 'REJECTED';
   reviewStatus: 'PENDING' | 'APPROVED' | 'REJECTED';
-  approvedAmount?: number;
+  approvedAmount?: number | null;
   requestedAmount?: number;
   returnState: 'UNDETERMINED' | 'NOT_REQUIRED' | 'WAIT_RETURN' | 'RETURNED';
   refundState:
@@ -1667,6 +1667,10 @@ export type AfterSalePublic = {
   updatedAt?: string;
   allowedActions?: Array<AllowedAction>;
   publicOpinion?: string | null;
+  reason: string;
+  reasonCode: string | null;
+  voucherFileIds: Array<string>;
+  notes: Array<AfterSaleNotePublic>;
 };
 
 export type DriverStatementPaymentPublic = {
@@ -2324,7 +2328,9 @@ export type AllowedAction =
   | 'VIEW_PRICING'
   | 'VIEW_RESULT'
   | 'VOID_STATEMENT'
-  | 'WITHDRAW_STATEMENT';
+  | 'WITHDRAW_STATEMENT'
+  | 'ADD_NOTE'
+  | 'VIEW_AFTERSALE';
 
 export type AccountStatus = 'ACTIVE' | 'LOCKED';
 
@@ -2602,8 +2608,8 @@ export type OwnerOrderAction =
   | 'VIEW_DETAIL'
   | 'VIEW_EVIDENCE'
   | 'VIEW_RESULT'
-  | 'VIEW_HANDOVER_SECRET';
-
+  | 'VIEW_HANDOVER_SECRET'
+  | 'VIEW_AFTERSALE';
 export type DriverOrderAction =
   | 'DEPART'
   | 'ARRIVE_PICKUP'
@@ -2761,3 +2767,10 @@ export type AvailableStation = {
 export type PaymentMethod = 'UNSELECTED' | 'WECHAT' | 'OFFLINE';
 
 export type OfflineProofStatus = 'SUBMITTED' | 'VERIFIED' | 'REJECTED';
+
+export type AfterSaleNotePublic = {
+  noteId: string;
+  note: string;
+  voucherFileIds: Array<string>;
+  createdAt: string;
+};
