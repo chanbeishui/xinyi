@@ -32,6 +32,11 @@ jobs:
       - name: Compile all modules
         run: mvn -B -ntp -DskipTests compile
 
+      # 单元测试作为 PR 门禁：目前 2 个用例（TokenService / DeptScope），跑完约 5 秒。
+      # 只测 framework + system，其余模块无用例，全量跑只是浪费 CI 时间。
+      - name: Test
+        run: mvn -B -ntp -pl xinyi-framework,xinyi-system -am test
+
       - name: Package
         run: mvn -B -ntp -DskipTests package
 

@@ -2,12 +2,16 @@ import { defineConfig, loadEnv } from 'vite'
 import path from 'path'
 import createVitePlugins from './vite/plugins'
 
-const baseUrl = 'http://localhost:8080' // 后端接口
-
 // https://vitejs.dev/config/
 export default defineConfig(({ mode, command }) => {
   const env = loadEnv(mode, process.cwd())
   const { VITE_APP_ENV } = env
+  // 后端接口地址：默认本机 8080。
+  // 联调线上服务器时不改代码，用环境变量覆盖：
+  //   VITE_PROXY_TARGET=http://服务器IP:8081/prod-api npm run dev
+  // 也可写进 .env.development.local（该文件已被 git 忽略）
+  const baseUrl =
+    process.env.VITE_PROXY_TARGET || env.VITE_PROXY_TARGET || 'http://localhost:8080'
   return {
     // 部署生产环境和开发环境下的URL。
     // 默认情况下，vite 会假设你的应用是被部署在一个域名的根路径上
