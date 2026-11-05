@@ -131,6 +131,18 @@
   `default-platform` 只在上传的 `of()` 生效——读写两条路口径不一致，这是最容易踩的坑
 - 读取前先 `exists`/HEAD 再写响应字节：响应一旦开始输出，就没法再返回 JSON 错误
 
+## 全量去本地化（2026-11-05，commit 3f83050）
+- **服务器不再保存任何用户文件**。通用上传（头像、富文本图、Excel 导入提取图、导出文件）也走 OSS，
+  统一门面 `com.xinyi.common.utils.file.OssFileService`；`ruoyi.profile` 已从配置和代码中删除
+- 静态工具类（`FileUploadUtils`/`FileUtils`/`ImageUtils`/`ExcelUtil`）通过
+  `SpringUtils.getBean(OssFileService.class)` 转发，不是自己持有 bean
+- **ACL 必须分两类**：通用上传 `public-read`（地址长期存库、直接喂 `<img src>`，签名会过期→头像天天裂）；
+  业务影像私有 + 短链。Bucket 整体保持私有，但**必须关闭「阻止公共访问」**，否则 public-read 上传报 AccessDenied
+- `/profile/**` 保留为**读 OSS 的兼容层**（`ProfileResourceController`），历史相对地址仍能显示；
+  它不是本地目录映射，`ResourcesConfig` 里那条 `file:` 映射已删
+- `/common/download` 的 `checkAllowDownload` 必须传 `FileUtils.getName(url)`：完整 URL 带 query 会被判非法
+- **endpoint 必须公网节点**：短链由该节点签出，`-internal` 会让手机端打不开图片（现象：上传成功、图片全白）
+
 ## 版本管理约定（2026-11-05 用户明确要求）
 - **每完成一次大修改就立刻提交**，不要攒着；提交描述**一律用中文**
 - 一次提交只做一件事：工作区同时积压多批不相干改动时，按主题分批 `git add` 再分别提交，
