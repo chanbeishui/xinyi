@@ -1,7 +1,7 @@
 <template>
   <RongliPage
     title="系统配置"
-    subtitle="预约派单分钟数可配；付款有效期固定30分钟，安全约束不能随意关闭。"
+    subtitle="预约派单分钟数可配；短信频控与订阅消息跳转按业务口径维护；付款有效期固定30分钟，安全约束不能随意关闭。"
   >
     <template #actions>
       <el-button @click="openPlan">预览已有预约重算</el-button>
@@ -78,6 +78,71 @@
         </div>
       </section>
     </div>
+
+    <section class="rl-panel">
+      <div class="rl-panel__head">
+        <h3>短信频控与订阅消息跳转</h3>
+        <span class="rl-muted">通道凭据在「第三方服务」维护，这里只调业务口径</span>
+      </div>
+      <div class="rl-panel__body">
+        <div class="rl-grid rl-grid--2">
+          <div>
+            <el-form label-position="top" class="rl-form-grid">
+              <el-form-item label="验证码有效期（秒）">
+                <el-input v-model="form.smsCodeExpireSeconds" type="number" />
+              </el-form-item>
+              <el-form-item label="同号重发间隔（秒）">
+                <el-input v-model="form.smsResendSeconds" type="number" />
+              </el-form-item>
+              <el-form-item label="单号每日上限（次）">
+                <el-input v-model="form.smsDailyLimit" type="number" />
+              </el-form-item>
+            </el-form>
+            <p class="rl-hint">
+              有效期 60~1800 秒，重发间隔 10~600 秒，单号每日 1~50 次。
+              超出范围保存会被拒绝——运行时不会静默改成别的值，避免页面与生效值不一致。
+            </p>
+            <div class="rl-kv">
+              <div><span>短信通道</span><b>{{ effective['rongli.sms.provider'] || 'ALIYUN' }}</b></div>
+              <div><span>通道状态</span>
+                <b>
+                  <span class="rl-tag rl-tag--plain" :class="effective['rongli.sms.enabled'] ? 'rl-tag--green' : 'rl-tag--amber'">
+                    {{ effective['rongli.sms.enabled'] ? '已启用' : '未启用' }}
+                  </span>
+                </b>
+              </div>
+            </div>
+          </div>
+          <div>
+            <el-form label-position="top" class="rl-form-grid">
+              <el-form-item label="点开后跳转页面">
+                <el-input v-model="form.subscribePage" placeholder="pages/index/index" />
+              </el-form-item>
+              <el-form-item label="跳转的小程序版本">
+                <el-select v-model="form.subscribeMiniprogramState" style="width: 100%">
+                  <el-option label="正式版 formal" value="formal" />
+                  <el-option label="体验版 trial" value="trial" />
+                  <el-option label="开发版 developer" value="developer" />
+                </el-select>
+              </el-form-item>
+              <el-form-item label="模板字段映射（JSON）">
+                <el-input
+                  v-model="form.subscribeFields"
+                  type="textarea"
+                  :rows="3"
+                  placeholder='{"thing1":"content","time2":"now"}'
+                />
+              </el-form-item>
+            </el-form>
+            <p class="rl-hint">
+              字段映射把微信模板占位符（thing1 / time2）映射到内部取值来源，可选值
+              <code>content</code>（消息正文）、<code>now</code>（当前时间）、<code>scene</code>（场景名）。
+              模板 ID 本身在「第三方服务 → 订阅消息模板」里维护。
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
 
     <section class="rl-panel">
       <div class="rl-panel__head">
@@ -166,7 +231,13 @@ const form = reactive({
   radiusStepsKm: '',
   totalMinutes: '',
   locationFreshSeconds: '',
-  termsVersion: ''
+  termsVersion: '',
+  smsCodeExpireSeconds: '',
+  smsResendSeconds: '',
+  smsDailyLimit: '',
+  subscribePage: '',
+  subscribeMiniprogramState: 'formal',
+  subscribeFields: ''
 })
 
 const plan = ref<any>({})
@@ -192,6 +263,12 @@ async function load() {
   form.totalMinutes = String(e['rongli.dispatch.totalMinutes'] ?? '')
   form.locationFreshSeconds = String(e['rongli.driver.locationFreshSeconds'] ?? '')
   form.termsVersion = String(e['rongli.service.termsVersion'] ?? '')
+  form.smsCodeExpireSeconds = String(e['rongli.sms.codeExpireSeconds'] ?? '')
+  form.smsResendSeconds = String(e['rongli.sms.resendSeconds'] ?? '')
+  form.smsDailyLimit = String(e['rongli.sms.dailyLimit'] ?? '')
+  form.subscribePage = String(e['rongli.subscribe.page'] ?? '')
+  form.subscribeMiniprogramState = String(e['rongli.subscribe.miniprogramState'] || 'formal')
+  form.subscribeFields = String(e['rongli.subscribe.fields'] ?? '')
 }
 
 function metersToKm(v: any) {
@@ -205,6 +282,20 @@ function kmToMeters(v: string) {
 }
 
 async function save() {
+  const fields = String(form.subscribeFields || '').trim()
+  if (fields) {
+    let parsed: any
+    try {
+      parsed = JSON.parse(fields)
+    } catch (e) {
+      ElMessage.warning('模板字段映射不是合法 JSON')
+      return
+    }
+    if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) {
+      ElMessage.warning('模板字段映射必须是 JSON 对象，例如 {"thing1":"content"}')
+      return
+    }
+  }
   saving.value = true
   try {
     await saveBusinessConfig({
@@ -219,9 +310,15 @@ async function save() {
         .join(','),
       totalMinutes: form.totalMinutes,
       locationFreshSeconds: form.locationFreshSeconds,
-      termsVersion: form.termsVersion
+      termsVersion: form.termsVersion,
+      smsCodeExpireSeconds: form.smsCodeExpireSeconds,
+      smsResendSeconds: form.smsResendSeconds,
+      smsDailyLimit: form.smsDailyLimit,
+      subscribePage: form.subscribePage,
+      subscribeMiniprogramState: form.subscribeMiniprogramState,
+      subscribeFields: fields
     })
-    ElMessage.success('已保存，仅影响新订单')
+    ElMessage.success('已保存：派单参数只影响新订单，短信频控与订阅跳转立即生效')
     await load()
   } finally {
     saving.value = false

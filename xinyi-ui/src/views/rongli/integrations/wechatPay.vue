@@ -18,6 +18,7 @@ const fields = [
     hint: '从已登记的小程序公共凭据中选择；不能拿另一个 AppID 的 OpenID 发起支付' },
   { key: 'merchantCertificateSerial', label: '商户证书序列号', max: 128, hint: '与商户签名私钥配套，16~64 位十六进制' },
   { key: 'verificationMode', label: '验签方式', type: 'select',
+    hint: '新接入选「微信支付公钥」；存量商户选「平台证书」后，到「发布历史与发送诊断 → 通道自检」点“拉取平台证书”（证书由微信下发并会轮换，不需要手工粘贴）',
     options: [
       { value: 'WECHATPAY_PUBLIC_KEY', label: '微信支付公钥（新接入默认）' },
       { value: 'PLATFORM_CERT', label: '平台证书（存量兼容）' }
@@ -28,7 +29,11 @@ const fields = [
   { key: 'merchantCertificatePem', label: '商户证书 PEM', type: 'textarea', rows: 4, max: 32768,
     hint: '可选，用于校验序列号与私钥是否匹配；私钥本身在下方凭据区单独提交' },
   { key: 'bindingAcknowledged', label: '已确认商户绑定', type: 'switch',
-    hint: '在微信商户平台确认该 AppID 与商户号已绑定后才勾选' }
+    hint: '在微信商户平台确认该 AppID 与商户号已绑定后才勾选' },
+  { key: 'paymentNotifyUrl', label: '支付回调地址', max: 512,
+    hint: '必须是公网可达的 https；留空表示沿用当前生效值，不会把线上回调清空' },
+  { key: 'refundNotifyUrl', label: '退款回调地址', max: 512,
+    hint: '留空时自动取支付回调地址并把末段替换为 /refund' }
 ]
 
 const secretSlots = [
@@ -44,6 +49,8 @@ const defaults = {
   wechatPayPublicKeyId: '',
   wechatPayPublicKeyPem: '',
   merchantCertificatePem: '',
-  bindingAcknowledged: false
+  bindingAcknowledged: false,
+  paymentNotifyUrl: '',
+  refundNotifyUrl: ''
 }
 </script>

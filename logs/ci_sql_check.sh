@@ -2,9 +2,10 @@
 # 数据库初始化与迁移的幂等校验（CI 与本地共用同一份逻辑）。
 #
 # 校验内容：
-#   1. 基础脚本 ry_20260417.sql + 全部 migration_*.sql 能按序执行成功
+#   1. 基础脚本 ry_20260417.sql + quartz.sql + 全部 migration_*.sql 能按序执行成功
+#      （quartz.sql 必须单独执行：基础脚本不含 QRTZ_* 表，漏了定时任务模块直接报错）
 #   2. 同一批迁移脚本**再执行一遍**仍然成功（幂等）
-#   3. 结构断言：vi_* 表 >= 66；侧栏四分组挂在 2100 目录下
+#   3. 结构断言：vi_* 表 >= 66；QRTZ_* 表 = 11；侧栏四分组挂在 2100 目录下
 #
 # 用法（本地，起一个空库）：
 #   mysql -h127.0.0.1 -P3307 -uroot -p... -e "CREATE DATABASE xinyi_ci"
@@ -34,7 +35,7 @@ echo "== 0/4 docker-compose 是否挂载了全部迁移脚本"
 # 极易在新增迁移后忘记同步（本仓库已发生过：V6.4 的六个迁移与 20261022_06 一度全缺）。
 if [ -f docker-compose.yml ]; then
   missing=""
-  for f in $(ls sql/migration_*.sql | sort); do
+  for f in $(ls sql/migration_*.sql sql/quartz.sql 2>/dev/null | sort); do
     if ! grep -q "$(basename "$f")" docker-compose.yml; then
       missing="$missing $f"
     fi
@@ -53,6 +54,16 @@ if run_sql "$DB_NAME" < sql/ry_20260417.sql > /dev/null 2>/tmp/ci_sql_err.txt; t
   echo "  [OK]   sql/ry_20260417.sql"
 else
   echo "  [FAIL] sql/ry_20260417.sql"; grep -v Warning /tmp/ci_sql_err.txt | head -3; fail=1
+fi
+
+# quartz.sql 不在 migration_* 里，历史上 CI 与 docker-compose 都漏过它，
+# 结果「定时任务」模块在全新环境下一启动就报表不存在。这里显式执行并断言。
+if [ -f sql/quartz.sql ]; then
+  if run_sql "$DB_NAME" < sql/quartz.sql > /dev/null 2>/tmp/ci_sql_err.txt; then
+    echo "  [OK]   sql/quartz.sql"
+  else
+    echo "  [FAIL] sql/quartz.sql"; grep -v Warning /tmp/ci_sql_err.txt | head -3; fail=1
+  fi
 fi
 
 for f in $(ls sql/migration_*.sql | sort); do
@@ -76,6 +87,7 @@ echo "== 3/4 结构断言"
 vi=$(run_sql -N -B -e "SELECT COUNT(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA='$DB_NAME' AND TABLE_NAME LIKE 'vi\\_%'" 2>/dev/null)
 groups=$(run_sql "$DB_NAME" -N -B -e "SELECT COUNT(*) FROM sys_menu WHERE parent_id=2100 AND path IN ('business','people','inspect','runtime') AND menu_type='M'" 2>/dev/null)
 visible=$(run_sql "$DB_NAME" -N -B -e "SELECT COUNT(*) FROM sys_menu WHERE parent_id IN (2190,2191,2192,2193) AND visible='0' AND menu_type='C'" 2>/dev/null)
+qrtz=$(run_sql -N -B -e "SELECT COUNT(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA='$DB_NAME' AND TABLE_NAME LIKE 'QRTZ%'" 2>/dev/null)
 
 check_ge() { if [ "$2" -ge "$3" ]; then echo "  [OK]   $1=$2 (需 >= $3)"; else echo "  [FAIL] $1=$2 (需 >= $3)"; fail=1; fi; }
 check_eq() { if [ "$2" -eq "$3" ]; then echo "  [OK]   $1=$2 (需 = $3)"; else echo "  [FAIL] $1=$2 (需 = $3)"; fail=1; fi; }
@@ -84,6 +96,7 @@ check_eq() { if [ "$2" -eq "$3" ]; then echo "  [OK]   $1=$2 (需 = $3)"; else e
 # V6.4 的 vi_notification_delivery 不覆盖该用例）。2026-10-23 已退役
 # vi_employee_binding_request / vi_employee_binding_credential 两张表。
 check_ge "vi_* 表数" "${vi:-0}" 80
+check_eq "QRTZ_* 表数" "${qrtz:-0}" 11
 check_eq "侧栏分组数" "${groups:-0}" 4
 # 20 = 业务 6 + 人员 11 + 巡检 9 + 运行时 5 中的可见 C 页；此前写 21 是被开发库的
 # 分组漂移带偏的（2122/2124 被手工挪到业务组），已由 migration_20261023_03 对齐。

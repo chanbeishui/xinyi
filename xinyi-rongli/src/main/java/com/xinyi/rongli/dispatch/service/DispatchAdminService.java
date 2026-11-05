@@ -34,6 +34,7 @@ import com.xinyi.rongli.common.support.Codes;
 import com.xinyi.rongli.common.support.Crypto;
 import com.xinyi.rongli.common.support.Json;
 import com.xinyi.rongli.common.support.Row;
+import com.xinyi.rongli.common.support.SubscribeSettings;
 import com.xinyi.rongli.common.support.ViTime;
 import com.xinyi.rongli.admin.mapper.AdminOpsMapper;
 
@@ -189,6 +190,14 @@ public class DispatchAdminService
         allowed.put("subscribeTemplateAssignmentAccepted", "rongli.subscribe.template.assignmentAccepted");
         allowed.put("subscribeTemplateResultReady", "rongli.subscribe.template.resultReady");
         allowed.put("subscribeTemplateRefundDone", "rongli.subscribe.template.refundDone");
+        // 订阅消息跳转与字段映射：模板 ID 在「第三方服务」维护，跳转行为属于业务口径
+        allowed.put("subscribePage", "rongli.subscribe.page");
+        allowed.put("subscribeMiniprogramState", "rongli.subscribe.miniprogramState");
+        allowed.put("subscribeFields", "rongli.subscribe.fields");
+        // 短信频控：通道凭据在「第三方服务」维护，发送节流是业务口径
+        allowed.put("smsCodeExpireSeconds", "rongli.sms.codeExpireSeconds");
+        allowed.put("smsResendSeconds", "rongli.sms.resendSeconds");
+        allowed.put("smsDailyLimit", "rongli.sms.dailyLimit");
         allowed.put("contentIntro", "rongli.content.intro");
         allowed.put("contentSupport", "rongli.content.support");
         for (Map.Entry<String, String> e : allowed.entrySet())
@@ -240,6 +249,38 @@ public class DispatchAdminService
                     throw ApiException.validation("订阅消息开关只能是 true 或 false");
                 }
             }
+            else if ("rongli.subscribe.page".equals(e.getValue()))
+            {
+                // 订阅消息点开后的落地页：必须是小程序内绝对路径，不能带前导斜杠或域名
+                if (!text.matches("^pages/[A-Za-z0-9_\\-]+(/[A-Za-z0-9_\\-]+)+$"))
+                {
+                    throw ApiException.validation("订阅消息跳转页需形如 pages/index/index（小程序内路径，不带前导斜杠）");
+                }
+            }
+            else if ("rongli.subscribe.miniprogramState".equals(e.getValue()))
+            {
+                if (!SubscribeSettings.STATES.contains(text))
+                {
+                    throw ApiException.validation("订阅消息跳转版本只能是 "
+                            + String.join(" / ", SubscribeSettings.STATES));
+                }
+            }
+            else if ("rongli.subscribe.fields".equals(e.getValue()))
+            {
+                validateSubscribeFields(text);
+            }
+            else if ("rongli.sms.codeExpireSeconds".equals(e.getValue()))
+            {
+                requireIntInRange(e.getKey(), text, 60, 1800, "验证码有效期需在 60~1800 秒之间");
+            }
+            else if ("rongli.sms.resendSeconds".equals(e.getValue()))
+            {
+                requireIntInRange(e.getKey(), text, 10, 600, "同号重发间隔需在 10~600 秒之间");
+            }
+            else if ("rongli.sms.dailyLimit".equals(e.getValue()))
+            {
+                requireIntInRange(e.getKey(), text, 1, 50, "单号每日上限需在 1~50 次之间");
+            }
             else
             {
                 int n;
@@ -290,6 +331,66 @@ public class DispatchAdminService
                     });
         }
         return dispatchConfig();
+    }
+    /**
+     * 短信频控整数项校验：超范围直接拒绝，而不是像运行时那样静默 clamp——
+     * 否则管理员看到的保存值与实际生效值不一致，排查时会被误导。
+     */
+    private void requireIntInRange(String key, String text, int min, int max, String message)
+    {
+        int n;
+        try
+        {
+            n = Integer.parseInt(text);
+        }
+        catch (NumberFormatException ex)
+        {
+            throw ApiException.validation(key + " 必须是整数");
+        }
+        if (n < min || n > max)
+        {
+            throw ApiException.validation(message);
+        }
+    }
+
+    /**
+     * 订阅消息字段映射校验：模板占位符 → 内部取值来源。
+     *
+     * <p>微信要求 data 里的键与模板定义一致，值有长度限制；这里只校验键名形态与
+     * 取值来源是否受支持，避免运营手写 JSON 时把发送链路写坏。</p>
+     */
+    private void validateSubscribeFields(String text)
+    {
+        JSONObject json;
+        try
+        {
+            json = JSON.parseObject(text);
+        }
+        catch (RuntimeException ex)
+        {
+            throw ApiException.validation("字段映射必须是 JSON 对象，例如 {\"thing1\":\"content\"}");
+        }
+        if (json == null || json.isEmpty())
+        {
+            throw ApiException.validation("字段映射不能为空");
+        }
+        if (json.size() > 10)
+        {
+            throw ApiException.validation("字段映射最多 10 项（微信单个模板的字段数上限）");
+        }
+        for (Map.Entry<String, Object> item : json.entrySet())
+        {
+            if (!SubscribeSettings.FIELD_KEY.matcher(item.getKey()).matches())
+            {
+                throw ApiException.validation("模板字段名不合法：" + item.getKey() + "（应形如 thing1 / time2）");
+            }
+            String source = String.valueOf(item.getValue());
+            if (!SubscribeSettings.FIELD_SOURCES.contains(source))
+            {
+                throw ApiException.validation("字段 " + item.getKey() + " 的取值来源只能是 "
+                        + String.join(" / ", SubscribeSettings.FIELD_SOURCES));
+            }
+        }
     }
     public Map<String, Object> previewDispatchPlan(Integer leadMinutes)
     {

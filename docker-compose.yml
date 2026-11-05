@@ -23,6 +23,8 @@ services:
     volumes:
       - xinyi-mysql-data:/var/lib/mysql
       - ./sql/ry_20260417.sql:/docker-entrypoint-initdb.d/00_base.sql:ro
+      # quartz.sql 必须单独执行：基础脚本不含 QRTZ_* 表，漏了「定时任务」模块直接报错
+      - ./sql/quartz.sql:/docker-entrypoint-initdb.d/01_quartz.sql:ro
       - ./sql/migration_20260804_digital_twin_menu.sql:/docker-entrypoint-initdb.d/05_digital_twin.sql:ro
       - ./sql/migration_20260915_data_screen_menu.sql:/docker-entrypoint-initdb.d/06_data_screen.sql:ro
       - ./sql/migration_20261021_01_rongli_vi_business_tables.sql:/docker-entrypoint-initdb.d/10_vi_business.sql:ro
@@ -40,7 +42,13 @@ services:
       - ./sql/migration_20261023_04_rongli_identity_v64_columns.sql:/docker-entrypoint-initdb.d/43_identity_v64_columns.sql:ro
       - ./sql/migration_20261023_05_rongli_retire_binding_flow.sql:/docker-entrypoint-initdb.d/44_retire_binding_flow.sql:ro
       - ./sql/migration_20261023_06_rongli_payment_identity.sql:/docker-entrypoint-initdb.d/45_payment_identity.sql:ro
+      - ./sql/migration_20261103_01_rongli_route_name_unique.sql:/docker-entrypoint-initdb.d/46_route_name_unique.sql:ro
+      - ./sql/migration_20261103_02_rongli_retire_legacy_config_pages.sql:/docker-entrypoint-initdb.d/47_retire_legacy_config.sql:ro
+      - ./sql/migration_20261103_03_purge_acceptance_integration_drafts.sql:/docker-entrypoint-initdb.d/48_purge_acceptance_drafts.sql:ro
+      - ./sql/migration_20261103_04_rongli_business_config_edit_perm.sql:/docker-entrypoint-initdb.d/49_business_config_edit_perm.sql:ro
       - ./sql/migration_multi_dept_authorization.sql:/docker-entrypoint-initdb.d/50_multi_dept_authz.sql:ro
+      # docx 的 MIME 有 71 字符，超过 vi_file.mime_type 原有的 64
+      - ./sql/migration_20261104_01_vi_file_mime_type_widen.sql:/docker-entrypoint-initdb.d/51_vi_file_mime_widen.sql:ro
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-pxinyi_dev"]
       interval: 10s

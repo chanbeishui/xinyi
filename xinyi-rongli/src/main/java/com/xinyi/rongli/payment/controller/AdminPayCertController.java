@@ -27,7 +27,7 @@ public class AdminPayCertController
 
     /** 只读预览：能看到证书清单即说明商户凭据与 APIv3 密钥可用 */
     @GetMapping
-    @PreAuthorize("@ss.hasPermi('biz:config:payment')")
+    @PreAuthorize("@ss.hasAnyPermi('biz:config:edit,biz:config:payment')")
     public Map<String, Object> preview()
     {
         return payCertService.preview();
@@ -39,7 +39,7 @@ public class AdminPayCertController
      * <p>{@code persist=true} 时写入 platformCert 与 platformSerialNo，回调验签立即使用新证书。</p>
      */
     @PostMapping("/refresh")
-    @PreAuthorize("@ss.hasPermi('biz:config:payment')")
+    @PreAuthorize("@ss.hasAnyPermi('biz:config:edit,biz:config:payment')")
     @Log(title = "微信支付平台证书", businessType = BusinessType.UPDATE)
     public Map<String, Object> refresh(@RequestBody(required = false) Map<String, Object> body)
     {

@@ -108,11 +108,11 @@ public record PaySettings(
         }
         if (!blank(platformCertPem) && publicKey() == null)
         {
-            missing.add("微信支付平台证书（内容不是合法的 X.509 PEM）");
+            missing.add("验签材料（微信支付公钥或平台证书的 PEM 无法解析）");
         }
         if (verifyNotify && publicKey() == null)
         {
-            missing.add("微信支付平台证书（已开启回调验签，必须提供）");
+            missing.add("验签材料（已开启回调验签，必须提供微信支付公钥或平台证书）");
         }
         if (blank(description) || description.trim().length() > 127)
         {
@@ -148,10 +148,38 @@ public record PaySettings(
         return parsePrivateKey(privateKeyPem);
     }
 
-    /** 解析微信支付平台证书公钥；未配置或非法返回 null */
+    /** 解析验签公钥；未配置或非法返回 null */
     public PublicKey publicKey()
     {
-        return parseCertificate(platformCertPem);
+        PublicKey fromCert = parseCertificate(platformCertPem);
+        return fromCert != null ? fromCert : parsePublicKey(platformCertPem);
+    }
+
+    /**
+     * 解析微信支付公钥（SPKI PEM，{@code -----BEGIN PUBLIC KEY-----}）。
+     *
+     * <p>新接入的商户默认走「微信支付公钥」验签，不再下载平台证书；两种材料都放在
+     * {@code platformCertPem} 这一个槽里，由本方法在证书解析失败后兜底，
+     * 这样 {@code PaySettings} 的结构不用跟着验签方式变化。</p>
+     */
+    public static PublicKey parsePublicKey(String pem)
+    {
+        if (blank(pem) || !pem.contains("PUBLIC KEY"))
+        {
+            return null;
+        }
+        try
+        {
+            String body = pem.replace("-----BEGIN PUBLIC KEY-----", "")
+                    .replace("-----END PUBLIC KEY-----", "")
+                    .replaceAll("\\s", "");
+            byte[] der = Base64.getDecoder().decode(body);
+            return KeyFactory.getInstance("RSA").generatePublic(new java.security.spec.X509EncodedKeySpec(der));
+        }
+        catch (Exception e)
+        {
+            return null;
+        }
     }
 
     public static PrivateKey parsePrivateKey(String pem)

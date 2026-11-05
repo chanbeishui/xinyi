@@ -59,6 +59,9 @@ public class IntegrationConfigService
     @Autowired
     private ISysConfigService configService;
 
+    @Autowired
+    private RuntimeProjection projection;
+
     // ================================================================ 列表与详情
 
     public Map<String, Object> list(String kind, String ownerDeptId, String env, Integer pageNum, Integer pageSize)
@@ -347,6 +350,8 @@ public class IntegrationConfigService
         }
         log.info("third-party config published profile={} kind={} revision={} by={}", profileId, kind, revisionId,
                 currentUserId());
+        // 生效值投影到 sys_config：支付签名/短信下发/小程序登录仍读那一层，人工不必在两处各填一遍
+        projection.project(profile, revision);
         Map<String, Object> out = new LinkedHashMap<>();
         out.put("publicationId", String.valueOf(Row.of(pub).lng("id")));
         out.put("profileId", String.valueOf(profileId));
@@ -397,6 +402,8 @@ public class IntegrationConfigService
         {
             throw ApiException.conflict("VI_CONFIG_VERSION_CONFLICT", "回滚时版本已变化，请重新加载");
         }
+        // 回滚是"把旧版本重新发布一次"，运行时快照必须同步回到旧值
+        projection.project(profile, revision);
         Map<String, Object> out = new LinkedHashMap<>();
         out.put("publicationId", String.valueOf(Row.of(pub).lng("id")));
         out.put("activeRevisionId", String.valueOf(targetRevisionId));
@@ -670,8 +677,11 @@ public class IntegrationConfigService
                     row.put("fingerprint", Crypto.hex(Crypto.sha256(Crypto.hex(Crypto.sha256(value)).getBytes())).substring(0, 16));
                     row.put("expiresAt", null);
                     row.put("createdBy", currentUserId());
-                    mapper.insertSecret(row);
+                    // 必须先退役旧凭据再写新值：retireSecrets 会把该槽位的 ACTIVE 凭据全部置为 RETIRED，
+                    // 一旦放在插入之后，刚写入的新凭据会被同一条语句一起退役掉，
+                    // 表现为"保存成功、校验永远报凭据缺失"，档案永远发布不出去。
                     mapper.retireSecrets(profileId, slot, "RETIRED", currentUserId(), "已替换为新版本：" + reason);
+                    mapper.insertSecret(row);
                     slots.add(slot);
                 }
                 case "CLEAR" -> {

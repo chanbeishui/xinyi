@@ -34,6 +34,8 @@ import com.xinyi.rongli.common.support.Codes;
 import com.xinyi.rongli.common.support.Crypto;
 import com.xinyi.rongli.common.support.Json;
 import com.xinyi.rongli.common.support.Row;
+import com.xinyi.rongli.common.support.SmsSettings;
+import com.xinyi.rongli.common.support.SubscribeSettings;
 import com.xinyi.rongli.common.support.ViTime;
 import com.xinyi.rongli.admin.mapper.AdminOpsMapper;
 import com.xinyi.rongli.admin.mapper.GovernanceMapper;
@@ -398,15 +400,24 @@ public class OpsAdminService
         effective.put("rongli.content.support",
                 config.get("rongli.content.support", "工作时段由运营确认后公布。"));
         effective.put("rongli.payment.channel", config.mockPayment() ? "MOCK" : "WECHAT");
-        effective.put("rongli.sms.enabled", config.getBool("rongli.sms.enabled", false));
-        effective.put("rongli.sms.provider", config.get("rongli.sms.provider", "ALIYUN"));
-        effective.put("rongli.subscribe.enabled", config.getBool("rongli.subscribe.enabled", true));
+        // 短信频控：走 SmsSettings 的 clamp 口径，让页面显示的就是真正生效的值
+        SmsSettings sms = SmsSettings.load(config, crypto);
+        effective.put("rongli.sms.enabled", sms.enabled());
+        effective.put("rongli.sms.provider", sms.provider());
+        effective.put("rongli.sms.codeExpireSeconds", sms.effectiveExpire());
+        effective.put("rongli.sms.resendSeconds", sms.effectiveResend());
+        effective.put("rongli.sms.dailyLimit", sms.effectiveDailyLimit());
+        SubscribeSettings subscribe = SubscribeSettings.load(config);
+        effective.put("rongli.subscribe.enabled", subscribe.enabled());
+        effective.put("rongli.subscribe.page", subscribe.effectivePage());
+        effective.put("rongli.subscribe.miniprogramState", subscribe.effectiveState());
+        effective.put("rongli.subscribe.fields", subscribe.fieldsJson());
         effective.put("rongli.handover.mutualConfirmTypes",
                 String.join(",", config.handoverMutualConfirmTypes()));
         view.put("effective", effective);
         view.put("stored", adminOpsMapper.listRongliConfigs());
         view.put("paymentChannelLocked", false);
-        view.put("hint", "支付通道与商户参数在「系统设置 → 微信支付」维护；短信通道、订阅消息各有独立配置页，保存后即时生效。");
+        view.put("hint", "第三方凭据（微信支付商户、短信通道、订阅消息模板、小程序公共凭据）统一在「第三方服务」维护，发布后即时生效；此处只维护业务口径参数。");
         return view;
     }
     public Map<String, Object> notificationTemplates()

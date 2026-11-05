@@ -142,6 +142,62 @@
         </el-table>
         <el-empty v-if="!recipientLoading && !recipients.length" description="还没有登记联调白名单" />
       </el-tab-pane>
+
+      <!-- ================================================== 通道自检 -->
+      <el-tab-pane label="通道自检" name="readiness">
+        <div class="bar">
+          <el-button type="primary" size="small" :loading="readinessLoading" @click="loadReadiness(probeCallback)">
+            重新体检
+          </el-button>
+          <el-checkbox v-model="probeCallback" @change="loadReadiness(probeCallback)">
+            同时探测支付回调地址（会发起一次外部请求）
+          </el-checkbox>
+          <el-divider direction="vertical" />
+          <span class="hint">联调模拟</span>
+          <el-switch v-model="mockMode" :loading="mockLoading" @change="toggleMock" />
+          <span class="hint">{{ readiness.mockSource || '' }}</span>
+        </div>
+
+        <el-alert v-if="readiness.blockers && readiness.blockers.length" type="error" :closable="false" style="margin-top: 12px">
+          <template #title>仍有 {{ readiness.blockers.length }} 项会阻断真实收款 / 下发</template>
+          <div v-for="(b, i) in readiness.blockers" :key="i">{{ b }}</div>
+        </el-alert>
+        <el-alert v-else-if="readiness.ready" type="success" :closable="false" style="margin-top: 12px"
+                  :title="readiness.hint || '三通道凭据均已就绪'" />
+
+        <el-table v-loading="readinessLoading" :data="readiness.items || []" size="small" style="margin-top: 12px">
+          <el-table-column label="通道" min-width="200">
+            <template #default="{ row }">{{ row.label }}</template>
+          </el-table-column>
+          <el-table-column label="状态" width="100">
+            <template #default="{ row }">
+              <el-tag size="small" :type="row.ready ? 'success' : 'danger'">{{ row.ready ? '就绪' : '未就绪' }}</el-tag>
+            </template>
+          </el-table-column>
+          <el-table-column label="缺什么" min-width="260">
+            <template #default="{ row }">
+              <span v-if="!row.missing || !row.missing.length">—</span>
+              <span v-else>{{ row.missing.join('、') }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="下一步" min-width="260" prop="action" show-overflow-tooltip />
+          <el-table-column label="受控动作" width="160">
+            <template #default="{ row }">
+              <el-button v-if="row.key === 'payment'" link type="primary" size="small"
+                         :loading="certLoading" @click="pullPlatformCert">拉取平台证书</el-button>
+              <span v-else class="hint">—</span>
+            </template>
+          </el-table-column>
+        </el-table>
+
+        <div v-if="readiness.warnings && readiness.warnings.length" class="hint" style="margin-top: 8px">
+          <div v-for="(w, i) in readiness.warnings" :key="i">提醒：{{ w }}</div>
+        </div>
+        <div class="hint" style="margin-top: 8px">
+          平台证书只在验签方式选「平台证书（存量兼容）」时才需要：它由微信下发且会轮换，
+          所以不让人工粘贴，点上面的按钮用现有商户凭据直接拉取。选「微信支付公钥（新接入默认）」时不需要。
+        </div>
+      </el-tab-pane>
     </el-tabs>
 
     <el-dialog v-model="recipientDialog" title="新增联调白名单" width="520px">
@@ -190,8 +246,9 @@
 import { onMounted, reactive, ref } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import {
-  addTestRecipient, listDeliveries, listProfiles, listPublications, listTemplatePublications,
-  listTemplates, listTestRecipients, queryReceipt, retryDelivery, revokeTestRecipient
+  addTestRecipient, getChannelReadiness, listDeliveries, listProfiles, listPublications,
+  listTemplatePublications, listTemplates, listTestRecipients, queryReceipt,
+  refreshPlatformCert, retryDelivery, revokeTestRecipient, setMockMode
 } from '@/api/rongli/integration'
 
 const tab = ref('publish')
@@ -382,11 +439,57 @@ async function doRevoke(row: any) {
   await loadRecipients()
 }
 
+/* ---------------- 通道自检 ---------------- */
+const readiness = ref<any>({})
+const readinessLoading = ref(false)
+const probeCallback = ref(false)
+const mockMode = ref(false)
+const mockLoading = ref(false)
+const certLoading = ref(false)
+
+async function loadReadiness(probe = false) {
+  readinessLoading.value = true
+  try {
+    readiness.value = (await getChannelReadiness(probe)) || {}
+    mockMode.value = !!readiness.value.mock
+  } finally {
+    readinessLoading.value = false
+  }
+}
+
+async function toggleMock(value: any) {
+  mockLoading.value = true
+  try {
+    const res = await setMockMode(!!value)
+    ElMessage.success(res?.message || '已切换联调模式')
+    await loadReadiness(probeCallback.value)
+  } catch (e) {
+    // 失败时把开关拨回去，避免页面显示的状态与实际不一致
+    mockMode.value = !value
+  } finally {
+    mockLoading.value = false
+  }
+}
+
+async function pullPlatformCert() {
+  certLoading.value = true
+  try {
+    const res = await refreshPlatformCert(true)
+    ElMessage.success(res?.message || '已写入平台证书，回调验签立即生效')
+    await loadReadiness(probeCallback.value)
+  } catch (e: any) {
+    ElMessage.error(e?.message || '拉取失败：请先在「微信支付商户」补齐商户号、证书序列号、私钥与 APIv3 密钥')
+  } finally {
+    certLoading.value = false
+  }
+}
+
 onMounted(async () => {
   await loadTargetOptions()
   await loadDeliveries()
   await loadRecipients()
   await loadAppProfiles()
+  await loadReadiness()
 })
 </script>
 

@@ -227,8 +227,12 @@ public final class IntegrationRules
         }
         if ("PLATFORM_CERT".equals(mode) && list(c, "platformCertificates").isEmpty())
         {
-            error(issues, "platformCertificates", "VI_CONFIG_INVALID",
-                    "平台证书模式必须提交有效平台证书；新商户默认使用公钥模式，不强制下载平台证书");
+            // 平台证书由微信下发且会自动轮换，不该要求运营手工下载粘贴。这里降级为提醒：
+            // 事务上先允许发布，证书由「通道自检」里的拉取动作写入运行时快照；
+            // 未拉取前回调验签会失败，通道体检会把它算成阻断项。
+            warn(issues, "platformCertificates", "VI_CONFIG_PLATFORM_CERT_PENDING",
+                    "平台证书模式未随档案提交证书：发布后请在「发布历史与发送诊断 → 通道自检」拉取平台证书，"
+                            + "未拉取前微信回调验签会失败、支付无法自动确认");
         }
         if (!bool(c, "bindingAcknowledged"))
         {

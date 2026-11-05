@@ -29,7 +29,7 @@ public class AdminChannelReadinessController
      * @param probe 传 true 时额外探测支付回调地址是否公网可达（会发起一次外部 GET）
      */
     @GetMapping
-    @PreAuthorize("@ss.hasAnyPermi('biz:config:payment,biz:config:sms,biz:config:subscribe')")
+    @PreAuthorize("@ss.hasAnyPermi('biz:config:query,biz:config:edit,biz:config:payment,biz:config:sms,biz:config:subscribe')")
     public Map<String, Object> report(@RequestParam(value = "probe", required = false, defaultValue = "false")
             boolean probe)
     {
@@ -38,7 +38,7 @@ public class AdminChannelReadinessController
 
     /** 切换服务端联调模式（写 rongli.mini.mock，保存即生效，无需重启） */
     @PutMapping("/mock")
-    @PreAuthorize("@ss.hasAnyPermi('biz:config:payment,biz:config:sms,biz:config:subscribe')")
+    @PreAuthorize("@ss.hasAnyPermi('biz:config:query,biz:config:edit,biz:config:payment,biz:config:sms,biz:config:subscribe')")
     @Log(title = "第三方联调模式", businessType = BusinessType.UPDATE)
     public Map<String, Object> setMock(@RequestBody Map<String, Object> body)
     {

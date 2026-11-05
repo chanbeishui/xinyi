@@ -110,3 +110,17 @@ export function registerOfflinePayment(data: any): Promise<any> {
 export function verifyOfflinePayment(proofId: string | number, data: any): Promise<any> {
   return request({ url: `/api/admin/offline-payments/${proofId}/verify`, method: 'post', data })
 }
+
+// ---------------------------------------------------------------- 通道自检
+/** 通道凭据体检；probe=true 时额外探测支付回调地址是否公网可达（服务端发起一次外部 GET） */
+export function getChannelReadiness(probe = false): Promise<any> {
+  return request({ url: '/api/admin/config/readiness', method: 'get', params: { probe } })
+}
+/** 切换服务端联调模式（写 rongli.mini.mock，保存即生效） */
+export function setMockMode(mock: boolean): Promise<any> {
+  return request({ url: '/api/admin/config/readiness/mock', method: 'put', data: { mock } })
+}
+/** 拉取微信支付平台证书；persist=true 时写入运行时快照，回调验签立即生效 */
+export function refreshPlatformCert(persist = true): Promise<any> {
+  return request({ url: '/api/admin/config/payment/platform-cert/refresh', method: 'post', data: { persist } })
+}

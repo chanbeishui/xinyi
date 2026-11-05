@@ -395,34 +395,6 @@ export function getBusinessConfig(): Promise<any> {
 export function saveBusinessConfig(data: any): Promise<any> {
   return request({ url: '/api/admin/config', method: 'put', data })
 }
-// ---------------------------------------------------------------- 支付 / 短信 / 订阅消息配置
-export function getPayConfig(): Promise<any> {
-  return request({ url: '/api/admin/config/payment', method: 'get' })
-}
-export function savePayConfig(data: any): Promise<any> {
-  return request({ url: '/api/admin/config/payment', method: 'put', data })
-}
-export function selfCheckPayConfig(): Promise<any> {
-  return request({ url: '/api/admin/config/payment/self-check', method: 'post' })
-}
-export function getSmsConfig(): Promise<any> {
-  return request({ url: '/api/admin/config/sms', method: 'get' })
-}
-export function saveSmsConfig(data: any): Promise<any> {
-  return request({ url: '/api/admin/config/sms', method: 'put', data })
-}
-export function testSmsConfig(phone: string): Promise<any> {
-  return request({ url: '/api/admin/config/sms/test', method: 'post', data: { phone } })
-}
-export function getSubscribeConfig(): Promise<any> {
-  return request({ url: '/api/admin/config/subscribe', method: 'get' })
-}
-export function saveSubscribeConfig(data: any): Promise<any> {
-  return request({ url: '/api/admin/config/subscribe', method: 'put', data })
-}
-export function selfCheckSubscribeConfig(): Promise<any> {
-  return request({ url: '/api/admin/config/subscribe/self-check', method: 'post' })
-}
 export function listPenalties(params: any): Promise<any> {
   return request({ url: '/api/admin/penalties', method: 'get', params })
 }
