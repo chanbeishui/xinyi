@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.security.MessageDigest;
+import java.time.format.DateTimeFormatter;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -45,6 +46,12 @@ public class MediaService
             "EVIDENCE_PHOTO", "LICENSE_PHOTO", "DRIVER_QUALIFICATION", "AVATAR", "AFTERSALE_EVIDENCE", "TRAINING_MEDIA");
 
     private static final Set<String> IMAGE_TYPES = Set.of("image/jpeg", "image/png", "image/webp");
+
+    /** 对象 key 里的日期目录格式，与框架层的 upload/avatar/download 保持同一套 yyyy/MM/dd */
+    private static final DateTimeFormatter KEY_DATE = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+
+    /** key 里订单段的最大长度，防止异常订单号把 key 撑过头 */
+    private static final int MAX_ORDER_SEGMENT = 40;
 
     @Autowired
     private MediaMapper mediaMapper;
@@ -106,8 +113,7 @@ public class MediaService
             case "image/webp" -> ".webp";
             default -> ".jpg";
         };
-        String objectKey = pz.toLowerCase() + "/" + ViTime.shanghaiDate(ViTime.now()) + "/"
-                + crypto.randomToken().substring(0, 24) + ext;
+        String objectKey = buildObjectKey(pz, orderNo, orderId, ext);
 
         Map<String, Object> row = new LinkedHashMap<>();
         row.put("uploaderAccountId", p.accountId);
@@ -403,6 +409,56 @@ public class MediaService
     {
         int i = objectKey == null ? -1 : objectKey.lastIndexOf('/');
         return i < 0 ? "" : objectKey.substring(0, i + 1);
+    }
+
+    /**
+     * 业务影像的对象 key：{@code 用途/[ord-订单号/]yyyy/MM/dd/用途_随机串.扩展名}。
+     *
+     * <p>三处刻意的设计：</p>
+     * <ul>
+     *   <li><b>订单号排在日期之前</b>。对象存储没有重命名，也不能按通配符筛「所有日期下的某订单」；
+     *       订单段靠前才能一次前缀删除清掉整单影像（{@code evidence_photo/ord-RL20261105001/}），
+     *       放到日期后面就只能一个日期一个日期地删。</li>
+     *   <li><b>日期统一 {@code yyyy/MM/dd}</b>。框架层（upload、avatar、download）本来就是这套，
+     *       影像原先用 {@code 2026-11-05}，同一个桶里两种层级风格，写清理脚本要兼容两套。</li>
+     *   <li><b>文件名带用途前缀 + 12 位随机串</b>。纯随机串在桶里完全看不出是什么，
+     *       带前缀便于人工排查；随机部分保证 key 不可枚举（订单号本身是可猜的）。</li>
+     * </ul>
+     *
+     * <p>订单号会被清洗成 {@code [A-Za-z0-9_-]}，清洗后为空退回订单 id，都没有就不带这一段——
+     * 头像、培训素材这类本来就不挂订单。</p>
+     */
+    private String buildObjectKey(String purpose, String orderNo, Long orderId, String ext)
+    {
+        String pz = purpose.toLowerCase();
+        StringBuilder key = new StringBuilder(pz).append('/');
+        String segment = orderSegment(orderNo, orderId);
+        if (segment != null)
+        {
+            key.append(segment).append('/');
+        }
+        key.append(ViTime.shanghaiDate(ViTime.now()).format(KEY_DATE)).append('/');
+        key.append(pz).append('_').append(crypto.randomToken(), 0, 12).append(ext);
+        return key.toString();
+    }
+
+    private String orderSegment(String orderNo, Long orderId)
+    {
+        // 只留 key 安全的字符；连字符在首尾会拼出 ord--xxx 这种难看的段，一并去掉
+        String safe = orderNo == null ? "" : orderNo.replaceAll("[^A-Za-z0-9_-]", "").replaceAll("^-+|-+$", "");
+        if (safe.isEmpty() && orderId != null)
+        {
+            safe = String.valueOf(orderId);
+        }
+        if (safe.isEmpty())
+        {
+            return null;
+        }
+        if (safe.length() > MAX_ORDER_SEGMENT)
+        {
+            safe = safe.substring(0, MAX_ORDER_SEGMENT);
+        }
+        return "ord-" + safe;
     }
 
     private String fileNameOf(String objectKey)

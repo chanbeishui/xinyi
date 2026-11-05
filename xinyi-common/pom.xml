@@ -131,6 +131,13 @@
             <artifactId>aliyun-sdk-oss</artifactId>
         </dependency>
 
+        <!-- 单测：MockMultipartFile 用来验上传校验逻辑；test 作用域，不进部署包 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
 
 </project>

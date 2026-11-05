@@ -1,9 +1,13 @@
 package com.xinyi.common.utils.file;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.Arrays;
 import java.util.Objects;
+import java.util.Set;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.web.multipart.MultipartFile;
+import com.xinyi.common.exception.UtilException;
 import com.xinyi.common.exception.file.FileNameLengthLimitExceededException;
 import com.xinyi.common.exception.file.FileSizeLimitExceededException;
 import com.xinyi.common.exception.file.InvalidExtensionException;
@@ -33,6 +37,9 @@ public class FileUploadUtils
      * 默认的文件名最大长度 100
      */
     public static final int DEFAULT_FILE_NAME_LENGTH = 100;
+
+    /** 能靠文件头识别真伪的图片扩展名；不在此列的扩展名不做内容校验 */
+    private static final Set<String> IMAGE_SIGNATURE_EXTENSIONS = Set.of("bmp", "gif", "jpg", "jpeg", "png");
 
     /**
      * 以默认配置进行文件上传
@@ -111,10 +118,11 @@ public class FileUploadUtils
     }
 
     /**
-     * 把历史调用方传进来的绝对路径收敛成逻辑目录。
+     * 规范化逻辑目录。
      *
-     * <p>改造前调用点传的是 {@code D:/ruoyi/uploadPath/upload} 这种本地路径，
-     * 现在只取最后一段作为 OSS 前缀，避免把整串磁盘路径写进对象 key。</p>
+     * <p>改造前调用点传的是 {@code D:/ruoyi/uploadPath/upload} 这种本地路径，需要剥掉磁盘部分；
+     * 现在调用点传的是 {@code upload/rich-text} 这类多级前缀，必须原样保留——
+     * 早先的实现只取最后一段，会把它压成 {@code rich-text}，业务分层就失效了。</p>
      */
     private static String logicalDir(String dir)
     {
@@ -122,14 +130,24 @@ public class FileUploadUtils
         {
             return OssFileService.DIR_UPLOAD;
         }
-        String d = dir.replace('\\', '/').replaceAll("/+$", "");
-        int i = d.lastIndexOf('/');
-        String last = i < 0 ? d : d.substring(i + 1);
-        if (StringUtils.isEmpty(last) || last.contains(":"))
+        String d = dir.trim().replace('\\', '/');
+        // 兼容改造前传进来的绝对路径：D:/ruoyi/uploadPath/upload
+        int idx = d.indexOf("uploadPath/");
+        if (idx >= 0)
+        {
+            d = d.substring(idx + "uploadPath/".length());
+        }
+        // 剥盘符
+        if (d.length() > 1 && d.charAt(1) == ':')
+        {
+            d = d.substring(2);
+        }
+        d = d.replaceAll("/{2,}", "/").replaceAll("^/+", "").replaceAll("/+$", "");
+        if (StringUtils.isEmpty(d) || d.contains("..") || d.contains(":"))
         {
             return OssFileService.DIR_UPLOAD;
         }
-        return last;
+        return d;
     }
 
     /**
@@ -192,6 +210,86 @@ public class FileUploadUtils
             {
                 throw new InvalidExtensionException(allowedExtension, extension, fileName);
             }
+        }
+
+        assertImageSignature(file, extension);
+    }
+
+    /**
+     * 图片类扩展名必须与真实文件头一致。
+     *
+     * <p>只看扩展名挡不住「把 exe 改名成 png」：文件会原样存进对象存储，一旦被当成静态资源
+     * 直出，等于提供了一个可执行文件托管点。这里按魔数核对，认不出任何已知图片签名就拒绝。
+     * 非图片扩展名（文档、压缩包等）不做此校验，避免误伤。</p>
+     */
+    private static void assertImageSignature(MultipartFile file, String extension) throws InvalidExtensionException
+    {
+        if (StringUtils.isEmpty(extension))
+        {
+            return;
+        }
+        String ext = extension.toLowerCase();
+        if (!IMAGE_SIGNATURE_EXTENSIONS.contains(ext))
+        {
+            return;
+        }
+        if (matchesImageSignature(readHead(file, 12), ext))
+        {
+            return;
+        }
+        throw new InvalidExtensionException.InvalidImageExtensionException(MimeTypeUtils.IMAGE_EXTENSION, extension,
+                file.getOriginalFilename());
+    }
+
+    /** 读文件头若干字节；读不满（极小文件）时按实际长度返回 */
+    private static byte[] readHead(MultipartFile file, int length)
+    {
+        try (InputStream in = file.getInputStream())
+        {
+            byte[] buf = new byte[length];
+            int off = 0;
+            while (off < length)
+            {
+                int n = in.read(buf, off, length - off);
+                if (n < 0)
+                {
+                    break;
+                }
+                off += n;
+            }
+            return off == 0 ? null : Arrays.copyOf(buf, off);
+        }
+        catch (IOException e)
+        {
+            throw new UtilException("读取上传文件失败：" + e.getMessage());
+        }
+    }
+
+    private static boolean matchesImageSignature(byte[] head, String ext)
+    {
+        if (head == null || head.length < 2)
+        {
+            return false;
+        }
+        switch (ext)
+        {
+            case "jpg":
+            case "jpeg":
+                return head.length >= 3 && (head[0] & 0xFF) == 0xFF && (head[1] & 0xFF) == 0xD8
+                        && (head[2] & 0xFF) == 0xFF;
+            case "png":
+                return head.length >= 8 && (head[0] & 0xFF) == 0x89 && head[1] == 'P' && head[2] == 'N' && head[3] == 'G'
+                        && (head[4] & 0xFF) == 0x0D && (head[5] & 0xFF) == 0x0A && (head[6] & 0xFF) == 0x1A
+                        && (head[7] & 0xFF) == 0x0A;
+            case "gif":
+                return head.length >= 4 && head[0] == 'G' && head[1] == 'I' && head[2] == 'F' && head[3] == '8';
+            case "bmp":
+                return head[0] == 'B' && head[1] == 'M';
+            case "webp":
+                return head.length >= 12 && head[0] == 'R' && head[1] == 'I' && head[2] == 'F' && head[3] == 'F'
+                        && head[8] == 'W' && head[9] == 'E' && head[10] == 'B' && head[11] == 'P';
+            default:
+                return true;
         }
     }
 

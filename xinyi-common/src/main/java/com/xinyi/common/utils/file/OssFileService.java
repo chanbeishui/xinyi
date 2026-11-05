@@ -48,8 +48,17 @@ public class OssFileService
 {
     private static final Logger log = LoggerFactory.getLogger(OssFileService.class);
 
-    /** 通用上传目录 */
+    /** 通用上传目录（调用方没声明业务时兜底），历史数据也都在这一层 */
     public static final String DIR_UPLOAD = "upload";
+
+    /** 富文本编辑器插入的图片 */
+    public static final String DIR_RICH_TEXT = "upload/rich-text";
+
+    /** 表单里的图片（ImageUpload 组件） */
+    public static final String DIR_IMAGE = "upload/image";
+
+    /** 附件（FileUpload 组件上传的文档、压缩包等） */
+    public static final String DIR_FILE = "upload/file";
 
     /** 头像目录 */
     public static final String DIR_AVATAR = "avatar";
@@ -59,6 +68,44 @@ public class OssFileService
 
     /** 导出文件（Excel 等），下载后可删 */
     public static final String DIR_DOWNLOAD = "download";
+
+    /**
+     * 前端声明上传用途的参数名。
+     *
+     * <p>三个上传组件都打同一个 {@code /common/upload}，服务端无法从请求里分辨是编辑器插图
+     * 还是表单附件，所以由调用方带一个查询参数说明用途，再映射到不同前缀——
+     * 这样不同用途可以分别设生命周期、分别统计容量，也不会全挤在 {@code upload/} 里。</p>
+     */
+    public static final String BIZ_PARAM = "biz";
+
+    /**
+     * 把前端声明的用途映射成对象前缀。未知取值一律落到 {@link #DIR_UPLOAD}，
+     * 不因为前端漏传或传错而让上传失败。
+     */
+    public static String dirForBiz(String biz)
+    {
+        if (StringUtils.isEmpty(biz))
+        {
+            return DIR_UPLOAD;
+        }
+        switch (biz.trim().toLowerCase())
+        {
+            case "rich-text":
+            case "richtext":
+            case "editor":
+                return DIR_RICH_TEXT;
+            case "image":
+            case "img":
+            case "photo":
+                return DIR_IMAGE;
+            case "file":
+            case "attachment":
+            case "doc":
+                return DIR_FILE;
+            default:
+                return DIR_UPLOAD;
+        }
+    }
 
     @Autowired(required = false)
     private FileStorageService fileStorageService;

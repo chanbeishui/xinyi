@@ -36,7 +36,7 @@ import type { UploadFileResult } from '@/types/api/common'
 const { proxy } = getCurrentInstance()
 
 const quillEditorRef = ref()
-const uploadUrl = ref(import.meta.env.VITE_APP_BASE_API + "/common/upload") // 上传的图片服务器地址
+const uploadUrl = ref(import.meta.env.VITE_APP_BASE_API + "/common/upload?biz=rich-text") // 上传的图片服务器地址，biz 决定对象存储前缀
 const headers = ref({
   Authorization: "Bearer " + getToken()
 })

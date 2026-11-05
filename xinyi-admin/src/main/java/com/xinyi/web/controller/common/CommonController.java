@@ -67,14 +67,16 @@ public class CommonController
 
     /**
      * 通用上传请求（单个）
+     *
+     * @param biz 上传用途，决定对象前缀：rich-text / image / file，缺省落到 upload/
      */
     @PostMapping("/upload")
-    public AjaxResult uploadFile(MultipartFile file) throws Exception
+    public AjaxResult uploadFile(MultipartFile file, String biz) throws Exception
     {
         try
         {
             // 上传到对象存储，返回可直接访问的完整地址
-            String url = FileUploadUtils.upload(OssFileService.DIR_UPLOAD, file);
+            String url = FileUploadUtils.upload(OssFileService.dirForBiz(biz), file);
             AjaxResult ajax = AjaxResult.success();
             ajax.put("url", url);
             ajax.put("fileName", url);
@@ -90,9 +92,11 @@ public class CommonController
 
     /**
      * 通用上传请求（多个）
+     *
+     * @param biz 上传用途，同单个上传
      */
     @PostMapping("/uploads")
-    public AjaxResult uploadFiles(List<MultipartFile> files) throws Exception
+    public AjaxResult uploadFiles(List<MultipartFile> files, String biz) throws Exception
     {
         try
         {
@@ -100,9 +104,10 @@ public class CommonController
             List<String> fileNames = new ArrayList<String>();
             List<String> newFileNames = new ArrayList<String>();
             List<String> originalFilenames = new ArrayList<String>();
+            String dir = OssFileService.dirForBiz(biz);
             for (MultipartFile file : files)
             {
-                String url = FileUploadUtils.upload(OssFileService.DIR_UPLOAD, file);
+                String url = FileUploadUtils.upload(dir, file);
                 urls.add(url);
                 fileNames.add(url);
                 newFileNames.add(FileUtils.getName(url));

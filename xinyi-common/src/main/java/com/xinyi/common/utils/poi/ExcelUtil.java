@@ -636,7 +636,7 @@ public class ExcelUtil<T>
             wb.write(out);
             // 不再写服务器本地 download 目录，直接进对象存储
             String url = SpringUtils.getBean(OssFileService.class)
-                    .uploadBytesNamed(out.toByteArray(), OssFileService.DIR_DOWNLOAD, filename);
+                    .uploadBytesNamed(out.toByteArray(), downloadDir(), filename);
             return AjaxResult.success(url);
         }
         catch (Exception e)
@@ -786,7 +786,7 @@ public class ExcelUtil<T>
             wb.write(out);
             // 不再写服务器本地 download 目录，直接进对象存储
             String url = SpringUtils.getBean(OssFileService.class)
-                    .uploadBytesNamed(out.toByteArray(), OssFileService.DIR_DOWNLOAD, filename);
+                    .uploadBytesNamed(out.toByteArray(), downloadDir(), filename);
             return AjaxResult.success(url);
         }
         catch (Exception e)
@@ -1617,6 +1617,18 @@ public class ExcelUtil<T>
     public String encodingFilename(String filename)
     {
         return UUID.randomUUID() + "_" + filename + ".xlsx";
+    }
+
+    /**
+     * 导出对象的前缀：{@code download/yyyy/MM/dd}。
+     *
+     * <p>导出文件只是一次性交付物，但平铺在 {@code download/} 下没有任何回收机制，
+     * 一年下来只增不减。按日期分层后，可以在桶上给 {@code download/} 配生命周期
+     * （{@code logs/set_oss_lifecycle.py} 默认 7 天），过期对象由 OSS 自行清理。</p>
+     */
+    private static String downloadDir()
+    {
+        return OssFileService.DIR_DOWNLOAD + "/" + DateUtils.datePath();
     }
 
     /**

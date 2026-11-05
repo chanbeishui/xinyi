@@ -53,10 +53,10 @@ interface UploadFileItem {
 
 const props = defineProps({
   modelValue: [String, Object, Array],
-  // 上传接口地址
+  // 上传接口地址，biz=file 决定对象存储前缀（upload/file）
   action: {
     type: String,
-    default: "/common/upload"
+    default: "/common/upload?biz=file"
   },
   // 上传携带的参数
   data: {

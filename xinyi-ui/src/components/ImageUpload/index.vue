@@ -61,10 +61,10 @@ interface UploadImageItem {
 
 const props = defineProps({
   modelValue: [String, Object, Array],
-  // 上传接口地址
+  // 上传接口地址，biz=image 决定对象存储前缀（upload/image）
   action: {
     type: String,
-    default: "/common/upload"
+    default: "/common/upload?biz=image"
   },
   // 上传携带的参数
   data: {
