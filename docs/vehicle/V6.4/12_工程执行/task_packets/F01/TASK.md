@@ -1,10 +1,11 @@
 # F01 · 私有文件全生命周期
 
 阶段：M1；责任域：file；前置：I01, I06, E07。
-范围版本：`V6.1-UNCHANGED`；definitionHash：`cfdc25b0e8e82e7ff12f02af6f435bef2c5ae04fe3dcab5aa1e1f2b2b78fa9b9`。
+范围版本：`V6.4-PRIVATE-FILE-20261105`；definitionHash：`ecf9fea54c027ce06c6878ee3ead1e6116618df0457a2865b258f2dc35b0ee60`。
 
 ## 本任务交付
 - 签上传、实际字节存储、元数据核验、短期读取、敏感访问审计
+- 双域上传者及明确父业务归属；私有字节传输、限流大小/像素和会话撤权复核；部署目录未配置拒绝使用
 
 ## 必测失败与并发
 - 伪造文件ID/对象路径/未上传/过期签名拒绝
@@ -20,10 +21,8 @@
 ## 代码落位
 `xinyi-rongli/src/main/java/com/xinyi/rongli/file/`
 `xinyi-rongli/src/main/resources/mapper/rongli/file/`
-`xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/file/`
-`xinyi-ui/src/views/rongli/file/`
-`xinyi-ui/src/api/rongli/file.ts`
-`xinyi-miniapp/src/features/file/`
+`xinyi-admin/src/test/java/com/xinyi/web/viit/F01FileIT.java`
+`docs/implementation/vehicle/F01/`
 
 ## 验证命令
 ```bash

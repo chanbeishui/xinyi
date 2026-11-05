@@ -1326,7 +1326,14 @@ CREATE TABLE `vi_photo` (
 
 CREATE TABLE `vi_file` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',
-  `uploader_account_id` BIGINT NOT NULL COMMENT '上传者',
+  `uploader_account_id` BIGINT NULL COMMENT '小程序上传者；与后台上传者互斥',
+  `uploader_user_id` BIGINT NULL COMMENT '后台上传者；与小程序上传者互斥',
+  `station_id` BIGINT NULL COMMENT '站点资质等文件的权威站点归属',
+  `declared_size` BIGINT NULL COMMENT '客户端声明大小，只用于与实际字节核对',
+  `declared_mime` VARCHAR(64) NULL COMMENT '客户端声明类型，READY以服务端识别为准',
+  `upload_expires_at` DATETIME(3) NULL COMMENT '原上传授权截止UTC',
+  `upload_lease_token` VARCHAR(36) NULL COMMENT '上传租约标识，禁止向客户端或日志输出',
+  `upload_lease_until` DATETIME(3) NULL COMMENT '上传租约截止，文件IO不持数据库事务',
   `purpose` VARCHAR(32) NOT NULL COMMENT '限定用途',
   `order_id` BIGINT COMMENT '订单归属',
   `application_id` BIGINT COMMENT '认证等申请归属',
@@ -1344,6 +1351,7 @@ CREATE TABLE `vi_file` (
   UNIQUE KEY uk_object_key (object_key),
   KEY ix_order_purpose (order_id,purpose),
   CONSTRAINT ck_66_c1389ba0baeb CHECK (`status` IN ('UPLOADING','VERIFYING','READY','REJECTED')),
+  CONSTRAINT ck_file_uploader CHECK ((uploader_account_id IS NOT NULL AND uploader_user_id IS NULL) OR (uploader_account_id IS NULL AND uploader_user_id IS NOT NULL)),
   CONSTRAINT ck_ver_file CHECK (version >= 0)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='私有文件登记与校验';
 
@@ -2699,3 +2707,23 @@ UPDATE sys_menu SET menu_name='支付与微信商户',menu_type='C',path='paymen
 COMMIT;
 SELECT menu_id,parent_id,menu_name,menu_type,path,component,visible,perms FROM sys_menu WHERE menu_id IN (2970500,2970501);
 SELECT perms,COUNT(*) AS copies FROM sys_menu WHERE perms='biz:integration:query' GROUP BY perms;
+
+-- F01文件功能权限；仅登记，不自动向既有角色授权。ID/权限冲突必须报告并停止。
+CREATE TEMPORARY TABLE f01_menu_guard (bad INT CHECK(bad=0));
+SELECT menu_id,parent_id,perms FROM sys_menu WHERE (menu_id=2970700 AND (parent_id<>0 OR COALESCE(perms,'')<>''));
+INSERT INTO f01_menu_guard SELECT COUNT(*) FROM sys_menu WHERE (menu_id=2970700 AND (parent_id<>0 OR COALESCE(perms,'')<>''));
+INSERT INTO sys_menu(menu_id,menu_name,parent_id,order_num,path,component,is_frame,is_cache,menu_type,visible,status,perms,icon,create_by,remark) SELECT 2970700,'私有文件权限',0,70,'private-files',NULL,1,1,'M','1','0','','system','migration','F01服务端权限；不自动授权' WHERE NOT EXISTS(SELECT 1 FROM sys_menu WHERE menu_id=2970700);
+SELECT menu_id,parent_id,perms FROM sys_menu WHERE (menu_id=2970701 AND (parent_id<>2970700 OR COALESCE(perms,'')<>'biz:uploads:create')) OR (perms='biz:uploads:create' AND menu_id<>2970701);
+INSERT INTO f01_menu_guard SELECT COUNT(*) FROM sys_menu WHERE (menu_id=2970701 AND (parent_id<>2970700 OR COALESCE(perms,'')<>'biz:uploads:create')) OR (perms='biz:uploads:create' AND menu_id<>2970701);
+INSERT INTO sys_menu(menu_id,menu_name,parent_id,order_num,path,component,is_frame,is_cache,menu_type,visible,status,perms,icon,create_by,remark) SELECT 2970701,'申请私有上传',2970700,70,'#',NULL,1,1,'F','1','0','biz:uploads:create','system','migration','F01服务端权限；不自动授权' WHERE NOT EXISTS(SELECT 1 FROM sys_menu WHERE menu_id=2970701);
+SELECT menu_id,parent_id,perms FROM sys_menu WHERE (menu_id=2970702 AND (parent_id<>2970700 OR COALESCE(perms,'')<>'biz:uploads:complete')) OR (perms='biz:uploads:complete' AND menu_id<>2970702);
+INSERT INTO f01_menu_guard SELECT COUNT(*) FROM sys_menu WHERE (menu_id=2970702 AND (parent_id<>2970700 OR COALESCE(perms,'')<>'biz:uploads:complete')) OR (perms='biz:uploads:complete' AND menu_id<>2970702);
+INSERT INTO sys_menu(menu_id,menu_name,parent_id,order_num,path,component,is_frame,is_cache,menu_type,visible,status,perms,icon,create_by,remark) SELECT 2970702,'完成私有上传',2970700,70,'#',NULL,1,1,'F','1','0','biz:uploads:complete','system','migration','F01服务端权限；不自动授权' WHERE NOT EXISTS(SELECT 1 FROM sys_menu WHERE menu_id=2970702);
+SELECT menu_id,parent_id,perms FROM sys_menu WHERE (menu_id=2970703 AND (parent_id<>2970700 OR COALESCE(perms,'')<>'biz:files:query')) OR (perms='biz:files:query' AND menu_id<>2970703);
+INSERT INTO f01_menu_guard SELECT COUNT(*) FROM sys_menu WHERE (menu_id=2970703 AND (parent_id<>2970700 OR COALESCE(perms,'')<>'biz:files:query')) OR (perms='biz:files:query' AND menu_id<>2970703);
+INSERT INTO sys_menu(menu_id,menu_name,parent_id,order_num,path,component,is_frame,is_cache,menu_type,visible,status,perms,icon,create_by,remark) SELECT 2970703,'查看文件状态',2970700,70,'#',NULL,1,1,'F','1','0','biz:files:query','system','migration','F01服务端权限；不自动授权' WHERE NOT EXISTS(SELECT 1 FROM sys_menu WHERE menu_id=2970703);
+SELECT menu_id,parent_id,perms FROM sys_menu WHERE (menu_id=2970704 AND (parent_id<>2970700 OR COALESCE(perms,'')<>'biz:files:access')) OR (perms='biz:files:access' AND menu_id<>2970704);
+INSERT INTO f01_menu_guard SELECT COUNT(*) FROM sys_menu WHERE (menu_id=2970704 AND (parent_id<>2970700 OR COALESCE(perms,'')<>'biz:files:access')) OR (perms='biz:files:access' AND menu_id<>2970704);
+INSERT INTO sys_menu(menu_id,menu_name,parent_id,order_num,path,component,is_frame,is_cache,menu_type,visible,status,perms,icon,create_by,remark) SELECT 2970704,'查看私有凭证',2970700,70,'#',NULL,1,1,'F','1','0','biz:files:access','system','migration','F01服务端权限；不自动授权' WHERE NOT EXISTS(SELECT 1 FROM sys_menu WHERE menu_id=2970704);
+DROP TEMPORARY TABLE f01_menu_guard;
+SELECT menu_id,parent_id,perms FROM sys_menu WHERE menu_id BETWEEN 2970700 AND 2970704 ORDER BY menu_id;

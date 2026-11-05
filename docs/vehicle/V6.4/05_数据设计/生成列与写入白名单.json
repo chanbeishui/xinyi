@@ -2634,20 +2634,22 @@
       "server_size",
       "server_sha256",
       "retain_until",
-      "legal_hold"
+      "legal_hold",
+      "uploader_user_id",
+      "station_id",
+      "declared_size",
+      "declared_mime",
+      "upload_expires_at"
     ],
     "updateColumns": [
-      "uploader_account_id",
-      "purpose",
-      "order_id",
-      "application_id",
-      "object_key",
       "status",
       "mime_type",
       "server_size",
       "server_sha256",
       "retain_until",
-      "legal_hold"
+      "legal_hold",
+      "upload_lease_token",
+      "upload_lease_until"
     ],
     "columnRules": {
       "id": {
@@ -2659,31 +2661,31 @@
       "uploader_account_id": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "purpose": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "order_id": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "application_id": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "object_key": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "status": {
@@ -2741,6 +2743,48 @@
         "generated": false,
         "insertable": false,
         "updatable": false,
+        "clientWritable": false
+      },
+      "uploader_user_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "station_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "declared_size": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "declared_mime": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "upload_expires_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "upload_lease_token": {
+        "generated": false,
+        "insertable": false,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "upload_lease_until": {
+        "generated": false,
+        "insertable": false,
+        "updatable": true,
         "clientWritable": false
       }
     },

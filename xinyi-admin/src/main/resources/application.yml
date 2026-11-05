@@ -157,8 +157,11 @@ security:
     fixed-delay: 5000
   user-dept-integrity-cron: "0 30 2 * * ?"
 
-# 支付查单与超时关闭；部署经验证后显式启用，隔离测试直接调用同一服务。
+# 荣利运行能力；部署经验证后配置，隔离测试使用独立目录与同一业务服务。
 vi:
+  files:
+    # 独立私有持久卷绝对路径，不能位于公开 profile 下；留空时文件入口拒绝使用。
+    root: ${VI_PRIVATE_FILE_ROOT:}
   payment:
     reconciliation-enabled: ${VI_PAYMENT_RECONCILIATION_ENABLED:false}
   jobs:

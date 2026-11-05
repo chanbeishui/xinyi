@@ -3629,7 +3629,8 @@
       "E07"
     ],
     "deliverables": [
-      "签上传、实际字节存储、元数据核验、短期读取、敏感访问审计"
+      "签上传、实际字节存储、元数据核验、短期读取、敏感访问审计",
+      "双域上传者及明确父业务归属；私有字节传输、限流大小/像素和会话撤权复核；部署目录未配置拒绝使用"
     ],
     "negative_checks": [
       "伪造文件ID/对象路径/未上传/过期签名拒绝",
@@ -3648,14 +3649,12 @@
     "case_ids": [],
     "scope": "DEVELOPMENT",
     "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
-    "status": "NOT_ASSESSED",
+    "status": "VERIFIED",
     "code_paths": [
       "xinyi-rongli/src/main/java/com/xinyi/rongli/file/",
       "xinyi-rongli/src/main/resources/mapper/rongli/file/",
-      "xinyi-rongli/src/main/java/com/xinyi/rongli/file/controller/",
-      "xinyi-ui/src/views/rongli/file/",
-      "xinyi-ui/src/api/rongli/file.ts",
-      "xinyi-miniapp/src/features/file/"
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/F01FileIT.java",
+      "docs/implementation/vehicle/F01/"
     ],
     "test_class": "F01FileIT",
     "commands": [
@@ -3675,12 +3674,19 @@
       "access": "不得绕过限制；保存恢复点",
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
-    "scopeRevision": "V6.1-UNCHANGED",
-    "definitionHash": "cfdc25b0e8e82e7ff12f02af6f435bef2c5ae04fe3dcab5aa1e1f2b2b78fa9b9",
-    "evidence": [],
+    "scopeRevision": "V6.4-PRIVATE-FILE-20261105",
+    "definitionHash": "ecf9fea54c027ce06c6878ee3ead1e6116618df0457a2865b258f2dc35b0ee60",
+    "evidence": [
+      {
+        "path": "docs/implementation/vehicle/evidence/F01-20261105.json",
+        "sha256": "5d0a2a1218e6151457721f682d29650951161040e0a033a6f2dcbc490941d90b"
+      }
+    ],
     "implementation": null,
     "review": null,
-    "blocker": null
+    "blocker": null,
+    "needsAdaptation": false,
+    "updatedAt": "2026-11-05T15:41:00.213992+00:00"
   },
   {
     "id": "F02",

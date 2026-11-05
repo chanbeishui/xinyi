@@ -199,10 +199,12 @@
     "taskId": "F02"
   },
   {
-    "status": "NOT_ASSESSED",
-    "entityFile": null,
-    "mapperFile": null,
-    "evidence": [],
+    "status": "VERIFIED",
+    "entityFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/file/domain/PrivateFile.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/file/PrivateFileMapper.xml",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/F01-20261105.json"
+    ],
     "table": "vi_file",
     "taskId": "F01"
   },

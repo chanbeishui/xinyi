@@ -2025,8 +2025,43 @@ CONSTRAINT ck_ver_photo CHECK (version &gt;= 0)
 </tr>
 <tr>
   <td><code>uploader_account_id</code></td>
-  <td><code>BIGINT NOT NULL</code></td>
+  <td><code>BIGINT NULL</code></td>
   <td>上传者</td>
+</tr>
+<tr>
+  <td><code>uploader_user_id</code></td>
+  <td><code>BIGINT NULL</code></td>
+  <td>后台上传者；与小程序上传者互斥</td>
+</tr>
+<tr>
+  <td><code>station_id</code></td>
+  <td><code>BIGINT NULL</code></td>
+  <td>站点资质等文件的权威站点归属</td>
+</tr>
+<tr>
+  <td><code>declared_size</code></td>
+  <td><code>BIGINT NULL</code></td>
+  <td>客户端声明大小，只用于与实际字节核对</td>
+</tr>
+<tr>
+  <td><code>declared_mime</code></td>
+  <td><code>VARCHAR(64) NULL</code></td>
+  <td>客户端声明类型，READY以服务端识别为准</td>
+</tr>
+<tr>
+  <td><code>upload_expires_at</code></td>
+  <td><code>DATETIME(3) NULL</code></td>
+  <td>原上传授权截止UTC</td>
+</tr>
+<tr>
+  <td><code>upload_lease_token</code></td>
+  <td><code>VARCHAR(36) NULL</code></td>
+  <td>上传租约标识，禁止向客户端或日志输出</td>
+</tr>
+<tr>
+  <td><code>upload_lease_until</code></td>
+  <td><code>DATETIME(3) NULL</code></td>
+  <td>上传租约截止，文件IO不持数据库事务</td>
 </tr>
 <tr>
   <td><code>purpose</code></td>
@@ -2474,11 +2509,31 @@ CONSTRAINT ck_ver_result_correction CHECK (version &gt;= 0)
   <td><code>BIGINT NOT NULL DEFAULT 0</code></td>
   <td>乐观锁版本</td>
 </tr>
-<tr><td><code>prepay_state</code></td><td><code>VARCHAR(16) NOT NULL DEFAULT &#x27;NONE&#x27;</code></td><td>预支付 NONE/REQUESTING/READY/UNKNOWN，不代表付款成功</td></tr>
-<tr><td><code>prepay_request_cipher</code></td><td><code>MEDIUMBLOB NULL</code></td><td>不可变预下单请求，加密绑定支付单ID</td></tr>
-<tr><td><code>prepay_result_cipher</code></td><td><code>MEDIUMBLOB NULL</code></td><td>预支付ID加密存储，不存客户端签名</td></tr>
-<tr><td><code>prepay_lease_token</code></td><td><code>VARCHAR(36) NULL</code></td><td>外部请求租约令牌</td></tr>
-<tr><td><code>prepay_lease_until</code></td><td><code>DATETIME(3) NULL</code></td><td>外部请求租约截止UTC</td></tr>
+<tr>
+  <td><code>prepay_state</code></td>
+  <td><code>VARCHAR(16) NOT NULL DEFAULT 'NONE'</code></td>
+  <td>预支付 NONE/REQUESTING/READY/UNKNOWN，不代表付款成功</td>
+</tr>
+<tr>
+  <td><code>prepay_request_cipher</code></td>
+  <td><code>MEDIUMBLOB NULL</code></td>
+  <td>不可变预下单请求，加密绑定支付单ID</td>
+</tr>
+<tr>
+  <td><code>prepay_result_cipher</code></td>
+  <td><code>MEDIUMBLOB NULL</code></td>
+  <td>预支付ID加密存储，不存客户端签名</td>
+</tr>
+<tr>
+  <td><code>prepay_lease_token</code></td>
+  <td><code>VARCHAR(36) NULL</code></td>
+  <td>外部请求租约令牌</td>
+</tr>
+<tr>
+  <td><code>prepay_lease_until</code></td>
+  <td><code>DATETIME(3) NULL</code></td>
+  <td>外部请求租约截止UTC</td>
+</tr>
 </tbody>
 </table>
 <pre><code class="language-sql">UNIQUE KEY uk_trade (out_trade_no)

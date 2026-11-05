@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xinyi.rongli.file.mapper.PrivateFileMapper">
+    <resultMap id="File" type="com.xinyi.rongli.file.domain.PrivateFile">
+        <id property="id" column="id"/>
+        <result property="version" column="version"/>
+        <result property="uploaderAccountId" column="uploader_account_id"/>
+        <result property="uploaderUserId" column="uploader_user_id"/>
+        <result property="purpose" column="purpose"/>
+        <result property="orderId" column="order_id"/>
+        <result property="applicationId" column="application_id"/>
+        <result property="stationId" column="station_id"/>
+        <result property="objectKey" column="object_key"/>
+        <result property="status" column="status"/>
+        <result property="mimeType" column="mime_type"/>
+        <result property="serverSize" column="server_size"/>
+        <result property="serverSha256" column="server_sha256"/>
+        <result property="declaredSize" column="declared_size"/>
+        <result property="declaredMime" column="declared_mime"/>
+        <result property="uploadExpiresAt" column="upload_expires_at"
+                typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+        <result property="uploadLeaseToken" column="upload_lease_token"/>
+        <result property="uploadLeaseUntil" column="upload_lease_until"
+                typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+    </resultMap>
+    <select id="lock" resultMap="File">
+        SELECT *
+        FROM vi_file
+        WHERE id=#{id}
+        FOR UPDATE
+    </select>
+    <select id="find" resultMap="File">
+        SELECT *
+        FROM vi_file
+        WHERE id=#{id}
+    </select>
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO vi_file(uploader_account_id,uploader_user_id,purpose,order_id,application_id,
+            station_id,object_key,status,declared_size,declared_mime,upload_expires_at)
+        VALUES(#{uploaderAccountId},#{uploaderUserId},#{purpose},#{orderId},#{applicationId},
+            #{stationId},#{objectKey},'UPLOADING',#{declaredSize},#{declaredMime},
+            #{uploadExpiresAt,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler})
+    </insert>
+    <update id="claim">
+        UPDATE vi_file SET upload_lease_token=#{token},
+            upload_lease_until=#{until,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler},
+            version=version+1,updated_at=UTC_TIMESTAMP(3)
+        WHERE id=#{id} AND status='UPLOADING' AND upload_lease_token IS NULL AND version=#{version}
+    </update>
+    <update id="uploaded">
+        UPDATE vi_file SET status='VERIFYING',upload_lease_until=NULL,upload_lease_token=NULL,
+            version=version+1,updated_at=UTC_TIMESTAMP(3)
+        WHERE id=#{id} AND status='UPLOADING' AND upload_lease_token=#{token}
+    </update>
+    <update id="finish">
+        UPDATE vi_file SET status=#{status},mime_type=#{mimeType},server_size=#{serverSize},
+            server_sha256=#{serverSha256},upload_lease_until=NULL,upload_lease_token=NULL,
+            version=version+1,updated_at=UTC_TIMESTAMP(3)
+        WHERE id=#{id} AND version=#{version} AND status IN ('UPLOADING','VERIFYING')
+    </update>
+    <select id="orderByNo" resultMap="com.xinyi.rongli.order.mapper.OrderMapper.Order">
+        SELECT *
+        FROM vi_order
+        WHERE order_no=#{no}
+    </select>
+    <select id="applicationOwner" resultType="long">
+        SELECT p.account_id
+        FROM vi_driver_application a
+        JOIN vi_driver_profile p ON p.id=a.driver_id
+        WHERE a.id=#{id}
+    </select>
+    <select id="stationDept" resultType="long">
+        SELECT s.dept_id
+        FROM vi_station s
+        JOIN sys_dept d ON d.dept_id=s.dept_id
+        WHERE s.id=#{id} AND d.status='0' AND d.del_flag='0'
+    </select>
+    <select id="activeDriver" resultType="int">
+        SELECT COUNT(*)
+        FROM vi_order o
+        JOIN vi_driver_assignment a ON a.id=o.active_assignment_id
+        JOIN vi_driver_profile d ON d.id=a.driver_id
+        WHERE o.id=#{orderId} AND a.order_id=o.id AND d.account_id=#{accountId}
+          AND a.ended_at IS NULL AND o.returned_at IS NULL
+          AND o.fulfillment_status NOT IN ('CLOSED','CANCELLED','COMPLETED')
+    </select>
+</mapper>

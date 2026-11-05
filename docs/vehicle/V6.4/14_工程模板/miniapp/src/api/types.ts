@@ -132,7 +132,9 @@ export type Review = { "reviewId"?: string; "orderNo"?: string; "score"?: number
 
 export type PriceRule = { "ruleId": string; "ownerDeptId": string; "companyName": string; "environment": "TEST" | "LIVE"; "ruleKey": string; "revision": number; "status": PriceRuleStatus; "config": (PriceContent) | null; "version": number; "sourceRuleId": (string) | null; "createdBy": string; "submittedBy": (string) | null; "approvedBy": (string) | null; "contentHash": string; "approvedHash": (string) | null; "publishedAt": (string) | null };
 
-export type UploadRequest = { "purpose": "VEHICLE_PHOTO" | "ID_CARD" | "DRIVER_LICENSE" | "VEHICLE_LICENSE" | "RESULT_EVIDENCE" | "DISPUTE" | "STATION_QUALIFICATION" | "AVATAR"; "orderNo"?: string; "applicationId"?: string; "fileName": string; "mimeType": "image/jpeg" | "image/png"; "size": number };
+export type UploadRequest = { "purpose": "VEHICLE_PHOTO" | "ID_CARD" | "DRIVER_LICENSE" | "VEHICLE_LICENSE" | "RESULT_EVIDENCE" | "DISPUTE" | "STATION_QUALIFICATION" | "AVATAR"; "orderNo"?: string; "applicationId"?: string; "fileName": string; "mimeType": "image/jpeg" | "image/png"; "size": number
+  stationId?: string;
+};
 
 export type UploadTicket = { "uploadId": string; "fileId": string; "uploadUrl": string; "expiresAt": string; "requiredHeaders"?: Record<string, string> };
 
@@ -140,7 +142,9 @@ export type FileReady = { "fileId"?: string; "status"?: FileStatus; "serverSha25
 
 export type AccessRequest = { "purpose": string; "orderNo"?: string; "fields"?: Array<string> };
 
-export type AccessResult = { "requestId"?: string; "status"?: "PENDING" | "APPROVED" | "REJECTED"; "expiresAt"?: string; "downloadUrl"?: string };
+export type AccessResult = { "requestId"?: string; "status"?: "PENDING" | "APPROVED" | "REJECTED"; "expiresAt"?: string; "downloadUrl"?: string
+  requiredHeaders?: { [key: string]: string };
+};
 
 export type ExportRequest = { "filters"?: { "stationId"?: string; "startAt"?: string; "endAt"?: string; "status"?: string }; "fields": Array<string>; "reason": string; "type"?: "ORDER" | "VEHICLE" | "OWNER" | "DRIVER" | "DRIVER_STATEMENT" | "AUDIT" };
 

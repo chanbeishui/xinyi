@@ -34080,14 +34080,19 @@ components:
           - image/png
         size:
           type: integer
-          minimum: 0
+          minimum: 1
+          maximum: 10485760
+        stationId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          description: STATION_QUALIFICATION必须显式指定权威站点；不能从管理员主部门推断。
       additionalProperties: false
       required:
       - purpose
       - fileName
       - mimeType
       - size
-      description: 订单与申请归属校验；不能只有任意ossKey和客户端哈希；允许文件类型以原业务范围评审
+      description: 私有JPEG/PNG，最大10MiB、2500万像素；用途与父业务一一匹配：头像无父项，证件申请applicationId，站点资质stationId，订单凭证orderNo。禁止传对象路径、上传者、部门或客户端摘要。
     UploadTicket:
       type: object
       properties:
@@ -34118,6 +34123,7 @@ components:
       - fileId
       - uploadUrl
       - expiresAt
+      description: 票据300秒，不缓存凭据；uploadUrl是同源私有传输接口，见private-transfer.openapi.yaml。PUT原始字节时同时携带当前Bearer、X-Client-Type和requiredHeaders，随后调用complete服务端核验。
     FileReady:
       type: object
       properties:
@@ -34143,13 +34149,19 @@ components:
       properties:
         purpose:
           type: string
+          minLength: 1
+          maxLength: 500
+          description: 本次访问意图；不构成业务权限，审计仅保存脱敏动作和关联。
         orderNo:
           type: string
           description: 不透明ID，以字符串传输，避免JavaScript大整数精度丢失
         fields:
           type: array
+          maxItems: 1
           items:
             type: string
+            enum:
+            - original
       additionalProperties: false
       required:
       - purpose
@@ -34173,7 +34185,13 @@ components:
           description: ISO8601 UTC时刻，必须Z结尾；显示与业务日期Asia/Shanghai
         downloadUrl:
           type: string
+        requiredHeaders:
+          type: object
+          additionalProperties:
+            type: string
+          description: 访问票据仅在请求头中传输；还必须携带当前Bearer与X-Client-Type，签名不替代会话和业务权限。
       additionalProperties: false
+      description: 短期读取60秒，downloadUrl同源私有传输接口；实际下载时重新检查授权并审计，不允许公开对象地址。
     ExportRequest:
       type: object
       properties:

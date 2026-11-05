@@ -590,6 +590,7 @@ export type UploadRequest = {
   fileName: string;
   mimeType: 'image/jpeg' | 'image/png';
   size: number;
+  stationId?: string;
 };
 
 export type UploadTicket = {
@@ -615,6 +616,7 @@ export type AccessResult = {
   status?: 'PENDING' | 'APPROVED' | 'REJECTED';
   expiresAt?: string;
   downloadUrl?: string;
+  requiredHeaders?: { [key: string]: string };
 };
 
 export type ExportRequest = {

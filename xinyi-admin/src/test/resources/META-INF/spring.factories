@@ -1,0 +1,3 @@
+# 仅打入test-classes，不影响后端运行包。
+org.springframework.test.context.ContextCustomizerFactory=\
+com.xinyi.web.viit.ViTestResourceCustomizerFactory

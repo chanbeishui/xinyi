@@ -4034,8 +4034,43 @@
       ],
       [
         "uploader_account_id",
-        "BIGINT NOT NULL",
-        "上传者"
+        "BIGINT NULL",
+        "小程序上传者；与后台上传者互斥"
+      ],
+      [
+        "uploader_user_id",
+        "BIGINT NULL",
+        "后台上传者；与小程序上传者互斥"
+      ],
+      [
+        "station_id",
+        "BIGINT NULL",
+        "站点资质等文件的权威站点归属"
+      ],
+      [
+        "declared_size",
+        "BIGINT NULL",
+        "客户端声明大小，只用于与实际字节核对"
+      ],
+      [
+        "declared_mime",
+        "VARCHAR(64) NULL",
+        "客户端声明类型，READY以服务端识别为准"
+      ],
+      [
+        "upload_expires_at",
+        "DATETIME(3) NULL",
+        "原上传授权截止UTC"
+      ],
+      [
+        "upload_lease_token",
+        "VARCHAR(36) NULL",
+        "上传租约标识，禁止向客户端或日志输出"
+      ],
+      [
+        "upload_lease_until",
+        "DATETIME(3) NULL",
+        "上传租约截止，文件IO不持数据库事务"
       ],
       [
         "purpose",
@@ -4124,31 +4159,31 @@
       "uploader_account_id": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "purpose": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "order_id": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "application_id": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "object_key": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "status": {
@@ -4207,11 +4242,54 @@
         "insertable": false,
         "updatable": false,
         "clientWritable": false
+      },
+      "uploader_user_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "station_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "declared_size": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "declared_mime": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "upload_expires_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "upload_lease_token": {
+        "generated": false,
+        "insertable": false,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "upload_lease_until": {
+        "generated": false,
+        "insertable": false,
+        "updatable": true,
+        "clientWritable": false
       }
     },
     "checks": [
       "CONSTRAINT ck_66_c1389ba0baeb CHECK (`status` IN ('UPLOADING','VERIFYING','READY','REJECTED'))",
-      "CONSTRAINT ck_ver_file CHECK (version >= 0)"
+      "CONSTRAINT ck_ver_file CHECK (version >= 0)",
+      "CONSTRAINT ck_file_uploader CHECK ((uploader_account_id IS NOT NULL AND uploader_user_id IS NULL) OR (uploader_account_id IS NULL AND uploader_user_id IS NOT NULL))"
     ]
   },
   {

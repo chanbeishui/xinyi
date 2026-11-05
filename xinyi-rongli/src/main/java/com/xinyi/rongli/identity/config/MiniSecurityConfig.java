@@ -28,7 +28,14 @@ public class MiniSecurityConfig {
         http.securityMatcher(
                         request -> {
                             String uri = request.getRequestURI();
-                            return uri.startsWith("/api/") && !uri.startsWith("/api/admin/");
+                            // 仅文件共用入口允许 ADMIN 选择框架认证链；请求头本身不构成授权。
+                            boolean sharedFile =
+                                    uri.matches("^/api/common/(uploads|files)(/.*)?$")
+                                            || uri.startsWith("/vi-private-transfer/");
+                            if (sharedFile && "admin".equals(request.getHeader("X-Client-Type")))
+                                return false;
+                            return (uri.startsWith("/api/") && !uri.startsWith("/api/admin/"))
+                                    || uri.startsWith("/vi-private-transfer/");
                         })
                 .csrf(csrf -> csrf.disable())
                 .httpBasic(basic -> basic.disable())

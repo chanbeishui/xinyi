@@ -514,7 +514,14 @@ CREATE TABLE `vi_photo` (
 
 CREATE TABLE `vi_file` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',
-  `uploader_account_id` BIGINT NOT NULL COMMENT '上传者',
+  `uploader_account_id` BIGINT NULL COMMENT '小程序上传者；与后台上传者互斥',
+  `uploader_user_id` BIGINT NULL COMMENT '后台上传者；与小程序上传者互斥',
+  `station_id` BIGINT NULL COMMENT '站点资质等文件的权威站点归属',
+  `declared_size` BIGINT NULL COMMENT '客户端声明大小，只用于与实际字节核对',
+  `declared_mime` VARCHAR(64) NULL COMMENT '客户端声明类型，READY以服务端识别为准',
+  `upload_expires_at` DATETIME(3) NULL COMMENT '原上传授权截止UTC',
+  `upload_lease_token` VARCHAR(36) NULL COMMENT '上传租约标识，禁止向客户端或日志输出',
+  `upload_lease_until` DATETIME(3) NULL COMMENT '上传租约截止，文件IO不持数据库事务',
   `purpose` VARCHAR(32) NOT NULL COMMENT '限定用途',
   `order_id` BIGINT COMMENT '订单归属',
   `application_id` BIGINT COMMENT '认证等申请归属',
@@ -532,6 +539,7 @@ CREATE TABLE `vi_file` (
   UNIQUE KEY uk_object_key (object_key),
   KEY ix_order_purpose (order_id,purpose),
   CONSTRAINT ck_66_c1389ba0baeb CHECK (`status` IN ('UPLOADING','VERIFYING','READY','REJECTED')),
+  CONSTRAINT ck_file_uploader CHECK ((uploader_account_id IS NOT NULL AND uploader_user_id IS NULL) OR (uploader_account_id IS NULL AND uploader_user_id IS NOT NULL)),
   CONSTRAINT ck_ver_file CHECK (version >= 0)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='私有文件登记与校验';
 
