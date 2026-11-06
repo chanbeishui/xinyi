@@ -97,8 +97,16 @@
 
         <el-form-item>
           <el-button :loading="saving" @click="saveDraft">保存草稿</el-button>
-          <el-button :loading="checking" :disabled="!draftRev" @click="runCheck">校验</el-button>
-          <el-button type="primary" :loading="publishing" :disabled="!checkResult" @click="publish">发布生效</el-button>
+          <el-tooltip :disabled="!!draftRev" content="先点「保存草稿」，有了草稿版本才能校验" placement="top">
+            <span class="btn-wrap">
+              <el-button :loading="checking" :disabled="!draftRev" @click="runCheck">校验</el-button>
+            </span>
+          </el-tooltip>
+          <el-tooltip :disabled="canPublish" :content="publishHint" placement="top">
+            <span class="btn-wrap">
+              <el-button type="primary" :loading="publishing" :disabled="!canPublish" @click="publish">发布生效</el-button>
+            </span>
+          </el-tooltip>
           <el-button v-if="detail && detail.activeRevisionId" text @click="loadVersions">版本与发布记录</el-button>
         </el-form-item>
       </el-form>
@@ -176,6 +184,22 @@ const publications = ref<any[]>([])
 
 const shortHash = computed(() => (checkResult.value?.contentHash || '').slice(0, 12))
 
+/** 校验通过才允许发布；校验失败时按钮保持禁用，并说明卡在哪一步。 */
+const canPublish = computed(() => !!checkResult.value && checkResult.value.status !== 'FAIL')
+
+const publishHint = computed(() => {
+  if (!draftRev.value) {
+    return '先点「保存草稿」，草稿版本存在后才能校验和发布'
+  }
+  if (!checkResult.value) {
+    return '请先点「校验」，校验通过后才能发布'
+  }
+  if (checkResult.value.status === 'FAIL') {
+    return '校验未通过，请按上方问题清单处理后重新校验'
+  }
+  return ''
+})
+
 function stateOf(slot: string) {
   return (detail.value?.draft?.credentialStates || detail.value?.active?.credentialStates || {})[slot] || {}
 }
@@ -190,7 +214,10 @@ async function load() {
   detail.value = await getProfile(rows[0].profileId)
   fillForm(detail.value.draft?.config || detail.value.active?.config || props.defaults)
   issues.value = detail.value.validationIssues || []
-  draftRev.value = null
+  // 草稿版本要按服务端返回的 draftRevisionId 恢复。
+  // 原来这里无条件置 null，导致"保存草稿"后立刻重新加载、校验按钮又变灰，
+  // 拿不到校验结果，发布按钮就永远点不动。
+  draftRev.value = detail.value.draftRevisionId ? { revisionId: detail.value.draftRevisionId } : null
   checkResult.value = null
   await loadRefs()
 }
@@ -284,7 +311,7 @@ async function saveDraft() {
     draftRev.value = res
     checkResult.value = null
     issues.value = res.validationIssues || []
-    ElMessage.success('草稿已保存（未生效）')
+    ElMessage.success('草稿已保存（未生效），下一步点「校验」')
     await load()
   } finally {
     saving.value = false
@@ -292,11 +319,17 @@ async function saveDraft() {
 }
 
 async function runCheck() {
-  if (!draftRev.value) return
+  // 以服务端草稿指针为准：页面刷新后 draftRev 由 draftRevisionId 恢复，
+  // 但直接改表单内容并不产生新草稿，校验必须针对已保存的那一版
+  const revisionId = detail.value?.draftRevisionId || draftRev.value?.revisionId
+  if (!revisionId) {
+    ElMessage.warning('请先点「保存草稿」，未保存的内容无法校验')
+    return
+  }
   checking.value = true
   try {
     const res = await checkProfile(detail.value.profileId, {
-      revisionId: draftRev.value.revisionId,
+      revisionId,
       expectedVersion: detail.value.version,
       level: 'LOCAL'
     })
@@ -309,6 +342,10 @@ async function runCheck() {
 }
 
 async function publish() {
+  if (!canPublish.value) {
+    ElMessage.warning(publishHint.value || '当前不满足发布条件')
+    return
+  }
   const bothOff = props.kind === 'PAYMENT_POLICY' && !form.offlineEnabled && !form.wechatEnabled
   let acknowledge = false
   if (bothOff) {
@@ -379,4 +416,6 @@ onMounted(load)
 .issue { display: flex; gap: 8px; align-items: baseline; font-size: 12px; margin-top: 4px; }
 .issue-field { font-family: monospace; color: var(--el-color-primary); }
 .secret-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+/* el-tooltip 包裹后按钮不再是相邻兄弟，间距要自己补回来 */
+.btn-wrap { display: inline-block; margin-left: 12px; }
 </style>
