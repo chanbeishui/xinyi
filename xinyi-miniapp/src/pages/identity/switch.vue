@@ -58,6 +58,9 @@ function viewLink() {
   uni.navigateTo({ url: '/pages/identity/phone' });
 }
 
+function work() {
+  uni.navigateTo({ url: '/pages/work/index' });
+}
 function orders() {
   uni.navigateTo({ url: '/pages/order/list' });
 }
@@ -124,6 +127,7 @@ function back() {
     </view>
     <text v-if="message" class="warn">{{ message }}</text>
 
+    <button @click="work">查看我的工作</button>
     <button @click="orders">查看当前身份订单</button>
     <button class="plain bottom" @click="back">返回我的</button>
   </view>

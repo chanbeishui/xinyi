@@ -739,6 +739,8 @@ components:
       - biz:vehicle:edit
       - biz:vehicle:list
       - biz:vehicle:query
+      - biz:driver:assigncompany
+      - biz:driver:enablenewassignments
     MiniRole:
       type: string
       enum:

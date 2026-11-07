@@ -1563,30 +1563,40 @@
     "taskId": "A03"
   },
   {
-    "implementationStatus": "NOT_ASSESSED",
-    "controllerFile": null,
-    "serviceFile": null,
-    "mapperFile": null,
-    "testFiles": [],
-    "reviewEvidence": null,
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/driver/controller/DriverAdminController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/driver/service/DriverAdminService.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/driver/DriverMapper.xml",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/A04DriverIT.java"
+    ],
+    "reviewEvidence": "docs/implementation/vehicle/A04/review.md",
     "operationId": "V4_get_api_admin_drivers",
     "method": "GET",
     "path": "/api/admin/drivers",
     "summary": "代驾员列表",
-    "taskId": "A04"
+    "taskId": "A04",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/A04-20261107.json"
+    ]
   },
   {
-    "implementationStatus": "NOT_ASSESSED",
-    "controllerFile": null,
-    "serviceFile": null,
-    "mapperFile": null,
-    "testFiles": [],
-    "reviewEvidence": null,
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/driver/controller/DriverAdminController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/driver/service/DriverAdminService.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/driver/DriverMapper.xml",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/A04DriverIT.java"
+    ],
+    "reviewEvidence": "docs/implementation/vehicle/A04/review.md",
     "operationId": "API_126_post",
     "method": "POST",
     "path": "/api/admin/drivers/{driverId}/disable-new-assignments",
     "summary": "禁止新增承接",
-    "taskId": "A04"
+    "taskId": "A04",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/A04-20261107.json"
+    ]
   },
   {
     "implementationStatus": "NOT_ASSESSED",
@@ -2462,30 +2472,40 @@
     "taskId": "A03"
   },
   {
-    "implementationStatus": "NOT_ASSESSED",
-    "controllerFile": null,
-    "serviceFile": null,
-    "mapperFile": null,
-    "testFiles": [],
-    "reviewEvidence": null,
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/driver/controller/DriverAdminController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/driver/service/DriverAdminService.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/driver/DriverMapper.xml",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/A04DriverIT.java"
+    ],
+    "reviewEvidence": "docs/implementation/vehicle/A04/review.md",
     "operationId": "V4_get_api_admin_drivers__driverId",
     "method": "GET",
     "path": "/api/admin/drivers/{driverId}",
     "summary": "查看独立档案详情",
-    "taskId": "A04"
+    "taskId": "A04",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/A04-20261107.json"
+    ]
   },
   {
-    "implementationStatus": "NOT_ASSESSED",
-    "controllerFile": null,
-    "serviceFile": null,
-    "mapperFile": null,
-    "testFiles": [],
-    "reviewEvidence": null,
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/driver/controller/DriverAdminController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/driver/service/DriverAdminService.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/driver/DriverMapper.xml",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/A04DriverIT.java"
+    ],
+    "reviewEvidence": "docs/implementation/vehicle/A04/review.md",
     "operationId": "V4_patch_api_admin_drivers__driverId",
     "method": "PATCH",
     "path": "/api/admin/drivers/{driverId}",
     "summary": "维护档案备注及允许字段",
-    "taskId": "A04"
+    "taskId": "A04",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/A04-20261107.json"
+    ]
   },
   {
     "implementationStatus": "VERIFIED",
@@ -2564,17 +2584,22 @@
     "evidence": "docs/implementation/vehicle/evidence/S02-20261106.json"
   },
   {
-    "implementationStatus": "NOT_ASSESSED",
-    "controllerFile": null,
-    "serviceFile": null,
-    "mapperFile": null,
-    "testFiles": [],
-    "reviewEvidence": null,
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/driver/controller/DriverAdminController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/driver/service/DriverAdminService.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/driver/DriverMapper.xml",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/A04DriverIT.java"
+    ],
+    "reviewEvidence": "docs/implementation/vehicle/A04/review.md",
     "operationId": "V4_get_api_admin_drivers__driverId__assignments",
     "method": "GET",
     "path": "/api/admin/drivers/{driverId}/assignments",
     "summary": "代驾承接服务记录",
-    "taskId": "A04"
+    "taskId": "A04",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/A04-20261107.json"
+    ]
   },
   {
     "implementationStatus": "NOT_ASSESSED",
@@ -4116,5 +4141,23 @@
     ],
     "reviewEvidence": null,
     "verificationEvidence": "docs/implementation/vehicle/evidence/B02-20261102.json"
+  },
+  {
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/driver/controller/DriverAdminController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/driver/service/DriverAdminService.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/driver/DriverMapper.xml",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/A04DriverIT.java"
+    ],
+    "reviewEvidence": "docs/implementation/vehicle/A04/review.md",
+    "operationId": "V64_post_api_admin_drivers__driverId__enable_new_assignments",
+    "method": "POST",
+    "path": "/api/admin/drivers/{driverId}/enable-new-assignments",
+    "summary": "恢复新承接行政开关",
+    "taskId": "A04",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/A04-20261107.json"
+    ]
   }
 ]

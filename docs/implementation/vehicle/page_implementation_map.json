@@ -928,11 +928,15 @@
     "taskId": "N02"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "PARTIAL",
+    "implementationFile": "xinyi-miniapp/src/pages/work/index.vue",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/A04-20261107.json",
+      "docs/implementation/vehicle/A04/browser.json"
+    ],
     "boardId": "D27",
-    "taskId": "A04"
+    "taskId": "A04",
+    "implementationNote": "本人工作与服务/权限入口已真实接通；资格、听单、对账/付款摘要后续任务未接通部分明确不可用，完整画板保持PARTIAL。"
   },
   {
     "status": "NOT_ASSESSED",
@@ -1196,11 +1200,15 @@
     "taskId": "S04"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "PARTIAL",
+    "implementationFile": "xinyi-miniapp/src/pages/work/index.vue",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/A04-20261107.json",
+      "docs/implementation/vehicle/A04/browser.json"
+    ],
     "boardId": "S15",
-    "taskId": "A04"
+    "taskId": "A04",
+    "implementationNote": "本人工作与服务/权限入口已真实接通；资格、听单、对账/付款摘要后续任务未接通部分明确不可用，完整画板保持PARTIAL。"
   },
   {
     "status": "IMPLEMENTED",
@@ -1842,46 +1850,70 @@
     "taskId": "A03"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "VERIFIED",
+    "implementationFile": "xinyi-ui/src/views/rongli/driver/index.vue",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/A04-20261107.json",
+      "docs/implementation/vehicle/A04/browser.json"
+    ],
     "boardId": "B28",
-    "taskId": "A04"
+    "taskId": "A04",
+    "implementationNote": "档案、归属、备注、行政启停和承接记录已验；费用对账入口待R任务，不虚构金额或账单。"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "VERIFIED",
+    "implementationFile": "xinyi-ui/src/views/rongli/driver/index.vue",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/A04-20261107.json",
+      "docs/implementation/vehicle/A04/browser.json"
+    ],
     "boardId": "B28-detail",
-    "taskId": "A04"
+    "taskId": "A04",
+    "implementationNote": "档案、归属、备注、行政启停和承接记录已验；费用对账入口待R任务，不虚构金额或账单。"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "VERIFIED",
+    "implementationFile": "xinyi-ui/src/views/rongli/driver/index.vue",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/A04-20261107.json",
+      "docs/implementation/vehicle/A04/browser.json"
+    ],
     "boardId": "B28-edit",
-    "taskId": "A04"
+    "taskId": "A04",
+    "implementationNote": "档案、归属、备注、行政启停和承接记录已验；费用对账入口待R任务，不虚构金额或账单。"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "VERIFIED",
+    "implementationFile": "xinyi-ui/src/views/rongli/driver/index.vue",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/A04-20261107.json",
+      "docs/implementation/vehicle/A04/browser.json"
+    ],
     "boardId": "B28-empty",
-    "taskId": "A04"
+    "taskId": "A04",
+    "implementationNote": "档案、归属、备注、行政启停和承接记录已验；费用对账入口待R任务，不虚构金额或账单。"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "VERIFIED",
+    "implementationFile": "xinyi-ui/src/views/rongli/driver/index.vue",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/A04-20261107.json",
+      "docs/implementation/vehicle/A04/browser.json"
+    ],
     "boardId": "B28-error",
-    "taskId": "A04"
+    "taskId": "A04",
+    "implementationNote": "档案、归属、备注、行政启停和承接记录已验；费用对账入口待R任务，不虚构金额或账单。"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "VERIFIED",
+    "implementationFile": "xinyi-ui/src/views/rongli/driver/index.vue",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/A04-20261107.json",
+      "docs/implementation/vehicle/A04/browser.json"
+    ],
     "boardId": "B28-forbidden",
-    "taskId": "A04"
+    "taskId": "A04",
+    "implementationNote": "档案、归属、备注、行政启停和承接记录已验；费用对账入口待R任务，不虚构金额或账单。"
   },
   {
     "status": "NOT_ASSESSED",

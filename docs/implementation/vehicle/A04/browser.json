@@ -1,0 +1,188 @@
+{
+  "mode": "Browser plugin not available；临时Playwright明确API夹具，不替代后端HTTP/MySQL或真机",
+  "checks": [
+    "PC: 公司共用池列表真实字段，姓名为昵称、NULL手机号/评分不伪造，编号隐藏仍显示占用且缺权限单量不补0",
+    "PC: 关键词与固定排序传服务端白名单，不传用户主部门或伪造权限范围",
+    "PC: 暂停携带UUID/版本/原因，仅改行政flag；占用和听单不解除，Availability响应后真实重读档案",
+    "PC: 备注未知结果关弹窗重开仍保留原body/key，备注不能改资格或开关",
+    "PC: 真实HTTP409保留原因/备注，禁直重试，重读后用新版本重新提交",
+    "PC: 真实/system/dept/list旧信封HTTP200/code403被拒绝，不能伪造空目录或默认公司",
+    "PC: 未归属档案不默认主部门，显式选择目录公司后认领，payload只含ownerDeptId/版本/原因",
+    "PC: 恢复行政控制不打开本人听单、不声称实时可接单",
+    "PC: 新公司越权HTTP403不回写归属，原公司仍保留",
+    "PC: 授权转移后行政控制暂停，保持听单意愿，未发送资格或任务释放字段",
+    "PC: 承接记录独立原订单权限API与固定排序/状态，个人对账未开通不造费用/余额或自审按钮",
+    "PC: 超JavaScript安全整数的driverId全程字符串保持精度",
+    "PC: 列表权限不开放维护/归属/启停，范围由服务端实际列表返回",
+    "PC: 390px筛选换行，档案表格局部横向滚动，页面无横向溢出",
+    "MINI: D27真实session/profile显示本人称呼、核验掩码、资格；未实现对账/听单/资格页禁用且无虚构余额",
+    "MINI: 本人服务记录复用已实现DRIVER订单接口，没有新建假任务页",
+    "MINI: 切换角色清除旧投影，旧在途响应不会恢复DRIVER信息；S15读取同一新会话及真实获授权站点",
+    "MINI: S15工作入口复用真实STATION订单，不沿用代驾视角",
+    "MINI: profile账户与会话不一致时清除全部工作投影，不展示异账号资料",
+    "MINI: 会话上下文与本地访问态不一致时拒绝展示并给重新登录入口",
+    "MINI: 页面身份/非空/无overlay与相关控制台错误，390px无横向溢出，未请求费用或伪造听单写入"
+  ],
+  "errors": [],
+  "pc": {
+    "mode": "Browser plugin not available；Playwright明确API夹具，仅验证真实PC渲染/交互，不替代后端HTTP/DB权限与并发验证",
+    "url": "http://127.0.0.1:5173/driver-management/drivers",
+    "viewports": [
+      "1440x1000",
+      "390x844"
+    ],
+    "checks": [
+      "公司共用池列表真实字段，姓名为昵称、NULL手机号/评分不伪造，编号隐藏仍显示占用且缺权限单量不补0",
+      "关键词与固定排序传服务端白名单，不传用户主部门或伪造权限范围",
+      "暂停携带UUID/版本/原因，仅改行政flag；占用和听单不解除，Availability响应后真实重读档案",
+      "备注未知结果关弹窗重开仍保留原body/key，备注不能改资格或开关",
+      "真实HTTP409保留原因/备注，禁直重试，重读后用新版本重新提交",
+      "真实/system/dept/list旧信封HTTP200/code403被拒绝，不能伪造空目录或默认公司",
+      "未归属档案不默认主部门，显式选择目录公司后认领，payload只含ownerDeptId/版本/原因",
+      "恢复行政控制不打开本人听单、不声称实时可接单",
+      "新公司越权HTTP403不回写归属，原公司仍保留",
+      "授权转移后行政控制暂停，保持听单意愿，未发送资格或任务释放字段",
+      "承接记录独立原订单权限API与固定排序/状态，个人对账未开通不造费用/余额或自审按钮",
+      "超JavaScript安全整数的driverId全程字符串保持精度",
+      "列表权限不开放维护/归属/启停，范围由服务端实际列表返回",
+      "390px筛选换行，档案表格局部横向滚动，页面无横向溢出"
+    ],
+    "errors": [],
+    "warnings": [],
+    "expectedTransportErrors": [
+      {
+        "message": "Failed to load resource: net::ERR_FAILED",
+        "url": "http://127.0.0.1:5173/dev-api/api/admin/drivers/1"
+      },
+      {
+        "message": "Failed to load resource: the server responded with a status of 409 (Conflict)",
+        "url": "http://127.0.0.1:5173/dev-api/api/admin/drivers/1"
+      },
+      {
+        "message": "Failed to load resource: the server responded with a status of 403 (Forbidden)",
+        "url": "http://127.0.0.1:5173/dev-api/api/admin/drivers/3"
+      }
+    ],
+    "unknown": [],
+    "screenshots": [
+      "/private/tmp/A04-driver-list.png",
+      "/private/tmp/A04-driver-detail.png",
+      "/private/tmp/A04-driver-mobile.png"
+    ]
+  },
+  "mini": {
+    "mode": "Browser plugin not available；临时Playwright明确API夹具，仅验证H5页面，不代表微信真机/资格链/费用链完成",
+    "url": "http://127.0.0.1:5175/#/pages/work/index",
+    "viewports": [
+      "390x844"
+    ],
+    "checks": [
+      "D27真实session/profile显示本人称呼、核验掩码、资格；未实现对账/听单/资格页禁用且无虚构余额",
+      "本人服务记录复用已实现DRIVER订单接口，没有新建假任务页",
+      "切换角色清除旧投影，旧在途响应不会恢复DRIVER信息；S15读取同一新会话及真实获授权站点",
+      "S15工作入口复用真实STATION订单，不沿用代驾视角",
+      "profile账户与会话不一致时清除全部工作投影，不展示异账号资料",
+      "会话上下文与本地访问态不一致时拒绝展示并给重新登录入口",
+      "页面身份/非空/无overlay与相关控制台错误，390px无横向溢出，未请求费用或伪造听单写入"
+    ],
+    "errors": [],
+    "unknown": [],
+    "requests": [
+      {
+        "method": "GET",
+        "path": "/api/common/session"
+      },
+      {
+        "method": "GET",
+        "path": "/api/common/profile"
+      },
+      {
+        "method": "GET",
+        "path": "/api/app/driver/orders"
+      },
+      {
+        "method": "GET",
+        "path": "/api/common/session"
+      },
+      {
+        "method": "GET",
+        "path": "/api/common/profile"
+      },
+      {
+        "method": "GET",
+        "path": "/api/common/session"
+      },
+      {
+        "method": "GET",
+        "path": "/api/common/profile"
+      },
+      {
+        "method": "GET",
+        "path": "/api/common/session"
+      },
+      {
+        "method": "POST",
+        "path": "/api/common/session/role"
+      },
+      {
+        "method": "GET",
+        "path": "/api/common/session"
+      },
+      {
+        "method": "GET",
+        "path": "/api/common/session"
+      },
+      {
+        "method": "GET",
+        "path": "/api/common/profile"
+      },
+      {
+        "method": "GET",
+        "path": "/api/app/station/authorized-stations"
+      },
+      {
+        "method": "GET",
+        "path": "/api/app/station/orders"
+      },
+      {
+        "method": "GET",
+        "path": "/api/common/session"
+      },
+      {
+        "method": "GET",
+        "path": "/api/common/profile"
+      },
+      {
+        "method": "GET",
+        "path": "/api/app/station/authorized-stations"
+      },
+      {
+        "method": "GET",
+        "path": "/api/common/session"
+      },
+      {
+        "method": "GET",
+        "path": "/api/common/profile"
+      },
+      {
+        "method": "GET",
+        "path": "/api/common/session"
+      },
+      {
+        "method": "GET",
+        "path": "/api/common/profile"
+      }
+    ],
+    "screenshots": [
+      "/private/tmp/A04-mini-driver-work.png",
+      "/private/tmp/A04-mini-station-work.png"
+    ]
+  },
+  "archivedScreenshots": [
+    "docs/implementation/vehicle/A04/ui-driver-list.png",
+    "docs/implementation/vehicle/A04/ui-driver-detail.png",
+    "docs/implementation/vehicle/A04/ui-driver-mobile.png",
+    "docs/implementation/vehicle/A04/ui-mini-driver-work.png",
+    "docs/implementation/vehicle/A04/ui-mini-station-work.png"
+  ]
+}

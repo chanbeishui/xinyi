@@ -1495,6 +1495,26 @@
         "POST /api/admin/after-sales/{caseId}/review"
       ],
       "usage": "ADDITIONAL_PERMISSION"
+    },
+    {
+      "code": "biz:driver:assigncompany",
+      "resource": "driver",
+      "action": "assigncompany",
+      "description": "显式归属或迁移代驾公司；原新范围并集",
+      "operations": [
+        "PATCH /api/admin/drivers/{driverId}"
+      ],
+      "usage": "FIELD"
+    },
+    {
+      "code": "biz:driver:enablenewassignments",
+      "resource": "driver",
+      "action": "enablenewassignments",
+      "description": "恢复新承接行政开关，不授资格",
+      "operations": [
+        "POST /api/admin/drivers/{driverId}/enable-new-assignments"
+      ],
+      "usage": "OPERATION"
     }
   ],
   "capabilities": [

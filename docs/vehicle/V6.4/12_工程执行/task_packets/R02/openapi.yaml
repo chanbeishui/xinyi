@@ -547,7 +547,7 @@ paths:
       x-flow-ids:
       - F39
       - F40
-      description: 按V6.4/T3.4真实主体与范围校验；个人对账汇总指标
+      description: 真实ADMIN及对应功能/公司部门范围；权威归属driver.owner_dept_id，不取员工绑定、主部门或历史订单。空范围拒绝。写入版本、UUID和原因，审计/outbox同事务。
       parameters:
       - name: driverId
         in: path
@@ -610,7 +610,7 @@ paths:
       x-permission: biz:driverstatement:list
       x-authorization:
         realm: ADMIN
-        scope: ORG_DEPT_STATION_AND_PAYOR
+        scope: DRIVER_OWNER_COMPANY
         permission: biz:driverstatement:list
       x-error-codes:
       - VI_REQUEST_INVALID
@@ -626,6 +626,8 @@ paths:
       - VI_UPSTREAM_UNAVAILABLE
       x-error-policy: OBJECT_404_HIDES_EXISTENCE
       x-contract-baseline: V6.4
+      x-authority-sources:
+        driver: vi_driver_profile.owner_dept_id
   /api/admin/drivers/{driverId}/reconciliation-entries:
     get:
       operationId: V42_get_api_admin_drivers__driverId__reconciliation_entries
@@ -637,7 +639,7 @@ paths:
       x-flow-ids:
       - F39
       - F40
-      description: 按V6.4/T3.4真实主体与范围校验；未结清与全部服务明细
+      description: 真实ADMIN及对应功能/公司部门范围；权威归属driver.owner_dept_id，不取员工绑定、主部门或历史订单。空范围拒绝。写入版本、UUID和原因，审计/outbox同事务。
       parameters:
       - name: driverId
         in: path
@@ -755,7 +757,7 @@ paths:
       x-permission: biz:driverstatement:list
       x-authorization:
         realm: ADMIN
-        scope: ORG_DEPT_STATION_AND_PAYOR
+        scope: DRIVER_OWNER_COMPANY
         permission: biz:driverstatement:list
       x-error-codes:
       - VI_REQUEST_INVALID
@@ -771,6 +773,8 @@ paths:
       - VI_UPSTREAM_UNAVAILABLE
       x-error-policy: OBJECT_404_HIDES_EXISTENCE
       x-contract-baseline: V6.4
+      x-authority-sources:
+        driver: vi_driver_profile.owner_dept_id
   /api/app/driver/reconciliation-entries:
     get:
       operationId: V42_get_api_app_driver_reconciliation_entries
@@ -1617,6 +1621,12 @@ components:
       - RETRY_REFUND
       - QUERY_RECONCILIATION
       - RESOLVE_RECONCILIATION
+      - VIEW_DRIVER
+      - EDIT_DRIVER
+      - DISABLE_NEW_ASSIGNMENTS
+      - ENABLE_NEW_ASSIGNMENTS
+      - ASSIGN_DRIVER_COMPANY
+      - VIEW_ASSIGNMENTS
     DriverStatementLine:
       type: object
       additionalProperties: false

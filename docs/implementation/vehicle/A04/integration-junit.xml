@@ -1,0 +1,95 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <testsuite xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-failsafe-plugin/xsd/failsafe-test-report.xsd" version="3.0.2" name="com.xinyi.web.viit.A04DriverIT" time="4.07" tests="45" errors="0" skipped="0" failures="0">
+    <testcase name="responseIsNoStoreAndMalformedIdentifiersSortAndPaginationAreRejected" classname="com.xinyi.web.viit.A04DriverIT" time="0.063">
+    </testcase>
+    <testcase name="disableAndFreshMiniSessionsKeepTheQualifiedRoleAndExistingResponsibility" classname="com.xinyi.web.viit.A04DriverIT" time="0.056">
+    </testcase>
+    <testcase name="remarksCannotChangeQualificationCredentialsListeningOrNewWorkSwitch" classname="com.xinyi.web.viit.A04DriverIT" time="0.049">
+    </testcase>
+    <testcase name="remarkUpdateIsVersionedAndDoesNotMutateAccountOrQualification" classname="com.xinyi.web.viit.A04DriverIT" time="0.04">
+    </testcase>
+    <testcase name="historyRequiresAssignmentPermissionSeparatelyFromDriverDetails" classname="com.xinyi.web.viit.A04DriverIT" time="0.037">
+    </testcase>
+    <testcase name="enableRejectsMissingOrExpiredLicenseAndExpiredReview" classname="com.xinyi.web.viit.A04DriverIT" time="0.051">
+    </testcase>
+    <testcase name="adminEndpointsRejectMissingLoginMiniTokensAndForgedClientRealm" classname="com.xinyi.web.viit.A04DriverIT" time="0.031">
+    </testcase>
+    <testcase name="disableDoesNotReleaseANewerAssignmentAfterHistoricalReturn" classname="com.xinyi.web.viit.A04DriverIT" time="0.044">
+    </testcase>
+    <testcase name="unownedLegacyRowsAreVisibleOnlyWithExplicitGlobalAuthority" classname="com.xinyi.web.viit.A04DriverIT" time="0.053">
+    </testcase>
+    <testcase name="oldAuthVersionIsRejectedEvenWhenRedisEvictionFails" classname="com.xinyi.web.viit.A04DriverIT" time="0.033">
+    </testcase>
+    <testcase name="enableRequiresAnExplicitLicenseClassAndFutureReviewButIncludesTodaysLicense" classname="com.xinyi.web.viit.A04DriverIT" time="0.062">
+    </testcase>
+    <testcase name="independentCompanyQueryAndSingleStationHistoryScopesAreBothHonored" classname="com.xinyi.web.viit.A04DriverIT" time="0.059">
+    </testcase>
+    <testcase name="displayNameIsExplicitlyANicknameAndNoInventedScoreIsReturned" classname="com.xinyi.web.viit.A04DriverIT" time="0.032">
+    </testcase>
+    <testcase name="ownershipCannotBeClearedOrForgedWithInternalScopeFields" classname="com.xinyi.web.viit.A04DriverIT" time="0.034">
+    </testcase>
+    <testcase name="authorityRevocationAndPendingMaintenanceAreSerializedByTheDirectoryGuard" classname="com.xinyi.web.viit.A04DriverIT" time="0.187">
+    </testcase>
+    <testcase name="enableAllowsAnExplicitLongTermLicenseAndDoesNotChangeListening" classname="com.xinyi.web.viit.A04DriverIT" time="0.045">
+    </testcase>
+    <testcase name="transferChecksTheUnionOfOldAndNewCompanyScopes" classname="com.xinyi.web.viit.A04DriverIT" time="0.044">
+    </testcase>
+    <testcase name="globalAuthorityClaimsLegacyRowWithoutGuessingEmployeeDepartment" classname="com.xinyi.web.viit.A04DriverIT" time="0.035">
+    </testcase>
+    <testcase name="sixActualHttpResponsesConformToThePrimaryOpenApi" classname="com.xinyi.web.viit.A04DriverIT" time="1.23">
+    </testcase>
+    <testcase name="sameIdempotencyKeyReplaysOnceAndDifferentBodyConflicts" classname="com.xinyi.web.viit.A04DriverIT" time="0.07">
+    </testcase>
+    <testcase name="revokedCompanyMembershipCannotReuseAnEarlierAuthorizedDetail" classname="com.xinyi.web.viit.A04DriverIT" time="0.04">
+    </testcase>
+    <testcase name="companyScopeCannotClaimAnUnownedLegacyDriver" classname="com.xinyi.web.viit.A04DriverIT" time="0.029">
+    </testcase>
+    <testcase name="staleVersionDoesNotOverwriteTheFirstOperatorsRemark" classname="com.xinyi.web.viit.A04DriverIT" time="0.04">
+    </testcase>
+    <testcase name="unverifiedPhoneCipherIsNeverDisplayedAndVerifiedPhoneIsOnlyMasked" classname="com.xinyi.web.viit.A04DriverIT" time="0.051">
+    </testcase>
+    <testcase name="enableRequiresApprovedQualificationInsteadOfAnEmployeeRole" classname="com.xinyi.web.viit.A04DriverIT" time="0.081">
+    </testcase>
+    <testcase name="assignmentsFilterEachOriginalOrderAndTotalRatherThanExposeAllDriverHistory" classname="com.xinyi.web.viit.A04DriverIT" time="0.04">
+    </testcase>
+    <testcase name="transferRejectsMissingInactiveOrDeletedTargetDepartments" classname="com.xinyi.web.viit.A04DriverIT" time="0.039">
+    </testcase>
+    <testcase name="emptyDepartmentScopeFailsClosedAndCannotUseAClientScopeOverride" classname="com.xinyi.web.viit.A04DriverIT" time="0.047">
+    </testcase>
+    <testcase name="missingFunctionsAreNotGrantedByCompanyScopeOrClientView" classname="com.xinyi.web.viit.A04DriverIT" time="0.048">
+    </testcase>
+    <testcase name="enableRequiresItsOwnFunctionalPermission" classname="com.xinyi.web.viit.A04DriverIT" time="0.121">
+    </testcase>
+    <testcase name="outboxFailureRollsBackRemarkVersionAuditAndIdempotency" classname="com.xinyi.web.viit.A04DriverIT" time="0.028">
+    </testcase>
+    <testcase name="disablePreservesPickedUpVehicleAssignmentOccupancyAndMoneyFacts" classname="com.xinyi.web.viit.A04DriverIT" time="0.04">
+    </testcase>
+    <testcase name="rowAndTotalUseTheSameScopeAcrossSearchAndPagination" classname="com.xinyi.web.viit.A04DriverIT" time="0.036">
+    </testcase>
+    <testcase name="databaseFailureRollsBackTheWholeMaintenanceIntent" classname="com.xinyi.web.viit.A04DriverIT" time="0.054">
+    </testcase>
+    <testcase name="occupancyBlocksTransferEvenWithoutAnActiveAssignmentRow" classname="com.xinyi.web.viit.A04DriverIT" time="0.03">
+    </testcase>
+    <testcase name="missingInvalidKeyVersionAndOversizedFieldsAreRejectedBeforeWriting" classname="com.xinyi.web.viit.A04DriverIT" time="0.028">
+    </testcase>
+    <testcase name="completedCountUsesActualReturnAndRespectsHistoryScope" classname="com.xinyi.web.viit.A04DriverIT" time="0.03">
+    </testcase>
+    <testcase name="waitingInvitationBlocksTransferEvenWithoutAnOccupancyRow" classname="com.xinyi.web.viit.A04DriverIT" time="0.021">
+    </testcase>
+    <testcase name="activeAssignmentBlocksTransferEvenIfOccupancyWasLost" classname="com.xinyi.web.viit.A04DriverIT" time="0.025">
+    </testcase>
+    <testcase name="disablePreservesWaitingInvitationAndItsExactOccupancy" classname="com.xinyi.web.viit.A04DriverIT" time="0.025">
+    </testcase>
+    <testcase name="enableRejectsUnownedOrInactiveCompanyWithoutRemovingTheRoleOrTask" classname="com.xinyi.web.viit.A04DriverIT" time="0.031">
+    </testcase>
+    <testcase name="ownershipRequiresSeparatePermissionEvenWhenEditingRemarksIsAllowed" classname="com.xinyi.web.viit.A04DriverIT" time="0.043">
+    </testcase>
+    <testcase name="multiDepartmentAuthorityCanTransferAndTransferAlwaysDisablesNewWork" classname="com.xinyi.web.viit.A04DriverIT" time="0.044">
+    </testcase>
+    <testcase name="companyPoolUsesExplicitCompanyInsteadOfTheAdministratorsStationDepartment" classname="com.xinyi.web.viit.A04DriverIT" time="0.046">
+    </testcase>
+    <testcase name="concurrentSameVersionEditsProduceOneWinnerAndOneConflict" classname="com.xinyi.web.viit.A04DriverIT" time="0.037">
+    </testcase>
+  </testsuite>
+</testsuites>

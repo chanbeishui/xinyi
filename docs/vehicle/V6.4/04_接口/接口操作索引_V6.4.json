@@ -2029,12 +2029,15 @@
     "capability": null,
     "authorization": {
       "realm": "ADMIN",
-      "scope": "ORG_DEPT_STATION",
+      "scope": "DRIVER_OWNER_COMPANY",
       "permission": "biz:driver:list"
     },
     "flows": [
       "F25"
-    ]
+    ],
+    "authoritySources": {
+      "driver": "vi_driver_profile.owner_dept_id"
+    }
   },
   {
     "method": "POST",
@@ -2045,12 +2048,15 @@
     "capability": null,
     "authorization": {
       "realm": "ADMIN",
-      "scope": "ORG_DEPT_STATION",
+      "scope": "DRIVER_OWNER_COMPANY",
       "permission": "biz:driver:disablenewassignments"
     },
     "flows": [
       "F04"
-    ]
+    ],
+    "authoritySources": {
+      "driver": "vi_driver_profile.owner_dept_id"
+    }
   },
   {
     "method": "POST",
@@ -3124,12 +3130,15 @@
     "capability": null,
     "authorization": {
       "realm": "ADMIN",
-      "scope": "ORG_DEPT_STATION",
+      "scope": "DRIVER_OWNER_COMPANY",
       "permission": "biz:driver:query"
     },
     "flows": [
       "F25"
-    ]
+    ],
+    "authoritySources": {
+      "driver": "vi_driver_profile.owner_dept_id"
+    }
   },
   {
     "method": "PATCH",
@@ -3140,12 +3149,15 @@
     "capability": null,
     "authorization": {
       "realm": "ADMIN",
-      "scope": "ORG_DEPT_STATION",
+      "scope": "DRIVER_OWNER_COMPANY",
       "permission": "biz:driver:edit"
     },
     "flows": [
       "F25"
-    ]
+    ],
+    "authoritySources": {
+      "driver": "vi_driver_profile.owner_dept_id"
+    }
   },
   {
     "method": "GET",
@@ -3236,13 +3248,17 @@
     "capability": null,
     "authorization": {
       "realm": "ADMIN",
-      "scope": "ORG_DEPT_STATION",
+      "scope": "DRIVER_OWNER_COMPANY",
       "permission": "biz:assignment:list"
     },
     "flows": [
       "F31",
       "F32"
-    ]
+    ],
+    "authoritySources": {
+      "driver": "vi_driver_profile.owner_dept_id",
+      "history": "vi_order.dept_id"
+    }
   },
   {
     "method": "GET",
@@ -3253,12 +3269,15 @@
     "capability": null,
     "authorization": {
       "realm": "ADMIN",
-      "scope": "ORG_DEPT_STATION_AND_PAYOR",
+      "scope": "DRIVER_OWNER_COMPANY",
       "permission": "biz:driverledger:list"
     },
     "flows": [
       "F32"
-    ]
+    ],
+    "authoritySources": {
+      "driver": "vi_driver_profile.owner_dept_id"
+    }
   },
   {
     "method": "GET",
@@ -3814,13 +3833,16 @@
     "capability": null,
     "authorization": {
       "realm": "ADMIN",
-      "scope": "ORG_DEPT_STATION_AND_PAYOR",
+      "scope": "DRIVER_OWNER_COMPANY",
       "permission": "biz:driverstatement:list"
     },
     "flows": [
       "F39",
       "F40"
-    ]
+    ],
+    "authoritySources": {
+      "driver": "vi_driver_profile.owner_dept_id"
+    }
   },
   {
     "method": "GET",
@@ -3831,13 +3853,16 @@
     "capability": null,
     "authorization": {
       "realm": "ADMIN",
-      "scope": "ORG_DEPT_STATION_AND_PAYOR",
+      "scope": "DRIVER_OWNER_COMPANY",
       "permission": "biz:driverstatement:list"
     },
     "flows": [
       "F39",
       "F40"
-    ]
+    ],
+    "authoritySources": {
+      "driver": "vi_driver_profile.owner_dept_id"
+    }
   },
   {
     "method": "POST",
@@ -5109,6 +5134,25 @@
       "scope": "OWN_ACCOUNT_RESOURCE",
       "activeRole": "OWNER",
       "capability": "OWNER_ORDER_CREATE"
+    }
+  },
+  {
+    "method": "POST",
+    "path": "/api/admin/drivers/{driverId}/enable-new-assignments",
+    "operationId": "V64_post_api_admin_drivers__driverId__enable_new_assignments",
+    "summary": "恢复新承接行政开关",
+    "permission": "biz:driver:enablenewassignments",
+    "capability": null,
+    "authorization": {
+      "realm": "ADMIN",
+      "scope": "DRIVER_OWNER_COMPANY",
+      "permission": "biz:driver:enablenewassignments"
+    },
+    "flows": [
+      "F04"
+    ],
+    "authoritySources": {
+      "driver": "vi_driver_profile.owner_dept_id"
     }
   }
 ]

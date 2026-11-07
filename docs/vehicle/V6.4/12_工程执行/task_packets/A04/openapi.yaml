@@ -22,7 +22,7 @@ paths:
       - AdminBearerAuth: []
       x-flow-ids:
       - F25
-      description: 执行前校验当前真实身份、功能权限与对象所属范围。所有金额来自服务端核对，不因UI显示可点而放行。
+      description: 真实ADMIN及对应功能/公司部门范围；权威归属driver.owner_dept_id，不取员工绑定、主部门或历史订单。空范围拒绝。写入版本、UUID和原因，审计/outbox同事务。
       parameters:
       - name: pageNum
         in: query
@@ -45,11 +45,27 @@ paths:
         in: query
         schema:
           type: string
+          enum:
+          - DRAFT
+          - SUBMITTED
+          - APPROVED
+          - REJECTED
+          - EXPIRED
+          - SUSPENDED
       - name: sort
         in: query
         schema:
           type: string
-          description: 白名单字段，不允许原样SQL拼接
+          enum:
+          - idDesc
+          - nameAsc
+          default: idDesc
+      - name: ownerDeptId
+        in: query
+        schema:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
       responses:
         '200':
           description: 成功，返回当前业务事实
@@ -101,7 +117,7 @@ paths:
       x-permission: biz:driver:list
       x-authorization:
         realm: ADMIN
-        scope: ORG_DEPT_STATION
+        scope: DRIVER_OWNER_COMPANY
         permission: biz:driver:list
       x-error-codes:
       - VI_REQUEST_INVALID
@@ -116,15 +132,15 @@ paths:
       - VI_UPSTREAM_UNAVAILABLE
       x-error-policy: GLOBAL_FAILURES_NO_RESOURCE_404
       x-contract-baseline: V6.4
+      x-authority-sources:
+        driver: vi_driver_profile.owner_dept_id
   /api/admin/drivers/{driverId}/disable-new-assignments:
     post:
       operationId: API_126_post
       summary: 禁止新增承接
       tags:
       - ADMIN
-      description: '流程：F04。权限码为建议，须映射实际仓库；非全局角色必须有站点范围；审核不允许自己审批自己的申请
-
-        参数校验、真实归属、服务端当前状态/版本先于写入；不接受主体伪造。'
+      description: 真实ADMIN及对应功能/公司部门范围；权威归属driver.owner_dept_id，不取员工绑定、主部门或历史订单。空范围拒绝。写入版本、UUID和原因，审计/outbox同事务。 只关闭新增承接，不改资格、听单、邀约、保管或既有承接。
       x-flow-ids:
       - F04
       security:
@@ -213,7 +229,7 @@ paths:
       x-permission: biz:driver:disablenewassignments
       x-authorization:
         realm: ADMIN
-        scope: ORG_DEPT_STATION
+        scope: DRIVER_OWNER_COMPANY
         permission: biz:driver:disablenewassignments
       x-error-codes:
       - VI_REQUEST_INVALID
@@ -245,6 +261,8 @@ paths:
       - VI_UPSTREAM_UNAVAILABLE
       x-error-policy: OBJECT_404_HIDES_EXISTENCE
       x-contract-baseline: V6.4
+      x-authority-sources:
+        driver: vi_driver_profile.owner_dept_id
   /api/admin/drivers/{driverId}:
     get:
       operationId: V4_get_api_admin_drivers__driverId
@@ -255,7 +273,7 @@ paths:
       - AdminBearerAuth: []
       x-flow-ids:
       - F25
-      description: 执行前校验当前真实身份、功能权限与对象所属范围。所有金额来自服务端核对，不因UI显示可点而放行。
+      description: 真实ADMIN及对应功能/公司部门范围；权威归属driver.owner_dept_id，不取员工绑定、主部门或历史订单。空范围拒绝。写入版本、UUID和原因，审计/outbox同事务。
       parameters:
       - name: driverId
         in: path
@@ -310,7 +328,7 @@ paths:
       x-permission: biz:driver:query
       x-authorization:
         realm: ADMIN
-        scope: ORG_DEPT_STATION
+        scope: DRIVER_OWNER_COMPANY
         permission: biz:driver:query
       x-error-codes:
       - VI_REQUEST_INVALID
@@ -326,6 +344,8 @@ paths:
       - VI_UPSTREAM_UNAVAILABLE
       x-error-policy: OBJECT_404_HIDES_EXISTENCE
       x-contract-baseline: V6.4
+      x-authority-sources:
+        driver: vi_driver_profile.owner_dept_id
     patch:
       operationId: V4_patch_api_admin_drivers__driverId
       summary: 维护档案备注及允许字段
@@ -335,7 +355,7 @@ paths:
       - AdminBearerAuth: []
       x-flow-ids:
       - F25
-      description: 执行前校验当前真实身份、功能权限与对象所属范围。所有金额来自服务端核对，不因UI显示可点而放行。
+      description: 真实ADMIN及对应功能/公司部门范围；权威归属driver.owner_dept_id，不取员工绑定、主部门或历史订单。空范围拒绝。写入版本、UUID和原因，审计/outbox同事务。 改公司覆盖原新归属；未归属认领须ALL。不可伪造资格/听单/证件。
       parameters:
       - name: driverId
         in: path
@@ -406,7 +426,7 @@ paths:
       x-permission: biz:driver:edit
       x-authorization:
         realm: ADMIN
-        scope: ORG_DEPT_STATION
+        scope: DRIVER_OWNER_COMPANY
         permission: biz:driver:edit
       x-error-codes:
       - VI_REQUEST_INVALID
@@ -438,6 +458,10 @@ paths:
       - VI_UPSTREAM_UNAVAILABLE
       x-error-policy: OBJECT_404_HIDES_EXISTENCE
       x-contract-baseline: V6.4
+      x-authority-sources:
+        driver: vi_driver_profile.owner_dept_id
+      x-field-permissions:
+        ownerDeptId: biz:driver:assigncompany
   /api/admin/drivers/{driverId}/assignments:
     get:
       operationId: V4_get_api_admin_drivers__driverId__assignments
@@ -449,7 +473,7 @@ paths:
       x-flow-ids:
       - F31
       - F32
-      description: 执行前校验当前真实身份、功能权限与对象所属范围。所有金额来自服务端核对，不因UI显示可点而放行。
+      description: 真实ADMIN及对应功能/公司部门范围；权威归属driver.owner_dept_id，不取员工绑定、主部门或历史订单。空范围拒绝。写入版本、UUID和原因，审计/outbox同事务。 同时需要司机query与assignment:list；承接记录再按原订单真实部门过滤，row/total同范围。
       parameters:
       - name: driverId
         in: path
@@ -480,11 +504,17 @@ paths:
         in: query
         schema:
           type: string
+          enum:
+          - ACTIVE
+          - ENDED
+          - RETURNED
       - name: sort
         in: query
         schema:
           type: string
-          description: 白名单字段，不允许原样SQL拼接
+          enum:
+          - acceptedAtDesc
+          default: acceptedAtDesc
       responses:
         '200':
           description: 成功，返回当前业务事实
@@ -538,7 +568,7 @@ paths:
       x-permission: biz:assignment:list
       x-authorization:
         realm: ADMIN
-        scope: ORG_DEPT_STATION
+        scope: DRIVER_OWNER_COMPANY
         permission: biz:assignment:list
       x-error-codes:
       - VI_REQUEST_INVALID
@@ -554,6 +584,138 @@ paths:
       - VI_UPSTREAM_UNAVAILABLE
       x-error-policy: OBJECT_404_HIDES_EXISTENCE
       x-contract-baseline: V6.4
+      x-authority-sources:
+        driver: vi_driver_profile.owner_dept_id
+        history: vi_order.dept_id
+  /api/admin/drivers/{driverId}/enable-new-assignments:
+    post:
+      operationId: V64_post_api_admin_drivers__driverId__enable_new_assignments
+      summary: 恢复新承接行政开关
+      tags:
+      - ADMIN
+      description: 真实ADMIN及对应功能/公司部门范围；权威归属driver.owner_dept_id，不取员工绑定、主部门或历史订单。空范围拒绝。写入版本、UUID和原因，审计/outbox同事务。 只有明确APPROVED、准驾类别/证照有效、复审未到期、公司有效才恢复行政开关；不代表D01最终可派单。
+      x-flow-ids:
+      - F04
+      security:
+      - AdminBearerAuth: []
+      responses:
+        '200':
+          description: 操作成功；领域校验后返回真实结果
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    enum:
+                    - 200
+                  msg:
+                    type: string
+                  data:
+                    allOf:
+                    - $ref: '#/components/schemas/Availability'
+                    nullable: true
+                    type: object
+                additionalProperties: false
+                required:
+                - code
+                - msg
+                - data
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+                enum:
+                - no-store
+              description: 身份/交易/个人业务响应不缓存
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalError'
+        '503':
+          $ref: '#/components/responses/Unavailable'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+      parameters:
+      - name: driverId
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+      - name: Idempotency-Key
+        in: header
+        required: true
+        schema:
+          type: string
+          description: UUID；按主体+动作+资源+键及请求摘要保存首次结果；同键不同体409，至少24h，资金/交接另有永久业务去重
+      - name: X-Client-Type
+        in: header
+        required: true
+        schema:
+          type: string
+          enum:
+          - owner
+          - driver
+          - station
+          - admin
+        description: 仅审计来源，不作为授权；须匹配服务端会话视角
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VersionReason'
+      x-permission: biz:driver:enablenewassignments
+      x-authorization:
+        realm: ADMIN
+        scope: DRIVER_OWNER_COMPANY
+        permission: biz:driver:enablenewassignments
+      x-error-codes:
+      - VI_REQUEST_INVALID
+      - VI_AUTH_REQUIRED
+      - VI_TOKEN_REALM_MISMATCH
+      - VI_REFRESH_REUSED
+      - VI_FORBIDDEN
+      - VI_SELF_REVIEW_DENIED
+      - VI_RESOURCE_NOT_VISIBLE
+      - VI_VERSION_CONFLICT
+      - VI_STATE_CONFLICT
+      - VI_IDEMPOTENCY_CONFLICT
+      - VI_SELECTION_CONFLICT
+      - VI_CONTEXT_CHANGED
+      - VI_SNAPSHOT_CHANGED
+      - VI_DATA_INVALID
+      - VI_EVIDENCE_INCOMPLETE
+      - VI_HANDOVER_CODE_INVALID
+      - VI_HANDOVER_LOCKED
+      - VI_UNPRICED_LINES
+      - VI_REFUND_LIMIT
+      - VI_PAYMENT_LIMIT
+      - VI_SERVICE_UNAVAILABLE
+      - VI_CAPABILITY_NOT_CONFIGURED
+      - VI_TRAINING_NOT_READY
+      - VI_RATE_LIMITED
+      - VI_INTERNAL_ERROR
+      - VI_AUTHORITY_UNAVAILABLE
+      - VI_UPSTREAM_UNAVAILABLE
+      x-error-policy: OBJECT_404_HIDES_EXISTENCE
+      x-contract-baseline: V6.4
+      x-authority-sources:
+        driver: vi_driver_profile.owner_dept_id
 components:
   responses:
     NotFound:
@@ -885,8 +1047,10 @@ components:
           format: date-time
           description: ISO8601 UTC时刻，必须Z结尾；显示与业务日期Asia/Shanghai
           pattern: Z$
+          nullable: true
         endReason:
           type: string
+          nullable: true
         custody:
           type: string
         released:
@@ -896,10 +1060,12 @@ components:
           pattern: ^[1-9][0-9]{0,18}$
           maxLength: 19
           description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+          nullable: true
       required:
       - assignmentId
       - driverId
       - orderNo
+      description: 真实承接历史，按司机公司权限及原订单部门双重过滤；不含客户住址、电话、付款金额及司机报酬。released取真实ended_at，不把订单完成当归还。
     DriverMaintenance:
       type: object
       additionalProperties: false
@@ -908,14 +1074,28 @@ components:
           type: integer
           format: int64
           description: 最后读取版本，用于条件更新；409必须重新获取，不静默覆盖
+          minimum: 0
+          maximum: 9007199254740991
         internalRemark:
           type: string
+          maxLength: 1000
         reason:
           type: string
+          minLength: 1
+          maxLength: 500
+        ownerDeptId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
       required:
       - expectedVersion
       - reason
-      description: 证件/实名变更进入资格复审；本接口不直接修改审核结论。
+      description: 仅维护运营备注和显式归属公司。改归属另需biz:driver:assigncompany且覆盖原/新公司，NULL归属认领须全数据范围；有邀约/占用/在手任务不能转移，转移后禁新。不能写资格、证件、听单偏好或资金。
+      anyOf:
+      - required:
+        - ownerDeptId
+      - required:
+        - internalRemark
     DriverRecord:
       type: object
       additionalProperties: false
@@ -932,10 +1112,20 @@ components:
           description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
         name:
           type: string
+          description: 账户昵称展示，不代表实名核验；无司机评分来源时score为null。
+          nullable: true
         phoneMask:
           type: string
+          nullable: true
         qualificationStatus:
           type: string
+          enum:
+          - DRAFT
+          - SUBMITTED
+          - APPROVED
+          - REJECTED
+          - EXPIRED
+          - SUSPENDED
         newAssignmentEnabled:
           type: boolean
         listening:
@@ -945,16 +1135,20 @@ components:
           pattern: ^[1-9][0-9]{0,18}$
           maxLength: 19
           description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+          nullable: true
         occupied:
           type: boolean
         licenseClass:
           type: string
+          nullable: true
         licenseValidTo:
           type: string
           format: date
+          nullable: true
         reviewDueAt:
           type: string
           format: date
+          nullable: true
         completedAssignmentCount:
           type: integer
           format: int64
@@ -962,22 +1156,64 @@ components:
           description: 归还完成的承接数，不等于客户订单完成数
         score:
           type: string
+          nullable: true
         internalRemark:
           type: string
+          nullable: true
         version:
           type: integer
           format: int64
           description: 最后读取版本，用于条件更新；409必须重新获取，不静默覆盖
+          minimum: 0
+          maximum: 9007199254740991
         allowedActions:
           type: array
           items:
             $ref: '#/components/schemas/AllowedAction'
           uniqueItems: true
+        ownerDeptId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          nullable: true
+        companyName:
+          type: string
+          nullable: true
+        ownershipUnassigned:
+          type: boolean
+        canAssignCompany:
+          type: boolean
+        licenseLongTerm:
+          type: boolean
+        qualificationRevision:
+          type: integer
+          format: int64
+          minimum: 0
+          nullable: true
+        availability:
+          $ref: '#/components/schemas/Availability'
+        reviewDueAtInstant:
+          type: string
+          format: date-time
+          pattern: Z$
+          nullable: true
       required:
       - driverId
+      - accountId
+      - name
+      - phoneMask
       - qualificationStatus
+      - newAssignmentEnabled
+      - listening
       - occupied
       - version
+      - ownerDeptId
+      - companyName
+      - ownershipUnassigned
+      - canAssignCompany
+      - availability
+      - allowedActions
+      description: 同公司共用代驾池，权威归属vi_driver_profile.owner_dept_id；未归属存量不猜测回填，仅全数据授权可见/认领。资格与新承接行政开关分开，暂停不撤角色、不弃车。证件原图及独立资格审核由Q01后续负责。
     AllowedAction:
       type: string
       description: 服务端按当前角色、对象状态、版本和实时授权计算的可执行动作集合；不能由客户端授予
@@ -1039,6 +1275,12 @@ components:
       - RETRY_REFUND
       - QUERY_RECONCILIATION
       - RESOLVE_RECONCILIATION
+      - VIEW_DRIVER
+      - EDIT_DRIVER
+      - DISABLE_NEW_ASSIGNMENTS
+      - ENABLE_NEW_ASSIGNMENTS
+      - ASSIGN_DRIVER_COMPANY
+      - VIEW_ASSIGNMENTS
     VersionReason:
       type: object
       properties:
@@ -1071,14 +1313,18 @@ components:
           pattern: ^[1-9][0-9]{0,18}$
           maxLength: 19
           description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+          nullable: true
         availableForNewOrder:
           type: boolean
         reason:
           type: string
+          description: 当前不能接受新单的实际原因；A04未接通D01定位/可达最终判定时不能将行政开关开启当作可接单。
         version:
           type: integer
           minimum: 0
           description: 客户端最后读取的版本；服务端条件更新，冲突返回409
+          format: int64
+          maximum: 9007199254740991
         activePenaltyIds:
           type: array
           items:
@@ -1086,7 +1332,10 @@ components:
             pattern: ^[1-9][0-9]{0,18}$
             maxLength: 19
             description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+        newAssignmentEnabled:
+          type: boolean
       additionalProperties: false
+      description: 行政允许、本人意愿、资格、占用分开；A04不伪造D01客户端可达和定位新鲜度。
     OccupationType:
       type: string
       enum:

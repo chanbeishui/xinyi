@@ -16,12 +16,15 @@
     "taskId": "I05"
   },
   {
-    "status": "NOT_ASSESSED",
-    "entityFile": null,
-    "mapperFile": null,
-    "evidence": [],
+    "status": "PARTIAL",
+    "entityFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/driver/domain/DriverProfile.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/driver/DriverMapper.xml",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/A04-20261107.json"
+    ],
     "table": "vi_driver_profile",
-    "taskId": "Q01"
+    "taskId": "Q01",
+    "implementationNote": "A04公司归属及档案/行政新承接已验证；Q01资格申请及Q05独立审核仍待后续，表主责任保留Q01。"
   },
   {
     "status": "NOT_ASSESSED",

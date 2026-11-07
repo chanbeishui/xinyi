@@ -235,93 +235,93 @@ CONSTRAINT ck_employee_link_revoke CHECK ((status='REVOKED' AND revoked_at IS NO
 CONSTRAINT ck_employee_link_source_actor CHECK (source='WECHAT_PHONE_MATCH' AND bound_by IS NULL)
 </code></pre>
 <h2>vi_driver_profile · 代驾资格与听单偏好</h2>
-<p>主键：id；ID策略：MYSQL_AUTO_INCREMENT</p>
+<p>每名代驾明确归属一个公司部门，旗下站点共用；owner_dept_id不从员工、创建人或历史订单推断。存量NULL待全数据管理员显式认领；归属变更检查原新范围并集且无待响应/占用/在手任务，转移后禁新。资格审核、本人听单偏好与行政开关分开；暂停不释放承接或保管。</p>
 <table>
 <thead>
 <tr>
   <th>字段</th>
-  <th>SQL类型</th>
-  <th>含义</th>
+  <th>SQL类型与约束</th>
+  <th>说明</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-  <td><code>id</code></td>
+  <td>id</td>
   <td><code>BIGINT NOT NULL AUTO_INCREMENT</code></td>
   <td>数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串</td>
 </tr>
 <tr>
-  <td><code>account_id</code></td>
+  <td>account_id</td>
   <td><code>BIGINT NOT NULL</code></td>
   <td>同一个基础账户</td>
 </tr>
 <tr>
-  <td><code>qualification_status</code></td>
+  <td>owner_dept_id</td>
+  <td><code>BIGINT NULL</code></td>
+  <td>后台明确指定的归属公司部门；历史NULL待全局管理员认领</td>
+</tr>
+<tr>
+  <td>qualification_status</td>
   <td><code>VARCHAR(24) NOT NULL</code></td>
   <td>QualificationStatus: DRAFT,SUBMITTED,APPROVED,REJECTED,EXPIRED,SUSPENDED</td>
 </tr>
 <tr>
-  <td><code>new_assignment_enabled</code></td>
+  <td>new_assignment_enabled</td>
   <td><code>TINYINT NOT NULL DEFAULT 0</code></td>
   <td>是否允许新增承接</td>
 </tr>
 <tr>
-  <td><code>listening_enabled</code></td>
+  <td>listening_enabled</td>
   <td><code>TINYINT NOT NULL DEFAULT 0</code></td>
   <td>本人听单偏好</td>
 </tr>
 <tr>
-  <td><code>review_due_at</code></td>
+  <td>review_due_at</td>
   <td><code>DATETIME(3)</code></td>
   <td>年度复审到期</td>
 </tr>
 <tr>
-  <td><code>license_class</code></td>
+  <td>license_class</td>
   <td><code>VARCHAR(64)</code></td>
   <td>实际准驾类别，不用字母排序比较</td>
 </tr>
 <tr>
-  <td><code>license_valid_to</code></td>
+  <td>license_valid_to</td>
   <td><code>DATETIME(3)</code></td>
   <td>到期日</td>
 </tr>
 <tr>
-  <td><code>license_long_term</code></td>
+  <td>license_long_term</td>
   <td><code>TINYINT NOT NULL DEFAULT 0</code></td>
   <td>长期有效标记</td>
 </tr>
 <tr>
-  <td><code>qualification_revision</code></td>
+  <td>qualification_revision</td>
   <td><code>BIGINT</code></td>
   <td>生效认证版本</td>
 </tr>
 <tr>
-  <td><code>internal_remark</code></td>
+  <td>internal_remark</td>
   <td><code>VARCHAR(1000)</code></td>
   <td>授权运营备注，变更留痕</td>
 </tr>
 <tr>
-  <td><code>created_at</code></td>
+  <td>created_at</td>
   <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
   <td>创建时间，统一UTC</td>
 </tr>
 <tr>
-  <td><code>updated_at</code></td>
+  <td>updated_at</td>
   <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
   <td>UTC更新时间；Mapper每次修改显式SET updated_at=UTC_TIMESTAMP(3)，不依赖连接时区</td>
 </tr>
 <tr>
-  <td><code>version</code></td>
+  <td>version</td>
   <td><code>BIGINT NOT NULL DEFAULT 0</code></td>
   <td>乐观锁版本</td>
 </tr>
 </tbody>
 </table>
-<pre><code class="language-sql">UNIQUE KEY uk_account (account_id)
-KEY ix_pool (qualification_status,new_assignment_enabled,listening_enabled)
-CONSTRAINT ck_66_c6bf03f0ceed CHECK (`qualification_status` IN ('DRAFT','SUBMITTED','APPROVED','REJECTED','EXPIRED','SUSPENDED'))
-CONSTRAINT ck_ver_driver_profile CHECK (version &gt;= 0)
-</code></pre>
 <h2>vi_driver_application · 代驾资格申请与复审版本</h2>
 <p>不以客户端PASSED当实名核验成功；禁止本人审批
 主键：id；ID策略：MYSQL_AUTO_INCREMENT</p>

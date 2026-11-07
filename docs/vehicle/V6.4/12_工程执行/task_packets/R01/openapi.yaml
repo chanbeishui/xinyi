@@ -22,7 +22,7 @@ paths:
       - AdminBearerAuth: []
       x-flow-ids:
       - F32
-      description: 执行前校验当前真实身份、功能权限与对象所属范围。所有金额来自服务端核对，不因UI显示可点而放行。
+      description: 真实ADMIN及对应功能/公司部门范围；权威归属driver.owner_dept_id，不取员工绑定、主部门或历史订单。空范围拒绝。写入版本、UUID和原因，审计/outbox同事务。
       parameters:
       - name: driverId
         in: path
@@ -128,7 +128,7 @@ paths:
       x-permission: biz:driverledger:list
       x-authorization:
         realm: ADMIN
-        scope: ORG_DEPT_STATION_AND_PAYOR
+        scope: DRIVER_OWNER_COMPANY
         permission: biz:driverledger:list
       x-error-codes:
       - VI_REQUEST_INVALID
@@ -144,6 +144,8 @@ paths:
       - VI_UPSTREAM_UNAVAILABLE
       x-error-policy: OBJECT_404_HIDES_EXISTENCE
       x-contract-baseline: V6.4
+      x-authority-sources:
+        driver: vi_driver_profile.owner_dept_id
 components:
   responses:
     NotFound:

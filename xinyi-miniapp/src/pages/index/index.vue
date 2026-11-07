@@ -2,6 +2,9 @@
 import { ref } from 'vue';
 import { request } from '../../services/http';
 const status = ref('尚未连接真实后端');
+function work() {
+  uni.navigateTo({ url: '/pages/work/index' });
+}
 // 此入口只验证服务配置连通性，不能据此认定预约、身份或付款业务已经完成。
 async function check() {
   try {
@@ -19,7 +22,8 @@ async function check() {
   <view class="screen"
     ><text class="title">工程联通检查</text
     ><text class="desc">这是可编译基座，不是已完成的预约首页。业务页面按照任务包接入真实接口。</text
-    ><button @click="check">检查后端连接</button><text class="status">{{ status }}</text></view
+    ><button @click="check">检查后端连接</button><text class="status">{{ status }}</text>
+    <button @click="work">我的工作</button></view
   >
 </template>
 <style scoped>

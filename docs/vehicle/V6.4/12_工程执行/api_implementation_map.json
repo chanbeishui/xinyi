@@ -3794,5 +3794,18 @@
     "mapperFile": null,
     "testFiles": [],
     "reviewEvidence": null
+  },
+  {
+    "implementationStatus": "NOT_ASSESSED",
+    "controllerFile": null,
+    "serviceFile": null,
+    "mapperFile": null,
+    "testFiles": [],
+    "reviewEvidence": null,
+    "operationId": "V64_post_api_admin_drivers__driverId__enable_new_assignments",
+    "method": "POST",
+    "path": "/api/admin/drivers/{driverId}/enable-new-assignments",
+    "summary": "恢复新承接行政开关",
+    "taskId": "A04"
   }
 ]

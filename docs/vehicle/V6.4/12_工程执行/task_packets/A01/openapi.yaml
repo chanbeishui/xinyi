@@ -1868,6 +1868,12 @@ components:
       - RETRY_REFUND
       - QUERY_RECONCILIATION
       - RESOLVE_RECONCILIATION
+      - VIEW_DRIVER
+      - EDIT_DRIVER
+      - DISABLE_NEW_ASSIGNMENTS
+      - ENABLE_NEW_ASSIGNMENTS
+      - ASSIGN_DRIVER_COMPANY
+      - VIEW_ASSIGNMENTS
     OwnerRecord:
       type: object
       additionalProperties: false

@@ -83,7 +83,17 @@ export type TrainingSubmit = { "attemptId": string; "answers": Array<Answer>; "e
 
 export type Listening = { "enabled": boolean; "expectedVersion": number };
 
-export type Availability = { "listeningEnabled"?: boolean; "qualificationValid"?: boolean; "occupationType"?: OccupationType; "holderId"?: string; "availableForNewOrder"?: boolean; "reason"?: string; "version"?: number; "activePenaltyIds"?: Array<string> };
+export type Availability = {
+  "listeningEnabled"?: boolean;
+  "qualificationValid"?: boolean;
+  "occupationType"?: OccupationType;
+  "holderId"?: (string) | null;
+  "availableForNewOrder"?: boolean;
+  "reason"?: string;
+  "version"?: number;
+  "activePenaltyIds"?: Array<string>;
+  "newAssignmentEnabled"?: boolean;
+};
 
 export type Invite = { "inviteId": string; "orderNo": string; "assignmentId"?: string; "pickupArea"?: string; "pickupSlotStartAt"?: string; "pickupSlotEndAt"?: string; "distanceMeter"?: number; "expiresAt": string; "status": InviteStatus; "version": number };
 
@@ -256,9 +266,40 @@ export type VehicleRecord = { "vehicleId": string; "plateNo": string; "plateType
 
 export type VehicleMaintenance = { "expectedVersion": number; "brandModel"?: string; "vehicleTypeCode"?: string; "useType"?: string; "registeredAt"?: string; "reason": string };
 
-export type DriverRecord = { "driverId": string; "accountId"?: string; "name"?: string; "phoneMask"?: string; "qualificationStatus": string; "newAssignmentEnabled"?: boolean; "listening"?: boolean; "assignmentId"?: string; "occupied": boolean; "licenseClass"?: string; "licenseValidTo"?: string; "reviewDueAt"?: string; "completedAssignmentCount"?: number; "score"?: string; "internalRemark"?: string; "version": number; "allowedActions"?: Array<AllowedAction> };
+export type DriverRecord = {
+  "driverId": string;
+  "accountId": string;
+  "name": string | null;
+  "phoneMask": (string) | null;
+  "qualificationStatus": "DRAFT" | "SUBMITTED" | "APPROVED" | "REJECTED" | "EXPIRED" | "SUSPENDED";
+  "newAssignmentEnabled": boolean;
+  "listening": boolean;
+  "assignmentId"?: (string) | null;
+  "occupied": boolean;
+  "licenseClass"?: (string) | null;
+  "licenseValidTo"?: (string) | null;
+  "reviewDueAt"?: (string) | null;
+  "reviewDueAtInstant"?: string | null;
+  "completedAssignmentCount"?: number;
+  "score"?: (string) | null;
+  "internalRemark"?: (string) | null;
+  "version": number;
+  "allowedActions": Array<AllowedAction>;
+  "ownerDeptId": (string) | null;
+  "companyName": (string) | null;
+  "ownershipUnassigned": boolean;
+  "canAssignCompany": boolean;
+  "licenseLongTerm"?: boolean;
+  "qualificationRevision"?: (number) | null;
+  "availability": Availability;
+};
 
-export type DriverMaintenance = { "expectedVersion": number; "internalRemark"?: string; "reason": string };
+export type DriverMaintenance = {
+  "expectedVersion": number;
+  "internalRemark"?: string;
+  "reason": string;
+  "ownerDeptId"?: string;
+};
 
 export type DriverFeeRule = { "ruleId": string; "revision": number; "status": DriverFeeRuleStatus; "configuration"?: DriverFeeRuleUpdate; "publishedBy"?: string; "version": number };
 
@@ -288,7 +329,17 @@ export type ExternalPaymentApply = { "statementId": string; "statementVersion": 
 
 export type ExternalPaymentRecord = { "recordId": string; "statementId": string; "driverId"?: string; "payorEntityId"?: string; "amount": number; "externalReferenceMask"?: string; "status": ExternalPaymentStatus; "paidAt"?: string; "registeredBy"?: string; "verifiedBy"?: string; "version": number; "evidenceFileIds"?: Array<string>; "verificationOpinion"?: string };
 
-export type DriverAssignmentRecord = { "assignmentId": string; "driverId": string; "orderNo": string; "acceptedAt"?: string; "endedAt"?: string; "endReason"?: string; "custody"?: string; "released"?: boolean; "feeEntryId"?: string };
+export type DriverAssignmentRecord = {
+  "assignmentId": string;
+  "driverId": string;
+  "orderNo": string;
+  "acceptedAt"?: string;
+  "endedAt"?: (string) | null;
+  "endReason"?: (string) | null;
+  "custody"?: string;
+  "released"?: boolean;
+  "feeEntryId"?: (string) | null;
+};
 
 export type SessionView = { "sessionId": string; "accountId": string; "activeRole": MiniRole; "availableRoles": Array<MiniRole>; "contextVersion": number; "phoneBound": boolean; "permissions"?: Array<PermissionCode>; "capabilities": Array<CapabilityCode>; "stationIds"?: Array<string>; "stationId"?: string | null; "workAccessDisabled"?: boolean; "driverQualification": (QualificationStatus) | null; "employeeLink": EmployeeLinkPublic; "accountVersion": number };
 
@@ -488,11 +539,11 @@ export type ApiErrorDetails = { "fieldErrors"?: Array<FieldViolation>; "conflict
 
 export type ApiError = { "code": 400 | 401 | 403 | 404 | 409 | 422 | 429 | 500 | 503; "errorCode": "VI_REQUEST_INVALID" | "VI_AUTH_REQUIRED" | "VI_TOKEN_REALM_MISMATCH" | "VI_REFRESH_REUSED" | "VI_FORBIDDEN" | "VI_SELF_REVIEW_DENIED" | "VI_RESOURCE_NOT_VISIBLE" | "VI_VERSION_CONFLICT" | "VI_STATE_CONFLICT" | "VI_IDEMPOTENCY_CONFLICT" | "VI_SELECTION_CONFLICT" | "VI_CONTEXT_CHANGED" | "VI_SNAPSHOT_CHANGED" | "VI_DATA_INVALID" | "VI_EVIDENCE_INCOMPLETE" | "VI_HANDOVER_CODE_INVALID" | "VI_HANDOVER_LOCKED" | "VI_UNPRICED_LINES" | "VI_REFUND_LIMIT" | "VI_PAYMENT_LIMIT" | "VI_SERVICE_UNAVAILABLE" | "VI_CAPABILITY_NOT_CONFIGURED" | "VI_TRAINING_NOT_READY" | "VI_RATE_LIMITED" | "VI_INTERNAL_ERROR" | "VI_AUTHORITY_UNAVAILABLE" | "VI_UPSTREAM_UNAVAILABLE" | "VI_PHONE_PROOF_REQUIRED" | "VI_PHONE_PROOF_REUSED" | "VI_EMPLOYEE_LINK_CONFLICT" | "VI_EMPLOYEE_LINK_BLOCKED" | "VI_CONFIG_INVALID" | "VI_CONFIG_CHANGED" | "VI_SECRET_UNAVAILABLE" | "VI_PAYMENT_METHOD_DISABLED" | "VI_PAYMENT_METHOD_LOCKED" | "VI_SEND_RESULT_UNKNOWN" | "VI_SUBSCRIPTION_UNAVAILABLE" | "VI_OFFLINE_PROOF_CONFLICT"; "msg": string; "requestId": string; "retryable": boolean; "retryAfterSeconds": number | null; "data": ApiErrorDetails };
 
-export type PermissionCode = "biz:aftersale:create" | "biz:aftersale:list" | "biz:aftersale:note" | "biz:aftersale:query" | "biz:aftersale:review" | "biz:aftersale:reviewpreview" | "biz:assignment:list" | "biz:audit:list" | "biz:capacity:edit" | "biz:capacity:list" | "biz:config:edit" | "biz:config:query" | "biz:dashboard:list" | "biz:delivery:query" | "biz:delivery:retry" | "biz:dispatch:create" | "biz:dispatch:edit" | "biz:dispatch:list" | "biz:dispatch:preview" | "biz:dispatch:query" | "biz:dispute:list" | "biz:dispute:query" | "biz:dispute:resolve" | "biz:driver:disablenewassignments" | "biz:driver:edit" | "biz:driver:list" | "biz:driver:query" | "biz:driveradjust:audit" | "biz:driveradjust:create" | "biz:driveradjust:list" | "biz:driverfeerule:create" | "biz:driverfeerule:edit" | "biz:driverfeerule:list" | "biz:driverfeerule:publish" | "biz:driverfeerule:query" | "biz:driverfeerule:trial" | "biz:driverledger:list" | "biz:driverpayment:create" | "biz:driverpayment:list" | "biz:driverpayment:query" | "biz:driverpayment:verify" | "biz:driverqualification:audit" | "biz:driverqualification:list" | "biz:driverqualification:query" | "biz:driverstatement:add" | "biz:driverstatement:create" | "biz:driverstatement:list" | "biz:driverstatement:preview" | "biz:driverstatement:price" | "biz:driverstatement:query" | "biz:driverstatement:remove" | "biz:driverstatement:review" | "biz:driverstatement:send" | "biz:driverstatement:submitreview" | "biz:driverstatement:void" | "biz:driverstatement:withdraw" | "biz:employeebinding:list" | "biz:employeebinding:query" | "biz:employeebinding:rematch" | "biz:employeebinding:revoke" | "biz:employeebinding:suspend" | "biz:exception:list" | "biz:exception:resolve" | "biz:export:audit" | "biz:export:query" | "biz:files:access" | "biz:files:query" | "biz:handover:confirm" | "biz:handover:create" | "biz:handover:query" | "biz:handover:secret" | "biz:integration:check" | "biz:integration:create" | "biz:integration:edit" | "biz:integration:publish" | "biz:integration:query" | "biz:integration:test" | "biz:integration:testrecipient" | "biz:job:list" | "biz:job:retry" | "biz:license:edit" | "biz:license:list" | "biz:messageroute:edit" | "biz:messageroute:query" | "biz:messagetemplate:check" | "biz:messagetemplate:create" | "biz:messagetemplate:edit" | "biz:messagetemplate:publish" | "biz:messagetemplate:query" | "biz:notificationtemplate:edit" | "biz:notificationtemplate:list" | "biz:offlinepayment:create" | "biz:offlinepayment:query" | "biz:offlinepayment:verify" | "biz:order:contact" | "biz:order:create" | "biz:order:export" | "biz:order:list" | "biz:order:query" | "biz:owner:edit" | "biz:owner:list" | "biz:owner:query" | "biz:paymentreconciliation:list" | "biz:paymentreconciliation:query" | "biz:paymentreconciliation:resolve" | "biz:penalty:list" | "biz:penalty:query" | "biz:penaltyappeal:audit" | "biz:penaltyappeal:list" | "biz:penaltyappeal:query" | "biz:price:audit" | "biz:price:create" | "biz:price:edit" | "biz:price:list" | "biz:price:publish" | "biz:price:submit" | "biz:privacycase:list" | "biz:privacycase:resolve" | "biz:refund:approve" | "biz:refund:query" | "biz:refund:retry" | "biz:result:create" | "biz:result:list" | "biz:resultcorrection:audit" | "biz:resultcorrection:create" | "biz:resultcorrection:list" | "biz:statementdifference:list" | "biz:statementdifference:resolve" | "biz:station:create" | "biz:station:edit" | "biz:station:list" | "biz:station:query" | "biz:stationgrant:edit" | "biz:stationgrant:list" | "biz:statistics:list" | "biz:trainingcourse:create" | "biz:trainingcourse:edit" | "biz:trainingcourse:list" | "biz:trainingcourse:publish" | "biz:trainingcourse:query" | "biz:uploads:complete" | "biz:uploads:create" | "biz:vehicle:edit" | "biz:vehicle:list" | "biz:vehicle:query";
+export type PermissionCode = "biz:aftersale:create" | "biz:aftersale:list" | "biz:aftersale:note" | "biz:aftersale:query" | "biz:aftersale:review" | "biz:aftersale:reviewpreview" | "biz:assignment:list" | "biz:audit:list" | "biz:capacity:edit" | "biz:capacity:list" | "biz:config:edit" | "biz:config:query" | "biz:dashboard:list" | "biz:delivery:query" | "biz:delivery:retry" | "biz:dispatch:create" | "biz:dispatch:edit" | "biz:dispatch:list" | "biz:dispatch:preview" | "biz:dispatch:query" | "biz:dispute:list" | "biz:dispute:query" | "biz:dispute:resolve" | "biz:driver:disablenewassignments" | "biz:driver:edit" | "biz:driver:list" | "biz:driver:query" | "biz:driveradjust:audit" | "biz:driveradjust:create" | "biz:driveradjust:list" | "biz:driverfeerule:create" | "biz:driverfeerule:edit" | "biz:driverfeerule:list" | "biz:driverfeerule:publish" | "biz:driverfeerule:query" | "biz:driverfeerule:trial" | "biz:driverledger:list" | "biz:driverpayment:create" | "biz:driverpayment:list" | "biz:driverpayment:query" | "biz:driverpayment:verify" | "biz:driverqualification:audit" | "biz:driverqualification:list" | "biz:driverqualification:query" | "biz:driverstatement:add" | "biz:driverstatement:create" | "biz:driverstatement:list" | "biz:driverstatement:preview" | "biz:driverstatement:price" | "biz:driverstatement:query" | "biz:driverstatement:remove" | "biz:driverstatement:review" | "biz:driverstatement:send" | "biz:driverstatement:submitreview" | "biz:driverstatement:void" | "biz:driverstatement:withdraw" | "biz:employeebinding:list" | "biz:employeebinding:query" | "biz:employeebinding:rematch" | "biz:employeebinding:revoke" | "biz:employeebinding:suspend" | "biz:exception:list" | "biz:exception:resolve" | "biz:export:audit" | "biz:export:query" | "biz:files:access" | "biz:files:query" | "biz:handover:confirm" | "biz:handover:create" | "biz:handover:query" | "biz:handover:secret" | "biz:integration:check" | "biz:integration:create" | "biz:integration:edit" | "biz:integration:publish" | "biz:integration:query" | "biz:integration:test" | "biz:integration:testrecipient" | "biz:job:list" | "biz:job:retry" | "biz:license:edit" | "biz:license:list" | "biz:messageroute:edit" | "biz:messageroute:query" | "biz:messagetemplate:check" | "biz:messagetemplate:create" | "biz:messagetemplate:edit" | "biz:messagetemplate:publish" | "biz:messagetemplate:query" | "biz:notificationtemplate:edit" | "biz:notificationtemplate:list" | "biz:offlinepayment:create" | "biz:offlinepayment:query" | "biz:offlinepayment:verify" | "biz:order:contact" | "biz:order:create" | "biz:order:export" | "biz:order:list" | "biz:order:query" | "biz:owner:edit" | "biz:owner:list" | "biz:owner:query" | "biz:paymentreconciliation:list" | "biz:paymentreconciliation:query" | "biz:paymentreconciliation:resolve" | "biz:penalty:list" | "biz:penalty:query" | "biz:penaltyappeal:audit" | "biz:penaltyappeal:list" | "biz:penaltyappeal:query" | "biz:price:audit" | "biz:price:create" | "biz:price:edit" | "biz:price:list" | "biz:price:publish" | "biz:price:submit" | "biz:privacycase:list" | "biz:privacycase:resolve" | "biz:refund:approve" | "biz:refund:query" | "biz:refund:retry" | "biz:result:create" | "biz:result:list" | "biz:resultcorrection:audit" | "biz:resultcorrection:create" | "biz:resultcorrection:list" | "biz:statementdifference:list" | "biz:statementdifference:resolve" | "biz:station:create" | "biz:station:edit" | "biz:station:list" | "biz:station:query" | "biz:stationgrant:edit" | "biz:stationgrant:list" | "biz:statistics:list" | "biz:trainingcourse:create" | "biz:trainingcourse:edit" | "biz:trainingcourse:list" | "biz:trainingcourse:publish" | "biz:trainingcourse:query" | "biz:uploads:complete" | "biz:uploads:create" | "biz:vehicle:edit" | "biz:vehicle:list" | "biz:vehicle:query" | "biz:driver:assigncompany" | "biz:driver:enablenewassignments";
 
 export type CapabilityCode = "COMMON_DICT_QUERY" | "COMMON_FILES_ACCESS" | "COMMON_FILES_QUERY" | "COMMON_MESSAGES_LIST" | "COMMON_MESSAGES_READ" | "COMMON_ORDERS_CONFIRM" | "COMMON_ORDERS_CONTACTACCESS" | "COMMON_ORDERS_CREATE" | "COMMON_ORDERS_LIST" | "COMMON_ORDERS_QUERY" | "COMMON_PHONE_CREATE" | "COMMON_PHONE_SEND" | "COMMON_PHONE_VERIFY" | "COMMON_PRIVACYCASES_CREATE" | "COMMON_PRIVACYCASES_LIST" | "COMMON_STATIONS_LIST" | "COMMON_SUBSCRIPTION_REPORT" | "COMMON_SUBSCRIPTION_REQUEST" | "COMMON_UPLOADS_COMPLETE" | "COMMON_UPLOADS_CREATE" | "DRIVER_ASSIGNMENT_QUERY" | "DRIVER_AVAILABILITY_EDIT" | "DRIVER_AVAILABILITY_QUERY" | "DRIVER_DRIVERPAYMENT_LIST" | "DRIVER_DRIVERSTATEMENT_CONFIRM" | "DRIVER_DRIVERSTATEMENT_CREATE" | "DRIVER_DRIVERSTATEMENT_LIST" | "DRIVER_DRIVERSTATEMENT_QUERY" | "DRIVER_INVITE_LIST" | "DRIVER_INVITE_QUERY" | "DRIVER_INVITE_RESPONSE" | "DRIVER_LOCATION_CREATE" | "DRIVER_ORDER_ARRIVEPICKUP" | "DRIVER_ORDER_ARRIVESTATION" | "DRIVER_ORDER_ASSIGNMENTCANCELLATION" | "DRIVER_ORDER_CREATE" | "DRIVER_ORDER_DEPART" | "DRIVER_ORDER_EDIT" | "DRIVER_ORDER_LIST" | "DRIVER_ORDER_QUERY" | "DRIVER_ORDER_READY" | "DRIVER_PENALTYAPPEAL_LIST" | "DRIVER_PENALTYAPPEAL_QUERY" | "DRIVER_PENALTY_CREATE" | "DRIVER_PENALTY_LIST" | "DRIVER_PENALTY_QUERY" | "DRIVER_QUALIFICATION_ATTEMPTS" | "DRIVER_QUALIFICATION_CREATE" | "DRIVER_QUALIFICATION_EDIT" | "DRIVER_QUALIFICATION_LIST" | "DRIVER_QUALIFICATION_PLAYBACK" | "DRIVER_QUALIFICATION_PROGRESS" | "DRIVER_QUALIFICATION_QUERY" | "DRIVER_QUALIFICATION_SUBMIT" | "EMPLOYEE_LINK_READ" | "EMPLOYEE_LINK_RECONCILE" | "OWNER_ADDRESSES_CREATE" | "OWNER_ADDRESSES_DEFAULT" | "OWNER_ADDRESSES_EDIT" | "OWNER_ADDRESSES_LIST" | "OWNER_ADDRESSES_REMOVE" | "OWNER_AFTERSALE_CREATE" | "OWNER_AFTERSALE_LIST" | "OWNER_AFTERSALE_QUERY" | "OWNER_OFFLINE_INTENT" | "OWNER_ORDER_CLOSEUNPAID" | "OWNER_ORDER_CREATE" | "OWNER_ORDER_LIST" | "OWNER_ORDER_QUERY" | "OWNER_ORDER_SERVICECONFIRMATION" | "OWNER_PAYMENT_OPTIONS" | "OWNER_PROFILE_EDIT" | "OWNER_SCHEDULE_LIST" | "OWNER_VEHICLE_CREATE" | "OWNER_VEHICLE_DEFAULT" | "OWNER_VEHICLE_EDIT" | "OWNER_VEHICLE_LIST" | "OWNER_VEHICLE_REMOVE" | "PHONE_BIND" | "PROFILE_READ" | "SESSION_LOGOUT" | "SESSION_READ" | "SESSION_SWITCH_ROLE" | "SESSION_SWITCH_STATION";
 
-export type AllowedAction = "ADD_REVIEW" | "ADD_TO_DRAFT" | "APPEAL_PENALTY" | "APPLY_ADJUSTMENT" | "APPLY_CANCEL_REFUND" | "APPLY_REFUND_ONLY" | "APPROVE_AND_SEND" | "ARRIVE_PICKUP" | "ARRIVE_STATION" | "CANCEL_ASSIGNMENT" | "CLOSE_UNPAID" | "CONFIRM_HANDOVER" | "CONFIRM_STATEMENT" | "CONTACT_DRIVER" | "CONTACT_OWNER" | "CONTACT_STATION" | "CREATE_HANDOVER" | "DEPART" | "EDIT_PRICE" | "EXPORT" | "FILL_MILEAGE" | "FILL_PRICE" | "MANUAL_INVITE" | "MARK_EVIDENCE_READY" | "OPEN_DISPUTE" | "PAY" | "RECORD_PAYMENT" | "REGISTER_RESULT" | "REJECT_REVIEW" | "REMOVE_FROM_DRAFT" | "RENOTIFY_PICKUP" | "REPORT_DIFFERENCE" | "REPORT_EXCEPTION" | "REQUEST_RESULT_CORRECTION" | "REVIEW_AFTERSALE" | "REVIEW_LICENSE" | "SEND_STATEMENT" | "SERVICE_CONFIRM" | "SUBMIT_REVIEW" | "UPLOAD_PHOTO" | "VERIFY_PAYMENT" | "VIEW_APPEAL" | "VIEW_DETAIL" | "VIEW_EVIDENCE" | "VIEW_HANDOVER_SECRET" | "VIEW_PAYMENT" | "VIEW_PRICE_HISTORY" | "VIEW_PRICING" | "VIEW_RESULT" | "VOID_STATEMENT" | "WITHDRAW_STATEMENT" | "ADD_NOTE" | "VIEW_AFTERSALE" | "QUERY_REFUND" | "RETRY_REFUND" | "QUERY_RECONCILIATION" | "RESOLVE_RECONCILIATION";
+export type AllowedAction = "ADD_REVIEW" | "ADD_TO_DRAFT" | "APPEAL_PENALTY" | "APPLY_ADJUSTMENT" | "APPLY_CANCEL_REFUND" | "APPLY_REFUND_ONLY" | "APPROVE_AND_SEND" | "ARRIVE_PICKUP" | "ARRIVE_STATION" | "CANCEL_ASSIGNMENT" | "CLOSE_UNPAID" | "CONFIRM_HANDOVER" | "CONFIRM_STATEMENT" | "CONTACT_DRIVER" | "CONTACT_OWNER" | "CONTACT_STATION" | "CREATE_HANDOVER" | "DEPART" | "EDIT_PRICE" | "EXPORT" | "FILL_MILEAGE" | "FILL_PRICE" | "MANUAL_INVITE" | "MARK_EVIDENCE_READY" | "OPEN_DISPUTE" | "PAY" | "RECORD_PAYMENT" | "REGISTER_RESULT" | "REJECT_REVIEW" | "REMOVE_FROM_DRAFT" | "RENOTIFY_PICKUP" | "REPORT_DIFFERENCE" | "REPORT_EXCEPTION" | "REQUEST_RESULT_CORRECTION" | "REVIEW_AFTERSALE" | "REVIEW_LICENSE" | "SEND_STATEMENT" | "SERVICE_CONFIRM" | "SUBMIT_REVIEW" | "UPLOAD_PHOTO" | "VERIFY_PAYMENT" | "VIEW_APPEAL" | "VIEW_DETAIL" | "VIEW_EVIDENCE" | "VIEW_HANDOVER_SECRET" | "VIEW_PAYMENT" | "VIEW_PRICE_HISTORY" | "VIEW_PRICING" | "VIEW_RESULT" | "VOID_STATEMENT" | "WITHDRAW_STATEMENT" | "ADD_NOTE" | "VIEW_AFTERSALE" | "QUERY_REFUND" | "RETRY_REFUND" | "QUERY_RECONCILIATION" | "RESOLVE_RECONCILIATION" | "VIEW_DRIVER" | "EDIT_DRIVER" | "DISABLE_NEW_ASSIGNMENTS" | "ENABLE_NEW_ASSIGNMENTS" | "ASSIGN_DRIVER_COMPANY" | "VIEW_ASSIGNMENTS";
 
 export type AccountStatus = "ACTIVE" | "LOCKED";
 

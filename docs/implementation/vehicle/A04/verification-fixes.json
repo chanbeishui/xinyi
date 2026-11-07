@@ -1,0 +1,30 @@
+{
+  "initialEnvironment": {
+    "command": "mvn -o test in sandbox",
+    "error": "Mockito ByteBuddy 无法附加 JVM agent",
+    "unitErrors": 5,
+    "resolution": "允许本机 JVM 附加的受控运行环境复跑37单元通过，未修改业务断言"
+  },
+  "firstTargeted": {
+    "integrationTests": 82,
+    "failures": 0,
+    "errors": 0
+  },
+  "firstFull": {
+    "integrationTests": 442,
+    "unitTests": 37,
+    "failures": 0,
+    "errors": 0
+  },
+  "reviewFindings": [
+    "已核验手机号才可投影phoneMask；公司query与原订单history权限分别校验",
+    "PC公司目录原用了仓库不存在的/system/dept/treeselect；已改真实/system/dept/list与flat响应，并处理legacy HTTP200非成功code",
+    "PC新增两处索引类型错误已修复；全站既有Vue声明错误仍单列"
+  ],
+  "additionalVerification": [
+    "审计原因/备注AES-GCM与AAD防跨动作/记录、同键一次、摘要不含明文",
+    "六真实业务响应契约及真实部门目录/权限响应"
+  ],
+  "fixedWithoutWeakeningAssertions": true,
+  "finalReport": "full-regression.json"
+}

@@ -565,14 +565,18 @@ components:
           pattern: ^[1-9][0-9]{0,18}$
           maxLength: 19
           description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+          nullable: true
         availableForNewOrder:
           type: boolean
         reason:
           type: string
+          description: 当前不能接受新单的实际原因；A04未接通D01定位/可达最终判定时不能将行政开关开启当作可接单。
         version:
           type: integer
           minimum: 0
           description: 客户端最后读取的版本；服务端条件更新，冲突返回409
+          format: int64
+          maximum: 9007199254740991
         activePenaltyIds:
           type: array
           items:
@@ -580,7 +584,10 @@ components:
             pattern: ^[1-9][0-9]{0,18}$
             maxLength: 19
             description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+        newAssignmentEnabled:
+          type: boolean
       additionalProperties: false
+      description: 行政允许、本人意愿、资格、占用分开；A04不伪造D01客户端可达和定位新鲜度。
     OccupationType:
       type: string
       enum:

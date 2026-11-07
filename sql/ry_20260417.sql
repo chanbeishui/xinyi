@@ -884,6 +884,7 @@ CREATE TABLE `vi_employee_binding` (
 CREATE TABLE `vi_driver_profile` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',
   `account_id` BIGINT NOT NULL COMMENT '同一个基础账户',
+  `owner_dept_id` BIGINT NULL COMMENT '后台明确指定的归属公司部门；历史NULL待全局管理员认领',
   `qualification_status` VARCHAR(24) NOT NULL COMMENT 'QualificationStatus: DRAFT,SUBMITTED,APPROVED,REJECTED,EXPIRED,SUSPENDED',
   `new_assignment_enabled` TINYINT NOT NULL DEFAULT 0 COMMENT '是否允许新增承接',
   `listening_enabled` TINYINT NOT NULL DEFAULT 0 COMMENT '本人听单偏好',
@@ -898,8 +899,10 @@ CREATE TABLE `vi_driver_profile` (
   `version` BIGINT NOT NULL DEFAULT 0 COMMENT '乐观锁版本',
   PRIMARY KEY (`id`),
   UNIQUE KEY uk_account (account_id),
+  KEY ix_driver_company (owner_dept_id,id),
   KEY ix_pool (qualification_status,new_assignment_enabled,listening_enabled),
   CONSTRAINT ck_66_c6bf03f0ceed CHECK (`qualification_status` IN ('DRAFT','SUBMITTED','APPROVED','REJECTED','EXPIRED','SUSPENDED')),
+  CONSTRAINT ck_driver_owner_dept CHECK (owner_dept_id IS NULL OR owner_dept_id>0),
   CONSTRAINT ck_ver_driver_profile CHECK (version >= 0)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='代驾资格与听单偏好';
 
@@ -3005,3 +3008,262 @@ WHERE NOT EXISTS(
 );
 
 DROP TEMPORARY TABLE p04_menu_guard;
+
+-- A04代驾档案与公司归属权限。
+CREATE TEMPORARY TABLE a04_menu_guard (
+    violations INT NOT NULL CHECK(violations=0)
+);
+
+SELECT menu_id,parent_id,perms
+FROM sys_menu
+WHERE (menu_id=2971000
+        AND (parent_id<>0
+            OR COALESCE(perms,'')<>''));
+
+INSERT INTO a04_menu_guard
+SELECT COUNT(*)
+FROM sys_menu
+WHERE (menu_id=2971000
+        AND (parent_id<>0
+            OR COALESCE(perms,'')<>''));
+
+INSERT INTO sys_menu(
+    menu_id,menu_name,parent_id,order_num,path,
+    component,is_frame,is_cache,menu_type,visible,
+    status,perms,icon,create_by,remark
+)
+SELECT
+    2971000,'代驾管理',0,100,'driver-management',
+    NULL,1,1,'M','0',
+    '0','','peoples','migration','A04单公司代驾归属；转移/启停单独授权，不自动授角色'
+WHERE NOT EXISTS(
+    SELECT 1
+    FROM sys_menu
+    WHERE menu_id=2971000
+);
+
+SELECT menu_id,parent_id,perms
+FROM sys_menu
+WHERE (menu_id=2971001
+        AND (parent_id<>2971000
+            OR COALESCE(perms,'')<>'biz:driver:list'))
+    OR (perms='biz:driver:list'
+        AND menu_id<>2971001);
+
+INSERT INTO a04_menu_guard
+SELECT COUNT(*)
+FROM sys_menu
+WHERE (menu_id=2971001
+        AND (parent_id<>2971000
+            OR COALESCE(perms,'')<>'biz:driver:list'))
+    OR (perms='biz:driver:list'
+        AND menu_id<>2971001);
+
+INSERT INTO sys_menu(
+    menu_id,menu_name,parent_id,order_num,path,
+    component,is_frame,is_cache,menu_type,visible,
+    status,perms,icon,create_by,remark
+)
+SELECT
+    2971001,'代驾员档案',2971000,100,'drivers',
+    'rongli/driver/index',1,1,'C','0',
+    '0','biz:driver:list','peoples','migration','A04单公司代驾归属；转移/启停单独授权，不自动授角色'
+WHERE NOT EXISTS(
+    SELECT 1
+    FROM sys_menu
+    WHERE menu_id=2971001
+);
+
+SELECT menu_id,parent_id,perms
+FROM sys_menu
+WHERE (menu_id=2971002
+        AND (parent_id<>2971001
+            OR COALESCE(perms,'')<>'biz:driver:query'))
+    OR (perms='biz:driver:query'
+        AND menu_id<>2971002);
+
+INSERT INTO a04_menu_guard
+SELECT COUNT(*)
+FROM sys_menu
+WHERE (menu_id=2971002
+        AND (parent_id<>2971001
+            OR COALESCE(perms,'')<>'biz:driver:query'))
+    OR (perms='biz:driver:query'
+        AND menu_id<>2971002);
+
+INSERT INTO sys_menu(
+    menu_id,menu_name,parent_id,order_num,path,
+    component,is_frame,is_cache,menu_type,visible,
+    status,perms,icon,create_by,remark
+)
+SELECT
+    2971002,'查看代驾档案',2971001,100,'#',
+    NULL,1,1,'F','0',
+    '0','biz:driver:query','peoples','migration','A04单公司代驾归属；转移/启停单独授权，不自动授角色'
+WHERE NOT EXISTS(
+    SELECT 1
+    FROM sys_menu
+    WHERE menu_id=2971002
+);
+
+SELECT menu_id,parent_id,perms
+FROM sys_menu
+WHERE (menu_id=2971003
+        AND (parent_id<>2971001
+            OR COALESCE(perms,'')<>'biz:driver:edit'))
+    OR (perms='biz:driver:edit'
+        AND menu_id<>2971003);
+
+INSERT INTO a04_menu_guard
+SELECT COUNT(*)
+FROM sys_menu
+WHERE (menu_id=2971003
+        AND (parent_id<>2971001
+            OR COALESCE(perms,'')<>'biz:driver:edit'))
+    OR (perms='biz:driver:edit'
+        AND menu_id<>2971003);
+
+INSERT INTO sys_menu(
+    menu_id,menu_name,parent_id,order_num,path,
+    component,is_frame,is_cache,menu_type,visible,
+    status,perms,icon,create_by,remark
+)
+SELECT
+    2971003,'维护代驾备注',2971001,100,'#',
+    NULL,1,1,'F','0',
+    '0','biz:driver:edit','peoples','migration','A04单公司代驾归属；转移/启停单独授权，不自动授角色'
+WHERE NOT EXISTS(
+    SELECT 1
+    FROM sys_menu
+    WHERE menu_id=2971003
+);
+
+SELECT menu_id,parent_id,perms
+FROM sys_menu
+WHERE (menu_id=2971004
+        AND (parent_id<>2971001
+            OR COALESCE(perms,'')<>'biz:driver:disablenewassignments'))
+    OR (perms='biz:driver:disablenewassignments'
+        AND menu_id<>2971004);
+
+INSERT INTO a04_menu_guard
+SELECT COUNT(*)
+FROM sys_menu
+WHERE (menu_id=2971004
+        AND (parent_id<>2971001
+            OR COALESCE(perms,'')<>'biz:driver:disablenewassignments'))
+    OR (perms='biz:driver:disablenewassignments'
+        AND menu_id<>2971004);
+
+INSERT INTO sys_menu(
+    menu_id,menu_name,parent_id,order_num,path,
+    component,is_frame,is_cache,menu_type,visible,
+    status,perms,icon,create_by,remark
+)
+SELECT
+    2971004,'暂停新增承接',2971001,100,'#',
+    NULL,1,1,'F','0',
+    '0','biz:driver:disablenewassignments','peoples','migration','A04单公司代驾归属；转移/启停单独授权，不自动授角色'
+WHERE NOT EXISTS(
+    SELECT 1
+    FROM sys_menu
+    WHERE menu_id=2971004
+);
+
+SELECT menu_id,parent_id,perms
+FROM sys_menu
+WHERE (menu_id=2971005
+        AND (parent_id<>2971001
+            OR COALESCE(perms,'')<>'biz:driver:enablenewassignments'))
+    OR (perms='biz:driver:enablenewassignments'
+        AND menu_id<>2971005);
+
+INSERT INTO a04_menu_guard
+SELECT COUNT(*)
+FROM sys_menu
+WHERE (menu_id=2971005
+        AND (parent_id<>2971001
+            OR COALESCE(perms,'')<>'biz:driver:enablenewassignments'))
+    OR (perms='biz:driver:enablenewassignments'
+        AND menu_id<>2971005);
+
+INSERT INTO sys_menu(
+    menu_id,menu_name,parent_id,order_num,path,
+    component,is_frame,is_cache,menu_type,visible,
+    status,perms,icon,create_by,remark
+)
+SELECT
+    2971005,'恢复新增承接',2971001,100,'#',
+    NULL,1,1,'F','0',
+    '0','biz:driver:enablenewassignments','peoples','migration','A04单公司代驾归属；转移/启停单独授权，不自动授角色'
+WHERE NOT EXISTS(
+    SELECT 1
+    FROM sys_menu
+    WHERE menu_id=2971005
+);
+
+SELECT menu_id,parent_id,perms
+FROM sys_menu
+WHERE (menu_id=2971006
+        AND (parent_id<>2971001
+            OR COALESCE(perms,'')<>'biz:driver:assigncompany'))
+    OR (perms='biz:driver:assigncompany'
+        AND menu_id<>2971006);
+
+INSERT INTO a04_menu_guard
+SELECT COUNT(*)
+FROM sys_menu
+WHERE (menu_id=2971006
+        AND (parent_id<>2971001
+            OR COALESCE(perms,'')<>'biz:driver:assigncompany'))
+    OR (perms='biz:driver:assigncompany'
+        AND menu_id<>2971006);
+
+INSERT INTO sys_menu(
+    menu_id,menu_name,parent_id,order_num,path,
+    component,is_frame,is_cache,menu_type,visible,
+    status,perms,icon,create_by,remark
+)
+SELECT
+    2971006,'配置代驾归属公司',2971001,100,'#',
+    NULL,1,1,'F','0',
+    '0','biz:driver:assigncompany','peoples','migration','A04单公司代驾归属；转移/启停单独授权，不自动授角色'
+WHERE NOT EXISTS(
+    SELECT 1
+    FROM sys_menu
+    WHERE menu_id=2971006
+);
+
+SELECT menu_id,parent_id,perms
+FROM sys_menu
+WHERE (menu_id=2971007
+        AND (parent_id<>2971001
+            OR COALESCE(perms,'')<>'biz:assignment:list'))
+    OR (perms='biz:assignment:list'
+        AND menu_id<>2971007);
+
+INSERT INTO a04_menu_guard
+SELECT COUNT(*)
+FROM sys_menu
+WHERE (menu_id=2971007
+        AND (parent_id<>2971001
+            OR COALESCE(perms,'')<>'biz:assignment:list'))
+    OR (perms='biz:assignment:list'
+        AND menu_id<>2971007);
+
+INSERT INTO sys_menu(
+    menu_id,menu_name,parent_id,order_num,path,
+    component,is_frame,is_cache,menu_type,visible,
+    status,perms,icon,create_by,remark
+)
+SELECT
+    2971007,'查看代驾承接历史',2971001,100,'#',
+    NULL,1,1,'F','0',
+    '0','biz:assignment:list','peoples','migration','A04单公司代驾归属；转移/启停单独授权，不自动授角色'
+WHERE NOT EXISTS(
+    SELECT 1
+    FROM sys_menu
+    WHERE menu_id=2971007
+);
+
+DROP TEMPORARY TABLE a04_menu_guard;

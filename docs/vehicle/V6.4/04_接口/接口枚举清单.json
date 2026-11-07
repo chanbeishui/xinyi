@@ -310,7 +310,9 @@
       "biz:uploads:create",
       "biz:vehicle:edit",
       "biz:vehicle:list",
-      "biz:vehicle:query"
+      "biz:vehicle:query",
+      "biz:driver:assigncompany",
+      "biz:driver:enablenewassignments"
     ],
     "CapabilityCode": [
       "COMMON_DICT_QUERY",
@@ -455,7 +457,13 @@
       "QUERY_REFUND",
       "RETRY_REFUND",
       "QUERY_RECONCILIATION",
-      "RESOLVE_RECONCILIATION"
+      "RESOLVE_RECONCILIATION",
+      "VIEW_DRIVER",
+      "EDIT_DRIVER",
+      "DISABLE_NEW_ASSIGNMENTS",
+      "ENABLE_NEW_ASSIGNMENTS",
+      "ASSIGN_DRIVER_COMPANY",
+      "VIEW_ASSIGNMENTS"
     ],
     "AccountStatus": [
       "ACTIVE",

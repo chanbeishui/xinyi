@@ -1205,12 +1205,12 @@
     "canonicalPage": "D27",
     "title": "我的代驾工作与本人对账",
     "role": "driver",
-    "targetPath": "xinyi-miniapp/src/pages/me/index.vue",
+    "targetPath": "xinyi-miniapp/src/pages/work/index.vue",
     "presentation": "MAIN_HOST_VIEW",
     "taskId": "A04",
     "status": "NOT_ASSESSED",
     "hostView": "DRIVER_ME",
-    "note": "目标实现路径，非已存在源码。状态画板与弹窗不是独立小程序路由；遵守原账号与权限边界。"
+    "note": "A04已按实际工作区路径适配；本人工作及已有服务入口接通，资格/听单/费用对账未完成部分以实现账本PARTIAL记录，不虚构运行数据。"
   },
   {
     "boardId": "D28",
@@ -1581,12 +1581,12 @@
     "canonicalPage": "S15",
     "title": "我的工作",
     "role": "station",
-    "targetPath": "xinyi-miniapp/src/pages/me/index.vue",
+    "targetPath": "xinyi-miniapp/src/pages/work/index.vue",
     "presentation": "MAIN_HOST_VIEW",
     "taskId": "A04",
     "status": "NOT_ASSESSED",
     "hostView": "STATION_ME",
-    "note": "目标实现路径，非已存在源码。状态画板与弹窗不是独立小程序路由；遵守原账号与权限边界。"
+    "note": "A04已按实际工作区路径适配；本人工作及已有服务入口接通，资格/听单/费用对账未完成部分以实现账本PARTIAL记录，不虚构运行数据。"
   },
   {
     "boardId": "S16",
@@ -2374,66 +2374,66 @@
     "canonicalPage": "B28",
     "title": "代驾员列表",
     "role": "admin",
-    "targetPath": "xinyi-ui/src/views/rongli/b28/index.vue",
+    "targetPath": "xinyi-ui/src/views/rongli/driver/index.vue",
     "presentation": "PAGE",
     "taskId": "A04",
     "status": "NOT_ASSESSED",
-    "note": "目标实现路径，非已存在源码。状态画板与弹窗不是独立小程序路由；遵守原账号与权限边界。"
+    "note": "A04已按实际工作区路径适配；本人工作及已有服务入口接通，资格/听单/费用对账未完成部分以实现账本PARTIAL记录，不虚构运行数据。"
   },
   {
     "boardId": "B28-detail",
     "canonicalPage": "B28",
     "title": "代驾员档案详情",
     "role": "admin",
-    "targetPath": "xinyi-ui/src/views/rongli/b28/index.vue",
+    "targetPath": "xinyi-ui/src/views/rongli/driver/index.vue",
     "presentation": "STATE_OR_OVERLAY",
     "taskId": "A04",
     "status": "NOT_ASSESSED",
-    "note": "目标实现路径，非已存在源码。状态画板与弹窗不是独立小程序路由；遵守原账号与权限边界。"
+    "note": "A04已按实际工作区路径适配；本人工作及已有服务入口接通，资格/听单/费用对账未完成部分以实现账本PARTIAL记录，不虚构运行数据。"
   },
   {
     "boardId": "B28-edit",
     "canonicalPage": "B28",
     "title": "编辑档案",
     "role": "admin",
-    "targetPath": "xinyi-ui/src/views/rongli/b28/index.vue",
+    "targetPath": "xinyi-ui/src/views/rongli/driver/index.vue",
     "presentation": "STATE_OR_OVERLAY",
     "taskId": "A04",
     "status": "NOT_ASSESSED",
-    "note": "目标实现路径，非已存在源码。状态画板与弹窗不是独立小程序路由；遵守原账号与权限边界。"
+    "note": "A04已按实际工作区路径适配；本人工作及已有服务入口接通，资格/听单/费用对账未完成部分以实现账本PARTIAL记录，不虚构运行数据。"
   },
   {
     "boardId": "B28-empty",
     "canonicalPage": "B28",
     "title": "无搜索结果",
     "role": "admin",
-    "targetPath": "xinyi-ui/src/views/rongli/b28/index.vue",
+    "targetPath": "xinyi-ui/src/views/rongli/driver/index.vue",
     "presentation": "STATE_OR_OVERLAY",
     "taskId": "A04",
     "status": "NOT_ASSESSED",
-    "note": "目标实现路径，非已存在源码。状态画板与弹窗不是独立小程序路由；遵守原账号与权限边界。"
+    "note": "A04已按实际工作区路径适配；本人工作及已有服务入口接通，资格/听单/费用对账未完成部分以实现账本PARTIAL记录，不虚构运行数据。"
   },
   {
     "boardId": "B28-error",
     "canonicalPage": "B28",
     "title": "加载失败",
     "role": "admin",
-    "targetPath": "xinyi-ui/src/views/rongli/b28/index.vue",
+    "targetPath": "xinyi-ui/src/views/rongli/driver/index.vue",
     "presentation": "STATE_OR_OVERLAY",
     "taskId": "A04",
     "status": "NOT_ASSESSED",
-    "note": "目标实现路径，非已存在源码。状态画板与弹窗不是独立小程序路由；遵守原账号与权限边界。"
+    "note": "A04已按实际工作区路径适配；本人工作及已有服务入口接通，资格/听单/费用对账未完成部分以实现账本PARTIAL记录，不虚构运行数据。"
   },
   {
     "boardId": "B28-forbidden",
     "canonicalPage": "B28",
     "title": "无查看权限",
     "role": "admin",
-    "targetPath": "xinyi-ui/src/views/rongli/b28/index.vue",
+    "targetPath": "xinyi-ui/src/views/rongli/driver/index.vue",
     "presentation": "STATE_OR_OVERLAY",
     "taskId": "A04",
     "status": "NOT_ASSESSED",
-    "note": "目标实现路径，非已存在源码。状态画板与弹窗不是独立小程序路由；遵守原账号与权限边界。"
+    "note": "A04已按实际工作区路径适配；本人工作及已有服务入口接通，资格/听单/费用对账未完成部分以实现账本PARTIAL记录，不虚构运行数据。"
   },
   {
     "boardId": "B30",

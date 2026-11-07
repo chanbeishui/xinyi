@@ -1,0 +1,10 @@
+{
+  "baselineCommit": "a10b3a9",
+  "branch": "rongli-wx-home",
+  "worktreeInitiallyClean": true,
+  "command": "mvn -o test",
+  "exitCode": 0,
+  "unitTests": 37,
+  "integrationTests": 0,
+  "note": "沙箱Mockito无法附加JVM时受控复跑；保持业务断言，未改生产。"
+}

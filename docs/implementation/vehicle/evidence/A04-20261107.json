@@ -1,0 +1,155 @@
+{
+  "taskId": "A04",
+  "scopeRevision": "V6.4-DRIVER-COMPANY-20261107",
+  "at": "2026-11-07T08:36:47.414307+00:00",
+  "implementer": "Codex",
+  "baselineCommit": "a10b3a9",
+  "userDecision": "每名代驾归属一家公司，旗下多个站点共用代驾池",
+  "codeFiles": [
+    "docs/vehicle/V6.4/05_数据设计/001_vi业务表_初始化_V6.4.sql",
+    "sql/migration_20261107_02_driver_company.sql",
+    "sql/ry_20260417.sql",
+    "xinyi-admin/src/main/java/com/xinyi/web/config/DriverAdminSecurityConfig.java",
+    "xinyi-admin/src/test/java/com/xinyi/web/viit/A04DriverIT.java",
+    "xinyi-admin/src/test/java/com/xinyi/web/viit/E08PlatformIT.java",
+    "xinyi-admin/src/test/resources/integration/a04_contract.py",
+    "xinyi-miniapp/src/api/types.ts",
+    "xinyi-miniapp/src/pages.json",
+    "xinyi-miniapp/src/pages/identity/switch.vue",
+    "xinyi-miniapp/src/pages/index/index.vue",
+    "xinyi-miniapp/src/pages/work/index.vue",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/driver/controller/DriverAdminController.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/driver/domain/DriverProfile.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/driver/dto/DriverRequests.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/driver/mapper/DriverMapper.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/driver/service/DriverAdminService.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/driver/service/DriverNewAssignmentPolicy.java",
+    "xinyi-rongli/src/main/resources/mapper/rongli/driver/DriverMapper.xml",
+    "xinyi-ui/src/api/rongli/driver.ts",
+    "xinyi-ui/src/views/rongli/driver/index.vue"
+  ],
+  "sourceDigests": {
+    "docs/vehicle/V6.4/05_数据设计/001_vi业务表_初始化_V6.4.sql": "fee1b06040240f5ec757379777c9d5e946d8963abc36cd87291b2892ebfb747f",
+    "sql/migration_20261107_02_driver_company.sql": "0f061f890a3a3190091a1fde0db174ef4dc29cfc45b29ca41122e04546ab8952",
+    "sql/ry_20260417.sql": "5eb9e71b44014c6d16651bfd770524a07b277145a693e54b1a99802e44b1ab4d",
+    "xinyi-admin/src/main/java/com/xinyi/web/config/DriverAdminSecurityConfig.java": "e7dbd01c4ebd7ed16a1df567ad8f03f1a53f08392b79bbc96dd440737d942b4d",
+    "xinyi-admin/src/test/java/com/xinyi/web/viit/A04DriverIT.java": "0ccc123594e063eeaa8ebf82c10672b7a763dae81fe9e216a462b1cf00652d62",
+    "xinyi-admin/src/test/java/com/xinyi/web/viit/E08PlatformIT.java": "cffe16440422da66aa8349ee71ca0fa2b32c32db29a138d30a14af017587f0bc",
+    "xinyi-admin/src/test/resources/integration/a04_contract.py": "c9569d19c5efeda6cd6070431ede0633b7b170b42f982da55a77d3dc9d4d9be7",
+    "xinyi-miniapp/src/api/types.ts": "396e6e8c5752113e7fcbceecfbaf6b4c0650b6cb26e427c12b66c1c5c15c5a6a",
+    "xinyi-miniapp/src/pages.json": "fa73b9b726db828c7e9ec60afaba4b39a286766bb79130992d529896453bedda",
+    "xinyi-miniapp/src/pages/identity/switch.vue": "1b57cced0a5b3b4257a309ae6db82e1e74fd3d67ca3bfef53d6c064ad24155b8",
+    "xinyi-miniapp/src/pages/index/index.vue": "4c0d5e5c263c58c11463d42509c13b51ae01c44c27f9d42d1ae9671acf955385",
+    "xinyi-miniapp/src/pages/work/index.vue": "c5154804dee6121bd6a5c578eb3344d659a6621db6ef6940a5cddbca6e5e4ba6",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/driver/controller/DriverAdminController.java": "77305b8464177ceb6aebd54b164c78859c1683bfb57decf662b6f9fa99addcdc",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/driver/domain/DriverProfile.java": "5f7461702feed187971b25c0a417173f2d349f09c74cc5ddfceb792dba6828ce",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/driver/dto/DriverRequests.java": "4cc03f6d8b9e36ea63c01a2421abcda6c739ff59f3ff9bc1997a679a8480241a",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/driver/mapper/DriverMapper.java": "552bb5b3fb256cd283be1b7f0fcfaae5fe9d6b44e468af9e1b1c1bb476ed769d",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/driver/service/DriverAdminService.java": "197edfdf783d8df36b372d41192bf5664f8010bd080718f50e210d7a0a56bd12",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/driver/service/DriverNewAssignmentPolicy.java": "68997045bb95edf24518962c8c80fddd1a84faeb9246ba57d32615b98c455e12",
+    "xinyi-rongli/src/main/resources/mapper/rongli/driver/DriverMapper.xml": "199da8a3ae69d69f34f64e9a7556ca1d750c7f16933f4e49801d30fd36beeb6a",
+    "xinyi-ui/src/api/rongli/driver.ts": "c7e5660fd7d506b359833208401489f21673ec2b1039fd0ec76bde3dcff1059a",
+    "xinyi-ui/src/views/rongli/driver/index.vue": "3436de5830cef2a569d3dabf1ce219be6209c9fc4ecb10c443d32988507f8ca9"
+  },
+  "runs": [
+    {
+      "command": "mvn -o -pl xinyi-admin -am -Pvi-it -Dit.test=当前31类 verify",
+      "layer": "LIVE_HTTP_MYSQL",
+      "exitCode": 0,
+      "testsRun": 442,
+      "skipped": 0,
+      "reportPath": "docs/implementation/vehicle/A04/full-regression.json"
+    },
+    {
+      "command": "同全量进程A04DriverIT专项",
+      "layer": "LIVE_HTTP_MYSQL",
+      "exitCode": 0,
+      "testsRun": 45,
+      "skipped": 0,
+      "reportPath": "docs/implementation/vehicle/A04/integration-junit.xml"
+    },
+    {
+      "command": "后端单元测试",
+      "layer": "UNIT",
+      "exitCode": 0,
+      "testsRun": 37,
+      "skipped": 0,
+      "reportPath": "docs/implementation/vehicle/A04/unit-junit.xml"
+    }
+  ],
+  "additionalChecks": [
+    {
+      "command": "PC生产构建",
+      "layer": "BUILD",
+      "exitCode": 0,
+      "checksRun": 1,
+      "reportPath": "docs/implementation/vehicle/A04/pc-build.txt"
+    },
+    {
+      "command": "小程序类型检查",
+      "layer": "BUILD",
+      "exitCode": 0,
+      "checksRun": 1,
+      "reportPath": "docs/implementation/vehicle/A04/types-build.txt"
+    },
+    {
+      "command": "小程序微信构建",
+      "layer": "BUILD",
+      "exitCode": 0,
+      "checksRun": 1,
+      "reportPath": "docs/implementation/vehicle/A04/mp-build.txt"
+    },
+    {
+      "command": "小程序H5构建",
+      "layer": "BUILD",
+      "exitCode": 0,
+      "checksRun": 1,
+      "reportPath": "docs/implementation/vehicle/A04/h5-build.txt"
+    },
+    {
+      "command": "Playwright PC/mini明确API夹具",
+      "layer": "BROWSER_SIMULATOR",
+      "exitCode": 0,
+      "checksRun": 21,
+      "reportPath": "docs/implementation/vehicle/A04/browser.json"
+    },
+    {
+      "command": "34工程+42资料检查",
+      "layer": "STATIC_CONTRACT",
+      "exitCode": 0,
+      "checksRun": 76,
+      "reportPath": "docs/implementation/vehicle/A04/engineering.json"
+    },
+    {
+      "command": "PC全站vue-tsc（额外检查）",
+      "layer": "OPTIONAL_PC_TYPECHECK",
+      "exitCode": 2,
+      "passed": false,
+      "reportPath": "docs/implementation/vehicle/A04/pc-typecheck.json",
+      "preExisting": true
+    }
+  ],
+  "review": {
+    "approved": true,
+    "reviewer": "/root/f01_tests",
+    "status": "APPROVED_WITH_SCOPE_BOUNDARIES",
+    "reportPath": "docs/implementation/vehicle/A04/review.md"
+  },
+  "databaseStructureChanged": true,
+  "migration": "sql/migration_20261107_02_driver_company.sql",
+  "databaseFiles": [
+    "sql/migration_20261107_02_driver_company.sql",
+    "sql/ry_20260417.sql",
+    "docs/vehicle/V6.4/05_数据设计/001_vi业务表_初始化_V6.4.sql"
+  ],
+  "realVendors": "NOT_RUN",
+  "wechatDevice": "NOT_RUN",
+  "productionDeploy": "NOT_RUN",
+  "boundaries": [
+    "D01/D02最终定位/可达/处罚/车型及实际接受仍待开发",
+    "Q01/Q05资格申请审核与H/D真实交接后续验收",
+    "D27/S15完整费用/听单/资格入口保持PARTIAL，费用自审隔离留R任务",
+    "PC全站99项既有Vue声明等类型问题单列",
+    "同公司归属显式选择有效sys_dept，框架未单列公司类型，不从名称/层级自动推断"
+  ]
+}

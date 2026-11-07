@@ -72,6 +72,7 @@ CREATE TABLE `vi_employee_binding` (
 CREATE TABLE `vi_driver_profile` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',
   `account_id` BIGINT NOT NULL COMMENT '同一个基础账户',
+  `owner_dept_id` BIGINT NULL COMMENT '后台明确指定的归属公司部门；历史NULL待全局管理员认领',
   `qualification_status` VARCHAR(24) NOT NULL COMMENT 'QualificationStatus: DRAFT,SUBMITTED,APPROVED,REJECTED,EXPIRED,SUSPENDED',
   `new_assignment_enabled` TINYINT NOT NULL DEFAULT 0 COMMENT '是否允许新增承接',
   `listening_enabled` TINYINT NOT NULL DEFAULT 0 COMMENT '本人听单偏好',
@@ -86,8 +87,10 @@ CREATE TABLE `vi_driver_profile` (
   `version` BIGINT NOT NULL DEFAULT 0 COMMENT '乐观锁版本',
   PRIMARY KEY (`id`),
   UNIQUE KEY uk_account (account_id),
+  KEY ix_driver_company (owner_dept_id,id),
   KEY ix_pool (qualification_status,new_assignment_enabled,listening_enabled),
   CONSTRAINT ck_66_c6bf03f0ceed CHECK (`qualification_status` IN ('DRAFT','SUBMITTED','APPROVED','REJECTED','EXPIRED','SUSPENDED')),
+  CONSTRAINT ck_driver_owner_dept CHECK (owner_dept_id IS NULL OR owner_dept_id>0),
   CONSTRAINT ck_ver_driver_profile CHECK (version >= 0)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='代驾资格与听单偏好';
 

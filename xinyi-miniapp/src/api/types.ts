@@ -329,11 +329,12 @@ export type Availability = {
   listeningEnabled?: boolean;
   qualificationValid?: boolean;
   occupationType?: OccupationType;
-  holderId?: string;
+  holderId?: string | null;
   availableForNewOrder?: boolean;
   reason?: string;
   version?: number;
   activePenaltyIds?: Array<string>;
+  newAssignmentEnabled?: boolean;
 };
 
 export type Invite = {
@@ -902,28 +903,37 @@ export type VehicleMaintenance = {
 
 export type DriverRecord = {
   driverId: string;
-  accountId?: string;
-  name?: string;
-  phoneMask?: string;
-  qualificationStatus: string;
-  newAssignmentEnabled?: boolean;
-  listening?: boolean;
-  assignmentId?: string;
+  accountId: string;
+  name: string | null;
+  phoneMask: string | null;
+  qualificationStatus: 'DRAFT' | 'SUBMITTED' | 'APPROVED' | 'REJECTED' | 'EXPIRED' | 'SUSPENDED';
+  newAssignmentEnabled: boolean;
+  listening: boolean;
+  assignmentId?: string | null;
   occupied: boolean;
-  licenseClass?: string;
-  licenseValidTo?: string;
-  reviewDueAt?: string;
+  licenseClass?: string | null;
+  licenseValidTo?: string | null;
+  reviewDueAt?: string | null;
+  reviewDueAtInstant?: string | null;
   completedAssignmentCount?: number;
-  score?: string;
-  internalRemark?: string;
+  score?: string | null;
+  internalRemark?: string | null;
   version: number;
-  allowedActions?: Array<AllowedAction>;
+  allowedActions: Array<AllowedAction>;
+  ownerDeptId: string | null;
+  companyName: string | null;
+  ownershipUnassigned: boolean;
+  canAssignCompany: boolean;
+  licenseLongTerm?: boolean;
+  qualificationRevision?: number | null;
+  availability: Availability;
 };
 
 export type DriverMaintenance = {
   expectedVersion: number;
   internalRemark?: string;
   reason: string;
+  ownerDeptId?: string;
 };
 
 export type DriverFeeRule = {
@@ -1097,11 +1107,11 @@ export type DriverAssignmentRecord = {
   driverId: string;
   orderNo: string;
   acceptedAt?: string;
-  endedAt?: string;
-  endReason?: string;
+  endedAt?: string | null;
+  endReason?: string | null;
   custody?: string;
   released?: boolean;
-  feeEntryId?: string;
+  feeEntryId?: string | null;
 };
 
 export type SessionView = {
@@ -2259,7 +2269,9 @@ export type PermissionCode =
   | 'biz:uploads:create'
   | 'biz:vehicle:edit'
   | 'biz:vehicle:list'
-  | 'biz:vehicle:query';
+  | 'biz:vehicle:query'
+  | 'biz:driver:assigncompany'
+  | 'biz:driver:enablenewassignments';
 
 export type CapabilityCode =
   | 'COMMON_DICT_QUERY'
@@ -2400,7 +2412,13 @@ export type AllowedAction =
   | 'QUERY_REFUND'
   | 'RETRY_REFUND'
   | 'QUERY_RECONCILIATION'
-  | 'RESOLVE_RECONCILIATION';
+  | 'RESOLVE_RECONCILIATION'
+  | 'VIEW_DRIVER'
+  | 'EDIT_DRIVER'
+  | 'DISABLE_NEW_ASSIGNMENTS'
+  | 'ENABLE_NEW_ASSIGNMENTS'
+  | 'ASSIGN_DRIVER_COMPANY'
+  | 'VIEW_ASSIGNMENTS';
 
 export type AccountStatus = 'ACTIVE' | 'LOCKED';
 

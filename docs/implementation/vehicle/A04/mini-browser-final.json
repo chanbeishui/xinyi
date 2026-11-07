@@ -1,0 +1,109 @@
+{
+  "mode": "Browser plugin not available；临时Playwright明确API夹具，仅验证H5页面，不代表微信真机/资格链/费用链完成",
+  "url": "http://127.0.0.1:5175/#/pages/work/index",
+  "viewports": [
+    "390x844"
+  ],
+  "checks": [
+    "D27真实session/profile显示本人称呼、核验掩码、资格；未实现对账/听单/资格页禁用且无虚构余额",
+    "本人服务记录复用已实现DRIVER订单接口，没有新建假任务页",
+    "切换角色清除旧投影，旧在途响应不会恢复DRIVER信息；S15读取同一新会话及真实获授权站点",
+    "S15工作入口复用真实STATION订单，不沿用代驾视角",
+    "profile账户与会话不一致时清除全部工作投影，不展示异账号资料",
+    "会话上下文与本地访问态不一致时拒绝展示并给重新登录入口",
+    "页面身份/非空/无overlay与相关控制台错误，390px无横向溢出，未请求费用或伪造听单写入"
+  ],
+  "errors": [],
+  "warnings": [],
+  "unknown": [],
+  "requests": [
+    {
+      "method": "GET",
+      "path": "/api/common/session"
+    },
+    {
+      "method": "GET",
+      "path": "/api/common/profile"
+    },
+    {
+      "method": "GET",
+      "path": "/api/app/driver/orders"
+    },
+    {
+      "method": "GET",
+      "path": "/api/common/session"
+    },
+    {
+      "method": "GET",
+      "path": "/api/common/profile"
+    },
+    {
+      "method": "GET",
+      "path": "/api/common/session"
+    },
+    {
+      "method": "GET",
+      "path": "/api/common/profile"
+    },
+    {
+      "method": "GET",
+      "path": "/api/common/session"
+    },
+    {
+      "method": "POST",
+      "path": "/api/common/session/role"
+    },
+    {
+      "method": "GET",
+      "path": "/api/common/session"
+    },
+    {
+      "method": "GET",
+      "path": "/api/common/session"
+    },
+    {
+      "method": "GET",
+      "path": "/api/common/profile"
+    },
+    {
+      "method": "GET",
+      "path": "/api/app/station/authorized-stations"
+    },
+    {
+      "method": "GET",
+      "path": "/api/app/station/orders"
+    },
+    {
+      "method": "GET",
+      "path": "/api/common/session"
+    },
+    {
+      "method": "GET",
+      "path": "/api/common/profile"
+    },
+    {
+      "method": "GET",
+      "path": "/api/app/station/authorized-stations"
+    },
+    {
+      "method": "GET",
+      "path": "/api/common/session"
+    },
+    {
+      "method": "GET",
+      "path": "/api/common/profile"
+    },
+    {
+      "method": "GET",
+      "path": "/api/common/session"
+    },
+    {
+      "method": "GET",
+      "path": "/api/common/profile"
+    }
+  ],
+  "screenshots": [
+    "/private/tmp/A04-mini-driver-work.png",
+    "/private/tmp/A04-mini-station-work.png"
+  ]
+}

@@ -240,7 +240,8 @@ paths:
       summary: 安全重试渠道请求
       tags:
       - ADMIN
-      description: 真实ADMIN、功能权限及原收款主体部门范围；版本/500字以内原因/UUID幂等键。外部SDK调用在事务外；新外部动作和返回操作者数据前实时鉴权，退款POST另重验审批、实物和租约；可信资金核对原单证据后独立归并，不因操作者撤权丢弃已发生事实。客户端不能提交金额、渠道结果或部门。 未知先查同一原退款号；仅可信未受理才能原参数重发。SUCCESS/CLOSED不可重提；线下返回明确不支持。
+      description: 真实ADMIN、功能权限及原收款主体部门范围；版本/500字以内原因/UUID幂等键。外部SDK调用在事务外；新外部动作和返回操作者数据前实时鉴权，退款POST另重验审批、实物和租约；可信资金核对原单证据后独立归并，不因操作者撤权丢弃已发生事实。客户端不能提交金额、渠道结果或部门。
+        未知先查同一原退款号；仅可信未受理才能原参数重发。SUCCESS/CLOSED不可重提；线下返回明确不支持。
       x-flow-ids:
       - F20
       security:
@@ -620,7 +621,8 @@ paths:
       summary: 基于证据登记对账结论
       tags:
       - ADMIN
-      description: 真实ADMIN、功能权限及原收款主体部门范围；版本/500字以内原因/UUID幂等键。外部SDK调用在事务外；新外部动作和返回操作者数据前实时鉴权，退款POST另重验审批、实物和租约；可信资金核对原单证据后独立归并，不因操作者撤权丢弃已发生事实。客户端不能提交金额、渠道结果或部门。 办结只登记已验证一致的事实，不改变付款/退款金额，不允许凭原因手工认账。
+      description: 真实ADMIN、功能权限及原收款主体部门范围；版本/500字以内原因/UUID幂等键。外部SDK调用在事务外；新外部动作和返回操作者数据前实时鉴权，退款POST另重验审批、实物和租约；可信资金核对原单证据后独立归并，不因操作者撤权丢弃已发生事实。客户端不能提交金额、渠道结果或部门。
+        办结只登记已验证一致的事实，不改变付款/退款金额，不允许凭原因手工认账。
       x-flow-ids:
       - F20
       security:
@@ -1191,6 +1193,12 @@ components:
       - RETRY_REFUND
       - QUERY_RECONCILIATION
       - RESOLVE_RECONCILIATION
+      - VIEW_DRIVER
+      - EDIT_DRIVER
+      - DISABLE_NEW_ASSIGNMENTS
+      - ENABLE_NEW_ASSIGNMENTS
+      - ASSIGN_DRIVER_COMPANY
+      - VIEW_ASSIGNMENTS
   responses:
     UnprocessableEntity:
       description: 填写内容不符合要求。参见errorCode注册表；HTTP状态与code一致。

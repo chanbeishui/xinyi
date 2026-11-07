@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xinyi.rongli.driver.mapper.DriverMapper">
+    <resultMap id="Driver" type="com.xinyi.rongli.driver.domain.DriverProfile">
+        <id property="id" column="id"/>
+        <result property="version" column="version"/>
+        <result property="accountId" column="account_id"/>
+        <result property="ownerDeptId" column="owner_dept_id"/>
+        <result property="qualificationStatus" column="qualification_status"/>
+        <result property="newAssignmentEnabled" column="new_assignment_enabled"/>
+        <result property="listeningEnabled" column="listening_enabled"/>
+        <result property="reviewDueAt" column="review_due_at" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+        <result property="licenseClass" column="license_class"/>
+        <result property="licenseValidTo" column="license_valid_to" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+        <result property="licenseLongTerm" column="license_long_term"/>
+        <result property="qualificationRevision" column="qualification_revision"/>
+        <result property="internalRemark" column="internal_remark"/>
+        <result property="displayName" column="display_name"/>
+        <result property="phoneCipher" column="phone_cipher"/>
+        <result property="accountStatus" column="account_status"/>
+        <result property="securityStatus" column="security_status"/>
+        <result property="companyName" column="company_name"/>
+        <result property="createdAt" column="created_at" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+        <result property="updatedAt" column="updated_at" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+    </resultMap>
+    <sql id="columns">
+        SELECT d.*,a.nickname display_name,
+            CASE WHEN a.phone_verified_at IS NOT NULL THEN a.phone_cipher ELSE NULL END phone_cipher,
+            a.status account_status,
+            security.security_status,company.dept_name company_name
+        FROM vi_driver_profile d
+        JOIN vi_account a ON a.id=d.account_id
+        LEFT JOIN vi_account_security security ON security.account_id=a.id
+        LEFT JOIN sys_dept company ON company.dept_id=d.owner_dept_id
+    </sql>
+    <select id="find" resultMap="Driver">
+        <include refid="columns"/>
+        WHERE d.id=#{id}
+    </select>
+    <select id="lock" resultMap="Driver">
+        <include refid="columns"/>
+        WHERE d.id=#{id}
+        FOR UPDATE
+    </select>
+    <!-- 未归属档案只有显式ALL范围可见，不得按员工关系或历史订单猜测公司。 -->
+    <sql id="visible">
+        <if test="scope != null">
+            <choose>
+                <when test="scope.size()>0">
+                    AND d.owner_dept_id IN
+                    <foreach collection="scope" item="dept" open="(" close=")" separator=",">#{dept}</foreach>
+                </when>
+                <otherwise>AND 1=0</otherwise>
+            </choose>
+        </if>
+    </sql>
+    <sql id="search">
+        WHERE 1=1
+        <include refid="visible"/>
+        <if test="search.query.ownerDeptId != null">
+            AND d.owner_dept_id=#{search.query.ownerDeptId}
+        </if>
+        <if test="search.query.status != null">
+            AND d.qualification_status=#{search.query.status}
+        </if>
+        <choose>
+            <when test="search.phoneLookup != null">AND a.phone_lookup=#{search.phoneLookup} AND a.phone_verified_at IS NOT NULL</when>
+            <when test="search.query.keyword != null and search.query.keyword != ''">
+                AND (LOCATE(#{search.query.keyword},COALESCE(a.nickname,''))&gt;0
+                    OR CAST(d.id AS CHAR)=#{search.query.keyword})
+            </when>
+        </choose>
+    </sql>
+    <select id="list" resultMap="Driver">
+        <include refid="columns"/>
+        <include refid="search"/>
+        <choose>
+            <when test="search.query.sort == 'nameAsc'">ORDER BY a.nickname ASC,d.id DESC</when>
+            <otherwise>ORDER BY d.id DESC</otherwise>
+        </choose>
+        LIMIT #{search.query.pageSize} OFFSET #{offset}
+    </select>
+    <select id="count" resultType="long">
+        SELECT COUNT(*)
+        FROM vi_driver_profile d JOIN vi_account a ON a.id=d.account_id
+        <include refid="search"/>
+    </select>
+    <select id="company" resultType="map">
+        SELECT dept_id,dept_name,status,del_flag
+        FROM sys_dept
+        WHERE dept_id=#{id}
+    </select>
+    <select id="busy" resultType="int">
+        SELECT (
+            EXISTS(SELECT 1 FROM vi_driver_occupancy WHERE driver_id=#{id})
+            OR EXISTS(SELECT 1 FROM vi_driver_assignment WHERE driver_id=#{id} AND ended_at IS NULL)
+            OR EXISTS(SELECT 1 FROM vi_dispatch_invite WHERE driver_id=#{id} AND status='WAIT_RESPONSE')
+        )
+    </select>
+    <select id="occupancy" resultType="map">
+        SELECT holder_type,holder_id,order_id
+        FROM vi_driver_occupancy
+        WHERE driver_id=#{id}
+    </select>
+    <!-- 承接历史始终依真实原订单部门收口，不能因为已转入本公司而浏览其他公司的旧订单。 -->
+    <sql id="assignmentVisible">
+        FROM vi_driver_assignment assignment
+        JOIN vi_order original ON original.id=assignment.order_id
+        WHERE assignment.driver_id=#{id}
+        <if test="scope != null">
+            <choose>
+                <when test="scope.size()>0">
+                    AND original.dept_id IN
+                    <foreach collection="scope" item="dept" open="(" close=")" separator=",">#{dept}</foreach>
+                </when>
+                <otherwise>AND 1=0</otherwise>
+            </choose>
+        </if>
+    </sql>
+    <sql id="assignmentSearch">
+        <include refid="assignmentVisible"/>
+        <if test="query.keyword != null and query.keyword != ''">
+            AND LOCATE(#{query.keyword},original.order_no)&gt;0
+        </if>
+        <choose>
+            <when test="query.status == 'ACTIVE'">AND assignment.ended_at IS NULL</when>
+            <when test="query.status == 'ENDED'">AND assignment.ended_at IS NOT NULL</when>
+            <when test="query.status == 'RETURNED'">AND assignment.end_reason='RETURNED' AND assignment.ended_at IS NOT NULL</when>
+        </choose>
+    </sql>
+    <select id="assignments" resultType="map">
+        SELECT assignment.id,original.order_no,original.custody_type,assignment.end_reason,
+            DATE_FORMAT(assignment.accepted_at,'%Y-%m-%dT%H:%i:%s.%fZ') accepted_iso,
+            DATE_FORMAT(assignment.ended_at,'%Y-%m-%dT%H:%i:%s.%fZ') ended_iso
+        <include refid="assignmentSearch"/>
+        ORDER BY assignment.accepted_at DESC,assignment.id DESC
+        LIMIT #{query.pageSize} OFFSET #{offset}
+    </select>
+    <select id="assignmentCount" resultType="long">
+        SELECT COUNT(*)
+        <include refid="assignmentSearch"/>
+    </select>
+    <select id="completedCount" resultType="long">
+        SELECT COUNT(*)
+        <include refid="assignmentVisible"/>
+            AND assignment.ended_at IS NOT NULL AND assignment.end_reason='RETURNED'
+    </select>
+    <select id="visibleAssignment" resultType="long">
+        SELECT assignment.id
+        <include refid="assignmentVisible"/>
+            AND assignment.ended_at IS NULL AND original.active_assignment_id=assignment.id
+        ORDER BY assignment.id DESC
+        LIMIT 1
+    </select>
+    <update id="maintain">
+        UPDATE vi_driver_profile
+        SET
+            <if test="ownerPresent">owner_dept_id=#{row.ownerDeptId},new_assignment_enabled=0,</if>
+            <if test="remarkPresent">internal_remark=#{row.internalRemark},</if>
+            version=version+1,updated_at=UTC_TIMESTAMP(3)
+        WHERE id=#{row.id} AND version=#{row.version}
+    </update>
+    <update id="switchNew">
+        UPDATE vi_driver_profile
+        SET new_assignment_enabled=#{enabled},version=version+1,updated_at=UTC_TIMESTAMP(3)
+        WHERE id=#{id} AND version=#{version}
+    </update>
+</mapper>

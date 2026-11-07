@@ -1,11 +1,13 @@
 # A04 · 代驾员档案与接单控制
 
 阶段：M1；责任域：driver；前置：I06, E05。
-范围版本：`V6.1-UNCHANGED`；definitionHash：`a1db049bdd104f1f054627a4b5863095502d59ce3dd417e42079247ae6830a77`。
+范围版本：`V6.4-DRIVER-COMPANY-20261107`；definitionHash：`b7ea4b6d6b46503ec44ba0baa8d7d57207618614771f56883b0f9dbd344cdff4`。
 
 ## 本任务交付
 - 代驾列表/资格/承接记录/备注/暂停新邀约
-- 个人对账入口
+- 本人工作页和服务记录入口；费用对账导航须R任务接通后启用，不虚构账单
+- 同公司共用代驾池；显式归属及空闲迁移，存量不猜测公司；原新权限并集与迁移后禁新
+- 暂停/恢复行政新承接开关，保留听单偏好、资格与在手责任；D01可达/定位最终判定及对账费用另待对应任务
 
 ## 必测失败与并发
 - 关闭新增承接不解除持车责任
@@ -13,7 +15,7 @@
 
 ## 精确输入
 主源：04_接口/openapi_V6.4.yaml、05_数据设计/data_model_V6.4.json、06_验收/test_cases_V6.4.json。本目录派生，不独立维护。
-接口：V4_get_api_admin_drivers, API_126_post, V4_get_api_admin_drivers__driverId, V4_patch_api_admin_drivers__driverId, V4_get_api_admin_drivers__driverId__assignments
+接口：V4_get_api_admin_drivers, API_126_post, V4_get_api_admin_drivers__driverId, V4_patch_api_admin_drivers__driverId, V4_get_api_admin_drivers__driverId__assignments, V64_post_api_admin_drivers__driverId__enable_new_assignments
 画板：D27, S15, B28, B28-detail, B28-edit, B28-empty, B28-error, B28-forbidden
 主责任表：无
 验收：无
@@ -21,10 +23,11 @@
 ## 代码落位
 `xinyi-rongli/src/main/java/com/xinyi/rongli/driver/`
 `xinyi-rongli/src/main/resources/mapper/rongli/driver/`
-`xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/driver/`
 `xinyi-ui/src/views/rongli/driver/`
 `xinyi-ui/src/api/rongli/driver.ts`
-`xinyi-miniapp/src/features/driver/`
+`xinyi-rongli/src/main/java/com/xinyi/rongli/driver/controller/`
+`xinyi-admin/src/test/java/com/xinyi/web/viit/A04DriverIT.java`
+`xinyi-miniapp/src/pages/work/`
 
 ## 验证命令
 ```bash
