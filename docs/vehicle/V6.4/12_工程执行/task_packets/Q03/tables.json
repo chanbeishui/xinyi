@@ -14,6 +14,16 @@
         "资格申请"
       ],
       [
+        "material_revision",
+        "BIGINT NULL",
+        "绑定核验或培训对应的材料版本；历史NULL不可视为当前通过"
+      ],
+      [
+        "material_hash",
+        "BINARY(32) NULL",
+        "绑定申请当前材料有密钥摘要；不接受客户端声明"
+      ],
+      [
         "driver_id",
         "BIGINT NOT NULL",
         "真正司机档案"
@@ -57,7 +67,7 @@
     "indexes": [
       "UNIQUE KEY uk_training_progress (application_id,training_id)"
     ],
-    "rule": "普通前端上报不证明观看完整；时长限幅、顺序检查、服务端阅卷共同决定培训完成；不宣称防作弊认证",
+    "rule": "普通前端上报不证明观看完整；时长限幅、顺序检查、服务端阅卷共同决定培训完成；不宣称防作弊认证 当前材料版本和HMAC绑定由服务端写入；旧NULL、错版或缺可信时刻不能视为当前通过。",
     "primaryKey": [
       "id"
     ],
@@ -127,6 +137,18 @@
         "insertable": false,
         "updatable": false,
         "clientWritable": false
+      },
+      "material_revision": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "material_hash": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
       }
     },
     "checks": [
@@ -147,6 +169,16 @@
         "progress_id",
         "BIGINT NOT NULL",
         "本人进度"
+      ],
+      [
+        "material_revision",
+        "BIGINT NULL",
+        "绑定核验或培训对应的材料版本；历史NULL不可视为当前通过"
+      ],
+      [
+        "material_hash",
+        "BINARY(32) NULL",
+        "绑定申请当前材料有密钥摘要；不接受客户端声明"
       ],
       [
         "session_id",
@@ -192,7 +224,7 @@
     "indexes": [
       "KEY ix_playback_progress (progress_id,expires_at)"
     ],
-    "rule": "按相邻报告服务端经过时长上限累加；多个并发播放会话不能重复计入时长",
+    "rule": "按相邻报告服务端经过时长上限累加；多个并发播放会话不能重复计入时长 当前材料版本和HMAC绑定由服务端写入；旧NULL、错版或缺可信时刻不能视为当前通过。",
     "primaryKey": [
       "id"
     ],
@@ -261,6 +293,18 @@
         "insertable": false,
         "updatable": false,
         "clientWritable": false
+      },
+      "material_revision": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "material_hash": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
       }
     },
     "checks": [
@@ -280,6 +324,16 @@
         "application_id",
         "BIGINT NOT NULL",
         "资格申请"
+      ],
+      [
+        "material_revision",
+        "BIGINT NULL",
+        "绑定核验或培训对应的材料版本；历史NULL不可视为当前通过"
+      ],
+      [
+        "material_hash",
+        "BINARY(32) NULL",
+        "绑定申请当前材料有密钥摘要；不接受客户端声明"
       ],
       [
         "driver_id",
@@ -356,7 +410,7 @@
       "UNIQUE KEY uk_attempt_number (application_id,training_id,attempt_no)",
       "UNIQUE KEY uk_open_training_attempt (active_attempt)"
     ],
-    "rule": "作答绑定attemptId+expectedVersion；提交后不可重写；正确答案只在服务端按确切课程版本读取",
+    "rule": "作答绑定attemptId+expectedVersion；提交后不可重写；正确答案只在服务端按确切课程版本读取 当前材料版本和HMAC绑定由服务端写入；旧NULL、错版或缺可信时刻不能视为当前通过。",
     "primaryKey": [
       "id"
     ],
@@ -461,6 +515,18 @@
         "generated": false,
         "insertable": false,
         "updatable": false,
+        "clientWritable": false
+      },
+      "material_revision": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "material_hash": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
         "clientWritable": false
       }
     },

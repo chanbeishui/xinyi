@@ -8,6 +8,9 @@ type UploadTicket = Transfer & { uploadId: string; fileId: string; uploadUrl: st
 type Access = Transfer & { downloadUrl: string };
 type FileReady = { fileId: string; status: 'UPLOADING' | 'VERIFYING' | 'READY' | 'REJECTED' };
 type ChosenImage = { path: string; size: number; name: string; mime: string };
+type EvidenceTarget =
+  | { purpose: 'DISPUTE'; orderNo: string }
+  | { purpose: 'ID_CARD' | 'DRIVER_LICENSE'; applicationId: string };
 
 export function intentKey() {
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (character) => {
@@ -25,6 +28,8 @@ function unchanged(previous: ReturnType<typeof context>) {
   const session = context();
   if (
     previous.sessionId !== session.sessionId ||
+    previous.accountId !== session.accountId ||
+    previous.activeRole !== session.activeRole ||
     previous.contextVersion !== session.contextVersion
   )
     throw new Error('身份已切换，请重新操作文件');
@@ -92,6 +97,19 @@ async function bytes(path: string): Promise<ArrayBuffer> {
 
 /** 上传字节后再请求服务端核验；本地扩展名和客户端成功回调不能证明凭证已 READY。 */
 export async function chooseAndUploadVoucher(orderNo: string): Promise<Voucher> {
+  return chooseAndUploadEvidence({ purpose: 'DISPUTE', orderNo });
+}
+
+/** 证件必须挂在服务端已建立的本人申请下；不把订单凭证或旧申请文件冒充本次证件。 */
+export async function chooseAndUploadQualificationEvidence(
+  applicationId: string,
+  purpose: 'ID_CARD' | 'DRIVER_LICENSE'
+): Promise<Voucher> {
+  if (!/^[1-9][0-9]{0,18}$/.test(applicationId)) throw new Error('申请编号无效');
+  return chooseAndUploadEvidence({ purpose, applicationId });
+}
+
+async function chooseAndUploadEvidence(target: EvidenceTarget): Promise<Voucher> {
   const previous = context();
   const [image] = await choose();
   unchanged(previous);
@@ -102,8 +120,7 @@ export async function chooseAndUploadVoucher(orderNo: string): Promise<Voucher> 
       'POST',
       '/api/common/uploads',
       {
-        purpose: 'DISPUTE',
-        orderNo,
+        ...target,
         fileName: image.name,
         mimeType: image.mime,
         size: content.byteLength
@@ -153,13 +170,19 @@ export async function chooseAndUploadVoucher(orderNo: string): Promise<Voucher> 
 }
 
 export async function previewVoucher(fileId: string, orderNo: string) {
+  return previewEvidence(fileId, { purpose: '本人查看售后凭证', orderNo });
+}
+
+export async function previewQualificationEvidence(fileId: string) {
+  // 证件读取仍由 F01 根据文件的 applicationId 校验本人；不附加伪造的订单归属。
+  return previewEvidence(fileId, { purpose: '本人查看代驾申请证件' });
+}
+
+async function previewEvidence(fileId: string, input: { purpose: string; orderNo?: string }) {
   if (!/^[1-9][0-9]{0,18}$/.test(fileId)) throw new Error('凭证编号无效');
   const previous = context();
   const access = (
-    await request<{ data: Access }>('POST', `/api/common/files/${fileId}/access`, {
-      purpose: '本人查看售后凭证',
-      orderNo
-    })
+    await request<{ data: Access }>('POST', `/api/common/files/${fileId}/access`, input)
   ).data;
   unchanged(previous);
   const temp = await new Promise<string>((resolve, reject) =>

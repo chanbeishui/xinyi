@@ -1,0 +1,194 @@
+{
+  "taskId": "Q01",
+  "reviewer": "/root/f01_tests（未写生产代码）",
+  "approved": true,
+  "date": "2026-11-07",
+  "scope": "Q01生产、身份/文件/同意交叉、7表SQL、主PRD/API/类型及F49流程、前端与测试源码独立复核通过；含末轮public NULL实际响应断言的32类484集成/37单元、42专项、23明确API夹具GUI及最终交付报告证据一致。Q03/Q04/Q05及D01/D02完整上游/审批/接单仍属后续，TC003/005保持PARTIAL。",
+  "sources": {
+    "docs/vehicle/V6.4/01_PRD/page_specs_V6.4.json": "976ae7bb983a8513fcfcc1499bd8f57b0bc2742c9079274b6edcac7127d8cd50",
+    "docs/vehicle/V6.4/01_PRD/全量页面与交互规格_V6.4.html": "9f3499363f8a21c73191b96a16a70d40841c55c513c3a207dd0778bca8ff5ac0",
+    "docs/vehicle/V6.4/01_PRD/全量页面与交互规格_V6.4.md": "59d733714a51eb372be1378d8a6e16f47882d0d5493b4b418a5f79ebcd88f461",
+    "docs/vehicle/V6.4/01_PRD/机动车检测预约_PRD_V6.4_完整整合版.html": "18c9ae72dace20315117d8a6e8cb1561e2d50e7c944a51b95333f3e4bb381c50",
+    "docs/vehicle/V6.4/01_PRD/机动车检测预约_PRD_V6.4_完整整合版.md": "69c58b0fb08ecb355662495a33f0e5dad91f6eab2837bc265c144b00713e6fad",
+    "docs/vehicle/V6.4/04_接口/dto-types.ts": "e7929f47c2636bebe25b88ba5bb29bce564804925743a0407af1ef723c7b2e32",
+    "docs/vehicle/V6.4/04_接口/openapi_V6.4.yaml": "c35e45bc74707b4620e3a73f768f81d7567fe7d2b492b4b55f34c075077754dd",
+    "docs/vehicle/V6.4/04_接口/接口操作索引_V6.4.json": "a2ef8998c7e4e64bd8fe0c0051bc8b1c73692c5d45f0cb1637de4143a4b3e556",
+    "docs/vehicle/V6.4/05_数据设计/001_vi业务表_初始化_V6.4.sql": "e2e759a62e8f00caa96b67d5b08f89f446989980076403505990ecc277017929",
+    "docs/vehicle/V6.4/05_数据设计/data_model_V6.4.json": "4aaa814424aaa29f449ef3e2593d007e797e1f0b88992a4be7795268b44875ab",
+    "docs/vehicle/V6.4/08_业务流程图/DOT/F49.dot": "2f7eceb549434096977e454bf7b3c5fbe2ca42c132cf863c64887c8bb202e1d1",
+    "docs/vehicle/V6.4/08_业务流程图/Mermaid/F49.mmd": "e0f8898320036227be8847d47a2142c50ff2a49815e278b87c2b395c5dfdeff0",
+    "docs/vehicle/V6.4/08_业务流程图/PNG/F49.png": "bf895e04f001f9cc54a0a059a417be836ccda4e2b5b1345f93862a802a33d323",
+    "docs/vehicle/V6.4/08_业务流程图/SVG/F49.svg": "f95dfbdccd0466b630f78b43c737b9b0d048431d74903a5501f23fb71b850c85",
+    "docs/vehicle/V6.4/08_业务流程图/flows_V6.4.json": "8b422dd9faa0f44cae47cceea1f8d28e625f262d1bbb406dcac2cb1b5b219123",
+    "docs/vehicle/V6.4/08_业务流程图/流程总览.html": "0142f9bc80d9350e4a0d3f104dcd88b4dbe707301e2540fe36e7d759035e98fb",
+    "sql/migration_20261107_03_qualification_drafts.sql": "bf117f738b030f9975958cfed9500d98df45ab44bac249158f631e89924823e3",
+    "sql/ry_20260417.sql": "7abfb15f619da971e403d7307e92f8e3b03a3b929f879d91769b66552a431fca",
+    "xinyi-admin/src/test/java/com/xinyi/web/viit/Q01QualificationIT.java": "4423f87ad5612eff1da5285f22bd4e503a07f10d9c534c6692878340f694a720",
+    "xinyi-admin/src/test/resources/integration/q01_contract.py": "6b51769f389faac5d176df5ae9bd14114c30fb11fb258ce5cd89092c3088fade",
+    "xinyi-miniapp/src/api/types.ts": "3d7e8ead3b34602abd9f02c4dec0de68216a3904bd03baec4c82f4dc7a98244e",
+    "xinyi-miniapp/src/features/config/api.ts": "fa47de270ed29db6c423e966e4a9633d89c33ec3ad37cbdf30c5975ea4e7c638",
+    "xinyi-miniapp/src/features/file/api.ts": "fb33faa4295b66e7f77487023332465a16a5689cbf22ae1b41c91ecd435ad0f6",
+    "xinyi-miniapp/src/features/qualification/api.ts": "08f7c320117476c47fa78883bb737717e58bfb62e9ec097fb9a1321ec3be9df8",
+    "xinyi-miniapp/src/pages.json": "3d795ae34b6aed8ee9116fefb08054835de619ff847557a26dbeb4743236766c",
+    "xinyi-miniapp/src/pages/identity/switch.vue": "c18bdc94613e86ad50fc54ab7ed5b93144ca594773076b554f77fe449edc64f4",
+    "xinyi-miniapp/src/pages/qualification/index.vue": "681378fe17bc05a0d783b0cc13b28071046147e2009b1c7aa5096c1081d85a20",
+    "xinyi-miniapp/src/pages/work/index.vue": "82b069e8c69d3c392f7f030a8222b841f3dd70ce239fe8a71ba1e4e330724aa7",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/config/dto/PublicServiceConfigView.java": "d07edb17bd72fbc1283186cd4fbc2450ba8f3703eb7c93e4bc3d52417bc37b37",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/config/mapper/ConfigMapper.java": "f4abead8720c785fe6bbab4947bb0714b1fdcb6dc9956425b074c54cee63987b",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/config/service/ConfigService.java": "3b96545517b54d34919c728dd08a3568363c67512a08a60435782598d4301aa9",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/config/service/QualificationConsentSnapshot.java": "38f991fcc1969b31dfa67f4562d4cbbdbaf7f374978b64e08fd7cf34e1e44b27",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/file/mapper/PrivateFileMapper.java": "644f4a55de5c8f3aa6ea05a5c80bc0bd000375c593f21c2764997b94450cfd3f",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/file/service/FileAuthority.java": "ea4a948f161e84a71d692cb24f7efaf048c6c1a10893b1c5f18b0cb4fd5bea5e",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/file/service/PrivateFileService.java": "42bf56819fec03f929755be991fa7e5aee4b4b2be52e52f70c15a7aa54867c8b",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/identity/auth/MiniCapabilityRegistry.java": "e061700c85a0fedbffe3e5a4dcc0c79b77e6581c14327bd7b961b093e984ec31",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/qualification/controller/QualificationController.java": "b162b427553f1e97b69a7007a46fedc94453f3291e5ad77d027acbccd20ae2a8",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/qualification/domain/QualificationApplication.java": "69083a817fb4e1e8fc844824773841e7741865fbf67531e8201f5cbeb7f88b40",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/qualification/dto/QualificationRequests.java": "03abe8125b769ef426fa47372060e6817db016d2e95b2c276aa2a3ffdfe1ea26",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/qualification/mapper/QualificationMapper.java": "9e3e3d1ebdae9b058ee66308cf06f019f5811002717530596322247bbc561db8",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/qualification/service/QualificationService.java": "4dd72e0b4b39951b5df3e1bddebfc847b7b865eb200f6b9857dedd95e7516004",
+    "xinyi-rongli/src/main/resources/mapper/rongli/config/ConfigMapper.xml": "da9226e8b7fe70abdfb08c489b679ef64f6d154a37fa5fb16c7776bfcc920c14",
+    "xinyi-rongli/src/main/resources/mapper/rongli/file/PrivateFileMapper.xml": "fa27c7dbc2fba6ec03dddae7c6efcae143ff5954278f29b90d54a6f9f6fe0cc0",
+    "xinyi-rongli/src/main/resources/mapper/rongli/qualification/QualificationMapper.xml": "f0137b7b8161342c5f691cd0c7098c381540d4b0f9baacf4da6bd59f3855adca"
+  },
+  "relatedRegression": {
+    "tests": 136,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "suites": [
+      {
+        "suite": "Q01QualificationIT",
+        "tests": 42,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "F01FileIT",
+        "tests": 30,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "A04DriverIT",
+        "tests": 45,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "I01IdentityIT",
+        "tests": 9,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "I04IdentityIT",
+        "tests": 10,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    ],
+    "evidence": "verification-fixes.json中保留首轮3失败及关联136最终通过，最终各套件原始计数亦在full-regression.json"
+  },
+  "schemaVerification": {
+    "path": "docs/implementation/vehicle/Q01/schema-verification.json",
+    "sha256": "69c03f4df3926acd2d21d245746ff8d155c3e762d953342366f15198118c4dd5",
+    "passed": true,
+    "tables": 7,
+    "newTables": 1
+  },
+  "upstreamBoundary": "五类服务端汇总证明为明确可信历史夹具；未mock业务鉴权，未声称Q03/Q04实际供应商、学习与考试或Q05真实审批已通过。",
+  "testReport": {
+    "path": "docs/implementation/vehicle/Q01/integration-junit.xml",
+    "sha256": "8db165f6dd7fc43824d76d5f86a4bb4bc64d777855178833f23354996e9213ed",
+    "suite": "com.xinyi.web.viit.Q01QualificationIT",
+    "tests": 42,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "unitReport": {
+    "path": "docs/implementation/vehicle/Q01/unit-junit.xml",
+    "sha256": "364ca24f31683338ce0d0eaaf5766696c5a27fc9d3b3d78e9f355f3a3c726c0a",
+    "tests": 37,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "finalFull": {
+    "path": "docs/implementation/vehicle/Q01/full-regression.json",
+    "sha256": "ffac7282f69d5f4e3cc5328c5dc41424e310b26b4408ef11551ef38624cfdcac",
+    "integrationTests": 484,
+    "unitTests": 37,
+    "suites": 32,
+    "exitCode": 0,
+    "includesPublicMissingNullContract": true
+  },
+  "browserEvidence": {
+    "path": "docs/implementation/vehicle/Q01/browser.json",
+    "sha256": "9e2774ec0a1f0a639de2811b5975724be0b115ead2d296b7d57745d189913b80",
+    "checks": 23,
+    "errors": 0,
+    "mode": "Browser plugin not available；临时Playwright真实H5页面+明确API夹具。真实五项PASSED仅模拟后端可信投影，不代表供应商/培训已接通或微信真机通过。",
+    "screenshots": {
+      "docs/implementation/vehicle/Q01/mini-draft-mobile.png": "18fcc38edacdcb56ad94a0b2032e29de96daa54e6e8c620db4407756887bb9ff",
+      "docs/implementation/vehicle/Q01/mini-draft-desktop.png": "41682501166339d3ce613f294c6a59078b06603235a622441bd9642afec3ecb6",
+      "docs/implementation/vehicle/Q01/mini-materials.png": "217583dac9d31edc86c5b4af15a957961c884ba998869c8c767c777ff5e9be70",
+      "docs/implementation/vehicle/Q01/mini-progress.png": "f2639f8edab5566e836b9e128b78acdb0eeaa415511e4516257c1f28c14b1fa6"
+    }
+  },
+  "builds": {
+    "miniTypes": {
+      "path": "docs/implementation/vehicle/Q01/types-build.txt",
+      "sha256": "aa88a9902920e3c1c2e4e640a476555060ba2a3397e3c0758997503616cf2546",
+      "exitCode": 0,
+      "evidence": "主任务实际执行退出0并归档构建摘要，复核核对摘要与交付说明",
+      "formatNote": "仅清理构建摘要结尾多余空行，命令及退出结果不变。"
+    },
+    "miniWechat": {
+      "path": "docs/implementation/vehicle/Q01/mp-build.txt",
+      "sha256": "d91c90e72c92a17e5101627e046c93cd4068aaefa56672f6fe7c49275902fa54",
+      "exitCode": 0,
+      "evidence": "主任务实际执行退出0并归档构建摘要，复核核对摘要与交付说明"
+    },
+    "miniH5": {
+      "path": "docs/implementation/vehicle/Q01/h5-build.txt",
+      "sha256": "33972d0530ddf26c0d3a17d5a1f72b7cc5ff24446b7d4794eca0fabba995fa84",
+      "exitCode": 0,
+      "evidence": "主任务实际执行退出0并归档构建摘要，复核核对摘要与交付说明"
+    },
+    "pcProduction": {
+      "path": "docs/implementation/vehicle/Q01/pc-build.txt",
+      "sha256": "7f2793563cf6e9419cb1f93c824b8292b62ce9b6354acf287b92d83c758b3019",
+      "exitCode": 0,
+      "evidence": "主任务实际执行退出0并归档构建摘要，复核核对摘要与交付说明"
+    }
+  },
+  "staticChecks": {
+    "engineering": {
+      "path": "docs/implementation/vehicle/Q01/engineering.json",
+      "sha256": "1daffc2a0f2c7b49785350f47581160fb6c71003321f4c30f7973a0d369caa2b",
+      "pass": 34,
+      "fail": 0
+    },
+    "package": {
+      "path": "docs/implementation/vehicle/Q01/package.json",
+      "sha256": "2e7c52c38eb25e11095e1bda0907489e6ffd61eb0d1f204b1320764299fe0a31",
+      "pass": 42,
+      "fail": 0
+    }
+  },
+  "deliveryReport": {
+    "path": "docs/implementation/vehicle/Q01/report.md",
+    "sha256": "6b95afdec8a275c6c04ebe738ba1659aa7a522b3bafde8ae0b91e854fe503b32",
+    "reviewed": true
+  },
+  "verificationFixes": {
+    "path": "docs/implementation/vehicle/Q01/verification-fixes.json",
+    "sha256": "2cbc8d0f6a690eca3a645a905c523c37c001e211e1b5d8c1325a27f77edc20a7"
+  }
+}

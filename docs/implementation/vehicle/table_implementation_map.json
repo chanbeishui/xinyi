@@ -18,21 +18,25 @@
   {
     "status": "PARTIAL",
     "entityFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/driver/domain/DriverProfile.java",
-    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/driver/DriverMapper.xml",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/qualification/QualificationMapper.xml",
     "evidence": [
-      "docs/implementation/vehicle/evidence/A04-20261107.json"
+      "docs/implementation/vehicle/evidence/A04-20261107.json",
+      "docs/implementation/vehicle/evidence/Q01-20261107.json"
     ],
     "table": "vi_driver_profile",
     "taskId": "Q01",
-    "implementationNote": "A04公司归属及档案/行政新承接已验证；Q01资格申请及Q05独立审核仍待后续，表主责任保留Q01。"
+    "implementationNote": "公司归属、材料与提交/复审分离已验；Q05独立审批、资格生效及到期生命周期未完成。"
   },
   {
-    "status": "NOT_ASSESSED",
-    "entityFile": null,
-    "mapperFile": null,
-    "evidence": [],
+    "status": "PARTIAL",
+    "entityFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/qualification/domain/QualificationApplication.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/qualification/QualificationMapper.xml",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/Q01-20261107.json"
+    ],
     "table": "vi_driver_application",
-    "taskId": "Q01"
+    "taskId": "Q01",
+    "implementationNote": "公司归属、材料与提交/复审分离已验；Q05独立审批、资格生效及到期生命周期未完成。"
   },
   {
     "status": "NOT_ASSESSED",
@@ -737,5 +741,16 @@
     "evidence": [
       "docs/implementation/vehicle/evidence/P04-20261107.json"
     ]
+  },
+  {
+    "table": "vi_driver_application_submission",
+    "taskId": "Q01",
+    "status": "VERIFIED",
+    "entityFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/qualification/domain/QualificationApplication.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/qualification/QualificationMapper.xml",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/Q01-20261107.json"
+    ],
+    "implementationNote": "提交快照只插入，无修改/删除业务入口，冻结证据已验。"
   }
 ]

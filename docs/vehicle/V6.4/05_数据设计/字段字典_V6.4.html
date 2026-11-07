@@ -305,7 +305,7 @@
 </tbody>
 </table>
 <h2>vi_driver_application · 代驾资格申请与复审版本</h2>
-<p>不以客户端PASSED当实名核验成功；禁止本人审批</p>
+<p>本人草稿与生效资格分离，显式申请ID/CAS/单活动约束；仅结构化驳回字段可补正。材料HMAC版本与可信核验绑定，用户确认五项核验/培训全通过后提交。公司来自档案并冻结，同意记录版本、实际正文与时刻；内部意见不公开，提交另存不可变快照。</p>
 <table>
 <thead>
 <tr>
@@ -324,6 +324,61 @@
   <td>driver_id</td>
   <td><code>BIGINT NOT NULL</code></td>
   <td>关联代驾档案</td>
+</tr>
+<tr>
+  <td>previous_application_id</td>
+  <td><code>BIGINT NULL</code></td>
+  <td>上次已批准资格申请；复审另建申请不覆盖生效档案</td>
+</tr>
+<tr>
+  <td>owner_dept_id</td>
+  <td><code>BIGINT NULL</code></td>
+  <td>提交时从司机档案冻结的真实公司；草稿不由客户端指定</td>
+</tr>
+<tr>
+  <td>material_revision</td>
+  <td><code>BIGINT NOT NULL DEFAULT 0</code></td>
+  <td>材料实际变更版本；纯同意不递增</td>
+</tr>
+<tr>
+  <td>material_hash</td>
+  <td><code>BINARY(32) NULL</code></td>
+  <td>当前规范化材料的有密钥摘要；不使用身份证裸哈希</td>
+</tr>
+<tr>
+  <td>submission_revision</td>
+  <td><code>BIGINT NOT NULL DEFAULT 0</code></td>
+  <td>提交修订号；对应不可变提交快照</td>
+</tr>
+<tr>
+  <td>consent_version</td>
+  <td><code>VARCHAR(64) NULL</code></td>
+  <td>服务端核对的资格申请同意版本</td>
+</tr>
+<tr>
+  <td>consent_text</td>
+  <td><code>TEXT NULL</code></td>
+  <td>已公开资格申请同意正文快照；不含个人资料</td>
+</tr>
+<tr>
+  <td>consent_accepted_at</td>
+  <td><code>DATETIME(3) NULL</code></td>
+  <td>本人明确接受当前同意版本的UTC时刻</td>
+</tr>
+<tr>
+  <td>reject_fields</td>
+  <td><code>JSON NULL</code></td>
+  <td>可补正的精确材料字段；历史NULL不得猜测为全部可编辑</td>
+</tr>
+<tr>
+  <td>public_review_opinion</td>
+  <td><code>VARCHAR(1000) NULL</code></td>
+  <td>向本人公开的审核意见；不返回内部review_opinion</td>
+</tr>
+<tr>
+  <td>active_driver</td>
+  <td><code>BIGINT GENERATED ALWAYS AS (IF(status IN ('DRAFT','SUBMITTED','REJECTED'),driver_id,NULL)) STORED</code></td>
+  <td>同司机最多一个活动申请</td>
 </tr>
 <tr>
   <td>status</td>
@@ -383,6 +438,7 @@
 </tbody>
 </table>
 <h2>vi_provider_verification · 第三方核验与培训任务记录</h2>
+<p>当前材料版本和HMAC绑定由服务端写入；旧NULL、错版或缺可信时刻不能视为当前通过。</p>
 <table>
 <thead>
 <tr>
@@ -401,6 +457,16 @@
   <td>application_id</td>
   <td><code>BIGINT NOT NULL</code></td>
   <td>代驾申请</td>
+</tr>
+<tr>
+  <td>material_revision</td>
+  <td><code>BIGINT NULL</code></td>
+  <td>绑定核验或培训对应的材料版本；历史NULL不可视为当前通过</td>
+</tr>
+<tr>
+  <td>material_hash</td>
+  <td><code>BINARY(32) NULL</code></td>
+  <td>绑定申请当前材料有密钥摘要；不接受客户端声明</td>
 </tr>
 <tr>
   <td>provider</td>
@@ -5121,7 +5187,7 @@
 </tbody>
 </table>
 <h2>vi_training_progress · 本人每个课程版本的学习进度</h2>
-<p>普通前端上报不证明观看完整；时长限幅、顺序检查、服务端阅卷共同决定培训完成；不宣称防作弊认证</p>
+<p>普通前端上报不证明观看完整；时长限幅、顺序检查、服务端阅卷共同决定培训完成；不宣称防作弊认证 当前材料版本和HMAC绑定由服务端写入；旧NULL、错版或缺可信时刻不能视为当前通过。</p>
 <table>
 <thead>
 <tr>
@@ -5140,6 +5206,16 @@
   <td>application_id</td>
   <td><code>BIGINT NOT NULL</code></td>
   <td>资格申请</td>
+</tr>
+<tr>
+  <td>material_revision</td>
+  <td><code>BIGINT NULL</code></td>
+  <td>绑定核验或培训对应的材料版本；历史NULL不可视为当前通过</td>
+</tr>
+<tr>
+  <td>material_hash</td>
+  <td><code>BINARY(32) NULL</code></td>
+  <td>绑定申请当前材料有密钥摘要；不接受客户端声明</td>
 </tr>
 <tr>
   <td>driver_id</td>
@@ -5184,7 +5260,7 @@
 </tbody>
 </table>
 <h2>vi_training_playback · 短期受控学习会话</h2>
-<p>按相邻报告服务端经过时长上限累加；多个并发播放会话不能重复计入时长</p>
+<p>按相邻报告服务端经过时长上限累加；多个并发播放会话不能重复计入时长 当前材料版本和HMAC绑定由服务端写入；旧NULL、错版或缺可信时刻不能视为当前通过。</p>
 <table>
 <thead>
 <tr>
@@ -5203,6 +5279,16 @@
   <td>progress_id</td>
   <td><code>BIGINT NOT NULL</code></td>
   <td>本人进度</td>
+</tr>
+<tr>
+  <td>material_revision</td>
+  <td><code>BIGINT NULL</code></td>
+  <td>绑定核验或培训对应的材料版本；历史NULL不可视为当前通过</td>
+</tr>
+<tr>
+  <td>material_hash</td>
+  <td><code>BINARY(32) NULL</code></td>
+  <td>绑定申请当前材料有密钥摘要；不接受客户端声明</td>
 </tr>
 <tr>
   <td>session_id</td>
@@ -5247,7 +5333,7 @@
 </tbody>
 </table>
 <h2>vi_training_attempt · 本人考试尝试及不可变题卷快照</h2>
-<p>作答绑定attemptId+expectedVersion；提交后不可重写；正确答案只在服务端按确切课程版本读取</p>
+<p>作答绑定attemptId+expectedVersion；提交后不可重写；正确答案只在服务端按确切课程版本读取 当前材料版本和HMAC绑定由服务端写入；旧NULL、错版或缺可信时刻不能视为当前通过。</p>
 <table>
 <thead>
 <tr>
@@ -5266,6 +5352,16 @@
   <td>application_id</td>
   <td><code>BIGINT NOT NULL</code></td>
   <td>资格申请</td>
+</tr>
+<tr>
+  <td>material_revision</td>
+  <td><code>BIGINT NULL</code></td>
+  <td>绑定核验或培训对应的材料版本；历史NULL不可视为当前通过</td>
+</tr>
+<tr>
+  <td>material_hash</td>
+  <td><code>BINARY(32) NULL</code></td>
+  <td>绑定申请当前材料有密钥摘要；不接受客户端声明</td>
 </tr>
 <tr>
   <td>driver_id</td>
@@ -5340,7 +5436,7 @@
 </tbody>
 </table>
 <h2>vi_face_session · 本人实名活体启动与可信结果会话</h2>
-<p>不信任客户端回调PASSED；供应商具体开通和WEBVIEW能力未证实即不能启用正式认证</p>
+<p>不信任客户端回调PASSED；供应商具体开通和WEBVIEW能力未证实即不能启用正式认证 当前材料版本和HMAC绑定由服务端写入；旧NULL、错版或缺可信时刻不能视为当前通过。</p>
 <table>
 <thead>
 <tr>
@@ -5359,6 +5455,16 @@
   <td>application_id</td>
   <td><code>BIGINT NOT NULL</code></td>
   <td>资格申请</td>
+</tr>
+<tr>
+  <td>material_revision</td>
+  <td><code>BIGINT NULL</code></td>
+  <td>绑定核验或培训对应的材料版本；历史NULL不可视为当前通过</td>
+</tr>
+<tr>
+  <td>material_hash</td>
+  <td><code>BINARY(32) NULL</code></td>
+  <td>绑定申请当前材料有密钥摘要；不接受客户端声明</td>
 </tr>
 <tr>
   <td>verification_id</td>
@@ -6994,6 +7100,94 @@
   <td>version</td>
   <td><code>BIGINT NOT NULL DEFAULT 0</code></td>
   <td>乐观锁版本</td>
+</tr>
+</tbody>
+</table>
+<h2>vi_driver_application_submission · 资格申请不可变提交快照</h2>
+<p>服务端事务内追加已完整通过的材料、公司、同意与核验依据；不可更新/删除，不能以客户端声称PASSED替代。</p>
+<table>
+<thead>
+<tr>
+  <th>字段</th>
+  <th>SQL类型与约束</th>
+  <th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>id</td>
+  <td><code>BIGINT NOT NULL AUTO_INCREMENT</code></td>
+  <td>不可变提交记录主键</td>
+</tr>
+<tr>
+  <td>application_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>本人资格申请</td>
+</tr>
+<tr>
+  <td>submission_revision</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>同申请提交修订号</td>
+</tr>
+<tr>
+  <td>owner_dept_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>提交时真实归属公司快照</td>
+</tr>
+<tr>
+  <td>profile_version</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>提交校验的司机档案版本</td>
+</tr>
+<tr>
+  <td>material_revision</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>冻结材料版本</td>
+</tr>
+<tr>
+  <td>material_hash</td>
+  <td><code>BINARY(32) NOT NULL</code></td>
+  <td>冻结材料的有密钥摘要</td>
+</tr>
+<tr>
+  <td>sensitive_payload_cipher</td>
+  <td><code>LONGBLOB NOT NULL</code></td>
+  <td>实名及证件加密快照；AAD仍绑定账号及申请</td>
+</tr>
+<tr>
+  <td>evidence_file_ids</td>
+  <td><code>JSON NOT NULL</code></td>
+  <td>四证件槽位到私有文件ID的冻结关联</td>
+</tr>
+<tr>
+  <td>provider_result_ids</td>
+  <td><code>JSON NOT NULL</code></td>
+  <td>实际可信核验和培训依据ID</td>
+</tr>
+<tr>
+  <td>consent_version</td>
+  <td><code>VARCHAR(64) NOT NULL</code></td>
+  <td>已接受的资格申请同意版本</td>
+</tr>
+<tr>
+  <td>consent_text</td>
+  <td><code>TEXT NOT NULL</code></td>
+  <td>已公开同意正文快照</td>
+</tr>
+<tr>
+  <td>consent_accepted_at</td>
+  <td><code>DATETIME(3) NOT NULL</code></td>
+  <td>本人接受同意UTC时刻</td>
+</tr>
+<tr>
+  <td>submit_reason_cipher</td>
+  <td><code>LONGBLOB NOT NULL</code></td>
+  <td>提交原因加密；不进入响应或消息</td>
+</tr>
+<tr>
+  <td>submitted_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>提交时刻UTC</td>
 </tr>
 </tbody>
 </table>

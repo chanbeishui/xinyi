@@ -63,6 +63,13 @@
         FROM vi_order
         WHERE order_no=#{no}
     </select>
+    <select id="lockApplication" resultType="map">
+        SELECT p.account_id,a.status,a.reject_fields
+        FROM vi_driver_application a
+        JOIN vi_driver_profile p ON p.id=a.driver_id
+        WHERE a.id=#{id}
+        FOR UPDATE
+    </select>
     <select id="applicationOwner" resultType="long">
         SELECT p.account_id
         FROM vi_driver_application a

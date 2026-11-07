@@ -594,19 +594,23 @@
     "capability": "DRIVER_QUALIFICATION_LIST",
     "authorization": {
       "realm": "MINI",
-      "scope": "SELF_QUALIFICATION",
+      "scope": "SELF_APPLICATION",
       "capability": "DRIVER_QUALIFICATION_LIST",
       "qualificationRequired": false,
       "principal": "MINI_ACCOUNT",
       "roleRequirement": "NONE",
       "requiredAccountConditions": [
-        "ACTIVE",
         "PHONE_VERIFIED"
       ]
     },
     "flows": [
-      "F04"
-    ]
+      "F49"
+    ],
+    "authoritySources": {
+      "subject": "可信MINI accountId与当前本人applicationId",
+      "company": "vi_driver_profile.owner_dept_id，提交时冻结",
+      "proofs": "服务端当前材料绑定的vi_provider_verification，不采信客户端PASSED"
+    }
   },
   {
     "method": "PUT",
@@ -617,19 +621,23 @@
     "capability": "DRIVER_QUALIFICATION_EDIT",
     "authorization": {
       "realm": "MINI",
-      "scope": "SELF_QUALIFICATION",
+      "scope": "SELF_APPLICATION",
       "capability": "DRIVER_QUALIFICATION_EDIT",
       "qualificationRequired": false,
       "principal": "MINI_ACCOUNT",
       "roleRequirement": "NONE",
       "requiredAccountConditions": [
-        "ACTIVE",
         "PHONE_VERIFIED"
       ]
     },
     "flows": [
-      "F04"
-    ]
+      "F49"
+    ],
+    "authoritySources": {
+      "subject": "可信MINI accountId与当前本人applicationId",
+      "company": "vi_driver_profile.owner_dept_id，提交时冻结",
+      "proofs": "服务端当前材料绑定的vi_provider_verification，不采信客户端PASSED"
+    }
   },
   {
     "method": "POST",
@@ -640,19 +648,23 @@
     "capability": "DRIVER_QUALIFICATION_CREATE",
     "authorization": {
       "realm": "MINI",
-      "scope": "SELF_QUALIFICATION",
+      "scope": "SELF_APPLICATION",
       "capability": "DRIVER_QUALIFICATION_CREATE",
       "qualificationRequired": false,
       "principal": "MINI_ACCOUNT",
       "roleRequirement": "NONE",
       "requiredAccountConditions": [
-        "ACTIVE",
         "PHONE_VERIFIED"
       ]
     },
     "flows": [
-      "F04"
-    ]
+      "F49"
+    ],
+    "authoritySources": {
+      "subject": "可信MINI accountId与当前本人applicationId",
+      "company": "vi_driver_profile.owner_dept_id，提交时冻结",
+      "proofs": "服务端当前材料绑定的vi_provider_verification，不采信客户端PASSED"
+    }
   },
   {
     "method": "POST",
@@ -663,19 +675,23 @@
     "capability": "DRIVER_QUALIFICATION_SUBMIT",
     "authorization": {
       "realm": "MINI",
-      "scope": "SELF_QUALIFICATION",
+      "scope": "SELF_APPLICATION",
       "capability": "DRIVER_QUALIFICATION_SUBMIT",
       "qualificationRequired": false,
       "principal": "MINI_ACCOUNT",
       "roleRequirement": "NONE",
       "requiredAccountConditions": [
-        "ACTIVE",
         "PHONE_VERIFIED"
       ]
     },
     "flows": [
-      "F04"
-    ]
+      "F49"
+    ],
+    "authoritySources": {
+      "subject": "可信MINI accountId与当前本人applicationId",
+      "company": "vi_driver_profile.owner_dept_id，提交时冻结",
+      "proofs": "服务端当前材料绑定的vi_provider_verification，不采信客户端PASSED"
+    }
   },
   {
     "method": "POST",
@@ -697,7 +713,7 @@
       ]
     },
     "flows": [
-      "F04"
+      "F49"
     ]
   },
   {
@@ -720,7 +736,7 @@
       ]
     },
     "flows": [
-      "F04"
+      "F49"
     ]
   },
   {
@@ -743,7 +759,7 @@
       ]
     },
     "flows": [
-      "F04"
+      "F49"
     ]
   },
   {
@@ -1969,7 +1985,7 @@
       "permission": "biz:driverqualification:list"
     },
     "flows": [
-      "F04"
+      "F49"
     ]
   },
   {
@@ -1985,7 +2001,7 @@
       "permission": "biz:driverqualification:query"
     },
     "flows": [
-      "F04"
+      "F49"
     ]
   },
   {
@@ -2001,7 +2017,7 @@
       "permission": "biz:driverqualification:audit"
     },
     "flows": [
-      "F04"
+      "F49"
     ]
   },
   {
@@ -4114,7 +4130,7 @@
       ]
     },
     "flows": [
-      "F04"
+      "F49"
     ]
   },
   {
@@ -4137,7 +4153,7 @@
       ]
     },
     "flows": [
-      "F04"
+      "F49"
     ]
   },
   {
@@ -4160,7 +4176,7 @@
       ]
     },
     "flows": [
-      "F04"
+      "F49"
     ]
   },
   {
@@ -4183,7 +4199,7 @@
       ]
     },
     "flows": [
-      "F04"
+      "F49"
     ]
   },
   {
@@ -4206,7 +4222,7 @@
       ]
     },
     "flows": [
-      "F04"
+      "F49"
     ]
   },
   {
@@ -4309,7 +4325,7 @@
       ]
     },
     "flows": [
-      "F04"
+      "F49"
     ]
   },
   {

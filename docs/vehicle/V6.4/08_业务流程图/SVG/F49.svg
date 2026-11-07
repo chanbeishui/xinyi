@@ -1,0 +1,119 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1260" height="2030" viewBox="0 0 1260 2030" role="img" aria-labelledby="title desc">
+<title id="title">F49 · 代驾资格申请、补正与复审</title>
+<desc id="desc">本人草稿、真实证件、有效公司及当前材料五项正式证明全部通过后才提交。审批与真实培训核验为后续任务；复审不覆盖生效资格，不解除在手责任。</desc>
+<!-- 按flows_V6.4.json的F49节点和边人工排布；SVG原生文字，未使用Graphviz或供应商界面截图。 -->
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#52657d"/></marker></defs>
+<style>text{font-family:"PingFang SC","Microsoft YaHei",Arial,sans-serif;fill:#23354d}.edge{fill:none;stroke:#52657d;stroke-width:2;marker-end:url(#arrow)}.edge-label{font-size:16px;fill:#52657d}.node-title{font-size:21px;font-weight:600}.node-body{font-size:18px}.note{font-size:18px;fill:#5d6c80}</style>
+<rect width="1260" height="2030" fill="#f6f8fb"/>
+<text x="630" y="42" text-anchor="middle" font-size="28" font-weight="700">F49 · 代驾资格申请、补正与复审</text>
+<text x="630" y="72" text-anchor="middle" class="note">Q01严格提交门槛 · 员工与普通申请人同标准 · F04仍为员工站点预配置</text>
+<path class="edge" d="M670.0,172 V210"/>
+<path class="edge" d="M670.0,292 V334"/>
+<path class="edge" d="M670.0,438 V486"/>
+<path class="edge" d="M670.0,586 V634"/>
+<path class="edge" d="M670.0,724 V772"/>
+<path class="edge" d="M670.0,1244 V1304"/>
+<path class="edge" d="M670.0,1736 V1790"/>
+<path class="edge" d="M670,882 V928"/>
+<text x="682" y="910" class="edge-label">可信结果</text>
+<path class="edge" d="M670,1088 V1134"/>
+<text x="686" y="1118" class="edge-label">是</text>
+<path class="edge" d="M670,1394 V1416"/>
+<text x="682" y="1412" class="edge-label">后续审核</text>
+<path class="edge" d="M670,1576 V1636"/>
+<text x="686" y="1612" class="edge-label">批准</text>
+<path class="edge" d="M410,386 H190 V634"/>
+<text x="202" y="472" class="edge-label">后台维护</text>
+<path class="edge" d="M335,696 H360 V962 H527"/>
+<text x="372" y="944" class="edge-label">有效归属</text>
+<path class="edge" d="M385,1008 H315"/>
+<text x="340" y="992" class="edge-label">否</text>
+<path class="edge" d="M35,1012 H20 V536 H410"/>
+<text x="34" y="520" class="edge-label">补齐后重试</text>
+<path class="edge" d="M390,1496 H352 V1524 H315"/>
+<text x="330" y="1482" class="edge-label">驳回</text>
+<path class="edge" d="M35,1524 H10 V536 H410"/>
+<path class="edge" d="M930,1844 H1190 V251 H930"/>
+<text x="1216" y="1190" class="edge-label" transform="rotate(-90 1216 1190)">另建复审：原生效资格与在手责任保持独立</text>
+<g id="n1"><rect x="410" y="100" width="520" height="72" rx="12" fill="#ffffff" stroke="#a8bfdc" stroke-width="2"/>
+<text x="670.0" y="129.5" text-anchor="middle" class="node-title">已核验手机号的本人进入</text>
+<text x="670.0" y="154.5" text-anchor="middle" class="node-body">OWNER / STATION / DRIVER均可申请</text>
+</g>
+<g id="n2"><rect x="410" y="210" width="520" height="82" rx="12" fill="#ffffff" stroke="#a8bfdc" stroke-width="2"/>
+<text x="670.0" y="244.5" text-anchor="middle" class="node-title">阅读并明确同意现行资格说明</text>
+<text x="670.0" y="269.5" text-anchor="middle" class="node-body">绑定consentVersion + 公开原文hash</text>
+</g>
+<g id="n3"><rect x="410" y="334" width="520" height="104" rx="12" fill="#ffffff" stroke="#a8bfdc" stroke-width="2"/>
+<text x="670.0" y="367.0" text-anchor="middle" class="node-title">建立本人资格草稿</text>
+<text x="670.0" y="392.0" text-anchor="middle" class="node-body">首次未归属、禁新；公司不从员工或主部门猜测</text>
+<text x="670.0" y="417.0" text-anchor="middle" class="node-body">复审另建申请，生效档案保持独立</text>
+</g>
+<g id="n4"><rect x="410" y="486" width="520" height="100" rx="12" fill="#ffffff" stroke="#a8bfdc" stroke-width="2"/>
+<text x="670.0" y="517.0" text-anchor="middle" class="node-title">本人私有上传证件与保存资料</text>
+<text x="670.0" y="542.0" text-anchor="middle" class="node-body">四证件须同申请、本人、READY、用途正确</text>
+<text x="670.0" y="567.0" text-anchor="middle" class="node-body">四ID各异；省略保留，null明确清除</text>
+</g>
+<g id="n5"><rect x="410" y="634" width="520" height="90" rx="12" fill="#ffffff" stroke="#a8bfdc" stroke-width="2"/>
+<text x="670.0" y="660.0" text-anchor="middle" class="node-title">材料实际变更：revision + HMAC更新</text>
+<text x="670.0" y="685.0" text-anchor="middle" class="node-body">旧材料证明失效，不复用PASSED</text>
+<text x="670.0" y="710.0" text-anchor="middle" class="node-body">仅更新同意不改材料版本</text>
+</g>
+<g id="n6"><rect x="45" y="634" width="290" height="124" rx="12" fill="#ffffff" stroke="#a8bfdc" stroke-width="2"/>
+<text x="190.0" y="664.5" text-anchor="middle" class="node-title">后台 A04 明确认领公司</text>
+<text x="190.0" y="689.5" text-anchor="middle" class="node-body">必须为实际有效公司部门</text>
+<text x="190.0" y="714.5" text-anchor="middle" class="node-body">提交冻结真实公司快照</text>
+<text x="190.0" y="739.5" text-anchor="middle" class="node-body">MINI不能指定公司</text>
+</g>
+<g id="n7"><rect x="410" y="772" width="520" height="110" rx="12" fill="#edf4ff" stroke="#a8bfdc" stroke-width="2"/>
+<text x="670.0" y="795.5" text-anchor="middle" class="node-title">真实核验与培训（Q03/Q04）</text>
+<text x="670.0" y="820.5" text-anchor="middle" class="node-body">REALNAME · FACE · BACKGROUND</text>
+<text x="670.0" y="845.5" text-anchor="middle" class="node-body">LICENSE · TRAINING正式汇总证明</text>
+<text x="670.0" y="870.5" text-anchor="middle" class="node-body">当前材料、PASSED、可信核验时刻</text>
+</g>
+<g id="n9"><rect x="35" y="944" width="280" height="136" rx="12" fill="#fff7e8" stroke="#d7a34b" stroke-width="2"/>
+<text x="175.0" y="980.5" text-anchor="middle" class="node-title">保留草稿，显示具体阻断</text>
+<text x="175.0" y="1005.5" text-anchor="middle" class="node-body">缺资料 / 公司 / 现行同意</text>
+<text x="175.0" y="1030.5" text-anchor="middle" class="node-body">核验或培训未接入不通过</text>
+<text x="175.0" y="1055.5" text-anchor="middle" class="node-body">补齐后重新核对</text>
+</g>
+<g id="n10"><rect x="410" y="1134" width="520" height="110" rx="12" fill="#ffffff" stroke="#a8bfdc" stroke-width="2"/>
+<text x="670.0" y="1157.5" text-anchor="middle" class="node-title">同事务校验并冻结提交快照</text>
+<text x="670.0" y="1182.5" text-anchor="middle" class="node-body">applicationId + 申请及档案expectedVersion</text>
+<text x="670.0" y="1207.5" text-anchor="middle" class="node-body">公司、材料、同意原文、五项证明和加密原因</text>
+<text x="670.0" y="1232.5" text-anchor="middle" class="node-body">任一冲突整笔拒绝，不覆盖或部分保存</text>
+</g>
+<g id="n11"><rect x="410" y="1304" width="520" height="90" rx="12" fill="#ffffff" stroke="#a8bfdc" stroke-width="2"/>
+<text x="670.0" y="1330.0" text-anchor="middle" class="node-title">SUBMITTED：只读等待审核</text>
+<text x="670.0" y="1355.0" text-anchor="middle" class="node-body">证件写入冻结；本人可查看真实进度</text>
+<text x="670.0" y="1380.0" text-anchor="middle" class="node-body">提交不授DRIVER，也不代表可以接新单</text>
+</g>
+<g id="n13"><rect x="35" y="1450" width="280" height="148" rx="12" fill="#fff7e8" stroke="#d7a34b" stroke-width="2"/>
+<text x="175.0" y="1480.0" text-anchor="middle" class="node-title">REJECTED：仅补指定字段</text>
+<text x="175.0" y="1505.0" text-anchor="middle" class="node-body">公开意见与内部意见分开</text>
+<text x="175.0" y="1530.0" text-anchor="middle" class="node-body">保存仍REJECTED，不绕限制</text>
+<text x="175.0" y="1555.0" text-anchor="middle" class="node-body">历史缺字段结构先人工补齐</text>
+<text x="175.0" y="1580.0" text-anchor="middle" class="node-body">修改材料后重新核验</text>
+</g>
+<g id="n14"><rect x="410" y="1636" width="520" height="100" rx="12" fill="#edf4ff" stroke="#a8bfdc" stroke-width="2"/>
+<text x="670.0" y="1667.0" text-anchor="middle" class="node-title">APPROVED：按权威生效快照刷新身份</text>
+<text x="670.0" y="1692.0" text-anchor="middle" class="node-body">Q05后续独立审批，禁止本人审批</text>
+<text x="670.0" y="1717.0" text-anchor="middle" class="node-body">新单另查行政开关、听单、定位及其它条件</text>
+</g>
+<g id="n15"><rect x="410" y="1790" width="520" height="108" rx="12" fill="#ffffff" stroke="#a8bfdc" stroke-width="2"/>
+<text x="670.0" y="1825.0" text-anchor="middle" class="node-title">APPROVED / EXPIRED / SUSPENDED可另建复审</text>
+<text x="670.0" y="1850.0" text-anchor="middle" class="node-body">草稿、待审、驳回不覆盖已有生效资格</text>
+<text x="670.0" y="1875.0" text-anchor="middle" class="node-body">到期停新不解除承接、车辆保管或归还责任</text>
+</g>
+<g id="n8"><path d="M670,928.0 L955.0,1008 L670,1088.0 L385.0,1008 Z" fill="#eaf4ee" stroke="#71a587" stroke-width="2"/>
+<text x="670" y="990.0" text-anchor="middle" class="node-title">完整资料 + 有效公司 + 现行同意</text>
+<text x="670" y="1014.0" text-anchor="middle" class="node-body">五项当前材料可信PASSED</text>
+<text x="670" y="1038.0" text-anchor="middle" class="node-body">全部满足？</text>
+</g>
+<g id="n12"><path d="M670,1416.0 L950.0,1496 L670,1576.0 L390.0,1496 Z" fill="#eaf4ee" stroke="#71a587" stroke-width="2"/>
+<text x="670" y="1478.0" text-anchor="middle" class="node-title">Q05 后续独立审批</text>
+<text x="670" y="1502.0" text-anchor="middle" class="node-body">禁止本人审批</text>
+<text x="670" y="1526.0" text-anchor="middle" class="node-body">通过 / 驳回</text>
+</g>
+<text x="630" y="1952" text-anchor="middle" class="note">执行边界：Q01消费正式证明，不代替真实供应商、正式培训或Q05审批；未接通能力持续阻断。</text>
+<text x="630" y="1984" text-anchor="middle" class="note">五项证明须同申请 / 当前材料revision与HMAC、PASSED、verified_at非空且不为未来。</text>
+</svg>

@@ -687,6 +687,61 @@
         "关联代驾档案"
       ],
       [
+        "previous_application_id",
+        "BIGINT NULL",
+        "上次已批准资格申请；复审另建申请不覆盖生效档案"
+      ],
+      [
+        "owner_dept_id",
+        "BIGINT NULL",
+        "提交时从司机档案冻结的真实公司；草稿不由客户端指定"
+      ],
+      [
+        "material_revision",
+        "BIGINT NOT NULL DEFAULT 0",
+        "材料实际变更版本；纯同意不递增"
+      ],
+      [
+        "material_hash",
+        "BINARY(32) NULL",
+        "当前规范化材料的有密钥摘要；不使用身份证裸哈希"
+      ],
+      [
+        "submission_revision",
+        "BIGINT NOT NULL DEFAULT 0",
+        "提交修订号；对应不可变提交快照"
+      ],
+      [
+        "consent_version",
+        "VARCHAR(64) NULL",
+        "服务端核对的资格申请同意版本"
+      ],
+      [
+        "consent_text",
+        "TEXT NULL",
+        "已公开资格申请同意正文快照；不含个人资料"
+      ],
+      [
+        "consent_accepted_at",
+        "DATETIME(3) NULL",
+        "本人明确接受当前同意版本的UTC时刻"
+      ],
+      [
+        "reject_fields",
+        "JSON NULL",
+        "可补正的精确材料字段；历史NULL不得猜测为全部可编辑"
+      ],
+      [
+        "public_review_opinion",
+        "VARCHAR(1000) NULL",
+        "向本人公开的审核意见；不返回内部review_opinion"
+      ],
+      [
+        "active_driver",
+        "BIGINT GENERATED ALWAYS AS (IF(status IN ('DRAFT','SUBMITTED','REJECTED'),driver_id,NULL)) STORED",
+        "同司机最多一个活动申请"
+      ],
+      [
         "status",
         "VARCHAR(24) NOT NULL",
         "QualificationStatus: DRAFT,SUBMITTED,APPROVED,REJECTED,EXPIRED,SUSPENDED"
@@ -743,10 +798,12 @@
       ]
     ],
     "indexes": [
+      "UNIQUE KEY uk_driver_active_application (active_driver)",
+      "KEY ix_application_company (owner_dept_id,status,id)",
       "KEY ix_driver_status (driver_id,status)",
       "KEY ix_review_queue (status,submitted_at)"
     ],
-    "rule": "不以客户端PASSED当实名核验成功；禁止本人审批",
+    "rule": "本人草稿与生效资格分离，显式申请ID/CAS/单活动约束；仅结构化驳回字段可补正。材料HMAC版本与可信核验绑定，用户确认五项核验/培训全通过后提交。公司来自档案并冻结，同意记录版本、实际正文与时刻；内部意见不公开，提交另存不可变快照。",
     "primaryKey": [
       "id"
     ],
@@ -834,9 +891,77 @@
         "insertable": false,
         "updatable": false,
         "clientWritable": false
+      },
+      "previous_application_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "owner_dept_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "material_revision": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "material_hash": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "submission_revision": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "consent_version": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "consent_text": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "consent_accepted_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "reject_fields": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "public_review_opinion": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "active_driver": {
+        "generated": true,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
       }
     },
     "checks": [
+      "CONSTRAINT ck_qualification_material_revision CHECK(material_revision>=0 AND submission_revision>=0)",
+      "CONSTRAINT ck_qualification_application_owner CHECK(owner_dept_id IS NULL OR owner_dept_id>0)",
       "CONSTRAINT ck_66_ef6019b02577 CHECK (`status` IN ('DRAFT','SUBMITTED','APPROVED','REJECTED','EXPIRED','SUSPENDED'))",
       "CONSTRAINT ck_ver_driver_application CHECK (version >= 0)"
     ]
@@ -854,6 +979,16 @@
         "application_id",
         "BIGINT NOT NULL",
         "代驾申请"
+      ],
+      [
+        "material_revision",
+        "BIGINT NULL",
+        "绑定核验或培训对应的材料版本；历史NULL不可视为当前通过"
+      ],
+      [
+        "material_hash",
+        "BINARY(32) NULL",
+        "绑定申请当前材料有密钥摘要；不接受客户端声明"
       ],
       [
         "provider",
@@ -905,7 +1040,7 @@
       "UNIQUE KEY uk_provider_task (provider,provider_task_id)",
       "KEY ix_app_type (application_id,task_type)"
     ],
-    "rule": "",
+    "rule": " 当前材料版本和HMAC绑定由服务端写入；旧NULL、错版或缺可信时刻不能视为当前通过。",
     "primaryKey": [
       "id"
     ],
@@ -981,6 +1116,18 @@
         "generated": false,
         "insertable": false,
         "updatable": false,
+        "clientWritable": false
+      },
+      "material_revision": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "material_hash": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
         "clientWritable": false
       }
     },
@@ -11181,6 +11328,16 @@
         "资格申请"
       ],
       [
+        "material_revision",
+        "BIGINT NULL",
+        "绑定核验或培训对应的材料版本；历史NULL不可视为当前通过"
+      ],
+      [
+        "material_hash",
+        "BINARY(32) NULL",
+        "绑定申请当前材料有密钥摘要；不接受客户端声明"
+      ],
+      [
         "driver_id",
         "BIGINT NOT NULL",
         "真正司机档案"
@@ -11224,7 +11381,7 @@
     "indexes": [
       "UNIQUE KEY uk_training_progress (application_id,training_id)"
     ],
-    "rule": "普通前端上报不证明观看完整；时长限幅、顺序检查、服务端阅卷共同决定培训完成；不宣称防作弊认证",
+    "rule": "普通前端上报不证明观看完整；时长限幅、顺序检查、服务端阅卷共同决定培训完成；不宣称防作弊认证 当前材料版本和HMAC绑定由服务端写入；旧NULL、错版或缺可信时刻不能视为当前通过。",
     "primaryKey": [
       "id"
     ],
@@ -11294,6 +11451,18 @@
         "insertable": false,
         "updatable": false,
         "clientWritable": false
+      },
+      "material_revision": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "material_hash": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
       }
     },
     "checks": [
@@ -11314,6 +11483,16 @@
         "progress_id",
         "BIGINT NOT NULL",
         "本人进度"
+      ],
+      [
+        "material_revision",
+        "BIGINT NULL",
+        "绑定核验或培训对应的材料版本；历史NULL不可视为当前通过"
+      ],
+      [
+        "material_hash",
+        "BINARY(32) NULL",
+        "绑定申请当前材料有密钥摘要；不接受客户端声明"
       ],
       [
         "session_id",
@@ -11359,7 +11538,7 @@
     "indexes": [
       "KEY ix_playback_progress (progress_id,expires_at)"
     ],
-    "rule": "按相邻报告服务端经过时长上限累加；多个并发播放会话不能重复计入时长",
+    "rule": "按相邻报告服务端经过时长上限累加；多个并发播放会话不能重复计入时长 当前材料版本和HMAC绑定由服务端写入；旧NULL、错版或缺可信时刻不能视为当前通过。",
     "primaryKey": [
       "id"
     ],
@@ -11428,6 +11607,18 @@
         "insertable": false,
         "updatable": false,
         "clientWritable": false
+      },
+      "material_revision": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "material_hash": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
       }
     },
     "checks": [
@@ -11447,6 +11638,16 @@
         "application_id",
         "BIGINT NOT NULL",
         "资格申请"
+      ],
+      [
+        "material_revision",
+        "BIGINT NULL",
+        "绑定核验或培训对应的材料版本；历史NULL不可视为当前通过"
+      ],
+      [
+        "material_hash",
+        "BINARY(32) NULL",
+        "绑定申请当前材料有密钥摘要；不接受客户端声明"
       ],
       [
         "driver_id",
@@ -11523,7 +11724,7 @@
       "UNIQUE KEY uk_attempt_number (application_id,training_id,attempt_no)",
       "UNIQUE KEY uk_open_training_attempt (active_attempt)"
     ],
-    "rule": "作答绑定attemptId+expectedVersion；提交后不可重写；正确答案只在服务端按确切课程版本读取",
+    "rule": "作答绑定attemptId+expectedVersion；提交后不可重写；正确答案只在服务端按确切课程版本读取 当前材料版本和HMAC绑定由服务端写入；旧NULL、错版或缺可信时刻不能视为当前通过。",
     "primaryKey": [
       "id"
     ],
@@ -11629,6 +11830,18 @@
         "insertable": false,
         "updatable": false,
         "clientWritable": false
+      },
+      "material_revision": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "material_hash": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
       }
     },
     "checks": [
@@ -11649,6 +11862,16 @@
         "application_id",
         "BIGINT NOT NULL",
         "资格申请"
+      ],
+      [
+        "material_revision",
+        "BIGINT NULL",
+        "绑定核验或培训对应的材料版本；历史NULL不可视为当前通过"
+      ],
+      [
+        "material_hash",
+        "BINARY(32) NULL",
+        "绑定申请当前材料有密钥摘要；不接受客户端声明"
       ],
       [
         "verification_id",
@@ -11714,7 +11937,7 @@
     "indexes": [
       "KEY ix_face_app_status (application_id,status)"
     ],
-    "rule": "不信任客户端回调PASSED；供应商具体开通和WEBVIEW能力未证实即不能启用正式认证",
+    "rule": "不信任客户端回调PASSED；供应商具体开通和WEBVIEW能力未证实即不能启用正式认证 当前材料版本和HMAC绑定由服务端写入；旧NULL、错版或缺可信时刻不能视为当前通过。",
     "primaryKey": [
       "id"
     ],
@@ -11808,6 +12031,18 @@
         "generated": false,
         "insertable": false,
         "updatable": false,
+        "clientWritable": false
+      },
+      "material_revision": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "material_hash": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
         "clientWritable": false
       }
     },
@@ -15244,6 +15479,195 @@
       "CONSTRAINT ck_reconciliation_kind CHECK (`kind` IN ('PAYMENT','REFUND'))",
       "CONSTRAINT ck_reconciliation_status CHECK (`status` IN ('OPEN','CHECKING','RESOLVED'))",
       "CONSTRAINT ck_reconciliation_version CHECK (`version` >= 0)"
+    ]
+  },
+  {
+    "name": "vi_driver_application_submission",
+    "comment": "资格申请不可变提交快照",
+    "cols": [
+      [
+        "id",
+        "BIGINT NOT NULL AUTO_INCREMENT",
+        "不可变提交记录主键"
+      ],
+      [
+        "application_id",
+        "BIGINT NOT NULL",
+        "本人资格申请"
+      ],
+      [
+        "submission_revision",
+        "BIGINT NOT NULL",
+        "同申请提交修订号"
+      ],
+      [
+        "owner_dept_id",
+        "BIGINT NOT NULL",
+        "提交时真实归属公司快照"
+      ],
+      [
+        "profile_version",
+        "BIGINT NOT NULL",
+        "提交校验的司机档案版本"
+      ],
+      [
+        "material_revision",
+        "BIGINT NOT NULL",
+        "冻结材料版本"
+      ],
+      [
+        "material_hash",
+        "BINARY(32) NOT NULL",
+        "冻结材料的有密钥摘要"
+      ],
+      [
+        "sensitive_payload_cipher",
+        "LONGBLOB NOT NULL",
+        "实名及证件加密快照；AAD仍绑定账号及申请"
+      ],
+      [
+        "evidence_file_ids",
+        "JSON NOT NULL",
+        "四证件槽位到私有文件ID的冻结关联"
+      ],
+      [
+        "provider_result_ids",
+        "JSON NOT NULL",
+        "实际可信核验和培训依据ID"
+      ],
+      [
+        "consent_version",
+        "VARCHAR(64) NOT NULL",
+        "已接受的资格申请同意版本"
+      ],
+      [
+        "consent_text",
+        "TEXT NOT NULL",
+        "已公开同意正文快照"
+      ],
+      [
+        "consent_accepted_at",
+        "DATETIME(3) NOT NULL",
+        "本人接受同意UTC时刻"
+      ],
+      [
+        "submit_reason_cipher",
+        "LONGBLOB NOT NULL",
+        "提交原因加密；不进入响应或消息"
+      ],
+      [
+        "submitted_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "提交时刻UTC"
+      ]
+    ],
+    "indexes": [
+      "UNIQUE KEY uk_application_submission (application_id,submission_revision)",
+      "KEY ix_qualification_submission_company (owner_dept_id,application_id,id)"
+    ],
+    "rule": "服务端事务内追加已完整通过的材料、公司、同意与核验依据；不可更新/删除，不能以客户端声称PASSED替代。",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "engine": "InnoDB",
+    "collation": "utf8mb4_0900_ai_ci",
+    "columnRules": {
+      "id": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "application_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "submission_revision": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "owner_dept_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "profile_version": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "material_revision": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "material_hash": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "sensitive_payload_cipher": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "evidence_file_ids": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "provider_result_ids": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "consent_version": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "consent_text": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "consent_accepted_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "submit_reason_cipher": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "submitted_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      }
+    },
+    "checks": [
+      "CONSTRAINT ck_qualification_submission_revision CHECK (submission_revision>0 AND material_revision>=0 AND profile_version>=0)",
+      "CONSTRAINT ck_qualification_submission_owner CHECK (owner_dept_id>0)"
     ]
   }
 ]

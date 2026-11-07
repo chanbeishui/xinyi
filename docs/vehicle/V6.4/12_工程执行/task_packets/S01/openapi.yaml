@@ -939,6 +939,9 @@ components:
       - ENABLE_NEW_ASSIGNMENTS
       - ASSIGN_DRIVER_COMPANY
       - VIEW_ASSIGNMENTS
+      - EDIT_QUALIFICATION
+      - SUBMIT_QUALIFICATION
+      - CREATE_QUALIFICATION_REVISION
     AfterSaleApply:
       type: object
       additionalProperties: false

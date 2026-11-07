@@ -1,10 +1,13 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TASK</title><style>body{font:16px/1.75 -apple-system,BlinkMacSystemFont,"Microsoft YaHei",sans-serif;color:#202632;margin:0;background:#f6f7f9}header{padding:14px 24px;background:white;border-bottom:1px solid #ddd}main{max-width:1120px;margin:24px auto;padding:30px;background:white}h1{font-size:30px}h2{margin-top:36px}a{color:#0661bd}table{border-collapse:collapse;width:100%;display:block;overflow:auto;font-size:14px}td,th{border:1px solid #dde2ea;padding:10px;vertical-align:top}th{background:#f1f5fb}pre{padding:15px;background:#f2f4f7;overflow:auto}img{max-width:100%;height:auto}blockquote{padding:10px 20px;border-left:3px solid #2571be;background:#f4f8fc}@media(max-width:700px){main{padding:15px;margin:8px}h1{font-size:25px}}</style></head><body><header><a href="../../../00_开始.html">V6.4 完整资料</a>　<a href="../../../02_UI/index.html">交互原型</a>　T3.4</header><main><h1>Q01 · 代驾资格草稿与提交</h1>
 <p>阶段：M1；责任域：qualification；前置：I02, C01, F01。
-范围版本：<code>V6.4-IDENTITY-20261022</code>；definitionHash：<code>04b17bf20dd9d4c21920cb191b53da7308f0a2e63bb5e7f2b3b80cdb432cc64f</code>。</p>
+范围版本：<code>V6.4-QUALIFICATION-DRAFT-20261107</code>；definitionHash：<code>90cd44d8df0ada1e9cbb6a88e5a1bec4d5380004be933078082c8d4fd5c176e5</code>。</p>
 <h2>本任务交付</h2>
 <ul>
 <li>本人认证档案、证件归属、提交校验、驳回只补相关项</li>
 <li>已验证OWNER可以申请，STATION不自动授DRIVER；拒绝/审核中不进入接单工作台</li>
+<li>用户确认完整资料、真实核验和培训全部通过后才可提交；材料HMAC版本与证明绑定、不可变提交快照</li>
+<li>本人证件真实私有上传及字段补正；复审草稿不覆盖已生效资格，公司由A04显式认领，不从客户端猜归属</li>
+<li>F49资格申请/补正/复审与员工F04分离；严格提交门槛与状态页面同源</li>
 </ul>
 <h2>必测失败与并发</h2>
 <ul>
@@ -15,15 +18,15 @@
 <p>主源：04_接口/openapi_V6.4.yaml、05_数据设计/data_model_V6.4.json、06_验收/test_cases_V6.4.json。本目录派生，不独立维护。
 接口：API_042_get, API_043_put, v5_post_api_app_driver_qualification, API_044_post
 画板：D02, D03, D05, D05-passed, D05-rejected, D28, D28-expired
-主责任表：vi_driver_profile, vi_driver_application
+主责任表：vi_driver_profile, vi_driver_application, vi_driver_application_submission
 验收：TC-R62-003, TC-R62-004, TC-R62-005</p>
 <h2>代码落位</h2>
 <p><code>xinyi-rongli/src/main/java/com/xinyi/rongli/qualification/</code>
 <code>xinyi-rongli/src/main/resources/mapper/rongli/qualification/</code>
-<code>xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/qualification/</code>
-<code>xinyi-ui/src/views/rongli/qualification/</code>
-<code>xinyi-ui/src/api/rongli/qualification.ts</code>
-<code>xinyi-miniapp/src/features/qualification/</code></p>
+<code>xinyi-miniapp/src/features/qualification/</code>
+<code>xinyi-rongli/src/main/java/com/xinyi/rongli/qualification/controller/</code>
+<code>xinyi-miniapp/src/pages/qualification/index.vue</code>
+<code>xinyi-admin/src/test/java/com/xinyi/web/viit/Q01QualificationIT.java</code></p>
 <h2>验证命令</h2>
 <pre><code class="language-bash">mvn -pl xinyi-admin -am -Pvi-it -Dit.test=Q01QualificationIT verify
 npm --prefix xinyi-ui run build:prod

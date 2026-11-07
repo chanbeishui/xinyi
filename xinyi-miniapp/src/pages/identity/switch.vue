@@ -46,12 +46,7 @@ async function doSwitch(role: MiniRole) {
 }
 
 function applyDriver() {
-  // 代驾申请属资格任务；此处仅提示状态，不重复引导已批准账号
-  const q = view.value?.driverQualification;
-  uni.showToast({
-    title: q === 'APPROVED' ? '已具备代驾资格' : '审核通过后才开通正式代驾身份',
-    icon: 'none'
-  });
+  uni.navigateTo({ url: '/pages/qualification/index' });
 }
 
 function viewLink() {
@@ -102,7 +97,7 @@ function back() {
       <text class="section">资格和工作信息</text>
       <view class="row switchable" @click="applyDriver">
         <view>
-          <text class="role">申请成为代驾</text>
+          <text class="role">代驾认证与申请进度</text>
           <text class="sub">{{
             view && view.driverQualification === 'APPROVED'
               ? '已审核通过，可切换代驾身份'

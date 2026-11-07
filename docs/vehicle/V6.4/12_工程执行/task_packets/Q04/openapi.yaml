@@ -22,7 +22,7 @@ paths:
 
         参数校验、真实归属、服务端当前状态/版本先于写入；不接受主体伪造。；主体为已验证的MINI基础账号，申请/培训/进度不要求已获DRIVER角色；本人记录校验。审核通过前不可接单。'
       x-flow-ids:
-      - F04
+      - F49
       security:
       - MiniBearerAuth: []
       responses:
@@ -127,8 +127,8 @@ paths:
       - VI_UPSTREAM_UNAVAILABLE
       x-error-policy: GLOBAL_FAILURES_NO_RESOURCE_404
       x-sensitive-response: true
-      x-idempotency: NO_PLAINTEXT_RESPONSE_CACHE; domain dedupe only; on lost credential
-        response reissue/refresh through controlled protocol
+      x-idempotency: NO_PLAINTEXT_RESPONSE_CACHE; domain dedupe only; on lost credential response reissue/refresh through
+        controlled protocol
       x-contract-baseline: V6.4
   /api/app/driver/qualification/face-sessions/{verificationSessionId}:
     get:
@@ -187,7 +187,7 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
       x-flow-ids:
-      - F04
+      - F49
       x-capability: DRIVER_QUALIFICATION_QUERY
       security:
       - MiniBearerAuth: []
@@ -215,8 +215,8 @@ paths:
       - VI_UPSTREAM_UNAVAILABLE
       x-error-policy: OBJECT_404_HIDES_EXISTENCE
       x-sensitive-response: true
-      x-idempotency: NO_PLAINTEXT_RESPONSE_CACHE; domain dedupe only; on lost credential
-        response reissue/refresh through controlled protocol
+      x-idempotency: NO_PLAINTEXT_RESPONSE_CACHE; domain dedupe only; on lost credential response reissue/refresh through
+        controlled protocol
       x-contract-baseline: V6.4
 components:
   responses:

@@ -2,8 +2,10 @@ package com.xinyi.rongli.file.mapper;
 
 import com.xinyi.rongli.file.domain.PrivateFile;
 import com.xinyi.rongli.order.domain.ViOrder;
-import java.time.Instant;
+
 import org.apache.ibatis.annotations.Param;
+
+import java.time.Instant;
 
 public interface PrivateFileMapper {
     PrivateFile lock(long id);
@@ -25,6 +27,8 @@ public interface PrivateFileMapper {
     ViOrder orderByNo(String no);
 
     Long applicationOwner(long id);
+
+    java.util.Map<String, Object> lockApplication(long id);
 
     Long stationDept(long id);
 

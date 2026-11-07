@@ -1,0 +1,55 @@
+{
+  "baselineUnit": {
+    "tests": 37,
+    "failures": 0
+  },
+  "firstBuild": {
+    "integrationTests": 0,
+    "phase": "testCompile",
+    "error": "RuoYiApplication 类未从当时增量构建目标解析",
+    "resolution": "统一root串行构建，clean后编译通过；未据此认定为业务故障"
+  },
+  "firstTargeted": {
+    "integrationTests": 136,
+    "passed": 133,
+    "failures": 3,
+    "errors": 0,
+    "skipped": 0,
+    "causes": [
+      "测试旧假设HTTP503，已按现有统一VI_CAPABILITY_NOT_CONFIGURED验证422及错误码",
+      "测试公开配置路径误用/api/common/config，改真实/api/public/service-config，未改变鉴权",
+      "生产GET忽略未知query；补严格拒绝所有query，保留400断言"
+    ]
+  },
+  "finalTargeted": {
+    "integrationTests": 136,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "finalFull": {
+    "integrationTests": 484,
+    "unitTests": 37,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "reviewFindings": [
+    "同意版本与正文一次读取并有序加锁，公开同意hash+主动勾选绑定当前正文",
+    "同版本正文变化仍重新同意；长期有效明确validTo:null；可编辑清空不等于省略",
+    "所有写入显式applicationId，未知重试不漂移复审，GET仅本人且禁止所有query"
+  ],
+  "fixedWithoutWeakeningAssertions": true,
+  "finalReport": "full-regression.json",
+  "finalContractReview": {
+    "finding": "公开qualificationConsentHash未配置实际null，但主契约漏nullable",
+    "resolution": "主API、切片和生成类型同步nullable；既有缺配置例新增匿名实际响应完整schema断言，保留42专项",
+    "verifiedByFinalFull": true,
+    "integrationTests": 484,
+    "unitTests": 37
+  },
+  "staticFormatting": {
+    "finding": "新快照表4空格字段缩进不符合既有DDL两空格及静态提取器",
+    "resolution": "三份SQL统一既有排版，语义不变；最终42资料检查和隔离结构比对通过"
+  }
+}

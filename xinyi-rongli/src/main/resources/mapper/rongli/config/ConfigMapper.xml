@@ -6,6 +6,15 @@
         SELECT config_value FROM sys_config WHERE config_key = #{key}
     </select>
 
+    <!-- 两个同意键按统一顺序读取；资格写事务锁住原文直到提交，发布不能在校验后穿透。 -->
+    <select id="selectQualificationConsent" resultType="java.util.LinkedHashMap">
+        SELECT config_key,config_value
+        FROM sys_config
+        WHERE config_key IN ('vi.biz.qualification.consent.version','vi.biz.qualification.consent.text')
+        ORDER BY config_key
+        <if test="lock">FOR UPDATE</if>
+    </select>
+
     <select id="selectBusiness" resultType="java.util.LinkedHashMap">
         SELECT config_key, config_value FROM sys_config WHERE config_key LIKE 'vi.biz.%' ORDER BY config_key
     </select>

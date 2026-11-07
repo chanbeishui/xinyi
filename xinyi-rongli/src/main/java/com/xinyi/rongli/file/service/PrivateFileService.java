@@ -6,14 +6,16 @@ import com.xinyi.rongli.file.mapper.PrivateFileMapper;
 import com.xinyi.rongli.platform.actor.Actor;
 import com.xinyi.rongli.platform.error.*;
 import com.xinyi.rongli.platform.service.*;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.support.TransactionTemplate;
+
 import java.io.InputStream;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.function.Supplier;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.support.TransactionTemplate;
 
 /** 文件传输与数据库事务分离；完成核验才变 READY，上传回执不能证明文件可信。 */
 @Service
@@ -436,6 +438,33 @@ public class PrivateFileService {
         if (ids.isEmpty()) return;
         authority.guard(actor, "biz:files:query");
         validateVouchers(actor, orderId, ids);
+    }
+
+    /** Q01已持目录/账号/档案/申请锁；按文件ID排序验证，不能用他人、跨申请或错误用途的证件凑齐材料。 */
+    public void validateQualificationFiles(
+            Actor actor, long applicationId, Map<String, Object> payload) {
+        if (!actor.isMini()) throw new ViException(ViErrorCode.VI_FORBIDDEN);
+        Map<Long, String> selected = new TreeMap<>();
+        for (String field :
+                List.of(
+                        "idCardFrontFileId",
+                        "idCardBackFileId",
+                        "licenseMainFileId",
+                        "licenseSubFileId")) {
+            if (payload.get(field) == null) continue;
+            long id = Long.parseLong(payload.get(field).toString());
+            if (selected.put(id, field.startsWith("idCard") ? "ID_CARD" : "DRIVER_LICENSE") != null)
+                throw new ViException(ViErrorCode.VI_DATA_INVALID, "四个证件槽位必须使用不同文件");
+        }
+        for (var entry : selected.entrySet()) {
+            PrivateFile file = authorized(actor, entry.getKey(), "biz:files:query", false);
+            if (!Objects.equals(file.getApplicationId(), applicationId)
+                    || !authority.uploader(actor, file))
+                throw new ViException(ViErrorCode.VI_RESOURCE_NOT_VISIBLE);
+            if (!entry.getValue().equals(file.getPurpose()))
+                throw new ViException(ViErrorCode.VI_DATA_INVALID, "证件文件用途与槽位不符");
+            ready(file);
+        }
     }
 
     private PrivateFile authorized(Actor actor, long id, String permission, boolean write) {

@@ -443,7 +443,9 @@
   {
     "table": "vi_driver_application",
     "writeMode": "BUSINESS_ACTION_CAS",
-    "generatedColumns": [],
+    "generatedColumns": [
+      "active_driver"
+    ],
     "insertColumns": [
       "driver_id",
       "status",
@@ -453,7 +455,17 @@
       "submitted_at",
       "reviewer_user_id",
       "reviewed_at",
-      "review_opinion"
+      "review_opinion",
+      "previous_application_id",
+      "owner_dept_id",
+      "material_revision",
+      "material_hash",
+      "submission_revision",
+      "consent_version",
+      "consent_text",
+      "consent_accepted_at",
+      "reject_fields",
+      "public_review_opinion"
     ],
     "updateColumns": [
       "driver_id",
@@ -464,7 +476,17 @@
       "submitted_at",
       "reviewer_user_id",
       "reviewed_at",
-      "review_opinion"
+      "review_opinion",
+      "previous_application_id",
+      "owner_dept_id",
+      "material_revision",
+      "material_hash",
+      "submission_revision",
+      "consent_version",
+      "consent_text",
+      "consent_accepted_at",
+      "reject_fields",
+      "public_review_opinion"
     ],
     "columnRules": {
       "id": {
@@ -547,9 +569,75 @@
         "insertable": false,
         "updatable": false,
         "clientWritable": false
+      },
+      "previous_application_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "owner_dept_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "material_revision": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "material_hash": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "submission_revision": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "consent_version": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "consent_text": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "consent_accepted_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "reject_fields": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "public_review_opinion": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "active_driver": {
+        "generated": true,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
       }
     },
-    "rule": "不以客户端PASSED当实名核验成功；禁止本人审批"
+    "rule": "本人草稿与生效资格分离，显式申请ID/CAS/单活动约束；仅结构化驳回字段可补正。材料HMAC版本与可信核验绑定，用户确认五项核验/培训全通过后提交。公司来自档案并冻结，同意记录版本、实际正文与时刻；内部意见不公开，提交另存不可变快照。"
   },
   {
     "table": "vi_provider_verification",
@@ -562,7 +650,9 @@
       "provider_task_id",
       "status",
       "result_digest",
-      "verified_at"
+      "verified_at",
+      "material_revision",
+      "material_hash"
     ],
     "updateColumns": [
       "application_id",
@@ -571,7 +661,9 @@
       "provider_task_id",
       "status",
       "result_digest",
-      "verified_at"
+      "verified_at",
+      "material_revision",
+      "material_hash"
     ],
     "columnRules": {
       "id": {
@@ -643,9 +735,21 @@
         "insertable": false,
         "updatable": false,
         "clientWritable": false
+      },
+      "material_revision": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "material_hash": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
       }
     },
-    "rule": ""
+    "rule": " 当前材料版本和HMAC绑定由服务端写入；旧NULL、错版或缺可信时刻不能视为当前通过。"
   },
   {
     "table": "vi_station",
@@ -7285,7 +7389,9 @@
       "training_id",
       "verified_duration_seconds",
       "status",
-      "last_position_seconds"
+      "last_position_seconds",
+      "material_revision",
+      "material_hash"
     ],
     "updateColumns": [
       "application_id",
@@ -7293,7 +7399,9 @@
       "training_id",
       "verified_duration_seconds",
       "status",
-      "last_position_seconds"
+      "last_position_seconds",
+      "material_revision",
+      "material_hash"
     ],
     "columnRules": {
       "id": {
@@ -7358,9 +7466,21 @@
         "insertable": false,
         "updatable": false,
         "clientWritable": false
+      },
+      "material_revision": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "material_hash": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
       }
     },
-    "rule": "普通前端上报不证明观看完整；时长限幅、顺序检查、服务端阅卷共同决定培训完成；不宣称防作弊认证"
+    "rule": "普通前端上报不证明观看完整；时长限幅、顺序检查、服务端阅卷共同决定培训完成；不宣称防作弊认证 当前材料版本和HMAC绑定由服务端写入；旧NULL、错版或缺可信时刻不能视为当前通过。"
   },
   {
     "table": "vi_training_playback",
@@ -7372,7 +7492,9 @@
       "started_at",
       "expires_at",
       "last_reported_at",
-      "last_sequence"
+      "last_sequence",
+      "material_revision",
+      "material_hash"
     ],
     "updateColumns": [
       "progress_id",
@@ -7380,7 +7502,9 @@
       "started_at",
       "expires_at",
       "last_reported_at",
-      "last_sequence"
+      "last_sequence",
+      "material_revision",
+      "material_hash"
     ],
     "columnRules": {
       "id": {
@@ -7444,9 +7568,21 @@
         "insertable": false,
         "updatable": false,
         "clientWritable": false
+      },
+      "material_revision": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "material_hash": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
       }
     },
-    "rule": "按相邻报告服务端经过时长上限累加；多个并发播放会话不能重复计入时长"
+    "rule": "按相邻报告服务端经过时长上限累加；多个并发播放会话不能重复计入时长 当前材料版本和HMAC绑定由服务端写入；旧NULL、错版或缺可信时刻不能视为当前通过。"
   },
   {
     "table": "vi_training_attempt",
@@ -7465,7 +7601,9 @@
       "score",
       "started_at",
       "expires_at",
-      "submitted_at"
+      "submitted_at",
+      "material_revision",
+      "material_hash"
     ],
     "updateColumns": [
       "application_id",
@@ -7478,7 +7616,9 @@
       "score",
       "started_at",
       "expires_at",
-      "submitted_at"
+      "submitted_at",
+      "material_revision",
+      "material_hash"
     ],
     "columnRules": {
       "id": {
@@ -7579,9 +7719,21 @@
         "insertable": false,
         "updatable": false,
         "clientWritable": false
+      },
+      "material_revision": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "material_hash": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
       }
     },
-    "rule": "作答绑定attemptId+expectedVersion；提交后不可重写；正确答案只在服务端按确切课程版本读取"
+    "rule": "作答绑定attemptId+expectedVersion；提交后不可重写；正确答案只在服务端按确切课程版本读取 当前材料版本和HMAC绑定由服务端写入；旧NULL、错版或缺可信时刻不能视为当前通过。"
   },
   {
     "table": "vi_face_session",
@@ -7597,7 +7749,9 @@
       "consent_version",
       "expires_at",
       "result_available",
-      "failure_code"
+      "failure_code",
+      "material_revision",
+      "material_hash"
     ],
     "updateColumns": [
       "application_id",
@@ -7609,7 +7763,9 @@
       "consent_version",
       "expires_at",
       "result_available",
-      "failure_code"
+      "failure_code",
+      "material_revision",
+      "material_hash"
     ],
     "columnRules": {
       "id": {
@@ -7699,9 +7855,21 @@
         "insertable": false,
         "updatable": false,
         "clientWritable": false
+      },
+      "material_revision": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "material_hash": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
       }
     },
-    "rule": "不信任客户端回调PASSED；供应商具体开通和WEBVIEW能力未证实即不能启用正式认证"
+    "rule": "不信任客户端回调PASSED；供应商具体开通和WEBVIEW能力未证实即不能启用正式认证 当前材料版本和HMAC绑定由服务端写入；旧NULL、错版或缺可信时刻不能视为当前通过。"
   },
   {
     "table": "vi_phone_verification_receipt",
@@ -9836,5 +10004,120 @@
       "resolved_by",
       "resolved_at"
     ]
+  },
+  {
+    "table": "vi_driver_application_submission",
+    "writeMode": "SERVER_APPEND_ONLY_QUALIFICATION_SUBMISSION",
+    "generatedColumns": [],
+    "columnRules": {
+      "id": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "application_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "submission_revision": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "owner_dept_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "profile_version": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "material_revision": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "material_hash": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "sensitive_payload_cipher": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "evidence_file_ids": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "provider_result_ids": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "consent_version": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "consent_text": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "consent_accepted_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "submit_reason_cipher": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "submitted_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      }
+    },
+    "rule": "服务端事务内追加已完整通过的材料、公司、同意与核验依据；不可更新/删除，不能以客户端声称PASSED替代。",
+    "insertColumns": [
+      "application_id",
+      "submission_revision",
+      "owner_dept_id",
+      "profile_version",
+      "material_revision",
+      "material_hash",
+      "sensitive_payload_cipher",
+      "evidence_file_ids",
+      "provider_result_ids",
+      "consent_version",
+      "consent_text",
+      "consent_accepted_at",
+      "submit_reason_cipher"
+    ],
+    "updateColumns": []
   }
 ]

@@ -1,11 +1,14 @@
 # Q01 · 代驾资格草稿与提交
 
 阶段：M1；责任域：qualification；前置：I02, C01, F01。
-范围版本：`V6.4-IDENTITY-20261022`；definitionHash：`04b17bf20dd9d4c21920cb191b53da7308f0a2e63bb5e7f2b3b80cdb432cc64f`。
+范围版本：`V6.4-QUALIFICATION-DRAFT-20261107`；definitionHash：`90cd44d8df0ada1e9cbb6a88e5a1bec4d5380004be933078082c8d4fd5c176e5`。
 
 ## 本任务交付
 - 本人认证档案、证件归属、提交校验、驳回只补相关项
 - 已验证OWNER可以申请，STATION不自动授DRIVER；拒绝/审核中不进入接单工作台
+- 用户确认完整资料、真实核验和培训全部通过后才可提交；材料HMAC版本与证明绑定、不可变提交快照
+- 本人证件真实私有上传及字段补正；复审草稿不覆盖已生效资格，公司由A04显式认领，不从客户端猜归属
+- F49资格申请/补正/复审与员工F04分离；严格提交门槛与状态页面同源
 
 ## 必测失败与并发
 - 员工和普通人同审核
@@ -15,16 +18,16 @@
 主源：04_接口/openapi_V6.4.yaml、05_数据设计/data_model_V6.4.json、06_验收/test_cases_V6.4.json。本目录派生，不独立维护。
 接口：API_042_get, API_043_put, v5_post_api_app_driver_qualification, API_044_post
 画板：D02, D03, D05, D05-passed, D05-rejected, D28, D28-expired
-主责任表：vi_driver_profile, vi_driver_application
+主责任表：vi_driver_profile, vi_driver_application, vi_driver_application_submission
 验收：TC-R62-003, TC-R62-004, TC-R62-005
 
 ## 代码落位
 `xinyi-rongli/src/main/java/com/xinyi/rongli/qualification/`
 `xinyi-rongli/src/main/resources/mapper/rongli/qualification/`
-`xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/qualification/`
-`xinyi-ui/src/views/rongli/qualification/`
-`xinyi-ui/src/api/rongli/qualification.ts`
 `xinyi-miniapp/src/features/qualification/`
+`xinyi-rongli/src/main/java/com/xinyi/rongli/qualification/controller/`
+`xinyi-miniapp/src/pages/qualification/index.vue`
+`xinyi-admin/src/test/java/com/xinyi/web/viit/Q01QualificationIT.java`
 
 ## 验证命令
 ```bash

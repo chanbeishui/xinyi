@@ -71,9 +71,50 @@ export type EvidenceGroup = { "groupId"?: string; "node"?: 1 | 2 | 3 | 4; "statu
 
 export type MileageInput = { "mileageKm": string; "expectedVersion": number; "reason"?: string; "dashboardPhotoId": string };
 
-export type QualificationDraft = { "expectedVersion": number; "realName"?: string; "idCardNo"?: string; "idCardFrontFileId"?: string; "idCardBackFileId"?: string; "licenseMainFileId"?: string; "licenseSubFileId"?: string; "licenseClass"?: string; "firstIssueDate"?: string; "validFrom"?: string; "validTo"?: string; "longTermValid"?: boolean; "consentVersion"?: string };
+export type QualificationDraft = {
+  "expectedVersion": number;
+  "realName"?: (string) | null;
+  "idCardNo"?: (string) | null;
+  "idCardFrontFileId"?: (string) | null;
+  "idCardBackFileId"?: (string) | null;
+  "licenseMainFileId"?: (string) | null;
+  "licenseSubFileId"?: (string) | null;
+  "licenseClass"?: (string) | null;
+  "firstIssueDate"?: (string) | null;
+  "validFrom"?: (string) | null;
+  "validTo"?: (string) | null;
+  "longTermValid"?: boolean;
+  "consentVersion"?: string;
+  "applicationId": string;
+  "acceptedConsent"?: true;
+  "consentTextHash"?: string;
+};
 
-export type Qualification = { "applicationId": string; "status": QualificationStatus; "items": Array<string>; "rejectReasons": Array<string>; "reviewDueAt"?: string; "canAcceptOrder"?: boolean; "version": number };
+export type Qualification = {
+  "applicationId": string;
+  "status": QualificationStatus;
+  "items": Array<string>;
+  "rejectReasons": Array<string>;
+  "reviewDueAt": (string) | null;
+  "canAcceptOrder": boolean;
+  "version": number;
+  "driverId": string;
+  "profileVersion": number;
+  "effectiveQualificationStatus": QualificationStatus;
+  "ownerDeptId": (string) | null;
+  "companyName": (string) | null;
+  "ownershipUnassigned": boolean;
+  "materialRevision": number;
+  "materialHash": (string) | null;
+  "submissionRevision": number;
+  "draft": QualificationDraftView;
+  "editableFields": Array<string>;
+  "rejectFields": (Array<string>) | null;
+  "publicReviewOpinion": (string) | null;
+  "submitBlockers": Array<QualificationBlocker>;
+  "checks": Array<QualificationCheck>;
+  "allowedActions": Array<AllowedAction>;
+};
 
 export type QualificationAudit = { "expectedVersion": number; "decision": "APPROVE" | "REJECT"; "opinion": string; "reviewDueAt"?: string };
 
@@ -467,7 +508,11 @@ export type StationCreate = { "name": string; "address": string; "location": Geo
 
 export type StationUpdate = { "name": string; "address": string; "location": GeoPoint; "contactPhone"?: string; "enabled"?: boolean; "supportedVehicleTypeCodes": Array<string>; "businessHours"?: string; "serviceRadiusMeter"?: number; "qualificationFileIds"?: Array<string>; "expectedVersion": number };
 
-export type QualificationCreate = { "consentVersion": string };
+export type QualificationCreate = {
+  "consentVersion": string;
+  "acceptedConsent": true;
+  "consentTextHash": string;
+};
 
 export type PenaltyStatus = "ACTIVE" | "EXPIRED" | "REVOKED";
 
@@ -543,7 +588,7 @@ export type PermissionCode = "biz:aftersale:create" | "biz:aftersale:list" | "bi
 
 export type CapabilityCode = "COMMON_DICT_QUERY" | "COMMON_FILES_ACCESS" | "COMMON_FILES_QUERY" | "COMMON_MESSAGES_LIST" | "COMMON_MESSAGES_READ" | "COMMON_ORDERS_CONFIRM" | "COMMON_ORDERS_CONTACTACCESS" | "COMMON_ORDERS_CREATE" | "COMMON_ORDERS_LIST" | "COMMON_ORDERS_QUERY" | "COMMON_PHONE_CREATE" | "COMMON_PHONE_SEND" | "COMMON_PHONE_VERIFY" | "COMMON_PRIVACYCASES_CREATE" | "COMMON_PRIVACYCASES_LIST" | "COMMON_STATIONS_LIST" | "COMMON_UPLOADS_COMPLETE" | "COMMON_UPLOADS_CREATE" | "DRIVER_ASSIGNMENT_QUERY" | "DRIVER_AVAILABILITY_EDIT" | "DRIVER_AVAILABILITY_QUERY" | "DRIVER_DRIVERPAYMENT_LIST" | "DRIVER_DRIVERSTATEMENT_CONFIRM" | "DRIVER_DRIVERSTATEMENT_CREATE" | "DRIVER_DRIVERSTATEMENT_LIST" | "DRIVER_DRIVERSTATEMENT_QUERY" | "DRIVER_INVITE_LIST" | "DRIVER_INVITE_QUERY" | "DRIVER_INVITE_RESPONSE" | "DRIVER_LOCATION_CREATE" | "DRIVER_ORDER_ARRIVEPICKUP" | "DRIVER_ORDER_ARRIVESTATION" | "DRIVER_ORDER_ASSIGNMENTCANCELLATION" | "DRIVER_ORDER_CREATE" | "DRIVER_ORDER_DEPART" | "DRIVER_ORDER_EDIT" | "DRIVER_ORDER_LIST" | "DRIVER_ORDER_QUERY" | "DRIVER_ORDER_READY" | "DRIVER_PENALTYAPPEAL_LIST" | "DRIVER_PENALTYAPPEAL_QUERY" | "DRIVER_PENALTY_CREATE" | "DRIVER_PENALTY_LIST" | "DRIVER_PENALTY_QUERY" | "DRIVER_QUALIFICATION_ATTEMPTS" | "DRIVER_QUALIFICATION_CREATE" | "DRIVER_QUALIFICATION_EDIT" | "DRIVER_QUALIFICATION_LIST" | "DRIVER_QUALIFICATION_PLAYBACK" | "DRIVER_QUALIFICATION_PROGRESS" | "DRIVER_QUALIFICATION_QUERY" | "DRIVER_QUALIFICATION_SUBMIT" | "EMPLOYEE_LINK_READ" | "EMPLOYEE_LINK_RECONCILE" | "OWNER_ADDRESSES_CREATE" | "OWNER_ADDRESSES_DEFAULT" | "OWNER_ADDRESSES_EDIT" | "OWNER_ADDRESSES_LIST" | "OWNER_ADDRESSES_REMOVE" | "OWNER_AFTERSALE_CREATE" | "OWNER_AFTERSALE_LIST" | "OWNER_AFTERSALE_QUERY" | "OWNER_ORDER_CLOSEUNPAID" | "OWNER_ORDER_CREATE" | "OWNER_ORDER_LIST" | "OWNER_ORDER_QUERY" | "OWNER_ORDER_SERVICECONFIRMATION" | "OWNER_PROFILE_EDIT" | "OWNER_SCHEDULE_LIST" | "OWNER_VEHICLE_CREATE" | "OWNER_VEHICLE_DEFAULT" | "OWNER_VEHICLE_EDIT" | "OWNER_VEHICLE_LIST" | "OWNER_VEHICLE_REMOVE" | "PHONE_BIND" | "PROFILE_READ" | "SESSION_LOGOUT" | "SESSION_READ" | "SESSION_SWITCH_ROLE" | "SESSION_SWITCH_STATION";
 
-export type AllowedAction = "ADD_REVIEW" | "ADD_TO_DRAFT" | "APPEAL_PENALTY" | "APPLY_ADJUSTMENT" | "APPLY_CANCEL_REFUND" | "APPLY_REFUND_ONLY" | "APPROVE_AND_SEND" | "ARRIVE_PICKUP" | "ARRIVE_STATION" | "CANCEL_ASSIGNMENT" | "CLOSE_UNPAID" | "CONFIRM_HANDOVER" | "CONFIRM_STATEMENT" | "CONTACT_DRIVER" | "CONTACT_OWNER" | "CONTACT_STATION" | "CREATE_HANDOVER" | "DEPART" | "EDIT_PRICE" | "EXPORT" | "FILL_MILEAGE" | "FILL_PRICE" | "MANUAL_INVITE" | "MARK_EVIDENCE_READY" | "OPEN_DISPUTE" | "PAY" | "RECORD_PAYMENT" | "REGISTER_RESULT" | "REJECT_REVIEW" | "REMOVE_FROM_DRAFT" | "RENOTIFY_PICKUP" | "REPORT_DIFFERENCE" | "REPORT_EXCEPTION" | "REQUEST_RESULT_CORRECTION" | "REVIEW_AFTERSALE" | "REVIEW_LICENSE" | "SEND_STATEMENT" | "SERVICE_CONFIRM" | "SUBMIT_REVIEW" | "UPLOAD_PHOTO" | "VERIFY_PAYMENT" | "VIEW_APPEAL" | "VIEW_DETAIL" | "VIEW_EVIDENCE" | "VIEW_HANDOVER_SECRET" | "VIEW_PAYMENT" | "VIEW_PRICE_HISTORY" | "VIEW_PRICING" | "VIEW_RESULT" | "VOID_STATEMENT" | "WITHDRAW_STATEMENT" | "ADD_NOTE" | "VIEW_AFTERSALE" | "QUERY_REFUND" | "RETRY_REFUND" | "QUERY_RECONCILIATION" | "RESOLVE_RECONCILIATION" | "VIEW_DRIVER" | "EDIT_DRIVER" | "DISABLE_NEW_ASSIGNMENTS" | "ENABLE_NEW_ASSIGNMENTS" | "ASSIGN_DRIVER_COMPANY" | "VIEW_ASSIGNMENTS";
+export type AllowedAction = "ADD_REVIEW" | "ADD_TO_DRAFT" | "APPEAL_PENALTY" | "APPLY_ADJUSTMENT" | "APPLY_CANCEL_REFUND" | "APPLY_REFUND_ONLY" | "APPROVE_AND_SEND" | "ARRIVE_PICKUP" | "ARRIVE_STATION" | "CANCEL_ASSIGNMENT" | "CLOSE_UNPAID" | "CONFIRM_HANDOVER" | "CONFIRM_STATEMENT" | "CONTACT_DRIVER" | "CONTACT_OWNER" | "CONTACT_STATION" | "CREATE_HANDOVER" | "DEPART" | "EDIT_PRICE" | "EXPORT" | "FILL_MILEAGE" | "FILL_PRICE" | "MANUAL_INVITE" | "MARK_EVIDENCE_READY" | "OPEN_DISPUTE" | "PAY" | "RECORD_PAYMENT" | "REGISTER_RESULT" | "REJECT_REVIEW" | "REMOVE_FROM_DRAFT" | "RENOTIFY_PICKUP" | "REPORT_DIFFERENCE" | "REPORT_EXCEPTION" | "REQUEST_RESULT_CORRECTION" | "REVIEW_AFTERSALE" | "REVIEW_LICENSE" | "SEND_STATEMENT" | "SERVICE_CONFIRM" | "SUBMIT_REVIEW" | "UPLOAD_PHOTO" | "VERIFY_PAYMENT" | "VIEW_APPEAL" | "VIEW_DETAIL" | "VIEW_EVIDENCE" | "VIEW_HANDOVER_SECRET" | "VIEW_PAYMENT" | "VIEW_PRICE_HISTORY" | "VIEW_PRICING" | "VIEW_RESULT" | "VOID_STATEMENT" | "WITHDRAW_STATEMENT" | "ADD_NOTE" | "VIEW_AFTERSALE" | "QUERY_REFUND" | "RETRY_REFUND" | "QUERY_RECONCILIATION" | "RESOLVE_RECONCILIATION" | "VIEW_DRIVER" | "EDIT_DRIVER" | "DISABLE_NEW_ASSIGNMENTS" | "ENABLE_NEW_ASSIGNMENTS" | "ASSIGN_DRIVER_COMPANY" | "VIEW_ASSIGNMENTS" | "EDIT_QUALIFICATION" | "SUBMIT_QUALIFICATION" | "CREATE_QUALIFICATION_REVISION";
 
 export type AccountStatus = "ACTIVE" | "LOCKED";
 
@@ -653,7 +698,22 @@ export type StationOrderAction = "CONTACT_DRIVER" | "CREATE_HANDOVER" | "CONFIRM
 
 export type AdminOrderAction = "MANUAL_INVITE" | "REVIEW_AFTERSALE" | "REVIEW_LICENSE" | "REGISTER_RESULT" | "REQUEST_RESULT_CORRECTION" | "CONTACT_OWNER" | "CONTACT_DRIVER" | "CONTACT_STATION" | "EXPORT" | "VIEW_DETAIL" | "VIEW_EVIDENCE" | "VIEW_RESULT" | "VIEW_PAYMENT";
 
-export type PublicServiceConfig = { "version": number; "companyName": string; "supportPhone": string; "termsVersion": string; "termsText": string; "privacyVersion": string; "privacyText": string; "serviceCities": Array<string>; "bookingEnabled": boolean };
+export type PublicServiceConfig = {
+  "version": number;
+  "companyName": string;
+  "supportPhone": string;
+  "termsVersion": string;
+  "termsText": string;
+  "privacyVersion": string;
+  "privacyText": string;
+  "serviceCities": Array<string>;
+  "bookingEnabled": boolean;
+  "availablePaymentMethods"?: Array<"WECHAT" | "OFFLINE">;
+  "paymentNotice"?: string;
+  "qualificationConsentVersion": string;
+  "qualificationConsentText": string;
+  "qualificationConsentHash": (string) | null;
+};
 
 export type EmployeeLinkStatus = "UNLINKED" | "LINKED" | "NEEDS_ADMIN" | "SUSPENDED" | "REVOKED";
 
@@ -703,3 +763,39 @@ export type AfterSaleNotePublic = { "noteId": string; "note": string; "voucherFi
 
 
 export type AfterSaleReviewHistory = { "decision": "APPROVE" | "REJECT"; "approvedAmount": (number) | null; "opinion": string; "publicOpinion": (string) | null; "reviewedAt": string; "reviewerUserId": string };
+
+export type QualificationSubmit = {
+  "applicationId": string;
+  "expectedVersion": number;
+  "expectedProfileVersion": number;
+  "reason": string;
+};
+
+export type QualificationDraftView = {
+  "realName": (string) | null;
+  "idCardNoMask": (string) | null;
+  "idCardNoProvided": boolean;
+  "idCardFrontFileId": (string) | null;
+  "idCardBackFileId": (string) | null;
+  "licenseMainFileId": (string) | null;
+  "licenseSubFileId": (string) | null;
+  "licenseClass": (string) | null;
+  "firstIssueDate": (string) | null;
+  "validFrom": (string) | null;
+  "validTo": (string) | null;
+  "longTermValid": boolean;
+  "consentVersion": (string) | null;
+  "consentAcceptedAt": (string) | null;
+  "consentTextHash": (string) | null;
+};
+
+export type QualificationCheck = {
+  "type": "REALNAME" | "FACE" | "BACKGROUND" | "LICENSE" | "TRAINING";
+  "status": "CREATED" | "PROCESSING" | "PASSED" | "FAILED" | "EXPIRED" | "UNAVAILABLE";
+};
+
+export type QualificationBlocker = {
+  "field": string;
+  "reasonCode": string;
+  "message": string;
+};

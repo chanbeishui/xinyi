@@ -1,0 +1,275 @@
+{
+  "at": "2026-11-07T09:26:28.442928+00:00",
+  "wholeRepoScanned": 1310,
+  "scope": "本任务变更源码；自动信号只定位，不据数量判定正确性。",
+  "files": [
+    {
+      "file": "xinyi-admin/src/test/java/com/xinyi/web/viit/Q01QualificationIT.java",
+      "lines": 1579,
+      "longestLine": 247,
+      "longLineNumbers": [
+        62,
+        1160,
+        1177,
+        1506,
+        1517
+      ],
+      "denseLineNumbers": [],
+      "commentLines": 10,
+      "group": "xinyi-admin"
+    },
+    {
+      "file": "xinyi-admin/src/test/resources/integration/q01_contract.py",
+      "lines": 35,
+      "longestLine": 101,
+      "longLineNumbers": [],
+      "denseLineNumbers": [],
+      "commentLines": 0,
+      "group": "xinyi-admin"
+    },
+    {
+      "file": "xinyi-miniapp/src/api/types.ts",
+      "lines": 2941,
+      "longestLine": 100,
+      "longLineNumbers": [],
+      "denseLineNumbers": [
+        3,
+        161,
+        233,
+        246,
+        343,
+        495,
+        507,
+        582,
+        646,
+        657,
+        705,
+        707,
+        1486,
+        2095,
+        2569
+      ],
+      "commentLines": 4,
+      "group": "xinyi-miniapp"
+    },
+    {
+      "file": "xinyi-miniapp/src/features/config/api.ts",
+      "lines": 53,
+      "longestLine": 99,
+      "longLineNumbers": [],
+      "denseLineNumbers": [
+        43
+      ],
+      "commentLines": 6,
+      "group": "xinyi-miniapp"
+    },
+    {
+      "file": "xinyi-miniapp/src/features/file/api.ts",
+      "lines": 202,
+      "longestLine": 97,
+      "longLineNumbers": [],
+      "denseLineNumbers": [
+        7,
+        10
+      ],
+      "commentLines": 11,
+      "group": "xinyi-miniapp"
+    },
+    {
+      "file": "xinyi-miniapp/src/features/qualification/api.ts",
+      "lines": 133,
+      "longestLine": 98,
+      "longLineNumbers": [],
+      "denseLineNumbers": [
+        45,
+        87
+      ],
+      "commentLines": 1,
+      "group": "xinyi-miniapp"
+    },
+    {
+      "file": "xinyi-miniapp/src/pages/identity/switch.vue",
+      "lines": 204,
+      "longestLine": 87,
+      "longLineNumbers": [],
+      "denseLineNumbers": [],
+      "commentLines": 3,
+      "group": "xinyi-miniapp"
+    },
+    {
+      "file": "xinyi-miniapp/src/pages/qualification/index.vue",
+      "lines": 925,
+      "longestLine": 97,
+      "longLineNumbers": [],
+      "denseLineNumbers": [],
+      "commentLines": 4,
+      "group": "xinyi-miniapp"
+    },
+    {
+      "file": "xinyi-miniapp/src/pages/work/index.vue",
+      "lines": 256,
+      "longestLine": 97,
+      "longLineNumbers": [],
+      "denseLineNumbers": [],
+      "commentLines": 1,
+      "group": "xinyi-miniapp"
+    },
+    {
+      "file": "xinyi-rongli/src/main/java/com/xinyi/rongli/config/dto/PublicServiceConfigView.java",
+      "lines": 22,
+      "longestLine": 98,
+      "longLineNumbers": [],
+      "denseLineNumbers": [],
+      "commentLines": 3,
+      "group": "xinyi-rongli"
+    },
+    {
+      "file": "xinyi-rongli/src/main/java/com/xinyi/rongli/config/mapper/ConfigMapper.java",
+      "lines": 31,
+      "longestLine": 96,
+      "longLineNumbers": [],
+      "denseLineNumbers": [],
+      "commentLines": 4,
+      "group": "xinyi-rongli"
+    },
+    {
+      "file": "xinyi-rongli/src/main/java/com/xinyi/rongli/config/service/ConfigService.java",
+      "lines": 221,
+      "longestLine": 99,
+      "longLineNumbers": [],
+      "denseLineNumbers": [],
+      "commentLines": 8,
+      "group": "xinyi-rongli"
+    },
+    {
+      "file": "xinyi-rongli/src/main/java/com/xinyi/rongli/config/service/QualificationConsentSnapshot.java",
+      "lines": 48,
+      "longestLine": 96,
+      "longLineNumbers": [],
+      "denseLineNumbers": [],
+      "commentLines": 2,
+      "group": "xinyi-rongli"
+    },
+    {
+      "file": "xinyi-rongli/src/main/java/com/xinyi/rongli/file/mapper/PrivateFileMapper.java",
+      "lines": 38,
+      "longestLine": 89,
+      "longLineNumbers": [],
+      "denseLineNumbers": [],
+      "commentLines": 0,
+      "group": "xinyi-rongli"
+    },
+    {
+      "file": "xinyi-rongli/src/main/java/com/xinyi/rongli/file/service/FileAuthority.java",
+      "lines": 209,
+      "longestLine": 100,
+      "longLineNumbers": [],
+      "denseLineNumbers": [],
+      "commentLines": 4,
+      "group": "xinyi-rongli"
+    },
+    {
+      "file": "xinyi-rongli/src/main/java/com/xinyi/rongli/file/service/PrivateFileService.java",
+      "lines": 514,
+      "longestLine": 100,
+      "longLineNumbers": [],
+      "denseLineNumbers": [],
+      "commentLines": 9,
+      "group": "xinyi-rongli"
+    },
+    {
+      "file": "xinyi-rongli/src/main/java/com/xinyi/rongli/identity/auth/MiniCapabilityRegistry.java",
+      "lines": 95,
+      "longestLine": 107,
+      "longLineNumbers": [],
+      "denseLineNumbers": [],
+      "commentLines": 11,
+      "group": "xinyi-rongli"
+    },
+    {
+      "file": "xinyi-rongli/src/main/java/com/xinyi/rongli/qualification/controller/QualificationController.java",
+      "lines": 75,
+      "longestLine": 99,
+      "longLineNumbers": [],
+      "denseLineNumbers": [],
+      "commentLines": 2,
+      "group": "xinyi-rongli"
+    },
+    {
+      "file": "xinyi-rongli/src/main/java/com/xinyi/rongli/qualification/domain/QualificationApplication.java",
+      "lines": 151,
+      "longestLine": 63,
+      "longLineNumbers": [],
+      "denseLineNumbers": [],
+      "commentLines": 1,
+      "group": "xinyi-rongli"
+    },
+    {
+      "file": "xinyi-rongli/src/main/java/com/xinyi/rongli/qualification/dto/QualificationRequests.java",
+      "lines": 182,
+      "longestLine": 100,
+      "longLineNumbers": [],
+      "denseLineNumbers": [],
+      "commentLines": 1,
+      "group": "xinyi-rongli"
+    },
+    {
+      "file": "xinyi-rongli/src/main/java/com/xinyi/rongli/qualification/mapper/QualificationMapper.java",
+      "lines": 39,
+      "longestLine": 96,
+      "longLineNumbers": [],
+      "denseLineNumbers": [],
+      "commentLines": 0,
+      "group": "xinyi-rongli"
+    },
+    {
+      "file": "xinyi-rongli/src/main/java/com/xinyi/rongli/qualification/service/QualificationService.java",
+      "lines": 661,
+      "longestLine": 100,
+      "longLineNumbers": [],
+      "denseLineNumbers": [],
+      "commentLines": 10,
+      "group": "xinyi-rongli"
+    },
+    {
+      "file": "xinyi-rongli/src/main/resources/mapper/rongli/config/ConfigMapper.xml",
+      "lines": 52,
+      "longestLine": 112,
+      "longLineNumbers": [],
+      "denseLineNumbers": [],
+      "commentLines": 1,
+      "group": "xinyi-rongli"
+    },
+    {
+      "file": "xinyi-rongli/src/main/resources/mapper/rongli/file/PrivateFileMapper.xml",
+      "lines": 111,
+      "longestLine": 110,
+      "longLineNumbers": [],
+      "denseLineNumbers": [],
+      "commentLines": 3,
+      "group": "xinyi-rongli"
+    },
+    {
+      "file": "xinyi-rongli/src/main/resources/mapper/rongli/qualification/QualificationMapper.xml",
+      "lines": 122,
+      "longestLine": 151,
+      "longLineNumbers": [],
+      "denseLineNumbers": [],
+      "commentLines": 7,
+      "group": "xinyi-rongli"
+    }
+  ],
+  "manualReview": [
+    "事务/目录锁顺序与撤权、本人/公司归属、草稿与生效资格分离",
+    "材料HMAC/加密AAD、同意版本与正文锁、五类可信证明与失败关闭",
+    "私有证件当前申请与READY、提交冻结、结构化补正",
+    "UUID/CAS与未知结果不漂移、审计/outbox/快照回滚",
+    "长期有效与null清除、旧掩码不回写、离页及身份变更清敏感输入"
+  ],
+  "exceptions": [
+    "生成TS的联合类型与交叉类型不是一行压缩业务方法",
+    "短字段类型定义是声明，不是嵌套业务逻辑",
+    "Java测试长行仅路径常量/SQL与契约样本，不拆改其内容"
+  ],
+  "passed": true
+}

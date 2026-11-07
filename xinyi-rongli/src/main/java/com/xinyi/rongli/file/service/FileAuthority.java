@@ -11,9 +11,11 @@ import com.xinyi.rongli.platform.actor.*;
 import com.xinyi.rongli.platform.error.*;
 import com.xinyi.rongli.scope.mapper.EmployeeStationAccessMapper;
 import com.xinyi.system.service.IDeptScopeService;
+
+import org.springframework.stereotype.Service;
+
 import java.time.Instant;
 import java.util.*;
-import org.springframework.stereotype.Service;
 
 /** 文件权限随父业务实时判断；临时签名和客户端声明的用途都不能扩大授权范围。 */
 @Service
@@ -109,11 +111,15 @@ public class FileAuthority {
             return;
         }
         if (file.getApplicationId() != null) {
-            // 申请证件没有权威部门归属。当前仅本人可读写，不能拿管理员主部门猜测审核范围。
+            // Q01先锁资格父记录再锁文件。提交冻结后，旧上传票据和IO后的回写也必须重新拒绝。
+            // 本轮仍仅本人证件读写，不借公司字段提前开放Q05后台原图。
+            var application = files.lockApplication(file.getApplicationId());
             if (!actor.isMini()
+                    || application == null
                     || !Objects.equals(
-                            actor.accountId(), files.applicationOwner(file.getApplicationId()))
+                            actor.accountId(), ((Number) application.get("account_id")).longValue())
                     || !Set.of("ID_CARD", "DRIVER_LICENSE").contains(purpose)) denied();
+            if (write) requireEditableApplication(application, purpose);
             return;
         }
         Long department;
@@ -166,6 +172,35 @@ public class FileAuthority {
                 || file.getOrderId() != null
                         && !stations.orderDepartments(actor.accountId(), station, permission)
                                 .contains(department)) denied();
+    }
+
+    private static void requireEditableApplication(
+            java.util.Map<String, Object> application, String purpose) {
+        String status = application.get("status").toString();
+        if (!Set.of("DRAFT", "REJECTED").contains(status)) {
+            throw new ViException(ViErrorCode.VI_STATE_CONFLICT, "资格申请已冻结，不可继续上传或替换证件");
+        }
+        if (!"REJECTED".equals(status)) return;
+        Object raw = application.get("reject_fields");
+        if (raw == null) {
+            throw new ViException(ViErrorCode.VI_STATE_CONFLICT, "历史驳回缺少补正字段，请联系管理员");
+        }
+        try {
+            var fields =
+                    com.xinyi.rongli.platform.json.ViJson.read(
+                            raw.toString(), java.util.List.class);
+            Set<String> slots =
+                    "ID_CARD".equals(purpose)
+                            ? Set.of("idCardFrontFileId", "idCardBackFileId")
+                            : Set.of("licenseMainFileId", "licenseSubFileId");
+            if (fields.stream().noneMatch(slots::contains)) {
+                throw new ViException(ViErrorCode.VI_STATE_CONFLICT, "本类证件不在驳回补正范围");
+            }
+        } catch (ViException error) {
+            throw error;
+        } catch (RuntimeException error) {
+            throw new ViException(ViErrorCode.VI_STATE_CONFLICT, "驳回补正记录不可用，请联系管理员");
+        }
     }
 
     private static void denied() {

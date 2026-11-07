@@ -1199,6 +1199,9 @@ components:
       - ENABLE_NEW_ASSIGNMENTS
       - ASSIGN_DRIVER_COMPANY
       - VIEW_ASSIGNMENTS
+      - EDIT_QUALIFICATION
+      - SUBMIT_QUALIFICATION
+      - CREATE_QUALIFICATION_REVISION
   responses:
     UnprocessableEntity:
       description: 填写内容不符合要求。参见errorCode注册表；HTTP状态与code一致。

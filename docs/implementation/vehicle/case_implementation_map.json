@@ -2557,28 +2557,37 @@
     "testMethod": "I01IdentityIT#伪造role或openid字段被400拒绝不提权_TC_002_R62_002"
   },
   {
-    "status": "NOT_RUN",
-    "testFiles": [],
-    "evidence": null,
+    "status": "PARTIAL",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q01QualificationIT.java"
+    ],
+    "evidence": "docs/implementation/vehicle/evidence/Q01-20261107.json",
     "caseId": "TC-R62-003",
     "taskId": "Q01",
-    "testMethod": "test_tc_r62_003"
+    "testMethod": "verifiedOwnerWithoutADriverProfileCanReadAndStartItsOwnApplication;strictSubmitFreezesOneSnapshotAndFourActualResponsesMatchThePrimaryContract",
+    "note": "本人申请、保存、严格提交及无DRIVER已验；D02实际接单接口尚未实现，真实接单拒绝留D01/D02。"
   },
   {
-    "status": "NOT_RUN",
-    "testFiles": [],
-    "evidence": null,
+    "status": "PASS",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q01QualificationIT.java"
+    ],
+    "evidence": "docs/implementation/vehicle/evidence/Q01-20261107.json",
     "caseId": "TC-R62-004",
     "taskId": "Q01",
-    "testMethod": "test_tc_r62_004"
+    "testMethod": "rejectedOrSubmittedFirstApplicationCannotGrantDriverByRefreshingOrSwitching",
+    "note": "真实待审核/驳回会话与DRIVER切换拒绝已验；员工不免审。"
   },
   {
-    "status": "NOT_RUN",
-    "testFiles": [],
-    "evidence": null,
+    "status": "PARTIAL",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q01QualificationIT.java"
+    ],
+    "evidence": "docs/implementation/vehicle/evidence/Q01-20261107.json",
     "caseId": "TC-R62-005",
     "taskId": "Q01",
-    "testMethod": "test_tc_r62_005"
+    "testMethod": "renewalDraftDoesNotOverwriteTheEffectiveQualificationOrApprovedHistory",
+    "note": "只有既有通过状态投影及复审保护已验；真实后台独立批准到角色生效留Q05。"
   },
   {
     "status": "PASS",

@@ -1,0 +1,679 @@
+{
+  "mode": "Browser plugin not available；临时Playwright真实H5页面+明确API夹具。真实五项PASSED仅模拟后端可信投影，不代表供应商/培训已接通或微信真机通过。",
+  "url": "http://127.0.0.1:5175/#/pages/qualification/index",
+  "viewports": [
+    "390x844",
+    "1280x900"
+  ],
+  "checks": [
+    "未核验手机号不读取/创建资格，提供真实核验入口",
+    "公开同意文本/版本缺失时真实关闭创建，无固定伪协议",
+    "公开说明换版本后清除旧勾选，必须重新主动同意当前版本",
+    "同版本改正文Hash仍清旧勾选，主动同意后create提交正确原文UTF8 SHA256",
+    "主动同意后才用UUID建本人草稿；缺公司/真实核验不开放提交",
+    "身份证格式错误在页面提示且不发保存请求",
+    "complete仍VERIFYING时不记为已上传、不允许未READY文件进入草稿",
+    "四证件各用正确用途/applicationId上传真实原PNG字节，经complete READY后PUT并清完整身份证输入",
+    "GET仅掩码，留空保存省略idCardNo保留原件，敏感号码/姓名/文件票均未落localStorage",
+    "GET草稿同意Hash与当前正文不同需重新确认，PUT三件成组保存当前正文Hash",
+    "已有截止日切长期同时发validTo:null；清空允许的姓名/日期发null，身份证空输入保留原件",
+    "证件预览通过本人短票认证下载原字节，不把私有URL/Token挂公开图片地址",
+    "409保留输入并禁提交，刷新最新版本后重新保存，不覆盖公司或客户端自造版本",
+    "网络/5xx未知写入冻结表单，刷新不换key，按原body及UUID重试",
+    "驳回仅开放服务端指明字段，其他资料和证件不可编辑",
+    "仅longTermValid被拒时不顺手清非驳回截止日，控件禁用并提示管理员补范围",
+    "历史驳回未记录字段时阻止臆测编辑，提示管理员核实",
+    "新复审草稿不复制旧证件，不覆盖当前有效APPROVED资格；状态分开展示",
+    "仅可信服务端SUBMITaction开放后带申请及profile双版本提交，提交后只读审核进度，不自行批准或添DRIVER角色",
+    "390px/1280px布局无横向溢出，首屏可辨有效资格、公司与本次申请",
+    "真实403清空旧本人草稿与公司展示，不能用旧缓存绕过权限",
+    "工作页入口连接真实资格中心；离页清敏感输入，旧在途响应不会写回新页面",
+    "页面身份/非空/无framework overlay，控制台仅明确负向HTTP状态日志，无未知API或组件警告"
+  ],
+  "errors": [],
+  "expectedHttpErrors": [
+    "Failed to load resource: the server responded with a status of 409 (Conflict)",
+    "Failed to load resource: the server responded with a status of 503 (Service Unavailable)",
+    "Failed to load resource: the server responded with a status of 403 (Forbidden)"
+  ],
+  "warnings": [],
+  "unknown": [],
+  "requests": [
+    {
+      "method": "GET",
+      "path": "/api/common/session"
+    },
+    {
+      "method": "GET",
+      "path": "/api/common/session"
+    },
+    {
+      "method": "GET",
+      "path": "/api/public/service-config"
+    },
+    {
+      "method": "GET",
+      "path": "/api/common/session"
+    },
+    {
+      "method": "GET",
+      "path": "/api/public/service-config"
+    },
+    {
+      "method": "GET",
+      "path": "/api/app/driver/qualification"
+    },
+    {
+      "method": "GET",
+      "path": "/api/common/session"
+    },
+    {
+      "method": "GET",
+      "path": "/api/public/service-config"
+    },
+    {
+      "method": "GET",
+      "path": "/api/app/driver/qualification"
+    },
+    {
+      "method": "GET",
+      "path": "/api/common/session"
+    },
+    {
+      "method": "GET",
+      "path": "/api/public/service-config"
+    },
+    {
+      "method": "GET",
+      "path": "/api/app/driver/qualification"
+    },
+    {
+      "method": "GET",
+      "path": "/api/common/session"
+    },
+    {
+      "method": "GET",
+      "path": "/api/public/service-config"
+    },
+    {
+      "method": "GET",
+      "path": "/api/app/driver/qualification"
+    },
+    {
+      "method": "GET",
+      "path": "/api/common/session"
+    },
+    {
+      "method": "GET",
+      "path": "/api/public/service-config"
+    },
+    {
+      "method": "GET",
+      "path": "/api/app/driver/qualification"
+    },
+    {
+      "method": "POST",
+      "path": "/api/app/driver/qualification"
+    },
+    {
+      "method": "POST",
+      "path": "/api/common/uploads"
+    },
+    {
+      "method": "PUT",
+      "path": "/vi-private-transfer/uploads/101"
+    },
+    {
+      "method": "POST",
+      "path": "/api/common/uploads/101/complete"
+    },
+    {
+      "method": "POST",
+      "path": "/api/common/uploads"
+    },
+    {
+      "method": "PUT",
+      "path": "/vi-private-transfer/uploads/102"
+    },
+    {
+      "method": "POST",
+      "path": "/api/common/uploads/102/complete"
+    },
+    {
+      "method": "POST",
+      "path": "/api/common/uploads"
+    },
+    {
+      "method": "PUT",
+      "path": "/vi-private-transfer/uploads/103"
+    },
+    {
+      "method": "POST",
+      "path": "/api/common/uploads/103/complete"
+    },
+    {
+      "method": "POST",
+      "path": "/api/common/uploads"
+    },
+    {
+      "method": "PUT",
+      "path": "/vi-private-transfer/uploads/104"
+    },
+    {
+      "method": "POST",
+      "path": "/api/common/uploads/104/complete"
+    },
+    {
+      "method": "POST",
+      "path": "/api/common/uploads"
+    },
+    {
+      "method": "PUT",
+      "path": "/vi-private-transfer/uploads/105"
+    },
+    {
+      "method": "POST",
+      "path": "/api/common/uploads/105/complete"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/app/driver/qualification"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/app/driver/qualification"
+    },
+    {
+      "method": "GET",
+      "path": "/api/common/session"
+    },
+    {
+      "method": "GET",
+      "path": "/api/public/service-config"
+    },
+    {
+      "method": "GET",
+      "path": "/api/app/driver/qualification"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/app/driver/qualification"
+    },
+    {
+      "method": "GET",
+      "path": "/api/common/session"
+    },
+    {
+      "method": "GET",
+      "path": "/api/public/service-config"
+    },
+    {
+      "method": "GET",
+      "path": "/api/app/driver/qualification"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/app/driver/qualification"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/app/driver/qualification"
+    },
+    {
+      "method": "POST",
+      "path": "/api/common/files/102/access"
+    },
+    {
+      "method": "GET",
+      "path": "/vi-private-transfer/files/102"
+    },
+    {
+      "method": "GET",
+      "path": "/api/common/session"
+    },
+    {
+      "method": "GET",
+      "path": "/api/public/service-config"
+    },
+    {
+      "method": "GET",
+      "path": "/api/app/driver/qualification"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/app/driver/qualification"
+    },
+    {
+      "method": "GET",
+      "path": "/api/common/session"
+    },
+    {
+      "method": "GET",
+      "path": "/api/public/service-config"
+    },
+    {
+      "method": "GET",
+      "path": "/api/app/driver/qualification"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/app/driver/qualification"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/app/driver/qualification"
+    },
+    {
+      "method": "GET",
+      "path": "/api/common/session"
+    },
+    {
+      "method": "GET",
+      "path": "/api/public/service-config"
+    },
+    {
+      "method": "GET",
+      "path": "/api/app/driver/qualification"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/app/driver/qualification"
+    },
+    {
+      "method": "GET",
+      "path": "/api/common/session"
+    },
+    {
+      "method": "GET",
+      "path": "/api/public/service-config"
+    },
+    {
+      "method": "GET",
+      "path": "/api/app/driver/qualification"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/app/driver/qualification"
+    },
+    {
+      "method": "GET",
+      "path": "/api/common/session"
+    },
+    {
+      "method": "GET",
+      "path": "/api/public/service-config"
+    },
+    {
+      "method": "GET",
+      "path": "/api/app/driver/qualification"
+    },
+    {
+      "method": "GET",
+      "path": "/api/common/session"
+    },
+    {
+      "method": "GET",
+      "path": "/api/public/service-config"
+    },
+    {
+      "method": "GET",
+      "path": "/api/app/driver/qualification"
+    },
+    {
+      "method": "GET",
+      "path": "/api/common/session"
+    },
+    {
+      "method": "GET",
+      "path": "/api/public/service-config"
+    },
+    {
+      "method": "GET",
+      "path": "/api/app/driver/qualification"
+    },
+    {
+      "method": "POST",
+      "path": "/api/app/driver/qualification"
+    },
+    {
+      "method": "GET",
+      "path": "/api/common/session"
+    },
+    {
+      "method": "GET",
+      "path": "/api/public/service-config"
+    },
+    {
+      "method": "GET",
+      "path": "/api/app/driver/qualification"
+    },
+    {
+      "method": "GET",
+      "path": "/api/common/session"
+    },
+    {
+      "method": "GET",
+      "path": "/api/public/service-config"
+    },
+    {
+      "method": "GET",
+      "path": "/api/app/driver/qualification"
+    },
+    {
+      "method": "POST",
+      "path": "/api/app/driver/qualification/submit"
+    },
+    {
+      "method": "GET",
+      "path": "/api/common/session"
+    },
+    {
+      "method": "GET",
+      "path": "/api/public/service-config"
+    },
+    {
+      "method": "GET",
+      "path": "/api/app/driver/qualification"
+    },
+    {
+      "method": "GET",
+      "path": "/api/common/session"
+    },
+    {
+      "method": "GET",
+      "path": "/api/public/service-config"
+    },
+    {
+      "method": "GET",
+      "path": "/api/app/driver/qualification"
+    },
+    {
+      "method": "GET",
+      "path": "/api/common/session"
+    },
+    {
+      "method": "GET",
+      "path": "/api/public/service-config"
+    },
+    {
+      "method": "GET",
+      "path": "/api/app/driver/qualification"
+    },
+    {
+      "method": "GET",
+      "path": "/api/common/session"
+    },
+    {
+      "method": "GET",
+      "path": "/api/public/service-config"
+    },
+    {
+      "method": "GET",
+      "path": "/api/app/driver/qualification"
+    },
+    {
+      "method": "GET",
+      "path": "/api/common/session"
+    },
+    {
+      "method": "GET",
+      "path": "/api/common/profile"
+    },
+    {
+      "method": "GET",
+      "path": "/api/common/session"
+    },
+    {
+      "method": "GET",
+      "path": "/api/public/service-config"
+    },
+    {
+      "method": "GET",
+      "path": "/api/app/driver/qualification"
+    }
+  ],
+  "writeRequests": [
+    {
+      "path": "/api/app/driver/qualification",
+      "method": "POST",
+      "key": "102d6e25-0b47-41c1-88cd-e287883e8a00",
+      "inputKeys": [
+        "consentVersion",
+        "consentTextHash",
+        "acceptedConsent"
+      ]
+    },
+    {
+      "path": "/api/common/uploads",
+      "method": "POST",
+      "key": "75feaaea-4f51-4001-b6ba-96bc5c5230a2",
+      "inputKeys": [
+        "purpose",
+        "applicationId",
+        "fileName",
+        "mimeType",
+        "size"
+      ]
+    },
+    {
+      "path": "/api/common/uploads/101/complete",
+      "method": "POST",
+      "inputKeys": []
+    },
+    {
+      "path": "/api/common/uploads",
+      "method": "POST",
+      "key": "7a92e6f6-8355-47c0-92b0-754ee1f0f911",
+      "inputKeys": [
+        "purpose",
+        "applicationId",
+        "fileName",
+        "mimeType",
+        "size"
+      ]
+    },
+    {
+      "path": "/api/common/uploads/102/complete",
+      "method": "POST",
+      "inputKeys": []
+    },
+    {
+      "path": "/api/common/uploads",
+      "method": "POST",
+      "key": "c7be7687-d18c-4d4d-8c8e-8b2ac406fdd7",
+      "inputKeys": [
+        "purpose",
+        "applicationId",
+        "fileName",
+        "mimeType",
+        "size"
+      ]
+    },
+    {
+      "path": "/api/common/uploads/103/complete",
+      "method": "POST",
+      "inputKeys": []
+    },
+    {
+      "path": "/api/common/uploads",
+      "method": "POST",
+      "key": "6270baa2-e114-4325-8041-03932900ea87",
+      "inputKeys": [
+        "purpose",
+        "applicationId",
+        "fileName",
+        "mimeType",
+        "size"
+      ]
+    },
+    {
+      "path": "/api/common/uploads/104/complete",
+      "method": "POST",
+      "inputKeys": []
+    },
+    {
+      "path": "/api/common/uploads",
+      "method": "POST",
+      "key": "a2416059-3005-4f44-b69d-e231900895d5",
+      "inputKeys": [
+        "purpose",
+        "applicationId",
+        "fileName",
+        "mimeType",
+        "size"
+      ]
+    },
+    {
+      "path": "/api/common/uploads/105/complete",
+      "method": "POST",
+      "inputKeys": []
+    },
+    {
+      "path": "/api/app/driver/qualification",
+      "method": "PUT",
+      "key": "ac226da1-e620-403c-b51e-e11f1464c603",
+      "inputKeys": [
+        "applicationId",
+        "expectedVersion",
+        "realName",
+        "idCardNo",
+        "idCardFrontFileId",
+        "idCardBackFileId",
+        "licenseMainFileId",
+        "licenseSubFileId",
+        "licenseClass",
+        "firstIssueDate",
+        "validFrom",
+        "longTermValid"
+      ]
+    },
+    {
+      "path": "/api/app/driver/qualification",
+      "method": "PUT",
+      "key": "7d68d48c-7894-41f9-8af3-096fd69cbb19",
+      "inputKeys": [
+        "applicationId",
+        "expectedVersion",
+        "licenseClass"
+      ]
+    },
+    {
+      "path": "/api/app/driver/qualification",
+      "method": "PUT",
+      "key": "20dabd57-4dd9-4693-a582-f3142f986fda",
+      "inputKeys": [
+        "applicationId",
+        "expectedVersion",
+        "consentVersion",
+        "consentTextHash",
+        "acceptedConsent"
+      ]
+    },
+    {
+      "path": "/api/app/driver/qualification",
+      "method": "PUT",
+      "key": "a4f25461-103d-44ae-aacd-72ed877254db",
+      "inputKeys": [
+        "applicationId",
+        "expectedVersion",
+        "validTo",
+        "longTermValid"
+      ]
+    },
+    {
+      "path": "/api/app/driver/qualification",
+      "method": "PUT",
+      "key": "38986371-4474-4cbf-b878-88dc19126594",
+      "inputKeys": [
+        "applicationId",
+        "expectedVersion",
+        "realName",
+        "firstIssueDate"
+      ]
+    },
+    {
+      "path": "/api/common/files/102/access",
+      "method": "POST",
+      "inputKeys": [
+        "purpose"
+      ]
+    },
+    {
+      "path": "/api/app/driver/qualification",
+      "method": "PUT",
+      "key": "33a2d160-7842-4b8c-a0b0-c0285aecea58",
+      "inputKeys": [
+        "applicationId",
+        "expectedVersion",
+        "realName"
+      ]
+    },
+    {
+      "path": "/api/app/driver/qualification",
+      "method": "PUT",
+      "key": "e6b5748c-c7f4-4b44-9442-2ca22c3a8246",
+      "inputKeys": [
+        "applicationId",
+        "expectedVersion",
+        "realName"
+      ]
+    },
+    {
+      "path": "/api/app/driver/qualification",
+      "method": "PUT",
+      "key": "79961201-612a-4dfd-9d96-37daffbf12e5",
+      "inputKeys": [
+        "applicationId",
+        "expectedVersion",
+        "realName"
+      ]
+    },
+    {
+      "path": "/api/app/driver/qualification",
+      "method": "PUT",
+      "key": "79961201-612a-4dfd-9d96-37daffbf12e5",
+      "inputKeys": [
+        "applicationId",
+        "expectedVersion",
+        "realName"
+      ]
+    },
+    {
+      "path": "/api/app/driver/qualification",
+      "method": "PUT",
+      "key": "363fd21b-a8aa-40bb-99ac-b89b3e173ab4",
+      "inputKeys": [
+        "applicationId",
+        "expectedVersion",
+        "licenseClass"
+      ]
+    },
+    {
+      "path": "/api/app/driver/qualification",
+      "method": "POST",
+      "key": "eac86d23-1c2e-4684-8bae-bfca99f3a8d6",
+      "inputKeys": [
+        "consentVersion",
+        "consentTextHash",
+        "acceptedConsent"
+      ]
+    },
+    {
+      "path": "/api/app/driver/qualification/submit",
+      "method": "POST",
+      "key": "109c9371-062f-4f38-ad91-28cfe5278812",
+      "inputKeys": [
+        "applicationId",
+        "expectedVersion",
+        "expectedProfileVersion",
+        "reason"
+      ]
+    }
+  ],
+  "screenshots": [
+    "docs/implementation/vehicle/Q01/mini-draft-mobile.png",
+    "docs/implementation/vehicle/Q01/mini-draft-desktop.png",
+    "docs/implementation/vehicle/Q01/mini-materials.png",
+    "docs/implementation/vehicle/Q01/mini-progress.png"
+  ]
+}

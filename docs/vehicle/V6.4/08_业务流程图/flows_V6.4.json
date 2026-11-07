@@ -5089,5 +5089,180 @@
       }
     ],
     "pages": "B50/B53/O28/U04"
+  },
+  {
+    "id": "F49",
+    "title": "代驾资格申请、补正与复审",
+    "scope": "Q01本人材料与严格提交；Q03/Q04真实核验培训、Q05独立审批按后续任务接通",
+    "nodes": [
+      {
+        "id": "n1",
+        "label": "已核验手机号的本人进入；OWNER或员工均可申请",
+        "decision": false
+      },
+      {
+        "id": "n2",
+        "label": "阅读现行资格同意原文；明确提交version与正文hash",
+        "decision": false
+      },
+      {
+        "id": "n3",
+        "label": "创建本人草稿；首次未归属禁新，复审另建申请不覆盖生效档案",
+        "decision": false
+      },
+      {
+        "id": "n4",
+        "label": "本人私有上传四证件并保存；同申请、READY、用途正确、四ID各异",
+        "decision": false
+      },
+      {
+        "id": "n5",
+        "label": "材料实际改变才递增revision与HMAC；旧材料证明不复用",
+        "decision": false
+      },
+      {
+        "id": "n6",
+        "label": "后台A04显式认领有效公司；不猜主部门或员工归属",
+        "decision": false
+      },
+      {
+        "id": "n7",
+        "label": "Q03/Q04真实核验与培训；五项可信PASSED绑定当前材料",
+        "decision": false
+      },
+      {
+        "id": "n8",
+        "label": "资料完整、有效公司、现行同意、五项可信PASSED均满足？",
+        "decision": true
+      },
+      {
+        "id": "n9",
+        "label": "保留草稿并列出阻断；未接能力不显示通过",
+        "decision": false
+      },
+      {
+        "id": "n10",
+        "label": "校验applicationId及申请/档案版本；冻结公司、材料、同意和证明快照",
+        "decision": false
+      },
+      {
+        "id": "n11",
+        "label": "SUBMITTED只读待审；提交不产生DRIVER或可接新单结论",
+        "decision": false
+      },
+      {
+        "id": "n12",
+        "label": "Q05后续独立审批，禁止本人审批",
+        "decision": true
+      },
+      {
+        "id": "n13",
+        "label": "REJECTED仅补指定字段；旧驳回缺结构先人工补记录",
+        "decision": false
+      },
+      {
+        "id": "n14",
+        "label": "APPROVED后按权威生效快照刷新身份；新单仍核验行政/听单/定位",
+        "decision": false
+      },
+      {
+        "id": "n15",
+        "label": "已通过/到期/暂停可另建复审；已有资格与在手保管责任不被草稿覆盖",
+        "decision": false
+      }
+    ],
+    "edges": [
+      {
+        "from": "n1",
+        "to": "n2",
+        "label": ""
+      },
+      {
+        "from": "n2",
+        "to": "n3",
+        "label": "明确同意"
+      },
+      {
+        "from": "n3",
+        "to": "n4",
+        "label": ""
+      },
+      {
+        "from": "n3",
+        "to": "n6",
+        "label": "后台维护"
+      },
+      {
+        "from": "n4",
+        "to": "n5",
+        "label": ""
+      },
+      {
+        "from": "n5",
+        "to": "n7",
+        "label": ""
+      },
+      {
+        "from": "n6",
+        "to": "n8",
+        "label": "有效归属"
+      },
+      {
+        "from": "n7",
+        "to": "n8",
+        "label": "可信结果"
+      },
+      {
+        "from": "n8",
+        "to": "n9",
+        "label": "否"
+      },
+      {
+        "from": "n9",
+        "to": "n4",
+        "label": "补齐后重试"
+      },
+      {
+        "from": "n8",
+        "to": "n10",
+        "label": "是"
+      },
+      {
+        "from": "n10",
+        "to": "n11",
+        "label": "事务提交"
+      },
+      {
+        "from": "n11",
+        "to": "n12",
+        "label": "后续审核"
+      },
+      {
+        "from": "n12",
+        "to": "n13",
+        "label": "驳回"
+      },
+      {
+        "from": "n13",
+        "to": "n4",
+        "label": "只补相关项"
+      },
+      {
+        "from": "n12",
+        "to": "n14",
+        "label": "批准"
+      },
+      {
+        "from": "n14",
+        "to": "n15",
+        "label": "复审需要"
+      },
+      {
+        "from": "n15",
+        "to": "n2",
+        "label": "新申请"
+      }
+    ],
+    "pages": "D01/D02/D03/D04/D05/D05-passed/D05-rejected/D28/D28-expired/B16/B28"
   }
 ]

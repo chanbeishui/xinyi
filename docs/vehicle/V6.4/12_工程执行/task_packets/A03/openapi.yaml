@@ -1171,6 +1171,9 @@ components:
       - ENABLE_NEW_ASSIGNMENTS
       - ASSIGN_DRIVER_COMPANY
       - VIEW_ASSIGNMENTS
+      - EDIT_QUALIFICATION
+      - SUBMIT_QUALIFICATION
+      - CREATE_QUALIFICATION_REVISION
     OwnerRecord:
       type: object
       additionalProperties: false

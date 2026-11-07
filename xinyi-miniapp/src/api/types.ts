@@ -288,18 +288,21 @@ export type MileageInput = {
 
 export type QualificationDraft = {
   expectedVersion: number;
-  realName?: string;
-  idCardNo?: string;
-  idCardFrontFileId?: string;
-  idCardBackFileId?: string;
-  licenseMainFileId?: string;
-  licenseSubFileId?: string;
-  licenseClass?: string;
-  firstIssueDate?: string;
-  validFrom?: string;
-  validTo?: string;
+  realName?: string | null;
+  idCardNo?: string | null;
+  idCardFrontFileId?: string | null;
+  idCardBackFileId?: string | null;
+  licenseMainFileId?: string | null;
+  licenseSubFileId?: string | null;
+  licenseClass?: string | null;
+  firstIssueDate?: string | null;
+  validFrom?: string | null;
+  validTo?: string | null;
   longTermValid?: boolean;
   consentVersion?: string;
+  applicationId: string;
+  acceptedConsent?: true;
+  consentTextHash?: string;
 };
 
 export type Qualification = {
@@ -307,9 +310,25 @@ export type Qualification = {
   status: QualificationStatus;
   items: Array<string>;
   rejectReasons: Array<string>;
-  reviewDueAt?: string;
-  canAcceptOrder?: boolean;
+  reviewDueAt: string | null;
+  canAcceptOrder: boolean;
   version: number;
+  driverId: string;
+  profileVersion: number;
+  effectiveQualificationStatus: QualificationStatus;
+  ownerDeptId: string | null;
+  companyName: string | null;
+  ownershipUnassigned: boolean;
+  materialRevision: number;
+  materialHash: string | null;
+  submissionRevision: number;
+  draft: QualificationDraftView;
+  editableFields: Array<string>;
+  rejectFields: Array<string> | null;
+  publicReviewOpinion: string | null;
+  submitBlockers: Array<QualificationBlocker>;
+  checks: Array<QualificationCheck>;
+  allowedActions: Array<AllowedAction>;
 };
 
 export type QualificationAudit = {
@@ -1801,7 +1820,11 @@ export type StationUpdate = {
   expectedVersion: number;
 };
 
-export type QualificationCreate = { consentVersion: string };
+export type QualificationCreate = {
+  consentVersion: string;
+  acceptedConsent: true;
+  consentTextHash: string;
+};
 
 export type PenaltyStatus = 'ACTIVE' | 'EXPIRED' | 'REVOKED';
 
@@ -2418,7 +2441,10 @@ export type AllowedAction =
   | 'DISABLE_NEW_ASSIGNMENTS'
   | 'ENABLE_NEW_ASSIGNMENTS'
   | 'ASSIGN_DRIVER_COMPANY'
-  | 'VIEW_ASSIGNMENTS';
+  | 'VIEW_ASSIGNMENTS'
+  | 'EDIT_QUALIFICATION'
+  | 'SUBMIT_QUALIFICATION'
+  | 'CREATE_QUALIFICATION_REVISION';
 
 export type AccountStatus = 'ACTIVE' | 'LOCKED';
 
@@ -2752,8 +2778,13 @@ export type PublicServiceConfig = {
   termsText: string;
   privacyVersion: string;
   privacyText: string;
-  serviceCities: string[];
+  serviceCities: Array<string>;
   bookingEnabled: boolean;
+  availablePaymentMethods?: Array<'WECHAT' | 'OFFLINE'>;
+  paymentNotice?: string;
+  qualificationConsentVersion: string;
+  qualificationConsentText: string;
+  qualificationConsentHash: string | null;
 };
 
 export type AdminStationCreate = {
@@ -2871,4 +2902,40 @@ export type AfterSaleReviewHistory = {
   publicOpinion: string | null;
   reviewedAt: string;
   reviewerUserId: string;
+};
+
+export type QualificationSubmit = {
+  applicationId: string;
+  expectedVersion: number;
+  expectedProfileVersion: number;
+  reason: string;
+};
+
+export type QualificationDraftView = {
+  realName: string | null;
+  idCardNoMask: string | null;
+  idCardNoProvided: boolean;
+  idCardFrontFileId: string | null;
+  idCardBackFileId: string | null;
+  licenseMainFileId: string | null;
+  licenseSubFileId: string | null;
+  licenseClass: string | null;
+  firstIssueDate: string | null;
+  validFrom: string | null;
+  validTo: string | null;
+  longTermValid: boolean;
+  consentVersion: string | null;
+  consentAcceptedAt: string | null;
+  consentTextHash: string | null;
+};
+
+export type QualificationCheck = {
+  type: 'REALNAME' | 'FACE' | 'BACKGROUND' | 'LICENSE' | 'TRAINING';
+  status: 'CREATED' | 'PROCESSING' | 'PASSED' | 'FAILED' | 'EXPIRED' | 'UNAVAILABLE';
+};
+
+export type QualificationBlocker = {
+  field: string;
+  reasonCode: string;
+  message: string;
 };

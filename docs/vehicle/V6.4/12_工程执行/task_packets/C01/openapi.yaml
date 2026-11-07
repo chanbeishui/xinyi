@@ -686,6 +686,9 @@ components:
       - privacyText
       - serviceCities
       - bookingEnabled
+      - qualificationConsentVersion
+      - qualificationConsentText
+      - qualificationConsentHash
       properties:
         version:
           type: integer
@@ -720,8 +723,18 @@ components:
         paymentNotice:
           type: string
           description: 对外安全提示，无商户密钥/企业银行账号；最终方式以本人订单payment-options为准
-      description: 仅公开白名单；来自现有业务配置发布值，不包含供应商密钥、内部财务主体配置、员工或角色名单。缺已发布协议不得假造版本开放下单。
-        第三方未配置或双开关关闭时不宣称可支付，不向公众返回商户/密钥。
+        qualificationConsentVersion:
+          type: string
+          description: vi.biz.qualification.consent.version；缺配置为空，不伪造已发布版本。
+        qualificationConsentText:
+          type: string
+          description: vi.biz.qualification.consent.text；管理员维护真实必要说明，无默认生产文案。
+        qualificationConsentHash:
+          type: string
+          nullable: true
+          pattern: ^[0-9a-f]{64}$
+          description: 同一次读取的资格同意正文摘要，未配置为null；不能把客户端旧正文记成已同意新文。
+      description: 仅公开白名单；来自现有业务配置发布值，不包含供应商密钥、内部财务主体配置、员工或角色名单。缺已发布协议不得假造版本开放下单。 第三方未配置或双开关关闭时不宣称可支付，不向公众返回商户/密钥。
     ConfigPatch:
       type: object
       properties:

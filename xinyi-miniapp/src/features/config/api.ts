@@ -16,6 +16,9 @@ export interface PublicServiceConfig {
   bookingEnabled: boolean;
   availablePaymentMethods: string[];
   paymentNotice: string;
+  qualificationConsentVersion: string | null;
+  qualificationConsentText: string | null;
+  qualificationConsentHash: string | null;
 }
 
 export interface DictItem {

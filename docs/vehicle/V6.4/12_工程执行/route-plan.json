@@ -773,22 +773,22 @@
     "canonicalPage": "D02",
     "title": "实名资料",
     "role": "driver",
-    "targetPath": "xinyi-miniapp/src/subpackages/driver/d02/index.vue",
+    "targetPath": "xinyi-miniapp/src/pages/qualification/index.vue",
     "presentation": "PAGE",
     "taskId": "Q01",
     "status": "NOT_ASSESSED",
-    "note": "目标实现路径，非已存在源码。状态画板与弹窗不是独立小程序路由；遵守原账号与权限边界。"
+    "note": "F49统一本人申请/进度/补正/复审页面；OWNER/STATION/DRIVER已核验本人均可，状态画板不单独建路由。严格核验培训后才提交；Q05审批另接通。"
   },
   {
     "boardId": "D03",
     "canonicalPage": "D03",
     "title": "驾驶证资料",
     "role": "driver",
-    "targetPath": "xinyi-miniapp/src/subpackages/driver/d03/index.vue",
+    "targetPath": "xinyi-miniapp/src/pages/qualification/index.vue",
     "presentation": "PAGE",
     "taskId": "Q01",
     "status": "NOT_ASSESSED",
-    "note": "目标实现路径，非已存在源码。状态画板与弹窗不是独立小程序路由；遵守原账号与权限边界。"
+    "note": "F49统一本人申请/进度/补正/复审页面；OWNER/STATION/DRIVER已核验本人均可，状态画板不单独建路由。严格核验培训后才提交；Q05审批另接通。"
   },
   {
     "boardId": "D04",
@@ -806,33 +806,33 @@
     "canonicalPage": "D05",
     "title": "代驾审核进度",
     "role": "driver",
-    "targetPath": "xinyi-miniapp/src/subpackages/driver/d05/index.vue",
+    "targetPath": "xinyi-miniapp/src/pages/qualification/index.vue",
     "presentation": "PAGE",
     "taskId": "Q01",
     "status": "NOT_ASSESSED",
-    "note": "目标实现路径，非已存在源码。状态画板与弹窗不是独立小程序路由；遵守原账号与权限边界。"
+    "note": "F49统一本人申请/进度/补正/复审页面；OWNER/STATION/DRIVER已核验本人均可，状态画板不单独建路由。严格核验培训后才提交；Q05审批另接通。"
   },
   {
     "boardId": "D05-passed",
     "canonicalPage": "D05",
     "title": "认证审核通过",
     "role": "driver",
-    "targetPath": "xinyi-miniapp/src/subpackages/driver/d05/index.vue",
+    "targetPath": "xinyi-miniapp/src/pages/qualification/index.vue",
     "presentation": "STATE_OR_OVERLAY",
     "taskId": "Q01",
     "status": "NOT_ASSESSED",
-    "note": "目标实现路径，非已存在源码。状态画板与弹窗不是独立小程序路由；遵守原账号与权限边界。"
+    "note": "F49统一本人申请/进度/补正/复审页面；OWNER/STATION/DRIVER已核验本人均可，状态画板不单独建路由。严格核验培训后才提交；Q05审批另接通。"
   },
   {
     "boardId": "D05-rejected",
     "canonicalPage": "D05",
     "title": "认证审核驳回",
     "role": "driver",
-    "targetPath": "xinyi-miniapp/src/subpackages/driver/d05/index.vue",
+    "targetPath": "xinyi-miniapp/src/pages/qualification/index.vue",
     "presentation": "STATE_OR_OVERLAY",
     "taskId": "Q01",
     "status": "NOT_ASSESSED",
-    "note": "目标实现路径，非已存在源码。状态画板与弹窗不是独立小程序路由；遵守原账号与权限边界。"
+    "note": "F49统一本人申请/进度/补正/复审页面；OWNER/STATION/DRIVER已核验本人均可，状态画板不单独建路由。严格核验培训后才提交；Q05审批另接通。"
   },
   {
     "boardId": "D06",
@@ -1217,22 +1217,22 @@
     "canonicalPage": "D28",
     "title": "认证中心/复审",
     "role": "driver",
-    "targetPath": "xinyi-miniapp/src/subpackages/driver/d28/index.vue",
+    "targetPath": "xinyi-miniapp/src/pages/qualification/index.vue",
     "presentation": "PAGE",
     "taskId": "Q01",
     "status": "NOT_ASSESSED",
-    "note": "目标实现路径，非已存在源码。状态画板与弹窗不是独立小程序路由；遵守原账号与权限边界。"
+    "note": "F49统一本人申请/进度/补正/复审页面；OWNER/STATION/DRIVER已核验本人均可，状态画板不单独建路由。严格核验培训后才提交；Q05审批另接通。"
   },
   {
     "boardId": "D28-expired",
     "canonicalPage": "D28",
     "title": "复审到期 · 禁止新接单",
     "role": "driver",
-    "targetPath": "xinyi-miniapp/src/subpackages/driver/d28/index.vue",
+    "targetPath": "xinyi-miniapp/src/pages/qualification/index.vue",
     "presentation": "STATE_OR_OVERLAY",
     "taskId": "Q01",
     "status": "NOT_ASSESSED",
-    "note": "目标实现路径，非已存在源码。状态画板与弹窗不是独立小程序路由；遵守原账号与权限边界。"
+    "note": "F49统一本人申请/进度/补正/复审页面；OWNER/STATION/DRIVER已核验本人均可，状态画板不单独建路由。严格核验培训后才提交；Q05审批另接通。"
   },
   {
     "boardId": "D30",

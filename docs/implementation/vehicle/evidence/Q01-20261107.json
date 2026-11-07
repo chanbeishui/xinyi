@@ -1,0 +1,171 @@
+{
+  "taskId": "Q01",
+  "scopeRevision": "V6.4-QUALIFICATION-DRAFT-20261107",
+  "at": "2026-11-07T09:28:00.020885+00:00",
+  "implementer": "Codex",
+  "baselineCommit": "6ab0866",
+  "userDecision": "资料完整、真实核验及培训全部通过后，才可提交审核",
+  "codeFiles": [
+    "docs/vehicle/V6.4/05_数据设计/001_vi业务表_初始化_V6.4.sql",
+    "sql/migration_20261107_03_qualification_drafts.sql",
+    "sql/ry_20260417.sql",
+    "xinyi-admin/src/test/java/com/xinyi/web/viit/Q01QualificationIT.java",
+    "xinyi-admin/src/test/resources/integration/q01_contract.py",
+    "xinyi-miniapp/src/api/types.ts",
+    "xinyi-miniapp/src/features/config/api.ts",
+    "xinyi-miniapp/src/features/file/api.ts",
+    "xinyi-miniapp/src/features/qualification/api.ts",
+    "xinyi-miniapp/src/pages.json",
+    "xinyi-miniapp/src/pages/identity/switch.vue",
+    "xinyi-miniapp/src/pages/qualification/index.vue",
+    "xinyi-miniapp/src/pages/work/index.vue",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/config/dto/PublicServiceConfigView.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/config/mapper/ConfigMapper.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/config/service/ConfigService.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/config/service/QualificationConsentSnapshot.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/file/mapper/PrivateFileMapper.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/file/service/FileAuthority.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/file/service/PrivateFileService.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/identity/auth/MiniCapabilityRegistry.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/qualification/controller/QualificationController.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/qualification/domain/QualificationApplication.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/qualification/dto/QualificationRequests.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/qualification/mapper/QualificationMapper.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/qualification/service/QualificationService.java",
+    "xinyi-rongli/src/main/resources/mapper/rongli/config/ConfigMapper.xml",
+    "xinyi-rongli/src/main/resources/mapper/rongli/file/PrivateFileMapper.xml",
+    "xinyi-rongli/src/main/resources/mapper/rongli/qualification/QualificationMapper.xml"
+  ],
+  "sourceDigests": {
+    "docs/vehicle/V6.4/05_数据设计/001_vi业务表_初始化_V6.4.sql": "e2e759a62e8f00caa96b67d5b08f89f446989980076403505990ecc277017929",
+    "sql/migration_20261107_03_qualification_drafts.sql": "bf117f738b030f9975958cfed9500d98df45ab44bac249158f631e89924823e3",
+    "sql/ry_20260417.sql": "7abfb15f619da971e403d7307e92f8e3b03a3b929f879d91769b66552a431fca",
+    "xinyi-admin/src/test/java/com/xinyi/web/viit/Q01QualificationIT.java": "4423f87ad5612eff1da5285f22bd4e503a07f10d9c534c6692878340f694a720",
+    "xinyi-admin/src/test/resources/integration/q01_contract.py": "6b51769f389faac5d176df5ae9bd14114c30fb11fb258ce5cd89092c3088fade",
+    "xinyi-miniapp/src/api/types.ts": "3d7e8ead3b34602abd9f02c4dec0de68216a3904bd03baec4c82f4dc7a98244e",
+    "xinyi-miniapp/src/features/config/api.ts": "fa47de270ed29db6c423e966e4a9633d89c33ec3ad37cbdf30c5975ea4e7c638",
+    "xinyi-miniapp/src/features/file/api.ts": "fb33faa4295b66e7f77487023332465a16a5689cbf22ae1b41c91ecd435ad0f6",
+    "xinyi-miniapp/src/features/qualification/api.ts": "08f7c320117476c47fa78883bb737717e58bfb62e9ec097fb9a1321ec3be9df8",
+    "xinyi-miniapp/src/pages.json": "3d795ae34b6aed8ee9116fefb08054835de619ff847557a26dbeb4743236766c",
+    "xinyi-miniapp/src/pages/identity/switch.vue": "c18bdc94613e86ad50fc54ab7ed5b93144ca594773076b554f77fe449edc64f4",
+    "xinyi-miniapp/src/pages/qualification/index.vue": "681378fe17bc05a0d783b0cc13b28071046147e2009b1c7aa5096c1081d85a20",
+    "xinyi-miniapp/src/pages/work/index.vue": "82b069e8c69d3c392f7f030a8222b841f3dd70ce239fe8a71ba1e4e330724aa7",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/config/dto/PublicServiceConfigView.java": "d07edb17bd72fbc1283186cd4fbc2450ba8f3703eb7c93e4bc3d52417bc37b37",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/config/mapper/ConfigMapper.java": "f4abead8720c785fe6bbab4947bb0714b1fdcb6dc9956425b074c54cee63987b",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/config/service/ConfigService.java": "3b96545517b54d34919c728dd08a3568363c67512a08a60435782598d4301aa9",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/config/service/QualificationConsentSnapshot.java": "38f991fcc1969b31dfa67f4562d4cbbdbaf7f374978b64e08fd7cf34e1e44b27",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/file/mapper/PrivateFileMapper.java": "644f4a55de5c8f3aa6ea05a5c80bc0bd000375c593f21c2764997b94450cfd3f",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/file/service/FileAuthority.java": "ea4a948f161e84a71d692cb24f7efaf048c6c1a10893b1c5f18b0cb4fd5bea5e",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/file/service/PrivateFileService.java": "42bf56819fec03f929755be991fa7e5aee4b4b2be52e52f70c15a7aa54867c8b",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/identity/auth/MiniCapabilityRegistry.java": "e061700c85a0fedbffe3e5a4dcc0c79b77e6581c14327bd7b961b093e984ec31",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/qualification/controller/QualificationController.java": "b162b427553f1e97b69a7007a46fedc94453f3291e5ad77d027acbccd20ae2a8",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/qualification/domain/QualificationApplication.java": "69083a817fb4e1e8fc844824773841e7741865fbf67531e8201f5cbeb7f88b40",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/qualification/dto/QualificationRequests.java": "03abe8125b769ef426fa47372060e6817db016d2e95b2c276aa2a3ffdfe1ea26",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/qualification/mapper/QualificationMapper.java": "9e3e3d1ebdae9b058ee66308cf06f019f5811002717530596322247bbc561db8",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/qualification/service/QualificationService.java": "4dd72e0b4b39951b5df3e1bddebfc847b7b865eb200f6b9857dedd95e7516004",
+    "xinyi-rongli/src/main/resources/mapper/rongli/config/ConfigMapper.xml": "da9226e8b7fe70abdfb08c489b679ef64f6d154a37fa5fb16c7776bfcc920c14",
+    "xinyi-rongli/src/main/resources/mapper/rongli/file/PrivateFileMapper.xml": "fa27c7dbc2fba6ec03dddae7c6efcae143ff5954278f29b90d54a6f9f6fe0cc0",
+    "xinyi-rongli/src/main/resources/mapper/rongli/qualification/QualificationMapper.xml": "f0137b7b8161342c5f691cd0c7098c381540d4b0f9baacf4da6bd59f3855adca"
+  },
+  "runs": [
+    {
+      "command": "mvn -o -pl xinyi-admin -am -Pvi-it -Dit.test=当前32类 verify",
+      "layer": "LIVE_HTTP_MYSQL",
+      "exitCode": 0,
+      "testsRun": 484,
+      "skipped": 0,
+      "reportPath": "docs/implementation/vehicle/Q01/full-regression.json"
+    },
+    {
+      "command": "同全量进程Q01QualificationIT专项",
+      "layer": "LIVE_HTTP_MYSQL",
+      "exitCode": 0,
+      "testsRun": 42,
+      "skipped": 0,
+      "reportPath": "docs/implementation/vehicle/Q01/integration-junit.xml"
+    },
+    {
+      "command": "后端单元测试",
+      "layer": "UNIT",
+      "exitCode": 0,
+      "testsRun": 37,
+      "skipped": 0,
+      "reportPath": "docs/implementation/vehicle/Q01/unit-junit.xml"
+    }
+  ],
+  "additionalChecks": [
+    {
+      "command": "PC生产构建",
+      "layer": "BUILD",
+      "exitCode": 0,
+      "checksRun": 1,
+      "reportPath": "docs/implementation/vehicle/Q01/pc-build.txt"
+    },
+    {
+      "command": "小程序类型检查",
+      "layer": "BUILD",
+      "exitCode": 0,
+      "checksRun": 1,
+      "reportPath": "docs/implementation/vehicle/Q01/types-build.txt"
+    },
+    {
+      "command": "小程序微信构建",
+      "layer": "BUILD",
+      "exitCode": 0,
+      "checksRun": 1,
+      "reportPath": "docs/implementation/vehicle/Q01/mp-build.txt"
+    },
+    {
+      "command": "小程序H5构建",
+      "layer": "BUILD",
+      "exitCode": 0,
+      "checksRun": 1,
+      "reportPath": "docs/implementation/vehicle/Q01/h5-build.txt"
+    },
+    {
+      "command": "Playwright小程序真实H5+明确API夹具",
+      "layer": "BROWSER_SIMULATOR",
+      "exitCode": 0,
+      "checksRun": 23,
+      "reportPath": "docs/implementation/vehicle/Q01/browser.json"
+    },
+    {
+      "command": "34工程+42资料检查",
+      "layer": "STATIC_CONTRACT",
+      "exitCode": 0,
+      "checksRun": 76,
+      "reportPath": "docs/implementation/vehicle/Q01/engineering.json"
+    },
+    {
+      "command": "7表增量与完整初始化对照",
+      "layer": "ISOLATED_SCHEMA",
+      "exitCode": 0,
+      "checksRun": 7,
+      "reportPath": "docs/implementation/vehicle/Q01/schema-verification.json"
+    }
+  ],
+  "review": {
+    "approved": true,
+    "reviewer": "/root/f01_tests",
+    "status": "APPROVED_WITH_SCOPE_BOUNDARIES",
+    "reportPath": "docs/implementation/vehicle/Q01/review.md"
+  },
+  "databaseStructureChanged": true,
+  "migration": "sql/migration_20261107_03_qualification_drafts.sql",
+  "databaseFiles": [
+    "sql/migration_20261107_03_qualification_drafts.sql",
+    "sql/ry_20260417.sql",
+    "docs/vehicle/V6.4/05_数据设计/001_vi业务表_初始化_V6.4.sql"
+  ],
+  "realVendors": "NOT_RUN",
+  "wechatDevice": "NOT_RUN",
+  "productionDeploy": "NOT_RUN",
+  "boundaries": [
+    "Q02/Q03培训及Q04真实核验未开发；正向提交证明是明确上游边界夹具，不代表真实验证通过",
+    "Q05独立审批、资格生效、自审隔离、到期任务待开发，TC005保持PARTIAL",
+    "TC003的实际接单拒绝留D01/D02；当前申请/提交不授DRIVER",
+    "D03识别/兼容、D05-passed实际审批及D28/expired完整核验审批仍PARTIAL",
+    "共享profile/application最终资格生命周期PARTIAL；新不可变提交快照已验",
+    "继承PC额外全站vue-tsc99项既有声明问题，本任务未宣称该额外检查通过"
+  ]
+}

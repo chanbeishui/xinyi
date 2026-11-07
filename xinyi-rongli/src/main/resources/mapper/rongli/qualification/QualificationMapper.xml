@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xinyi.rongli.qualification.mapper.QualificationMapper">
+    <resultMap id="Application" type="com.xinyi.rongli.qualification.domain.QualificationApplication">
+        <id property="id" column="id"/>
+        <result property="version" column="version"/>
+        <result property="driverId" column="driver_id"/>
+        <result property="previousApplicationId" column="previous_application_id"/>
+        <result property="ownerDeptId" column="owner_dept_id"/>
+        <result property="status" column="status"/>
+        <result property="sensitivePayloadCipher" column="sensitive_payload_cipher"/>
+        <result property="evidenceFileIds" column="evidence_file_ids"/>
+        <result property="providerResultIds" column="provider_result_ids"/>
+        <result property="materialRevision" column="material_revision"/>
+        <result property="materialHash" column="material_hash"/>
+        <result property="submissionRevision" column="submission_revision"/>
+        <result property="consentVersion" column="consent_version"/>
+        <result property="consentText" column="consent_text"/>
+        <result property="consentAcceptedAt" column="consent_accepted_at" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+        <result property="rejectFields" column="reject_fields"/>
+        <result property="publicReviewOpinion" column="public_review_opinion"/>
+        <result property="submittedAt" column="submitted_at" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+    </resultMap>
+    <select id="lockProfile" resultMap="com.xinyi.rongli.driver.mapper.DriverMapper.Driver">
+        <include refid="com.xinyi.rongli.driver.mapper.DriverMapper.columns"/>
+        WHERE d.account_id=#{accountId}
+        FOR UPDATE
+    </select>
+    <insert id="insertProfile" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO vi_driver_profile(
+            account_id,qualification_status,new_assignment_enabled,listening_enabled
+        )
+        VALUES(#{accountId},'DRAFT',0,0)
+    </insert>
+    <select id="current" resultMap="Application">
+        SELECT *
+        FROM vi_driver_application
+        WHERE driver_id=#{driverId}
+        ORDER BY CASE WHEN active_driver IS NOT NULL THEN 0 ELSE 1 END,id DESC
+        LIMIT 1
+    </select>
+    <select id="lock" resultMap="Application">
+        SELECT *
+        FROM vi_driver_application
+        WHERE id=#{id}
+        FOR UPDATE
+    </select>
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO vi_driver_application(
+            driver_id,previous_application_id,status,evidence_file_ids,
+            material_revision,submission_revision,consent_version,consent_text,consent_accepted_at
+        )
+        VALUES(
+            #{driverId},#{previousApplicationId},'DRAFT',JSON_OBJECT(),
+            0,0,#{consentVersion},#{consentText},#{consentAcceptedAt,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler}
+        )
+    </insert>
+    <update id="save">
+        UPDATE vi_driver_application
+        SET sensitive_payload_cipher=#{sensitivePayloadCipher},
+            evidence_file_ids=#{evidenceFileIds},
+            material_revision=#{materialRevision},
+            material_hash=#{materialHash},
+            consent_version=#{consentVersion},
+            consent_text=#{consentText},
+            consent_accepted_at=#{consentAcceptedAt,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler},
+            version=version+1,
+            updated_at=UTC_TIMESTAMP(3)
+        WHERE id=#{id}
+            AND version=#{version}
+            AND status IN ('DRAFT','REJECTED')
+    </update>
+    <select id="company" resultType="map">
+        SELECT dept_id,dept_name,status,del_flag
+        FROM sys_dept
+        WHERE dept_id=#{id}
+    </select>
+    <!-- 只读当前材料的服务端核验；历史NULL、过期版本及没有可信核验时间的结果均不能晋级。 -->
+    <select id="proofs" resultType="map">
+        SELECT id,provider,task_type,status,verified_at
+        FROM vi_provider_verification
+        WHERE application_id=#{id}
+            AND material_revision=#{revision}
+            AND material_hash=#{hash}
+            AND verified_at IS NOT NULL
+            AND verified_at&lt;=UTC_TIMESTAMP(3)
+            AND provider IS NOT NULL
+            AND provider&lt;>''
+        ORDER BY id DESC
+    </select>
+    <update id="submit">
+        UPDATE vi_driver_application
+        SET status='SUBMITTED',owner_dept_id=#{application.ownerDeptId},
+            provider_result_ids=#{application.providerResultIds},
+            submission_revision=submission_revision+1,submitted_at=UTC_TIMESTAMP(3),
+            version=version+1,updated_at=UTC_TIMESTAMP(3)
+        WHERE id=#{application.id}
+            AND version=#{application.version}
+            AND status IN ('DRAFT','REJECTED')
+    </update>
+    <!-- 首次申请进度可更新；复审绝不覆盖已经生效的APPROVED/EXPIRED/SUSPENDED档案。 -->
+    <update id="updateInitialStatus">
+        UPDATE vi_driver_profile
+        SET qualification_status=#{status},version=version+1,updated_at=UTC_TIMESTAMP(3)
+        WHERE id=#{id}
+            AND qualification_revision IS NULL
+            AND qualification_status IN ('DRAFT','SUBMITTED','REJECTED')
+    </update>
+    <insert id="insertSubmission">
+        INSERT INTO vi_driver_application_submission(
+            application_id,submission_revision,owner_dept_id,profile_version,
+            material_revision,material_hash,sensitive_payload_cipher,evidence_file_ids,
+            provider_result_ids,consent_version,consent_text,consent_accepted_at,submit_reason_cipher
+        )
+        VALUES(
+            #{application.id},#{application.submissionRevision}+1,#{application.ownerDeptId},#{profileVersion},
+            #{application.materialRevision},#{application.materialHash},#{application.sensitivePayloadCipher},
+            #{application.evidenceFileIds},#{application.providerResultIds},#{application.consentVersion},
+            #{application.consentText},#{application.consentAcceptedAt,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler},#{reason}
+        )
+    </insert>
+</mapper>

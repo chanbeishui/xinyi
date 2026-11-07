@@ -293,36 +293,36 @@
 <p><strong>字段</strong>：本人账号、核验手机号、NONE/DRAFT/PENDING/REJECTED/APPROVED状态</p>
 <p><strong>操作</strong>：未申请开始、草稿继续、待审查看、驳回补充、已过审查看资格</p>
 <p><strong>约束</strong>：车主可申请；未核验手机号先登录；不重复注册，不因员工身份免审</p>
-<p><strong>关联流程</strong>：F04</p>
+<p><strong>关联流程</strong>：F49</p>
 <p><strong>来源</strong>：用户已确认身份方案；V6.4全量核对修订</p>
 <h2>D02 · 实名资料</h2>
 <p><strong>状态</strong>：有效·V6.4</p>
-<p><strong>字段</strong>：姓名、身份证、正反面文件</p>
-<p><strong>操作</strong>：保存草稿</p>
-<p><strong>约束</strong>：文件归属和敏感数据权限校验；保存草稿不锁定为已审核</p>
-<p><strong>关联流程</strong>：F04</p>
-<p><strong>来源</strong>：V2原页 D02</p>
+<p><strong>字段</strong>：本人姓名、身份证脱敏摘要及已提供标记、身份证正反面私有文件、申请版本与材料版本</p>
+<p><strong>操作</strong>：先建立本人草稿、上传和预览本人证件、保存可编辑字段</p>
+<p><strong>约束</strong>：完整身份证只在本次输入内存中，不回显或持久缓存；文件须本人、同申请、READY且用途正确；省略字段保留、null明确清除；提交后冻结证件写入</p>
+<p><strong>关联流程</strong>：F49</p>
+<p><strong>来源</strong>：Q01真实资料/严格提交2026-11-07；审批/培训/核验按Q02–Q05后续边界</p>
 <h2>D03 · 驾驶证资料</h2>
 <p><strong>状态</strong>：有效·V6.4</p>
-<p><strong>字段</strong>：准驾车型、初领日期、有效期、证件文件</p>
-<p><strong>操作</strong>：识别、复核、保存</p>
-<p><strong>约束</strong>：以实际车型兼容规则校验，不能对字母编号简单比较大小；过期不进入候选</p>
-<p><strong>关联流程</strong>：F04</p>
-<p><strong>来源</strong>：V2原页 D03</p>
+<p><strong>字段</strong>：准驾类别、初领日期、有效起止日、长期标记、驾驶证主页/副页私有文件</p>
+<p><strong>操作</strong>：填写、本人私有上传与预览、保存可编辑字段</p>
+<p><strong>约束</strong>：日期按Asia/Shanghai日历日；长期有效与有限到期日互斥，到期当天有效；四证件ID各异；不伪造OCR/车型兼容或核验通过，补正只允许指定字段</p>
+<p><strong>关联流程</strong>：F49</p>
+<p><strong>来源</strong>：Q01真实资料/严格提交2026-11-07；审批/培训/核验按Q02–Q05后续边界</p>
 <h2>D04 · 认证补充</h2>
 <p><strong>状态</strong>：有效·V6.4</p>
 <p><strong>字段</strong>：既有范围中的活体/背景调查/培训及考试状态</p>
 <p><strong>操作</strong>：完成真实核验、查看失败原因</p>
 <p><strong>约束</strong>：各能力须有实际来源；未接入不得显示通过；统一标准也适用于检测员工</p>
-<p><strong>关联流程</strong>：F04</p>
+<p><strong>关联流程</strong>：F49</p>
 <p><strong>来源</strong>：V2原页 D04</p>
 <h2>D05 · 代驾审核进度</h2>
 <p><strong>状态</strong>：有效·V6.4</p>
-<p><strong>字段</strong>：实际审核状态、驳回原因、复审日期、是否开通正式身份</p>
-<p><strong>操作</strong>：刷新、补正、通过后切换代驾</p>
-<p><strong>约束</strong>：刷新不批准；同一资格状态驱动文案和按钮，不用画板名替代实际审核</p>
-<p><strong>关联流程</strong>：F04</p>
-<p><strong>来源</strong>：用户已确认身份方案；V6.4全量核对修订</p>
+<p><strong>字段</strong>：当前申请状态与生效资格、公司归属、公开审核意见、字段级补正、五项真实核验/培训状态和提交阻断</p>
+<p><strong>操作</strong>：刷新真实进度；完整资料、有效公司、现行同意和五项可信PASSED后提交；按指定字段补正</p>
+<p><strong>约束</strong>：申请/员工关联不授DRIVER；五项证明必须同申请且绑定当前materialRevision/HMAC并有可信核验时刻；SUBMITTED冻结；提交显式绑定applicationId及申请/档案版本；Q05审批另行接通</p>
+<p><strong>关联流程</strong>：F49</p>
+<p><strong>来源</strong>：Q01真实资料/严格提交2026-11-07；审批/培训/核验按Q02–Q05后续边界</p>
 <h2>D06 · 听单工作台</h2>
 <p><strong>状态</strong>：有效·V6.4</p>
 <p><strong>字段</strong>：资格、听单开关、当前占用、个人邀约、服务单量</p>
@@ -479,11 +479,11 @@
 <p><strong>来源</strong>：A04统一本人工作页；身份/服务记录复用已实现I01/I04/I06/B04</p>
 <h2>D28 · 认证中心/复审</h2>
 <p><strong>状态</strong>：有效·V6.4</p>
-<p><strong>字段</strong>：资料有效期、复审状态、真实核验项</p>
-<p><strong>操作</strong>：更新、提交复审</p>
-<p><strong>约束</strong>：有在手任务时资格异常通知运营；不能以过期为由直接把车无人保管</p>
-<p><strong>关联流程</strong>：F04</p>
-<p><strong>来源</strong>：V2原页 D28</p>
+<p><strong>字段</strong>：生效资格/证照期限和复审截止、当前复审申请、材料与核验状态、公开补正项</p>
+<p><strong>操作</strong>：另建复审草稿、上传本人当前申请材料、达到严格门槛后提交复审</p>
+<p><strong>约束</strong>：复审新建application，原APPROVED生效快照不被草稿/待审/驳回覆盖；到期停新与在手任务分离；公司只能由后台显式维护</p>
+<p><strong>关联流程</strong>：F49</p>
+<p><strong>来源</strong>：Q01真实资料/严格提交2026-11-07；审批/培训/核验按Q02–Q05后续边界</p>
 <h2>D29 · 原服务记录/收入独立页</h2>
 <p><strong>状态</strong>：废弃</p>
 <p><strong>字段</strong>：无</p>
@@ -825,7 +825,7 @@
 <p><strong>字段</strong>：完整申请、核验状态、驳回项、有效期</p>
 <p><strong>操作</strong>：审核、复审、证件查看</p>
 <p><strong>约束</strong>：员工与普通人同规则；通过前不给接单资格；保险不是审核项</p>
-<p><strong>关联流程</strong>：F04</p>
+<p><strong>关联流程</strong>：F49</p>
 <p><strong>来源</strong>：V2原页 B16</p>
 <h2>B17 · 检测点管理</h2>
 <p><strong>状态</strong>：有效·V6.4</p>
@@ -907,7 +907,7 @@
 <p><strong>字段</strong>：明确公司归属、账户昵称与核验手机号摘要、认证结论/证照/复审截止、行政新承接开关、本人听单偏好、真实占用、授权范围内承接记录与归还数、运营备注</p>
 <p><strong>操作</strong>：公司内查询、查看档案/承接、维护备注、明确认领或空闲迁移公司、暂停/恢复行政新承接</p>
 <p><strong>约束</strong>：公司归属从owner_dept_id读取；旧档案不猜测公司；迁移覆盖原新范围且不得有邀约/占用/在手。资格/证件/听单不可由维护接口写入，暂停不弃车。恢复需明确有效资格/证照/复审；开关开不等于D01可达/定位已通过。跨公司承接史另按订单部门过滤，无来源评分不造数。</p>
-<p><strong>关联流程</strong>：F04/F31</p>
+<p><strong>关联流程</strong>：F49/F31</p>
 <p><strong>来源</strong>：用户确认公司代驾池2026-11-07；A04实际接入</p>
 <h2>B29 · 原取消审核与待返还</h2>
 <p><strong>状态</strong>：合并至B13待返还筛选</p>
@@ -1013,7 +1013,7 @@
 <p><strong>字段</strong>：课程列表、课程版本、进度</p>
 <p><strong>操作</strong>：开始学习、查看尝试</p>
 <p><strong>约束</strong>：本人/授权范围、状态及expectedVersion；真实供应商和正式政策未配置不得返回生产通过</p>
-<p><strong>关联流程</strong>：F04/F41</p>
+<p><strong>关联流程</strong>：F49/F41</p>
 <p><strong>来源</strong>：V4.2既有资格/培训/申诉能力缺失合同的本轮补全；不新增保险事故或钱包</p>
 <h2>D40 · 车辆交接课程</h2>
 <p><strong>状态</strong>：V6.4契约闭环补全</p>
@@ -1062,7 +1062,7 @@
 <p><strong>字段</strong>：verificationSessionId、expiresAt、launchUrl、状态</p>
 <p><strong>操作</strong>：发起、恢复查询</p>
 <p><strong>约束</strong>：本人/授权范围、状态及expectedVersion；真实供应商和正式政策未配置不得返回生产通过</p>
-<p><strong>关联流程</strong>：F04</p>
+<p><strong>关联流程</strong>：F49</p>
 <p><strong>来源</strong>：V4.2既有资格/培训/申诉能力缺失合同的本轮补全；不新增保险事故或钱包</p>
 <h2>B43 · 培训课程管理</h2>
 <p><strong>状态</strong>：V6.4契约闭环补全</p>

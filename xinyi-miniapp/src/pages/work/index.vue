@@ -151,7 +151,7 @@ function open(path: string) {
         <text v-else class="muted">当前会话暂未开放本人服务入口，请核对权限后重试。</text>
         <text class="note">暂停新邀约不会结束在手服务，也不免除车辆保管和实际归还责任。</text>
         <button disabled>听单控制暂不可用</button>
-        <button disabled>认证资料暂不可用</button>
+        <button @click="open('/pages/qualification/index')">查看认证与复审资料</button>
       </view>
       <view v-else-if="session.activeRole === 'STATION'" class="card">
         <text class="section">检测工作权限</text>
@@ -182,6 +182,9 @@ function open(path: string) {
         <button disabled>本人对账暂不可用</button>
       </view>
       <button @click="open('/pages/identity/switch')">切换已有身份</button>
+      <button v-if="session.activeRole !== 'DRIVER'" @click="open('/pages/qualification/index')">
+        申请代驾或查看认证进度
+      </button>
       <button v-if="!session.phoneBound" @click="open('/pages/identity/phone')">
         核验本人手机号
       </button>

@@ -22,7 +22,7 @@ paths:
 
         参数校验、真实归属、服务端当前状态/版本先于写入；不接受主体伪造。；主体为已验证的MINI基础账号，申请/培训/进度不要求已获DRIVER角色；本人记录校验。审核通过前不可接单。'
       x-flow-ids:
-      - F04
+      - F49
       security:
       - MiniBearerAuth: []
       responses:
@@ -111,7 +111,7 @@ paths:
 
         参数校验、真实归属、服务端当前状态/版本先于写入；不接受主体伪造。；主体为已验证的MINI基础账号，申请/培训/进度不要求已获DRIVER角色；本人记录校验。审核通过前不可接单。'
       x-flow-ids:
-      - F04
+      - F49
       security:
       - MiniBearerAuth: []
       responses:
@@ -279,7 +279,7 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
       x-flow-ids:
-      - F04
+      - F49
       x-capability: DRIVER_QUALIFICATION_QUERY
       security:
       - MiniBearerAuth: []
@@ -375,7 +375,7 @@ paths:
         '422':
           $ref: '#/components/responses/UnprocessableEntity'
       x-flow-ids:
-      - F04
+      - F49
       requestBody:
         required: true
         content:
@@ -493,7 +493,7 @@ paths:
         '422':
           $ref: '#/components/responses/UnprocessableEntity'
       x-flow-ids:
-      - F04
+      - F49
       requestBody:
         required: true
         content:
@@ -611,7 +611,7 @@ paths:
         '422':
           $ref: '#/components/responses/UnprocessableEntity'
       x-flow-ids:
-      - F04
+      - F49
       requestBody:
         required: true
         content:
@@ -718,7 +718,7 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
       x-flow-ids:
-      - F04
+      - F49
       x-capability: DRIVER_QUALIFICATION_QUERY
       security:
       - MiniBearerAuth: []

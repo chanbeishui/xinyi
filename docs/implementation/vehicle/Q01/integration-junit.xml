@@ -1,0 +1,89 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <testsuite xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-failsafe-plugin/xsd/failsafe-test-report.xsd" version="3.0.2" name="com.xinyi.web.viit.Q01QualificationIT" time="6.192" tests="42" errors="0" skipped="0" failures="0">
+    <testcase name="documentCipherAndPrivateFieldsNeverAppearInAuditOutboxOrIdempotencyResults" classname="com.xinyi.web.viit.Q01QualificationIT" time="0.06">
+    </testcase>
+    <testcase name="strictSubmitFreezesOneSnapshotAndFourActualResponsesMatchThePrimaryContract" classname="com.xinyi.web.viit.Q01QualificationIT" time="1.283">
+    </testcase>
+    <testcase name="rejectedDraftCanOnlyCorrectStructuredRejectedFieldsEvenAcrossTwoSaves" classname="com.xinyi.web.viit.Q01QualificationIT" time="0.094">
+    </testcase>
+    <testcase name="missingConsentConfigurationHasNoSilentDefaultOrEmptyApprovalText" classname="com.xinyi.web.viit.Q01QualificationIT" time="1.156">
+    </testcase>
+    <testcase name="staleDraftVersionCannotOverwriteTheWinningSavedMaterial" classname="com.xinyi.web.viit.Q01QualificationIT" time="0.052">
+    </testcase>
+    <testcase name="renewalSubmissionPreservesTheEffectiveLicenseAndExistingVehicleResponsibility" classname="com.xinyi.web.viit.Q01QualificationIT" time="0.149">
+    </testcase>
+    <testcase name="saveReplayDoesNotIncreaseMaterialRevisionAgainAndChangedBodyConflicts" classname="com.xinyi.web.viit.Q01QualificationIT" time="0.049">
+    </testcase>
+    <testcase name="submittedApplicationDoesNotAllowDraftMutationOrAnotherActiveCreate" classname="com.xinyi.web.viit.Q01QualificationIT" time="0.044">
+    </testcase>
+    <testcase name="legacyRejectionWithoutStructuredFieldsNeverGuessesAnEditableScope" classname="com.xinyi.web.viit.Q01QualificationIT" time="0.04">
+    </testcase>
+    <testcase name="changedProfileVersionOrConsentCannotBeSilentlyAcceptedAtSubmit" classname="com.xinyi.web.viit.Q01QualificationIT" time="0.133">
+    </testcase>
+    <testcase name="responsesAreNoStoreAndIdentifiersCannotBeProvidedThroughQueryOrExtraBody" classname="com.xinyi.web.viit.Q01QualificationIT" time="0.032">
+    </testcase>
+    <testcase name="concurrentCreatesWithDifferentKeysLeaveOneEditableApplication" classname="com.xinyi.web.viit.Q01QualificationIT" time="0.029">
+    </testcase>
+    <testcase name="anotherAccountsReadyFileIsHiddenAndMixedReferencesAreAtomic" classname="com.xinyi.web.viit.Q01QualificationIT" time="0.088">
+    </testcase>
+    <testcase name="missingEncryptionKeyCannotFallBackToPlaintextOrPartiallySave" classname="com.xinyi.web.viit.Q01QualificationIT" time="0.033">
+    </testcase>
+    <testcase name="databaseFailureRollsBackTheFrozenSnapshotAndInitialProfileTransition" classname="com.xinyi.web.viit.Q01QualificationIT" time="0.145">
+    </testcase>
+    <testcase name="acceptedConsentVersionAndTextAreFrozenInTheApplication" classname="com.xinyi.web.viit.Q01QualificationIT" time="0.04">
+    </testcase>
+    <testcase name="outboxFailureRollsBackDraftCipherVersionAndSuccessfulIntent" classname="com.xinyi.web.viit.Q01QualificationIT" time="0.03">
+    </testcase>
+    <testcase name="bodyCannotForgeAccountCompanyQualificationReviewOrVerificationResults" classname="com.xinyi.web.viit.Q01QualificationIT" time="0.048">
+    </testcase>
+    <testcase name="draftDtoRejectsUnknownFieldsBadVersionsAndInvalidScalarTypes" classname="com.xinyi.web.viit.Q01QualificationIT" time="0.036">
+    </testcase>
+    <testcase name="adminTokensAndMissingLoginCannotBecomeTheMiniApplicant" classname="com.xinyi.web.viit.Q01QualificationIT" time="0.018">
+    </testcase>
+    <testcase name="submittedApplicationStopsTicketCreationRawUploadAndCompletionButKeepsReadyRead" classname="com.xinyi.web.viit.Q01QualificationIT" time="0.073">
+    </testcase>
+    <testcase name="concurrentConsentPublicationCannotMixTheNoticeOrBypassFreshCreateAndSubmitConsent" classname="com.xinyi.web.viit.Q01QualificationIT" time="0.512">
+    </testcase>
+    <testcase name="companyAssignmentIsOnlyTheExistingAdminActionNotAMiniDraftField" classname="com.xinyi.web.viit.Q01QualificationIT" time="0.074">
+    </testcase>
+    <testcase name="fourRealReadyFilesCanBeBoundOnlyToTheirCorrectDocumentSlots" classname="com.xinyi.web.viit.Q01QualificationIT" time="0.152">
+    </testcase>
+    <testcase name="concurrentSubmitAndIdempotentReplayCreateOnlyOneFrozenDecisionIntent" classname="com.xinyi.web.viit.Q01QualificationIT" time="0.17">
+    </testcase>
+    <testcase name="wrongPurposeAndDuplicateDocumentSlotsAreRejectedWithoutPartialSave" classname="com.xinyi.web.viit.Q01QualificationIT" time="0.091">
+    </testcase>
+    <testcase name="savingNewSensitiveMaterialIncrementsItsRevisionAndDoesNotReuseItsHash" classname="com.xinyi.web.viit.Q01QualificationIT" time="0.044">
+    </testcase>
+    <testcase name="sameAccountCannotBorrowAFileBoundToItsPreviousApprovedApplication" classname="com.xinyi.web.viit.Q01QualificationIT" time="0.072">
+    </testcase>
+    <testcase name="unverifiedPhoneCannotReadCreateSaveOrSubmitQualification" classname="com.xinyi.web.viit.Q01QualificationIT" time="0.033">
+    </testcase>
+    <testcase name="consentRequiresExplicitAcceptanceAndTheConfiguredCurrentVersion" classname="com.xinyi.web.viit.Q01QualificationIT" time="0.051">
+    </testcase>
+    <testcase name="partialDraftSavePreservesUnsentFieldsAndMasksTheIdentityNumber" classname="com.xinyi.web.viit.Q01QualificationIT" time="0.039">
+    </testcase>
+    <testcase name="revokedMiniSessionCannotReuseAReadVersionToSaveApplication" classname="com.xinyi.web.viit.Q01QualificationIT" time="0.026">
+    </testcase>
+    <testcase name="verifiedOwnerWithoutADriverProfileCanReadAndStartItsOwnApplication" classname="com.xinyi.web.viit.Q01QualificationIT" time="0.029">
+    </testcase>
+    <testcase name="uploadingVerifyingAndRejectedFilesCannotBecomeAcceptedEvidence" classname="com.xinyi.web.viit.Q01QualificationIT" time="0.057">
+    </testcase>
+    <testcase name="expiredAndSuspendedHistoricalApplicationsOfferRevisionWithoutRestoringQualification" classname="com.xinyi.web.viit.Q01QualificationIT" time="0.064">
+    </testcase>
+    <testcase name="createIdempotencyReplaysOneApplicationAndDifferentBodyConflicts" classname="com.xinyi.web.viit.Q01QualificationIT" time="0.038">
+    </testcase>
+    <testcase name="maskedOrInvalidIdentityNumbersCannotOverwriteTheStoredSecret" classname="com.xinyi.web.viit.Q01QualificationIT" time="0.034">
+    </testcase>
+    <testcase name="realStationIdentityUsesTheSameDraftRulesAndIsNotGrantedDriver" classname="com.xinyi.web.viit.Q01QualificationIT" time="0.04">
+    </testcase>
+    <testcase name="submitRequiresCompleteDocumentsAndAnExplicitValidCompany" classname="com.xinyi.web.viit.Q01QualificationIT" time="0.139">
+    </testcase>
+    <testcase name="trustedChecksMustMatchCurrentMaterialAndIncludeVerifiedTraining" classname="com.xinyi.web.viit.Q01QualificationIT" time="0.195">
+    </testcase>
+    <testcase name="renewalDraftDoesNotOverwriteTheEffectiveQualificationOrApprovedHistory" classname="com.xinyi.web.viit.Q01QualificationIT" time="0.051">
+    </testcase>
+    <testcase name="rejectedOrSubmittedFirstApplicationCannotGrantDriverByRefreshingOrSwitching" classname="com.xinyi.web.viit.Q01QualificationIT" time="0.04">
+    </testcase>
+  </testsuite>
+</testsuites>

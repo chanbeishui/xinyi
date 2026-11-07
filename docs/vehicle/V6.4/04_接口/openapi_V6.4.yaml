@@ -4054,11 +4054,9 @@ paths:
       summary: 我的申请
       tags:
       - ACCOUNT
-      description: '流程：F04。审核前允许基础账号申请，不要求已拥有正式DRIVER角色；真实第三方核验状态只能从受信服务取得
-
-        参数校验、真实归属、服务端当前状态/版本先于写入；不接受主体伪造。；主体为已验证的MINI基础账号，申请/培训/进度不要求已获DRIVER角色；本人记录校验。审核通过前不可接单。'
+      description: OWNER/STATION/DRIVER均可按本人已核验手机号申请，ADMIN不适用。身份和当前视角取服务端，role/ownerDeptId/status/provider结果不能由客户端指定。草稿不是已认证，员工不免审。
       x-flow-ids:
-      - F04
+      - F49
       security:
       - MiniBearerAuth: []
       responses:
@@ -4114,18 +4112,16 @@ paths:
           - owner
           - driver
           - station
-          - admin
         description: 仅审计来源，不作为授权；须匹配服务端会话视角
       x-capability: DRIVER_QUALIFICATION_LIST
       x-authorization:
         realm: MINI
-        scope: SELF_QUALIFICATION
+        scope: SELF_APPLICATION
         capability: DRIVER_QUALIFICATION_LIST
         qualificationRequired: false
         principal: MINI_ACCOUNT
         roleRequirement: NONE
         requiredAccountConditions:
-        - ACTIVE
         - PHONE_VERIFIED
       x-error-codes:
       - VI_REQUEST_INVALID
@@ -4140,16 +4136,18 @@ paths:
       - VI_UPSTREAM_UNAVAILABLE
       x-error-policy: GLOBAL_FAILURES_NO_RESOURCE_404
       x-contract-baseline: V6.4
+      x-authority-sources:
+        subject: 可信MINI accountId与当前本人applicationId
+        company: vi_driver_profile.owner_dept_id，提交时冻结
+        proofs: 服务端当前材料绑定的vi_provider_verification，不采信客户端PASSED
     put:
       operationId: API_043_put
       summary: 保存资格草稿
       tags:
       - ACCOUNT
-      description: '流程：F04。审核前允许基础账号申请，不要求已拥有正式DRIVER角色；真实第三方核验状态只能从受信服务取得
-
-        参数校验、真实归属、服务端当前状态/版本先于写入；不接受主体伪造。；主体为已验证的MINI基础账号，申请/培训/进度不要求已获DRIVER角色；本人记录校验。审核通过前不可接单。'
+      description: OWNER/STATION/DRIVER均可按本人已核验手机号申请，ADMIN不适用。身份和当前视角取服务端，role/ownerDeptId/status/provider结果不能由客户端指定。草稿不是已认证，员工不免审。
       x-flow-ids:
-      - F04
+      - F49
       security:
       - MiniBearerAuth: []
       responses:
@@ -4215,7 +4213,6 @@ paths:
           - owner
           - driver
           - station
-          - admin
         description: 仅审计来源，不作为授权；须匹配服务端会话视角
       requestBody:
         required: true
@@ -4226,13 +4223,12 @@ paths:
       x-capability: DRIVER_QUALIFICATION_EDIT
       x-authorization:
         realm: MINI
-        scope: SELF_QUALIFICATION
+        scope: SELF_APPLICATION
         capability: DRIVER_QUALIFICATION_EDIT
         qualificationRequired: false
         principal: MINI_ACCOUNT
         roleRequirement: NONE
         requiredAccountConditions:
-        - ACTIVE
         - PHONE_VERIFIED
       x-error-codes:
       - VI_REQUEST_INVALID
@@ -4263,9 +4259,13 @@ paths:
       - VI_UPSTREAM_UNAVAILABLE
       x-error-policy: GLOBAL_FAILURES_NO_RESOURCE_404
       x-contract-baseline: V6.4
+      x-authority-sources:
+        subject: 可信MINI accountId与当前本人applicationId
+        company: vi_driver_profile.owner_dept_id，提交时冻结
+        proofs: 服务端当前材料绑定的vi_provider_verification，不采信客户端PASSED
     post:
       summary: 建立本人代驾资格草稿
-      description: 建立本人代驾资格草稿。真实主体由认证上下文构造；不得信任客户端通过/授权结论。；主体为已验证的MINI基础账号，申请/培训/进度不要求已获DRIVER角色；本人记录校验。审核通过前不可接单。
+      description: OWNER/STATION/DRIVER均可按本人已核验手机号申请，ADMIN不适用。身份和当前视角取服务端，role/ownerDeptId/status/provider结果不能由客户端指定。草稿不是已认证，员工不免审。
       operationId: v5_post_api_app_driver_qualification
       parameters:
       - in: header
@@ -4320,7 +4320,7 @@ paths:
         '422':
           $ref: '#/components/responses/UnprocessableEntity'
       x-flow-ids:
-      - F04
+      - F49
       requestBody:
         required: true
         content:
@@ -4332,13 +4332,12 @@ paths:
       - MiniBearerAuth: []
       x-authorization:
         realm: MINI
-        scope: SELF_QUALIFICATION
+        scope: SELF_APPLICATION
         capability: DRIVER_QUALIFICATION_CREATE
         qualificationRequired: false
         principal: MINI_ACCOUNT
         roleRequirement: NONE
         requiredAccountConditions:
-        - ACTIVE
         - PHONE_VERIFIED
       x-error-codes:
       - VI_REQUEST_INVALID
@@ -4369,17 +4368,20 @@ paths:
       - VI_UPSTREAM_UNAVAILABLE
       x-error-policy: GLOBAL_FAILURES_NO_RESOURCE_404
       x-contract-baseline: V6.4
+      x-authority-sources:
+        subject: 可信MINI accountId与当前本人applicationId
+        company: vi_driver_profile.owner_dept_id，提交时冻结
+        proofs: 服务端当前材料绑定的vi_provider_verification，不采信客户端PASSED
   /api/app/driver/qualification/submit:
     post:
       operationId: API_044_post
       summary: 提交资格审核
       tags:
       - ACCOUNT
-      description: '流程：F04。审核前允许基础账号申请，不要求已拥有正式DRIVER角色；真实第三方核验状态只能从受信服务取得
-
-        参数校验、真实归属、服务端当前状态/版本先于写入；不接受主体伪造。；主体为已验证的MINI基础账号，申请/培训/进度不要求已获DRIVER角色；本人记录校验。审核通过前不可接单。'
+      description: OWNER/STATION/DRIVER均可按本人已核验手机号申请，ADMIN不适用。身份和当前视角取服务端，role/ownerDeptId/status/provider结果不能由客户端指定。草稿不是已认证，员工不免审。
+        资料完整、真实核验及培训全部通过才提交；必须当前材料版本/HMAC及可信verified_at，未接能力拒绝晋级。
       x-flow-ids:
-      - F04
+      - F49
       security:
       - MiniBearerAuth: []
       responses:
@@ -4445,24 +4447,22 @@ paths:
           - owner
           - driver
           - station
-          - admin
         description: 仅审计来源，不作为授权；须匹配服务端会话视角
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/VersionReason'
+              $ref: '#/components/schemas/QualificationSubmit'
       x-capability: DRIVER_QUALIFICATION_SUBMIT
       x-authorization:
         realm: MINI
-        scope: SELF_QUALIFICATION
+        scope: SELF_APPLICATION
         capability: DRIVER_QUALIFICATION_SUBMIT
         qualificationRequired: false
         principal: MINI_ACCOUNT
         roleRequirement: NONE
         requiredAccountConditions:
-        - ACTIVE
         - PHONE_VERIFIED
       x-error-codes:
       - VI_REQUEST_INVALID
@@ -4493,6 +4493,10 @@ paths:
       - VI_UPSTREAM_UNAVAILABLE
       x-error-policy: GLOBAL_FAILURES_NO_RESOURCE_404
       x-contract-baseline: V6.4
+      x-authority-sources:
+        subject: 可信MINI accountId与当前本人applicationId
+        company: vi_driver_profile.owner_dept_id，提交时冻结
+        proofs: 服务端当前材料绑定的vi_provider_verification，不采信客户端PASSED
   /api/app/driver/qualification/face-session:
     post:
       operationId: API_045_post
@@ -4503,7 +4507,7 @@ paths:
 
         参数校验、真实归属、服务端当前状态/版本先于写入；不接受主体伪造。；主体为已验证的MINI基础账号，申请/培训/进度不要求已获DRIVER角色；本人记录校验。审核通过前不可接单。'
       x-flow-ids:
-      - F04
+      - F49
       security:
       - MiniBearerAuth: []
       responses:
@@ -4621,7 +4625,7 @@ paths:
 
         参数校验、真实归属、服务端当前状态/版本先于写入；不接受主体伪造。；主体为已验证的MINI基础账号，申请/培训/进度不要求已获DRIVER角色；本人记录校验。审核通过前不可接单。'
       x-flow-ids:
-      - F04
+      - F49
       security:
       - MiniBearerAuth: []
       responses:
@@ -4710,7 +4714,7 @@ paths:
 
         参数校验、真实归属、服务端当前状态/版本先于写入；不接受主体伪造。；主体为已验证的MINI基础账号，申请/培训/进度不要求已获DRIVER角色；本人记录校验。审核通过前不可接单。'
       x-flow-ids:
-      - F04
+      - F49
       security:
       - MiniBearerAuth: []
       responses:
@@ -12636,7 +12640,7 @@ paths:
 
         参数校验、真实归属、服务端当前状态/版本先于写入；不接受主体伪造。'
       x-flow-ids:
-      - F04
+      - F49
       security:
       - AdminBearerAuth: []
       responses:
@@ -12738,7 +12742,7 @@ paths:
 
         参数校验、真实归属、服务端当前状态/版本先于写入；不接受主体伪造。'
       x-flow-ids:
-      - F04
+      - F49
       security:
       - AdminBearerAuth: []
       responses:
@@ -12835,7 +12839,7 @@ paths:
 
         参数校验、真实归属、服务端当前状态/版本先于写入；不接受主体伪造。'
       x-flow-ids:
-      - F04
+      - F49
       security:
       - AdminBearerAuth: []
       responses:
@@ -25958,7 +25962,7 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
       x-flow-ids:
-      - F04
+      - F49
       x-capability: DRIVER_QUALIFICATION_QUERY
       security:
       - MiniBearerAuth: []
@@ -26054,7 +26058,7 @@ paths:
         '422':
           $ref: '#/components/responses/UnprocessableEntity'
       x-flow-ids:
-      - F04
+      - F49
       requestBody:
         required: true
         content:
@@ -26172,7 +26176,7 @@ paths:
         '422':
           $ref: '#/components/responses/UnprocessableEntity'
       x-flow-ids:
-      - F04
+      - F49
       requestBody:
         required: true
         content:
@@ -26290,7 +26294,7 @@ paths:
         '422':
           $ref: '#/components/responses/UnprocessableEntity'
       x-flow-ids:
-      - F04
+      - F49
       requestBody:
         required: true
         content:
@@ -26397,7 +26401,7 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
       x-flow-ids:
-      - F04
+      - F49
       x-capability: DRIVER_QUALIFICATION_QUERY
       security:
       - MiniBearerAuth: []
@@ -26971,7 +26975,7 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
       x-flow-ids:
-      - F04
+      - F49
       x-capability: DRIVER_QUALIFICATION_QUERY
       security:
       - MiniBearerAuth: []
@@ -33238,50 +33242,128 @@ components:
       properties:
         expectedVersion:
           type: integer
+          format: int64
           minimum: 0
-          description: 客户端最后读取的版本；服务端条件更新，冲突返回409
+          maximum: 9007199254740991
         realName:
           type: string
+          maxLength: 64
+          nullable: true
         idCardNo:
           type: string
-          description: 敏感，传输后加密；响应只脱敏
+          description: 完整18位号码或显式null清除；服务端格式/校验位检查后加密。省略保留，禁止掩码回写；格式通过不证明实名。
+          maxLength: 18
+          nullable: true
         idCardFrontFileId:
           type: string
           pattern: ^[1-9][0-9]{0,18}$
           maxLength: 19
-          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+          nullable: true
         idCardBackFileId:
           type: string
           pattern: ^[1-9][0-9]{0,18}$
           maxLength: 19
-          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+          nullable: true
         licenseMainFileId:
           type: string
           pattern: ^[1-9][0-9]{0,18}$
           maxLength: 19
-          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+          nullable: true
         licenseSubFileId:
           type: string
           pattern: ^[1-9][0-9]{0,18}$
           maxLength: 19
-          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+          nullable: true
         licenseClass:
           type: string
+          maxLength: 32
+          nullable: true
         firstIssueDate:
           type: string
-          description: yyyy-MM-dd
+          format: date
+          nullable: true
         validFrom:
           type: string
+          format: date
+          nullable: true
         validTo:
           type: string
+          format: date
+          nullable: true
         longTermValid:
           type: boolean
         consentVersion:
           type: string
+          minLength: 1
+          maxLength: 64
+        applicationId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+        acceptedConsent:
+          type: boolean
+          enum:
+          - true
+        consentTextHash:
+          type: string
+          pattern: ^[0-9a-f]{64}$
+          description: 已阅读公开资格申请正文的UTF8 SHA256；与版本、明确同意同组提交，正文即使同版本变更也409。
       additionalProperties: false
       required:
+      - applicationId
       - expectedVersion
-      minProperties: 2
+      minProperties: 3
+      anyOf:
+      - required:
+        - realName
+      - required:
+        - idCardNo
+      - required:
+        - idCardFrontFileId
+      - required:
+        - idCardBackFileId
+      - required:
+        - licenseMainFileId
+      - required:
+        - licenseSubFileId
+      - required:
+        - licenseClass
+      - required:
+        - firstIssueDate
+      - required:
+        - validFrom
+      - required:
+        - validTo
+      - required:
+        - longTermValid
+      - required:
+        - consentVersion
+      allOf:
+      - anyOf:
+        - not:
+            required:
+            - consentVersion
+        - required:
+          - consentVersion
+          - consentTextHash
+          - acceptedConsent
+      - anyOf:
+        - not:
+            required:
+            - consentTextHash
+        - required:
+          - consentVersion
+          - consentTextHash
+          - acceptedConsent
+      - anyOf:
+        - not:
+            required:
+            - acceptedConsent
+        - required:
+          - consentVersion
+          - consentTextHash
+          - acceptedConsent
+      description: 只更新显式出现的本人当前申请字段，省略保留、null清除；applicationId防未知请求误写另一版复审。REJECTED只允许结构化rejectFields列出的资料项，不能提交公司/状态/核验结果。敏感材料加密，实际变化才推进材料版并使旧版证明失效。
     Qualification:
       type: object
       properties:
@@ -33304,20 +33386,105 @@ components:
           type: string
           format: date-time
           pattern: Z$
-          description: ISO8601 UTC时刻，必须Z结尾；显示与业务日期Asia/Shanghai
+          nullable: true
         canAcceptOrder:
           type: boolean
         version:
           type: integer
+          format: int64
           minimum: 0
-          description: 客户端最后读取的版本；服务端条件更新，冲突返回409
+          maximum: 9007199254740991
+        driverId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+        profileVersion:
+          type: integer
+          format: int64
+          minimum: 0
+          maximum: 9007199254740991
+        effectiveQualificationStatus:
+          $ref: '#/components/schemas/QualificationStatus'
+        ownerDeptId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          nullable: true
+        companyName:
+          type: string
+          nullable: true
+        ownershipUnassigned:
+          type: boolean
+        materialRevision:
+          type: integer
+          format: int64
+          minimum: 0
+          maximum: 9007199254740991
+        materialHash:
+          type: string
+          pattern: ^[0-9a-f]{64}$
+          nullable: true
+        submissionRevision:
+          type: integer
+          format: int64
+          minimum: 0
+          maximum: 9007199254740991
+        draft:
+          $ref: '#/components/schemas/QualificationDraftView'
+        editableFields:
+          type: array
+          uniqueItems: true
+          items:
+            type: string
+        rejectFields:
+          type: array
+          uniqueItems: true
+          items:
+            type: string
+          nullable: true
+        publicReviewOpinion:
+          type: string
+          maxLength: 1000
+          nullable: true
+        submitBlockers:
+          type: array
+          items:
+            $ref: '#/components/schemas/QualificationBlocker'
+        checks:
+          type: array
+          items:
+            $ref: '#/components/schemas/QualificationCheck'
+        allowedActions:
+          type: array
+          uniqueItems: true
+          items:
+            $ref: '#/components/schemas/AllowedAction'
       additionalProperties: false
       required:
       - applicationId
       - status
       - items
       - rejectReasons
+      - reviewDueAt
+      - canAcceptOrder
       - version
+      - driverId
+      - profileVersion
+      - effectiveQualificationStatus
+      - ownerDeptId
+      - companyName
+      - ownershipUnassigned
+      - materialRevision
+      - materialHash
+      - submissionRevision
+      - draft
+      - editableFields
+      - rejectFields
+      - publicReviewOpinion
+      - submitBlockers
+      - checks
+      - allowedActions
+      description: status为本次申请，effectiveQualificationStatus为原生效档案，两者不得混写。复审另建申请不抹已批准资格/证件/听单/任务；Q01 canAcceptOrder=false。内部review_opinion不公开，历史无rejectFields不猜全部可改。提交材料/公司/同意/证明写不可变快照，后台批准由Q05负责。
     QualificationAudit:
       type: object
       properties:
@@ -39150,9 +39317,20 @@ components:
         consentVersion:
           type: string
           minLength: 1
+          maxLength: 64
+        acceptedConsent:
+          type: boolean
+          enum:
+          - true
+        consentTextHash:
+          type: string
+          pattern: ^[0-9a-f]{64}$
+          description: 已阅读公开资格申请正文的UTF8 SHA256；与版本、明确同意同组提交，正文即使同版本变更也409。
       required:
       - consentVersion
-      description: 首次申请，仅创建本人的草稿；并发唯一活动申请
+      - acceptedConsent
+      - consentTextHash
+      description: 已核验手机号的本人主动同意当前已发布资格申请说明后建草稿，不要求DRIVER；owner由A04明确认领，客户端不交公司。无当前版本/正文不创建。已有活动申请409，同键只重放原申请。
     PenaltyStatus:
       type: string
       enum:
@@ -40531,6 +40709,9 @@ components:
       - ENABLE_NEW_ASSIGNMENTS
       - ASSIGN_DRIVER_COMPANY
       - VIEW_ASSIGNMENTS
+      - EDIT_QUALIFICATION
+      - SUBMIT_QUALIFICATION
+      - CREATE_QUALIFICATION_REVISION
     AccountStatus:
       type: string
       enum:
@@ -41520,6 +41701,9 @@ components:
       - privacyText
       - serviceCities
       - bookingEnabled
+      - qualificationConsentVersion
+      - qualificationConsentText
+      - qualificationConsentHash
       properties:
         version:
           type: integer
@@ -41554,6 +41738,17 @@ components:
         paymentNotice:
           type: string
           description: 对外安全提示，无商户密钥/企业银行账号；最终方式以本人订单payment-options为准
+        qualificationConsentVersion:
+          type: string
+          description: vi.biz.qualification.consent.version；缺配置为空，不伪造已发布版本。
+        qualificationConsentText:
+          type: string
+          description: vi.biz.qualification.consent.text；管理员维护真实必要说明，无默认生产文案。
+        qualificationConsentHash:
+          type: string
+          nullable: true
+          pattern: ^[0-9a-f]{64}$
+          description: 同一次读取的资格同意正文摘要，未配置为null；不能把客户端旧正文记成已同意新文。
       description: 仅公开白名单；来自现有业务配置发布值，不包含供应商密钥、内部财务主体配置、员工或角色名单。缺已发布协议不得假造版本开放下单。 第三方未配置或双开关关闭时不宣称可支付，不向公众返回商户/密钥。
     EmployeeLinkStatus:
       type: string
@@ -44311,6 +44506,155 @@ components:
           type: string
           pattern: ^[1-9][0-9]{0,18}$
 
+    QualificationSubmit:
+      type: object
+      additionalProperties: false
+      properties:
+        applicationId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+        expectedVersion:
+          type: integer
+          format: int64
+          minimum: 0
+          maximum: 9007199254740991
+        expectedProfileVersion:
+          type: integer
+          format: int64
+          minimum: 0
+          maximum: 9007199254740991
+        reason:
+          type: string
+          minLength: 1
+          maxLength: 500
+      required:
+      - applicationId
+      - expectedVersion
+      - expectedProfileVersion
+      - reason
+      description: 用户确认：完整资料、有效公司、当前同意及五项真实核验/培训当前材料可信通过后才待审。显式申请ID和档案版本防复审/公司漂移；提交冻结快照，不批准或授DRIVER。
+    QualificationDraftView:
+      type: object
+      additionalProperties: false
+      properties:
+        realName:
+          type: string
+          maxLength: 64
+          nullable: true
+        idCardNoMask:
+          type: string
+          nullable: true
+        idCardNoProvided:
+          type: boolean
+        idCardFrontFileId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          nullable: true
+        idCardBackFileId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          nullable: true
+        licenseMainFileId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          nullable: true
+        licenseSubFileId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          nullable: true
+        licenseClass:
+          type: string
+          maxLength: 32
+          nullable: true
+        firstIssueDate:
+          type: string
+          format: date
+          nullable: true
+        validFrom:
+          type: string
+          format: date
+          nullable: true
+        validTo:
+          type: string
+          format: date
+          nullable: true
+        longTermValid:
+          type: boolean
+        consentVersion:
+          type: string
+          maxLength: 64
+          nullable: true
+        consentAcceptedAt:
+          type: string
+          format: date-time
+          pattern: Z$
+          nullable: true
+        consentTextHash:
+          type: string
+          pattern: ^[0-9a-f]{64}$
+          description: 已阅读公开资格申请正文的UTF8 SHA256；与版本、明确同意同组提交，正文即使同版本变更也409。
+          nullable: true
+      required:
+      - realName
+      - idCardNoMask
+      - idCardNoProvided
+      - idCardFrontFileId
+      - idCardBackFileId
+      - licenseMainFileId
+      - licenseSubFileId
+      - licenseClass
+      - firstIssueDate
+      - validFrom
+      - validTo
+      - longTermValid
+      - consentVersion
+      - consentAcceptedAt
+      - consentTextHash
+      description: 仅本人授权读取；身份证只回掩码和存在标志，不将掩码当原值回写。证件使用当前申请私有ID。
+    QualificationCheck:
+      type: object
+      additionalProperties: false
+      properties:
+        type:
+          type: string
+          enum:
+          - REALNAME
+          - FACE
+          - BACKGROUND
+          - LICENSE
+          - TRAINING
+        status:
+          type: string
+          enum:
+          - CREATED
+          - PROCESSING
+          - PASSED
+          - FAILED
+          - EXPIRED
+          - UNAVAILABLE
+      required:
+      - type
+      - status
+      description: 服务端权威记录，PASSED须同申请/当前材料有密钥摘要和版本、真实核验时刻。TRAINING是Q03依据正式课程/学习阅卷产生的汇总证明；Q01不猜必修课程集合，也无客户端写通过通路。未接通无证明则UNAVAILABLE。
+    QualificationBlocker:
+      type: object
+      additionalProperties: false
+      properties:
+        field:
+          type: string
+        reasonCode:
+          type: string
+        message:
+          type: string
+      required:
+      - field
+      - reasonCode
+      - message
   responses:
     BadRequest:
       description: 请求格式不正确。参见errorCode注册表；HTTP状态与code一致。

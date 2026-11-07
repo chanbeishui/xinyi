@@ -2,7 +2,6 @@ package com.xinyi.rongli.config.service;
 
 import com.xinyi.common.core.domain.model.LoginUser;
 import com.xinyi.common.utils.SecurityUtils;
-import com.xinyi.rongli.pricing.service.PricingService;
 import com.xinyi.rongli.config.dto.ConfigView;
 import com.xinyi.rongli.config.dto.DictItemView;
 import com.xinyi.rongli.config.dto.PublicServiceConfigView;
@@ -14,6 +13,8 @@ import com.xinyi.rongli.platform.error.ViException;
 import com.xinyi.rongli.platform.json.ViJson;
 import com.xinyi.rongli.platform.service.AuditService;
 import com.xinyi.rongli.platform.service.OutboxService;
+import com.xinyi.rongli.pricing.service.PricingService;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -107,6 +108,11 @@ public class ConfigService {
                         ViErrorCode.VI_FORBIDDEN, "固定安全项/非白名单键不可由普通配置修改: " + it.key());
             }
         }
+        // 同意配置按相同键序加锁，避免资格提交锁正文/版本时与后台反序多键写入相互等待。
+        List<ConfigView.Item> orderedItems =
+                items.stream()
+                        .sorted(java.util.Comparator.comparing(ConfigView.Item::key))
+                        .toList();
         return tx.execute(
                 s -> {
                     configMapper.ensureVersion();
@@ -114,7 +120,7 @@ public class ConfigService {
                     if (current != expectedVersion) {
                         throw new ViException(ViErrorCode.VI_VERSION_CONFLICT, "配置已变化，请刷新后重试");
                     }
-                    for (ConfigView.Item it : items) {
+                    for (ConfigView.Item it : orderedItems) {
                         configMapper.upsert(it.key(), it.value());
                     }
                     if (configMapper.casVersion(
@@ -161,6 +167,8 @@ public class ConfigService {
             methods.add("OFFLINE");
         }
         List<String> cities = parseList(configMapper.selectValue("vi.biz.service.cities"));
+        QualificationConsentSnapshot qualificationConsent =
+                QualificationConsentSnapshot.read(configMapper, false);
         return new PublicServiceConfigView(
                 configMapper.selectVersion(),
                 nvl(configMapper.selectValue("vi.biz.company.name")),
@@ -172,7 +180,10 @@ public class ConfigService {
                 cities,
                 bookingEnabled,
                 methods,
-                nvl(configMapper.selectValue("vi.biz.payment.notice")));
+                nvl(configMapper.selectValue("vi.biz.payment.notice")),
+                nvl(qualificationConsent.version()),
+                nvl(qualificationConsent.text()),
+                qualificationConsent.textHash());
     }
 
     /** 缺少真实站点和检测类型的旧入口不能证明可计价，保留签名并拒绝绕过C04。 */

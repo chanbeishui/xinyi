@@ -1,0 +1,38 @@
+digraph G {
+    graph [rankdir=TB,bgcolor="white",pad="0.3",nodesep="0.4",ranksep="0.5",fontname="sans-serif",label="F49 · 代驾资格申请、补正与复审",labelloc=t,fontsize=20];
+    node [shape=box,style="rounded,filled",fillcolor="#F2F6FC",color="#B5C9E5",fontname="sans-serif",fontsize=12,margin=".15,.12"];
+    edge [color="#607A9C",fontname="sans-serif",fontsize=10];
+    n1 [label="已核验手机号的本人进入；OWNER或员工均可申请"];
+    n2 [label="阅读现行资格同意原文；明确提交version与正文hash"];
+    n3 [label="创建本人草稿；首次未归属禁新，复审另建申请不覆盖生效档案"];
+    n4 [label="本人私有上传四证件并保存；同申请、READY、用途正确、四ID各异"];
+    n5 [label="材料实际改变才递增revision与HMAC；旧材料证明不复用"];
+    n6 [label="后台A04显式认领有效公司；不猜主部门或员工归属"];
+    n7 [label="Q03/Q04真实核验与培训；五项可信PASSED绑定当前材料"];
+    n8 [label="资料完整、有效公司、现行同意、五项可信PASSED均满足？",shape=diamond];
+    n9 [label="保留草稿并列出阻断；未接能力不显示通过"];
+    n10 [label="校验applicationId及申请/档案版本；冻结公司、材料、同意和证明快照"];
+    n11 [label="SUBMITTED只读待审；提交不产生DRIVER或可接新单结论"];
+    n12 [label="Q05后续独立审批，禁止本人审批",shape=diamond];
+    n13 [label="REJECTED仅补指定字段；旧驳回缺结构先人工补记录"];
+    n14 [label="APPROVED后按权威生效快照刷新身份；新单仍核验行政/听单/定位"];
+    n15 [label="已通过/到期/暂停可另建复审；已有资格与在手保管责任不被草稿覆盖"];
+    n1 -> n2 [label=""];
+    n2 -> n3 [label="明确同意"];
+    n3 -> n4 [label=""];
+    n3 -> n6 [label="后台维护"];
+    n4 -> n5 [label=""];
+    n5 -> n7 [label=""];
+    n6 -> n8 [label="有效归属"];
+    n7 -> n8 [label="可信结果"];
+    n8 -> n9 [label="否"];
+    n9 -> n4 [label="补齐后重试"];
+    n8 -> n10 [label="是"];
+    n10 -> n11 [label="事务提交"];
+    n11 -> n12 [label="后续审核"];
+    n12 -> n13 [label="驳回"];
+    n13 -> n4 [label="只补相关项"];
+    n12 -> n14 [label="批准"];
+    n14 -> n15 [label="复审需要"];
+    n15 -> n2 [label="新申请"];
+}

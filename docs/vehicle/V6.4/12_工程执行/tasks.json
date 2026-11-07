@@ -1593,7 +1593,10 @@
     ],
     "deliverables": [
       "本人认证档案、证件归属、提交校验、驳回只补相关项",
-      "已验证OWNER可以申请，STATION不自动授DRIVER；拒绝/审核中不进入接单工作台"
+      "已验证OWNER可以申请，STATION不自动授DRIVER；拒绝/审核中不进入接单工作台",
+      "用户确认完整资料、真实核验和培训全部通过后才可提交；材料HMAC版本与证明绑定、不可变提交快照",
+      "本人证件真实私有上传及字段补正；复审草稿不覆盖已生效资格，公司由A04显式认领，不从客户端猜归属",
+      "F49资格申请/补正/复审与员工F04分离；严格提交门槛与状态页面同源"
     ],
     "negative_checks": [
       "员工和普通人同审核",
@@ -1616,7 +1619,8 @@
     ],
     "tables": [
       "vi_driver_profile",
-      "vi_driver_application"
+      "vi_driver_application",
+      "vi_driver_application_submission"
     ],
     "case_ids": [
       "TC-R62-003",
@@ -1629,10 +1633,10 @@
     "code_paths": [
       "xinyi-rongli/src/main/java/com/xinyi/rongli/qualification/",
       "xinyi-rongli/src/main/resources/mapper/rongli/qualification/",
-      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/qualification/",
-      "xinyi-ui/src/views/rongli/qualification/",
-      "xinyi-ui/src/api/rongli/qualification.ts",
-      "xinyi-miniapp/src/features/qualification/"
+      "xinyi-miniapp/src/features/qualification/",
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/qualification/controller/",
+      "xinyi-miniapp/src/pages/qualification/index.vue",
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q01QualificationIT.java"
     ],
     "test_class": "Q01QualificationIT",
     "commands": [
@@ -1652,8 +1656,16 @@
       "access": "不得绕过限制；保存恢复点",
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
-    "scopeRevision": "V6.4-IDENTITY-20261022",
-    "definitionHash": "04b17bf20dd9d4c21920cb191b53da7308f0a2e63bb5e7f2b3b80cdb432cc64f"
+    "scopeRevision": "V6.4-QUALIFICATION-DRAFT-20261107",
+    "definitionHash": "90cd44d8df0ada1e9cbb6a88e5a1bec4d5380004be933078082c8d4fd5c176e5",
+    "related_tables": [
+      "vi_provider_verification",
+      "vi_face_session",
+      "vi_training_progress",
+      "vi_training_playback",
+      "vi_training_attempt",
+      "vi_file"
+    ]
   },
   {
     "id": "Q02",

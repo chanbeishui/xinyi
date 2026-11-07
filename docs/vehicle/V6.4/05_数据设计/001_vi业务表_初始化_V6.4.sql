@@ -97,6 +97,17 @@ CREATE TABLE `vi_driver_profile` (
 CREATE TABLE `vi_driver_application` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',
   `driver_id` BIGINT NOT NULL COMMENT '关联代驾档案',
+  `previous_application_id` BIGINT NULL COMMENT '上次已批准资格申请；复审另建申请不覆盖生效档案',
+  `owner_dept_id` BIGINT NULL COMMENT '提交时从司机档案冻结的真实公司；草稿不由客户端指定',
+  `material_revision` BIGINT NOT NULL DEFAULT 0 COMMENT '材料实际变更版本；纯同意不递增',
+  `material_hash` BINARY(32) NULL COMMENT '当前规范化材料的有密钥摘要；不使用身份证裸哈希',
+  `submission_revision` BIGINT NOT NULL DEFAULT 0 COMMENT '提交修订号；对应不可变提交快照',
+  `consent_version` VARCHAR(64) NULL COMMENT '服务端核对的资格申请同意版本',
+  `consent_text` TEXT NULL COMMENT '已公开资格申请同意正文快照；不含个人资料',
+  `consent_accepted_at` DATETIME(3) NULL COMMENT '本人明确接受当前同意版本的UTC时刻',
+  `reject_fields` JSON NULL COMMENT '可补正的精确材料字段；历史NULL不得猜测为全部可编辑',
+  `public_review_opinion` VARCHAR(1000) NULL COMMENT '向本人公开的审核意见；不返回内部review_opinion',
+  `active_driver` BIGINT GENERATED ALWAYS AS (IF(status IN ('DRAFT','SUBMITTED','REJECTED'),driver_id,NULL)) STORED COMMENT '同司机最多一个活动申请',
   `status` VARCHAR(24) NOT NULL COMMENT 'QualificationStatus: DRAFT,SUBMITTED,APPROVED,REJECTED,EXPIRED,SUSPENDED',
   `sensitive_payload_cipher` LONGBLOB COMMENT '证件信息加密，不存明文JSON',
   `evidence_file_ids` JSON COMMENT '证件文件关联ID',
@@ -109,15 +120,44 @@ CREATE TABLE `vi_driver_application` (
   `updated_at` DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3)) COMMENT 'UTC更新时间；Mapper每次修改显式SET updated_at=UTC_TIMESTAMP(3)，不依赖连接时区',
   `version` BIGINT NOT NULL DEFAULT 0 COMMENT '乐观锁版本',
   PRIMARY KEY (`id`),
+  UNIQUE KEY uk_driver_active_application (active_driver),
+  KEY ix_application_company (owner_dept_id,status,id),
+  CONSTRAINT ck_qualification_material_revision CHECK(material_revision>=0 AND submission_revision>=0),
+  CONSTRAINT ck_qualification_application_owner CHECK(owner_dept_id IS NULL OR owner_dept_id>0),
   KEY ix_driver_status (driver_id,status),
   KEY ix_review_queue (status,submitted_at),
   CONSTRAINT ck_66_ef6019b02577 CHECK (`status` IN ('DRAFT','SUBMITTED','APPROVED','REJECTED','EXPIRED','SUSPENDED')),
   CONSTRAINT ck_ver_driver_application CHECK (version >= 0)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='代驾资格申请与复审版本';
 
+CREATE TABLE `vi_driver_application_submission` (
+  `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '不可变提交记录主键',
+  `application_id` BIGINT NOT NULL COMMENT '本人资格申请',
+  `submission_revision` BIGINT NOT NULL COMMENT '同申请提交修订号',
+  `owner_dept_id` BIGINT NOT NULL COMMENT '提交时真实归属公司快照',
+  `profile_version` BIGINT NOT NULL COMMENT '提交校验的司机档案版本',
+  `material_revision` BIGINT NOT NULL COMMENT '冻结材料版本',
+  `material_hash` BINARY(32) NOT NULL COMMENT '冻结材料的有密钥摘要',
+  `sensitive_payload_cipher` LONGBLOB NOT NULL COMMENT '实名及证件加密快照；AAD仍绑定账号及申请',
+  `evidence_file_ids` JSON NOT NULL COMMENT '四证件槽位到私有文件ID的冻结关联',
+  `provider_result_ids` JSON NOT NULL COMMENT '实际可信核验和培训依据ID',
+  `consent_version` VARCHAR(64) NOT NULL COMMENT '已接受的资格申请同意版本',
+  `consent_text` TEXT NOT NULL COMMENT '已公开同意正文快照',
+  `consent_accepted_at` DATETIME(3) NOT NULL COMMENT '本人接受同意UTC时刻',
+  `submit_reason_cipher` LONGBLOB NOT NULL COMMENT '提交原因加密；不进入响应或消息',
+  `submitted_at` DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3)) COMMENT '提交时刻UTC',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY uk_application_submission (application_id,submission_revision),
+  KEY ix_qualification_submission_company (owner_dept_id,application_id,id),
+  CONSTRAINT ck_qualification_submission_revision CHECK (submission_revision>0 AND material_revision>=0 AND profile_version>=0),
+  CONSTRAINT ck_qualification_submission_owner CHECK (owner_dept_id>0)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='资格申请不可变提交快照；无更新删除业务入口';
+
 CREATE TABLE `vi_provider_verification` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',
   `application_id` BIGINT NOT NULL COMMENT '代驾申请',
+  `material_revision` BIGINT NULL COMMENT '绑定核验或培训对应的材料版本；历史NULL不可视为当前通过',
+  `material_hash` BINARY(32) NULL COMMENT '绑定申请当前材料有密钥摘要；不接受客户端声明',
   `provider` VARCHAR(64) COMMENT '供应商或培训服务',
   `task_type` VARCHAR(64) COMMENT 'VerificationType: REALNAME,FACE,BACKGROUND,LICENSE,TRAINING',
   `provider_task_id` VARCHAR(128) COMMENT '外部任务标识',
@@ -1425,6 +1465,8 @@ CREATE TABLE `vi_training_question` (
 CREATE TABLE `vi_training_progress` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库生成业务主键；插入不提供id',
   `application_id` BIGINT NOT NULL COMMENT '资格申请',
+  `material_revision` BIGINT NULL COMMENT '绑定核验或培训对应的材料版本；历史NULL不可视为当前通过',
+  `material_hash` BINARY(32) NULL COMMENT '绑定申请当前材料有密钥摘要；不接受客户端声明',
   `driver_id` BIGINT NOT NULL COMMENT '真正司机档案',
   `training_id` BIGINT NOT NULL COMMENT '课程版本主键',
   `verified_duration_seconds` INT NOT NULL DEFAULT 0 COMMENT '服务端按会话时间限幅的有效学习时长',
@@ -1442,6 +1484,8 @@ CREATE TABLE `vi_training_progress` (
 CREATE TABLE `vi_training_playback` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库生成业务主键；插入不提供id',
   `progress_id` BIGINT NOT NULL COMMENT '本人进度',
+  `material_revision` BIGINT NULL COMMENT '绑定核验或培训对应的材料版本；历史NULL不可视为当前通过',
+  `material_hash` BINARY(32) NULL COMMENT '绑定申请当前材料有密钥摘要；不接受客户端声明',
   `session_id` BIGINT NOT NULL COMMENT '小程序设备会话',
   `started_at` DATETIME(3) NOT NULL COMMENT '服务端开始时间',
   `expires_at` DATETIME(3) NOT NULL COMMENT '服务端结束边界',
@@ -1458,6 +1502,8 @@ CREATE TABLE `vi_training_playback` (
 CREATE TABLE `vi_training_attempt` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库生成业务主键；插入不提供id',
   `application_id` BIGINT NOT NULL COMMENT '资格申请',
+  `material_revision` BIGINT NULL COMMENT '绑定核验或培训对应的材料版本；历史NULL不可视为当前通过',
+  `material_hash` BINARY(32) NULL COMMENT '绑定申请当前材料有密钥摘要；不接受客户端声明',
   `driver_id` BIGINT NOT NULL COMMENT '本人',
   `training_id` BIGINT NOT NULL COMMENT '确切课程版本',
   `attempt_no` INT NOT NULL COMMENT '本课程尝试序号',
@@ -1482,6 +1528,8 @@ CREATE TABLE `vi_training_attempt` (
 CREATE TABLE `vi_face_session` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库生成业务主键；插入不提供id',
   `application_id` BIGINT NOT NULL COMMENT '资格申请',
+  `material_revision` BIGINT NULL COMMENT '绑定核验或培训对应的材料版本；历史NULL不可视为当前通过',
+  `material_hash` BINARY(32) NULL COMMENT '绑定申请当前材料有密钥摘要；不接受客户端声明',
   `verification_id` BIGINT NULL COMMENT '供应商核验记录',
   `account_id` BIGINT NOT NULL COMMENT '本人基础账户',
   `status` VARCHAR(24) NOT NULL DEFAULT 'CREATED' COMMENT 'FaceSessionStatus: CREATED,PROCESSING,PASSED,FAILED,EXPIRED',

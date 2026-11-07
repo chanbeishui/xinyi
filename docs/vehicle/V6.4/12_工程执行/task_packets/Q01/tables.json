@@ -208,6 +208,61 @@
         "关联代驾档案"
       ],
       [
+        "previous_application_id",
+        "BIGINT NULL",
+        "上次已批准资格申请；复审另建申请不覆盖生效档案"
+      ],
+      [
+        "owner_dept_id",
+        "BIGINT NULL",
+        "提交时从司机档案冻结的真实公司；草稿不由客户端指定"
+      ],
+      [
+        "material_revision",
+        "BIGINT NOT NULL DEFAULT 0",
+        "材料实际变更版本；纯同意不递增"
+      ],
+      [
+        "material_hash",
+        "BINARY(32) NULL",
+        "当前规范化材料的有密钥摘要；不使用身份证裸哈希"
+      ],
+      [
+        "submission_revision",
+        "BIGINT NOT NULL DEFAULT 0",
+        "提交修订号；对应不可变提交快照"
+      ],
+      [
+        "consent_version",
+        "VARCHAR(64) NULL",
+        "服务端核对的资格申请同意版本"
+      ],
+      [
+        "consent_text",
+        "TEXT NULL",
+        "已公开资格申请同意正文快照；不含个人资料"
+      ],
+      [
+        "consent_accepted_at",
+        "DATETIME(3) NULL",
+        "本人明确接受当前同意版本的UTC时刻"
+      ],
+      [
+        "reject_fields",
+        "JSON NULL",
+        "可补正的精确材料字段；历史NULL不得猜测为全部可编辑"
+      ],
+      [
+        "public_review_opinion",
+        "VARCHAR(1000) NULL",
+        "向本人公开的审核意见；不返回内部review_opinion"
+      ],
+      [
+        "active_driver",
+        "BIGINT GENERATED ALWAYS AS (IF(status IN ('DRAFT','SUBMITTED','REJECTED'),driver_id,NULL)) STORED",
+        "同司机最多一个活动申请"
+      ],
+      [
         "status",
         "VARCHAR(24) NOT NULL",
         "QualificationStatus: DRAFT,SUBMITTED,APPROVED,REJECTED,EXPIRED,SUSPENDED"
@@ -264,10 +319,12 @@
       ]
     ],
     "indexes": [
+      "UNIQUE KEY uk_driver_active_application (active_driver)",
+      "KEY ix_application_company (owner_dept_id,status,id)",
       "KEY ix_driver_status (driver_id,status)",
       "KEY ix_review_queue (status,submitted_at)"
     ],
-    "rule": "不以客户端PASSED当实名核验成功；禁止本人审批",
+    "rule": "本人草稿与生效资格分离，显式申请ID/CAS/单活动约束；仅结构化驳回字段可补正。材料HMAC版本与可信核验绑定，用户确认五项核验/培训全通过后提交。公司来自档案并冻结，同意记录版本、实际正文与时刻；内部意见不公开，提交另存不可变快照。",
     "primaryKey": [
       "id"
     ],
@@ -355,11 +412,1447 @@
         "insertable": false,
         "updatable": false,
         "clientWritable": false
+      },
+      "previous_application_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "owner_dept_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "material_revision": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "material_hash": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "submission_revision": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "consent_version": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "consent_text": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "consent_accepted_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "reject_fields": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "public_review_opinion": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "active_driver": {
+        "generated": true,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
       }
     },
     "checks": [
+      "CONSTRAINT ck_qualification_material_revision CHECK(material_revision>=0 AND submission_revision>=0)",
+      "CONSTRAINT ck_qualification_application_owner CHECK(owner_dept_id IS NULL OR owner_dept_id>0)",
       "CONSTRAINT ck_66_ef6019b02577 CHECK (`status` IN ('DRAFT','SUBMITTED','APPROVED','REJECTED','EXPIRED','SUSPENDED'))",
       "CONSTRAINT ck_ver_driver_application CHECK (version >= 0)"
+    ]
+  },
+  {
+    "name": "vi_provider_verification",
+    "comment": "第三方核验与培训任务记录",
+    "cols": [
+      [
+        "id",
+        "BIGINT NOT NULL AUTO_INCREMENT",
+        "数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串"
+      ],
+      [
+        "application_id",
+        "BIGINT NOT NULL",
+        "代驾申请"
+      ],
+      [
+        "material_revision",
+        "BIGINT NULL",
+        "绑定核验或培训对应的材料版本；历史NULL不可视为当前通过"
+      ],
+      [
+        "material_hash",
+        "BINARY(32) NULL",
+        "绑定申请当前材料有密钥摘要；不接受客户端声明"
+      ],
+      [
+        "provider",
+        "VARCHAR(64)",
+        "供应商或培训服务"
+      ],
+      [
+        "task_type",
+        "VARCHAR(64)",
+        "VerificationType: REALNAME,FACE,BACKGROUND,LICENSE,TRAINING"
+      ],
+      [
+        "provider_task_id",
+        "VARCHAR(128)",
+        "外部任务标识"
+      ],
+      [
+        "status",
+        "VARCHAR(64) NOT NULL",
+        "VerificationStatus: CREATED,PROCESSING,PASSED,FAILED,EXPIRED,UNAVAILABLE"
+      ],
+      [
+        "result_digest",
+        "VARCHAR(64)",
+        "结果摘要，不泄露生物信息"
+      ],
+      [
+        "verified_at",
+        "DATETIME(3)",
+        "可信回调或查单确认时刻"
+      ],
+      [
+        "created_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "创建时间，统一UTC"
+      ],
+      [
+        "updated_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "UTC更新时间；Mapper每次修改显式SET updated_at=UTC_TIMESTAMP(3)，不依赖连接时区"
+      ],
+      [
+        "version",
+        "BIGINT NOT NULL DEFAULT 0",
+        "乐观锁版本"
+      ]
+    ],
+    "indexes": [
+      "UNIQUE KEY uk_provider_task (provider,provider_task_id)",
+      "KEY ix_app_type (application_id,task_type)"
+    ],
+    "rule": " 当前材料版本和HMAC绑定由服务端写入；旧NULL、错版或缺可信时刻不能视为当前通过。",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "engine": "InnoDB",
+    "collation": "utf8mb4_0900_ai_ci",
+    "columnRules": {
+      "id": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "application_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "provider": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "task_type": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false,
+        "enumRef": "VerificationType"
+      },
+      "provider_task_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "status": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false,
+        "enumRef": "VerificationStatus"
+      },
+      "result_digest": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "verified_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "created_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "updated_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "version": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "material_revision": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "material_hash": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      }
+    },
+    "checks": [
+      "CONSTRAINT ck_66_2612e28e561f CHECK (`task_type` IN ('REALNAME','FACE','BACKGROUND','LICENSE','TRAINING'))",
+      "CONSTRAINT ck_66_fd8e93f22cc6 CHECK (`status` IN ('CREATED','PROCESSING','PASSED','FAILED','EXPIRED','UNAVAILABLE'))",
+      "CONSTRAINT ck_ver_provider_verification CHECK (version >= 0)"
+    ]
+  },
+  {
+    "name": "vi_face_session",
+    "comment": "本人实名活体启动与可信结果会话",
+    "cols": [
+      [
+        "id",
+        "BIGINT NOT NULL AUTO_INCREMENT",
+        "数据库生成业务主键；插入不提供id"
+      ],
+      [
+        "application_id",
+        "BIGINT NOT NULL",
+        "资格申请"
+      ],
+      [
+        "material_revision",
+        "BIGINT NULL",
+        "绑定核验或培训对应的材料版本；历史NULL不可视为当前通过"
+      ],
+      [
+        "material_hash",
+        "BINARY(32) NULL",
+        "绑定申请当前材料有密钥摘要；不接受客户端声明"
+      ],
+      [
+        "verification_id",
+        "BIGINT NULL",
+        "供应商核验记录"
+      ],
+      [
+        "account_id",
+        "BIGINT NOT NULL",
+        "本人基础账户"
+      ],
+      [
+        "status",
+        "VARCHAR(24) NOT NULL DEFAULT 'CREATED'",
+        "FaceSessionStatus: CREATED,PROCESSING,PASSED,FAILED,EXPIRED"
+      ],
+      [
+        "launch_mode",
+        "VARCHAR(24) NOT NULL DEFAULT 'WEBVIEW_URL'",
+        "FaceLaunchMode: WEBVIEW_URL"
+      ],
+      [
+        "launch_payload_cipher",
+        "BLOB NULL",
+        "加密短期URL；失效或结束销毁"
+      ],
+      [
+        "consent_version",
+        "VARCHAR(64) NOT NULL",
+        "此次明确同意版本"
+      ],
+      [
+        "expires_at",
+        "DATETIME(3) NOT NULL",
+        "供应商与本地较短有效期"
+      ],
+      [
+        "result_available",
+        "TINYINT NOT NULL DEFAULT 0",
+        "可信查询后赋值"
+      ],
+      [
+        "failure_code",
+        "VARCHAR(64) NULL",
+        "安全映射错误，无原始生物数据"
+      ],
+      [
+        "created_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "创建时刻UTC"
+      ],
+      [
+        "updated_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "更新时间UTC；更新必须显式设置UTC_TIMESTAMP(3)"
+      ],
+      [
+        "version",
+        "BIGINT NOT NULL DEFAULT 0",
+        "手写CAS版本"
+      ]
+    ],
+    "indexes": [
+      "KEY ix_face_app_status (application_id,status)"
+    ],
+    "rule": "不信任客户端回调PASSED；供应商具体开通和WEBVIEW能力未证实即不能启用正式认证 当前材料版本和HMAC绑定由服务端写入；旧NULL、错版或缺可信时刻不能视为当前通过。",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "engine": "InnoDB",
+    "collation": "utf8mb4_0900_ai_ci",
+    "columnRules": {
+      "id": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "application_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "verification_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "account_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "status": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false,
+        "enumRef": "FaceSessionStatus"
+      },
+      "launch_mode": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false,
+        "enumRef": "FaceLaunchMode"
+      },
+      "launch_payload_cipher": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "consent_version": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "expires_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "result_available": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "failure_code": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "created_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "updated_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "version": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "material_revision": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "material_hash": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      }
+    },
+    "checks": [
+      "CONSTRAINT ck_66_b67f9761e849 CHECK (`status` IN ('CREATED','PROCESSING','PASSED','FAILED','EXPIRED'))",
+      "CONSTRAINT ck_66_a153de145e1b CHECK (`launch_mode` IN ('WEBVIEW_URL'))",
+      "CONSTRAINT ck_ver_face_session CHECK (version >= 0)"
+    ]
+  },
+  {
+    "name": "vi_training_progress",
+    "comment": "本人每个课程版本的学习进度",
+    "cols": [
+      [
+        "id",
+        "BIGINT NOT NULL AUTO_INCREMENT",
+        "数据库生成业务主键；插入不提供id"
+      ],
+      [
+        "application_id",
+        "BIGINT NOT NULL",
+        "资格申请"
+      ],
+      [
+        "material_revision",
+        "BIGINT NULL",
+        "绑定核验或培训对应的材料版本；历史NULL不可视为当前通过"
+      ],
+      [
+        "material_hash",
+        "BINARY(32) NULL",
+        "绑定申请当前材料有密钥摘要；不接受客户端声明"
+      ],
+      [
+        "driver_id",
+        "BIGINT NOT NULL",
+        "真正司机档案"
+      ],
+      [
+        "training_id",
+        "BIGINT NOT NULL",
+        "课程版本主键"
+      ],
+      [
+        "verified_duration_seconds",
+        "INT NOT NULL DEFAULT 0",
+        "服务端按会话时间限幅的有效学习时长"
+      ],
+      [
+        "status",
+        "VARCHAR(24) NOT NULL DEFAULT 'NOT_STARTED'",
+        "TrainingStatus: NOT_STARTED,IN_PROGRESS,READY_FOR_EXAM,PASSED,FAILED"
+      ],
+      [
+        "last_position_seconds",
+        "INT NOT NULL DEFAULT 0",
+        "仅恢复位置，不等于有效学习时长"
+      ],
+      [
+        "created_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "创建时刻UTC"
+      ],
+      [
+        "updated_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "更新时间UTC；更新必须显式设置UTC_TIMESTAMP(3)"
+      ],
+      [
+        "version",
+        "BIGINT NOT NULL DEFAULT 0",
+        "手写CAS版本"
+      ]
+    ],
+    "indexes": [
+      "UNIQUE KEY uk_training_progress (application_id,training_id)"
+    ],
+    "rule": "普通前端上报不证明观看完整；时长限幅、顺序检查、服务端阅卷共同决定培训完成；不宣称防作弊认证 当前材料版本和HMAC绑定由服务端写入；旧NULL、错版或缺可信时刻不能视为当前通过。",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "engine": "InnoDB",
+    "collation": "utf8mb4_0900_ai_ci",
+    "columnRules": {
+      "id": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "application_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "driver_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "training_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "verified_duration_seconds": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "status": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false,
+        "enumRef": "TrainingStatus"
+      },
+      "last_position_seconds": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "created_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "updated_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "version": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "material_revision": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "material_hash": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      }
+    },
+    "checks": [
+      "CONSTRAINT ck_66_57bd05d422b1 CHECK (`status` IN ('NOT_STARTED','IN_PROGRESS','READY_FOR_EXAM','PASSED','FAILED'))",
+      "CONSTRAINT ck_ver_training_progress CHECK (version >= 0)"
+    ]
+  },
+  {
+    "name": "vi_training_playback",
+    "comment": "短期受控学习会话",
+    "cols": [
+      [
+        "id",
+        "BIGINT NOT NULL AUTO_INCREMENT",
+        "数据库生成业务主键；插入不提供id"
+      ],
+      [
+        "progress_id",
+        "BIGINT NOT NULL",
+        "本人进度"
+      ],
+      [
+        "material_revision",
+        "BIGINT NULL",
+        "绑定核验或培训对应的材料版本；历史NULL不可视为当前通过"
+      ],
+      [
+        "material_hash",
+        "BINARY(32) NULL",
+        "绑定申请当前材料有密钥摘要；不接受客户端声明"
+      ],
+      [
+        "session_id",
+        "BIGINT NOT NULL",
+        "小程序设备会话"
+      ],
+      [
+        "started_at",
+        "DATETIME(3) NOT NULL",
+        "服务端开始时间"
+      ],
+      [
+        "expires_at",
+        "DATETIME(3) NOT NULL",
+        "服务端结束边界"
+      ],
+      [
+        "last_reported_at",
+        "DATETIME(3) NULL",
+        "最近服务器接收时刻"
+      ],
+      [
+        "last_sequence",
+        "INT NOT NULL DEFAULT 0",
+        "乱序和重复不增加时长"
+      ],
+      [
+        "created_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "创建时刻UTC"
+      ],
+      [
+        "updated_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "更新时间UTC；更新必须显式设置UTC_TIMESTAMP(3)"
+      ],
+      [
+        "version",
+        "BIGINT NOT NULL DEFAULT 0",
+        "手写CAS版本"
+      ]
+    ],
+    "indexes": [
+      "KEY ix_playback_progress (progress_id,expires_at)"
+    ],
+    "rule": "按相邻报告服务端经过时长上限累加；多个并发播放会话不能重复计入时长 当前材料版本和HMAC绑定由服务端写入；旧NULL、错版或缺可信时刻不能视为当前通过。",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "engine": "InnoDB",
+    "collation": "utf8mb4_0900_ai_ci",
+    "columnRules": {
+      "id": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "progress_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "session_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "started_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "expires_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "last_reported_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "last_sequence": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "created_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "updated_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "version": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "material_revision": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "material_hash": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      }
+    },
+    "checks": [
+      "CONSTRAINT ck_ver_training_playback CHECK (version >= 0)"
+    ]
+  },
+  {
+    "name": "vi_training_attempt",
+    "comment": "本人考试尝试及不可变题卷快照",
+    "cols": [
+      [
+        "id",
+        "BIGINT NOT NULL AUTO_INCREMENT",
+        "数据库生成业务主键；插入不提供id"
+      ],
+      [
+        "application_id",
+        "BIGINT NOT NULL",
+        "资格申请"
+      ],
+      [
+        "material_revision",
+        "BIGINT NULL",
+        "绑定核验或培训对应的材料版本；历史NULL不可视为当前通过"
+      ],
+      [
+        "material_hash",
+        "BINARY(32) NULL",
+        "绑定申请当前材料有密钥摘要；不接受客户端声明"
+      ],
+      [
+        "driver_id",
+        "BIGINT NOT NULL",
+        "本人"
+      ],
+      [
+        "training_id",
+        "BIGINT NOT NULL",
+        "确切课程版本"
+      ],
+      [
+        "attempt_no",
+        "INT NOT NULL",
+        "本课程尝试序号"
+      ],
+      [
+        "status",
+        "VARCHAR(24) NOT NULL DEFAULT 'OPEN'",
+        "AttemptStatus: OPEN,SUBMITTED,PASSED,FAILED,EXPIRED"
+      ],
+      [
+        "question_snapshot",
+        "JSON NOT NULL",
+        "确切题干/选项；无答案的对外投影单独构造"
+      ],
+      [
+        "answer_snapshot",
+        "JSON NULL",
+        "本人作答"
+      ],
+      [
+        "score",
+        "INT NULL",
+        "服务器阅卷0至100"
+      ],
+      [
+        "started_at",
+        "DATETIME(3) NOT NULL",
+        "UTC开始"
+      ],
+      [
+        "expires_at",
+        "DATETIME(3) NOT NULL",
+        "UTC失效"
+      ],
+      [
+        "submitted_at",
+        "DATETIME(3) NULL",
+        "UTC提交"
+      ],
+      [
+        "active_attempt",
+        "VARCHAR(128) GENERATED ALWAYS AS (IF(status='OPEN',CONCAT(application_id,':',training_id),NULL)) STORED",
+        "同申请同课程仅一个开放尝试"
+      ],
+      [
+        "created_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "创建时刻UTC"
+      ],
+      [
+        "updated_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "更新时间UTC；更新必须显式设置UTC_TIMESTAMP(3)"
+      ],
+      [
+        "version",
+        "BIGINT NOT NULL DEFAULT 0",
+        "手写CAS版本"
+      ]
+    ],
+    "indexes": [
+      "UNIQUE KEY uk_attempt_number (application_id,training_id,attempt_no)",
+      "UNIQUE KEY uk_open_training_attempt (active_attempt)"
+    ],
+    "rule": "作答绑定attemptId+expectedVersion；提交后不可重写；正确答案只在服务端按确切课程版本读取 当前材料版本和HMAC绑定由服务端写入；旧NULL、错版或缺可信时刻不能视为当前通过。",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "engine": "InnoDB",
+    "collation": "utf8mb4_0900_ai_ci",
+    "columnRules": {
+      "id": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "application_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "driver_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "training_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "attempt_no": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "status": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false,
+        "enumRef": "AttemptStatus"
+      },
+      "question_snapshot": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "answer_snapshot": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "score": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "started_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "expires_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "submitted_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "active_attempt": {
+        "generated": true,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "created_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "updated_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "version": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "material_revision": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "material_hash": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      }
+    },
+    "checks": [
+      "CONSTRAINT ck_66_5b693ca15a96 CHECK (`status` IN ('OPEN','SUBMITTED','PASSED','FAILED','EXPIRED'))",
+      "CONSTRAINT ck_ver_training_attempt CHECK (version >= 0)"
+    ]
+  },
+  {
+    "name": "vi_driver_application_submission",
+    "comment": "资格申请不可变提交快照",
+    "cols": [
+      [
+        "id",
+        "BIGINT NOT NULL AUTO_INCREMENT",
+        "不可变提交记录主键"
+      ],
+      [
+        "application_id",
+        "BIGINT NOT NULL",
+        "本人资格申请"
+      ],
+      [
+        "submission_revision",
+        "BIGINT NOT NULL",
+        "同申请提交修订号"
+      ],
+      [
+        "owner_dept_id",
+        "BIGINT NOT NULL",
+        "提交时真实归属公司快照"
+      ],
+      [
+        "profile_version",
+        "BIGINT NOT NULL",
+        "提交校验的司机档案版本"
+      ],
+      [
+        "material_revision",
+        "BIGINT NOT NULL",
+        "冻结材料版本"
+      ],
+      [
+        "material_hash",
+        "BINARY(32) NOT NULL",
+        "冻结材料的有密钥摘要"
+      ],
+      [
+        "sensitive_payload_cipher",
+        "LONGBLOB NOT NULL",
+        "实名及证件加密快照；AAD仍绑定账号及申请"
+      ],
+      [
+        "evidence_file_ids",
+        "JSON NOT NULL",
+        "四证件槽位到私有文件ID的冻结关联"
+      ],
+      [
+        "provider_result_ids",
+        "JSON NOT NULL",
+        "实际可信核验和培训依据ID"
+      ],
+      [
+        "consent_version",
+        "VARCHAR(64) NOT NULL",
+        "已接受的资格申请同意版本"
+      ],
+      [
+        "consent_text",
+        "TEXT NOT NULL",
+        "已公开同意正文快照"
+      ],
+      [
+        "consent_accepted_at",
+        "DATETIME(3) NOT NULL",
+        "本人接受同意UTC时刻"
+      ],
+      [
+        "submit_reason_cipher",
+        "LONGBLOB NOT NULL",
+        "提交原因加密；不进入响应或消息"
+      ],
+      [
+        "submitted_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "提交时刻UTC"
+      ]
+    ],
+    "indexes": [
+      "UNIQUE KEY uk_application_submission (application_id,submission_revision)",
+      "KEY ix_qualification_submission_company (owner_dept_id,application_id,id)"
+    ],
+    "rule": "服务端事务内追加已完整通过的材料、公司、同意与核验依据；不可更新/删除，不能以客户端声称PASSED替代。",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "engine": "InnoDB",
+    "collation": "utf8mb4_0900_ai_ci",
+    "columnRules": {
+      "id": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "application_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "submission_revision": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "owner_dept_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "profile_version": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "material_revision": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "material_hash": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "sensitive_payload_cipher": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "evidence_file_ids": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "provider_result_ids": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "consent_version": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "consent_text": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "consent_accepted_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "submit_reason_cipher": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "submitted_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      }
+    },
+    "checks": [
+      "CONSTRAINT ck_qualification_submission_revision CHECK (submission_revision>0 AND material_revision>=0 AND profile_version>=0)",
+      "CONSTRAINT ck_qualification_submission_owner CHECK (owner_dept_id>0)"
+    ]
+  },
+  {
+    "name": "vi_file",
+    "comment": "私有文件登记与校验",
+    "cols": [
+      [
+        "id",
+        "BIGINT NOT NULL AUTO_INCREMENT",
+        "数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串"
+      ],
+      [
+        "uploader_account_id",
+        "BIGINT NULL",
+        "小程序上传者；与后台上传者互斥"
+      ],
+      [
+        "uploader_user_id",
+        "BIGINT NULL",
+        "后台上传者；与小程序上传者互斥"
+      ],
+      [
+        "station_id",
+        "BIGINT NULL",
+        "站点资质等文件的权威站点归属"
+      ],
+      [
+        "declared_size",
+        "BIGINT NULL",
+        "客户端声明大小，只用于与实际字节核对"
+      ],
+      [
+        "declared_mime",
+        "VARCHAR(64) NULL",
+        "客户端声明类型，READY以服务端识别为准"
+      ],
+      [
+        "upload_expires_at",
+        "DATETIME(3) NULL",
+        "原上传授权截止UTC"
+      ],
+      [
+        "upload_lease_token",
+        "VARCHAR(36) NULL",
+        "上传租约标识，禁止向客户端或日志输出"
+      ],
+      [
+        "upload_lease_until",
+        "DATETIME(3) NULL",
+        "上传租约截止，文件IO不持数据库事务"
+      ],
+      [
+        "purpose",
+        "VARCHAR(32) NOT NULL",
+        "限定用途"
+      ],
+      [
+        "order_id",
+        "BIGINT",
+        "订单归属"
+      ],
+      [
+        "application_id",
+        "BIGINT",
+        "认证等申请归属"
+      ],
+      [
+        "object_key",
+        "VARCHAR(255) NOT NULL",
+        "服务端生成不可猜键"
+      ],
+      [
+        "status",
+        "VARCHAR(24) NOT NULL",
+        "FileStatus: UPLOADING,VERIFYING,READY,REJECTED"
+      ],
+      [
+        "mime_type",
+        "VARCHAR(64)",
+        "内容识别类型"
+      ],
+      [
+        "server_size",
+        "BIGINT",
+        "实际大小"
+      ],
+      [
+        "server_sha256",
+        "BINARY(32)",
+        "服务器复核摘要"
+      ],
+      [
+        "retain_until",
+        "DATETIME(3)",
+        "按已审批保留政策"
+      ],
+      [
+        "legal_hold",
+        "TINYINT NOT NULL DEFAULT 0",
+        "争议等必要留存"
+      ],
+      [
+        "created_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "创建时间，统一UTC"
+      ],
+      [
+        "updated_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "UTC更新时间；Mapper每次修改显式SET updated_at=UTC_TIMESTAMP(3)，不依赖连接时区"
+      ],
+      [
+        "version",
+        "BIGINT NOT NULL DEFAULT 0",
+        "乐观锁版本"
+      ]
+    ],
+    "indexes": [
+      "UNIQUE KEY uk_object_key (object_key)",
+      "KEY ix_order_purpose (order_id,purpose)"
+    ],
+    "rule": "访问签名不进明文长期表，不接受客户端READY/摘要即可信",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "engine": "InnoDB",
+    "collation": "utf8mb4_0900_ai_ci",
+    "columnRules": {
+      "id": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "uploader_account_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "purpose": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "order_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "application_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "object_key": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "status": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false,
+        "enumRef": "FileStatus"
+      },
+      "mime_type": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "server_size": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "server_sha256": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "retain_until": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "legal_hold": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "created_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "updated_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "version": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "uploader_user_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "station_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "declared_size": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "declared_mime": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "upload_expires_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "upload_lease_token": {
+        "generated": false,
+        "insertable": false,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "upload_lease_until": {
+        "generated": false,
+        "insertable": false,
+        "updatable": true,
+        "clientWritable": false
+      }
+    },
+    "checks": [
+      "CONSTRAINT ck_66_c1389ba0baeb CHECK (`status` IN ('UPLOADING','VERIFYING','READY','REJECTED'))",
+      "CONSTRAINT ck_ver_file CHECK (version >= 0)",
+      "CONSTRAINT ck_file_uploader CHECK ((uploader_account_id IS NOT NULL AND uploader_user_id IS NULL) OR (uploader_account_id IS NULL AND uploader_user_id IS NOT NULL))"
     ]
   }
 ]

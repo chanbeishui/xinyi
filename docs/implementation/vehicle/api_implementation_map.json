@@ -519,56 +519,76 @@
     "taskId": "F02"
   },
   {
-    "implementationStatus": "NOT_ASSESSED",
-    "controllerFile": null,
-    "serviceFile": null,
-    "mapperFile": null,
-    "testFiles": [],
-    "reviewEvidence": null,
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/qualification/controller/QualificationController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/qualification/service/QualificationService.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/qualification/QualificationMapper.xml",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q01QualificationIT.java"
+    ],
+    "reviewEvidence": "docs/implementation/vehicle/Q01/review.md",
     "operationId": "API_042_get",
     "method": "GET",
     "path": "/api/app/driver/qualification",
     "summary": "我的申请",
-    "taskId": "Q01"
+    "taskId": "Q01",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/Q01-20261107.json"
+    ]
   },
   {
-    "implementationStatus": "NOT_ASSESSED",
-    "controllerFile": null,
-    "serviceFile": null,
-    "mapperFile": null,
-    "testFiles": [],
-    "reviewEvidence": null,
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/qualification/controller/QualificationController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/qualification/service/QualificationService.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/qualification/QualificationMapper.xml",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q01QualificationIT.java"
+    ],
+    "reviewEvidence": "docs/implementation/vehicle/Q01/review.md",
     "operationId": "API_043_put",
     "method": "PUT",
     "path": "/api/app/driver/qualification",
     "summary": "保存资格草稿",
-    "taskId": "Q01"
+    "taskId": "Q01",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/Q01-20261107.json"
+    ]
   },
   {
-    "implementationStatus": "NOT_ASSESSED",
-    "controllerFile": null,
-    "serviceFile": null,
-    "mapperFile": null,
-    "testFiles": [],
-    "reviewEvidence": null,
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/qualification/controller/QualificationController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/qualification/service/QualificationService.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/qualification/QualificationMapper.xml",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q01QualificationIT.java"
+    ],
+    "reviewEvidence": "docs/implementation/vehicle/Q01/review.md",
     "operationId": "v5_post_api_app_driver_qualification",
     "method": "POST",
     "path": "/api/app/driver/qualification",
     "summary": "建立本人代驾资格草稿",
-    "taskId": "Q01"
+    "taskId": "Q01",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/Q01-20261107.json"
+    ]
   },
   {
-    "implementationStatus": "NOT_ASSESSED",
-    "controllerFile": null,
-    "serviceFile": null,
-    "mapperFile": null,
-    "testFiles": [],
-    "reviewEvidence": null,
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/qualification/controller/QualificationController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/qualification/service/QualificationService.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/qualification/QualificationMapper.xml",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q01QualificationIT.java"
+    ],
+    "reviewEvidence": "docs/implementation/vehicle/Q01/review.md",
     "operationId": "API_044_post",
     "method": "POST",
     "path": "/api/app/driver/qualification/submit",
     "summary": "提交资格审核",
-    "taskId": "Q01"
+    "taskId": "Q01",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/Q01-20261107.json"
+    ]
   },
   {
     "implementationStatus": "NOT_ASSESSED",

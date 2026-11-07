@@ -1630,6 +1630,9 @@ components:
       - ENABLE_NEW_ASSIGNMENTS
       - ASSIGN_DRIVER_COMPANY
       - VIEW_ASSIGNMENTS
+      - EDIT_QUALIFICATION
+      - SUBMIT_QUALIFICATION
+      - CREATE_QUALIFICATION_REVISION
     DriverStatementLine:
       type: object
       additionalProperties: false

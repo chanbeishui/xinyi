@@ -14,6 +14,16 @@
         "代驾申请"
       ],
       [
+        "material_revision",
+        "BIGINT NULL",
+        "绑定核验或培训对应的材料版本；历史NULL不可视为当前通过"
+      ],
+      [
+        "material_hash",
+        "BINARY(32) NULL",
+        "绑定申请当前材料有密钥摘要；不接受客户端声明"
+      ],
+      [
         "provider",
         "VARCHAR(64)",
         "供应商或培训服务"
@@ -63,7 +73,7 @@
       "UNIQUE KEY uk_provider_task (provider,provider_task_id)",
       "KEY ix_app_type (application_id,task_type)"
     ],
-    "rule": "",
+    "rule": " 当前材料版本和HMAC绑定由服务端写入；旧NULL、错版或缺可信时刻不能视为当前通过。",
     "primaryKey": [
       "id"
     ],
@@ -140,6 +150,18 @@
         "insertable": false,
         "updatable": false,
         "clientWritable": false
+      },
+      "material_revision": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "material_hash": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
       }
     },
     "checks": [
@@ -161,6 +183,16 @@
         "application_id",
         "BIGINT NOT NULL",
         "资格申请"
+      ],
+      [
+        "material_revision",
+        "BIGINT NULL",
+        "绑定核验或培训对应的材料版本；历史NULL不可视为当前通过"
+      ],
+      [
+        "material_hash",
+        "BINARY(32) NULL",
+        "绑定申请当前材料有密钥摘要；不接受客户端声明"
       ],
       [
         "verification_id",
@@ -226,7 +258,7 @@
     "indexes": [
       "KEY ix_face_app_status (application_id,status)"
     ],
-    "rule": "不信任客户端回调PASSED；供应商具体开通和WEBVIEW能力未证实即不能启用正式认证",
+    "rule": "不信任客户端回调PASSED；供应商具体开通和WEBVIEW能力未证实即不能启用正式认证 当前材料版本和HMAC绑定由服务端写入；旧NULL、错版或缺可信时刻不能视为当前通过。",
     "primaryKey": [
       "id"
     ],
@@ -320,6 +352,18 @@
         "generated": false,
         "insertable": false,
         "updatable": false,
+        "clientWritable": false
+      },
+      "material_revision": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "material_hash": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
         "clientWritable": false
       }
     },
