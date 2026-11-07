@@ -99,7 +99,7 @@ class P02PaymentIT extends PaymentHttpFixture {
     void expire() {
         jdbc.update(
                 "UPDATE vi_payment_order SET expires_at=DATE_SUB(UTC_TIMESTAMP(3),INTERVAL 1"
-                    + " SECOND),next_query_at=NULL WHERE order_id=?",
+                        + " SECOND),next_query_at=NULL WHERE order_id=?",
                 orderId);
     }
 
@@ -225,7 +225,7 @@ class P02PaymentIT extends PaymentHttpFixture {
                 0,
                 jdbc.queryForObject(
                         "SELECT COUNT(*) FROM vi_order WHERE id=? AND"
-                            + " fulfillment_status='SCHEDULED'",
+                                + " fulfillment_status='SCHEDULED'",
                         Integer.class,
                         orderId));
         assertEquals(
@@ -298,7 +298,7 @@ class P02PaymentIT extends PaymentHttpFixture {
                 4,
                 jdbc.queryForObject(
                         "SELECT COUNT(*) FROM vi_event_log WHERE"
-                            + " action='PAYMENT_CALLBACK_REJECTED'",
+                                + " action='PAYMENT_CALLBACK_REJECTED'",
                         Integer.class));
         assertEquals(
                 1,
@@ -429,7 +429,7 @@ class P02PaymentIT extends PaymentHttpFixture {
                 1,
                 jdbc.queryForObject(
                         "SELECT COUNT(*) FROM vi_outbox WHERE"
-                            + " event_type='PAYMENT_LATE_SUCCESS_CONFLICT'",
+                                + " event_type='PAYMENT_LATE_SUCCESS_CONFLICT'",
                         Integer.class));
         assertTrue(data(payment()).path("queryRequired").asBoolean());
     }
@@ -439,7 +439,7 @@ class P02PaymentIT extends PaymentHttpFixture {
         startPay();
         jdbc.execute(
                 "CREATE TRIGGER p02_fail_event BEFORE INSERT ON vi_channel_event FOR EACH ROW"
-                    + " SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='isolated rollback'");
+                        + " SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='isolated rollback'");
         try {
             assertEquals(500, notify(fact(), "rollback").getStatusCode().value());
             assertEquals("0", state("paid_fen"));
@@ -501,7 +501,7 @@ class P02PaymentIT extends PaymentHttpFixture {
         assertEquals(409, pay(intent(), UUID.randomUUID().toString()).getStatusCode().value());
         jdbc.update(
                 "UPDATE vi_payment_order SET prepay_lease_until=DATE_SUB(UTC_TIMESTAMP(3),INTERVAL"
-                    + " 1 SECOND) WHERE order_id=?",
+                        + " 1 SECOND) WHERE order_id=?",
                 orderId);
         lifecycle.runDue();
         assertEquals("CLOSED", state("status"));
@@ -526,10 +526,27 @@ class P02PaymentIT extends PaymentHttpFixture {
         long payment =
                 jdbc.queryForObject(
                         "SELECT id FROM vi_payment_order WHERE order_id=?", Long.class, orderId);
+        // P04共用结算会核对原审批事实；旧支付回调用例也必须提供对应申请与同版批准，而非悬空caseId。
+        long caseId = SEQ.incrementAndGet();
         jdbc.update(
                 "INSERT INTO"
-                    + " vi_refund_order(case_id,review_revision,payment_id,out_refund_no,amount_fen,status,payment_method,execution_mode)"
-                    + " VALUES(1,1,?,'REF_P02',100,'PROCESSING','WECHAT','WECHAT_API')",
+                    + " vi_aftersale_case(id,case_no,order_id,payment_id,kind,case_status,review_status,requested_fen,approved_fen,return_state,refund_state,applicant_type,applicant_id,reason,evidence_ids)"
+                    + " VALUES(?,?,?,?,'REFUND_ONLY','EXECUTING','APPROVED',100,100,'NOT_REQUIRED','PROCESSING','ACCOUNT',?,'P02回调审批前置','[]')",
+                caseId,
+                "P02AS" + caseId,
+                orderId,
+                payment,
+                account);
+        jdbc.update(
+                "INSERT INTO"
+                    + " vi_aftersale_review(case_id,revision,decision,approved_fen,observed_order_version,custody_at_review,return_required,reviewer_user_id,opinion,reviewed_at)"
+                    + " VALUES(?,1,'APPROVE',100,0,'OWNER',0,1,'P02隔离审批事实',UTC_TIMESTAMP(3))",
+                caseId);
+        jdbc.update(
+                "INSERT INTO"
+                    + " vi_refund_order(case_id,review_revision,payment_id,out_refund_no,amount_fen,status,payment_method,execution_mode,execution_started_at)"
+                    + " VALUES(?,1,?,'REF_P02',100,'PROCESSING','WECHAT','WECHAT_API',UTC_TIMESTAMP(3))",
+                caseId,
                 payment);
         var f = new LinkedHashMap<>(fact());
         f.remove("appid");

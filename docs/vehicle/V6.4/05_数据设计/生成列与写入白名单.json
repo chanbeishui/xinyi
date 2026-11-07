@@ -3360,18 +3360,18 @@
       "execution_mode"
     ],
     "updateColumns": [
-      "case_id",
-      "review_revision",
-      "payment_id",
-      "out_refund_no",
       "channel_refund_id",
-      "amount_fen",
       "status",
       "success_at",
       "last_query_at",
       "next_query_at",
-      "payment_method",
-      "execution_mode"
+      "execution_started_at",
+      "execution_lease_token",
+      "execution_lease_until",
+      "execution_attempts",
+      "last_error_code",
+      "last_verified_status",
+      "last_verified_at"
     ],
     "columnRules": {
       "id": {
@@ -3383,25 +3383,25 @@
       "case_id": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "review_revision": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "payment_id": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "out_refund_no": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "channel_refund_id": {
@@ -3413,7 +3413,7 @@
       "amount_fen": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "status": {
@@ -3464,16 +3464,58 @@
       "payment_method": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false,
         "enumRef": "RefundPaymentMethod"
       },
       "execution_mode": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false,
         "enumRef": "RefundExecutionMode"
+      },
+      "execution_started_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "execution_lease_token": {
+        "generated": false,
+        "insertable": false,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "execution_lease_until": {
+        "generated": false,
+        "insertable": false,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "execution_attempts": {
+        "generated": false,
+        "insertable": false,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "last_error_code": {
+        "generated": false,
+        "insertable": false,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "last_verified_status": {
+        "generated": false,
+        "insertable": false,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "last_verified_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": true,
+        "clientWritable": false
       }
     },
     "rule": "受理≠成功；UNKNOWN先查，不换号盲重试；OFFLINE走已有批准金额的人工付款记录和独立核实，不调用微信；关闭新支付不关闭旧退款。"
@@ -9663,5 +9705,127 @@
       "user_id"
     ],
     "updateColumns": []
+  },
+  {
+    "table": "vi_payment_reconciliation",
+    "writeMode": "SERVER_TRUSTED_RECONCILIATION",
+    "generatedColumns": [],
+    "columnRules": {
+      "id": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "kind": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "subject_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "order_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "payment_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "status": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "local_status": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "channel_status": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "reason_code": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "verified_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "resolved_by": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "resolved_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "created_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "updated_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "version": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      }
+    },
+    "rule": "权威归属从原支付receiver_dept_id加载；同kind/subject_id永久一条记录可重开，异常/结案均保留审计。服务端可信查询结果才能结案，不接受客户端声明资金状态。",
+    "insertColumns": [
+      "kind",
+      "subject_id",
+      "order_id",
+      "payment_id",
+      "status",
+      "local_status",
+      "channel_status",
+      "reason_code",
+      "verified_at",
+      "resolved_by",
+      "resolved_at"
+    ],
+    "updateColumns": [
+      "status",
+      "local_status",
+      "channel_status",
+      "reason_code",
+      "verified_at",
+      "resolved_by",
+      "resolved_at"
+    ]
   }
 ]

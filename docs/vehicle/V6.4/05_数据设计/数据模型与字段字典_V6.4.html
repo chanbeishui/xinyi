@@ -2547,108 +2547,133 @@ CONSTRAINT ck_51d858e7957115 CHECK (`capacity_resolution` IN ('HELD','RELEASED',
 CONSTRAINT ck_pay_method_identity CHECK (payment_method&lt;&gt;'WECHAT' OR (merchant_profile_id IS NOT NULL AND merchant_revision_id IS NOT NULL AND app_id IS NOT NULL AND mchid IS NOT NULL))
 </code></pre>
 <h2>vi_refund_order · 稳定退款单及渠道执行</h2>
-<p>受理≠成功；UNKNOWN先查，不换号盲重试；OFFLINE走已有批准金额的人工付款记录和独立核实，不调用微信；关闭新支付不关闭旧退款。
-主键：id；ID策略：MYSQL_AUTO_INCREMENT</p>
+<p>受理≠成功；UNKNOWN先查，不换号盲重试；OFFLINE走已有批准金额的人工付款记录和独立核实，不调用微信；关闭新支付不关闭旧退款。</p>
 <table>
 <thead>
 <tr>
   <th>字段</th>
-  <th>SQL类型</th>
-  <th>含义</th>
+  <th>SQL类型与约束</th>
+  <th>说明</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-  <td><code>id</code></td>
+  <td>id</td>
   <td><code>BIGINT NOT NULL AUTO_INCREMENT</code></td>
   <td>数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串</td>
 </tr>
 <tr>
-  <td><code>case_id</code></td>
+  <td>case_id</td>
   <td><code>BIGINT NOT NULL</code></td>
   <td>关联唯一统一售后申请</td>
 </tr>
 <tr>
-  <td><code>review_revision</code></td>
+  <td>review_revision</td>
   <td><code>INT NOT NULL</code></td>
   <td>批准决定版本，金额变更必须新版本审核</td>
 </tr>
 <tr>
-  <td><code>payment_id</code></td>
+  <td>payment_id</td>
   <td><code>BIGINT NOT NULL</code></td>
   <td>支付单</td>
 </tr>
 <tr>
-  <td><code>out_refund_no</code></td>
+  <td>out_refund_no</td>
   <td><code>VARCHAR(64) NOT NULL</code></td>
   <td>幂等商户退款号</td>
 </tr>
 <tr>
-  <td><code>channel_refund_id</code></td>
+  <td>channel_refund_id</td>
   <td><code>VARCHAR(64)</code></td>
   <td>渠道退款ID</td>
 </tr>
 <tr>
-  <td><code>amount_fen</code></td>
+  <td>amount_fen</td>
   <td><code>BIGINT NOT NULL</code></td>
   <td>金额分</td>
 </tr>
 <tr>
-  <td><code>status</code></td>
+  <td>status</td>
   <td><code>VARCHAR(24) NOT NULL</code></td>
   <td>ChannelRefundStatus: CREATED,PROCESSING,SUCCESS,CLOSED,ABNORMAL,UNKNOWN</td>
 </tr>
 <tr>
-  <td><code>success_at</code></td>
+  <td>success_at</td>
   <td><code>DATETIME(3)</code></td>
   <td>只有SUCCESS存在</td>
 </tr>
 <tr>
-  <td><code>last_query_at</code></td>
+  <td>last_query_at</td>
   <td><code>DATETIME(3)</code></td>
   <td>查单</td>
 </tr>
 <tr>
-  <td><code>next_query_at</code></td>
+  <td>next_query_at</td>
   <td><code>DATETIME(3)</code></td>
   <td>退避后查单</td>
 </tr>
 <tr>
-  <td><code>payment_method</code></td>
+  <td>payment_method</td>
   <td><code>VARCHAR(16) NOT NULL</code></td>
   <td>RefundPaymentMethod: WECHAT,OFFLINE；</td>
 </tr>
 <tr>
-  <td><code>execution_mode</code></td>
+  <td>execution_mode</td>
   <td><code>VARCHAR(24) NOT NULL</code></td>
   <td>RefundExecutionMode: WECHAT_API,MANUAL_OFFLINE；</td>
 </tr>
 <tr>
-  <td><code>created_at</code></td>
+  <td>created_at</td>
   <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
   <td>创建时间，统一UTC</td>
 </tr>
 <tr>
-  <td><code>updated_at</code></td>
+  <td>updated_at</td>
   <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
   <td>UTC更新时间；Mapper每次修改显式SET updated_at=UTC_TIMESTAMP(3)，不依赖连接时区</td>
 </tr>
 <tr>
-  <td><code>version</code></td>
+  <td>execution_started_at</td>
+  <td><code>DATETIME(3) NULL</code></td>
+  <td>首次退款发起意图UTC，一旦存在仅查原号</td>
+</tr>
+<tr>
+  <td>execution_lease_token</td>
+  <td><code>VARCHAR(36) NULL</code></td>
+  <td>执行租约标识，不向客户端或日志输出</td>
+</tr>
+<tr>
+  <td>execution_lease_until</td>
+  <td><code>DATETIME(3) NULL</code></td>
+  <td>执行租约截止UTC</td>
+</tr>
+<tr>
+  <td>execution_attempts</td>
+  <td><code>INT NOT NULL DEFAULT 0</code></td>
+  <td>提交与查询尝试计数</td>
+</tr>
+<tr>
+  <td>last_error_code</td>
+  <td><code>VARCHAR(64) NULL</code></td>
+  <td>脱敏稳定错误码，不含SDK异常或凭据</td>
+</tr>
+<tr>
+  <td>last_verified_status</td>
+  <td><code>VARCHAR(24) NULL</code></td>
+  <td>最近可信渠道状态，不采信客户端</td>
+</tr>
+<tr>
+  <td>last_verified_at</td>
+  <td><code>DATETIME(3) NULL</code></td>
+  <td>最近可信渠道核对UTC时刻</td>
+</tr>
+<tr>
+  <td>version</td>
   <td><code>BIGINT NOT NULL DEFAULT 0</code></td>
   <td>乐观锁版本</td>
 </tr>
 </tbody>
 </table>
-<pre><code class="language-sql">UNIQUE KEY uk_case_review (case_id,review_revision)
-UNIQUE KEY uk_refund_no (out_refund_no)
-KEY ix_query (status,next_query_at)
-CONSTRAINT ck_refund_amount CHECK (amount_fen&gt;0)
-CONSTRAINT ck_66_8132f268f5fd CHECK (`status` IN ('CREATED','PROCESSING','SUCCESS','CLOSED','ABNORMAL','UNKNOWN'))
-CONSTRAINT ck_ver_refund_order CHECK (version &gt;= 0)
-CONSTRAINT ck_be46cf0b350473 CHECK (`payment_method` IN ('WECHAT','OFFLINE'))
-CONSTRAINT ck_35feb49f221ec5 CHECK (`execution_mode` IN ('WECHAT_API','MANUAL_OFFLINE'))
-</code></pre>
 <h2>vi_channel_event · 永久渠道回调去重</h2>
 <p>事务持久化失败不ack；不储存密钥或敏感回调明文
 主键：id；ID策略：MYSQL_AUTO_INCREMENT</p>
@@ -7361,6 +7386,94 @@ CONSTRAINT ck_recipient_shape CHECK ((kind='PHONE' AND phone_cipher IS NOT NULL 
   <td>created_at</td>
   <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
   <td>关系冻结UTC时刻</td>
+</tr>
+</tbody>
+</table>
+<h2>vi_payment_reconciliation · 原支付主体下永久对账异常</h2>
+<p>权威归属从原支付receiver_dept_id加载；同kind/subject_id永久一条记录可重开，异常/结案均保留审计。服务端可信查询结果才能结案，不接受客户端声明资金状态。</p>
+<table>
+<thead>
+<tr>
+  <th>字段</th>
+  <th>SQL类型与约束</th>
+  <th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>id</td>
+  <td><code>BIGINT NOT NULL AUTO_INCREMENT</code></td>
+  <td>独立对账异常ID，对外caseId十进制字符串</td>
+</tr>
+<tr>
+  <td>kind</td>
+  <td><code>VARCHAR(16) NOT NULL</code></td>
+  <td>PAYMENT或REFUND</td>
+</tr>
+<tr>
+  <td>subject_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>对应支付记录或退款记录ID，按kind解释</td>
+</tr>
+<tr>
+  <td>order_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>原订单</td>
+</tr>
+<tr>
+  <td>payment_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>原支付记录，权威收款主体从此加载</td>
+</tr>
+<tr>
+  <td>status</td>
+  <td><code>VARCHAR(16) NOT NULL DEFAULT 'OPEN'</code></td>
+  <td>OPEN,CHECKING,RESOLVED</td>
+</tr>
+<tr>
+  <td>local_status</td>
+  <td><code>VARCHAR(24) NOT NULL</code></td>
+  <td>最近本地状态快照</td>
+</tr>
+<tr>
+  <td>channel_status</td>
+  <td><code>VARCHAR(24) NULL</code></td>
+  <td>最近可信渠道状态，未知为NULL</td>
+</tr>
+<tr>
+  <td>reason_code</td>
+  <td><code>VARCHAR(64) NOT NULL</code></td>
+  <td>受控异常原因，不存自由文本或SDK报文</td>
+</tr>
+<tr>
+  <td>verified_at</td>
+  <td><code>DATETIME(3) NULL</code></td>
+  <td>最近可信渠道核对UTC</td>
+</tr>
+<tr>
+  <td>resolved_by</td>
+  <td><code>BIGINT NULL</code></td>
+  <td>已核实一致后登记结案的后台用户</td>
+</tr>
+<tr>
+  <td>resolved_at</td>
+  <td><code>DATETIME(3) NULL</code></td>
+  <td>结案UTC，异常重开时清空</td>
+</tr>
+<tr>
+  <td>created_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>UTC创建时间</td>
+</tr>
+<tr>
+  <td>updated_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>UTC更新时间</td>
+</tr>
+<tr>
+  <td>version</td>
+  <td><code>BIGINT NOT NULL DEFAULT 0</code></td>
+  <td>乐观锁版本</td>
 </tr>
 </tbody>
 </table>

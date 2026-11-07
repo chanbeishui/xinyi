@@ -24,6 +24,8 @@ import java.security.MessageDigest;
 public class PaymentLifecycleService {
     private final com.xinyi.rongli.jobs.service.DispatchDeadlineService dispatch;
     private final PaymentMapper payments;
+    private final com.xinyi.rongli.refund.service.RefundSettlementService refundSettlement;
+    private final com.xinyi.rongli.refund.service.ReconciliationTracker reconciliation;
     private final PaymentLifecycleMapper mapper;
     private final PaymentService intents;
     private final PaymentHistoryGateway gateway;
@@ -39,6 +41,8 @@ public class PaymentLifecycleService {
     public PaymentLifecycleService(
             com.xinyi.rongli.jobs.service.DispatchDeadlineService dispatch,
             PaymentMapper payments,
+            com.xinyi.rongli.refund.service.RefundSettlementService refundSettlement,
+            com.xinyi.rongli.refund.service.ReconciliationTracker reconciliation,
             PaymentLifecycleMapper mapper,
             PaymentService intents,
             PaymentHistoryGateway gateway,
@@ -52,6 +56,8 @@ public class PaymentLifecycleService {
             PlatformTransactionManager manager) {
         this.dispatch = dispatch;
         this.payments = payments;
+        this.refundSettlement = refundSettlement;
+        this.reconciliation = reconciliation;
         this.mapper = mapper;
         this.intents = intents;
         this.gateway = gateway;
@@ -251,6 +257,16 @@ public class PaymentLifecycleService {
                             // 明确未付与无法确定结果分开；关闭中的 NOTPAY 仍不能据此释放额度。
                             if ("NOTPAY".equals(status) && !work.close()) mapper.pending(p.getId());
                             else mapper.unknown(p.getId());
+                            if (!"NOTPAY".equals(status) || work.close())
+                                reconciliation.open(
+                                        "PAYMENT",
+                                        p.getId(),
+                                        o.getId(),
+                                        p.getId(),
+                                        "UNKNOWN",
+                                        status,
+                                        "PAYMENT_UNKNOWN",
+                                        actor);
                             audit.recordSuccess(
                                     actor,
                                     "VI_PAYMENT_ORDER",
@@ -269,6 +285,15 @@ public class PaymentLifecycleService {
                         payments.lockOrder(id);
                         var p = payments.lockPayment(id);
                         if (p != null && mapper.unknown(p.getId()) > 0) {
+                            reconciliation.open(
+                                    "PAYMENT",
+                                    p.getId(),
+                                    id,
+                                    p.getId(),
+                                    "UNKNOWN",
+                                    null,
+                                    "PAYMENT_UNKNOWN",
+                                    actor);
                             audit.recordSuccess(
                                     actor,
                                     "VI_PAYMENT_ORDER",
@@ -312,6 +337,16 @@ public class PaymentLifecycleService {
             one(mapper.orderState(o.getId(), "SCHEDULED"));
             dispatch.onPaid(o.getId());
         }
+        if (conflict)
+            reconciliation.open(
+                    "PAYMENT",
+                    p.getId(),
+                    o.getId(),
+                    p.getId(),
+                    "SUCCESS",
+                    "SUCCESS",
+                    "CAPACITY_CONFLICT",
+                    actor);
         String action = conflict ? "PAYMENT_LATE_SUCCESS_CONFLICT" : "PAYMENT_CONFIRMED";
         audit.recordSuccess(
                 actor,
@@ -491,47 +526,60 @@ public class PaymentLifecycleService {
         var found = mapper.refundByNo(fact.path("out_refund_no").asText());
         if (found == null || ((Number) found.get("order_id")).longValue() != o.getId()) invalid();
         long id = ((Number) found.get("id")).longValue();
-        var r = mapper.lockRefund(id);
+        var r = mapper.refundSnapshot(id);
         long amount = ((Number) r.get("amount_fen")).longValue();
         if (amount(fact.path("amount").path("refund")) != amount
                 || amount(fact.path("amount").path("total")) != p.getTotalFen()
                 || !"CNY".equals(fact.path("amount").path("currency").asText())) invalid();
-        String channel = fact.path("refund_id").asText();
-        if (!channel.matches("[A-Za-z0-9_-]{1,64}")) invalid();
-        if ("SUCCESS".equals(r.get("status"))) {
-            if (!"SUCCESS".equals(state) || !channel.equals(r.get("channel_refund_id"))) invalid();
-            return;
-        }
-        if ("CLOSED".equals(r.get("status"))) {
-            if (!"CLOSED".equals(state)) invalid();
-            return;
-        }
-        // 成功将预留额转为已退，渠道明确关闭才释放预留；ABNORMAL 保留预留以待核查。
-        if ("SUCCESS".equals(state)) {
-            one(mapper.refundBalance(p.getId(), amount, true));
-            one(mapper.refundSuccess(id, channel, instant(fact.path("success_time").asText())));
-        } else if ("CLOSED".equals(state)) {
-            one(mapper.refundBalance(p.getId(), amount, false));
-            one(mapper.refundState(id, state));
-        } else {
-            if ("ABNORMAL".equals(r.get("status"))) return;
-            one(mapper.refundState(id, state));
-        }
-        audit.recordSuccess(
-                actor,
-                "VI_REFUND_ORDER",
+        refundSettlement.applyLocked(
+                o,
+                p,
                 id,
-                "REFUND_" + state,
-                null,
-                Map.of("orderId", o.getId(), "amount", amount),
-                null,
-                o.getId());
-        outbox.publish(
-                "refund:" + id + ":" + state,
-                "VI_REFUND_ORDER",
-                id,
-                "REFUND_" + state,
-                Map.of("orderId", o.getId(), "refundId", id));
+                new com.xinyi.rongli.refund.service.RefundSettlementService.Fact(
+                        state,
+                        fact.path("refund_id").asText(),
+                        "SUCCESS".equals(state)
+                                ? instant(fact.path("success_time").asText())
+                                : null),
+                actor);
+    }
+
+    /** 后台资金权限已由调用者校验；真实原交易重查仍沿同一支付落账点，绝不构造车主会话。 */
+    public String queryTrusted(long orderId, Actor actor) {
+        Transaction fact = gateway.queryOrder(orderId);
+        String state = fact.getTradeState() == null ? "UNKNOWN" : fact.getTradeState().name();
+        tx.executeWithoutResult(
+                status -> {
+                    lock();
+                    ViOrder order = payments.lockOrder(orderId);
+                    PaymentTransaction payment = payments.lockPayment(orderId);
+                    if (order == null || payment == null)
+                        throw new ViException(ViErrorCode.VI_RESOURCE_NOT_VISIBLE);
+                    if ("SUCCESS".equals(state))
+                        paidLocked(
+                                order,
+                                payment,
+                                fact.getTransactionId(),
+                                instant(fact.getSuccessTime()),
+                                actor);
+                    else if ("CLOSED".equals(state)) closeLocked(order, payment, actor);
+                    else if ("REFUND".equals(state)) {
+                        if (payment.getTransactionId() == null
+                                || !payment.getTransactionId().equals(fact.getTransactionId())
+                                || payment.getPaidFen() != payment.getTotalFen()) invalid();
+                    } else if (Set.of("PENDING", "UNKNOWN").contains(payment.getStatus()))
+                        mapper.unknown(payment.getId());
+                    audit.recordSuccess(
+                            actor,
+                            "VI_PAYMENT_ORDER",
+                            payment.getId(),
+                            "PAYMENT_RECONCILIATION_QUERY",
+                            null,
+                            Map.of("providerState", state),
+                            null,
+                            orderId);
+                });
+        return state;
     }
 
     private Map<String, Object> view(PaymentTransaction p) {

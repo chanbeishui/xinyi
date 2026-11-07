@@ -1898,26 +1898,30 @@
     "taskId": "F05"
   },
   {
-    "status": "PARTIAL",
-    "implementationFile": null,
+    "status": "VERIFIED",
+    "implementationFile": "xinyi-ui/src/views/rongli/reconciliation/index.vue",
     "evidence": [
-      "docs/implementation/vehicle/evidence/P02-20261104.json"
+      "docs/implementation/vehicle/evidence/P04-20261107.json",
+      "docs/implementation/vehicle/P04/browser.json"
     ],
     "boardId": "B31",
-    "taskId": "P02",
+    "taskId": "P04",
     "implemented": "P02提供可信查询/通知/异常outbox基础，无独立后台画板实现",
-    "remaining": "B31列表/人工查询/核实API_141～143归属P04；界面与其真实权限/接口在P04一起实现，不用模拟页面冒充完成"
+    "remaining": "B31列表/人工查询/核实API_141～143归属P04；界面与其真实权限/接口在P04一起实现，不用模拟页面冒充完成",
+    "implementationNote": "真实PC页面与共享退款Drawer；浏览器采用明确API夹具，权限/事务由真实HTTP/MySQL覆盖。"
   },
   {
-    "status": "PARTIAL",
-    "implementationFile": null,
+    "status": "VERIFIED",
+    "implementationFile": "xinyi-ui/src/views/rongli/reconciliation/index.vue",
     "evidence": [
-      "docs/implementation/vehicle/evidence/P02-20261104.json"
+      "docs/implementation/vehicle/evidence/P04-20261107.json",
+      "docs/implementation/vehicle/P04/browser.json"
     ],
     "boardId": "B31-query",
-    "taskId": "P02",
+    "taskId": "P04",
     "implemented": "P02提供可信查询/通知/异常outbox基础，无独立后台画板实现",
-    "remaining": "B31列表/人工查询/核实API_141～143归属P04；界面与其真实权限/接口在P04一起实现，不用模拟页面冒充完成"
+    "remaining": "B31列表/人工查询/核实API_141～143归属P04；界面与其真实权限/接口在P04一起实现，不用模拟页面冒充完成",
+    "implementationNote": "真实PC页面与共享退款Drawer；浏览器采用明确API夹具，权限/事务由真实HTTP/MySQL覆盖。"
   },
   {
     "status": "NOT_ASSESSED",

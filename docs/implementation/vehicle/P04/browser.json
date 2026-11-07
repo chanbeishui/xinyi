@@ -1,0 +1,65 @@
+{
+  "mode": "Browser plugin not available；临时Playwright明确API夹具，仅验证真实页面渲染与客户端交互，不替代后端HTTP/DB或供应商联调",
+  "url": "http://127.0.0.1:5173/payment-finance/reconciliation",
+  "viewports": [
+    "1440x1000",
+    "390x844"
+  ],
+  "browserTimeZone": "UTC（财务展示统一Asia/Shanghai）",
+  "checks": [
+    "从S02已批准申请的原退款号进入P04执行详情，沿用原号且不增加人工审核",
+    "浏览器设为UTC时仍按上海业务时区显示可信资金时点",
+    "原退款号详情展示原支付方法/金额/有效预留；UNKNOWN仅允许查询，不开放盲重试",
+    "查询原因必填，空原因不发送POST",
+    "查询携带记录版本、原因和UUID；未知结果保持预留与原号",
+    "取得可信未受理结论后，按服务端allowedActions开放原号受控重试",
+    "重试回执丢失后冻结原意图；关弹窗再开仍复用原body/UUID/退款号",
+    "可信成功后展示真实已退和释放后的预留，终态不再开放重试",
+    "CLOSED显示关闭终态和后续修订边界，不误显示退款成功或原号重提",
+    "OFFLINE显示待X06实际凭证核实，不展示微信查询或重试",
+    "WAIT_RETURN保留批准金额与持车任务，不提供提前执行入口",
+    "跨收款主体403清除详情金额，不残留上一笔记录",
+    "B31只展示服务端真实异常，筛选原订单不提交伪造部门或客户端权限上下文",
+    "未收敛异常无办结按钮，界面不提供手工改资金状态控件",
+    "事实条件变化时服务端422拒绝办结，原因保留且没有人工写成功",
+    "对账409保留原因并禁止直重试，caseId精确读取后绑定新版本提交",
+    "条件满足才办结真实异常，办结后移除操作，不新建退款或改金额",
+    "读取范围由服务端返回；只有列表权限时不显示重查/办结/退款查询入口",
+    "390px筛选换行、表格局部滚动，页面无横向溢出",
+    "390px退款详情使用单列字段与资金卡，待还车状态可读且不横向溢出"
+  ],
+  "errors": [],
+  "expectedTransportErrors": [
+    {
+      "message": "Failed to load resource: net::ERR_FAILED",
+      "url": "http://127.0.0.1:5173/dev-api/api/admin/refunds/RF1/retry"
+    },
+    {
+      "message": "Failed to load resource: the server responded with a status of 403 (Forbidden)",
+      "url": "http://127.0.0.1:5173/dev-api/api/admin/refunds/RFdenied"
+    },
+    {
+      "message": "Failed to load resource: the server responded with a status of 422 (Unprocessable Entity)",
+      "url": "http://127.0.0.1:5173/dev-api/api/admin/reconciliation/2/resolve"
+    },
+    {
+      "message": "Failed to load resource: the server responded with a status of 409 (Conflict)",
+      "url": "http://127.0.0.1:5173/dev-api/api/admin/reconciliation/2/query"
+    }
+  ],
+  "unknown": [],
+  "screenshots": [
+    "/private/tmp/P04-refund-unknown.png",
+    "/private/tmp/P04-refund-offline.png",
+    "/private/tmp/P04-reconciliation-list.png",
+    "/private/tmp/P04-reconciliation-mobile.png",
+    "/private/tmp/P04-refund-mobile.png"
+  ],
+  "archivedScreenshots": [
+    "docs/implementation/vehicle/P04/ui-reconciliation-list.png",
+    "docs/implementation/vehicle/P04/ui-reconciliation-mobile.png",
+    "docs/implementation/vehicle/P04/ui-refund-mobile.png",
+    "docs/implementation/vehicle/P04/ui-refund-offline.png",
+    "docs/implementation/vehicle/P04/ui-refund-unknown.png"
+  ]
+}

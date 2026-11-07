@@ -1,7 +1,7 @@
 # S05 · 服务确认与评价
 
 阶段：M4；责任域：review；前置：F06, S04。
-范围版本：`V6.1-UNCHANGED`；definitionHash：`e978a5bbd5279eb2901b1cff903e6b03936dda58f0ea9ca26dfac4494e39bce9`。
+范围版本：`V6.1-UNCHANGED`；definitionHash：`ed9148795a291726ac7cd97e66042222ce8c3be7e14c89da2c8f0873662f3d17`。
 
 ## 本任务交付
 - 实际归还后24h无争议自动完成，车主确认/评价和评分来源
@@ -15,7 +15,7 @@
 接口：API_034_post, API_039_post
 画板：O22, O22-review
 主责任表：vi_review
-验收：TC-115, TC-118, TC-119, TC-120, TC-121, TC-123, TC-124, TC-125, TC-148, TC-153, TC-154, TC-196
+验收：TC-115, TC-125, TC-148, TC-196
 
 ## 代码落位
 `xinyi-rongli/src/main/java/com/xinyi/rongli/review/`

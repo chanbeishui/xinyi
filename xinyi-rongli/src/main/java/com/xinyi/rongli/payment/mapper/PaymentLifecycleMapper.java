@@ -52,6 +52,8 @@ public interface PaymentLifecycleMapper {
 
     Map<String, Object> lockRefund(long id);
 
+    Map<String, Object> refundSnapshot(long id);
+
     int refundSuccess(
             @Param("id") long id, @Param("channelId") String channelId, @Param("at") Instant at);
 

@@ -925,11 +925,12 @@
 <p><strong>来源</strong>：本版补充</p>
 <h2>B31 · 支付退款对账异常</h2>
 <p><strong>状态</strong>：有效·V6.4</p>
-<p><strong>字段</strong>：业务/微信订单、金额、未知状态、关闭竞态、查询日志</p>
-<p><strong>操作</strong>：主动查询、人工核实、审批退款</p>
-<p><strong>约束</strong>：不可通过手写成功状态替代渠道证据；非钱包结算</p>
+<p><strong>字段</strong>：独立支付/退款异常ID、原订单及支付方式、原退款号、本地/可信渠道状态、实付/已退/预留、版本、核验/办结时刻、操作原因</p>
+<p><strong>操作</strong>：按原号查询退款；可信未受理后显式原号原参重试；筛选对账异常、重查可信渠道、核实一致后登记办结</p>
+<p><strong>约束</strong>：按原支付receiver_dept_id资金范围；UNKNOWN先查且保留预留，PROCESSING不当成功；CLOSED禁原号重提；待归还不提前执行；仅退款不释放承接；线下交X06实际凭证；原因与版本/幂等绑定且加密审计；不另设退款审核或手工改资金状态</p>
 <p><strong>关联流程</strong>：F08/F20</p>
-<p><strong>来源</strong>：本版补充</p>
+<p><strong>来源</strong>：V6.4 P04执行与对账细则2026-11-07</p>
+<p>后台路径：<code>/payment-finance/refunds</code>、<code>/payment-finance/reconciliation</code>；S02批准记录通过原退款号进入执行详情。</p>
 <h2>B32 · 敏感访问与导出审批</h2>
 <p><strong>状态</strong>：有效·V6.4</p>
 <p><strong>字段</strong>：理由、目的、范围、有效期、审批与下载记录</p>

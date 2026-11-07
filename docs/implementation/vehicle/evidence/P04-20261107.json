@@ -1,0 +1,172 @@
+{
+  "taskId": "P04",
+  "scopeRevision": "V6.4-REFUND-EXECUTION-20261107",
+  "at": "2026-11-07T07:53:31.459129+00:00",
+  "implementer": "Codex",
+  "baselineCommit": "cdc30bb",
+  "codeFiles": [
+    "docs/vehicle/V6.4/05_数据设计/001_vi业务表_初始化_V6.4.sql",
+    "sql/migration_20261107_01_refund_execution.sql",
+    "sql/ry_20260417.sql",
+    "xinyi-admin/src/main/java/com/xinyi/web/config/RefundAdminSecurityConfig.java",
+    "xinyi-admin/src/test/java/com/xinyi/web/viit/P02PaymentIT.java",
+    "xinyi-admin/src/test/java/com/xinyi/web/viit/P04RefundIT.java",
+    "xinyi-admin/src/test/java/com/xinyi/web/viit/RefundHttpFixture.java",
+    "xinyi-admin/src/test/resources/integration/p04_contract.py",
+    "xinyi-miniapp/src/api/types.ts",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/payment/gateway/WechatPrepayGateway.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/payment/mapper/PaymentLifecycleMapper.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/payment/service/PaymentHistoryGateway.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/payment/service/PaymentLifecycleService.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/refund/controller/RefundController.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/refund/domain/ReconciliationRecord.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/refund/domain/RefundRecord.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/refund/dto/RefundRequests.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/refund/gateway/WechatRefundGateway.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/refund/mapper/RefundMapper.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/refund/service/PaymentOperationReason.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/refund/service/PaymentReconciliationService.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/refund/service/ReconciliationTracker.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/refund/service/RefundExecutionDispatcher.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/refund/service/RefundExecutionJob.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/refund/service/RefundExecutionService.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/refund/service/RefundSettlementService.java",
+    "xinyi-rongli/src/main/resources/mapper/rongli/payment/PaymentLifecycleMapper.xml",
+    "xinyi-rongli/src/main/resources/mapper/rongli/refund/RefundMapper.xml",
+    "xinyi-ui/src/api/rongli/refund.ts",
+    "xinyi-ui/src/views/rongli/aftersale/index.vue",
+    "xinyi-ui/src/views/rongli/reconciliation/index.vue",
+    "xinyi-ui/src/views/rongli/refund/RefundDrawer.vue",
+    "xinyi-ui/src/views/rongli/refund/VersionReasonAction.vue",
+    "xinyi-ui/src/views/rongli/refund/index.vue"
+  ],
+  "sourceDigests": {
+    "docs/vehicle/V6.4/05_数据设计/001_vi业务表_初始化_V6.4.sql": "23f2b536142303b71fecefb722279e7a2672538b968ca8eb07391cc8486449a0",
+    "sql/migration_20261107_01_refund_execution.sql": "d4e25589df56e936b932ae63c9eca22001a915afe36f8141b0395cad35e54947",
+    "sql/ry_20260417.sql": "bbf0d172ea54673098884d39c6ca0590723fa34cd24353953975b45e83273fd9",
+    "xinyi-admin/src/main/java/com/xinyi/web/config/RefundAdminSecurityConfig.java": "c3f12ce7fe7a15223901ad6ecec59a6d2664af8d3cb5a402d1d09dd43b36d16c",
+    "xinyi-admin/src/test/java/com/xinyi/web/viit/P02PaymentIT.java": "02bd1082d412856bac5e9751f95dda601d780ab910161da908342588e94c943a",
+    "xinyi-admin/src/test/java/com/xinyi/web/viit/P04RefundIT.java": "ab822318c39a03dde07955233f70c176ac2ce3ae00dbae9daca0a73295ccb322",
+    "xinyi-admin/src/test/java/com/xinyi/web/viit/RefundHttpFixture.java": "d9b66ba90a7a3df50314e1f406ea7b9416388fc954c17b8c6606066e42df06ae",
+    "xinyi-admin/src/test/resources/integration/p04_contract.py": "bf3b4bd5968a6d63ab3daf3ba7aaf57367eac0d13645482a730f94e3ae17500e",
+    "xinyi-miniapp/src/api/types.ts": "a800e110e3c198c2669fad5a0550111d4cadbf2476ee2e394ce9b8bff87665ec",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/payment/gateway/WechatPrepayGateway.java": "0241a7ad5bb74e91bdc2f749e3686017204416f09b489dea0ee66060e357b29b",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/payment/mapper/PaymentLifecycleMapper.java": "e7499d7762272b5737c836771947a11d5941f1c6488be7b9b1be1137a1675d08",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/payment/service/PaymentHistoryGateway.java": "744ef1e16abfb3065c12d416a51706f55c4cfcd972096267b52f9eac95608a68",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/payment/service/PaymentLifecycleService.java": "22ab376890f67cf6b04b1b13425b1383676f72e97e85ca1cfcd9e3daab3f63f5",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/refund/controller/RefundController.java": "4efac6d1a6b8ef6b502ce0939745b32bc0561fee8f3b566eb7b03a5e4e76e24a",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/refund/domain/ReconciliationRecord.java": "4a890463d7945cf7dbb78a18e4b155abd79a440179db6bbe1a281230544c9385",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/refund/domain/RefundRecord.java": "953abfc4da3ef964821c1cdfb868ec364ffdc0b5f806585ef2eafa433fa73ac6",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/refund/dto/RefundRequests.java": "3c59f5eac80528f0d600d876779851ad5260c42b42d77d16bedc100812b3e20c",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/refund/gateway/WechatRefundGateway.java": "0489649fb9d077836429e9c795ace1a3ad42b63c2faf975bbb914ec819506698",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/refund/mapper/RefundMapper.java": "bbd64d28a87c2af5bd1dc92a0e3e13c0bc8e835681d75c6fb754f140ce21e5fc",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/refund/service/PaymentOperationReason.java": "af602c611f43ef3e82b428ef4557860cad27d1d51349a26828bf3ce542e3427b",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/refund/service/PaymentReconciliationService.java": "b50508e39f8da4e780cb8826a5af3f31b94af7d1a04bad64728c02841cd54382",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/refund/service/ReconciliationTracker.java": "46f5a637fc816d2b5c8b937066d312ed849fc327fa2b6c70f70631165640daf2",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/refund/service/RefundExecutionDispatcher.java": "4121719a569a94ebdc6b0a1bba9f10a3da39c8e978a9db219d0be54f51e25949",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/refund/service/RefundExecutionJob.java": "a9aa3e1e0896a6cad93837de247f5ffe349e060db3ea9fef7ab527f5a9995dba",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/refund/service/RefundExecutionService.java": "871795111d4de6db28605c03732fd94068c0fe9b9e5698ab61e36c312e78a13c",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/refund/service/RefundSettlementService.java": "b111d92d0f224c150104f6f0e93bdbfa7f03d65e596a035e162456aa5a982010",
+    "xinyi-rongli/src/main/resources/mapper/rongli/payment/PaymentLifecycleMapper.xml": "1d6916d3d64d25096d86c948c5510da7719fc4157d06f62f6abb71e7a075a061",
+    "xinyi-rongli/src/main/resources/mapper/rongli/refund/RefundMapper.xml": "8768dfef39df1049f6af6d1d55b2653e1344f55804d8e99be4d8f0e4bb6a8547",
+    "xinyi-ui/src/api/rongli/refund.ts": "20a2c70ad4a24766e2801ba8ccbfd5757bd92c7ad6d8266ea30ec47004a7d60a",
+    "xinyi-ui/src/views/rongli/aftersale/index.vue": "f6ac9d3f45f56bc20bae4cfd7892c16dd5424292eb3e4f375c3cb74142877936",
+    "xinyi-ui/src/views/rongli/reconciliation/index.vue": "c7a741adb83210dd24b634f13fe8200e21d5043f23c2facd073216ecf0b21e2a",
+    "xinyi-ui/src/views/rongli/refund/RefundDrawer.vue": "a401bfedf5f2f31eee7b57ba3e20c693526c5b122baee859314e92acc02106b4",
+    "xinyi-ui/src/views/rongli/refund/VersionReasonAction.vue": "9689232e8c419f32ae0f75eb834537a281ccf3a401807eb7ac42dc04060151a2",
+    "xinyi-ui/src/views/rongli/refund/index.vue": "aae2a3ac2df02bc25957dd0c3b1202c6a9f1e284e1ff88a7228a59703e71244c"
+  },
+  "runs": [
+    {
+      "command": "mvn -o -pl xinyi-admin -am -Pvi-it -Dit.test=当前30类 verify",
+      "layer": "LIVE_HTTP_MYSQL",
+      "exitCode": 0,
+      "testsRun": 397,
+      "skipped": 0,
+      "reportPath": "docs/implementation/vehicle/P04/full-regression.json"
+    },
+    {
+      "command": "同全量进程P04RefundIT子套件",
+      "layer": "LIVE_HTTP_MYSQL",
+      "exitCode": 0,
+      "testsRun": 44,
+      "skipped": 0,
+      "reportPath": "docs/implementation/vehicle/P04/integration-junit.xml"
+    },
+    {
+      "command": "后端单元测试",
+      "layer": "UNIT",
+      "exitCode": 0,
+      "testsRun": 37,
+      "skipped": 0,
+      "reportPath": "docs/implementation/vehicle/P04/unit-junit.xml"
+    }
+  ],
+  "additionalChecks": [
+    {
+      "command": "npm --prefix xinyi-ui run build:prod",
+      "layer": "BUILD",
+      "exitCode": 0,
+      "checksRun": 1,
+      "reportPath": "docs/implementation/vehicle/P04/pc-build.txt"
+    },
+    {
+      "command": "npm --prefix xinyi-miniapp run type-check",
+      "layer": "BUILD",
+      "exitCode": 0,
+      "checksRun": 1,
+      "reportPath": "docs/implementation/vehicle/P04/types-build.txt"
+    },
+    {
+      "command": "npm --prefix xinyi-miniapp run build:mp-weixin",
+      "layer": "BUILD",
+      "exitCode": 0,
+      "checksRun": 1,
+      "reportPath": "docs/implementation/vehicle/P04/mp-build.txt"
+    },
+    {
+      "command": "Playwright PC明确API夹具",
+      "layer": "BROWSER_SIMULATOR",
+      "exitCode": 0,
+      "checksRun": 20,
+      "reportPath": "docs/implementation/vehicle/P04/browser.json"
+    },
+    {
+      "command": "check_engineering.py + check_package.py",
+      "layer": "STATIC_CONTRACT",
+      "exitCode": 0,
+      "checksRun": 76,
+      "reportPath": "docs/implementation/vehicle/P04/engineering.json"
+    },
+    {
+      "command": "PC全站vue-tsc（额外检查）",
+      "layer": "OPTIONAL_PC_TYPECHECK",
+      "exitCode": 2,
+      "passed": false,
+      "reportPath": "docs/implementation/vehicle/P04/pc-typecheck.json",
+      "preExisting": true
+    }
+  ],
+  "review": {
+    "approved": true,
+    "status": "APPROVED_WITH_SCOPE_BOUNDARIES",
+    "reviewer": "/root/f01_tests",
+    "reportPath": "docs/implementation/vehicle/P04/review.md"
+  },
+  "databaseStructureChanged": true,
+  "migration": "sql/migration_20261107_01_refund_execution.sql",
+  "databaseFiles": [
+    "sql/migration_20261107_01_refund_execution.sql",
+    "sql/ry_20260417.sql",
+    "docs/vehicle/V6.4/05_数据设计/001_vi业务表_初始化_V6.4.sql"
+  ],
+  "realVendors": "NOT_RUN",
+  "wechatDevice": "NOT_RUN",
+  "productionDeploy": "NOT_RUN",
+  "boundaries": [
+    "H/D真实归还接新单及S05后续完整持车取消流程待验收",
+    "X06线下实际退款凭证核实未完成",
+    "PC全站类型检查既有全局Vue声明等错误单列",
+    "自动退款任务默认关闭，未授权真实退款或生产启用"
+  ]
+}

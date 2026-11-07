@@ -1008,36 +1008,56 @@
     "note": "给定状态由隔离夹具准备，验证S02决定；真实交接执行与渠道退款不计入本通过范围。"
   },
   {
-    "status": "NOT_RUN",
-    "testFiles": [],
-    "evidence": null,
+    "status": "VERIFIED",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/P04RefundIT.java"
+    ],
+    "evidence": [
+      "docs/implementation/vehicle/evidence/P04-20261107.json"
+    ],
     "caseId": "TC-118",
-    "taskId": "S05",
-    "testMethod": "test_tc_118"
+    "taskId": "P04",
+    "testMethod": "lostPostResponseKeepsOriginalNumberAndReservationThenQueriesFirst",
+    "implementationNote": "真实HTTP/MySQL、官方SDK签验及隔离渠道替身；不代表真实供应商已运行。"
   },
   {
-    "status": "NOT_RUN",
-    "testFiles": [],
-    "evidence": null,
+    "status": "VERIFIED",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/P04RefundIT.java"
+    ],
+    "evidence": [
+      "docs/implementation/vehicle/evidence/P04-20261107.json"
+    ],
     "caseId": "TC-119",
-    "taskId": "S05",
-    "testMethod": "test_tc_119"
+    "taskId": "P04",
+    "testMethod": "processingResponseNeverPretendsMoneyHasBeenRefunded",
+    "implementationNote": "真实HTTP/MySQL、官方SDK签验及隔离渠道替身；不代表真实供应商已运行。"
   },
   {
-    "status": "NOT_RUN",
-    "testFiles": [],
-    "evidence": null,
+    "status": "VERIFIED",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/P04RefundIT.java"
+    ],
+    "evidence": [
+      "docs/implementation/vehicle/evidence/P04-20261107.json"
+    ],
     "caseId": "TC-120",
-    "taskId": "S05",
-    "testMethod": "test_tc_120"
+    "taskId": "P04",
+    "testMethod": "trustedCallbackAndQueryConcurrentResultsOnlyMoveMoneyOnce",
+    "implementationNote": "真实HTTP/MySQL、官方SDK签验及隔离渠道替身；不代表真实供应商已运行。"
   },
   {
-    "status": "NOT_RUN",
-    "testFiles": [],
-    "evidence": null,
+    "status": "VERIFIED",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/P04RefundIT.java"
+    ],
+    "evidence": [
+      "docs/implementation/vehicle/evidence/P04-20261107.json"
+    ],
     "caseId": "TC-121",
-    "taskId": "S05",
-    "testMethod": "test_tc_121"
+    "taskId": "P04",
+    "testMethod": "abnormalRefundPreservesReservationAndRetryOnlyQueriesOriginalNumber",
+    "implementationNote": "真实HTTP/MySQL、官方SDK签验及隔离渠道替身；不代表真实供应商已运行。"
   },
   {
     "status": "PASS",
@@ -1051,20 +1071,30 @@
     "note": "给定状态由隔离夹具准备，验证S02决定；真实交接执行与渠道退款不计入本通过范围。"
   },
   {
-    "status": "NOT_RUN",
-    "testFiles": [],
-    "evidence": null,
+    "status": "PARTIAL",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/P04RefundIT.java"
+    ],
+    "evidence": [
+      "docs/implementation/vehicle/evidence/P04-20261107.json"
+    ],
     "caseId": "TC-123",
-    "taskId": "S05",
-    "testMethod": "test_tc_123"
+    "taskId": "P04",
+    "testMethod": "waitingForReturnNeverCallsChannelOrReleasesDriverOnForgedSuccess",
+    "implementationNote": "退款成功不改变现有承接/保管，已验证资金侧边界；真实归还后接新单需H/D全链验收。"
   },
   {
-    "status": "NOT_RUN",
-    "testFiles": [],
-    "evidence": null,
+    "status": "VERIFIED",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/P04RefundIT.java"
+    ],
+    "evidence": [
+      "docs/implementation/vehicle/evidence/P04-20261107.json"
+    ],
     "caseId": "TC-124",
-    "taskId": "S05",
-    "testMethod": "test_tc_124"
+    "taskId": "P04",
+    "testMethod": "callbackTerminalSuccessIsNeverDowngradedByLateProcessingResponse",
+    "implementationNote": "真实HTTP/MySQL、官方SDK签验及隔离渠道替身；不代表真实供应商已运行。"
   },
   {
     "status": "NOT_RUN",
@@ -1094,12 +1124,17 @@
     "testMethod": "test_tc_127"
   },
   {
-    "status": "NOT_RUN",
-    "testFiles": [],
-    "evidence": null,
+    "status": "PARTIAL",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/P04RefundIT.java"
+    ],
+    "evidence": [
+      "docs/implementation/vehicle/evidence/P04-20261107.json"
+    ],
     "caseId": "TC-128",
-    "taskId": "N01",
-    "testMethod": "test_tc_128"
+    "taskId": "P04",
+    "testMethod": "waitingForReturnNeverCallsChannelOrReleasesDriverOnForgedSuccess",
+    "implementationNote": "退款成功不改变现有承接/保管，已验证资金侧边界；真实归还后接新单需H/D全链验收。"
   },
   {
     "status": "NOT_RUN",
@@ -1318,20 +1353,30 @@
     "note": "给定状态由隔离夹具准备，验证S02决定；真实交接执行与渠道退款不计入本通过范围。"
   },
   {
-    "status": "NOT_RUN",
-    "testFiles": [],
-    "evidence": null,
+    "status": "VERIFIED",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/P04RefundIT.java"
+    ],
+    "evidence": [
+      "docs/implementation/vehicle/evidence/P04-20261107.json"
+    ],
     "caseId": "TC-153",
-    "taskId": "S05",
-    "testMethod": "test_tc_153"
+    "taskId": "P04",
+    "testMethod": "lostPostResponseKeepsOriginalNumberAndReservationThenQueriesFirst",
+    "implementationNote": "真实HTTP/MySQL、官方SDK签验及隔离渠道替身；不代表真实供应商已运行。"
   },
   {
-    "status": "NOT_RUN",
-    "testFiles": [],
-    "evidence": null,
+    "status": "PARTIAL",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/P04RefundIT.java"
+    ],
+    "evidence": [
+      "docs/implementation/vehicle/evidence/P04-20261107.json"
+    ],
     "caseId": "TC-154",
-    "taskId": "S05",
-    "testMethod": "test_tc_154"
+    "taskId": "P04",
+    "testMethod": "trustedCallbackAndQueryConcurrentResultsOnlyMoveMoneyOnce",
+    "implementationNote": "退款成功不改变现有承接/保管，已验证资金侧边界；真实归还后接新单需H/D全链验收。"
   },
   {
     "status": "NOT_RUN",

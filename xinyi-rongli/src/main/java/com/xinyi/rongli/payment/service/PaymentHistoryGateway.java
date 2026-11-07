@@ -97,17 +97,24 @@ public class PaymentHistoryGateway {
             input.setOutRefundNo((String) row.get("out_refund_no"));
             var result =
                     new RefundService.Builder()
-                            .httpClient(gateway.client(r.sdk()))
+                            .httpClient(gateway.clientForRefund(r.sdk()))
                             .build()
                             .queryByOutRefundNo(input);
             if (!Objects.equals(result.getOutRefundNo(), row.get("out_refund_no"))
                     || !Objects.equals(result.getOutTradeNo(), r.payment().getOutTradeNo()))
                 throw new IllegalArgumentException();
             return result;
+        } catch (com.wechat.pay.java.core.exception.ServiceException e) {
+            if (e.getHttpStatusCode() == 404 && "RESOURCE_NOT_EXISTS".equals(e.getErrorCode()))
+                throw new RefundNotFound();
+            throw unavailable();
         } catch (Exception e) {
             throw unavailable();
         }
     }
+
+    /** 仅clientForRefund已验证签名的404能抵达这里，不能把未验签错误当作未受理证明。 */
+    public static final class RefundNotFound extends RuntimeException {}
 
     public Transaction readNotification(long orderId, RequestParam request) {
         var r = runtime(orderId);

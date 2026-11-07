@@ -1,0 +1,13 @@
+{
+  "exitCode": 2,
+  "totalErrors": 94,
+  "newFileVueDeclarationErrors": 14,
+  "newFileOwnErrors": [],
+  "note": "全站Vue声明等既有问题未修复；不宣称全站类型检查通过",
+  "passed": false,
+  "baselineCommit": "cdc30bb",
+  "baselineErrors": 80,
+  "currentErrors": 94,
+  "ownBusinessTypeErrors": 0,
+  "baselineEvidence": "docs/implementation/vehicle/S02/pc-typecheck.json"
+}

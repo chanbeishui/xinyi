@@ -466,9 +466,13 @@ components:
           type: integer
           minimum: 0
           description: 客户端最后读取的版本；服务端条件更新，冲突返回409
+          format: int64
+          maximum: 9007199254740991
         reason:
           type: string
           description: 必填；具体字段长度与原规范对齐，上限500字
+          minLength: 1
+          maxLength: 500
       additionalProperties: false
       required:
       - expectedVersion

@@ -1613,6 +1613,10 @@ components:
       - WITHDRAW_STATEMENT
       - ADD_NOTE
       - VIEW_AFTERSALE
+      - QUERY_REFUND
+      - RETRY_REFUND
+      - QUERY_RECONCILIATION
+      - RESOLVE_RECONCILIATION
     DriverStatementLine:
       type: object
       additionalProperties: false

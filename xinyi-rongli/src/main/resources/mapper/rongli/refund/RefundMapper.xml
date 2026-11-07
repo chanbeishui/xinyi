@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xinyi.rongli.refund.mapper.RefundMapper">
+    <resultMap id="RefundRecord" type="com.xinyi.rongli.refund.domain.RefundRecord">
+        <id property="id" column="id"/>
+        <result property="version" column="version"/>
+        <result property="caseId" column="case_id"/>
+        <result property="reviewRevision" column="review_revision"/>
+        <result property="paymentId" column="payment_id"/>
+        <result property="outRefundNo" column="out_refund_no"/>
+        <result property="channelRefundId" column="channel_refund_id"/>
+        <result property="amountFen" column="amount_fen"/>
+        <result property="status" column="status"/>
+        <result property="successAt" column="success_at" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+        <result property="lastQueryAt" column="last_query_at" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+        <result property="nextQueryAt" column="next_query_at" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+        <result property="paymentMethod" column="payment_method"/>
+        <result property="executionMode" column="execution_mode"/>
+        <result property="executionStartedAt" column="execution_started_at" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+        <result property="executionLeaseToken" column="execution_lease_token"/>
+        <result property="executionLeaseUntil" column="execution_lease_until" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+        <result property="executionAttempts" column="execution_attempts"/>
+        <result property="lastErrorCode" column="last_error_code"/>
+        <result property="lastVerifiedStatus" column="last_verified_status"/>
+        <result property="lastVerifiedAt" column="last_verified_at" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+        <result property="createdAt" column="created_at" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+        <result property="updatedAt" column="updated_at" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+    </resultMap>
+    <resultMap id="ReconciliationRecord" type="com.xinyi.rongli.refund.domain.ReconciliationRecord">
+        <id property="id" column="id"/>
+        <result property="version" column="version"/>
+        <result property="kind" column="kind"/>
+        <result property="subjectId" column="subject_id"/>
+        <result property="orderId" column="order_id"/>
+        <result property="paymentId" column="payment_id"/>
+        <result property="status" column="status"/>
+        <result property="localStatus" column="local_status"/>
+        <result property="channelStatus" column="channel_status"/>
+        <result property="reasonCode" column="reason_code"/>
+        <result property="verifiedAt" column="verified_at" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+        <result property="resolvedBy" column="resolved_by"/>
+        <result property="resolvedAt" column="resolved_at" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+        <result property="createdAt" column="created_at" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+        <result property="updatedAt" column="updated_at" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+    </resultMap>
+    <select id="ledger" resultType="map">
+        SELECT COALESCE(SUM(CASE WHEN status='SUCCESS' THEN amount_fen ELSE 0 END),0) refunded,
+            COALESCE(SUM(CASE WHEN status IN ('CREATED','PROCESSING','UNKNOWN','ABNORMAL') THEN amount_fen ELSE 0 END),0) reserved
+        FROM vi_refund_order
+        WHERE payment_id = #{paymentId}
+    </select>
+    <select id="balance" resultType="map">
+        SELECT paid_fen, refunded_fen, refund_reserved_fen
+        FROM vi_payment_order
+        WHERE id = #{paymentId}
+    </select>
+    <select id="find" resultMap="RefundRecord">
+        SELECT *
+        FROM vi_refund_order
+        WHERE id = #{id}
+    </select>
+    <select id="lock" resultMap="RefundRecord">
+        SELECT *
+        FROM vi_refund_order
+        WHERE id = #{id}
+        FOR UPDATE
+    </select>
+    <select id="byNo" resultMap="RefundRecord">
+        SELECT *
+        FROM vi_refund_order
+        WHERE out_refund_no = #{no}
+    </select>
+    <select id="byCase" resultMap="RefundRecord">
+        SELECT *
+        FROM vi_refund_order
+        WHERE case_id = #{caseId}
+            AND review_revision = #{revision}
+    </select>
+    <select id="orderId" resultType="long">
+        SELECT order_id
+        FROM vi_payment_order
+        WHERE id = #{paymentId}
+    </select>
+    <select id="review" resultType="map">
+        SELECT decision,approved_fen,return_required
+        FROM vi_aftersale_review
+        WHERE case_id = #{caseId}
+            AND revision = #{revision}
+    </select>
+    <!-- 发起前持久化UNKNOWN，进程掉线后只能先查询原号；租约和版本共同隔离晚到响应。 -->
+    <update id="claim">
+        UPDATE vi_refund_order
+        SET execution_lease_token = #{token},
+            execution_lease_until = DATE_ADD(UTC_TIMESTAMP(3), INTERVAL 60 SECOND),
+            execution_attempts = execution_attempts + 1,
+            <if test="submit">
+                execution_started_at = COALESCE(execution_started_at, UTC_TIMESTAMP(3)),
+                status = 'UNKNOWN',
+            </if>
+            version = version + 1,
+            updated_at = UTC_TIMESTAMP(3)
+        WHERE id = #{id}
+            AND version = #{version}
+            AND status NOT IN ('SUCCESS','CLOSED')
+            AND (execution_lease_until IS NULL OR execution_lease_until &lt;= UTC_TIMESTAMP(3))
+    </update>
+    <update id="markSubmission">
+        UPDATE vi_refund_order
+        SET execution_started_at = COALESCE(execution_started_at,UTC_TIMESTAMP(3)),status='UNKNOWN',
+            version=version+1,updated_at=UTC_TIMESTAMP(3)
+        WHERE id=#{id} AND version=#{version} AND execution_lease_token=#{token}
+            AND status NOT IN ('SUCCESS','CLOSED')
+    </update>
+    <update id="finish">
+        UPDATE vi_refund_order
+        SET status = #{row.status},
+            last_error_code = #{row.lastErrorCode},
+            last_query_at = UTC_TIMESTAMP(3),
+            next_query_at = DATE_ADD(UTC_TIMESTAMP(3), INTERVAL 30 SECOND),
+            execution_lease_token = NULL,execution_lease_until = NULL,
+            version = version + 1,updated_at = UTC_TIMESTAMP(3)
+        WHERE id = #{row.id}
+            AND version = #{row.version}
+            AND execution_lease_token = #{token}
+            AND status NOT IN ('SUCCESS','CLOSED')
+    </update>
+    <update id="state">
+        UPDATE vi_refund_order
+        SET status = #{status},channel_refund_id = #{channelRefundId},
+            success_at = #{successAt,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler},
+            last_verified_status = #{lastVerifiedStatus},
+            last_verified_at = #{lastVerifiedAt,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler},
+            last_error_code = NULL,last_query_at = UTC_TIMESTAMP(3),
+            next_query_at = CASE WHEN #{status} IN ('SUCCESS','CLOSED') THEN NULL
+                ELSE DATE_ADD(UTC_TIMESTAMP(3), INTERVAL 30 SECOND) END,
+            execution_lease_token = NULL,execution_lease_until = NULL,
+            version = version + 1,updated_at = UTC_TIMESTAMP(3)
+        WHERE id = #{id}
+            AND version = #{version}
+    </update>
+    <update id="settleCase">
+        UPDATE vi_aftersale_case
+        SET refund_state = #{refundState},
+            <if test="close">case_status = 'CLOSED',resolved_at = UTC_TIMESTAMP(3),</if>
+            version = version + 1,updated_at = UTC_TIMESTAMP(3)
+        WHERE id = #{caseId}
+            AND review_status = 'APPROVED'
+    </update>
+    <update id="paidBalance">
+        UPDATE vi_payment_order
+        SET refund_reserved_fen = refund_reserved_fen - #{amount},
+            refunded_fen = refunded_fen + <choose><when test="success">#{amount}</when><otherwise>0</otherwise></choose>,
+            version = version + 1,updated_at = UTC_TIMESTAMP(3)
+        WHERE id = #{paymentId}
+            AND refund_reserved_fen &gt;= #{amount}
+            AND paid_fen &gt;= refunded_fen + #{amount}
+    </update>
+    <select id="due" resultType="long">
+        SELECT r.id
+        FROM vi_refund_order r
+        JOIN vi_aftersale_case c ON c.id = r.case_id
+        JOIN vi_payment_order p ON p.id = r.payment_id
+        JOIN vi_order o ON o.id = p.order_id
+        WHERE r.payment_method = 'WECHAT' AND r.status NOT IN ('SUCCESS','CLOSED')
+            AND c.review_status = 'APPROVED'
+            AND (c.kind = 'REFUND_ONLY' OR c.return_state &lt;&gt; 'WAIT_RETURN' OR o.returned_at IS NOT NULL)
+            AND (r.next_query_at IS NULL OR r.next_query_at &lt;= UTC_TIMESTAMP(3))
+            AND (r.execution_lease_until IS NULL OR r.execution_lease_until &lt;= UTC_TIMESTAMP(3))
+        ORDER BY r.id LIMIT 100
+    </select>
+    <select id="problems" resultType="map">
+        SELECT 'PAYMENT' kind,p.id subject_id,p.order_id,p.id payment_id,p.status local_status,
+            CASE WHEN p.capacity_resolution = 'MANUAL_CONFLICT' THEN 'CAPACITY_CONFLICT' ELSE 'PAYMENT_UNKNOWN' END reason_code
+        FROM vi_payment_order p
+        WHERE (p.status = 'UNKNOWN' OR p.capacity_resolution = 'MANUAL_CONFLICT')
+            AND NOT EXISTS (SELECT 1 FROM vi_payment_reconciliation previous
+                WHERE previous.kind='PAYMENT' AND previous.subject_id=p.id AND previous.status='RESOLVED'
+                    AND p.updated_at &lt;= previous.resolved_at)
+        UNION ALL
+        SELECT 'REFUND',r.id,p.order_id,p.id,r.status,CONCAT('REFUND_',r.status)
+        FROM vi_refund_order r JOIN vi_payment_order p ON p.id = r.payment_id
+        WHERE r.status IN ('UNKNOWN','ABNORMAL','CLOSED')
+            AND NOT EXISTS (SELECT 1 FROM vi_payment_reconciliation previous
+                WHERE previous.kind='REFUND' AND previous.subject_id=r.id AND previous.status='RESOLVED'
+                    AND r.updated_at &lt;= previous.resolved_at)
+    </select>
+    <select id="reconciliation" resultMap="ReconciliationRecord">
+        SELECT *
+        FROM vi_payment_reconciliation
+        WHERE id = #{id}
+    </select>
+    <select id="lockReconciliation" resultMap="ReconciliationRecord">
+        SELECT *
+        FROM vi_payment_reconciliation
+        WHERE id = #{id}
+        FOR UPDATE
+    </select>
+    <select id="reconciliationSubject" resultMap="ReconciliationRecord">
+        SELECT *
+        FROM vi_payment_reconciliation
+        WHERE kind = #{kind}
+            AND subject_id = #{subjectId}
+        FOR UPDATE
+    </select>
+    <insert id="insertReconciliation" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO vi_payment_reconciliation(kind,subject_id,order_id,payment_id,local_status,channel_status,reason_code)
+        VALUES(#{kind},#{subjectId},#{orderId},#{paymentId},#{localStatus},#{channelStatus},#{reasonCode})
+    </insert>
+    <update id="reopen">
+        UPDATE vi_payment_reconciliation
+        SET status = 'OPEN',local_status = #{localStatus},channel_status = #{channelStatus},reason_code = #{reasonCode},
+            verified_at = NULL,resolved_at = NULL,resolved_by = NULL,
+            version = version + 1,updated_at = UTC_TIMESTAMP(3)
+        WHERE id = #{id}
+            AND version = #{version}
+    </update>
+    <update id="checked">
+        UPDATE vi_payment_reconciliation
+        SET status = 'CHECKING',local_status = #{localStatus},channel_status = #{channelStatus},
+            verified_at = #{verifiedAt,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler},
+            version = version + 1,updated_at = UTC_TIMESTAMP(3)
+        WHERE id = #{id}
+            AND version = #{version}
+    </update>
+    <update id="resolve">
+        UPDATE vi_payment_reconciliation
+        SET status = 'RESOLVED',resolved_by = #{userId},resolved_at = UTC_TIMESTAMP(3),
+            version = version + 1,updated_at = UTC_TIMESTAMP(3)
+        WHERE id = #{id}
+            AND version = #{version} AND status = 'CHECKING' AND verified_at IS NOT NULL
+    </update>
+    <!-- 收款主体是资金记录的权威归属；空集合必须拒绝，精确case过滤仍不能绕过此范围。 -->
+    <sql id="visible">
+        FROM vi_payment_reconciliation c
+        JOIN vi_payment_order p ON p.id = c.payment_id
+        WHERE p.order_id = c.order_id
+        <if test="query.caseId != null">
+            AND c.id = #{query.caseId}
+        </if>
+        <if test="query.orderNo != null">
+            AND EXISTS (
+                SELECT 1 FROM vi_order o
+                WHERE o.id = c.order_id AND o.order_no = #{query.orderNo}
+            )
+        </if>
+        <if test="query.type != null">
+            AND c.kind = #{query.type}
+        </if>
+        <if test="query.status != null">
+            AND c.status = #{query.status}
+        </if>
+        <if test="departments != null">
+            <choose>
+                <when test="departments.size() > 0">
+                    AND p.receiver_dept_id IN
+                    <foreach collection="departments" item="d" open="(" close=")" separator=",">
+                        #{d}
+                    </foreach>
+                </when>
+                <otherwise>
+                    AND 1 = 0
+                </otherwise>
+            </choose>
+        </if>
+    </sql>
+    <select id="list" resultMap="ReconciliationRecord">
+        SELECT c.*
+        <include refid="visible"/>
+        ORDER BY c.id DESC
+        LIMIT #{size} OFFSET #{offset}
+    </select>
+    <select id="count" resultType="long">
+        SELECT COUNT(*)
+        <include refid="visible"/>
+    </select>
+</mapper>

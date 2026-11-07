@@ -242,13 +242,15 @@
     ],
     "table": "vi_payment_order",
     "taskId": "P01",
-    "implementationNote": "P01预支付、X02方式锁定、P02可信支付/关闭/退款通知及查单调度字段已验证；退款申请执行由P04"
+    "implementationNote": "P01/X02方式及资金、P02通知/关闭/补偿与P04官方SDK退款/统一资金归并已隔离验证；真实渠道及X06线下凭证待后续"
   },
   {
-    "status": "NOT_ASSESSED",
-    "entityFile": null,
-    "mapperFile": null,
-    "evidence": [],
+    "status": "VERIFIED",
+    "entityFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/refund/domain/RefundRecord.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/refund/RefundMapper.xml",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/P04-20261107.json"
+    ],
     "table": "vi_refund_order",
     "taskId": "P04"
   },
@@ -722,5 +724,15 @@
       "docs/implementation/vehicle/evidence/S02-20261106.json"
     ],
     "note": "统一Service受控追加/查询，审核与排除关系无通用更新删除入口。"
+  },
+  {
+    "table": "vi_payment_reconciliation",
+    "taskId": "P04",
+    "status": "VERIFIED",
+    "entityFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/refund/domain/ReconciliationRecord.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/refund/RefundMapper.xml",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/P04-20261107.json"
+    ]
   }
 ]

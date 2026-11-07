@@ -13,19 +13,6 @@
     "origin": "V6.4新业务完整验收规格；未绑定真实Step实现前不是自动化测试结果"
   },
   {
-    "id": "TC-128",
-    "priority": "P0",
-    "module": "并发补偿",
-    "flow": "F23 F25 F26 F28 F29",
-    "title": "A退款不清B任务",
-    "given": "A取消退款后B已接",
-    "when": "A退款成功回调",
-    "then": "不操作B占用或状态",
-    "status": "NOT_RUN",
-    "evidence": "",
-    "origin": "V6.4新业务完整验收规格；未绑定真实Step实现前不是自动化测试结果"
-  },
-  {
     "id": "TC-129",
     "priority": "P0",
     "module": "并发补偿",

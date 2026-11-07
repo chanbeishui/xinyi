@@ -1161,6 +1161,10 @@ components:
       - WITHDRAW_STATEMENT
       - ADD_NOTE
       - VIEW_AFTERSALE
+      - QUERY_REFUND
+      - RETRY_REFUND
+      - QUERY_RECONCILIATION
+      - RESOLVE_RECONCILIATION
     OwnerRecord:
       type: object
       additionalProperties: false

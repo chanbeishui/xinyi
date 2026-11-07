@@ -1,7 +1,7 @@
 # P02 · 支付可信通知、查单与关单
 
 阶段：M2；责任域：payment；前置：P01, E06, X02。
-范围版本：`V6.4-CONFIG-20261022`；definitionHash：`1265bde7fec79cb17dcaeae8cca7722c48fd27506e56f41d60beb7f8b6149842`。
+范围版本：`V6.4-CONFIG-20261022`；definitionHash：`e30d70d555020b44ea14a8e7b1bd4f5c52dcf3b586c6bb9cf434f37154ab8cff`。
 
 ## 本任务交付
 - 原始body验签/解密/金额商户一致、查单补偿、30分钟可信关单
@@ -15,7 +15,7 @@
 ## 精确输入
 主源：04_接口/openapi_V6.4.yaml、05_数据设计/data_model_V6.4.json、06_验收/test_cases_V6.4.json。本目录派生，不独立维护。
 接口：API_030_get, API_031_post, API_165_post, API_166_post
-画板：B31, B31-query
+画板：无
 主责任表：vi_channel_event
 验收：TC-037, TC-038, TC-039, TC-040, TC-041, TC-042, TC-043, TC-044, TC-045, TC-046, TC-047, TC-048, TC-049, TC-050
 

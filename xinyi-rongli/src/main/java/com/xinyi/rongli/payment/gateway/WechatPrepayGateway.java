@@ -112,6 +112,60 @@ public class WechatPrepayGateway {
                 .build();
     }
 
+    /** SDK非2xx会先抛ServiceException；退款重试不能把未经验签的404当作未受理证据。 */
+    public com.wechat.pay.java.core.http.HttpClient clientForRefund(Config config) {
+        networkAvailable();
+        var strictTransport =
+                transport
+                        .newBuilder()
+                        .addInterceptor(
+                                chain -> {
+                                    var response = chain.proceed(chain.request());
+                                    if (response.code() != 404) return response;
+                                    try {
+                                        var headers =
+                                                new com.wechat.pay.java.core.http.HttpHeaders();
+                                        for (String name :
+                                                List.of(
+                                                        "Wechatpay-Timestamp",
+                                                        "Wechatpay-Nonce",
+                                                        "Wechatpay-Serial",
+                                                        "Wechatpay-Signature")) {
+                                            var values = response.headers(name);
+                                            if (values.size() != 1)
+                                                throw new java.io.IOException("退款查询404缺少唯一签名头");
+                                            headers.addHeader(name, values.get(0));
+                                        }
+                                        byte[] bytes = response.peekBody(65537).bytes();
+                                        if (bytes.length > 65536
+                                                || !config.createValidator()
+                                                        .validate(
+                                                                headers,
+                                                                new String(
+                                                                        bytes,
+                                                                        java.nio.charset
+                                                                                .StandardCharsets
+                                                                                .UTF_8)))
+                                            throw new java.io.IOException("退款查询404验签失败");
+                                        return response;
+                                    } catch (RuntimeException | java.io.IOException failure) {
+                                        response.close();
+                                        throw new java.io.IOException("退款查询未取得可信未受理证据");
+                                    }
+                                })
+                        .build();
+        return new DefaultHttpClientBuilder()
+                .config(config)
+                .okHttpClient(strictTransport)
+                .disableRetryOnConnectionFailure()
+                .build();
+    }
+
+    /** 通知地址沿可信部署域名生成，不能由退款请求任意指定外部接收地址。 */
+    public String refundNotifyUrl() {
+        return notifyUrl().replaceFirst("/pay$", "/refund");
+    }
+
     public String notifyUrl() {
         try {
             var u = URI.create(origin);

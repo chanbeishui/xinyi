@@ -2442,6 +2442,41 @@
   <td>UTC更新时间；Mapper每次修改显式SET updated_at=UTC_TIMESTAMP(3)，不依赖连接时区</td>
 </tr>
 <tr>
+  <td>execution_started_at</td>
+  <td><code>DATETIME(3) NULL</code></td>
+  <td>首次退款发起意图UTC，一旦存在仅查原号</td>
+</tr>
+<tr>
+  <td>execution_lease_token</td>
+  <td><code>VARCHAR(36) NULL</code></td>
+  <td>执行租约标识，不向客户端或日志输出</td>
+</tr>
+<tr>
+  <td>execution_lease_until</td>
+  <td><code>DATETIME(3) NULL</code></td>
+  <td>执行租约截止UTC</td>
+</tr>
+<tr>
+  <td>execution_attempts</td>
+  <td><code>INT NOT NULL DEFAULT 0</code></td>
+  <td>提交与查询尝试计数</td>
+</tr>
+<tr>
+  <td>last_error_code</td>
+  <td><code>VARCHAR(64) NULL</code></td>
+  <td>脱敏稳定错误码，不含SDK异常或凭据</td>
+</tr>
+<tr>
+  <td>last_verified_status</td>
+  <td><code>VARCHAR(24) NULL</code></td>
+  <td>最近可信渠道状态，不采信客户端</td>
+</tr>
+<tr>
+  <td>last_verified_at</td>
+  <td><code>DATETIME(3) NULL</code></td>
+  <td>最近可信渠道核对UTC时刻</td>
+</tr>
+<tr>
   <td>version</td>
   <td><code>BIGINT NOT NULL DEFAULT 0</code></td>
   <td>乐观锁版本</td>
@@ -6865,6 +6900,94 @@
   <td>created_at</td>
   <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
   <td>关系冻结UTC时刻</td>
+</tr>
+</tbody>
+</table>
+<h2>vi_payment_reconciliation · 原支付主体下永久对账异常</h2>
+<p>权威归属从原支付receiver_dept_id加载；同kind/subject_id永久一条记录可重开，异常/结案均保留审计。服务端可信查询结果才能结案，不接受客户端声明资金状态。</p>
+<table>
+<thead>
+<tr>
+  <th>字段</th>
+  <th>SQL类型与约束</th>
+  <th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>id</td>
+  <td><code>BIGINT NOT NULL AUTO_INCREMENT</code></td>
+  <td>独立对账异常ID，对外caseId十进制字符串</td>
+</tr>
+<tr>
+  <td>kind</td>
+  <td><code>VARCHAR(16) NOT NULL</code></td>
+  <td>PAYMENT或REFUND</td>
+</tr>
+<tr>
+  <td>subject_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>对应支付记录或退款记录ID，按kind解释</td>
+</tr>
+<tr>
+  <td>order_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>原订单</td>
+</tr>
+<tr>
+  <td>payment_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>原支付记录，权威收款主体从此加载</td>
+</tr>
+<tr>
+  <td>status</td>
+  <td><code>VARCHAR(16) NOT NULL DEFAULT 'OPEN'</code></td>
+  <td>OPEN,CHECKING,RESOLVED</td>
+</tr>
+<tr>
+  <td>local_status</td>
+  <td><code>VARCHAR(24) NOT NULL</code></td>
+  <td>最近本地状态快照</td>
+</tr>
+<tr>
+  <td>channel_status</td>
+  <td><code>VARCHAR(24) NULL</code></td>
+  <td>最近可信渠道状态，未知为NULL</td>
+</tr>
+<tr>
+  <td>reason_code</td>
+  <td><code>VARCHAR(64) NOT NULL</code></td>
+  <td>受控异常原因，不存自由文本或SDK报文</td>
+</tr>
+<tr>
+  <td>verified_at</td>
+  <td><code>DATETIME(3) NULL</code></td>
+  <td>最近可信渠道核对UTC</td>
+</tr>
+<tr>
+  <td>resolved_by</td>
+  <td><code>BIGINT NULL</code></td>
+  <td>已核实一致后登记结案的后台用户</td>
+</tr>
+<tr>
+  <td>resolved_at</td>
+  <td><code>DATETIME(3) NULL</code></td>
+  <td>结案UTC，异常重开时清空</td>
+</tr>
+<tr>
+  <td>created_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>UTC创建时间</td>
+</tr>
+<tr>
+  <td>updated_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>UTC更新时间</td>
+</tr>
+<tr>
+  <td>version</td>
+  <td><code>BIGINT NOT NULL DEFAULT 0</code></td>
+  <td>乐观锁版本</td>
 </tr>
 </tbody>
 </table>

@@ -1390,43 +1390,58 @@
     "taskId": "D03"
   },
   {
-    "implementationStatus": "NOT_ASSESSED",
-    "controllerFile": null,
-    "serviceFile": null,
-    "mapperFile": null,
-    "testFiles": [],
-    "reviewEvidence": null,
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/refund/controller/RefundController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/refund/service/RefundExecutionService.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/refund/RefundMapper.xml",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/P04RefundIT.java"
+    ],
+    "reviewEvidence": "docs/implementation/vehicle/P04/review.md",
     "operationId": "API_113_get",
     "method": "GET",
     "path": "/api/admin/refunds/{refundNo}",
     "summary": "渠道退款详情",
-    "taskId": "P04"
+    "taskId": "P04",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/P04-20261107.json"
+    ]
   },
   {
-    "implementationStatus": "NOT_ASSESSED",
-    "controllerFile": null,
-    "serviceFile": null,
-    "mapperFile": null,
-    "testFiles": [],
-    "reviewEvidence": null,
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/refund/controller/RefundController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/refund/service/RefundExecutionService.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/refund/RefundMapper.xml",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/P04RefundIT.java"
+    ],
+    "reviewEvidence": "docs/implementation/vehicle/P04/review.md",
     "operationId": "API_114_post",
     "method": "POST",
     "path": "/api/admin/refunds/{refundNo}/query",
     "summary": "主动查退款",
-    "taskId": "P04"
+    "taskId": "P04",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/P04-20261107.json"
+    ]
   },
   {
-    "implementationStatus": "NOT_ASSESSED",
-    "controllerFile": null,
-    "serviceFile": null,
-    "mapperFile": null,
-    "testFiles": [],
-    "reviewEvidence": null,
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/refund/controller/RefundController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/refund/service/RefundExecutionService.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/refund/RefundMapper.xml",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/P04RefundIT.java"
+    ],
+    "reviewEvidence": "docs/implementation/vehicle/P04/review.md",
     "operationId": "API_115_post",
     "method": "POST",
     "path": "/api/admin/refunds/{refundNo}/retry",
     "summary": "安全重试渠道请求",
-    "taskId": "P04"
+    "taskId": "P04",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/P04-20261107.json"
+    ]
   },
   {
     "implementationStatus": "NOT_ASSESSED",
@@ -1805,43 +1820,58 @@
     "taskId": "F05"
   },
   {
-    "implementationStatus": "NOT_ASSESSED",
-    "controllerFile": null,
-    "serviceFile": null,
-    "mapperFile": null,
-    "testFiles": [],
-    "reviewEvidence": null,
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/refund/controller/RefundController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/refund/service/PaymentReconciliationService.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/refund/RefundMapper.xml",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/P04RefundIT.java"
+    ],
+    "reviewEvidence": "docs/implementation/vehicle/P04/review.md",
     "operationId": "API_141_get",
     "method": "GET",
     "path": "/api/admin/reconciliation",
     "summary": "对账异常",
-    "taskId": "P04"
+    "taskId": "P04",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/P04-20261107.json"
+    ]
   },
   {
-    "implementationStatus": "NOT_ASSESSED",
-    "controllerFile": null,
-    "serviceFile": null,
-    "mapperFile": null,
-    "testFiles": [],
-    "reviewEvidence": null,
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/refund/controller/RefundController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/refund/service/PaymentReconciliationService.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/refund/RefundMapper.xml",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/P04RefundIT.java"
+    ],
+    "reviewEvidence": "docs/implementation/vehicle/P04/review.md",
     "operationId": "API_142_post",
     "method": "POST",
     "path": "/api/admin/reconciliation/{caseId}/query",
     "summary": "重查可信渠道状态",
-    "taskId": "P04"
+    "taskId": "P04",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/P04-20261107.json"
+    ]
   },
   {
-    "implementationStatus": "NOT_ASSESSED",
-    "controllerFile": null,
-    "serviceFile": null,
-    "mapperFile": null,
-    "testFiles": [],
-    "reviewEvidence": null,
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/refund/controller/RefundController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/refund/service/PaymentReconciliationService.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/refund/RefundMapper.xml",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/P04RefundIT.java"
+    ],
+    "reviewEvidence": "docs/implementation/vehicle/P04/review.md",
     "operationId": "API_143_post",
     "method": "POST",
     "path": "/api/admin/reconciliation/{caseId}/resolve",
     "summary": "基于证据登记对账结论",
-    "taskId": "P04"
+    "taskId": "P04",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/P04-20261107.json"
+    ]
   },
   {
     "implementationStatus": "NOT_ASSESSED",

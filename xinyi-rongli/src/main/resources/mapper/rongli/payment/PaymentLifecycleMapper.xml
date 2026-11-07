@@ -184,6 +184,10 @@
       AND r.execution_mode = 'WECHAT_API'
   </select>
 
+  <select id="refundSnapshot" resultType="map">
+    SELECT * FROM vi_refund_order WHERE id = #{id}
+  </select>
+
   <select id="lockRefund" resultType="map">
     SELECT *
     FROM vi_refund_order

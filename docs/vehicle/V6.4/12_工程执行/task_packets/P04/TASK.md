@@ -1,12 +1,14 @@
 # P04 · 未接车退款执行与渠道基础
 
 阶段：M2；责任域：refund；前置：S02, P02。
-范围版本：`V6.4-CONFIG-20261022`；definitionHash：`efe17e756bb198138fc1d96ae4f02ceb61142afdab068eca09c337c6e797ab6e`。
+范围版本：`V6.4-REFUND-EXECUTION-20261107`；definitionHash：`a9cb334b417b9fec3bf1cec70155bdfd533dbfe22ccacf1758a68bf8c66994a5`。
 
 ## 本任务交付
 - 审核批准后退款单与渠道调用，复用原退款号查询及重试
 - 为真实付款准备取消出口
 - V6.4同步范围：第三方配置/支付method/外部路由/消息模板以主PRD23和X01–X07为准；旧静态配置不能形成旁路
+- 真实官方SDK签验、404未受理证据校验、租约恢复与原号受控重试；共用资金归并不释放车辆承接
+- 持久支付/退款对账及可信终态办结；线下本地查询不冒充已退，默认关闭自动执行
 
 ## 必测失败与并发
 - 未知结果不重复扣款
@@ -15,17 +17,18 @@
 ## 精确输入
 主源：04_接口/openapi_V6.4.yaml、05_数据设计/data_model_V6.4.json、06_验收/test_cases_V6.4.json。本目录派生，不独立维护。
 接口：API_113_get, API_114_post, API_115_post, API_141_get, API_142_post, API_143_post
-画板：无
-主责任表：vi_refund_order
-验收：无
+画板：B31, B31-query
+主责任表：vi_refund_order, vi_payment_reconciliation
+验收：TC-118, TC-119, TC-120, TC-121, TC-123, TC-124, TC-128, TC-153, TC-154
 
 ## 代码落位
 `xinyi-rongli/src/main/java/com/xinyi/rongli/refund/`
 `xinyi-rongli/src/main/resources/mapper/rongli/refund/`
-`xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/refund/`
 `xinyi-ui/src/views/rongli/refund/`
 `xinyi-ui/src/api/rongli/refund.ts`
 `xinyi-miniapp/src/features/refund/`
+`xinyi-rongli/src/main/java/com/xinyi/rongli/refund/controller/`
+`xinyi-admin/src/test/java/com/xinyi/web/viit/P04RefundIT.java`
 
 ## 验证命令
 ```bash

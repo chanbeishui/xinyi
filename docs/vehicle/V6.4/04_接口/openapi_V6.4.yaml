@@ -11724,9 +11724,7 @@ paths:
       summary: 渠道退款详情
       tags:
       - ADMIN
-      description: '流程：F20。权限码为建议，须映射实际仓库；非全局角色必须有站点范围；审核不允许自己审批自己的申请
-
-        参数校验、真实归属、服务端当前状态/版本先于写入；不接受主体伪造。'
+      description: 真实ADMIN按原支付receiver_dept_id资金权限读取；后台身份/交易数据不缓存。
       x-flow-ids:
       - F20
       security:
@@ -11797,7 +11795,7 @@ paths:
       x-permission: biz:refund:query
       x-authorization:
         realm: ADMIN
-        scope: ORG_DEPT_STATION
+        scope: ORIGINAL_PAYMENT_RECEIVER_DEPT
         permission: biz:refund:query
       x-error-codes:
       - VI_REQUEST_INVALID
@@ -11813,15 +11811,15 @@ paths:
       - VI_UPSTREAM_UNAVAILABLE
       x-error-policy: OBJECT_404_HIDES_EXISTENCE
       x-contract-baseline: V6.4
+      x-authority-sources:
+        funds: vi_payment_order.receiver_dept_id
   /api/admin/refunds/{refundNo}/query:
     post:
       operationId: API_114_post
       summary: 主动查退款
       tags:
       - ADMIN
-      description: '流程：F20。权限码为建议，须映射实际仓库；非全局角色必须有站点范围；审核不允许自己审批自己的申请
-
-        参数校验、真实归属、服务端当前状态/版本先于写入；不接受主体伪造。 V6.4：先按原支付method分支；OFFLINE查询本地核实进度，重试不调用微信且不重复人工付款；历史微信按原商户有效凭据查询/重试。'
+      description: 真实ADMIN、功能权限及原收款主体部门范围；版本/500字以内原因/UUID幂等键。外部SDK调用在事务外；新外部动作和返回操作者数据前实时鉴权，退款POST另重验审批、实物和租约；可信资金核对原单证据后独立归并，不因操作者撤权丢弃已发生事实。客户端不能提交金额、渠道结果或部门。
       x-flow-ids:
       - F20
       security:
@@ -11908,7 +11906,7 @@ paths:
       x-permission: biz:refund:query
       x-authorization:
         realm: ADMIN
-        scope: ORG_DEPT_STATION
+        scope: ORIGINAL_PAYMENT_RECEIVER_DEPT
         permission: biz:refund:query
       x-error-codes:
       - VI_REQUEST_INVALID
@@ -11940,15 +11938,15 @@ paths:
       - VI_UPSTREAM_UNAVAILABLE
       x-error-policy: OBJECT_404_HIDES_EXISTENCE
       x-contract-baseline: V6.4
+      x-authority-sources:
+        funds: vi_payment_order.receiver_dept_id
   /api/admin/refunds/{refundNo}/retry:
     post:
       operationId: API_115_post
       summary: 安全重试渠道请求
       tags:
       - ADMIN
-      description: '流程：F20。权限码为建议，须映射实际仓库；非全局角色必须有站点范围；审核不允许自己审批自己的申请
-
-        参数校验、真实归属、服务端当前状态/版本先于写入；不接受主体伪造。 V6.4：先按原支付method分支；OFFLINE查询本地核实进度，重试不调用微信且不重复人工付款；历史微信按原商户有效凭据查询/重试。'
+      description: 真实ADMIN、功能权限及原收款主体部门范围；版本/500字以内原因/UUID幂等键。外部SDK调用在事务外；新外部动作和返回操作者数据前实时鉴权，退款POST另重验审批、实物和租约；可信资金核对原单证据后独立归并，不因操作者撤权丢弃已发生事实。客户端不能提交金额、渠道结果或部门。 未知先查同一原退款号；仅可信未受理才能原参数重发。SUCCESS/CLOSED不可重提；线下返回明确不支持。
       x-flow-ids:
       - F20
       security:
@@ -12035,7 +12033,7 @@ paths:
       x-permission: biz:refund:retry
       x-authorization:
         realm: ADMIN
-        scope: ORG_DEPT_STATION
+        scope: ORIGINAL_PAYMENT_RECEIVER_DEPT
         permission: biz:refund:retry
       x-error-codes:
       - VI_REQUEST_INVALID
@@ -12067,6 +12065,8 @@ paths:
       - VI_UPSTREAM_UNAVAILABLE
       x-error-policy: OBJECT_404_HIDES_EXISTENCE
       x-contract-baseline: V6.4
+      x-authority-sources:
+        funds: vi_payment_order.receiver_dept_id
   /api/admin/disputes:
     get:
       operationId: API_116_get
@@ -15062,9 +15062,7 @@ paths:
       summary: 对账异常
       tags:
       - ADMIN
-      description: '流程：F20。权限码为建议，须映射实际仓库；非全局角色必须有站点范围；审核不允许自己审批自己的申请
-
-        参数校验、真实归属、服务端当前状态/版本先于写入；不接受主体伪造。'
+      description: 真实ADMIN按原支付receiver_dept_id资金权限读取；后台身份/交易数据不缓存。
       x-flow-ids:
       - F20
       security:
@@ -15140,10 +15138,32 @@ paths:
           minimum: 1
           maximum: 100
           default: 10
+      - name: caseId
+        in: query
+        schema:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+      - name: orderNo
+        in: query
+        schema:
+          type: string
+          minLength: 1
+          maxLength: 64
+      - name: type
+        in: query
+        schema:
+          type: string
+          enum:
+          - PAYMENT
+          - REFUND
+      - name: status
+        in: query
+        schema:
+          $ref: '#/components/schemas/ReconcileStatus'
       x-permission: biz:paymentreconciliation:list
       x-authorization:
         realm: ADMIN
-        scope: ORG_DEPT_STATION
+        scope: ORIGINAL_PAYMENT_RECEIVER_DEPT
         permission: biz:paymentreconciliation:list
       x-error-codes:
       - VI_REQUEST_INVALID
@@ -15158,15 +15178,15 @@ paths:
       - VI_UPSTREAM_UNAVAILABLE
       x-error-policy: GLOBAL_FAILURES_NO_RESOURCE_404
       x-contract-baseline: V6.4
+      x-authority-sources:
+        funds: vi_payment_order.receiver_dept_id
   /api/admin/reconciliation/{caseId}/query:
     post:
       operationId: API_142_post
       summary: 重查可信渠道状态
       tags:
       - ADMIN
-      description: '流程：F20。权限码为建议，须映射实际仓库；非全局角色必须有站点范围；审核不允许自己审批自己的申请
-
-        参数校验、真实归属、服务端当前状态/版本先于写入；不接受主体伪造。'
+      description: 真实ADMIN、功能权限及原收款主体部门范围；版本/500字以内原因/UUID幂等键。外部SDK调用在事务外；新外部动作和返回操作者数据前实时鉴权，退款POST另重验审批、实物和租约；可信资金核对原单证据后独立归并，不因操作者撤权丢弃已发生事实。客户端不能提交金额、渠道结果或部门。
       x-flow-ids:
       - F20
       security:
@@ -15255,7 +15275,7 @@ paths:
       x-permission: biz:paymentreconciliation:query
       x-authorization:
         realm: ADMIN
-        scope: ORG_DEPT_STATION
+        scope: ORIGINAL_PAYMENT_RECEIVER_DEPT
         permission: biz:paymentreconciliation:query
       x-error-codes:
       - VI_REQUEST_INVALID
@@ -15287,15 +15307,15 @@ paths:
       - VI_UPSTREAM_UNAVAILABLE
       x-error-policy: OBJECT_404_HIDES_EXISTENCE
       x-contract-baseline: V6.4
+      x-authority-sources:
+        funds: vi_payment_order.receiver_dept_id
   /api/admin/reconciliation/{caseId}/resolve:
     post:
       operationId: API_143_post
       summary: 基于证据登记对账结论
       tags:
       - ADMIN
-      description: '流程：F20。权限码为建议，须映射实际仓库；非全局角色必须有站点范围；审核不允许自己审批自己的申请
-
-        参数校验、真实归属、服务端当前状态/版本先于写入；不接受主体伪造。'
+      description: 真实ADMIN、功能权限及原收款主体部门范围；版本/500字以内原因/UUID幂等键。外部SDK调用在事务外；新外部动作和返回操作者数据前实时鉴权，退款POST另重验审批、实物和租约；可信资金核对原单证据后独立归并，不因操作者撤权丢弃已发生事实。客户端不能提交金额、渠道结果或部门。 办结只登记已验证一致的事实，不改变付款/退款金额，不允许凭原因手工认账。
       x-flow-ids:
       - F20
       security:
@@ -15384,7 +15404,7 @@ paths:
       x-permission: biz:paymentreconciliation:resolve
       x-authorization:
         realm: ADMIN
-        scope: ORG_DEPT_STATION
+        scope: ORIGINAL_PAYMENT_RECEIVER_DEPT
         permission: biz:paymentreconciliation:resolve
       x-error-codes:
       - VI_REQUEST_INVALID
@@ -15416,6 +15436,8 @@ paths:
       - VI_UPSTREAM_UNAVAILABLE
       x-error-policy: OBJECT_404_HIDES_EXISTENCE
       x-contract-baseline: V6.4
+      x-authority-sources:
+        funds: vi_payment_order.receiver_dept_id
   /api/admin/orders/export:
     post:
       operationId: API_144_post
@@ -32081,9 +32103,13 @@ components:
           type: integer
           minimum: 0
           description: 客户端最后读取的版本；服务端条件更新，冲突返回409
+          format: int64
+          maximum: 9007199254740991
         reason:
           type: string
           description: 必填；具体字段长度与原规范对齐，上限500字
+          minLength: 1
+          maxLength: 500
       additionalProperties: false
       required:
       - expectedVersion
@@ -33764,14 +33790,16 @@ components:
           $ref: '#/components/schemas/ChannelRefundStatus'
         channelRefundId:
           type: string
-          pattern: ^[1-9][0-9]{0,18}$
-          maxLength: 19
-          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+          minLength: 1
+          maxLength: 64
+          pattern: ^[A-Za-z0-9_-]+$
+          nullable: true
+          description: 渠道不透明退款号，不能按数据库Long/19位限制解析。
         successAt:
           type: string
           format: date-time
           pattern: Z$
-          description: ISO8601 UTC时刻，必须Z结尾；显示与业务日期Asia/Shanghai
+          nullable: true
         queryRequired:
           type: boolean
         version:
@@ -33800,8 +33828,64 @@ components:
           allOf:
           - $ref: '#/components/schemas/OfflineProofStatus'
           nullable: true
+        returnState:
+          type: string
+          enum:
+          - UNDETERMINED
+          - NOT_REQUIRED
+          - WAIT_RETURN
+          - RETURNED
+        executionStartedAt:
+          type: string
+          format: date-time
+          pattern: Z$
+          nullable: true
+        lastErrorCode:
+          type: string
+          nullable: true
+          maxLength: 64
+        lastVerifiedAt:
+          type: string
+          format: date-time
+          pattern: Z$
+          nullable: true
+        paidAmount:
+          type: integer
+          format: int64
+          minimum: 0
+        refundedAmount:
+          type: integer
+          format: int64
+          minimum: 0
+        reservedAmount:
+          type: integer
+          format: int64
+          minimum: 0
+        allowedActions:
+          type: array
+          uniqueItems: true
+          items:
+            $ref: '#/components/schemas/AllowedAction'
       additionalProperties: false
-      description: ' 退款归属原支付方法与收款主体；线下不调用微信，不因支付开关关闭放弃历史退款。'
+      description: 原支付收款主体下的稳定退款单；签名/金额/原交易核验后才归并渠道事实。UNKNOWN先查原号，可信未受理才可后台显式原号原参重试；CLOSED终态禁止原号重提。线下仅查询本地已记录进度，不调用微信，实际凭证核实交X06。不得以退款结果释放车辆承接。
+      required:
+      - refundNo
+      - orderNo
+      - amount
+      - status
+      - channelRefundId
+      - successAt
+      - version
+      - caseId
+      - reviewRevision
+      - paymentMethod
+      - executionMode
+      - returnState
+      - queryRequired
+      - paidAmount
+      - refundedAmount
+      - reservedAmount
+      - allowedActions
     DisputeInput:
       type: object
       properties:
@@ -34470,23 +34554,73 @@ components:
           type: string
           pattern: ^[1-9][0-9]{0,18}$
           maxLength: 19
-          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+          description: 独立对账异常ID，不是售后申请ID；同kind/subject永久一条，可重开并保留审计。
         orderNo:
           type: string
           description: 不透明ID，以字符串传输，避免JavaScript大整数精度丢失
         type:
           type: string
+          enum:
+          - PAYMENT
+          - REFUND
         localStatus:
           type: string
         channelStatus:
           type: string
+          nullable: true
+          maxLength: 24
         status:
           $ref: '#/components/schemas/ReconcileStatus'
         version:
           type: integer
           minimum: 0
           description: 客户端最后读取的版本；服务端条件更新，冲突返回409
+        subjectId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+        paymentMethod:
+          type: string
+          enum:
+          - WECHAT
+          - OFFLINE
+        refundNo:
+          type: string
+          nullable: true
+          maxLength: 64
+        reasonCode:
+          type: string
+          maxLength: 64
+        verifiedAt:
+          type: string
+          format: date-time
+          pattern: Z$
+          nullable: true
+        resolvedAt:
+          type: string
+          format: date-time
+          pattern: Z$
+          nullable: true
+        allowedActions:
+          type: array
+          uniqueItems: true
+          items:
+            $ref: '#/components/schemas/AllowedAction'
       additionalProperties: false
+      required:
+      - caseId
+      - orderNo
+      - type
+      - subjectId
+      - paymentMethod
+      - status
+      - localStatus
+      - channelStatus
+      - reasonCode
+      - version
+      - verifiedAt
+      - resolvedAt
+      - allowedActions
+      description: 从原payment.receiver_dept_id校验资金范围；只有本地与可信渠道终态一致且容量/余额冲突已消除才能办结。reason是审计说明，不能手工把未知写成成功。
     EncryptedResource:
       type: object
       properties:
@@ -40136,6 +40270,10 @@ components:
       - WITHDRAW_STATEMENT
       - ADD_NOTE
       - VIEW_AFTERSALE
+      - QUERY_REFUND
+      - RETRY_REFUND
+      - QUERY_RECONCILIATION
+      - RESOLVE_RECONCILIATION
     AccountStatus:
       type: string
       enum:

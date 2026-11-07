@@ -1475,17 +1475,49 @@ CREATE TABLE `vi_refund_order` (
   `execution_mode` VARCHAR(24) NOT NULL COMMENT 'RefundExecutionMode: WECHAT_API,MANUAL_OFFLINE；',
   `created_at` DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3)) COMMENT '创建时间，统一UTC',
   `updated_at` DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3)) COMMENT 'UTC更新时间；Mapper每次修改显式SET updated_at=UTC_TIMESTAMP(3)，不依赖连接时区',
+  `execution_started_at` DATETIME(3) NULL COMMENT '首次退款发起意图UTC，一旦存在仅查原号',
+  `execution_lease_token` VARCHAR(36) NULL COMMENT '执行租约标识，不向客户端或日志输出',
+  `execution_lease_until` DATETIME(3) NULL COMMENT '执行租约截止UTC',
+  `execution_attempts` INT NOT NULL DEFAULT 0 COMMENT '提交与查询尝试计数',
+  `last_error_code` VARCHAR(64) NULL COMMENT '脱敏稳定错误码，不含SDK异常或凭据',
+  `last_verified_status` VARCHAR(24) NULL COMMENT '最近可信渠道状态，不采信客户端',
+  `last_verified_at` DATETIME(3) NULL COMMENT '最近可信渠道核对UTC时刻',
   `version` BIGINT NOT NULL DEFAULT 0 COMMENT '乐观锁版本',
   PRIMARY KEY (`id`),
   UNIQUE KEY uk_case_review (case_id,review_revision),
   UNIQUE KEY uk_refund_no (out_refund_no),
   KEY ix_query (status,next_query_at),
+  CONSTRAINT ck_refund_execution_attempts CHECK (execution_attempts>=0),
   CONSTRAINT ck_refund_amount CHECK (amount_fen>0),
   CONSTRAINT ck_66_8132f268f5fd CHECK (`status` IN ('CREATED','PROCESSING','SUCCESS','CLOSED','ABNORMAL','UNKNOWN')),
   CONSTRAINT ck_ver_refund_order CHECK (version >= 0),
   CONSTRAINT ck_be46cf0b350473 CHECK (`payment_method` IN ('WECHAT','OFFLINE')),
   CONSTRAINT ck_35feb49f221ec5 CHECK (`execution_mode` IN ('WECHAT_API','MANUAL_OFFLINE'))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='稳定退款单及渠道执行';
+
+CREATE TABLE `vi_payment_reconciliation` (
+  `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '独立对账异常ID，对外caseId十进制字符串',
+  `kind` VARCHAR(16) NOT NULL COMMENT 'PAYMENT或REFUND',
+  `subject_id` BIGINT NOT NULL COMMENT '对应支付记录或退款记录ID，按kind解释',
+  `order_id` BIGINT NOT NULL COMMENT '原订单',
+  `payment_id` BIGINT NOT NULL COMMENT '原支付记录，权威收款主体从此加载',
+  `status` VARCHAR(16) NOT NULL DEFAULT 'OPEN' COMMENT 'OPEN,CHECKING,RESOLVED',
+  `local_status` VARCHAR(24) NOT NULL COMMENT '最近本地状态快照',
+  `channel_status` VARCHAR(24) NULL COMMENT '最近可信渠道状态，未知为NULL',
+  `reason_code` VARCHAR(64) NOT NULL COMMENT '受控异常原因，不存自由文本或SDK报文',
+  `verified_at` DATETIME(3) NULL COMMENT '最近可信渠道核对UTC',
+  `resolved_by` BIGINT NULL COMMENT '已核实一致后登记结案的后台用户',
+  `resolved_at` DATETIME(3) NULL COMMENT '结案UTC，异常重开时清空',
+  `created_at` DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3)) COMMENT 'UTC创建时间',
+  `updated_at` DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3)) COMMENT 'UTC更新时间',
+  `version` BIGINT NOT NULL DEFAULT 0 COMMENT '乐观锁版本',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY uk_reconciliation_subject (`kind`,`subject_id`),
+  KEY ix_reconciliation_status (`status`,`updated_at`,`id`),
+  CONSTRAINT ck_reconciliation_kind CHECK (`kind` IN ('PAYMENT','REFUND')),
+  CONSTRAINT ck_reconciliation_status CHECK (`status` IN ('OPEN','CHECKING','RESOLVED')),
+  CONSTRAINT ck_reconciliation_version CHECK (`version` >= 0)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='原支付主体下永久对账异常，不删除历史，原case可重开';
 
 CREATE TABLE `vi_channel_event` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',
@@ -2782,3 +2814,194 @@ SELECT menu_id,parent_id,perms FROM sys_menu WHERE (menu_id=2970808 AND (parent_
 INSERT INTO s02_menu_guard SELECT COUNT(*) FROM sys_menu WHERE (menu_id=2970808 AND (parent_id<>2970801 OR COALESCE(perms,'')<>'biz:refund:approve')) OR (perms='biz:refund:approve' AND menu_id<>2970808);
 INSERT INTO sys_menu(menu_id,menu_name,parent_id,order_num,path,component,is_frame,is_cache,menu_type,visible,status,perms,icon,create_by,remark) SELECT 2970808,'批准客户退款资金',2970801,80,'#',NULL,1,1,'F','0','0','biz:refund:approve','documentation','migration','S02订单权限与收款主体资金权限分别校验；不自动授权' WHERE NOT EXISTS(SELECT 1 FROM sys_menu WHERE menu_id=2970808);
 DROP TEMPORARY TABLE s02_menu_guard;
+
+-- P04客户支付与退款权限菜单。
+CREATE TEMPORARY TABLE p04_menu_guard (
+    violations INT NOT NULL CHECK(violations=0)
+);
+
+SELECT menu_id,parent_id,perms
+FROM sys_menu
+WHERE (menu_id=2970900
+        AND (parent_id<>0
+            OR COALESCE(perms,'')<>''));
+
+INSERT INTO p04_menu_guard
+SELECT COUNT(*)
+FROM sys_menu
+WHERE (menu_id=2970900
+        AND (parent_id<>0
+            OR COALESCE(perms,'')<>''));
+
+INSERT INTO sys_menu(
+    menu_id,menu_name,parent_id,order_num,path,
+    component,is_frame,is_cache,menu_type,visible,
+    status,perms,icon,create_by,remark
+)
+SELECT
+    2970900,'客户支付与退款',0,90,'payment-finance',
+    NULL,1,1,'M','0',
+    '0','','money','migration','P04资金数据归属原收款主体；不自动授权'
+WHERE NOT EXISTS(
+    SELECT 1
+    FROM sys_menu
+    WHERE menu_id=2970900
+);
+
+SELECT menu_id,parent_id,perms
+FROM sys_menu
+WHERE (menu_id=2970901
+        AND (parent_id<>2970900
+            OR COALESCE(perms,'')<>''));
+
+INSERT INTO p04_menu_guard
+SELECT COUNT(*)
+FROM sys_menu
+WHERE (menu_id=2970901
+        AND (parent_id<>2970900
+            OR COALESCE(perms,'')<>''));
+
+INSERT INTO sys_menu(
+    menu_id,menu_name,parent_id,order_num,path,
+    component,is_frame,is_cache,menu_type,visible,
+    status,perms,icon,create_by,remark
+)
+SELECT
+    2970901,'渠道退款',2970900,90,'refunds',
+    'rongli/refund/index',1,1,'C','0',
+    '0','','money','migration','P04资金数据归属原收款主体；不自动授权'
+WHERE NOT EXISTS(
+    SELECT 1
+    FROM sys_menu
+    WHERE menu_id=2970901
+);
+
+SELECT menu_id,parent_id,perms
+FROM sys_menu
+WHERE (menu_id=2970902
+        AND (parent_id<>2970900
+            OR COALESCE(perms,'')<>'biz:paymentreconciliation:list'))
+    OR (perms='biz:paymentreconciliation:list'
+        AND menu_id<>2970902);
+
+INSERT INTO p04_menu_guard
+SELECT COUNT(*)
+FROM sys_menu
+WHERE (menu_id=2970902
+        AND (parent_id<>2970900
+            OR COALESCE(perms,'')<>'biz:paymentreconciliation:list'))
+    OR (perms='biz:paymentreconciliation:list'
+        AND menu_id<>2970902);
+
+INSERT INTO sys_menu(
+    menu_id,menu_name,parent_id,order_num,path,
+    component,is_frame,is_cache,menu_type,visible,
+    status,perms,icon,create_by,remark
+)
+SELECT
+    2970902,'支付对账异常',2970900,90,'reconciliation',
+    'rongli/reconciliation/index',1,1,'C','0',
+    '0','biz:paymentreconciliation:list','money','migration','P04资金数据归属原收款主体；不自动授权'
+WHERE NOT EXISTS(
+    SELECT 1
+    FROM sys_menu
+    WHERE menu_id=2970902
+);
+
+SELECT menu_id,parent_id,perms
+FROM sys_menu
+WHERE (menu_id=2970903
+        AND (parent_id<>2970901
+            OR COALESCE(perms,'')<>'biz:refund:retry'))
+    OR (perms='biz:refund:retry'
+        AND menu_id<>2970903);
+
+INSERT INTO p04_menu_guard
+SELECT COUNT(*)
+FROM sys_menu
+WHERE (menu_id=2970903
+        AND (parent_id<>2970901
+            OR COALESCE(perms,'')<>'biz:refund:retry'))
+    OR (perms='biz:refund:retry'
+        AND menu_id<>2970903);
+
+INSERT INTO sys_menu(
+    menu_id,menu_name,parent_id,order_num,path,
+    component,is_frame,is_cache,menu_type,visible,
+    status,perms,icon,create_by,remark
+)
+SELECT
+    2970903,'安全重试退款',2970901,90,'#',
+    NULL,1,1,'F','0',
+    '0','biz:refund:retry','money','migration','P04资金数据归属原收款主体；不自动授权'
+WHERE NOT EXISTS(
+    SELECT 1
+    FROM sys_menu
+    WHERE menu_id=2970903
+);
+
+SELECT menu_id,parent_id,perms
+FROM sys_menu
+WHERE (menu_id=2970904
+        AND (parent_id<>2970902
+            OR COALESCE(perms,'')<>'biz:paymentreconciliation:query'))
+    OR (perms='biz:paymentreconciliation:query'
+        AND menu_id<>2970904);
+
+INSERT INTO p04_menu_guard
+SELECT COUNT(*)
+FROM sys_menu
+WHERE (menu_id=2970904
+        AND (parent_id<>2970902
+            OR COALESCE(perms,'')<>'biz:paymentreconciliation:query'))
+    OR (perms='biz:paymentreconciliation:query'
+        AND menu_id<>2970904);
+
+INSERT INTO sys_menu(
+    menu_id,menu_name,parent_id,order_num,path,
+    component,is_frame,is_cache,menu_type,visible,
+    status,perms,icon,create_by,remark
+)
+SELECT
+    2970904,'重查对账渠道',2970902,90,'#',
+    NULL,1,1,'F','0',
+    '0','biz:paymentreconciliation:query','money','migration','P04资金数据归属原收款主体；不自动授权'
+WHERE NOT EXISTS(
+    SELECT 1
+    FROM sys_menu
+    WHERE menu_id=2970904
+);
+
+SELECT menu_id,parent_id,perms
+FROM sys_menu
+WHERE (menu_id=2970905
+        AND (parent_id<>2970902
+            OR COALESCE(perms,'')<>'biz:paymentreconciliation:resolve'))
+    OR (perms='biz:paymentreconciliation:resolve'
+        AND menu_id<>2970905);
+
+INSERT INTO p04_menu_guard
+SELECT COUNT(*)
+FROM sys_menu
+WHERE (menu_id=2970905
+        AND (parent_id<>2970902
+            OR COALESCE(perms,'')<>'biz:paymentreconciliation:resolve'))
+    OR (perms='biz:paymentreconciliation:resolve'
+        AND menu_id<>2970905);
+
+INSERT INTO sys_menu(
+    menu_id,menu_name,parent_id,order_num,path,
+    component,is_frame,is_cache,menu_type,visible,
+    status,perms,icon,create_by,remark
+)
+SELECT
+    2970905,'核实对账结案',2970902,90,'#',
+    NULL,1,1,'F','0',
+    '0','biz:paymentreconciliation:resolve','money','migration','P04资金数据归属原收款主体；不自动授权'
+WHERE NOT EXISTS(
+    SELECT 1
+    FROM sys_menu
+    WHERE menu_id=2970905
+);
+
+DROP TEMPORARY TABLE p04_menu_guard;

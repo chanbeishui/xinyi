@@ -1,0 +1,23 @@
+{
+  "initialRuns": [
+    {
+      "command": "P04-targeted first run",
+      "integrationTests": 121,
+      "failures": 20,
+      "errors": 1,
+      "causes": [
+        "P04子夹具与父夹具同名DynamicPropertySource导致端点被覆盖，原交易严格核对正确拒绝",
+        "相同回调事件ID每次生成不同原文，原文摘要冲突正确拒绝",
+        "内部执行租约竞争应无副作用no-op，原Future见409"
+      ]
+    }
+  ],
+  "corrections": [
+    "仅P04测试上下文固定独立端点并逐例断言Environment，不改变生产网络或父支付夹具",
+    "同事件并发重投冻结相同原文，不放松回调摘要约束",
+    "worker走真实任务入口，底层执行有效租约/退避竞争正常no-op；HTTP人工动作仍409",
+    "独立复核补齐人工原因加密审计并提取业务方法，追加真实回归"
+  ],
+  "fixedWithoutWeakeningAssertions": true,
+  "finalReport": "full-regression.json"
+}

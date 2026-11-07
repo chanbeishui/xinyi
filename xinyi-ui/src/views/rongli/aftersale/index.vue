@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { ElMessage, ElMessageBox } from 'element-plus';
 import { checkPermi } from '@/utils/permission';
 import { getOrder, type AdminOrderView } from '@/api/rongli/order';
@@ -21,6 +21,7 @@ import type { AfterSaleApply, AfterSaleNote } from '../../../../../xinyi-miniapp
 import type { Voucher } from '@/api/rongli/privateFile';
 import VoucherFiles from './VoucherFiles.vue';
 const route = useRoute();
+const router = useRouter();
 const rows = ref<AdminCase[]>([]),
   total = ref(0),
   page = ref(1),
@@ -396,6 +397,11 @@ async function submitNote() {
     } else if (noteAttempt) noteUnknown.value = true;
   } finally {
     if (run === detailSequence) noteBusy.value = false;
+  }
+}
+function openOriginalRefund() {
+  if (detail.value?.refundNo) {
+    router.push({ path: '/payment-finance/refunds', query: { refundNo: detail.value.refundNo } });
   }
 }
 function newCase() {
@@ -894,6 +900,12 @@ function closeCreate(done: () => void) {
             :closable="false"
           />
           <p v-if="detail.refundNo" class="number muted">原退款编号：{{ detail.refundNo }}</p>
+          <el-button
+            v-if="detail.refundNo"
+            v-hasPermi="['biz:refund:query']"
+            @click="openOriginalRefund"
+            >查看原退款执行</el-button
+          >
         </template>
       </div>
     </el-drawer>

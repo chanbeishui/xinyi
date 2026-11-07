@@ -1,0 +1,17 @@
+{
+  "passed": true,
+  "upgradeEqualsFull": true,
+  "testSchemaEqualsFull": true,
+  "tables": 2,
+  "permissionRows": 6,
+  "checksCompared": true,
+  "columnComparison": "BY_NAME_TYPE_DEFAULT_COMMENT_EXPRESSION",
+  "legacyOrdinalOnly": [
+    "payment_method",
+    "execution_mode"
+  ],
+  "historicalNumberUnchanged": true,
+  "businessOrProductionChanged": false,
+  "repeatable": false,
+  "at": "2026-11-07T07:48:36.736559+00:00"
+}

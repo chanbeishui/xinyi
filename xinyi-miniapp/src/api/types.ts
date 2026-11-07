@@ -4,7 +4,10 @@ export type Ack = { accepted: boolean; requestId?: string; version?: number };
 
 export type VersionInput = { expectedVersion: number; remark?: string };
 
-export type VersionReason = { expectedVersion: number; reason: string };
+export type VersionReason = {
+  expectedVersion: number;
+  reason: string;
+};
 
 export type Location = {
   lng: number;
@@ -484,16 +487,27 @@ export type Correction = {
 export type Decision = { expectedVersion: number; decision: 'APPROVE' | 'REJECT'; opinion: string };
 
 export type Refund = {
-  refundNo?: string;
-  orderNo?: string;
-  amount?: number;
-  status?: ChannelRefundStatus;
-  channelRefundId?: string;
-  successAt?: string;
-  queryRequired?: boolean;
-  version?: number;
-  caseId?: string;
-  reviewRevision?: number;
+  refundNo: string;
+  orderNo: string;
+  amount: number;
+  status: ChannelRefundStatus;
+  channelRefundId: string | null;
+  successAt: string | null;
+  queryRequired: boolean;
+  version: number;
+  caseId: string;
+  reviewRevision: number;
+  paymentMethod: 'WECHAT' | 'OFFLINE';
+  executionMode: 'WECHAT_API' | 'MANUAL_OFFLINE';
+  manualProofState?: OfflineProofStatus | null;
+  returnState: 'UNDETERMINED' | 'NOT_REQUIRED' | 'WAIT_RETURN' | 'RETURNED';
+  executionStartedAt?: string | null;
+  lastErrorCode?: string | null;
+  lastVerifiedAt?: string | null;
+  paidAmount: number;
+  refundedAmount: number;
+  reservedAmount: number;
+  allowedActions: Array<AllowedAction>;
 };
 
 export type DisputeInput = {
@@ -695,13 +709,20 @@ export type Timeline = {
 };
 
 export type Reconcile = {
-  caseId?: string;
-  orderNo?: string;
-  type?: string;
-  localStatus?: string;
-  channelStatus?: string;
-  status?: ReconcileStatus;
-  version?: number;
+  caseId: string;
+  orderNo: string;
+  type: 'PAYMENT' | 'REFUND';
+  localStatus: string;
+  channelStatus: string | null;
+  status: ReconcileStatus;
+  version: number;
+  subjectId: string;
+  paymentMethod: 'WECHAT' | 'OFFLINE';
+  refundNo?: string | null;
+  reasonCode: string;
+  verifiedAt: string | null;
+  resolvedAt: string | null;
+  allowedActions: Array<AllowedAction>;
 };
 
 export type EncryptedResource = {
@@ -2375,7 +2396,11 @@ export type AllowedAction =
   | 'VOID_STATEMENT'
   | 'WITHDRAW_STATEMENT'
   | 'ADD_NOTE'
-  | 'VIEW_AFTERSALE';
+  | 'VIEW_AFTERSALE'
+  | 'QUERY_REFUND'
+  | 'RETRY_REFUND'
+  | 'QUERY_RECONCILIATION'
+  | 'RESOLVE_RECONCILIATION';
 
 export type AccountStatus = 'ACTIVE' | 'LOCKED';
 

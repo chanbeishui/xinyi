@@ -1,0 +1,10 @@
+{
+  "baselineCommit": "cdc30bb",
+  "branch": "rongli-wx-home",
+  "worktreeInitiallyClean": true,
+  "command": "mvn -o test",
+  "exitCode": 0,
+  "unitTests": 37,
+  "integrationTests": 0,
+  "note": "后端改动前基线；源码开发与真实渠道/生产隔离。"
+}

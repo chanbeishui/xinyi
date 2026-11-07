@@ -1,0 +1,93 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <testsuite xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-failsafe-plugin/xsd/failsafe-test-report.xsd" version="3.0.2" name="com.xinyi.web.viit.P04RefundIT" time="8.588" tests="44" errors="0" skipped="0" failures="0">
+    <testcase name="unsignedNotFoundDoesNotAuthorizeAnotherRefundPost" classname="com.xinyi.web.viit.P04RefundIT" time="0.248">
+    </testcase>
+    <testcase name="databaseFailureRollsBackTrustedCallbackAndIdenticalRetryCanSucceed" classname="com.xinyi.web.viit.P04RefundIT" time="0.244">
+    </testcase>
+    <testcase name="abnormalRefundPreservesReservationAndRetryOnlyQueriesOriginalNumber" classname="com.xinyi.web.viit.P04RefundIT" time="0.225">
+    </testcase>
+    <testcase name="callerCannotOverrideRefundAmountCaseOrChannelFromRetryBody" classname="com.xinyi.web.viit.P04RefundIT" time="0.141">
+    </testcase>
+    <testcase name="concurrentWorkersOnlyClaimOneRefundPost" classname="com.xinyi.web.viit.P04RefundIT" time="0.147">
+    </testcase>
+    <testcase name="staleVersionMissingUuidAndInternalQueryFieldsAreRejected" classname="com.xinyi.web.viit.P04RefundIT" time="0.16">
+    </testcase>
+    <testcase name="blockedExternalIoDoesNotHoldDatabaseAuthorityLockAndRevocationStopsNewPost" classname="com.xinyi.web.viit.P04RefundIT" time="0.154">
+    </testcase>
+    <testcase name="processingResponseNeverPretendsMoneyHasBeenRefunded" classname="com.xinyi.web.viit.P04RefundIT" time="0.166">
+    </testcase>
+    <testcase name="fundsEndpointsRejectMissingLoginMiniTokenAndForgedRealmWithRealHttp401" classname="com.xinyi.web.viit.P04RefundIT" time="0.145">
+    </testcase>
+    <testcase name="callbackMerchantMismatchCannotSettleOriginalMerchantFunds" classname="com.xinyi.web.viit.P04RefundIT" time="0.132">
+    </testcase>
+    <testcase name="requestIdempotencyNeverChangesOriginalAmountOrRepeatsSuccessfulSettlement" classname="com.xinyi.web.viit.P04RefundIT" time="0.185">
+    </testcase>
+    <testcase name="badSignatureNotFoundDoesNotAuthorizeAnotherRefundPost" classname="com.xinyi.web.viit.P04RefundIT" time="0.163">
+    </testcase>
+    <testcase name="outboxFailureAfterTrustedSuccessRollsBackFundSettlementThenQueriesSameNumber" classname="com.xinyi.web.viit.P04RefundIT" time="0.156">
+    </testcase>
+    <testcase name="responseTotalOrTradeMismatchCannotSettle" classname="com.xinyi.web.viit.P04RefundIT" time="0.148">
+    </testcase>
+    <testcase name="operatorReasonIsAuthenticatedEncryptedAndNeverAppearsInPublicResponsesOrPlainAudit" classname="com.xinyi.web.viit.P04RefundIT" time="0.153">
+    </testcase>
+    <testcase name="functionalityAndEmptyDepartmentScopeCannotBeForged" classname="com.xinyi.web.viit.P04RefundIT" time="0.134">
+    </testcase>
+    <testcase name="refundUnknownCreatesOnePermanentReconciliationCaseAndRepeatedQueryDoesNotDuplicate" classname="com.xinyi.web.viit.P04RefundIT" time="0.168">
+    </testcase>
+    <testcase name="manualOperationReasonsAreRecordedOncePerSuccessfulIdempotentIntent" classname="com.xinyi.web.viit.P04RefundIT" time="0.217">
+    </testcase>
+    <testcase name="establishedChannelRefundIdCannotBeReplacedByAnotherTrustedResult" classname="com.xinyi.web.viit.P04RefundIT" time="0.158">
+    </testcase>
+    <testcase name="historicalMerchantStillExecutesWhenCurrentPaymentPolicyIsOff" classname="com.xinyi.web.viit.P04RefundIT" time="0.124">
+    </testcase>
+    <testcase name="currentValidSigningRotationPreservesOriginalMerchantAndRefundIdentity" classname="com.xinyi.web.viit.P04RefundIT" time="0.241">
+    </testcase>
+    <testcase name="oldAuthVersionRemainsDeniedWhenRedisEvictionFails" classname="com.xinyi.web.viit.P04RefundIT" time="0.12">
+    </testcase>
+    <testcase name="signedNotFoundAllowsOnlySameRefundNumberAndFrozenAmountRetry" classname="com.xinyi.web.viit.P04RefundIT" time="0.162">
+    </testcase>
+    <testcase name="waitingForReturnNeverCallsChannelOrReleasesDriverOnForgedSuccess" classname="com.xinyi.web.viit.P04RefundIT" time="0.12">
+    </testcase>
+    <testcase name="forgedCallbackAndMismatchedAmountDoNotConsumeReservation" classname="com.xinyi.web.viit.P04RefundIT" time="0.119">
+    </testcase>
+    <testcase name="lostPostResponseKeepsOriginalNumberAndReservationThenQueriesFirst" classname="com.xinyi.web.viit.P04RefundIT" time="0.16">
+    </testcase>
+    <testcase name="closedRefundCannotBeBlindlyRetriedWithSameOrNewNumber" classname="com.xinyi.web.viit.P04RefundIT" time="0.118">
+    </testcase>
+    <testcase name="responseRefundNumberMismatchCannotSettle" classname="com.xinyi.web.viit.P04RefundIT" time="0.12">
+    </testcase>
+    <testcase name="responseAmountMismatchCannotSettleOrReleaseReservation" classname="com.xinyi.web.viit.P04RefundIT" time="0.127">
+    </testcase>
+    <testcase name="alteredRefundCannotExecuteWithoutMatchingOriginalApprovedAmount" classname="com.xinyi.web.viit.P04RefundIT" time="0.112">
+    </testcase>
+    <testcase name="reasonAloneCannotResolveUnknownOrMismatchedFinancialFact" classname="com.xinyi.web.viit.P04RefundIT" time="0.125">
+    </testcase>
+    <testcase name="offlineRemainsPendingManualEvidenceWithoutWechatCalls" classname="com.xinyi.web.viit.P04RefundIT" time="0.117">
+    </testcase>
+    <testcase name="leaseExpiredAfterCrashQueriesBeforeAnyNewApplication" classname="com.xinyi.web.viit.P04RefundIT" time="0.129">
+    </testcase>
+    <testcase name="approvalOutboxAndWorkerSendOfficialSignedRequestThenQuerySettlesOnce" classname="com.xinyi.web.viit.P04RefundIT" time="0.169">
+    </testcase>
+    <testcase name="paymentUnknownAlsoPersistsTypedCaseWithoutPretendingRefundCaseExists" classname="com.xinyi.web.viit.P04RefundIT" time="0.102">
+    </testcase>
+    <testcase name="sixActualHttpResponsesConformToPrimaryContract" classname="com.xinyi.web.viit.P04RefundIT" time="1.326">
+    </testcase>
+    <testcase name="zeroCancellationHasNoChannelRefundToExecute" classname="com.xinyi.web.viit.P04RefundIT" time="0.132">
+    </testcase>
+    <testcase name="originalReceiverCompanyControlsRefundAccessInsteadOfOrderStationDepartment" classname="com.xinyi.web.viit.P04RefundIT" time="0.143">
+    </testcase>
+    <testcase name="trustedOriginalPaymentStateRefundAlsoAllowsRemainingApprovedRefund" classname="com.xinyi.web.viit.P04RefundIT" time="0.164">
+    </testcase>
+    <testcase name="invalidResponseSignatureCannotSettleApprovedMoney" classname="com.xinyi.web.viit.P04RefundIT" time="0.189">
+    </testcase>
+    <testcase name="trustedCallbackAndQueryConcurrentResultsOnlyMoveMoneyOnce" classname="com.xinyi.web.viit.P04RefundIT" time="0.141">
+    </testcase>
+    <testcase name="matchingTrustedRequeryThenExplicitResolveClosesOriginalReconciliationCase" classname="com.xinyi.web.viit.P04RefundIT" time="0.154">
+    </testcase>
+    <testcase name="callbackTerminalSuccessIsNeverDowngradedByLateProcessingResponse" classname="com.xinyi.web.viit.P04RefundIT" time="0.114">
+    </testcase>
+    <testcase name="reconciliationPermissionDepartmentAndVersionAreEnforced" classname="com.xinyi.web.viit.P04RefundIT" time="0.149">
+    </testcase>
+  </testsuite>
+</testsuites>

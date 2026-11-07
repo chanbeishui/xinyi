@@ -2894,10 +2894,7 @@
       "API_165_post",
       "API_166_post"
     ],
-    "page_ids": [
-      "B31",
-      "B31-query"
-    ],
+    "page_ids": [],
     "tables": [
       "vi_channel_event"
     ],
@@ -2949,7 +2946,7 @@
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
     "scopeRevision": "V6.4-CONFIG-20261022",
-    "definitionHash": "1265bde7fec79cb17dcaeae8cca7722c48fd27506e56f41d60beb7f8b6149842",
+    "definitionHash": "e30d70d555020b44ea14a8e7b1bd4f5c52dcf3b586c6bb9cf434f37154ab8cff",
     "evidence": [
       {
         "path": "docs/implementation/vehicle/evidence/P02-20261104.json",
@@ -2984,7 +2981,9 @@
     "deliverables": [
       "审核批准后退款单与渠道调用，复用原退款号查询及重试",
       "为真实付款准备取消出口",
-      "V6.4同步范围：第三方配置/支付method/外部路由/消息模板以主PRD23和X01–X07为准；旧静态配置不能形成旁路"
+      "V6.4同步范围：第三方配置/支付method/外部路由/消息模板以主PRD23和X01–X07为准；旧静态配置不能形成旁路",
+      "真实官方SDK签验、404未受理证据校验、租约恢复与原号受控重试；共用资金归并不释放车辆承接",
+      "持久支付/退款对账及可信终态办结；线下本地查询不冒充已退，默认关闭自动执行"
     ],
     "negative_checks": [
       "未知结果不重复扣款",
@@ -2998,21 +2997,36 @@
       "API_142_post",
       "API_143_post"
     ],
-    "page_ids": [],
-    "tables": [
-      "vi_refund_order"
+    "page_ids": [
+      "B31",
+      "B31-query"
     ],
-    "case_ids": [],
+    "tables": [
+      "vi_refund_order",
+      "vi_payment_reconciliation"
+    ],
+    "case_ids": [
+      "TC-118",
+      "TC-119",
+      "TC-120",
+      "TC-121",
+      "TC-123",
+      "TC-124",
+      "TC-128",
+      "TC-153",
+      "TC-154"
+    ],
     "scope": "DEVELOPMENT",
     "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
-    "status": "NOT_ASSESSED",
+    "status": "VERIFIED",
     "code_paths": [
       "xinyi-rongli/src/main/java/com/xinyi/rongli/refund/",
       "xinyi-rongli/src/main/resources/mapper/rongli/refund/",
-      "xinyi-rongli/src/main/java/com/xinyi/rongli/refund/controller/",
       "xinyi-ui/src/views/rongli/refund/",
       "xinyi-ui/src/api/rongli/refund.ts",
-      "xinyi-miniapp/src/features/refund/"
+      "xinyi-miniapp/src/features/refund/",
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/refund/controller/",
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/P04RefundIT.java"
     ],
     "test_class": "P04RefundIT",
     "commands": [
@@ -3032,9 +3046,14 @@
       "access": "不得绕过限制；保存恢复点",
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
-    "scopeRevision": "V6.4-CONFIG-20261022",
-    "definitionHash": "efe17e756bb198138fc1d96ae4f02ceb61142afdab068eca09c337c6e797ab6e",
-    "evidence": [],
+    "scopeRevision": "V6.4-REFUND-EXECUTION-20261107",
+    "definitionHash": "a9cb334b417b9fec3bf1cec70155bdfd533dbfe22ccacf1758a68bf8c66994a5",
+    "evidence": [
+      {
+        "path": "docs/implementation/vehicle/evidence/P04-20261107.json",
+        "sha256": "8f90316e97c018301979308244e7c18f130c165c05d4b0694309df4d91e72925"
+      }
+    ],
     "implementation": null,
     "review": null,
     "blocker": null,
@@ -3047,7 +3066,9 @@
         "reason": "用户确认身份流程变更，保留代码和旧证据但需适配新范围",
         "at": "2026-10-22T14:48:23.198473+00:00"
       }
-    ]
+    ],
+    "needsAdaptation": false,
+    "updatedAt": "2026-11-07T07:54:00.156502+00:00"
   },
   {
     "id": "P03",
@@ -4467,16 +4488,8 @@
     ],
     "case_ids": [
       "TC-115",
-      "TC-118",
-      "TC-119",
-      "TC-120",
-      "TC-121",
-      "TC-123",
-      "TC-124",
       "TC-125",
       "TC-148",
-      "TC-153",
-      "TC-154",
       "TC-196"
     ],
     "scope": "DEVELOPMENT",
@@ -4509,7 +4522,7 @@
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
     "scopeRevision": "V6.1-UNCHANGED",
-    "definitionHash": "e978a5bbd5279eb2901b1cff903e6b03936dda58f0ea9ca26dfac4494e39bce9",
+    "definitionHash": "ed9148795a291726ac7cd97e66042222ce8c3be7e14c89da2c8f0873662f3d17",
     "evidence": [],
     "implementation": null,
     "review": null,
@@ -4549,7 +4562,6 @@
     ],
     "case_ids": [
       "TC-127",
-      "TC-128",
       "TC-129",
       "TC-130",
       "TC-131",
@@ -4571,7 +4583,7 @@
     "code_paths": [
       "xinyi-rongli/src/main/java/com/xinyi/rongli/notification/",
       "xinyi-rongli/src/main/resources/mapper/rongli/notification/",
-      "xinyi-rongli/src/main/java/com/xinyi/rongli/notification/controller/",
+      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/notification/",
       "xinyi-ui/src/views/rongli/notification/",
       "xinyi-ui/src/api/rongli/notification.ts",
       "xinyi-miniapp/src/features/notification/"
@@ -4595,7 +4607,7 @@
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
     "scopeRevision": "V6.4-CONFIG-20261022",
-    "definitionHash": "ed37d5efa627684fb26c769a044f7c807b8b93f793c5011e741496d8a12fcc65",
+    "definitionHash": "6ad6896b54c976ea8e7e2ca4cc5e1d908f7d93e63956dcdceda088c1d264c069",
     "evidence": [],
     "implementation": null,
     "review": null,

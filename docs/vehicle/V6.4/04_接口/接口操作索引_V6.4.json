@@ -1828,12 +1828,15 @@
     "capability": null,
     "authorization": {
       "realm": "ADMIN",
-      "scope": "ORG_DEPT_STATION",
+      "scope": "ORIGINAL_PAYMENT_RECEIVER_DEPT",
       "permission": "biz:refund:query"
     },
     "flows": [
       "F20"
-    ]
+    ],
+    "authoritySources": {
+      "funds": "vi_payment_order.receiver_dept_id"
+    }
   },
   {
     "method": "POST",
@@ -1844,12 +1847,15 @@
     "capability": null,
     "authorization": {
       "realm": "ADMIN",
-      "scope": "ORG_DEPT_STATION",
+      "scope": "ORIGINAL_PAYMENT_RECEIVER_DEPT",
       "permission": "biz:refund:query"
     },
     "flows": [
       "F20"
-    ]
+    ],
+    "authoritySources": {
+      "funds": "vi_payment_order.receiver_dept_id"
+    }
   },
   {
     "method": "POST",
@@ -1860,12 +1866,15 @@
     "capability": null,
     "authorization": {
       "realm": "ADMIN",
-      "scope": "ORG_DEPT_STATION",
+      "scope": "ORIGINAL_PAYMENT_RECEIVER_DEPT",
       "permission": "biz:refund:retry"
     },
     "flows": [
       "F20"
-    ]
+    ],
+    "authoritySources": {
+      "funds": "vi_payment_order.receiver_dept_id"
+    }
   },
   {
     "method": "GET",
@@ -2292,12 +2301,15 @@
     "capability": null,
     "authorization": {
       "realm": "ADMIN",
-      "scope": "ORG_DEPT_STATION",
+      "scope": "ORIGINAL_PAYMENT_RECEIVER_DEPT",
       "permission": "biz:paymentreconciliation:list"
     },
     "flows": [
       "F20"
-    ]
+    ],
+    "authoritySources": {
+      "funds": "vi_payment_order.receiver_dept_id"
+    }
   },
   {
     "method": "POST",
@@ -2308,12 +2320,15 @@
     "capability": null,
     "authorization": {
       "realm": "ADMIN",
-      "scope": "ORG_DEPT_STATION",
+      "scope": "ORIGINAL_PAYMENT_RECEIVER_DEPT",
       "permission": "biz:paymentreconciliation:query"
     },
     "flows": [
       "F20"
-    ]
+    ],
+    "authoritySources": {
+      "funds": "vi_payment_order.receiver_dept_id"
+    }
   },
   {
     "method": "POST",
@@ -2324,12 +2339,15 @@
     "capability": null,
     "authorization": {
       "realm": "ADMIN",
-      "scope": "ORG_DEPT_STATION",
+      "scope": "ORIGINAL_PAYMENT_RECEIVER_DEPT",
       "permission": "biz:paymentreconciliation:resolve"
     },
     "flows": [
       "F20"
-    ]
+    ],
+    "authoritySources": {
+      "funds": "vi_payment_order.receiver_dept_id"
+    }
   },
   {
     "method": "POST",

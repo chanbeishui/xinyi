@@ -706,6 +706,41 @@
         "UTC更新时间；Mapper每次修改显式SET updated_at=UTC_TIMESTAMP(3)，不依赖连接时区"
       ],
       [
+        "execution_started_at",
+        "DATETIME(3) NULL",
+        "首次退款发起意图UTC，一旦存在仅查原号"
+      ],
+      [
+        "execution_lease_token",
+        "VARCHAR(36) NULL",
+        "执行租约标识，不向客户端或日志输出"
+      ],
+      [
+        "execution_lease_until",
+        "DATETIME(3) NULL",
+        "执行租约截止UTC"
+      ],
+      [
+        "execution_attempts",
+        "INT NOT NULL DEFAULT 0",
+        "提交与查询尝试计数"
+      ],
+      [
+        "last_error_code",
+        "VARCHAR(64) NULL",
+        "脱敏稳定错误码，不含SDK异常或凭据"
+      ],
+      [
+        "last_verified_status",
+        "VARCHAR(24) NULL",
+        "最近可信渠道状态，不采信客户端"
+      ],
+      [
+        "last_verified_at",
+        "DATETIME(3) NULL",
+        "最近可信渠道核对UTC时刻"
+      ],
+      [
         "version",
         "BIGINT NOT NULL DEFAULT 0",
         "乐观锁版本"
@@ -734,25 +769,25 @@
       "case_id": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "review_revision": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "payment_id": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "out_refund_no": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "channel_refund_id": {
@@ -764,7 +799,7 @@
       "amount_fen": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "status": {
@@ -815,23 +850,66 @@
       "payment_method": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false,
         "enumRef": "RefundPaymentMethod"
       },
       "execution_mode": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false,
         "enumRef": "RefundExecutionMode"
+      },
+      "execution_started_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "execution_lease_token": {
+        "generated": false,
+        "insertable": false,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "execution_lease_until": {
+        "generated": false,
+        "insertable": false,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "execution_attempts": {
+        "generated": false,
+        "insertable": false,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "last_error_code": {
+        "generated": false,
+        "insertable": false,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "last_verified_status": {
+        "generated": false,
+        "insertable": false,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "last_verified_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": true,
+        "clientWritable": false
       }
     },
     "checks": [
       "CONSTRAINT ck_66_8132f268f5fd CHECK (`status` IN ('CREATED','PROCESSING','SUCCESS','CLOSED','ABNORMAL','UNKNOWN'))",
       "CONSTRAINT ck_ver_refund_order CHECK (version >= 0)",
       "CONSTRAINT ck_be46cf0b350473 CHECK (`payment_method` IN ('WECHAT','OFFLINE'))",
-      "CONSTRAINT ck_35feb49f221ec5 CHECK (`execution_mode` IN ('WECHAT_API','MANUAL_OFFLINE'))"
+      "CONSTRAINT ck_35feb49f221ec5 CHECK (`execution_mode` IN ('WECHAT_API','MANUAL_OFFLINE'))",
+      "CONSTRAINT ck_refund_execution_attempts CHECK (execution_attempts>=0)"
     ]
   }
 ]

@@ -1,5 +1,15 @@
 # 当前恢复点
 
+最新交付：2026-11-07 P04退款执行与支付对账已VERIFIED。当前34项VERIFIED、1项IMPLEMENTED（B01）、50项NOT_ASSESSED，共85项；已验证约40%。下一主线A04代驾员档案与接单控制，结合Q01资格链推进，不跳过真实交接与准入依赖。
+
+P04最终30类397集成/37单元、44专项、20浏览器、PC与小程序构建及76静态检查通过。原因加密审计与ABNORMAL专项已补齐，独立复核及指纹见P04/review.md、reviewed-sources.json。TC123/128/154的H/D完整路径仍PARTIAL；线下凭证X06、真实渠道/真机/生产门槛未完成。PC额外全站TS现94项同类既有声明等错误，业务自身错误0，单列记录。
+
+SQL：先完成20261105_01→_02→_03，再执行migration_20261107_01_refund_execution.sql；隔离增量与完整初始化对照一致。备份并暂停入口/通知/任务，迁移后重启；自动退款vi.jobs.refund-enabled默认false，无生产启用或真实退款。通过统一授权分配权限，无需手动清Token缓存。本轮本地中文提交与标签见VERSIONS.md，未推送GitHub。
+
+以下为历史恢复记录，当前状态以上方及tasks.json为准。
+
+# 当前恢复点
+
 工作区 `/Users/chenbeishui/Downloads/code_project/xinyi`，分支 `rongli-wx-home`。保留现有代码与数据，不重新初始化。
 
 P02 可信支付查询、未付关闭、微信支付/退款通知和调度补偿已实现并通过隔离验证，状态 VERIFIED，独立复核 PENDING。证据 P02/report.md 与 evidence/P02-20261104.json。全量244集成、最终支付专项48、单元36、6项浏览器验证、构建及SQL一致性通过。
