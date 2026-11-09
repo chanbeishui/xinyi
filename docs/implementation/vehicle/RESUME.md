@@ -8,7 +8,7 @@
 
 SQL顺序：既有前置→migration_20261109_02_controlled_training.sql→migration_20261109_03_device_authentication.sql；同时同步ry_20260417.sql及包内完整初始化。2改表+1新表、7菜单，隔离升级/完整结构一致；备份、暂停核验写入、DDL不可重复，历史NULL来源保持隔离。迁移后重启后端、分配真实公司权限、发布WECHAT_APP及独立本机同意；不在聊天/Git存秘密，不需手工清Token缓存。
 
-真实微信服务、iOS/Android硬件、平台开通和生产验收继续L01/L02/L03，未推送GitHub/部署或修改业务库。原挑战冻结原AppSecret，真实失效时失败关闭，不能自动漂移新AppID。中文版本见VERSIONS.md，报告明确642全量与最后58定向层次。
+真实微信服务、iOS/Android硬件、平台开通和生产验收继续L01/L02/L03，未推送GitHub/部署或修改业务库。原挑战冻结原AppSecret，真实失效时失败关闭，不能自动漂移新AppID。中文实现提交`863d2f93f0698bad6c36efd71cef9566527e723d`，任务标签`vehicle-Q04-20261110`包含后续记账提交；见VERSIONS.md，报告明确642全量与最后58定向层次。
 
 以下为已交付恢复历史，旧决策/统计不替代本节当前范围。
 
