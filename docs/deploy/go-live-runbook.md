@@ -1,6 +1,6 @@
 # 上线总流程（域名 / 小程序备案未完成版）
 
-> 现状：服务器已定（阿里云轻量 2C4G + 1Panel），但**域名 ICP 备案未下**、**小程序备案未下**。
+> 现状：服务器已定（阿里云轻量 2C4G + 1panel），但**域名 ICP 备案未下**、**小程序备案未下**。
 > 本文按「现在能做什么、被卡住什么、备案下来后怎么切」编排，与
 > `docs/deploy/1panel-2c4g-deployment.md`（服务器/数据库详细步骤）配套使用。
 >
@@ -33,7 +33,7 @@
 线 B  小程序备案（独立流程，与域名备案并行）                    │
       微信公众平台提交 → 平台初审 → 管局审核 ──────────────┐   │
                                                           │   │
-线 C  服务器：系统 → 1Panel → MySQL/Redis → 库初始化       │   │
+线 C  服务器：系统 → 1panel → MySQL/Redis → 库初始化       │   │
 线 D  后端：打包 → 上传 → systemd → 探活                   │   │
 线 E  前端：build → 临时 IP 站点 → 后台验收                 │   │
 线 F  小程序：改 VITE_API_BASE → 体验版联调                 │   │
@@ -85,8 +85,8 @@
 严格按 `docs/deploy/1panel-2c4g-deployment.md` 第 1~4 节执行，顺序：
 
 1. 系统准备：时区 `Asia/Shanghai`、**加 2G swap**、更新软件包
-2. 阿里云控制台防火墙：放行 `22`、`8081`（过渡端口）、`1Panel 面板端口`；**先不开 80/443**
-3. 装 1Panel → 改端口/安全入口/开 SSL/开二次验证
+2. 阿里云控制台防火墙：放行 `22`、`8081`（过渡端口）、`1panel 面板端口`；**先不开 80/443**
+3. 装 1panel → 改端口/安全入口/开 SSL/开二次验证
 4. 应用商店装 OpenResty、MySQL 8、Redis 7；MySQL 改 `my.cnf`（buffer pool 768M、`default-time-zone=+08:00`）
 5. 建库 `xinyi` + 专用户 `xinyi`（不用 root）
 6. 导入 SQL：`ry_20260417.sql` → **`quartz.sql`** → 全部 `migration_*.sql`（**跳过两个 demo seed**）
@@ -187,7 +187,7 @@ npm run build:mp-weixin       # 产物 dist/build/mp-weixin
 
 1. **域名解析**：A 记录 → 服务器公网 IP，`ping 域名` 确认生效
 2. **阿里云防火墙**：放行 `80`、`443`
-3. **1Panel 站点**：把站点域名改成正式域名 → HTTPS → 申请 Let's Encrypt（自动续期）→ 开「强制 HTTPS」
+3. **1panel 站点**：把站点域名改成正式域名 → HTTPS → 申请 Let's Encrypt（自动续期）→ 开「强制 HTTPS」
 4. **换站点配置**：用 `deploy/prod/nginx-xinyi.conf` 覆盖临时配置（443 + 80 跳转 + 反代）
 5. **关掉临时入口**：停用/删除 8081 站点，删 `.htpasswd`（否则明文入口一直挂着，等于留后门）
 6. **小程序白名单**：微信后台 → 开发管理 → 开发设置 → 服务器域名，加入：

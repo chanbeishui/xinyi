@@ -1,7 +1,7 @@
-# 1Panel 部署手册（阿里云轻量 2 核 4G · 数据库用面板托管）
+# 1panel 部署手册（阿里云轻量 2 核 4G · 数据库用面板托管）
 
 面向环境：阿里云轻量应用服务器，2 核 4G，系统 **Ubuntu 22.04 LTS**。
-形态：前端静态站 + 后端 jar 常驻 + MySQL 8 / Redis 7 由 1Panel 应用商店托管。
+形态：前端静态站 + 后端 jar 常驻 + MySQL 8 / Redis 7 由 1panel 应用商店托管。
 配套文件：`deploy/prod/`（`application-prod.yml`、`xinyi.env.example`、`xinyi-admin.service`、`nginx-xinyi.conf`、`backup-xinyi.sh`）。
 上线总流程（含备案与小程序发布的依赖关系、切换清单）见 `docs/deploy/go-live-runbook.md`。
 
@@ -16,7 +16,7 @@
 | JVM（后端） | ≤ 1.5G | `-Xmx1536m`，见 systemd 单元 |
 | MySQL 容器 | ~1G | `innodb_buffer_pool_size=768M` |
 | Redis 容器 | ~150M | `maxmemory 256mb` |
-| OpenResty + 1Panel | ~350M | |
+| OpenResty + 1panel | ~350M | |
 | 系统 + 其他 | ~400M | |
 | **swap** | 2G | 必须有，防 OOM Killer 杀 MySQL |
 
@@ -44,11 +44,11 @@ swapon --show
 free -h
 ```
 
-**阿里云控制台 → 防火墙**只需要放行：`22`、`80`、`443`、1Panel 面板端口。`3306 / 6379 / 8080` **一律不放行**。
+**阿里云控制台 → 防火墙**只需要放行：`22`、`80`、`443`、1panel 面板端口。`3306 / 6379 / 8080` **一律不放行**。
 
 ---
 
-## 2. 安装 1Panel 并加固
+## 2. 安装 1panel 并加固
 
 按官网脚本安装后，进面板第一件事：
 
@@ -101,7 +101,7 @@ Docker 发布的端口**会绕过 ufw/firewalld**，宿主机防火墙拦不住�
 
 ### 4.1 建库建账号
 
-1Panel → 数据库 → MySQL → 创建数据库：
+1panel → 数据库 → MySQL → 创建数据库：
 
 - 数据库名：`xinyi`
 - 字符集：`utf8mb4`
@@ -442,7 +442,7 @@ chown -R xinyi:xinyi /home/xinyi/web
 
 `dist` 里必须是 `index.html` 直接在根，不要出现 `/home/xinyi/web/dist/index.html` 这种多套一层。
 
-1Panel → 网站 → 创建网站 → **静态网站**，域名填你的，根目录选 `/home/xinyi/web`，然后**直接编辑站点配置文件**，用 `deploy/prod/nginx-xinyi.conf` 的内容替换。
+1panel → 网站 → 创建网站 → **静态网站**，域名填你的，根目录选 `/home/xinyi/web`，然后**直接编辑站点配置文件**，用 `deploy/prod/nginx-xinyi.conf` 的内容替换。
 
 > 关键两点：`try_files $uri $uri/ /index.html`（否则刷新子页面 404）；`/prod-api/` 反代必须带尾斜杠 `proxy_pass http://127.0.0.1:8080/;`（否则前缀不去掉，接口全 404）。
 
@@ -451,7 +451,7 @@ chown -R xinyi:xinyi /home/xinyi/web
 ## 7. 域名与 HTTPS
 
 1. 域名解析 A 记录指向轻量服务器公网 IP
-2. 1Panel → 网站 → 站点 → HTTPS → 申请 Let's Encrypt 证书（自动续期）
+2. 1panel → 网站 → 站点 → HTTPS → 申请 Let's Encrypt 证书（自动续期）
 3. 开启「强制 HTTPS」
 4. 阿里云控制台放行 443
 
@@ -466,7 +466,7 @@ chmod 700 /home/xinyi/bin/backup-xinyi.sh
 /home/xinyi/bin/backup-xinyi.sh      # 先手工跑一次，确认输出 [OK]
 ```
 
-1Panel → 计划任务 → Shell 脚本，每天 `02:30` 执行上面的脚本。
+1panel → 计划任务 → Shell 脚本，每天 `02:30` 执行上面的脚本。
 
 再补两条：
 - 每周打包一次 MySQL 全库（脚本已包含）；用户文件在 OSS，不需要单独备份
@@ -511,4 +511,4 @@ gunzip -c xinyi_2026-11-04_0230.sql.gz | \
 | 上传报错 | OSS 未配置或凭据无效，先跑 `python3 logs/check_oss.py --env-file /home/xinyi/app/.env` |
 | 时间差 8 小时 | 容器 MySQL `default-time-zone` 没设，仍是 UTC |
 | 隔几天服务被杀 | 内存不足触发 OOM，检查 `dmesg | grep -i oom`，压 `-Xmx` 或加 swap |
-| Redis 连不上 | 密码没填 / 容器重启后端口变了，1Panel 应用详情核对端口 |
+| Redis 连不上 | 密码没填 / 容器重启后端口变了，1panel 应用详情核对端口 |

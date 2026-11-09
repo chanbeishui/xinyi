@@ -24,7 +24,7 @@
 
 ```
 ① 开发                    ② PR 门禁                ③ 合并                ④ 发布
-feature/xxx  ──push──▶  backend + frontend  ──▶  main（受保护）  ──▶  tag v1.2.3
+feature/xxx  ──push──▶  backend + frontend  ──▶  rongli-wx（受保护）  ──▶  tag v1.2.3
                            全绿才能合并                  │                或手动触发 deploy
                                                                         │
                                                           ⑤ 构建（含测试）──▶ ⑥ 上传暂存
@@ -36,9 +36,10 @@ feature/xxx  ──push──▶  backend + frontend  ──▶  main（受保�
 
 **分支模型（保持简单）**
 
-- `main`：随时可发布，**开启分支保护**：禁止直接 push，必须 PR，必须通过 `backend` / `frontend` 检查
+- **`rongli-wx`（当前发布分支）**：随时可发布，**必须开启分支保护**：禁止直接 push，走 PR，必须通过 `backend` / `frontend` 检查
+- `main`：历史主线，保持可构建即可；若将来切到 main 发布，把保护规则一起搬过去
 - `feature/xxx`、`fix/xxx`：短生命周期，天级合并
-- `rongli-wx`：小程序联调分支，现有 CI 已覆盖
+- 注意区分：分支是 `rongli-wx`（连字符），生产库是 `rongli_wx`（下划线），两者无关
 - 提交粒度按 `AGENTS.md`：**一次提交只做一件事**，fix 必须写清复现条件与根因
 
 **版本号**
@@ -83,7 +84,7 @@ Variables（可选，覆盖默认路径）：`DEPLOY_APP_DIR`（默认 `/home/xi
 还需两步人工配置：
 
 1. Settings → Environments → 新建 `production`，加 **Required reviewers**，这样点下 Run workflow 后仍需审批，防误发
-2. Settings → Branches → `main` 保护规则，勾选 `backend` / `frontend` 为必需检查
+2. Settings → Branches → `rongli-wx` 保护规则，勾选 `backend` / `frontend` 为必需检查
 
 **网络注意**：GitHub 托管的 runner 要 SSH 连到你的服务器，阿里云控制台防火墙必须放行 22（建议只允许密钥登录 + 装 fail2ban）。
 如果不想对公网开 22，改用**自托管 runner**（把 runner 装在内网机器上），工作流文件不用改。
@@ -140,7 +141,7 @@ CI 和本地脚本**共用同一份逻辑**，不存在"手工发和流水线发
 # 先备份（别跳）
 /home/xinyi/bin/backup-xinyi.sh
 # 再执行（容器内 mysql 客户端）
-ssh root@服务器IP 'docker exec -i 1Panel-mysql-XXXX mysql -uroot -p"密码" xinyi' < sql/migration_20261104_01_xxx.sql
+ssh root@服务器IP 'docker exec -i 1panel-mysql-XXXX mysql -uroot -p"密码" rongli_wx' < sql/migration_20261104_01_xxx.sql
 # 再校验（脚本里的断言 SQL 或 ci_sql_check.sh 的结构段）
 ```
 
@@ -190,5 +191,54 @@ ssh root@服务器IP 'docker exec -i 1Panel-mysql-XXXX mysql -uroot -p"密码" x
 - **小程序构建纳入 CI**：`xinyi-rongli-wx` 目前完全没有流水线覆盖，建议加 `npm ci && npm run build:mp-weixin` 的构建校验
 - **集成测试**：现有 2 个用例都是纯单元测试；后续可用 MySQL 服务容器 + Testcontainers 覆盖数据权限边界（`AGENTS.md` 要求的那几类场景）
 - **灰度/蓝绿**：2C4G 起不了双实例，当前"原地替换 + 自动回滚"是这台机器的合理上限；换 4C8G 后可考虑蓝绿
-- **镜像化**：把 jar 打进镜像，配合 1Panel 的应用管理，回滚变成切 tag
+- **镜像化**：把 jar 打进镜像，配合 1panel 的应用管理，回滚变成切 tag
 - **构建产物归档**：tag 发布时把 jar + dist 挂到 GitHub Release，方便只回滚不重建
+
+---
+
+## 附：当前采用的发布分工（2026-11 起生效）
+
+跨境链路的现实：GitHub runner 在境外，前端产物 4.5MB、后端 jar 94MB。
+所以**不追求全自动，而是按体积分工**。
+
+| 内容 | 走哪条 | 触发方式 | 耗时 |
+|---|---|---|---|
+| 前端 `dist` | GitHub Actions `deploy.yml` | Actions 页面点运行（默认 `scope=frontend`） | ~1 分钟 |
+| 后端 `jar` | 本机 `deploy/prod/deploy.sh backend` | 命令行 | ~60 秒 |
+| 全量发版 | tag 触发 `deploy.yml`（`v*`） | `git push origin v1.2.3` | ~3 分钟 |
+| 数据库迁移 | 人工 | 备份 → 执行 → 校验 | — |
+
+### 手动触发为什么默认只发前端
+
+`deploy.yml` 的 `scope` 默认值是 `frontend`；若手动选了 `backend` 或 `all`，
+必须同时勾选 `allow_backend`，否则流水线在「校验部署范围」这步直接失败并提示改用本机脚本。
+tag 触发（发版）不受此限制。
+
+### 一次性配置
+
+```bash
+bash deploy/prod/setup-github-actions.sh root@服务器IP
+```
+
+脚本会：生成专用部署密钥（放 `~/.ssh`，不进仓库）→ 写入服务器 `authorized_keys` →
+验证免密 → 有 `gh` 时自动写 4 个 Secrets，没有则打印待执行命令。
+
+之后在 GitHub 网页完成两件事：
+
+1. Settings → Environments → 新建 `production`，勾 **Required reviewers**（防误发）
+2. Settings → Branches → `rongli-wx`，把 `backend` / `frontend` 设为必需检查
+
+### 关于 22 端口
+
+Actions 需要 SSH 到服务器，22 必须对公网可达。既然开了密钥部署，就关掉密码登录并上 fail2ban：
+
+```bash
+sed -i 's/^#*PasswordAuthentication.*/PasswordAuthentication no/' /etc/ssh/sshd_config
+systemctl restart ssh          # 先在另一窗口确认密钥能登，再执行
+apt install -y fail2ban && systemctl enable --now fail2ban
+```
+
+### 后续可选：自托管 runner
+
+如果有一天后端也想走流水线，或跨境太慢，把 runner 注册到这台服务器（或同地域一台小机器）：
+代码 checkout 走 GitHub、构建与发布全在本机，跨境只传源码。工作流文件不用改。
