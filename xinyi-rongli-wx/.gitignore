@@ -19,3 +19,6 @@ dist
 *.njsproj
 *.sln
 *.sw?
+# 小程序代码上传密钥（公众平台生成，仅本机保存）
+private.upload.key
+private.*.key
