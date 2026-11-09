@@ -146,8 +146,17 @@ async function doLogin(phoneCode?: string) {
     applySession(view)
     uni.setStorageSync(STORAGE.lastRole, view.activeRole)
     uni.reLaunch({ url: '/pages/role/index' })
-  } catch (e) {
-    // 请求层已提示
+  } catch (e: any) {
+    // 原来这里是空 catch，只靠请求层的一条 toast；toast 一闪而过，现象就是"点了没反应"。
+    // 登录是入口，失败必须让人看得见原因，否则只能靠猜域名、证书还是网络。
+    const message = (e && (e.message || e.errMsg)) || '登录失败，请稍后重试'
+    console.error('[login] 失败', message)
+    uni.showModal({
+      title: '登录失败',
+      content: message,
+      showCancel: false,
+      confirmText: '知道了'
+    })
   } finally {
     loading.value = false
   }
