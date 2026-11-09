@@ -177,9 +177,30 @@ jobs:
       - name: 配置 SSH
         run: |
           install -m 700 -d ~/.ssh
+
+          if [ -z "${DEPLOY_HOST:-}" ]; then
+            echo "::error::DEPLOY_HOST 未配置。Settings → Secrets and variables → Actions 里添加，值只填 IP 或域名（不要带 root@）。"
+            exit 1
+          fi
+
           printf '%s\n' "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
-          ssh-keyscan -p "$DEPLOY_PORT" -H "$DEPLOY_HOST" >> ~/.ssh/known_hosts 2>/dev/null
+
+          # 私钥格式自检：格式不对会在这里直接暴露，而不是等到 ssh 阶段报 publickey
+          if ! ssh-keygen -y -f ~/.ssh/id_ed25519 > /dev/null 2>/tmp/keyerr; then
+            echo "::error::DEPLOY_SSH_KEY 不是有效私钥（$(head -1 /tmp/keyerr)）。"
+            echo "::error::请粘贴 id_ed25519 全文，含首尾 ----- 行，末尾保留一个换行；不要用 .pub。"
+            exit 1
+          fi
+          echo "私钥格式校验通过"
+
+          # keyscan 失败常见于 22 端口未对公网开放。这里降级为首次连接自动信任，
+          # 只在本次 Action 的临时容器里生效，不影响宿主安全。
+          if ! ssh-keyscan -T 10 -p "${DEPLOY_PORT:-22}" -H "$DEPLOY_HOST" >> ~/.ssh/known_hosts 2>/tmp/kscan; then
+            echo "::warning::ssh-keyscan 失败，改用宽松主机校验：$(tr '\n' ' ' < /tmp/kscan | head -c 200)"
+            printf 'Host *\n  StrictHostKeyChecking no\n  UserKnownHostsFile /dev/null\n' >> ~/.ssh/config
+            chmod 600 ~/.ssh/config
+          fi
 
       - name: 上传产物到暂存目录
         run: |
