@@ -247,6 +247,8 @@ apt install -y fail2ban && systemctl enable --now fail2ban
 
 ## 附：三端发布流程
 
+> 逐条可执行的命令见 `docs/deploy/release-playbook.md`。
+
 | 端 | 产物 | 触发方式 | 耗时 | 回滚手段 |
 |---|---|---|---|---|
 | Web 后台 | `dist` 9.9MB | Actions 点一下（或本机 `deploy.sh frontend`） | ~1 分钟 | `mv web.old web` |
