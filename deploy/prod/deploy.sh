@@ -29,8 +29,11 @@ NPM_BIN=${NPM_BIN:-npm}
 
 ROOT_DIR=$(cd "$(dirname "$0")/../.." && pwd)
 UI_DIR="$ROOT_DIR/xinyi-ui"
+# 前端产物目录可覆盖：默认 xinyi-ui/dist；想复用 dist-verify-* 就设 XINYI_UI_DIST
+UI_DIST=${XINYI_UI_DIST:-$UI_DIR/dist}
 JAR_PATH="$ROOT_DIR/xinyi-admin/target/$JAR_NAME"
 REMOTE_SCRIPT="$ROOT_DIR/deploy/prod/remote-deploy.sh"
+START_TS=$(date +%s)
 
 info() { printf '\033[36m== %s\033[0m\n' "$*"; }
 ok()   { printf '\033[32mOK  %s\033[0m\n' "$*"; }
@@ -51,8 +54,27 @@ build_backend() {
 build_frontend() {
   info "打包前端（production）"
   ( cd "$UI_DIR" && "$NPM_BIN" run build:prod ) || die "前端打包失败"
-  [ -f "$UI_DIR/dist/index.html" ] || die "dist/index.html 不存在"
-  ok "dist $(du -sh "$UI_DIR/dist" | cut -f1)"
+  [ -f "$UI_DIST/index.html" ] || die "$UI_DIST/index.html 不存在"
+  ok "dist $(du -sh "$UI_DIST" | cut -f1)"
+}
+
+# XINYI_SKIP_BUILD=1：跳过构建直接发已有产物，改完 CSS 反复调试时省 20 多秒
+ensure_backend() {
+  if [ "${XINYI_SKIP_BUILD:-0}" = "1" ]; then
+    info "跳过构建（XINYI_SKIP_BUILD=1）"
+    [ -f "$JAR_PATH" ] || die "没有可用的 jar：$JAR_PATH"
+  else
+    build_backend
+  fi
+}
+
+ensure_frontend() {
+  if [ "${XINYI_SKIP_BUILD:-0}" = "1" ]; then
+    info "跳过构建（XINYI_SKIP_BUILD=1）"
+    [ -f "$UI_DIST/index.html" ] || die "没有可用的 dist：$UI_DIST"
+  else
+    build_frontend
+  fi
 }
 
 run_remote() {
@@ -69,7 +91,7 @@ run_remote() {
   fi
   if [ "$DO_FRONTEND" = "1" ]; then
     info "上传 dist（tar 流式，比 scp 几千小文件快）"
-    tar -czf - -C "$UI_DIR/dist" . | ssh "$TARGET" "cat > $STAGE_DIR/dist.tar.gz" || die "dist 上传失败"
+    tar -czf - -C "$UI_DIST" . | ssh "$TARGET" "cat > $STAGE_DIR/dist.tar.gz" || die "dist 上传失败"
   fi
 
   info "执行服务器端部署（健康检查失败会自动回滚）"
@@ -84,13 +106,13 @@ case "$action" in
   build)
     build_backend; build_frontend ;;
   backend)
-    DO_BACKEND=1; build_backend; run_remote ;;
+    DO_BACKEND=1; ensure_backend; run_remote ;;
   frontend)
-    DO_FRONTEND=1; build_frontend; run_remote ;;
+    DO_FRONTEND=1; ensure_frontend; run_remote ;;
   all)
-    DO_BACKEND=1; DO_FRONTEND=1; build_backend; build_frontend; run_remote ;;
+    DO_BACKEND=1; DO_FRONTEND=1; ensure_backend; ensure_frontend; run_remote ;;
   *)
     die "未知参数：$action（可选 all|backend|frontend|build）" ;;
 esac
 
-ok "完成：$action"
+ok "完成：$action，耗时 $(( $(date +%s) - START_TS )) 秒"

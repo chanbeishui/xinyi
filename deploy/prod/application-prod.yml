@@ -1,5 +1,5 @@
 # =====================================================================
-# 生产环境配置（1Panel + 应用商店 MySQL8 / Redis7，服务器 2 核 4G）
+# 生产环境配置（1panel + 应用商店 MySQL8 / Redis7，服务器 2 核 4G）
 #
 # 启动方式：
 #   java -jar xinyi-admin.jar --spring.profiles.active=druid,prod
@@ -28,8 +28,9 @@ spring:
   datasource:
     druid:
       master:
-        # 1Panel 应用商店 MySQL 发布到宿主机的端口；在「数据库」详情页的
+        # 1panel 应用商店 MySQL 发布到宿主机的端口；在「数据库」详情页的
         # 连接信息里核对实际端口，不要照抄示例。
+        # 库名按实际改：本环境生产库为 rongli_wx（不是 xinyi）
         # useSSL=false：同机回环连接无需 TLS；allowPublicKeyRetrieval 为 MySQL8 必须
         # serverTimezone=Asia/Shanghai：与 application.yml 的 jackson GMT+8 保持一致
         url: jdbc:mysql://127.0.0.1:3306/xinyi?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai
@@ -47,7 +48,7 @@ spring:
   data:
     redis:
       host: 127.0.0.1
-      # 1Panel Redis 应用发布到宿主机的端口，按实际改
+      # 1panel Redis 应用发布到宿主机的端口，按实际改
       port: 6379
       database: 0
       password: ${XINYI_REDIS_PASSWORD}

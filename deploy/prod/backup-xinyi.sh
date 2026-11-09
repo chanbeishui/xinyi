@@ -1,21 +1,21 @@
 #!/usr/bin/env bash
 # =====================================================================
-# 数据库每日备份（适配 1Panel 应用商店 MySQL 容器）
+# 数据库每日备份（适配 1panel 应用商店 MySQL 容器）
 #
 # 部署：放到 /home/xinyi/bin/backup-xinyi.sh，chmod 700
-# 调度：1Panel → 计划任务 → Shell 脚本，每天 02:30
+# 调度：1panel → 计划任务 → Shell 脚本，每天 02:30
 # 手工跑：/home/xinyi/bin/backup-xinyi.sh
 #
 # ⚠️ 容器名先确认： docker ps --format '{{.Names}}' | grep -i mysql
-#    （1Panel 装的应用容器名形如 1Panel-mysql-AbCdEf）
+#    （1panel 装的应用容器名形如 1panel-mysql-AbCdEf）
 # =====================================================================
 set -euo pipefail
 
 BACKUP_DIR=/home/xinyi/backup
 KEEP_DAYS=14
-MYSQL_CONTAINER="1Panel-mysql-XXXXXX"   # ← 改成实际容器名
-DB_NAME=xinyi
-DB_ROOT_PASS="CHANGE_ME"                # ← 1Panel 数据库页的 root 密码
+MYSQL_CONTAINER="1panel-mysql-XXXXXX"   # ← 改成实际容器名
+DB_NAME=rongli_wx                       # ← 生产库名（1panel 里实际建的库）
+DB_ROOT_PASS="CHANGE_ME"                # ← 1panel 数据库页的 root 密码
 
 mkdir -p "$BACKUP_DIR"
 TS=$(date +%F_%H%M)

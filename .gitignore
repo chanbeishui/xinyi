@@ -54,3 +54,7 @@ nbdist/
 
 # 小程序本地环境配置（含联调标识），仅保留示例文件
 xinyi-rongli-wx/.env
+
+# GitHub Actions 部署私钥（脚本默认生成到 ~/.ssh，此两行兜底防误提交）
+deploy_key
+deploy_key.pub

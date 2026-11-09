@@ -14,7 +14,7 @@
 
 [Unit]
 Description=xinyi-admin backend
-# 数据库/Redis 跑在 1Panel 的容器里，必须等 docker 起来，否则首连失败
+# 数据库/Redis 跑在 1panel 的容器里，必须等 docker 起来，否则首连失败
 After=network-online.target docker.service
 Wants=network-online.target
 
