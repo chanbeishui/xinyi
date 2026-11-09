@@ -106,6 +106,10 @@ public class FileAuthority {
     public void check(Actor actor, PrivateFile file, String permission, boolean write) {
         if (file == null || write && !uploader(actor, file)) denied();
         String purpose = file.getPurpose();
+        if (file.getTrainingId() != null || "TRAINING_MEDIA".equals(purpose)) {
+            checkTraining(actor, file, permission, write);
+            return;
+        }
         if ("AVATAR".equals(purpose)) {
             if (!uploader(actor, file)) denied();
             return;
@@ -172,6 +176,33 @@ public class FileAuthority {
                 || file.getOrderId() != null
                         && !stations.orderDepartments(actor.accountId(), station, permission)
                                 .contains(department)) denied();
+    }
+
+    private void checkTraining(Actor actor, PrivateFile file, String permission, boolean write) {
+        if (!actor.isAdmin()
+                || file.getTrainingId() == null
+                || !"TRAINING_MEDIA".equals(file.getPurpose())) denied();
+        var parent = files.lockTraining(file.getTrainingId());
+        if (parent == null || parent.get("owner_dept_id") == null) denied();
+        long owner = ((Number) parent.get("owner_dept_id")).longValue();
+        requireAdminDepartment(actor, owner, permission);
+        requireAdminDepartment(
+                actor, owner, write ? "biz:trainingcourse:edit" : "biz:trainingcourse:query");
+        if (write
+                && (!"0".equals(parent.get("dept_status"))
+                        || !"0".equals(parent.get("dept_delete"))))
+            throw new ViException(ViErrorCode.VI_FORBIDDEN, "归属公司当前不可用，不能上传新培训媒体");
+        if (write && !"DRAFT".equals(parent.get("status"))) {
+            throw new ViException(ViErrorCode.VI_STATE_CONFLICT, "已发布课程媒体只读，请派生新草稿维护");
+        }
+    }
+
+    /** 内部业务已验证其父记录后仍独立核对文件功能权和真实公司，不能以有课程权代替私有文件权。 */
+    public void requireAdminDepartment(Actor actor, long owner, String permission) {
+        if (!actor.isAdmin() || !SecurityUtils.hasPermi(permission))
+            throw new ViException(ViErrorCode.VI_FORBIDDEN);
+        var scope = scopes.resolve(SecurityUtils.getLoginUser(), permission);
+        if (!scope.isAllData() && !scope.getDeptIds().contains(owner)) denied();
     }
 
     private static void requireEditableApplication(

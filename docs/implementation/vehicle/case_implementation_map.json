@@ -2423,12 +2423,15 @@
     "testMethod": "test_tc_r50_018"
   },
   {
-    "status": "NOT_RUN",
-    "testFiles": [],
-    "evidence": null,
+    "status": "PARTIAL",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q02TrainingIT.java"
+    ],
+    "evidence": "docs/implementation/vehicle/evidence/Q02-20261109.json",
     "caseId": "TC-R50-019",
     "taskId": "Q03",
-    "testMethod": "test_tc_r50_019"
+    "testMethod": "Q02TrainingIT#oldAttemptStillReferencesItsExactPublishedCourseAndQuestionSnapshot",
+    "note": "旧课程/题库/媒体/attempt确切引用与快照不覆盖已验；旧attempt真实按V1判分须Q03，主责任仍Q03。"
   },
   {
     "status": "NOT_RUN",

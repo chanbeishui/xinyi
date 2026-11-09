@@ -845,6 +845,10 @@ components:
       - EDIT_QUALIFICATION
       - SUBMIT_QUALIFICATION
       - CREATE_QUALIFICATION_REVISION
+      - VIEW_TRAINING_COURSE
+      - EDIT_TRAINING_COURSE
+      - PUBLISH_TRAINING_COURSE
+      - CREATE_TRAINING_REVISION
   responses:
     UnprocessableEntity:
       description: 填写内容不符合要求。参见errorCode注册表；HTTP状态与code一致。

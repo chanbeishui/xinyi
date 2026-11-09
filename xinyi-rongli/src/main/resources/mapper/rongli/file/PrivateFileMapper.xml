@@ -10,6 +10,12 @@
         <result property="orderId" column="order_id"/>
         <result property="applicationId" column="application_id"/>
         <result property="stationId" column="station_id"/>
+        <result property="trainingId" column="training_id"/>
+        <result property="mediaDurationMillis" column="media_duration_millis"/>
+        <result property="mediaWidth" column="media_width"/>
+        <result property="mediaHeight" column="media_height"/>
+        <result property="mediaVideoCodec" column="media_video_codec"/>
+        <result property="mediaAudioCodec" column="media_audio_codec"/>
         <result property="objectKey" column="object_key"/>
         <result property="status" column="status"/>
         <result property="mimeType" column="mime_type"/>
@@ -36,9 +42,9 @@
     </select>
     <insert id="insert" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO vi_file(uploader_account_id,uploader_user_id,purpose,order_id,application_id,
-            station_id,object_key,status,declared_size,declared_mime,upload_expires_at)
+            station_id,training_id,object_key,status,declared_size,declared_mime,upload_expires_at)
         VALUES(#{uploaderAccountId},#{uploaderUserId},#{purpose},#{orderId},#{applicationId},
-            #{stationId},#{objectKey},'UPLOADING',#{declaredSize},#{declaredMime},
+            #{stationId},#{trainingId},#{objectKey},'UPLOADING',#{declaredSize},#{declaredMime},
             #{uploadExpiresAt,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler})
     </insert>
     <update id="claim">
@@ -54,7 +60,9 @@
     </update>
     <update id="finish">
         UPDATE vi_file SET status=#{status},mime_type=#{mimeType},server_size=#{serverSize},
-            server_sha256=#{serverSha256},upload_lease_until=NULL,upload_lease_token=NULL,
+            server_sha256=#{serverSha256},media_duration_millis=#{mediaDurationMillis},
+            media_width=#{mediaWidth},media_height=#{mediaHeight},media_video_codec=#{mediaVideoCodec},
+            media_audio_codec=#{mediaAudioCodec},upload_lease_until=NULL,upload_lease_token=NULL,
             version=version+1,updated_at=UTC_TIMESTAMP(3)
         WHERE id=#{id} AND version=#{version} AND status IN ('UPLOADING','VERIFYING')
     </update>
@@ -62,6 +70,13 @@
         SELECT *
         FROM vi_order
         WHERE order_no=#{no}
+    </select>
+    <select id="lockTraining" resultType="map">
+        SELECT c.id,c.owner_dept_id,c.status,d.status dept_status,d.del_flag dept_delete
+        FROM vi_training_course c
+        LEFT JOIN sys_dept d ON d.dept_id=c.owner_dept_id
+        WHERE c.id=#{id}
+        FOR UPDATE
     </select>
     <select id="lockApplication" resultType="map">
         SELECT p.account_id,a.status,a.reject_fields

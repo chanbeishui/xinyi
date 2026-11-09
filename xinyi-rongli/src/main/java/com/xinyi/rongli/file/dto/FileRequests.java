@@ -16,7 +16,8 @@ public final class FileRequests {
             long size,
             String orderNo,
             Long applicationId,
-            Long stationId) {}
+            Long stationId,
+            Long trainingId) {}
 
     public record Access(String purpose, String orderNo) {}
 
@@ -29,16 +30,23 @@ public final class FileRequests {
                             "size",
                             "orderNo",
                             "applicationId",
-                            "stationId")
+                            "stationId",
+                            "trainingId")
                     .containsAll(body.keySet())) invalid();
             String purpose = string(body, "purpose", 1, 64);
             String name = string(body, "fileName", 1, 255);
             String mime = string(body, "mimeType", 1, 64);
             if (!(body.get("size") instanceof Number)) invalid();
             long size = Long.parseLong(body.get("size").toString());
+            boolean training = "TRAINING_MEDIA".equals(purpose);
             if (size <= 0
-                    || size > PrivateFileStorage.MAX_SIZE
-                    || !Set.of("image/jpeg", "image/png").contains(mime)) invalid();
+                    || size
+                            > (training
+                                    ? PrivateFileStorage.MAX_MEDIA_SIZE
+                                    : PrivateFileStorage.MAX_SIZE)
+                    || (training
+                            ? !"video/mp4".equals(mime)
+                            : !Set.of("image/jpeg", "image/png").contains(mime))) invalid();
             if (!Set.of(
                             "VEHICLE_PHOTO",
                             "ID_CARD",
@@ -47,6 +55,7 @@ public final class FileRequests {
                             "RESULT_EVIDENCE",
                             "DISPUTE",
                             "STATION_QUALIFICATION",
+                            "TRAINING_MEDIA",
                             "AVATAR")
                     .contains(purpose)) invalid();
             String order = body.containsKey("orderNo") ? string(body, "orderNo", 1, 64) : null;
@@ -58,17 +67,23 @@ public final class FileRequests {
                     body.containsKey("stationId")
                             ? ViId.parse(string(body, "stationId", 1, 19))
                             : null;
+            Long trainingId =
+                    body.containsKey("trainingId")
+                            ? ViId.parse(string(body, "trainingId", 1, 19))
+                            : null;
             int parents =
                     (order == null ? 0 : 1)
                             + (application == null ? 0 : 1)
-                            + (station == null ? 0 : 1);
+                            + (station == null ? 0 : 1)
+                            + (trainingId == null ? 0 : 1);
             if ("AVATAR".equals(purpose) ? parents != 0 : parents != 1) invalid();
+            if (training != (trainingId != null)) invalid();
             if (Set.of("ID_CARD", "DRIVER_LICENSE").contains(purpose) && application == null
                     || "STATION_QUALIFICATION".equals(purpose) && station == null
                     || Set.of("VEHICLE_PHOTO", "VEHICLE_LICENSE", "RESULT_EVIDENCE", "DISPUTE")
                                     .contains(purpose)
                             && order == null) invalid();
-            return new Upload(purpose, name, mime, size, order, application, station);
+            return new Upload(purpose, name, mime, size, order, application, station, trainingId);
         } catch (IllegalArgumentException error) {
             throw new ViException(ViErrorCode.VI_REQUEST_INVALID);
         }

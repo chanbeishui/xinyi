@@ -4209,6 +4209,36 @@
         "站点资质等文件的权威站点归属"
       ],
       [
+        "training_id",
+        "BIGINT NULL",
+        "培训媒体权威父课程版本，发布后仅只读继承"
+      ],
+      [
+        "media_duration_millis",
+        "BIGINT NULL",
+        "服务端解析的实际视频时长毫秒"
+      ],
+      [
+        "media_width",
+        "INT NULL",
+        "实际视频轨道宽度"
+      ],
+      [
+        "media_height",
+        "INT NULL",
+        "实际视频轨道高度"
+      ],
+      [
+        "media_video_codec",
+        "VARCHAR(16) NULL",
+        "实际视频轨道编码"
+      ],
+      [
+        "media_audio_codec",
+        "VARCHAR(16) NULL",
+        "可选实际音频轨道编码"
+      ],
+      [
         "declared_size",
         "BIGINT NULL",
         "客户端声明大小，只用于与实际字节核对"
@@ -4300,10 +4330,11 @@
       ]
     ],
     "indexes": [
+      "KEY ix_training_file (training_id,status,id)",
       "UNIQUE KEY uk_object_key (object_key)",
       "KEY ix_order_purpose (order_id,purpose)"
     ],
-    "rule": "访问签名不进明文长期表，不接受客户端READY/摘要即可信",
+    "rule": "访问签名不进明文长期表，不接受客户端READY/摘要即可信 Q02新增TRAINING_MEDIA仅ADMIN公司DRAFT父课程、私有MP4不超过100MiB；READY由实际容器/轨道/时长与流式SHA校验产生，发布后不可重写，可由同族派生白名单只读继承。图片仍JPEG/PNG10MiB。",
     "primaryKey": [
       "id"
     ],
@@ -4445,12 +4476,49 @@
         "insertable": false,
         "updatable": true,
         "clientWritable": false
+      },
+      "training_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "media_duration_millis": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "media_width": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "media_height": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "media_video_codec": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "media_audio_codec": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
       }
     },
     "checks": [
+      "CONSTRAINT ck_training_file_parent CHECK((training_id IS NULL AND purpose<>'TRAINING_MEDIA') OR (training_id IS NOT NULL AND purpose='TRAINING_MEDIA' AND order_id IS NULL AND application_id IS NULL AND station_id IS NULL))",
       "CONSTRAINT ck_66_c1389ba0baeb CHECK (`status` IN ('UPLOADING','VERIFYING','READY','REJECTED'))",
-      "CONSTRAINT ck_ver_file CHECK (version >= 0)",
-      "CONSTRAINT ck_file_uploader CHECK ((uploader_account_id IS NOT NULL AND uploader_user_id IS NULL) OR (uploader_account_id IS NULL AND uploader_user_id IS NOT NULL))"
+      "CONSTRAINT ck_file_uploader CHECK ((uploader_account_id IS NOT NULL AND uploader_user_id IS NULL) OR (uploader_account_id IS NULL AND uploader_user_id IS NOT NULL))",
+      "CONSTRAINT ck_ver_file CHECK (version >= 0)"
     ]
   },
   {
@@ -10985,6 +11053,41 @@
         "数据库生成业务主键；插入不提供id"
       ],
       [
+        "owner_dept_id",
+        "BIGINT NULL",
+        "明确选择的公司部门；历史NULL待人工核查，不从创建者或主部门推断"
+      ],
+      [
+        "source_training_id",
+        "BIGINT NULL",
+        "派生所依据的已发布确切课程版本"
+      ],
+      [
+        "inherited_media_file_id",
+        "BIGINT NULL",
+        "服务端从来源课程冻结的只读媒体白名单，客户端不可指定"
+      ],
+      [
+        "created_by_user_id",
+        "BIGINT NULL",
+        "后台草稿创建人；历史不猜测回填"
+      ],
+      [
+        "updated_by_user_id",
+        "BIGINT NULL",
+        "最近后台内容维护人"
+      ],
+      [
+        "content_hash",
+        "BINARY(32) NULL",
+        "含题库答案的有密钥内容指纹；不向MINI发布"
+      ],
+      [
+        "draft_course_key",
+        "VARCHAR(64) CHARACTER SET ascii COLLATE ascii_bin GENERATED ALWAYS AS (IF(status='DRAFT',course_key,NULL)) STORED",
+        "单课程族仅一个未发布草稿"
+      ],
+      [
         "course_key",
         "VARCHAR(64) CHARACTER SET ascii COLLATE ascii_bin NOT NULL",
         "稳定课程编码"
@@ -11006,23 +11109,23 @@
       ],
       [
         "media_file_id",
-        "BIGINT NOT NULL",
-        "私有培训媒体"
+        "BIGINT NULL",
+        "私有培训媒体；草稿未选可为空"
       ],
       [
         "required_duration_seconds",
-        "INT NOT NULL",
-        "规定学习时长；发布时校验>0"
+        "INT NULL",
+        "规定学习时长；发布须完整且不超过实际媒体时长"
       ],
       [
         "pass_score",
-        "INT NOT NULL",
-        "0至100的配置门槛"
+        "INT NULL",
+        "0至100的配置门槛；草稿可暂缺"
       ],
       [
         "attempt_time_limit_seconds",
-        "INT NOT NULL",
-        "考试时间配置"
+        "INT NULL",
+        "考试时限秒；发布须配置至少60秒"
       ],
       [
         "status",
@@ -11056,11 +11159,11 @@
       ]
     ],
     "indexes": [
-      "UNIQUE KEY uk_course_revision (course_key,course_version)",
-      "CONSTRAINT ck_course_score CHECK (pass_score BETWEEN 0 AND 100)",
-      "CONSTRAINT ck_course_duration CHECK (required_duration_seconds>0 AND attempt_time_limit_seconds>=60)"
+      "UNIQUE KEY uk_training_active_draft (draft_course_key)",
+      "KEY ix_training_company (owner_dept_id,status,id)",
+      "UNIQUE KEY uk_course_revision (course_key,course_version)"
     ],
-    "rule": "课程发布后不可原地修改；更新发布新版本；正式题目和通过标准由业务配置，不是demo",
+    "rule": "各公司独立维护，旗下站点与公司代驾共用。公司归属显式选择，历史NULL不猜回填；课程族/内容版本服务端生成，单族仅一DRAFT。草稿可未完成，发布完整校验后内容/题库不可覆盖，派生另建新版本；标准答案仅后台query及公司范围，含答案内容指纹使用HMAC，不向MINI下发。",
     "primaryKey": [
       "id"
     ],
@@ -11077,13 +11180,13 @@
       "course_key": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "course_version": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "title": {
@@ -11131,13 +11234,13 @@
       },
       "published_at": {
         "generated": false,
-        "insertable": true,
+        "insertable": false,
         "updatable": true,
         "clientWritable": false
       },
       "published_by_user_id": {
         "generated": false,
-        "insertable": true,
+        "insertable": false,
         "updatable": true,
         "clientWritable": false
       },
@@ -11160,9 +11263,54 @@
         "insertable": false,
         "updatable": false,
         "clientWritable": false
+      },
+      "owner_dept_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "source_training_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "inherited_media_file_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "created_by_user_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "updated_by_user_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "content_hash": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "draft_course_key": {
+        "generated": true,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
       }
     },
     "checks": [
+      "CONSTRAINT ck_training_owner CHECK(owner_dept_id IS NULL OR owner_dept_id>0)",
+      "CONSTRAINT ck_course_score CHECK (pass_score BETWEEN 0 AND 100)",
+      "CONSTRAINT ck_course_duration CHECK (required_duration_seconds>0 AND attempt_time_limit_seconds>=60)",
       "CONSTRAINT ck_66_0aa07ede2e69 CHECK (`status` IN ('DRAFT','PUBLISHED','DISABLED'))",
       "CONSTRAINT ck_ver_training_course CHECK (version >= 0)"
     ]
@@ -11230,7 +11378,7 @@
     "indexes": [
       "UNIQUE KEY uk_course_question (training_id,question_code)"
     ],
-    "rule": "发布题库只读；考试返回TrainingQuestion白名单，无正确答案；独立权限保护后台读取",
+    "rule": "权威归属继承父课程owner_dept_id，草稿完整替换，发布题库只读。后台query及公司范围读取答案；Q03学员另用TrainingQuestion白名单，实际判分/权重/必修集合属后续，不把发布当培训通过。",
     "primaryKey": [
       "id"
     ],
@@ -11247,44 +11395,44 @@
       "training_id": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "question_code": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "question_type": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false,
         "enumRef": "QuestionType"
       },
       "prompt": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "options_json": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "correct_option_codes": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "sort_no": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "created_at": {

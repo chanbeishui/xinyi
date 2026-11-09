@@ -70,6 +70,7 @@ public class PrivateFileService {
                                     draft.setPurpose(request.purpose());
                                     draft.setApplicationId(request.applicationId());
                                     draft.setStationId(request.stationId());
+                                    draft.setTrainingId(request.trainingId());
                                     if (request.orderNo() != null) {
                                         var order = files.orderByNo(request.orderNo());
                                         if (order == null)
@@ -168,14 +169,21 @@ public class PrivateFileService {
                                                                 id,
                                                                 file.getVersion(),
                                                                 lease,
-                                                                Instant.now().plusSeconds(60))
+                                                                Instant.now()
+                                                                        .plusSeconds(
+                                                                                transferSeconds(
+                                                                                        file)))
                                                         != 1)
                                             throw new ViException(
                                                     ViErrorCode.VI_STATE_CONFLICT, "上传已开始或授权已失效");
                                         return file;
                                     });
                     try {
-                        storage.store(row.getObjectKey(), input, row.getDeclaredSize());
+                        storage.store(
+                                row.getObjectKey(),
+                                input,
+                                row.getDeclaredSize(),
+                                "TRAINING_MEDIA".equals(row.getPurpose()));
                     } catch (ViException error) {
                         // 租约失败不重新覆盖同一个对象。客户端使用新申请重试，旧对象保持不可用且留有审计。
                         tx.executeWithoutResult(
@@ -261,6 +269,13 @@ public class PrivateFileService {
                                 file.setMimeType(verified.mime());
                                 file.setServerSize(verified.size());
                                 file.setServerSha256(HexFormat.of().parseHex(verified.sha256()));
+                                if (verified.media() != null) {
+                                    file.setMediaDurationMillis(verified.media().durationMillis());
+                                    file.setMediaWidth(verified.media().width());
+                                    file.setMediaHeight(verified.media().height());
+                                    file.setMediaVideoCodec(verified.media().videoCodec());
+                                    file.setMediaAudioCodec(verified.media().audioCodec());
+                                }
                                 if (files.finish(file) != 1)
                                     throw new ViException(ViErrorCode.VI_VERSION_CONFLICT);
                                 audit.recordSuccess(
@@ -336,7 +351,7 @@ public class PrivateFileService {
                                     }
                                     Instant expires =
                                             Instant.now()
-                                                    .plusSeconds(60)
+                                                    .plusSeconds(transferSeconds(file))
                                                     .truncatedTo(ChronoUnit.SECONDS);
                                     String requestId = UUID.randomUUID().toString();
                                     // 原因是访问意图，不作为权限凭据；审计只保存脱敏动作与关联，避免自由文本夹带身份证号。
@@ -369,6 +384,96 @@ public class PrivateFileService {
                                 }));
     }
 
+    /** 同步请求线程输出视频，保留ADMIN安全上下文；只提供200原始完整流，不声称支持Range。 */
+    public boolean streamMedia(
+            long id, String ticket, jakarta.servlet.http.HttpServletResponse response) {
+        Actor actor = authority.actor();
+        return audited(
+                actor,
+                id,
+                "FILE_MEDIA_DOWNLOAD",
+                () -> {
+                    PrivateFile file =
+                            tx.execute(
+                                    status -> {
+                                        authority.guard(actor, "biz:files:access");
+                                        PrivateFile row =
+                                                authorized(actor, id, "biz:files:access", false);
+                                        if (!"TRAINING_MEDIA".equals(row.getPurpose())) return null;
+                                        ready(row);
+                                        tickets.verify(actor, id, "READ", ticket);
+                                        return row;
+                                    });
+                    if (file == null) return false;
+                    if (file.getServerSize() == null)
+                        throw new ViException(ViErrorCode.VI_STATE_CONFLICT);
+                    storage.verifyIntegrity(
+                            file.getObjectKey(), file.getServerSize(), file.getServerSha256());
+                    // 第一字节前必须提交真实开始轨迹；审计库失败时不发送原件，长连接中断仍有可追溯起点。
+                    authorizeMediaChunk(actor, file, ticket, "FILE_MEDIA_DOWNLOAD_STARTED");
+                    response.setStatus(200);
+                    // 框架编码过滤器预置UTF-8；二进制原流必须清除字符编码，不能返回带charset的MP4类型。
+                    response.setCharacterEncoding((String) null);
+                    response.setContentType("video/mp4");
+                    response.setHeader("Content-Type", "video/mp4");
+                    response.setContentLengthLong(file.getServerSize());
+                    response.setHeader("Cache-Control", "no-store");
+                    response.setHeader("X-Content-Type-Options", "nosniff");
+                    response.setHeader("Content-Disposition", "inline; filename=\"training.mp4\"");
+                    try {
+                        storage.transfer(
+                                file.getObjectKey(),
+                                0,
+                                file.getServerSize(),
+                                response.getOutputStream(),
+                                () -> authorizeMediaChunk(actor, file, ticket));
+                        // 完成轨迹与开始轨迹分开；后续审计失败不能抹去已输出字节或伪称整次传输回滚。
+                        authorizeMediaChunk(actor, file, ticket, "FILE_MEDIA_DOWNLOAD");
+                        return true;
+                    } catch (java.io.IOException error) {
+                        throw new ViException(ViErrorCode.VI_UPSTREAM_UNAVAILABLE, "媒体原始流传输中断");
+                    }
+                });
+    }
+
+    /** 真实媒体与PC传输时限对齐；图片保持原60秒租约/读取票据，媒体仍逐块校验撤权与短票。 */
+    private static long transferSeconds(PrivateFile file) {
+        return "TRAINING_MEDIA".equals(file.getPurpose()) ? 300 : 60;
+    }
+
+    private void authorizeMediaChunk(Actor actor, PrivateFile expected, String ticket) {
+        authorizeMediaChunk(actor, expected, ticket, null);
+    }
+
+    private void authorizeMediaChunk(
+            Actor actor, PrivateFile expected, String ticket, String auditAction) {
+        tx.executeWithoutResult(
+                status -> {
+                    authority.guard(actor, "biz:files:access");
+                    PrivateFile current =
+                            authorized(actor, expected.getId(), "biz:files:access", false);
+                    ready(current);
+                    tickets.verify(actor, expected.getId(), "READ", ticket);
+                    if (!Objects.equals(current.getObjectKey(), expected.getObjectKey())
+                            || !Objects.equals(current.getServerSize(), expected.getServerSize())
+                            || current.getServerSha256() == null
+                            || expected.getServerSha256() == null
+                            || !java.security.MessageDigest.isEqual(
+                                    current.getServerSha256(), expected.getServerSha256()))
+                        throw new ViException(ViErrorCode.VI_STATE_CONFLICT, "媒体原件已变化，请重新核对");
+                    if (auditAction != null) {
+                        audit.recordSuccess(
+                                actor,
+                                "FILE",
+                                expected.getId(),
+                                auditAction,
+                                null,
+                                Map.of("size", expected.getServerSize()),
+                                null);
+                    }
+                });
+    }
+
     public Download download(long id, String ticket) {
         Actor actor = authority.actor();
         return audited(
@@ -386,6 +491,8 @@ public class PrivateFileService {
                                         ready(row);
                                         return row;
                                     });
+                    if ("TRAINING_MEDIA".equals(file.getPurpose()))
+                        throw new ViException(ViErrorCode.VI_STATE_CONFLICT, "培训媒体须使用受保护原始流读取");
                     byte[] bytes = storage.read(file.getObjectKey());
                     // 持久卷损坏或被部署外部操作替换时拒绝输出，不能沿用旧 READY 元数据伪装为可信原件。
                     try {
@@ -467,6 +574,32 @@ public class PrivateFileService {
         }
     }
 
+    /** 培训业务已锁真实公司/课程并证明继承链；这里仍实时校验私有文件权、用途与可信READY元数据。 */
+    public PrivateFile validateTrainingMedia(
+            Actor actor, long ownerDeptId, long fileId, Set<Long> permittedTrainingIds) {
+        authority.guard(actor, "biz:files:query");
+        authority.requireAdminDepartment(actor, ownerDeptId, "biz:files:query");
+        PrivateFile snapshot = files.find(fileId);
+        if (snapshot == null
+                || !"TRAINING_MEDIA".equals(snapshot.getPurpose())
+                || snapshot.getTrainingId() == null
+                || !permittedTrainingIds.contains(snapshot.getTrainingId()))
+            throw new ViException(ViErrorCode.VI_RESOURCE_NOT_VISIBLE);
+        PrivateFile file = files.lock(fileId);
+        ready(file);
+        if (!"video/mp4".equals(file.getMimeType())
+                || file.getServerSha256() == null
+                || file.getServerSize() == null
+                || file.getServerSize() <= 0
+                || file.getServerSize() > PrivateFileStorage.MAX_MEDIA_SIZE
+                || file.getMediaDurationMillis() == null
+                || file.getMediaDurationMillis() <= 0
+                || file.getMediaDurationMillis() > 86400000
+                || file.getMediaVideoCodec() == null)
+            throw new ViException(ViErrorCode.VI_DATA_INVALID, "培训媒体缺少可信视频元数据，请重新上传核验");
+        return file;
+    }
+
     private PrivateFile authorized(Actor actor, long id, String permission, boolean write) {
         // 先读定位父记录，再按父订单→文件顺序加锁；不允许文件锁反向等待订单锁。
         PrivateFile snapshot = files.find(id);
@@ -487,6 +620,13 @@ public class PrivateFileService {
         if (file.getServerSha256() != null)
             result.put("serverSha256", HexFormat.of().formatHex(file.getServerSha256()));
         if (file.getServerSize() != null) result.put("size", file.getServerSize());
+        if ("TRAINING_MEDIA".equals(file.getPurpose())) {
+            result.put("durationMillis", file.getMediaDurationMillis());
+            result.put("width", file.getMediaWidth());
+            result.put("height", file.getMediaHeight());
+            result.put("videoCodec", file.getMediaVideoCodec());
+            result.put("audioCodec", file.getMediaAudioCodec());
+        }
         return result;
     }
 

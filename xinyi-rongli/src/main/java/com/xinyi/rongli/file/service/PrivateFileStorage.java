@@ -2,18 +2,23 @@ package com.xinyi.rongli.file.service;
 
 import com.xinyi.common.config.RuoYiConfig;
 import com.xinyi.rongli.platform.error.*;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
 import java.io.*;
 import java.nio.file.*;
 import java.security.*;
 import java.util.*;
+
 import javax.imageio.ImageIO;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 
 /** 私有磁盘适配器。目录由部署环境明确提供，不能复用公开 profile，也不接受客户端路径。 */
 @Component
 public class PrivateFileStorage {
     public static final long MAX_SIZE = 10 * 1024 * 1024;
+    public static final long MAX_MEDIA_SIZE = 100L * 1024 * 1024;
+    private final TrainingMediaInspector mediaInspector = new TrainingMediaInspector();
     private final String configuredRoot;
 
     public PrivateFileStorage(@Value("${vi.files.root:${VI_PRIVATE_FILE_ROOT:}}") String root) {
@@ -61,6 +66,13 @@ public class PrivateFileStorage {
     }
 
     public void store(String key, InputStream input, long expectedSize) {
+        store(key, input, expectedSize, false);
+    }
+
+    public void store(String key, InputStream input, long expectedSize, boolean trainingMedia) {
+        long maximum = trainingMedia ? MAX_MEDIA_SIZE : MAX_SIZE;
+        if (expectedSize <= 0 || expectedSize > maximum)
+            throw new ViException(ViErrorCode.VI_DATA_INVALID);
         Path target = object(key);
         Path temp = target.resolveSibling(".part-" + UUID.randomUUID());
         try {
@@ -79,7 +91,7 @@ public class PrivateFileStorage {
                 int count;
                 while ((count = input.read(buffer)) != -1) {
                     total += count;
-                    if (total > MAX_SIZE || total > expectedSize)
+                    if (total > maximum || total > expectedSize)
                         throw new ViException(ViErrorCode.VI_DATA_INVALID, "文件大小与声明不符");
                     out.write(buffer, 0, count);
                 }
@@ -101,9 +113,14 @@ public class PrivateFileStorage {
         }
     }
 
-    public record Verified(String mime, long size, String sha256) {}
+    public record Verified(
+            String mime, long size, String sha256, TrainingMediaInspector.Metadata media) {}
 
     public Verified verify(String key, long size, String mime) {
+        if ("video/mp4".equals(mime)) {
+            String hash = streamingHash(key, size, MAX_MEDIA_SIZE);
+            return new Verified(mime, size, hash, mediaInspector.inspect(object(key), size));
+        }
         byte[] bytes = read(key);
         if (bytes.length != size) throw new ViException(ViErrorCode.VI_DATA_INVALID, "实际文件大小不匹配");
         try (var stream = ImageIO.createImageInputStream(new ByteArrayInputStream(bytes))) {
@@ -130,12 +147,75 @@ public class PrivateFileStorage {
                         actual,
                         bytes.length,
                         HexFormat.of()
-                                .formatHex(MessageDigest.getInstance("SHA-256").digest(bytes)));
+                                .formatHex(MessageDigest.getInstance("SHA-256").digest(bytes)),
+                        null);
             } finally {
                 reader.dispose();
             }
         } catch (IOException | NoSuchAlgorithmException | RuntimeException error) {
             throw new ViException(ViErrorCode.VI_DATA_INVALID, "文件不是有效的 JPEG 或 PNG 图片");
+        }
+    }
+
+    /** 先流式核验完整原件，64KiB缓冲与文件大小无关；绝不把100MiB媒体转换为byte[]。 */
+    public void verifyIntegrity(String key, long size, byte[] expectedHash) {
+        String actual = streamingHash(key, size, MAX_MEDIA_SIZE);
+        if (expectedHash == null
+                || !MessageDigest.isEqual(HexFormat.of().parseHex(actual), expectedHash))
+            throw new ViException(ViErrorCode.VI_DATA_INVALID, "私有媒体完整性校验失败");
+    }
+
+    private String streamingHash(String key, long expectedSize, long maximum) {
+        Path path = object(key);
+        try {
+            // 尚未rawPUT不能当作坏文件永久拒绝；与图片路径一致，保留UPLOADING供原票据继续传输。
+            if (!Files.isRegularFile(path, LinkOption.NOFOLLOW_LINKS))
+                throw new ViException(ViErrorCode.VI_STATE_CONFLICT, "尚未收到完整文件");
+            if (Files.size(path) != expectedSize || expectedSize <= 0 || expectedSize > maximum)
+                throw new ViException(ViErrorCode.VI_DATA_INVALID, "实际文件大小不匹配");
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] buffer = new byte[65536];
+            long count = 0;
+            try (InputStream input = Files.newInputStream(path, LinkOption.NOFOLLOW_LINKS)) {
+                int n;
+                while ((n = input.read(buffer)) != -1) {
+                    count += n;
+                    if (count > maximum || count > expectedSize)
+                        throw new ViException(ViErrorCode.VI_DATA_INVALID);
+                    digest.update(buffer, 0, n);
+                }
+            }
+            if (count != expectedSize) throw new ViException(ViErrorCode.VI_DATA_INVALID);
+            return HexFormat.of().formatHex(digest.digest());
+        } catch (IOException | NoSuchAlgorithmException error) {
+            throw new ViException(ViErrorCode.VI_UPSTREAM_UNAVAILABLE, "私有媒体读取失败");
+        }
+    }
+
+    /** 只输出已鉴权的指定原始字节区间；定期回到统一权限事务以停止已撤权的长连接。 */
+    public void transfer(
+            String key, long offset, long length, OutputStream output, Runnable reauthorize) {
+        try (var input =
+                java.nio.channels.FileChannel.open(
+                        object(key), StandardOpenOption.READ, LinkOption.NOFOLLOW_LINKS)) {
+            input.position(offset);
+            java.nio.ByteBuffer buffer = java.nio.ByteBuffer.allocate(65536);
+            long remaining = length, sinceCheck = 0;
+            while (remaining > 0) {
+                if (sinceCheck >= 1048576) {
+                    reauthorize.run();
+                    sinceCheck = 0;
+                }
+                buffer.clear();
+                buffer.limit((int) Math.min(buffer.capacity(), remaining));
+                int n = input.read(buffer);
+                if (n <= 0) throw new ViException(ViErrorCode.VI_DATA_INVALID, "媒体原件不完整");
+                output.write(buffer.array(), 0, n);
+                remaining -= n;
+                sinceCheck += n;
+            }
+        } catch (IOException error) {
+            throw new ViException(ViErrorCode.VI_UPSTREAM_UNAVAILABLE, "私有媒体传输中断");
         }
     }
 

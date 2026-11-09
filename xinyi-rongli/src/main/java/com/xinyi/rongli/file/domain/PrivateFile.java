@@ -164,4 +164,64 @@ public class PrivateFile extends ViRecord {
     public void setUploadLeaseUntil(Instant value) {
         uploadLeaseUntil = value;
     }
+
+    private Long trainingId;
+
+    public Long getTrainingId() {
+        return trainingId;
+    }
+
+    public void setTrainingId(Long value) {
+        trainingId = value;
+    }
+
+    private Long mediaDurationMillis;
+
+    public Long getMediaDurationMillis() {
+        return mediaDurationMillis;
+    }
+
+    public void setMediaDurationMillis(Long value) {
+        mediaDurationMillis = value;
+    }
+
+    private Integer mediaWidth;
+
+    public Integer getMediaWidth() {
+        return mediaWidth;
+    }
+
+    public void setMediaWidth(Integer value) {
+        mediaWidth = value;
+    }
+
+    private Integer mediaHeight;
+
+    public Integer getMediaHeight() {
+        return mediaHeight;
+    }
+
+    public void setMediaHeight(Integer value) {
+        mediaHeight = value;
+    }
+
+    private String mediaVideoCodec;
+
+    public String getMediaVideoCodec() {
+        return mediaVideoCodec;
+    }
+
+    public void setMediaVideoCodec(String value) {
+        mediaVideoCodec = value;
+    }
+
+    private String mediaAudioCodec;
+
+    public String getMediaAudioCodec() {
+        return mediaAudioCodec;
+    }
+
+    public void setMediaAudioCodec(String value) {
+        mediaAudioCodec = value;
+    }
 }

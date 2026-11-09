@@ -1407,6 +1407,10 @@ components:
       - EDIT_QUALIFICATION
       - SUBMIT_QUALIFICATION
       - CREATE_QUALIFICATION_REVISION
+      - VIEW_TRAINING_COURSE
+      - EDIT_TRAINING_COURSE
+      - PUBLISH_TRAINING_COURSE
+      - CREATE_TRAINING_REVISION
     DriverStatementLine:
       type: object
       additionalProperties: false

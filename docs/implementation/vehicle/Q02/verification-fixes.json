@@ -1,0 +1,59 @@
+{
+  "baselineUnit": {
+    "tests": 37,
+    "failures": 0
+  },
+  "firstCompile": {
+    "integrationTests": 0,
+    "phase": "testCompile",
+    "cause": "Q02私有publish辅助方法与PricingHttpFixture同签名，访问权限冲突",
+    "resolution": "专用helper改名publishTraining，不覆盖父夹具或改断言"
+  },
+  "firstActualTargeted": {
+    "tests": 171,
+    "passed": 167,
+    "failures": 4,
+    "errors": 0,
+    "skipped": 0,
+    "q02Tests": 44,
+    "other127Passed": true,
+    "failuresDetail": [
+      "3例真实下载Content-Type为video/mp4;charset=UTF-8，严格video/mp4断言失败且PC会拒绝",
+      "1例未传对象错误返回422并拒绝重试；既有缺文件语义应409保留UPLOADING"
+    ]
+  },
+  "intermediateCompile": {
+    "integrationTests": 0,
+    "phase": "compile",
+    "cause": "当前Servlet同时有String/Charset字符编码重载，null调用歧义",
+    "resolution": "显式(String)null，保持清除编码语义"
+  },
+  "productionFixes": [
+    "二进制视频响应清除字符编码并保持video/mp4",
+    "缺对象409允许续传，存在但损坏才422",
+    "仅培训媒体上传租约与READ票延为300秒，图片仍原60秒；视频PC300秒一致",
+    "首字节前在授权事务写下载STARTED审计，失败不发原件；完成另记真实完成事件"
+  ],
+  "testEnhancements": [
+    "实际HTTP socket首字节等待时读取DB lease及complete409，再发完整MP4并204/READY",
+    "实际票expiresAt约300秒，原始视频完整字节及SHA/元数据验证",
+    "STARTED审计故障真实500且不发MP4；成功开始/完成各一",
+    "合法128大CAS版本回归；旧比较因primitive自动拆箱并非缺陷，不算修复"
+  ],
+  "fixedWithoutWeakeningAssertions": true,
+  "finalReport": "full-regression.json",
+  "finalVerification": "PASS",
+  "finalTargeted": {
+    "tests": 171,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "finalFull": {
+    "integrationTests": 528,
+    "unitTests": 41,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  }
+}

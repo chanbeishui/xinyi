@@ -618,13 +618,15 @@ export type UploadRequest = {
     | 'RESULT_EVIDENCE'
     | 'DISPUTE'
     | 'STATION_QUALIFICATION'
-    | 'AVATAR';
+    | 'AVATAR'
+    | 'TRAINING_MEDIA';
   orderNo?: string;
   applicationId?: string;
   fileName: string;
-  mimeType: 'image/jpeg' | 'image/png';
+  mimeType: 'image/jpeg' | 'image/png' | 'video/mp4';
   size: number;
   stationId?: string;
+  trainingId?: string;
 };
 
 export type UploadTicket = {
@@ -641,6 +643,11 @@ export type FileReady = {
   serverSha256?: string;
   size?: number;
   version?: number;
+  durationMillis?: number | null;
+  width?: number | null;
+  height?: number | null;
+  videoCodec?: string | null;
+  audioCodec?: string | null;
 };
 
 export type AccessRequest = { purpose: string; orderNo?: string; fields?: Array<string> };
@@ -1933,58 +1940,21 @@ export type TrainingAttempt = {
 
 export type TrainingAttemptCreate = { expectedVersion: number; courseVersion: number };
 
-export type TrainingCourseInput = {
-  title: string;
-  description?: string;
-  mediaFileId: string;
-  requiredDurationSeconds: number;
-  passScore: number;
-  attemptTimeLimitSeconds: number;
-  questions: Array<{
-    type: 'SINGLE' | 'MULTIPLE' | 'TRUE_FALSE';
-    prompt: string;
-    options: Array<QuestionOption>;
-    correctOptionCodes: Array<string>;
-    questionCode: string;
-  }>;
-};
+export type TrainingCourseInput = TrainingCourseCreate | TrainingCourseRevision;
 
 export type TrainingCourseUpdate = {
   title: string;
-  description?: string;
-  mediaFileId: string;
-  requiredDurationSeconds: number;
-  passScore: number;
-  attemptTimeLimitSeconds: number;
-  questions: Array<{
-    type: 'SINGLE' | 'MULTIPLE' | 'TRUE_FALSE';
-    prompt: string;
-    options: Array<QuestionOption>;
-    correctOptionCodes: Array<string>;
-    questionCode: string;
-  }>;
+  description: string | null;
+  mediaFileId: string | null;
+  requiredDurationSeconds: number | null;
+  passScore: number | null;
+  attemptTimeLimitSeconds: number | null;
+  questions: Array<TrainingQuestionInput>;
   expectedVersion: number;
+  reason: string;
 };
 
-export type TrainingCourseAdmin = {
-  title: string;
-  description?: string;
-  mediaFileId?: string;
-  requiredDurationSeconds?: number;
-  passScore?: number;
-  attemptTimeLimitSeconds?: number;
-  questions?: Array<{
-    type: 'SINGLE' | 'MULTIPLE' | 'TRUE_FALSE';
-    prompt: string;
-    options: Array<QuestionOption>;
-    correctOptionCodes: Array<string>;
-    questionCode: string;
-  }>;
-  trainingId: string;
-  courseVersion: number;
-  status: 'DRAFT' | 'PUBLISHED' | 'DISABLED';
-  version: number;
-};
+export type TrainingCourseAdmin = TrainingCourseSummary | TrainingCourseDetail;
 
 export type FaceSessionStatus = 'CREATED' | 'PROCESSING' | 'PASSED' | 'FAILED' | 'EXPIRED';
 
@@ -2444,7 +2414,11 @@ export type AllowedAction =
   | 'VIEW_ASSIGNMENTS'
   | 'EDIT_QUALIFICATION'
   | 'SUBMIT_QUALIFICATION'
-  | 'CREATE_QUALIFICATION_REVISION';
+  | 'CREATE_QUALIFICATION_REVISION'
+  | 'VIEW_TRAINING_COURSE'
+  | 'EDIT_TRAINING_COURSE'
+  | 'PUBLISH_TRAINING_COURSE'
+  | 'CREATE_TRAINING_REVISION';
 
 export type AccountStatus = 'ACTIVE' | 'LOCKED';
 
@@ -2938,4 +2912,90 @@ export type QualificationBlocker = {
   field: string;
   reasonCode: string;
   message: string;
+};
+
+export type TrainingQuestionInput = {
+  questionCode: string;
+  type: 'SINGLE' | 'MULTIPLE' | 'TRUE_FALSE';
+  prompt: string;
+  options: Array<{
+    code: string;
+    text: string;
+  }>;
+  correctOptionCodes: Array<string>;
+};
+
+export type TrainingPublishBlocker = {
+  field: string;
+  reasonCode: string;
+  message: string;
+};
+
+export type TrainingMediaAdmin = {
+  fileId: string;
+  status: 'UPLOADING' | 'VERIFYING' | 'READY' | 'REJECTED';
+  mimeType: string | null;
+  size: number | null;
+  durationMillis: number | null;
+  width: number | null;
+  height: number | null;
+  videoCodec: string | null;
+  audioCodec: string | null;
+  inherited: boolean;
+};
+
+export type TrainingCourseSummary = {
+  trainingId: string;
+  ownerDeptId: string | null;
+  companyName: string | null;
+  courseKey: string;
+  courseVersion: number;
+  sourceTrainingId: string | null;
+  title: string;
+  description: string | null;
+  status: 'DRAFT' | 'PUBLISHED' | 'DISABLED';
+  version: number;
+  publishedAt: string | null;
+  requiredDurationSeconds: number | null;
+  passScore: number | null;
+  attemptTimeLimitSeconds: number | null;
+  mediaFileId: string | null;
+  questionCount: number;
+  contentHash: string | null;
+  allowedActions: Array<AllowedAction>;
+  publishBlockers: Array<TrainingPublishBlocker>;
+};
+
+export type TrainingCourseDetail = {
+  trainingId: string;
+  ownerDeptId: string | null;
+  companyName: string | null;
+  courseKey: string;
+  courseVersion: number;
+  sourceTrainingId: string | null;
+  title: string;
+  description: string | null;
+  status: 'DRAFT' | 'PUBLISHED' | 'DISABLED';
+  version: number;
+  publishedAt: string | null;
+  requiredDurationSeconds: number | null;
+  passScore: number | null;
+  attemptTimeLimitSeconds: number | null;
+  mediaFileId: string | null;
+  questionCount: number;
+  contentHash: string | null;
+  allowedActions: Array<AllowedAction>;
+  publishBlockers: Array<TrainingPublishBlocker>;
+  questions: Array<TrainingQuestionInput>;
+  media: TrainingMediaAdmin | null;
+};
+
+export type TrainingCourseCreate = {
+  ownerDeptId: string;
+  title: string;
+};
+
+export type TrainingCourseRevision = {
+  sourceTrainingId: string;
+  expectedSourceVersion: number;
 };

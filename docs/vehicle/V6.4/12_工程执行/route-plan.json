@@ -3144,22 +3144,24 @@
     "canonicalPage": "B43",
     "title": "培训课程管理",
     "role": "admin",
-    "targetPath": "xinyi-ui/src/views/rongli/b43/index.vue",
+    "targetPath": "xinyi-ui/src/views/rongli/training/index.vue",
     "presentation": "PAGE",
     "taskId": "Q02",
     "status": "NOT_ASSESSED",
-    "note": "目标实现路径，非已存在源码。状态画板与弹窗不是独立小程序路由；遵守原账号与权限边界。"
+    "note": "目标实现路径，非已存在源码。状态画板与弹窗不是独立小程序路由；遵守原账号与权限边界。",
+    "implementationNote": "B43/B44统一真实training页面；公司范围、草稿/视频/题库及发布版本按Q02同源契约。"
   },
   {
     "boardId": "B44",
     "canonicalPage": "B44",
     "title": "课程与题库编辑",
     "role": "admin",
-    "targetPath": "xinyi-ui/src/views/rongli/b44/index.vue",
+    "targetPath": "xinyi-ui/src/views/rongli/training/index.vue",
     "presentation": "PAGE",
     "taskId": "Q02",
     "status": "NOT_ASSESSED",
-    "note": "目标实现路径，非已存在源码。状态画板与弹窗不是独立小程序路由；遵守原账号与权限边界。"
+    "note": "目标实现路径，非已存在源码。状态画板与弹窗不是独立小程序路由；遵守原账号与权限边界。",
+    "implementationNote": "B43/B44统一真实training页面；公司范围、草稿/视频/题库及发布版本按Q02同源契约。"
   },
   {
     "boardId": "B45",

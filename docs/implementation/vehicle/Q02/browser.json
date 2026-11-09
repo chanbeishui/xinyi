@@ -1,0 +1,398 @@
+{
+  "mode": "Browser plugin not available；Playwright真实PC页面+明确API夹具；MP4原字节/浏览器解码实际执行，不代表真实后端发布/学员Q03完成。",
+  "url": "http://127.0.0.1:5173/driver-management/training",
+  "viewports": [
+    "1440x1000",
+    "390x844"
+  ],
+  "checks": [
+    "B43真实路由和公司列表仅summary，不取标准答案或推导主部门",
+    "标题/状态/公司/排序走服务端白名单，分页总数取服务端",
+    "明确选择真实公司创建最简草稿，创建unknown关开仍原UUID/body重试",
+    "不完整草稿允许9键显式null/空题库保存，缺教材或标准不显示发布",
+    "题干/选项/标准答案校验；修改选项code同步答案，不残留隐藏旧答案",
+    "单选/多选/判断真实控件均可维护，切单答案题型不残留多答案",
+    "真实MP4原字节100MiB规则、TRAINING_MEDIA父课程、sameorigin票据PUT及READY后绑定；VERIFYING不假成功",
+    "教材真实短票下载为blob播放，关闭撤销临时地址，不把票据Token放video URL",
+    "409保留题库/标题/原因，重读最新版本后才重新保存",
+    "保存unknown关闭重开原课程仍原body/key，不能编辑后另换意图",
+    "发布409保留原因重读后提交，发布unknown关开仍原版本/body/UUID",
+    "发布必须VersionReason/UUID及正式标准确认，发布后内容和答案只读",
+    "仅从PUBLISHED精确源版本派生同族新草稿，保留旧试卷题库与受控继承媒体",
+    "真实403清空旧课程题目标准答案和视频，不能用旧详情继续维护",
+    "换课程清前一题库/媒体，超安全整数trainingId保持字符串",
+    "真实/system/dept/list旧HTTP200/code403关闭公司创建选择，不冒充空目录或默认主部门",
+    "仅list权限不开放答案详情、创建、编辑或发布",
+    "390px筛选工具栏换行、表格局部滚动，无页面横向溢出"
+  ],
+  "errors": [],
+  "warnings": [],
+  "expectedTransportErrors": [
+    "Failed to load resource: the server responded with a status of 503 (Service Unavailable)",
+    "Failed to load resource: the server responded with a status of 409 (Conflict)",
+    "Failed to load resource: the server responded with a status of 503 (Service Unavailable)",
+    "Failed to load resource: the server responded with a status of 409 (Conflict)",
+    "Failed to load resource: the server responded with a status of 503 (Service Unavailable)",
+    "Failed to load resource: the server responded with a status of 403 (Forbidden)"
+  ],
+  "unknown": [],
+  "writes": [
+    {
+      "path": "/api/admin/training-courses",
+      "method": "POST",
+      "input": {
+        "ownerDeptId": "995001",
+        "title": "公司甲安全培训草稿"
+      },
+      "key": "5a97859f-85a5-423a-8867-b13a92bad4c2"
+    },
+    {
+      "path": "/api/admin/training-courses",
+      "method": "POST",
+      "input": {
+        "ownerDeptId": "995001",
+        "title": "公司甲安全培训草稿"
+      },
+      "key": "5a97859f-85a5-423a-8867-b13a92bad4c2"
+    },
+    {
+      "path": "/api/admin/training-courses/10",
+      "method": "PUT",
+      "input": {
+        "title": "公司甲安全培训草稿",
+        "description": "本段为测试夹具，尚未完成培训门槛",
+        "mediaFileId": null,
+        "requiredDurationSeconds": null,
+        "passScore": null,
+        "attemptTimeLimitSeconds": null,
+        "questions": [],
+        "expectedVersion": 1,
+        "reason": "先保存真实不完整课程草稿"
+      },
+      "key": "a9864eb5-4ed8-4ee7-8e22-5c398e4fed10"
+    },
+    {
+      "path": "/api/admin/training-courses/10",
+      "method": "PUT",
+      "input": {
+        "title": "公司甲安全培训草稿",
+        "description": "本段为测试夹具，尚未完成培训门槛",
+        "mediaFileId": null,
+        "requiredDurationSeconds": null,
+        "passScore": null,
+        "attemptTimeLimitSeconds": null,
+        "questions": [
+          {
+            "questionCode": "Q_56d470f2",
+            "type": "SINGLE",
+            "prompt": "测试题：应先核对交接信息吗？",
+            "options": [
+              {
+                "code": "SAFE",
+                "text": "应核对"
+              },
+              {
+                "code": "B",
+                "text": "无需核对"
+              }
+            ],
+            "correctOptionCodes": [
+              "SAFE"
+            ]
+          }
+        ],
+        "expectedVersion": 2,
+        "reason": "维护题目与标准答案"
+      },
+      "key": "5a147b6e-e9c0-41ac-85b1-e8bf2e20f66d"
+    },
+    {
+      "path": "/api/admin/training-courses/10",
+      "method": "PUT",
+      "input": {
+        "title": "公司甲安全培训草稿",
+        "description": "本段为测试夹具，尚未完成培训门槛",
+        "mediaFileId": null,
+        "requiredDurationSeconds": null,
+        "passScore": null,
+        "attemptTimeLimitSeconds": null,
+        "questions": [
+          {
+            "questionCode": "Q_56d470f2",
+            "type": "MULTIPLE",
+            "prompt": "测试题：应先核对交接信息吗？",
+            "options": [
+              {
+                "code": "SAFE",
+                "text": "应核对"
+              },
+              {
+                "code": "B",
+                "text": "无需核对"
+              }
+            ],
+            "correctOptionCodes": [
+              "SAFE",
+              "B"
+            ]
+          }
+        ],
+        "expectedVersion": 3,
+        "reason": "核对多选题两个标准答案"
+      },
+      "key": "a69983a3-e412-44c7-969a-a27ce66fc52c"
+    },
+    {
+      "path": "/api/admin/training-courses/10",
+      "method": "PUT",
+      "input": {
+        "title": "公司甲安全培训草稿",
+        "description": "本段为测试夹具，尚未完成培训门槛",
+        "mediaFileId": null,
+        "requiredDurationSeconds": null,
+        "passScore": null,
+        "attemptTimeLimitSeconds": null,
+        "questions": [
+          {
+            "questionCode": "Q_56d470f2",
+            "type": "TRUE_FALSE",
+            "prompt": "测试题：应先核对交接信息吗？",
+            "options": [
+              {
+                "code": "SAFE",
+                "text": "应核对"
+              },
+              {
+                "code": "B",
+                "text": "无需核对"
+              }
+            ],
+            "correctOptionCodes": [
+              "SAFE"
+            ]
+          }
+        ],
+        "expectedVersion": 4,
+        "reason": "核对判断题两个选项一个答案"
+      },
+      "key": "61e4db44-e072-4d75-be15-31e280cc9b36"
+    },
+    {
+      "path": "/api/admin/training-courses/10",
+      "method": "PUT",
+      "input": {
+        "title": "公司甲安全培训草稿",
+        "description": "本段为测试夹具，尚未完成培训门槛",
+        "mediaFileId": "602",
+        "requiredDurationSeconds": 1,
+        "passScore": 80,
+        "attemptTimeLimitSeconds": 60,
+        "questions": [
+          {
+            "questionCode": "Q_56d470f2",
+            "type": "TRUE_FALSE",
+            "prompt": "测试题：应先核对交接信息吗？",
+            "options": [
+              {
+                "code": "SAFE",
+                "text": "应核对"
+              },
+              {
+                "code": "B",
+                "text": "无需核对"
+              }
+            ],
+            "correctOptionCodes": [
+              "SAFE"
+            ]
+          }
+        ],
+        "expectedVersion": 5,
+        "reason": "绑定真实MP4并配置培训门槛"
+      },
+      "key": "fa53222a-95a8-4b0e-8164-24177a1e7a74"
+    },
+    {
+      "path": "/api/admin/training-courses/10",
+      "method": "PUT",
+      "input": {
+        "title": "409后保留课程标题",
+        "description": "本段为测试夹具，尚未完成培训门槛",
+        "mediaFileId": "602",
+        "requiredDurationSeconds": 1,
+        "passScore": 80,
+        "attemptTimeLimitSeconds": 60,
+        "questions": [
+          {
+            "questionCode": "Q_56d470f2",
+            "type": "TRUE_FALSE",
+            "prompt": "测试题：应先核对交接信息吗？",
+            "options": [
+              {
+                "code": "SAFE",
+                "text": "应核对"
+              },
+              {
+                "code": "B",
+                "text": "无需核对"
+              }
+            ],
+            "correctOptionCodes": [
+              "SAFE"
+            ]
+          }
+        ],
+        "expectedVersion": 6,
+        "reason": "并发修改后保留原因"
+      },
+      "key": "94461a91-44a2-4035-b3fc-4b2ba58769b6"
+    },
+    {
+      "path": "/api/admin/training-courses/10",
+      "method": "PUT",
+      "input": {
+        "title": "409后保留课程标题",
+        "description": "本段为测试夹具，尚未完成培训门槛",
+        "mediaFileId": "602",
+        "requiredDurationSeconds": 1,
+        "passScore": 80,
+        "attemptTimeLimitSeconds": 60,
+        "questions": [
+          {
+            "questionCode": "Q_56d470f2",
+            "type": "TRUE_FALSE",
+            "prompt": "测试题：应先核对交接信息吗？",
+            "options": [
+              {
+                "code": "SAFE",
+                "text": "应核对"
+              },
+              {
+                "code": "B",
+                "text": "无需核对"
+              }
+            ],
+            "correctOptionCodes": [
+              "SAFE"
+            ]
+          }
+        ],
+        "expectedVersion": 7,
+        "reason": "并发修改后保留原因"
+      },
+      "key": "40d281bb-62fc-486c-9a88-4902b0dc8af1"
+    },
+    {
+      "path": "/api/admin/training-courses/10",
+      "method": "PUT",
+      "input": {
+        "title": "409后保留课程标题",
+        "description": "未知请求冻结的说明",
+        "mediaFileId": "602",
+        "requiredDurationSeconds": 1,
+        "passScore": 80,
+        "attemptTimeLimitSeconds": 60,
+        "questions": [
+          {
+            "questionCode": "Q_56d470f2",
+            "type": "TRUE_FALSE",
+            "prompt": "测试题：应先核对交接信息吗？",
+            "options": [
+              {
+                "code": "SAFE",
+                "text": "应核对"
+              },
+              {
+                "code": "B",
+                "text": "无需核对"
+              }
+            ],
+            "correctOptionCodes": [
+              "SAFE"
+            ]
+          }
+        ],
+        "expectedVersion": 8,
+        "reason": "未知保存保持原意图"
+      },
+      "key": "f93b0be9-e7d8-44fd-8dbd-31c1fd436a05"
+    },
+    {
+      "path": "/api/admin/training-courses/10",
+      "method": "PUT",
+      "input": {
+        "title": "409后保留课程标题",
+        "description": "未知请求冻结的说明",
+        "mediaFileId": "602",
+        "requiredDurationSeconds": 1,
+        "passScore": 80,
+        "attemptTimeLimitSeconds": 60,
+        "questions": [
+          {
+            "questionCode": "Q_56d470f2",
+            "type": "TRUE_FALSE",
+            "prompt": "测试题：应先核对交接信息吗？",
+            "options": [
+              {
+                "code": "SAFE",
+                "text": "应核对"
+              },
+              {
+                "code": "B",
+                "text": "无需核对"
+              }
+            ],
+            "correctOptionCodes": [
+              "SAFE"
+            ]
+          }
+        ],
+        "expectedVersion": 8,
+        "reason": "未知保存保持原意图"
+      },
+      "key": "f93b0be9-e7d8-44fd-8dbd-31c1fd436a05"
+    },
+    {
+      "path": "/api/admin/training-courses/10/publish",
+      "method": "POST",
+      "input": {
+        "expectedVersion": 9,
+        "reason": "审核正式教材及题库后发布测试版本"
+      },
+      "key": "8b96f6f3-6cc4-43da-80dd-308427672af1"
+    },
+    {
+      "path": "/api/admin/training-courses/10/publish",
+      "method": "POST",
+      "input": {
+        "expectedVersion": 10,
+        "reason": "审核正式教材及题库后发布测试版本"
+      },
+      "key": "e0387042-bb81-4e16-9a90-ca2047364c97"
+    },
+    {
+      "path": "/api/admin/training-courses/10/publish",
+      "method": "POST",
+      "input": {
+        "expectedVersion": 10,
+        "reason": "审核正式教材及题库后发布测试版本"
+      },
+      "key": "e0387042-bb81-4e16-9a90-ca2047364c97"
+    },
+    {
+      "path": "/api/admin/training-courses",
+      "method": "POST",
+      "input": {
+        "sourceTrainingId": "10",
+        "expectedSourceVersion": 11
+      },
+      "key": "622fce58-62b5-45d9-ba09-2f740b0f2966"
+    }
+  ],
+  "screenshots": [
+    "docs/implementation/vehicle/Q02/training-list.png",
+    "docs/implementation/vehicle/Q02/training-editor.png",
+    "docs/implementation/vehicle/Q02/training-published.png",
+    "docs/implementation/vehicle/Q02/training-mobile.png"
+  ]
+}

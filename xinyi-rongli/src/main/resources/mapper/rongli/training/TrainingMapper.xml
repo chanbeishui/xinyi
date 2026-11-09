@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xinyi.rongli.training.mapper.TrainingMapper">
+    <resultMap id="Course" type="com.xinyi.rongli.training.domain.TrainingCourse">
+        <id property="id" column="id"/>
+        <result property="version" column="version"/>
+        <result property="ownerDeptId" column="owner_dept_id"/>
+        <result property="companyName" column="company_name"/>
+        <result property="courseKey" column="course_key"/>
+        <result property="courseVersion" column="course_version"/>
+        <result property="sourceTrainingId" column="source_training_id"/>
+        <result property="inheritedMediaFileId" column="inherited_media_file_id"/>
+        <result property="title" column="title"/>
+        <result property="description" column="description"/>
+        <result property="mediaFileId" column="media_file_id"/>
+        <result property="requiredDurationSeconds" column="required_duration_seconds"/>
+        <result property="passScore" column="pass_score"/>
+        <result property="attemptTimeLimitSeconds" column="attempt_time_limit_seconds"/>
+        <result property="status" column="status"/>
+        <result property="publishedAt" column="published_at" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+        <result property="publishedByUserId" column="published_by_user_id"/>
+        <result property="createdByUserId" column="created_by_user_id"/>
+        <result property="updatedByUserId" column="updated_by_user_id"/>
+        <result property="contentHash" column="content_hash"/>
+    </resultMap>
+    <sql id="columns">
+        SELECT c.*,d.dept_name company_name
+        FROM vi_training_course c
+        LEFT JOIN sys_dept d ON d.dept_id=c.owner_dept_id
+    </sql>
+    <select id="company" resultType="map">
+        SELECT dept_id,status,del_flag
+        FROM sys_dept
+        WHERE dept_id=#{id}
+    </select>
+    <select id="find" resultMap="Course">
+        <include refid="columns"/>
+        WHERE c.id=#{id}
+    </select>
+    <select id="lock" resultMap="Course">
+        <include refid="columns"/>
+        WHERE c.id=#{id}
+        FOR UPDATE
+    </select>
+    <!-- 族首版本是永久锁锚，派生时不能分别锁不同来源后各自分配同一版本。 -->
+    <select id="lockFamily" resultMap="Course">
+        <include refid="columns"/>
+        WHERE c.course_key=#{key}
+        ORDER BY c.course_version,c.id
+        LIMIT 1
+        FOR UPDATE
+    </select>
+    <select id="draft" resultMap="Course">
+        <include refid="columns"/>
+        WHERE c.course_key=#{key} AND c.status='DRAFT'
+    </select>
+    <select id="maxVersion" resultType="int">
+        SELECT COALESCE(MAX(course_version),0)
+        FROM vi_training_course
+        WHERE course_key=#{key}
+    </select>
+    <sql id="filter">
+        WHERE 1=1
+        <if test="scope!=null">
+            <choose>
+                <when test="scope.size()>0">
+                    AND c.owner_dept_id IN
+                    <foreach collection="scope" item="dept" open="(" close=")" separator=",">#{dept}</foreach>
+                </when>
+                <otherwise>AND 1=0</otherwise>
+            </choose>
+        </if>
+        <if test="query.ownerDeptId!=null">AND c.owner_dept_id=#{query.ownerDeptId}</if>
+        <if test="query.status!=null">AND c.status=#{query.status}</if>
+        <if test="query.keyword!=null">AND c.title LIKE CONCAT('%',#{query.keyword},'%')</if>
+    </sql>
+    <select id="list" resultMap="Course">
+        <include refid="columns"/>
+        <include refid="filter"/>
+        <choose>
+            <when test="query.sort=='titleAsc'">ORDER BY c.title,c.id DESC</when>
+            <otherwise>ORDER BY c.id DESC</otherwise>
+        </choose>
+        LIMIT #{query.pageSize} OFFSET #{offset}
+    </select>
+    <select id="count" resultType="long">
+        SELECT COUNT(*)
+        FROM vi_training_course c
+        <include refid="filter"/>
+    </select>
+    <select id="questions" resultType="map">
+        SELECT question_code,question_type,prompt,options_json,correct_option_codes
+        FROM vi_training_question
+        WHERE training_id=#{id}
+        ORDER BY sort_no,id
+    </select>
+    <select id="questionCount" resultType="int">
+        SELECT COUNT(*)
+        FROM vi_training_question
+        WHERE training_id=#{id}
+    </select>
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO vi_training_course(
+            owner_dept_id,course_key,course_version,source_training_id,inherited_media_file_id,
+            title,description,media_file_id,required_duration_seconds,pass_score,
+            attempt_time_limit_seconds,status,created_by_user_id,updated_by_user_id,content_hash
+        )
+        VALUES(
+            #{ownerDeptId},#{courseKey},#{courseVersion},#{sourceTrainingId},#{inheritedMediaFileId},
+            #{title},#{description},#{mediaFileId},#{requiredDurationSeconds},#{passScore},
+            #{attemptTimeLimitSeconds},'DRAFT',#{createdByUserId},#{updatedByUserId},#{contentHash}
+        )
+    </insert>
+    <update id="save">
+        UPDATE vi_training_course
+        SET title=#{title},description=#{description},media_file_id=#{mediaFileId},
+            required_duration_seconds=#{requiredDurationSeconds},pass_score=#{passScore},
+            attempt_time_limit_seconds=#{attemptTimeLimitSeconds},content_hash=#{contentHash},
+            updated_by_user_id=#{updatedByUserId},version=version+1,updated_at=UTC_TIMESTAMP(3)
+        WHERE id=#{id} AND version=#{version} AND status='DRAFT'
+    </update>
+    <update id="publish">
+        UPDATE vi_training_course
+        SET status='PUBLISHED',content_hash=#{hash},published_at=UTC_TIMESTAMP(3),
+            published_by_user_id=#{userId},updated_by_user_id=#{userId},
+            version=version+1,updated_at=UTC_TIMESTAMP(3)
+        WHERE id=#{id} AND version=#{version} AND status='DRAFT'
+    </update>
+    <!-- 仅父课程DRAFT且锁定/CAS通过后重建工作题库；已发布题目永不执行此删除。 -->
+    <delete id="clearQuestions">
+        DELETE q
+        FROM vi_training_question q
+        JOIN vi_training_course c ON c.id=q.training_id
+        WHERE q.training_id=#{id} AND c.status='DRAFT'
+    </delete>
+    <insert id="insertQuestion">
+        INSERT INTO vi_training_question(
+            training_id,question_code,question_type,prompt,options_json,correct_option_codes,sort_no
+        )
+        VALUES(#{trainingId},#{question.questionCode},#{question.type},#{question.prompt},#{options},#{answers},#{sort})
+    </insert>
+</mapper>

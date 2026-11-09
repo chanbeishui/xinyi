@@ -1,0 +1,93 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <testsuite xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-failsafe-plugin/xsd/failsafe-test-report.xsd" version="3.0.2" name="com.xinyi.web.viit.Q02TrainingIT" time="5.021" tests="44" errors="0" skipped="0" failures="0">
+    <testcase name="mediaLimitsAndTrainingParentMustBeCheckedBeforeAnyTicketIsIssued" classname="com.xinyi.web.viit.Q02TrainingIT" time="0.086">
+    </testcase>
+    <testcase name="concurrentSameVersionSavesHaveExactlyOneWinnerAndNoMixedQuestionSet" classname="com.xinyi.web.viit.Q02TrainingIT" time="0.051">
+    </testcase>
+    <testcase name="ownerMustBeExplicitValidAndAuthorizedRatherThanInferredFromPrimaryDepartment" classname="com.xinyi.web.viit.Q02TrainingIT" time="0.043">
+    </testcase>
+    <testcase name="questionOptionsRequireDistinctCodesAndNonBlankBoundedContent" classname="com.xinyi.web.viit.Q02TrainingIT" time="0.028">
+    </testcase>
+    <testcase name="requiredStudyDurationCannotExceedVerifiedVideoDuration" classname="com.xinyi.web.viit.Q02TrainingIT" time="0.09">
+    </testcase>
+    <testcase name="onlyOneDraftCanExistPerCourseSeriesWithoutReusingOldCourseVersionNumbers" classname="com.xinyi.web.viit.Q02TrainingIT" time="0.108">
+    </testcase>
+    <testcase name="fullReplacementCanPersistIncompleteDraftAndExplicitlyClearOptionalValues" classname="com.xinyi.web.viit.Q02TrainingIT" time="0.035">
+    </testcase>
+    <testcase name="derivationRejectsDraftSourceForeignCompanyStaleVersionAndForgedOwner" classname="com.xinyi.web.viit.Q02TrainingIT" time="0.085">
+    </testcase>
+    <testcase name="oldAttemptStillReferencesItsExactPublishedCourseAndQuestionSnapshot" classname="com.xinyi.web.viit.Q02TrainingIT" time="0.103">
+    </testcase>
+    <testcase name="malformedIdentifiersPaginationSortAndInternalQueryFieldsAreRejected" classname="com.xinyi.web.viit.Q02TrainingIT" time="0.028">
+    </testcase>
+    <testcase name="successfulAndDeniedAuditsArePresentWithoutPlainQuestionOrAnswerPayloads" classname="com.xinyi.web.viit.Q02TrainingIT" time="0.061">
+    </testcase>
+    <testcase name="fakeOrTruncatedMp4ContentIsRejectedRatherThanTrustedFromMimeOrExtension" classname="com.xinyi.web.viit.Q02TrainingIT" time="0.07">
+    </testcase>
+    <testcase name="missingMiniOrForgedClientRealmCannotEnterAnyAdminTrainingEndpoint" classname="com.xinyi.web.viit.Q02TrainingIT" time="0.045">
+    </testcase>
+    <testcase name="derivingNewDraftPreservesSeriesAndCopiesQuestionsWithoutMutatingPublishedVersion" classname="com.xinyi.web.viit.Q02TrainingIT" time="0.147">
+    </testcase>
+    <testcase name="publicationFreezesNewUploadRawUploadAndCompleteButKeepsReadyMediaReadable" classname="com.xinyi.web.viit.Q02TrainingIT" time="0.149">
+    </testcase>
+    <testcase name="mediaFromAnotherCourseOrCompanyCannotBeAttachedByGuessingItsId" classname="com.xinyi.web.viit.Q02TrainingIT" time="0.125">
+    </testcase>
+    <testcase name="singleMultipleAndTrueFalseQuestionsPersistTheirExactConfiguredAnswers" classname="com.xinyi.web.viit.Q02TrainingIT" time="0.041">
+    </testcase>
+    <testcase name="bodyCannotForgeIdsVersionsPublicationOwnershipOrInternalDataScope" classname="com.xinyi.web.viit.Q02TrainingIT" time="0.066">
+    </testcase>
+    <testcase name="fileTicketsCannotBypassCourseScopeOrRevokedTrainingPermission" classname="com.xinyi.web.viit.Q02TrainingIT" time="0.046">
+    </testcase>
+    <testcase name="outboxFailureRollsBackCourseQuestionsVersionAuditAndIdempotency" classname="com.xinyi.web.viit.Q02TrainingIT" time="0.044">
+    </testcase>
+    <testcase name="fullReplacementAndUuidAndExpectedVersionAreMandatory" classname="com.xinyi.web.viit.Q02TrainingIT" time="0.055">
+    </testcase>
+    <testcase name="eachOfFiveFunctionalPermissionsIsRequiredIndependently" classname="com.xinyi.web.viit.Q02TrainingIT" time="0.069">
+    </testcase>
+    <testcase name="listRowsAndTotalUseRealCompanyScopeAndDetailHidesAnotherCompany" classname="com.xinyi.web.viit.Q02TrainingIT" time="0.057">
+    </testcase>
+    <testcase name="listAndMutationWithoutQueryPermissionDoNotExposeQuestionAnswers" classname="com.xinyi.web.viit.Q02TrainingIT" time="0.085">
+    </testcase>
+    <testcase name="databaseFailureDoesNotLeaveHalfReplacedQuestionBankOrSuccessfulEvents" classname="com.xinyi.web.viit.Q02TrainingIT" time="0.061">
+    </testcase>
+    <testcase name="emptyCompanyDataScopeFailsClosedForReadsAndWrites" classname="com.xinyi.web.viit.Q02TrainingIT" time="0.036">
+    </testcase>
+    <testcase name="realUploadedMediaAndQuestionBankCanBePublishedWithImmutableContentHash" classname="com.xinyi.web.viit.Q02TrainingIT" time="0.061">
+    </testcase>
+    <testcase name="idempotentCreateReplaysOneRecordAndRejectsSameKeyWithAnotherBody" classname="com.xinyi.web.viit.Q02TrainingIT" time="0.033">
+    </testcase>
+    <testcase name="duplicateOrMalformedQuestionCodesAreRejectedAtomically" classname="com.xinyi.web.viit.Q02TrainingIT" time="0.038">
+    </testcase>
+    <testcase name="qualificationOrAvatarImagesCannotBeUsedAsTrainingMedia" classname="com.xinyi.web.viit.Q02TrainingIT" time="0.054">
+    </testcase>
+    <testcase name="answersMustBeUniqueOptionSubsetsAndRespectEachQuestionType" classname="com.xinyi.web.viit.Q02TrainingIT" time="0.03">
+    </testcase>
+    <testcase name="revokedMembershipCannotReuseEarlierDetailOrIdempotencyResult" classname="com.xinyi.web.viit.Q02TrainingIT" time="0.041">
+    </testcase>
+    <testcase name="authorityRevocationAndPendingPublicationSerializeThroughTheDirectoryGuard" classname="com.xinyi.web.viit.Q02TrainingIT" time="0.225">
+    </testcase>
+    <testcase name="fiveActualHttpResponsesConformToPrimaryAndTaskOpenApi" classname="com.xinyi.web.viit.Q02TrainingIT" time="1.379">
+    </testcase>
+    <testcase name="untransferredOrUncompletedMediaCannotBecomePublishedCourseEvidence" classname="com.xinyi.web.viit.Q02TrainingIT" time="0.062">
+    </testcase>
+    <testcase name="concurrentDerivationCreatesExactlyOneDraftForTheSeries" classname="com.xinyi.web.viit.Q02TrainingIT" time="0.111">
+    </testcase>
+    <testcase name="publishedCourseAndQuestionRowsCannotBeEditedOrRepublished" classname="com.xinyi.web.viit.Q02TrainingIT" time="0.085">
+    </testcase>
+    <testcase name="publicationRejectsIncompleteDraftAndKeepsEveryOriginalFact" classname="com.xinyi.web.viit.Q02TrainingIT" time="0.033">
+    </testcase>
+    <testcase name="privateMp4LifecycleVerifiesActualBytesHashMetadataAndAuthorizedDownload" classname="com.xinyi.web.viit.Q02TrainingIT" time="0.153">
+    </testcase>
+    <testcase name="boundedTitlesThresholdsAndReasonsAreValidatedWithoutReplacingFormalDefaults" classname="com.xinyi.web.viit.Q02TrainingIT" time="0.036">
+    </testcase>
+    <testcase name="idempotentPublishCreatesOneAuditAndOutboxAndDoesNotLeakTheAnswers" classname="com.xinyi.web.viit.Q02TrainingIT" time="0.085">
+    </testcase>
+    <testcase name="oldTokenIsRejectedEvenWhenRedisEvictionFailsAndCannotReplaySuccessfulWrite" classname="com.xinyi.web.viit.Q02TrainingIT" time="0.03">
+    </testcase>
+    <testcase name="concurrentSaveAndPublishFreezeOneConsistentAuthorizedVersion" classname="com.xinyi.web.viit.Q02TrainingIT" time="0.078">
+    </testcase>
+    <testcase name="explicitlyOwnedMinimalDraftDoesNotInventMediaQuestionsOrTrainingPass" classname="com.xinyi.web.viit.Q02TrainingIT" time="0.025">
+    </testcase>
+  </testsuite>
+</testsuites>

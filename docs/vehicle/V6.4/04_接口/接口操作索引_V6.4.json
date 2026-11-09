@@ -4234,11 +4234,11 @@
     "capability": null,
     "authorization": {
       "realm": "ADMIN",
-      "scope": "ORG_DEPT_STATION",
+      "scope": "COMPANY_OWNER_DEPT",
       "permission": "biz:trainingcourse:list"
     },
     "flows": [
-      "F04"
+      "F41"
     ]
   },
   {
@@ -4250,11 +4250,11 @@
     "capability": null,
     "authorization": {
       "realm": "ADMIN",
-      "scope": "ORG_DEPT_STATION",
+      "scope": "COMPANY_OWNER_DEPT",
       "permission": "biz:trainingcourse:create"
     },
     "flows": [
-      "F04"
+      "F41"
     ]
   },
   {
@@ -4266,11 +4266,11 @@
     "capability": null,
     "authorization": {
       "realm": "ADMIN",
-      "scope": "ORG_DEPT_STATION",
+      "scope": "COMPANY_OWNER_DEPT",
       "permission": "biz:trainingcourse:query"
     },
     "flows": [
-      "F04"
+      "F41"
     ]
   },
   {
@@ -4282,11 +4282,11 @@
     "capability": null,
     "authorization": {
       "realm": "ADMIN",
-      "scope": "ORG_DEPT_STATION",
+      "scope": "COMPANY_OWNER_DEPT",
       "permission": "biz:trainingcourse:edit"
     },
     "flows": [
-      "F04"
+      "F41"
     ]
   },
   {
@@ -4298,11 +4298,11 @@
     "capability": null,
     "authorization": {
       "realm": "ADMIN",
-      "scope": "ORG_DEPT_STATION",
+      "scope": "COMPANY_OWNER_DEPT",
       "permission": "biz:trainingcourse:publish"
     },
     "flows": [
-      "F04"
+      "F41"
     ]
   },
   {

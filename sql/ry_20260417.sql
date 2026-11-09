@@ -1372,6 +1372,12 @@ CREATE TABLE `vi_file` (
   `uploader_account_id` BIGINT NULL COMMENT '小程序上传者；与后台上传者互斥',
   `uploader_user_id` BIGINT NULL COMMENT '后台上传者；与小程序上传者互斥',
   `station_id` BIGINT NULL COMMENT '站点资质等文件的权威站点归属',
+  `training_id` BIGINT NULL COMMENT '培训媒体权威父课程版本，发布后仅只读继承',
+  `media_duration_millis` BIGINT NULL COMMENT '服务端解析的实际视频时长毫秒',
+  `media_width` INT NULL COMMENT '实际视频轨道宽度',
+  `media_height` INT NULL COMMENT '实际视频轨道高度',
+  `media_video_codec` VARCHAR(16) NULL COMMENT '实际视频轨道编码',
+  `media_audio_codec` VARCHAR(16) NULL COMMENT '可选实际音频轨道编码',
   `declared_size` BIGINT NULL COMMENT '客户端声明大小，只用于与实际字节核对',
   `declared_mime` VARCHAR(64) NULL COMMENT '客户端声明类型，READY以服务端识别为准',
   `upload_expires_at` DATETIME(3) NULL COMMENT '原上传授权截止UTC',
@@ -1391,6 +1397,8 @@ CREATE TABLE `vi_file` (
   `updated_at` DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3)) COMMENT 'UTC更新时间；Mapper每次修改显式SET updated_at=UTC_TIMESTAMP(3)，不依赖连接时区',
   `version` BIGINT NOT NULL DEFAULT 0 COMMENT '乐观锁版本',
   PRIMARY KEY (`id`),
+  CONSTRAINT ck_training_file_parent CHECK((training_id IS NULL AND purpose<>'TRAINING_MEDIA') OR (training_id IS NOT NULL AND purpose='TRAINING_MEDIA' AND order_id IS NULL AND application_id IS NULL AND station_id IS NULL)),
+  KEY ix_training_file (training_id,status,id),
   UNIQUE KEY uk_object_key (object_key),
   KEY ix_order_purpose (order_id,purpose),
   CONSTRAINT ck_66_c1389ba0baeb CHECK (`status` IN ('UPLOADING','VERIFYING','READY','REJECTED')),
@@ -2237,14 +2245,21 @@ CREATE TABLE `vi_penalty_appeal` (
 
 CREATE TABLE `vi_training_course` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库生成业务主键；插入不提供id',
+  `owner_dept_id` BIGINT NULL COMMENT '明确选择的公司部门；历史NULL待人工核查，不从创建者或主部门推断',
+  `source_training_id` BIGINT NULL COMMENT '派生所依据的已发布确切课程版本',
+  `inherited_media_file_id` BIGINT NULL COMMENT '服务端从来源课程冻结的只读媒体白名单，客户端不可指定',
+  `created_by_user_id` BIGINT NULL COMMENT '后台草稿创建人；历史不猜测回填',
+  `updated_by_user_id` BIGINT NULL COMMENT '最近后台内容维护人',
+  `content_hash` BINARY(32) NULL COMMENT '含题库答案的有密钥内容指纹；不向MINI发布',
+  `draft_course_key` VARCHAR(64) CHARACTER SET ascii COLLATE ascii_bin GENERATED ALWAYS AS (IF(status='DRAFT',course_key,NULL)) STORED COMMENT '单课程族仅一个未发布草稿',
   `course_key` VARCHAR(64) CHARACTER SET ascii COLLATE ascii_bin NOT NULL COMMENT '稳定课程编码',
   `course_version` INT NOT NULL COMMENT '课程内容版本',
   `title` VARCHAR(200) NOT NULL COMMENT '课程标题',
   `description` TEXT NULL COMMENT '培训说明',
-  `media_file_id` BIGINT NOT NULL COMMENT '私有培训媒体',
-  `required_duration_seconds` INT NOT NULL COMMENT '规定学习时长；发布时校验>0',
-  `pass_score` INT NOT NULL COMMENT '0至100的配置门槛',
-  `attempt_time_limit_seconds` INT NOT NULL COMMENT '考试时间配置',
+  `media_file_id` BIGINT NULL COMMENT '私有培训媒体；草稿未选可为空',
+  `required_duration_seconds` INT NULL COMMENT '规定学习时长；发布须完整且不超过实际媒体时长',
+  `pass_score` INT NULL COMMENT '0至100的配置门槛；草稿可暂缺',
+  `attempt_time_limit_seconds` INT NULL COMMENT '考试时限秒；发布须配置至少60秒',
   `status` VARCHAR(24) NOT NULL DEFAULT 'DRAFT' COMMENT 'TrainingCourseStatus: DRAFT,PUBLISHED,DISABLED',
   `published_at` DATETIME(3) NULL COMMENT 'UTC发布时间',
   `published_by_user_id` BIGINT NULL COMMENT '后台发布人',
@@ -2252,6 +2267,9 @@ CREATE TABLE `vi_training_course` (
   `updated_at` DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3)) COMMENT '更新时间UTC；更新必须显式设置UTC_TIMESTAMP(3)',
   `version` BIGINT NOT NULL DEFAULT 0 COMMENT '手写CAS版本',
   PRIMARY KEY (`id`),
+  UNIQUE KEY uk_training_active_draft (draft_course_key),
+  KEY ix_training_company (owner_dept_id,status,id),
+  CONSTRAINT ck_training_owner CHECK(owner_dept_id IS NULL OR owner_dept_id>0),
   UNIQUE KEY uk_course_revision (course_key,course_version),
   CONSTRAINT ck_course_score CHECK (pass_score BETWEEN 0 AND 100),
   CONSTRAINT ck_course_duration CHECK (required_duration_seconds>0 AND attempt_time_limit_seconds>=60),
@@ -3315,3 +3333,130 @@ WHERE NOT EXISTS(
 );
 
 DROP TEMPORARY TABLE a04_menu_guard;
+
+-- Q02培训管理稳定菜单；不自动授权角色。
+CREATE TEMPORARY TABLE q02_menu_guard (
+    violations INT NOT NULL CHECK(violations=0)
+);
+
+SELECT menu_id,parent_id,perms
+FROM sys_menu
+WHERE (menu_id=2971100 AND (parent_id<>2971000 OR COALESCE(perms,'')<>'biz:trainingcourse:list'))
+    OR (perms='biz:trainingcourse:list' AND menu_id<>2971100);
+
+INSERT INTO q02_menu_guard
+SELECT COUNT(*)
+FROM sys_menu
+WHERE (menu_id=2971100 AND (parent_id<>2971000 OR COALESCE(perms,'')<>'biz:trainingcourse:list'))
+    OR (perms='biz:trainingcourse:list' AND menu_id<>2971100);
+
+INSERT INTO sys_menu(
+    menu_id,menu_name,parent_id,order_num,path,component,is_frame,is_cache,
+    menu_type,visible,status,perms,icon,create_by,remark
+)
+SELECT
+    2971100,'培训课程与题库',2971000,110,'training','rongli/training/index',1,1,
+    'C','0','0','biz:trainingcourse:list','education','migration','Q02各公司独立培训；只发布不可变版本，不自动生成资格或授予角色'
+WHERE NOT EXISTS(
+    SELECT 1
+    FROM sys_menu
+    WHERE menu_id=2971100
+);
+
+SELECT menu_id,parent_id,perms
+FROM sys_menu
+WHERE (menu_id=2971101 AND (parent_id<>2971100 OR COALESCE(perms,'')<>'biz:trainingcourse:query'))
+    OR (perms='biz:trainingcourse:query' AND menu_id<>2971101);
+
+INSERT INTO q02_menu_guard
+SELECT COUNT(*)
+FROM sys_menu
+WHERE (menu_id=2971101 AND (parent_id<>2971100 OR COALESCE(perms,'')<>'biz:trainingcourse:query'))
+    OR (perms='biz:trainingcourse:query' AND menu_id<>2971101);
+
+INSERT INTO sys_menu(
+    menu_id,menu_name,parent_id,order_num,path,component,is_frame,is_cache,
+    menu_type,visible,status,perms,icon,create_by,remark
+)
+SELECT
+    2971101,'培训课程详情',2971100,110,'#',NULL,1,1,
+    'F','0','0','biz:trainingcourse:query','education','migration','Q02各公司独立培训；只发布不可变版本，不自动生成资格或授予角色'
+WHERE NOT EXISTS(
+    SELECT 1
+    FROM sys_menu
+    WHERE menu_id=2971101
+);
+
+SELECT menu_id,parent_id,perms
+FROM sys_menu
+WHERE (menu_id=2971102 AND (parent_id<>2971100 OR COALESCE(perms,'')<>'biz:trainingcourse:create'))
+    OR (perms='biz:trainingcourse:create' AND menu_id<>2971102);
+
+INSERT INTO q02_menu_guard
+SELECT COUNT(*)
+FROM sys_menu
+WHERE (menu_id=2971102 AND (parent_id<>2971100 OR COALESCE(perms,'')<>'biz:trainingcourse:create'))
+    OR (perms='biz:trainingcourse:create' AND menu_id<>2971102);
+
+INSERT INTO sys_menu(
+    menu_id,menu_name,parent_id,order_num,path,component,is_frame,is_cache,
+    menu_type,visible,status,perms,icon,create_by,remark
+)
+SELECT
+    2971102,'创建培训草稿',2971100,110,'#',NULL,1,1,
+    'F','0','0','biz:trainingcourse:create','education','migration','Q02各公司独立培训；只发布不可变版本，不自动生成资格或授予角色'
+WHERE NOT EXISTS(
+    SELECT 1
+    FROM sys_menu
+    WHERE menu_id=2971102
+);
+
+SELECT menu_id,parent_id,perms
+FROM sys_menu
+WHERE (menu_id=2971103 AND (parent_id<>2971100 OR COALESCE(perms,'')<>'biz:trainingcourse:edit'))
+    OR (perms='biz:trainingcourse:edit' AND menu_id<>2971103);
+
+INSERT INTO q02_menu_guard
+SELECT COUNT(*)
+FROM sys_menu
+WHERE (menu_id=2971103 AND (parent_id<>2971100 OR COALESCE(perms,'')<>'biz:trainingcourse:edit'))
+    OR (perms='biz:trainingcourse:edit' AND menu_id<>2971103);
+
+INSERT INTO sys_menu(
+    menu_id,menu_name,parent_id,order_num,path,component,is_frame,is_cache,
+    menu_type,visible,status,perms,icon,create_by,remark
+)
+SELECT
+    2971103,'编辑培训草稿',2971100,110,'#',NULL,1,1,
+    'F','0','0','biz:trainingcourse:edit','education','migration','Q02各公司独立培训；只发布不可变版本，不自动生成资格或授予角色'
+WHERE NOT EXISTS(
+    SELECT 1
+    FROM sys_menu
+    WHERE menu_id=2971103
+);
+
+SELECT menu_id,parent_id,perms
+FROM sys_menu
+WHERE (menu_id=2971104 AND (parent_id<>2971100 OR COALESCE(perms,'')<>'biz:trainingcourse:publish'))
+    OR (perms='biz:trainingcourse:publish' AND menu_id<>2971104);
+
+INSERT INTO q02_menu_guard
+SELECT COUNT(*)
+FROM sys_menu
+WHERE (menu_id=2971104 AND (parent_id<>2971100 OR COALESCE(perms,'')<>'biz:trainingcourse:publish'))
+    OR (perms='biz:trainingcourse:publish' AND menu_id<>2971104);
+
+INSERT INTO sys_menu(
+    menu_id,menu_name,parent_id,order_num,path,component,is_frame,is_cache,
+    menu_type,visible,status,perms,icon,create_by,remark
+)
+SELECT
+    2971104,'发布培训课程',2971100,110,'#',NULL,1,1,
+    'F','0','0','biz:trainingcourse:publish','education','migration','Q02各公司独立培训；只发布不可变版本，不自动生成资格或授予角色'
+WHERE NOT EXISTS(
+    SELECT 1
+    FROM sys_menu
+    WHERE menu_id=2971104
+);
+
+DROP TEMPORARY TABLE q02_menu_guard;

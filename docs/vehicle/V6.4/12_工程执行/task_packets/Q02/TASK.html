@@ -1,14 +1,19 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TASK</title><style>body{font:16px/1.75 -apple-system,BlinkMacSystemFont,"Microsoft YaHei",sans-serif;color:#202632;margin:0;background:#f6f7f9}header{padding:14px 24px;background:white;border-bottom:1px solid #ddd}main{max-width:1120px;margin:24px auto;padding:30px;background:white}h1{font-size:30px}h2{margin-top:36px}a{color:#0661bd}table{border-collapse:collapse;width:100%;display:block;overflow:auto;font-size:14px}td,th{border:1px solid #dde2ea;padding:10px;vertical-align:top}th{background:#f1f5fb}pre{padding:15px;background:#f2f4f7;overflow:auto}img{max-width:100%;height:auto}blockquote{padding:10px 20px;border-left:3px solid #2571be;background:#f4f8fc}@media(max-width:700px){main{padding:15px;margin:8px}h1{font-size:25px}}</style></head><body><header><a href="../../../00_开始.html">V6.4 完整资料</a>　<a href="../../../02_UI/index.html">交互原型</a>　T3.4</header><main><h1>Q02 · 培训课程和题库管理</h1>
 <p>阶段：M1；责任域：training；前置：I06, C01。
-范围版本：<code>V6.1-UNCHANGED</code>；definitionHash：<code>82de4984663880db1afe235894ac8ad65e9f18879e77d0777c4ba54fdd23f96e</code>。</p>
+范围版本：<code>V6.4-COMPANY-TRAINING-20261109</code>；definitionHash：<code>20ca296a5d1fa0ed258e8b51163615338d0194e566e744965a7eb08637d8be31</code>。</p>
 <h2>本任务交付</h2>
 <ul>
-<li>课程/题目草稿，核定标准和发布不可变版本</li>
+<li>各公司独立课程/题库草稿，旗下站点与公司代驾共用；公司显式归属，不从主部门推断</li>
+<li>先建允许未完成草稿，再上传真实私有MP4与维护题目；完整门槛校验后发布不可变内容版本</li>
+<li>同课程族派生新草稿，不覆盖原发布/题库/历史试卷；列表无答案，详情query+公司范围，含答案摘要HMAC</li>
+<li>F01扩展TRAINING_MEDIA父课程、有限内存流传输/完整性与容器/轨道校验，图片规则保持；不生成正式培训通过证明</li>
 </ul>
 <h2>必测失败与并发</h2>
 <ul>
-<li>不向学员下发答案</li>
-<li>发布后不覆盖旧试卷版本</li>
+<li>公司越权、空范围、客户端伪造公司/状态/内容版本/答案权限均拒绝</li>
+<li>不向学员下发答案；列表或无query写响应无题库；实际学员及阅卷留Q03</li>
+<li>发布后不覆盖旧试卷版本，单族最多一个草稿，UUID/CAS并发及数据库/outbox失败整体回滚</li>
+<li>真实视频必须当前草稿/同族继承白名单/READY；错误用途、证件/异公司文件及伪造MP4不得发布</li>
 </ul>
 <h2>精确输入</h2>
 <p>主源：04_接口/openapi_V6.4.yaml、05_数据设计/data_model_V6.4.json、06_验收/test_cases_V6.4.json。本目录派生，不独立维护。
@@ -19,10 +24,11 @@
 <h2>代码落位</h2>
 <p><code>xinyi-rongli/src/main/java/com/xinyi/rongli/training/</code>
 <code>xinyi-rongli/src/main/resources/mapper/rongli/training/</code>
-<code>xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/training/</code>
-<code>xinyi-ui/src/views/rongli/training/</code>
+<code>xinyi-rongli/src/main/java/com/xinyi/rongli/file/</code>
+<code>xinyi-ui/src/views/rongli/training/index.vue</code>
 <code>xinyi-ui/src/api/rongli/training.ts</code>
-<code>xinyi-miniapp/src/features/training/</code></p>
+<code>xinyi-ui/src/api/rongli/privateFile.ts</code>
+<code>xinyi-admin/src/test/java/com/xinyi/web/viit/Q02TrainingIT.java</code></p>
 <h2>验证命令</h2>
 <pre><code class="language-bash">mvn -pl xinyi-admin -am -Pvi-it -Dit.test=Q02TrainingIT verify
 npm --prefix xinyi-ui run build:prod

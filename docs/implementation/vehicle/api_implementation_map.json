@@ -2082,7 +2082,8 @@
     "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/file/service/PrivateFileService.java",
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/file/PrivateFileMapper.xml",
     "testFiles": [
-      "xinyi-admin/src/test/java/com/xinyi/web/viit/F01FileIT.java"
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/F01FileIT.java",
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q02TrainingIT.java"
     ],
     "reviewEvidence": "docs/implementation/vehicle/F01/review.md",
     "operationId": "API_157_post",
@@ -2090,7 +2091,11 @@
     "path": "/api/common/uploads",
     "summary": "申请限定用途上传",
     "taskId": "F01",
-    "evidence": "docs/implementation/vehicle/evidence/F01-20261105.json"
+    "evidence": [
+      "docs/implementation/vehicle/evidence/F01-20261105.json",
+      "docs/implementation/vehicle/evidence/Q02-20261109.json"
+    ],
+    "implementationNote": "保留原图片/证件业务；Q02新增培训MP4父课程、真实校验/300s与同步完整流，F01/Q01及Q02已关联回归。"
   },
   {
     "implementationStatus": "VERIFIED",
@@ -2098,7 +2103,8 @@
     "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/file/service/PrivateFileService.java",
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/file/PrivateFileMapper.xml",
     "testFiles": [
-      "xinyi-admin/src/test/java/com/xinyi/web/viit/F01FileIT.java"
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/F01FileIT.java",
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q02TrainingIT.java"
     ],
     "reviewEvidence": "docs/implementation/vehicle/F01/review.md",
     "operationId": "API_158_post",
@@ -2106,7 +2112,11 @@
     "path": "/api/common/uploads/{uploadId}/complete",
     "summary": "服务器核验上传完成",
     "taskId": "F01",
-    "evidence": "docs/implementation/vehicle/evidence/F01-20261105.json"
+    "evidence": [
+      "docs/implementation/vehicle/evidence/F01-20261105.json",
+      "docs/implementation/vehicle/evidence/Q02-20261109.json"
+    ],
+    "implementationNote": "保留原图片/证件业务；Q02新增培训MP4父课程、真实校验/300s与同步完整流，F01/Q01及Q02已关联回归。"
   },
   {
     "implementationStatus": "VERIFIED",
@@ -2114,7 +2124,8 @@
     "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/file/service/PrivateFileService.java",
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/file/PrivateFileMapper.xml",
     "testFiles": [
-      "xinyi-admin/src/test/java/com/xinyi/web/viit/F01FileIT.java"
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/F01FileIT.java",
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q02TrainingIT.java"
     ],
     "reviewEvidence": "docs/implementation/vehicle/F01/review.md",
     "operationId": "API_159_get",
@@ -2122,7 +2133,11 @@
     "path": "/api/common/files/{fileId}",
     "summary": "文件验证状态",
     "taskId": "F01",
-    "evidence": "docs/implementation/vehicle/evidence/F01-20261105.json"
+    "evidence": [
+      "docs/implementation/vehicle/evidence/F01-20261105.json",
+      "docs/implementation/vehicle/evidence/Q02-20261109.json"
+    ],
+    "implementationNote": "保留原图片/证件业务；Q02新增培训MP4父课程、真实校验/300s与同步完整流，F01/Q01及Q02已关联回归。"
   },
   {
     "implementationStatus": "VERIFIED",
@@ -2130,7 +2145,8 @@
     "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/file/service/PrivateFileService.java",
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/file/PrivateFileMapper.xml",
     "testFiles": [
-      "xinyi-admin/src/test/java/com/xinyi/web/viit/F01FileIT.java"
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/F01FileIT.java",
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q02TrainingIT.java"
     ],
     "reviewEvidence": "docs/implementation/vehicle/F01/review.md",
     "operationId": "API_160_post",
@@ -2138,7 +2154,11 @@
     "path": "/api/common/files/{fileId}/access",
     "summary": "按权限申请短期文件访问",
     "taskId": "F01",
-    "evidence": "docs/implementation/vehicle/evidence/F01-20261105.json"
+    "evidence": [
+      "docs/implementation/vehicle/evidence/F01-20261105.json",
+      "docs/implementation/vehicle/evidence/Q02-20261109.json"
+    ],
+    "implementationNote": "保留原图片/证件业务；Q02新增培训MP4父课程、真实校验/300s与同步完整流，F01/Q01及Q02已关联回归。"
   },
   {
     "implementationStatus": "NOT_ASSESSED",
@@ -3356,69 +3376,94 @@
     "taskId": "Q03"
   },
   {
-    "implementationStatus": "NOT_ASSESSED",
-    "controllerFile": null,
-    "serviceFile": null,
-    "mapperFile": null,
-    "testFiles": [],
-    "reviewEvidence": null,
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/training/controller/TrainingController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/training/service/TrainingService.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/training/TrainingMapper.xml",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q02TrainingIT.java"
+    ],
+    "reviewEvidence": "docs/implementation/vehicle/Q02/review.md",
     "operationId": "v5_get_api_admin_training_courses",
     "method": "GET",
     "path": "/api/admin/training-courses",
     "summary": "培训课程管理列表",
-    "taskId": "Q02"
+    "taskId": "Q02",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/Q02-20261109.json"
+    ]
   },
   {
-    "implementationStatus": "NOT_ASSESSED",
-    "controllerFile": null,
-    "serviceFile": null,
-    "mapperFile": null,
-    "testFiles": [],
-    "reviewEvidence": null,
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/training/controller/TrainingController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/training/service/TrainingService.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/training/TrainingMapper.xml",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q02TrainingIT.java"
+    ],
+    "reviewEvidence": "docs/implementation/vehicle/Q02/review.md",
     "operationId": "v5_post_api_admin_training_courses",
     "method": "POST",
     "path": "/api/admin/training-courses",
     "summary": "创建培训课程草稿",
-    "taskId": "Q02"
+    "taskId": "Q02",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/Q02-20261109.json"
+    ]
   },
   {
-    "implementationStatus": "NOT_ASSESSED",
-    "controllerFile": null,
-    "serviceFile": null,
-    "mapperFile": null,
-    "testFiles": [],
-    "reviewEvidence": null,
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/training/controller/TrainingController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/training/service/TrainingService.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/training/TrainingMapper.xml",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q02TrainingIT.java"
+    ],
+    "reviewEvidence": "docs/implementation/vehicle/Q02/review.md",
     "operationId": "v5_get_api_admin_training_courses_trainingId",
     "method": "GET",
     "path": "/api/admin/training-courses/{trainingId}",
     "summary": "培训课程管理详情",
-    "taskId": "Q02"
+    "taskId": "Q02",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/Q02-20261109.json"
+    ]
   },
   {
-    "implementationStatus": "NOT_ASSESSED",
-    "controllerFile": null,
-    "serviceFile": null,
-    "mapperFile": null,
-    "testFiles": [],
-    "reviewEvidence": null,
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/training/controller/TrainingController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/training/service/TrainingService.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/training/TrainingMapper.xml",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q02TrainingIT.java"
+    ],
+    "reviewEvidence": "docs/implementation/vehicle/Q02/review.md",
     "operationId": "v5_put_api_admin_training_courses_trainingId",
     "method": "PUT",
     "path": "/api/admin/training-courses/{trainingId}",
     "summary": "编辑未发布培训课程",
-    "taskId": "Q02"
+    "taskId": "Q02",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/Q02-20261109.json"
+    ]
   },
   {
-    "implementationStatus": "NOT_ASSESSED",
-    "controllerFile": null,
-    "serviceFile": null,
-    "mapperFile": null,
-    "testFiles": [],
-    "reviewEvidence": null,
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/training/controller/TrainingController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/training/service/TrainingService.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/training/TrainingMapper.xml",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q02TrainingIT.java"
+    ],
+    "reviewEvidence": "docs/implementation/vehicle/Q02/review.md",
     "operationId": "v5_post_api_admin_training_courses_trainingId_publish",
     "method": "POST",
     "path": "/api/admin/training-courses/{trainingId}/publish",
     "summary": "发布不可变培训课程版本",
-    "taskId": "Q02"
+    "taskId": "Q02",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/Q02-20261109.json"
+    ]
   },
   {
     "implementationStatus": "NOT_ASSESSED",

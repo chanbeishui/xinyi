@@ -1677,11 +1677,16 @@
       "C01"
     ],
     "deliverables": [
-      "课程/题目草稿，核定标准和发布不可变版本"
+      "各公司独立课程/题库草稿，旗下站点与公司代驾共用；公司显式归属，不从主部门推断",
+      "先建允许未完成草稿，再上传真实私有MP4与维护题目；完整门槛校验后发布不可变内容版本",
+      "同课程族派生新草稿，不覆盖原发布/题库/历史试卷；列表无答案，详情query+公司范围，含答案摘要HMAC",
+      "F01扩展TRAINING_MEDIA父课程、有限内存流传输/完整性与容器/轨道校验，图片规则保持；不生成正式培训通过证明"
     ],
     "negative_checks": [
-      "不向学员下发答案",
-      "发布后不覆盖旧试卷版本"
+      "公司越权、空范围、客户端伪造公司/状态/内容版本/答案权限均拒绝",
+      "不向学员下发答案；列表或无query写响应无题库；实际学员及阅卷留Q03",
+      "发布后不覆盖旧试卷版本，单族最多一个草稿，UUID/CAS并发及数据库/outbox失败整体回滚",
+      "真实视频必须当前草稿/同族继承白名单/READY；错误用途、证件/异公司文件及伪造MP4不得发布"
     ],
     "api_ids": [
       "v5_get_api_admin_training_courses",
@@ -1705,10 +1710,11 @@
     "code_paths": [
       "xinyi-rongli/src/main/java/com/xinyi/rongli/training/",
       "xinyi-rongli/src/main/resources/mapper/rongli/training/",
-      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/training/",
-      "xinyi-ui/src/views/rongli/training/",
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/file/",
+      "xinyi-ui/src/views/rongli/training/index.vue",
       "xinyi-ui/src/api/rongli/training.ts",
-      "xinyi-miniapp/src/features/training/"
+      "xinyi-ui/src/api/rongli/privateFile.ts",
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q02TrainingIT.java"
     ],
     "test_class": "Q02TrainingIT",
     "commands": [
@@ -1728,8 +1734,11 @@
       "access": "不得绕过限制；保存恢复点",
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
-    "scopeRevision": "V6.1-UNCHANGED",
-    "definitionHash": "82de4984663880db1afe235894ac8ad65e9f18879e77d0777c4ba54fdd23f96e"
+    "scopeRevision": "V6.4-COMPANY-TRAINING-20261109",
+    "definitionHash": "20ca296a5d1fa0ed258e8b51163615338d0194e566e744965a7eb08637d8be31",
+    "related_tables": [
+      "vi_file"
+    ]
   },
   {
     "id": "Q03",

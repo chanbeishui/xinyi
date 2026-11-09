@@ -71,11 +71,13 @@ public class PrivateFileController {
     }
 
     @GetMapping("/vi-private-transfer/files/{id}")
-    public ResponseEntity<byte[]> download(
+    public ResponseEntity<?> download(
             @RequestHeader("X-Client-Type") String client,
             @RequestHeader(value = "X-File-Ticket", required = false) String ticket,
-            @PathVariable String id) {
+            @PathVariable String id,
+            jakarta.servlet.http.HttpServletResponse response) {
         client(client);
+        if (service.streamMedia(id(id), ticket, response)) return null;
         var download = service.download(id(id), ticket);
         return ResponseEntity.ok()
                 .cacheControl(CacheControl.noStore())

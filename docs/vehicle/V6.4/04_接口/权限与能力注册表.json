@@ -2339,7 +2339,26 @@
     "VIEW_PRICING",
     "VIEW_RESULT",
     "VOID_STATEMENT",
-    "WITHDRAW_STATEMENT"
+    "WITHDRAW_STATEMENT",
+    "ADD_NOTE",
+    "VIEW_AFTERSALE",
+    "QUERY_REFUND",
+    "RETRY_REFUND",
+    "QUERY_RECONCILIATION",
+    "RESOLVE_RECONCILIATION",
+    "VIEW_DRIVER",
+    "EDIT_DRIVER",
+    "DISABLE_NEW_ASSIGNMENTS",
+    "ENABLE_NEW_ASSIGNMENTS",
+    "ASSIGN_DRIVER_COMPANY",
+    "VIEW_ASSIGNMENTS",
+    "EDIT_QUALIFICATION",
+    "SUBMIT_QUALIFICATION",
+    "CREATE_QUALIFICATION_REVISION",
+    "VIEW_TRAINING_COURSE",
+    "EDIT_TRAINING_COURSE",
+    "PUBLISH_TRAINING_COURSE",
+    "CREATE_TRAINING_REVISION"
   ],
   "operations": [
     {
@@ -5763,7 +5782,7 @@
       "capability": null,
       "authorization": {
         "realm": "ADMIN",
-        "scope": "ORG_DEPT_STATION",
+        "scope": "COMPANY_OWNER_DEPT",
         "permission": "biz:trainingcourse:list"
       },
       "summary": "培训课程管理列表"
@@ -5776,7 +5795,7 @@
       "capability": null,
       "authorization": {
         "realm": "ADMIN",
-        "scope": "ORG_DEPT_STATION",
+        "scope": "COMPANY_OWNER_DEPT",
         "permission": "biz:trainingcourse:create"
       },
       "summary": "创建培训课程草稿"
@@ -5789,7 +5808,7 @@
       "capability": null,
       "authorization": {
         "realm": "ADMIN",
-        "scope": "ORG_DEPT_STATION",
+        "scope": "COMPANY_OWNER_DEPT",
         "permission": "biz:trainingcourse:query"
       },
       "summary": "培训课程管理详情"
@@ -5802,7 +5821,7 @@
       "capability": null,
       "authorization": {
         "realm": "ADMIN",
-        "scope": "ORG_DEPT_STATION",
+        "scope": "COMPANY_OWNER_DEPT",
         "permission": "biz:trainingcourse:edit"
       },
       "summary": "编辑未发布培训课程"
@@ -5815,7 +5834,7 @@
       "capability": null,
       "authorization": {
         "realm": "ADMIN",
-        "scope": "ORG_DEPT_STATION",
+        "scope": "COMPANY_OWNER_DEPT",
         "permission": "biz:trainingcourse:publish"
       },
       "summary": "发布不可变培训课程版本"

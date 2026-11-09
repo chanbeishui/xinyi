@@ -210,10 +210,12 @@
     "entityFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/file/domain/PrivateFile.java",
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/file/PrivateFileMapper.xml",
     "evidence": [
-      "docs/implementation/vehicle/evidence/F01-20261105.json"
+      "docs/implementation/vehicle/evidence/F01-20261105.json",
+      "docs/implementation/vehicle/evidence/Q02-20261109.json"
     ],
     "table": "vi_file",
-    "taskId": "F01"
+    "taskId": "F01",
+    "implementationNote": "F01图片原规则保留，Q02扩培训父课程与真实视频元数据、受保护同步流；3表结构对照和文件/资格/课程实际回归通过。"
   },
   {
     "status": "NOT_ASSESSED",
@@ -520,20 +522,26 @@
     "taskId": "D07"
   },
   {
-    "status": "NOT_ASSESSED",
-    "entityFile": null,
-    "mapperFile": null,
-    "evidence": [],
+    "status": "VERIFIED",
+    "entityFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/training/domain/TrainingCourse.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/training/TrainingMapper.xml",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/Q02-20261109.json"
+    ],
     "table": "vi_training_course",
-    "taskId": "Q02"
+    "taskId": "Q02",
+    "implementationNote": "Q02课程/题库父归属、草稿完整替换和不可变发布已验；题目由内部SQL显式映射到Question DTO，非实体批量绑定；Q03实际学员/阅卷待后续。"
   },
   {
-    "status": "NOT_ASSESSED",
-    "entityFile": null,
-    "mapperFile": null,
-    "evidence": [],
+    "status": "VERIFIED",
+    "entityFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/training/dto/TrainingRequests.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/training/TrainingMapper.xml",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/Q02-20261109.json"
+    ],
     "table": "vi_training_question",
-    "taskId": "Q02"
+    "taskId": "Q02",
+    "implementationNote": "Q02课程/题库父归属、草稿完整替换和不可变发布已验；题目由内部SQL显式映射到Question DTO，非实体批量绑定；Q03实际学员/阅卷待后续。"
   },
   {
     "status": "NOT_ASSESSED",

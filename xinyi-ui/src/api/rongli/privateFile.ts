@@ -22,6 +22,9 @@ interface FileReady {
 interface Access extends Transfer {
   downloadUrl: string;
 }
+type UploadTarget =
+  | { purpose: 'DISPUTE'; orderNo: string }
+  | { purpose: 'TRAINING_MEDIA'; trainingId: string };
 
 function privateUrl(path: string) {
   // 文件票据不是公开下载凭据；只允许固定的同源传输地址，避免将后台令牌发送到第三方。
@@ -48,10 +51,11 @@ function current(token: string) {
 async function transfer<T>(
   url: string,
   options: RequestInit,
-  consume: (response: Response) => Promise<T>
+  consume: (response: Response) => Promise<T>,
+  timeout = 45000
 ): Promise<T> {
   const controller = new AbortController();
-  const deadline = window.setTimeout(() => controller.abort(), 45000);
+  const deadline = window.setTimeout(() => controller.abort(), timeout);
   try {
     const response = await fetch(url, { ...options, signal: controller.signal });
     return await consume(response);
@@ -70,23 +74,30 @@ async function failed(response: Response) {
   throw new Error(message);
 }
 export async function uploadVoucher(orderNo: string, image: File): Promise<Voucher> {
-  const token = getToken() || '';
-  current(token);
   if (
     !['image/jpeg', 'image/png'].includes(image.type) ||
     image.size <= 0 ||
     image.size > 10 * 1024 * 1024
   )
     throw new Error('请选择不超过 10MB 的 JPEG 或 PNG 图片');
+  return uploadPrivateFile({ purpose: 'DISPUTE', orderNo }, image);
+}
+export async function uploadTrainingMedia(trainingId: string, video: File): Promise<Voucher> {
+  if (video.type !== 'video/mp4' || video.size <= 0 || video.size > 100 * 1024 * 1024)
+    throw new Error('请选择不超过 100MiB 的 MP4 视频');
+  return uploadPrivateFile({ purpose: 'TRAINING_MEDIA', trainingId: validId(trainingId) }, video);
+}
+async function uploadPrivateFile(target: UploadTarget, file: File): Promise<Voucher> {
+  const token = getToken() || '';
+  current(token);
   const ticket = (
     await viPost<{ data: UploadTicket }>(
       '/api/common/uploads',
       {
-        purpose: 'DISPUTE',
-        orderNo,
-        fileName: image.name,
-        mimeType: image.type,
-        size: image.size
+        ...target,
+        fileName: file.name,
+        mimeType: file.type,
+        size: file.size
       },
       { idempotencyKey: intentKey() }
     )
@@ -97,7 +108,7 @@ export async function uploadVoucher(orderNo: string, image: File): Promise<Vouch
       privateUrl(ticket.uploadUrl),
       {
         method: 'PUT',
-        body: image,
+        body: file,
         headers: transferHeaders(ticket, token),
         credentials: 'omit',
         cache: 'no-store',
@@ -106,11 +117,12 @@ export async function uploadVoucher(orderNo: string, image: File): Promise<Vouch
       },
       async (response) => {
         if (!response.ok) await failed(response);
-      }
+      },
+      target.purpose === 'TRAINING_MEDIA' ? 300000 : 45000
     );
   } catch (error) {
     current(token);
-    // 可能只丢失上传回执。先核对完成状态，只有 READY 文件可附加到售后业务。
+    // 可能只丢失上传回执。先核对完成状态，只有 READY 文件可附加到业务记录。
     try {
       const result = (
         await viPost<{ data: FileReady }>(
@@ -118,7 +130,7 @@ export async function uploadVoucher(orderNo: string, image: File): Promise<Vouch
         )
       ).data;
       current(token);
-      if (result.status === 'READY') return { fileId: result.fileId, name: image.name };
+      if (result.status === 'READY') return { fileId: result.fileId, name: file.name };
     } catch {
       /* 原错误更能表达实际传输结果，未核验文件不会作为有效凭证返回。 */
     }
@@ -128,17 +140,24 @@ export async function uploadVoucher(orderNo: string, image: File): Promise<Vouch
     await viPost<{ data: FileReady }>(`/api/common/uploads/${validId(ticket.uploadId)}/complete`)
   ).data;
   current(token);
-  if (result.status !== 'READY') throw new Error('图片尚未完成服务端核验');
-  return { fileId: result.fileId, name: image.name };
+  if (result.status !== 'READY') throw new Error('文件尚未完成服务端核验');
+  return { fileId: result.fileId, name: file.name };
 }
 export async function readVoucher(fileId: string, orderNo: string): Promise<string> {
+  return readPrivateFile(fileId, { purpose: '售后经办人员核对业务凭证', orderNo }, false);
+}
+export async function readTrainingMedia(fileId: string): Promise<string> {
+  return readPrivateFile(fileId, { purpose: '课程管理员核对私有培训教材' }, true);
+}
+async function readPrivateFile(
+  fileId: string,
+  input: { purpose: string; orderNo?: string },
+  media: boolean
+) {
   const token = getToken() || '';
   current(token);
   const access = (
-    await viPost<{ data: Access }>(`/api/common/files/${validId(fileId)}/access`, {
-      purpose: '售后经办人员核对业务凭证',
-      orderNo
-    })
+    await viPost<{ data: Access }>(`/api/common/files/${validId(fileId)}/access`, input)
   ).data;
   current(token);
   const content = await transfer(
@@ -153,10 +172,14 @@ export async function readVoucher(fileId: string, orderNo: string): Promise<stri
     async (response) => {
       if (!response.ok) await failed(response);
       return response.blob();
-    }
+    },
+    media ? 300000 : 45000
   );
   current(token);
-  if (!['image/jpeg', 'image/png'].includes(content.type) || content.size > 10 * 1024 * 1024)
-    throw new Error('凭证返回格式不正确');
+  if (
+    !(media ? content.type === 'video/mp4' : ['image/jpeg', 'image/png'].includes(content.type)) ||
+    content.size > (media ? 100 : 10) * 1024 * 1024
+  )
+    throw new Error('文件返回格式不正确');
   return URL.createObjectURL(content);
 }

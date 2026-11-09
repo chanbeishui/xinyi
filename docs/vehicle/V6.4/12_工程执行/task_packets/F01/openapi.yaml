@@ -771,6 +771,25 @@ components:
           type: integer
           minimum: 0
           description: 客户端最后读取的版本；服务端条件更新，冲突返回409
+        durationMillis:
+          type: integer
+          minimum: 1
+          maximum: 86400000
+          nullable: true
+        width:
+          type: integer
+          minimum: 1
+          nullable: true
+        height:
+          type: integer
+          minimum: 1
+          nullable: true
+        videoCodec:
+          type: string
+          nullable: true
+        audioCodec:
+          type: string
+          nullable: true
       additionalProperties: false
     FileStatus:
       type: string
@@ -793,6 +812,7 @@ components:
           - DISPUTE
           - STATION_QUALIFICATION
           - AVATAR
+          - TRAINING_MEDIA
         orderNo:
           type: string
           description: 不透明ID，以字符串传输，避免JavaScript大整数精度丢失
@@ -808,21 +828,66 @@ components:
           enum:
           - image/jpeg
           - image/png
+          - video/mp4
         size:
           type: integer
           minimum: 1
-          maximum: 10485760
+          maximum: 104857600
         stationId:
           type: string
           pattern: ^[1-9][0-9]{0,18}$
           description: STATION_QUALIFICATION必须显式指定权威站点；不能从管理员主部门推断。
+        trainingId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
       additionalProperties: false
       required:
       - purpose
       - fileName
       - mimeType
       - size
-      description: 私有JPEG/PNG，最大10MiB、2500万像素；用途与父业务一一匹配：头像无父项，证件申请applicationId，站点资质stationId，订单凭证orderNo。禁止传对象路径、上传者、部门或客户端摘要。
+      description: 私有图片仍JPEG/PNG≤10MiB、2500万像素。TRAINING_MEDIA仅ADMIN、当前公司DRAFT课程trainingId、MP4≤100MiB，真实容器及视频轨道校验后READY；不信任扩展名/MIME/任意文件号，不复用证件或订单媒体。其它父项与用途规则保持F01。
+      allOf:
+      - anyOf:
+        - properties:
+            purpose:
+              enum:
+              - TRAINING_MEDIA
+            mimeType:
+              enum:
+              - video/mp4
+          required:
+          - trainingId
+          not:
+            anyOf:
+            - required:
+              - orderNo
+            - required:
+              - applicationId
+            - required:
+              - stationId
+        - properties:
+            purpose:
+              enum:
+              - VEHICLE_PHOTO
+              - ID_CARD
+              - DRIVER_LICENSE
+              - VEHICLE_LICENSE
+              - RESULT_EVIDENCE
+              - DISPUTE
+              - STATION_QUALIFICATION
+              - AVATAR
+            mimeType:
+              enum:
+              - image/jpeg
+              - image/png
+            size:
+              maximum: 10485760
+          not:
+            required:
+            - trainingId
     UploadTicket:
       type: object
       properties:

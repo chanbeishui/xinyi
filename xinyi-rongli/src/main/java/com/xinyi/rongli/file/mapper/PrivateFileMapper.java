@@ -30,6 +30,8 @@ public interface PrivateFileMapper {
 
     java.util.Map<String, Object> lockApplication(long id);
 
+    java.util.Map<String, Object> lockTraining(long id);
+
     Long stationDept(long id);
 
     int activeDriver(@Param("orderId") long orderId, @Param("accountId") long accountId);

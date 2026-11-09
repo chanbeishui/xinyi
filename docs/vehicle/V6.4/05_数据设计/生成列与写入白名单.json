@@ -2752,7 +2752,13 @@
       "station_id",
       "declared_size",
       "declared_mime",
-      "upload_expires_at"
+      "upload_expires_at",
+      "training_id",
+      "media_duration_millis",
+      "media_width",
+      "media_height",
+      "media_video_codec",
+      "media_audio_codec"
     ],
     "updateColumns": [
       "status",
@@ -2762,7 +2768,12 @@
       "retain_until",
       "legal_hold",
       "upload_lease_token",
-      "upload_lease_until"
+      "upload_lease_until",
+      "media_duration_millis",
+      "media_width",
+      "media_height",
+      "media_video_codec",
+      "media_audio_codec"
     ],
     "columnRules": {
       "id": {
@@ -2899,9 +2910,45 @@
         "insertable": false,
         "updatable": true,
         "clientWritable": false
+      },
+      "training_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "media_duration_millis": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "media_width": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "media_height": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "media_video_codec": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "media_audio_codec": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
       }
     },
-    "rule": "访问签名不进明文长期表，不接受客户端READY/摘要即可信"
+    "rule": "访问签名不进明文长期表，不接受客户端READY/摘要即可信 Q02新增TRAINING_MEDIA仅ADMIN公司DRAFT父课程、私有MP4不超过100MiB；READY由实际容器/轨道/时长与流式SHA校验产生，发布后不可重写，可由同族派生白名单只读继承。图片仍JPEG/PNG10MiB。"
   },
   {
     "table": "vi_vehicle_license",
@@ -7160,7 +7207,9 @@
   {
     "table": "vi_training_course",
     "writeMode": "BUSINESS_ACTION_CAS",
-    "generatedColumns": [],
+    "generatedColumns": [
+      "draft_course_key"
+    ],
     "insertColumns": [
       "course_key",
       "course_version",
@@ -7171,12 +7220,14 @@
       "pass_score",
       "attempt_time_limit_seconds",
       "status",
-      "published_at",
-      "published_by_user_id"
+      "owner_dept_id",
+      "source_training_id",
+      "inherited_media_file_id",
+      "created_by_user_id",
+      "updated_by_user_id",
+      "content_hash"
     ],
     "updateColumns": [
-      "course_key",
-      "course_version",
       "title",
       "description",
       "media_file_id",
@@ -7185,7 +7236,9 @@
       "attempt_time_limit_seconds",
       "status",
       "published_at",
-      "published_by_user_id"
+      "published_by_user_id",
+      "updated_by_user_id",
+      "content_hash"
     ],
     "columnRules": {
       "id": {
@@ -7197,13 +7250,13 @@
       "course_key": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "course_version": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "title": {
@@ -7251,13 +7304,13 @@
       },
       "published_at": {
         "generated": false,
-        "insertable": true,
+        "insertable": false,
         "updatable": true,
         "clientWritable": false
       },
       "published_by_user_id": {
         "generated": false,
-        "insertable": true,
+        "insertable": false,
         "updatable": true,
         "clientWritable": false
       },
@@ -7280,9 +7333,51 @@
         "insertable": false,
         "updatable": false,
         "clientWritable": false
+      },
+      "owner_dept_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "source_training_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "inherited_media_file_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "created_by_user_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "updated_by_user_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "content_hash": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "draft_course_key": {
+        "generated": true,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
       }
     },
-    "rule": "课程发布后不可原地修改；更新发布新版本；正式题目和通过标准由业务配置，不是demo"
+    "rule": "各公司独立维护，旗下站点与公司代驾共用。公司归属显式选择，历史NULL不猜回填；课程族/内容版本服务端生成，单族仅一DRAFT。草稿可未完成，发布完整校验后内容/题库不可覆盖，派生另建新版本；标准答案仅后台query及公司范围，含答案内容指纹使用HMAC，不向MINI下发。"
   },
   {
     "table": "vi_training_question",
@@ -7297,15 +7392,7 @@
       "correct_option_codes",
       "sort_no"
     ],
-    "updateColumns": [
-      "training_id",
-      "question_code",
-      "question_type",
-      "prompt",
-      "options_json",
-      "correct_option_codes",
-      "sort_no"
-    ],
+    "updateColumns": [],
     "columnRules": {
       "id": {
         "generated": false,
@@ -7316,44 +7403,44 @@
       "training_id": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "question_code": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "question_type": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false,
         "enumRef": "QuestionType"
       },
       "prompt": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "options_json": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "correct_option_codes": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "sort_no": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "created_at": {
@@ -7377,7 +7464,7 @@
         "clientWritable": false
       }
     },
-    "rule": "发布题库只读；考试返回TrainingQuestion白名单，无正确答案；独立权限保护后台读取"
+    "rule": "权威归属继承父课程owner_dept_id，草稿完整替换，发布题库只读。后台query及公司范围读取答案；Q03学员另用TrainingQuestion白名单，实际判分/权重/必修集合属后续，不把发布当培训通过。"
   },
   {
     "table": "vi_training_progress",

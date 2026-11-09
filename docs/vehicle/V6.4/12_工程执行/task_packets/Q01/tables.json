@@ -1611,6 +1611,36 @@
         "站点资质等文件的权威站点归属"
       ],
       [
+        "training_id",
+        "BIGINT NULL",
+        "培训媒体权威父课程版本，发布后仅只读继承"
+      ],
+      [
+        "media_duration_millis",
+        "BIGINT NULL",
+        "服务端解析的实际视频时长毫秒"
+      ],
+      [
+        "media_width",
+        "INT NULL",
+        "实际视频轨道宽度"
+      ],
+      [
+        "media_height",
+        "INT NULL",
+        "实际视频轨道高度"
+      ],
+      [
+        "media_video_codec",
+        "VARCHAR(16) NULL",
+        "实际视频轨道编码"
+      ],
+      [
+        "media_audio_codec",
+        "VARCHAR(16) NULL",
+        "可选实际音频轨道编码"
+      ],
+      [
         "declared_size",
         "BIGINT NULL",
         "客户端声明大小，只用于与实际字节核对"
@@ -1702,10 +1732,11 @@
       ]
     ],
     "indexes": [
+      "KEY ix_training_file (training_id,status,id)",
       "UNIQUE KEY uk_object_key (object_key)",
       "KEY ix_order_purpose (order_id,purpose)"
     ],
-    "rule": "访问签名不进明文长期表，不接受客户端READY/摘要即可信",
+    "rule": "访问签名不进明文长期表，不接受客户端READY/摘要即可信 Q02新增TRAINING_MEDIA仅ADMIN公司DRAFT父课程、私有MP4不超过100MiB；READY由实际容器/轨道/时长与流式SHA校验产生，发布后不可重写，可由同族派生白名单只读继承。图片仍JPEG/PNG10MiB。",
     "primaryKey": [
       "id"
     ],
@@ -1847,12 +1878,49 @@
         "insertable": false,
         "updatable": true,
         "clientWritable": false
+      },
+      "training_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "media_duration_millis": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "media_width": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "media_height": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "media_video_codec": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "media_audio_codec": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
       }
     },
     "checks": [
+      "CONSTRAINT ck_training_file_parent CHECK((training_id IS NULL AND purpose<>'TRAINING_MEDIA') OR (training_id IS NOT NULL AND purpose='TRAINING_MEDIA' AND order_id IS NULL AND application_id IS NULL AND station_id IS NULL))",
       "CONSTRAINT ck_66_c1389ba0baeb CHECK (`status` IN ('UPLOADING','VERIFYING','READY','REJECTED'))",
-      "CONSTRAINT ck_ver_file CHECK (version >= 0)",
-      "CONSTRAINT ck_file_uploader CHECK ((uploader_account_id IS NOT NULL AND uploader_user_id IS NULL) OR (uploader_account_id IS NULL AND uploader_user_id IS NOT NULL))"
+      "CONSTRAINT ck_file_uploader CHECK ((uploader_account_id IS NOT NULL AND uploader_user_id IS NULL) OR (uploader_account_id IS NULL AND uploader_user_id IS NOT NULL))",
+      "CONSTRAINT ck_ver_file CHECK (version >= 0)"
     ]
   }
 ]

@@ -2060,134 +2060,158 @@ CONSTRAINT ck_66_37b55c2a7354 CHECK (`photo_type` IN ('FRONT','BACK','LEFT','RIG
 CONSTRAINT ck_ver_photo CHECK (version &gt;= 0)
 </code></pre>
 <h2>vi_file · 私有文件登记与校验</h2>
-<p>访问签名不进明文长期表，不接受客户端READY/摘要即可信
-主键：id；ID策略：MYSQL_AUTO_INCREMENT</p>
+<p>访问签名不进明文长期表，不接受客户端READY/摘要即可信 Q02新增TRAINING_MEDIA仅ADMIN公司DRAFT父课程、私有MP4不超过100MiB；READY由实际容器/轨道/时长与流式SHA校验产生，发布后不可重写，可由同族派生白名单只读继承。图片仍JPEG/PNG10MiB。</p>
 <table>
 <thead>
 <tr>
   <th>字段</th>
-  <th>SQL类型</th>
-  <th>含义</th>
+  <th>SQL类型与约束</th>
+  <th>说明</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-  <td><code>id</code></td>
+  <td>id</td>
   <td><code>BIGINT NOT NULL AUTO_INCREMENT</code></td>
   <td>数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串</td>
 </tr>
 <tr>
-  <td><code>uploader_account_id</code></td>
+  <td>uploader_account_id</td>
   <td><code>BIGINT NULL</code></td>
-  <td>上传者</td>
+  <td>小程序上传者；与后台上传者互斥</td>
 </tr>
 <tr>
-  <td><code>uploader_user_id</code></td>
+  <td>uploader_user_id</td>
   <td><code>BIGINT NULL</code></td>
   <td>后台上传者；与小程序上传者互斥</td>
 </tr>
 <tr>
-  <td><code>station_id</code></td>
+  <td>station_id</td>
   <td><code>BIGINT NULL</code></td>
   <td>站点资质等文件的权威站点归属</td>
 </tr>
 <tr>
-  <td><code>declared_size</code></td>
+  <td>training_id</td>
+  <td><code>BIGINT NULL</code></td>
+  <td>培训媒体权威父课程版本，发布后仅只读继承</td>
+</tr>
+<tr>
+  <td>media_duration_millis</td>
+  <td><code>BIGINT NULL</code></td>
+  <td>服务端解析的实际视频时长毫秒</td>
+</tr>
+<tr>
+  <td>media_width</td>
+  <td><code>INT NULL</code></td>
+  <td>实际视频轨道宽度</td>
+</tr>
+<tr>
+  <td>media_height</td>
+  <td><code>INT NULL</code></td>
+  <td>实际视频轨道高度</td>
+</tr>
+<tr>
+  <td>media_video_codec</td>
+  <td><code>VARCHAR(16) NULL</code></td>
+  <td>实际视频轨道编码</td>
+</tr>
+<tr>
+  <td>media_audio_codec</td>
+  <td><code>VARCHAR(16) NULL</code></td>
+  <td>可选实际音频轨道编码</td>
+</tr>
+<tr>
+  <td>declared_size</td>
   <td><code>BIGINT NULL</code></td>
   <td>客户端声明大小，只用于与实际字节核对</td>
 </tr>
 <tr>
-  <td><code>declared_mime</code></td>
+  <td>declared_mime</td>
   <td><code>VARCHAR(64) NULL</code></td>
   <td>客户端声明类型，READY以服务端识别为准</td>
 </tr>
 <tr>
-  <td><code>upload_expires_at</code></td>
+  <td>upload_expires_at</td>
   <td><code>DATETIME(3) NULL</code></td>
   <td>原上传授权截止UTC</td>
 </tr>
 <tr>
-  <td><code>upload_lease_token</code></td>
+  <td>upload_lease_token</td>
   <td><code>VARCHAR(36) NULL</code></td>
   <td>上传租约标识，禁止向客户端或日志输出</td>
 </tr>
 <tr>
-  <td><code>upload_lease_until</code></td>
+  <td>upload_lease_until</td>
   <td><code>DATETIME(3) NULL</code></td>
   <td>上传租约截止，文件IO不持数据库事务</td>
 </tr>
 <tr>
-  <td><code>purpose</code></td>
+  <td>purpose</td>
   <td><code>VARCHAR(32) NOT NULL</code></td>
   <td>限定用途</td>
 </tr>
 <tr>
-  <td><code>order_id</code></td>
+  <td>order_id</td>
   <td><code>BIGINT</code></td>
   <td>订单归属</td>
 </tr>
 <tr>
-  <td><code>application_id</code></td>
+  <td>application_id</td>
   <td><code>BIGINT</code></td>
   <td>认证等申请归属</td>
 </tr>
 <tr>
-  <td><code>object_key</code></td>
+  <td>object_key</td>
   <td><code>VARCHAR(255) NOT NULL</code></td>
   <td>服务端生成不可猜键</td>
 </tr>
 <tr>
-  <td><code>status</code></td>
+  <td>status</td>
   <td><code>VARCHAR(24) NOT NULL</code></td>
   <td>FileStatus: UPLOADING,VERIFYING,READY,REJECTED</td>
 </tr>
 <tr>
-  <td><code>mime_type</code></td>
+  <td>mime_type</td>
   <td><code>VARCHAR(64)</code></td>
   <td>内容识别类型</td>
 </tr>
 <tr>
-  <td><code>server_size</code></td>
+  <td>server_size</td>
   <td><code>BIGINT</code></td>
   <td>实际大小</td>
 </tr>
 <tr>
-  <td><code>server_sha256</code></td>
+  <td>server_sha256</td>
   <td><code>BINARY(32)</code></td>
   <td>服务器复核摘要</td>
 </tr>
 <tr>
-  <td><code>retain_until</code></td>
+  <td>retain_until</td>
   <td><code>DATETIME(3)</code></td>
   <td>按已审批保留政策</td>
 </tr>
 <tr>
-  <td><code>legal_hold</code></td>
+  <td>legal_hold</td>
   <td><code>TINYINT NOT NULL DEFAULT 0</code></td>
   <td>争议等必要留存</td>
 </tr>
 <tr>
-  <td><code>created_at</code></td>
+  <td>created_at</td>
   <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
   <td>创建时间，统一UTC</td>
 </tr>
 <tr>
-  <td><code>updated_at</code></td>
+  <td>updated_at</td>
   <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
   <td>UTC更新时间；Mapper每次修改显式SET updated_at=UTC_TIMESTAMP(3)，不依赖连接时区</td>
 </tr>
 <tr>
-  <td><code>version</code></td>
+  <td>version</td>
   <td><code>BIGINT NOT NULL DEFAULT 0</code></td>
   <td>乐观锁版本</td>
 </tr>
 </tbody>
 </table>
-<pre><code class="language-sql">UNIQUE KEY uk_object_key (object_key)
-KEY ix_order_purpose (order_id,purpose)
-CONSTRAINT ck_66_c1389ba0baeb CHECK (`status` IN ('UPLOADING','VERIFYING','READY','REJECTED'))
-CONSTRAINT ck_ver_file CHECK (version &gt;= 0)
-</code></pre>
 <h2>vi_vehicle_license · 行驶证登记与人工复核</h2>
 <p>主键：id；ID策略：MYSQL_AUTO_INCREMENT</p>
 <table>
@@ -5359,173 +5383,196 @@ CONSTRAINT ck_66_623fb1878076 CHECK (`status` IN ('SUBMITTED','APPROVED','REJECT
 CONSTRAINT ck_ver_penalty_appeal CHECK (version &gt;= 0)
 </code></pre>
 <h2>vi_training_course · 代驾培训不可变课程版本</h2>
-<p>课程发布后不可原地修改；更新发布新版本；正式题目和通过标准由业务配置，不是demo
-主键：id；ID策略：MYSQL_AUTO_INCREMENT</p>
+<p>各公司独立维护，旗下站点与公司代驾共用。公司归属显式选择，历史NULL不猜回填；课程族/内容版本服务端生成，单族仅一DRAFT。草稿可未完成，发布完整校验后内容/题库不可覆盖，派生另建新版本；标准答案仅后台query及公司范围，含答案内容指纹使用HMAC，不向MINI下发。</p>
 <table>
 <thead>
 <tr>
   <th>字段</th>
-  <th>SQL类型</th>
-  <th>含义</th>
+  <th>SQL类型与约束</th>
+  <th>说明</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-  <td><code>id</code></td>
+  <td>id</td>
   <td><code>BIGINT NOT NULL AUTO_INCREMENT</code></td>
   <td>数据库生成业务主键；插入不提供id</td>
 </tr>
 <tr>
-  <td><code>course_key</code></td>
+  <td>owner_dept_id</td>
+  <td><code>BIGINT NULL</code></td>
+  <td>明确选择的公司部门；历史NULL待人工核查，不从创建者或主部门推断</td>
+</tr>
+<tr>
+  <td>source_training_id</td>
+  <td><code>BIGINT NULL</code></td>
+  <td>派生所依据的已发布确切课程版本</td>
+</tr>
+<tr>
+  <td>inherited_media_file_id</td>
+  <td><code>BIGINT NULL</code></td>
+  <td>服务端从来源课程冻结的只读媒体白名单，客户端不可指定</td>
+</tr>
+<tr>
+  <td>created_by_user_id</td>
+  <td><code>BIGINT NULL</code></td>
+  <td>后台草稿创建人；历史不猜测回填</td>
+</tr>
+<tr>
+  <td>updated_by_user_id</td>
+  <td><code>BIGINT NULL</code></td>
+  <td>最近后台内容维护人</td>
+</tr>
+<tr>
+  <td>content_hash</td>
+  <td><code>BINARY(32) NULL</code></td>
+  <td>含题库答案的有密钥内容指纹；不向MINI发布</td>
+</tr>
+<tr>
+  <td>draft_course_key</td>
+  <td><code>VARCHAR(64) CHARACTER SET ascii COLLATE ascii_bin GENERATED ALWAYS AS (IF(status='DRAFT',course_key,NULL)) STORED</code></td>
+  <td>单课程族仅一个未发布草稿</td>
+</tr>
+<tr>
+  <td>course_key</td>
   <td><code>VARCHAR(64) CHARACTER SET ascii COLLATE ascii_bin NOT NULL</code></td>
   <td>稳定课程编码</td>
 </tr>
 <tr>
-  <td><code>course_version</code></td>
+  <td>course_version</td>
   <td><code>INT NOT NULL</code></td>
   <td>课程内容版本</td>
 </tr>
 <tr>
-  <td><code>title</code></td>
+  <td>title</td>
   <td><code>VARCHAR(200) NOT NULL</code></td>
   <td>课程标题</td>
 </tr>
 <tr>
-  <td><code>description</code></td>
+  <td>description</td>
   <td><code>TEXT NULL</code></td>
   <td>培训说明</td>
 </tr>
 <tr>
-  <td><code>media_file_id</code></td>
-  <td><code>BIGINT NOT NULL</code></td>
-  <td>私有培训媒体</td>
+  <td>media_file_id</td>
+  <td><code>BIGINT NULL</code></td>
+  <td>私有培训媒体；草稿未选可为空</td>
 </tr>
 <tr>
-  <td><code>required_duration_seconds</code></td>
-  <td><code>INT NOT NULL</code></td>
-  <td>规定学习时长；发布时校验&gt;0</td>
+  <td>required_duration_seconds</td>
+  <td><code>INT NULL</code></td>
+  <td>规定学习时长；发布须完整且不超过实际媒体时长</td>
 </tr>
 <tr>
-  <td><code>pass_score</code></td>
-  <td><code>INT NOT NULL</code></td>
-  <td>0至100的配置门槛</td>
+  <td>pass_score</td>
+  <td><code>INT NULL</code></td>
+  <td>0至100的配置门槛；草稿可暂缺</td>
 </tr>
 <tr>
-  <td><code>attempt_time_limit_seconds</code></td>
-  <td><code>INT NOT NULL</code></td>
-  <td>考试时间配置</td>
+  <td>attempt_time_limit_seconds</td>
+  <td><code>INT NULL</code></td>
+  <td>考试时限秒；发布须配置至少60秒</td>
 </tr>
 <tr>
-  <td><code>status</code></td>
+  <td>status</td>
   <td><code>VARCHAR(24) NOT NULL DEFAULT 'DRAFT'</code></td>
   <td>TrainingCourseStatus: DRAFT,PUBLISHED,DISABLED</td>
 </tr>
 <tr>
-  <td><code>published_at</code></td>
+  <td>published_at</td>
   <td><code>DATETIME(3) NULL</code></td>
   <td>UTC发布时间</td>
 </tr>
 <tr>
-  <td><code>published_by_user_id</code></td>
+  <td>published_by_user_id</td>
   <td><code>BIGINT NULL</code></td>
   <td>后台发布人</td>
 </tr>
 <tr>
-  <td><code>created_at</code></td>
+  <td>created_at</td>
   <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
   <td>创建时刻UTC</td>
 </tr>
 <tr>
-  <td><code>updated_at</code></td>
+  <td>updated_at</td>
   <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
   <td>更新时间UTC；更新必须显式设置UTC_TIMESTAMP(3)</td>
 </tr>
 <tr>
-  <td><code>version</code></td>
+  <td>version</td>
   <td><code>BIGINT NOT NULL DEFAULT 0</code></td>
   <td>手写CAS版本</td>
 </tr>
 </tbody>
 </table>
-<pre><code class="language-sql">UNIQUE KEY uk_course_revision (course_key,course_version)
-CONSTRAINT ck_course_score CHECK (pass_score BETWEEN 0 AND 100)
-CONSTRAINT ck_course_duration CHECK (required_duration_seconds&gt;0 AND attempt_time_limit_seconds&gt;=60)
-CONSTRAINT ck_66_0aa07ede2e69 CHECK (`status` IN ('DRAFT','PUBLISHED','DISABLED'))
-CONSTRAINT ck_ver_training_course CHECK (version &gt;= 0)
-</code></pre>
 <h2>vi_training_question · 培训课程版本的后台题库</h2>
-<p>发布题库只读；考试返回TrainingQuestion白名单，无正确答案；独立权限保护后台读取
-主键：id；ID策略：MYSQL_AUTO_INCREMENT</p>
+<p>权威归属继承父课程owner_dept_id，草稿完整替换，发布题库只读。后台query及公司范围读取答案；Q03学员另用TrainingQuestion白名单，实际判分/权重/必修集合属后续，不把发布当培训通过。</p>
 <table>
 <thead>
 <tr>
   <th>字段</th>
-  <th>SQL类型</th>
-  <th>含义</th>
+  <th>SQL类型与约束</th>
+  <th>说明</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-  <td><code>id</code></td>
+  <td>id</td>
   <td><code>BIGINT NOT NULL AUTO_INCREMENT</code></td>
   <td>数据库生成业务主键；插入不提供id</td>
 </tr>
 <tr>
-  <td><code>training_id</code></td>
+  <td>training_id</td>
   <td><code>BIGINT NOT NULL</code></td>
   <td>确切课程版本</td>
 </tr>
 <tr>
-  <td><code>question_code</code></td>
+  <td>question_code</td>
   <td><code>VARCHAR(64) CHARACTER SET ascii COLLATE ascii_bin NOT NULL</code></td>
   <td>课程内稳定编码</td>
 </tr>
 <tr>
-  <td><code>question_type</code></td>
+  <td>question_type</td>
   <td><code>VARCHAR(24) NOT NULL</code></td>
   <td>QuestionType: SINGLE,MULTIPLE,TRUE_FALSE</td>
 </tr>
 <tr>
-  <td><code>prompt</code></td>
+  <td>prompt</td>
   <td><code>TEXT NOT NULL</code></td>
   <td>题干</td>
 </tr>
 <tr>
-  <td><code>options_json</code></td>
+  <td>options_json</td>
   <td><code>JSON NOT NULL</code></td>
   <td>code和text</td>
 </tr>
 <tr>
-  <td><code>correct_option_codes</code></td>
+  <td>correct_option_codes</td>
   <td><code>JSON NOT NULL</code></td>
   <td>仅课程管理/服务端阅卷可见，禁止MINI输出</td>
 </tr>
 <tr>
-  <td><code>sort_no</code></td>
+  <td>sort_no</td>
   <td><code>INT NOT NULL</code></td>
   <td>排序</td>
 </tr>
 <tr>
-  <td><code>created_at</code></td>
+  <td>created_at</td>
   <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
   <td>创建时刻UTC</td>
 </tr>
 <tr>
-  <td><code>updated_at</code></td>
+  <td>updated_at</td>
   <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
   <td>更新时间UTC；更新必须显式设置UTC_TIMESTAMP(3)</td>
 </tr>
 <tr>
-  <td><code>version</code></td>
+  <td>version</td>
   <td><code>BIGINT NOT NULL DEFAULT 0</code></td>
   <td>手写CAS版本</td>
 </tr>
 </tbody>
 </table>
-<pre><code class="language-sql">UNIQUE KEY uk_course_question (training_id,question_code)
-CONSTRAINT ck_66_3f48408ab1be CHECK (`question_type` IN ('SINGLE','MULTIPLE','TRUE_FALSE'))
-CONSTRAINT ck_ver_training_question CHECK (version &gt;= 0)
-</code></pre>
 <h2>vi_training_progress · 本人每个课程版本的学习进度</h2>
 <p>普通前端上报不证明观看完整；时长限幅、顺序检查、服务端阅卷共同决定培训完成；不宣称防作弊认证 当前材料版本和HMAC绑定由服务端写入；旧NULL、错版或缺可信时刻不能视为当前通过。</p>
 <table>
