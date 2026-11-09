@@ -174,6 +174,21 @@ jobs:
           name: deploy-dist
           path: deploy-artifacts/dist
 
+      - name: 规整部署参数
+        run: |
+          # Secret 里粘进空格或换行会让 scp 把远端目标当成本地路径（stat local 报错）
+          host=$(printf '%s' "${DEPLOY_HOST:-}" | tr -d '[:space:]')
+          user=$(printf '%s' "${DEPLOY_USER:-root}" | tr -d '[:space:]')
+          port=$(printf '%s' "${DEPLOY_PORT:-22}" | tr -d '[:space:]')
+          echo "DEPLOY_HOST=$host" >> "$GITHUB_ENV"
+          echo "DEPLOY_USER=$user" >> "$GITHUB_ENV"
+          echo "DEPLOY_PORT=$port" >> "$GITHUB_ENV"
+          echo "host长度=${#host} / user=$user / port=$port"
+          if [ -z "$host" ]; then
+            echo "::error::DEPLOY_HOST 为空，请到 Settings → Secrets and variables → Actions 添加"
+            exit 1
+          fi
+
       - name: 配置 SSH
         run: |
           install -m 700 -d ~/.ssh
@@ -204,15 +219,26 @@ jobs:
 
       - name: 上传产物到暂存目录
         run: |
-          SSH_OPTS="-i ~/.ssh/id_ed25519 -p $DEPLOY_PORT -o ConnectTimeout=15"
-          ssh $SSH_OPTS "$DEPLOY_USER@$DEPLOY_HOST" "mkdir -p $STAGE_DIR"
+          # 关键：ssh 用 -p 指定端口，scp 用 -P。共用同一份参数会把端口号
+          # 当成待拷贝的本地文件，报 scp: stat local "22": No such file
+          SSH_OPTS="-i $HOME/.ssh/id_ed25519 -p $DEPLOY_PORT -o ConnectTimeout=15 -o BatchMode=yes"
+          SCP_OPTS="-i $HOME/.ssh/id_ed25519 -P $DEPLOY_PORT -o ConnectTimeout=15 -o BatchMode=yes"
+          TARGET="$DEPLOY_USER@$DEPLOY_HOST"
+
+          ssh $SSH_OPTS "$TARGET" "mkdir -p $STAGE_DIR"
+
           if [ "${{ needs.build.outputs.scope }}" != "frontend" ]; then
-            scp $SSH_OPTS deploy-artifacts/xinyi-admin.jar "$DEPLOY_USER@$DEPLOY_HOST:$STAGE_DIR/"
+            echo "上传 jar"
+            scp $SCP_OPTS deploy-artifacts/xinyi-admin.jar "$TARGET:$STAGE_DIR/"
           fi
+
           if [ "${{ needs.build.outputs.scope }}" != "backend" ]; then
+            echo "上传 dist"
             tar -czf /tmp/dist.tar.gz -C deploy-artifacts/dist .
-            scp $SSH_OPTS /tmp/dist.tar.gz "$DEPLOY_USER@$DEPLOY_HOST:$STAGE_DIR/"
+            scp $SCP_OPTS /tmp/dist.tar.gz "$TARGET:$STAGE_DIR/"
           fi
+
+          ssh $SSH_OPTS "$TARGET" "ls -lh $STAGE_DIR"
 
       - name: 执行原子部署（健康检查失败自动回滚）
         run: |
