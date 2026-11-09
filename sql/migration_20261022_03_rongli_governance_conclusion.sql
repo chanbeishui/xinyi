@@ -7,11 +7,9 @@
 -- 幂等：列已存在时跳过。
 -- =====================================================================
 
-USE xinyi;
-
 SET @has_col := (
   SELECT COUNT(*) FROM information_schema.COLUMNS
-  WHERE TABLE_SCHEMA = 'xinyi' AND TABLE_NAME = 'vi_governance_case' AND COLUMN_NAME = 'conclusion'
+  WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'vi_governance_case' AND COLUMN_NAME = 'conclusion'
 );
 SET @ddl := IF(@has_col = 0,
   'ALTER TABLE vi_governance_case ADD COLUMN conclusion VARCHAR(1000) NULL COMMENT ''人工处置结论，与 reason（问题类型/申请依据）分开保存'' AFTER reason',
@@ -28,5 +26,5 @@ WHERE case_type = 'RECONCILE'
   AND conclusion IS NULL;
 
 SELECT 'has_conclusion_col' AS obj, CAST(COUNT(*) AS CHAR) AS val FROM information_schema.COLUMNS
-WHERE TABLE_SCHEMA = 'xinyi' AND TABLE_NAME = 'vi_governance_case' AND COLUMN_NAME = 'conclusion'
+WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'vi_governance_case' AND COLUMN_NAME = 'conclusion'
 UNION ALL SELECT 'reconcile_cases', CAST(COUNT(*) AS CHAR) FROM vi_governance_case WHERE case_type = 'RECONCILE';

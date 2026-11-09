@@ -7,8 +7,6 @@
 -- 幂等：同一订单已存在 RECONCILE 案件时不重复插入。
 -- =====================================================================
 
-USE xinyi;
-
 INSERT INTO vi_governance_case
   (case_type, order_id, requester_account_id, requester_user_id, status, payload_cipher, reason,
    expires_at, created_at, updated_at, version)

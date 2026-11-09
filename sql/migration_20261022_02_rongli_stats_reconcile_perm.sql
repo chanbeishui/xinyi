@@ -8,8 +8,6 @@
 -- 本脚本只做修正与补充，不改动既有菜单层级与排序。
 -- =====================================================================
 
-USE xinyi;
-
 -- ---------------------------------------------------------------- 一、权限标识修正
 UPDATE sys_menu SET perms = 'biz:paymentreconciliation:list', update_time = sysdate()
 WHERE menu_id = 2131 AND perms <> 'biz:paymentreconciliation:list';
