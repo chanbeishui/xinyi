@@ -242,3 +242,71 @@ apt install -y fail2ban && systemctl enable --now fail2ban
 
 如果有一天后端也想走流水线，或跨境太慢，把 runner 注册到这台服务器（或同地域一台小机器）：
 代码 checkout 走 GitHub、构建与发布全在本机，跨境只传源码。工作流文件不用改。
+
+---
+
+## 附：三端发布流程
+
+| 端 | 产物 | 触发方式 | 耗时 | 回滚手段 |
+|---|---|---|---|---|
+| Web 后台 | `dist` 9.9MB | Actions 点一下（或本机 `deploy.sh frontend`） | ~1 分钟 | `mv web.old web` |
+| 后端 | `jar` 94MB | 本机 `deploy.sh backend` | ~60 秒 | `mv xinyi-admin.jar.prev xinyi-admin.jar` |
+| 小程序 | `dist/build/mp-weixin` | 本机 `npm run release:mp` + 后台设体验版 | ~1 分钟 | 后台回退到上一线上版本 |
+
+### 后端
+
+后端**不交给 GitHub Actions**：jar 94MB 跨境传输不稳定，且发后端通常伴随排障（看日志、回滚），
+本机一条命令更快。工作流里保留了 `allow_backend` 开关，确需流水线发布时可用。
+
+标准流程（顺序不能乱）：
+
+```bash
+# 1) 有数据库变更时，先备份再执行迁移，再校验
+/home/xinyi/bin/backup-xinyi.sh
+docker exec -i "$MYSQL_C" mysql -uroot rongli_wx < sql/migration_YYYYMMDD_xx.sql
+
+# 2) 发布 jar（构建 → 上传 → 备份旧 jar → 重启 → 健康检查 60s → 失败自动回滚）
+XINYI_HOST=xinyi-prod ./deploy/prod/deploy.sh backend
+
+# 3) 验证
+curl -s -o /dev/null -w '%{http_code}\n' http://127.0.0.1:8080/captchaImage   # 200
+```
+
+迁移先行的理由：新代码要能同时兼容"迁移前"和"迁移后"的表结构；
+先发代码再迁移，中间窗口内新代码访问旧结构会报错。
+
+手工回滚：
+
+```bash
+cd /home/xinyi/app && mv xinyi-admin.jar.prev xinyi-admin.jar && systemctl restart xinyi-admin
+```
+
+### 小程序
+
+上传必须满足两个条件，且都只能在本机做（Actions 出口 IP 不固定，加不了白名单）：
+
+1. 公众平台 → 开发管理 → 开发设置 → **小程序代码上传密钥**（生成并下载）
+2. 同一页把本机公网出口 IP 加进 **IP 白名单**
+
+```bash
+cd xinyi-rongli-wx
+# 密钥放 private.upload.key（已 gitignore）
+npm run release:mp                       # 构建 + 上传
+MP_VERSION=1.2.0 npm run release:mp      # 指定版本号
+```
+
+上传后仍是**开发版**，需人工在公众平台操作：
+
+| 步骤 | 在哪做 | 能否自动化 |
+|---|---|---|
+| 上传代码 | `npm run release:mp` | ✅ 已脚本化 |
+| 设为体验版 | 公众平台 → 版本管理 | ❌ 平台不支持 API |
+| 提交审核 | 公众平台 → 版本管理 | ❌ 需人工确认类目与隐私协议 |
+| 发布上线 | 公众平台 | ❌ 且要求**小程序备案已完成** |
+
+所以小程序的"发布"只有上传这一步能自动化，后三步是平台强制的管理动作。
+
+### 三端的发布顺序
+
+改一处牵动多端时，按「迁移 → 后端 → 前端 → 小程序」推进：
+迁移向后兼容、后端兼容新旧结构、前端与小程序只依赖接口，任一步失败都不会留下不匹配状态。
