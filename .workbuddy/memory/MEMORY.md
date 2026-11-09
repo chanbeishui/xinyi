@@ -38,8 +38,8 @@
 - 菜单 2024(dataScreen) / 2025(管理层BI看板) / 2026(档案室管理)
 - 页面 `src/views/archiveRoom/`（SVG 平面图 + fuse.js）、`src/views/dataScreen/`（ECharts），均为纯前端静态数据
 
-## 生产部署（阿里云轻量 2C4G + 1Panel，2026-11-04）
-- Ubuntu 22.04 + 1Panel 托管 MySQL8/Redis7，jar 用 systemd，OpenResty 反代 `/prod-api/` → 127.0.0.1:8080
+## 生产部署（阿里云轻量 2C4G + 1panel，2026-11-04）
+- Ubuntu 22.04 + 1panel 托管 MySQL8/Redis7，jar 用 systemd，OpenResty 反代 `/prod-api/` → 127.0.0.1:8080
 - 产物：`docs/deploy/1panel-2c4g-deployment.md`、`deploy/prod/*`
 - **启动 profile 必须 `druid,prod`**（后加载优先，顺序反了会覆盖回开发库）
 - `sql/quartz.sql` 必须单独导入（`ry_20260417.sql` 不含 QRTZ_* 表，docker-compose 也没挂载）
