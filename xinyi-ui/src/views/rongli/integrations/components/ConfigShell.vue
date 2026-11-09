@@ -150,7 +150,10 @@ import { computed, onMounted, reactive, ref } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import {
   checkProfile, createProfile, getProfile, listProfiles, listPublications, listRevisions,
-  publishProfile, rollbackProfile, saveDraft
+  publishProfile, rollbackProfile,
+  // 必须起别名：组件里也有一个 saveDraft（保存按钮的处理函数），
+  // 同名导入会被函数声明遮蔽，内部调用就变成调用自己，直接爆栈
+  saveDraft as saveDraftApi
 } from '@/api/rongli/integration'
 
 const props = defineProps<{
@@ -301,7 +304,7 @@ async function saveDraft() {
   }
   saving.value = true
   try {
-    const res = await saveDraft(detail.value.profileId, {
+    const res = await saveDraftApi(detail.value.profileId, {
       kind: props.kind,
       expectedVersion: detail.value.version,
       config: buildConfig(),
