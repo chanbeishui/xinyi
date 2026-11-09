@@ -18,6 +18,7 @@ concurrency:
 
 jobs:
   build:
+    name: backend-build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -48,13 +49,14 @@ jobs:
           retention-days: 7
 
   sql-check:
+    name: backend-sql-check
     runs-on: ubuntu-latest
     services:
       mysql:
         image: mysql:8.0
         env:
           MYSQL_ROOT_PASSWORD: xinyi_dev
-          MYSQL_DATABASE: xinyi
+          MYSQL_DATABASE: xinyi_ci
         ports: ["13307:3306"]
         options: >-
           --health-cmd="mysqladmin ping -h 127.0.0.1 -pxinyi_dev"
@@ -71,10 +73,11 @@ jobs:
           DB_HOST: 127.0.0.1
           DB_PORT: "13307"
           DB_USER: root
-          DB_NAME: xinyi
-        run: bash logs/ci_sql_check.sh xinyi
+          DB_NAME: xinyi_ci
+        run: bash logs/ci_sql_check.sh xinyi_ci
 
   scripts:
+    name: backend-scripts
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

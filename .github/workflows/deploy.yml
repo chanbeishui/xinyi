@@ -20,13 +20,17 @@ on:
   workflow_dispatch:
     inputs:
       scope:
-        description: "部署范围"
+        description: "部署范围（手动触发默认只发前端；发后端用本机 deploy.sh，或勾选 allow_backend / 用 tag 发布）"
         type: choice
-        options: [all, backend, frontend]
-        default: all
+        options: [frontend, backend, all]
+        default: frontend
       ref:
         description: "分支 / tag / commit SHA（留空 = 当前提交）"
         required: false
+      allow_backend:
+        description: "允许手动触发时发布后端（jar 跨境传输慢，确认再勾）"
+        type: boolean
+        default: false
       skip_tests:
         description: "跳过后端单元测试（仅在紧急修复时勾选）"
         type: boolean
@@ -65,6 +69,19 @@ jobs:
         with:
           ref: ${{ inputs.ref || github.ref }}
 
+      - name: 校验部署范围
+        run: |
+          scope="${{ inputs.scope || 'all' }}"
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] \
+             && [ "$scope" != "frontend" ] \
+             && [ "${{ inputs.allow_backend }}" != "true" ]; then
+            echo "::error::手动触发默认只允许发布前端（4.5MB）。"
+            echo "::error::发布后端 jar（94MB）请在本机执行：./deploy/prod/deploy.sh backend"
+            echo "::error::如确需在流水线发后端，请勾选 allow_backend，或用 tag 触发（git push origin v1.2.3）。"
+            exit 1
+          fi
+          echo "部署范围：$scope（事件：${{ github.event_name }}）"
+
       - name: 记录版本信息
         id: meta
         run: |
@@ -82,6 +99,7 @@ jobs:
           } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Set up JDK 17
+        if: ${{ (inputs.scope || 'all') != 'frontend' }}
         uses: actions/setup-java@v4
         with:
           distribution: temurin
@@ -90,13 +108,15 @@ jobs:
 
       # 只在真跑测试时执行；紧急修复可用 skip_tests 跳过并自行承担风险
       - name: 后端单元测试
-        if: ${{ inputs.skip_tests != true }}
+        if: ${{ (inputs.scope || 'all') != 'frontend' && inputs.skip_tests != true }}
         run: mvn -B -ntp -pl xinyi-framework,xinyi-system -am test
 
       - name: 打包后端
+        if: ${{ (inputs.scope || 'all') != 'frontend' }}
         run: mvn -B -ntp -DskipTests package
 
       - name: 上传 jar
+        if: ${{ (inputs.scope || 'all') != 'frontend' }}
         uses: actions/upload-artifact@v4
         with:
           name: deploy-jar
@@ -141,6 +161,7 @@ jobs:
           ref: ${{ inputs.ref || github.ref }}
 
       - name: 下载 jar
+        if: ${{ needs.build.outputs.scope != 'frontend' }}
         uses: actions/download-artifact@v4
         with:
           name: deploy-jar
