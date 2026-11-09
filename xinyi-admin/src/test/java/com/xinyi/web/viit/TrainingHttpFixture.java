@@ -8,6 +8,7 @@ import com.xinyi.rongli.identity.mapper.ViSessionMapper;
 import com.xinyi.rongli.identity.service.MiniTokenService;
 import com.xinyi.rongli.identity.service.PhoneCrypto;
 import com.xinyi.rongli.integration.config.IntegrationKeyProperties;
+import com.xinyi.rongli.integration.service.IntegrationCrypto;
 import com.xinyi.rongli.platform.json.ViJson;
 
 import org.junit.jupiter.api.AfterAll;
@@ -42,6 +43,8 @@ abstract class TrainingHttpFixture extends PricingHttpFixture {
     @Autowired ViSessionMapper miniSessions;
     @Autowired PhoneCrypto phoneCrypto;
     @Autowired IntegrationKeyProperties integrationKeys;
+    @Autowired IntegrationCrypto boundaryCrypto;
+    @Autowired com.xinyi.rongli.platform.service.IdempotencyService boundaryIdempotency;
 
     String rootAdmin;
     byte[] mp4;
@@ -72,6 +75,7 @@ abstract class TrainingHttpFixture extends PricingHttpFixture {
                         "vi_driver_application_submission",
                         "vi_face_session",
                         "vi_provider_verification",
+                        "vi_manual_verification",
                         "vi_driver_occupancy",
                         "vi_driver_assignment",
                         "vi_dispatch_invite",
@@ -396,24 +400,13 @@ abstract class TrainingHttpFixture extends PricingHttpFixture {
     }
 
     void trustedOtherVerifications(Student person) {
-        // 仅Q04四种外部核验的明确边界事实；TRAINING正向绝不在此插入或设置PASSED。
-        Map<String, Object> material =
-                jdbc.queryForMap(
-                        "SELECT material_revision,material_hash FROM vi_driver_application WHERE"
-                                + " id=?",
-                        person.applicationId());
-        for (String type : List.of("REALNAME", "FACE", "BACKGROUND", "LICENSE")) {
-            jdbc.update(
-                    "INSERT INTO"
-                        + " vi_provider_verification(application_id,material_revision,material_hash,provider,task_type,provider_task_id,status,result_digest,verified_at)"
-                        + " VALUES"
-                        + " (?,?,?,'Q03_Q04_BOUNDARY_FACT',?,?,'PASSED','explicit-upstream-boundary',UTC_TIMESTAMP(3))",
-                    person.applicationId(),
-                    material.get("material_revision"),
-                    material.get("material_hash"),
-                    type,
-                    "q03-upstream-" + UUID.randomUUID());
-        }
+        // Q03仅消费明确Q04完整上游关系，不把它当微信设备/人工验收；TRAINING仍必须真实学习阅卷产生。
+        VerificationCompletedBoundaryFixture.seed(
+                jdbc,
+                boundaryCrypto,
+                boundaryIdempotency,
+                person.applicationId(),
+                miniTokens.resolveAccess(person.token()).sessionId());
     }
 
     long profileVersion(Student person) {

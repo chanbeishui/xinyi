@@ -1107,6 +1107,10 @@ components:
       - biz:job:retry
       - biz:license:edit
       - biz:license:list
+      - biz:manualverification:create
+      - biz:manualverification:list
+      - biz:manualverification:query
+      - biz:manualverification:review
       - biz:messageroute:edit
       - biz:messageroute:query
       - biz:messagetemplate:check
@@ -1173,6 +1177,9 @@ components:
       - biz:vehicle:edit
       - biz:vehicle:list
       - biz:vehicle:query
+      - biz:verification:close
+      - biz:verification:list
+      - biz:verification:query
     MiniRole:
       type: string
       enum:

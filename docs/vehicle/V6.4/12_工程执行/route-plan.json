@@ -795,11 +795,17 @@
     "canonicalPage": "D04",
     "title": "认证补充",
     "role": "driver",
-    "targetPath": "xinyi-miniapp/src/subpackages/driver/d04/index.vue",
+    "targetPath": "xinyi-miniapp/src/pages/verification/index.vue",
     "presentation": "PAGE",
     "taskId": "Q04",
     "status": "NOT_ASSESSED",
-    "note": "目标实现路径，非已存在源码。状态画板与弹窗不是独立小程序路由；遵守原账号与权限边界。"
+    "note": "Q04当前实际本人本机认证与四分项进度页面；已核验手机号的OWNER/STATION/DRIVER均可，不先要求DRIVER。SOTER仅确认设备使用者，非实名活体；H5仅查看进度，真实签名校验由服务端处理。",
+    "implementationNote": "D04/D46共用/pages/verification/index；api.ts绑定创建、纯读及confirm/recover，device.ts调用原生support/enrollment/authenticate。后台配套/driver-management/verification人工记录与设备会话tab，原公司权限/经办复核分离/受控封存；不是人工强行通过设备签名。",
+    "adminTargetPaths": [
+      "xinyi-ui/src/views/rongli/verification/index.vue",
+      "xinyi-ui/src/views/rongli/verification/ManualRecords.vue",
+      "xinyi-ui/src/views/rongli/verification/DeviceSessions.vue"
+    ]
   },
   {
     "boardId": "D05",
@@ -810,7 +816,7 @@
     "presentation": "PAGE",
     "taskId": "Q01",
     "status": "NOT_ASSESSED",
-    "note": "F49统一本人申请/进度/补正/复审页面；OWNER/STATION/DRIVER已核验本人均可，状态画板不单独建路由。严格核验培训后才提交；Q05审批另接通。"
+    "note": "F49统一本人申请/进度/补正/复审；完整资料、有效公司、现行同意及DEVICE_AUTH/BACKGROUND/LICENSE/TRAINING四项可信证明后提交。本机认证只确认设备使用者，不声明实名活体；Q05审批另接通。"
   },
   {
     "boardId": "D05-passed",
@@ -3135,13 +3141,19 @@
   {
     "boardId": "D46",
     "canonicalPage": "D46",
-    "title": "人脸核验会话",
+    "title": "本机生物认证会话",
     "role": "driver",
-    "targetPath": "xinyi-miniapp/src/subpackages/driver/d46/index.vue",
+    "targetPath": "xinyi-miniapp/src/pages/verification/index.vue",
     "presentation": "PAGE",
     "taskId": "Q04",
     "status": "NOT_ASSESSED",
-    "note": "目标实现路径，非已存在源码。状态画板与弹窗不是独立小程序路由；遵守原账号与权限边界。"
+    "note": "Q04当前实际本人本机认证与四分项进度页面；已核验手机号的OWNER/STATION/DRIVER均可，不先要求DRIVER。SOTER仅确认设备使用者，非实名活体；H5仅查看进度，真实签名校验由服务端处理。",
+    "implementationNote": "D04/D46共用/pages/verification/index；api.ts绑定创建、纯读及confirm/recover，device.ts调用原生support/enrollment/authenticate。后台配套/driver-management/verification人工记录与设备会话tab，原公司权限/经办复核分离/受控封存；不是人工强行通过设备签名。",
+    "adminTargetPaths": [
+      "xinyi-ui/src/views/rongli/verification/index.vue",
+      "xinyi-ui/src/views/rongli/verification/ManualRecords.vue",
+      "xinyi-ui/src/views/rongli/verification/DeviceSessions.vue"
+    ]
   },
   {
     "boardId": "B43",

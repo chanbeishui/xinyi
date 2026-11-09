@@ -4,13 +4,13 @@
   "pass": 42,
   "fail": 0,
   "counts": {
-    "operations": 287,
-    "schemas": 373,
-    "tables": 79,
-    "generatedColumns": 16,
+    "operations": 305,
+    "schemas": 413,
+    "tables": 89,
+    "generatedColumns": 20,
     "screens": 355,
     "cases": 412,
-    "flows": 48
+    "flows": 49
   },
   "checks": [
     {
@@ -164,6 +164,16 @@
       "name": "30 数据列与SQL列集合精确相同",
       "result": "PASS",
       "detail": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
         null,
         null,
         null,

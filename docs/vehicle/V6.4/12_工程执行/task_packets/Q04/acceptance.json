@@ -1,1 +1,15 @@
-[]
+[
+  {
+    "id": "TC-R50-021",
+    "priority": "P1",
+    "module": "本机生物认证",
+    "flow": "F49",
+    "title": "设备认证只信一次性挑战与微信服务端验签",
+    "given": "本人当前申请、材料、公司epoch和实际MINI登录会话创建随机challenge",
+    "when": "客户端提交原始SOTER resultJSON与签名，或伪造passed/挑战/其他账号签名",
+    "then": "只有微信可信验签真值且原始raw挑战、原始OpenID和当前上下文相符才通过；未知仅恢复原文，GET不访问微信；不证明法律机主或实名活体",
+    "status": "NOT_RUN",
+    "evidence": "",
+    "origin": "2026-11-09用户确认SOTER设备认证替代实名活体；Q04实现测试结果另记实施证据，源用例保持NOT_RUN"
+  }
+]

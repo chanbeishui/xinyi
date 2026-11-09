@@ -689,6 +689,9 @@ components:
       - qualificationConsentVersion
       - qualificationConsentText
       - qualificationConsentHash
+      - verificationConsentVersion
+      - verificationConsentText
+      - verificationConsentHash
       properties:
         version:
           type: integer
@@ -734,6 +737,16 @@ components:
           nullable: true
           pattern: ^[0-9a-f]{64}$
           description: 同一次读取的资格同意正文摘要，未配置为null；不能把客户端旧正文记成已同意新文。
+        verificationConsentVersion:
+          type: string
+          nullable: true
+        verificationConsentText:
+          type: string
+          nullable: true
+        verificationConsentHash:
+          type: string
+          pattern: ^[0-9a-f]{64}$
+          nullable: true
       description: 仅公开白名单；来自现有业务配置发布值，不包含供应商密钥、内部财务主体配置、员工或角色名单。缺已发布协议不得假造版本开放下单。 第三方未配置或双开关关闭时不宣称可支付，不向公众返回商户/密钥。
     ConfigPatch:
       type: object

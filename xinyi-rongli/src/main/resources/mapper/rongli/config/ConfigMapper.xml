@@ -15,6 +15,15 @@
         <if test="lock">FOR UPDATE</if>
     </select>
 
+    <!-- 本机认证原文与版本使用同一快照，不能用两个单键读取混出并不存在的同意内容。 -->
+    <select id="selectVerificationConsent" resultType="java.util.LinkedHashMap">
+        SELECT config_key,config_value
+        FROM sys_config
+        WHERE config_key IN ('vi.biz.verification.consent.version','vi.biz.verification.consent.text')
+        ORDER BY config_key
+        <if test="lock">FOR UPDATE</if>
+    </select>
+
     <select id="selectBusiness" resultType="java.util.LinkedHashMap">
         SELECT config_key, config_value FROM sys_config WHERE config_key LIKE 'vi.biz.%' ORDER BY config_key
     </select>

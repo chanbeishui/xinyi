@@ -1646,6 +1646,14 @@ components:
       - CREATE_TRAINING_ATTEMPT
       - VIEW_TRAINING_ATTEMPT
       - SUBMIT_TRAINING_ATTEMPT
+      - START_DEVICE_AUTH
+      - CONFIRM_DEVICE_AUTH
+      - RECOVER_DEVICE_AUTH
+      - QUERY_DEVICE_AUTH
+      - VIEW_DEVICE_AUTH
+      - CLOSE_DEVICE_AUTH
+      - VIEW_MANUAL_VERIFICATION
+      - REVIEW_MANUAL_VERIFICATION
     DriverStatementLine:
       type: object
       additionalProperties: false

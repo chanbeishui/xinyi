@@ -1,0 +1,325 @@
+{
+  "mode": "Browser plugin not available；临时Playwright真实PC页面+明确API夹具，不替代后端权限/事务及微信真机SOTER验证",
+  "url": "http://127.0.0.1:5173/driver-management/verification",
+  "viewports": [
+    "1440x1000",
+    "390x844"
+  ],
+  "checks": [
+    "真实菜单路由、非空中文页面、人工待复核记录与真实公司/昵称展示",
+    "当前经办记录按服务端allowedActions禁止自复核，不把前端昵称当实名",
+    "候选申请读取真实上下文版本，7键UUID登记允许空备注，无凭证/标准字段或手填版本",
+    "复核409保留决定备注，重读新CAS；unknown关闭/查看另一记录后仍原记录原体UUID恢复",
+    "退回与确认分开，空复核备注合法，不制造通过凭证或最终资格第三人限制",
+    "HTTP403清详情与填写，不保留越权记录",
+    "1440与390布局无页面横向溢出，表格内部滚动，业务中文说明可读",
+    "管理员设备会话GET只读安全metadata，无挑战/签名/设备标识，不为已通过会话提供封存动作",
+    "封存原因必填2键/CAS/UUID；409保留原因重读，unknown关弹窗/换会话后原目标原键恢复，无收费ack或通过字段",
+    "设备会话越权403清除旧详情，后台不通过手工封存制造DEVICE_AUTH证明",
+    "设备会话1440/390布局与中文封存边界，无整页横向溢出",
+    "查询角色无经办/复核写按钮，不调用候选接口推导写权限"
+  ],
+  "errors": [],
+  "warnings": [],
+  "expectedHttpErrors": [
+    "Failed to load resource: the server responded with a status of 409 (Conflict)",
+    "Failed to load resource: the server responded with a status of 503 (Service Unavailable)",
+    "Failed to load resource: the server responded with a status of 403 (Forbidden)",
+    "Failed to load resource: the server responded with a status of 409 (Conflict)",
+    "Failed to load resource: the server responded with a status of 503 (Service Unavailable)",
+    "Failed to load resource: the server responded with a status of 403 (Forbidden)"
+  ],
+  "unknown": [],
+  "requests": [
+    {
+      "path": "/getInfo",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/getRouters",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/system/notice/listTop",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/admin/manual-verifications",
+      "method": "GET",
+      "query": {
+        "pageNum": "1",
+        "pageSize": "10"
+      }
+    },
+    {
+      "path": "/api/admin/verification-sessions",
+      "method": "GET",
+      "query": {
+        "pageNum": "1",
+        "pageSize": "10"
+      }
+    },
+    {
+      "path": "/api/admin/manual-verifications/41",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/admin/manual-verifications/applications",
+      "method": "GET",
+      "query": {
+        "pageNum": "1",
+        "pageSize": "30"
+      }
+    },
+    {
+      "path": "/api/admin/manual-verifications",
+      "method": "POST",
+      "query": {}
+    },
+    {
+      "path": "/api/admin/manual-verifications",
+      "method": "GET",
+      "query": {
+        "pageNum": "1",
+        "pageSize": "10"
+      }
+    },
+    {
+      "path": "/api/admin/manual-verifications/42",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/admin/manual-verifications/42/review",
+      "method": "POST",
+      "query": {}
+    },
+    {
+      "path": "/api/admin/manual-verifications/42",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/admin/manual-verifications/42/review",
+      "method": "POST",
+      "query": {}
+    },
+    {
+      "path": "/api/admin/manual-verifications/43",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/admin/manual-verifications/42/review",
+      "method": "POST",
+      "query": {}
+    },
+    {
+      "path": "/api/admin/manual-verifications",
+      "method": "GET",
+      "query": {
+        "pageNum": "1",
+        "pageSize": "10"
+      }
+    },
+    {
+      "path": "/api/admin/manual-verifications/43",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/admin/manual-verifications/43/review",
+      "method": "POST",
+      "query": {}
+    },
+    {
+      "path": "/api/admin/manual-verifications",
+      "method": "GET",
+      "query": {
+        "pageNum": "1",
+        "pageSize": "10"
+      }
+    },
+    {
+      "path": "/api/admin/manual-verifications/41",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/admin/manual-verifications",
+      "method": "GET",
+      "query": {
+        "pageNum": "1",
+        "pageSize": "10"
+      }
+    },
+    {
+      "path": "/system/notice/listTop",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/admin/verification-sessions/73",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/admin/verification-sessions/71",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/admin/verification-sessions/71/close",
+      "method": "POST",
+      "query": {}
+    },
+    {
+      "path": "/api/admin/verification-sessions/71",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/admin/verification-sessions/71/close",
+      "method": "POST",
+      "query": {}
+    },
+    {
+      "path": "/api/admin/verification-sessions/72",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/admin/verification-sessions/71/close",
+      "method": "POST",
+      "query": {}
+    },
+    {
+      "path": "/api/admin/verification-sessions",
+      "method": "GET",
+      "query": {
+        "pageNum": "1",
+        "pageSize": "10"
+      }
+    },
+    {
+      "path": "/api/admin/verification-sessions/72",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/admin/verification-sessions",
+      "method": "GET",
+      "query": {
+        "pageNum": "1",
+        "pageSize": "10"
+      }
+    },
+    {
+      "path": "/system/notice/listTop",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/getInfo",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/getRouters",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/system/notice/listTop",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/admin/manual-verifications",
+      "method": "GET",
+      "query": {
+        "pageNum": "1",
+        "pageSize": "10"
+      }
+    }
+  ],
+  "writes": [
+    {
+      "path": "/api/admin/manual-verifications",
+      "input": {
+        "applicationId": "21",
+        "expectedApplicationVersion": 7,
+        "expectedCompanyRevision": 2,
+        "expectedMaterialRevision": 3,
+        "type": "BACKGROUND",
+        "conclusion": "PASSED",
+        "note": ""
+      },
+      "key": "6984b2be-6612-4969-8878-49c4ca22eeb9"
+    },
+    {
+      "path": "/api/admin/manual-verifications/42/review",
+      "input": {
+        "expectedVersion": 0,
+        "decision": "CONFIRM",
+        "note": "已独立核对背景核验经办结论"
+      },
+      "key": "2cea6c0e-ed40-421c-bfbb-739600bde3e4"
+    },
+    {
+      "path": "/api/admin/manual-verifications/42/review",
+      "input": {
+        "expectedVersion": 1,
+        "decision": "CONFIRM",
+        "note": "已独立核对背景核验经办结论"
+      },
+      "key": "b1ec7079-8aa7-4c39-9b8c-43793862000f"
+    },
+    {
+      "path": "/api/admin/manual-verifications/42/review",
+      "input": {
+        "expectedVersion": 1,
+        "decision": "CONFIRM",
+        "note": "已独立核对背景核验经办结论"
+      },
+      "key": "b1ec7079-8aa7-4c39-9b8c-43793862000f"
+    },
+    {
+      "path": "/api/admin/manual-verifications/43/review",
+      "input": {
+        "expectedVersion": 0,
+        "decision": "RETURN",
+        "note": ""
+      },
+      "key": "838549ec-40d8-44b6-ba56-d2a5edc431b6"
+    },
+    {
+      "path": "/api/admin/verification-sessions/71/close",
+      "input": {
+        "expectedVersion": 0,
+        "reason": "原设备认证长期未决，结束本地挑战供本人重新办理"
+      },
+      "key": "3811911e-3616-44f0-9c89-ef6a0a875ed5"
+    },
+    {
+      "path": "/api/admin/verification-sessions/71/close",
+      "input": {
+        "expectedVersion": 1,
+        "reason": "原设备认证长期未决，结束本地挑战供本人重新办理"
+      },
+      "key": "6a5c93ec-296d-486a-8851-3dfc207151c1"
+    },
+    {
+      "path": "/api/admin/verification-sessions/71/close",
+      "input": {
+        "expectedVersion": 1,
+        "reason": "原设备认证长期未决，结束本地挑战供本人重新办理"
+      },
+      "key": "6a5c93ec-296d-486a-8851-3dfc207151c1"
+    }
+  ]
+}

@@ -329,6 +329,8 @@ export type Qualification = {
   submitBlockers: Array<QualificationBlocker>;
   checks: Array<QualificationCheck>;
   allowedActions: Array<AllowedAction>;
+  companyRevision: number;
+  verificationSessionId: string | null;
 };
 
 export type QualificationAudit = {
@@ -2001,24 +2003,41 @@ export type TrainingCourseUpdate = {
 
 export type TrainingCourseAdmin = TrainingCourseSummary | TrainingCourseDetail;
 
-export type FaceSessionStatus = 'CREATED' | 'PROCESSING' | 'PASSED' | 'FAILED' | 'EXPIRED';
+export type FaceSessionStatus =
+  | 'CREATED'
+  | 'PROCESSING'
+  | 'UNKNOWN'
+  | 'PASSED'
+  | 'FAILED'
+  | 'EXPIRED'
+  | 'CLOSED';
 
 export type FaceSessionCreate = {
   applicationId: string;
-  expectedVersion: number;
+  expectedApplicationVersion: number;
+  expectedCompanyRevision: number;
+  expectedMaterialRevision: number;
   consentVersion: string;
+  consentTextHash: string;
+  acceptedConsent: true;
 };
 
 export type FaceSession = {
   verificationSessionId: string;
   applicationId: string;
+  requestNo: string;
   status: FaceSessionStatus;
-  launchMode: 'WEBVIEW_URL';
+  launchMode: 'WX_SOTER_DEVICE_AUTH';
   launchUrl: string | null;
+  challenge: string | null;
+  authContent: string;
   expiresAt: string;
   resultAvailable: boolean;
   failureCode: string | null;
   version: number;
+  materialRevision: number;
+  companyRevision: number;
+  allowedActions: Array<AllowedAction>;
 };
 
 export type EmployeeBindingStatus =
@@ -2247,6 +2266,10 @@ export type PermissionCode =
   | 'biz:job:retry'
   | 'biz:license:edit'
   | 'biz:license:list'
+  | 'biz:manualverification:create'
+  | 'biz:manualverification:list'
+  | 'biz:manualverification:query'
+  | 'biz:manualverification:review'
   | 'biz:messageroute:edit'
   | 'biz:messageroute:query'
   | 'biz:messagetemplate:check'
@@ -2312,7 +2335,10 @@ export type PermissionCode =
   | 'biz:uploads:create'
   | 'biz:vehicle:edit'
   | 'biz:vehicle:list'
-  | 'biz:vehicle:query';
+  | 'biz:vehicle:query'
+  | 'biz:verification:close'
+  | 'biz:verification:list'
+  | 'biz:verification:query';
 
 export type CapabilityCode =
   | 'COMMON_DICT_QUERY'
@@ -2475,11 +2501,25 @@ export type AllowedAction =
   | 'REPORT_TRAINING_PROGRESS'
   | 'CREATE_TRAINING_ATTEMPT'
   | 'VIEW_TRAINING_ATTEMPT'
-  | 'SUBMIT_TRAINING_ATTEMPT';
+  | 'SUBMIT_TRAINING_ATTEMPT'
+  | 'START_DEVICE_AUTH'
+  | 'CONFIRM_DEVICE_AUTH'
+  | 'RECOVER_DEVICE_AUTH'
+  | 'QUERY_DEVICE_AUTH'
+  | 'VIEW_DEVICE_AUTH'
+  | 'CLOSE_DEVICE_AUTH'
+  | 'VIEW_MANUAL_VERIFICATION'
+  | 'REVIEW_MANUAL_VERIFICATION';
 
 export type AccountStatus = 'ACTIVE' | 'LOCKED';
 
-export type VerificationType = 'REALNAME' | 'FACE' | 'BACKGROUND' | 'LICENSE' | 'TRAINING';
+export type VerificationType =
+  | 'DEVICE_AUTH'
+  | 'BACKGROUND'
+  | 'LICENSE'
+  | 'TRAINING'
+  | 'REALNAME'
+  | 'FACE';
 
 export type VerificationStatus =
   | 'CREATED'
@@ -2581,7 +2621,7 @@ export type TrainingCourseStatus = 'DRAFT' | 'PUBLISHED' | 'DISABLED';
 
 export type QuestionType = 'SINGLE' | 'MULTIPLE' | 'TRUE_FALSE';
 
-export type FaceLaunchMode = 'WEBVIEW_URL';
+export type FaceLaunchMode = 'WX_SOTER_DEVICE_AUTH' | 'WEBVIEW_URL';
 
 export type GovernanceStatus =
   | 'APPLIED'
@@ -2816,6 +2856,9 @@ export type PublicServiceConfig = {
   qualificationConsentVersion: string;
   qualificationConsentText: string;
   qualificationConsentHash: string | null;
+  verificationConsentVersion: string | null;
+  verificationConsentText: string | null;
+  verificationConsentHash: string | null;
 };
 
 export type AdminStationCreate = {
@@ -2961,7 +3004,7 @@ export type QualificationDraftView = {
 };
 
 export type QualificationCheck = {
-  type: 'REALNAME' | 'FACE' | 'BACKGROUND' | 'LICENSE' | 'TRAINING';
+  type: 'DEVICE_AUTH' | 'BACKGROUND' | 'LICENSE' | 'TRAINING';
   status: 'CREATED' | 'PROCESSING' | 'PASSED' | 'FAILED' | 'EXPIRED' | 'UNAVAILABLE';
 };
 
@@ -3107,4 +3150,100 @@ export type TrainingPlaybackCreate = {
   runId: string | null;
   courseVersion: number;
   expectedVersion: number;
+};
+
+export type DeviceAuthenticationConfirm =
+  | {
+      expectedVersion: number;
+      resultJSON: string;
+      resultJSONSignature: string;
+    }
+  | {
+      expectedVersion: number;
+      recover: true;
+    };
+
+export type DeviceAuthenticationAdminView = {
+  verificationSessionId: string;
+  applicationId: string;
+  requestNo: string;
+  status: FaceSessionStatus;
+  launchMode: 'WX_SOTER_DEVICE_AUTH';
+  launchUrl: string | null;
+  challenge: string | null;
+  authContent: string;
+  expiresAt: string;
+  resultAvailable: boolean;
+  failureCode: string | null;
+  version: number;
+  materialRevision: number;
+  companyRevision: number;
+  allowedActions: Array<AllowedAction>;
+  ownerDeptId: string | null;
+  companyName: string | null;
+  provider: string | null;
+  createdAt: string | null;
+  verifiedAt: string | null;
+};
+
+export type DeviceAuthenticationClose = {
+  expectedVersion: number;
+  reason: string;
+};
+
+export type ManualVerificationType = 'BACKGROUND' | 'LICENSE';
+
+export type ManualVerificationConclusion = 'PASSED' | 'FAILED';
+
+export type ManualVerificationStatus = 'PENDING_REVIEW' | 'CONFIRMED' | 'RETURNED';
+
+export type ManualVerificationCreate = {
+  applicationId: string;
+  expectedApplicationVersion: number;
+  expectedCompanyRevision: number;
+  expectedMaterialRevision: number;
+  type: ManualVerificationType;
+  conclusion: ManualVerificationConclusion;
+  note: string;
+};
+
+export type ManualVerificationReview = {
+  expectedVersion: number;
+  decision: 'CONFIRM' | 'RETURN';
+  note: string;
+};
+
+export type ManualVerificationView = {
+  recordId: string;
+  applicationId: string;
+  driverId: string;
+  applicantName: string;
+  ownerDeptId: string;
+  companyName: string;
+  companyRevision: number;
+  materialRevision: number;
+  type: ManualVerificationType;
+  conclusion: ManualVerificationConclusion;
+  status: ManualVerificationStatus;
+  submittedByUserId: string;
+  submittedByName: string;
+  submittedAt: string;
+  reviewedByUserId: string | null;
+  reviewedByName: string | null;
+  reviewedAt: string | null;
+  note: string | null;
+  reviewNote: string | null;
+  version: number;
+  allowedActions: Array<AllowedAction>;
+};
+
+export type ManualVerificationApplication = {
+  applicationId: string;
+  driverId: string;
+  applicantName: string;
+  ownerDeptId: string;
+  companyName: string;
+  version: number;
+  companyRevision: number;
+  materialRevision: number;
 };

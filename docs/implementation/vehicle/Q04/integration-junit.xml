@@ -1,0 +1,121 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <testsuite xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-failsafe-plugin/xsd/failsafe-test-report.xsd" version="3.0.2" name="com.xinyi.web.viit.Q04VerificationIT" time="21.93" tests="58" errors="0" skipped="0" failures="0">
+    <testcase name="concurrentConfirmIsSingleFlightAndReplaysCannotCreateAnotherCanonicalFact" classname="com.xinyi.web.viit.Q04VerificationIT" time="0.343">
+    </testcase>
+    <testcase name="applicantHistoricalBindingCannotOperateOrReviewAfterTheBindingIsRevoked" classname="com.xinyi.web.viit.Q04VerificationIT" time="0.217">
+    </testcase>
+    <testcase name="rawResultSignatureChallengeAndOpenidNeverAppearInIdempotencyOutboxOrAudit" classname="com.xinyi.web.viit.Q04VerificationIT" time="0.416">
+    </testcase>
+    <testcase name="manualConfirmationNeedsTwoAuthorizedPeopleAndNoVoucherOrPolicyPublication" classname="com.xinyi.web.viit.Q04VerificationIT" time="0.268">
+    </testcase>
+    <testcase name="unpublishedOrDisabledWechatConfigCannotVerifyDevice" classname="com.xinyi.web.viit.Q04VerificationIT" time="0.325">
+    </testcase>
+    <testcase name="historicalWechatRevisionRemainsTheAuthorityWhenCurrentCredentialsRotateOrDisable" classname="com.xinyi.web.viit.Q04VerificationIT" time="0.377">
+    </testcase>
+    <testcase name="concurrentCreateKeysCannotCreateTwoActiveChallengesForOneLoginContext" classname="com.xinyi.web.viit.Q04VerificationIT" time="0.359">
+    </testcase>
+    <testcase name="canonicalOutboxFailureRollsBackDeviceProofThenOriginalPayloadCanRecover" classname="com.xinyi.web.viit.Q04VerificationIT" time="0.535">
+    </testcase>
+    <testcase name="canonicalPublishFailureRollsBackManualReviewAndKeepsPendingOperatorFact" classname="com.xinyi.web.viit.Q04VerificationIT" time="0.493">
+    </testcase>
+    <testcase name="realWechatTwoManualConfirmationsAndActualTrainingEnableOnlyQualificationSubmission" classname="com.xinyi.web.viit.Q04VerificationIT" time="2.024">
+    </testcase>
+    <testcase name="materialOrCompanyEpochChangeBeforeManualReviewRejectsOldFactAndKeepsHistory" classname="com.xinyi.web.viit.Q04VerificationIT" time="0.28">
+    </testcase>
+    <testcase name="officialErrorAmbiguousTrueMissingBooleanAndMalformedBodiesRemainUnknown" classname="com.xinyi.web.viit.Q04VerificationIT" time="1.855">
+    </testcase>
+    <testcase name="explicitConsentRequiresTrueAndExactCurrentTextHashEvenWhenVersionIsUnchanged" classname="com.xinyi.web.viit.Q04VerificationIT" time="0.278">
+    </testcase>
+    <testcase name="sameCreateKeyRecoversSameEncryptedChallengeWithoutDuplicatingCurrentSession" classname="com.xinyi.web.viit.Q04VerificationIT" time="0.29">
+    </testcase>
+    <testcase name="manualFunctionPermissionsCannotBeReplacedByCompanyMembershipOrVisibleLists" classname="com.xinyi.web.viit.Q04VerificationIT" time="0.225">
+    </testcase>
+    <testcase name="signatureFromAnotherOpenidCannotAuthenticateTheCurrentMiniAccount" classname="com.xinyi.web.viit.Q04VerificationIT" time="0.372">
+    </testcase>
+    <testcase name="unassignedOrDisabledCompanyCannotCreateAnAuthenticationChallenge" classname="com.xinyi.web.viit.Q04VerificationIT" time="0.201">
+    </testcase>
+    <testcase name="manualNotesAreEncryptedBoundToTheRecordAndAbsentFromAuditOutboxAndIdempotency" classname="com.xinyi.web.viit.Q04VerificationIT" time="0.189">
+    </testcase>
+    <testcase name="duplicateRawKeysMalformedJsonAndNonStringRawCannotHideAnotherChallenge" classname="com.xinyi.web.viit.Q04VerificationIT" time="0.238">
+    </testcase>
+    <testcase name="aNewLoginSessionCannotReuseThePreviousSessionsDeviceProofOrSubmission" classname="com.xinyi.web.viit.Q04VerificationIT" time="0.331">
+    </testcase>
+    <testcase name="verifiedPhoneLookupWithoutBindingCannotEraseApplicantIdentityByChangingPhone" classname="com.xinyi.web.viit.Q04VerificationIT" time="0.179">
+    </testcase>
+    <testcase name="falseSignatureVerificationIsTerminalFailureAndNeverAClientSuccess" classname="com.xinyi.web.viit.Q04VerificationIT" time="0.275">
+    </testcase>
+    <testcase name="manualCreateOutboxFailureRollsBackRecordNotesAndIdempotencyReceipt" classname="com.xinyi.web.viit.Q04VerificationIT" time="0.174">
+    </testcase>
+    <testcase name="rawWhitespaceAndUnknownOfficialDeviceFieldsStayInTheExactSignedOriginal" classname="com.xinyi.web.viit.Q04VerificationIT" time="0.372">
+    </testcase>
+    <testcase name="clientCannotSupplyOpenidChallengeProviderResultOrAnyAuthorityField" classname="com.xinyi.web.viit.Q04VerificationIT" time="0.257">
+    </testcase>
+    <testcase name="companyRoundTripNeverResurrectsDeviceProofButOrdinaryRemarkDoesNotInvalidateIt" classname="com.xinyi.web.viit.Q04VerificationIT" time="0.298">
+    </testcase>
+    <testcase name="pendingManualRecordCannotBeBypassedByNewUuidOrRereviewedAfterConfirmation" classname="com.xinyi.web.viit.Q04VerificationIT" time="0.193">
+    </testcase>
+    <testcase name="revokedAccountDuringExternalVerificationCannotPublishProofOrReturnSuccess" classname="com.xinyi.web.viit.Q04VerificationIT" time="0.233">
+    </testcase>
+    <testcase name="returnedManualRecordKeepsHistoryAndNewSubmissionNeedsAnotherConfirmation" classname="com.xinyi.web.viit.Q04VerificationIT" time="0.18">
+    </testcase>
+    <testcase name="miniAndMissingCredentialsCannotEnterTheAdminVerificationOrManualRealm" classname="com.xinyi.web.viit.Q04VerificationIT" time="0.178">
+    </testcase>
+    <testcase name="resultRawMustMatchExactServerNonceBeforeWechatIsCalled" classname="com.xinyi.web.viit.Q04VerificationIT" time="0.291">
+    </testcase>
+    <testcase name="unknownOrOtherAccountSessionsCannotBeReadOrConfirmed" classname="com.xinyi.web.viit.Q04VerificationIT" time="0.461">
+    </testcase>
+    <testcase name="manualRequestCannotInjectEvidenceStandardsReviewersOrCanonicalProofFields" classname="com.xinyi.web.viit.Q04VerificationIT" time="0.213">
+    </testcase>
+    <testcase name="getSessionOnlyReadsMetadataAndNeverRetriesAWechatVerification" classname="com.xinyi.web.viit.Q04VerificationIT" time="0.251">
+    </testcase>
+    <testcase name="adminCloseNeedsFunctionCasUuidAndPersistsOnlyLocalClosureWithoutAnyProof" classname="com.xinyi.web.viit.Q04VerificationIT" time="0.35">
+    </testcase>
+    <testcase name="sameConfirmKeyReplaysOneDecisionAndDifferentSignedBodyCannotOverwriteIt" classname="com.xinyi.web.viit.Q04VerificationIT" time="0.298">
+    </testcase>
+    <testcase name="completedDeviceProofSurvivesRealRoleSwitchWithinTheSameLoginSession" classname="com.xinyi.web.viit.Q04VerificationIT" time="0.348">
+    </testcase>
+    <testcase name="manualReadsAndWritesUseRealOriginalCompanyAndEmptyScopesFailClosed" classname="com.xinyi.web.viit.Q04VerificationIT" time="0.346">
+    </testcase>
+    <testcase name="expiredUnsubmittedChallengeRejectsNewResultButUnknownOriginalRecoversAfterExpiry" classname="com.xinyi.web.viit.Q04VerificationIT" time="0.455">
+    </testcase>
+    <testcase name="expiredProcessingLeaseRecoversOnlyTheDurablyFrozenSignedSubmission" classname="com.xinyi.web.viit.Q04VerificationIT" time="0.266">
+    </testcase>
+    <testcase name="manualOperatorCannotReviewItsOwnRecordEvenWithEveryFunction" classname="com.xinyi.web.viit.Q04VerificationIT" time="0.161">
+    </testcase>
+    <testcase name="confirmCannotAcceptClientPassedExtraFieldsInvalidUuidOrStaleCas" classname="com.xinyi.web.viit.Q04VerificationIT" time="0.231">
+    </testcase>
+    <testcase name="manualStaleApplicationMaterialAndCompanyVersionsNeverCreatePartialRecords" classname="com.xinyi.web.viit.Q04VerificationIT" time="0.172">
+    </testcase>
+    <testcase name="concurrentManualReviewCommitsExactlyOneDecisionAndOneCanonicalProof" classname="com.xinyi.web.viit.Q04VerificationIT" time="0.166">
+    </testcase>
+    <testcase name="missingPhoneAdminRealmAndForgedClientCannotCreateOrConfirmDeviceChallenge" classname="com.xinyi.web.viit.Q04VerificationIT" time="0.029">
+    </testcase>
+    <testcase name="revokedMiniSessionCannotConfirmOrRecoverEvenWhenRedisEvictionFails" classname="com.xinyi.web.viit.Q04VerificationIT" time="0.207">
+    </testcase>
+    <testcase name="confirmedManualFailureIsNotConvertedIntoQualificationSuccess" classname="com.xinyi.web.viit.Q04VerificationIT" time="0.168">
+    </testcase>
+    <testcase name="materialChangesInvalidateSessionProofAndOldSignedPayloadCannotDriftToNewMaterials" classname="com.xinyi.web.viit.Q04VerificationIT" time="0.256">
+    </testcase>
+    <testcase name="materialChangeDuringExternalVerificationCannotPublishCurrentDeviceProof" classname="com.xinyi.web.viit.Q04VerificationIT" time="0.479">
+    </testcase>
+    <testcase name="trustedWechatVerificationPublishesExactlyOneDeviceProofAndNeverRealnameOrLiveness" classname="com.xinyi.web.viit.Q04VerificationIT" time="0.529">
+    </testcase>
+    <testcase name="adminRecoveryUsesOriginalCompanyAndMetadataNeverContainsBiometricPayload" classname="com.xinyi.web.viit.Q04VerificationIT" time="0.273">
+    </testcase>
+    <testcase name="independentLegacyRealnameFaceOrUnlinkedPassedNeverSatisfyDeviceAuthentication" classname="com.xinyi.web.viit.Q04VerificationIT" time="0.301">
+    </testcase>
+    <testcase name="manualCandidatesComeFromCurrentVisibleApplicationsAndNeverPretendNicknameIsRealname" classname="com.xinyi.web.viit.Q04VerificationIT" time="0.321">
+    </testcase>
+    <testcase name="verifiedOwnerCreatesOnlyServerChallengeWithoutExternalIoOrQualificationProof" classname="com.xinyi.web.viit.Q04VerificationIT" time="0.19">
+    </testcase>
+    <testcase name="unknownResponsesNeverBecomePassedAndOnlyFrozenOriginalCanBeRecovered" classname="com.xinyi.web.viit.Q04VerificationIT" time="0.307">
+    </testcase>
+    <testcase name="oldAdminTokenIsRejectedForManualReviewEvenWhenRedisEvictionFails" classname="com.xinyi.web.viit.Q04VerificationIT" time="0.162">
+    </testcase>
+    <testcase name="staleVersionsNoncanonicalIdsInvalidUuidAndUnexpectedQueryAreRejected" classname="com.xinyi.web.viit.Q04VerificationIT" time="0.21">
+    </testcase>
+    <testcase name="elevenActualDeviceAndManualResponsesMatchMainAndTaskContractsIncludingPublicNullConsent" classname="com.xinyi.web.viit.Q04VerificationIT" time="1.818">
+    </testcase>
+  </testsuite>
+</testsuites>

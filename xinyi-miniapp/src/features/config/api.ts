@@ -19,6 +19,9 @@ export interface PublicServiceConfig {
   qualificationConsentVersion: string | null;
   qualificationConsentText: string | null;
   qualificationConsentHash: string | null;
+  verificationConsentVersion: string | null;
+  verificationConsentText: string | null;
+  verificationConsentHash: string | null;
 }
 
 export interface DictItem {

@@ -1,0 +1,10 @@
+{
+  "exitCode": 0,
+  "tests": 58,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "afterFullRegression": true,
+  "change": "后台状态筛选CASE与页面有效状态一致；仅相关查询SQL改变，全部Q04专项含EXPIRED/UNKNOWN的rows/total及GET零写零网络复测。",
+  "layer": "LIVE_HTTP_MYSQL"
+}

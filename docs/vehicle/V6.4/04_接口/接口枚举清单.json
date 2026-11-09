@@ -129,9 +129,11 @@
     "FaceSessionStatus": [
       "CREATED",
       "PROCESSING",
+      "UNKNOWN",
       "PASSED",
       "FAILED",
-      "EXPIRED"
+      "EXPIRED",
+      "CLOSED"
     ],
     "OccupationType": [
       "NONE",
@@ -250,6 +252,10 @@
       "biz:job:retry",
       "biz:license:edit",
       "biz:license:list",
+      "biz:manualverification:create",
+      "biz:manualverification:list",
+      "biz:manualverification:query",
+      "biz:manualverification:review",
       "biz:messageroute:edit",
       "biz:messageroute:query",
       "biz:messagetemplate:check",
@@ -315,7 +321,10 @@
       "biz:uploads:create",
       "biz:vehicle:edit",
       "biz:vehicle:list",
-      "biz:vehicle:query"
+      "biz:vehicle:query",
+      "biz:verification:close",
+      "biz:verification:list",
+      "biz:verification:query"
     ],
     "CapabilityCode": [
       "COMMON_DICT_QUERY",
@@ -482,18 +491,27 @@
       "REPORT_TRAINING_PROGRESS",
       "CREATE_TRAINING_ATTEMPT",
       "VIEW_TRAINING_ATTEMPT",
-      "SUBMIT_TRAINING_ATTEMPT"
+      "SUBMIT_TRAINING_ATTEMPT",
+      "START_DEVICE_AUTH",
+      "CONFIRM_DEVICE_AUTH",
+      "RECOVER_DEVICE_AUTH",
+      "QUERY_DEVICE_AUTH",
+      "VIEW_DEVICE_AUTH",
+      "CLOSE_DEVICE_AUTH",
+      "VIEW_MANUAL_VERIFICATION",
+      "REVIEW_MANUAL_VERIFICATION"
     ],
     "AccountStatus": [
       "ACTIVE",
       "LOCKED"
     ],
     "VerificationType": [
-      "REALNAME",
-      "FACE",
+      "DEVICE_AUTH",
       "BACKGROUND",
       "LICENSE",
-      "TRAINING"
+      "TRAINING",
+      "REALNAME",
+      "FACE"
     ],
     "VerificationStatus": [
       "CREATED",
@@ -685,6 +703,7 @@
       "TRUE_FALSE"
     ],
     "FaceLaunchMode": [
+      "WX_SOTER_DEVICE_AUTH",
       "WEBVIEW_URL"
     ],
     "GovernanceStatus": [
@@ -967,6 +986,19 @@
     "TrainingRunStatus": [
       "ACTIVE",
       "PASSED"
+    ],
+    "ManualVerificationType": [
+      "BACKGROUND",
+      "LICENSE"
+    ],
+    "ManualVerificationConclusion": [
+      "PASSED",
+      "FAILED"
+    ],
+    "ManualVerificationStatus": [
+      "PENDING_REVIEW",
+      "CONFIRMED",
+      "RETURNED"
     ]
   }
 }

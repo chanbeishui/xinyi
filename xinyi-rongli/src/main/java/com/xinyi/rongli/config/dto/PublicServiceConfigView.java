@@ -19,4 +19,7 @@ public record PublicServiceConfigView(
         String paymentNotice,
         String qualificationConsentVersion,
         String qualificationConsentText,
-        String qualificationConsentHash) {}
+        String qualificationConsentHash,
+        String verificationConsentVersion,
+        String verificationConsentText,
+        String verificationConsentHash) {}

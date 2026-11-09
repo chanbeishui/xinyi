@@ -12,6 +12,9 @@ U.action=async function(action,payload='',el=null){const a=U.auth62();
   const scenario=a.scenario==='denied'?'owner':a.scenario==='processing'?'owner':a.scenario;
   const result=U.authorize62(scenario);U.closeDialog();
   if(['DENIED','FAILED'].includes(result)){U.toast('核验未完成，没有开通工作身份');return;}
+  // 设备确认只属于本次登录；既有资格和人工/培训记录不由此自动删除。
+  U.store.saved.face = false;
+  if (U.store.v5) U.store.v5.faceStatus = 'NOT_STARTED';
   U.toast(result==='LINKED'?'登录成功，员工信息已自动识别':'登录成功，先以车主身份进入');U.go('O03');return;
  }
  if(action==='identity-query-phone'){U.toast(a.phoneState==='PROCESSING'?'仍在核验，请稍后查询':'结果尚未确认，不重复提交原授权凭据；可重新主动授权');return;}
@@ -33,9 +36,19 @@ U.action=async function(action,payload='',el=null){const a=U.auth62();
   a.journeyStarted=true;a.driverStatus='DRAFT';U.sync62();U.go('D02');return;
  }
  if(action==='save-driver'){a.driverStatus=a.driverApproved?'APPROVED':'DRAFT';U.sync62();return previous(action,payload,el);}
- if(action==='driver-check-next'){
-  if(!U.store.saved.face||!U.store.saved.background||!U.store.saved.training){U.toast('请先完成核验和培训，再提交审核');return;}
-  a.driverStatus='PENDING';a.driverApproved=false;a.journeyStarted=true;U.sync62();U.log('代驾申请','完整申请已提交，未开通代驾身份');U.go('D05');return;
+ if (action === 'driver-check-next') {
+  // 四项反馈来自同一份演示状态；进入进度页不会替代最终资格审核。
+  if (!U.store.saved.face || !U.store.saved.background || !U.store.saved.licenseVerification || !U.store.saved.training) {
+   U.toast('请先完成本机确认、背景与驾驶证双人确认、培训四项演示检查');
+   return;
+  }
+  a.driverStatus = 'PENDING';
+  a.driverApproved = false;
+  a.journeyStarted = true;
+  U.sync62();
+  U.log('代驾申请', '完整申请已提交，未开通代驾身份');
+  U.go('D05');
+  return;
  }
  if(action==='identity-refresh-driver'||action==='auth-refresh'){U.sync62();U.testing.render('D05');U.toast('已刷新审核结果；刷新不会代替后台审核');return;}
  if(action==='qualification-approve'||action==='qualification-reject'){

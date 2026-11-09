@@ -2455,12 +2455,17 @@
     "note": "原用例为F42处罚与申诉，不属于Q03培训；只校正任务主责任，保留NOT_RUN，后续D07实际验收。"
   },
   {
-    "status": "NOT_RUN",
-    "testFiles": [],
-    "evidence": null,
+    "status": "VERIFIED",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q04VerificationIT.java"
+    ],
+    "evidence": [
+      "docs/implementation/vehicle/evidence/Q04-20261110.json"
+    ],
     "caseId": "TC-R50-021",
-    "taskId": "T05",
-    "testMethod": "test_tc_r50_021"
+    "taskId": "Q04",
+    "testMethod": "trustedWechatVerificationPublishesExactlyOneDeviceProofAndNeverRealnameOrLiveness",
+    "note": "58项真实HTTP/MySQL；本地独立RSA-PSS微信协议替身，不替代真机TEE或官方微信服务。主责任从T05纠正，主源仍NOT_RUN。"
   },
   {
     "status": "NOT_RUN",

@@ -1,0 +1,490 @@
+{
+  "passed": true,
+  "scanFiles": 1396,
+  "scope": "本任务变化源码人工复核及静态定位，非全库语义批准",
+  "changedSourceFiles": 47,
+  "files": [
+    {
+      "file": "xinyi-admin/src/main/java/com/xinyi/web/config/TrainingAdminSecurityConfig.java",
+      "lines": 80,
+      "longestLine": 98,
+      "longLineNumbers": [],
+      "denseLineNumbers": [],
+      "commentLines": 1,
+      "group": "xinyi-admin"
+    },
+    {
+      "file": "xinyi-admin/src/test/java/com/xinyi/web/viit/E08PlatformIT.java",
+      "lines": 83,
+      "longestLine": 98,
+      "longLineNumbers": [],
+      "denseLineNumbers": [],
+      "commentLines": 14,
+      "group": "xinyi-admin"
+    },
+    {
+      "file": "xinyi-admin/src/test/java/com/xinyi/web/viit/Q01QualificationIT.java",
+      "lines": 1584,
+      "longestLine": 247,
+      "longLineNumbers": [
+        63,
+        1176,
+        1511,
+        1522
+      ],
+      "denseLineNumbers": [],
+      "commentLines": 11,
+      "group": "xinyi-admin"
+    },
+    {
+      "file": "xinyi-admin/src/test/java/com/xinyi/web/viit/Q04VerificationIT.java",
+      "lines": 1792,
+      "longestLine": 202,
+      "longLineNumbers": [
+        32
+      ],
+      "denseLineNumbers": [],
+      "commentLines": 6,
+      "group": "xinyi-admin"
+    },
+    {
+      "file": "xinyi-admin/src/test/java/com/xinyi/web/viit/SoterSignatureLoopback.java",
+      "lines": 308,
+      "longestLine": 100,
+      "longLineNumbers": [],
+      "denseLineNumbers": [],
+      "commentLines": 3,
+      "group": "xinyi-admin"
+    },
+    {
+      "file": "xinyi-admin/src/test/java/com/xinyi/web/viit/TrainingCompletedBoundaryFixture.java",
+      "lines": 259,
+      "longestLine": 275,
+      "longLineNumbers": [
+        74,
+        86,
+        123,
+        153,
+        163,
+        192,
+        237
+      ],
+      "denseLineNumbers": [],
+      "commentLines": 8,
+      "group": "xinyi-admin"
+    },
+    {
+      "file": "xinyi-admin/src/test/java/com/xinyi/web/viit/TrainingHttpFixture.java",
+      "lines": 702,
+      "longestLine": 124,
+      "longLineNumbers": [],
+      "denseLineNumbers": [],
+      "commentLines": 5,
+      "group": "xinyi-admin"
+    },
+    {
+      "file": "xinyi-admin/src/test/java/com/xinyi/web/viit/VerificationCompletedBoundaryFixture.java",
+      "lines": 247,
+      "longestLine": 244,
+      "longLineNumbers": [
+        191
+      ],
+      "denseLineNumbers": [],
+      "commentLines": 6,
+      "group": "xinyi-admin"
+    },
+    {
+      "file": "xinyi-admin/src/test/java/com/xinyi/web/viit/VerificationHttpFixture.java",
+      "lines": 266,
+      "longestLine": 99,
+      "longLineNumbers": [],
+      "denseLineNumbers": [],
+      "commentLines": 4,
+      "group": "xinyi-admin"
+    },
+    {
+      "file": "xinyi-miniapp/src/api/types.ts",
+      "lines": 3249,
+      "longestLine": 100,
+      "longLineNumbers": [],
+      "denseLineNumbers": [
+        3,
+        161,
+        233,
+        246,
+        506,
+        518,
+        593,
+        664,
+        675,
+        723,
+        725,
+        1504,
+        2129,
+        2640
+      ],
+      "commentLines": 4,
+      "group": "xinyi-miniapp"
+    },
+    {
+      "file": "xinyi-miniapp/src/features/config/api.ts",
+      "lines": 56,
+      "longestLine": 99,
+      "longLineNumbers": [],
+      "denseLineNumbers": [
+        46
+      ],
+      "commentLines": 6,
+      "group": "xinyi-miniapp"
+    },
+    {
+      "file": "xinyi-miniapp/src/features/qualification/api.ts",
+      "lines": 135,
+      "longestLine": 98,
+      "longLineNumbers": [],
+      "denseLineNumbers": [
+        47,
+        89
+      ],
+      "commentLines": 1,
+      "group": "xinyi-miniapp"
+    },
+    {
+      "file": "xinyi-miniapp/src/features/verification/api.ts",
+      "lines": 88,
+      "longestLine": 97,
+      "longLineNumbers": [],
+      "denseLineNumbers": [
+        37,
+        38
+      ],
+      "commentLines": 1,
+      "group": "xinyi-miniapp"
+    },
+    {
+      "file": "xinyi-miniapp/src/features/verification/device.ts",
+      "lines": 66,
+      "longestLine": 100,
+      "longLineNumbers": [],
+      "denseLineNumbers": [],
+      "commentLines": 4,
+      "group": "xinyi-miniapp"
+    },
+    {
+      "file": "xinyi-miniapp/src/features/verification/labels.ts",
+      "lines": 37,
+      "longestLine": 81,
+      "longLineNumbers": [],
+      "denseLineNumbers": [],
+      "commentLines": 0,
+      "group": "xinyi-miniapp"
+    },
+    {
+      "file": "xinyi-miniapp/src/pages/qualification/index.vue",
+      "lines": 929,
+      "longestLine": 97,
+      "longLineNumbers": [],
+      "denseLineNumbers": [],
+      "commentLines": 4,
+      "group": "xinyi-miniapp"
+    },
+    {
+      "file": "xinyi-miniapp/src/pages/verification/index.vue",
+      "lines": 490,
+      "longestLine": 95,
+      "longLineNumbers": [],
+      "denseLineNumbers": [],
+      "commentLines": 3,
+      "group": "xinyi-miniapp"
+    },
+    {
+      "file": "xinyi-rongli/src/main/java/com/xinyi/rongli/config/dto/PublicServiceConfigView.java",
+      "lines": 25,
+      "longestLine": 98,
+      "longLineNumbers": [],
+      "denseLineNumbers": [],
+      "commentLines": 3,
+      "group": "xinyi-rongli"
+    },
+    {
+      "file": "xinyi-rongli/src/main/java/com/xinyi/rongli/config/mapper/ConfigMapper.java",
+      "lines": 33,
+      "longestLine": 96,
+      "longLineNumbers": [],
+      "denseLineNumbers": [],
+      "commentLines": 4,
+      "group": "xinyi-rongli"
+    },
+    {
+      "file": "xinyi-rongli/src/main/java/com/xinyi/rongli/config/service/ConfigService.java",
+      "lines": 238,
+      "longestLine": 99,
+      "longLineNumbers": [],
+      "denseLineNumbers": [],
+      "commentLines": 9,
+      "group": "xinyi-rongli"
+    },
+    {
+      "file": "xinyi-rongli/src/main/java/com/xinyi/rongli/qualification/service/QualificationService.java",
+      "lines": 659,
+      "longestLine": 100,
+      "longLineNumbers": [],
+      "denseLineNumbers": [],
+      "commentLines": 10,
+      "group": "xinyi-rongli"
+    },
+    {
+      "file": "xinyi-rongli/src/main/java/com/xinyi/rongli/verification/controller/DeviceAuthenticationController.java",
+      "lines": 74,
+      "longestLine": 98,
+      "longLineNumbers": [],
+      "denseLineNumbers": [],
+      "commentLines": 1,
+      "group": "xinyi-rongli"
+    },
+    {
+      "file": "xinyi-rongli/src/main/java/com/xinyi/rongli/verification/controller/ManualVerificationController.java",
+      "lines": 92,
+      "longestLine": 98,
+      "longLineNumbers": [],
+      "denseLineNumbers": [],
+      "commentLines": 1,
+      "group": "xinyi-rongli"
+    },
+    {
+      "file": "xinyi-rongli/src/main/java/com/xinyi/rongli/verification/controller/VerificationSessionAdminController.java",
+      "lines": 68,
+      "longestLine": 98,
+      "longLineNumbers": [],
+      "denseLineNumbers": [],
+      "commentLines": 1,
+      "group": "xinyi-rongli"
+    },
+    {
+      "file": "xinyi-rongli/src/main/java/com/xinyi/rongli/verification/domain/DeviceAuthenticationSession.java",
+      "lines": 388,
+      "longestLine": 59,
+      "longLineNumbers": [],
+      "denseLineNumbers": [],
+      "commentLines": 1,
+      "group": "xinyi-rongli"
+    },
+    {
+      "file": "xinyi-rongli/src/main/java/com/xinyi/rongli/verification/domain/ManualVerificationRecord.java",
+      "lines": 226,
+      "longestLine": 57,
+      "longLineNumbers": [],
+      "denseLineNumbers": [],
+      "commentLines": 1,
+      "group": "xinyi-rongli"
+    },
+    {
+      "file": "xinyi-rongli/src/main/java/com/xinyi/rongli/verification/domain/VerificationProof.java",
+      "lines": 145,
+      "longestLine": 60,
+      "longLineNumbers": [],
+      "denseLineNumbers": [],
+      "commentLines": 1,
+      "group": "xinyi-rongli"
+    },
+    {
+      "file": "xinyi-rongli/src/main/java/com/xinyi/rongli/verification/dto/ManualVerificationRequests.java",
+      "lines": 131,
+      "longestLine": 94,
+      "longLineNumbers": [],
+      "denseLineNumbers": [],
+      "commentLines": 1,
+      "group": "xinyi-rongli"
+    },
+    {
+      "file": "xinyi-rongli/src/main/java/com/xinyi/rongli/verification/dto/VerificationRequests.java",
+      "lines": 133,
+      "longestLine": 99,
+      "longLineNumbers": [],
+      "denseLineNumbers": [],
+      "commentLines": 1,
+      "group": "xinyi-rongli"
+    },
+    {
+      "file": "xinyi-rongli/src/main/java/com/xinyi/rongli/verification/mapper/ManualVerificationMapper.java",
+      "lines": 57,
+      "longestLine": 81,
+      "longLineNumbers": [],
+      "denseLineNumbers": [],
+      "commentLines": 1,
+      "group": "xinyi-rongli"
+    },
+    {
+      "file": "xinyi-rongli/src/main/java/com/xinyi/rongli/verification/mapper/SoterConfigurationMapper.java",
+      "lines": 16,
+      "longestLine": 94,
+      "longLineNumbers": [],
+      "denseLineNumbers": [],
+      "commentLines": 1,
+      "group": "xinyi-rongli"
+    },
+    {
+      "file": "xinyi-rongli/src/main/java/com/xinyi/rongli/verification/mapper/VerificationMapper.java",
+      "lines": 62,
+      "longestLine": 98,
+      "longLineNumbers": [],
+      "denseLineNumbers": [],
+      "commentLines": 1,
+      "group": "xinyi-rongli"
+    },
+    {
+      "file": "xinyi-rongli/src/main/java/com/xinyi/rongli/verification/provider/PublishedSoterSettings.java",
+      "lines": 93,
+      "longestLine": 115,
+      "longLineNumbers": [],
+      "denseLineNumbers": [],
+      "commentLines": 2,
+      "group": "xinyi-rongli"
+    },
+    {
+      "file": "xinyi-rongli/src/main/java/com/xinyi/rongli/verification/provider/VerificationProvider.java",
+      "lines": 36,
+      "longestLine": 96,
+      "longLineNumbers": [],
+      "denseLineNumbers": [],
+      "commentLines": 2,
+      "group": "xinyi-rongli"
+    },
+    {
+      "file": "xinyi-rongli/src/main/java/com/xinyi/rongli/verification/provider/WeChatSoterProvider.java",
+      "lines": 195,
+      "longestLine": 98,
+      "longLineNumbers": [],
+      "denseLineNumbers": [],
+      "commentLines": 5,
+      "group": "xinyi-rongli"
+    },
+    {
+      "file": "xinyi-rongli/src/main/java/com/xinyi/rongli/verification/service/CanonicalVerificationAuthority.java",
+      "lines": 380,
+      "longestLine": 100,
+      "longLineNumbers": [],
+      "denseLineNumbers": [],
+      "commentLines": 5,
+      "group": "xinyi-rongli"
+    },
+    {
+      "file": "xinyi-rongli/src/main/java/com/xinyi/rongli/verification/service/DeviceAuthenticationService.java",
+      "lines": 768,
+      "longestLine": 108,
+      "longLineNumbers": [],
+      "denseLineNumbers": [],
+      "commentLines": 5,
+      "group": "xinyi-rongli"
+    },
+    {
+      "file": "xinyi-rongli/src/main/java/com/xinyi/rongli/verification/service/ManualVerificationEvidence.java",
+      "lines": 34,
+      "longestLine": 76,
+      "longLineNumbers": [],
+      "denseLineNumbers": [],
+      "commentLines": 3,
+      "group": "xinyi-rongli"
+    },
+    {
+      "file": "xinyi-rongli/src/main/java/com/xinyi/rongli/verification/service/ManualVerificationService.java",
+      "lines": 431,
+      "longestLine": 100,
+      "longLineNumbers": [],
+      "denseLineNumbers": [],
+      "commentLines": 8,
+      "group": "xinyi-rongli"
+    },
+    {
+      "file": "xinyi-rongli/src/main/java/com/xinyi/rongli/verification/service/VerificationConsentSnapshot.java",
+      "lines": 30,
+      "longestLine": 96,
+      "longLineNumbers": [],
+      "denseLineNumbers": [],
+      "commentLines": 1,
+      "group": "xinyi-rongli"
+    },
+    {
+      "file": "xinyi-rongli/src/main/resources/mapper/rongli/config/ConfigMapper.xml",
+      "lines": 61,
+      "longestLine": 112,
+      "longLineNumbers": [],
+      "denseLineNumbers": [],
+      "commentLines": 2,
+      "group": "xinyi-rongli"
+    },
+    {
+      "file": "xinyi-rongli/src/main/resources/mapper/rongli/verification/ManualVerificationMapper.xml",
+      "lines": 163,
+      "longestLine": 135,
+      "longLineNumbers": [],
+      "denseLineNumbers": [],
+      "commentLines": 1,
+      "group": "xinyi-rongli"
+    },
+    {
+      "file": "xinyi-rongli/src/main/resources/mapper/rongli/verification/VerificationMapper.xml",
+      "lines": 248,
+      "longestLine": 202,
+      "longLineNumbers": [
+        120,
+        126
+      ],
+      "denseLineNumbers": [],
+      "commentLines": 18,
+      "group": "xinyi-rongli"
+    },
+    {
+      "file": "xinyi-ui/src/api/rongli/verification.ts",
+      "lines": 136,
+      "longestLine": 96,
+      "longLineNumbers": [],
+      "denseLineNumbers": [
+        58,
+        102
+      ],
+      "commentLines": 0,
+      "group": "xinyi-ui"
+    },
+    {
+      "file": "xinyi-ui/src/views/rongli/verification/DeviceSessions.vue",
+      "lines": 321,
+      "longestLine": 100,
+      "longLineNumbers": [],
+      "denseLineNumbers": [
+        8
+      ],
+      "commentLines": 1,
+      "group": "xinyi-ui"
+    },
+    {
+      "file": "xinyi-ui/src/views/rongli/verification/ManualRecords.vue",
+      "lines": 488,
+      "longestLine": 117,
+      "longLineNumbers": [],
+      "denseLineNumbers": [
+        10,
+        11
+      ],
+      "commentLines": 3,
+      "group": "xinyi-ui"
+    },
+    {
+      "file": "xinyi-ui/src/views/rongli/verification/index.vue",
+      "lines": 30,
+      "longestLine": 80,
+      "longLineNumbers": [],
+      "denseLineNumbers": [],
+      "commentLines": 0,
+      "group": "xinyi-ui"
+    }
+  ],
+  "manualReview": [
+    "Java4空格、Vue/TS2空格，完整业务方法展开",
+    "权限原公司/当前写入、锁顺序、IO事务边界、会话/context/公司epoch/材料、原文验签与未知恢复均有关键中文注释",
+    "SQL查询更新展开，MyBatis保持实体运算符/绑定/动态标签",
+    "20个变更生成类型别名局部格式化，未混入其他类型重排；类型检查通过",
+    "测试长SQL/契约样本与XML绑定长行人工检查，不按长行或注释比例判断业务正确性"
+  ],
+  "diffCheck": "PASS"
+}

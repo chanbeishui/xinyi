@@ -1,29 +1,33 @@
-<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TASK</title><style>body{font:16px/1.75 -apple-system,BlinkMacSystemFont,"Microsoft YaHei",sans-serif;color:#202632;margin:0;background:#f6f7f9}header{padding:14px 24px;background:white;border-bottom:1px solid #ddd}main{max-width:1120px;margin:24px auto;padding:30px;background:white}h1{font-size:30px}h2{margin-top:36px}a{color:#0661bd}table{border-collapse:collapse;width:100%;display:block;overflow:auto;font-size:14px}td,th{border:1px solid #dde2ea;padding:10px;vertical-align:top}th{background:#f1f5fb}pre{padding:15px;background:#f2f4f7;overflow:auto}img{max-width:100%;height:auto}blockquote{padding:10px 20px;border-left:3px solid #2571be;background:#f4f8fc}@media(max-width:700px){main{padding:15px;margin:8px}h1{font-size:25px}}</style></head><body><header><a href="../../../00_开始.html">V6.4 完整资料</a>　<a href="../../../02_UI/index.html">交互原型</a>　T3.4</header><main><h1>Q04 · 实名活体与核验适配</h1>
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TASK</title><style>body{font:16px/1.75 -apple-system,BlinkMacSystemFont,"Microsoft YaHei",sans-serif;color:#202632;margin:0;background:#f6f7f9}header{padding:14px 24px;background:white;border-bottom:1px solid #ddd}main{max-width:1120px;margin:24px auto;padding:30px;background:white}h1{font-size:30px}h2{margin-top:36px}a{color:#0661bd}table{border-collapse:collapse;width:100%;display:block;overflow:auto;font-size:14px}td,th{border:1px solid #dde2ea;padding:10px;vertical-align:top}th{background:#f1f5fb}pre{padding:15px;background:#f2f4f7;overflow:auto}img{max-width:100%;height:auto}blockquote{padding:10px 20px;border-left:3px solid #2571be;background:#f4f8fc}@media(max-width:700px){main{padding:15px;margin:8px}h1{font-size:25px}}</style></head><body><header><a href="../../../00_开始.html">V6.4 完整资料</a>　<a href="../../../02_UI/index.html">交互原型</a>　T3.4</header><main><h1>Q04 · 本机生物认证、双人人工核验与可信结果</h1>
 <p>阶段：M1；责任域：verification；前置：Q01。
-范围版本：<code>V6.1-UNCHANGED</code>；definitionHash：<code>224a140022a98539496da67c116a8888fd84cab386176a6d7c7c1e65e3870f81</code>。</p>
+范围版本：<code>V6.4-SOTER-MANUAL-20261109</code>；definitionHash：<code>096e6f3e9ff5e015a39ef9fda2c94998c71836033fd7f739b98f14f9fec09ac4</code>。</p>
 <h2>本任务交付</h2>
 <ul>
-<li>业务face session、白名单启动参数、可信结果查询、供应商适配</li>
+<li>微信SOTER本机随机挑战、原签名微信服务端验真、同实际MINI登录会话可信结果；不接腾讯慧眼，不要求实名活体</li>
+<li>背景/驾驶证双人人工确认，不要求凭证上传或标准发布；同公司权限、申请人防自审、终态不可改</li>
+<li>11接口/主契约/页面/模型/增量与完整SQL/任务切片同源，Q01当前四项可信提交</li>
 </ul>
 <h2>必测失败与并发</h2>
 <ul>
-<li>客户端passed拒绝</li>
-<li>模拟结果仅测试环境</li>
-<li>未开通不阻其他代码开发</li>
+<li>客户端passed、伪造raw/签名/OpenID、重复JSON键、跨实际session或旧材料/公司epoch拒绝</li>
+<li>微信未知仅恢复首次冻结原文，GET零网络；验签IO期间撤会话/改材料不得生成可信证明</li>
+<li>两位ADMIN经办复核分离，申请人不能自办自审；复核人可参与最终资格审核</li>
+<li>空公司范围失败关闭，原公司读归属、当前材料写复核，UUID/CAS/审计outbox失败整体回滚</li>
+<li>真机SOTER与真实微信API另在L02/L01验证，不用local替身声称完成</li>
 </ul>
 <h2>精确输入</h2>
 <p>主源：04_接口/openapi_V6.4.yaml、05_数据设计/data_model_V6.4.json、06_验收/test_cases_V6.4.json。本目录派生，不独立维护。
-接口：API_045_post, v5_get_api_app_driver_qualification_face_sessions_verificationSessionId
+接口：API_045_post, q04_get_api_admin_manual_verifications, q04_get_api_admin_manual_verifications_applications, q04_get_api_admin_manual_verifications_id, q04_get_api_admin_verification_sessions, q04_get_api_admin_verification_sessions_id, q04_post_api_admin_manual_verifications, q04_post_api_admin_manual_verifications_id_review, q04_post_api_admin_verification_sessions_id_close, q04_post_api_app_driver_qualification_face_sessions_verificationSessionId_confirm, v5_get_api_app_driver_qualification_face_sessions_verificationSessionId
 画板：D04, D46
-主责任表：vi_provider_verification, vi_face_session
-验收：无</p>
+主责任表：vi_provider_verification, vi_face_session, vi_manual_verification
+验收：TC-R50-021</p>
 <h2>代码落位</h2>
-<p><code>xinyi-rongli/src/main/java/com/xinyi/rongli/verification/</code>
-<code>xinyi-rongli/src/main/resources/mapper/rongli/verification/</code>
-<code>xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/verification/</code>
-<code>xinyi-ui/src/views/rongli/verification/</code>
-<code>xinyi-ui/src/api/rongli/verification.ts</code>
-<code>xinyi-miniapp/src/features/verification/</code></p>
+<p><code>xinyi-rongli/src/main/java/com/xinyi/rongli/verification</code>
+<code>xinyi-rongli/src/main/resources/mapper/rongli/verification</code>
+<code>xinyi-miniapp/src/pages/verification/index.vue</code>
+<code>xinyi-miniapp/src/features/verification</code>
+<code>xinyi-ui/src/views/rongli/verification</code>
+<code>xinyi-ui/src/api/rongli/verification.ts</code></p>
 <h2>验证命令</h2>
 <pre><code class="language-bash">mvn -pl xinyi-admin -am -Pvi-it -Dit.test=Q04VerificationIT verify
 npm --prefix xinyi-ui run build:prod

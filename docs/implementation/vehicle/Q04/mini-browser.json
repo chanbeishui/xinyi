@@ -1,0 +1,258 @@
+{
+  "url": "http://127.0.0.1:5175/#/pages/verification/index",
+  "title": "本机生物认证",
+  "viewports": [
+    "390x844",
+    "1440x1000"
+  ],
+  "mode": "Browser plugin not available；Playwright真实H5页面+明确服务端状态API夹具，不是微信真机SOTER或身份证实名/活体证明；H5实际不调用设备能力",
+  "checks": [
+    "真实本人认证路由/空申请不编造认证结果或身份，不创建挑战",
+    "四分项DEVICE_AUTH/BACKGROUND/LICENSE/TRAINING正确展示；明确非实名活体，H5不调用SOTER",
+    "独立设备认证同意version/hash，同版本正文改变强制重新勾选；H5仍不能创建挑战",
+    "从qualification恢复精确会话，挑战不显示、不放路由/存储；H5有挑战也不能假调用设备能力",
+    "UNKNOWN恢复只POST两键recover/CAS/UUID，503后刷新仍原正文原键恢复，不新挑战或签名；只更新本机分项",
+    "409后重读可信会话再用新CAS恢复，不提交旧材料或伪造通过字段",
+    "封存如实显示，不把封存当通过或后台人工实名",
+    "390和1440布局无横向溢出，当前申请/四分项/会话语义清晰",
+    "HTTP403清除旧申请投影、设备会话和敏感挑战，不保留越权展示",
+    "通过真实I04客户端API辅助触发身份切换，在途旧会话响应被丢弃且旧申请/挑战/勾选/未知意图立即清理"
+  ],
+  "errors": [],
+  "warnings": [],
+  "expectedHttpErrors": [
+    "Failed to load resource: the server responded with a status of 503 (Service Unavailable)",
+    "Failed to load resource: the server responded with a status of 409 (Conflict)",
+    "Failed to load resource: the server responded with a status of 403 (Forbidden)",
+    "Failed to load resource: the server responded with a status of 503 (Service Unavailable)"
+  ],
+  "unknown": [],
+  "requests": [
+    {
+      "path": "/api/app/driver/qualification",
+      "method": "GET"
+    },
+    {
+      "path": "/api/public/service-config",
+      "method": "GET"
+    },
+    {
+      "path": "/api/app/driver/qualification",
+      "method": "GET"
+    },
+    {
+      "path": "/api/public/service-config",
+      "method": "GET"
+    },
+    {
+      "path": "/api/app/driver/qualification",
+      "method": "GET"
+    },
+    {
+      "path": "/api/public/service-config",
+      "method": "GET"
+    },
+    {
+      "path": "/api/app/driver/qualification",
+      "method": "GET"
+    },
+    {
+      "path": "/api/public/service-config",
+      "method": "GET"
+    },
+    {
+      "path": "/api/app/driver/qualification",
+      "method": "GET"
+    },
+    {
+      "path": "/api/public/service-config",
+      "method": "GET"
+    },
+    {
+      "path": "/api/app/driver/qualification/face-sessions/31",
+      "method": "GET"
+    },
+    {
+      "path": "/api/app/driver/qualification",
+      "method": "GET"
+    },
+    {
+      "path": "/api/public/service-config",
+      "method": "GET"
+    },
+    {
+      "path": "/api/app/driver/qualification/face-sessions/31",
+      "method": "GET"
+    },
+    {
+      "path": "/api/app/driver/qualification/face-sessions/31/confirm",
+      "method": "POST"
+    },
+    {
+      "path": "/api/app/driver/qualification",
+      "method": "GET"
+    },
+    {
+      "path": "/api/public/service-config",
+      "method": "GET"
+    },
+    {
+      "path": "/api/app/driver/qualification/face-sessions/31",
+      "method": "GET"
+    },
+    {
+      "path": "/api/app/driver/qualification/face-sessions/31/confirm",
+      "method": "POST"
+    },
+    {
+      "path": "/api/app/driver/qualification",
+      "method": "GET"
+    },
+    {
+      "path": "/api/app/driver/qualification",
+      "method": "GET"
+    },
+    {
+      "path": "/api/public/service-config",
+      "method": "GET"
+    },
+    {
+      "path": "/api/app/driver/qualification/face-sessions/31",
+      "method": "GET"
+    },
+    {
+      "path": "/api/app/driver/qualification/face-sessions/31/confirm",
+      "method": "POST"
+    },
+    {
+      "path": "/api/app/driver/qualification",
+      "method": "GET"
+    },
+    {
+      "path": "/api/public/service-config",
+      "method": "GET"
+    },
+    {
+      "path": "/api/app/driver/qualification/face-sessions/31",
+      "method": "GET"
+    },
+    {
+      "path": "/api/app/driver/qualification/face-sessions/31/confirm",
+      "method": "POST"
+    },
+    {
+      "path": "/api/app/driver/qualification",
+      "method": "GET"
+    },
+    {
+      "path": "/api/app/driver/qualification",
+      "method": "GET"
+    },
+    {
+      "path": "/api/public/service-config",
+      "method": "GET"
+    },
+    {
+      "path": "/api/app/driver/qualification/face-sessions/31",
+      "method": "GET"
+    },
+    {
+      "path": "/api/app/driver/qualification",
+      "method": "GET"
+    },
+    {
+      "path": "/api/public/service-config",
+      "method": "GET"
+    },
+    {
+      "path": "/api/app/driver/qualification/face-sessions/31",
+      "method": "GET"
+    },
+    {
+      "path": "/api/app/driver/qualification",
+      "method": "GET"
+    },
+    {
+      "path": "/api/public/service-config",
+      "method": "GET"
+    },
+    {
+      "path": "/api/app/driver/qualification/face-sessions/31",
+      "method": "GET"
+    },
+    {
+      "path": "/api/app/driver/qualification",
+      "method": "GET"
+    },
+    {
+      "path": "/api/public/service-config",
+      "method": "GET"
+    },
+    {
+      "path": "/api/app/driver/qualification/face-sessions/31",
+      "method": "GET"
+    },
+    {
+      "path": "/api/app/driver/qualification/face-sessions/31/confirm",
+      "method": "POST"
+    },
+    {
+      "path": "/api/app/driver/qualification",
+      "method": "GET"
+    },
+    {
+      "path": "/api/public/service-config",
+      "method": "GET"
+    },
+    {
+      "path": "/api/app/driver/qualification/face-sessions/31",
+      "method": "GET"
+    },
+    {
+      "path": "/api/common/session/role",
+      "method": "POST"
+    }
+  ],
+  "writes": [
+    {
+      "path": "/api/app/driver/qualification/face-sessions/31/confirm",
+      "input": {
+        "expectedVersion": 2,
+        "recover": true
+      },
+      "key": "260a07af-f6a4-4165-906d-f804051669e0"
+    },
+    {
+      "path": "/api/app/driver/qualification/face-sessions/31/confirm",
+      "input": {
+        "expectedVersion": 2,
+        "recover": true
+      },
+      "key": "260a07af-f6a4-4165-906d-f804051669e0"
+    },
+    {
+      "path": "/api/app/driver/qualification/face-sessions/31/confirm",
+      "input": {
+        "expectedVersion": 3,
+        "recover": true
+      },
+      "key": "bf055309-fb7a-4df3-843d-3626e8bb9e68"
+    },
+    {
+      "path": "/api/app/driver/qualification/face-sessions/31/confirm",
+      "input": {
+        "expectedVersion": 4,
+        "recover": true
+      },
+      "key": "127cbcc4-7988-4bd7-9916-02c248bf1a14"
+    },
+    {
+      "path": "/api/app/driver/qualification/face-sessions/31/confirm",
+      "input": {
+        "expectedVersion": 5,
+        "recover": true
+      },
+      "key": "e6a5c25c-1871-4a8c-acf9-05301144db04"
+    }
+  ]
+}

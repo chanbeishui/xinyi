@@ -3,11 +3,11 @@
     "id": "D04",
     "name": "认证补充",
     "status": "有效·V6.4",
-    "fields": "既有范围中的活体/背景调查/培训及考试状态",
-    "actions": "完成真实核验、查看失败原因",
-    "guards": "各能力须有实际来源；未接入不得显示通过；统一标准也适用于检测员工",
-    "flows": "F04",
-    "source": "V2原页 D04",
+    "fields": "当前申请/公司epoch/材料修订；DEVICE_AUTH本机认证、BACKGROUND背景人工核验、LICENSE驾驶证人工核验及TRAINING培训四分项可信状态与提交阻断",
+    "actions": "进入本机生物认证、刷新当前四分项、查看失败或未知原因、进入正式培训与返回资格申请",
+    "guards": "已核验手机号的MINI本人账号可进入，不预先要求DRIVER，员工同标准。本机认证只确认设备使用者，不证明身份证实名、人证比对或活体。人工项目无需凭证或标准发布，经办与同公司有权限复核人不同，复核人可参与最终资格审核。四项分别由服务端当前绑定证明判断，客户端回调和旧任意PASSED均不能通过。",
+    "flows": "F49",
+    "source": "2026-11-09用户最终确认Q04：微信SOTER只确认本机使用者；人工无凭证、经办与复核分离、复核人可参加最终资格审核。历史实名活体五项门槛已由当前四项替代，验证范围见实施报告。",
     "base": "D04",
     "state": "default",
     "kind": "page"
@@ -16,14 +16,14 @@
     "id": "D46",
     "base": "D46",
     "state": "default",
-    "name": "人脸核验会话",
+    "name": "本机生物认证会话",
     "kind": "page",
     "parent": "D46",
     "status": "有效·V6.4",
-    "fields": "verificationSessionId、expiresAt、launchUrl、状态",
-    "actions": "发起、恢复查询",
-    "guards": "本人/授权范围、状态及expectedVersion；真实供应商和正式政策未配置不得返回生产通过",
-    "flows": "F04",
-    "source": "V4.2既有资格/培训/申诉能力缺失合同的本轮补全；不新增保险事故或钱包"
+    "fields": "verificationSessionId、requestNo、当前申请/公司epoch/材料修订、状态、挑战有效期、独立同意版本/hash与服务端allowedActions；挑战和原签名仅内存使用、不展示或持久化",
+    "actions": "微信真机检查支持与已录入方式、明确同意后创建本次挑战、调用SOTER、提交原始签名、纯读会话进度、按原意图恢复未知签名校验",
+    "guards": "launchMode=WX_SOTER_DEVICE_AUTH且legacy launchUrl恒null。按实际支持且已录入的fingerPrint/facial调用原生认证，challenge来自服务器一次随机值；只将原resultJSON/resultJSONSignature交服务端微信verify_signature校验，客户端不提交passed。所有写UUID+CAS；UNKNOWN恢复冻结原签名，不新挑战或换正文；GET纯DB读取不调用渠道。绑定本人登录session及当前申请/公司epoch/材料；在途视角变更不漂移。H5不可调用真机能力，明确仅看进度；后台按原公司范围仅查询/受控封存，不生成通过证明。",
+    "flows": "F49",
+    "source": "2026-11-09用户最终确认Q04：微信SOTER只确认本机使用者；人工无凭证、经办与复核分离、复核人可参加最终资格审核。历史实名活体五项门槛已由当前四项替代，验证范围见实施报告。"
   }
 ]

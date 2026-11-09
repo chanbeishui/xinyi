@@ -516,7 +516,7 @@
     "operationId": "API_045_post",
     "method": "POST",
     "path": "/api/app/driver/qualification/face-session",
-    "summary": "创建实名活体核验会话",
+    "summary": "创建本人本机生物认证挑战",
     "taskId": "Q04"
   },
   {
@@ -3142,7 +3142,7 @@
     "operationId": "v5_get_api_app_driver_qualification_face_sessions_verificationSessionId",
     "method": "GET",
     "path": "/api/app/driver/qualification/face-sessions/{verificationSessionId}",
-    "summary": "查询本人活体核验结果（服务端查询供应商）",
+    "summary": "读取本人本机生物认证元数据",
     "taskId": "Q04"
   },
   {
@@ -3846,5 +3846,122 @@
     "path": "/api/admin/training-policies/{ownerDeptId}/publish",
     "summary": "发布公司培训政策",
     "taskId": "Q03"
+  },
+  {
+    "implementationStatus": "NOT_ASSESSED",
+    "controllerFile": null,
+    "serviceFile": null,
+    "mapperFile": null,
+    "testFiles": [],
+    "reviewEvidence": null,
+    "operationId": "q04_get_api_admin_manual_verifications",
+    "taskId": "Q04",
+    "method": "GET",
+    "path": "/api/admin/manual-verifications",
+    "summary": "人工确认记录列表"
+  },
+  {
+    "implementationStatus": "NOT_ASSESSED",
+    "controllerFile": null,
+    "serviceFile": null,
+    "mapperFile": null,
+    "testFiles": [],
+    "reviewEvidence": null,
+    "operationId": "q04_get_api_admin_manual_verifications_applications",
+    "taskId": "Q04",
+    "method": "GET",
+    "path": "/api/admin/manual-verifications/applications",
+    "summary": "候选人工确认申请"
+  },
+  {
+    "implementationStatus": "NOT_ASSESSED",
+    "controllerFile": null,
+    "serviceFile": null,
+    "mapperFile": null,
+    "testFiles": [],
+    "reviewEvidence": null,
+    "operationId": "q04_get_api_admin_manual_verifications_id",
+    "taskId": "Q04",
+    "method": "GET",
+    "path": "/api/admin/manual-verifications/{id}",
+    "summary": "人工确认详情"
+  },
+  {
+    "implementationStatus": "NOT_ASSESSED",
+    "controllerFile": null,
+    "serviceFile": null,
+    "mapperFile": null,
+    "testFiles": [],
+    "reviewEvidence": null,
+    "operationId": "q04_get_api_admin_verification_sessions",
+    "taskId": "Q04",
+    "method": "GET",
+    "path": "/api/admin/verification-sessions",
+    "summary": "本机生物认证会话列表"
+  },
+  {
+    "implementationStatus": "NOT_ASSESSED",
+    "controllerFile": null,
+    "serviceFile": null,
+    "mapperFile": null,
+    "testFiles": [],
+    "reviewEvidence": null,
+    "operationId": "q04_get_api_admin_verification_sessions_id",
+    "taskId": "Q04",
+    "method": "GET",
+    "path": "/api/admin/verification-sessions/{id}",
+    "summary": "本机生物认证会话详情"
+  },
+  {
+    "implementationStatus": "NOT_ASSESSED",
+    "controllerFile": null,
+    "serviceFile": null,
+    "mapperFile": null,
+    "testFiles": [],
+    "reviewEvidence": null,
+    "operationId": "q04_post_api_admin_manual_verifications",
+    "taskId": "Q04",
+    "method": "POST",
+    "path": "/api/admin/manual-verifications",
+    "summary": "登记背景或驾驶证人工确认"
+  },
+  {
+    "implementationStatus": "NOT_ASSESSED",
+    "controllerFile": null,
+    "serviceFile": null,
+    "mapperFile": null,
+    "testFiles": [],
+    "reviewEvidence": null,
+    "operationId": "q04_post_api_admin_manual_verifications_id_review",
+    "taskId": "Q04",
+    "method": "POST",
+    "path": "/api/admin/manual-verifications/{id}/review",
+    "summary": "独立复核人工确认"
+  },
+  {
+    "implementationStatus": "NOT_ASSESSED",
+    "controllerFile": null,
+    "serviceFile": null,
+    "mapperFile": null,
+    "testFiles": [],
+    "reviewEvidence": null,
+    "operationId": "q04_post_api_admin_verification_sessions_id_close",
+    "taskId": "Q04",
+    "method": "POST",
+    "path": "/api/admin/verification-sessions/{id}/close",
+    "summary": "封存未决本机认证会话"
+  },
+  {
+    "implementationStatus": "NOT_ASSESSED",
+    "controllerFile": null,
+    "serviceFile": null,
+    "mapperFile": null,
+    "testFiles": [],
+    "reviewEvidence": null,
+    "operationId": "q04_post_api_app_driver_qualification_face_sessions_verificationSessionId_confirm",
+    "taskId": "Q04",
+    "method": "POST",
+    "path": "/api/app/driver/qualification/face-sessions/{verificationSessionId}/confirm",
+    "summary": "提交微信SOTER原签名或恢复首次未知验签"
   }
 ]

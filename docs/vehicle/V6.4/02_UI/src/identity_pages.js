@@ -42,12 +42,22 @@ M.D01=()=>{const a=U.auth62(),s=a.driverStatus;return{title:'申请代驾资格'
  p('当前申请',kv('账号',a.name)+kv('手机号',a.phoneVerified?a.phone+' · 已核验':'尚未授权')+kv('资格状态',U.driverLabels[s]||'尚未申请'))+
  p('申请步骤',U.timeline([['填写实名与证件','按要求提交本人资料'],['完成核验与培训','核验失败可查看原因并补充'],['提交后台审核','普通用户和公司员工采用同一标准'],['审核通过后切换代驾','接单还需满足证件、听单和占用条件']],a.driverApproved?4:s==='PENDING'?2:0))+
  n('公司员工也必须通过代驾审核。代驾申请不决定其检测工作权限。'),footer:acts(g('返回我的','O25','secondary'),a.driverApproved?g('查看资格','D28'):s==='PENDING'?g('查看审核进度','D05'):b(s==='REJECTED'?'补充申请资料':s==='DRAFT'?'继续填写':'开始申请','identity-start-driver'))};};
-M.D05=()=>{const a=U.auth62(),passed=a.driverApproved,rejected=a.driverStatus==='REJECTED',pending=a.driverStatus==='PENDING';return{title:'代驾审核进度',body:
- U.banner(passed?'审核通过':rejected?'申请需补充':pending?'审核中':'尚未提交审核',passed?'正式代驾身份已开通，可返回身份切换。':rejected?'请按驳回意见补充资料后重新提交。':pending?'等待后台审核，审核结果会同步到本账号。':'请先完成申请资料和必要核验。',passed?'success':rejected?'warn':'')+
- p('审核信息',kv('申请人',a.name)+kv('资格状态',U.driverLabels[a.driverStatus]||'尚未申请')+kv('正式代驾身份',passed?'已开通':'未开通')+kv('复审日期',passed?'按实际审核记录展示':'通过后确定')+(rejected?kv('需补充项','驾驶证图片不清晰（演示意见）'):''))+
- n('刷新只读取审核结果，不会自动批准资格。员工与普通申请人适用同一标准。'),
- footer:acts(g('返回车主','O25','secondary'),passed?b('切换到代驾','auth62-role','',{payload:'D'}):rejected?b('补充资料','identity-start-driver'):b('刷新审核结果','identity-refresh-driver'))};};
-
+M.D05 = () => {
+  const a = U.auth62(), passed = a.driverApproved, rejected = a.driverStatus === 'REJECTED', pending = a.driverStatus === 'PENDING';
+  const checks = [['face', '本机设备确认'], ['background', '背景双人人工确认'], ['licenseVerification', '驾驶证双人人工确认'], ['training', '培训与考试']];
+  return {
+    title: '代驾审核进度',
+    body: U.banner(passed ? '审核通过' : rejected ? '申请需补充' : pending ? '审核中' : '尚未提交审核',
+      passed ? '正式代驾身份已开通，可返回身份切换。' : rejected ? '请按驳回意见补充资料后重新提交。' : pending ? '等待后台审核，审核结果会同步到本账号。' : '请先完成申请资料和四项必要检查。',
+      passed ? 'success' : rejected ? 'warn' : '') +
+      p('本地四项检查反馈', checks.map(([key, label]) => kv(label, U.store.saved[key] ? '演示已完成' : '尚未完成演示')).join('')) +
+      p('审核信息', kv('申请人', a.name) + kv('资格状态', U.driverLabels[a.driverStatus] || '尚未申请') +
+        kv('正式代驾身份', passed ? '已开通' : '未开通') + kv('复审日期', passed ? '按实际审核记录展示' : '通过后确定') +
+        (rejected ? kv('需补充项', '驾驶证图片不清晰（演示意见）') : '')) +
+      n('本机确认不代表实名或活体。真实提交须四项服务端认可记录；本页本地反馈及刷新都不能批准资格，员工与普通申请人同标准。', 'warn'),
+    footer: acts(g('返回车主', 'O25', 'secondary'), passed ? b('切换到代驾', 'auth62-role', '', {payload: 'D'}) : rejected ? b('补充资料', 'identity-start-driver') : b('刷新审核结果', 'identity-refresh-driver'))
+  };
+};
 M.D27=()=>{const a=U.auth62();if(!a.driverApproved)return{title:'我的代驾工作',body:U.banner('尚未取得正式代驾资格','请先从车主身份申请，审核通过后再进入工作台。','warn'),footer:g('查看申请进度','D01')};return{title:'我的代驾工作',tabs:'driver',active:2,body:`<div class="profile-head"><div class="avatar">${e(a.name.slice(0,1))}</div><div class="grow"><h2>${e(a.name)}</h2><p class="hint">代驾资格已通过 · ${e(a.phone)}</p></div>${tag('已审核','green')}</div>`+U.summary([['本月接送',18],['今日结束',3],['服务评分','4.9']])+p('工作与账号',row('idcard','认证中心与复审','证件有效期与复审申请','','D28')+row('users','切换身份',U.roles62().map(k=>({O:'车主',D:'代驾',S:'检测工作'}[k])).join(' · '),'','U01')+row('support','客服与帮助','普通服务问题与联系入口','','D30'))+p('服务与费用核对',row('order','我的接送任务','在手与已结束承接','','D36')+row('doc','我的对账单','仅本人已发送账单、未结清服务和公开付款状态','','D37'))+p('资格与服务规范',row('doc','培训与测验','查询本人学习及答题记录','','D39')+row('warn','接单限制与申诉','查看本人记录及处理进度','','D43'))+n('统计及任务为演示数据；正式页面只读取当前账号本人的信息。')};};
 M.S15=()=>{const a=U.auth62(),emp=U.identityCurrentEmployee(),can=U.roles62().includes('S');return{title:'我的检测工作',tabs:'station',active:3,body:`<div class="profile-head"><div class="avatar">${e(a.name.slice(0,1))}</div><div class="grow"><h2>${e(a.name)}</h2><p class="hint">${emp?'框架员工 '+e(emp.id):'尚无有效员工关联'} · ${e(U.identityLabels[a.link])}</p></div></div>`+p('工作权限',row('building','当前检测点',can?U.station().name:'暂无可操作检测点',can?'切换':'',can?'S21':'S01')+row('users','切换身份',U.roles62().map(k=>({O:'车主',D:'代驾',S:'检测工作'}[k])).join(' · '),'','U01')+row('user','员工关联状态','后台维护人员与站点；不在小程序申请','','U02'))+(can?p('站点与资料',row('building','站点资料与资质','按当前授权范围维护','','S16')+row('calendar','营业时间与预约容量','查看配置并预览变更影响','','S17')+row('users','本站工作人员','只读信息；账号维护在PC后台','','S18')+row('history','操作记录','查看当前范围操作流水','','S20')):n('关联或站点权限暂不可用，请联系管理员，个人车主身份保留。','warn'))};};
 

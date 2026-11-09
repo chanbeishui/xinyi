@@ -34,6 +34,8 @@ export type MyQualification = {
   companyName: string | null;
   ownershipUnassigned: boolean;
   profileVersion: number;
+  companyRevision: number;
+  verificationSessionId: string | null;
   version: number;
   materialRevision: number;
   materialHash: string | null;

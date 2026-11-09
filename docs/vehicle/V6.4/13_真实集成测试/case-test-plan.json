@@ -6598,7 +6598,9 @@
     "testFiles": [],
     "status": "SPEC_NOT_IMPLEMENTED",
     "lastResult": "NOT_RUN",
-    "evidence": []
+    "evidence": [],
+    "taskId": "Q04",
+    "testMethod": "trustedWechatVerificationPublishesExactlyOneDeviceProofAndNeverRealnameOrLiveness"
   },
   {
     "caseId": "TC-R50-022",

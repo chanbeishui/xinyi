@@ -22,7 +22,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
-/** 公司培训课程只接受真实ADMIN凭据，认证失败使用真实401；不改既有平台接口的响应约定。 */
+/** 公司培训与资格核验只接受真实ADMIN凭据，认证失败使用真实401；不改既有平台接口的响应约定。 */
 @Configuration
 public class TrainingAdminSecurityConfig {
     @Bean
@@ -34,7 +34,11 @@ public class TrainingAdminSecurityConfig {
                             String uri = request.getRequestURI();
                             return uri.equals("/api/admin/training-courses")
                                     || uri.startsWith("/api/admin/training-courses/")
-                                    || uri.startsWith("/api/admin/training-policies/");
+                                    || uri.startsWith("/api/admin/training-policies/")
+                                    || uri.equals("/api/admin/manual-verifications")
+                                    || uri.startsWith("/api/admin/manual-verifications/")
+                                    || uri.equals("/api/admin/verification-sessions")
+                                    || uri.startsWith("/api/admin/verification-sessions/");
                         })
                 .csrf(csrf -> csrf.disable())
                 .httpBasic(basic -> basic.disable())

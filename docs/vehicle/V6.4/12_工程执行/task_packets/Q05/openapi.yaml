@@ -619,6 +619,18 @@ components:
           uniqueItems: true
           items:
             $ref: '#/components/schemas/AllowedAction'
+        companyRevision:
+          type: integer
+          minimum: 0
+          description: 客户端最后读取的版本；服务端条件更新，冲突返回409
+          format: int64
+          maximum: 9007199254740991
+        verificationSessionId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+          nullable: true
       additionalProperties: false
       required:
       - applicationId
@@ -644,7 +656,10 @@ components:
       - submitBlockers
       - checks
       - allowedActions
+      - companyRevision
+      - verificationSessionId
       description: status为本次申请，effectiveQualificationStatus为原生效档案，两者不得混写。复审另建申请不抹已批准资格/证件/听单/任务；Q01 canAcceptOrder=false。内部review_opinion不公开，历史无rejectFields不猜全部可改。提交材料/公司/同意/证明写不可变快照，后台批准由Q05负责。
+        当前4项DEVICE_AUTH/BACKGROUND/LICENSE/TRAINING；本机认证只本次实际登录会话，移除实名活体门槛，不直接获得DRIVER。
     QualificationStatus:
       type: string
       enum:
@@ -757,8 +772,7 @@ components:
         type:
           type: string
           enum:
-          - REALNAME
-          - FACE
+          - DEVICE_AUTH
           - BACKGROUND
           - LICENSE
           - TRAINING
@@ -774,7 +788,7 @@ components:
       required:
       - type
       - status
-      description: 服务端权威记录，PASSED须同申请/当前材料有密钥摘要和版本、真实核验时刻。TRAINING是Q03依据正式课程/学习阅卷产生的汇总证明；Q01不猜必修课程集合，也无客户端写通过通路。未接通无证明则UNAVAILABLE。
+      description: 当前四项可信状态：设备结果绑定原登录会话，人工来自双人确认，培训来自Q03真实冻结运行；全部绑定当前申请/公司epoch/材料及可信时刻。历史实名活体不作为当前门槛，独立PASSED不可信。
     AllowedAction:
       type: string
       description: 服务端按当前角色、对象状态、版本和实时授权计算的可执行动作集合；不能由客户端授予
@@ -858,6 +872,14 @@ components:
       - CREATE_TRAINING_ATTEMPT
       - VIEW_TRAINING_ATTEMPT
       - SUBMIT_TRAINING_ATTEMPT
+      - START_DEVICE_AUTH
+      - CONFIRM_DEVICE_AUTH
+      - RECOVER_DEVICE_AUTH
+      - QUERY_DEVICE_AUTH
+      - VIEW_DEVICE_AUTH
+      - CLOSE_DEVICE_AUTH
+      - VIEW_MANUAL_VERIFICATION
+      - REVIEW_MANUAL_VERIFICATION
   responses:
     UnprocessableEntity:
       description: 填写内容不符合要求。参见errorCode注册表；HTTP状态与code一致。

@@ -1,12 +1,12 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1260" height="2030" viewBox="0 0 1260 2030" role="img" aria-labelledby="title desc">
 <title id="title">F49 · 代驾资格申请、补正与复审</title>
-<desc id="desc">本人草稿、真实证件、有效公司及当前材料五项正式证明全部通过后才提交。审批与真实培训核验为后续任务；复审不覆盖生效资格，不解除在手责任。</desc>
+<desc id="desc">本人草稿、真实证件、有效公司及当前材料四项可信证明通过后才提交。微信SOTER只确认本机使用者；背景与驾驶证经办和复核人不同，复核人可参与最终资格审核。复审不覆盖生效资格和在手责任。</desc>
 <!-- 按flows_V6.4.json的F49节点和边人工排布；SVG原生文字，未使用Graphviz或供应商界面截图。 -->
 <defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#52657d"/></marker></defs>
 <style>text{font-family:"PingFang SC","Microsoft YaHei",Arial,sans-serif;fill:#23354d}.edge{fill:none;stroke:#52657d;stroke-width:2;marker-end:url(#arrow)}.edge-label{font-size:16px;fill:#52657d}.node-title{font-size:21px;font-weight:600}.node-body{font-size:18px}.note{font-size:18px;fill:#5d6c80}</style>
 <rect width="1260" height="2030" fill="#f6f8fb"/>
 <text x="630" y="42" text-anchor="middle" font-size="28" font-weight="700">F49 · 代驾资格申请、补正与复审</text>
-<text x="630" y="72" text-anchor="middle" class="note">Q01严格提交门槛 · 员工与普通申请人同标准 · F04仍为员工站点预配置</text>
+<text x="630" y="72" text-anchor="middle" class="note">当前四项门槛 · SOTER只确认本机使用者，不证明身份证实名或活体 · 员工同标准</text>
 <path class="edge" d="M670.0,172 V210"/>
 <path class="edge" d="M670.0,292 V334"/>
 <path class="edge" d="M670.0,438 V486"/>
@@ -65,10 +65,10 @@
 <text x="190.0" y="739.5" text-anchor="middle" class="node-body">MINI不能指定公司</text>
 </g>
 <g id="n7"><rect x="410" y="772" width="520" height="110" rx="12" fill="#edf4ff" stroke="#a8bfdc" stroke-width="2"/>
-<text x="670.0" y="795.5" text-anchor="middle" class="node-title">真实核验与培训（Q03/Q04）</text>
-<text x="670.0" y="820.5" text-anchor="middle" class="node-body">REALNAME · FACE · BACKGROUND</text>
-<text x="670.0" y="845.5" text-anchor="middle" class="node-body">LICENSE · TRAINING正式汇总证明</text>
-<text x="670.0" y="870.5" text-anchor="middle" class="node-body">当前材料、PASSED、可信核验时刻</text>
+<text x="670.0" y="795.5" text-anchor="middle" class="node-title">本机认证、人工核验与培训（Q03/Q04）</text>
+<text x="670.0" y="820.5" text-anchor="middle" class="node-body">DEVICE_AUTH · BACKGROUND</text>
+<text x="670.0" y="845.5" text-anchor="middle" class="node-body">LICENSE · TRAINING 四项可信证明</text>
+<text x="670.0" y="870.5" text-anchor="middle" class="node-body">人工经办与另人复核；本机仅设备确认</text>
 </g>
 <g id="n9"><rect x="35" y="944" width="280" height="136" rx="12" fill="#fff7e8" stroke="#d7a34b" stroke-width="2"/>
 <text x="175.0" y="980.5" text-anchor="middle" class="node-title">保留草稿，显示具体阻断</text>
@@ -79,7 +79,7 @@
 <g id="n10"><rect x="410" y="1134" width="520" height="110" rx="12" fill="#ffffff" stroke="#a8bfdc" stroke-width="2"/>
 <text x="670.0" y="1157.5" text-anchor="middle" class="node-title">同事务校验并冻结提交快照</text>
 <text x="670.0" y="1182.5" text-anchor="middle" class="node-body">applicationId + 申请及档案expectedVersion</text>
-<text x="670.0" y="1207.5" text-anchor="middle" class="node-body">公司、材料、同意原文、五项证明和加密原因</text>
+<text x="670.0" y="1207.5" text-anchor="middle" class="node-body">公司epoch、材料、同意原文与四项证明</text>
 <text x="670.0" y="1232.5" text-anchor="middle" class="node-body">任一冲突整笔拒绝，不覆盖或部分保存</text>
 </g>
 <g id="n11"><rect x="410" y="1304" width="520" height="90" rx="12" fill="#ffffff" stroke="#a8bfdc" stroke-width="2"/>
@@ -106,14 +106,14 @@
 </g>
 <g id="n8"><path d="M670,928.0 L955.0,1008 L670,1088.0 L385.0,1008 Z" fill="#eaf4ee" stroke="#71a587" stroke-width="2"/>
 <text x="670" y="990.0" text-anchor="middle" class="node-title">完整资料 + 有效公司 + 现行同意</text>
-<text x="670" y="1014.0" text-anchor="middle" class="node-body">五项当前材料可信PASSED</text>
+<text x="670" y="1014.0" text-anchor="middle" class="node-body">四项当前材料可信通过</text>
 <text x="670" y="1038.0" text-anchor="middle" class="node-body">全部满足？</text>
 </g>
 <g id="n12"><path d="M670,1416.0 L950.0,1496 L670,1576.0 L390.0,1496 Z" fill="#eaf4ee" stroke="#71a587" stroke-width="2"/>
-<text x="670" y="1478.0" text-anchor="middle" class="node-title">Q05 后续独立审批</text>
+<text x="670" y="1478.0" text-anchor="middle" class="node-title">Q05 最终资格审核</text>
 <text x="670" y="1502.0" text-anchor="middle" class="node-body">禁止本人审批</text>
-<text x="670" y="1526.0" text-anchor="middle" class="node-body">通过 / 驳回</text>
+<text x="670" y="1526.0" text-anchor="middle" class="node-body">人工复核人可参与本次审核</text>
 </g>
-<text x="630" y="1952" text-anchor="middle" class="note">执行边界：Q01消费正式证明，不代替真实供应商、正式培训或Q05审批；未接通能力持续阻断。</text>
-<text x="630" y="1984" text-anchor="middle" class="note">五项证明须同申请 / 当前材料revision与HMAC、PASSED、verified_at非空且不为未来。</text>
+<text x="630" y="1952" text-anchor="middle" class="note">Q01只消费四项可信证明，核验和提交不直接授予DRIVER；微信验签与Q05审核分别办理。</text>
+<text x="630" y="1984" text-anchor="middle" class="note">证明绑定当前申请 / 公司epoch / 材料；本机认证另绑定本人登录session，旧证明不复活。</text>
 </svg>

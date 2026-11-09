@@ -181,9 +181,11 @@
       "values": [
         "CREATED",
         "PROCESSING",
+        "UNKNOWN",
         "PASSED",
         "FAILED",
-        "EXPIRED"
+        "EXPIRED",
+        "CLOSED"
       ],
       "description": ""
     },
@@ -388,11 +390,12 @@
     },
     "VerificationType": {
       "values": [
-        "REALNAME",
-        "FACE",
+        "DEVICE_AUTH",
         "BACKGROUND",
         "LICENSE",
-        "TRAINING"
+        "TRAINING",
+        "REALNAME",
+        "FACE"
       ],
       "description": ""
     },
@@ -692,6 +695,7 @@
     },
     "FaceLaunchMode": {
       "values": [
+        "WX_SOTER_DEVICE_AUTH",
         "WEBVIEW_URL"
       ],
       "description": ""
@@ -976,6 +980,28 @@
         "MANUAL_OFFLINE"
       ],
       "description": ""
+    },
+    "ManualVerificationType": {
+      "values": [
+        "BACKGROUND",
+        "LICENSE"
+      ],
+      "description": "ManualVerificationType"
+    },
+    "ManualVerificationConclusion": {
+      "values": [
+        "PASSED",
+        "FAILED"
+      ],
+      "description": "ManualVerificationConclusion"
+    },
+    "ManualVerificationStatus": {
+      "values": [
+        "PENDING_REVIEW",
+        "CONFIRMED",
+        "RETURNED"
+      ],
+      "description": "ManualVerificationStatus"
     }
   },
   "columnBindings": {
@@ -1074,7 +1100,10 @@
     "vi_payment_order.payment_method": "PaymentMethod",
     "vi_payment_order.capacity_resolution": "PaymentCapacityResolution",
     "vi_refund_order.payment_method": "RefundPaymentMethod",
-    "vi_refund_order.execution_mode": "RefundExecutionMode"
+    "vi_refund_order.execution_mode": "RefundExecutionMode",
+    "vi_manual_verification.verification_type": "ManualVerificationType",
+    "vi_manual_verification.conclusion": "ManualVerificationConclusion",
+    "vi_manual_verification.status": "ManualVerificationStatus"
   },
   "governanceStatusByType": {
     "PRIVACY": [

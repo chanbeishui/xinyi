@@ -4500,12 +4500,10 @@ paths:
   /api/app/driver/qualification/face-session:
     post:
       operationId: API_045_post
-      summary: 创建实名活体核验会话
+      summary: 创建本人本机生物认证挑战
       tags:
       - ACCOUNT
-      description: '流程：F04。审核前允许基础账号申请，不要求已拥有正式DRIVER角色；真实第三方核验状态只能从受信服务取得
-
-        参数校验、真实归属、服务端当前状态/版本先于写入；不接受主体伪造。；主体为已验证的MINI基础账号，申请/培训/进度不要求已获DRIVER角色；本人记录校验。审核通过前不可接单。'
+      description: 旧face路径现为微信SOTER本机生物认证。仅确认当前设备已录入的指纹/面容持有人，不证明法律机主、姓名身份证一致或活体实名。挑战300秒，原始签名首次接受后UNKNOWN可恢复；GET纯DB不调用微信。证明仅本次实际MINI登录会话有效，完成后同会话切换身份可复用；新登录须重做。
       x-flow-ids:
       - F49
       security:
@@ -4555,8 +4553,14 @@ paths:
         '422':
           $ref: '#/components/responses/UnprocessableEntity'
       parameters:
-      - name: X-Client-Type
-        in: header
+      - in: header
+        name: Idempotency-Key
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - in: header
+        name: X-Client-Type
         required: true
         schema:
           type: string
@@ -4564,8 +4568,6 @@ paths:
           - owner
           - driver
           - station
-          - admin
-        description: 仅审计来源，不作为授权；须匹配服务端会话视角
       requestBody:
         required: true
         content:
@@ -4612,8 +4614,8 @@ paths:
       - VI_UPSTREAM_UNAVAILABLE
       x-error-policy: GLOBAL_FAILURES_NO_RESOURCE_404
       x-sensitive-response: true
-      x-idempotency: NO_PLAINTEXT_RESPONSE_CACHE; domain dedupe only; on lost credential response reissue/refresh through
-        controlled protocol
+      x-idempotency: NO_PLAINTEXT_RESPONSE_CACHE; domain dedupe only; on lost credential response reissue/refresh through controlled
+        protocol
       x-contract-baseline: V6.4
   /api/app/driver/qualification/training:
     get:
@@ -26947,8 +26949,8 @@ paths:
       x-contract-baseline: V6.4
   /api/app/driver/qualification/face-sessions/{verificationSessionId}:
     get:
-      summary: 查询本人活体核验结果（服务端查询供应商）
-      description: 查询本人活体核验结果（服务端查询供应商）。真实主体由认证上下文构造；不得信任客户端通过/授权结论。；主体为已验证的MINI基础账号，申请/培训/进度不要求已获DRIVER角色；本人记录校验。审核通过前不可接单。
+      summary: 读取本人本机生物认证元数据
+      description: 旧face路径现为微信SOTER本机生物认证。仅确认当前设备已录入的指纹/面容持有人，不证明法律机主、姓名身份证一致或活体实名。挑战300秒，原始签名首次接受后UNKNOWN可恢复；GET纯DB不调用微信。证明仅本次实际MINI登录会话有效，完成后同会话切换身份可复用；新登录须重做。
       operationId: v5_get_api_app_driver_qualification_face_sessions_verificationSessionId
       parameters:
       - in: path
@@ -26959,6 +26961,15 @@ paths:
           pattern: ^[1-9][0-9]{0,18}$
           maxLength: 19
           description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+      - in: header
+        name: X-Client-Type
+        required: true
+        schema:
+          type: string
+          enum:
+          - owner
+          - driver
+          - station
       responses:
         '200':
           description: 成功
@@ -27001,6 +27012,8 @@ paths:
           $ref: '#/components/responses/Unavailable'
         '404':
           $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
       x-flow-ids:
       - F49
       x-capability: DRIVER_QUALIFICATION_QUERY
@@ -27030,8 +27043,8 @@ paths:
       - VI_UPSTREAM_UNAVAILABLE
       x-error-policy: OBJECT_404_HIDES_EXISTENCE
       x-sensitive-response: true
-      x-idempotency: NO_PLAINTEXT_RESPONSE_CACHE; domain dedupe only; on lost credential response reissue/refresh through
-        controlled protocol
+      x-idempotency: NO_PLAINTEXT_RESPONSE_CACHE; domain dedupe only; on lost credential response reissue/refresh through controlled
+        protocol
       x-contract-baseline: V6.4
   /api/common/orders/{orderNo}/contact-access:
     post:
@@ -32568,6 +32581,1011 @@ paths:
       - VI_UPSTREAM_UNAVAILABLE
       x-error-policy: OBJECT_404_HIDES_EXISTENCE
       x-contract-baseline: V6.4
+  /api/app/driver/qualification/face-sessions/{verificationSessionId}/confirm:
+    post:
+      operationId: q04_post_api_app_driver_qualification_face_sessions_verificationSessionId_confirm
+      summary: 提交微信SOTER原签名或恢复首次未知验签
+      tags:
+      - ACCOUNT
+      description: 二选一精确字段。仅服务端原始OpenID及冻结WECHAT_APP已发布凭据调用微信verify_signature，客户端success不放行。恢复只使用服务器加密的首次接受原文，不可替换签名；幂等保留原目标。
+      x-flow-ids:
+      - F49
+      security:
+      - MiniBearerAuth: []
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                properties:
+                  code:
+                    type: integer
+                    enum:
+                    - 200
+                  msg:
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/FaceSession'
+                required:
+                - code
+                - msg
+                - data
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+                enum:
+                - no-store
+              description: 身份/交易/个人业务响应不缓存
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalError'
+        '503':
+          $ref: '#/components/responses/Unavailable'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+      parameters:
+      - in: path
+        name: verificationSessionId
+        required: true
+        schema:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+      - in: header
+        name: Idempotency-Key
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - in: header
+        name: X-Client-Type
+        required: true
+        schema:
+          type: string
+          enum:
+          - owner
+          - driver
+          - station
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeviceAuthenticationConfirm'
+      x-capability: DRIVER_QUALIFICATION_CREATE
+      x-authorization:
+        realm: MINI
+        scope: SELF_QUALIFICATION
+        capability: DRIVER_QUALIFICATION_CREATE
+        qualificationRequired: false
+        principal: MINI_ACCOUNT
+        roleRequirement: NONE
+        requiredAccountConditions:
+        - ACTIVE
+        - PHONE_VERIFIED
+      x-error-codes:
+      - VI_REQUEST_INVALID
+      - VI_AUTH_REQUIRED
+      - VI_TOKEN_REALM_MISMATCH
+      - VI_REFRESH_REUSED
+      - VI_FORBIDDEN
+      - VI_SELF_REVIEW_DENIED
+      - VI_VERSION_CONFLICT
+      - VI_STATE_CONFLICT
+      - VI_IDEMPOTENCY_CONFLICT
+      - VI_SELECTION_CONFLICT
+      - VI_CONTEXT_CHANGED
+      - VI_SNAPSHOT_CHANGED
+      - VI_DATA_INVALID
+      - VI_EVIDENCE_INCOMPLETE
+      - VI_HANDOVER_CODE_INVALID
+      - VI_HANDOVER_LOCKED
+      - VI_UNPRICED_LINES
+      - VI_REFUND_LIMIT
+      - VI_PAYMENT_LIMIT
+      - VI_SERVICE_UNAVAILABLE
+      - VI_CAPABILITY_NOT_CONFIGURED
+      - VI_TRAINING_NOT_READY
+      - VI_RATE_LIMITED
+      - VI_INTERNAL_ERROR
+      - VI_AUTHORITY_UNAVAILABLE
+      - VI_UPSTREAM_UNAVAILABLE
+      x-error-policy: GLOBAL_FAILURES_NO_RESOURCE_404
+      x-sensitive-response: true
+      x-idempotency: NO_PLAINTEXT_RESPONSE_CACHE; domain dedupe only; on lost credential response reissue/refresh through controlled
+        protocol
+      x-contract-baseline: V6.4
+
+  /api/admin/manual-verifications/applications:
+    get:
+      summary: 候选人工确认申请
+      description: 真实ADMIN，按数据库权威公司范围分别执行功能、查询和写入授权，空范围失败关闭。禁止客户端dataScope或owner伪造。当前DRAFT/REJECTED人工确认候选申请；按query公司范围过滤，不输出证件或手机号。
+      operationId: q04_get_api_admin_manual_verifications_applications
+      parameters:
+      - in: query
+        name: pageNum
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 1000000
+          default: 1
+      - in: query
+        name: pageSize
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 100
+          default: 20
+      - in: query
+        name: ownerDeptId
+        schema:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+      - in: header
+        name: X-Client-Type
+        required: true
+        schema:
+          type: string
+          enum:
+          - admin
+        description: 必须匹配实际ADMIN调用域，不作为权限替代。
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                properties:
+                  code:
+                    type: integer
+                    enum:
+                    - 200
+                  msg:
+                    type: string
+                  rows:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ManualVerificationApplication'
+                  total:
+                    type: integer
+                    minimum: 0
+                required:
+                - code
+                - msg
+                - rows
+                - total
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+                enum:
+                - no-store
+              description: 身份/交易/个人业务响应不缓存
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalError'
+        '503':
+          $ref: '#/components/responses/Unavailable'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+      x-flow-ids:
+      - F49
+      x-permission: biz:manualverification:query
+      security:
+      - AdminBearerAuth: []
+      x-authorization:
+        realm: ADMIN
+        scope: COMPANY_OWNER_DEPT
+        permission: biz:manualverification:query
+      x-error-codes:
+      - VI_REQUEST_INVALID
+      - VI_AUTH_REQUIRED
+      - VI_TOKEN_REALM_MISMATCH
+      - VI_REFRESH_REUSED
+      - VI_FORBIDDEN
+      - VI_SELF_REVIEW_DENIED
+      - VI_RESOURCE_NOT_VISIBLE
+      - VI_RATE_LIMITED
+      - VI_INTERNAL_ERROR
+      - VI_AUTHORITY_UNAVAILABLE
+      - VI_UPSTREAM_UNAVAILABLE
+      x-error-policy: OBJECT_404_HIDES_EXISTENCE
+      x-contract-baseline: V6.4
+  /api/admin/manual-verifications:
+    get:
+      summary: 人工确认记录列表
+      description: 真实ADMIN，按数据库权威公司范围分别执行功能、查询和写入授权，空范围失败关闭。禁止客户端dataScope或owner伪造。申请人显示昵称不冒充实名。列表备注null；详情按query公司范围解密普通备注，不输出密文、材料证件或后台权限上下文。
+      operationId: q04_get_api_admin_manual_verifications
+      parameters:
+      - in: query
+        name: pageNum
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 1000000
+          default: 1
+      - in: query
+        name: pageSize
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 100
+          default: 20
+      - in: query
+        name: ownerDeptId
+        schema:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+      - in: query
+        name: applicationId
+        schema:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+      - in: query
+        name: type
+        schema:
+          $ref: '#/components/schemas/ManualVerificationType'
+      - in: query
+        name: status
+        schema:
+          $ref: '#/components/schemas/ManualVerificationStatus'
+      - in: header
+        name: X-Client-Type
+        required: true
+        schema:
+          type: string
+          enum:
+          - admin
+        description: 必须匹配实际ADMIN调用域，不作为权限替代。
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                properties:
+                  code:
+                    type: integer
+                    enum:
+                    - 200
+                  msg:
+                    type: string
+                  rows:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ManualVerificationView'
+                  total:
+                    type: integer
+                    minimum: 0
+                required:
+                - code
+                - msg
+                - rows
+                - total
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+                enum:
+                - no-store
+              description: 身份/交易/个人业务响应不缓存
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalError'
+        '503':
+          $ref: '#/components/responses/Unavailable'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+      x-flow-ids:
+      - F49
+      x-permission: biz:manualverification:list
+      security:
+      - AdminBearerAuth: []
+      x-authorization:
+        realm: ADMIN
+        scope: COMPANY_OWNER_DEPT
+        permission: biz:manualverification:list
+      x-error-codes:
+      - VI_REQUEST_INVALID
+      - VI_AUTH_REQUIRED
+      - VI_TOKEN_REALM_MISMATCH
+      - VI_REFRESH_REUSED
+      - VI_FORBIDDEN
+      - VI_SELF_REVIEW_DENIED
+      - VI_RESOURCE_NOT_VISIBLE
+      - VI_RATE_LIMITED
+      - VI_INTERNAL_ERROR
+      - VI_AUTHORITY_UNAVAILABLE
+      - VI_UPSTREAM_UNAVAILABLE
+      x-error-policy: OBJECT_404_HIDES_EXISTENCE
+      x-contract-baseline: V6.4
+    post:
+      summary: 登记背景或驾驶证人工确认
+      description: 真实ADMIN，按数据库权威公司范围分别执行功能、查询和写入授权，空范围失败关闭。禁止客户端dataScope或owner伪造。真实ADMIN按当前申请公司范围登记人工确认；无需凭证上传、报告或标准发布，普通备注可空。经办与申请人本人不能相同，冻结已知申请人后台身份防换号自审。
+      operationId: q04_post_api_admin_manual_verifications
+      parameters:
+      - in: header
+        name: Idempotency-Key
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - in: header
+        name: X-Client-Type
+        required: true
+        schema:
+          type: string
+          enum:
+          - admin
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                properties:
+                  code:
+                    type: integer
+                    enum:
+                    - 200
+                  msg:
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/ManualVerificationView'
+                required:
+                - code
+                - msg
+                - data
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+                enum:
+                - no-store
+              description: 身份/交易/个人业务响应不缓存
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalError'
+        '503':
+          $ref: '#/components/responses/Unavailable'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+      x-flow-ids:
+      - F49
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ManualVerificationCreate'
+      x-permission: biz:manualverification:create
+      security:
+      - AdminBearerAuth: []
+      x-authorization:
+        realm: ADMIN
+        scope: COMPANY_OWNER_DEPT
+        permission: biz:manualverification:create
+        additionalRequiredPermissions:
+        - biz:manualverification:query
+      x-error-codes:
+      - VI_REQUEST_INVALID
+      - VI_AUTH_REQUIRED
+      - VI_TOKEN_REALM_MISMATCH
+      - VI_REFRESH_REUSED
+      - VI_FORBIDDEN
+      - VI_SELF_REVIEW_DENIED
+      - VI_RESOURCE_NOT_VISIBLE
+      - VI_VERSION_CONFLICT
+      - VI_STATE_CONFLICT
+      - VI_IDEMPOTENCY_CONFLICT
+      - VI_SELECTION_CONFLICT
+      - VI_CONTEXT_CHANGED
+      - VI_SNAPSHOT_CHANGED
+      - VI_DATA_INVALID
+      - VI_EVIDENCE_INCOMPLETE
+      - VI_HANDOVER_CODE_INVALID
+      - VI_HANDOVER_LOCKED
+      - VI_UNPRICED_LINES
+      - VI_REFUND_LIMIT
+      - VI_PAYMENT_LIMIT
+      - VI_SERVICE_UNAVAILABLE
+      - VI_CAPABILITY_NOT_CONFIGURED
+      - VI_TRAINING_NOT_READY
+      - VI_RATE_LIMITED
+      - VI_INTERNAL_ERROR
+      - VI_AUTHORITY_UNAVAILABLE
+      - VI_UPSTREAM_UNAVAILABLE
+      x-error-policy: OBJECT_404_HIDES_EXISTENCE
+      x-contract-baseline: V6.4
+  /api/admin/manual-verifications/{id}:
+    get:
+      summary: 人工确认详情
+      description: 真实ADMIN，按数据库权威公司范围分别执行功能、查询和写入授权，空范围失败关闭。禁止客户端dataScope或owner伪造。申请人显示昵称不冒充实名。列表备注null；详情按query公司范围解密普通备注，不输出密文、材料证件或后台权限上下文。
+      operationId: q04_get_api_admin_manual_verifications_id
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+      - in: header
+        name: X-Client-Type
+        required: true
+        schema:
+          type: string
+          enum:
+          - admin
+        description: 必须匹配实际ADMIN调用域，不作为权限替代。
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                properties:
+                  code:
+                    type: integer
+                    enum:
+                    - 200
+                  msg:
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/ManualVerificationView'
+                required:
+                - code
+                - msg
+                - data
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+                enum:
+                - no-store
+              description: 身份/交易/个人业务响应不缓存
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalError'
+        '503':
+          $ref: '#/components/responses/Unavailable'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+      x-flow-ids:
+      - F49
+      x-permission: biz:manualverification:query
+      security:
+      - AdminBearerAuth: []
+      x-authorization:
+        realm: ADMIN
+        scope: COMPANY_OWNER_DEPT
+        permission: biz:manualverification:query
+      x-error-codes:
+      - VI_REQUEST_INVALID
+      - VI_AUTH_REQUIRED
+      - VI_TOKEN_REALM_MISMATCH
+      - VI_REFRESH_REUSED
+      - VI_FORBIDDEN
+      - VI_SELF_REVIEW_DENIED
+      - VI_RESOURCE_NOT_VISIBLE
+      - VI_RATE_LIMITED
+      - VI_INTERNAL_ERROR
+      - VI_AUTHORITY_UNAVAILABLE
+      - VI_UPSTREAM_UNAVAILABLE
+      x-error-policy: OBJECT_404_HIDES_EXISTENCE
+      x-contract-baseline: V6.4
+  /api/admin/manual-verifications/{id}/review:
+    post:
+      summary: 独立复核人工确认
+      description: 真实ADMIN，按数据库权威公司范围分别执行功能、查询和写入授权，空范围失败关闭。禁止客户端dataScope或owner伪造。原公司范围且当前申请/材料/公司epoch，复核人必须区别经办和申请人。CONFIRM同事务发布对应PASSED/FAILED可信事实，RETURN不出证明；历史不可改，需重新经办另建。复核人允许参与Q05最终资格审核，不额外强制第三人。
+      operationId: q04_post_api_admin_manual_verifications_id_review
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+      - in: header
+        name: Idempotency-Key
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - in: header
+        name: X-Client-Type
+        required: true
+        schema:
+          type: string
+          enum:
+          - admin
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                properties:
+                  code:
+                    type: integer
+                    enum:
+                    - 200
+                  msg:
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/ManualVerificationView'
+                required:
+                - code
+                - msg
+                - data
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+                enum:
+                - no-store
+              description: 身份/交易/个人业务响应不缓存
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalError'
+        '503':
+          $ref: '#/components/responses/Unavailable'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+      x-flow-ids:
+      - F49
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ManualVerificationReview'
+      x-permission: biz:manualverification:review
+      security:
+      - AdminBearerAuth: []
+      x-authorization:
+        realm: ADMIN
+        scope: COMPANY_OWNER_DEPT
+        permission: biz:manualverification:review
+        additionalRequiredPermissions:
+        - biz:manualverification:query
+      x-error-codes:
+      - VI_REQUEST_INVALID
+      - VI_AUTH_REQUIRED
+      - VI_TOKEN_REALM_MISMATCH
+      - VI_REFRESH_REUSED
+      - VI_FORBIDDEN
+      - VI_SELF_REVIEW_DENIED
+      - VI_RESOURCE_NOT_VISIBLE
+      - VI_VERSION_CONFLICT
+      - VI_STATE_CONFLICT
+      - VI_IDEMPOTENCY_CONFLICT
+      - VI_SELECTION_CONFLICT
+      - VI_CONTEXT_CHANGED
+      - VI_SNAPSHOT_CHANGED
+      - VI_DATA_INVALID
+      - VI_EVIDENCE_INCOMPLETE
+      - VI_HANDOVER_CODE_INVALID
+      - VI_HANDOVER_LOCKED
+      - VI_UNPRICED_LINES
+      - VI_REFUND_LIMIT
+      - VI_PAYMENT_LIMIT
+      - VI_SERVICE_UNAVAILABLE
+      - VI_CAPABILITY_NOT_CONFIGURED
+      - VI_TRAINING_NOT_READY
+      - VI_RATE_LIMITED
+      - VI_INTERNAL_ERROR
+      - VI_AUTHORITY_UNAVAILABLE
+      - VI_UPSTREAM_UNAVAILABLE
+      x-error-policy: OBJECT_404_HIDES_EXISTENCE
+      x-contract-baseline: V6.4
+
+  /api/admin/verification-sessions:
+    get:
+      summary: 本机生物认证会话列表
+      description: 真实ADMIN，按数据库权威公司范围分别执行功能、查询和写入授权，空范围失败关闭。禁止客户端dataScope或owner伪造。按会话原公司范围查看安全元数据；无OpenID、设备硬件标识、原始resultJSON/签名/秘密。后台只看本轮requestNo非空可信结构，不把旧FACE记录改称设备确认。
+      operationId: q04_get_api_admin_verification_sessions
+      parameters:
+      - in: query
+        name: pageNum
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 1000000
+          default: 1
+      - in: query
+        name: pageSize
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 100
+          default: 20
+      - in: query
+        name: ownerDeptId
+        schema:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+      - in: query
+        name: status
+        schema:
+          $ref: '#/components/schemas/FaceSessionStatus'
+      - in: query
+        name: keyword
+        schema:
+          type: string
+          maxLength: 100
+      - in: header
+        name: X-Client-Type
+        required: true
+        schema:
+          type: string
+          enum:
+          - admin
+        description: 必须匹配实际ADMIN调用域，不作为权限替代。
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                properties:
+                  code:
+                    type: integer
+                    enum:
+                    - 200
+                  msg:
+                    type: string
+                  rows:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/DeviceAuthenticationAdminView'
+                  total:
+                    type: integer
+                    minimum: 0
+                required:
+                - code
+                - msg
+                - rows
+                - total
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+                enum:
+                - no-store
+              description: 身份/交易/个人业务响应不缓存
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalError'
+        '503':
+          $ref: '#/components/responses/Unavailable'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+      x-flow-ids:
+      - F49
+      x-permission: biz:verification:list
+      security:
+      - AdminBearerAuth: []
+      x-authorization:
+        realm: ADMIN
+        scope: COMPANY_OWNER_DEPT
+        permission: biz:verification:list
+      x-error-codes:
+      - VI_REQUEST_INVALID
+      - VI_AUTH_REQUIRED
+      - VI_TOKEN_REALM_MISMATCH
+      - VI_REFRESH_REUSED
+      - VI_FORBIDDEN
+      - VI_SELF_REVIEW_DENIED
+      - VI_RESOURCE_NOT_VISIBLE
+      - VI_RATE_LIMITED
+      - VI_INTERNAL_ERROR
+      - VI_AUTHORITY_UNAVAILABLE
+      - VI_UPSTREAM_UNAVAILABLE
+      x-error-policy: OBJECT_404_HIDES_EXISTENCE
+      x-contract-baseline: V6.4
+  /api/admin/verification-sessions/{id}:
+    get:
+      summary: 本机生物认证会话详情
+      description: 真实ADMIN，按数据库权威公司范围分别执行功能、查询和写入授权，空范围失败关闭。禁止客户端dataScope或owner伪造。按会话原公司范围查看安全元数据；无OpenID、设备硬件标识、原始resultJSON/签名/秘密。后台只看本轮requestNo非空可信结构，不把旧FACE记录改称设备确认。
+      operationId: q04_get_api_admin_verification_sessions_id
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+      - in: header
+        name: X-Client-Type
+        required: true
+        schema:
+          type: string
+          enum:
+          - admin
+        description: 必须匹配实际ADMIN调用域，不作为权限替代。
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                properties:
+                  code:
+                    type: integer
+                    enum:
+                    - 200
+                  msg:
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/DeviceAuthenticationAdminView'
+                required:
+                - code
+                - msg
+                - data
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+                enum:
+                - no-store
+              description: 身份/交易/个人业务响应不缓存
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalError'
+        '503':
+          $ref: '#/components/responses/Unavailable'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+      x-flow-ids:
+      - F49
+      x-permission: biz:verification:query
+      security:
+      - AdminBearerAuth: []
+      x-authorization:
+        realm: ADMIN
+        scope: COMPANY_OWNER_DEPT
+        permission: biz:verification:query
+      x-error-codes:
+      - VI_REQUEST_INVALID
+      - VI_AUTH_REQUIRED
+      - VI_TOKEN_REALM_MISMATCH
+      - VI_REFRESH_REUSED
+      - VI_FORBIDDEN
+      - VI_SELF_REVIEW_DENIED
+      - VI_RESOURCE_NOT_VISIBLE
+      - VI_RATE_LIMITED
+      - VI_INTERNAL_ERROR
+      - VI_AUTHORITY_UNAVAILABLE
+      - VI_UPSTREAM_UNAVAILABLE
+      x-error-policy: OBJECT_404_HIDES_EXISTENCE
+      x-contract-baseline: V6.4
+  /api/admin/verification-sessions/{id}/close:
+    post:
+      summary: 封存未决本机认证会话
+      description: 真实ADMIN，按数据库权威公司范围分别执行功能、查询和写入授权，空范围失败关闭。禁止客户端dataScope或owner伪造。仅未决CREATED/UNKNOWN/EXPIRED且无活跃租约可本地封存；不能补写通过结论。无微信请求或费用确认。
+      operationId: q04_post_api_admin_verification_sessions_id_close
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+      - in: header
+        name: Idempotency-Key
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - in: header
+        name: X-Client-Type
+        required: true
+        schema:
+          type: string
+          enum:
+          - admin
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                properties:
+                  code:
+                    type: integer
+                    enum:
+                    - 200
+                  msg:
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/DeviceAuthenticationAdminView'
+                required:
+                - code
+                - msg
+                - data
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+                enum:
+                - no-store
+              description: 身份/交易/个人业务响应不缓存
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalError'
+        '503':
+          $ref: '#/components/responses/Unavailable'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+      x-flow-ids:
+      - F49
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeviceAuthenticationClose'
+      x-permission: biz:verification:close
+      security:
+      - AdminBearerAuth: []
+      x-authorization:
+        realm: ADMIN
+        scope: COMPANY_OWNER_DEPT
+        permission: biz:verification:close
+      x-error-codes:
+      - VI_REQUEST_INVALID
+      - VI_AUTH_REQUIRED
+      - VI_TOKEN_REALM_MISMATCH
+      - VI_REFRESH_REUSED
+      - VI_FORBIDDEN
+      - VI_SELF_REVIEW_DENIED
+      - VI_RESOURCE_NOT_VISIBLE
+      - VI_VERSION_CONFLICT
+      - VI_STATE_CONFLICT
+      - VI_IDEMPOTENCY_CONFLICT
+      - VI_SELECTION_CONFLICT
+      - VI_CONTEXT_CHANGED
+      - VI_SNAPSHOT_CHANGED
+      - VI_DATA_INVALID
+      - VI_EVIDENCE_INCOMPLETE
+      - VI_HANDOVER_CODE_INVALID
+      - VI_HANDOVER_LOCKED
+      - VI_UNPRICED_LINES
+      - VI_REFUND_LIMIT
+      - VI_PAYMENT_LIMIT
+      - VI_SERVICE_UNAVAILABLE
+      - VI_CAPABILITY_NOT_CONFIGURED
+      - VI_TRAINING_NOT_READY
+      - VI_RATE_LIMITED
+      - VI_INTERNAL_ERROR
+      - VI_AUTHORITY_UNAVAILABLE
+      - VI_UPSTREAM_UNAVAILABLE
+      x-error-policy: OBJECT_404_HIDES_EXISTENCE
+      x-contract-baseline: V6.4
 components:
   securitySchemes:
     MiniBearerAuth:
@@ -33798,6 +34816,18 @@ components:
           uniqueItems: true
           items:
             $ref: '#/components/schemas/AllowedAction'
+        companyRevision:
+          type: integer
+          minimum: 0
+          description: 客户端最后读取的版本；服务端条件更新，冲突返回409
+          format: int64
+          maximum: 9007199254740991
+        verificationSessionId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+          nullable: true
       additionalProperties: false
       required:
       - applicationId
@@ -33823,7 +34853,10 @@ components:
       - submitBlockers
       - checks
       - allowedActions
+      - companyRevision
+      - verificationSessionId
       description: status为本次申请，effectiveQualificationStatus为原生效档案，两者不得混写。复审另建申请不抹已批准资格/证件/听单/任务；Q01 canAcceptOrder=false。内部review_opinion不公开，历史无rejectFields不猜全部可改。提交材料/公司/同意/证明写不可变快照，后台批准由Q05负责。
+        当前4项DEVICE_AUTH/BACKGROUND/LICENSE/TRAINING；本机认证只本次实际登录会话，移除实名活体门槛，不直接获得DRIVER。
     QualificationAudit:
       type: object
       properties:
@@ -40499,9 +41532,11 @@ components:
       enum:
       - CREATED
       - PROCESSING
+      - UNKNOWN
       - PASSED
       - FAILED
       - EXPIRED
+      - CLOSED
     FaceSessionCreate:
       type: object
       additionalProperties: false
@@ -40511,19 +41546,44 @@ components:
           pattern: ^[1-9][0-9]{0,18}$
           maxLength: 19
           description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
-        expectedVersion:
+        expectedApplicationVersion:
           type: integer
-          format: int64
           minimum: 0
+          description: 客户端最后读取的版本；服务端条件更新，冲突返回409
+          format: int64
           maximum: 9007199254740991
-          description: 最后读取的非负版本；更新CAS，冲突409
+        expectedCompanyRevision:
+          type: integer
+          minimum: 0
+          description: 客户端最后读取的版本；服务端条件更新，冲突返回409
+          format: int64
+          maximum: 9007199254740991
+        expectedMaterialRevision:
+          type: integer
+          minimum: 0
+          description: 客户端最后读取的版本；服务端条件更新，冲突返回409
+          format: int64
+          maximum: 9007199254740991
         consentVersion:
           type: string
           minLength: 1
+          maxLength: 64
+        consentTextHash:
+          type: string
+          pattern: ^[0-9a-f]{64}$
+        acceptedConsent:
+          type: boolean
+          enum:
+          - true
       required:
       - applicationId
-      - expectedVersion
+      - expectedApplicationVersion
+      - expectedCompanyRevision
+      - expectedMaterialRevision
       - consentVersion
+      - consentTextHash
+      - acceptedConsent
+      description: 恰7键，明确接受当前同一次读取的本机认证同意版本及正文hash；不接受客户端openid/部门/通过结论。创建只生成随机挑战，不调用收费实名供应商。
     FaceSession:
       type: object
       additionalProperties: false
@@ -40538,22 +41598,29 @@ components:
           pattern: ^[1-9][0-9]{0,18}$
           maxLength: 19
           description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+        requestNo:
+          type: string
+          format: uuid
         status:
           $ref: '#/components/schemas/FaceSessionStatus'
         launchMode:
           type: string
           enum:
-          - WEBVIEW_URL
+          - WX_SOTER_DEVICE_AUTH
         launchUrl:
           type: string
-          format: uri
-          description: 仅服务端配置的供应商白名单HTTPS URL，短时一次性；禁止日志/幂等响应长期明文保存
+          description: 兼容旧字段，当前恒null，无WebView外部页面。
           nullable: true
+        challenge:
+          type: string
+          pattern: ^[A-Za-z0-9_-]{43}$
+          nullable: true
+        authContent:
+          type: string
         expiresAt:
           type: string
           format: date-time
           pattern: Z$
-          description: ISO8601 UTC时刻，必须Z结尾；显示与业务日期Asia/Shanghai
         resultAvailable:
           type: boolean
         failureCode:
@@ -40561,21 +41628,44 @@ components:
           nullable: true
         version:
           type: integer
-          format: int64
           minimum: 0
+          description: 客户端最后读取的版本；服务端条件更新，冲突返回409
+          format: int64
           maximum: 9007199254740991
-          description: 最后读取的非负版本；更新CAS，冲突409
+        materialRevision:
+          type: integer
+          minimum: 0
+          description: 客户端最后读取的版本；服务端条件更新，冲突返回409
+          format: int64
+          maximum: 9007199254740991
+        companyRevision:
+          type: integer
+          minimum: 0
+          description: 客户端最后读取的版本；服务端条件更新，冲突返回409
+          format: int64
+          maximum: 9007199254740991
+        allowedActions:
+          type: array
+          uniqueItems: true
+          items:
+            $ref: '#/components/schemas/AllowedAction'
       required:
       - verificationSessionId
       - applicationId
+      - requestNo
       - status
       - launchMode
       - launchUrl
+      - challenge
+      - authContent
       - expiresAt
       - resultAvailable
       - failureCode
       - version
-      description: 供应商中立首期契约固定WEBVIEW_URL；供应商如仅支持其他模式，先更改适配合同再启用，不伪造兼容或通过
+      - materialRevision
+      - companyRevision
+      - allowedActions
+      description: 旧face路径现为微信SOTER本机生物认证。仅确认当前设备已录入的指纹/面容持有人，不证明法律机主、姓名身份证一致或活体实名。挑战300秒，原始签名首次接受后UNKNOWN可恢复；GET纯DB不调用微信。证明仅本次实际MINI登录会话有效，完成后同会话切换身份可复用；新登录须重做。
     OrderContactRequest:
       type: object
       additionalProperties: false
@@ -40960,6 +42050,10 @@ components:
       - biz:job:retry
       - biz:license:edit
       - biz:license:list
+      - biz:manualverification:create
+      - biz:manualverification:list
+      - biz:manualverification:query
+      - biz:manualverification:review
       - biz:messageroute:edit
       - biz:messageroute:query
       - biz:messagetemplate:check
@@ -41026,6 +42120,9 @@ components:
       - biz:vehicle:edit
       - biz:vehicle:list
       - biz:vehicle:query
+      - biz:verification:close
+      - biz:verification:list
+      - biz:verification:query
     CapabilityCode:
       type: string
       description: 会话能力注册表；资格申请及本人历史不要求已获正式接单资格
@@ -41197,6 +42294,14 @@ components:
       - CREATE_TRAINING_ATTEMPT
       - VIEW_TRAINING_ATTEMPT
       - SUBMIT_TRAINING_ATTEMPT
+      - START_DEVICE_AUTH
+      - CONFIRM_DEVICE_AUTH
+      - RECOVER_DEVICE_AUTH
+      - QUERY_DEVICE_AUTH
+      - VIEW_DEVICE_AUTH
+      - CLOSE_DEVICE_AUTH
+      - VIEW_MANUAL_VERIFICATION
+      - REVIEW_MANUAL_VERIFICATION
     AccountStatus:
       type: string
       enum:
@@ -41205,11 +42310,13 @@ components:
     VerificationType:
       type: string
       enum:
-      - REALNAME
-      - FACE
+      - DEVICE_AUTH
       - BACKGROUND
       - LICENSE
       - TRAINING
+      - REALNAME
+      - FACE
+      description: 当前提交仅要求DEVICE_AUTH/BACKGROUND/LICENSE/TRAINING；REALNAME/FACE保留历史枚举，不再作为要求或由设备认证推导。
     VerificationStatus:
       type: string
       enum:
@@ -41437,7 +42544,9 @@ components:
     FaceLaunchMode:
       type: string
       enum:
+      - WX_SOTER_DEVICE_AUTH
       - WEBVIEW_URL
+      description: 当前仅WX_SOTER_DEVICE_AUTH；WEBVIEW_URL仅历史旧枚举，不提供H5活体。
     GovernanceStatus:
       type: string
       description: 必须同时校验case_type对应子集
@@ -42189,6 +43298,9 @@ components:
       - qualificationConsentVersion
       - qualificationConsentText
       - qualificationConsentHash
+      - verificationConsentVersion
+      - verificationConsentText
+      - verificationConsentHash
       properties:
         version:
           type: integer
@@ -42234,6 +43346,16 @@ components:
           nullable: true
           pattern: ^[0-9a-f]{64}$
           description: 同一次读取的资格同意正文摘要，未配置为null；不能把客户端旧正文记成已同意新文。
+        verificationConsentVersion:
+          type: string
+          nullable: true
+        verificationConsentText:
+          type: string
+          nullable: true
+        verificationConsentHash:
+          type: string
+          pattern: ^[0-9a-f]{64}$
+          nullable: true
       description: 仅公开白名单；来自现有业务配置发布值，不包含供应商密钥、内部财务主体配置、员工或角色名单。缺已发布协议不得假造版本开放下单。 第三方未配置或双开关关闭时不宣称可支付，不向公众返回商户/密钥。
     EmployeeLinkStatus:
       type: string
@@ -45018,7 +46140,7 @@ components:
       - expectedVersion
       - expectedProfileVersion
       - reason
-      description: 用户确认：完整资料、有效公司、当前同意及五项真实核验/培训当前材料可信通过后才待审。显式申请ID和档案版本防复审/公司漂移；提交冻结快照，不批准或授DRIVER。
+      description: 用户确认：完整资料、有效公司、当前同意及DEVICE_AUTH/BACKGROUND/LICENSE/TRAINING四项当前材料可信通过后才待审。显式申请ID和档案版本防复审/公司漂移；提交冻结快照，不批准或授DRIVER。
     QualificationDraftView:
       type: object
       additionalProperties: false
@@ -45108,8 +46230,7 @@ components:
         type:
           type: string
           enum:
-          - REALNAME
-          - FACE
+          - DEVICE_AUTH
           - BACKGROUND
           - LICENSE
           - TRAINING
@@ -45125,7 +46246,7 @@ components:
       required:
       - type
       - status
-      description: 服务端权威记录，PASSED须同申请/当前材料有密钥摘要和版本、真实核验时刻。TRAINING是Q03依据正式课程/学习阅卷产生的汇总证明；Q01不猜必修课程集合，也无客户端写通过通路。未接通无证明则UNAVAILABLE。
+      description: 当前四项可信状态：设备结果绑定原登录会话，人工来自双人确认，培训来自Q03真实冻结运行；全部绑定当前申请/公司epoch/材料及可信时刻。历史实名活体不作为当前门槛，独立PASSED不可信。
     QualificationBlocker:
       type: object
       additionalProperties: false
@@ -45780,6 +46901,421 @@ components:
       - courseVersion
       - expectedVersion
       description: 九键必须显式存在，planId/runId仅未创建时为null且须与GET一致。expectedVersion为progress CAS；其余对应当前申请/公司epoch/材料/正式或已固定policy。旧请求不能漂移新复审/run。
+    DeviceAuthenticationConfirm:
+      oneOf:
+      - type: object
+        additionalProperties: false
+        properties:
+          expectedVersion:
+            type: integer
+            minimum: 0
+            description: 客户端最后读取的版本；服务端条件更新，冲突返回409
+            format: int64
+            maximum: 9007199254740991
+          resultJSON:
+            type: string
+            minLength: 1
+            maxLength: 16384
+            description: 原始UTF8最多16KiB，不trim不重序列化；严格重复键检查，raw必须精确匹配一次性challenge。
+          resultJSONSignature:
+            type: string
+            minLength: 1
+            maxLength: 4096
+            description: 微信原始base64签名，不trim。
+        required:
+        - expectedVersion
+        - resultJSON
+        - resultJSONSignature
+      - type: object
+        additionalProperties: false
+        properties:
+          expectedVersion:
+            type: integer
+            minimum: 0
+            description: 客户端最后读取的版本；服务端条件更新，冲突返回409
+            format: int64
+            maximum: 9007199254740991
+          recover:
+            type: boolean
+            enum:
+            - true
+        required:
+        - expectedVersion
+        - recover
+      description: 二选一精确字段。仅服务端原始OpenID及冻结WECHAT_APP已发布凭据调用微信verify_signature，客户端success不放行。恢复只使用服务器加密的首次接受原文，不可替换签名；幂等保留原目标。
+    DeviceAuthenticationAdminView:
+      type: object
+      additionalProperties: false
+      properties:
+        verificationSessionId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+        applicationId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+        requestNo:
+          type: string
+          format: uuid
+        status:
+          $ref: '#/components/schemas/FaceSessionStatus'
+        launchMode:
+          type: string
+          enum:
+          - WX_SOTER_DEVICE_AUTH
+        launchUrl:
+          type: string
+          description: 兼容旧字段，当前恒null，无WebView外部页面。
+          nullable: true
+        challenge:
+          type: string
+          description: 后台恒null，不提供可用挑战或原始签名。
+          nullable: true
+        authContent:
+          type: string
+        expiresAt:
+          type: string
+          format: date-time
+          pattern: Z$
+        resultAvailable:
+          type: boolean
+        failureCode:
+          type: string
+          nullable: true
+        version:
+          type: integer
+          minimum: 0
+          description: 客户端最后读取的版本；服务端条件更新，冲突返回409
+          format: int64
+          maximum: 9007199254740991
+        materialRevision:
+          type: integer
+          minimum: 0
+          description: 客户端最后读取的版本；服务端条件更新，冲突返回409
+          format: int64
+          maximum: 9007199254740991
+        companyRevision:
+          type: integer
+          minimum: 0
+          description: 客户端最后读取的版本；服务端条件更新，冲突返回409
+          format: int64
+          maximum: 9007199254740991
+        allowedActions:
+          type: array
+          uniqueItems: true
+          items:
+            $ref: '#/components/schemas/AllowedAction'
+        ownerDeptId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+          nullable: true
+        companyName:
+          type: string
+          nullable: true
+        provider:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+          pattern: Z$
+          nullable: true
+        verifiedAt:
+          type: string
+          format: date-time
+          pattern: Z$
+          nullable: true
+      required:
+      - verificationSessionId
+      - applicationId
+      - requestNo
+      - status
+      - launchMode
+      - launchUrl
+      - challenge
+      - authContent
+      - expiresAt
+      - resultAvailable
+      - failureCode
+      - version
+      - materialRevision
+      - companyRevision
+      - allowedActions
+      - ownerDeptId
+      - companyName
+      - provider
+      - createdAt
+      - verifiedAt
+      description: 按会话原公司范围查看安全元数据；无OpenID、设备硬件标识、原始resultJSON/签名/秘密。后台只看本轮requestNo非空可信结构，不把旧FACE记录改称设备确认。
+    DeviceAuthenticationClose:
+      type: object
+      additionalProperties: false
+      properties:
+        expectedVersion:
+          type: integer
+          minimum: 0
+          description: 客户端最后读取的版本；服务端条件更新，冲突返回409
+          format: int64
+          maximum: 9007199254740991
+        reason:
+          type: string
+          minLength: 1
+          maxLength: 500
+      required:
+      - expectedVersion
+      - reason
+      description: 仅未决CREATED/UNKNOWN/EXPIRED且无活跃租约可本地封存；不能补写通过结论。无微信请求或费用确认。
+    ManualVerificationType:
+      type: string
+      enum:
+      - BACKGROUND
+      - LICENSE
+    ManualVerificationConclusion:
+      type: string
+      enum:
+      - PASSED
+      - FAILED
+    ManualVerificationStatus:
+      type: string
+      enum:
+      - PENDING_REVIEW
+      - CONFIRMED
+      - RETURNED
+    ManualVerificationCreate:
+      type: object
+      additionalProperties: false
+      properties:
+        applicationId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+        expectedApplicationVersion:
+          type: integer
+          minimum: 0
+          description: 客户端最后读取的版本；服务端条件更新，冲突返回409
+          format: int64
+          maximum: 9007199254740991
+        expectedCompanyRevision:
+          type: integer
+          minimum: 0
+          description: 客户端最后读取的版本；服务端条件更新，冲突返回409
+          format: int64
+          maximum: 9007199254740991
+        expectedMaterialRevision:
+          type: integer
+          minimum: 0
+          description: 客户端最后读取的版本；服务端条件更新，冲突返回409
+          format: int64
+          maximum: 9007199254740991
+        type:
+          $ref: '#/components/schemas/ManualVerificationType'
+        conclusion:
+          $ref: '#/components/schemas/ManualVerificationConclusion'
+        note:
+          type: string
+          maxLength: 500
+      required:
+      - applicationId
+      - expectedApplicationVersion
+      - expectedCompanyRevision
+      - expectedMaterialRevision
+      - type
+      - conclusion
+      - note
+      description: 真实ADMIN按当前申请公司范围登记人工确认；无需凭证上传、报告或标准发布，普通备注可空。经办与申请人本人不能相同，冻结已知申请人后台身份防换号自审。
+    ManualVerificationReview:
+      type: object
+      additionalProperties: false
+      properties:
+        expectedVersion:
+          type: integer
+          minimum: 0
+          description: 客户端最后读取的版本；服务端条件更新，冲突返回409
+          format: int64
+          maximum: 9007199254740991
+        decision:
+          type: string
+          enum:
+          - CONFIRM
+          - RETURN
+        note:
+          type: string
+          maxLength: 500
+      required:
+      - expectedVersion
+      - decision
+      - note
+      description: 原公司范围且当前申请/材料/公司epoch，复核人必须区别经办和申请人。CONFIRM同事务发布对应PASSED/FAILED可信事实，RETURN不出证明；历史不可改，需重新经办另建。复核人允许参与Q05最终资格审核，不额外强制第三人。
+    ManualVerificationView:
+      type: object
+      additionalProperties: false
+      properties:
+        recordId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+        applicationId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+        driverId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+        applicantName:
+          type: string
+        ownerDeptId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+        companyName:
+          type: string
+        companyRevision:
+          type: integer
+          minimum: 0
+          description: 客户端最后读取的版本；服务端条件更新，冲突返回409
+          format: int64
+          maximum: 9007199254740991
+        materialRevision:
+          type: integer
+          minimum: 0
+          description: 客户端最后读取的版本；服务端条件更新，冲突返回409
+          format: int64
+          maximum: 9007199254740991
+        type:
+          $ref: '#/components/schemas/ManualVerificationType'
+        conclusion:
+          $ref: '#/components/schemas/ManualVerificationConclusion'
+        status:
+          $ref: '#/components/schemas/ManualVerificationStatus'
+        submittedByUserId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+        submittedByName:
+          type: string
+        submittedAt:
+          type: string
+          format: date-time
+          pattern: Z$
+        reviewedByUserId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+          nullable: true
+        reviewedByName:
+          type: string
+          nullable: true
+        reviewedAt:
+          type: string
+          format: date-time
+          pattern: Z$
+          nullable: true
+        note:
+          type: string
+          maxLength: 500
+          nullable: true
+        reviewNote:
+          type: string
+          maxLength: 500
+          nullable: true
+        version:
+          type: integer
+          minimum: 0
+          description: 客户端最后读取的版本；服务端条件更新，冲突返回409
+          format: int64
+          maximum: 9007199254740991
+        allowedActions:
+          type: array
+          uniqueItems: true
+          items:
+            $ref: '#/components/schemas/AllowedAction'
+      required:
+      - recordId
+      - applicationId
+      - driverId
+      - applicantName
+      - ownerDeptId
+      - companyName
+      - companyRevision
+      - materialRevision
+      - type
+      - conclusion
+      - status
+      - submittedByUserId
+      - submittedByName
+      - submittedAt
+      - reviewedByUserId
+      - reviewedByName
+      - reviewedAt
+      - note
+      - reviewNote
+      - version
+      - allowedActions
+      description: 申请人显示昵称不冒充实名。列表备注null；详情按query公司范围解密普通备注，不输出密文、材料证件或后台权限上下文。
+    ManualVerificationApplication:
+      type: object
+      additionalProperties: false
+      properties:
+        applicationId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+        driverId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+        applicantName:
+          type: string
+        ownerDeptId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+        companyName:
+          type: string
+        version:
+          type: integer
+          minimum: 0
+          description: 客户端最后读取的版本；服务端条件更新，冲突返回409
+          format: int64
+          maximum: 9007199254740991
+        companyRevision:
+          type: integer
+          minimum: 0
+          description: 客户端最后读取的版本；服务端条件更新，冲突返回409
+          format: int64
+          maximum: 9007199254740991
+        materialRevision:
+          type: integer
+          minimum: 0
+          description: 客户端最后读取的版本；服务端条件更新，冲突返回409
+          format: int64
+          maximum: 9007199254740991
+      required:
+      - applicationId
+      - driverId
+      - applicantName
+      - ownerDeptId
+      - companyName
+      - version
+      - companyRevision
+      - materialRevision
+      description: 当前DRAFT/REJECTED人工确认候选申请；按query公司范围过滤，不输出证件或手机号。
   responses:
     BadRequest:
       description: 请求格式不正确。参见errorCode注册表；HTTP状态与code一致。

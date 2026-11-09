@@ -1,0 +1,215 @@
+{
+  "task": "Q04 static prototype semantic consistency",
+  "generatedAt": "2026-11-09T16:11:24.928Z",
+  "passed": true,
+  "browserPlugin": "Browser plugin not available",
+  "fallback": "Regular Playwright with installed Chrome; same set_content and UI.testing.render entry points as original export_screens.py",
+  "flow": "D04四项检查 → D46本机确认演示 → 背景/驾驶证反馈 → D39-D42培训演示 → D05审核中 → B16显式演示审批",
+  "scope": "Static documentation prototype only. No real SOTER signature verification, manual review, training proof, cloud provider, production API or qualification approval was executed.",
+  "htmlSha256": "2786c7d29d146c3dbc178bd9eb392ea7cb030c4c94914a2bd03d1430bdcaa68f",
+  "checkCount": 13,
+  "checks": [
+    {
+      "name": "页面身份、非空与无框架错误覆盖层",
+      "passed": true,
+      "url": "about:blank (set_content self-contained HTML)",
+      "title": "O29 微信手机号授权登录 · V6.4 · 全量一致性修正版"
+    },
+    {
+      "name": "四项均缺失时阻止提交",
+      "passed": true
+    },
+    {
+      "name": "仅缺驾驶证双人人工确认也阻止提交",
+      "passed": true
+    },
+    {
+      "name": "D04 → D46 创建挑战与确认演示只更新本地状态",
+      "passed": true
+    },
+    {
+      "name": "背景与驾驶证分别取得双人确认演示反馈",
+      "passed": true
+    },
+    {
+      "name": "原培训学习、创建尝试、答题与结果链保留",
+      "passed": true,
+      "path": [
+        "D39",
+        "D40",
+        "D41",
+        "D42"
+      ]
+    },
+    {
+      "name": "四项齐全进入审核中；刷新不能批准或生成代驾身份",
+      "passed": true
+    },
+    {
+      "name": "同一登录切换已有角色保留设备确认演示",
+      "passed": true
+    },
+    {
+      "name": "新登录只清本机确认，不抹去资格与人工/培训历史",
+      "passed": true
+    },
+    {
+      "name": "B16 显式演示审核仍要求意见和人工勾选，原交互保留",
+      "passed": true
+    },
+    {
+      "name": "四个画板同一演示状态、8 张首屏/完整截图及无横向溢出",
+      "passed": true,
+      "screenIds": [
+        "D04",
+        "D46",
+        "D05",
+        "B16-review"
+      ]
+    },
+    {
+      "name": "375 / 428 手机宽度无横向溢出",
+      "passed": true,
+      "responsive": [
+        {
+          "viewport": 375,
+          "documentWidth": 375,
+          "bodyOverflow": 0
+        },
+        {
+          "viewport": 428,
+          "documentWidth": 428,
+          "bodyOverflow": 0
+        }
+      ]
+    },
+    {
+      "name": "无页面错误、无警告/错误控制台日志、无外部网络请求",
+      "passed": true
+    }
+  ],
+  "screens": [
+    {
+      "id": "D04",
+      "viewport": [
+        390,
+        844
+      ],
+      "width": 390,
+      "height": 844,
+      "mobileOverflow": 0,
+      "checkState": {
+        "face": true,
+        "background": true,
+        "licenseVerification": true,
+        "training": true
+      },
+      "approved": false,
+      "driverStatus": "PENDING",
+      "firstImage": "docs/vehicle/V6.4/02_UI/全量页面图/首屏/D04.png",
+      "fullImage": "docs/vehicle/V6.4/02_UI/全量页面图/完整内容/D04.png",
+      "firstSha256": "40907138f975267961601224074abedab7ec4ee37cb8c3c2b79ebffcc1165fcd",
+      "fullSha256": "9a060b56437374c386ea32bd8fb98875f9fee2ad829fe56d442425aabb1f4ce1"
+    },
+    {
+      "id": "D46",
+      "viewport": [
+        390,
+        844
+      ],
+      "width": 390,
+      "height": 844,
+      "mobileOverflow": 0,
+      "checkState": {
+        "face": true,
+        "background": true,
+        "licenseVerification": true,
+        "training": true
+      },
+      "approved": false,
+      "driverStatus": "PENDING",
+      "firstImage": "docs/vehicle/V6.4/02_UI/全量页面图/首屏/D46.png",
+      "fullImage": "docs/vehicle/V6.4/02_UI/全量页面图/完整内容/D46.png",
+      "firstSha256": "e7e5e65bd9d793c090ab8523280a48878619db9adab2ec06dfe3f434e135e0bf",
+      "fullSha256": "ee43908c1e03475682e51681ddebf183fdfa436ad30f1691209db667231833c3"
+    },
+    {
+      "id": "D05",
+      "viewport": [
+        390,
+        844
+      ],
+      "width": 390,
+      "height": 844,
+      "mobileOverflow": 0,
+      "checkState": {
+        "face": true,
+        "background": true,
+        "licenseVerification": true,
+        "training": true
+      },
+      "approved": false,
+      "driverStatus": "PENDING",
+      "firstImage": "docs/vehicle/V6.4/02_UI/全量页面图/首屏/D05.png",
+      "fullImage": "docs/vehicle/V6.4/02_UI/全量页面图/完整内容/D05.png",
+      "firstSha256": "36a6e6494acb329f2091d1a07991af893a985b54b9289051f36776b45fd6cc0f",
+      "fullSha256": "77fdc98f50334dac6639c4f523298212a8fc5a908128112caf5b054a4a8f4d33"
+    },
+    {
+      "id": "B16-review",
+      "viewport": [
+        1440,
+        1050
+      ],
+      "width": 1440,
+      "height": 1050,
+      "mobileOverflow": 0,
+      "checkState": {
+        "face": true,
+        "background": true,
+        "licenseVerification": true,
+        "training": true
+      },
+      "approved": false,
+      "driverStatus": "PENDING",
+      "firstImage": "docs/vehicle/V6.4/02_UI/全量页面图/首屏/B16-review.png",
+      "fullImage": "docs/vehicle/V6.4/02_UI/全量页面图/完整内容/B16-review.png",
+      "firstSha256": "9ac3e53b9daca7123e9f1946b8909cf78273005807053888eeadabc20b69fd94",
+      "fullSha256": "99139e88b8d0160dff936dec7b05ccbdc4899f3d82a39200b8f0c953be5c498e"
+    }
+  ],
+  "responsive": [
+    {
+      "viewport": 375,
+      "documentWidth": 375,
+      "bodyOverflow": 0
+    },
+    {
+      "viewport": 428,
+      "documentWidth": 428,
+      "bodyOverflow": 0
+    }
+  ],
+  "pageErrors": [],
+  "consoleWarningsOrErrors": [],
+  "externalRequests": [],
+  "allScreenshotsRegenerated": false,
+  "targetedImageCount": 8,
+  "staticChecks": {
+    "javascriptSyntaxFiles": 8,
+    "javascriptSyntaxPassed": true,
+    "gitDiffCheckPassed": true,
+    "buildCommand": "python3 docs/vehicle/V6.4/02_UI/build.py",
+    "targetedExportOnly": true
+  },
+  "visualReview": {
+    "images": [
+      "全量页面图/完整内容/D04.png",
+      "全量页面图/首屏/D46.png",
+      "全量页面图/完整内容/B16-review.png"
+    ],
+    "passed": true,
+    "findings": "四项演示反馈和待审核状态一致；D04长内容可完整导出，D46状态和边界说明、B16审核抽屉无重叠或横向溢出。"
+  },
+  "fixedInteractionFinding": "D04旧HTML属性串替换依赖属性间空格，实际按钮可能绕过D46直接置本地face标记；已改为显式v5-open-face动作，真实浏览器验证D04→D46→创建挑战→演示确认。"
+}

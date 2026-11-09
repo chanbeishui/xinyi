@@ -424,8 +424,7 @@ function checkLabel(type: string) {
   return (
     (
       {
-        REALNAME: '实名核验',
-        FACE: '活体核验',
+        DEVICE_AUTH: '本机生物认证',
         BACKGROUND: '背景核验',
         LICENSE: '驾驶证核验',
         TRAINING: '培训考试'
@@ -682,15 +681,19 @@ function open(path: string) {
     <view v-if="application" class="card">
       <text class="section">真实核验与提交条件</text>
       <text class="muted"
-        >资料完整、所属公司已配置、同意当前说明，且五项真实核验与培训均通过后，才可提交审核。</text
+        >资料完整、所属公司已配置、同意当前说明，且本机认证、背景及驾驶证人工核验与培训均通过后，才可提交审核。</text
       >
       <view v-for="check in application.checks" :key="check.type" class="check"
         ><text>{{ checkLabel(check.type) }}</text
         ><text class="muted">{{ checkStatus(check.status) }}</text></view
       >
       <text class="muted"
-        >活体、背景核验入口尚未接通。培训须按公司正式必修方案完成，实际结果以服务端核验为准；后台审核另行进行。</text
+        >本机生物认证只确认当前设备使用者，不是身份证实名或活体核验。背景及驾驶证由人工经办与独立复核；结果以服务端记录为准。</text
       >
+      <button :disabled="lock || dirty" @click="open('/pages/verification/index')">
+        本机认证与人工核验进度
+      </button>
+      <text v-if="dirty" class="muted">先保存当前资料，再进入本人核验，避免核验旧材料。</text>
       <button @click="open('/pages/training/list')">进入正式培训与考试</button>
       <view v-if="application.submitBlockers.length" class="blockers"
         ><text v-for="(blocker, index) in application.submitBlockers" :key="index"

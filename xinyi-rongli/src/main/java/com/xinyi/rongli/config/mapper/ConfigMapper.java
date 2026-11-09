@@ -17,6 +17,8 @@ public interface ConfigMapper {
 
     List<Map<String, Object>> selectQualificationConsent(@Param("lock") boolean lock);
 
+    List<Map<String, Object>> selectVerificationConsent(@Param("lock") boolean lock);
+
     int upsert(@Param("key") String key, @Param("value") String value);
 
     int ensureVersion();

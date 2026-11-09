@@ -5,7 +5,7 @@ const {panel:p,button:b,goBtn:g,kv,field:f,notice:n,badge:tag,check:c,table:t,ro
 const actions=(...v)=>'<div class="flex wrap">'+v.join('')+'</div>';
 const screen=(title,desc,body,act='',overlay='')=>({title,desc,body,actions:act,overlay});
 U.v5=()=>U.store.v5||(U.store.v5={trainingRead:false,attempt:null,answer:null,passed:false,appeal:null,appealDecision:null,coursePublished:false,faceStatus:'NOT_STARTED'});
-const note=()=>n('本地交互演示。课程、资格、供应商核验与实名关系仍须在真实系统配置并验证。','info');
+const note=()=>n('本地交互演示，不产生真实设备认证、人工核验、培训或代驾资格证明。正式状态只读服务端认可的记录。','info');
 M.D39=()=>({title:'服务培训',body:p('本次认证的学习任务',row('doc','车辆交接与服务规范','演示课程 · 1个学习单元',tag(U.v5().passed?'演示已完成':U.v5().trainingRead?'待测验':'待学习',U.v5().passed?'green':'orange'))+kv('学习要求','完成课程，再进入测验')+g(U.v5().trainingRead?'继续学习 / 测验':'开始学习','D40','block'))+note(),footer:g('返回认证','D04','secondary')});
 M.D40=()=>({title:'车辆交接课程',body:p('学习内容',`<div class="training-media" style="padding:28px 16px;background:var(--bg);border-radius:12px"><h3>车辆交还与任务结束</h3><p class="hint mt">这里是演示教材区域，不调用真实视频平台。</p></div><p class="mt">实际归还交接完成后，代驾本次任务结束。后续服务确认和付款核对不继续占用司机。</p>`+kv('学习进度',U.v5().trainingRead?'演示已读完':'尚未完成')+b('演示阅读完本节','v5-training-read','secondary'))+p('测验说明','<p>本地示例只有1题，用于展示尝试编号、答题、提交与结果。正式题库及通过分数由后台发布。</p>')+note(),footer:actions(g('返回课程','D39','secondary'),b('开始测验','v5-attempt-start','',{disabled:!U.v5().trainingRead}))});
 M.D41=()=>{let a=U.v5().attempt;return{title:'服务知识测验',body:!a?U.empty('尚未开始本次测验','先完成课程，再创建新的测验尝试。',g('返回课程','D40')):p('本次答题',kv('尝试编号',a.id)+kv('状态',a.submitted?'已提交':'答题中')+kv('演示截止时间','开始后10分钟（示例）')+'<h3 class="mt">车辆何时交还后，司机可以结束本次任务？</h3>'+f('请选择答案','v5.answer','','select',{required:true,options:[['','请选择'],['RETURN','实际归还交接成功后'],['CONFIRM','等待车主24小时服务确认后']]}))+note(),footer:actions(g('返回课程','D40','secondary'),b('提交本次答案','v5-attempt-submit','',{disabled:!a||a.submitted}))};};
@@ -13,8 +13,26 @@ M.D42=()=>({title:'测验结果',body:p('本次结果',kv('尝试编号',U.v5().
 M.D43=()=>({title:'接单限制记录',body:p('本人的限制与申诉',row('warn','接车前取消 · 停派一轮','处罚编号 PN-DEMO-001 · 演示服务',tag(U.v5().appealDecision==='APPROVE'?'已撤销':'生效中','orange'))+g('查看原因与申诉','D44','secondary block'))+n('限制只按已有规则处理新邀约，不删除已经发生的服务记录或车辆保管责任。'),footer:g('返回我的','D27','secondary')});
 M.D44=()=>({title:'限制记录详情',body:p('限制说明',kv('记录编号','PN-DEMO-001')+kv('关联服务','AS-DEMO-001')+kv('原因','接车前取消了承接（示例）')+kv('规则','停派一轮 / 演示规则V1')+kv('当前状态',U.v5().appealDecision==='APPROVE'?'已撤销':'生效中'))+p('申诉进度',U.v5().appeal?kv('申诉编号',U.v5().appeal.id)+kv('提交说明',U.v5().appeal.reason)+kv('处理结果',U.v5().appealDecision==='APPROVE'?'已通过':U.v5().appealDecision==='REJECT'?'未通过':'待处理')+(U.v5().appealOpinion?kv('公开说明',U.v5().appealOpinion):''):'<p class="hint">暂无申诉。需要核实原因时可提交说明。</p>'),footer:actions(g('返回记录','D43','secondary'),g(U.v5().appeal?'查看申诉':'提交申诉','D45'))});
 M.D45=()=>({title:'限制申诉',body:p('针对本条记录',kv('处罚记录','PN-DEMO-001')+f('申诉原因','v5.appealReason',U.v5().appeal?.reason||'','textarea',{required:true,placeholder:'说明需要核实的具体服务和依据',disabled:!!U.v5().appeal})+n('已有同一未办结申诉时返回原申诉，不再生成第二份。凭证通过私有文件接口上传。'))+(U.v5().appeal?g('查看处理进度','D44','secondary block'):''),footer:actions(g('返回','D44','secondary'),b('提交申诉','v5-appeal-submit','',{disabled:!!U.v5().appeal}))});
-M.D46=()=>({title:'人脸核验',body:p('认证会话',kv('业务会话',U.v5().faceStatus==='NOT_STARTED'?'尚未创建':'FACE-DEMO-001')+kv('状态',U.v5().faceStatus==='NOT_STARTED'?'未开始':U.v5().faceStatus==='PENDING'?'等待核验结果':'演示结果已返回')+n('正式模式使用限时供应商核验页面。此原型不采集真实人脸，也不证明实际活体能力可用。','warn'))+actions(b('创建核验会话','v5-face-start','',{disabled:U.v5().faceStatus!=='NOT_STARTED'}),b('模拟返回并查询结果','v5-face-query','secondary',{disabled:U.v5().faceStatus!=='PENDING'})),footer:g('返回认证','D04','secondary')});
-const oldD04=M.D04;M.D04=()=>{let d=oldD04();d.body=d.body.replace('data-action="training-demo"','data-go="D39"').replace('data-action="capability-demo" data-payload="face"','data-action="v5-open-face"');d.body+=p('核验状态查询',g('查看人脸核验会话','D46','secondary block'));return d;};
+M.D46 = () => ({
+  title: '本机设备确认',
+  body: p('SOTER 本机确认演示',
+    kv('演示会话', U.v5().faceStatus === 'NOT_STARTED' ? '尚未创建' : 'DEVICE-DEMO-001') +
+    kv('状态', U.v5().faceStatus === 'NOT_STARTED' ? '未开始' : U.v5().faceStatus === 'PENDING' ? '等待演示服务端确认' : '演示确认已完成') +
+    kv('当前登录确认', U.store.saved.face ? '演示已确认' : '尚未确认') +
+    n('正式流程：创建5分钟随机挑战 → 本机指纹/面容认证 → 后台微信可信验签。GET只读取状态，UNKNOWN需用已冻结原文恢复确认。') +
+    n('确认只对原登录会话有效，同一登录切角色可继续使用，新登录需重新确认。不证明实名、人证比对或真人活体。', 'info') +
+    n('本原型不接入真实微信SOTER、不采集生物特征、不使用供应商核验URL；下方按钮仅演示状态，不能作为真实证明。', 'warn')) +
+    actions(
+      b('创建本机挑战（演示）', 'v5-face-start', '', {disabled: U.v5().faceStatus !== 'NOT_STARTED'}),
+      b('演示服务端确认结果', 'v5-face-query', 'secondary', {disabled: U.v5().faceStatus !== 'PENDING'})),
+  footer: g('返回四项检查', 'D04', 'secondary')
+});
+const oldD04 = M.D04;
+M.D04 = () => {
+  const view = oldD04();
+  view.body = view.body.replace('data-action="training-demo"', 'data-go="D39"');
+  return view;
+};
 R.B43=()=>screen('培训课程','维护真实服务规范与考核内容。发布版本不能覆盖已产生的学习或答题记录。',p('课程列表',t(['课程','版本','状态','操作'],[['车辆交接与服务规范','V1（演示）',tag(U.v5().coursePublished?'已发布':'草稿','blue'),g('编辑课程与题目','B44','link')]]))+n('只读演示题不代表实际培训政策。正式上线前由业务确定教材、必学时长、分数及重试规则。'),g('维护课程','B44'));
 R.B44=()=>screen('编辑培训课程','只在管理员视角配置标准答案，小程序题目投影没有正确答案字段。',p('课程设置',f('课程名称','v5.courseTitle','车辆交接与服务规范','text',{required:true})+f('媒体文件ID','v5.mediaFileId','100','text',{required:true})+f('必学秒数','v5.duration','300','number',{required:true})+f('通过分数','v5.passScore','100','number',{required:true})+f('考试时限（秒）','v5.examSeconds','600','number',{required:true}))+p('示例题目',f('题目内容','v5.prompt','车辆实际交还后何时释放司机？','textarea',{required:true})+f('选项A','v5.optionA','实际交还交接成功后','text',{required:true})+f('选项B','v5.optionB','车主24小时后确认服务','text',{required:true})+f('标准答案（仅管理员）','v5.correct','A','select',{options:['A','B'],required:true})+n('发布时服务端验证选项唯一、答案属于选项、版本与权限；创建生成trainingId/questionId，题库不由客户端制造有效资格。')),actions(g('返回课程','B43','secondary'),b('保存草稿','v5-course-save','secondary'),b('发布此版本','v5-course-publish')));
 R.B45=()=>{let z=U.v5();return screen('代驾限制申诉','从本人处罚记录产生的申诉；查询、审核和公开说明闭合。',p('申诉列表',t(['申诉','代驾 / 处罚','说明','状态'],[[z.appeal?.id||'APPEAL-DEMO-001','演示代驾 / PN-DEMO-001',e(z.appeal?.reason||'请核实本次取消情况'),tag(z.appealDecision==='APPROVE'?'已通过':z.appealDecision==='REJECT'?'未通过':'待处理','orange')]]))+p('审核处理',f('对代驾公开的处理说明','v5.appealOpinion','','textarea',{required:true})+n('通过不删除原处罚事件；记录撤销及理由。不能自审自己的申诉。实际权限与同人检查由服务端执行。')+actions(b('驳回','v5-appeal-reject','danger',{disabled:!!z.appealDecision}),b('通过申诉','v5-appeal-approve','',{disabled:!!z.appealDecision}))),g('返回代驾员','B28','secondary'));};

@@ -22,7 +22,8 @@
     "evidence": [
       "docs/implementation/vehicle/evidence/A04-20261107.json",
       "docs/implementation/vehicle/evidence/Q01-20261107.json",
-      "docs/implementation/vehicle/evidence/Q03-20261109.json"
+      "docs/implementation/vehicle/evidence/Q03-20261109.json",
+      "docs/implementation/vehicle/evidence/Q04-20261110.json"
     ],
     "table": "vi_driver_profile",
     "taskId": "Q01",
@@ -35,7 +36,8 @@
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/qualification/QualificationMapper.xml",
     "evidence": [
       "docs/implementation/vehicle/evidence/Q01-20261107.json",
-      "docs/implementation/vehicle/evidence/Q03-20261109.json"
+      "docs/implementation/vehicle/evidence/Q03-20261109.json",
+      "docs/implementation/vehicle/evidence/Q04-20261110.json"
     ],
     "table": "vi_driver_application",
     "taskId": "Q01",
@@ -43,16 +45,17 @@
     "q03Note": "公司epoch/当前材料run/固定课表及私有媒体权限兼容回归通过；原共享表的未完成责任保留。"
   },
   {
-    "status": "PARTIAL",
-    "entityFile": null,
-    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/training/LearningMapper.xml",
+    "status": "VERIFIED",
+    "entityFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/verification/domain/VerificationProof.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/verification/VerificationMapper.xml",
     "evidence": [
-      "docs/implementation/vehicle/evidence/Q03-20261109.json"
+      "docs/implementation/vehicle/evidence/Q03-20261109.json",
+      "docs/implementation/vehicle/evidence/Q04-20261110.json"
     ],
     "table": "vi_provider_verification",
     "taskId": "Q04",
-    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/training/service/TrainingCompletionAuthority.java",
-    "implementationNote": "Q03以内部Map显式投影生产INTERNAL_TRAINING汇总并核对Q01权威消费，无实体批量绑定；Q04其余真实外部核验/回调尚未完成，主责任Q04。"
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/verification/service/CanonicalVerificationAuthority.java",
+    "implementationNote": "按Q04当前用户范围验证；历史FACE/REALNAME/NULL来源隔离，设备只确认已录入生物特征、人工双人，无腾讯慧眼或实名活体通过。"
   },
   {
     "status": "NOT_ASSESSED",
@@ -562,7 +565,8 @@
     "entityFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/training/domain/TrainingProgress.java",
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/training/LearningMapper.xml",
     "evidence": [
-      "docs/implementation/vehicle/evidence/Q03-20261109.json"
+      "docs/implementation/vehicle/evidence/Q03-20261109.json",
+      "docs/implementation/vehicle/evidence/Q04-20261110.json"
     ],
     "table": "vi_training_progress",
     "taskId": "Q03",
@@ -584,19 +588,24 @@
     "entityFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/training/domain/TrainingExamAttempt.java",
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/training/LearningMapper.xml",
     "evidence": [
-      "docs/implementation/vehicle/evidence/Q03-20261109.json"
+      "docs/implementation/vehicle/evidence/Q03-20261109.json",
+      "docs/implementation/vehicle/evidence/Q04-20261110.json"
     ],
     "table": "vi_training_attempt",
     "taskId": "Q03",
     "implementationNote": "Q03父归属、冻结与当前运行、毫秒学时、计次、一次阅卷和真实证明已验；旧NULL运行不可信。"
   },
   {
-    "status": "NOT_ASSESSED",
-    "entityFile": null,
-    "mapperFile": null,
-    "evidence": [],
+    "status": "VERIFIED",
+    "entityFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/verification/domain/DeviceAuthenticationSession.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/verification/VerificationMapper.xml",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/Q04-20261110.json"
+    ],
     "table": "vi_face_session",
-    "taskId": "Q04"
+    "taskId": "Q04",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/verification/service/DeviceAuthenticationService.java",
+    "implementationNote": "按Q04当前用户范围验证；历史FACE/REALNAME/NULL来源隔离，设备只确认已录入生物特征、人工双人，无腾讯慧眼或实名活体通过。"
   },
   {
     "status": "NOT_ASSESSED",
@@ -627,7 +636,8 @@
     "entityFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/integration/domain/IntegrationProfile.java",
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/integration/IntegrationMapper.xml",
     "evidence": [
-      "docs/implementation/vehicle/evidence/X01-20261102.json"
+      "docs/implementation/vehicle/evidence/X01-20261102.json",
+      "docs/implementation/vehicle/evidence/Q04-20261110.json"
     ],
     "table": "vi_integration_profile",
     "taskId": "X01"
@@ -637,7 +647,8 @@
     "entityFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/integration/domain/IntegrationRevision.java",
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/integration/IntegrationMapper.xml",
     "evidence": [
-      "docs/implementation/vehicle/evidence/X01-20261102.json"
+      "docs/implementation/vehicle/evidence/X01-20261102.json",
+      "docs/implementation/vehicle/evidence/Q04-20261110.json"
     ],
     "table": "vi_integration_revision",
     "taskId": "X01"
@@ -647,7 +658,8 @@
     "entityFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/integration/domain/IntegrationSecret.java",
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/integration/IntegrationMapper.xml",
     "evidence": [
-      "docs/implementation/vehicle/evidence/X01-20261102.json"
+      "docs/implementation/vehicle/evidence/X01-20261102.json",
+      "docs/implementation/vehicle/evidence/Q04-20261110.json"
     ],
     "table": "vi_integration_secret",
     "taskId": "X01"
@@ -822,10 +834,23 @@
     "entityFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/training/domain/TrainingRun.java",
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/training/LearningMapper.xml",
     "evidence": [
-      "docs/implementation/vehicle/evidence/Q03-20261109.json"
+      "docs/implementation/vehicle/evidence/Q03-20261109.json",
+      "docs/implementation/vehicle/evidence/Q04-20261110.json"
     ],
     "table": "vi_training_run",
     "taskId": "Q03",
     "implementationNote": "Q03父归属、冻结与当前运行、毫秒学时、计次、一次阅卷和真实证明已验；旧NULL运行不可信。"
+  },
+  {
+    "status": "VERIFIED",
+    "entityFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/verification/domain/ManualVerificationRecord.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/verification/ManualVerificationMapper.xml",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/Q04-20261110.json"
+    ],
+    "table": "vi_manual_verification",
+    "taskId": "Q04",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/verification/service/ManualVerificationService.java",
+    "implementationNote": "按Q04当前用户范围验证；历史FACE/REALNAME/NULL来源隔离，设备只确认已录入生物特征、人工双人，无腾讯慧眼或实名活体通过。"
   }
 ]

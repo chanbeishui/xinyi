@@ -59,6 +59,8 @@ U.prepareIdentityPreview=function(v){const a=U.auth62();if(a.journeyStarted||a.p
  if(scenario){U.authorize62(scenario);a.journeyStarted=false;}
  if(id==='U01-all'){a.driverApproved=true;a.driverStatus='APPROVED';}
  if(['D01-pending','D05','O25-pending'].includes(id))a.driverStatus='PENDING';
+ // 目录中的待审核/已通过画板是明确状态样本；真实演示操作仍逐项检查，不能靠进入页面提交。
+ if(['D05','D05-passed'].includes(id)){['face','background','licenseVerification','training'].forEach(key=>U.store.saved[key]=true);if(U.store.v5)U.store.v5.faceStatus='DEMO_PASSED';}
  if(id==='D01-draft')a.driverStatus='DRAFT';
  if(['D01-rejected','D05-rejected'].includes(id))a.driverStatus='REJECTED';
  if(id==='U02-revoked'||id==='B36-rematch'){const e=U.identityCurrentEmployee();e.linkStatus='REVOKED';e.blocked=true;a.link='REVOKED';a.blocked=true;}

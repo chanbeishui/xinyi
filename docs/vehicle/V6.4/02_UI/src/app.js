@@ -98,10 +98,23 @@ case 'dispute-submit':if(!requireFields(['dispute.desc']))return;o.dispute='OPEN
 case 'save-driver':saveNote('driver.draft','代驾资料草稿');return;
 case 'driver-real-next':if(!requireFields(['driver.name','driver.id']))return;U.go('D03');return;
 case 'driver-license-next':if(!requireFields(['driver.licenseType','driver.firstIssue','driver.validTo']))return;U.go('D04');return;
-case 'capability-demo':U.store.saved[payload]=true;U.log('认证能力演示',payload+'仅演示反馈，不构成实际通过');render();return;
+case 'capability-demo': {
+  const labels = {background: '背景双人人工确认', licenseVerification: '驾驶证双人人工确认', face: '本机设备确认'};
+  U.store.saved[payload] = true;
+  U.log('认证检查演示', (labels[payload] || '本地检查') + '仅演示反馈，不构成真实证明');
+  render();
+  return;
+}
+
 case 'training-demo':U.dialog('培训与测验交互演示',U.notice('正式培训内容、考试合格条件与记录需实际配置，本页仅呈现学习、答题及反馈结构。','warn')+'<h3 class="mt">当车辆已经交还，司机任务何时结束？</h3>'+U.field('选择答案','training.answer','','select',{options:[['','请选择'],['return','实际归还交接成功后'],['wait','车主24小时后服务确认时']]}),[b('取消','close-dialog','secondary'),b('提交演示答案','training-submit')]);return;
 case 'training-submit':if(U.get('training.answer')!=='return'){invalid('training.answer','请根据已确认业务规则重新选择');return;}U.store.saved.training=true;U.closeDialog();render();U.toast('演示答题已完成，不代表正式培训通过');return;
-case 'driver-check-next':if(!U.store.saved.face||!U.store.saved.background||!U.store.saved.training){U.toast('请先完成各项演示核验和培训反馈');return;}U.go('D05');return;
+case 'driver-check-next':
+  if (!U.store.saved.face || !U.store.saved.background || !U.store.saved.licenseVerification || !U.store.saved.training) {
+    U.toast('请完成本机、背景、驾驶证与培训四项演示反馈');
+    return;
+  }
+  U.go('D05');
+  return;
 case 'auth-refresh':U.toast('当前仍为演示审核状态；实际审批结果由后台返回');return;
 case 'invite-accept':if(U.store.qualification!=='PASSED'){U.toast('正式代驾资格未通过，不可接受邀约');return;}if(U.store.flow&&U.store.occupancy){U.toast('已有在手承接，不能接受新邀约');return;}o.stage='ACCEPTED';o.assignmentId=o.assignmentId||'ASG-DEMO-452';o.occupied=true;o.occupiedHolder=o.assignmentId;U.store.occupancy={assignmentId:o.assignmentId,orderNo:o.orderNo};o.custody='OWNER';U.log('接受邀约',o.assignmentId+' · 保留原订单');U.go('D09');return;
 case 'invite-reject':if(U.store.flow&&o.occupied){U.toast('已经承接，不能把拒绝邀约当作取消任务');return;}o.stage='DISPATCHING';U.go('D08');return;

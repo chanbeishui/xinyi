@@ -2546,7 +2546,7 @@
       [
         "task_type",
         "VARCHAR(64)",
-        "VerificationType: REALNAME,FACE,BACKGROUND,LICENSE,TRAINING"
+        "VerificationType: DEVICE_AUTH,BACKGROUND,LICENSE,TRAINING；REALNAME/FACE仅历史"
       ],
       [
         "provider_task_id",
@@ -2582,13 +2582,45 @@
         "version",
         "BIGINT NOT NULL DEFAULT 0",
         "乐观锁版本"
+      ],
+      [
+        "owner_dept_id",
+        "BIGINT NULL",
+        "权威公司；历史NULL不猜归属"
+      ],
+      [
+        "company_revision",
+        "BIGINT NULL",
+        "专用公司归属epoch，历史NULL不可信"
+      ],
+      [
+        "source_kind",
+        "VARCHAR(32) NULL",
+        "DEVICE_SESSION或MANUAL_REVIEW，历史无来源不可信"
+      ],
+      [
+        "source_record_id",
+        "BIGINT NULL",
+        "可信原始会话或双人人工确认事实"
+      ],
+      [
+        "canonical_result_cipher",
+        "MEDIUMBLOB NULL",
+        "绑定完整上下文与原始事实的认证加密结果"
+      ],
+      [
+        "source_session_id",
+        "BIGINT NULL",
+        "设备确认绑定实际MINI登录会话；人工事实为空"
       ]
     ],
     "indexes": [
       "UNIQUE KEY uk_provider_task (provider,provider_task_id)",
-      "KEY ix_app_type (application_id,task_type)"
+      "KEY ix_app_type (application_id,task_type)",
+      "UNIQUE KEY uk_verification_source (source_kind,source_record_id,task_type)",
+      "KEY ix_verification_canonical (application_id,company_revision,material_revision,task_type,id)"
     ],
-    "rule": " 当前材料版本和HMAC绑定由服务端写入；旧NULL、错版或缺可信时刻不能视为当前通过。",
+    "rule": "新设备/人工证明只能从可信父会话/双人确认发布，认证密文绑定当前申请/公司epoch/材料/来源ID；DEVICE_AUTH还绑定实际MINI登录会话。历史REALNAME/FACE、NULL来源或独立PASSED行不满足Q01。Q03培训仍按其权威计划/运行验真。当前提交只消费四项要求，不从设备确认推导实名或活体。",
     "primaryKey": [
       "id"
     ],
@@ -2605,45 +2637,45 @@
       "application_id": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "provider": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "task_type": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false,
         "enumRef": "VerificationType"
       },
       "provider_task_id": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "status": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false,
         "enumRef": "VerificationStatus"
       },
       "result_digest": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "verified_at": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "created_at": {
@@ -2669,18 +2701,55 @@
       "material_revision": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "material_hash": {
         "generated": false,
         "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "owner_dept_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "company_revision": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "source_kind": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "source_record_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "canonical_result_cipher": {
+        "generated": false,
+        "insertable": true,
         "updatable": true,
+        "clientWritable": false,
+        "authority": "取得数据库ID后同事务仅初始化一次sealProof，WHERE原值NULL；结果来源和结论不可更改。"
+      },
+      "source_session_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
         "clientWritable": false
       }
     },
     "checks": [
-      "CONSTRAINT ck_66_2612e28e561f CHECK (`task_type` IN ('REALNAME','FACE','BACKGROUND','LICENSE','TRAINING'))",
+      "CONSTRAINT ck_66_2612e28e561f CHECK (`task_type` IN ('DEVICE_AUTH','REALNAME','FACE','BACKGROUND','LICENSE','TRAINING'))",
       "CONSTRAINT ck_66_fd8e93f22cc6 CHECK (`status` IN ('CREATED','PROCESSING','PASSED','FAILED','EXPIRED','UNAVAILABLE'))",
       "CONSTRAINT ck_ver_provider_verification CHECK (version >= 0)"
     ]

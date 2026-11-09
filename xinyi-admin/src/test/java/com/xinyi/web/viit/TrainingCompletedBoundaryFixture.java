@@ -60,8 +60,7 @@ final class TrainingCompletedBoundaryFixture {
                 plan = next(),
                 run = next(),
                 progress = next(),
-                attempt = next(),
-                proof = next();
+                attempt = next();
         String courseKey = "Q01_BOUNDARY_" + course;
         byte[] hash =
                 HexFormat.of()
@@ -161,15 +160,23 @@ final class TrainingCompletedBoundaryFixture {
                 ViJson.write(List.of(frozen)));
         jdbc.update(
                 "INSERT INTO"
-                    + " vi_provider_verification(id,application_id,material_revision,material_hash,provider,task_type,provider_task_id,status,result_digest,verified_at)"
+                    + " vi_provider_verification(application_id,material_revision,material_hash,provider,task_type,provider_task_id,status,result_digest,verified_at)"
                     + " VALUES"
-                    + " (?,?,?,?,'INTERNAL_TRAINING','TRAINING',?,'PASSED','q01-consumer-upstream-boundary',DATE_SUB(UTC_TIMESTAMP(3),INTERVAL"
+                    + " (?,?,?,'INTERNAL_TRAINING','TRAINING',?,'PASSED','q01-consumer-upstream-boundary',DATE_SUB(UTC_TIMESTAMP(3),INTERVAL"
                     + " 1 SECOND))",
-                proof,
                 application,
                 revision,
                 material,
                 "Q03:RUN:" + run);
+        // 与真实Q03共享同一证明表时必须使用数据库主键，不能用SEQ撞上生产AUTO_INCREMENT。
+        long proof =
+                jdbc.queryForObject(
+                        "SELECT id FROM vi_provider_verification WHERE application_id=? AND"
+                            + " provider='INTERNAL_TRAINING' AND task_type='TRAINING' AND"
+                            + " provider_task_id=?",
+                        Long.class,
+                        application,
+                        "Q03:RUN:" + run);
         jdbc.update(
                 "INSERT INTO"
                     + " vi_training_run(id,plan_snapshot_id,application_id,material_revision,material_hash,status,provider_verification_id,completed_at)"

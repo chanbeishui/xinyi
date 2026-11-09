@@ -110,6 +110,7 @@ class Q01QualificationIT extends PricingHttpFixture {
                         "vi_driver_application_submission",
                         "vi_face_session",
                         "vi_provider_verification",
+                        "vi_manual_verification",
                         "vi_training_playback",
                         "vi_training_attempt",
                         "vi_training_progress",
@@ -965,7 +966,7 @@ class Q01QualificationIT extends PricingHttpFixture {
         assertEquals(
                 body.get("expectedProfileVersion"),
                 ((Number) frozen.get("profile_version")).longValue());
-        assertEquals(5, ViJson.tree(frozen.get("provider_result_ids").toString()).size());
+        assertEquals(4, ViJson.tree(frozen.get("provider_result_ids").toString()).size());
         assertArrayEquals(payload(id(row)), (byte[]) frozen.get("sensitive_payload_cipher"));
         String reasonAad = "Q01:ACCOUNT:" + account + ":APPLICATION:" + id(row) + ":SUBMIT:1";
         byte[] encryptedReason = (byte[]) frozen.get("submit_reason_cipher");
@@ -1158,26 +1159,11 @@ class Q01QualificationIT extends PricingHttpFixture {
     }
 
     private void trustedChecks(JsonNode application) {
-        // Q04四项是显式上游边界；TRAINING另建真实Q03关系的消费端边界，不靠独立PASSED行放行。
+        // 仅Q04/Q03上游完成事实的消费边界；生产者真实微信设备验签/双人/墙钟链分别在各自IT验证。
         long id = id(application);
         jdbc.update("DELETE FROM vi_provider_verification WHERE application_id=?", id);
-        Map<String, Object> material =
-                jdbc.queryForMap(
-                        "SELECT material_revision,material_hash FROM vi_driver_application WHERE"
-                                + " id=?",
-                        id);
-        for (String type : List.of("REALNAME", "FACE", "BACKGROUND", "LICENSE")) {
-            jdbc.update(
-                    "INSERT INTO"
-                        + " vi_provider_verification(application_id,material_revision,material_hash,provider,task_type,provider_task_id,status,result_digest,verified_at)"
-                        + " VALUES"
-                        + " (?,?,?,'Q01_SERVER_FACT_FIXTURE',?,?,'PASSED','controlled-source-boundary',UTC_TIMESTAMP(3))",
-                    id,
-                    material.get("material_revision"),
-                    material.get("material_hash"),
-                    type,
-                    "q01-" + UUID.randomUUID());
-        }
+        VerificationCompletedBoundaryFixture.seed(
+                jdbc, crypto, idempotency, id, miniTokens.resolveAccess(owner).sessionId());
         TrainingCompletedBoundaryFixture.seed(jdbc, crypto, idempotency, id);
     }
 

@@ -697,7 +697,7 @@
     "method": "POST",
     "path": "/api/app/driver/qualification/face-session",
     "operationId": "API_045_post",
-    "summary": "创建实名活体核验会话",
+    "summary": "创建本人本机生物认证挑战",
     "permission": null,
     "capability": "DRIVER_QUALIFICATION_CREATE",
     "authorization": {
@@ -4309,7 +4309,7 @@
     "method": "GET",
     "path": "/api/app/driver/qualification/face-sessions/{verificationSessionId}",
     "operationId": "v5_get_api_app_driver_qualification_face_sessions_verificationSessionId",
-    "summary": "查询本人活体核验结果（服务端查询供应商）",
+    "summary": "读取本人本机生物认证元数据",
     "permission": null,
     "capability": "DRIVER_QUALIFICATION_QUERY",
     "authorization": {
@@ -5232,6 +5232,163 @@
     },
     "flows": [
       "F41"
+    ]
+  },
+  {
+    "operationId": "q04_post_api_admin_manual_verifications_id_review",
+    "method": "POST",
+    "path": "/api/admin/manual-verifications/{id}/review",
+    "summary": "独立复核人工确认",
+    "permission": "biz:manualverification:review",
+    "capability": null,
+    "authorization": {
+      "realm": "ADMIN",
+      "scope": "COMPANY_OWNER_DEPT",
+      "permission": "biz:manualverification:review",
+      "additionalRequiredPermissions": [
+        "biz:manualverification:query"
+      ]
+    },
+    "flows": [
+      "F49"
+    ]
+  },
+  {
+    "operationId": "q04_get_api_admin_verification_sessions",
+    "method": "GET",
+    "path": "/api/admin/verification-sessions",
+    "summary": "本机生物认证会话列表",
+    "permission": "biz:verification:list",
+    "capability": null,
+    "authorization": {
+      "realm": "ADMIN",
+      "scope": "COMPANY_OWNER_DEPT",
+      "permission": "biz:verification:list"
+    },
+    "flows": [
+      "F49"
+    ]
+  },
+  {
+    "operationId": "q04_get_api_admin_verification_sessions_id",
+    "method": "GET",
+    "path": "/api/admin/verification-sessions/{id}",
+    "summary": "本机生物认证会话详情",
+    "permission": "biz:verification:query",
+    "capability": null,
+    "authorization": {
+      "realm": "ADMIN",
+      "scope": "COMPANY_OWNER_DEPT",
+      "permission": "biz:verification:query"
+    },
+    "flows": [
+      "F49"
+    ]
+  },
+  {
+    "operationId": "q04_get_api_admin_manual_verifications_applications",
+    "method": "GET",
+    "path": "/api/admin/manual-verifications/applications",
+    "summary": "候选人工确认申请",
+    "permission": "biz:manualverification:query",
+    "capability": null,
+    "authorization": {
+      "realm": "ADMIN",
+      "scope": "COMPANY_OWNER_DEPT",
+      "permission": "biz:manualverification:query"
+    },
+    "flows": [
+      "F49"
+    ]
+  },
+  {
+    "operationId": "q04_get_api_admin_manual_verifications",
+    "method": "GET",
+    "path": "/api/admin/manual-verifications",
+    "summary": "人工确认记录列表",
+    "permission": "biz:manualverification:list",
+    "capability": null,
+    "authorization": {
+      "realm": "ADMIN",
+      "scope": "COMPANY_OWNER_DEPT",
+      "permission": "biz:manualverification:list"
+    },
+    "flows": [
+      "F49"
+    ]
+  },
+  {
+    "operationId": "q04_post_api_admin_manual_verifications",
+    "method": "POST",
+    "path": "/api/admin/manual-verifications",
+    "summary": "登记背景或驾驶证人工确认",
+    "permission": "biz:manualverification:create",
+    "capability": null,
+    "authorization": {
+      "realm": "ADMIN",
+      "scope": "COMPANY_OWNER_DEPT",
+      "permission": "biz:manualverification:create",
+      "additionalRequiredPermissions": [
+        "biz:manualverification:query"
+      ]
+    },
+    "flows": [
+      "F49"
+    ]
+  },
+  {
+    "operationId": "q04_post_api_app_driver_qualification_face_sessions_verificationSessionId_confirm",
+    "method": "POST",
+    "path": "/api/app/driver/qualification/face-sessions/{verificationSessionId}/confirm",
+    "summary": "提交微信SOTER原签名或恢复首次未知验签",
+    "permission": null,
+    "capability": "DRIVER_QUALIFICATION_CREATE",
+    "authorization": {
+      "realm": "MINI",
+      "scope": "SELF_QUALIFICATION",
+      "capability": "DRIVER_QUALIFICATION_CREATE",
+      "qualificationRequired": false,
+      "principal": "MINI_ACCOUNT",
+      "roleRequirement": "NONE",
+      "requiredAccountConditions": [
+        "ACTIVE",
+        "PHONE_VERIFIED"
+      ]
+    },
+    "flows": [
+      "F49"
+    ]
+  },
+  {
+    "operationId": "q04_get_api_admin_manual_verifications_id",
+    "method": "GET",
+    "path": "/api/admin/manual-verifications/{id}",
+    "summary": "人工确认详情",
+    "permission": "biz:manualverification:query",
+    "capability": null,
+    "authorization": {
+      "realm": "ADMIN",
+      "scope": "COMPANY_OWNER_DEPT",
+      "permission": "biz:manualverification:query"
+    },
+    "flows": [
+      "F49"
+    ]
+  },
+  {
+    "operationId": "q04_post_api_admin_verification_sessions_id_close",
+    "method": "POST",
+    "path": "/api/admin/verification-sessions/{id}/close",
+    "summary": "封存未决本机认证会话",
+    "permission": "biz:verification:close",
+    "capability": null,
+    "authorization": {
+      "realm": "ADMIN",
+      "scope": "COMPANY_OWNER_DEPT",
+      "permission": "biz:verification:close"
+    },
+    "flows": [
+      "F49"
     ]
   }
 ]

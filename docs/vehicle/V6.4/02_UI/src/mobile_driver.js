@@ -4,7 +4,27 @@ const task=stage=>U.taskHeader(U.demoOrder.plate,stage,'ASG-DEMO-451 · 本次�
 const nextPhotos=(stage,mode,required=true,manual=false)=>p('六类车况照片',U.photos(stage,mode,true)+`<p class="hint mt">前、后、左、右、仪表盘、内饰。每张可单独重拍或重试。演示缩略图不作为真实证据。</p>`)+p('仪表里程',f('里程（km）','mileage.'+stage,manual?'':stage==='pickup'?'48216.0':stage==='arrival'||stage==='take'?'48222.0':'48229.0','number',{required,step:'0.1',hint:required?'必填；请对照车辆仪表核对。':'中间节点选填，填写后不得小于前次里程。'}));
 R.D02=()=>({title:'填写实名资料',body:U.steps(['实名','驾驶证','补充核验','审核'],0)+p('身份信息',f('真实姓名','driver.name','林晓','text',{required:true})+f('身份证号码','driver.id','','text',{required:true,placeholder:'请填写真实证件号码',maxlength:18,hint:'原型请仅填写虚构测试数据。'}))+p('身份证照片',`<div class="stats-duo">${U.upload('身份证人像面','id-front')}${U.upload('身份证国徽面','id-back')}</div>`)+n('文件仅用于资格审核。保存草稿不会提前锁定为“已通过”。'),footer:b('保存草稿','save-driver','secondary')+b('下一步','driver-real-next')});
 R.D03=()=>({title:'驾驶证资料',body:U.steps(['实名','驾驶证','补充核验','审核'],1)+p('驾驶证照片',`<div class="stats-duo">${U.upload('驾驶证主页','license-main')}${U.upload('驾驶证副页','license-sub')}</div>`)+p('核对证件信息',f('准驾车型','driver.licenseType','','select',{required:true,options:[['','请选择'],['C1','C1'],['C2','C2'],['B2','B2'],['A1','A1'],['OTHER','其他（按配置核验）']]})+f('初次领证日期','driver.firstIssue','','date',{required:true})+f('有效期至','driver.validTo','','date',{required:true})+n('能否驾驶所选车辆按已配置的资格兼容规则审核，不按字母数字大小比较。')),footer:b('保存草稿','save-driver','secondary')+b('下一步','driver-license-next')});
-R.D04=()=>({title:'认证补充',body:U.steps(['实名','驾驶证','补充核验','审核'],2)+p('核验项目',row('user','活体与人证核验',U.store.saved.face?'已完成演示核验':'待进行',tag(U.store.saved.face?'演示通过':'待核验',U.store.saved.face?'green':'orange'))+b('演示核验反馈','capability-demo','secondary block',{payload:'face'})+row('shield','背景核验',U.store.saved.background?'演示结果已返回':'实际供应商能力待配置',tag(U.store.saved.background?'演示结果':'未配置',U.store.saved.background?'green':'gray'))+b('演示背景核验反馈','capability-demo','secondary block',{payload:'background'}))+p('培训与考试',row('doc','服务规范学习','课程与合格条件由后台确定',tag(U.store.saved.training?'演示完成':'待学习',U.store.saved.training?'green':'orange'))+b('查看培训与测验','training-demo','secondary block'))+n('本原型不调用活体、背景核验或培训供应商；演示反馈不能用作实际资格通过证据。','warn'),footer:b('查看提交检查','driver-check-next')});
+R.D04 = () => ({
+  title: '认证补充',
+  body: U.steps(['本人资料', '驾驶证', '补充核验', '审核'], 2) +
+    p('四项提交检查',
+      row('user', '本机设备确认 · SOTER', U.store.saved.face ? '本次登录的演示确认已完成' : '待本机生物认证',
+        tag(U.store.saved.face ? '演示完成' : '待确认', U.store.saved.face ? 'green' : 'orange')) +
+      b('查看本机确认演示', 'v5-open-face', 'secondary block') +
+      row('shield', '背景 · 双人人工确认', U.store.saved.background ? '演示经办及另一人复核已完成' : '待后台经办及另一人复核',
+        tag(U.store.saved.background ? '演示完成' : '待人工确认', U.store.saved.background ? 'green' : 'orange')) +
+      b('演示背景双人确认反馈', 'capability-demo', 'secondary block', {payload: 'background'}) +
+      row('idcard', '驾驶证 · 双人人工确认', U.store.saved.licenseVerification ? '演示经办及另一人复核已完成' : '填写证件资料不等于人工确认',
+        tag(U.store.saved.licenseVerification ? '演示完成' : '待人工确认', U.store.saved.licenseVerification ? 'green' : 'orange')) +
+      b('演示驾驶证双人确认反馈', 'capability-demo', 'secondary block', {payload: 'licenseVerification'})) +
+    p('培训与考试',
+      row('doc', '培训必修课程与考试', '正式系统按公司已发布政策及本申请冻结课表执行',
+        tag(U.store.saved.training ? '演示完成' : '待学习', U.store.saved.training ? 'green' : 'orange')) +
+      b('查看培训与测验', 'training-demo', 'secondary block')) +
+    n('SOTER只确认当前登录中本设备已录入的生物特征，不证明姓名身份证或人脸活体。背景与驾驶证由后台两人确认，无需上传核验凭证。', 'info') +
+    n('这里复用本地演示状态，不调用微信认证、真实人工复核或培训服务；演示按钮和绿色反馈不能替代四项真实证明。', 'warn'),
+  footer: b('查看四项提交检查', 'driver-check-next')
+});
 R.D06=v=>{let busy=v.state==='occupied'||U.store.flow&&!!U.store.occupancy;let online=v.state==='offline'?false:U.store.listening;return{title:'代驾工作台',tabs:'driver',active:0,body:rolebar()+U.banner(busy?'当前有接送任务':online?'已开启听单':'未开启听单',busy?'完成实际车辆归还交接后，本次任务结束并释放。':online?'仅接收分配给您的个人邀约。':'开启后将按资格与位置参与派单。')+U.summary([['今日已结束',3],['当前承接',busy?1:0],['服务评分','4.9']])+p('工作状态',kv('资格状态','已通过 · 证件有效')+kv('位置更新','09:28 · 最近节点')+U.switcher('接受新邀约','关闭新邀约不会解除已承接任务','driver.listening',online))+(busy?U.orderCard({stage:'INSPECTING'},'D17',g('继续当前任务','D17','small')):p('当前邀约',row('bell','暂无待响应邀约','新的邀约会显示响应截止时间')))+p('常用功能',row('order','当前与历史任务','查看接送任务与释放时间','','D36')+row('idcard','认证与复审','维护证件和资格','','D28'))};};
 R.D07=()=>({title:'新派单邀约',body:task('仅发给您的一次邀约')+U.banner('请在有效时间内响应','剩余 <span data-countdown="invite">00:47</span>；超时后邀约失效。')+p('服务安排',kv('上门时段','2026-10-11 09:00–10:00')+kv('接车地点','迎宾大道88号 · 东门停车区')+kv('送达检测点','城东检测站')+kv('接车距离','2.4 km（演示）')+kv('工作内容','接车、送检、站点取车、车辆归还'))+n('接受前再次检查资格与占用。车主支付的服务费不作为司机可提现收入。'),footer:b('拒绝本次邀约','invite-reject','secondary')+b('接受邀约','invite-accept')});
 R.D08=()=>({title:'本次邀约已失效',body:U.empty('本次邀约已结束','邀约超时、被撤回或已经有其他有效承接时，不再允许接受。',g('返回听单','D06'),'clock')+p('邀约信息',kv('邀约编号','INV-DEMO-118')+kv('状态','已超时')+kv('订单','原订单继续安排其他代驾'))+n('旧通知不会重新开启已经失效的邀约。')});

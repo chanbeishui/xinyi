@@ -1545,6 +1545,77 @@
         "POST /api/admin/training-policies/{ownerDeptId}/publish"
       ],
       "usage": "OPERATION"
+    },
+    {
+      "code": "biz:manualverification:query",
+      "resource": "manualverification",
+      "action": "query",
+      "description": "候选人工确认申请",
+      "operations": [
+        "GET /api/admin/manual-verifications/applications",
+        "GET /api/admin/manual-verifications/{id}"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:manualverification:list",
+      "resource": "manualverification",
+      "action": "list",
+      "description": "人工确认记录列表",
+      "operations": [
+        "GET /api/admin/manual-verifications"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:manualverification:create",
+      "resource": "manualverification",
+      "action": "create",
+      "description": "登记背景或驾驶证人工确认",
+      "operations": [
+        "POST /api/admin/manual-verifications"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:manualverification:review",
+      "resource": "manualverification",
+      "action": "review",
+      "description": "独立复核人工确认",
+      "operations": [
+        "POST /api/admin/manual-verifications/{id}/review"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:verification:list",
+      "resource": "verification",
+      "action": "list",
+      "description": "本机生物认证会话列表",
+      "operations": [
+        "GET /api/admin/verification-sessions"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:verification:query",
+      "resource": "verification",
+      "action": "query",
+      "description": "本机生物认证会话详情",
+      "operations": [
+        "GET /api/admin/verification-sessions/{id}"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:verification:close",
+      "resource": "verification",
+      "action": "close",
+      "description": "封存未决本机认证会话",
+      "operations": [
+        "POST /api/admin/verification-sessions/{id}/close"
+      ],
+      "usage": "OPERATION"
     }
   ],
   "capabilities": [
@@ -2397,7 +2468,15 @@
     "REPORT_TRAINING_PROGRESS",
     "CREATE_TRAINING_ATTEMPT",
     "VIEW_TRAINING_ATTEMPT",
-    "SUBMIT_TRAINING_ATTEMPT"
+    "SUBMIT_TRAINING_ATTEMPT",
+    "START_DEVICE_AUTH",
+    "CONFIRM_DEVICE_AUTH",
+    "RECOVER_DEVICE_AUTH",
+    "QUERY_DEVICE_AUTH",
+    "VIEW_DEVICE_AUTH",
+    "CLOSE_DEVICE_AUTH",
+    "VIEW_MANUAL_VERIFICATION",
+    "REVIEW_MANUAL_VERIFICATION"
   ],
   "operations": [
     {
@@ -2979,7 +3058,7 @@
           "PHONE_VERIFIED"
         ]
       },
-      "summary": "创建实名活体核验会话"
+      "summary": "创建本人本机生物认证挑战"
     },
     {
       "operationId": "API_046_get",
@@ -5896,7 +5975,7 @@
           "PHONE_VERIFIED"
         ]
       },
-      "summary": "查询本人活体核验结果（服务端查询供应商）"
+      "summary": "读取本人本机生物认证元数据"
     },
     {
       "operationId": "v5_post_api_common_orders_orderNo_contact_access",
@@ -6626,6 +6705,136 @@
             "condition": "requiredTrainingIds非空时，每个课程及其权威公司范围必须覆盖"
           }
         ]
+      }
+    },
+    {
+      "operationId": "q04_post_api_admin_manual_verifications_id_review",
+      "method": "POST",
+      "path": "/api/admin/manual-verifications/{id}/review",
+      "summary": "独立复核人工确认",
+      "permission": "biz:manualverification:review",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "COMPANY_OWNER_DEPT",
+        "permission": "biz:manualverification:review",
+        "additionalRequiredPermissions": [
+          "biz:manualverification:query"
+        ]
+      }
+    },
+    {
+      "operationId": "q04_get_api_admin_verification_sessions",
+      "method": "GET",
+      "path": "/api/admin/verification-sessions",
+      "summary": "本机生物认证会话列表",
+      "permission": "biz:verification:list",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "COMPANY_OWNER_DEPT",
+        "permission": "biz:verification:list"
+      }
+    },
+    {
+      "operationId": "q04_get_api_admin_verification_sessions_id",
+      "method": "GET",
+      "path": "/api/admin/verification-sessions/{id}",
+      "summary": "本机生物认证会话详情",
+      "permission": "biz:verification:query",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "COMPANY_OWNER_DEPT",
+        "permission": "biz:verification:query"
+      }
+    },
+    {
+      "operationId": "q04_get_api_admin_manual_verifications_applications",
+      "method": "GET",
+      "path": "/api/admin/manual-verifications/applications",
+      "summary": "候选人工确认申请",
+      "permission": "biz:manualverification:query",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "COMPANY_OWNER_DEPT",
+        "permission": "biz:manualverification:query"
+      }
+    },
+    {
+      "operationId": "q04_get_api_admin_manual_verifications",
+      "method": "GET",
+      "path": "/api/admin/manual-verifications",
+      "summary": "人工确认记录列表",
+      "permission": "biz:manualverification:list",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "COMPANY_OWNER_DEPT",
+        "permission": "biz:manualverification:list"
+      }
+    },
+    {
+      "operationId": "q04_post_api_admin_manual_verifications",
+      "method": "POST",
+      "path": "/api/admin/manual-verifications",
+      "summary": "登记背景或驾驶证人工确认",
+      "permission": "biz:manualverification:create",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "COMPANY_OWNER_DEPT",
+        "permission": "biz:manualverification:create",
+        "additionalRequiredPermissions": [
+          "biz:manualverification:query"
+        ]
+      }
+    },
+    {
+      "operationId": "q04_post_api_app_driver_qualification_face_sessions_verificationSessionId_confirm",
+      "method": "POST",
+      "path": "/api/app/driver/qualification/face-sessions/{verificationSessionId}/confirm",
+      "summary": "提交微信SOTER原签名或恢复首次未知验签",
+      "permission": null,
+      "capability": "DRIVER_QUALIFICATION_CREATE",
+      "authorization": {
+        "realm": "MINI",
+        "scope": "SELF_QUALIFICATION",
+        "capability": "DRIVER_QUALIFICATION_CREATE",
+        "qualificationRequired": false,
+        "principal": "MINI_ACCOUNT",
+        "roleRequirement": "NONE",
+        "requiredAccountConditions": [
+          "ACTIVE",
+          "PHONE_VERIFIED"
+        ]
+      }
+    },
+    {
+      "operationId": "q04_get_api_admin_manual_verifications_id",
+      "method": "GET",
+      "path": "/api/admin/manual-verifications/{id}",
+      "summary": "人工确认详情",
+      "permission": "biz:manualverification:query",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "COMPANY_OWNER_DEPT",
+        "permission": "biz:manualverification:query"
+      }
+    },
+    {
+      "operationId": "q04_post_api_admin_verification_sessions_id_close",
+      "method": "POST",
+      "path": "/api/admin/verification-sessions/{id}/close",
+      "summary": "封存未决本机认证会话",
+      "permission": "biz:verification:close",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "COMPANY_OWNER_DEPT",
+        "permission": "biz:verification:close"
       }
     }
   ]

@@ -14,6 +14,7 @@ import com.xinyi.rongli.platform.json.ViJson;
 import com.xinyi.rongli.platform.service.AuditService;
 import com.xinyi.rongli.platform.service.OutboxService;
 import com.xinyi.rongli.pricing.service.PricingService;
+import com.xinyi.rongli.verification.service.VerificationConsentSnapshot;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -169,6 +170,7 @@ public class ConfigService {
         List<String> cities = parseList(configMapper.selectValue("vi.biz.service.cities"));
         QualificationConsentSnapshot qualificationConsent =
                 QualificationConsentSnapshot.read(configMapper, false);
+        var verificationConsent = verificationConsent();
         return new PublicServiceConfigView(
                 configMapper.selectVersion(),
                 nvl(configMapper.selectValue("vi.biz.company.name")),
@@ -183,7 +185,22 @@ public class ConfigService {
                 nvl(configMapper.selectValue("vi.biz.payment.notice")),
                 nvl(qualificationConsent.version()),
                 nvl(qualificationConsent.text()),
-                qualificationConsent.textHash());
+                qualificationConsent.textHash(),
+                verificationConsent.version(),
+                verificationConsent.text(),
+                verificationConsent.textHash());
+    }
+
+    /** 同意版本和正文必须来自同一次有序查询，避免把旧正文误记为已同意新版本。 */
+    private VerificationConsentSnapshot verificationConsent() {
+        String version = null, text = null;
+        for (var row : configMapper.selectVerificationConsent(false)) {
+            if ("vi.biz.verification.consent.version".equals(row.get("config_key")))
+                version = (String) row.get("config_value");
+            if ("vi.biz.verification.consent.text".equals(row.get("config_key")))
+                text = (String) row.get("config_value");
+        }
+        return new VerificationConsentSnapshot(version, text);
     }
 
     /** 缺少真实站点和检测类型的旧入口不能证明可计价，保留签名并拒绝绕过C04。 */

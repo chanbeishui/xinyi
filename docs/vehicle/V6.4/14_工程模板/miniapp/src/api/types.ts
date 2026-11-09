@@ -114,6 +114,8 @@ export type Qualification = {
   "submitBlockers": Array<QualificationBlocker>;
   "checks": Array<QualificationCheck>;
   "allowedActions": Array<AllowedAction>;
+  "companyRevision": number;
+  "verificationSessionId": (string) | null;
 };
 
 export type QualificationAudit = { "expectedVersion": number; "decision": "APPROVE" | "REJECT"; "opinion": string; "reviewDueAt"?: string };
@@ -666,11 +668,35 @@ export type TrainingCourseUpdate = {
 
 export type TrainingCourseAdmin = TrainingCourseSummary | TrainingCourseDetail;
 
-export type FaceSessionStatus = "CREATED" | "PROCESSING" | "PASSED" | "FAILED" | "EXPIRED";
+export type FaceSessionStatus = "CREATED" | "PROCESSING" | "UNKNOWN" | "PASSED" | "FAILED" | "EXPIRED" | "CLOSED";
 
-export type FaceSessionCreate = { "applicationId": string; "expectedVersion": number; "consentVersion": string };
+export type FaceSessionCreate = {
+  "applicationId": string;
+  "expectedApplicationVersion": number;
+  "expectedCompanyRevision": number;
+  "expectedMaterialRevision": number;
+  "consentVersion": string;
+  "consentTextHash": string;
+  "acceptedConsent": true;
+};
 
-export type FaceSession = { "verificationSessionId": string; "applicationId": string; "status": FaceSessionStatus; "launchMode": "WEBVIEW_URL"; "launchUrl": (string) | null; "expiresAt": string; "resultAvailable": boolean; "failureCode": (string) | null; "version": number };
+export type FaceSession = {
+  "verificationSessionId": string;
+  "applicationId": string;
+  "requestNo": string;
+  "status": FaceSessionStatus;
+  "launchMode": "WX_SOTER_DEVICE_AUTH";
+  "launchUrl": (string) | null;
+  "challenge": (string) | null;
+  "authContent": string;
+  "expiresAt": string;
+  "resultAvailable": boolean;
+  "failureCode": (string) | null;
+  "version": number;
+  "materialRevision": number;
+  "companyRevision": number;
+  "allowedActions": Array<AllowedAction>;
+};
 
 export type OrderContactRequest = { "target": "OWNER" | "DRIVER" | "STATION"; "purpose": string; "expectedVersion": number };
 
@@ -698,165 +724,15 @@ export type ApiErrorDetails = { "fieldErrors"?: Array<FieldViolation>; "conflict
 
 export type ApiError = { "code": 400 | 401 | 403 | 404 | 409 | 422 | 429 | 500 | 503; "errorCode": "VI_REQUEST_INVALID" | "VI_AUTH_REQUIRED" | "VI_TOKEN_REALM_MISMATCH" | "VI_REFRESH_REUSED" | "VI_FORBIDDEN" | "VI_SELF_REVIEW_DENIED" | "VI_RESOURCE_NOT_VISIBLE" | "VI_VERSION_CONFLICT" | "VI_STATE_CONFLICT" | "VI_IDEMPOTENCY_CONFLICT" | "VI_SELECTION_CONFLICT" | "VI_CONTEXT_CHANGED" | "VI_SNAPSHOT_CHANGED" | "VI_DATA_INVALID" | "VI_EVIDENCE_INCOMPLETE" | "VI_HANDOVER_CODE_INVALID" | "VI_HANDOVER_LOCKED" | "VI_UNPRICED_LINES" | "VI_REFUND_LIMIT" | "VI_PAYMENT_LIMIT" | "VI_SERVICE_UNAVAILABLE" | "VI_CAPABILITY_NOT_CONFIGURED" | "VI_TRAINING_NOT_READY" | "VI_RATE_LIMITED" | "VI_INTERNAL_ERROR" | "VI_AUTHORITY_UNAVAILABLE" | "VI_UPSTREAM_UNAVAILABLE" | "VI_PHONE_PROOF_REQUIRED" | "VI_PHONE_PROOF_REUSED" | "VI_EMPLOYEE_LINK_CONFLICT" | "VI_EMPLOYEE_LINK_BLOCKED"; "msg": string; "requestId": string; "retryable": boolean; "retryAfterSeconds": (number) | null; "data": ApiErrorDetails };
 
-export type PermissionCode =
-  | 'biz:aftersale:create'
-  | 'biz:aftersale:list'
-  | 'biz:aftersale:note'
-  | 'biz:aftersale:query'
-  | 'biz:aftersale:review'
-  | 'biz:aftersale:reviewpreview'
-  | 'biz:assignment:list'
-  | 'biz:audit:list'
-  | 'biz:capacity:edit'
-  | 'biz:capacity:list'
-  | 'biz:config:edit'
-  | 'biz:config:query'
-  | 'biz:dashboard:list'
-  | 'biz:delivery:query'
-  | 'biz:delivery:retry'
-  | 'biz:dispatch:create'
-  | 'biz:dispatch:edit'
-  | 'biz:dispatch:list'
-  | 'biz:dispatch:preview'
-  | 'biz:dispatch:query'
-  | 'biz:dispute:list'
-  | 'biz:dispute:query'
-  | 'biz:dispute:resolve'
-  | 'biz:driver:assigncompany'
-  | 'biz:driver:disablenewassignments'
-  | 'biz:driver:edit'
-  | 'biz:driver:enablenewassignments'
-  | 'biz:driver:list'
-  | 'biz:driver:query'
-  | 'biz:driveradjust:audit'
-  | 'biz:driveradjust:create'
-  | 'biz:driveradjust:list'
-  | 'biz:driverfeerule:create'
-  | 'biz:driverfeerule:edit'
-  | 'biz:driverfeerule:list'
-  | 'biz:driverfeerule:publish'
-  | 'biz:driverfeerule:query'
-  | 'biz:driverfeerule:trial'
-  | 'biz:driverledger:list'
-  | 'biz:driverpayment:create'
-  | 'biz:driverpayment:list'
-  | 'biz:driverpayment:query'
-  | 'biz:driverpayment:verify'
-  | 'biz:driverqualification:audit'
-  | 'biz:driverqualification:list'
-  | 'biz:driverqualification:query'
-  | 'biz:driverstatement:add'
-  | 'biz:driverstatement:create'
-  | 'biz:driverstatement:list'
-  | 'biz:driverstatement:preview'
-  | 'biz:driverstatement:price'
-  | 'biz:driverstatement:query'
-  | 'biz:driverstatement:remove'
-  | 'biz:driverstatement:review'
-  | 'biz:driverstatement:send'
-  | 'biz:driverstatement:submitreview'
-  | 'biz:driverstatement:void'
-  | 'biz:driverstatement:withdraw'
-  | 'biz:employeebinding:list'
-  | 'biz:employeebinding:query'
-  | 'biz:employeebinding:rematch'
-  | 'biz:employeebinding:revoke'
-  | 'biz:employeebinding:suspend'
-  | 'biz:exception:list'
-  | 'biz:exception:resolve'
-  | 'biz:export:audit'
-  | 'biz:export:query'
-  | 'biz:files:access'
-  | 'biz:files:query'
-  | 'biz:handover:confirm'
-  | 'biz:handover:create'
-  | 'biz:handover:query'
-  | 'biz:handover:secret'
-  | 'biz:integration:check'
-  | 'biz:integration:create'
-  | 'biz:integration:edit'
-  | 'biz:integration:publish'
-  | 'biz:integration:query'
-  | 'biz:integration:test'
-  | 'biz:integration:testrecipient'
-  | 'biz:job:list'
-  | 'biz:job:retry'
-  | 'biz:license:edit'
-  | 'biz:license:list'
-  | 'biz:messageroute:edit'
-  | 'biz:messageroute:query'
-  | 'biz:messagetemplate:check'
-  | 'biz:messagetemplate:create'
-  | 'biz:messagetemplate:edit'
-  | 'biz:messagetemplate:publish'
-  | 'biz:messagetemplate:query'
-  | 'biz:notificationtemplate:edit'
-  | 'biz:notificationtemplate:list'
-  | 'biz:offlinepayment:create'
-  | 'biz:offlinepayment:query'
-  | 'biz:offlinepayment:verify'
-  | 'biz:order:contact'
-  | 'biz:order:create'
-  | 'biz:order:export'
-  | 'biz:order:list'
-  | 'biz:order:query'
-  | 'biz:owner:edit'
-  | 'biz:owner:list'
-  | 'biz:owner:query'
-  | 'biz:paymentreconciliation:list'
-  | 'biz:paymentreconciliation:query'
-  | 'biz:paymentreconciliation:resolve'
-  | 'biz:penalty:list'
-  | 'biz:penalty:query'
-  | 'biz:penaltyappeal:audit'
-  | 'biz:penaltyappeal:list'
-  | 'biz:penaltyappeal:query'
-  | 'biz:price:audit'
-  | 'biz:price:create'
-  | 'biz:price:edit'
-  | 'biz:price:list'
-  | 'biz:price:publish'
-  | 'biz:price:submit'
-  | 'biz:privacycase:list'
-  | 'biz:privacycase:resolve'
-  | 'biz:refund:approve'
-  | 'biz:refund:query'
-  | 'biz:refund:retry'
-  | 'biz:result:create'
-  | 'biz:result:list'
-  | 'biz:resultcorrection:audit'
-  | 'biz:resultcorrection:create'
-  | 'biz:resultcorrection:list'
-  | 'biz:statementdifference:list'
-  | 'biz:statementdifference:resolve'
-  | 'biz:station:create'
-  | 'biz:station:edit'
-  | 'biz:station:list'
-  | 'biz:station:query'
-  | 'biz:stationgrant:edit'
-  | 'biz:stationgrant:list'
-  | 'biz:statistics:list'
-  | 'biz:trainingcourse:create'
-  | 'biz:trainingcourse:edit'
-  | 'biz:trainingcourse:list'
-  | 'biz:trainingcourse:publish'
-  | 'biz:trainingcourse:query'
-  | 'biz:trainingpolicy:edit'
-  | 'biz:trainingpolicy:publish'
-  | 'biz:trainingpolicy:query'
-  | 'biz:uploads:complete'
-  | 'biz:uploads:create'
-  | 'biz:vehicle:edit'
-  | 'biz:vehicle:list'
-  | 'biz:vehicle:query';
+export type PermissionCode = "biz:aftersale:create" | "biz:aftersale:list" | "biz:aftersale:note" | "biz:aftersale:query" | "biz:aftersale:review" | "biz:aftersale:reviewpreview" | "biz:assignment:list" | "biz:audit:list" | "biz:capacity:edit" | "biz:capacity:list" | "biz:config:edit" | "biz:config:query" | "biz:dashboard:list" | "biz:delivery:query" | "biz:delivery:retry" | "biz:dispatch:create" | "biz:dispatch:edit" | "biz:dispatch:list" | "biz:dispatch:preview" | "biz:dispatch:query" | "biz:dispute:list" | "biz:dispute:query" | "biz:dispute:resolve" | "biz:driver:assigncompany" | "biz:driver:disablenewassignments" | "biz:driver:edit" | "biz:driver:enablenewassignments" | "biz:driver:list" | "biz:driver:query" | "biz:driveradjust:audit" | "biz:driveradjust:create" | "biz:driveradjust:list" | "biz:driverfeerule:create" | "biz:driverfeerule:edit" | "biz:driverfeerule:list" | "biz:driverfeerule:publish" | "biz:driverfeerule:query" | "biz:driverfeerule:trial" | "biz:driverledger:list" | "biz:driverpayment:create" | "biz:driverpayment:list" | "biz:driverpayment:query" | "biz:driverpayment:verify" | "biz:driverqualification:audit" | "biz:driverqualification:list" | "biz:driverqualification:query" | "biz:driverstatement:add" | "biz:driverstatement:create" | "biz:driverstatement:list" | "biz:driverstatement:preview" | "biz:driverstatement:price" | "biz:driverstatement:query" | "biz:driverstatement:remove" | "biz:driverstatement:review" | "biz:driverstatement:send" | "biz:driverstatement:submitreview" | "biz:driverstatement:void" | "biz:driverstatement:withdraw" | "biz:employeebinding:list" | "biz:employeebinding:query" | "biz:employeebinding:rematch" | "biz:employeebinding:revoke" | "biz:employeebinding:suspend" | "biz:exception:list" | "biz:exception:resolve" | "biz:export:audit" | "biz:export:query" | "biz:files:access" | "biz:files:query" | "biz:handover:confirm" | "biz:handover:create" | "biz:handover:query" | "biz:handover:secret" | "biz:integration:check" | "biz:integration:create" | "biz:integration:edit" | "biz:integration:publish" | "biz:integration:query" | "biz:integration:test" | "biz:integration:testrecipient" | "biz:job:list" | "biz:job:retry" | "biz:license:edit" | "biz:license:list" | "biz:manualverification:create" | "biz:manualverification:list" | "biz:manualverification:query" | "biz:manualverification:review" | "biz:messageroute:edit" | "biz:messageroute:query" | "biz:messagetemplate:check" | "biz:messagetemplate:create" | "biz:messagetemplate:edit" | "biz:messagetemplate:publish" | "biz:messagetemplate:query" | "biz:notificationtemplate:edit" | "biz:notificationtemplate:list" | "biz:offlinepayment:create" | "biz:offlinepayment:query" | "biz:offlinepayment:verify" | "biz:order:contact" | "biz:order:create" | "biz:order:export" | "biz:order:list" | "biz:order:query" | "biz:owner:edit" | "biz:owner:list" | "biz:owner:query" | "biz:paymentreconciliation:list" | "biz:paymentreconciliation:query" | "biz:paymentreconciliation:resolve" | "biz:penalty:list" | "biz:penalty:query" | "biz:penaltyappeal:audit" | "biz:penaltyappeal:list" | "biz:penaltyappeal:query" | "biz:price:audit" | "biz:price:create" | "biz:price:edit" | "biz:price:list" | "biz:price:publish" | "biz:price:submit" | "biz:privacycase:list" | "biz:privacycase:resolve" | "biz:refund:approve" | "biz:refund:query" | "biz:refund:retry" | "biz:result:create" | "biz:result:list" | "biz:resultcorrection:audit" | "biz:resultcorrection:create" | "biz:resultcorrection:list" | "biz:statementdifference:list" | "biz:statementdifference:resolve" | "biz:station:create" | "biz:station:edit" | "biz:station:list" | "biz:station:query" | "biz:stationgrant:edit" | "biz:stationgrant:list" | "biz:statistics:list" | "biz:trainingcourse:create" | "biz:trainingcourse:edit" | "biz:trainingcourse:list" | "biz:trainingcourse:publish" | "biz:trainingcourse:query" | "biz:trainingpolicy:edit" | "biz:trainingpolicy:publish" | "biz:trainingpolicy:query" | "biz:uploads:complete" | "biz:uploads:create" | "biz:vehicle:edit" | "biz:vehicle:list" | "biz:vehicle:query" | "biz:verification:close" | "biz:verification:list" | "biz:verification:query";
 
 export type CapabilityCode = "COMMON_DICT_QUERY" | "COMMON_FILES_ACCESS" | "COMMON_FILES_QUERY" | "COMMON_MESSAGES_LIST" | "COMMON_MESSAGES_READ" | "COMMON_ORDERS_CONFIRM" | "COMMON_ORDERS_CONTACTACCESS" | "COMMON_ORDERS_CREATE" | "COMMON_ORDERS_LIST" | "COMMON_ORDERS_QUERY" | "COMMON_PHONE_CREATE" | "COMMON_PHONE_SEND" | "COMMON_PHONE_VERIFY" | "COMMON_PRIVACYCASES_CREATE" | "COMMON_PRIVACYCASES_LIST" | "COMMON_STATIONS_LIST" | "COMMON_UPLOADS_COMPLETE" | "COMMON_UPLOADS_CREATE" | "DRIVER_ASSIGNMENT_QUERY" | "DRIVER_AVAILABILITY_EDIT" | "DRIVER_AVAILABILITY_QUERY" | "DRIVER_DRIVERPAYMENT_LIST" | "DRIVER_DRIVERSTATEMENT_CONFIRM" | "DRIVER_DRIVERSTATEMENT_CREATE" | "DRIVER_DRIVERSTATEMENT_LIST" | "DRIVER_DRIVERSTATEMENT_QUERY" | "DRIVER_INVITE_LIST" | "DRIVER_INVITE_QUERY" | "DRIVER_INVITE_RESPONSE" | "DRIVER_LOCATION_CREATE" | "DRIVER_ORDER_ARRIVEPICKUP" | "DRIVER_ORDER_ARRIVESTATION" | "DRIVER_ORDER_ASSIGNMENTCANCELLATION" | "DRIVER_ORDER_CREATE" | "DRIVER_ORDER_DEPART" | "DRIVER_ORDER_EDIT" | "DRIVER_ORDER_LIST" | "DRIVER_ORDER_QUERY" | "DRIVER_ORDER_READY" | "DRIVER_PENALTYAPPEAL_LIST" | "DRIVER_PENALTYAPPEAL_QUERY" | "DRIVER_PENALTY_CREATE" | "DRIVER_PENALTY_LIST" | "DRIVER_PENALTY_QUERY" | "DRIVER_QUALIFICATION_ATTEMPTS" | "DRIVER_QUALIFICATION_CREATE" | "DRIVER_QUALIFICATION_EDIT" | "DRIVER_QUALIFICATION_LIST" | "DRIVER_QUALIFICATION_PLAYBACK" | "DRIVER_QUALIFICATION_PROGRESS" | "DRIVER_QUALIFICATION_QUERY" | "DRIVER_QUALIFICATION_SUBMIT" | "EMPLOYEE_LINK_READ" | "EMPLOYEE_LINK_RECONCILE" | "OWNER_ADDRESSES_CREATE" | "OWNER_ADDRESSES_DEFAULT" | "OWNER_ADDRESSES_EDIT" | "OWNER_ADDRESSES_LIST" | "OWNER_ADDRESSES_REMOVE" | "OWNER_AFTERSALE_CREATE" | "OWNER_AFTERSALE_LIST" | "OWNER_AFTERSALE_QUERY" | "OWNER_ORDER_CLOSEUNPAID" | "OWNER_ORDER_CREATE" | "OWNER_ORDER_LIST" | "OWNER_ORDER_QUERY" | "OWNER_ORDER_SERVICECONFIRMATION" | "OWNER_PROFILE_EDIT" | "OWNER_SCHEDULE_LIST" | "OWNER_VEHICLE_CREATE" | "OWNER_VEHICLE_DEFAULT" | "OWNER_VEHICLE_EDIT" | "OWNER_VEHICLE_LIST" | "OWNER_VEHICLE_REMOVE" | "PHONE_BIND" | "PROFILE_READ" | "SESSION_LOGOUT" | "SESSION_READ" | "SESSION_SWITCH_ROLE" | "SESSION_SWITCH_STATION";
 
-export type AllowedAction = "ADD_REVIEW" | "ADD_TO_DRAFT" | "APPEAL_PENALTY" | "APPLY_ADJUSTMENT" | "APPLY_CANCEL_REFUND" | "APPLY_REFUND_ONLY" | "APPROVE_AND_SEND" | "ARRIVE_PICKUP" | "ARRIVE_STATION" | "CANCEL_ASSIGNMENT" | "CLOSE_UNPAID" | "CONFIRM_HANDOVER" | "CONFIRM_STATEMENT" | "CONTACT_DRIVER" | "CONTACT_OWNER" | "CONTACT_STATION" | "CREATE_HANDOVER" | "DEPART" | "EDIT_PRICE" | "EXPORT" | "FILL_MILEAGE" | "FILL_PRICE" | "MANUAL_INVITE" | "MARK_EVIDENCE_READY" | "OPEN_DISPUTE" | "PAY" | "RECORD_PAYMENT" | "REGISTER_RESULT" | "REJECT_REVIEW" | "REMOVE_FROM_DRAFT" | "RENOTIFY_PICKUP" | "REPORT_DIFFERENCE" | "REPORT_EXCEPTION" | "REQUEST_RESULT_CORRECTION" | "REVIEW_AFTERSALE" | "REVIEW_LICENSE" | "SEND_STATEMENT" | "SERVICE_CONFIRM" | "SUBMIT_REVIEW" | "UPLOAD_PHOTO" | "VERIFY_PAYMENT" | "VIEW_APPEAL" | "VIEW_DETAIL" | "VIEW_EVIDENCE" | "VIEW_HANDOVER_SECRET" | "VIEW_PAYMENT" | "VIEW_PRICE_HISTORY" | "VIEW_PRICING" | "VIEW_RESULT" | "VOID_STATEMENT" | "WITHDRAW_STATEMENT" | "ADD_NOTE" | "VIEW_AFTERSALE" | "QUERY_REFUND" | "RETRY_REFUND" | "QUERY_RECONCILIATION" | "RESOLVE_RECONCILIATION" | "VIEW_DRIVER" | "EDIT_DRIVER" | "DISABLE_NEW_ASSIGNMENTS" | "ENABLE_NEW_ASSIGNMENTS" | "ASSIGN_DRIVER_COMPANY" | "VIEW_ASSIGNMENTS" | "EDIT_QUALIFICATION" | "SUBMIT_QUALIFICATION" | "CREATE_QUALIFICATION_REVISION" | "VIEW_TRAINING_COURSE" | "EDIT_TRAINING_COURSE" | "PUBLISH_TRAINING_COURSE" | "CREATE_TRAINING_REVISION" | "VIEW_TRAINING_POLICY" | "EDIT_TRAINING_POLICY" | "PUBLISH_TRAINING_POLICY" | "START_TRAINING" | "START_PLAYBACK" | "REPORT_TRAINING_PROGRESS" | "CREATE_TRAINING_ATTEMPT" | "VIEW_TRAINING_ATTEMPT" | "SUBMIT_TRAINING_ATTEMPT";
+export type AllowedAction = "ADD_REVIEW" | "ADD_TO_DRAFT" | "APPEAL_PENALTY" | "APPLY_ADJUSTMENT" | "APPLY_CANCEL_REFUND" | "APPLY_REFUND_ONLY" | "APPROVE_AND_SEND" | "ARRIVE_PICKUP" | "ARRIVE_STATION" | "CANCEL_ASSIGNMENT" | "CLOSE_UNPAID" | "CONFIRM_HANDOVER" | "CONFIRM_STATEMENT" | "CONTACT_DRIVER" | "CONTACT_OWNER" | "CONTACT_STATION" | "CREATE_HANDOVER" | "DEPART" | "EDIT_PRICE" | "EXPORT" | "FILL_MILEAGE" | "FILL_PRICE" | "MANUAL_INVITE" | "MARK_EVIDENCE_READY" | "OPEN_DISPUTE" | "PAY" | "RECORD_PAYMENT" | "REGISTER_RESULT" | "REJECT_REVIEW" | "REMOVE_FROM_DRAFT" | "RENOTIFY_PICKUP" | "REPORT_DIFFERENCE" | "REPORT_EXCEPTION" | "REQUEST_RESULT_CORRECTION" | "REVIEW_AFTERSALE" | "REVIEW_LICENSE" | "SEND_STATEMENT" | "SERVICE_CONFIRM" | "SUBMIT_REVIEW" | "UPLOAD_PHOTO" | "VERIFY_PAYMENT" | "VIEW_APPEAL" | "VIEW_DETAIL" | "VIEW_EVIDENCE" | "VIEW_HANDOVER_SECRET" | "VIEW_PAYMENT" | "VIEW_PRICE_HISTORY" | "VIEW_PRICING" | "VIEW_RESULT" | "VOID_STATEMENT" | "WITHDRAW_STATEMENT" | "ADD_NOTE" | "VIEW_AFTERSALE" | "QUERY_REFUND" | "RETRY_REFUND" | "QUERY_RECONCILIATION" | "RESOLVE_RECONCILIATION" | "VIEW_DRIVER" | "EDIT_DRIVER" | "DISABLE_NEW_ASSIGNMENTS" | "ENABLE_NEW_ASSIGNMENTS" | "ASSIGN_DRIVER_COMPANY" | "VIEW_ASSIGNMENTS" | "EDIT_QUALIFICATION" | "SUBMIT_QUALIFICATION" | "CREATE_QUALIFICATION_REVISION" | "VIEW_TRAINING_COURSE" | "EDIT_TRAINING_COURSE" | "PUBLISH_TRAINING_COURSE" | "CREATE_TRAINING_REVISION" | "VIEW_TRAINING_POLICY" | "EDIT_TRAINING_POLICY" | "PUBLISH_TRAINING_POLICY" | "START_TRAINING" | "START_PLAYBACK" | "REPORT_TRAINING_PROGRESS" | "CREATE_TRAINING_ATTEMPT" | "VIEW_TRAINING_ATTEMPT" | "SUBMIT_TRAINING_ATTEMPT" | "START_DEVICE_AUTH" | "CONFIRM_DEVICE_AUTH" | "RECOVER_DEVICE_AUTH" | "QUERY_DEVICE_AUTH" | "VIEW_DEVICE_AUTH" | "CLOSE_DEVICE_AUTH" | "VIEW_MANUAL_VERIFICATION" | "REVIEW_MANUAL_VERIFICATION";
 
 export type AccountStatus = "ACTIVE" | "LOCKED";
 
-export type VerificationType = "REALNAME" | "FACE" | "BACKGROUND" | "LICENSE" | "TRAINING";
+export type VerificationType = "DEVICE_AUTH" | "BACKGROUND" | "LICENSE" | "TRAINING" | "REALNAME" | "FACE";
 
 export type VerificationStatus = "CREATED" | "PROCESSING" | "PASSED" | "FAILED" | "EXPIRED" | "UNAVAILABLE";
 
@@ -928,7 +804,7 @@ export type TrainingCourseStatus = "DRAFT" | "PUBLISHED" | "DISABLED";
 
 export type QuestionType = "SINGLE" | "MULTIPLE" | "TRUE_FALSE";
 
-export type FaceLaunchMode = "WEBVIEW_URL";
+export type FaceLaunchMode = "WX_SOTER_DEVICE_AUTH" | "WEBVIEW_URL";
 
 export type GovernanceStatus = "APPLIED" | "APPROVED" | "CHECKING" | "COMPLETED" | "EXPIRED" | "FAILED" | "OPEN" | "PROCESSING" | "READY" | "REJECTED" | "RESOLVED" | "REVOKED";
 
@@ -977,6 +853,9 @@ export type PublicServiceConfig = {
   "qualificationConsentVersion": string;
   "qualificationConsentText": string;
   "qualificationConsentHash": (string) | null;
+  "verificationConsentVersion": (string) | null;
+  "verificationConsentText": (string) | null;
+  "verificationConsentHash": (string) | null;
 };
 
 export type EmployeeLinkStatus = "UNLINKED" | "LINKED" | "NEEDS_ADMIN" | "SUSPENDED" | "REVOKED";
@@ -1054,7 +933,7 @@ export type QualificationDraftView = {
 };
 
 export type QualificationCheck = {
-  "type": "REALNAME" | "FACE" | "BACKGROUND" | "LICENSE" | "TRAINING";
+  "type": "DEVICE_AUTH" | "BACKGROUND" | "LICENSE" | "TRAINING";
   "status": "CREATED" | "PROCESSING" | "PASSED" | "FAILED" | "EXPIRED" | "UNAVAILABLE";
 };
 
@@ -1206,4 +1085,107 @@ export type TrainingPlaybackCreate = {
   "runId": (string) | null;
   "courseVersion": number;
   "expectedVersion": number;
+};
+
+export type DeviceAuthenticationConfirm = {
+  "expectedVersion": number;
+  "resultJSON": string;
+  "resultJSONSignature": string;
+} | {
+  "expectedVersion": number;
+  "recover": true;
+};
+
+
+export type DeviceAuthenticationAdminView = {
+  "verificationSessionId": string;
+  "applicationId": string;
+  "requestNo": string;
+  "status": FaceSessionStatus;
+  "launchMode": "WX_SOTER_DEVICE_AUTH";
+  "launchUrl": (string) | null;
+  "challenge": (string) | null;
+  "authContent": string;
+  "expiresAt": string;
+  "resultAvailable": boolean;
+  "failureCode": (string) | null;
+  "version": number;
+  "materialRevision": number;
+  "companyRevision": number;
+  "allowedActions": Array<AllowedAction>;
+  "ownerDeptId": (string) | null;
+  "companyName": (string) | null;
+  "provider": (string) | null;
+  "createdAt": (string) | null;
+  "verifiedAt": (string) | null;
+};
+
+
+export type DeviceAuthenticationClose = {
+  "expectedVersion": number;
+  "reason": string;
+};
+
+
+export type ManualVerificationType = "BACKGROUND" | "LICENSE";
+
+
+export type ManualVerificationConclusion = "PASSED" | "FAILED";
+
+
+export type ManualVerificationStatus = "PENDING_REVIEW" | "CONFIRMED" | "RETURNED";
+
+
+export type ManualVerificationCreate = {
+  "applicationId": string;
+  "expectedApplicationVersion": number;
+  "expectedCompanyRevision": number;
+  "expectedMaterialRevision": number;
+  "type": ManualVerificationType;
+  "conclusion": ManualVerificationConclusion;
+  "note": string;
+};
+
+
+export type ManualVerificationReview = {
+  "expectedVersion": number;
+  "decision": "CONFIRM" | "RETURN";
+  "note": string;
+};
+
+
+export type ManualVerificationView = {
+  "recordId": string;
+  "applicationId": string;
+  "driverId": string;
+  "applicantName": string;
+  "ownerDeptId": string;
+  "companyName": string;
+  "companyRevision": number;
+  "materialRevision": number;
+  "type": ManualVerificationType;
+  "conclusion": ManualVerificationConclusion;
+  "status": ManualVerificationStatus;
+  "submittedByUserId": string;
+  "submittedByName": string;
+  "submittedAt": string;
+  "reviewedByUserId": (string) | null;
+  "reviewedByName": (string) | null;
+  "reviewedAt": (string) | null;
+  "note": (string) | null;
+  "reviewNote": (string) | null;
+  "version": number;
+  "allowedActions": Array<AllowedAction>;
+};
+
+
+export type ManualVerificationApplication = {
+  "applicationId": string;
+  "driverId": string;
+  "applicantName": string;
+  "ownerDeptId": string;
+  "companyName": string;
+  "version": number;
+  "companyRevision": number;
+  "materialRevision": number;
 };

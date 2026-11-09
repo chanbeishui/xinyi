@@ -169,19 +169,6 @@
     "origin": "V6.4修复门禁；真实系统待实现/执行"
   },
   {
-    "id": "TC-R50-021",
-    "priority": "P1",
-    "module": "活体",
-    "flow": "F01",
-    "title": "核验会话只信服务端",
-    "given": "创建face-session返回业务ID/限时URL",
-    "when": "前端返回passed=true或供应商页面关闭",
-    "then": "不能据前端结论通过；仅可信厂商回调/查询更新；失败/未知明确展示",
-    "status": "NOT_RUN",
-    "evidence": "",
-    "origin": "V6.4修复门禁；真实系统待实现/执行"
-  },
-  {
     "id": "TC-R50-022",
     "priority": "P0",
     "module": "数据库",

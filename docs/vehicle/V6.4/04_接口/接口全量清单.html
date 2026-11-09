@@ -1,5 +1,5 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>接口全量清单</title><style>body{font:16px/1.75 -apple-system,BlinkMacSystemFont,"Microsoft YaHei",sans-serif;color:#202632;margin:0;background:#f6f7f9}header{padding:14px 24px;background:white;border-bottom:1px solid #ddd}main{max-width:1120px;margin:24px auto;padding:30px;background:white}h1{font-size:30px}h2{margin-top:36px}a{color:#0661bd}table{border-collapse:collapse;width:100%;display:block;overflow:auto;font-size:14px}td,th{border:1px solid #dde2ea;padding:10px;vertical-align:top}th{background:#f1f5fb}pre{padding:15px;background:#f2f4f7;overflow:auto}img{max-width:100%;height:auto}blockquote{padding:10px 20px;border-left:3px solid #2571be;background:#f4f8fc}@media(max-width:700px){main{padding:15px;margin:8px}h1{font-size:25px}}</style></head><body><header><a href="../00_开始.html">V6.4 完整资料</a>　<a href="../02_UI/index.html">交互原型</a>　T3.4</header><main><h1>接口全量清单 V6.4</h1>
-<p>从主OpenAPI生成，共296个操作。</p>
+<p>从主OpenAPI生成，共305个操作。</p>
 <table>
 <thead>
 <tr>
@@ -247,7 +247,7 @@
 <tr>
   <td>API_045_post</td>
   <td><code>POST /api/app/driver/qualification/face-session</code></td>
-  <td>创建实名活体核验会话</td>
+  <td>创建本人本机生物认证挑战</td>
   <td>DRIVER_QUALIFICATION_CREATE</td>
 </tr>
 <tr>
@@ -1465,7 +1465,7 @@
 <tr>
   <td>v5_get_api_app_driver_qualification_face_sessions_verificationSessionId</td>
   <td><code>GET /api/app/driver/qualification/face-sessions/{verificationSessionId}</code></td>
-  <td>查询本人活体核验结果（服务端查询供应商）</td>
+  <td>读取本人本机生物认证元数据</td>
   <td>DRIVER_QUALIFICATION_QUERY</td>
 </tr>
 <tr>
@@ -1785,6 +1785,60 @@
   <td><code>POST /api/admin/training-policies/{ownerDeptId}/publish</code></td>
   <td>发布公司培训政策</td>
   <td>biz:trainingpolicy:publish</td>
+</tr>
+<tr>
+  <td>q04_post_api_app_driver_qualification_face_sessions_verificationSessionId_confirm</td>
+  <td><code>POST /api/app/driver/qualification/face-sessions/{verificationSessionId}/confirm</code></td>
+  <td>提交微信SOTER原签名或恢复首次未知验签</td>
+  <td>DRIVER_QUALIFICATION_CREATE</td>
+</tr>
+<tr>
+  <td>q04_get_api_admin_manual_verifications_applications</td>
+  <td><code>GET /api/admin/manual-verifications/applications</code></td>
+  <td>候选人工确认申请</td>
+  <td>biz:manualverification:query</td>
+</tr>
+<tr>
+  <td>q04_get_api_admin_manual_verifications</td>
+  <td><code>GET /api/admin/manual-verifications</code></td>
+  <td>人工确认记录列表</td>
+  <td>biz:manualverification:list</td>
+</tr>
+<tr>
+  <td>q04_post_api_admin_manual_verifications</td>
+  <td><code>POST /api/admin/manual-verifications</code></td>
+  <td>登记背景或驾驶证人工确认</td>
+  <td>biz:manualverification:create</td>
+</tr>
+<tr>
+  <td>q04_get_api_admin_manual_verifications_id</td>
+  <td><code>GET /api/admin/manual-verifications/{id}</code></td>
+  <td>人工确认详情</td>
+  <td>biz:manualverification:query</td>
+</tr>
+<tr>
+  <td>q04_post_api_admin_manual_verifications_id_review</td>
+  <td><code>POST /api/admin/manual-verifications/{id}/review</code></td>
+  <td>独立复核人工确认</td>
+  <td>biz:manualverification:review</td>
+</tr>
+<tr>
+  <td>q04_get_api_admin_verification_sessions</td>
+  <td><code>GET /api/admin/verification-sessions</code></td>
+  <td>本机生物认证会话列表</td>
+  <td>biz:verification:list</td>
+</tr>
+<tr>
+  <td>q04_get_api_admin_verification_sessions_id</td>
+  <td><code>GET /api/admin/verification-sessions/{id}</code></td>
+  <td>本机生物认证会话详情</td>
+  <td>biz:verification:query</td>
+</tr>
+<tr>
+  <td>q04_post_api_admin_verification_sessions_id_close</td>
+  <td><code>POST /api/admin/verification-sessions/{id}/close</code></td>
+  <td>封存未决本机认证会话</td>
+  <td>biz:verification:close</td>
 </tr>
 </tbody>
 </table>

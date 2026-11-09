@@ -661,18 +661,16 @@
       "result_digest",
       "verified_at",
       "material_revision",
-      "material_hash"
+      "material_hash",
+      "owner_dept_id",
+      "company_revision",
+      "source_kind",
+      "source_record_id",
+      "canonical_result_cipher",
+      "source_session_id"
     ],
     "updateColumns": [
-      "application_id",
-      "provider",
-      "task_type",
-      "provider_task_id",
-      "status",
-      "result_digest",
-      "verified_at",
-      "material_revision",
-      "material_hash"
+      "canonical_result_cipher"
     ],
     "columnRules": {
       "id": {
@@ -684,45 +682,45 @@
       "application_id": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "provider": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "task_type": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false,
         "enumRef": "VerificationType"
       },
       "provider_task_id": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "status": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false,
         "enumRef": "VerificationStatus"
       },
       "result_digest": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "verified_at": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "created_at": {
@@ -748,17 +746,54 @@
       "material_revision": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "material_hash": {
         "generated": false,
         "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "owner_dept_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "company_revision": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "source_kind": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "source_record_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "canonical_result_cipher": {
+        "generated": false,
+        "insertable": true,
         "updatable": true,
+        "clientWritable": false,
+        "authority": "取得数据库ID后同事务仅初始化一次sealProof，WHERE原值NULL；结果来源和结论不可更改。"
+      },
+      "source_session_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
         "clientWritable": false
       }
     },
-    "rule": " 当前材料版本和HMAC绑定由服务端写入；旧NULL、错版或缺可信时刻不能视为当前通过。"
+    "rule": "新设备/人工证明只能从可信父会话/双人确认发布，认证密文绑定当前申请/公司epoch/材料/来源ID；DEVICE_AUTH还绑定实际MINI登录会话。历史REALNAME/FACE、NULL来源或独立PASSED行不满足Q01。Q03培训仍按其权威计划/运行验真。当前提交只消费四项要求，不从设备确认推导实名或活体。"
   },
   {
     "table": "vi_station",
@@ -7905,7 +7940,9 @@
   {
     "table": "vi_face_session",
     "writeMode": "BUSINESS_ACTION_CAS",
-    "generatedColumns": [],
+    "generatedColumns": [
+      "active_device_context"
+    ],
     "insertColumns": [
       "application_id",
       "verification_id",
@@ -7918,7 +7955,34 @@
       "result_available",
       "failure_code",
       "material_revision",
-      "material_hash"
+      "material_hash",
+      "owner_dept_id",
+      "company_revision",
+      "session_id",
+      "context_version",
+      "app_id",
+      "open_id_mac",
+      "request_no",
+      "request_mac",
+      "config_profile_id",
+      "config_revision_id",
+      "provider",
+      "product",
+      "provider_identity_digest",
+      "config_snapshot",
+      "challenge_cipher",
+      "challenge_mac",
+      "submission_cipher",
+      "submission_mac",
+      "submitted_at",
+      "consent_text_hash",
+      "consent_text",
+      "consent_accepted_at",
+      "execution_started_at",
+      "lease_token",
+      "lease_until",
+      "verified_at",
+      "result_digest"
     ],
     "updateColumns": [
       "application_id",
@@ -7932,7 +7996,34 @@
       "result_available",
       "failure_code",
       "material_revision",
-      "material_hash"
+      "material_hash",
+      "owner_dept_id",
+      "company_revision",
+      "session_id",
+      "context_version",
+      "app_id",
+      "open_id_mac",
+      "request_no",
+      "request_mac",
+      "config_profile_id",
+      "config_revision_id",
+      "provider",
+      "product",
+      "provider_identity_digest",
+      "config_snapshot",
+      "challenge_cipher",
+      "challenge_mac",
+      "submission_cipher",
+      "submission_mac",
+      "submitted_at",
+      "consent_text_hash",
+      "consent_text",
+      "consent_accepted_at",
+      "execution_started_at",
+      "lease_token",
+      "lease_until",
+      "verified_at",
+      "result_digest"
     ],
     "columnRules": {
       "id": {
@@ -7945,7 +8036,8 @@
         "generated": false,
         "insertable": true,
         "updatable": true,
-        "clientWritable": false
+        "clientWritable": false,
+        "authority": "创建后冻结；saveSession仅随CAS原值回写，统一Service校验禁止改变，客户端无写权。"
       },
       "verification_id": {
         "generated": false,
@@ -7957,7 +8049,8 @@
         "generated": false,
         "insertable": true,
         "updatable": true,
-        "clientWritable": false
+        "clientWritable": false,
+        "authority": "创建后冻结；saveSession仅随CAS原值回写，统一Service校验禁止改变，客户端无写权。"
       },
       "status": {
         "generated": false,
@@ -7983,13 +8076,15 @@
         "generated": false,
         "insertable": true,
         "updatable": true,
-        "clientWritable": false
+        "clientWritable": false,
+        "authority": "创建后冻结；saveSession仅随CAS原值回写，统一Service校验禁止改变，客户端无写权。"
       },
       "expires_at": {
         "generated": false,
         "insertable": true,
         "updatable": true,
-        "clientWritable": false
+        "clientWritable": false,
+        "authority": "创建后冻结；saveSession仅随CAS原值回写，统一Service校验禁止改变，客户端无写权。"
       },
       "result_available": {
         "generated": false,
@@ -8027,16 +8122,204 @@
         "generated": false,
         "insertable": true,
         "updatable": true,
-        "clientWritable": false
+        "clientWritable": false,
+        "authority": "创建后冻结；saveSession仅随CAS原值回写，统一Service校验禁止改变，客户端无写权。"
       },
       "material_hash": {
         "generated": false,
         "insertable": true,
         "updatable": true,
+        "clientWritable": false,
+        "authority": "创建后冻结；saveSession仅随CAS原值回写，统一Service校验禁止改变，客户端无写权。"
+      },
+      "owner_dept_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false,
+        "authority": "创建后冻结；saveSession仅随CAS原值回写，统一Service校验禁止改变，客户端无写权。"
+      },
+      "company_revision": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false,
+        "authority": "创建后冻结；saveSession仅随CAS原值回写，统一Service校验禁止改变，客户端无写权。"
+      },
+      "session_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false,
+        "authority": "创建后冻结；saveSession仅随CAS原值回写，统一Service校验禁止改变，客户端无写权。"
+      },
+      "context_version": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false,
+        "authority": "创建后冻结；saveSession仅随CAS原值回写，统一Service校验禁止改变，客户端无写权。"
+      },
+      "app_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false,
+        "authority": "创建后冻结；saveSession仅随CAS原值回写，统一Service校验禁止改变，客户端无写权。"
+      },
+      "open_id_mac": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false,
+        "authority": "创建后冻结；saveSession仅随CAS原值回写，统一Service校验禁止改变，客户端无写权。"
+      },
+      "request_no": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false,
+        "authority": "创建后冻结；saveSession仅随CAS原值回写，统一Service校验禁止改变，客户端无写权。"
+      },
+      "request_mac": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false,
+        "authority": "创建后冻结；saveSession仅随CAS原值回写，统一Service校验禁止改变，客户端无写权。"
+      },
+      "config_profile_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false,
+        "authority": "创建后冻结；saveSession仅随CAS原值回写，统一Service校验禁止改变，客户端无写权。"
+      },
+      "config_revision_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false,
+        "authority": "创建后冻结；saveSession仅随CAS原值回写，统一Service校验禁止改变，客户端无写权。"
+      },
+      "provider": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false,
+        "authority": "创建后冻结；saveSession仅随CAS原值回写，统一Service校验禁止改变，客户端无写权。"
+      },
+      "product": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false,
+        "authority": "创建后冻结；saveSession仅随CAS原值回写，统一Service校验禁止改变，客户端无写权。"
+      },
+      "provider_identity_digest": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false,
+        "authority": "创建后冻结；saveSession仅随CAS原值回写，统一Service校验禁止改变，客户端无写权。"
+      },
+      "config_snapshot": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false,
+        "authority": "创建后冻结；saveSession仅随CAS原值回写，统一Service校验禁止改变，客户端无写权。"
+      },
+      "challenge_cipher": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "challenge_mac": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false,
+        "authority": "创建后冻结；saveSession仅随CAS原值回写，统一Service校验禁止改变，客户端无写权。"
+      },
+      "submission_cipher": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "submission_mac": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "submitted_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "consent_text_hash": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false,
+        "authority": "创建后冻结；saveSession仅随CAS原值回写，统一Service校验禁止改变，客户端无写权。"
+      },
+      "consent_text": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false,
+        "authority": "创建后冻结；saveSession仅随CAS原值回写，统一Service校验禁止改变，客户端无写权。"
+      },
+      "consent_accepted_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false,
+        "authority": "创建后冻结；saveSession仅随CAS原值回写，统一Service校验禁止改变，客户端无写权。"
+      },
+      "execution_started_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "lease_token": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "lease_until": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "verified_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "result_digest": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "active_device_context": {
+        "generated": true,
+        "insertable": false,
+        "updatable": false,
         "clientWritable": false
       }
     },
-    "rule": "不信任客户端回调PASSED；供应商具体开通和WEBVIEW能力未证实即不能启用正式认证 当前材料版本和HMAC绑定由服务端写入；旧NULL、错版或缺可信时刻不能视为当前通过。"
+    "rule": "保留物理旧表名，当前为微信SOTER随机挑战和验签。创建绑定本人申请/材料/公司epoch/实际MINI会话context、已发布WECHAT_APP版本和明确同意。43字符随机challenge技术TTL300秒；原始resultJSON/raw精确核对，不trim；首签名提交必须有效期内，原文密文/HMAC冻结，UNKNOWN仅恢复原文。微信IO锁外执行、租约/CAS及IO后实时权限/材料复查；GET纯读不调用微信。已完成同会话可切身份，新登录须重做。不证明法律机主或实名活体，旧记录NULL隔离。"
   },
   {
     "table": "vi_phone_verification_receipt",
@@ -10641,5 +10924,174 @@
       "completed_at"
     ],
     "generatedColumns": []
+  },
+  {
+    "table": "vi_manual_verification",
+    "writeMode": "BUSINESS_ACTION_CAS",
+    "columnRules": {
+      "id": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "application_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "owner_dept_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "company_revision": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "material_revision": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "material_hash": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "verification_type": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false,
+        "enumRef": "ManualVerificationType"
+      },
+      "conclusion": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false,
+        "enumRef": "ManualVerificationConclusion"
+      },
+      "status": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false,
+        "enumRef": "ManualVerificationStatus"
+      },
+      "submitted_by_user_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "reviewed_by_user_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "submitted_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "reviewed_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "note_cipher": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false,
+        "authority": "由真实ADMIN与记录ID生成AAD认证密文；note仅取得ID后同事务初始化一次，review_note仅终结待复核事实。"
+      },
+      "review_note_cipher": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false,
+        "authority": "由真实ADMIN与记录ID生成AAD认证密文；note仅取得ID后同事务初始化一次，review_note仅终结待复核事实。"
+      },
+      "proof_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "applicant_user_ids": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "active_context": {
+        "generated": true,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "created_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "updated_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "version": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      }
+    },
+    "rule": "背景/驾驶证无需凭证上传、报告或标准发布，真实ADMIN按当前权威公司登记结论并由另一人复核。禁止申请人自办/自审，冻结已知后台用户身份；复核人可参与后续Q05不额外要求第三人。同申请/公司epoch/材料/类型仅一个待复核，终态不可编辑；确认同事务生成PASSED/FAILED可信事实并链接，退回无proof。备注可空且独立AAD认证加密，权限按原始公司读、当前公司及材料复核写。",
+    "insertColumns": [
+      "application_id",
+      "owner_dept_id",
+      "company_revision",
+      "material_revision",
+      "material_hash",
+      "verification_type",
+      "conclusion",
+      "status",
+      "submitted_by_user_id",
+      "reviewed_by_user_id",
+      "submitted_at",
+      "reviewed_at",
+      "note_cipher",
+      "review_note_cipher",
+      "proof_id",
+      "applicant_user_ids"
+    ],
+    "updateColumns": [
+      "status",
+      "reviewed_by_user_id",
+      "reviewed_at",
+      "note_cipher",
+      "review_note_cipher",
+      "proof_id"
+    ],
+    "generatedColumns": [
+      "active_context"
+    ]
   }
 ]

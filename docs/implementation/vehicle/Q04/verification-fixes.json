@@ -1,0 +1,90 @@
+{
+  "firstRun": {
+    "total": 237,
+    "failures": 24,
+    "errors": 0,
+    "skipped": 0,
+    "suites": [
+      {
+        "suite": "Q04VerificationIT",
+        "tests": 58,
+        "failures": 17,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "Q01QualificationIT",
+        "tests": 42,
+        "failures": 4,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "Q03TrainingIT",
+        "tests": 56,
+        "failures": 3,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "A04DriverIT",
+        "tests": 45,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "C01ConfigIT",
+        "tests": 6,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "F01FileIT",
+        "tests": 30,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    ]
+  },
+  "fixes": [
+    "人工Mapper补齐显式字段映射，不放宽原公司权限",
+    "Q01/Q03消费者上游边界夹具统一UTC LocalDateTime，不改严格提交断言",
+    "篡改密文按统一错误合同503/VI_SECRET_UNAVAILABLE精确断言失败关闭，不期望正常200",
+    "独立审补IO后当前权限/材料复查，网络返回不能先发布过期证明",
+    "独立审补渠道响应重复JSON键/尾随拒绝及Token必须文本",
+    "上游边界夹具proof由数据库分配ID，避免与真实生产AUTO_INCREMENT冲突"
+  ],
+  "finalVerification": "PASS",
+  "secondAssociated": {
+    "tests": 237,
+    "failures": 1,
+    "errors": 0,
+    "skipped": 0,
+    "cause": "QualificationCheck内嵌枚举仍旧五项，真实业务通过但主合同校验失败；已同步四项及切片/types。"
+  },
+  "firstFull": {
+    "tests": 642,
+    "failures": 1,
+    "errors": 0,
+    "skipped": 0,
+    "cause": "旧E08 CI元数据断言硬编码296接口，主源已305；更新精确数量与说明，不改生产或业务断言。"
+  },
+  "finalFull": {
+    "integrationTests": 642,
+    "unitTests": 41,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "postFullReviewFix": {
+    "problem": "后台显示EXPIRED/UNKNOWN但status筛选按原始CREATED/PROCESSING，显示与筛选不一致",
+    "fix": "查询按相同CASE与UTC时间筛选，仍纯读；既有adminRecovery用例补两组rows/total及原存储不变断言",
+    "tests": 58,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  }
+}

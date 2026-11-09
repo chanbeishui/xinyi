@@ -37,7 +37,7 @@ public class QualificationService {
     public static final String CONSENT_TEXT = "vi.biz.qualification.consent.text";
     private static final Set<String> ACTIVE = Set.of("DRAFT", "SUBMITTED", "REJECTED");
     private static final List<String> CHECK_TYPES =
-            List.of("REALNAME", "FACE", "BACKGROUND", "LICENSE", "TRAINING");
+            List.of("DEVICE_AUTH", "BACKGROUND", "LICENSE", "TRAINING");
     private static final List<String> FILE_FIELDS =
             List.of(
                     "idCardFrontFileId",
@@ -50,6 +50,8 @@ public class QualificationService {
     private final QualificationMapper mapper;
     private final ConfigMapper configs;
     private final com.xinyi.rongli.training.service.TrainingCompletionAuthority trainingCompletion;
+    private final com.xinyi.rongli.verification.service.CanonicalVerificationAuthority
+            verifications;
     private final PrivateFileService files;
     private final IntegrationCrypto crypto;
     private final IdempotencyService idem;
@@ -67,6 +69,7 @@ public class QualificationService {
             QualificationMapper mapper,
             ConfigMapper configs,
             com.xinyi.rongli.training.service.TrainingCompletionAuthority trainingCompletion,
+            com.xinyi.rongli.verification.service.CanonicalVerificationAuthority verifications,
             PrivateFileService files,
             IntegrationCrypto crypto,
             IdempotencyService idem,
@@ -79,6 +82,7 @@ public class QualificationService {
         this.mapper = mapper;
         this.configs = configs;
         this.trainingCompletion = trainingCompletion;
+        this.verifications = verifications;
         this.files = files;
         this.crypto = crypto;
         this.idem = idem;
@@ -273,16 +277,9 @@ public class QualificationService {
         application.setOwnerDeptId(profile.getOwnerDeptId());
         // 只接收当前材料和可信核验时间的服务端记录；不从请求读取任何passed、proofId或hash。
         List<String> proofIds =
-                mapper
-                        .proofs(
-                                application.getId(),
-                                application.getMaterialRevision(),
-                                application.getMaterialHash())
-                        .stream()
-                        .filter(this::trustedProvider)
-                        .filter(proof -> "PASSED".equals(proof.get("status")))
-                        .filter(proof -> !"TRAINING".equals(proof.get("task_type")))
-                        .map(proof -> proof.get("id").toString())
+                verifications.currentProofs(profile, application).values().stream()
+                        .filter(proof -> "PASSED".equals(proof.getStatus()))
+                        .map(proof -> proof.getId().toString())
                         .toList();
         // 汇总培训只能冻结当前公司epoch/材料运行认可的唯一证明，不能顺带采入旧独立PASSED行。
         proofIds = new ArrayList<>(proofIds);
@@ -491,6 +488,11 @@ public class QualificationService {
         result.put("applicationId", application.getId().toString());
         result.put("driverId", profile.getId().toString());
         result.put("profileVersion", profile.getVersion());
+        result.put("companyRevision", profile.getTrainingContextRevision());
+        Long verificationSessionId = verifications.currentSessionId(profile, application);
+        result.put(
+                "verificationSessionId",
+                verificationSessionId == null ? null : verificationSessionId.toString());
         result.put("status", application.getStatus());
         result.put("effectiveQualificationStatus", profile.getQualificationStatus());
         result.put(
@@ -536,30 +538,14 @@ public class QualificationService {
 
     private List<Map<String, String>> checks(
             DriverProfile profile, QualificationApplication application) {
-        Map<String, String> states = new HashMap<>();
-        for (Map<String, Object> proof :
-                mapper.proofs(
-                        application.getId(),
-                        application.getMaterialRevision(),
-                        application.getMaterialHash())) {
-            if (!trustedProvider(proof) || "TRAINING".equals(proof.get("task_type"))) continue;
-            states.putIfAbsent(proof.get("task_type").toString(), proof.get("status").toString());
-        }
+        Map<String, String> states =
+                new HashMap<>(verifications.currentStatuses(profile, application));
         if (trainingCompletion.currentProof(profile, application) != null)
             states.put("TRAINING", "PASSED");
         List<Map<String, String>> result = new ArrayList<>();
         for (String type : CHECK_TYPES)
             result.add(Map.of("type", type, "status", states.getOrDefault(type, "UNAVAILABLE")));
         return result;
-    }
-
-    private boolean trustedProvider(Map<String, Object> proof) {
-        // 测试替身只能存在于明确本地/测试环境；生产不能把模拟供应商结果当正式资格。
-        String provider = Objects.toString(proof.get("provider"), "").toUpperCase(Locale.ROOT);
-        boolean testEnvironment = Set.of("local", "test").contains(environment);
-        return !provider.isBlank()
-                && (testEnvironment
-                        || !provider.contains("SIMULATOR") && !provider.startsWith("TEST"));
     }
 
     private List<Map<String, String>> blockers(

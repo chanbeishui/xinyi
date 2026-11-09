@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xinyi.rongli.verification.mapper.ManualVerificationMapper">
+    <resultMap id="Record" type="com.xinyi.rongli.verification.domain.ManualVerificationRecord">
+        <id property="id" column="id"/>
+        <result property="version" column="version"/>
+        <result property="createdAt" column="created_at" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+        <result property="updatedAt" column="updated_at" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+        <result property="applicationId" column="application_id"/>
+        <result property="ownerDeptId" column="owner_dept_id"/>
+        <result property="companyRevision" column="company_revision"/>
+        <result property="materialRevision" column="material_revision"/>
+        <result property="materialHash" column="material_hash"/>
+        <result property="verificationType" column="verification_type"/>
+        <result property="conclusion" column="conclusion"/>
+        <result property="status" column="status"/>
+        <result property="submittedByUserId" column="submitted_by_user_id"/>
+        <result property="reviewedByUserId" column="reviewed_by_user_id"/>
+        <result property="submittedAt" column="submitted_at" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+        <result property="reviewedAt" column="reviewed_at" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+        <result property="noteCipher" column="note_cipher"/>
+        <result property="reviewNoteCipher" column="review_note_cipher"/>
+        <result property="proofId" column="proof_id"/>
+        <result property="driverId" column="driver_id"/>
+        <result property="accountId" column="account_id"/>
+        <result property="applicantName" column="applicant_name"/>
+        <result property="companyName" column="company_name"/>
+        <result property="submittedByName" column="submitted_by_name"/>
+        <result property="reviewedByName" column="reviewed_by_name"/>
+        <result property="applicantUserIds" column="applicant_user_ids"/>
+    </resultMap>
+    <sql id="Projection">
+        SELECT m.*,p.id driver_id,p.account_id,account.nickname applicant_name,d.dept_name company_name,
+            submitter.user_name submitted_by_name,reviewer.user_name reviewed_by_name
+        FROM vi_manual_verification m
+        JOIN vi_driver_application a ON a.id=m.application_id
+        JOIN vi_driver_profile p ON p.id=a.driver_id
+        JOIN vi_account account ON account.id=p.account_id
+        LEFT JOIN sys_dept d ON d.dept_id=m.owner_dept_id
+        LEFT JOIN sys_user submitter ON submitter.user_id=m.submitted_by_user_id
+        LEFT JOIN sys_user reviewer ON reviewer.user_id=m.reviewed_by_user_id
+    </sql>
+    <sql id="Scope">
+        <if test="departments != null">
+            <choose>
+                <when test="departments.size() > 0">
+                    AND m.owner_dept_id IN
+                    <foreach collection="departments" item="department" open="(" separator="," close=")">#{department}</foreach>
+                </when>
+                <otherwise>AND 1=0</otherwise>
+            </choose>
+        </if>
+    </sql>
+    <sql id="Filters">
+        WHERE 1=1
+        <include refid="Scope"/>
+        <if test="q.ownerDeptId != null">AND m.owner_dept_id=#{q.ownerDeptId}</if>
+        <if test="q.applicationId != null">AND m.application_id=#{q.applicationId}</if>
+        <if test="q.type != null">AND m.verification_type=#{q.type}</if>
+        <if test="q.status != null">AND m.status=#{q.status}</if>
+    </sql>
+    <select id="list" resultMap="Record">
+        <include refid="Projection"/>
+        <include refid="Filters"/>
+        ORDER BY m.id DESC
+        LIMIT #{q.pageSize} OFFSET #{q.offset}
+    </select>
+    <select id="count" resultType="long">
+        SELECT COUNT(*) FROM vi_manual_verification m
+        <include refid="Filters"/>
+    </select>
+    <sql id="Applications">
+        FROM vi_driver_application a
+        JOIN vi_driver_profile p ON p.id=a.driver_id
+        JOIN vi_account account ON account.id=p.account_id
+        JOIN sys_dept d ON d.dept_id=p.owner_dept_id AND d.status='0' AND d.del_flag='0'
+        WHERE a.status IN ('DRAFT','REJECTED')
+            AND NOT EXISTS(SELECT 1 FROM vi_driver_application newer WHERE newer.driver_id=a.driver_id AND newer.id&gt;a.id)
+        <if test="q.ownerDeptId != null">AND p.owner_dept_id=#{q.ownerDeptId}</if>
+        <if test="departments != null">
+            <choose>
+                <when test="departments.size() > 0">
+                    AND p.owner_dept_id IN
+                    <foreach collection="departments" item="department" open="(" separator="," close=")">#{department}</foreach>
+                </when>
+                <otherwise>AND 1=0</otherwise>
+            </choose>
+        </if>
+    </sql>
+    <select id="applications" resultType="map">
+        SELECT a.id application_id,p.id driver_id,account.nickname applicant_name,
+            p.owner_dept_id,d.dept_name company_name,a.version,
+            p.training_context_revision company_revision,a.material_revision
+        <include refid="Applications"/>
+        ORDER BY a.id DESC
+        LIMIT #{q.pageSize} OFFSET #{q.offset}
+    </select>
+    <select id="applicationCount" resultType="long">
+        SELECT COUNT(*)
+        <include refid="Applications"/>
+    </select>
+    <select id="find" resultMap="Record">
+        <include refid="Projection"/>
+        WHERE m.id=#{id}
+    </select>
+    <select id="lock" resultMap="Record">
+        <include refid="Projection"/>
+        WHERE m.id=#{id}
+        FOR UPDATE
+    </select>
+    <select id="context" resultType="map">
+        SELECT a.id application_id,a.status,a.version,a.material_revision,a.material_hash,
+            p.id driver_id,p.account_id,p.owner_dept_id,p.training_context_revision company_revision,
+            (SELECT MAX(current_app.id) FROM vi_driver_application current_app WHERE current_app.driver_id=p.id) current_application_id
+        FROM vi_driver_profile p
+        JOIN vi_driver_application a ON a.driver_id=p.id
+        WHERE a.id=#{applicationId}
+        FOR UPDATE
+    </select>
+    <select id="applicantUser" resultType="long">
+        SELECT COUNT(*) FROM vi_employee_binding
+        WHERE account_id=#{account} AND sys_user_id=#{user}
+    </select>
+    <select id="pending" resultType="long">
+        SELECT COUNT(*) FROM vi_manual_verification
+        WHERE application_id=#{application} AND company_revision=#{epoch}
+            AND material_revision=#{material} AND verification_type=#{type} AND status='PENDING_REVIEW'
+    </select>
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO vi_manual_verification(application_id,owner_dept_id,company_revision,material_revision,
+            material_hash,verification_type,conclusion,status,submitted_by_user_id,submitted_at,note_cipher,applicant_user_ids)
+        VALUES(#{applicationId},#{ownerDeptId},#{companyRevision},#{materialRevision},#{materialHash},
+            #{verificationType},#{conclusion},'PENDING_REVIEW',#{submittedByUserId},UTC_TIMESTAMP(3),#{noteCipher},#{applicantUserIds})
+    </insert>
+    <update id="setNoteCipher">
+        UPDATE vi_manual_verification
+        SET note_cipher=#{noteCipher}
+        WHERE id=#{id} AND status='PENDING_REVIEW' AND note_cipher IS NULL
+    </update>
+    <select id="boundUsers" resultType="long">
+        SELECT DISTINCT sys_user_id FROM vi_employee_binding WHERE account_id=#{account}
+    </select>
+    <select id="verifiedPhoneLookup" resultType="map">
+        SELECT phone_lookup FROM vi_account WHERE id=#{account} AND phone_verified_at IS NOT NULL
+    </select>
+    <select id="usersWithPhone" resultType="map">
+        SELECT user_id,phonenumber FROM sys_user WHERE phonenumber IS NOT NULL AND phonenumber!=''
+    </select>
+    <select id="reviewerPhone" resultType="string">
+        SELECT phonenumber FROM sys_user WHERE user_id=#{user}
+    </select>
+    <update id="review">
+        UPDATE vi_manual_verification
+        SET status=#{status},reviewed_by_user_id=#{reviewedByUserId},reviewed_at=UTC_TIMESTAMP(3),
+            review_note_cipher=#{reviewNoteCipher},version=version+1,updated_at=UTC_TIMESTAMP(3)
+        WHERE id=#{id} AND version=#{version} AND status='PENDING_REVIEW'
+    </update>
+    <update id="linkProof">
+        UPDATE vi_manual_verification
+        SET proof_id=#{proof},updated_at=UTC_TIMESTAMP(3)
+        WHERE id=#{id} AND status='CONFIRMED' AND proof_id IS NULL
+    </update>
+</mapper>
