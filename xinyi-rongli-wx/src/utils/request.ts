@@ -118,6 +118,26 @@ function bizError(body: any): string | null {
 }
 
 /**
+ * 把 uni.request 的 fail 归类成可读文案。
+ *
+ * 小程序把「域名没进白名单」「证书校验失败」「超时」全塞进 fail，统一提示"网络异常"
+ * 会让排查只能靠猜——体验版最常见的就是域名未配置。原始 errMsg 另外写 console，
+ * 供 vConsole 查看，不直接把技术细节甩给终端用户。
+ */
+function networkFailureMessage(errMsg: string): string {
+  if (/url not in domain list/i.test(errMsg)) {
+    return '请求域名未配置，请在小程序后台添加合法域名'
+  }
+  if (/ssl|tls|certificate/i.test(errMsg)) {
+    return '安全连接建立失败，请检查 HTTPS 证书'
+  }
+  if (/timeout/i.test(errMsg)) {
+    return '请求超时，请稍后重试'
+  }
+  return '网络异常，请检查网络后重试'
+}
+
+/**
  * 统一请求封装：自动附带小程序令牌、401 自动续期重放、业务错误统一抛出。
  */
 export function request<T = any>(options: RequestOptions): Promise<T> {
@@ -174,9 +194,12 @@ export function request<T = any>(options: RequestOptions): Promise<T> {
         reject(new Error(message))
       },
       fail: (err) => {
-        const message = '网络异常，请检查网络后重试'
+        const raw = (err && err.errMsg) || ''
+        const message = networkFailureMessage(raw)
+        // 原始 errMsg 只进控制台：vConsole 里能看到 request:fail url not in domain list 这类真实原因
+        console.error('[request] 请求失败', url, raw)
         if (!silent) toast(message)
-        reject(new Error(err.errMsg || message))
+        reject(new Error(raw || message))
       }
     })
   })
