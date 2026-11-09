@@ -93,10 +93,16 @@
           <el-input v-model="form.area" type="textarea" :rows="2" placeholder="描述已开放服务区域，仅用于展示" />
         </el-form-item>
         <el-form-item label="经纬度（用于派单半径判定）">
-          <div class="rl-hours__range">
+          <MapPicker
+            v-model:lng="form.lng"
+            v-model:lat="form.lat"
+            @update:address="onMapAddress"
+          />
+          <div class="rl-hours__range" style="margin-top: 8px">
             <el-input v-model="form.lng" placeholder="经度 110.925" />
             <el-input v-model="form.lat" placeholder="纬度 21.663" />
           </div>
+          <p class="rl-hint">在地图上点选即可回填坐标；地址为空时会同时填入逆地理编码结果。</p>
         </el-form-item>
         <el-form-item label="服务半径（米）">
           <el-input-number v-model="form.serviceRadiusMeter" :min="500" :step="500" />
@@ -174,6 +180,7 @@
 
 <script setup name="RongliStation" lang="ts">
 import RongliPage from '../components/RongliPage.vue'
+import MapPicker from '@/components/MapPicker/index.vue'
 import { onMounted, reactive, ref } from 'vue'
 import { ElMessage } from 'element-plus'
 import { createStation, listCapacity, listStations, updateCapacity, updateStation } from '@/api/rongli'
@@ -213,6 +220,19 @@ const form = reactive<any>({
   types: ['sedan'],
   enabled: true
 })
+
+/**
+ * 地图选点后的逆地理编码结果。
+ *
+ * 只在地址为空时回填：站点对外展示的地址通常是运营整理过的写法（"xx路1号"），
+ * 直接覆盖成高德返回的长串地址反而不利于车主阅读。
+ */
+function onMapAddress(address: string) {
+  if (!address) return
+  if (!form.address || !String(form.address).trim()) {
+    form.address = address
+  }
+}
 
 const disableVisible = ref(false)
 const disableReason = ref('')
