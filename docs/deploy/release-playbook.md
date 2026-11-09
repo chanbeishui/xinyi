@@ -36,11 +36,12 @@ ssh xinyi-prod 'hostname'
 
 取私钥到剪贴板（不显示）：`cat ~/.ssh/xinyi_deploy_ed25519 | clip`
 
-### 0.3 小程序上传密钥
+### 0.3 小程序上传前置（开发者工具 CLI）
 
-1. 公众平台 → 开发管理 → 开发设置 → 小程序代码上传密钥 → 生成并下载
-2. 同页「IP 白名单」加本机公网出口 IP
-3. 密钥存为 `xinyi-rongli-wx/private.upload.key`（已 gitignore）
+走 CLI 上传，**不需要上传密钥，也不需要 IP 白名单**，只要两项设置：
+
+1. 开发者工具已扫码登录
+2. 开发者工具 → 设置 → 安全设置 → 开启「服务端口」（CLI/HTTP 调用）
 
 ### 0.4 服务器备份脚本（每台服务器一次）
 
@@ -149,8 +150,8 @@ ssh xinyi-prod 'systemctl is-active xinyi-admin;
 
 ```bash
 cd /e/codex/xinyi/xinyi-rongli-wx
-npm run release:mp                    # 构建 + 上传（版本号默认 YYMMDD.1）
-MP_VERSION=1.1.0 npm run release:mp   # 指定版本号
+npm run release:mp                              # 构建 + 上传（版本号默认 YYMMDD.1）
+node scripts/upload-mp-cli.mjs --version 1.1.0 --desc "修复派单超时"   # 指定版本与描述
 ```
 
 上传成功后到公众平台（人工三步）：

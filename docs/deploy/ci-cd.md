@@ -285,16 +285,14 @@ cd /home/xinyi/app && mv xinyi-admin.jar.prev xinyi-admin.jar && systemctl resta
 
 ### 小程序
 
-上传必须满足两个条件，且都只能在本机做（Actions 出口 IP 不固定，加不了白名单）：
-
-1. 公众平台 → 开发管理 → 开发设置 → **小程序代码上传密钥**（生成并下载）
-2. 同一页把本机公网出口 IP 加进 **IP 白名单**
+用开发者工具 CLI 上传（`cli upload`）：走工具登录态，**不需要上传密钥、不受 IP 白名单限制**，
+因此不用管出口 IP 变化。代价是必须在本机执行，且工具已登录并开启「设置 → 安全设置 → 服务端口」。
 
 ```bash
 cd xinyi-rongli-wx
 # 密钥放 private.upload.key（已 gitignore）
-npm run release:mp                       # 构建 + 上传
-MP_VERSION=1.2.0 npm run release:mp      # 指定版本号
+npm run release:mp                                    # 构建 + 上传
+node scripts/upload-mp-cli.mjs --version 1.2.0 --desc "本次改动"   # 指定版本
 ```
 
 上传后仍是**开发版**，需人工在公众平台操作：
