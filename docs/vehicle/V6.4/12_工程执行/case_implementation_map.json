@@ -2284,8 +2284,9 @@
     "testFiles": [],
     "evidence": null,
     "caseId": "TC-R50-020",
-    "taskId": "Q03",
-    "testMethod": "test_tc_r50_020"
+    "taskId": "D07",
+    "testMethod": "test_tc_r50_020",
+    "note": "原用例为F42处罚与申诉，不属于Q03培训；只校正任务主责任，保留NOT_RUN，后续D07实际验收。"
   },
   {
     "status": "NOT_RUN",

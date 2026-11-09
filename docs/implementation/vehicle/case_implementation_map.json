@@ -2407,39 +2407,52 @@
     "testMethod": "I05IdentityIT#唯一匹配自动关联无凭证且不免司机审核_TC_R50_016_R62_007"
   },
   {
-    "status": "NOT_RUN",
-    "testFiles": [],
-    "evidence": null,
+    "status": "VERIFIED",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q03TrainingIT.java"
+    ],
+    "evidence": [
+      "docs/implementation/vehicle/evidence/Q03-20261109.json"
+    ],
     "caseId": "TC-R50-017",
     "taskId": "Q03",
-    "testMethod": "test_tc_r50_017"
+    "testMethod": "allRealMandatoryCoursesProduceOneCanonicalProofAndQ01CanThenSubmit",
+    "note": "56项真实HTTP/MySQL、真实MP4/墙钟/阅卷验证；含快进/重复/旧版本和全部必修证明，GUI替身不代替后端证据。"
   },
   {
-    "status": "NOT_RUN",
-    "testFiles": [],
-    "evidence": null,
+    "status": "VERIFIED",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q03TrainingIT.java"
+    ],
+    "evidence": [
+      "docs/implementation/vehicle/evidence/Q03-20261109.json"
+    ],
     "caseId": "TC-R50-018",
     "taskId": "Q03",
-    "testMethod": "test_tc_r50_018"
+    "testMethod": "firstHeartbeatOnlyEstablishesBaselineAndCannotClaimWholeVideo",
+    "note": "56项真实HTTP/MySQL、真实MP4/墙钟/阅卷验证；含快进/重复/旧版本和全部必修证明，GUI替身不代替后端证据。"
   },
   {
-    "status": "PARTIAL",
+    "status": "VERIFIED",
     "testFiles": [
-      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q02TrainingIT.java"
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q03TrainingIT.java"
     ],
-    "evidence": "docs/implementation/vehicle/evidence/Q02-20261109.json",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/Q03-20261109.json"
+    ],
     "caseId": "TC-R50-019",
     "taskId": "Q03",
-    "testMethod": "Q02TrainingIT#oldAttemptStillReferencesItsExactPublishedCourseAndQuestionSnapshot",
-    "note": "旧课程/题库/媒体/attempt确切引用与快照不覆盖已验；旧attempt真实按V1判分须Q03，主责任仍Q03。"
+    "testMethod": "anOpenV1AttemptIsReallyGradedAgainstV1AfterV2AndNewPolicyPublication",
+    "note": "56项真实HTTP/MySQL、真实MP4/墙钟/阅卷验证；含快进/重复/旧版本和全部必修证明，GUI替身不代替后端证据。"
   },
   {
     "status": "NOT_RUN",
     "testFiles": [],
     "evidence": null,
     "caseId": "TC-R50-020",
-    "taskId": "Q03",
-    "testMethod": "test_tc_r50_020"
+    "taskId": "D07",
+    "testMethod": "test_tc_r50_020",
+    "note": "原用例为F42处罚与申诉，不属于Q03培训；只校正任务主责任，保留NOT_RUN，后续D07实际验收。"
   },
   {
     "status": "NOT_RUN",

@@ -2356,32 +2356,48 @@
     "taskId": "R04"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "VERIFIED",
+    "implementationFile": "xinyi-miniapp/src/pages/training/list.vue",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/Q03-20261109.json",
+      "docs/implementation/vehicle/Q03/mini-browser.json"
+    ],
     "boardId": "D39",
-    "taskId": "Q03"
+    "taskId": "Q03",
+    "implementationNote": "真实页面与固定本人课表/私有媒体/限时题卷/服务端结果已接通；21项GUI明确API/墙钟夹具，真实HTTP/MySQL独立验证；不授DRIVER。"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "VERIFIED",
+    "implementationFile": "xinyi-miniapp/src/pages/training/course.vue",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/Q03-20261109.json",
+      "docs/implementation/vehicle/Q03/mini-browser.json"
+    ],
     "boardId": "D40",
-    "taskId": "Q03"
+    "taskId": "Q03",
+    "implementationNote": "真实页面与固定本人课表/私有媒体/限时题卷/服务端结果已接通；21项GUI明确API/墙钟夹具，真实HTTP/MySQL独立验证；不授DRIVER。"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "VERIFIED",
+    "implementationFile": "xinyi-miniapp/src/pages/training/exam.vue",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/Q03-20261109.json",
+      "docs/implementation/vehicle/Q03/mini-browser.json"
+    ],
     "boardId": "D41",
-    "taskId": "Q03"
+    "taskId": "Q03",
+    "implementationNote": "真实页面与固定本人课表/私有媒体/限时题卷/服务端结果已接通；21项GUI明确API/墙钟夹具，真实HTTP/MySQL独立验证；不授DRIVER。"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "VERIFIED",
+    "implementationFile": "xinyi-miniapp/src/pages/training/result.vue",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/Q03-20261109.json",
+      "docs/implementation/vehicle/Q03/mini-browser.json"
+    ],
     "boardId": "D42",
-    "taskId": "Q03"
+    "taskId": "Q03",
+    "implementationNote": "真实页面与固定本人课表/私有媒体/限时题卷/服务端结果已接通；21项GUI明确API/墙钟夹具，真实HTTP/MySQL独立验证；不授DRIVER。"
   },
   {
     "status": "NOT_ASSESSED",
@@ -2416,11 +2432,18 @@
     "implementationFile": "xinyi-ui/src/views/rongli/training/index.vue",
     "evidence": [
       "docs/implementation/vehicle/evidence/Q02-20261109.json",
-      "docs/implementation/vehicle/Q02/browser.json"
+      "docs/implementation/vehicle/Q02/browser.json",
+      "docs/implementation/vehicle/evidence/Q03-20261109.json",
+      "docs/implementation/vehicle/Q03/pc-browser.json"
     ],
     "boardId": "B43",
     "taskId": "Q02",
-    "implementationNote": "B43列表与B44编辑统一真实页面；公司范围、先草稿/媒体/题库/不可变发布与派生已验。GUI为明确API夹具，真实HTTP/MySQL独立验证；学员学习/判分不算完成。"
+    "implementationNote": "B43列表与B44编辑统一真实页面；公司范围、先草稿/媒体/题库/不可变发布与派生已验。GUI为明确API夹具，真实HTTP/MySQL独立验证；学员学习/判分不算完成。",
+    "additionalImplementationFiles": [
+      "xinyi-ui/src/views/rongli/training/policy.vue",
+      "xinyi-ui/src/api/rongli/trainingPolicy.ts"
+    ],
+    "q03Note": "保留Q02课程主页面，新增公司明确必修政策独立页面及三接口；14项GUI夹具，原课程责任仍Q02。"
   },
   {
     "status": "VERIFIED",

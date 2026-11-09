@@ -189,8 +189,10 @@
       "biz:dispute:list",
       "biz:dispute:query",
       "biz:dispute:resolve",
+      "biz:driver:assigncompany",
       "biz:driver:disablenewassignments",
       "biz:driver:edit",
+      "biz:driver:enablenewassignments",
       "biz:driver:list",
       "biz:driver:query",
       "biz:driveradjust:audit",
@@ -306,13 +308,14 @@
       "biz:trainingcourse:list",
       "biz:trainingcourse:publish",
       "biz:trainingcourse:query",
+      "biz:trainingpolicy:edit",
+      "biz:trainingpolicy:publish",
+      "biz:trainingpolicy:query",
       "biz:uploads:complete",
       "biz:uploads:create",
       "biz:vehicle:edit",
       "biz:vehicle:list",
-      "biz:vehicle:query",
-      "biz:driver:assigncompany",
-      "biz:driver:enablenewassignments"
+      "biz:vehicle:query"
     ],
     "CapabilityCode": [
       "COMMON_DICT_QUERY",
@@ -470,7 +473,16 @@
       "VIEW_TRAINING_COURSE",
       "EDIT_TRAINING_COURSE",
       "PUBLISH_TRAINING_COURSE",
-      "CREATE_TRAINING_REVISION"
+      "CREATE_TRAINING_REVISION",
+      "VIEW_TRAINING_POLICY",
+      "EDIT_TRAINING_POLICY",
+      "PUBLISH_TRAINING_POLICY",
+      "START_TRAINING",
+      "START_PLAYBACK",
+      "REPORT_TRAINING_PROGRESS",
+      "CREATE_TRAINING_ATTEMPT",
+      "VIEW_TRAINING_ATTEMPT",
+      "SUBMIT_TRAINING_ATTEMPT"
     ],
     "AccountStatus": [
       "ACTIVE",
@@ -948,6 +960,13 @@
     "RefundExecutionMode": [
       "WECHAT_API",
       "MANUAL_OFFLINE"
+    ],
+    "TrainingGradingMode": [
+      "EQUAL_HALF_UP_EXACT"
+    ],
+    "TrainingRunStatus": [
+      "ACTIVE",
+      "PASSED"
     ]
   }
 }

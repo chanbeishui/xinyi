@@ -1515,6 +1515,36 @@
         "POST /api/admin/drivers/{driverId}/enable-new-assignments"
       ],
       "usage": "OPERATION"
+    },
+    {
+      "code": "biz:trainingpolicy:query",
+      "resource": "trainingpolicy",
+      "action": "query",
+      "description": "读取公司培训政策",
+      "operations": [
+        "GET /api/admin/training-policies/{ownerDeptId}"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:trainingpolicy:edit",
+      "resource": "trainingpolicy",
+      "action": "edit",
+      "description": "保存公司培训政策草稿",
+      "operations": [
+        "PUT /api/admin/training-policies/{ownerDeptId}"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:trainingpolicy:publish",
+      "resource": "trainingpolicy",
+      "action": "publish",
+      "description": "发布公司培训政策",
+      "operations": [
+        "POST /api/admin/training-policies/{ownerDeptId}/publish"
+      ],
+      "usage": "OPERATION"
     }
   ],
   "capabilities": [
@@ -2358,7 +2388,16 @@
     "VIEW_TRAINING_COURSE",
     "EDIT_TRAINING_COURSE",
     "PUBLISH_TRAINING_COURSE",
-    "CREATE_TRAINING_REVISION"
+    "CREATE_TRAINING_REVISION",
+    "VIEW_TRAINING_POLICY",
+    "EDIT_TRAINING_POLICY",
+    "PUBLISH_TRAINING_POLICY",
+    "START_TRAINING",
+    "START_PLAYBACK",
+    "REPORT_TRAINING_PROGRESS",
+    "CREATE_TRAINING_ATTEMPT",
+    "VIEW_TRAINING_ATTEMPT",
+    "SUBMIT_TRAINING_ATTEMPT"
   ],
   "operations": [
     {
@@ -6533,6 +6572,60 @@
         "scope": "OWN_ACCOUNT_RESOURCE",
         "activeRole": "OWNER",
         "capability": "OWNER_ORDER_CREATE"
+      }
+    },
+    {
+      "operationId": "q03_get_api_admin_training_policies_ownerDeptId",
+      "method": "GET",
+      "path": "/api/admin/training-policies/{ownerDeptId}",
+      "summary": "读取公司培训政策",
+      "permission": "biz:trainingpolicy:query",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "COMPANY_OWNER_DEPT",
+        "permission": "biz:trainingpolicy:query"
+      }
+    },
+    {
+      "operationId": "q03_post_api_admin_training_policies_ownerDeptId_publish",
+      "method": "POST",
+      "path": "/api/admin/training-policies/{ownerDeptId}/publish",
+      "summary": "发布公司培训政策",
+      "permission": "biz:trainingpolicy:publish",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "COMPANY_OWNER_DEPT",
+        "permission": "biz:trainingpolicy:publish",
+        "additionalRequiredPermissions": [
+          "biz:trainingpolicy:query",
+          "biz:trainingcourse:query"
+        ],
+        "scopeDetails": "写动作与policyquery均按数据库公司范围验证，非空选课另需coursequery及公司范围；课程候选列表另需trainingcourse:list，不能代替query或写权限。"
+      }
+    },
+    {
+      "operationId": "q03_put_api_admin_training_policies_ownerDeptId",
+      "method": "PUT",
+      "path": "/api/admin/training-policies/{ownerDeptId}",
+      "summary": "保存公司培训政策草稿",
+      "permission": "biz:trainingpolicy:edit",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "COMPANY_OWNER_DEPT",
+        "permission": "biz:trainingpolicy:edit",
+        "additionalRequiredPermissions": [
+          "biz:trainingpolicy:query"
+        ],
+        "scopeDetails": "写动作与policyquery均按数据库公司范围验证，非空选课另需coursequery及公司范围；课程候选列表另需trainingcourse:list，不能代替query或写权限。",
+        "conditionalPermissions": [
+          {
+            "permission": "biz:trainingcourse:query",
+            "condition": "requiredTrainingIds非空时，每个课程及其权威公司范围必须覆盖"
+          }
+        ]
       }
     }
   ]

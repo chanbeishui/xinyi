@@ -670,5 +670,37 @@
     "entityFile": null,
     "mapperFile": null,
     "evidence": []
+  },
+  {
+    "status": "NOT_ASSESSED",
+    "entityFile": null,
+    "mapperFile": null,
+    "evidence": [],
+    "table": "vi_training_policy",
+    "taskId": "Q03"
+  },
+  {
+    "status": "NOT_ASSESSED",
+    "entityFile": null,
+    "mapperFile": null,
+    "evidence": [],
+    "table": "vi_training_policy_revision",
+    "taskId": "Q03"
+  },
+  {
+    "status": "NOT_ASSESSED",
+    "entityFile": null,
+    "mapperFile": null,
+    "evidence": [],
+    "table": "vi_training_plan_snapshot",
+    "taskId": "Q03"
+  },
+  {
+    "status": "NOT_ASSESSED",
+    "entityFile": null,
+    "mapperFile": null,
+    "evidence": [],
+    "table": "vi_training_run",
+    "taskId": "Q03"
   }
 ]

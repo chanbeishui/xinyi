@@ -4621,9 +4621,7 @@ paths:
       summary: 培训与考试任务
       tags:
       - ACCOUNT
-      description: '流程：F04。审核前允许基础账号申请，不要求已拥有正式DRIVER角色；真实第三方核验状态只能从受信服务取得
-
-        参数校验、真实归属、服务端当前状态/版本先于写入；不接受主体伪造。；主体为已验证的MINI基础账号，申请/培训/进度不要求已获DRIVER角色；本人记录校验。审核通过前不可接单。'
+      description: 真实已核验MINI本人申请，OWNER/STATION/DRIVER同标准，不要求先具备DRIVER。当前公司epoch/材料/app/run/固定课表实时校验，旧目标不漂移；GET不创建课表或运行。
       x-flow-ids:
       - F41
       security:
@@ -4644,7 +4642,10 @@ paths:
                   msg:
                     type: string
                   data:
-                    $ref: '#/components/schemas/Training'
+                    allOf:
+                    - $ref: '#/components/schemas/Training'
+                    type: object
+                    nullable: true
                 required:
                 - code
                 - msg
@@ -4710,9 +4711,7 @@ paths:
       summary: 提交考试答案
       tags:
       - ACCOUNT
-      description: '流程：F04。审核前允许基础账号申请，不要求已拥有正式DRIVER角色；真实第三方核验状态只能从受信服务取得
-
-        参数校验、真实归属、服务端当前状态/版本先于写入；不接受主体伪造。；主体为已验证的MINI基础账号，申请/培训/进度不要求已获DRIVER角色；本人记录校验。审核通过前不可接单。'
+      description: 真实已核验MINI本人申请，OWNER/STATION/DRIVER同标准，不要求先具备DRIVER。当前公司epoch/材料/app/run/固定课表实时校验，旧目标不漂移；GET不创建课表或运行。
       x-flow-ids:
       - F41
       security:
@@ -25908,7 +25907,7 @@ paths:
   /api/app/driver/qualification/training/{trainingId}:
     get:
       summary: 查看课程与本人进度
-      description: 查看课程与本人进度。真实主体由认证上下文构造；不得信任客户端通过/授权结论。；主体为已验证的MINI基础账号，申请/培训/进度不要求已获DRIVER角色；本人记录校验。审核通过前不可接单。
+      description: 真实已核验MINI本人申请，OWNER/STATION/DRIVER同标准，不要求先具备DRIVER。当前公司epoch/材料/app/run/固定课表实时校验，旧目标不漂移；GET不创建课表或运行。
       operationId: v5_get_api_app_driver_qualification_training_trainingId
       parameters:
       - in: path
@@ -25993,7 +25992,7 @@ paths:
   /api/app/driver/qualification/training/{trainingId}/playback:
     post:
       summary: 开始受控学习会话
-      description: 开始受控学习会话。真实主体由认证上下文构造；不得信任客户端通过/授权结论。；主体为已验证的MINI基础账号，申请/培训/进度不要求已获DRIVER角色；本人记录校验。审核通过前不可接单。
+      description: 真实已核验MINI本人申请，OWNER/STATION/DRIVER同标准，不要求先具备DRIVER。当前公司epoch/材料/app/run/固定课表实时校验，旧目标不漂移；GET不创建课表或运行。
       operationId: v5_post_api_app_driver_qualification_training_trainingId_playback
       parameters:
       - in: path
@@ -26064,7 +26063,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/TrainingAttemptCreate'
+              $ref: '#/components/schemas/TrainingPlaybackCreate'
       x-capability: DRIVER_QUALIFICATION_PLAYBACK
       security:
       - MiniBearerAuth: []
@@ -26111,7 +26110,7 @@ paths:
   /api/app/driver/qualification/training/{trainingId}/progress:
     post:
       summary: 记录本人学习进度
-      description: 记录本人学习进度。真实主体由认证上下文构造；不得信任客户端通过/授权结论。；主体为已验证的MINI基础账号，申请/培训/进度不要求已获DRIVER角色；本人记录校验。审核通过前不可接单。
+      description: 真实已核验MINI本人申请，OWNER/STATION/DRIVER同标准，不要求先具备DRIVER。当前公司epoch/材料/app/run/固定课表实时校验，旧目标不漂移；GET不创建课表或运行。
       operationId: v5_post_api_app_driver_qualification_training_trainingId_progress
       parameters:
       - in: path
@@ -26229,7 +26228,7 @@ paths:
   /api/app/driver/qualification/training/{trainingId}/attempts:
     post:
       summary: 建立本人的考试尝试
-      description: 建立本人的考试尝试。真实主体由认证上下文构造；不得信任客户端通过/授权结论。；主体为已验证的MINI基础账号，申请/培训/进度不要求已获DRIVER角色；本人记录校验。审核通过前不可接单。
+      description: 真实已核验MINI本人申请，OWNER/STATION/DRIVER同标准，不要求先具备DRIVER。当前公司epoch/材料/app/run/固定课表实时校验，旧目标不漂移；GET不创建课表或运行。
       operationId: v5_post_api_app_driver_qualification_training_trainingId_attempts
       parameters:
       - in: path
@@ -26347,7 +26346,7 @@ paths:
   /api/app/driver/qualification/training/attempts/{attemptId}:
     get:
       summary: 读取本人考试尝试
-      description: 读取本人考试尝试。真实主体由认证上下文构造；不得信任客户端通过/授权结论。；主体为已验证的MINI基础账号，申请/培训/进度不要求已获DRIVER角色；本人记录校验。审核通过前不可接单。
+      description: 真实已核验MINI本人申请，OWNER/STATION/DRIVER同标准，不要求先具备DRIVER。当前公司epoch/材料/app/run/固定课表实时校验，旧目标不漂移；GET不创建课表或运行。
       operationId: v5_get_api_app_driver_qualification_training_attempts_attemptId
       parameters:
       - in: path
@@ -32257,6 +32256,318 @@ paths:
       x-contract-baseline: V6.4
       x-authority-sources:
         driver: vi_driver_profile.owner_dept_id
+  /api/admin/training-policies/{ownerDeptId}:
+    get:
+      summary: 读取公司培训政策
+      description: 权威ownerDeptId公司范围，真实ADMIN和query/写功能分别校验。未配置不提供演示默认，保存草稿不生效，显式发布不可变修订；不覆盖已有申请冻结课表。
+      operationId: q03_get_api_admin_training_policies_ownerDeptId
+      parameters:
+      - in: path
+        name: ownerDeptId
+        required: true
+        schema:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                properties:
+                  code:
+                    type: integer
+                    enum:
+                    - 200
+                  msg:
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/TrainingPolicy'
+                required:
+                - code
+                - msg
+                - data
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+                enum:
+                - no-store
+              description: 身份/交易/个人业务响应不缓存
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalError'
+        '503':
+          $ref: '#/components/responses/Unavailable'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      x-flow-ids:
+      - F41
+      x-permission: biz:trainingpolicy:query
+      security:
+      - AdminBearerAuth: []
+      x-authorization:
+        realm: ADMIN
+        scope: COMPANY_OWNER_DEPT
+        permission: biz:trainingpolicy:query
+      x-error-codes:
+      - VI_REQUEST_INVALID
+      - VI_AUTH_REQUIRED
+      - VI_TOKEN_REALM_MISMATCH
+      - VI_REFRESH_REUSED
+      - VI_FORBIDDEN
+      - VI_SELF_REVIEW_DENIED
+      - VI_RESOURCE_NOT_VISIBLE
+      - VI_RATE_LIMITED
+      - VI_INTERNAL_ERROR
+      - VI_AUTHORITY_UNAVAILABLE
+      - VI_UPSTREAM_UNAVAILABLE
+      x-error-policy: OBJECT_404_HIDES_EXISTENCE
+      x-contract-baseline: V6.4
+    put:
+      summary: 保存公司培训政策草稿
+      description: 权威ownerDeptId公司范围，真实ADMIN和query/写功能分别校验。未配置不提供演示默认，保存草稿不生效，显式发布不可变修订；不覆盖已有申请冻结课表。
+      operationId: q03_put_api_admin_training_policies_ownerDeptId
+      parameters:
+      - in: header
+        name: Idempotency-Key
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: 同主体+动作+目标的幂等键；同体重试返回原结果，异体409；还须永久业务唯一约束
+      - in: path
+        name: ownerDeptId
+        required: true
+        schema:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                properties:
+                  code:
+                    type: integer
+                    enum:
+                    - 200
+                  msg:
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/TrainingPolicy'
+                required:
+                - code
+                - msg
+                - data
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+                enum:
+                - no-store
+              description: 身份/交易/个人业务响应不缓存
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalError'
+        '503':
+          $ref: '#/components/responses/Unavailable'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+      x-flow-ids:
+      - F41
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TrainingPolicySave'
+      x-permission: biz:trainingpolicy:edit
+      security:
+      - AdminBearerAuth: []
+      x-authorization:
+        realm: ADMIN
+        scope: COMPANY_OWNER_DEPT
+        permission: biz:trainingpolicy:edit
+        additionalRequiredPermissions:
+        - biz:trainingpolicy:query
+        scopeDetails: 写动作与policyquery均按数据库公司范围验证，非空选课另需coursequery及公司范围；课程候选列表另需trainingcourse:list，不能代替query或写权限。
+        conditionalPermissions:
+        - permission: biz:trainingcourse:query
+          condition: requiredTrainingIds非空时，每个课程及其权威公司范围必须覆盖
+      x-error-codes:
+      - VI_REQUEST_INVALID
+      - VI_AUTH_REQUIRED
+      - VI_TOKEN_REALM_MISMATCH
+      - VI_REFRESH_REUSED
+      - VI_FORBIDDEN
+      - VI_SELF_REVIEW_DENIED
+      - VI_RESOURCE_NOT_VISIBLE
+      - VI_VERSION_CONFLICT
+      - VI_STATE_CONFLICT
+      - VI_IDEMPOTENCY_CONFLICT
+      - VI_SELECTION_CONFLICT
+      - VI_CONTEXT_CHANGED
+      - VI_SNAPSHOT_CHANGED
+      - VI_DATA_INVALID
+      - VI_EVIDENCE_INCOMPLETE
+      - VI_HANDOVER_CODE_INVALID
+      - VI_HANDOVER_LOCKED
+      - VI_UNPRICED_LINES
+      - VI_REFUND_LIMIT
+      - VI_PAYMENT_LIMIT
+      - VI_SERVICE_UNAVAILABLE
+      - VI_CAPABILITY_NOT_CONFIGURED
+      - VI_TRAINING_NOT_READY
+      - VI_RATE_LIMITED
+      - VI_INTERNAL_ERROR
+      - VI_AUTHORITY_UNAVAILABLE
+      - VI_UPSTREAM_UNAVAILABLE
+      x-error-policy: OBJECT_404_HIDES_EXISTENCE
+      x-contract-baseline: V6.4
+  /api/admin/training-policies/{ownerDeptId}/publish:
+    post:
+      summary: 发布公司培训政策
+      description: 权威ownerDeptId公司范围，真实ADMIN和query/写功能分别校验。未配置不提供演示默认，保存草稿不生效，显式发布不可变修订；不覆盖已有申请冻结课表。
+      operationId: q03_post_api_admin_training_policies_ownerDeptId_publish
+      parameters:
+      - in: header
+        name: Idempotency-Key
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: 同主体+动作+目标的幂等键；同体重试返回原结果，异体409；还须永久业务唯一约束
+      - in: path
+        name: ownerDeptId
+        required: true
+        schema:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                properties:
+                  code:
+                    type: integer
+                    enum:
+                    - 200
+                  msg:
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/TrainingPolicy'
+                required:
+                - code
+                - msg
+                - data
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+                enum:
+                - no-store
+              description: 身份/交易/个人业务响应不缓存
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalError'
+        '503':
+          $ref: '#/components/responses/Unavailable'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+      x-flow-ids:
+      - F41
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TrainingPolicyPublish'
+      x-permission: biz:trainingpolicy:publish
+      security:
+      - AdminBearerAuth: []
+      x-authorization:
+        realm: ADMIN
+        scope: COMPANY_OWNER_DEPT
+        permission: biz:trainingpolicy:publish
+        additionalRequiredPermissions:
+        - biz:trainingpolicy:query
+        - biz:trainingcourse:query
+        scopeDetails: 写动作与policyquery均按数据库公司范围验证，非空选课另需coursequery及公司范围；课程候选列表另需trainingcourse:list，不能代替query或写权限。
+      x-error-codes:
+      - VI_REQUEST_INVALID
+      - VI_AUTH_REQUIRED
+      - VI_TOKEN_REALM_MISMATCH
+      - VI_REFRESH_REUSED
+      - VI_FORBIDDEN
+      - VI_SELF_REVIEW_DENIED
+      - VI_RESOURCE_NOT_VISIBLE
+      - VI_VERSION_CONFLICT
+      - VI_STATE_CONFLICT
+      - VI_IDEMPOTENCY_CONFLICT
+      - VI_SELECTION_CONFLICT
+      - VI_CONTEXT_CHANGED
+      - VI_SNAPSHOT_CHANGED
+      - VI_DATA_INVALID
+      - VI_EVIDENCE_INCOMPLETE
+      - VI_HANDOVER_CODE_INVALID
+      - VI_HANDOVER_LOCKED
+      - VI_UNPRICED_LINES
+      - VI_REFUND_LIMIT
+      - VI_PAYMENT_LIMIT
+      - VI_SERVICE_UNAVAILABLE
+      - VI_CAPABILITY_NOT_CONFIGURED
+      - VI_TRAINING_NOT_READY
+      - VI_RATE_LIMITED
+      - VI_INTERNAL_ERROR
+      - VI_AUTHORITY_UNAVAILABLE
+      - VI_UPSTREAM_UNAVAILABLE
+      x-error-policy: OBJECT_404_HIDES_EXISTENCE
+      x-contract-baseline: V6.4
 components:
   securitySchemes:
     MiniBearerAuth:
@@ -33555,27 +33866,59 @@ components:
       - answerCodes
     TrainingSubmit:
       type: object
+      additionalProperties: false
       properties:
+        applicationId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+        runId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
         attemptId:
           type: string
           pattern: ^[1-9][0-9]{0,18}$
           maxLength: 19
           description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
-        answers:
-          type: array
-          items:
-            $ref: '#/components/schemas/Answer'
         expectedVersion:
           type: integer
-          format: int64
           minimum: 0
+          description: 客户端最后读取的版本；服务端条件更新，冲突返回409
+          format: int64
           maximum: 9007199254740991
-          description: 最后读取的非负版本；更新CAS，冲突409
-      additionalProperties: false
+        answers:
+          type: array
+          minItems: 1
+          maxItems: 200
+          items:
+            type: object
+            additionalProperties: false
+            properties:
+              questionId:
+                type: string
+                pattern: ^[1-9][0-9]{0,18}$
+                maxLength: 19
+                description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+              answerCodes:
+                type: array
+                uniqueItems: true
+                maxItems: 10
+                items:
+                  type: string
+                  pattern: ^[A-Za-z0-9_-]{1,32}$
+            required:
+            - questionId
+            - answerCodes
       required:
+      - applicationId
+      - runId
       - attemptId
-      - answers
       - expectedVersion
+      - answers
+      description: expectedVersion为attempt CAS。每个快照题目恰一次，空选择计0，未知/重复题目或选项整组拒绝；服务器一次阅卷、永久作答HMAC，不因换UUID重判。
     Listening:
       type: object
       properties:
@@ -39619,27 +39962,39 @@ components:
           pattern: ^[1-9][0-9]{0,18}$
           maxLength: 19
           description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+        courseKey:
+          type: string
+          maxLength: 64
         courseVersion:
           type: integer
-          format: int64
-          minimum: 0
-          maximum: 9007199254740991
-          description: 最后读取的非负版本；更新CAS，冲突409
+          minimum: 1
+          maximum: 2147483647
         title:
           type: string
         description:
           type: string
+          nullable: true
         mediaFileId:
           type: string
           pattern: ^[1-9][0-9]{0,18}$
           maxLength: 19
           description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+        mediaDurationMillis:
+          type: integer
+          minimum: 1
+          maximum: 86400000
         requiredDurationSeconds:
           type: integer
-          minimum: 0
+          minimum: 1
+          maximum: 86400
         verifiedDurationSeconds:
           type: integer
           minimum: 0
+          maximum: 86400
+        verifiedDurationMillis:
+          type: integer
+          minimum: 0
+          maximum: 86400000
         status:
           $ref: '#/components/schemas/TrainingStatus'
         latestAttemptId:
@@ -39650,21 +40005,49 @@ components:
           nullable: true
         version:
           type: integer
-          format: int64
           minimum: 0
+          description: 该run中本课程progress行CAS，未初始化预览为0。
+          format: int64
           maximum: 9007199254740991
-          description: 最后读取的非负版本；更新CAS，冲突409
+        initialized:
+          type: boolean
+        attemptsUsed:
+          type: integer
+          minimum: 0
+        maxAttempts:
+          type: integer
+          minimum: 1
+          maximum: 100
+        retryAvailableAt:
+          type: string
+          format: date-time
+          pattern: Z$
+          nullable: true
+        allowedActions:
+          type: array
+          uniqueItems: true
+          items:
+            $ref: '#/components/schemas/AllowedAction'
       required:
       - trainingId
+      - courseKey
       - courseVersion
       - title
       - description
       - mediaFileId
+      - mediaDurationMillis
       - requiredDurationSeconds
       - verifiedDurationSeconds
+      - verifiedDurationMillis
       - status
       - latestAttemptId
       - version
+      - initialized
+      - attemptsUsed
+      - maxAttempts
+      - retryAvailableAt
+      - allowedActions
+      description: 只投影本人当前课表；不含标准答案、内容HMAC或阅卷密文。有效时长由服务器按不重复媒体区间和可信墙钟计算，毫秒累计后秒数向下取整。
     Training:
       type: object
       additionalProperties: false
@@ -39674,62 +40057,157 @@ components:
           pattern: ^[1-9][0-9]{0,18}$
           maxLength: 19
           description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+        version:
+          type: integer
+          minimum: 0
+          description: 资格申请CAS；不是课表/进度/播放/考试版本。
+          format: int64
+          maximum: 9007199254740991
+        profileVersion:
+          type: integer
+          minimum: 0
+          description: 客户端最后读取的版本；服务端条件更新，冲突返回409
+          format: int64
+          maximum: 9007199254740991
+        ownerDeptId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+          nullable: true
+        companyName:
+          type: string
+          nullable: true
+        companyRevision:
+          type: integer
+          minimum: 0
+          description: 仅真实公司归属变化递增的epoch，不随备注或行政开关变化。
+          format: int64
+          maximum: 9007199254740991
+        materialRevision:
+          type: integer
+          minimum: 0
+          description: 客户端最后读取的版本；服务端条件更新，冲突返回409
+          format: int64
+          maximum: 9007199254740991
+        policyRevisionId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+          nullable: true
+        planId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+          nullable: true
+        runId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+          nullable: true
         units:
           type: array
           items:
             $ref: '#/components/schemas/TrainingUnit'
         complete:
           type: boolean
-        version:
-          type: integer
-          format: int64
-          minimum: 0
-          maximum: 9007199254740991
-          description: 最后读取的非负版本；更新CAS，冲突409
+        blockers:
+          type: array
+          items:
+            $ref: '#/components/schemas/TrainingPublishBlocker'
+        allowedActions:
+          type: array
+          uniqueItems: true
+          items:
+            $ref: '#/components/schemas/AllowedAction'
       required:
       - applicationId
+      - version
+      - profileVersion
+      - ownerDeptId
+      - companyName
+      - companyRevision
+      - materialRevision
+      - policyRevisionId
+      - planId
+      - runId
       - units
       - complete
-      - version
+      - blockers
+      - allowedActions
+      description: 本人当前申请的冻结公司课表与材料运行，GET纯读不建plan/run。首次真实playback冻结；新材料run复用同公司epoch固定课表，后发布不覆盖。公司epoch变化重新绑定，不复活旧证明。
     TrainingProgressInput:
       type: object
       additionalProperties: false
       properties:
-        expectedVersion:
-          type: integer
-          format: int64
-          minimum: 0
-          maximum: 9007199254740991
-          description: 最后读取的非负版本；更新CAS，冲突409
+        applicationId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+        runId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
         courseVersion:
           type: integer
-          format: int64
-          minimum: 0
-          maximum: 9007199254740991
-          description: 最后读取的非负版本；更新CAS，冲突409
-        sequence:
-          type: integer
           minimum: 1
-        positionSeconds:
+          maximum: 2147483647
+        expectedVersion:
           type: integer
           minimum: 0
+          description: 客户端最后读取的版本；服务端条件更新，冲突返回409
+          format: int64
+          maximum: 9007199254740991
         playbackSessionId:
           type: string
           pattern: ^[1-9][0-9]{0,18}$
           maxLength: 19
           description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+        sequence:
+          type: integer
+          minimum: 1
+          maximum: 2147483647
+        positionMillis:
+          type: integer
+          minimum: 0
+          maximum: 86400000
+        playing:
+          type: boolean
       required:
-      - expectedVersion
+      - applicationId
+      - runId
       - courseVersion
-      - sequence
-      - positionSeconds
+      - expectedVersion
       - playbackSessionId
-      description: 服务端按可信会话经过时间限幅；客户端进度不是已完成证明，不允许一次上报无限推进
+      - sequence
+      - positionMillis
+      - playing
+      description: expectedVersion仅progress行CAS。positionMillis与playing是报告而非完成证明；首基线/暂停不计时，心跳间隔超过15秒整段不计并重建基线；服务端按会话/序号/墙钟及区间并集校验，重复/乱序不重复加时。
     TrainingPlayback:
       type: object
       additionalProperties: false
       properties:
         playbackSessionId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+        applicationId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+        planId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+        runId:
           type: string
           pattern: ^[1-9][0-9]{0,18}$
           maxLength: 19
@@ -39741,33 +40219,45 @@ components:
           description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
         courseVersion:
           type: integer
-          format: int64
-          minimum: 0
-          maximum: 9007199254740991
-          description: 最后读取的非负版本；更新CAS，冲突409
+          minimum: 1
+          maximum: 2147483647
         serverStartedAt:
           type: string
           format: date-time
           pattern: Z$
-          description: ISO8601 UTC时刻，必须Z结尾；显示与业务日期Asia/Shanghai
         expiresAt:
           type: string
           format: date-time
           pattern: Z$
-          description: ISO8601 UTC时刻，必须Z结尾；显示与业务日期Asia/Shanghai
         version:
           type: integer
-          format: int64
           minimum: 0
+          description: 播放行自身CAS，不用于heartbeat的progress CAS。
+          format: int64
           maximum: 9007199254740991
-          description: 最后读取的非负版本；更新CAS，冲突409
+        progressVersion:
+          type: integer
+          minimum: 0
+          description: heartbeat/attempt创建使用的progress CAS。
+          format: int64
+          maximum: 9007199254740991
+        heartbeatMaxGapSeconds:
+          type: integer
+          enum:
+          - 15
       required:
       - playbackSessionId
+      - applicationId
+      - planId
+      - runId
       - trainingId
       - courseVersion
       - serverStartedAt
       - expiresAt
       - version
+      - progressVersion
+      - heartbeatMaxGapSeconds
+      description: 受控播放绑定MINI session/context及当前run。先下载本人授权私有媒体，首心跳建立位置基线且不获时；playing=false不获时，超过技术窗口不补离线时长，区间并集不重复计时。
     QuestionOption:
       type: object
       additionalProperties: false
@@ -39816,6 +40306,16 @@ components:
           pattern: ^[1-9][0-9]{0,18}$
           maxLength: 19
           description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+        applicationId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+        runId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
         trainingId:
           type: string
           pattern: ^[1-9][0-9]{0,18}$
@@ -39823,31 +40323,33 @@ components:
           description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
         courseVersion:
           type: integer
-          format: int64
-          minimum: 0
-          maximum: 9007199254740991
-          description: 最后读取的非负版本；更新CAS，冲突409
+          minimum: 1
+          maximum: 2147483647
         status:
-          $ref: '#/components/schemas/AttemptStatus'
+          type: string
+          enum:
+          - OPEN
+          - PASSED
+          - FAILED
+          - EXPIRED
         questions:
           type: array
+          minItems: 1
+          maxItems: 200
           items:
             $ref: '#/components/schemas/TrainingQuestion'
         startedAt:
           type: string
           format: date-time
           pattern: Z$
-          description: ISO8601 UTC时刻，必须Z结尾；显示与业务日期Asia/Shanghai
         expiresAt:
           type: string
           format: date-time
           pattern: Z$
-          description: ISO8601 UTC时刻，必须Z结尾；显示与业务日期Asia/Shanghai
         submittedAt:
           type: string
           format: date-time
           pattern: Z$
-          description: ISO8601 UTC时刻，必须Z结尾；显示与业务日期Asia/Shanghai
           nullable: true
         score:
           type: integer
@@ -39859,12 +40361,26 @@ components:
           nullable: true
         version:
           type: integer
-          format: int64
           minimum: 0
+          description: 仅attempt行CAS，提交使用；不是progress或播放版本。
+          format: int64
           maximum: 9007199254740991
-          description: 最后读取的非负版本；更新CAS，冲突409
+        attemptNo:
+          type: integer
+          minimum: 1
+        passScore:
+          type: integer
+          minimum: 0
+          maximum: 100
+        allowedActions:
+          type: array
+          uniqueItems: true
+          items:
+            $ref: '#/components/schemas/AllowedAction'
       required:
       - attemptId
+      - applicationId
+      - runId
       - trainingId
       - courseVersion
       - status
@@ -39875,26 +40391,40 @@ components:
       - score
       - passed
       - version
+      - attemptNo
+      - passScore
+      - allowedActions
+      description: 仅本人当前app/run。公开试卷始终无答案/解释/内容HMAC，私有阅卷快照独立AAD加密；旧版本保留并按创建时快照判分。
     TrainingAttemptCreate:
       type: object
       additionalProperties: false
       properties:
-        expectedVersion:
-          type: integer
-          format: int64
-          minimum: 0
-          maximum: 9007199254740991
-          description: 最后读取的非负版本；更新CAS，冲突409
+        applicationId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+        runId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
         courseVersion:
           type: integer
-          format: int64
+          minimum: 1
+          maximum: 2147483647
+        expectedVersion:
+          type: integer
           minimum: 0
+          description: 客户端最后读取的版本；服务端条件更新，冲突返回409
+          format: int64
           maximum: 9007199254740991
-          description: 最后读取的非负版本；更新CAS，冲突409
       required:
-      - expectedVersion
+      - applicationId
+      - runId
       - courseVersion
-      description: 从本人已满足学习条件的课程建立考试尝试；同一课程并发创建返回同一有效尝试
+      - expectedVersion
+      description: expectedVersion仅progress行CAS。已达到必学条件、累计次数及重试间隔均满足才创建；当前未过期OPEN尝试复用不再次占次数。
     TrainingCourseInput:
       oneOf:
       - $ref: '#/components/schemas/TrainingCourseCreate'
@@ -40369,8 +40899,10 @@ components:
       - biz:dispute:list
       - biz:dispute:query
       - biz:dispute:resolve
+      - biz:driver:assigncompany
       - biz:driver:disablenewassignments
       - biz:driver:edit
+      - biz:driver:enablenewassignments
       - biz:driver:list
       - biz:driver:query
       - biz:driveradjust:audit
@@ -40486,13 +41018,14 @@ components:
       - biz:trainingcourse:list
       - biz:trainingcourse:publish
       - biz:trainingcourse:query
+      - biz:trainingpolicy:edit
+      - biz:trainingpolicy:publish
+      - biz:trainingpolicy:query
       - biz:uploads:complete
       - biz:uploads:create
       - biz:vehicle:edit
       - biz:vehicle:list
       - biz:vehicle:query
-      - biz:driver:assigncompany
-      - biz:driver:enablenewassignments
     CapabilityCode:
       type: string
       description: 会话能力注册表；资格申请及本人历史不要求已获正式接单资格
@@ -40655,6 +41188,15 @@ components:
       - EDIT_TRAINING_COURSE
       - PUBLISH_TRAINING_COURSE
       - CREATE_TRAINING_REVISION
+      - VIEW_TRAINING_POLICY
+      - EDIT_TRAINING_POLICY
+      - PUBLISH_TRAINING_POLICY
+      - START_TRAINING
+      - START_PLAYBACK
+      - REPORT_TRAINING_PROGRESS
+      - CREATE_TRAINING_ATTEMPT
+      - VIEW_TRAINING_ATTEMPT
+      - SUBMIT_TRAINING_ATTEMPT
     AccountStatus:
       type: string
       enum:
@@ -44994,6 +45536,250 @@ components:
       - sourceTrainingId
       - expectedSourceVersion
       description: 源必须已发布，读取并覆盖create/query/filesquery公司范围；服务端继承稳定courseKey/公司及教材和题目，分配新内容版本。全课程族最多一个DRAFT，不改旧发布与历史试卷。
+    TrainingGradingMode:
+      type: string
+      enum:
+      - EQUAL_HALF_UP_EXACT
+      description: 每题等分100，多选精确集合匹配，全卷正确题数*100/总题数最终HALF_UP整数后判定，不能逐题先舍入。
+    TrainingRunStatus:
+      type: string
+      enum:
+      - ACTIVE
+      - PASSED
+    TrainingPolicyRevision:
+      type: object
+      additionalProperties: false
+      properties:
+        revisionId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+        revisionNo:
+          type: integer
+          minimum: 1
+        status:
+          type: string
+          enum:
+          - DRAFT
+          - PUBLISHED
+        requiredTrainingIds:
+          type: array
+          uniqueItems: true
+          maxItems: 100
+          items:
+            type: string
+            pattern: ^[1-9][0-9]{0,18}$
+            maxLength: 19
+            description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+        maxAttempts:
+          type: integer
+          minimum: 1
+          maximum: 100
+          nullable: true
+        retryIntervalSeconds:
+          type: integer
+          minimum: 0
+          maximum: 2592000
+          nullable: true
+        gradingMode:
+          $ref: '#/components/schemas/TrainingGradingMode'
+        publishedAt:
+          type: string
+          format: date-time
+          pattern: Z$
+          nullable: true
+        publishBlockers:
+          type: array
+          items:
+            $ref: '#/components/schemas/TrainingPublishBlocker'
+      required:
+      - revisionId
+      - revisionNo
+      - status
+      - requiredTrainingIds
+      - maxAttempts
+      - retryIntervalSeconds
+      - gradingMode
+      - publishedAt
+      - publishBlockers
+      description: 不可变政策内容；发布元数据只设一次，不覆盖已有申请课表。草稿可缺上限/间隔及集合，发布不可缺。
+    TrainingPolicy:
+      type: object
+      additionalProperties: false
+      properties:
+        policyId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+          nullable: true
+        ownerDeptId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+        companyName:
+          type: string
+        version:
+          type: integer
+          minimum: 0
+          description: 客户端最后读取的版本；服务端条件更新，冲突返回409
+          format: int64
+          maximum: 9007199254740991
+        draftRevision:
+          allOf:
+          - $ref: '#/components/schemas/TrainingPolicyRevision'
+          type: object
+          nullable: true
+        activeRevision:
+          allOf:
+          - $ref: '#/components/schemas/TrainingPolicyRevision'
+          type: object
+          nullable: true
+        allowedActions:
+          type: array
+          uniqueItems: true
+          items:
+            $ref: '#/components/schemas/AllowedAction'
+      required:
+      - policyId
+      - ownerDeptId
+      - companyName
+      - version
+      - draftRevision
+      - activeRevision
+      - allowedActions
+      description: 真实公司聚合；尚无政策时id/revision均null且version0，不自动生成默认政策。query与写入各按权威owner公司范围。
+    TrainingPolicySave:
+      type: object
+      additionalProperties: false
+      properties:
+        expectedVersion:
+          type: integer
+          minimum: 0
+          description: 客户端最后读取的版本；服务端条件更新，冲突返回409
+          format: int64
+          maximum: 9007199254740991
+        requiredTrainingIds:
+          type: array
+          uniqueItems: true
+          maxItems: 100
+          items:
+            type: string
+            pattern: ^[1-9][0-9]{0,18}$
+            maxLength: 19
+            description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+        maxAttempts:
+          type: integer
+          minimum: 1
+          maximum: 100
+          nullable: true
+        retryIntervalSeconds:
+          type: integer
+          minimum: 0
+          maximum: 2592000
+          nullable: true
+        reason:
+          type: string
+          minLength: 1
+          maxLength: 500
+      required:
+      - expectedVersion
+      - requiredTrainingIds
+      - maxAttempts
+      - retryIntervalSeconds
+      - reason
+      description: 恰五键完整保存新不可变草稿修订。选同公司可信PUBLISHED精确ID、同族仅一版本，另需coursequery范围；不从所有发布课程推必修。maxAttempts含首次且同申请稳定courseKey累计，材料换版不重置，失败/超时计次。
+    TrainingPolicyPublish:
+      type: object
+      additionalProperties: false
+      properties:
+        expectedVersion:
+          type: integer
+          minimum: 0
+          description: 客户端最后读取的版本；服务端条件更新，冲突返回409
+          format: int64
+          maximum: 9007199254740991
+        draftRevisionId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+        reason:
+          type: string
+          minLength: 1
+          maxLength: 500
+      required:
+      - expectedVersion
+      - draftRevisionId
+      - reason
+      description: 显式目标草稿ID和聚合CAS，不能发布已变化的新草稿。需query/publish权限与公司范围；空集合、缺上限或间隔失败关闭。
+    TrainingPlaybackCreate:
+      type: object
+      additionalProperties: false
+      properties:
+        applicationId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+        expectedApplicationVersion:
+          type: integer
+          minimum: 0
+          description: 客户端最后读取的版本；服务端条件更新，冲突返回409
+          format: int64
+          maximum: 9007199254740991
+        expectedCompanyRevision:
+          type: integer
+          minimum: 0
+          description: 客户端最后读取的版本；服务端条件更新，冲突返回409
+          format: int64
+          maximum: 9007199254740991
+        expectedMaterialRevision:
+          type: integer
+          minimum: 0
+          description: 客户端最后读取的版本；服务端条件更新，冲突返回409
+          format: int64
+          maximum: 9007199254740991
+        expectedPolicyRevisionId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+        planId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+          nullable: true
+        runId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+          nullable: true
+        courseVersion:
+          type: integer
+          minimum: 1
+          maximum: 2147483647
+        expectedVersion:
+          type: integer
+          minimum: 0
+          description: 客户端最后读取的版本；服务端条件更新，冲突返回409
+          format: int64
+          maximum: 9007199254740991
+      required:
+      - applicationId
+      - expectedApplicationVersion
+      - expectedCompanyRevision
+      - expectedMaterialRevision
+      - expectedPolicyRevisionId
+      - planId
+      - runId
+      - courseVersion
+      - expectedVersion
+      description: 九键必须显式存在，planId/runId仅未创建时为null且须与GET一致。expectedVersion为progress CAS；其余对应当前申请/公司epoch/材料/正式或已固定policy。旧请求不能漂移新复审/run。
   responses:
     BadRequest:
       description: 请求格式不正确。参见errorCode注册表；HTTP状态与code一致。

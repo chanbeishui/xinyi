@@ -340,7 +340,16 @@ export type QualificationAudit = {
 
 export type Answer = { questionId: string; answerCodes: Array<string> };
 
-export type TrainingSubmit = { attemptId: string; answers: Array<Answer>; expectedVersion: number };
+export type TrainingSubmit = {
+  applicationId: string;
+  runId: string;
+  attemptId: string;
+  expectedVersion: number;
+  answers: Array<{
+    questionId: string;
+    answerCodes: Array<string>;
+  }>;
+};
 
 export type Listening = { enabled: boolean; expectedVersion: number };
 
@@ -1880,39 +1889,65 @@ export type AttemptStatus = 'OPEN' | 'SUBMITTED' | 'PASSED' | 'FAILED' | 'EXPIRE
 
 export type TrainingUnit = {
   trainingId: string;
+  courseKey: string;
   courseVersion: number;
   title: string;
-  description: string;
+  description: string | null;
   mediaFileId: string;
+  mediaDurationMillis: number;
   requiredDurationSeconds: number;
   verifiedDurationSeconds: number;
+  verifiedDurationMillis: number;
   status: TrainingStatus;
   latestAttemptId: string | null;
   version: number;
+  initialized: boolean;
+  attemptsUsed: number;
+  maxAttempts: number;
+  retryAvailableAt: string | null;
+  allowedActions: Array<AllowedAction>;
 };
 
 export type Training = {
   applicationId: string;
+  version: number;
+  profileVersion: number;
+  ownerDeptId: string | null;
+  companyName: string | null;
+  companyRevision: number;
+  materialRevision: number;
+  policyRevisionId: string | null;
+  planId: string | null;
+  runId: string | null;
   units: Array<TrainingUnit>;
   complete: boolean;
-  version: number;
+  blockers: Array<TrainingPublishBlocker>;
+  allowedActions: Array<AllowedAction>;
 };
 
 export type TrainingProgressInput = {
-  expectedVersion: number;
+  applicationId: string;
+  runId: string;
   courseVersion: number;
-  sequence: number;
-  positionSeconds: number;
+  expectedVersion: number;
   playbackSessionId: string;
+  sequence: number;
+  positionMillis: number;
+  playing: boolean;
 };
 
 export type TrainingPlayback = {
   playbackSessionId: string;
+  applicationId: string;
+  planId: string;
+  runId: string;
   trainingId: string;
   courseVersion: number;
   serverStartedAt: string;
   expiresAt: string;
   version: number;
+  progressVersion: number;
+  heartbeatMaxGapSeconds: 15;
 };
 
 export type QuestionOption = { code: string; text: string };
@@ -1926,9 +1961,11 @@ export type TrainingQuestion = {
 
 export type TrainingAttempt = {
   attemptId: string;
+  applicationId: string;
+  runId: string;
   trainingId: string;
   courseVersion: number;
-  status: AttemptStatus;
+  status: 'OPEN' | 'PASSED' | 'FAILED' | 'EXPIRED';
   questions: Array<TrainingQuestion>;
   startedAt: string;
   expiresAt: string;
@@ -1936,9 +1973,17 @@ export type TrainingAttempt = {
   score: number | null;
   passed: boolean | null;
   version: number;
+  attemptNo: number;
+  passScore: number;
+  allowedActions: Array<AllowedAction>;
 };
 
-export type TrainingAttemptCreate = { expectedVersion: number; courseVersion: number };
+export type TrainingAttemptCreate = {
+  applicationId: string;
+  runId: string;
+  courseVersion: number;
+  expectedVersion: number;
+};
 
 export type TrainingCourseInput = TrainingCourseCreate | TrainingCourseRevision;
 
@@ -2141,8 +2186,10 @@ export type PermissionCode =
   | 'biz:dispute:list'
   | 'biz:dispute:query'
   | 'biz:dispute:resolve'
+  | 'biz:driver:assigncompany'
   | 'biz:driver:disablenewassignments'
   | 'biz:driver:edit'
+  | 'biz:driver:enablenewassignments'
   | 'biz:driver:list'
   | 'biz:driver:query'
   | 'biz:driveradjust:audit'
@@ -2258,13 +2305,14 @@ export type PermissionCode =
   | 'biz:trainingcourse:list'
   | 'biz:trainingcourse:publish'
   | 'biz:trainingcourse:query'
+  | 'biz:trainingpolicy:edit'
+  | 'biz:trainingpolicy:publish'
+  | 'biz:trainingpolicy:query'
   | 'biz:uploads:complete'
   | 'biz:uploads:create'
   | 'biz:vehicle:edit'
   | 'biz:vehicle:list'
-  | 'biz:vehicle:query'
-  | 'biz:driver:assigncompany'
-  | 'biz:driver:enablenewassignments';
+  | 'biz:vehicle:query';
 
 export type CapabilityCode =
   | 'COMMON_DICT_QUERY'
@@ -2418,7 +2466,16 @@ export type AllowedAction =
   | 'VIEW_TRAINING_COURSE'
   | 'EDIT_TRAINING_COURSE'
   | 'PUBLISH_TRAINING_COURSE'
-  | 'CREATE_TRAINING_REVISION';
+  | 'CREATE_TRAINING_REVISION'
+  | 'VIEW_TRAINING_POLICY'
+  | 'EDIT_TRAINING_POLICY'
+  | 'PUBLISH_TRAINING_POLICY'
+  | 'START_TRAINING'
+  | 'START_PLAYBACK'
+  | 'REPORT_TRAINING_PROGRESS'
+  | 'CREATE_TRAINING_ATTEMPT'
+  | 'VIEW_TRAINING_ATTEMPT'
+  | 'SUBMIT_TRAINING_ATTEMPT';
 
 export type AccountStatus = 'ACTIVE' | 'LOCKED';
 
@@ -2998,4 +3055,56 @@ export type TrainingCourseCreate = {
 export type TrainingCourseRevision = {
   sourceTrainingId: string;
   expectedSourceVersion: number;
+};
+
+export type TrainingGradingMode = 'EQUAL_HALF_UP_EXACT';
+
+export type TrainingRunStatus = 'ACTIVE' | 'PASSED';
+
+export type TrainingPolicyRevision = {
+  revisionId: string;
+  revisionNo: number;
+  status: 'DRAFT' | 'PUBLISHED';
+  requiredTrainingIds: Array<string>;
+  maxAttempts: number | null;
+  retryIntervalSeconds: number | null;
+  gradingMode: TrainingGradingMode;
+  publishedAt: string | null;
+  publishBlockers: Array<TrainingPublishBlocker>;
+};
+
+export type TrainingPolicy = {
+  policyId: string | null;
+  ownerDeptId: string;
+  companyName: string;
+  version: number;
+  draftRevision: TrainingPolicyRevision | null;
+  activeRevision: TrainingPolicyRevision | null;
+  allowedActions: Array<AllowedAction>;
+};
+
+export type TrainingPolicySave = {
+  expectedVersion: number;
+  requiredTrainingIds: Array<string>;
+  maxAttempts: number | null;
+  retryIntervalSeconds: number | null;
+  reason: string;
+};
+
+export type TrainingPolicyPublish = {
+  expectedVersion: number;
+  draftRevisionId: string;
+  reason: string;
+};
+
+export type TrainingPlaybackCreate = {
+  applicationId: string;
+  expectedApplicationVersion: number;
+  expectedCompanyRevision: number;
+  expectedMaterialRevision: number;
+  expectedPolicyRevisionId: string;
+  planId: string | null;
+  runId: string | null;
+  courseVersion: number;
+  expectedVersion: number;
 };

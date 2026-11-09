@@ -380,11 +380,17 @@ public class PrivateFileService {
                                             "requiredHeaders",
                                             Map.of(
                                                     "X-File-Ticket",
-                                                    tickets.sign(actor, id, "READ", expires)));
+                                                    tickets.sign(
+                                                            actor,
+                                                            id,
+                                                            "READ",
+                                                            expires,
+                                                            authority.trainingReadContext(
+                                                                    actor, file))));
                                 }));
     }
 
-    /** 同步请求线程输出视频，保留ADMIN安全上下文；只提供200原始完整流，不声称支持Range。 */
+    /** 同步请求线程输出视频，保留真实ADMIN或MINI安全上下文；只提供200原始完整流，不声称支持Range。 */
     public boolean streamMedia(
             long id, String ticket, jakarta.servlet.http.HttpServletResponse response) {
         Actor actor = authority.actor();
@@ -401,7 +407,12 @@ public class PrivateFileService {
                                                 authorized(actor, id, "biz:files:access", false);
                                         if (!"TRAINING_MEDIA".equals(row.getPurpose())) return null;
                                         ready(row);
-                                        tickets.verify(actor, id, "READ", ticket);
+                                        tickets.verify(
+                                                actor,
+                                                id,
+                                                "READ",
+                                                ticket,
+                                                authority.trainingReadContext(actor, row));
                                         return row;
                                     });
                     if (file == null) return false;
@@ -453,7 +464,12 @@ public class PrivateFileService {
                     PrivateFile current =
                             authorized(actor, expected.getId(), "biz:files:access", false);
                     ready(current);
-                    tickets.verify(actor, expected.getId(), "READ", ticket);
+                    tickets.verify(
+                            actor,
+                            expected.getId(),
+                            "READ",
+                            ticket,
+                            authority.trainingReadContext(actor, current));
                     if (!Objects.equals(current.getObjectKey(), expected.getObjectKey())
                             || !Objects.equals(current.getServerSize(), expected.getServerSize())
                             || current.getServerSha256() == null
@@ -487,7 +503,12 @@ public class PrivateFileService {
                                         authority.guard(actor, "biz:files:access");
                                         PrivateFile row =
                                                 authorized(actor, id, "biz:files:access", false);
-                                        tickets.verify(actor, id, "READ", ticket);
+                                        tickets.verify(
+                                                actor,
+                                                id,
+                                                "READ",
+                                                ticket,
+                                                authority.trainingReadContext(actor, row));
                                         ready(row);
                                         return row;
                                     });
@@ -511,8 +532,15 @@ public class PrivateFileService {
                     tx.executeWithoutResult(
                             status -> {
                                 authority.guard(actor, "biz:files:access");
-                                ready(authorized(actor, id, "biz:files:access", false));
-                                tickets.verify(actor, id, "READ", ticket);
+                                PrivateFile current =
+                                        authorized(actor, id, "biz:files:access", false);
+                                ready(current);
+                                tickets.verify(
+                                        actor,
+                                        id,
+                                        "READ",
+                                        ticket,
+                                        authority.trainingReadContext(actor, current));
                                 audit.recordSuccess(
                                         actor,
                                         "FILE",

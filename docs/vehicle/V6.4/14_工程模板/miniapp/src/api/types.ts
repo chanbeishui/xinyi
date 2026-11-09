@@ -120,7 +120,16 @@ export type QualificationAudit = { "expectedVersion": number; "decision": "APPRO
 
 export type Answer = { "questionId": string; "answerCodes": Array<string> };
 
-export type TrainingSubmit = { "attemptId": string; "answers": Array<Answer>; "expectedVersion": number };
+export type TrainingSubmit = {
+  "applicationId": string;
+  "runId": string;
+  "attemptId": string;
+  "expectedVersion": number;
+  "answers": Array<{
+  "questionId": string;
+  "answerCodes": Array<string>;
+}>;
+};
 
 export type Listening = { "enabled": boolean; "expectedVersion": number };
 
@@ -548,21 +557,98 @@ export type TrainingStatus = "NOT_STARTED" | "IN_PROGRESS" | "READY_FOR_EXAM" | 
 
 export type AttemptStatus = "OPEN" | "SUBMITTED" | "PASSED" | "FAILED" | "EXPIRED";
 
-export type TrainingUnit = { "trainingId": string; "courseVersion": number; "title": string; "description": string; "mediaFileId": string; "requiredDurationSeconds": number; "verifiedDurationSeconds": number; "status": TrainingStatus; "latestAttemptId": (string) | null; "version": number };
+export type TrainingUnit = {
+  "trainingId": string;
+  "courseKey": string;
+  "courseVersion": number;
+  "title": string;
+  "description": (string) | null;
+  "mediaFileId": string;
+  "mediaDurationMillis": number;
+  "requiredDurationSeconds": number;
+  "verifiedDurationSeconds": number;
+  "verifiedDurationMillis": number;
+  "status": TrainingStatus;
+  "latestAttemptId": (string) | null;
+  "version": number;
+  "initialized": boolean;
+  "attemptsUsed": number;
+  "maxAttempts": number;
+  "retryAvailableAt": (string) | null;
+  "allowedActions": Array<AllowedAction>;
+};
 
-export type Training = { "applicationId": string; "units": Array<TrainingUnit>; "complete": boolean; "version": number };
+export type Training = {
+  "applicationId": string;
+  "version": number;
+  "profileVersion": number;
+  "ownerDeptId": (string) | null;
+  "companyName": (string) | null;
+  "companyRevision": number;
+  "materialRevision": number;
+  "policyRevisionId": (string) | null;
+  "planId": (string) | null;
+  "runId": (string) | null;
+  "units": Array<TrainingUnit>;
+  "complete": boolean;
+  "blockers": Array<TrainingPublishBlocker>;
+  "allowedActions": Array<AllowedAction>;
+};
 
-export type TrainingProgressInput = { "expectedVersion": number; "courseVersion": number; "sequence": number; "positionSeconds": number; "playbackSessionId": string };
+export type TrainingProgressInput = {
+  "applicationId": string;
+  "runId": string;
+  "courseVersion": number;
+  "expectedVersion": number;
+  "playbackSessionId": string;
+  "sequence": number;
+  "positionMillis": number;
+  "playing": boolean;
+};
 
-export type TrainingPlayback = { "playbackSessionId": string; "trainingId": string; "courseVersion": number; "serverStartedAt": string; "expiresAt": string; "version": number };
+export type TrainingPlayback = {
+  "playbackSessionId": string;
+  "applicationId": string;
+  "planId": string;
+  "runId": string;
+  "trainingId": string;
+  "courseVersion": number;
+  "serverStartedAt": string;
+  "expiresAt": string;
+  "version": number;
+  "progressVersion": number;
+  "heartbeatMaxGapSeconds": 15;
+};
 
 export type QuestionOption = { "code": string; "text": string };
 
 export type TrainingQuestion = { "questionId": string; "type": "SINGLE" | "MULTIPLE" | "TRUE_FALSE"; "prompt": string; "options": Array<QuestionOption> };
 
-export type TrainingAttempt = { "attemptId": string; "trainingId": string; "courseVersion": number; "status": AttemptStatus; "questions": Array<TrainingQuestion>; "startedAt": string; "expiresAt": string; "submittedAt": (string) | null; "score": (number) | null; "passed": (boolean) | null; "version": number };
+export type TrainingAttempt = {
+  "attemptId": string;
+  "applicationId": string;
+  "runId": string;
+  "trainingId": string;
+  "courseVersion": number;
+  "status": "OPEN" | "PASSED" | "FAILED" | "EXPIRED";
+  "questions": Array<TrainingQuestion>;
+  "startedAt": string;
+  "expiresAt": string;
+  "submittedAt": (string) | null;
+  "score": (number) | null;
+  "passed": (boolean) | null;
+  "version": number;
+  "attemptNo": number;
+  "passScore": number;
+  "allowedActions": Array<AllowedAction>;
+};
 
-export type TrainingAttemptCreate = { "expectedVersion": number; "courseVersion": number };
+export type TrainingAttemptCreate = {
+  "applicationId": string;
+  "runId": string;
+  "courseVersion": number;
+  "expectedVersion": number;
+};
 
 export type TrainingCourseInput = TrainingCourseCreate | TrainingCourseRevision;
 
@@ -612,11 +698,161 @@ export type ApiErrorDetails = { "fieldErrors"?: Array<FieldViolation>; "conflict
 
 export type ApiError = { "code": 400 | 401 | 403 | 404 | 409 | 422 | 429 | 500 | 503; "errorCode": "VI_REQUEST_INVALID" | "VI_AUTH_REQUIRED" | "VI_TOKEN_REALM_MISMATCH" | "VI_REFRESH_REUSED" | "VI_FORBIDDEN" | "VI_SELF_REVIEW_DENIED" | "VI_RESOURCE_NOT_VISIBLE" | "VI_VERSION_CONFLICT" | "VI_STATE_CONFLICT" | "VI_IDEMPOTENCY_CONFLICT" | "VI_SELECTION_CONFLICT" | "VI_CONTEXT_CHANGED" | "VI_SNAPSHOT_CHANGED" | "VI_DATA_INVALID" | "VI_EVIDENCE_INCOMPLETE" | "VI_HANDOVER_CODE_INVALID" | "VI_HANDOVER_LOCKED" | "VI_UNPRICED_LINES" | "VI_REFUND_LIMIT" | "VI_PAYMENT_LIMIT" | "VI_SERVICE_UNAVAILABLE" | "VI_CAPABILITY_NOT_CONFIGURED" | "VI_TRAINING_NOT_READY" | "VI_RATE_LIMITED" | "VI_INTERNAL_ERROR" | "VI_AUTHORITY_UNAVAILABLE" | "VI_UPSTREAM_UNAVAILABLE" | "VI_PHONE_PROOF_REQUIRED" | "VI_PHONE_PROOF_REUSED" | "VI_EMPLOYEE_LINK_CONFLICT" | "VI_EMPLOYEE_LINK_BLOCKED"; "msg": string; "requestId": string; "retryable": boolean; "retryAfterSeconds": (number) | null; "data": ApiErrorDetails };
 
-export type PermissionCode = "biz:aftersale:create" | "biz:aftersale:list" | "biz:aftersale:note" | "biz:aftersale:query" | "biz:aftersale:review" | "biz:aftersale:reviewpreview" | "biz:assignment:list" | "biz:audit:list" | "biz:capacity:edit" | "biz:capacity:list" | "biz:config:edit" | "biz:config:query" | "biz:dashboard:list" | "biz:delivery:query" | "biz:delivery:retry" | "biz:dispatch:create" | "biz:dispatch:edit" | "biz:dispatch:list" | "biz:dispatch:preview" | "biz:dispatch:query" | "biz:dispute:list" | "biz:dispute:query" | "biz:dispute:resolve" | "biz:driver:disablenewassignments" | "biz:driver:edit" | "biz:driver:list" | "biz:driver:query" | "biz:driveradjust:audit" | "biz:driveradjust:create" | "biz:driveradjust:list" | "biz:driverfeerule:create" | "biz:driverfeerule:edit" | "biz:driverfeerule:list" | "biz:driverfeerule:publish" | "biz:driverfeerule:query" | "biz:driverfeerule:trial" | "biz:driverledger:list" | "biz:driverpayment:create" | "biz:driverpayment:list" | "biz:driverpayment:query" | "biz:driverpayment:verify" | "biz:driverqualification:audit" | "biz:driverqualification:list" | "biz:driverqualification:query" | "biz:driverstatement:add" | "biz:driverstatement:create" | "biz:driverstatement:list" | "biz:driverstatement:preview" | "biz:driverstatement:price" | "biz:driverstatement:query" | "biz:driverstatement:remove" | "biz:driverstatement:review" | "biz:driverstatement:send" | "biz:driverstatement:submitreview" | "biz:driverstatement:void" | "biz:driverstatement:withdraw" | "biz:employeebinding:list" | "biz:employeebinding:query" | "biz:employeebinding:rematch" | "biz:employeebinding:revoke" | "biz:employeebinding:suspend" | "biz:exception:list" | "biz:exception:resolve" | "biz:export:audit" | "biz:export:query" | "biz:files:access" | "biz:files:query" | "biz:handover:confirm" | "biz:handover:create" | "biz:handover:query" | "biz:handover:secret" | "biz:integration:check" | "biz:integration:create" | "biz:integration:edit" | "biz:integration:publish" | "biz:integration:query" | "biz:integration:test" | "biz:integration:testrecipient" | "biz:job:list" | "biz:job:retry" | "biz:license:edit" | "biz:license:list" | "biz:messageroute:edit" | "biz:messageroute:query" | "biz:messagetemplate:check" | "biz:messagetemplate:create" | "biz:messagetemplate:edit" | "biz:messagetemplate:publish" | "biz:messagetemplate:query" | "biz:notificationtemplate:edit" | "biz:notificationtemplate:list" | "biz:offlinepayment:create" | "biz:offlinepayment:query" | "biz:offlinepayment:verify" | "biz:order:contact" | "biz:order:create" | "biz:order:export" | "biz:order:list" | "biz:order:query" | "biz:owner:edit" | "biz:owner:list" | "biz:owner:query" | "biz:paymentreconciliation:list" | "biz:paymentreconciliation:query" | "biz:paymentreconciliation:resolve" | "biz:penalty:list" | "biz:penalty:query" | "biz:penaltyappeal:audit" | "biz:penaltyappeal:list" | "biz:penaltyappeal:query" | "biz:price:audit" | "biz:price:create" | "biz:price:edit" | "biz:price:list" | "biz:price:publish" | "biz:price:submit" | "biz:privacycase:list" | "biz:privacycase:resolve" | "biz:refund:approve" | "biz:refund:query" | "biz:refund:retry" | "biz:result:create" | "biz:result:list" | "biz:resultcorrection:audit" | "biz:resultcorrection:create" | "biz:resultcorrection:list" | "biz:statementdifference:list" | "biz:statementdifference:resolve" | "biz:station:create" | "biz:station:edit" | "biz:station:list" | "biz:station:query" | "biz:stationgrant:edit" | "biz:stationgrant:list" | "biz:statistics:list" | "biz:trainingcourse:create" | "biz:trainingcourse:edit" | "biz:trainingcourse:list" | "biz:trainingcourse:publish" | "biz:trainingcourse:query" | "biz:uploads:complete" | "biz:uploads:create" | "biz:vehicle:edit" | "biz:vehicle:list" | "biz:vehicle:query" | "biz:driver:assigncompany" | "biz:driver:enablenewassignments";
+export type PermissionCode =
+  | 'biz:aftersale:create'
+  | 'biz:aftersale:list'
+  | 'biz:aftersale:note'
+  | 'biz:aftersale:query'
+  | 'biz:aftersale:review'
+  | 'biz:aftersale:reviewpreview'
+  | 'biz:assignment:list'
+  | 'biz:audit:list'
+  | 'biz:capacity:edit'
+  | 'biz:capacity:list'
+  | 'biz:config:edit'
+  | 'biz:config:query'
+  | 'biz:dashboard:list'
+  | 'biz:delivery:query'
+  | 'biz:delivery:retry'
+  | 'biz:dispatch:create'
+  | 'biz:dispatch:edit'
+  | 'biz:dispatch:list'
+  | 'biz:dispatch:preview'
+  | 'biz:dispatch:query'
+  | 'biz:dispute:list'
+  | 'biz:dispute:query'
+  | 'biz:dispute:resolve'
+  | 'biz:driver:assigncompany'
+  | 'biz:driver:disablenewassignments'
+  | 'biz:driver:edit'
+  | 'biz:driver:enablenewassignments'
+  | 'biz:driver:list'
+  | 'biz:driver:query'
+  | 'biz:driveradjust:audit'
+  | 'biz:driveradjust:create'
+  | 'biz:driveradjust:list'
+  | 'biz:driverfeerule:create'
+  | 'biz:driverfeerule:edit'
+  | 'biz:driverfeerule:list'
+  | 'biz:driverfeerule:publish'
+  | 'biz:driverfeerule:query'
+  | 'biz:driverfeerule:trial'
+  | 'biz:driverledger:list'
+  | 'biz:driverpayment:create'
+  | 'biz:driverpayment:list'
+  | 'biz:driverpayment:query'
+  | 'biz:driverpayment:verify'
+  | 'biz:driverqualification:audit'
+  | 'biz:driverqualification:list'
+  | 'biz:driverqualification:query'
+  | 'biz:driverstatement:add'
+  | 'biz:driverstatement:create'
+  | 'biz:driverstatement:list'
+  | 'biz:driverstatement:preview'
+  | 'biz:driverstatement:price'
+  | 'biz:driverstatement:query'
+  | 'biz:driverstatement:remove'
+  | 'biz:driverstatement:review'
+  | 'biz:driverstatement:send'
+  | 'biz:driverstatement:submitreview'
+  | 'biz:driverstatement:void'
+  | 'biz:driverstatement:withdraw'
+  | 'biz:employeebinding:list'
+  | 'biz:employeebinding:query'
+  | 'biz:employeebinding:rematch'
+  | 'biz:employeebinding:revoke'
+  | 'biz:employeebinding:suspend'
+  | 'biz:exception:list'
+  | 'biz:exception:resolve'
+  | 'biz:export:audit'
+  | 'biz:export:query'
+  | 'biz:files:access'
+  | 'biz:files:query'
+  | 'biz:handover:confirm'
+  | 'biz:handover:create'
+  | 'biz:handover:query'
+  | 'biz:handover:secret'
+  | 'biz:integration:check'
+  | 'biz:integration:create'
+  | 'biz:integration:edit'
+  | 'biz:integration:publish'
+  | 'biz:integration:query'
+  | 'biz:integration:test'
+  | 'biz:integration:testrecipient'
+  | 'biz:job:list'
+  | 'biz:job:retry'
+  | 'biz:license:edit'
+  | 'biz:license:list'
+  | 'biz:messageroute:edit'
+  | 'biz:messageroute:query'
+  | 'biz:messagetemplate:check'
+  | 'biz:messagetemplate:create'
+  | 'biz:messagetemplate:edit'
+  | 'biz:messagetemplate:publish'
+  | 'biz:messagetemplate:query'
+  | 'biz:notificationtemplate:edit'
+  | 'biz:notificationtemplate:list'
+  | 'biz:offlinepayment:create'
+  | 'biz:offlinepayment:query'
+  | 'biz:offlinepayment:verify'
+  | 'biz:order:contact'
+  | 'biz:order:create'
+  | 'biz:order:export'
+  | 'biz:order:list'
+  | 'biz:order:query'
+  | 'biz:owner:edit'
+  | 'biz:owner:list'
+  | 'biz:owner:query'
+  | 'biz:paymentreconciliation:list'
+  | 'biz:paymentreconciliation:query'
+  | 'biz:paymentreconciliation:resolve'
+  | 'biz:penalty:list'
+  | 'biz:penalty:query'
+  | 'biz:penaltyappeal:audit'
+  | 'biz:penaltyappeal:list'
+  | 'biz:penaltyappeal:query'
+  | 'biz:price:audit'
+  | 'biz:price:create'
+  | 'biz:price:edit'
+  | 'biz:price:list'
+  | 'biz:price:publish'
+  | 'biz:price:submit'
+  | 'biz:privacycase:list'
+  | 'biz:privacycase:resolve'
+  | 'biz:refund:approve'
+  | 'biz:refund:query'
+  | 'biz:refund:retry'
+  | 'biz:result:create'
+  | 'biz:result:list'
+  | 'biz:resultcorrection:audit'
+  | 'biz:resultcorrection:create'
+  | 'biz:resultcorrection:list'
+  | 'biz:statementdifference:list'
+  | 'biz:statementdifference:resolve'
+  | 'biz:station:create'
+  | 'biz:station:edit'
+  | 'biz:station:list'
+  | 'biz:station:query'
+  | 'biz:stationgrant:edit'
+  | 'biz:stationgrant:list'
+  | 'biz:statistics:list'
+  | 'biz:trainingcourse:create'
+  | 'biz:trainingcourse:edit'
+  | 'biz:trainingcourse:list'
+  | 'biz:trainingcourse:publish'
+  | 'biz:trainingcourse:query'
+  | 'biz:trainingpolicy:edit'
+  | 'biz:trainingpolicy:publish'
+  | 'biz:trainingpolicy:query'
+  | 'biz:uploads:complete'
+  | 'biz:uploads:create'
+  | 'biz:vehicle:edit'
+  | 'biz:vehicle:list'
+  | 'biz:vehicle:query';
 
 export type CapabilityCode = "COMMON_DICT_QUERY" | "COMMON_FILES_ACCESS" | "COMMON_FILES_QUERY" | "COMMON_MESSAGES_LIST" | "COMMON_MESSAGES_READ" | "COMMON_ORDERS_CONFIRM" | "COMMON_ORDERS_CONTACTACCESS" | "COMMON_ORDERS_CREATE" | "COMMON_ORDERS_LIST" | "COMMON_ORDERS_QUERY" | "COMMON_PHONE_CREATE" | "COMMON_PHONE_SEND" | "COMMON_PHONE_VERIFY" | "COMMON_PRIVACYCASES_CREATE" | "COMMON_PRIVACYCASES_LIST" | "COMMON_STATIONS_LIST" | "COMMON_UPLOADS_COMPLETE" | "COMMON_UPLOADS_CREATE" | "DRIVER_ASSIGNMENT_QUERY" | "DRIVER_AVAILABILITY_EDIT" | "DRIVER_AVAILABILITY_QUERY" | "DRIVER_DRIVERPAYMENT_LIST" | "DRIVER_DRIVERSTATEMENT_CONFIRM" | "DRIVER_DRIVERSTATEMENT_CREATE" | "DRIVER_DRIVERSTATEMENT_LIST" | "DRIVER_DRIVERSTATEMENT_QUERY" | "DRIVER_INVITE_LIST" | "DRIVER_INVITE_QUERY" | "DRIVER_INVITE_RESPONSE" | "DRIVER_LOCATION_CREATE" | "DRIVER_ORDER_ARRIVEPICKUP" | "DRIVER_ORDER_ARRIVESTATION" | "DRIVER_ORDER_ASSIGNMENTCANCELLATION" | "DRIVER_ORDER_CREATE" | "DRIVER_ORDER_DEPART" | "DRIVER_ORDER_EDIT" | "DRIVER_ORDER_LIST" | "DRIVER_ORDER_QUERY" | "DRIVER_ORDER_READY" | "DRIVER_PENALTYAPPEAL_LIST" | "DRIVER_PENALTYAPPEAL_QUERY" | "DRIVER_PENALTY_CREATE" | "DRIVER_PENALTY_LIST" | "DRIVER_PENALTY_QUERY" | "DRIVER_QUALIFICATION_ATTEMPTS" | "DRIVER_QUALIFICATION_CREATE" | "DRIVER_QUALIFICATION_EDIT" | "DRIVER_QUALIFICATION_LIST" | "DRIVER_QUALIFICATION_PLAYBACK" | "DRIVER_QUALIFICATION_PROGRESS" | "DRIVER_QUALIFICATION_QUERY" | "DRIVER_QUALIFICATION_SUBMIT" | "EMPLOYEE_LINK_READ" | "EMPLOYEE_LINK_RECONCILE" | "OWNER_ADDRESSES_CREATE" | "OWNER_ADDRESSES_DEFAULT" | "OWNER_ADDRESSES_EDIT" | "OWNER_ADDRESSES_LIST" | "OWNER_ADDRESSES_REMOVE" | "OWNER_AFTERSALE_CREATE" | "OWNER_AFTERSALE_LIST" | "OWNER_AFTERSALE_QUERY" | "OWNER_ORDER_CLOSEUNPAID" | "OWNER_ORDER_CREATE" | "OWNER_ORDER_LIST" | "OWNER_ORDER_QUERY" | "OWNER_ORDER_SERVICECONFIRMATION" | "OWNER_PROFILE_EDIT" | "OWNER_SCHEDULE_LIST" | "OWNER_VEHICLE_CREATE" | "OWNER_VEHICLE_DEFAULT" | "OWNER_VEHICLE_EDIT" | "OWNER_VEHICLE_LIST" | "OWNER_VEHICLE_REMOVE" | "PHONE_BIND" | "PROFILE_READ" | "SESSION_LOGOUT" | "SESSION_READ" | "SESSION_SWITCH_ROLE" | "SESSION_SWITCH_STATION";
 
-export type AllowedAction = "ADD_REVIEW" | "ADD_TO_DRAFT" | "APPEAL_PENALTY" | "APPLY_ADJUSTMENT" | "APPLY_CANCEL_REFUND" | "APPLY_REFUND_ONLY" | "APPROVE_AND_SEND" | "ARRIVE_PICKUP" | "ARRIVE_STATION" | "CANCEL_ASSIGNMENT" | "CLOSE_UNPAID" | "CONFIRM_HANDOVER" | "CONFIRM_STATEMENT" | "CONTACT_DRIVER" | "CONTACT_OWNER" | "CONTACT_STATION" | "CREATE_HANDOVER" | "DEPART" | "EDIT_PRICE" | "EXPORT" | "FILL_MILEAGE" | "FILL_PRICE" | "MANUAL_INVITE" | "MARK_EVIDENCE_READY" | "OPEN_DISPUTE" | "PAY" | "RECORD_PAYMENT" | "REGISTER_RESULT" | "REJECT_REVIEW" | "REMOVE_FROM_DRAFT" | "RENOTIFY_PICKUP" | "REPORT_DIFFERENCE" | "REPORT_EXCEPTION" | "REQUEST_RESULT_CORRECTION" | "REVIEW_AFTERSALE" | "REVIEW_LICENSE" | "SEND_STATEMENT" | "SERVICE_CONFIRM" | "SUBMIT_REVIEW" | "UPLOAD_PHOTO" | "VERIFY_PAYMENT" | "VIEW_APPEAL" | "VIEW_DETAIL" | "VIEW_EVIDENCE" | "VIEW_HANDOVER_SECRET" | "VIEW_PAYMENT" | "VIEW_PRICE_HISTORY" | "VIEW_PRICING" | "VIEW_RESULT" | "VOID_STATEMENT" | "WITHDRAW_STATEMENT" | "ADD_NOTE" | "VIEW_AFTERSALE" | "QUERY_REFUND" | "RETRY_REFUND" | "QUERY_RECONCILIATION" | "RESOLVE_RECONCILIATION" | "VIEW_DRIVER" | "EDIT_DRIVER" | "DISABLE_NEW_ASSIGNMENTS" | "ENABLE_NEW_ASSIGNMENTS" | "ASSIGN_DRIVER_COMPANY" | "VIEW_ASSIGNMENTS" | "EDIT_QUALIFICATION" | "SUBMIT_QUALIFICATION" | "CREATE_QUALIFICATION_REVISION" | "VIEW_TRAINING_COURSE" | "EDIT_TRAINING_COURSE" | "PUBLISH_TRAINING_COURSE" | "CREATE_TRAINING_REVISION";
+export type AllowedAction = "ADD_REVIEW" | "ADD_TO_DRAFT" | "APPEAL_PENALTY" | "APPLY_ADJUSTMENT" | "APPLY_CANCEL_REFUND" | "APPLY_REFUND_ONLY" | "APPROVE_AND_SEND" | "ARRIVE_PICKUP" | "ARRIVE_STATION" | "CANCEL_ASSIGNMENT" | "CLOSE_UNPAID" | "CONFIRM_HANDOVER" | "CONFIRM_STATEMENT" | "CONTACT_DRIVER" | "CONTACT_OWNER" | "CONTACT_STATION" | "CREATE_HANDOVER" | "DEPART" | "EDIT_PRICE" | "EXPORT" | "FILL_MILEAGE" | "FILL_PRICE" | "MANUAL_INVITE" | "MARK_EVIDENCE_READY" | "OPEN_DISPUTE" | "PAY" | "RECORD_PAYMENT" | "REGISTER_RESULT" | "REJECT_REVIEW" | "REMOVE_FROM_DRAFT" | "RENOTIFY_PICKUP" | "REPORT_DIFFERENCE" | "REPORT_EXCEPTION" | "REQUEST_RESULT_CORRECTION" | "REVIEW_AFTERSALE" | "REVIEW_LICENSE" | "SEND_STATEMENT" | "SERVICE_CONFIRM" | "SUBMIT_REVIEW" | "UPLOAD_PHOTO" | "VERIFY_PAYMENT" | "VIEW_APPEAL" | "VIEW_DETAIL" | "VIEW_EVIDENCE" | "VIEW_HANDOVER_SECRET" | "VIEW_PAYMENT" | "VIEW_PRICE_HISTORY" | "VIEW_PRICING" | "VIEW_RESULT" | "VOID_STATEMENT" | "WITHDRAW_STATEMENT" | "ADD_NOTE" | "VIEW_AFTERSALE" | "QUERY_REFUND" | "RETRY_REFUND" | "QUERY_RECONCILIATION" | "RESOLVE_RECONCILIATION" | "VIEW_DRIVER" | "EDIT_DRIVER" | "DISABLE_NEW_ASSIGNMENTS" | "ENABLE_NEW_ASSIGNMENTS" | "ASSIGN_DRIVER_COMPANY" | "VIEW_ASSIGNMENTS" | "EDIT_QUALIFICATION" | "SUBMIT_QUALIFICATION" | "CREATE_QUALIFICATION_REVISION" | "VIEW_TRAINING_COURSE" | "EDIT_TRAINING_COURSE" | "PUBLISH_TRAINING_COURSE" | "CREATE_TRAINING_REVISION" | "VIEW_TRAINING_POLICY" | "EDIT_TRAINING_POLICY" | "PUBLISH_TRAINING_POLICY" | "START_TRAINING" | "START_PLAYBACK" | "REPORT_TRAINING_PROGRESS" | "CREATE_TRAINING_ATTEMPT" | "VIEW_TRAINING_ATTEMPT" | "SUBMIT_TRAINING_ATTEMPT";
 
 export type AccountStatus = "ACTIVE" | "LOCKED";
 
@@ -912,4 +1148,62 @@ export type TrainingCourseCreate = {
 export type TrainingCourseRevision = {
   "sourceTrainingId": string;
   "expectedSourceVersion": number;
+};
+
+export type TrainingGradingMode = "EQUAL_HALF_UP_EXACT";
+
+
+export type TrainingRunStatus = "ACTIVE" | "PASSED";
+
+
+export type TrainingPolicyRevision = {
+  "revisionId": string;
+  "revisionNo": number;
+  "status": "DRAFT" | "PUBLISHED";
+  "requiredTrainingIds": Array<string>;
+  "maxAttempts": (number) | null;
+  "retryIntervalSeconds": (number) | null;
+  "gradingMode": TrainingGradingMode;
+  "publishedAt": (string) | null;
+  "publishBlockers": Array<TrainingPublishBlocker>;
+};
+
+
+export type TrainingPolicy = {
+  "policyId": (string) | null;
+  "ownerDeptId": string;
+  "companyName": string;
+  "version": number;
+  "draftRevision": (TrainingPolicyRevision) | null;
+  "activeRevision": (TrainingPolicyRevision) | null;
+  "allowedActions": Array<AllowedAction>;
+};
+
+
+export type TrainingPolicySave = {
+  "expectedVersion": number;
+  "requiredTrainingIds": Array<string>;
+  "maxAttempts": (number) | null;
+  "retryIntervalSeconds": (number) | null;
+  "reason": string;
+};
+
+
+export type TrainingPolicyPublish = {
+  "expectedVersion": number;
+  "draftRevisionId": string;
+  "reason": string;
+};
+
+
+export type TrainingPlaybackCreate = {
+  "applicationId": string;
+  "expectedApplicationVersion": number;
+  "expectedCompanyRevision": number;
+  "expectedMaterialRevision": number;
+  "expectedPolicyRevisionId": string;
+  "planId": (string) | null;
+  "runId": (string) | null;
+  "courseVersion": number;
+  "expectedVersion": number;
 };

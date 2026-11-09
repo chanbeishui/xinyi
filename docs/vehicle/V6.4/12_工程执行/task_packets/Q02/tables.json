@@ -334,7 +334,7 @@
     "indexes": [
       "UNIQUE KEY uk_course_question (training_id,question_code)"
     ],
-    "rule": "权威归属继承父课程owner_dept_id，草稿完整替换，发布题库只读。后台query及公司范围读取答案；Q03学员另用TrainingQuestion白名单，实际判分/权重/必修集合属后续，不把发布当培训通过。",
+    "rule": "权威归属继承父课程owner_dept_id，草稿完整替换，发布题库只读。后台query及公司范围读取答案；Q03学员另用TrainingQuestion白名单，Q03按首次冻结版本在服务端等分精确匹配阅卷，最终总分四舍五入，课程发布不产生培训通过。",
     "primaryKey": [
       "id"
     ],
@@ -567,7 +567,7 @@
       "UNIQUE KEY uk_object_key (object_key)",
       "KEY ix_order_purpose (order_id,purpose)"
     ],
-    "rule": "访问签名不进明文长期表，不接受客户端READY/摘要即可信 Q02新增TRAINING_MEDIA仅ADMIN公司DRAFT父课程、私有MP4不超过100MiB；READY由实际容器/轨道/时长与流式SHA校验产生，发布后不可重写，可由同族派生白名单只读继承。图片仍JPEG/PNG10MiB。",
+    "rule": "访问签名不进明文长期表，不接受客户端READY/摘要即可信 Q02新增TRAINING_MEDIA仅ADMIN公司DRAFT父课程、私有MP4不超过100MiB；READY由实际容器/轨道/时长与流式SHA校验产生，发布后不可重写，可由同族派生白名单只读继承。图片仍JPEG/PNG10MiB。 Q03：MINI仅当前本人冻结run引用的发布媒体可读，不具上传权；300秒READ票据MAC绑定申请/材料/run/公司epoch，逐块重新校验。后台原公司DRAFT维护规则保留。",
     "primaryKey": [
       "id"
     ],

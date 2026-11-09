@@ -19,6 +19,11 @@
         "后台明确指定的归属公司部门；历史NULL待全局管理员认领"
       ],
       [
+        "training_context_revision",
+        "BIGINT NOT NULL DEFAULT 0",
+        "仅实际公司归属变更递增；备注与行政开关不使培训失效"
+      ],
+      [
         "qualification_status",
         "VARCHAR(24) NOT NULL",
         "QualificationStatus: DRAFT,SUBMITTED,APPROVED,REJECTED,EXPIRED,SUSPENDED"
@@ -84,7 +89,7 @@
       "KEY ix_driver_company (owner_dept_id,id)",
       "KEY ix_pool (qualification_status,new_assignment_enabled,listening_enabled)"
     ],
-    "rule": "每名代驾明确归属一个公司部门，旗下站点共用；owner_dept_id不从员工、创建人或历史订单推断。存量NULL待全数据管理员显式认领；归属变更检查原新范围并集且无待响应/占用/在手任务，转移后禁新。资格审核、本人听单偏好与行政开关分开；暂停不释放承接或保管。",
+    "rule": "每名代驾明确归属一个公司部门，旗下站点共用；owner_dept_id不从员工、创建人或历史订单推断。存量NULL待全数据管理员显式认领；归属变更检查原新范围并集且无待响应/占用/在手任务，转移后禁新。资格审核、本人听单偏好与行政开关分开；暂停不释放承接或保管。 Q03：training_context_revision只在实际公司归属变化时递增，A→B→A不可复活旧学习；备注及行政开关不影响既有培训。",
     "primaryKey": [
       "id"
     ],
@@ -185,6 +190,13 @@
         "updatable": true,
         "clientWritable": false,
         "authority": "后台明确选择并验证目标有效部门与原新范围，DTO不可直接批量绑定实体。"
+      },
+      "training_context_revision": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false,
+        "authority": "仅A04实际公司归属变更，由原值比较同事务递增。"
       }
     },
     "checks": [

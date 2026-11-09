@@ -3056,44 +3056,48 @@
     "canonicalPage": "D39",
     "title": "服务培训",
     "role": "driver",
-    "targetPath": "xinyi-miniapp/src/subpackages/driver/d39/index.vue",
+    "targetPath": "xinyi-miniapp/src/pages/training/list.vue",
     "presentation": "PAGE",
     "taskId": "Q03",
     "status": "NOT_ASSESSED",
-    "note": "目标实现路径，非已存在源码。状态画板与弹窗不是独立小程序路由；遵守原账号与权限边界。"
+    "note": "Q03当前本人受控学习页面；OWNER/STATION/DRIVER已核验本人均可进入，不先要求DRIVER。真实接口绑定申请/公司epoch/材料运行，未知原键原体保持当前身份上下文；验证结果见实施账本。",
+    "implementationNote": "复用xinyi-miniapp/src/features/training/api.ts与media.ts；D39–D42为独立实际路由，课表GET纯读，首次播放才冻结计划。"
   },
   {
     "boardId": "D40",
     "canonicalPage": "D40",
     "title": "车辆交接课程",
     "role": "driver",
-    "targetPath": "xinyi-miniapp/src/subpackages/driver/d40/index.vue",
+    "targetPath": "xinyi-miniapp/src/pages/training/course.vue",
     "presentation": "PAGE",
     "taskId": "Q03",
     "status": "NOT_ASSESSED",
-    "note": "目标实现路径，非已存在源码。状态画板与弹窗不是独立小程序路由；遵守原账号与权限边界。"
+    "note": "Q03当前本人受控学习页面；OWNER/STATION/DRIVER已核验本人均可进入，不先要求DRIVER。真实接口绑定申请/公司epoch/材料运行，未知原键原体保持当前身份上下文；验证结果见实施账本。",
+    "implementationNote": "复用xinyi-miniapp/src/features/training/api.ts与media.ts；D39–D42为独立实际路由，课表GET纯读，首次播放才冻结计划。"
   },
   {
     "boardId": "D41",
     "canonicalPage": "D41",
     "title": "服务知识测验",
     "role": "driver",
-    "targetPath": "xinyi-miniapp/src/subpackages/driver/d41/index.vue",
+    "targetPath": "xinyi-miniapp/src/pages/training/exam.vue",
     "presentation": "PAGE",
     "taskId": "Q03",
     "status": "NOT_ASSESSED",
-    "note": "目标实现路径，非已存在源码。状态画板与弹窗不是独立小程序路由；遵守原账号与权限边界。"
+    "note": "Q03当前本人受控学习页面；OWNER/STATION/DRIVER已核验本人均可进入，不先要求DRIVER。真实接口绑定申请/公司epoch/材料运行，未知原键原体保持当前身份上下文；验证结果见实施账本。",
+    "implementationNote": "复用xinyi-miniapp/src/features/training/api.ts与media.ts；D39–D42为独立实际路由，课表GET纯读，首次播放才冻结计划。"
   },
   {
     "boardId": "D42",
     "canonicalPage": "D42",
     "title": "测验结果",
     "role": "driver",
-    "targetPath": "xinyi-miniapp/src/subpackages/driver/d42/index.vue",
+    "targetPath": "xinyi-miniapp/src/pages/training/result.vue",
     "presentation": "PAGE",
     "taskId": "Q03",
     "status": "NOT_ASSESSED",
-    "note": "目标实现路径，非已存在源码。状态画板与弹窗不是独立小程序路由；遵守原账号与权限边界。"
+    "note": "Q03当前本人受控学习页面；OWNER/STATION/DRIVER已核验本人均可进入，不先要求DRIVER。真实接口绑定申请/公司epoch/材料运行，未知原键原体保持当前身份上下文；验证结果见实施账本。",
+    "implementationNote": "复用xinyi-miniapp/src/features/training/api.ts与media.ts；D39–D42为独立实际路由，课表GET纯读，首次播放才冻结计划。"
   },
   {
     "boardId": "D43",
@@ -3149,7 +3153,11 @@
     "taskId": "Q02",
     "status": "NOT_ASSESSED",
     "note": "目标实现路径，非已存在源码。状态画板与弹窗不是独立小程序路由；遵守原账号与权限边界。",
-    "implementationNote": "B43/B44统一真实training页面；公司范围、草稿/视频/题库及发布版本按Q02同源契约。"
+    "implementationNote": "B43/B44课程仍用Q02 training/index.vue；Q03政策独立training/policy.vue，路由/driver-management/training-policy/policies，API trainingPolicy.ts。政策角色不冒充课程列表权限，不覆盖原Q02任务归属。",
+    "targetPaths": [
+      "xinyi-ui/src/views/rongli/training/index.vue",
+      "xinyi-ui/src/views/rongli/training/policy.vue"
+    ]
   },
   {
     "boardId": "B44",

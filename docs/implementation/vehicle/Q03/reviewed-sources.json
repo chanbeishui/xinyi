@@ -1,0 +1,280 @@
+{
+  "taskId": "Q03",
+  "reviewer": "/root/f01_tests（未写生产代码）",
+  "approved": true,
+  "date": "2026-11-09",
+  "baseline": "865922b",
+  "scope": "最终独立复核 PASS：十个接口、公司政策与冻结课程/材料运行、真实墙钟/去重、一次阅卷/跨run计次、Q01 canonical proof、私有媒体上下文票、SQL/模型/白名单、MINI/PC、测试和交付报告。584集成/41单元/56专项/227关联/35明确夹具GUI一致；供应商/审批/真机/生产发布边界保留。",
+  "sources": {
+    "docs/vehicle/V6.4/01_PRD/page_specs_V6.4.json": "bdfb95d614ce1ee9adca243bc15ecd44b2c86949ba77b437d241f4463b83839c",
+    "docs/vehicle/V6.4/01_PRD/全量页面与交互规格_V6.4.html": "35007cc20a03d7105a93d0978199d0354413340dc1051ca73ef252b3b671c74a",
+    "docs/vehicle/V6.4/01_PRD/全量页面与交互规格_V6.4.md": "95fbba7c03d1744b2c1902b0b9a5df72ba4181cbed1d8db99844899ea87df345",
+    "docs/vehicle/V6.4/01_PRD/机动车检测预约_PRD_V6.4_完整整合版.html": "7632eb3c51c9c2f19140b611a5511f19308126430a02629ff41f1e2369a8999c",
+    "docs/vehicle/V6.4/01_PRD/机动车检测预约_PRD_V6.4_完整整合版.md": "9fa1670c5671864666466a5901e89bf24da1aa12e438c13b2663a0773436c0e8",
+    "docs/vehicle/V6.4/02_UI/src/prd_pages.json": "d8c66fa890f62f2c85cb2b3100bc9008bb712b25b3554535633cb4cf8905c2e8",
+    "docs/vehicle/V6.4/04_接口/dto-types.ts": "0620c39f1617eb2cf24a45ef1ddcc6f2d5b0332328cb0a6a1ec17c932394adc9",
+    "docs/vehicle/V6.4/04_接口/openapi_V6.4.yaml": "0cd784b1868814938eaef8e61b28a3ab269e0e329dab40762421326a531f79a9",
+    "docs/vehicle/V6.4/04_接口/接口操作索引_V6.4.json": "8c7935f46f97d1a516a9a37f6b83dcd6ed271a05ae51ffef7d1a3c8f2d41ac29",
+    "docs/vehicle/V6.4/04_接口/权限与能力注册表.json": "6b39a7570f2c5634accaaf83b5edfdea46350544be46576852d4d6885fb6e896",
+    "docs/vehicle/V6.4/05_数据设计/001_vi业务表_初始化_V6.4.sql": "67e1da6e147022723225b4702627aa73bb37c5f5c7aa0540832c2a5faaa504a3",
+    "docs/vehicle/V6.4/05_数据设计/data_model_V6.4.json": "35a629b74ba5c760c6188aadc7b54ef0fc18924dd17a013b5e31e39a0f87e581",
+    "docs/vehicle/V6.4/05_数据设计/生成列与写入白名单.json": "cb19de29ea9696fa3137db8f1741efb2623d562f58ea1bf6625b7ed66a3e5d6c",
+    "docs/vehicle/V6.4/12_工程执行/task_packets/Q03/TASK.md": "88750c0402968bec31b48cb18882e5320b83f9a385a530e8451b3730b7d0dd6e",
+    "docs/vehicle/V6.4/12_工程执行/task_packets/Q03/acceptance.json": "ee9fb85e00580546d541ff56fd9cf6a8b8550d666f5bd3e9d012fae9e9f07aa9",
+    "docs/vehicle/V6.4/12_工程执行/task_packets/Q03/openapi.yaml": "c7606afbb4680f47ac7dfbab69337c800ca9a989ad7893ee7d24fa681812cd4c",
+    "docs/vehicle/V6.4/12_工程执行/task_packets/Q03/pages.json": "2c5e9f991cb2ae8aa8d1d90a47927659243b48503604d2163c7094331cac3021",
+    "docs/vehicle/V6.4/12_工程执行/task_packets/Q03/tables.json": "2b2d0f699a9f954d6e1f7811855a7b9332b3cd82c8a91967c3111d0bd4ec5c40",
+    "docs/vehicle/V6.4/14_工程模板/miniapp/src/api/types.ts": "4d9d1f8c24ec26c6f28bdc5056772a227cbdc93c71b6e3d51d70c3f6bd277edc",
+    "sql/migration_20261109_02_controlled_training.sql": "78396113f40789558c10b50597bcb17896002a7cba4929972a59aeb49ea79190",
+    "sql/ry_20260417.sql": "39b6fd201094a53080b68a7c770b1a524e046e64351ba68daa330bf2b38897b1",
+    "xinyi-admin/src/main/java/com/xinyi/web/config/TrainingAdminSecurityConfig.java": "ac278430c9cc81eb5de93aee7f9bb359296b03bd29e038b97e50d4d8d463635d",
+    "xinyi-admin/src/test/java/com/xinyi/web/viit/Q01QualificationIT.java": "1286286da205f41c83c966df0fa6aeb6452b0e335be438edf42b430364de262f",
+    "xinyi-admin/src/test/java/com/xinyi/web/viit/Q03TrainingIT.java": "1852a48880787c00da32708cbf1c5bd4a8b8ab6c1193532c405521af724aa2d6",
+    "xinyi-admin/src/test/java/com/xinyi/web/viit/TrainingCompletedBoundaryFixture.java": "53fbd61571f57ce8a68399458b233c77cbcd3d1d0fdf181c73fc670c1d39b47c",
+    "xinyi-admin/src/test/java/com/xinyi/web/viit/TrainingHttpFixture.java": "306e3af3d4b27f604331e6860a4a3dc0ea8f6783caea143ad94d574a5fecbef9",
+    "xinyi-admin/src/test/resources/integration/q02/flower.mp4": "0cd83d944a6ca7822b4a8306cecc60a36e859b041f6702c6a1ad9ead78924451",
+    "xinyi-admin/src/test/resources/integration/q03_contract.py": "33b8869f91a386f130e09901935a43ac379c16b0c4e280747f463ac58493bb15",
+    "xinyi-miniapp/src/api/types.ts": "d25d642db44fef0021a47367c34d18ba2249188dd5e8ae309f56d0807a61078c",
+    "xinyi-miniapp/src/features/training/api.ts": "71ffd9fbe54bdac5e08ff2a2ba0cd980b3f7357b0eaa55a623f0a58e6f0fa231",
+    "xinyi-miniapp/src/features/training/media.ts": "349e3582adc11b94a49b7e66978848fdde682d46ad86f423ffd1546546bd76a1",
+    "xinyi-miniapp/src/pages.json": "17c9f1ee6f0e0c47adb18876f9af27e0eee803f1e6012cebee65b5e0c8d5000d",
+    "xinyi-miniapp/src/pages/qualification/index.vue": "eb1d0590f4100923fc0bf3bac09d81d53a55f1418e3b5731e81cde121293eea9",
+    "xinyi-miniapp/src/pages/training/course.vue": "d42d8c24d19b8e516a9a5e45098ef3c725d70ea22b9b4d21a11d84fae8bc0791",
+    "xinyi-miniapp/src/pages/training/exam.vue": "04766bf363bbd117ef924423594f3946b6a1869632a347b7f8ec1205ac6c217e",
+    "xinyi-miniapp/src/pages/training/list.vue": "899c003fe866c591bc588b056ad285748fdcc2dc7b0cf48111c57dcd78acf4fa",
+    "xinyi-miniapp/src/pages/training/result.vue": "4ffe4b5d0369c1506de1e5380252ef593f04fc315bb766aa357a828c1c584d91",
+    "xinyi-miniapp/src/pages/training/training.css": "bc36f65b2f45e9792bce6c9328d3614a3a3fa00c6a45e4c292f17229de91b4de",
+    "xinyi-miniapp/src/pages/work/index.vue": "525fd82258aa1babb5d4bbaa15b8e03350f512cd006a2c8e52ea07a15b6862ff",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/driver/domain/DriverProfile.java": "a5c492acc86c5e3216e9abee44d280acc3e6ae3e306cc1fdcbf51320e4a721c0",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/file/service/FileAuthority.java": "3208828d0530134fe4ffd5b6e8e0a33a53318f0dd232a38fa578861a79ce1558",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/file/service/FileTickets.java": "6c1b79f85cf1f0790804c96d6619b98e5ddb4033b6ba608e72e5595281d6415e",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/file/service/PrivateFileService.java": "a80dbc5f47d25f05259e5cfb4eff9e148500a376a32da1def40477e6f842e064",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/qualification/service/QualificationService.java": "01d27de50d564b431932eae75385778b63ad800b6a982206905c03f6df1ff9b3",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/training/controller/LearningController.java": "971e3b9d3d10ad61a78c0b801de5b89616d8e75a2ff2946ee586aa9f6253253c",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/training/controller/TrainingController.java": "2c52c13d6ae01715e737b598015b85cdf7364f2caa585811beb4991a43ac0f44",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/training/controller/TrainingPolicyController.java": "e99459bf885491d52b47721564f8445abf6c76f371aa1fe2f24157c91da7adae",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/training/domain/TrainingCourse.java": "c64494ac222ee09ab6df8f3d47e68afdbd71dfacc3aa9320beae2a25d976fcd4",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/training/domain/TrainingExamAttempt.java": "9319222e146448b8fe26fab95e8eba1291e3e1570e247ab923f24dace112edba",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/training/domain/TrainingPlan.java": "d9a0d113a323a4b01398422672e1f6cc1fed9cda8b048bd1ab5d4142700735d0",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/training/domain/TrainingPlaybackSession.java": "f568c9786761dcb622f9a2c7ab739f300c711266d79c123692d3be186d7c8611",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/training/domain/TrainingPolicy.java": "324be51715621206f1fd77b1a54959bfa57ca529732aa0cc4a41c438cf8b7725",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/training/domain/TrainingPolicyRevision.java": "c03129f2b5e9d6564a68b97bf191c1b5b1ed618434ccf9a00986950ff1d3acf0",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/training/domain/TrainingProgress.java": "2360a0ad6360685c3f81a7f9adffe525f158d3aa8cba1343228321fe7f6572eb",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/training/domain/TrainingRun.java": "e44f226ffa0bdb32db7def497436059cc09c6f82e669fb76c5f3a50a0c9137ed",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/training/dto/FrozenTrainingCourse.java": "a5c3d3623f3a941ed075a51fe2506d7f5094fd5dccfe7a8f30359db7973e92ca",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/training/dto/LearningRequests.java": "76d2d4f3f7d5aa058fd5eafc7ff636b281a5dfcde33dac2ab158c654659808ce",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/training/dto/TrainingRequests.java": "a4e97a3b09d42d35b0522720167165818bc49248978b08fef7b07f6d688759ee",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/training/mapper/LearningMapper.java": "897c6e0a4e692e11b8fa3af17747dc9662dd7ee6e38b8e70ccb156be4104ce40",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/training/mapper/TrainingMapper.java": "057326cbf12000acb5fbc11dc44a339165c1e90686aa13359a25a1a93d325e8f",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/training/service/LearningService.java": "1e258056d5e39f9806bce94417d0fd8c800a26ea98bf8df621a33024b2cb79f7",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/training/service/TrainingCompletionAuthority.java": "f05ee55d5e15dac03fdc07f530e41f71388064ea015429fb6cfc24c0dfb16d03",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/training/service/TrainingPolicyService.java": "0b17a2e70dc57e75c822ebbeed034442485d65bacf3019067218a1c5dce18ee6",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/training/service/TrainingService.java": "67a08d2ca98548d7a2bdeff52daec4271e97f8e3d224c9235eff1245e1ec4461",
+    "xinyi-rongli/src/main/resources/mapper/rongli/driver/DriverMapper.xml": "a9632489227b16debb5222c1caf36f86580cf023d041d60d34af07771321f85a",
+    "xinyi-rongli/src/main/resources/mapper/rongli/training/LearningMapper.xml": "673003a759212683d5f8fc6cb84880a292c879137bba7d04e56def87fbc73e6e",
+    "xinyi-rongli/src/main/resources/mapper/rongli/training/TrainingMapper.xml": "1f6cbbe9bc586f41394de01c29776e6acab926f8c9db8ec4497335eaba01a2ed",
+    "xinyi-ui/src/api/rongli/driver.ts": "c7e5660fd7d506b359833208401489f21673ec2b1039fd0ec76bde3dcff1059a",
+    "xinyi-ui/src/api/rongli/trainingPolicy.ts": "92d4685067e60e7702bf082fdbd0b972c4a890bfcf44b91b650fe4691c33dd90",
+    "xinyi-ui/src/views/rongli/training/policy.vue": "27236ea732b4d2407b0f725e5602ecd5ec0897f2e8c7be5bbbf9f5582a2a5755"
+  },
+  "regression": {
+    "status": "PASS",
+    "sourceMethods": 56,
+    "oldQ01ConsumerMethods": 42,
+    "realTrainingProducerNotSeeded": true,
+    "consumerBoundaryFixtureExplicit": true,
+    "firstActualAttempt": {
+      "tests": 187,
+      "failures": 13,
+      "errors": 0,
+      "skipped": 0,
+      "q03": 56,
+      "q01": 42,
+      "q02": 44,
+      "a04": 45,
+      "f01AndI06Included": false,
+      "status": "FAILED",
+      "causes": [
+        "12: 测试同意配置重复行",
+        "1: 超业务位置范围应422的测试误断400"
+      ]
+    },
+    "firstFullAttempt": {
+      "integrationTests": 584,
+      "suites": 34,
+      "failures": 0,
+      "errors": 1,
+      "skipped": 0,
+      "q03Passed": 56,
+      "cause": "Q01 BeforeEach 手工账号SEQ与先前I05真实登录 AUTO_INCREMENT 主键碰撞",
+      "fix": "Q01 和本轮 TrainingHttpFixture 账号由数据库分配id，唯一app/openId回读；保留断言"
+    },
+    "relatedTests": 227,
+    "relatedFailures": 0,
+    "relatedErrors": 0,
+    "relatedSkipped": 0,
+    "actualQ03JunitConfirmed": true
+  },
+  "relatedRegression": {
+    "path": "docs/implementation/vehicle/Q03/associated-regression.json",
+    "sha256": "8a2d6523a76f96151b4f94f042894cc6d22bff4feb880886f78be14b11cbca15",
+    "tests": 227,
+    "passed": true
+  },
+  "finalFull": {
+    "path": "docs/implementation/vehicle/Q03/full-regression.json",
+    "sha256": "198e936525adf6837f0d2abce3a76babd0fbc435b9fdca5a586cf4dc13551945",
+    "integrationTests": 584,
+    "integrationClasses": 34,
+    "unitTests": 41,
+    "unitClasses": 12,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "exitCode": 0,
+    "finishedAt": "2026-11-09T22:48:43+08:00",
+    "actualSuitesAndTotalsIndependentlyConfirmed": true,
+    "summary": {
+      "path": "docs/implementation/vehicle/Q03/full-regression-summary.txt",
+      "sha256": "ab2c956cbe7d1f8c4c7c03c00e5cefeea03934c5c9b4ee11c7aa51678bd3687e"
+    },
+    "q03Junit": {
+      "path": "docs/implementation/vehicle/Q03/integration-junit.xml",
+      "sha256": "1f119a5b989588e89681a9cb05dd2d68f78807ec01b8a3efd0ec7fe8ce525d2f",
+      "tests": 56,
+      "notFull584Xml": true
+    },
+    "unitJunit": {
+      "path": "docs/implementation/vehicle/Q03/unit-junit.xml",
+      "sha256": "b9bfa3958f3ada8f747fa9aa3618f0be3e55a9f6c4f6618b42ec7e1d650ab7b8",
+      "tests": 41
+    }
+  },
+  "schemaVerification": {
+    "path": "docs/implementation/vehicle/Q03/schema-verification.json",
+    "sha256": "ad2da59758585f27f40d685f2f63e09072a2a52c72e0bc05d1cb6a2f40432fca",
+    "passed": true,
+    "comparedTables": 8,
+    "newTables": 4,
+    "alteredTables": 4,
+    "menuRows": 4
+  },
+  "gui": {
+    "checks": 35,
+    "mini": {
+      "path": "docs/implementation/vehicle/Q03/mini-browser.json",
+      "sha256": "c5942a61109f2523a9a83ec00a527f7702497b050e1034e83954a42ab933832c",
+      "checks": 21
+    },
+    "pc": {
+      "path": "docs/implementation/vehicle/Q03/pc-browser.json",
+      "sha256": "fe9d1b0b447c1aeac182163e6baf51d637b132d50e77d9aefbe1ab36b8b6ee9f",
+      "checks": 14
+    },
+    "mode": "真实页面及真实MP4事件，明确API/墙钟夹具，不等同直连MySQL或微信真机",
+    "screenshots": {
+      "mini-list-mobile.png": {
+        "path": "docs/implementation/vehicle/Q03/mini-list-mobile.png",
+        "sha256": "03328f044dc4ae97171efeba7dc5b24987f8586ebd4ff124d4f8d99e4ab539c5"
+      },
+      "mini-list-desktop.png": {
+        "path": "docs/implementation/vehicle/Q03/mini-list-desktop.png",
+        "sha256": "1ec8538a0465a591fdad62eb1da2b00fc850054e42e6fe433b6437e724c2dc8e"
+      },
+      "mini-course.png": {
+        "path": "docs/implementation/vehicle/Q03/mini-course.png",
+        "sha256": "ef596b868c9eee2dcde0f79a2fe44c760700c2f2aa89d5fc040fc1b0a5768746"
+      },
+      "mini-exam.png": {
+        "path": "docs/implementation/vehicle/Q03/mini-exam.png",
+        "sha256": "b6ad1866bcd4caa2f1a1fa6b3ba898ad9a31de0743911b73adb277befdf77d43"
+      },
+      "mini-result.png": {
+        "path": "docs/implementation/vehicle/Q03/mini-result.png",
+        "sha256": "b27115c49ebd2e1b765c9c581541dc2db673d8ae564d0495b8cc06a678645b18"
+      },
+      "pc-policy-main.png": {
+        "path": "docs/implementation/vehicle/Q03/pc-policy-main.png",
+        "sha256": "9e0d3ea2e0a44271252e63c23ba5ed4890c8d7412bcda18c65ee4cc5ee59506a"
+      },
+      "pc-policy-mobile.png": {
+        "path": "docs/implementation/vehicle/Q03/pc-policy-mobile.png",
+        "sha256": "548d92bdab720080bbebcd91bee92b8bc3e316e377d2120fc02282a334d90ddd"
+      },
+      "pc-policy-publish.png": {
+        "path": "docs/implementation/vehicle/Q03/pc-policy-publish.png",
+        "sha256": "a00e08672fe5189800538cd38341da431d02f5ab3b12adb5d7ffed90de40f891"
+      }
+    }
+  },
+  "builds": {
+    "miniTypes": {
+      "path": "docs/implementation/vehicle/Q03/types-build.txt",
+      "sha256": "aa88a9902920e3c1c2e4e640a476555060ba2a3397e3c0758997503616cf2546"
+    },
+    "miniWeixin": {
+      "path": "docs/implementation/vehicle/Q03/mp-build.txt",
+      "sha256": "ace1271aca24136e8afff8358c1b9fd580a6173a309bff22586a0cfe9cbab1b9"
+    },
+    "miniH5": {
+      "path": "docs/implementation/vehicle/Q03/h5-build.txt",
+      "sha256": "cb7b00ee33819ae7e8ec478839ab2c0907fc9a183e93b69bc5d4a5246e94a7e9"
+    },
+    "pcProduction": {
+      "path": "docs/implementation/vehicle/Q03/pc-build.txt",
+      "sha256": "7f3e2dbcd7540992cc280239416ac4c253e09f2494db704a2aca4b4d189d05d1"
+    },
+    "pcTypecheck": {
+      "path": "docs/implementation/vehicle/Q03/pc-typecheck.json",
+      "sha256": "4972560439792f5e89c2789605fed977603fa68c82021e8f8ab50a9530e9e09c",
+      "fullSitePassed": false,
+      "totalErrors": 109,
+      "existingOther": 99,
+      "q02Ambient": 5,
+      "q03Ambient": 5,
+      "ownBusinessErrors": 0
+    }
+  },
+  "staticChecks": {
+    "engineering": {
+      "path": "docs/implementation/vehicle/Q03/engineering.json",
+      "sha256": "4748560722c51d9089c1cca6ca6940c04a58097d0aa115ae46e341272018dd1b",
+      "passed": 34,
+      "failed": 0,
+      "actualRunAt": "2026-11-09"
+    },
+    "package": {
+      "path": "docs/implementation/vehicle/Q03/package.json",
+      "sha256": "fe860c847059cba47c6bedb09ea0846b79c6ae0057d05913587c3d3084ba4963",
+      "passed": 42,
+      "failed": 0,
+      "actualRunAt": "2026-11-09"
+    },
+    "definitionsCheckedAtNotActualRunAt": true
+  },
+  "readability": {
+    "path": "docs/implementation/vehicle/Q03/readability.json",
+    "sha256": "4da36faf367b50b4a38089032a1988bae38bc521cdfe891ee64d2ac1866402c6",
+    "passed": true,
+    "manualReviewOfTaskDiff": true
+  },
+  "verificationFixes": {
+    "path": "docs/implementation/vehicle/Q03/verification-fixes.json",
+    "sha256": "4d0501d591a397d0d40f9dadac98fedeb521333d21d47cff6b5f4a0e278e92ff"
+  },
+  "deliveryReport": {
+    "path": "docs/implementation/vehicle/Q03/report.md",
+    "sha256": "5c71c0e7bbd49465c9007023a6e311825eb4cfa54ed5444bf8aa02fa0d14863f"
+  },
+  "scopeBoundaries": [
+    "Q03 正向真实 MP4/墙钟/阅卷，不 seed TRAINING PASSED",
+    "Q01 消费端种完整可信上游关系，不冒充真实学习",
+    "Q04 四外部核验是明确边界，不是供应商验收",
+    "GUI 明确 API/墙钟夹具，CAS/MySQL由真实HTTP层另验",
+    "PC全站类型检查仍109项，自身业务类型0不等同全站通过",
+    "TC-R50-020 转 D07 保持 NOT_RUN",
+    "旧V6.1桥接器不纳入当前领域回归，不以排除当skip",
+    "真实审批授予/微信真机/生产发布/GitHub推送不在本批准内"
+  ],
+  "buildLogNormalization": "仅去除 pc-build.txt/types-build.txt 行尾空白及多余EOF空行；与原暂存证据逐字节去空白比较一致，实际命令及结果未变。"
+}

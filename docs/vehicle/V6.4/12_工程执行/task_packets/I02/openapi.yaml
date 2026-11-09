@@ -1046,8 +1046,10 @@ components:
       - biz:dispute:list
       - biz:dispute:query
       - biz:dispute:resolve
+      - biz:driver:assigncompany
       - biz:driver:disablenewassignments
       - biz:driver:edit
+      - biz:driver:enablenewassignments
       - biz:driver:list
       - biz:driver:query
       - biz:driveradjust:audit
@@ -1163,13 +1165,14 @@ components:
       - biz:trainingcourse:list
       - biz:trainingcourse:publish
       - biz:trainingcourse:query
+      - biz:trainingpolicy:edit
+      - biz:trainingpolicy:publish
+      - biz:trainingpolicy:query
       - biz:uploads:complete
       - biz:uploads:create
       - biz:vehicle:edit
       - biz:vehicle:list
       - biz:vehicle:query
-      - biz:driver:assigncompany
-      - biz:driver:enablenewassignments
     MiniRole:
       type: string
       enum:

@@ -1,0 +1,117 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <testsuite xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-failsafe-plugin/xsd/failsafe-test-report.xsd" version="3.0.2" name="com.xinyi.web.viit.Q03TrainingIT" time="57.148" tests="56" errors="0" skipped="0" failures="0">
+    <testcase name="materialChangeCreatesNewRunUsingTheSameFrozenPlanAndNoOldWatchCredit" classname="com.xinyi.web.viit.Q03TrainingIT" time="1.541">
+    </testcase>
+    <testcase name="companyPolicyRequiresIndependentFunctionsAndRealCompanyScope" classname="com.xinyi.web.viit.Q03TrainingIT" time="0.112">
+    </testcase>
+    <testcase name="multipleChoiceUsesExactSetsWithoutPartialCreditAndOrderDoesNotMatter" classname="com.xinyi.web.viit.Q03TrainingIT" time="1.484">
+    </testcase>
+    <testcase name="immediateSeekWithinActualMediaRangeDoesNotEarnWatchTime" classname="com.xinyi.web.viit.Q03TrainingIT" time="0.175">
+    </testcase>
+    <testcase name="aNewQualificationApplicationHasFreshCurriculumAndIndependentAttemptCounts" classname="com.xinyi.web.viit.Q03TrainingIT" time="1.56">
+    </testcase>
+    <testcase name="policyIdempotencyAndEncryptedReasonCannotBeReplayedAfterCompanyMembershipIsRevoked" classname="com.xinyi.web.viit.Q03TrainingIT" time="0.119">
+    </testcase>
+    <testcase name="retryIntervalStartsAtTheRealTerminalTimestampAndIsNotAHiddenDefault" classname="com.xinyi.web.viit.Q03TrainingIT" time="1.537">
+    </testcase>
+    <testcase name="subsecondHeartbeatsPreserveMillisecondsInsteadOfLosingEveryFraction" classname="com.xinyi.web.viit.Q03TrainingIT" time="1.579">
+    </testcase>
+    <testcase name="allRealMandatoryCoursesProduceOneCanonicalProofAndQ01CanThenSubmit" classname="com.xinyi.web.viit.Q03TrainingIT" time="3.069">
+    </testcase>
+    <testcase name="pausedAndResumeBaselineHeartbeatsCannotClaimThePausedGap" classname="com.xinyi.web.viit.Q03TrainingIT" time="3.831">
+    </testcase>
+    <testcase name="anOpenV1AttemptIsReallyGradedAgainstV1AfterV2AndNewPolicyPublication" classname="com.xinyi.web.viit.Q03TrainingIT" time="1.524">
+    </testcase>
+    <testcase name="malformedPolicyIdsFieldsNumbersUuidAndInternalScopesAreRejected" classname="com.xinyi.web.viit.Q03TrainingIT" time="0.102">
+    </testcase>
+    <testcase name="companyRoundTripUsesNewEpochAndCannotReviveOldRunOrProof" classname="com.xinyi.web.viit.Q03TrainingIT" time="1.54">
+    </testcase>
+    <testcase name="otherStudentsApplicationPlaybackAndAttemptIdsCannotBeBorrowed" classname="com.xinyi.web.viit.Q03TrainingIT" time="1.557">
+    </testcase>
+    <testcase name="gradingOutboxFailureRollsBackScoreProgressAndCanonicalProofTogether" classname="com.xinyi.web.viit.Q03TrainingIT" time="1.388">
+    </testcase>
+    <testcase name="repeatedAndRewoundMediaIntervalsCannotEarnTheSameSecondTwice" classname="com.xinyi.web.viit.Q03TrainingIT" time="2.588">
+    </testcase>
+    <testcase name="invalidOrDuplicateQuestionAndOptionInputsRejectTheEntireExamSubmission" classname="com.xinyi.web.viit.Q03TrainingIT" time="1.445">
+    </testcase>
+    <testcase name="playbackWritesPinApplicationRunMaterialCompanyAndPolicyInsteadOfFollowingCurrentState" classname="com.xinyi.web.viit.Q03TrainingIT" time="0.245">
+    </testcase>
+    <testcase name="heartbeatIdempotencyAndSequenceReplayDoNotDoubleCountAndDifferentBodyConflicts" classname="com.xinyi.web.viit.Q03TrainingIT" time="1.393">
+    </testcase>
+    <testcase name="partialCoursesAndStandaloneLegacyPassedRowsCannotBypassQ01TrainingGate" classname="com.xinyi.web.viit.Q03TrainingIT" time="1.644">
+    </testcase>
+    <testcase name="halfUpFinalIntegerIsUsedBeforeComparingTheConfiguredPassScore" classname="com.xinyi.web.viit.Q03TrainingIT" time="1.434">
+    </testcase>
+    <testcase name="finalSubmissionIsPermanentAcrossDifferentUuidsAndValidRootKeyRotation" classname="com.xinyi.web.viit.Q03TrainingIT" time="1.476">
+    </testcase>
+    <testcase name="equalQuestionsAreRoundedOnceAtTheEndRatherThanPerQuestion" classname="com.xinyi.web.viit.Q03TrainingIT" time="1.43">
+    </testcase>
+    <testcase name="examsRequireActualStudyAndConcurrentCreationReturnsTheSameOpenAttemptOnlyOnce" classname="com.xinyi.web.viit.Q03TrainingIT" time="1.493">
+    </testcase>
+    <testcase name="concurrentFirstPlaybackRequestsCannotCreateMultiplePlansOrAddParallelWatchTime" classname="com.xinyi.web.viit.Q03TrainingIT" time="0.2">
+    </testcase>
+    <testcase name="realMaterialSaveAndExamSubmissionSerializeWithoutProducingAnOldMaterialProof" classname="com.xinyi.web.viit.Q03TrainingIT" time="1.56">
+    </testcase>
+    <testcase name="concurrentDifferentAnswerSubmissionsProduceOneGradeAndOneSummary" classname="com.xinyi.web.viit.Q03TrainingIT" time="1.468">
+    </testcase>
+    <testcase name="firstHeartbeatOnlyEstablishesBaselineAndCannotClaimWholeVideo" classname="com.xinyi.web.viit.Q03TrainingIT" time="0.213">
+    </testcase>
+    <testcase name="unverifiedPhoneAndAdminRealmCannotBecomeTheMiniStudent" classname="com.xinyi.web.viit.Q03TrainingIT" time="0.036">
+    </testcase>
+    <testcase name="laterCourseAndPolicyPublicationDoNotReplaceAnAlreadyFrozenCurriculum" classname="com.xinyi.web.viit.Q03TrainingIT" time="0.182">
+    </testcase>
+    <testcase name="oldAdminAuthVersionIsRejectedForPolicyReadAndWriteEvenIfRedisEvictionFails" classname="com.xinyi.web.viit.Q03TrainingIT" time="0.084">
+    </testcase>
+    <testcase name="firstPlaybackOutboxFailureRollsBackPlanRunProgressAndIdempotency" classname="com.xinyi.web.viit.Q03TrainingIT" time="0.12">
+    </testcase>
+    <testcase name="correctlyCompletedFrozenPlanStillSatisfiesQ01AfterTheActivePolicyChanges" classname="com.xinyi.web.viit.Q03TrainingIT" time="1.606">
+    </testcase>
+    <testcase name="companyPolicyGetIsPureReadAndUnconfiguredPolicyHasNoHiddenDefaults" classname="com.xinyi.web.viit.Q03TrainingIT" time="0.035">
+    </testcase>
+    <testcase name="unknownClientAuthorityAndResultFieldsCannotForgeAnyTrainingTransition" classname="com.xinyi.web.viit.Q03TrainingIT" time="0.14">
+    </testcase>
+    <testcase name="stableCourseKeyCountsOldVersionAttemptsAfterACompanyEpochRoundTrip" classname="com.xinyi.web.viit.Q03TrainingIT" time="2.785">
+    </testcase>
+    <testcase name="actualWallClockAndValidVideoMovementEarnOnlyTheElapsedUniqueDuration" classname="com.xinyi.web.viit.Q03TrainingIT" time="1.359">
+    </testcase>
+    <testcase name="successfulPlaybackKeyCannotDriftToTheNewMaterialRun" classname="com.xinyi.web.viit.Q03TrainingIT" time="0.221">
+    </testcase>
+    <testcase name="latestPlaybackAndRealMiniSessionContextPreventParallelDeviceCredit" classname="com.xinyi.web.viit.Q03TrainingIT" time="0.199">
+    </testcase>
+    <testcase name="wrongVersionsAndPositionsOutsideTheVerifiedMediaAreRejectedWithoutCredit" classname="com.xinyi.web.viit.Q03TrainingIT" time="0.167">
+    </testcase>
+    <testcase name="firstRealPlaybackFreezesOnePlanAndRunWhileAllEarlierReadsStayPure" classname="com.xinyi.web.viit.Q03TrainingIT" time="0.454">
+    </testcase>
+    <testcase name="tenActualResponsesConformToBothMainAndTaskContractsWithoutAnyAnswersOrInternalSecrets" classname="com.xinyi.web.viit.Q03TrainingIT" time="2.705">
+    </testcase>
+    <testcase name="expiredAttemptsRemainExpiredWithoutScoreAndStillConsumeTheConfiguredAttempt" classname="com.xinyi.web.viit.Q03TrainingIT" time="1.479">
+    </testcase>
+    <testcase name="expiredPlaybackAndOldSequenceCannotIncreasePersistedDuration" classname="com.xinyi.web.viit.Q03TrainingIT" time="0.179">
+    </testcase>
+    <testcase name="invalidPolicyCourseSelectionIsRejectedAtomicallyIncludingMixedForeignOrDraftRows" classname="com.xinyi.web.viit.Q03TrainingIT" time="0.2">
+    </testcase>
+    <testcase name="concurrentPolicyDraftsUseAggregateCasAndKeepExactlyOneAppendedRevision" classname="com.xinyi.web.viit.Q03TrainingIT" time="0.108">
+    </testcase>
+    <testcase name="missingEncryptionKeyCannotCreateAnUnprotectedGradingSnapshotOrConsumeAnAttempt" classname="com.xinyi.web.viit.Q03TrainingIT" time="1.512">
+    </testcase>
+    <testcase name="learnerMediaUsesRealBytesAndCurrentFrozenMembershipWithoutOpeningAdminFiles" classname="com.xinyi.web.viit.Q03TrainingIT" time="0.362">
+    </testcase>
+    <testcase name="databaseGradingFailureDoesNotCommitHalfAnExamOrAFalseCompletedRun" classname="com.xinyi.web.viit.Q03TrainingIT" time="1.431">
+    </testcase>
+    <testcase name="policyRevisionIsAppendOnlyAndPublishingRequiresItsExactDraftAndCas" classname="com.xinyi.web.viit.Q03TrainingIT" time="0.113">
+    </testcase>
+    <testcase name="verifiedOwnerWithoutDriverRoleCanLearnItsExplicitCompanyCurriculum" classname="com.xinyi.web.viit.Q03TrainingIT" time="0.152">
+    </testcase>
+    <testcase name="failureAndTimeoutCountAcrossMaterialRunsWithoutResettingTheApplicationQuota" classname="com.xinyi.web.viit.Q03TrainingIT" time="2.695">
+    </testcase>
+    <testcase name="incompletePolicyDraftCanBeSavedButCannotPublishOrEnableAnyLearning" classname="com.xinyi.web.viit.Q03TrainingIT" time="0.072">
+    </testcase>
+    <testcase name="unassignedOrUnavailableCompanyCannotBeGuessedFromAccountOrStation" classname="com.xinyi.web.viit.Q03TrainingIT" time="0.143">
+    </testcase>
+    <testcase name="noApplicationReturnsNullAndReadonlyQueriesNeverCreateTrainingFacts" classname="com.xinyi.web.viit.Q03TrainingIT" time="0.048">
+    </testcase>
+    <testcase name="ordinaryRemarkAndAssignmentPauseDoNotDiscardTrainingContext" classname="com.xinyi.web.viit.Q03TrainingIT" time="0.139">
+    </testcase>
+  </testsuite>
+</testsuites>

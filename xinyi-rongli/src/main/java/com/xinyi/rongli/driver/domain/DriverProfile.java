@@ -1,6 +1,7 @@
 package com.xinyi.rongli.driver.domain;
 
 import com.xinyi.rongli.core.ViRecord;
+
 import java.time.Instant;
 
 /** 代驾档案持久化投影，不能作为请求体批量绑定资格和开关。 */
@@ -23,6 +24,16 @@ public class DriverProfile extends ViRecord {
 
     public void setOwnerDeptId(Long value) {
         ownerDeptId = value;
+    }
+
+    private long trainingContextRevision;
+
+    public long getTrainingContextRevision() {
+        return trainingContextRevision;
+    }
+
+    public void setTrainingContextRevision(long value) {
+        trainingContextRevision = value;
     }
 
     private String qualificationStatus;

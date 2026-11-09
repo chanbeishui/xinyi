@@ -1,0 +1,371 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xinyi.rongli.training.mapper.LearningMapper">
+    <resultMap id="TrainingPolicy" type="com.xinyi.rongli.training.domain.TrainingPolicy">
+        <result property="id" column="id"/>
+        <result property="version" column="version"/>
+        <result property="createdAt" column="created_at" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+        <result property="updatedAt" column="updated_at" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+        <result property="ownerDeptId" column="owner_dept_id"/>
+        <result property="draftRevisionId" column="draft_revision_id"/>
+        <result property="activeRevisionId" column="active_revision_id"/>
+    </resultMap>
+    <resultMap id="TrainingPolicyRevision" type="com.xinyi.rongli.training.domain.TrainingPolicyRevision">
+        <result property="id" column="id"/>
+        <result property="version" column="version"/>
+        <result property="createdAt" column="created_at" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+        <result property="updatedAt" column="updated_at" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+        <result property="policyId" column="policy_id"/>
+        <result property="revisionNo" column="revision_no"/>
+        <result property="requiredTrainingIds" column="required_training_ids"/>
+        <result property="maxAttempts" column="max_attempts"/>
+        <result property="retryIntervalSeconds" column="retry_interval_seconds"/>
+        <result property="gradingMode" column="grading_mode"/>
+        <result property="contentHash" column="content_hash"/>
+        <result property="createdByUserId" column="created_by_user_id"/>
+        <result property="publishedByUserId" column="published_by_user_id"/>
+        <result property="publishedAt" column="published_at" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+    </resultMap>
+    <resultMap id="TrainingPlan" type="com.xinyi.rongli.training.domain.TrainingPlan">
+        <result property="id" column="id"/>
+        <result property="version" column="version"/>
+        <result property="createdAt" column="created_at" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+        <result property="updatedAt" column="updated_at" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+        <result property="applicationId" column="application_id"/>
+        <result property="ownerDeptId" column="owner_dept_id"/>
+        <result property="companyRevision" column="company_revision"/>
+        <result property="policyRevisionId" column="policy_revision_id"/>
+        <result property="courseSnapshot" column="course_snapshot"/>
+        <result property="maxAttempts" column="max_attempts"/>
+        <result property="retryIntervalSeconds" column="retry_interval_seconds"/>
+        <result property="gradingMode" column="grading_mode"/>
+    </resultMap>
+    <resultMap id="TrainingRun" type="com.xinyi.rongli.training.domain.TrainingRun">
+        <result property="id" column="id"/>
+        <result property="version" column="version"/>
+        <result property="createdAt" column="created_at" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+        <result property="updatedAt" column="updated_at" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+        <result property="planSnapshotId" column="plan_snapshot_id"/>
+        <result property="applicationId" column="application_id"/>
+        <result property="materialRevision" column="material_revision"/>
+        <result property="materialHash" column="material_hash"/>
+        <result property="status" column="status"/>
+        <result property="providerVerificationId" column="provider_verification_id"/>
+        <result property="completedAt" column="completed_at" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+    </resultMap>
+    <resultMap id="TrainingProgress" type="com.xinyi.rongli.training.domain.TrainingProgress">
+        <result property="id" column="id"/>
+        <result property="version" column="version"/>
+        <result property="createdAt" column="created_at" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+        <result property="updatedAt" column="updated_at" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+        <result property="runId" column="run_id"/>
+        <result property="applicationId" column="application_id"/>
+        <result property="driverId" column="driver_id"/>
+        <result property="trainingId" column="training_id"/>
+        <result property="materialRevision" column="material_revision"/>
+        <result property="materialHash" column="material_hash"/>
+        <result property="verifiedDurationMillis" column="verified_duration_millis"/>
+        <result property="verifiedDurationSeconds" column="verified_duration_seconds"/>
+        <result property="verifiedSegments" column="verified_segments"/>
+        <result property="activePlaybackId" column="active_playback_id"/>
+        <result property="status" column="status"/>
+        <result property="lastPositionSeconds" column="last_position_seconds"/>
+    </resultMap>
+    <resultMap id="TrainingPlaybackSession" type="com.xinyi.rongli.training.domain.TrainingPlaybackSession">
+        <result property="id" column="id"/>
+        <result property="version" column="version"/>
+        <result property="createdAt" column="created_at" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+        <result property="updatedAt" column="updated_at" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+        <result property="runId" column="run_id"/>
+        <result property="progressId" column="progress_id"/>
+        <result property="materialRevision" column="material_revision"/>
+        <result property="materialHash" column="material_hash"/>
+        <result property="sessionId" column="session_id"/>
+        <result property="contextVersion" column="context_version"/>
+        <result property="startedAt" column="started_at" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+        <result property="expiresAt" column="expires_at" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+        <result property="lastReportedAt" column="last_reported_at" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+        <result property="lastSequence" column="last_sequence"/>
+        <result property="lastPositionMillis" column="last_position_millis"/>
+        <result property="lastPlaying" column="last_playing"/>
+    </resultMap>
+    <resultMap id="TrainingExamAttempt" type="com.xinyi.rongli.training.domain.TrainingExamAttempt">
+        <result property="id" column="id"/>
+        <result property="version" column="version"/>
+        <result property="createdAt" column="created_at" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+        <result property="updatedAt" column="updated_at" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+        <result property="runId" column="run_id"/>
+        <result property="applicationId" column="application_id"/>
+        <result property="driverId" column="driver_id"/>
+        <result property="trainingId" column="training_id"/>
+        <result property="courseKey" column="course_key"/>
+        <result property="materialRevision" column="material_revision"/>
+        <result property="materialHash" column="material_hash"/>
+        <result property="attemptNo" column="attempt_no"/>
+        <result property="status" column="status"/>
+        <result property="questionSnapshot" column="question_snapshot"/>
+        <result property="answerSnapshot" column="answer_snapshot"/>
+        <result property="gradingSnapshotCipher" column="grading_snapshot_cipher"/>
+        <result property="submissionMac" column="submission_mac"/>
+        <result property="score" column="score"/>
+        <result property="startedAt" column="started_at" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+        <result property="expiresAt" column="expires_at" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+        <result property="submittedAt" column="submitted_at" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+    </resultMap>
+    <select id="policy" resultMap="TrainingPolicy">
+        SELECT *
+        FROM vi_training_policy
+        WHERE owner_dept_id=#{ownerDeptId}
+        FOR UPDATE
+    </select>
+    <insert id="insertPolicy" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO vi_training_policy(owner_dept_id)
+        VALUES(#{ownerDeptId})
+    </insert>
+    <select id="revision" resultMap="TrainingPolicyRevision">
+        SELECT *
+        FROM vi_training_policy_revision
+        WHERE id=#{id}
+    </select>
+    <select id="maxPolicyRevision" resultType="int">
+        SELECT COALESCE(MAX(revision_no),0)
+        FROM vi_training_policy_revision
+        WHERE policy_id=#{id}
+    </select>
+    <insert id="insertRevision" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO vi_training_policy_revision(
+            policy_id,revision_no,required_training_ids,max_attempts,retry_interval_seconds,
+            grading_mode,content_hash,created_by_user_id
+        )
+        VALUES(
+            #{policyId},#{revisionNo},#{requiredTrainingIds},#{maxAttempts},#{retryIntervalSeconds},
+            #{gradingMode},#{contentHash},#{createdByUserId}
+        )
+    </insert>
+    <update id="pointDraft">
+        UPDATE vi_training_policy
+        SET draft_revision_id=#{draftRevisionId},version=version+1,updated_at=UTC_TIMESTAMP(3)
+        WHERE id=#{id} AND version=#{version}
+    </update>
+    <update id="publishRevision">
+        UPDATE vi_training_policy_revision
+        SET published_at=UTC_TIMESTAMP(3),published_by_user_id=#{user},version=version+1,updated_at=UTC_TIMESTAMP(3)
+        WHERE id=#{id} AND published_at IS NULL
+    </update>
+    <update id="pointActive">
+        UPDATE vi_training_policy
+        SET active_revision_id=#{activeRevisionId},draft_revision_id=NULL,
+            version=version+1,updated_at=UTC_TIMESTAMP(3)
+        WHERE id=#{id} AND version=#{version} AND draft_revision_id=#{activeRevisionId}
+    </update>
+    <select id="plan" resultMap="TrainingPlan">
+        SELECT *
+        FROM vi_training_plan_snapshot
+        WHERE application_id=#{application} AND company_revision=#{epoch}
+    </select>
+    <insert id="insertPlan" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO vi_training_plan_snapshot(
+            application_id,owner_dept_id,company_revision,policy_revision_id,course_snapshot,
+            max_attempts,retry_interval_seconds,grading_mode
+        )
+        VALUES(
+            #{applicationId},#{ownerDeptId},#{companyRevision},#{policyRevisionId},#{courseSnapshot},
+            #{maxAttempts},#{retryIntervalSeconds},#{gradingMode}
+        )
+    </insert>
+    <select id="run" resultMap="TrainingRun">
+        SELECT *
+        FROM vi_training_run
+        WHERE plan_snapshot_id=#{plan} AND material_revision=#{material}
+    </select>
+    <select id="runById" resultMap="TrainingRun">
+        SELECT *
+        FROM vi_training_run
+        WHERE id=#{id}
+    </select>
+    <insert id="insertRun" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO vi_training_run(plan_snapshot_id,application_id,material_revision,material_hash)
+        VALUES(#{planSnapshotId},#{applicationId},#{materialRevision},#{materialHash})
+    </insert>
+    <select id="progresses" resultMap="TrainingProgress">
+        SELECT *
+        FROM vi_training_progress
+        WHERE run_id=#{run}
+        ORDER BY training_id
+    </select>
+    <select id="progress" resultMap="TrainingProgress">
+        SELECT *
+        FROM vi_training_progress
+        WHERE run_id=#{run} AND training_id=#{training}
+        FOR UPDATE
+    </select>
+    <insert id="insertProgress" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO vi_training_progress(
+            run_id,application_id,driver_id,training_id,material_revision,material_hash,verified_segments
+        )
+        VALUES(#{runId},#{applicationId},#{driverId},#{trainingId},#{materialRevision},#{materialHash},JSON_ARRAY())
+    </insert>
+    <update id="saveProgress">
+        UPDATE vi_training_progress
+        SET verified_duration_millis=#{verifiedDurationMillis},verified_duration_seconds=#{verifiedDurationSeconds},
+            verified_segments=#{verifiedSegments},active_playback_id=#{activePlaybackId},
+            status=#{status},last_position_seconds=#{lastPositionSeconds},version=version+1,updated_at=UTC_TIMESTAMP(3)
+        WHERE id=#{id} AND version=#{version}
+    </update>
+    <select id="playback" resultMap="TrainingPlaybackSession">
+        SELECT *
+        FROM vi_training_playback
+        WHERE id=#{id}
+        FOR UPDATE
+    </select>
+    <insert id="insertPlayback" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO vi_training_playback(
+            run_id,progress_id,material_revision,material_hash,session_id,context_version,started_at,expires_at
+        )
+        VALUES(
+            #{runId},#{progressId},#{materialRevision},#{materialHash},#{sessionId},#{contextVersion},
+            #{startedAt,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler},
+            #{expiresAt,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler}
+        )
+    </insert>
+    <update id="savePlayback">
+        UPDATE vi_training_playback
+        SET last_reported_at=#{lastReportedAt,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler},
+            last_position_millis=#{lastPositionMillis},last_playing=#{lastPlaying},last_sequence=#{lastSequence},
+            version=version+1,updated_at=UTC_TIMESTAMP(3)
+        WHERE id=#{id} AND version=#{version}
+    </update>
+    <select id="attempt" resultMap="TrainingExamAttempt">
+        SELECT *
+        FROM vi_training_attempt
+        WHERE id=#{id}
+        FOR UPDATE
+    </select>
+    <select id="openAttempt" resultMap="TrainingExamAttempt">
+        SELECT *
+        FROM vi_training_attempt
+        WHERE application_id=#{application} AND course_key=#{key} AND status='OPEN'
+        ORDER BY id DESC
+        LIMIT 1
+        FOR UPDATE
+    </select>
+    <select id="latestAttempt" resultMap="TrainingExamAttempt">
+        SELECT *
+        FROM vi_training_attempt
+        WHERE application_id=#{application}
+            AND (course_key=#{key} OR (course_key IS NULL AND training_id IN (
+                SELECT id
+                FROM vi_training_course
+                WHERE course_key=#{key}
+            )))
+        ORDER BY attempt_no DESC,id DESC
+        LIMIT 1
+    </select>
+    <select id="runLatestAttempt" resultMap="TrainingExamAttempt">
+        SELECT *
+        FROM vi_training_attempt
+        WHERE run_id=#{run} AND training_id=#{training}
+        ORDER BY id DESC
+        LIMIT 1
+    </select>
+    <select id="attemptCount" resultType="int">
+        SELECT COUNT(*)
+        FROM vi_training_attempt
+        WHERE application_id=#{application}
+            AND (course_key=#{key} OR (course_key IS NULL AND training_id IN (
+                SELECT id
+                FROM vi_training_course
+                WHERE course_key=#{key}
+            )))
+    </select>
+    <select id="maxAttemptNo" resultType="int">
+        SELECT COALESCE(MAX(attempt_no),0)
+        FROM vi_training_attempt
+        WHERE application_id=#{application}
+            AND (course_key=#{key} OR (course_key IS NULL AND training_id IN (
+                SELECT id
+                FROM vi_training_course
+                WHERE course_key=#{key}
+            )))
+    </select>
+    <insert id="insertAttempt" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO vi_training_attempt(
+            application_id,run_id,material_revision,material_hash,driver_id,training_id,course_key,
+            attempt_no,status,question_snapshot,started_at,expires_at
+        )
+        VALUES(
+            #{applicationId},#{runId},#{materialRevision},#{materialHash},#{driverId},#{trainingId},#{courseKey},
+            #{attemptNo},'OPEN',#{questionSnapshot},
+            #{startedAt,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler},
+            #{expiresAt,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler}
+        )
+    </insert>
+    <update id="saveAttempt">
+        UPDATE vi_training_attempt
+        SET status=#{status},answer_snapshot=#{answerSnapshot},grading_snapshot_cipher=#{gradingSnapshotCipher},
+            submission_mac=#{submissionMac},score=#{score},
+            submitted_at=#{submittedAt,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler},
+            version=version+1,updated_at=UTC_TIMESTAMP(3)
+        WHERE id=#{id} AND version=#{version}
+    </update>
+    <insert id="insertTrainingProof" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO vi_provider_verification(
+            application_id,material_revision,material_hash,provider,task_type,provider_task_id,status,verified_at
+        )
+        VALUES(
+            #{applicationId},#{materialRevision},#{materialHash},
+            'INTERNAL_TRAINING','TRAINING',#{requestNo},'PASSED',UTC_TIMESTAMP(3)
+        )
+    </insert>
+    <update id="completeRun">
+        UPDATE vi_training_run
+        SET status='PASSED',provider_verification_id=#{proof},completed_at=UTC_TIMESTAMP(3),
+            version=version+1,updated_at=UTC_TIMESTAMP(3)
+        WHERE id=#{id} AND version=#{version} AND status='ACTIVE' AND provider_verification_id IS NULL
+    </update>
+    <select id="trainingProof" resultType="map">
+        SELECT id,application_id,material_revision,material_hash,provider,task_type,status,verified_at
+        FROM vi_provider_verification
+        WHERE id=#{id} AND provider='INTERNAL_TRAINING' AND task_type='TRAINING' AND status='PASSED'
+            AND verified_at IS NOT NULL AND verified_at&lt;=UTC_TIMESTAMP(3)
+    </select>
+    <select id="requiredPassedFacts" resultType="map">
+        SELECT progress.training_id,progress.verified_duration_millis,progress.status,
+            MAX(attempt.score) passed_score
+        FROM vi_training_progress progress
+        LEFT JOIN vi_training_attempt attempt ON attempt.run_id=progress.run_id
+            AND attempt.training_id=progress.training_id AND attempt.application_id=progress.application_id
+            AND attempt.material_revision=progress.material_revision AND attempt.material_hash=progress.material_hash
+            AND attempt.status='PASSED' AND attempt.grading_snapshot_cipher IS NOT NULL
+            AND attempt.submission_mac IS NOT NULL AND attempt.submitted_at IS NOT NULL
+        JOIN vi_training_run current_run ON current_run.id=progress.run_id
+            AND current_run.application_id=progress.application_id
+            AND current_run.material_revision=progress.material_revision AND current_run.material_hash=progress.material_hash
+        WHERE progress.run_id=#{run}
+        GROUP BY progress.training_id,progress.verified_duration_millis,progress.status
+    </select>
+    <!-- 媒体授权完全由当前本人申请/材料/公司epoch/冻结集合联结，不采纳客户端裸run或同公司任意课程。 -->
+    <select id="currentMediaContext" resultType="map">
+        SELECT app.id application_id,run.id run_id,profile.training_context_revision company_revision,
+            app.material_revision,HEX(app.material_hash) material_hex
+        FROM vi_driver_profile profile
+        JOIN vi_account account ON account.id=profile.account_id
+        JOIN sys_dept company ON company.dept_id=profile.owner_dept_id AND company.status='0' AND company.del_flag='0'
+        JOIN vi_driver_application app ON app.driver_id=profile.id
+        JOIN vi_training_plan_snapshot plan ON plan.application_id=app.id AND plan.owner_dept_id=profile.owner_dept_id
+            AND plan.company_revision=profile.training_context_revision
+        JOIN vi_training_run run ON run.plan_snapshot_id=plan.id AND run.application_id=app.id
+            AND run.material_revision=app.material_revision AND run.material_hash=app.material_hash
+        JOIN JSON_TABLE(plan.course_snapshot,'$[*]' COLUMNS(media_file_id BIGINT PATH '$.mediaFileId')) selected
+            ON selected.media_file_id=#{file}
+        WHERE profile.account_id=#{account} AND account.phone_verified_at IS NOT NULL AND account.phone_cipher IS NOT NULL
+            AND app.id=(
+                SELECT current.id
+                FROM vi_driver_application current
+                WHERE current.driver_id=profile.id
+                ORDER BY CASE WHEN current.active_driver IS NOT NULL THEN 0 ELSE 1 END,current.id DESC
+                LIMIT 1
+            )
+        LIMIT 1
+    </select>
+</mapper>

@@ -30,6 +30,7 @@ public class FileAuthority {
     private final IDeptScopeService scopes;
     private final EmployeeStationAccessMapper stations;
     private final PrivateFileMapper files;
+    private final com.xinyi.rongli.training.mapper.LearningMapper learning;
 
     public FileAuthority(
             BusinessActorResolver actors,
@@ -41,7 +42,8 @@ public class FileAuthority {
             IntegrationMapper integration,
             IDeptScopeService scopes,
             EmployeeStationAccessMapper stations,
-            PrivateFileMapper files) {
+            PrivateFileMapper files,
+            com.xinyi.rongli.training.mapper.LearningMapper learning) {
         this.actors = actors;
         this.directory = directory;
         this.accounts = accounts;
@@ -52,6 +54,7 @@ public class FileAuthority {
         this.scopes = scopes;
         this.stations = stations;
         this.files = files;
+        this.learning = learning;
     }
 
     public Actor actor() {
@@ -179,9 +182,13 @@ public class FileAuthority {
     }
 
     private void checkTraining(Actor actor, PrivateFile file, String permission, boolean write) {
-        if (!actor.isAdmin()
-                || file.getTrainingId() == null
-                || !"TRAINING_MEDIA".equals(file.getPurpose())) denied();
+        if (file.getTrainingId() == null || !"TRAINING_MEDIA".equals(file.getPurpose())) denied();
+        if (actor.isMini()) {
+            if (write) denied();
+            trainingReadContext(actor, file);
+            return;
+        }
+        if (!actor.isAdmin()) denied();
         var parent = files.lockTraining(file.getTrainingId());
         if (parent == null || parent.get("owner_dept_id") == null) denied();
         long owner = ((Number) parent.get("owner_dept_id")).longValue();
@@ -195,6 +202,23 @@ public class FileAuthority {
         if (write && !"DRAFT".equals(parent.get("status"))) {
             throw new ViException(ViErrorCode.VI_STATE_CONFLICT, "已发布课程媒体只读，请派生新草稿维护");
         }
+    }
+
+    /** 票据MAC覆盖此上下文；同file在新run重新被选中，也不能复活旧公司/材料的读取票。 */
+    public String trainingReadContext(Actor actor, PrivateFile file) {
+        if (!actor.isMini() || !"TRAINING_MEDIA".equals(file.getPurpose())) return "";
+        var context = learning.currentMediaContext(actor.accountId(), file.getId());
+        if (context == null) denied();
+        return "Q03:APP:"
+                + context.get("application_id")
+                + ":RUN:"
+                + context.get("run_id")
+                + ":COMPANY:"
+                + context.get("company_revision")
+                + ":MATERIAL:"
+                + context.get("material_revision")
+                + ":"
+                + context.get("material_hex");
     }
 
     /** 内部业务已验证其父记录后仍独立核对文件功能权和真实公司，不能以有课程权代替私有文件权。 */

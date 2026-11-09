@@ -498,6 +498,11 @@
         "后台明确指定的归属公司部门；历史NULL待全局管理员认领"
       ],
       [
+        "training_context_revision",
+        "BIGINT NOT NULL DEFAULT 0",
+        "仅实际公司归属变更递增；备注与行政开关不使培训失效"
+      ],
+      [
         "qualification_status",
         "VARCHAR(24) NOT NULL",
         "QualificationStatus: DRAFT,SUBMITTED,APPROVED,REJECTED,EXPIRED,SUSPENDED"
@@ -563,7 +568,7 @@
       "KEY ix_driver_company (owner_dept_id,id)",
       "KEY ix_pool (qualification_status,new_assignment_enabled,listening_enabled)"
     ],
-    "rule": "每名代驾明确归属一个公司部门，旗下站点共用；owner_dept_id不从员工、创建人或历史订单推断。存量NULL待全数据管理员显式认领；归属变更检查原新范围并集且无待响应/占用/在手任务，转移后禁新。资格审核、本人听单偏好与行政开关分开；暂停不释放承接或保管。",
+    "rule": "每名代驾明确归属一个公司部门，旗下站点共用；owner_dept_id不从员工、创建人或历史订单推断。存量NULL待全数据管理员显式认领；归属变更检查原新范围并集且无待响应/占用/在手任务，转移后禁新。资格审核、本人听单偏好与行政开关分开；暂停不释放承接或保管。 Q03：training_context_revision只在实际公司归属变化时递增，A→B→A不可复活旧学习；备注及行政开关不影响既有培训。",
     "primaryKey": [
       "id"
     ],
@@ -664,6 +669,13 @@
         "updatable": true,
         "clientWritable": false,
         "authority": "后台明确选择并验证目标有效部门与原新范围，DTO不可直接批量绑定实体。"
+      },
+      "training_context_revision": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false,
+        "authority": "仅A04实际公司归属变更，由原值比较同事务递增。"
       }
     },
     "checks": [
@@ -4334,7 +4346,7 @@
       "UNIQUE KEY uk_object_key (object_key)",
       "KEY ix_order_purpose (order_id,purpose)"
     ],
-    "rule": "访问签名不进明文长期表，不接受客户端READY/摘要即可信 Q02新增TRAINING_MEDIA仅ADMIN公司DRAFT父课程、私有MP4不超过100MiB；READY由实际容器/轨道/时长与流式SHA校验产生，发布后不可重写，可由同族派生白名单只读继承。图片仍JPEG/PNG10MiB。",
+    "rule": "访问签名不进明文长期表，不接受客户端READY/摘要即可信 Q02新增TRAINING_MEDIA仅ADMIN公司DRAFT父课程、私有MP4不超过100MiB；READY由实际容器/轨道/时长与流式SHA校验产生，发布后不可重写，可由同族派生白名单只读继承。图片仍JPEG/PNG10MiB。 Q03：MINI仅当前本人冻结run引用的发布媒体可读，不具上传权；300秒READ票据MAC绑定申请/材料/run/公司epoch，逐块重新校验。后台原公司DRAFT维护规则保留。",
     "primaryKey": [
       "id"
     ],
@@ -11378,7 +11390,7 @@
     "indexes": [
       "UNIQUE KEY uk_course_question (training_id,question_code)"
     ],
-    "rule": "权威归属继承父课程owner_dept_id，草稿完整替换，发布题库只读。后台query及公司范围读取答案；Q03学员另用TrainingQuestion白名单，实际判分/权重/必修集合属后续，不把发布当培训通过。",
+    "rule": "权威归属继承父课程owner_dept_id，草稿完整替换，发布题库只读。后台query及公司范围读取答案；Q03学员另用TrainingQuestion白名单，Q03按首次冻结版本在服务端等分精确匹配阅卷，最终总分四舍五入，课程发布不产生培训通过。",
     "primaryKey": [
       "id"
     ],
@@ -11476,6 +11488,11 @@
         "资格申请"
       ],
       [
+        "run_id",
+        "BIGINT NULL",
+        "真实当前材料运行；历史NULL隔离，不猜回填"
+      ],
+      [
         "material_revision",
         "BIGINT NULL",
         "绑定核验或培训对应的材料版本；历史NULL不可视为当前通过"
@@ -11499,6 +11516,21 @@
         "verified_duration_seconds",
         "INT NOT NULL DEFAULT 0",
         "服务端按会话时间限幅的有效学习时长"
+      ],
+      [
+        "verified_duration_millis",
+        "BIGINT NOT NULL DEFAULT 0",
+        "服务端校验后媒体区间并集毫秒"
+      ],
+      [
+        "verified_segments",
+        "JSON NULL",
+        "已验证不重复计时的媒体区间并集"
+      ],
+      [
+        "active_playback_id",
+        "BIGINT NULL",
+        "当前唯一可报告播放，旧设备会话不能并行加时"
       ],
       [
         "status",
@@ -11527,9 +11559,10 @@
       ]
     ],
     "indexes": [
-      "UNIQUE KEY uk_training_progress (application_id,training_id)"
+      "UNIQUE KEY uk_training_progress_run (run_id,training_id)",
+      "KEY ix_training_progress_application (application_id,training_id)"
     ],
-    "rule": "普通前端上报不证明观看完整；时长限幅、顺序检查、服务端阅卷共同决定培训完成；不宣称防作弊认证 当前材料版本和HMAC绑定由服务端写入；旧NULL、错版或缺可信时刻不能视为当前通过。",
+    "rule": "权威归属继承当前申请/计划/运行，不接受客户端部门。run_id历史NULL不可信；当前运行每课程唯一。毫秒有效区间并集防重复，首基线/暂停/离线不计时，15秒窗口限幅，最新播放会话独占报告；进度CAS独立于播放/考试CAS。",
     "primaryKey": [
       "id"
     ],
@@ -11546,19 +11579,19 @@
       "application_id": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "driver_id": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "training_id": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "verified_duration_seconds": {
@@ -11603,10 +11636,34 @@
       "material_revision": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "material_hash": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "run_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "verified_duration_millis": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "verified_segments": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "active_playback_id": {
         "generated": false,
         "insertable": true,
         "updatable": true,
@@ -11614,6 +11671,7 @@
       }
     },
     "checks": [
+      "CONSTRAINT ck_training_progress_millis CHECK (verified_duration_millis>=0)",
       "CONSTRAINT ck_66_57bd05d422b1 CHECK (`status` IN ('NOT_STARTED','IN_PROGRESS','READY_FOR_EXAM','PASSED','FAILED'))",
       "CONSTRAINT ck_ver_training_progress CHECK (version >= 0)"
     ]
@@ -11633,6 +11691,11 @@
         "本人进度"
       ],
       [
+        "run_id",
+        "BIGINT NULL",
+        "绑定材料运行；历史NULL不可报告"
+      ],
+      [
         "material_revision",
         "BIGINT NULL",
         "绑定核验或培训对应的材料版本；历史NULL不可视为当前通过"
@@ -11646,6 +11709,11 @@
         "session_id",
         "BIGINT NOT NULL",
         "小程序设备会话"
+      ],
+      [
+        "context_version",
+        "BIGINT NULL",
+        "绑定MINI真实身份视角版本"
       ],
       [
         "started_at",
@@ -11668,6 +11736,16 @@
         "乱序和重复不增加时长"
       ],
       [
+        "last_position_millis",
+        "BIGINT NULL",
+        "服务端最近位置基线，首次报告不计时"
+      ],
+      [
+        "last_playing",
+        "TINYINT NOT NULL DEFAULT 0",
+        "暂停不累计；恢复第一报告重新建基线"
+      ],
+      [
         "created_at",
         "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
         "创建时刻UTC"
@@ -11686,7 +11764,7 @@
     "indexes": [
       "KEY ix_playback_progress (progress_id,expires_at)"
     ],
-    "rule": "按相邻报告服务端经过时长上限累加；多个并发播放会话不能重复计入时长 当前材料版本和HMAC绑定由服务端写入；旧NULL、错版或缺可信时刻不能视为当前通过。",
+    "rule": "归属继承进度及当前材料运行；绑定真实MINI会话和contextVersion。1800秒有效期、递增序号和服务端时钟共同校验，旧设备/身份视角/材料/公司epoch不能续报；首报告只建基线，暂停后恢复不补时。旧run/context NULL隔离。",
     "primaryKey": [
       "id"
     ],
@@ -11703,25 +11781,25 @@
       "progress_id": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "session_id": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "started_at": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "expires_at": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "last_reported_at": {
@@ -11759,10 +11837,34 @@
       "material_revision": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "material_hash": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "run_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "context_version": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "last_position_millis": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "last_playing": {
         "generated": false,
         "insertable": true,
         "updatable": true,
@@ -11788,6 +11890,11 @@
         "资格申请"
       ],
       [
+        "run_id",
+        "BIGINT NULL",
+        "真实材料运行；历史NULL不作为当前考试结果"
+      ],
+      [
         "material_revision",
         "BIGINT NULL",
         "绑定核验或培训对应的材料版本；历史NULL不可视为当前通过"
@@ -11808,6 +11915,11 @@
         "确切课程版本"
       ],
       [
+        "course_key",
+        "VARCHAR(64) CHARACTER SET ascii COLLATE ascii_bin NULL",
+        "跨材料/版本累计次数的稳定课程族"
+      ],
+      [
         "attempt_no",
         "INT NOT NULL",
         "本课程尝试序号"
@@ -11823,9 +11935,19 @@
         "确切题干/选项；无答案的对外投影单独构造"
       ],
       [
+        "grading_snapshot_cipher",
+        "MEDIUMBLOB NULL",
+        "独立AAD绑定本次尝试的标准答案与阅卷参数密文"
+      ],
+      [
         "answer_snapshot",
         "JSON NULL",
         "本人作答"
+      ],
+      [
+        "submission_mac",
+        "BINARY(32) NULL",
+        "永久作答摘要，换幂等键也不能重新阅卷"
       ],
       [
         "score",
@@ -11849,8 +11971,8 @@
       ],
       [
         "active_attempt",
-        "VARCHAR(128) GENERATED ALWAYS AS (IF(status='OPEN',CONCAT(application_id,':',training_id),NULL)) STORED",
-        "同申请同课程仅一个开放尝试"
+        "VARCHAR(128) GENERATED ALWAYS AS (IF(status='OPEN' AND run_id IS NOT NULL,CONCAT(run_id,':',training_id),NULL)) STORED",
+        "同当前运行同课程只存在一个开放尝试"
       ],
       [
         "created_at",
@@ -11870,9 +11992,11 @@
     ],
     "indexes": [
       "UNIQUE KEY uk_attempt_number (application_id,training_id,attempt_no)",
-      "UNIQUE KEY uk_open_training_attempt (active_attempt)"
+      "UNIQUE KEY uk_open_training_attempt (active_attempt)",
+      "UNIQUE KEY uk_attempt_course_counter (application_id,course_key,attempt_no)",
+      "KEY ix_training_attempt_counter (application_id,course_key,status,id)"
     ],
-    "rule": "作答绑定attemptId+expectedVersion；提交后不可重写；正确答案只在服务端按确切课程版本读取 当前材料版本和HMAC绑定由服务端写入；旧NULL、错版或缺可信时刻不能视为当前通过。",
+    "rule": "归属继承当前材料运行。以application_id+稳定course_key累计所有已签发尝试，材料/版本修改不重置，失败/超时均计次；maxAttempts含首次，冷却从失败提交或超时时刻算。公开题卷无答案，标准答案及参数使用独立AAD密文。等分精确集合匹配，最终总分HALF_UP到整数后判通过；永久作答HMAC防换幂等键重阅。旧run NULL不作为当前证明。 阅卷密文在同一创建事务INSERT取得数据库id后首次初始化，之后不可替换；阅卷/超时仅保留原密文。",
     "primaryKey": [
       "id"
     ],
@@ -11889,25 +12013,25 @@
       "application_id": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "driver_id": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "training_id": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "attempt_no": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "status": {
@@ -11920,7 +12044,7 @@
       "question_snapshot": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "answer_snapshot": {
@@ -11938,13 +12062,13 @@
       "started_at": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "expires_at": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "submitted_at": {
@@ -11982,10 +12106,35 @@
       "material_revision": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "material_hash": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "run_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "course_key": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "grading_snapshot_cipher": {
+        "generated": false,
+        "insertable": false,
+        "updatable": true,
+        "clientWritable": false,
+        "authority": "仅创建尝试事务取得数据库id后首次写入，以确切attempt AAD加密；之后仅可原值回写，不得替换标准答案或参数，客户端永不可写。"
+      },
+      "submission_mac": {
         "generated": false,
         "insertable": true,
         "updatable": true,
@@ -15816,6 +15965,593 @@
     "checks": [
       "CONSTRAINT ck_qualification_submission_revision CHECK (submission_revision>0 AND material_revision>=0 AND profile_version>=0)",
       "CONSTRAINT ck_qualification_submission_owner CHECK (owner_dept_id>0)"
+    ]
+  },
+  {
+    "name": "vi_training_policy",
+    "comment": "公司培训政策聚合",
+    "cols": [
+      [
+        "id",
+        "BIGINT NOT NULL AUTO_INCREMENT",
+        "数据库生成政策聚合主键"
+      ],
+      [
+        "owner_dept_id",
+        "BIGINT NOT NULL",
+        "显式公司部门，旗下站点和该公司代驾共用"
+      ],
+      [
+        "draft_revision_id",
+        "BIGINT NULL",
+        "当前未发布修订，发布请求必须显式指定"
+      ],
+      [
+        "active_revision_id",
+        "BIGINT NULL",
+        "当前生效政策修订，不覆盖既有申请冻结集合"
+      ],
+      [
+        "created_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "创建时刻UTC"
+      ],
+      [
+        "updated_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "更新时间UTC；更新必须显式设置UTC_TIMESTAMP(3)"
+      ],
+      [
+        "version",
+        "BIGINT NOT NULL DEFAULT 0",
+        "政策聚合CAS，与课程内容版本分离"
+      ]
+    ],
+    "indexes": [
+      "UNIQUE KEY uk_training_policy_company (owner_dept_id)"
+    ],
+    "rule": "各公司独立政策，归属显式公司部门；查询与写入均校验数据库公司范围，不能用主部门替代。草稿保存只切换draft指针；发布显式draftRevisionId与CAS才切换active指针，既有冻结计划不被覆盖。",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "engine": "InnoDB",
+    "collation": "utf8mb4_0900_ai_ci",
+    "columnRules": {
+      "id": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "owner_dept_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "draft_revision_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "active_revision_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "created_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "updated_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "version": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      }
+    },
+    "checks": [
+      "CONSTRAINT ck_training_policy_version CHECK (version>=0)"
+    ]
+  },
+  {
+    "name": "vi_training_policy_revision",
+    "comment": "公司培训政策不可变修订",
+    "cols": [
+      [
+        "id",
+        "BIGINT NOT NULL AUTO_INCREMENT",
+        "不可变政策内容修订"
+      ],
+      [
+        "policy_id",
+        "BIGINT NOT NULL",
+        "权威公司政策父聚合"
+      ],
+      [
+        "revision_no",
+        "INT NOT NULL",
+        "聚合内单调内容修订号"
+      ],
+      [
+        "required_training_ids",
+        "JSON NOT NULL",
+        "确切已发布课程ID数组，同族最多一个版本"
+      ],
+      [
+        "max_attempts",
+        "INT NULL",
+        "含首次的累计上限，草稿可缺，发布不得缺省"
+      ],
+      [
+        "retry_interval_seconds",
+        "INT NULL",
+        "失败或超时到下一次的间隔秒，发布必须显式配置"
+      ],
+      [
+        "grading_mode",
+        "VARCHAR(32) NOT NULL",
+        "TrainingGradingMode: EQUAL_HALF_UP_EXACT，等分及精确集合匹配"
+      ],
+      [
+        "content_hash",
+        "BINARY(32) NOT NULL",
+        "服务端政策有密钥摘要，不接受客户端声明"
+      ],
+      [
+        "created_by_user_id",
+        "BIGINT NOT NULL",
+        "后台内容创建人"
+      ],
+      [
+        "published_by_user_id",
+        "BIGINT NULL",
+        "后台真实发布人，草稿未发布为空"
+      ],
+      [
+        "published_at",
+        "DATETIME(3) NULL",
+        "服务端实际发布时间UTC"
+      ],
+      [
+        "created_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "创建时刻UTC"
+      ],
+      [
+        "updated_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "更新时间UTC；更新必须显式设置UTC_TIMESTAMP(3)"
+      ],
+      [
+        "version",
+        "BIGINT NOT NULL DEFAULT 0",
+        "服务端记录CAS版本"
+      ]
+    ],
+    "indexes": [
+      "UNIQUE KEY uk_training_policy_revision (policy_id,revision_no)"
+    ],
+    "rule": "权威公司继承父policy；每次保存另建不可变内容修订，必修集合为确切已发布同公司课程，同族最多一个版本。草稿可缺参数；发布必须非空课程、明确累计次数及间隔。内容与HMAC不可覆盖，只补服务端发布人/时刻。",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "engine": "InnoDB",
+    "collation": "utf8mb4_0900_ai_ci",
+    "columnRules": {
+      "id": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "policy_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "revision_no": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "required_training_ids": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "max_attempts": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "retry_interval_seconds": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "grading_mode": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false,
+        "enumRef": "TrainingGradingMode"
+      },
+      "content_hash": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "created_by_user_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "published_by_user_id": {
+        "generated": false,
+        "insertable": false,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "published_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "created_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "updated_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "version": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      }
+    },
+    "checks": [
+      "CONSTRAINT ck_training_policy_revision CHECK (revision_no>0 AND version>=0)",
+      "CONSTRAINT ck_training_policy_limits CHECK ((max_attempts IS NULL OR max_attempts BETWEEN 1 AND 100) AND (retry_interval_seconds IS NULL OR retry_interval_seconds BETWEEN 0 AND 2592000))",
+      "CONSTRAINT ck_training_policy_grading CHECK (`grading_mode` IN ('EQUAL_HALF_UP_EXACT'))"
+    ]
+  },
+  {
+    "name": "vi_training_plan_snapshot",
+    "comment": "资格申请冻结必修课表",
+    "cols": [
+      [
+        "id",
+        "BIGINT NOT NULL AUTO_INCREMENT",
+        "首次真实学习冻结的申请课程集合"
+      ],
+      [
+        "application_id",
+        "BIGINT NOT NULL",
+        "真实资格申请父记录"
+      ],
+      [
+        "owner_dept_id",
+        "BIGINT NOT NULL",
+        "数据库权威公司归属"
+      ],
+      [
+        "company_revision",
+        "BIGINT NOT NULL",
+        "档案专用公司归属epoch，A转B再转A不可复活"
+      ],
+      [
+        "policy_revision_id",
+        "BIGINT NOT NULL",
+        "首次学习固定的确切已发布政策修订"
+      ],
+      [
+        "course_snapshot",
+        "JSON NOT NULL",
+        "不可变确切课程版本/媒体/有密钥摘要及学习考试参数，不含标准答案"
+      ],
+      [
+        "max_attempts",
+        "INT NOT NULL",
+        "含首次的同申请同课程累计上限"
+      ],
+      [
+        "retry_interval_seconds",
+        "INT NOT NULL",
+        "失败或超时后的最小重考间隔秒"
+      ],
+      [
+        "grading_mode",
+        "VARCHAR(32) NOT NULL",
+        "TrainingGradingMode: EQUAL_HALF_UP_EXACT"
+      ],
+      [
+        "created_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "创建时刻UTC"
+      ],
+      [
+        "updated_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "更新时间UTC；更新必须显式设置UTC_TIMESTAMP(3)"
+      ],
+      [
+        "version",
+        "BIGINT NOT NULL DEFAULT 0",
+        "服务端记录CAS版本"
+      ]
+    ],
+    "indexes": [
+      "UNIQUE KEY uk_training_plan_context (application_id,company_revision)",
+      "KEY ix_training_plan_company (owner_dept_id,application_id)"
+    ],
+    "rule": "权威公司和本人身份来自资格申请及档案；首次真实播放冻结政策、课程/媒体版本和参数，GET无副作用。每申请/公司epoch只建一份，材料变更复用同份计划；后续课程及政策发布不覆盖。整行仅服务端追加，不含标准答案。",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "engine": "InnoDB",
+    "collation": "utf8mb4_0900_ai_ci",
+    "columnRules": {
+      "id": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "application_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "owner_dept_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "company_revision": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "policy_revision_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "course_snapshot": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "max_attempts": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "retry_interval_seconds": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "grading_mode": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false,
+        "enumRef": "TrainingGradingMode"
+      },
+      "created_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "updated_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "version": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      }
+    },
+    "checks": [
+      "CONSTRAINT ck_training_plan_context CHECK (company_revision>=0 AND version>=0)",
+      "CONSTRAINT ck_training_plan_limits CHECK (max_attempts BETWEEN 1 AND 100 AND retry_interval_seconds BETWEEN 0 AND 2592000)",
+      "CONSTRAINT ck_training_plan_grading CHECK (`grading_mode` IN ('EQUAL_HALF_UP_EXACT'))"
+    ]
+  },
+  {
+    "name": "vi_training_run",
+    "comment": "当前材料培训运行与汇总",
+    "cols": [
+      [
+        "id",
+        "BIGINT NOT NULL AUTO_INCREMENT",
+        "冻结集合下每次实际材料版本的学习运行"
+      ],
+      [
+        "plan_snapshot_id",
+        "BIGINT NOT NULL",
+        "当前申请和公司epoch的不可变课表"
+      ],
+      [
+        "application_id",
+        "BIGINT NOT NULL",
+        "真实资格申请父记录"
+      ],
+      [
+        "material_revision",
+        "BIGINT NOT NULL",
+        "当前实际材料修订号"
+      ],
+      [
+        "material_hash",
+        "BINARY(32) NOT NULL",
+        "当前材料的有密钥摘要，不接受客户端声明"
+      ],
+      [
+        "status",
+        "VARCHAR(16) NOT NULL DEFAULT 'ACTIVE'",
+        "TrainingRunStatus: ACTIVE,PASSED"
+      ],
+      [
+        "provider_verification_id",
+        "BIGINT NULL",
+        "只在全部必修真实完成后关联本事务培训汇总证明"
+      ],
+      [
+        "completed_at",
+        "DATETIME(3) NULL",
+        "当前材料全部必修实际完成的UTC时刻"
+      ],
+      [
+        "created_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "创建时刻UTC"
+      ],
+      [
+        "updated_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "更新时间UTC；更新必须显式设置UTC_TIMESTAMP(3)"
+      ],
+      [
+        "version",
+        "BIGINT NOT NULL DEFAULT 0",
+        "服务端记录CAS版本"
+      ]
+    ],
+    "indexes": [
+      "UNIQUE KEY uk_training_run_material (plan_snapshot_id,material_revision)",
+      "KEY ix_training_run_application (application_id,id)",
+      "UNIQUE KEY uk_training_run_proof (provider_verification_id)"
+    ],
+    "rule": "父计划固定公司epoch，本运行固定申请材料版本与有密钥摘要；材料变化另建运行，旧run不可信。全部必修有效学时与考试通过，才在同事务ACTIVE转PASSED并生成唯一INTERNAL_TRAINING汇总证明；Q01只消费当前权威run证明。",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "engine": "InnoDB",
+    "collation": "utf8mb4_0900_ai_ci",
+    "columnRules": {
+      "id": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "plan_snapshot_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "application_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "material_revision": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "material_hash": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "status": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false,
+        "enumRef": "TrainingRunStatus"
+      },
+      "provider_verification_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "completed_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "created_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "updated_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "version": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      }
+    },
+    "checks": [
+      "CONSTRAINT ck_training_run_status CHECK (`status` IN ('ACTIVE','PASSED'))",
+      "CONSTRAINT ck_training_run_version CHECK (material_revision>=0 AND version>=0)"
     ]
   }
 ]

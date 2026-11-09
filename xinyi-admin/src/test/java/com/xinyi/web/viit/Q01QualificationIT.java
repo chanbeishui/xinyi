@@ -13,6 +13,7 @@ import com.xinyi.rongli.identity.service.PhoneCrypto;
 import com.xinyi.rongli.integration.config.IntegrationKeyProperties;
 import com.xinyi.rongli.integration.service.IntegrationCrypto;
 import com.xinyi.rongli.platform.json.ViJson;
+import com.xinyi.rongli.platform.service.IdempotencyService;
 import com.xinyi.rongli.platform.service.OutboxService;
 
 import org.junit.jupiter.api.AfterAll;
@@ -79,6 +80,7 @@ class Q01QualificationIT extends PricingHttpFixture {
     @Autowired PhoneCrypto phones;
     @Autowired IntegrationKeyProperties keys;
     @Autowired IntegrationCrypto crypto;
+    @Autowired IdempotencyService idempotency;
     @Autowired PlatformTransactionManager transactionManager;
     @MockitoSpyBean OutboxService outbox;
 
@@ -111,6 +113,12 @@ class Q01QualificationIT extends PricingHttpFixture {
                         "vi_training_playback",
                         "vi_training_attempt",
                         "vi_training_progress",
+                        "vi_training_run",
+                        "vi_training_plan_snapshot",
+                        "vi_training_policy_revision",
+                        "vi_training_policy",
+                        "vi_training_question",
+                        "vi_training_course",
                         "vi_driver_occupancy",
                         "vi_driver_assignment",
                         "vi_dispatch_invite",
@@ -878,10 +886,14 @@ class Q01QualificationIT extends PricingHttpFixture {
         status(requestMini("POST", BASE + "/submit", submitBody(incomplete), owner), 422);
         JsonNode ready = data(save(incomplete, completeValues(incomplete), owner));
         trustedChecks(ready);
+        assertTrue(current(owner).path("submitBlockers").toString().contains("COMPANY_UNASSIGNED"));
         status(requestMini("POST", BASE + "/submit", submitBody(ready), owner), 422);
         assertEquals(0, number("SELECT COUNT(*) FROM vi_driver_application_submission"));
         assignCompany(ready);
+        trustedChecks(ready);
         jdbc.update("UPDATE sys_dept SET status='1' WHERE dept_id=?", COMPANY_A);
+        assertTrue(
+                current(owner).path("submitBlockers").toString().contains("COMPANY_UNAVAILABLE"));
         status(requestMini("POST", BASE + "/submit", submitBody(ready), owner), 422);
         assertEquals("DRAFT", current(owner).path("status").asText());
     }
@@ -1146,7 +1158,7 @@ class Q01QualificationIT extends PricingHttpFixture {
     }
 
     private void trustedChecks(JsonNode application) {
-        // 这是Q03/Q04已完成的服务端汇总事实夹具，不是学习、阅卷、实名或活体真实供应商验收。
+        // Q04四项是显式上游边界；TRAINING另建真实Q03关系的消费端边界，不靠独立PASSED行放行。
         long id = id(application);
         jdbc.update("DELETE FROM vi_provider_verification WHERE application_id=?", id);
         Map<String, Object> material =
@@ -1154,7 +1166,7 @@ class Q01QualificationIT extends PricingHttpFixture {
                         "SELECT material_revision,material_hash FROM vi_driver_application WHERE"
                                 + " id=?",
                         id);
-        for (String type : List.of("REALNAME", "FACE", "BACKGROUND", "LICENSE", "TRAINING")) {
+        for (String type : List.of("REALNAME", "FACE", "BACKGROUND", "LICENSE")) {
             jdbc.update(
                     "INSERT INTO"
                         + " vi_provider_verification(application_id,material_revision,material_hash,provider,task_type,provider_task_id,status,result_digest,verified_at)"
@@ -1166,6 +1178,7 @@ class Q01QualificationIT extends PricingHttpFixture {
                     type,
                     "q01-" + UUID.randomUUID());
         }
+        TrainingCompletedBoundaryFixture.seed(jdbc, crypto, idempotency, id);
     }
 
     private long heldVehicle(long driver) {
@@ -1203,18 +1216,24 @@ class Q01QualificationIT extends PricingHttpFixture {
     }
 
     private String mini(boolean verified) {
-        long id = SEQ.incrementAndGet();
-        String phone = "139" + String.format("%08d", Math.floorMod(id, 100000000));
+        long suffix = SEQ.incrementAndGet();
+        String phone = "139" + String.format("%08d", Math.floorMod(suffix, 100000000));
+        String openId = "q01-" + UUID.randomUUID();
+        // 与真实微信登录共用AUTO_INCREMENT；手工SEQ可能被其它套件的真实登录追上，不能混用两种主键分配。
         jdbc.update(
                 "INSERT INTO"
-                    + " vi_account(id,app_id,open_id,nickname,status,phone_cipher,phone_lookup,phone_verified_at,phone_source)"
-                    + " VALUES (?,'wx0000000000000000',?,'Q01本人','ACTIVE',?,?,?,?)",
-                id,
-                "q01-" + UUID.randomUUID(),
+                    + " vi_account(app_id,open_id,nickname,status,phone_cipher,phone_lookup,phone_verified_at,phone_source)"
+                    + " VALUES ('wx0000000000000000',?,'Q01本人','ACTIVE',?,?,?,?)",
+                openId,
                 verified ? phones.encrypt(phone) : null,
                 verified ? phones.lookup(phone) : null,
                 verified ? java.sql.Timestamp.from(Instant.now()) : null,
                 verified ? "WECHAT" : null);
+        long id =
+                jdbc.queryForObject(
+                        "SELECT id FROM vi_account WHERE app_id='wx0000000000000000' AND open_id=?",
+                        Long.class,
+                        openId);
         jdbc.update(
                 "INSERT INTO vi_account_security(account_id,changed_at) VALUES"
                         + " (?,UTC_TIMESTAMP(3))",

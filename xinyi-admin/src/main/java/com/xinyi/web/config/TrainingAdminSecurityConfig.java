@@ -5,19 +5,22 @@ import com.xinyi.rongli.identity.dto.ApiError;
 import com.xinyi.rongli.identity.dto.ApiErrorDetails;
 import com.xinyi.rongli.platform.error.ViErrorCode;
 import com.xinyi.rongli.platform.json.ViJson;
+
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.UUID;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.UUID;
 
 /** 公司培训课程只接受真实ADMIN凭据，认证失败使用真实401；不改既有平台接口的响应约定。 */
 @Configuration
@@ -30,7 +33,8 @@ public class TrainingAdminSecurityConfig {
                         request -> {
                             String uri = request.getRequestURI();
                             return uri.equals("/api/admin/training-courses")
-                                    || uri.startsWith("/api/admin/training-courses/");
+                                    || uri.startsWith("/api/admin/training-courses/")
+                                    || uri.startsWith("/api/admin/training-policies/");
                         })
                 .csrf(csrf -> csrf.disable())
                 .httpBasic(basic -> basic.disable())

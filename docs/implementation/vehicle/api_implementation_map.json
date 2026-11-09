@@ -524,7 +524,8 @@
     "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/qualification/service/QualificationService.java",
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/qualification/QualificationMapper.xml",
     "testFiles": [
-      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q01QualificationIT.java"
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q01QualificationIT.java",
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q03TrainingIT.java"
     ],
     "reviewEvidence": "docs/implementation/vehicle/Q01/review.md",
     "operationId": "API_042_get",
@@ -533,8 +534,10 @@
     "summary": "我的申请",
     "taskId": "Q01",
     "evidence": [
-      "docs/implementation/vehicle/evidence/Q01-20261107.json"
-    ]
+      "docs/implementation/vehicle/evidence/Q01-20261107.json",
+      "docs/implementation/vehicle/evidence/Q03-20261109.json"
+    ],
+    "q03CompatibilityNote": "Q03补齐真实冻结run/培训证明消费、公司epoch与本人教材访问；保留该接口原责任与证据，未把审批/外部核验算完成。"
   },
   {
     "implementationStatus": "VERIFIED",
@@ -542,7 +545,8 @@
     "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/qualification/service/QualificationService.java",
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/qualification/QualificationMapper.xml",
     "testFiles": [
-      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q01QualificationIT.java"
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q01QualificationIT.java",
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q03TrainingIT.java"
     ],
     "reviewEvidence": "docs/implementation/vehicle/Q01/review.md",
     "operationId": "API_043_put",
@@ -551,8 +555,10 @@
     "summary": "保存资格草稿",
     "taskId": "Q01",
     "evidence": [
-      "docs/implementation/vehicle/evidence/Q01-20261107.json"
-    ]
+      "docs/implementation/vehicle/evidence/Q01-20261107.json",
+      "docs/implementation/vehicle/evidence/Q03-20261109.json"
+    ],
+    "q03CompatibilityNote": "Q03补齐真实冻结run/培训证明消费、公司epoch与本人教材访问；保留该接口原责任与证据，未把审批/外部核验算完成。"
   },
   {
     "implementationStatus": "VERIFIED",
@@ -560,7 +566,8 @@
     "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/qualification/service/QualificationService.java",
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/qualification/QualificationMapper.xml",
     "testFiles": [
-      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q01QualificationIT.java"
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q01QualificationIT.java",
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q03TrainingIT.java"
     ],
     "reviewEvidence": "docs/implementation/vehicle/Q01/review.md",
     "operationId": "v5_post_api_app_driver_qualification",
@@ -569,8 +576,10 @@
     "summary": "建立本人代驾资格草稿",
     "taskId": "Q01",
     "evidence": [
-      "docs/implementation/vehicle/evidence/Q01-20261107.json"
-    ]
+      "docs/implementation/vehicle/evidence/Q01-20261107.json",
+      "docs/implementation/vehicle/evidence/Q03-20261109.json"
+    ],
+    "q03CompatibilityNote": "Q03补齐真实冻结run/培训证明消费、公司epoch与本人教材访问；保留该接口原责任与证据，未把审批/外部核验算完成。"
   },
   {
     "implementationStatus": "VERIFIED",
@@ -578,7 +587,8 @@
     "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/qualification/service/QualificationService.java",
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/qualification/QualificationMapper.xml",
     "testFiles": [
-      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q01QualificationIT.java"
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q01QualificationIT.java",
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q03TrainingIT.java"
     ],
     "reviewEvidence": "docs/implementation/vehicle/Q01/review.md",
     "operationId": "API_044_post",
@@ -587,8 +597,10 @@
     "summary": "提交资格审核",
     "taskId": "Q01",
     "evidence": [
-      "docs/implementation/vehicle/evidence/Q01-20261107.json"
-    ]
+      "docs/implementation/vehicle/evidence/Q01-20261107.json",
+      "docs/implementation/vehicle/evidence/Q03-20261109.json"
+    ],
+    "q03CompatibilityNote": "Q03补齐真实冻结run/培训证明消费、公司epoch与本人教材访问；保留该接口原责任与证据，未把审批/外部核验算完成。"
   },
   {
     "implementationStatus": "NOT_ASSESSED",
@@ -604,30 +616,40 @@
     "taskId": "Q04"
   },
   {
-    "implementationStatus": "NOT_ASSESSED",
-    "controllerFile": null,
-    "serviceFile": null,
-    "mapperFile": null,
-    "testFiles": [],
-    "reviewEvidence": null,
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/training/controller/LearningController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/training/service/LearningService.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/training/LearningMapper.xml",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q03TrainingIT.java"
+    ],
+    "reviewEvidence": "docs/implementation/vehicle/Q03/review.md",
     "operationId": "API_046_get",
     "method": "GET",
     "path": "/api/app/driver/qualification/training",
     "summary": "培训与考试任务",
-    "taskId": "Q03"
+    "taskId": "Q03",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/Q03-20261109.json"
+    ]
   },
   {
-    "implementationStatus": "NOT_ASSESSED",
-    "controllerFile": null,
-    "serviceFile": null,
-    "mapperFile": null,
-    "testFiles": [],
-    "reviewEvidence": null,
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/training/controller/LearningController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/training/service/LearningService.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/training/LearningMapper.xml",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q03TrainingIT.java"
+    ],
+    "reviewEvidence": "docs/implementation/vehicle/Q03/review.md",
     "operationId": "API_047_post",
     "method": "POST",
     "path": "/api/app/driver/qualification/training/submit",
     "summary": "提交考试答案",
-    "taskId": "Q03"
+    "taskId": "Q03",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/Q03-20261109.json"
+    ]
   },
   {
     "implementationStatus": "NOT_ASSESSED",
@@ -1588,7 +1610,8 @@
     "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/driver/service/DriverAdminService.java",
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/driver/DriverMapper.xml",
     "testFiles": [
-      "xinyi-admin/src/test/java/com/xinyi/web/viit/A04DriverIT.java"
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/A04DriverIT.java",
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q03TrainingIT.java"
     ],
     "reviewEvidence": "docs/implementation/vehicle/A04/review.md",
     "operationId": "V4_get_api_admin_drivers",
@@ -1597,8 +1620,10 @@
     "summary": "代驾员列表",
     "taskId": "A04",
     "evidence": [
-      "docs/implementation/vehicle/evidence/A04-20261107.json"
-    ]
+      "docs/implementation/vehicle/evidence/A04-20261107.json",
+      "docs/implementation/vehicle/evidence/Q03-20261109.json"
+    ],
+    "q03CompatibilityNote": "Q03补齐真实冻结run/培训证明消费、公司epoch与本人教材访问；保留该接口原责任与证据，未把审批/外部核验算完成。"
   },
   {
     "implementationStatus": "VERIFIED",
@@ -1606,7 +1631,8 @@
     "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/driver/service/DriverAdminService.java",
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/driver/DriverMapper.xml",
     "testFiles": [
-      "xinyi-admin/src/test/java/com/xinyi/web/viit/A04DriverIT.java"
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/A04DriverIT.java",
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q03TrainingIT.java"
     ],
     "reviewEvidence": "docs/implementation/vehicle/A04/review.md",
     "operationId": "API_126_post",
@@ -1615,8 +1641,10 @@
     "summary": "禁止新增承接",
     "taskId": "A04",
     "evidence": [
-      "docs/implementation/vehicle/evidence/A04-20261107.json"
-    ]
+      "docs/implementation/vehicle/evidence/A04-20261107.json",
+      "docs/implementation/vehicle/evidence/Q03-20261109.json"
+    ],
+    "q03CompatibilityNote": "Q03补齐真实冻结run/培训证明消费、公司epoch与本人教材访问；保留该接口原责任与证据，未把审批/外部核验算完成。"
   },
   {
     "implementationStatus": "NOT_ASSESSED",
@@ -2083,7 +2111,8 @@
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/file/PrivateFileMapper.xml",
     "testFiles": [
       "xinyi-admin/src/test/java/com/xinyi/web/viit/F01FileIT.java",
-      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q02TrainingIT.java"
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q02TrainingIT.java",
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q03TrainingIT.java"
     ],
     "reviewEvidence": "docs/implementation/vehicle/F01/review.md",
     "operationId": "API_157_post",
@@ -2093,9 +2122,11 @@
     "taskId": "F01",
     "evidence": [
       "docs/implementation/vehicle/evidence/F01-20261105.json",
-      "docs/implementation/vehicle/evidence/Q02-20261109.json"
+      "docs/implementation/vehicle/evidence/Q02-20261109.json",
+      "docs/implementation/vehicle/evidence/Q03-20261109.json"
     ],
-    "implementationNote": "保留原图片/证件业务；Q02新增培训MP4父课程、真实校验/300s与同步完整流，F01/Q01及Q02已关联回归。"
+    "implementationNote": "保留原图片/证件业务；Q02新增培训MP4父课程、真实校验/300s与同步完整流，F01/Q01及Q02已关联回归。",
+    "q03CompatibilityNote": "Q03补齐真实冻结run/培训证明消费、公司epoch与本人教材访问；保留该接口原责任与证据，未把审批/外部核验算完成。"
   },
   {
     "implementationStatus": "VERIFIED",
@@ -2104,7 +2135,8 @@
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/file/PrivateFileMapper.xml",
     "testFiles": [
       "xinyi-admin/src/test/java/com/xinyi/web/viit/F01FileIT.java",
-      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q02TrainingIT.java"
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q02TrainingIT.java",
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q03TrainingIT.java"
     ],
     "reviewEvidence": "docs/implementation/vehicle/F01/review.md",
     "operationId": "API_158_post",
@@ -2114,9 +2146,11 @@
     "taskId": "F01",
     "evidence": [
       "docs/implementation/vehicle/evidence/F01-20261105.json",
-      "docs/implementation/vehicle/evidence/Q02-20261109.json"
+      "docs/implementation/vehicle/evidence/Q02-20261109.json",
+      "docs/implementation/vehicle/evidence/Q03-20261109.json"
     ],
-    "implementationNote": "保留原图片/证件业务；Q02新增培训MP4父课程、真实校验/300s与同步完整流，F01/Q01及Q02已关联回归。"
+    "implementationNote": "保留原图片/证件业务；Q02新增培训MP4父课程、真实校验/300s与同步完整流，F01/Q01及Q02已关联回归。",
+    "q03CompatibilityNote": "Q03补齐真实冻结run/培训证明消费、公司epoch与本人教材访问；保留该接口原责任与证据，未把审批/外部核验算完成。"
   },
   {
     "implementationStatus": "VERIFIED",
@@ -2125,7 +2159,8 @@
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/file/PrivateFileMapper.xml",
     "testFiles": [
       "xinyi-admin/src/test/java/com/xinyi/web/viit/F01FileIT.java",
-      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q02TrainingIT.java"
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q02TrainingIT.java",
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q03TrainingIT.java"
     ],
     "reviewEvidence": "docs/implementation/vehicle/F01/review.md",
     "operationId": "API_159_get",
@@ -2135,9 +2170,11 @@
     "taskId": "F01",
     "evidence": [
       "docs/implementation/vehicle/evidence/F01-20261105.json",
-      "docs/implementation/vehicle/evidence/Q02-20261109.json"
+      "docs/implementation/vehicle/evidence/Q02-20261109.json",
+      "docs/implementation/vehicle/evidence/Q03-20261109.json"
     ],
-    "implementationNote": "保留原图片/证件业务；Q02新增培训MP4父课程、真实校验/300s与同步完整流，F01/Q01及Q02已关联回归。"
+    "implementationNote": "保留原图片/证件业务；Q02新增培训MP4父课程、真实校验/300s与同步完整流，F01/Q01及Q02已关联回归。",
+    "q03CompatibilityNote": "Q03补齐真实冻结run/培训证明消费、公司epoch与本人教材访问；保留该接口原责任与证据，未把审批/外部核验算完成。"
   },
   {
     "implementationStatus": "VERIFIED",
@@ -2146,7 +2183,8 @@
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/file/PrivateFileMapper.xml",
     "testFiles": [
       "xinyi-admin/src/test/java/com/xinyi/web/viit/F01FileIT.java",
-      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q02TrainingIT.java"
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q02TrainingIT.java",
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q03TrainingIT.java"
     ],
     "reviewEvidence": "docs/implementation/vehicle/F01/review.md",
     "operationId": "API_160_post",
@@ -2156,9 +2194,11 @@
     "taskId": "F01",
     "evidence": [
       "docs/implementation/vehicle/evidence/F01-20261105.json",
-      "docs/implementation/vehicle/evidence/Q02-20261109.json"
+      "docs/implementation/vehicle/evidence/Q02-20261109.json",
+      "docs/implementation/vehicle/evidence/Q03-20261109.json"
     ],
-    "implementationNote": "保留原图片/证件业务；Q02新增培训MP4父课程、真实校验/300s与同步完整流，F01/Q01及Q02已关联回归。"
+    "implementationNote": "保留原图片/证件业务；Q02新增培训MP4父课程、真实校验/300s与同步完整流，F01/Q01及Q02已关联回归。",
+    "q03CompatibilityNote": "Q03补齐真实冻结run/培训证明消费、公司epoch与本人教材访问；保留该接口原责任与证据，未把审批/外部核验算完成。"
   },
   {
     "implementationStatus": "NOT_ASSESSED",
@@ -2517,7 +2557,8 @@
     "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/driver/service/DriverAdminService.java",
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/driver/DriverMapper.xml",
     "testFiles": [
-      "xinyi-admin/src/test/java/com/xinyi/web/viit/A04DriverIT.java"
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/A04DriverIT.java",
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q03TrainingIT.java"
     ],
     "reviewEvidence": "docs/implementation/vehicle/A04/review.md",
     "operationId": "V4_get_api_admin_drivers__driverId",
@@ -2526,8 +2567,10 @@
     "summary": "查看独立档案详情",
     "taskId": "A04",
     "evidence": [
-      "docs/implementation/vehicle/evidence/A04-20261107.json"
-    ]
+      "docs/implementation/vehicle/evidence/A04-20261107.json",
+      "docs/implementation/vehicle/evidence/Q03-20261109.json"
+    ],
+    "q03CompatibilityNote": "Q03补齐真实冻结run/培训证明消费、公司epoch与本人教材访问；保留该接口原责任与证据，未把审批/外部核验算完成。"
   },
   {
     "implementationStatus": "VERIFIED",
@@ -2535,7 +2578,8 @@
     "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/driver/service/DriverAdminService.java",
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/driver/DriverMapper.xml",
     "testFiles": [
-      "xinyi-admin/src/test/java/com/xinyi/web/viit/A04DriverIT.java"
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/A04DriverIT.java",
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q03TrainingIT.java"
     ],
     "reviewEvidence": "docs/implementation/vehicle/A04/review.md",
     "operationId": "V4_patch_api_admin_drivers__driverId",
@@ -2544,8 +2588,10 @@
     "summary": "维护档案备注及允许字段",
     "taskId": "A04",
     "evidence": [
-      "docs/implementation/vehicle/evidence/A04-20261107.json"
-    ]
+      "docs/implementation/vehicle/evidence/A04-20261107.json",
+      "docs/implementation/vehicle/evidence/Q03-20261109.json"
+    ],
+    "q03CompatibilityNote": "Q03补齐真实冻结run/培训证明消费、公司epoch与本人教材访问；保留该接口原责任与证据，未把审批/外部核验算完成。"
   },
   {
     "implementationStatus": "VERIFIED",
@@ -2629,7 +2675,8 @@
     "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/driver/service/DriverAdminService.java",
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/driver/DriverMapper.xml",
     "testFiles": [
-      "xinyi-admin/src/test/java/com/xinyi/web/viit/A04DriverIT.java"
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/A04DriverIT.java",
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q03TrainingIT.java"
     ],
     "reviewEvidence": "docs/implementation/vehicle/A04/review.md",
     "operationId": "V4_get_api_admin_drivers__driverId__assignments",
@@ -2638,8 +2685,10 @@
     "summary": "代驾承接服务记录",
     "taskId": "A04",
     "evidence": [
-      "docs/implementation/vehicle/evidence/A04-20261107.json"
-    ]
+      "docs/implementation/vehicle/evidence/A04-20261107.json",
+      "docs/implementation/vehicle/evidence/Q03-20261109.json"
+    ],
+    "q03CompatibilityNote": "Q03补齐真实冻结run/培训证明消费、公司epoch与本人教材访问；保留该接口原责任与证据，未把审批/外部核验算完成。"
   },
   {
     "implementationStatus": "NOT_ASSESSED",
@@ -3311,69 +3360,94 @@
     "taskId": "D07"
   },
   {
-    "implementationStatus": "NOT_ASSESSED",
-    "controllerFile": null,
-    "serviceFile": null,
-    "mapperFile": null,
-    "testFiles": [],
-    "reviewEvidence": null,
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/training/controller/LearningController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/training/service/LearningService.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/training/LearningMapper.xml",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q03TrainingIT.java"
+    ],
+    "reviewEvidence": "docs/implementation/vehicle/Q03/review.md",
     "operationId": "v5_get_api_app_driver_qualification_training_trainingId",
     "method": "GET",
     "path": "/api/app/driver/qualification/training/{trainingId}",
     "summary": "查看课程与本人进度",
-    "taskId": "Q03"
+    "taskId": "Q03",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/Q03-20261109.json"
+    ]
   },
   {
-    "implementationStatus": "NOT_ASSESSED",
-    "controllerFile": null,
-    "serviceFile": null,
-    "mapperFile": null,
-    "testFiles": [],
-    "reviewEvidence": null,
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/training/controller/LearningController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/training/service/LearningService.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/training/LearningMapper.xml",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q03TrainingIT.java"
+    ],
+    "reviewEvidence": "docs/implementation/vehicle/Q03/review.md",
     "operationId": "v5_post_api_app_driver_qualification_training_trainingId_playback",
     "method": "POST",
     "path": "/api/app/driver/qualification/training/{trainingId}/playback",
     "summary": "开始受控学习会话",
-    "taskId": "Q03"
+    "taskId": "Q03",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/Q03-20261109.json"
+    ]
   },
   {
-    "implementationStatus": "NOT_ASSESSED",
-    "controllerFile": null,
-    "serviceFile": null,
-    "mapperFile": null,
-    "testFiles": [],
-    "reviewEvidence": null,
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/training/controller/LearningController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/training/service/LearningService.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/training/LearningMapper.xml",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q03TrainingIT.java"
+    ],
+    "reviewEvidence": "docs/implementation/vehicle/Q03/review.md",
     "operationId": "v5_post_api_app_driver_qualification_training_trainingId_progress",
     "method": "POST",
     "path": "/api/app/driver/qualification/training/{trainingId}/progress",
     "summary": "记录本人学习进度",
-    "taskId": "Q03"
+    "taskId": "Q03",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/Q03-20261109.json"
+    ]
   },
   {
-    "implementationStatus": "NOT_ASSESSED",
-    "controllerFile": null,
-    "serviceFile": null,
-    "mapperFile": null,
-    "testFiles": [],
-    "reviewEvidence": null,
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/training/controller/LearningController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/training/service/LearningService.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/training/LearningMapper.xml",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q03TrainingIT.java"
+    ],
+    "reviewEvidence": "docs/implementation/vehicle/Q03/review.md",
     "operationId": "v5_post_api_app_driver_qualification_training_trainingId_attempts",
     "method": "POST",
     "path": "/api/app/driver/qualification/training/{trainingId}/attempts",
     "summary": "建立本人的考试尝试",
-    "taskId": "Q03"
+    "taskId": "Q03",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/Q03-20261109.json"
+    ]
   },
   {
-    "implementationStatus": "NOT_ASSESSED",
-    "controllerFile": null,
-    "serviceFile": null,
-    "mapperFile": null,
-    "testFiles": [],
-    "reviewEvidence": null,
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/training/controller/LearningController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/training/service/LearningService.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/training/LearningMapper.xml",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q03TrainingIT.java"
+    ],
+    "reviewEvidence": "docs/implementation/vehicle/Q03/review.md",
     "operationId": "v5_get_api_app_driver_qualification_training_attempts_attemptId",
     "method": "GET",
     "path": "/api/app/driver/qualification/training/attempts/{attemptId}",
     "summary": "读取本人考试尝试",
-    "taskId": "Q03"
+    "taskId": "Q03",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/Q03-20261109.json"
+    ]
   },
   {
     "implementationStatus": "VERIFIED",
@@ -4213,7 +4287,8 @@
     "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/driver/service/DriverAdminService.java",
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/driver/DriverMapper.xml",
     "testFiles": [
-      "xinyi-admin/src/test/java/com/xinyi/web/viit/A04DriverIT.java"
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/A04DriverIT.java",
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q03TrainingIT.java"
     ],
     "reviewEvidence": "docs/implementation/vehicle/A04/review.md",
     "operationId": "V64_post_api_admin_drivers__driverId__enable_new_assignments",
@@ -4222,7 +4297,63 @@
     "summary": "恢复新承接行政开关",
     "taskId": "A04",
     "evidence": [
-      "docs/implementation/vehicle/evidence/A04-20261107.json"
+      "docs/implementation/vehicle/evidence/A04-20261107.json",
+      "docs/implementation/vehicle/evidence/Q03-20261109.json"
+    ],
+    "q03CompatibilityNote": "Q03补齐真实冻结run/培训证明消费、公司epoch与本人教材访问；保留该接口原责任与证据，未把审批/外部核验算完成。"
+  },
+  {
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/training/controller/TrainingPolicyController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/training/service/TrainingPolicyService.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/training/LearningMapper.xml",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q03TrainingIT.java"
+    ],
+    "reviewEvidence": "docs/implementation/vehicle/Q03/review.md",
+    "operationId": "q03_get_api_admin_training_policies_ownerDeptId",
+    "method": "GET",
+    "path": "/api/admin/training-policies/{ownerDeptId}",
+    "summary": "读取公司培训政策",
+    "taskId": "Q03",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/Q03-20261109.json"
+    ]
+  },
+  {
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/training/controller/TrainingPolicyController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/training/service/TrainingPolicyService.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/training/LearningMapper.xml",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q03TrainingIT.java"
+    ],
+    "reviewEvidence": "docs/implementation/vehicle/Q03/review.md",
+    "operationId": "q03_put_api_admin_training_policies_ownerDeptId",
+    "method": "PUT",
+    "path": "/api/admin/training-policies/{ownerDeptId}",
+    "summary": "保存公司培训政策草稿",
+    "taskId": "Q03",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/Q03-20261109.json"
+    ]
+  },
+  {
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/training/controller/TrainingPolicyController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/training/service/TrainingPolicyService.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/training/LearningMapper.xml",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q03TrainingIT.java"
+    ],
+    "reviewEvidence": "docs/implementation/vehicle/Q03/review.md",
+    "operationId": "q03_post_api_admin_training_policies_ownerDeptId_publish",
+    "method": "POST",
+    "path": "/api/admin/training-policies/{ownerDeptId}/publish",
+    "summary": "发布公司培训政策",
+    "taskId": "Q03",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/Q03-20261109.json"
     ]
   }
 ]

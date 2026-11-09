@@ -689,8 +689,9 @@ function open(path: string) {
         ><text class="muted">{{ checkStatus(check.status) }}</text></view
       >
       <text class="muted"
-        >活体、背景核验和培训考试入口尚未接通。未取得有效结果时不会展示通过；后台审核另行进行。</text
+        >活体、背景核验入口尚未接通。培训须按公司正式必修方案完成，实际结果以服务端核验为准；后台审核另行进行。</text
       >
+      <button @click="open('/pages/training/list')">进入正式培训与考试</button>
       <view v-if="application.submitBlockers.length" class="blockers"
         ><text v-for="(blocker, index) in application.submitBlockers" :key="index"
           >{{ fieldLabels[blocker.field] || '提交条件' }}：{{ blocker.message }}</text

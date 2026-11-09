@@ -1,0 +1,149 @@
+{
+  "firstAssociatedRun": {
+    "integrationTests": 187,
+    "failures": 13,
+    "errors": 0,
+    "skipped": 0,
+    "suites": [
+      {
+        "suite": "com.xinyi.web.viit.Q03TrainingIT",
+        "tests": 56,
+        "failures": 13,
+        "errors": 0,
+        "skipped": 0,
+        "failedCases": [
+          "anOpenV1AttemptIsReallyGradedAgainstV1AfterV2AndNewPolicyPublication",
+          "companyRoundTripUsesNewEpochAndCannotReviveOldRunOrProof",
+          "otherStudentsApplicationPlaybackAndAttemptIdsCannotBeBorrowed",
+          "gradingOutboxFailureRollsBackScoreProgressAndCanonicalProofTogether",
+          "repeatedAndRewoundMediaIntervalsCannotEarnTheSameSecondTwice",
+          "invalidOrDuplicateQuestionAndOptionInputsRejectTheEntireExamSubmission",
+          "playbackWritesPinApplicationRunMaterialCompanyAndPolicyInsteadOfFollowingCurrentState",
+          "heartbeatIdempotencyAndSequenceReplayDoNotDoubleCountAndDifferentBodyConflicts",
+          "partialCoursesAndStandaloneLegacyPassedRowsCannotBypassQ01TrainingGate",
+          "halfUpFinalIntegerIsUsedBeforeComparingTheConfiguredPassScore",
+          "finalSubmissionIsPermanentAcrossDifferentUuidsAndValidRootKeyRotation",
+          "equalQuestionsAreRoundedOnceAtTheEndRatherThanPerQuestion",
+          "wrongVersionsAndPositionsOutsideTheVerifiedMediaAreRejectedWithoutCredit"
+        ]
+      },
+      {
+        "suite": "com.xinyi.web.viit.A04DriverIT",
+        "tests": 45,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "failedCases": []
+      },
+      {
+        "suite": "com.xinyi.web.viit.Q01QualificationIT",
+        "tests": 42,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "failedCases": []
+      },
+      {
+        "suite": "com.xinyi.web.viit.Q02TrainingIT",
+        "tests": 44,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "failedCases": []
+      }
+    ],
+    "failureKinds": [
+      "12个Q03用例在新建学员测试夹具的真实同意版本校验处被409拒绝，待核查夹具",
+      "1个越界位置语义预期400，实际领域422，待核查契约"
+    ],
+    "executedClasses": [
+      "Q03TrainingIT",
+      "Q01QualificationIT",
+      "Q02TrainingIT",
+      "A04DriverIT"
+    ],
+    "notExecutedRequestedAliases": [
+      "F01PrivateFileIT",
+      "I06StationGrantIT"
+    ],
+    "note": "两个别名与真实类名不符，F01/I06不计入本轮关联已验，最终全量显式真实类名覆盖。"
+  },
+  "finalVerification": "PASS",
+  "fixes": [
+    "sys_config.config_key无唯一键；新培训夹具旧ON DUPLICATE不能更新同意配置。改为保护隔离环境精确重建两键并断唯一，不改生产严格同意规则。",
+    "90000000ms为正整数但超业务范围，按既有VI_DATA_INVALID精确422；CAS错误仍断409/VI_VERSION_CONFLICT。",
+    "复核补强：超过15秒心跳窗口整段0，恢复报告重建基线；既有用例用受控时间老化与随后真实1.15秒墙钟证明恢复正常。",
+    "PC真实公司目录应读取result.data并用id节点；已修正。",
+    "局部重建锁状态变化的两个InputNumber，修正所用组件只挂载写aria-disabled导致的读屏状态不一致。"
+  ],
+  "finalAssociatedRun": {
+    "integrationTests": 227,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "suites": [
+      {
+        "suite": "com.xinyi.web.viit.Q03TrainingIT",
+        "tests": 56,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "com.xinyi.web.viit.F01FileIT",
+        "tests": 30,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "com.xinyi.web.viit.A04DriverIT",
+        "tests": 45,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "com.xinyi.web.viit.Q01QualificationIT",
+        "tests": 42,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "com.xinyi.web.viit.I06ScopeIT",
+        "tests": 10,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "com.xinyi.web.viit.Q02TrainingIT",
+        "tests": 44,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    ]
+  },
+  "toolCommandCorrections": [
+    "小程序类型检查脚本名是type-check，首次误写typecheck没有执行类型检查；已改用真实脚本重跑，未把未执行记为通过。"
+  ],
+  "firstFullRun": {
+    "integrationTests": 584,
+    "passed": 583,
+    "failures": 0,
+    "errors": 1,
+    "skipped": 0,
+    "failedSuite": "Q01QualificationIT",
+    "failedCase": "bodyCannotForgeAccountCompanyQualificationReviewOrVerificationResults @BeforeEach",
+    "reason": "I05真实登录由AUTO_INCREMENT创建账号，Q01旧夹具以独立SEQ手工指定主键而碰撞。已只在Q01及新增Q03夹具改数据库分配ID/唯一app+openId回读；SEQ仅用于手机号，未删除账号或吞重复错误。Q03 56项通过；该轮584整体不计通过。"
+  },
+  "finalFull": {
+    "integrationTests": 584,
+    "unitTests": 41,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  }
+}

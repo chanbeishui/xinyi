@@ -1,7 +1,7 @@
 # D07 · 处罚及申诉查询审核
 
 阶段：M4；责任域：penalty；前置：D06, I06。
-范围版本：`V6.1-UNCHANGED`；definitionHash：`610d7675a966a7da96faabd068cd640b56b66d4acca4b8a415ae4b92c70396a0`。
+范围版本：`V6.1-UNCHANGED`；definitionHash：`8b9878d799e4878a98a77f4919e059bc06ecfcb66f61aa8c939694abdc57c2c3`。
 
 ## 本任务交付
 - 本人处罚列表详情、申诉提交进度、后台审批，公开意见投影
@@ -16,7 +16,7 @@
 接口：API_061_post, API_127_post, v5_get_api_app_driver_penalties, v5_get_api_app_driver_penalties_penaltyId, v5_get_api_app_driver_penalty_appeals, v5_get_api_app_driver_penalty_appeals_appealId, v5_get_api_admin_penalties, v5_get_api_admin_penalties_penaltyId, v5_get_api_admin_penalty_appeals, v5_get_api_admin_penalty_appeals_appealId
 画板：D43, D44, D45, B45
 主责任表：vi_penalty, vi_penalty_appeal
-验收：无
+验收：TC-R50-020
 
 ## 代码落位
 `xinyi-rongli/src/main/java/com/xinyi/rongli/penalty/`

@@ -125,6 +125,30 @@
       "style": {
         "navigationBarTitleText": "代驾认证中心"
       }
+    },
+    {
+      "path": "pages/training/list",
+      "style": {
+        "navigationBarTitleText": "服务培训"
+      }
+    },
+    {
+      "path": "pages/training/course",
+      "style": {
+        "navigationBarTitleText": "课程学习"
+      }
+    },
+    {
+      "path": "pages/training/exam",
+      "style": {
+        "navigationBarTitleText": "服务知识测验"
+      }
+    },
+    {
+      "path": "pages/training/result",
+      "style": {
+        "navigationBarTitleText": "测验结果"
+      }
     }
   ],
   "globalStyle": {

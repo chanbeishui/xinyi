@@ -6,6 +6,7 @@
         <result property="version" column="version"/>
         <result property="accountId" column="account_id"/>
         <result property="ownerDeptId" column="owner_dept_id"/>
+        <result property="trainingContextRevision" column="training_context_revision"/>
         <result property="qualificationStatus" column="qualification_status"/>
         <result property="newAssignmentEnabled" column="new_assignment_enabled"/>
         <result property="listeningEnabled" column="listening_enabled"/>
@@ -155,7 +156,11 @@
     <update id="maintain">
         UPDATE vi_driver_profile
         SET
-            <if test="ownerPresent">owner_dept_id=#{row.ownerDeptId},new_assignment_enabled=0,</if>
+            <!-- MySQL赋值从左到右；必须先按原归属递增epoch，再覆盖owner，A→B→A不可复活旧培训。 -->
+            <if test="ownerPresent">
+                training_context_revision=training_context_revision+IF(owner_dept_id &lt;=> #{row.ownerDeptId},0,1),
+                owner_dept_id=#{row.ownerDeptId},new_assignment_enabled=0,
+            </if>
             <if test="remarkPresent">internal_remark=#{row.internalRemark},</if>
             version=version+1,updated_at=UTC_TIMESTAMP(3)
         WHERE id=#{row.id} AND version=#{row.version}

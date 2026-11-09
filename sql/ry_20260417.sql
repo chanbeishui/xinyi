@@ -885,6 +885,7 @@ CREATE TABLE `vi_driver_profile` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库AUTO_INCREMENT生成内部Long；API输出十进制字符串',
   `account_id` BIGINT NOT NULL COMMENT '同一个基础账户',
   `owner_dept_id` BIGINT NULL COMMENT '后台明确指定的归属公司部门；历史NULL待全局管理员认领',
+  `training_context_revision` BIGINT NOT NULL DEFAULT 0 COMMENT '仅实际公司归属变更递增；备注与行政开关不使培训失效',
   `qualification_status` VARCHAR(24) NOT NULL COMMENT 'QualificationStatus: DRAFT,SUBMITTED,APPROVED,REJECTED,EXPIRED,SUSPENDED',
   `new_assignment_enabled` TINYINT NOT NULL DEFAULT 0 COMMENT '是否允许新增承接',
   `listening_enabled` TINYINT NOT NULL DEFAULT 0 COMMENT '本人听单偏好',
@@ -2295,21 +2296,103 @@ CREATE TABLE `vi_training_question` (
   CONSTRAINT ck_ver_training_question CHECK (version >= 0)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='培训课程版本的后台题库';
 
+CREATE TABLE `vi_training_policy` (
+  `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库生成政策聚合主键',
+  `owner_dept_id` BIGINT NOT NULL COMMENT '显式公司部门，旗下站点和该公司代驾共用',
+  `draft_revision_id` BIGINT NULL COMMENT '当前未发布修订，发布请求必须显式指定',
+  `active_revision_id` BIGINT NULL COMMENT '当前生效政策修订，不覆盖既有申请冻结集合',
+  `created_at` DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3)) COMMENT '创建时刻UTC',
+  `updated_at` DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3)) COMMENT '更新时间UTC；更新必须显式设置UTC_TIMESTAMP(3)',
+  `version` BIGINT NOT NULL DEFAULT 0 COMMENT '政策聚合CAS，与课程内容版本分离',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY uk_training_policy_company (owner_dept_id),
+  CONSTRAINT ck_training_policy_version CHECK (version>=0)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='公司培训政策聚合';
+
+CREATE TABLE `vi_training_policy_revision` (
+  `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '不可变政策内容修订',
+  `policy_id` BIGINT NOT NULL COMMENT '权威公司政策父聚合',
+  `revision_no` INT NOT NULL COMMENT '聚合内单调内容修订号',
+  `required_training_ids` JSON NOT NULL COMMENT '确切已发布课程ID数组，同族最多一个版本',
+  `max_attempts` INT NULL COMMENT '含首次的累计上限，草稿可缺，发布不得缺省',
+  `retry_interval_seconds` INT NULL COMMENT '失败或超时到下一次的间隔秒，发布必须显式配置',
+  `grading_mode` VARCHAR(32) NOT NULL COMMENT 'TrainingGradingMode: EQUAL_HALF_UP_EXACT，等分及精确集合匹配',
+  `content_hash` BINARY(32) NOT NULL COMMENT '服务端政策有密钥摘要，不接受客户端声明',
+  `created_by_user_id` BIGINT NOT NULL COMMENT '后台内容创建人',
+  `published_by_user_id` BIGINT NULL COMMENT '后台真实发布人，草稿未发布为空',
+  `published_at` DATETIME(3) NULL COMMENT '服务端实际发布时间UTC',
+  `created_at` DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3)) COMMENT '创建时刻UTC',
+  `updated_at` DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3)) COMMENT '更新时间UTC；更新必须显式设置UTC_TIMESTAMP(3)',
+  `version` BIGINT NOT NULL DEFAULT 0 COMMENT '服务端记录CAS版本',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY uk_training_policy_revision (policy_id,revision_no),
+  CONSTRAINT ck_training_policy_revision CHECK (revision_no>0 AND version>=0),
+  CONSTRAINT ck_training_policy_limits CHECK ((max_attempts IS NULL OR max_attempts BETWEEN 1 AND 100) AND (retry_interval_seconds IS NULL OR retry_interval_seconds BETWEEN 0 AND 2592000)),
+  CONSTRAINT ck_training_policy_grading CHECK (`grading_mode` IN ('EQUAL_HALF_UP_EXACT'))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='公司培训政策不可变修订';
+
+CREATE TABLE `vi_training_plan_snapshot` (
+  `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '首次真实学习冻结的申请课程集合',
+  `application_id` BIGINT NOT NULL COMMENT '真实资格申请父记录',
+  `owner_dept_id` BIGINT NOT NULL COMMENT '数据库权威公司归属',
+  `company_revision` BIGINT NOT NULL COMMENT '档案专用公司归属epoch，A转B再转A不可复活',
+  `policy_revision_id` BIGINT NOT NULL COMMENT '首次学习固定的确切已发布政策修订',
+  `course_snapshot` JSON NOT NULL COMMENT '不可变确切课程版本/媒体/有密钥摘要及学习考试参数，不含标准答案',
+  `max_attempts` INT NOT NULL COMMENT '含首次的同申请同课程累计上限',
+  `retry_interval_seconds` INT NOT NULL COMMENT '失败或超时后的最小重考间隔秒',
+  `grading_mode` VARCHAR(32) NOT NULL COMMENT 'TrainingGradingMode: EQUAL_HALF_UP_EXACT',
+  `created_at` DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3)) COMMENT '创建时刻UTC',
+  `updated_at` DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3)) COMMENT '更新时间UTC；更新必须显式设置UTC_TIMESTAMP(3)',
+  `version` BIGINT NOT NULL DEFAULT 0 COMMENT '服务端记录CAS版本',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY uk_training_plan_context (application_id,company_revision),
+  KEY ix_training_plan_company (owner_dept_id,application_id),
+  CONSTRAINT ck_training_plan_context CHECK (company_revision>=0 AND version>=0),
+  CONSTRAINT ck_training_plan_limits CHECK (max_attempts BETWEEN 1 AND 100 AND retry_interval_seconds BETWEEN 0 AND 2592000),
+  CONSTRAINT ck_training_plan_grading CHECK (`grading_mode` IN ('EQUAL_HALF_UP_EXACT'))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='资格申请冻结必修课表';
+
+CREATE TABLE `vi_training_run` (
+  `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '冻结集合下每次实际材料版本的学习运行',
+  `plan_snapshot_id` BIGINT NOT NULL COMMENT '当前申请和公司epoch的不可变课表',
+  `application_id` BIGINT NOT NULL COMMENT '真实资格申请父记录',
+  `material_revision` BIGINT NOT NULL COMMENT '当前实际材料修订号',
+  `material_hash` BINARY(32) NOT NULL COMMENT '当前材料的有密钥摘要，不接受客户端声明',
+  `status` VARCHAR(16) NOT NULL DEFAULT 'ACTIVE' COMMENT 'TrainingRunStatus: ACTIVE,PASSED',
+  `provider_verification_id` BIGINT NULL COMMENT '只在全部必修真实完成后关联本事务培训汇总证明',
+  `completed_at` DATETIME(3) NULL COMMENT '当前材料全部必修实际完成的UTC时刻',
+  `created_at` DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3)) COMMENT '创建时刻UTC',
+  `updated_at` DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3)) COMMENT '更新时间UTC；更新必须显式设置UTC_TIMESTAMP(3)',
+  `version` BIGINT NOT NULL DEFAULT 0 COMMENT '服务端记录CAS版本',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY uk_training_run_material (plan_snapshot_id,material_revision),
+  KEY ix_training_run_application (application_id,id),
+  UNIQUE KEY uk_training_run_proof (provider_verification_id),
+  CONSTRAINT ck_training_run_status CHECK (`status` IN ('ACTIVE','PASSED')),
+  CONSTRAINT ck_training_run_version CHECK (material_revision>=0 AND version>=0)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='当前材料培训运行与汇总';
+
 CREATE TABLE `vi_training_progress` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库生成业务主键；插入不提供id',
   `application_id` BIGINT NOT NULL COMMENT '资格申请',
+  `run_id` BIGINT NULL COMMENT '真实当前材料运行；历史NULL隔离，不猜回填',
   `material_revision` BIGINT NULL COMMENT '绑定核验或培训对应的材料版本；历史NULL不可视为当前通过',
   `material_hash` BINARY(32) NULL COMMENT '绑定申请当前材料有密钥摘要；不接受客户端声明',
   `driver_id` BIGINT NOT NULL COMMENT '真正司机档案',
   `training_id` BIGINT NOT NULL COMMENT '课程版本主键',
   `verified_duration_seconds` INT NOT NULL DEFAULT 0 COMMENT '服务端按会话时间限幅的有效学习时长',
+  `verified_duration_millis` BIGINT NOT NULL DEFAULT 0 COMMENT '服务端校验后媒体区间并集毫秒',
+  `verified_segments` JSON NULL COMMENT '已验证不重复计时的媒体区间并集',
+  `active_playback_id` BIGINT NULL COMMENT '当前唯一可报告播放，旧设备会话不能并行加时',
   `status` VARCHAR(24) NOT NULL DEFAULT 'NOT_STARTED' COMMENT 'TrainingStatus: NOT_STARTED,IN_PROGRESS,READY_FOR_EXAM,PASSED,FAILED',
   `last_position_seconds` INT NOT NULL DEFAULT 0 COMMENT '仅恢复位置，不等于有效学习时长',
   `created_at` DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3)) COMMENT '创建时刻UTC',
   `updated_at` DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3)) COMMENT '更新时间UTC；更新必须显式设置UTC_TIMESTAMP(3)',
   `version` BIGINT NOT NULL DEFAULT 0 COMMENT '手写CAS版本',
   PRIMARY KEY (`id`),
-  UNIQUE KEY uk_training_progress (application_id,training_id),
+  UNIQUE KEY uk_training_progress_run (run_id,training_id),
+  KEY ix_training_progress_application (application_id,training_id),
+  CONSTRAINT ck_training_progress_millis CHECK (verified_duration_millis>=0),
   CONSTRAINT ck_66_57bd05d422b1 CHECK (`status` IN ('NOT_STARTED','IN_PROGRESS','READY_FOR_EXAM','PASSED','FAILED')),
   CONSTRAINT ck_ver_training_progress CHECK (version >= 0)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='本人每个课程版本的学习进度';
@@ -2317,13 +2400,17 @@ CREATE TABLE `vi_training_progress` (
 CREATE TABLE `vi_training_playback` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库生成业务主键；插入不提供id',
   `progress_id` BIGINT NOT NULL COMMENT '本人进度',
+  `run_id` BIGINT NULL COMMENT '绑定材料运行；历史NULL不可报告',
   `material_revision` BIGINT NULL COMMENT '绑定核验或培训对应的材料版本；历史NULL不可视为当前通过',
   `material_hash` BINARY(32) NULL COMMENT '绑定申请当前材料有密钥摘要；不接受客户端声明',
   `session_id` BIGINT NOT NULL COMMENT '小程序设备会话',
+  `context_version` BIGINT NULL COMMENT '绑定MINI真实身份视角版本',
   `started_at` DATETIME(3) NOT NULL COMMENT '服务端开始时间',
   `expires_at` DATETIME(3) NOT NULL COMMENT '服务端结束边界',
   `last_reported_at` DATETIME(3) NULL COMMENT '最近服务器接收时刻',
   `last_sequence` INT NOT NULL DEFAULT 0 COMMENT '乱序和重复不增加时长',
+  `last_position_millis` BIGINT NULL COMMENT '服务端最近位置基线，首次报告不计时',
+  `last_playing` TINYINT NOT NULL DEFAULT 0 COMMENT '暂停不累计；恢复第一报告重新建基线',
   `created_at` DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3)) COMMENT '创建时刻UTC',
   `updated_at` DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3)) COMMENT '更新时间UTC；更新必须显式设置UTC_TIMESTAMP(3)',
   `version` BIGINT NOT NULL DEFAULT 0 COMMENT '手写CAS版本',
@@ -2335,25 +2422,31 @@ CREATE TABLE `vi_training_playback` (
 CREATE TABLE `vi_training_attempt` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库生成业务主键；插入不提供id',
   `application_id` BIGINT NOT NULL COMMENT '资格申请',
+  `run_id` BIGINT NULL COMMENT '真实材料运行；历史NULL不作为当前考试结果',
   `material_revision` BIGINT NULL COMMENT '绑定核验或培训对应的材料版本；历史NULL不可视为当前通过',
   `material_hash` BINARY(32) NULL COMMENT '绑定申请当前材料有密钥摘要；不接受客户端声明',
   `driver_id` BIGINT NOT NULL COMMENT '本人',
   `training_id` BIGINT NOT NULL COMMENT '确切课程版本',
+  `course_key` VARCHAR(64) CHARACTER SET ascii COLLATE ascii_bin NULL COMMENT '跨材料/版本累计次数的稳定课程族',
   `attempt_no` INT NOT NULL COMMENT '本课程尝试序号',
   `status` VARCHAR(24) NOT NULL DEFAULT 'OPEN' COMMENT 'AttemptStatus: OPEN,SUBMITTED,PASSED,FAILED,EXPIRED',
   `question_snapshot` JSON NOT NULL COMMENT '确切题干/选项；无答案的对外投影单独构造',
+  `grading_snapshot_cipher` MEDIUMBLOB NULL COMMENT '独立AAD绑定本次尝试的标准答案与阅卷参数密文',
   `answer_snapshot` JSON NULL COMMENT '本人作答',
+  `submission_mac` BINARY(32) NULL COMMENT '永久作答摘要，换幂等键也不能重新阅卷',
   `score` INT NULL COMMENT '服务器阅卷0至100',
   `started_at` DATETIME(3) NOT NULL COMMENT 'UTC开始',
   `expires_at` DATETIME(3) NOT NULL COMMENT 'UTC失效',
   `submitted_at` DATETIME(3) NULL COMMENT 'UTC提交',
-  `active_attempt` VARCHAR(128) GENERATED ALWAYS AS (IF(status='OPEN',CONCAT(application_id,':',training_id),NULL)) STORED COMMENT '同申请同课程仅一个开放尝试',
+  `active_attempt` VARCHAR(128) GENERATED ALWAYS AS (IF(status='OPEN' AND run_id IS NOT NULL,CONCAT(run_id,':',training_id),NULL)) STORED COMMENT '同当前运行同课程只存在一个开放尝试',
   `created_at` DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3)) COMMENT '创建时刻UTC',
   `updated_at` DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3)) COMMENT '更新时间UTC；更新必须显式设置UTC_TIMESTAMP(3)',
   `version` BIGINT NOT NULL DEFAULT 0 COMMENT '手写CAS版本',
   PRIMARY KEY (`id`),
   UNIQUE KEY uk_attempt_number (application_id,training_id,attempt_no),
   UNIQUE KEY uk_open_training_attempt (active_attempt),
+  UNIQUE KEY uk_attempt_course_counter (application_id,course_key,attempt_no),
+  KEY ix_training_attempt_counter (application_id,course_key,status,id),
   CONSTRAINT ck_66_5b693ca15a96 CHECK (`status` IN ('OPEN','SUBMITTED','PASSED','FAILED','EXPIRED')),
   CONSTRAINT ck_ver_training_attempt CHECK (version >= 0)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='本人考试尝试及不可变题卷快照';
@@ -3460,3 +3553,104 @@ WHERE NOT EXISTS(
 );
 
 DROP TEMPORARY TABLE q02_menu_guard;
+
+-- Q03受控培训政策权限，未给任何角色自动授权。
+CREATE TEMPORARY TABLE q03_menu_guard (
+    violations INT NOT NULL CHECK (violations=0)
+);
+
+SELECT menu_id,parent_id,perms
+FROM sys_menu
+WHERE menu_id=2971200 AND (parent_id<>2971000 OR COALESCE(perms,'')<>'');
+
+INSERT INTO q03_menu_guard
+SELECT COUNT(*)
+FROM sys_menu
+WHERE menu_id=2971200 AND (parent_id<>2971000 OR COALESCE(perms,'')<>'');
+
+INSERT INTO sys_menu(
+    menu_id,menu_name,parent_id,order_num,path,component,is_frame,is_cache,
+    menu_type,visible,status,perms,icon,create_by,remark
+)
+SELECT
+    2971200,'培训管理',2971000,120,'training-policy',NULL,1,1,
+    'M','0','0','','education','migration','Q03公司显式必修集合与考试政策，发布不覆盖既有申请冻结计划'
+WHERE NOT EXISTS(
+    SELECT 1
+    FROM sys_menu
+    WHERE menu_id=2971200
+);
+
+SELECT menu_id,parent_id,perms
+FROM sys_menu
+WHERE (menu_id=2971201 AND (parent_id<>2971200 OR COALESCE(perms,'')<>'biz:trainingpolicy:query'))
+    OR (perms='biz:trainingpolicy:query' AND menu_id<>2971201);
+
+INSERT INTO q03_menu_guard
+SELECT COUNT(*)
+FROM sys_menu
+WHERE (menu_id=2971201 AND (parent_id<>2971200 OR COALESCE(perms,'')<>'biz:trainingpolicy:query'))
+    OR (perms='biz:trainingpolicy:query' AND menu_id<>2971201);
+
+INSERT INTO sys_menu(
+    menu_id,menu_name,parent_id,order_num,path,component,is_frame,is_cache,
+    menu_type,visible,status,perms,icon,create_by,remark
+)
+SELECT
+    2971201,'培训必修政策',2971200,120,'policies','rongli/training/policy',1,1,
+    'C','0','0','biz:trainingpolicy:query','education','migration','Q03公司显式必修集合与考试政策，发布不覆盖既有申请冻结计划'
+WHERE NOT EXISTS(
+    SELECT 1
+    FROM sys_menu
+    WHERE menu_id=2971201
+);
+
+SELECT menu_id,parent_id,perms
+FROM sys_menu
+WHERE (menu_id=2971202 AND (parent_id<>2971201 OR COALESCE(perms,'')<>'biz:trainingpolicy:edit'))
+    OR (perms='biz:trainingpolicy:edit' AND menu_id<>2971202);
+
+INSERT INTO q03_menu_guard
+SELECT COUNT(*)
+FROM sys_menu
+WHERE (menu_id=2971202 AND (parent_id<>2971201 OR COALESCE(perms,'')<>'biz:trainingpolicy:edit'))
+    OR (perms='biz:trainingpolicy:edit' AND menu_id<>2971202);
+
+INSERT INTO sys_menu(
+    menu_id,menu_name,parent_id,order_num,path,component,is_frame,is_cache,
+    menu_type,visible,status,perms,icon,create_by,remark
+)
+SELECT
+    2971202,'维护培训政策',2971201,120,'#',NULL,1,1,
+    'F','0','0','biz:trainingpolicy:edit','education','migration','Q03公司显式必修集合与考试政策，发布不覆盖既有申请冻结计划'
+WHERE NOT EXISTS(
+    SELECT 1
+    FROM sys_menu
+    WHERE menu_id=2971202
+);
+
+SELECT menu_id,parent_id,perms
+FROM sys_menu
+WHERE (menu_id=2971203 AND (parent_id<>2971201 OR COALESCE(perms,'')<>'biz:trainingpolicy:publish'))
+    OR (perms='biz:trainingpolicy:publish' AND menu_id<>2971203);
+
+INSERT INTO q03_menu_guard
+SELECT COUNT(*)
+FROM sys_menu
+WHERE (menu_id=2971203 AND (parent_id<>2971201 OR COALESCE(perms,'')<>'biz:trainingpolicy:publish'))
+    OR (perms='biz:trainingpolicy:publish' AND menu_id<>2971203);
+
+INSERT INTO sys_menu(
+    menu_id,menu_name,parent_id,order_num,path,component,is_frame,is_cache,
+    menu_type,visible,status,perms,icon,create_by,remark
+)
+SELECT
+    2971203,'发布培训政策',2971201,120,'#',NULL,1,1,
+    'F','0','0','biz:trainingpolicy:publish','education','migration','Q03公司显式必修集合与考试政策，发布不覆盖既有申请冻结计划'
+WHERE NOT EXISTS(
+    SELECT 1
+    FROM sys_menu
+    WHERE menu_id=2971203
+);
+
+DROP TEMPORARY TABLE q03_menu_guard;

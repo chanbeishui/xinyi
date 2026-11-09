@@ -181,6 +181,7 @@ function open(path: string) {
         >
         <button disabled>本人对账暂不可用</button>
       </view>
+      <button @click="open('/pages/training/list')">查看本人必修培训</button>
       <button @click="open('/pages/identity/switch')">切换已有身份</button>
       <button v-if="session.activeRole !== 'DRIVER'" @click="open('/pages/qualification/index')">
         申请代驾或查看认证进度

@@ -1,0 +1,569 @@
+{
+  "mode": "Browser plugin not available；临时Playwright真实H5页面+明确API/墙钟夹具。真实MP4下载/本地解码/播放事件与客户端毫秒请求实际执行；fixture成绩/次数不替代后端DB并发或微信真机验证。",
+  "url": "http://127.0.0.1:5175/#/pages/training/list",
+  "viewports": [
+    "390x844",
+    "1280x900"
+  ],
+  "checks": [
+    "D39无正式必修政策/空课表不显示培训通过，GET只读不创建plan/run",
+    "无本人申请不编造课程/身份，提供认证中心入口",
+    "OWNER可进真实培训，不要求DRIVER；课表预览未学不能开始考试",
+    "首次POST才冻结精确课表，100MiB/300s保护下载可取消且下载不计学时",
+    "私有原MP4带短票/Bearer下载后本地播放，先0暂停基线，不把Token或票据放video URL",
+    "心跳503暂停播放器，原sequence/body/UUID恢复，不并发追发新序号",
+    "真实视频事件及毫秒串行心跳，播放实际墙钟后服务端返回可考试，暂停/结束补段不计离线时长",
+    "新政策发布不替换已冻结V1课表；重读解绑清临时blob，不恢复旧播放器",
+    "考试建立unknown查询原attempt恢复，不另扣一次；D41仅固定公开题卷，无标准答案",
+    "单选/多选/判断真实作答，未完成题目不发提交；答案草稿只含本人题目ID/选择",
+    "提交409保留答案、锁定重读真实attempt版本，试卷不被后来课程替换",
+    "未知答案提交先GET原OPEN再原体原键重试；D42仅展示服务端67分/HALF_UP通过，不本地判分或增次数",
+    "结果刷新复用原attempt，不重复判卷；终态清答题草稿，短票/临时媒体不持久化",
+    "结果返回原课程再返回课表使用已有页面或替换，不重复压栈耗尽页面容量",
+    "材料变化的新run保留同申请courseKey累计次数，不复活旧通过/旧attempt",
+    "含首次的考试上限/失败超时累计与重考间隔由服务端投影约束，没有客户端默认值",
+    "材料/公司旧播放409立即停止并释放视频，不继续用旧媒体或凭本地学时开考",
+    "真实403清除旧课程和媒体，不保留越权缓存",
+    "题卷读取后提交403清除旧问题、答案及缓存，不继续沿旧权限作答",
+    "基线回执在途离页/切身份，旧prepare/播放续体不恢复视频；新工作入口按station视角读本人培训",
+    "390/1280px布局、页面身份/非空/无overlay、无相关控制台错误或未知API"
+  ],
+  "errors": [],
+  "warnings": [],
+  "expectedHttpErrors": [
+    "Failed to load resource: the server responded with a status of 503 (Service Unavailable)",
+    "Failed to load resource: the server responded with a status of 503 (Service Unavailable)",
+    "Failed to load resource: the server responded with a status of 409 (Conflict)",
+    "Failed to load resource: the server responded with a status of 503 (Service Unavailable)",
+    "Failed to load resource: the server responded with a status of 409 (Conflict)",
+    "Failed to load resource: the server responded with a status of 403 (Forbidden)",
+    "Failed to load resource: the server responded with a status of 403 (Forbidden)"
+  ],
+  "unknown": [],
+  "writes": [
+    {
+      "path": "/api/app/driver/qualification/training/10/playback",
+      "input": {
+        "applicationId": "21",
+        "expectedApplicationVersion": 4,
+        "expectedCompanyRevision": 1,
+        "expectedMaterialRevision": 2,
+        "expectedPolicyRevisionId": "7",
+        "planId": null,
+        "runId": null,
+        "courseVersion": 1,
+        "expectedVersion": 0
+      },
+      "key": "339a87d5-731e-408c-bf59-f794257a3e20"
+    },
+    {
+      "path": "/api/app/driver/qualification/training/10/playback",
+      "input": {
+        "applicationId": "21",
+        "expectedApplicationVersion": 4,
+        "expectedCompanyRevision": 1,
+        "expectedMaterialRevision": 2,
+        "expectedPolicyRevisionId": "7",
+        "planId": "61",
+        "runId": "71",
+        "courseVersion": 1,
+        "expectedVersion": 0
+      },
+      "key": "cc171bee-bbb6-4a55-a66e-1e7aa7a5a11b"
+    },
+    {
+      "path": "/api/app/driver/qualification/training/10/progress",
+      "input": {
+        "applicationId": "21",
+        "runId": "71",
+        "courseVersion": 1,
+        "expectedVersion": 0,
+        "playbackSessionId": "32",
+        "sequence": 1,
+        "positionMillis": 0,
+        "playing": false
+      },
+      "key": "096ce7c3-dc2e-4604-854e-a109172e5be3"
+    },
+    {
+      "path": "/api/app/driver/qualification/training/10/progress",
+      "input": {
+        "applicationId": "21",
+        "runId": "71",
+        "courseVersion": 1,
+        "expectedVersion": 1,
+        "playbackSessionId": "32",
+        "sequence": 2,
+        "positionMillis": 0,
+        "playing": true
+      },
+      "key": "95f1eb0d-a758-482c-88c3-70b691c866ee"
+    },
+    {
+      "path": "/api/app/driver/qualification/training/10/progress",
+      "input": {
+        "applicationId": "21",
+        "runId": "71",
+        "courseVersion": 1,
+        "expectedVersion": 1,
+        "playbackSessionId": "32",
+        "sequence": 2,
+        "positionMillis": 0,
+        "playing": true
+      },
+      "key": "95f1eb0d-a758-482c-88c3-70b691c866ee"
+    },
+    {
+      "path": "/api/app/driver/qualification/training/10/progress",
+      "input": {
+        "applicationId": "21",
+        "runId": "71",
+        "courseVersion": 1,
+        "expectedVersion": 2,
+        "playbackSessionId": "32",
+        "sequence": 3,
+        "positionMillis": 0,
+        "playing": true
+      },
+      "key": "a95c8a15-05a4-4e11-99d6-ca8fd2f98d6d"
+    },
+    {
+      "path": "/api/app/driver/qualification/training/10/progress",
+      "input": {
+        "applicationId": "21",
+        "runId": "71",
+        "courseVersion": 1,
+        "expectedVersion": 3,
+        "playbackSessionId": "32",
+        "sequence": 4,
+        "positionMillis": 2852,
+        "playing": true
+      },
+      "key": "8edf8150-0214-49aa-bbfa-e746a8443746"
+    },
+    {
+      "path": "/api/app/driver/qualification/training/10/progress",
+      "input": {
+        "applicationId": "21",
+        "runId": "71",
+        "courseVersion": 1,
+        "expectedVersion": 4,
+        "playbackSessionId": "32",
+        "sequence": 5,
+        "positionMillis": 5011,
+        "playing": true
+      },
+      "key": "40d39c24-c9f2-4dc9-829f-30297efeea83"
+    },
+    {
+      "path": "/api/app/driver/qualification/training/10/progress",
+      "input": {
+        "applicationId": "21",
+        "runId": "71",
+        "courseVersion": 1,
+        "expectedVersion": 5,
+        "playbackSessionId": "32",
+        "sequence": 6,
+        "positionMillis": 5011,
+        "playing": false
+      },
+      "key": "8d5a792d-38cd-4e0e-8ac5-48e920984cf4"
+    },
+    {
+      "path": "/api/app/driver/qualification/training/10/attempts",
+      "input": {
+        "applicationId": "21",
+        "runId": "71",
+        "courseVersion": 1,
+        "expectedVersion": 6
+      },
+      "key": "b9895e37-e5de-4f19-a903-9d2014bb4009"
+    },
+    {
+      "path": "/api/app/driver/qualification/training/submit",
+      "input": {
+        "applicationId": "21",
+        "runId": "71",
+        "attemptId": "101",
+        "expectedVersion": 0,
+        "answers": [
+          {
+            "questionId": "1001",
+            "answerCodes": [
+              "A"
+            ]
+          },
+          {
+            "questionId": "1002",
+            "answerCodes": [
+              "A",
+              "B"
+            ]
+          },
+          {
+            "questionId": "1003",
+            "answerCodes": [
+              "T"
+            ]
+          }
+        ]
+      },
+      "key": "8d17162d-61e3-4f08-bdb4-4a326f2b92ee"
+    },
+    {
+      "path": "/api/app/driver/qualification/training/submit",
+      "input": {
+        "applicationId": "21",
+        "runId": "71",
+        "attemptId": "101",
+        "expectedVersion": 1,
+        "answers": [
+          {
+            "questionId": "1001",
+            "answerCodes": [
+              "A"
+            ]
+          },
+          {
+            "questionId": "1002",
+            "answerCodes": [
+              "A",
+              "B"
+            ]
+          },
+          {
+            "questionId": "1003",
+            "answerCodes": [
+              "T"
+            ]
+          }
+        ]
+      },
+      "key": "4237a543-558a-4223-8afa-ec097c8a2ea4"
+    },
+    {
+      "path": "/api/app/driver/qualification/training/submit",
+      "input": {
+        "applicationId": "21",
+        "runId": "71",
+        "attemptId": "101",
+        "expectedVersion": 1,
+        "answers": [
+          {
+            "questionId": "1001",
+            "answerCodes": [
+              "A"
+            ]
+          },
+          {
+            "questionId": "1002",
+            "answerCodes": [
+              "A",
+              "B"
+            ]
+          },
+          {
+            "questionId": "1003",
+            "answerCodes": [
+              "T"
+            ]
+          }
+        ]
+      },
+      "key": "4237a543-558a-4223-8afa-ec097c8a2ea4"
+    },
+    {
+      "path": "/api/app/driver/qualification/training/10/playback",
+      "input": {
+        "applicationId": "21",
+        "expectedApplicationVersion": 4,
+        "expectedCompanyRevision": 1,
+        "expectedMaterialRevision": 3,
+        "expectedPolicyRevisionId": "7",
+        "planId": "61",
+        "runId": "72",
+        "courseVersion": 1,
+        "expectedVersion": 0
+      },
+      "key": "2c72185e-bcce-4987-8b72-3eb7c5817c89"
+    },
+    {
+      "path": "/api/app/driver/qualification/training/10/progress",
+      "input": {
+        "applicationId": "21",
+        "runId": "71",
+        "courseVersion": 1,
+        "expectedVersion": 0,
+        "playbackSessionId": "33",
+        "sequence": 1,
+        "positionMillis": 0,
+        "playing": false
+      },
+      "key": "b0e882d8-7057-496a-8e46-cb831591a1f6"
+    },
+    {
+      "path": "/api/app/driver/qualification/training/10/progress",
+      "input": {
+        "applicationId": "21",
+        "runId": "71",
+        "courseVersion": 1,
+        "expectedVersion": 1,
+        "playbackSessionId": "33",
+        "sequence": 2,
+        "positionMillis": 0,
+        "playing": true
+      },
+      "key": "101dd1bf-7723-4137-acea-eb50037e8eb4"
+    },
+    {
+      "path": "/api/app/driver/qualification/training/submit",
+      "input": {
+        "applicationId": "21",
+        "runId": "71",
+        "attemptId": "202",
+        "expectedVersion": 0,
+        "answers": [
+          {
+            "questionId": "1001",
+            "answerCodes": [
+              "A"
+            ]
+          },
+          {
+            "questionId": "1002",
+            "answerCodes": [
+              "A"
+            ]
+          },
+          {
+            "questionId": "1003",
+            "answerCodes": [
+              "T"
+            ]
+          }
+        ]
+      },
+      "key": "aabef6ed-7682-4271-b297-4f293c2c313a"
+    },
+    {
+      "path": "/api/app/driver/qualification/training/10/playback",
+      "input": {
+        "applicationId": "21",
+        "expectedApplicationVersion": 4,
+        "expectedCompanyRevision": 1,
+        "expectedMaterialRevision": 3,
+        "expectedPolicyRevisionId": "7",
+        "planId": "61",
+        "runId": "71",
+        "courseVersion": 1,
+        "expectedVersion": 1
+      },
+      "key": "6b67b1e8-07d2-4a1d-81c6-9e911840a7a8"
+    },
+    {
+      "path": "/api/app/driver/qualification/training/10/progress",
+      "input": {
+        "applicationId": "21",
+        "runId": "71",
+        "courseVersion": 1,
+        "expectedVersion": 1,
+        "playbackSessionId": "34",
+        "sequence": 1,
+        "positionMillis": 0,
+        "playing": false
+      },
+      "key": "ddf4b942-8b64-4de3-a0f3-01117ae93245"
+    }
+  ],
+  "beats": [
+    {
+      "input": {
+        "applicationId": "21",
+        "runId": "71",
+        "courseVersion": 1,
+        "expectedVersion": 0,
+        "playbackSessionId": "32",
+        "sequence": 1,
+        "positionMillis": 0,
+        "playing": false
+      },
+      "key": "096ce7c3-dc2e-4604-854e-a109172e5be3",
+      "wall": 0,
+      "verified": 0
+    },
+    {
+      "input": {
+        "applicationId": "21",
+        "runId": "71",
+        "courseVersion": 1,
+        "expectedVersion": 1,
+        "playbackSessionId": "32",
+        "sequence": 2,
+        "positionMillis": 0,
+        "playing": true
+      },
+      "key": "95f1eb0d-a758-482c-88c3-70b691c866ee",
+      "wall": 164,
+      "verified": 0
+    },
+    {
+      "input": {
+        "applicationId": "21",
+        "runId": "71",
+        "courseVersion": 1,
+        "expectedVersion": 2,
+        "playbackSessionId": "32",
+        "sequence": 3,
+        "positionMillis": 0,
+        "playing": true
+      },
+      "key": "a95c8a15-05a4-4e11-99d6-ca8fd2f98d6d",
+      "wall": 284,
+      "verified": 0
+    },
+    {
+      "input": {
+        "applicationId": "21",
+        "runId": "71",
+        "courseVersion": 1,
+        "expectedVersion": 3,
+        "playbackSessionId": "32",
+        "sequence": 4,
+        "positionMillis": 2852,
+        "playing": true
+      },
+      "key": "8edf8150-0214-49aa-bbfa-e746a8443746",
+      "wall": 3008,
+      "verified": 2852
+    },
+    {
+      "input": {
+        "applicationId": "21",
+        "runId": "71",
+        "courseVersion": 1,
+        "expectedVersion": 4,
+        "playbackSessionId": "32",
+        "sequence": 5,
+        "positionMillis": 5011,
+        "playing": true
+      },
+      "key": "40d39c24-c9f2-4dc9-829f-30297efeea83",
+      "wall": 2123,
+      "verified": 5011
+    },
+    {
+      "input": {
+        "applicationId": "21",
+        "runId": "71",
+        "courseVersion": 1,
+        "expectedVersion": 5,
+        "playbackSessionId": "32",
+        "sequence": 6,
+        "positionMillis": 5011,
+        "playing": false
+      },
+      "key": "8d5a792d-38cd-4e0e-8ac5-48e920984cf4",
+      "wall": 9,
+      "verified": 5011
+    },
+    {
+      "input": {
+        "applicationId": "21",
+        "runId": "71",
+        "courseVersion": 1,
+        "expectedVersion": 0,
+        "playbackSessionId": "33",
+        "sequence": 1,
+        "positionMillis": 0,
+        "playing": false
+      },
+      "key": "b0e882d8-7057-496a-8e46-cb831591a1f6",
+      "wall": 0,
+      "verified": 0
+    },
+    {
+      "input": {
+        "applicationId": "21",
+        "runId": "71",
+        "courseVersion": 1,
+        "expectedVersion": 1,
+        "playbackSessionId": "34",
+        "sequence": 1,
+        "positionMillis": 0,
+        "playing": false
+      },
+      "key": "ddf4b942-8b64-4de3-a0f3-01117ae93245",
+      "wall": 0,
+      "verified": 2000
+    }
+  ],
+  "downloads": [
+    {
+      "url": "http://127.0.0.1:18080/vi-private-transfer/files/501",
+      "headerNames": [
+        "accept",
+        "authorization",
+        "origin",
+        "referer",
+        "user-agent",
+        "x-client-type",
+        "x-file-ticket",
+        "sec-ch-ua",
+        "sec-ch-ua-mobile",
+        "sec-ch-ua-platform"
+      ]
+    },
+    {
+      "url": "http://127.0.0.1:18080/vi-private-transfer/files/501",
+      "headerNames": [
+        "accept",
+        "authorization",
+        "origin",
+        "referer",
+        "user-agent",
+        "x-client-type",
+        "x-file-ticket",
+        "sec-ch-ua",
+        "sec-ch-ua-mobile",
+        "sec-ch-ua-platform"
+      ]
+    },
+    {
+      "url": "http://127.0.0.1:18080/vi-private-transfer/files/501",
+      "headerNames": [
+        "accept",
+        "authorization",
+        "origin",
+        "referer",
+        "user-agent",
+        "x-client-type",
+        "x-file-ticket",
+        "sec-ch-ua",
+        "sec-ch-ua-mobile",
+        "sec-ch-ua-platform"
+      ]
+    },
+    {
+      "url": "http://127.0.0.1:18080/vi-private-transfer/files/501",
+      "headerNames": [
+        "accept",
+        "authorization",
+        "origin",
+        "referer",
+        "user-agent",
+        "x-client-type",
+        "x-file-ticket",
+        "sec-ch-ua",
+        "sec-ch-ua-mobile",
+        "sec-ch-ua-platform"
+      ]
+    }
+  ],
+  "screenshots": [
+    "/private/tmp/Q03-mini-course.png",
+    "/private/tmp/Q03-mini-exam.png",
+    "/private/tmp/Q03-mini-result.png",
+    "/private/tmp/Q03-mini-list-desktop.png",
+    "/private/tmp/Q03-mini-list-mobile.png"
+  ]
+}

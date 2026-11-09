@@ -1,29 +1,41 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TASK</title><style>body{font:16px/1.75 -apple-system,BlinkMacSystemFont,"Microsoft YaHei",sans-serif;color:#202632;margin:0;background:#f6f7f9}header{padding:14px 24px;background:white;border-bottom:1px solid #ddd}main{max-width:1120px;margin:24px auto;padding:30px;background:white}h1{font-size:30px}h2{margin-top:36px}a{color:#0661bd}table{border-collapse:collapse;width:100%;display:block;overflow:auto;font-size:14px}td,th{border:1px solid #dde2ea;padding:10px;vertical-align:top}th{background:#f1f5fb}pre{padding:15px;background:#f2f4f7;overflow:auto}img{max-width:100%;height:auto}blockquote{padding:10px 20px;border-left:3px solid #2571be;background:#f4f8fc}@media(max-width:700px){main{padding:15px;margin:8px}h1{font-size:25px}}</style></head><body><header><a href="../../../00_开始.html">V6.4 完整资料</a>　<a href="../../../02_UI/index.html">交互原型</a>　T3.4</header><main><h1>Q03 · 学习播放与考试尝试</h1>
 <p>阶段：M1；责任域：training；前置：Q01, Q02。
-范围版本：<code>V6.1-UNCHANGED</code>；definitionHash：<code>5bc191f7020657e66d9074fee545dd71cf7b05e7a4224fe76f81dac167ea95f4</code>。</p>
+范围版本：<code>V6.4-CONTROLLED-TRAINING-20261109</code>；definitionHash：<code>d9ac188d22efb9230e37e801c04b9182b1b65a83f4d207cc02ee80b1ace9c5bd</code>。</p>
 <h2>本任务交付</h2>
 <ul>
-<li>播放会话/心跳/墙钟进度、考试尝试生成读取提交、结果复用</li>
+<li>公司后台明确必修课程及确切已发布版本，正式次数/间隔配置与显式政策发布，无默认通过</li>
+<li>首次播放冻结本申请/公司epoch课表；材料新run保留同公司冻结课表，后续政策/课程发布不覆盖</li>
+<li>受保护真实媒体、播放会话/毫秒心跳/共享墙钟、考试尝试生成读取一次提交及结果复用</li>
+<li>每题等分100，精确集合匹配，全卷最终HALF_UP整数后判通过；同申请稳定课程累计次数，材料不重置，失败超时计次</li>
+<li>真实全部必修完成才产正式TRAINING证明；Q01实时核对申请/材料/公司epoch/课表与run，旧公司/伪造PASSED不旁路</li>
 </ul>
 <h2>必测失败与并发</h2>
 <ul>
-<li>倍速伪造累计拒绝</li>
-<li>超时/重复提交只判一次</li>
-<li>次数由配置限制</li>
+<li>未配置/未发布/空必修集不得真空通过；选入别公司或非可信发布课程整体拒绝</li>
+<li>倍速/跳进度/重复乱序/离线补时/多会话不能超共享真实墙钟；毫秒余数不丢失</li>
+<li>旧application/run/材料/epoch请求及未知原键不能漂移；A→B→A不复活旧证明</li>
+<li>超时/并发/重复提交只判一次，旧V1题卷不被V2覆盖；HALF_UP只能最终全卷舍入</li>
+<li>次数和间隔由冻结政策限制，同申请同courseKey累计；材料修改不能重置</li>
+<li>MINI仅当前本人冻结教材可读，无标准答案/阅卷密文/内容HMAC泄露，不授后台或DRIVER</li>
 </ul>
 <h2>精确输入</h2>
 <p>主源：04_接口/openapi_V6.4.yaml、05_数据设计/data_model_V6.4.json、06_验收/test_cases_V6.4.json。本目录派生，不独立维护。
-接口：API_046_get, API_047_post, v5_get_api_app_driver_qualification_training_trainingId, v5_post_api_app_driver_qualification_training_trainingId_playback, v5_post_api_app_driver_qualification_training_trainingId_progress, v5_post_api_app_driver_qualification_training_trainingId_attempts, v5_get_api_app_driver_qualification_training_attempts_attemptId
+接口：API_046_get, API_047_post, v5_get_api_app_driver_qualification_training_trainingId, v5_post_api_app_driver_qualification_training_trainingId_playback, v5_post_api_app_driver_qualification_training_trainingId_progress, v5_post_api_app_driver_qualification_training_trainingId_attempts, v5_get_api_app_driver_qualification_training_attempts_attemptId, q03_get_api_admin_training_policies_ownerDeptId, q03_put_api_admin_training_policies_ownerDeptId, q03_post_api_admin_training_policies_ownerDeptId_publish
 画板：D39, D40, D41, D42
-主责任表：vi_training_progress, vi_training_playback, vi_training_attempt
-验收：TC-R50-017, TC-R50-018, TC-R50-019, TC-R50-020</p>
+主责任表：vi_training_progress, vi_training_playback, vi_training_attempt, vi_training_policy, vi_training_policy_revision, vi_training_plan_snapshot, vi_training_run
+验收：TC-R50-017, TC-R50-018, TC-R50-019</p>
 <h2>代码落位</h2>
 <p><code>xinyi-rongli/src/main/java/com/xinyi/rongli/training/</code>
 <code>xinyi-rongli/src/main/resources/mapper/rongli/training/</code>
-<code>xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/training/</code>
+<code>xinyi-rongli/src/main/java/com/xinyi/rongli/file/</code>
+<code>xinyi-rongli/src/main/java/com/xinyi/rongli/qualification/</code>
 <code>xinyi-ui/src/views/rongli/training/</code>
 <code>xinyi-ui/src/api/rongli/training.ts</code>
-<code>xinyi-miniapp/src/features/training/</code></p>
+<code>xinyi-miniapp/src/features/training/</code>
+<code>xinyi-miniapp/src/pages/training/</code>
+<code>xinyi-admin/src/test/java/com/xinyi/web/viit/Q03TrainingIT.java</code>
+<code>xinyi-ui/src/views/rongli/training/policy.vue</code>
+<code>xinyi-ui/src/api/rongli/trainingPolicy.ts</code></p>
 <h2>验证命令</h2>
 <pre><code class="language-bash">mvn -pl xinyi-admin -am -Pvi-it -Dit.test=Q03TrainingIT verify
 npm --prefix xinyi-ui run build:prod

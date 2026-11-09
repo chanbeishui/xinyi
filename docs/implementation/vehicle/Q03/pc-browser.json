@@ -1,0 +1,516 @@
+{
+  "mode": "Browser plugin not available；独立Playwright真实PC政策页+明确API夹具，不替代后端DB权限/事务/并发验证。",
+  "url": "http://127.0.0.1:5173/driver-management/training-policy/policies",
+  "viewports": [
+    "1440x1000",
+    "390x844"
+  ],
+  "checks": [
+    "真实路由/非空页面，公司目录使用真实flat接口，未默认账号主部门发起政策读取",
+    "缺次数/间隔/空必修可5键显式null保存不可变草稿，不能发布且无业务默认值",
+    "必修选择精确PUBLISHED字符串ID且同族第二版禁选；0重考间隔必须显式填写，不等于无限次数",
+    "发布使用显式draftRevisionId+CAS+UUID；关闭发布和切公司后仍原公司原体原键恢复，B政策不串A",
+    "后续保存生成新的草稿修订，当前active版本及其原课程/次数保持不变",
+    "409保存保留填写与原因，锁写后重读最新版本，以新CAS保存新修订",
+    "保存unknown按公司Map隔离，切B不修改B，回A恢复冻结输入并原5键正文/UUID重试",
+    "发布409保留原因，关闭重读后重新核对精确保存版本，未越过CAS或重指向草稿",
+    "1440px政策草稿/active并列，390px规则换行，无页面横向溢出，截图业务中文无调试输入",
+    "政策GET真实403清空旧active、draft及课程候选，不继续保留越权政策",
+    "读取后写入403清旧政策和输入，不能用先前列表/目录权限代替写权限",
+    "policy query-only只读，不调用courselist，不开放保存/发布或更换必修集合",
+    "公司A在途读取后切B，迟到A响应不会覆盖B的当前生效政策或课程",
+    "真实/system/dept/list HTTP200/code403被拒绝并禁选择，不伪造空目录成功或默认公司"
+  ],
+  "errors": [],
+  "warnings": [],
+  "expectedHttpErrors": [
+    "Failed to load resource: the server responded with a status of 503 (Service Unavailable)",
+    "Failed to load resource: the server responded with a status of 409 (Conflict)",
+    "Failed to load resource: the server responded with a status of 503 (Service Unavailable)",
+    "Failed to load resource: the server responded with a status of 409 (Conflict)",
+    "Failed to load resource: the server responded with a status of 403 (Forbidden)",
+    "Failed to load resource: the server responded with a status of 403 (Forbidden)"
+  ],
+  "unknown": [],
+  "requests": [
+    {
+      "path": "/getInfo",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/getRouters",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/system/notice/listTop",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/system/dept/list",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/admin/training-policies/995001",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/admin/training-courses",
+      "method": "GET",
+      "query": {
+        "ownerDeptId": "995001",
+        "status": "PUBLISHED",
+        "pageNum": "1",
+        "pageSize": "100",
+        "sort": "idDesc"
+      }
+    },
+    {
+      "path": "/api/admin/training-policies/995001",
+      "method": "PUT",
+      "query": {}
+    },
+    {
+      "path": "/api/admin/training-policies/995001",
+      "method": "PUT",
+      "query": {}
+    },
+    {
+      "path": "/api/admin/training-policies/995001/publish",
+      "method": "POST",
+      "query": {}
+    },
+    {
+      "path": "/api/admin/training-policies/995002",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/admin/training-courses",
+      "method": "GET",
+      "query": {
+        "ownerDeptId": "995002",
+        "status": "PUBLISHED",
+        "pageNum": "1",
+        "pageSize": "100",
+        "sort": "idDesc"
+      }
+    },
+    {
+      "path": "/api/admin/training-policies/995001",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/admin/training-courses",
+      "method": "GET",
+      "query": {
+        "ownerDeptId": "995001",
+        "status": "PUBLISHED",
+        "pageNum": "1",
+        "pageSize": "100",
+        "sort": "idDesc"
+      }
+    },
+    {
+      "path": "/api/admin/training-policies/995001/publish",
+      "method": "POST",
+      "query": {}
+    },
+    {
+      "path": "/api/admin/training-policies/995001",
+      "method": "PUT",
+      "query": {}
+    },
+    {
+      "path": "/api/admin/training-policies/995001",
+      "method": "PUT",
+      "query": {}
+    },
+    {
+      "path": "/api/admin/training-policies/995001",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/admin/training-courses",
+      "method": "GET",
+      "query": {
+        "ownerDeptId": "995001",
+        "status": "PUBLISHED",
+        "pageNum": "1",
+        "pageSize": "100",
+        "sort": "idDesc"
+      }
+    },
+    {
+      "path": "/api/admin/training-policies/995001",
+      "method": "PUT",
+      "query": {}
+    },
+    {
+      "path": "/api/admin/training-policies/995001",
+      "method": "PUT",
+      "query": {}
+    },
+    {
+      "path": "/api/admin/training-policies/995002",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/admin/training-courses",
+      "method": "GET",
+      "query": {
+        "ownerDeptId": "995002",
+        "status": "PUBLISHED",
+        "pageNum": "1",
+        "pageSize": "100",
+        "sort": "idDesc"
+      }
+    },
+    {
+      "path": "/api/admin/training-policies/995001",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/admin/training-courses",
+      "method": "GET",
+      "query": {
+        "ownerDeptId": "995001",
+        "status": "PUBLISHED",
+        "pageNum": "1",
+        "pageSize": "100",
+        "sort": "idDesc"
+      }
+    },
+    {
+      "path": "/api/admin/training-policies/995001",
+      "method": "PUT",
+      "query": {}
+    },
+    {
+      "path": "/api/admin/training-policies/995001/publish",
+      "method": "POST",
+      "query": {}
+    },
+    {
+      "path": "/api/admin/training-policies/995001",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/admin/training-courses",
+      "method": "GET",
+      "query": {
+        "ownerDeptId": "995001",
+        "status": "PUBLISHED",
+        "pageNum": "1",
+        "pageSize": "100",
+        "sort": "idDesc"
+      }
+    },
+    {
+      "path": "/api/admin/training-policies/995001/publish",
+      "method": "POST",
+      "query": {}
+    },
+    {
+      "path": "/system/notice/listTop",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/admin/training-policies/995001",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/admin/training-policies/995002",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/admin/training-courses",
+      "method": "GET",
+      "query": {
+        "ownerDeptId": "995002",
+        "status": "PUBLISHED",
+        "pageNum": "1",
+        "pageSize": "100",
+        "sort": "idDesc"
+      }
+    },
+    {
+      "path": "/api/admin/training-policies/995002",
+      "method": "PUT",
+      "query": {}
+    },
+    {
+      "path": "/getInfo",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/getRouters",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/system/notice/listTop",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/system/dept/list",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/admin/training-policies/995001",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/getInfo",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/getRouters",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/system/notice/listTop",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/system/dept/list",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/admin/training-policies/995001",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/admin/training-policies/995002",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/admin/training-courses",
+      "method": "GET",
+      "query": {
+        "ownerDeptId": "995002",
+        "status": "PUBLISHED",
+        "pageNum": "1",
+        "pageSize": "100",
+        "sort": "idDesc"
+      }
+    },
+    {
+      "path": "/getInfo",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/getRouters",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/system/notice/listTop",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/system/dept/list",
+      "method": "GET",
+      "query": {}
+    }
+  ],
+  "writes": [
+    {
+      "company": "995001",
+      "path": "/api/admin/training-policies/995001",
+      "method": "PUT",
+      "input": {
+        "expectedVersion": 0,
+        "requiredTrainingIds": [],
+        "maxAttempts": null,
+        "retryIntervalSeconds": null,
+        "reason": "准备公司正式培训政策的基础配置"
+      },
+      "key": "44b6ced1-77f9-4a00-a00f-351e3a66eee4"
+    },
+    {
+      "company": "995001",
+      "path": "/api/admin/training-policies/995001",
+      "method": "PUT",
+      "input": {
+        "expectedVersion": 1,
+        "requiredTrainingIds": [
+          "10",
+          "12"
+        ],
+        "maxAttempts": 3,
+        "retryIntervalSeconds": 0,
+        "reason": "明确公司必修课程及含首次的考试次数"
+      },
+      "key": "badf017a-de05-4685-b7f6-1772ad475686"
+    },
+    {
+      "company": "995001",
+      "path": "/api/admin/training-policies/995001/publish",
+      "method": "POST",
+      "input": {
+        "expectedVersion": 2,
+        "draftRevisionId": "102",
+        "reason": "核准公司车辆交接与服务规范的正式培训要求"
+      },
+      "key": "0996883f-591c-4d91-be3d-998573183696"
+    },
+    {
+      "company": "995001",
+      "path": "/api/admin/training-policies/995001/publish",
+      "method": "POST",
+      "input": {
+        "expectedVersion": 2,
+        "draftRevisionId": "102",
+        "reason": "核准公司车辆交接与服务规范的正式培训要求"
+      },
+      "key": "0996883f-591c-4d91-be3d-998573183696"
+    },
+    {
+      "company": "995001",
+      "path": "/api/admin/training-policies/995001",
+      "method": "PUT",
+      "input": {
+        "expectedVersion": 3,
+        "requiredTrainingIds": [
+          "10",
+          "12"
+        ],
+        "maxAttempts": 4,
+        "retryIntervalSeconds": 60,
+        "reason": "调整新申请的培训考试次数与间隔"
+      },
+      "key": "db67f144-7c32-495c-b041-fb6bdd322228"
+    },
+    {
+      "company": "995001",
+      "path": "/api/admin/training-policies/995001",
+      "method": "PUT",
+      "input": {
+        "expectedVersion": 4,
+        "requiredTrainingIds": [
+          "10",
+          "12"
+        ],
+        "maxAttempts": 6,
+        "retryIntervalSeconds": 60,
+        "reason": "依据运营复核意见完善考试次数"
+      },
+      "key": "48b9f45d-0c4f-4d2b-903a-a515786ae184"
+    },
+    {
+      "company": "995001",
+      "path": "/api/admin/training-policies/995001",
+      "method": "PUT",
+      "input": {
+        "expectedVersion": 5,
+        "requiredTrainingIds": [
+          "10",
+          "12"
+        ],
+        "maxAttempts": 6,
+        "retryIntervalSeconds": 60,
+        "reason": "依据运营复核意见完善考试次数"
+      },
+      "key": "a5a425b4-0b28-44f8-9849-ff09d7c67ab5"
+    },
+    {
+      "company": "995001",
+      "path": "/api/admin/training-policies/995001",
+      "method": "PUT",
+      "input": {
+        "expectedVersion": 6,
+        "requiredTrainingIds": [
+          "10",
+          "12"
+        ],
+        "maxAttempts": 5,
+        "retryIntervalSeconds": 120,
+        "reason": "统一维护新申请的重考安排"
+      },
+      "key": "504e1ebb-7d3d-4ee4-a597-3ceba438c8e3"
+    },
+    {
+      "company": "995001",
+      "path": "/api/admin/training-policies/995001",
+      "method": "PUT",
+      "input": {
+        "expectedVersion": 6,
+        "requiredTrainingIds": [
+          "10",
+          "12"
+        ],
+        "maxAttempts": 5,
+        "retryIntervalSeconds": 120,
+        "reason": "统一维护新申请的重考安排"
+      },
+      "key": "504e1ebb-7d3d-4ee4-a597-3ceba438c8e3"
+    },
+    {
+      "company": "995001",
+      "path": "/api/admin/training-policies/995001/publish",
+      "method": "POST",
+      "input": {
+        "expectedVersion": 7,
+        "draftRevisionId": "105",
+        "reason": "正式发布本期公司培训实施要求"
+      },
+      "key": "689a5147-1ff3-40b4-9383-66284da81681"
+    },
+    {
+      "company": "995001",
+      "path": "/api/admin/training-policies/995001/publish",
+      "method": "POST",
+      "input": {
+        "expectedVersion": 8,
+        "draftRevisionId": "105",
+        "reason": "正式发布本期公司培训实施要求"
+      },
+      "key": "9d1b8798-0f2d-4d20-ad41-bb57a8826689"
+    },
+    {
+      "company": "995002",
+      "path": "/api/admin/training-policies/995002",
+      "method": "PUT",
+      "input": {
+        "expectedVersion": 3,
+        "requiredTrainingIds": [
+          "20"
+        ],
+        "maxAttempts": 4,
+        "retryIntervalSeconds": 60,
+        "reason": "按公司授权维护培训安排"
+      },
+      "key": "5a8e839d-81b0-4cf8-a620-689a99df4489"
+    }
+  ],
+  "screenshots": [
+    "/private/tmp/Q03-policy-main.png",
+    "/private/tmp/Q03-policy-publish.png",
+    "/private/tmp/Q03-policy-mobile.png"
+  ]
+}

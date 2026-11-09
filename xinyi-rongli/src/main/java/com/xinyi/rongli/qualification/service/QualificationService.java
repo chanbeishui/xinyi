@@ -49,6 +49,7 @@ public class QualificationService {
     private final ViAccountMapper accounts;
     private final QualificationMapper mapper;
     private final ConfigMapper configs;
+    private final com.xinyi.rongli.training.service.TrainingCompletionAuthority trainingCompletion;
     private final PrivateFileService files;
     private final IntegrationCrypto crypto;
     private final IdempotencyService idem;
@@ -65,6 +66,7 @@ public class QualificationService {
             ViAccountMapper accounts,
             QualificationMapper mapper,
             ConfigMapper configs,
+            com.xinyi.rongli.training.service.TrainingCompletionAuthority trainingCompletion,
             PrivateFileService files,
             IntegrationCrypto crypto,
             IdempotencyService idem,
@@ -76,6 +78,7 @@ public class QualificationService {
         this.accounts = accounts;
         this.mapper = mapper;
         this.configs = configs;
+        this.trainingCompletion = trainingCompletion;
         this.files = files;
         this.crypto = crypto;
         this.idem = idem;
@@ -278,8 +281,14 @@ public class QualificationService {
                         .stream()
                         .filter(this::trustedProvider)
                         .filter(proof -> "PASSED".equals(proof.get("status")))
+                        .filter(proof -> !"TRAINING".equals(proof.get("task_type")))
                         .map(proof -> proof.get("id").toString())
                         .toList();
+        // 汇总培训只能冻结当前公司epoch/材料运行认可的唯一证明，不能顺带采入旧独立PASSED行。
+        proofIds = new ArrayList<>(proofIds);
+        Long trainingProofId = trainingCompletion.currentProof(profile, application);
+        if (trainingProofId == null) throw new ViException(ViErrorCode.VI_TRAINING_NOT_READY);
+        proofIds.add(trainingProofId.toString());
         application.setProviderResultIds(ViJson.write(proofIds));
         byte[] reason =
                 crypto.envelope(
@@ -507,7 +516,7 @@ public class QualificationService {
                         : List.of(application.getPublicReviewOpinion()));
         result.put(
                 "items", FILE_FIELDS.stream().filter(field -> payload.get(field) != null).toList());
-        result.put("checks", checks(application));
+        result.put("checks", checks(profile, application));
         result.put("submitBlockers", blockers(profile, application, payload));
         List<String> actions = new ArrayList<>();
         if (!editable.isEmpty()) {
@@ -525,16 +534,19 @@ public class QualificationService {
         return result;
     }
 
-    private List<Map<String, String>> checks(QualificationApplication application) {
+    private List<Map<String, String>> checks(
+            DriverProfile profile, QualificationApplication application) {
         Map<String, String> states = new HashMap<>();
         for (Map<String, Object> proof :
                 mapper.proofs(
                         application.getId(),
                         application.getMaterialRevision(),
                         application.getMaterialHash())) {
-            if (!trustedProvider(proof)) continue;
+            if (!trustedProvider(proof) || "TRAINING".equals(proof.get("task_type"))) continue;
             states.putIfAbsent(proof.get("task_type").toString(), proof.get("status").toString());
         }
+        if (trainingCompletion.currentProof(profile, application) != null)
+            states.put("TRAINING", "PASSED");
         List<Map<String, String>> result = new ArrayList<>();
         for (String type : CHECK_TYPES)
             result.add(Map.of("type", type, "status", states.getOrDefault(type, "UNAVAILABLE")));
@@ -591,7 +603,7 @@ public class QualificationService {
                 || !Objects.equals(application.getConsentText(), consent.text())
                 || application.getConsentAcceptedAt() == null)
             result.add(blocker("consentVersion", "CONSENT_CHANGED", "请重新阅读并明确同意当前资格申请说明"));
-        for (Map<String, String> check : checks(application)) {
+        for (Map<String, String> check : checks(profile, application)) {
             if (!"PASSED".equals(check.get("status"))) {
                 result.add(
                         blocker(

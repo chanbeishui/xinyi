@@ -1637,6 +1637,15 @@ components:
       - EDIT_TRAINING_COURSE
       - PUBLISH_TRAINING_COURSE
       - CREATE_TRAINING_REVISION
+      - VIEW_TRAINING_POLICY
+      - EDIT_TRAINING_POLICY
+      - PUBLISH_TRAINING_POLICY
+      - START_TRAINING
+      - START_PLAYBACK
+      - REPORT_TRAINING_PROGRESS
+      - CREATE_TRAINING_ATTEMPT
+      - VIEW_TRAINING_ATTEMPT
+      - SUBMIT_TRAINING_ATTEMPT
     DriverStatementLine:
       type: object
       additionalProperties: false

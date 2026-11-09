@@ -19,6 +19,11 @@
         "后台明确指定的归属公司部门；历史NULL待全局管理员认领"
       ],
       [
+        "training_context_revision",
+        "BIGINT NOT NULL DEFAULT 0",
+        "仅实际公司归属变更递增；备注与行政开关不使培训失效"
+      ],
+      [
         "qualification_status",
         "VARCHAR(24) NOT NULL",
         "QualificationStatus: DRAFT,SUBMITTED,APPROVED,REJECTED,EXPIRED,SUSPENDED"
@@ -84,7 +89,7 @@
       "KEY ix_driver_company (owner_dept_id,id)",
       "KEY ix_pool (qualification_status,new_assignment_enabled,listening_enabled)"
     ],
-    "rule": "每名代驾明确归属一个公司部门，旗下站点共用；owner_dept_id不从员工、创建人或历史订单推断。存量NULL待全数据管理员显式认领；归属变更检查原新范围并集且无待响应/占用/在手任务，转移后禁新。资格审核、本人听单偏好与行政开关分开；暂停不释放承接或保管。",
+    "rule": "每名代驾明确归属一个公司部门，旗下站点共用；owner_dept_id不从员工、创建人或历史订单推断。存量NULL待全数据管理员显式认领；归属变更检查原新范围并集且无待响应/占用/在手任务，转移后禁新。资格审核、本人听单偏好与行政开关分开；暂停不释放承接或保管。 Q03：training_context_revision只在实际公司归属变化时递增，A→B→A不可复活旧学习；备注及行政开关不影响既有培训。",
     "primaryKey": [
       "id"
     ],
@@ -185,6 +190,13 @@
         "updatable": true,
         "clientWritable": false,
         "authority": "后台明确选择并验证目标有效部门与原新范围，DTO不可直接批量绑定实体。"
+      },
+      "training_context_revision": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false,
+        "authority": "仅A04实际公司归属变更，由原值比较同事务递增。"
       }
     },
     "checks": [
@@ -876,6 +888,11 @@
         "资格申请"
       ],
       [
+        "run_id",
+        "BIGINT NULL",
+        "真实当前材料运行；历史NULL隔离，不猜回填"
+      ],
+      [
         "material_revision",
         "BIGINT NULL",
         "绑定核验或培训对应的材料版本；历史NULL不可视为当前通过"
@@ -899,6 +916,21 @@
         "verified_duration_seconds",
         "INT NOT NULL DEFAULT 0",
         "服务端按会话时间限幅的有效学习时长"
+      ],
+      [
+        "verified_duration_millis",
+        "BIGINT NOT NULL DEFAULT 0",
+        "服务端校验后媒体区间并集毫秒"
+      ],
+      [
+        "verified_segments",
+        "JSON NULL",
+        "已验证不重复计时的媒体区间并集"
+      ],
+      [
+        "active_playback_id",
+        "BIGINT NULL",
+        "当前唯一可报告播放，旧设备会话不能并行加时"
       ],
       [
         "status",
@@ -927,9 +959,10 @@
       ]
     ],
     "indexes": [
-      "UNIQUE KEY uk_training_progress (application_id,training_id)"
+      "UNIQUE KEY uk_training_progress_run (run_id,training_id)",
+      "KEY ix_training_progress_application (application_id,training_id)"
     ],
-    "rule": "普通前端上报不证明观看完整；时长限幅、顺序检查、服务端阅卷共同决定培训完成；不宣称防作弊认证 当前材料版本和HMAC绑定由服务端写入；旧NULL、错版或缺可信时刻不能视为当前通过。",
+    "rule": "权威归属继承当前申请/计划/运行，不接受客户端部门。run_id历史NULL不可信；当前运行每课程唯一。毫秒有效区间并集防重复，首基线/暂停/离线不计时，15秒窗口限幅，最新播放会话独占报告；进度CAS独立于播放/考试CAS。",
     "primaryKey": [
       "id"
     ],
@@ -946,19 +979,19 @@
       "application_id": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "driver_id": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "training_id": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "verified_duration_seconds": {
@@ -1003,10 +1036,34 @@
       "material_revision": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "material_hash": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "run_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "verified_duration_millis": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "verified_segments": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "active_playback_id": {
         "generated": false,
         "insertable": true,
         "updatable": true,
@@ -1014,6 +1071,7 @@
       }
     },
     "checks": [
+      "CONSTRAINT ck_training_progress_millis CHECK (verified_duration_millis>=0)",
       "CONSTRAINT ck_66_57bd05d422b1 CHECK (`status` IN ('NOT_STARTED','IN_PROGRESS','READY_FOR_EXAM','PASSED','FAILED'))",
       "CONSTRAINT ck_ver_training_progress CHECK (version >= 0)"
     ]
@@ -1033,6 +1091,11 @@
         "本人进度"
       ],
       [
+        "run_id",
+        "BIGINT NULL",
+        "绑定材料运行；历史NULL不可报告"
+      ],
+      [
         "material_revision",
         "BIGINT NULL",
         "绑定核验或培训对应的材料版本；历史NULL不可视为当前通过"
@@ -1046,6 +1109,11 @@
         "session_id",
         "BIGINT NOT NULL",
         "小程序设备会话"
+      ],
+      [
+        "context_version",
+        "BIGINT NULL",
+        "绑定MINI真实身份视角版本"
       ],
       [
         "started_at",
@@ -1068,6 +1136,16 @@
         "乱序和重复不增加时长"
       ],
       [
+        "last_position_millis",
+        "BIGINT NULL",
+        "服务端最近位置基线，首次报告不计时"
+      ],
+      [
+        "last_playing",
+        "TINYINT NOT NULL DEFAULT 0",
+        "暂停不累计；恢复第一报告重新建基线"
+      ],
+      [
         "created_at",
         "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
         "创建时刻UTC"
@@ -1086,7 +1164,7 @@
     "indexes": [
       "KEY ix_playback_progress (progress_id,expires_at)"
     ],
-    "rule": "按相邻报告服务端经过时长上限累加；多个并发播放会话不能重复计入时长 当前材料版本和HMAC绑定由服务端写入；旧NULL、错版或缺可信时刻不能视为当前通过。",
+    "rule": "归属继承进度及当前材料运行；绑定真实MINI会话和contextVersion。1800秒有效期、递增序号和服务端时钟共同校验，旧设备/身份视角/材料/公司epoch不能续报；首报告只建基线，暂停后恢复不补时。旧run/context NULL隔离。",
     "primaryKey": [
       "id"
     ],
@@ -1103,25 +1181,25 @@
       "progress_id": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "session_id": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "started_at": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "expires_at": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "last_reported_at": {
@@ -1159,10 +1237,34 @@
       "material_revision": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "material_hash": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "run_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "context_version": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "last_position_millis": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "last_playing": {
         "generated": false,
         "insertable": true,
         "updatable": true,
@@ -1188,6 +1290,11 @@
         "资格申请"
       ],
       [
+        "run_id",
+        "BIGINT NULL",
+        "真实材料运行；历史NULL不作为当前考试结果"
+      ],
+      [
         "material_revision",
         "BIGINT NULL",
         "绑定核验或培训对应的材料版本；历史NULL不可视为当前通过"
@@ -1208,6 +1315,11 @@
         "确切课程版本"
       ],
       [
+        "course_key",
+        "VARCHAR(64) CHARACTER SET ascii COLLATE ascii_bin NULL",
+        "跨材料/版本累计次数的稳定课程族"
+      ],
+      [
         "attempt_no",
         "INT NOT NULL",
         "本课程尝试序号"
@@ -1223,9 +1335,19 @@
         "确切题干/选项；无答案的对外投影单独构造"
       ],
       [
+        "grading_snapshot_cipher",
+        "MEDIUMBLOB NULL",
+        "独立AAD绑定本次尝试的标准答案与阅卷参数密文"
+      ],
+      [
         "answer_snapshot",
         "JSON NULL",
         "本人作答"
+      ],
+      [
+        "submission_mac",
+        "BINARY(32) NULL",
+        "永久作答摘要，换幂等键也不能重新阅卷"
       ],
       [
         "score",
@@ -1249,8 +1371,8 @@
       ],
       [
         "active_attempt",
-        "VARCHAR(128) GENERATED ALWAYS AS (IF(status='OPEN',CONCAT(application_id,':',training_id),NULL)) STORED",
-        "同申请同课程仅一个开放尝试"
+        "VARCHAR(128) GENERATED ALWAYS AS (IF(status='OPEN' AND run_id IS NOT NULL,CONCAT(run_id,':',training_id),NULL)) STORED",
+        "同当前运行同课程只存在一个开放尝试"
       ],
       [
         "created_at",
@@ -1270,9 +1392,11 @@
     ],
     "indexes": [
       "UNIQUE KEY uk_attempt_number (application_id,training_id,attempt_no)",
-      "UNIQUE KEY uk_open_training_attempt (active_attempt)"
+      "UNIQUE KEY uk_open_training_attempt (active_attempt)",
+      "UNIQUE KEY uk_attempt_course_counter (application_id,course_key,attempt_no)",
+      "KEY ix_training_attempt_counter (application_id,course_key,status,id)"
     ],
-    "rule": "作答绑定attemptId+expectedVersion；提交后不可重写；正确答案只在服务端按确切课程版本读取 当前材料版本和HMAC绑定由服务端写入；旧NULL、错版或缺可信时刻不能视为当前通过。",
+    "rule": "归属继承当前材料运行。以application_id+稳定course_key累计所有已签发尝试，材料/版本修改不重置，失败/超时均计次；maxAttempts含首次，冷却从失败提交或超时时刻算。公开题卷无答案，标准答案及参数使用独立AAD密文。等分精确集合匹配，最终总分HALF_UP到整数后判通过；永久作答HMAC防换幂等键重阅。旧run NULL不作为当前证明。 阅卷密文在同一创建事务INSERT取得数据库id后首次初始化，之后不可替换；阅卷/超时仅保留原密文。",
     "primaryKey": [
       "id"
     ],
@@ -1289,25 +1413,25 @@
       "application_id": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "driver_id": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "training_id": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "attempt_no": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "status": {
@@ -1320,7 +1444,7 @@
       "question_snapshot": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "answer_snapshot": {
@@ -1338,13 +1462,13 @@
       "started_at": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "expires_at": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "submitted_at": {
@@ -1382,10 +1506,35 @@
       "material_revision": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "material_hash": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "run_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "course_key": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "grading_snapshot_cipher": {
+        "generated": false,
+        "insertable": false,
+        "updatable": true,
+        "clientWritable": false,
+        "authority": "仅创建尝试事务取得数据库id后首次写入，以确切attempt AAD加密；之后仅可原值回写，不得替换标准答案或参数，客户端永不可写。"
+      },
+      "submission_mac": {
         "generated": false,
         "insertable": true,
         "updatable": true,
@@ -1736,7 +1885,7 @@
       "UNIQUE KEY uk_object_key (object_key)",
       "KEY ix_order_purpose (order_id,purpose)"
     ],
-    "rule": "访问签名不进明文长期表，不接受客户端READY/摘要即可信 Q02新增TRAINING_MEDIA仅ADMIN公司DRAFT父课程、私有MP4不超过100MiB；READY由实际容器/轨道/时长与流式SHA校验产生，发布后不可重写，可由同族派生白名单只读继承。图片仍JPEG/PNG10MiB。",
+    "rule": "访问签名不进明文长期表，不接受客户端READY/摘要即可信 Q02新增TRAINING_MEDIA仅ADMIN公司DRAFT父课程、私有MP4不超过100MiB；READY由实际容器/轨道/时长与流式SHA校验产生，发布后不可重写，可由同族派生白名单只读继承。图片仍JPEG/PNG10MiB。 Q03：MINI仅当前本人冻结run引用的发布媒体可读，不具上传权；300秒READ票据MAC绑定申请/材料/run/公司epoch，逐块重新校验。后台原公司DRAFT维护规则保留。",
     "primaryKey": [
       "id"
     ],

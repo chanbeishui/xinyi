@@ -736,7 +736,7 @@
       ]
     },
     "flows": [
-      "F49"
+      "F41"
     ]
   },
   {
@@ -759,7 +759,7 @@
       ]
     },
     "flows": [
-      "F49"
+      "F41"
     ]
   },
   {
@@ -4130,7 +4130,7 @@
       ]
     },
     "flows": [
-      "F49"
+      "F41"
     ]
   },
   {
@@ -4153,7 +4153,7 @@
       ]
     },
     "flows": [
-      "F49"
+      "F41"
     ]
   },
   {
@@ -4176,7 +4176,7 @@
       ]
     },
     "flows": [
-      "F49"
+      "F41"
     ]
   },
   {
@@ -4199,7 +4199,7 @@
       ]
     },
     "flows": [
-      "F49"
+      "F41"
     ]
   },
   {
@@ -4222,7 +4222,7 @@
       ]
     },
     "flows": [
-      "F49"
+      "F41"
     ]
   },
   {
@@ -5170,5 +5170,68 @@
     "authoritySources": {
       "driver": "vi_driver_profile.owner_dept_id"
     }
+  },
+  {
+    "operationId": "q03_get_api_admin_training_policies_ownerDeptId",
+    "method": "GET",
+    "path": "/api/admin/training-policies/{ownerDeptId}",
+    "summary": "读取公司培训政策",
+    "permission": "biz:trainingpolicy:query",
+    "capability": null,
+    "authorization": {
+      "realm": "ADMIN",
+      "scope": "COMPANY_OWNER_DEPT",
+      "permission": "biz:trainingpolicy:query"
+    },
+    "flows": [
+      "F41"
+    ]
+  },
+  {
+    "operationId": "q03_post_api_admin_training_policies_ownerDeptId_publish",
+    "method": "POST",
+    "path": "/api/admin/training-policies/{ownerDeptId}/publish",
+    "summary": "发布公司培训政策",
+    "permission": "biz:trainingpolicy:publish",
+    "capability": null,
+    "authorization": {
+      "realm": "ADMIN",
+      "scope": "COMPANY_OWNER_DEPT",
+      "permission": "biz:trainingpolicy:publish",
+      "additionalRequiredPermissions": [
+        "biz:trainingpolicy:query",
+        "biz:trainingcourse:query"
+      ],
+      "scopeDetails": "写动作与policyquery均按数据库公司范围验证，非空选课另需coursequery及公司范围；课程候选列表另需trainingcourse:list，不能代替query或写权限。"
+    },
+    "flows": [
+      "F41"
+    ]
+  },
+  {
+    "operationId": "q03_put_api_admin_training_policies_ownerDeptId",
+    "method": "PUT",
+    "path": "/api/admin/training-policies/{ownerDeptId}",
+    "summary": "保存公司培训政策草稿",
+    "permission": "biz:trainingpolicy:edit",
+    "capability": null,
+    "authorization": {
+      "realm": "ADMIN",
+      "scope": "COMPANY_OWNER_DEPT",
+      "permission": "biz:trainingpolicy:edit",
+      "additionalRequiredPermissions": [
+        "biz:trainingpolicy:query"
+      ],
+      "scopeDetails": "写动作与policyquery均按数据库公司范围验证，非空选课另需coursequery及公司范围；课程候选列表另需trainingcourse:list，不能代替query或写权限。",
+      "conditionalPermissions": [
+        {
+          "permission": "biz:trainingcourse:query",
+          "condition": "requiredTrainingIds非空时，每个课程及其权威公司范围必须覆盖"
+        }
+      ]
+    },
+    "flows": [
+      "F41"
+    ]
   }
 ]

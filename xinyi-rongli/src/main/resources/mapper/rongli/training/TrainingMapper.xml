@@ -89,7 +89,7 @@
         <include refid="filter"/>
     </select>
     <select id="questions" resultType="map">
-        SELECT question_code,question_type,prompt,options_json,correct_option_codes
+        SELECT id,question_code,question_type,prompt,options_json,correct_option_codes
         FROM vi_training_question
         WHERE training_id=#{id}
         ORDER BY sort_no,id

@@ -3807,5 +3807,44 @@
     "path": "/api/admin/drivers/{driverId}/enable-new-assignments",
     "summary": "恢复新承接行政开关",
     "taskId": "A04"
+  },
+  {
+    "implementationStatus": "NOT_ASSESSED",
+    "controllerFile": null,
+    "serviceFile": null,
+    "mapperFile": null,
+    "testFiles": [],
+    "reviewEvidence": null,
+    "operationId": "q03_get_api_admin_training_policies_ownerDeptId",
+    "method": "GET",
+    "path": "/api/admin/training-policies/{ownerDeptId}",
+    "summary": "读取公司培训政策",
+    "taskId": "Q03"
+  },
+  {
+    "implementationStatus": "NOT_ASSESSED",
+    "controllerFile": null,
+    "serviceFile": null,
+    "mapperFile": null,
+    "testFiles": [],
+    "reviewEvidence": null,
+    "operationId": "q03_put_api_admin_training_policies_ownerDeptId",
+    "method": "PUT",
+    "path": "/api/admin/training-policies/{ownerDeptId}",
+    "summary": "保存公司培训政策草稿",
+    "taskId": "Q03"
+  },
+  {
+    "implementationStatus": "NOT_ASSESSED",
+    "controllerFile": null,
+    "serviceFile": null,
+    "mapperFile": null,
+    "testFiles": [],
+    "reviewEvidence": null,
+    "operationId": "q03_post_api_admin_training_policies_ownerDeptId_publish",
+    "method": "POST",
+    "path": "/api/admin/training-policies/{ownerDeptId}/publish",
+    "summary": "发布公司培训政策",
+    "taskId": "Q03"
   }
 ]

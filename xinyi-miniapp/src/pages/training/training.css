@@ -1,0 +1,82 @@
+.training-screen {
+  box-sizing: border-box;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 24px 18px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.training-screen .title {
+  font-size: 24px;
+  font-weight: 600;
+}
+.training-screen .card {
+  min-width: 0;
+  padding: 18px;
+  border-radius: 12px;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  line-height: 1.7;
+  font-size: 15px;
+}
+.training-screen .section {
+  font-size: 18px;
+  font-weight: 600;
+}
+.training-screen .muted {
+  color: #64748b;
+  font-size: 13px;
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+}
+.training-screen .note {
+  padding: 12px;
+  background: #fff4e5;
+  color: #854d0e;
+  border-radius: 8px;
+  line-height: 1.7;
+  font-size: 14px;
+}
+.training-screen .error {
+  color: #b42318;
+  line-height: 1.7;
+}
+.training-screen .success {
+  color: #087443;
+  line-height: 1.7;
+}
+.training-screen .row {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+.training-screen .options {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.training-screen .option {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 0;
+}
+.training-screen button {
+  width: 100%;
+  margin: 0;
+  font-size: 15px;
+}
+.training-screen .primary {
+  background: #005fcb;
+  color: #fff;
+}
+.training-screen video {
+  width: 100%;
+  height: 220px;
+  background: #111;
+}
