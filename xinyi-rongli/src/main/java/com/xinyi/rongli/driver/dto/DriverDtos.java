@@ -136,6 +136,8 @@ public final class DriverDtos
     public static class StationUpdateReq
     {
         public String name;
+        /** 归属部门；创建时使用，创建后不可改（改归属会让历史订单的数据范围漂移） */
+        public Long deptId;
         public String address;
         public java.math.BigDecimal lng;
         public java.math.BigDecimal lat;

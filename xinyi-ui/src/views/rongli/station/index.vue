@@ -73,6 +73,26 @@
         <el-form-item label="检测点名称" required>
           <el-input v-model="form.name" placeholder="请输入检测点名称" />
         </el-form-item>
+        <el-form-item label="归属部门" :required="deptOptions.length > 0">
+          <el-tree-select
+            v-if="deptOptions.length"
+            v-model="form.deptId"
+            :data="deptOptions"
+            :props="{ value: 'id', label: 'label', children: 'children' }"
+            check-strictly
+            :render-after-expand="false"
+            placeholder="请选择归属部门"
+            style="width: 100%"
+            :disabled="!!form.id"
+          />
+          <p class="rl-hint">
+            {{
+              deptOptions.length
+                ? '检测点创建后不再变更归属部门，避免历史订单的数据范围漂移。'
+                : '当前账号没有部门列表权限，保存时将按你的任职部门归属。'
+            }}
+          </p>
+        </el-form-item>
         <el-form-item label="地址" required>
           <el-input v-model="form.address" placeholder="请输入公开地址" />
         </el-form-item>
@@ -184,6 +204,7 @@ import MapPicker from '@/components/MapPicker/index.vue'
 import { onMounted, reactive, ref } from 'vue'
 import { ElMessage } from 'element-plus'
 import { createStation, listCapacity, listStations, updateCapacity, updateStation } from '@/api/rongli'
+import { deptTreeSelect } from '@/api/system/user'
 
 const { vehicle_type } = useDict('vehicle_type')
 const vehicleType = vehicle_type as any
@@ -206,9 +227,11 @@ const query = reactive<any>({ pageNum: 1, pageSize: 10 })
 const capacityMap = reactive<Record<string, any>>({})
 
 const formVisible = ref(false)
+const deptOptions = ref<any[]>([])
 const form = reactive<any>({
   id: '',
   name: '',
+  deptId: null,
   address: '',
   area: '',
   lng: '',
@@ -242,7 +265,23 @@ const current = ref<any>({})
 const capacityVisible = ref(false)
 const slots = ref<any[]>([])
 
-onMounted(load)
+/**
+ * 归属部门候选。接口要求 system:user:list 权限，检测点管理员不一定有；
+ * 取不到时把选择器藏起来，由后端按任职部门兜底，不阻塞创建。
+ */
+async function loadDeptOptions() {
+  try {
+    const res: any = await deptTreeSelect()
+    deptOptions.value = res?.data || []
+  } catch {
+    deptOptions.value = []
+  }
+}
+
+onMounted(() => {
+  load()
+  loadDeptOptions()
+})
 
 async function load() {
   loading.value = true
@@ -305,6 +344,7 @@ function openCreate() {
   Object.assign(form, {
     id: '',
     name: '',
+    deptId: null,
     address: '',
     area: '',
     lng: '',
@@ -324,6 +364,7 @@ function openEdit(row: any) {
   Object.assign(form, {
     id: String(row.id),
     name: row.name,
+    deptId: row.dept_id ? Number(row.dept_id) : null,
     address: row.address,
     area: row.area || '',
     lng: String(row.lng ?? ''),
@@ -343,7 +384,11 @@ async function submit() {
     ElMessage.warning('请填写检测点名称与地址')
     return
   }
-  const payload = {
+  if (!form.id && deptOptions.value.length && !form.deptId) {
+    ElMessage.warning('请选择归属部门')
+    return
+  }
+  const payload: any = {
     name: form.name,
     address: form.address,
     lng: Number(form.lng || 0),
@@ -356,6 +401,10 @@ async function submit() {
       endHour: form.endHour
     }),
     enabled: form.enabled
+  }
+  // 归属部门只在创建时提交：vi_station.dept_id 是 NOT NULL，后端创建时必须拿到它
+  if (!form.id) {
+    payload.deptId = form.deptId
   }
   saving.value = true
   try {

@@ -51,6 +51,8 @@ public class StationAdminService
     private StationService stationService;
     @Autowired
     private EventService eventService;
+    @Autowired
+    private DeptScope deptScope;
 
     public Map<String, Object> capacity(Long stationId)
     {
@@ -85,6 +87,15 @@ public class StationAdminService
         }
         Station row = new Station();
         row.setName(req.name.trim());
+        // vi_station.dept_id 是 NOT NULL，而旧实现从未给它赋值：新建检测点必然
+        // Column 'dept_id' cannot be null，被全局异常处理器兜成 500「服务暂时不可用」。
+        // 归属由 DeptScope 决定：受限账号只能写自己的任职部门，越权直接 403。
+        Long deptId = deptScope.writeDeptId(req.deptId, "无权在所选部门下创建检测点");
+        if (deptId == null)
+        {
+            throw ApiException.validation("请选择检测点归属部门");
+        }
+        row.setDeptId(deptId);
         row.setAddress(req.address);
         row.setLng(req.lng);
         row.setLat(req.lat);
