@@ -20,7 +20,7 @@ function download(name,rows){const escape=value=>{let s=String(value??'');if(/^[
 U.applyDisplayPrefs=function(){const flags={dark:'v4.dark','more-contrast':'v4.contrast','no-transparency':'v4.transparency','no-motion':'v4.motion'};for(const[cls,key]of Object.entries(flags))document.body.classList.toggle(cls,!!U.get(key,false));};
 U.refinePageCopy=function(v,d){
  // Keep implementation notes in the review sidebar, not as long technical page subtitles.
- const brief={B03:'查询预约、接送安排和服务状态。',B04:'查看本次服务、车辆交接与售后记录。',B05:'按预约时间安排代驾，及时处理等待中的任务。',B07:'核对车辆、到站资料和交接信息。',B08:'对照证件核实登记内容。',B10:'处理资料核验和最终结果登记。',B11:'核对车辆与站点，填写本次最终检测结果。',B15:'记录问题、跟踪沟通与处理结果。',B16:'按同一标准审核普通申请人和检测员工。',B17:'维护服务站点、车型和营业信息。',B19:'安排开放时段与可接受的预约数量。',B20:'配置面向车主的收费规则。',B21:'维护服务通知与公开内容。',B22:'查看关键操作与访问记录。',B23:'查看预约、履约及资金核对统计。',B24:'维护预约派单与服务参数。',B25:'查看员工账号与检测点授权。',B26:'选择员工可以操作的检测点。',B30:'对照更正前后的检测结果。',B31:'核实订单付款与渠道退款状态。',B32:'审核必要的资料访问与导出。'};
+ const brief={B03:'查询预约、接送安排和服务状态。',B04:'查看本次服务、车辆交接与售后记录。',B05:'按预约时间安排代驾，及时处理等待中的任务。',B07:'核对车辆、到站资料和交接信息。',B08:'对照证件核实登记内容。',B10:'处理资料核验和最终结果登记。',B11:'核对车辆与站点，填写本次最终检测结果。',B15:'记录问题、跟踪沟通与处理结果。',B16:'审查冻结提交；本次复审和既有生效资格分开展示。',B17:'维护服务站点、车型和营业信息。',B19:'安排开放时段与可接受的预约数量。',B20:'配置面向车主的收费规则。',B21:'维护服务通知与公开内容。',B22:'查看关键操作与访问记录。',B23:'查看预约、履约及资金核对统计。',B24:'维护预约派单与服务参数。',B25:'查看员工账号与检测点授权。',B26:'选择员工可以操作的检测点。',B30:'对照更正前后的检测结果。',B31:'核实订单付款与渠道退款状态。',B32:'审核必要的资料访问与导出。'};
  if(brief[v.base])d.desc=brief[v.base];
 };
 U.afterRender=function(v){

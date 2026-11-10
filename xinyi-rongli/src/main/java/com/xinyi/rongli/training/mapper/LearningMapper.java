@@ -75,6 +75,9 @@ public interface LearningMapper {
 
     List<Map<String, Object>> requiredPassedFacts(long run);
 
+    List<Map<String, Object>> requiredPassedFactsAt(
+            @Param("run") long run, @Param("asOf") java.time.Instant asOf);
+
     Map<String, Object> currentMediaContext(
             @Param("account") long account, @Param("file") long file);
 }

@@ -667,7 +667,8 @@
     "evidence": [
       "docs/implementation/vehicle/evidence/Q04-20261110.json",
       "docs/implementation/vehicle/Q04/mini-browser.json",
-      "docs/implementation/vehicle/Q04/pc-browser.json"
+      "docs/implementation/vehicle/Q04/pc-browser.json",
+      "docs/implementation/vehicle/evidence/Q05-20261110.json"
     ],
     "boardId": "D04",
     "taskId": "Q04",
@@ -677,7 +678,8 @@
       "xinyi-ui/src/views/rongli/verification/ManualRecords.vue",
       "xinyi-ui/src/views/rongli/verification/DeviceSessions.vue"
     ],
-    "implementationNote": "真实SOTER原生适配及服务器权威进度、无凭证人工双人页面、原公司后台封存；GUI明确夹具，真实硬件/官方微信服务未验收。静态原型同步四项并另13项验证。"
+    "implementationNote": "真实SOTER原生适配及服务器权威进度、无凭证人工双人页面、原公司后台封存；GUI明确夹具，真实硬件/官方微信服务未验收。静态原型同步四项并另13项验证。",
+    "q05CompatibilityNote": "当前四项冻结提交与审批接通，APPROVED或EXPIRED历史DRIVER入口与实时新单资格分离，复审不覆盖旧生效事实。原报告/责任保留，D01/D02实际听单及派单仍后续。"
   },
   {
     "status": "VERIFIED",
@@ -685,23 +687,27 @@
     "evidence": [
       "docs/implementation/vehicle/evidence/Q01-20261107.json",
       "docs/implementation/vehicle/Q01/browser.json",
-      "docs/implementation/vehicle/evidence/Q04-20261110.json"
+      "docs/implementation/vehicle/evidence/Q04-20261110.json",
+      "docs/implementation/vehicle/evidence/Q05-20261110.json"
     ],
     "boardId": "D05",
     "taskId": "Q01",
     "implementationNote": "本人材料、严格提交、冻结进度及结构化驳回补正按本次范围实际验证，不授正式身份。",
-    "q04CompatibilityNote": "严格提交改为本轮用户确认四项，不再要实名活体，只有当前认可canonical结果入快照；Q05审批/DRIVER授予后续。"
+    "q04CompatibilityNote": "严格提交改为本轮用户确认四项，不再要实名活体，只有当前认可canonical结果入快照；Q05审批/DRIVER授予后续。",
+    "q05CompatibilityNote": "当前四项冻结提交与审批接通，APPROVED或EXPIRED历史DRIVER入口与实时新单资格分离，复审不覆盖旧生效事实。原报告/责任保留，D01/D02实际听单及派单仍后续。"
   },
   {
     "status": "PARTIAL",
     "implementationFile": "xinyi-miniapp/src/pages/qualification/index.vue",
     "evidence": [
       "docs/implementation/vehicle/evidence/Q01-20261107.json",
-      "docs/implementation/vehicle/Q01/browser.json"
+      "docs/implementation/vehicle/Q01/browser.json",
+      "docs/implementation/vehicle/evidence/Q05-20261110.json"
     ],
     "boardId": "D05-passed",
     "taskId": "Q01",
-    "implementationNote": "既有APPROVED投影与切换入口已验；真实独立审批、生效与角色刷新留Q05。"
+    "implementationNote": "既有APPROVED投影与切换入口已验；真实独立审批、生效与角色刷新留Q05。",
+    "q05CompatibilityNote": "当前四项冻结提交与审批接通，APPROVED或EXPIRED历史DRIVER入口与实时新单资格分离，复审不覆盖旧生效事实。原报告/责任保留，D01/D02实际听单及派单仍后续。"
   },
   {
     "status": "VERIFIED",
@@ -977,11 +983,13 @@
     "implementationFile": "xinyi-miniapp/src/pages/qualification/index.vue",
     "evidence": [
       "docs/implementation/vehicle/evidence/Q01-20261107.json",
-      "docs/implementation/vehicle/Q01/browser.json"
+      "docs/implementation/vehicle/Q01/browser.json",
+      "docs/implementation/vehicle/evidence/Q05-20261110.json"
     ],
     "boardId": "D28",
     "taskId": "Q01",
-    "implementationNote": "新复审、当前有效资格分离及材料/状态已验；Q03/Q04真实培训核验与Q05审核/到期管理后续。"
+    "implementationNote": "新复审、当前有效资格分离及材料/状态已验；Q03/Q04真实培训核验与Q05审核/到期管理后续。",
+    "q05CompatibilityNote": "当前四项冻结提交与审批接通，APPROVED或EXPIRED历史DRIVER入口与实时新单资格分离，复审不覆盖旧生效事实。原报告/责任保留，D01/D02实际听单及派单仍后续。"
   },
   {
     "status": "PARTIAL",
@@ -1675,18 +1683,38 @@
     "taskId": "S04"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "VERIFIED",
+    "implementationFile": "xinyi-ui/src/views/rongli/qualification/index.vue",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/Q05-20261110.json",
+      "docs/implementation/vehicle/Q05/pc-browser.json",
+      "docs/implementation/vehicle/Q05/mini-browser.json",
+      "docs/implementation/vehicle/Q05/prototype-browser.json"
+    ],
     "boardId": "B16",
-    "taskId": "Q05"
+    "taskId": "Q05",
+    "additionalImplementationFiles": [
+      "xinyi-ui/src/api/rongli/qualification.ts",
+      "xinyi-miniapp/src/pages/qualification/index.vue"
+    ],
+    "implementationNote": "真实ADMIN列表/详情/审批、独立截止及补正、未知结果UUID、敏感证件受控查看和原生效资格分离；GUI为明确API夹具，真实HTTP/MySQL另有55专项。静态原型另13项。"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "VERIFIED",
+    "implementationFile": "xinyi-ui/src/views/rongli/qualification/index.vue",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/Q05-20261110.json",
+      "docs/implementation/vehicle/Q05/pc-browser.json",
+      "docs/implementation/vehicle/Q05/mini-browser.json",
+      "docs/implementation/vehicle/Q05/prototype-browser.json"
+    ],
     "boardId": "B16-review",
-    "taskId": "Q05"
+    "taskId": "Q05",
+    "additionalImplementationFiles": [
+      "xinyi-ui/src/api/rongli/qualification.ts",
+      "xinyi-miniapp/src/pages/qualification/index.vue"
+    ],
+    "implementationNote": "真实ADMIN列表/详情/审批、独立截止及补正、未知结果UUID、敏感证件受控查看和原生效资格分离；GUI为明确API夹具，真实HTTP/MySQL另有55专项。静态原型另13项。"
   },
   {
     "status": "IMPLEMENTED",

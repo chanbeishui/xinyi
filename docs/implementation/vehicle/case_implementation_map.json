@@ -116,12 +116,17 @@
     "testMethod": "test_tc_014"
   },
   {
-    "status": "NOT_RUN",
-    "testFiles": [],
-    "evidence": null,
+    "status": "VERIFIED",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q05QualificationIT.java"
+    ],
+    "evidence": [
+      "docs/implementation/vehicle/evidence/Q05-20261110.json"
+    ],
     "caseId": "TC-015",
-    "taskId": "I01",
-    "testMethod": "test_tc_015"
+    "taskId": "Q05",
+    "testMethod": "applicantHistoricEmployeeBindingCannotBeUsedToApproveTheirOwnSubmission",
+    "note": "真实HTTP403/数据库无审核与生效写入，vi_event_log精确ADMIN主体及VI_SELF_REVIEW_DENIED留痕；可信手机号与历史绑定另有覆盖。"
   },
   {
     "status": "NOT_RUN",
@@ -132,12 +137,17 @@
     "testMethod": "test_tc_016"
   },
   {
-    "status": "NOT_RUN",
-    "testFiles": [],
-    "evidence": null,
+    "status": "PARTIAL",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q05QualificationIT.java"
+    ],
+    "evidence": [
+      "docs/implementation/vehicle/evidence/Q05-20261110.json"
+    ],
     "caseId": "TC-017",
-    "taskId": "I01",
-    "testMethod": "test_tc_017"
+    "taskId": "D02",
+    "testMethod": "pastReviewDeadlineBlocksNewAssignmentsBeforeAnyJobRunsAndKeepsDriverHistoryRole",
+    "note": "只验证可信资格到期及基础新单Policy实时拒绝，保留历史/在手DRIVER入口；完整自动/人工派单与接受入口仍由D02验收，未冒充全程通过。"
   },
   {
     "status": "NOT_RUN",
@@ -2600,15 +2610,19 @@
     "note": "真实待审核/驳回会话与DRIVER切换拒绝已验；员工不免审。"
   },
   {
-    "status": "PARTIAL",
+    "status": "VERIFIED",
     "testFiles": [
-      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q01QualificationIT.java"
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q01QualificationIT.java",
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q05QualificationIT.java"
     ],
-    "evidence": "docs/implementation/vehicle/evidence/Q01-20261107.json",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/Q01-20261107.json",
+      "docs/implementation/vehicle/evidence/Q05-20261110.json"
+    ],
     "caseId": "TC-R62-005",
-    "taskId": "Q01",
-    "testMethod": "renewalDraftDoesNotOverwriteTheEffectiveQualificationOrApprovedHistory",
-    "note": "只有既有通过状态投影及复审保护已验；真实后台独立批准到角色生效留Q05。"
+    "taskId": "Q05",
+    "testMethod": "completeRealDeviceManualTrainingSubmissionAuditAndExplicitRoleSwitchWorkTogether",
+    "note": "真实四项上游→Q01认证提交→独立最终审核→权限版本→本人主动DRIVER切换完整链，无自动切换/听单；真实微信/硬件未执行。"
   },
   {
     "status": "PASS",

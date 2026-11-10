@@ -214,6 +214,7 @@
       "biz:driverqualification:audit",
       "biz:driverqualification:list",
       "biz:driverqualification:query",
+      "biz:driverqualification:sensitive",
       "biz:driverstatement:add",
       "biz:driverstatement:create",
       "biz:driverstatement:list",
@@ -499,7 +500,10 @@
       "VIEW_DEVICE_AUTH",
       "CLOSE_DEVICE_AUTH",
       "VIEW_MANUAL_VERIFICATION",
-      "REVIEW_MANUAL_VERIFICATION"
+      "REVIEW_MANUAL_VERIFICATION",
+      "VIEW_QUALIFICATION",
+      "AUDIT_QUALIFICATION",
+      "REPAIR_QUALIFICATION_REJECTION"
     ],
     "AccountStatus": [
       "ACTIVE",
@@ -999,6 +1003,28 @@
       "PENDING_REVIEW",
       "CONFIRMED",
       "RETURNED"
+    ],
+    "QualificationReviewDecision": [
+      "APPROVE",
+      "REJECT",
+      "REPAIR_REJECTION"
+    ],
+    "QualificationReviewKind": [
+      "DECISION",
+      "REPAIR_REJECTION"
+    ],
+    "QualificationMaterialField": [
+      "realName",
+      "idCardNo",
+      "idCardFrontFileId",
+      "idCardBackFileId",
+      "licenseMainFileId",
+      "licenseSubFileId",
+      "licenseClass",
+      "firstIssueDate",
+      "validFrom",
+      "validTo",
+      "longTermValid"
     ]
   }
 }

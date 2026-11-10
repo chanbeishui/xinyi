@@ -1616,6 +1616,17 @@
         "POST /api/admin/verification-sessions/{id}/close"
       ],
       "usage": "OPERATION"
+    },
+    {
+      "code": "biz:driverqualification:sensitive",
+      "resource": "driverqualification",
+      "action": "sensitive",
+      "description": "查看已认证提交快照中的指定证件原图",
+      "operations": [
+        "POST /api/common/files/{fileId}/access",
+        "GET /api/common/files/{fileId}"
+      ],
+      "usage": "CONDITIONAL_BUSINESS_FILE_READ"
     }
   ],
   "capabilities": [
@@ -2476,7 +2487,10 @@
     "VIEW_DEVICE_AUTH",
     "CLOSE_DEVICE_AUTH",
     "VIEW_MANUAL_VERIFICATION",
-    "REVIEW_MANUAL_VERIFICATION"
+    "REVIEW_MANUAL_VERIFICATION",
+    "VIEW_QUALIFICATION",
+    "AUDIT_QUALIFICATION",
+    "REPAIR_QUALIFICATION_REJECTION"
   ],
   "operations": [
     {
@@ -4096,8 +4110,9 @@
       "capability": null,
       "authorization": {
         "realm": "ADMIN",
-        "scope": "ORG_DEPT_STATION",
-        "permission": "biz:driverqualification:list"
+        "scope": "COMPANY_OWNER_DEPT",
+        "permission": "biz:driverqualification:list",
+        "scopeDetails": "读取按提交原公司，当前公司投影另需当前query；审核query/audit覆盖原与当前公司并集，批准再核冻结公司epoch。"
       },
       "summary": "资格审核列表"
     },
@@ -4109,8 +4124,9 @@
       "capability": null,
       "authorization": {
         "realm": "ADMIN",
-        "scope": "ORG_DEPT_STATION",
-        "permission": "biz:driverqualification:query"
+        "scope": "COMPANY_OWNER_DEPT",
+        "permission": "biz:driverqualification:query",
+        "scopeDetails": "读取按提交原公司，当前公司投影另需当前query；审核query/audit覆盖原与当前公司并集，批准再核冻结公司epoch。"
       },
       "summary": "资格审核详情"
     },
@@ -4122,8 +4138,12 @@
       "capability": null,
       "authorization": {
         "realm": "ADMIN",
-        "scope": "ORG_DEPT_STATION",
-        "permission": "biz:driverqualification:audit"
+        "scope": "COMPANY_OWNER_DEPT",
+        "permission": "biz:driverqualification:audit",
+        "scopeDetails": "读取按提交原公司，当前公司投影另需当前query；审核query/audit覆盖原与当前公司并集，批准再核冻结公司epoch。",
+        "additionalRequiredPermissions": [
+          "biz:driverqualification:query"
+        ]
       },
       "summary": "批准或驳回资格"
     },

@@ -1,0 +1,109 @@
+{
+  "mode": "Browser plugin not available；真实H5资格页+明确审批/生效状态API夹具，不替代后端真实审批和到期任务验收",
+  "url": "http://127.0.0.1:5175/#/pages/qualification/index",
+  "viewports": [
+    "390x844",
+    "1440x1000"
+  ],
+  "checks": [
+    "审核中只读本次提交，未批准不显示代驾身份；页面刷新只GET，不发审批/听单请求",
+    "批准后刷新真实session才显示已有代驾切换入口，截止归属生效资格，不自动切角色或开启听单",
+    "另建复审草稿与原已批准资格并存，原截止和历史身份入口不被新草稿覆盖",
+    "驳回显示公开意见且只开放指定补正字段，不显示后台内部意见或顺便解锁其他资料",
+    "到期状态与仍保留的历史DRIVER入口分开，限制新单说明清楚，不删除在手服务责任或假装可接单",
+    "会话实时EXPIRED优先于申请持久APPROVED，不依赖客户端时钟或定时任务，仍保留历史DRIVER切换入口",
+    "真实403清除旧批准状态、角色切换入口及申请材料，不能继续凭旧投影操作"
+  ],
+  "errors": [],
+  "warnings": [],
+  "expectedHttpErrors": [
+    "Failed to load resource: the server responded with a status of 403 (Forbidden)"
+  ],
+  "unknown": [],
+  "requests": [
+    {
+      "method": "GET",
+      "path": "/api/common/session"
+    },
+    {
+      "method": "GET",
+      "path": "/api/public/service-config"
+    },
+    {
+      "method": "GET",
+      "path": "/api/app/driver/qualification"
+    },
+    {
+      "method": "GET",
+      "path": "/api/common/session"
+    },
+    {
+      "method": "GET",
+      "path": "/api/public/service-config"
+    },
+    {
+      "method": "GET",
+      "path": "/api/app/driver/qualification"
+    },
+    {
+      "method": "GET",
+      "path": "/api/common/session"
+    },
+    {
+      "method": "GET",
+      "path": "/api/public/service-config"
+    },
+    {
+      "method": "GET",
+      "path": "/api/app/driver/qualification"
+    },
+    {
+      "method": "GET",
+      "path": "/api/common/session"
+    },
+    {
+      "method": "GET",
+      "path": "/api/public/service-config"
+    },
+    {
+      "method": "GET",
+      "path": "/api/app/driver/qualification"
+    },
+    {
+      "method": "GET",
+      "path": "/api/common/session"
+    },
+    {
+      "method": "GET",
+      "path": "/api/public/service-config"
+    },
+    {
+      "method": "GET",
+      "path": "/api/app/driver/qualification"
+    },
+    {
+      "method": "GET",
+      "path": "/api/common/session"
+    },
+    {
+      "method": "GET",
+      "path": "/api/public/service-config"
+    },
+    {
+      "method": "GET",
+      "path": "/api/app/driver/qualification"
+    },
+    {
+      "method": "GET",
+      "path": "/api/common/session"
+    },
+    {
+      "method": "GET",
+      "path": "/api/public/service-config"
+    },
+    {
+      "method": "GET",
+      "path": "/api/app/driver/qualification"
+    }
+  ]
+}

@@ -235,7 +235,7 @@ CONSTRAINT ck_employee_link_revoke CHECK ((status='REVOKED' AND revoked_at IS NO
 CONSTRAINT ck_employee_link_source_actor CHECK (source='WECHAT_PHONE_MATCH' AND bound_by IS NULL)
 </code></pre>
 <h2>vi_driver_profile · 代驾资格与听单偏好</h2>
-<p>每名代驾明确归属一个公司部门，旗下站点共用；owner_dept_id不从员工、创建人或历史订单推断。存量NULL待全数据管理员显式认领；归属变更检查原新范围并集且无待响应/占用/在手任务，转移后禁新。资格审核、本人听单偏好与行政开关分开；暂停不释放承接或保管。 Q03：training_context_revision只在实际公司归属变化时递增，A→B→A不可复活旧学习；备注及行政开关不影响既有培训。</p>
+<p>每名代驾明确归属一个公司部门，旗下站点共用；owner_dept_id不从员工、创建人或历史订单推断。存量NULL待全数据管理员显式认领；归属变更检查原新范围并集且无待响应/占用/在手任务，转移后禁新。资格审核、本人听单偏好与行政开关分开；暂停不释放承接或保管。 Q03：training_context_revision只在实际公司归属变化时递增，A→B→A不可复活旧学习；备注及行政开关不影响既有培训。 Q05：effective_snapshot_id仅实际批准事务切换；新单实时核资格/公司epoch/上海证件日期/明确UTC复审，不依赖Job准时。曾批准DRIVER仅历史/在手视角，不能作为新单资格；到期只更新资格状态，行政/听单/承接/占用均保留。</p>
 <table>
 <thead>
 <tr>
@@ -283,7 +283,7 @@ CONSTRAINT ck_employee_link_source_actor CHECK (source='WECHAT_PHONE_MATCH' AND 
 <tr>
   <td>review_due_at</td>
   <td><code>DATETIME(3)</code></td>
-  <td>年度复审到期</td>
+  <td>审核员明确的UTC复审截止；不默认年度周期</td>
 </tr>
 <tr>
   <td>license_class</td>
@@ -324,6 +324,11 @@ CONSTRAINT ck_employee_link_source_actor CHECK (source='WECHAT_PHONE_MATCH' AND 
   <td>version</td>
   <td><code>BIGINT NOT NULL DEFAULT 0</code></td>
   <td>乐观锁版本</td>
+</tr>
+<tr>
+  <td>effective_snapshot_id</td>
+  <td><code>BIGINT NULL</code></td>
+  <td>当前生效资格不可变快照；历史NULL不猜回填</td>
 </tr>
 </tbody>
 </table>
@@ -2095,7 +2100,7 @@ CONSTRAINT ck_66_37b55c2a7354 CHECK (`photo_type` IN ('FRONT','BACK','LEFT','RIG
 CONSTRAINT ck_ver_photo CHECK (version &gt;= 0)
 </code></pre>
 <h2>vi_file · 私有文件登记与校验</h2>
-<p>访问签名不进明文长期表，不接受客户端READY/摘要即可信 Q02新增TRAINING_MEDIA仅ADMIN公司DRAFT父课程、私有MP4不超过100MiB；READY由实际容器/轨道/时长与流式SHA校验产生，发布后不可重写，可由同族派生白名单只读继承。图片仍JPEG/PNG10MiB。 Q03：MINI仅当前本人冻结run引用的发布媒体可读，不具上传权；300秒READ票据MAC绑定申请/材料/run/公司epoch，逐块重新校验。后台原公司DRAFT维护规则保留。</p>
+<p>访问签名不进明文长期表，不接受客户端READY/摘要即可信 Q02新增TRAINING_MEDIA仅ADMIN公司DRAFT父课程、私有MP4不超过100MiB；READY由实际容器/轨道/时长与流式SHA校验产生，发布后不可重写，可由同族派生白名单只读继承。图片仍JPEG/PNG10MiB。 Q03：MINI仅当前本人冻结run引用的发布媒体可读，不具上传权；300秒READ票据MAC绑定申请/材料/run/公司epoch，逐块重新校验。后台原公司DRAFT维护规则保留。 Q05：ADMIN读取资格原图须独立query/sensitive/files query/access及原提交公司范围；只允许已认证当前提交四槽位，草稿或legacy无seal不开放。60秒READ短票绑定submission revision/seal摘要，IO前后重鉴权；实际访问理由AAD加密审计，不向后台开放写入。</p>
 <table>
 <thead>
 <tr>
@@ -7831,8 +7836,8 @@ CONSTRAINT ck_recipient_shape CHECK ((kind='PHONE' AND phone_cipher IS NOT NULL 
 </tr>
 </tbody>
 </table>
-<h2>vi_driver_application_submission · 资格申请不可变提交快照</h2>
-<p>服务端事务内追加已完整通过的材料、公司、同意与核验依据；不可更新/删除，不能以客户端声称PASSED替代。</p>
+<h2>vi_driver_application_submission · 资格申请不可变提交快照；无更新删除业务入口</h2>
+<p>本人严格提交事务冻结材料、四项可信证明、公司epoch、实际提交session、明确同意和已知后台同人集合；JSON/UTC时间回读后按DBID一次认证封装。审核消费冻结原始事实，不要求原登录仍在线，不用后改草稿替代；新申请/材料仍须本次session设备认证。历史新增字段NULL保持隔离，不猜回填可信；仅历史驳回结构修复，不直接批准。</p>
 <table>
 <thead>
 <tr>
@@ -7916,6 +7921,26 @@ CONSTRAINT ck_recipient_shape CHECK ((kind='PHONE' AND phone_cipher IS NOT NULL 
   <td>submitted_at</td>
   <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
   <td>提交时刻UTC</td>
+</tr>
+<tr>
+  <td>company_revision</td>
+  <td><code>BIGINT NULL</code></td>
+  <td>提交时专用公司归属epoch；历史NULL不可信</td>
+</tr>
+<tr>
+  <td>source_session_id</td>
+  <td><code>BIGINT NULL</code></td>
+  <td>提交时实际MINI登录会话；审核不要求其仍在线</td>
+</tr>
+<tr>
+  <td>applicant_user_ids</td>
+  <td><code>JSON NULL</code></td>
+  <td>服务端冻结已知申请人后台身份；换号不抹去自审约束</td>
+</tr>
+<tr>
+  <td>submission_seal</td>
+  <td><code>MEDIUMBLOB NULL</code></td>
+  <td>取得数据库ID后同事务一次初始化的提交认证封装；历史NULL不可批准</td>
 </tr>
 </tbody>
 </table>
@@ -8306,6 +8331,202 @@ CONSTRAINT ck_recipient_shape CHECK ((kind='PHONE' AND phone_cipher IS NOT NULL 
   <td>version</td>
   <td><code>BIGINT NOT NULL DEFAULT 0</code></td>
   <td>经办复核CAS</td>
+</tr>
+</tbody>
+</table>
+<h2>vi_qualification_review · 资格不可变审核历史；内部意见不对外返回</h2>
+<p>权威归属为真实提交原公司；写入须query/audit覆盖原与当前档案公司并集。审核仅指明的申请/提交revision/CAS/公司epoch，禁止已知申请人本人，人工经办及复核人可参与最终审核。正常审核及旧REJECTED结构修复分kind，事实仅追加，内部意见取DBID后一次AAD加密且不返回GET；公开意见和精确补正字段分列。旧无可信提交不批准或开放原图，修复仅使申请可补正，不授DRIVER。</p>
+<table>
+<thead>
+<tr>
+  <th>字段</th>
+  <th>SQL类型与约束</th>
+  <th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>id</td>
+  <td><code>BIGINT NOT NULL AUTO_INCREMENT</code></td>
+  <td>数据库生成不可变审核事实主键</td>
+</tr>
+<tr>
+  <td>application_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>真实资格申请</td>
+</tr>
+<tr>
+  <td>driver_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>真实父代驾档案</td>
+</tr>
+<tr>
+  <td>owner_dept_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>审核原公司归属；历史修复继承显式父档案公司</td>
+</tr>
+<tr>
+  <td>company_revision</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>审核对应的专用公司归属epoch</td>
+</tr>
+<tr>
+  <td>submission_id</td>
+  <td><code>BIGINT NULL</code></td>
+  <td>可信提交快照；仅历史驳回结构修复可空</td>
+</tr>
+<tr>
+  <td>submission_revision</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>本次明确提交修订，历史修复可为0</td>
+</tr>
+<tr>
+  <td>kind</td>
+  <td><code>VARCHAR(32) NOT NULL</code></td>
+  <td>QualificationReviewKind: DECISION,REPAIR_REJECTION</td>
+</tr>
+<tr>
+  <td>decision</td>
+  <td><code>VARCHAR(32) NOT NULL</code></td>
+  <td>QualificationReviewDecision: APPROVE,REJECT,REPAIR_REJECTION</td>
+</tr>
+<tr>
+  <td>reviewer_user_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>真实ADMIN审核人，禁止已知申请人本人</td>
+</tr>
+<tr>
+  <td>reviewed_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>服务器审核时刻UTC</td>
+</tr>
+<tr>
+  <td>internal_opinion_cipher</td>
+  <td><code>MEDIUMBLOB NULL</code></td>
+  <td>取得ID后一次AAD加密内部意见；不返回GET</td>
+</tr>
+<tr>
+  <td>public_opinion</td>
+  <td><code>VARCHAR(1000) NULL</code></td>
+  <td>可向本人公开的审核说明；与内部意见分离</td>
+</tr>
+<tr>
+  <td>reject_fields</td>
+  <td><code>JSON NOT NULL</code></td>
+  <td>明确补正的材料字段；批准必须空集合</td>
+</tr>
+<tr>
+  <td>application_version</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>审核前明确申请CAS</td>
+</tr>
+<tr>
+  <td>profile_version</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>审核前明确档案CAS</td>
+</tr>
+</tbody>
+</table>
+<h2>vi_qualification_snapshot · 实际批准的不可变生效资格快照；到期不删除历史</h2>
+<p>实际APPROVE才生成不可变生效版本，绑定司机/账号/真实提交/审核/公司epoch/材料及确切证件、复审和期限。取得DBID后一次认证封装；原MINI后续退出不撤销已提交事实。截止=min(明确未来UTC复审，上海证件到期日次日00:00)，长期须明确，不默认一年。复审驳回不覆盖旧快照；到期实时禁新单、版本任务幂等补偿，不改行政开关/听单/在手责任。旧任务不得使新版本过期。</p>
+<table>
+<thead>
+<tr>
+  <th>字段</th>
+  <th>SQL类型与约束</th>
+  <th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>id</td>
+  <td><code>BIGINT NOT NULL AUTO_INCREMENT</code></td>
+  <td>数据库生成生效资格快照主键</td>
+</tr>
+<tr>
+  <td>driver_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>真实父代驾档案</td>
+</tr>
+<tr>
+  <td>account_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>真实MINI申请人账号</td>
+</tr>
+<tr>
+  <td>application_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>实际批准的申请</td>
+</tr>
+<tr>
+  <td>submission_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>实际批准的可信提交快照</td>
+</tr>
+<tr>
+  <td>review_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>唯一实际批准审核事实</td>
+</tr>
+<tr>
+  <td>qualification_revision</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>司机专用生效资格单调版本</td>
+</tr>
+<tr>
+  <td>owner_dept_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>批准时真实公司</td>
+</tr>
+<tr>
+  <td>company_revision</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>批准时专用公司归属epoch</td>
+</tr>
+<tr>
+  <td>material_revision</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>批准的实际材料修订</td>
+</tr>
+<tr>
+  <td>material_hash</td>
+  <td><code>BINARY(32) NOT NULL</code></td>
+  <td>批准材料有密钥摘要</td>
+</tr>
+<tr>
+  <td>license_class</td>
+  <td><code>VARCHAR(64) NOT NULL</code></td>
+  <td>冻结实际准驾类别，不以字母排序判断车型</td>
+</tr>
+<tr>
+  <td>license_valid_to</td>
+  <td><code>DATETIME(3) NULL</code></td>
+  <td>上海证件到期日00:00转换UTC；到期当日仍有效</td>
+</tr>
+<tr>
+  <td>license_long_term</td>
+  <td><code>TINYINT NOT NULL</code></td>
+  <td>是否明确长期有效；不得把NULL期限当永久</td>
+</tr>
+<tr>
+  <td>review_due_at</td>
+  <td><code>DATETIME(3) NOT NULL</code></td>
+  <td>审核员本次明确的未来UTC复审截止，不默认一年</td>
+</tr>
+<tr>
+  <td>expires_at</td>
+  <td><code>DATETIME(3) NOT NULL</code></td>
+  <td>实际期限取复审截止与证件到期日次日00:00较早值</td>
+</tr>
+<tr>
+  <td>approved_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>真实批准UTC时刻</td>
+</tr>
+<tr>
+  <td>snapshot_seal</td>
+  <td><code>MEDIUMBLOB NULL</code></td>
+  <td>取得ID后同事务一次初始化的生效事实认证封装</td>
 </tr>
 </tbody>
 </table>

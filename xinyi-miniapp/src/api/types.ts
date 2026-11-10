@@ -333,12 +333,40 @@ export type Qualification = {
   verificationSessionId: string | null;
 };
 
-export type QualificationAudit = {
-  expectedVersion: number;
-  decision: 'APPROVE' | 'REJECT';
-  opinion: string;
-  reviewDueAt?: string;
-};
+export type QualificationAudit =
+  | {
+      expectedVersion: number;
+      expectedProfileVersion: number;
+      expectedSubmissionRevision: number;
+      expectedCompanyRevision: number;
+      decision: 'APPROVE';
+      opinion: string;
+      publicOpinion: string | null;
+      rejectFields: Array<QualificationMaterialField>;
+      reviewDueAt: string;
+    }
+  | {
+      expectedVersion: number;
+      expectedProfileVersion: number;
+      expectedSubmissionRevision: number;
+      expectedCompanyRevision: number;
+      decision: 'REJECT';
+      opinion: string;
+      publicOpinion: string;
+      rejectFields: Array<QualificationMaterialField>;
+      reviewDueAt: null | null;
+    }
+  | {
+      expectedVersion: number;
+      expectedProfileVersion: number;
+      expectedSubmissionRevision: number;
+      expectedCompanyRevision: number;
+      decision: 'REPAIR_REJECTION';
+      opinion: string;
+      publicOpinion: string;
+      rejectFields: Array<QualificationMaterialField>;
+      reviewDueAt: null | null;
+    };
 
 export type Answer = { questionId: string; answerCodes: Array<string> };
 
@@ -2228,6 +2256,7 @@ export type PermissionCode =
   | 'biz:driverqualification:audit'
   | 'biz:driverqualification:list'
   | 'biz:driverqualification:query'
+  | 'biz:driverqualification:sensitive'
   | 'biz:driverstatement:add'
   | 'biz:driverstatement:create'
   | 'biz:driverstatement:list'
@@ -2509,7 +2538,10 @@ export type AllowedAction =
   | 'VIEW_DEVICE_AUTH'
   | 'CLOSE_DEVICE_AUTH'
   | 'VIEW_MANUAL_VERIFICATION'
-  | 'REVIEW_MANUAL_VERIFICATION';
+  | 'REVIEW_MANUAL_VERIFICATION'
+  | 'VIEW_QUALIFICATION'
+  | 'AUDIT_QUALIFICATION'
+  | 'REPAIR_QUALIFICATION_REJECTION';
 
 export type AccountStatus = 'ACTIVE' | 'LOCKED';
 
@@ -3005,7 +3037,7 @@ export type QualificationDraftView = {
 
 export type QualificationCheck = {
   type: 'DEVICE_AUTH' | 'BACKGROUND' | 'LICENSE' | 'TRAINING';
-  status: 'CREATED' | 'PROCESSING' | 'PASSED' | 'FAILED' | 'EXPIRED' | 'UNAVAILABLE';
+  status: 'CREATED' | 'PROCESSING' | 'PASSED' | 'FAILED' | 'EXPIRED' | 'UNAVAILABLE' | 'UNKNOWN';
 };
 
 export type QualificationBlocker = {
@@ -3246,4 +3278,126 @@ export type ManualVerificationApplication = {
   version: number;
   companyRevision: number;
   materialRevision: number;
+};
+
+export type QualificationReviewDecision = 'APPROVE' | 'REJECT' | 'REPAIR_REJECTION';
+
+export type QualificationReviewKind = 'DECISION' | 'REPAIR_REJECTION';
+
+export type QualificationMaterialField =
+  | 'realName'
+  | 'idCardNo'
+  | 'idCardFrontFileId'
+  | 'idCardBackFileId'
+  | 'licenseMainFileId'
+  | 'licenseSubFileId'
+  | 'licenseClass'
+  | 'firstIssueDate'
+  | 'validFrom'
+  | 'validTo'
+  | 'longTermValid';
+
+export type QualificationSubmittedMaterials = {
+  realName: string | null;
+  idCardNoMask: string | null;
+  idCardNoProvided: boolean;
+  idCardFrontFileId: string | null;
+  idCardBackFileId: string | null;
+  licenseMainFileId: string | null;
+  licenseSubFileId: string | null;
+  licenseClass: string | null;
+  firstIssueDate: string | null;
+  validFrom: string | null;
+  validTo: string | null;
+  longTermValid: boolean;
+  consentVersion: string | null;
+  consentAcceptedAt: string | null;
+  consentTextHash: string | null;
+};
+
+export type QualificationAdminSummary = {
+  applicationId: string;
+  driverId: string;
+  applicantName: string;
+  ownerDeptId: string | null;
+  companyName: string | null;
+  currentOwnerDeptId: string | null;
+  currentCompanyName: string | null;
+  companyRevision: number | null;
+  status: QualificationStatus;
+  effectiveQualificationStatus:
+    | ('DRAFT' | 'SUBMITTED' | 'APPROVED' | 'REJECTED' | 'EXPIRED' | 'SUSPENDED')
+    | null;
+  profileVersion: number | null;
+  version: number;
+  submissionRevision: number;
+  materialRevision: number;
+  submittedAt: string | null;
+  reviewDueAt: string | null;
+  qualificationRevision: number | null;
+  selfReviewDenied: boolean;
+  hasTrustedSubmission: boolean;
+  legacyRejectionRepairable: boolean;
+  allowedActions: Array<AllowedAction>;
+};
+
+export type QualificationEffectiveSnapshot = {
+  snapshotId: string;
+  qualificationRevision: number;
+  ownerDeptId: string;
+  companyRevision: number;
+  licenseClass: string;
+  licenseValidTo: string | null;
+  licenseLongTerm: boolean;
+  reviewDueAt: string;
+  expiresAt: string;
+  approvedAt: string;
+  status: QualificationStatus;
+  effectiveStatus: QualificationStatus;
+};
+
+export type QualificationReviewEntry = {
+  reviewId: string;
+  decision: QualificationReviewDecision;
+  submissionRevision: number;
+  publicOpinion: string | null;
+  rejectFields: Array<QualificationMaterialField>;
+  reviewedAt: string;
+  reviewerUserId: string;
+};
+
+export type QualificationAdminDetail = {
+  applicationId: string;
+  driverId: string;
+  applicantName: string;
+  ownerDeptId: string | null;
+  companyName: string | null;
+  currentOwnerDeptId: string | null;
+  currentCompanyName: string | null;
+  companyRevision: number | null;
+  status: QualificationStatus;
+  effectiveQualificationStatus:
+    | ('DRAFT' | 'SUBMITTED' | 'APPROVED' | 'REJECTED' | 'EXPIRED' | 'SUSPENDED')
+    | null;
+  profileVersion: number | null;
+  version: number;
+  submissionRevision: number;
+  materialRevision: number;
+  submittedAt: string | null;
+  reviewDueAt: string | null;
+  qualificationRevision: number | null;
+  selfReviewDenied: boolean;
+  hasTrustedSubmission: boolean;
+  legacyRejectionRepairable: boolean;
+  allowedActions: Array<AllowedAction>;
+  draft: QualificationSubmittedMaterials | null;
+  items: Array<'idCardFrontFileId' | 'idCardBackFileId' | 'licenseMainFileId' | 'licenseSubFileId'>;
+  rejectFields: Array<QualificationMaterialField>;
+  publicReviewOpinion: string | null;
+  checks: Array<QualificationCheck>;
+  reviews: Array<QualificationReviewEntry>;
+  reviewBlockers: Array<QualificationBlocker>;
+  submissionId: string | null;
+  effectiveSnapshotId: string | null;
+  effectiveQualification: QualificationEffectiveSnapshot | null;
 };

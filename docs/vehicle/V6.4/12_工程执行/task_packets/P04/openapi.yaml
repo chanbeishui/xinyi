@@ -1223,6 +1223,9 @@ components:
       - CLOSE_DEVICE_AUTH
       - VIEW_MANUAL_VERIFICATION
       - REVIEW_MANUAL_VERIFICATION
+      - VIEW_QUALIFICATION
+      - AUDIT_QUALIFICATION
+      - REPAIR_QUALIFICATION_REJECTION
   responses:
     UnprocessableEntity:
       description: 填写内容不符合要求。参见errorCode注册表；HTTP状态与code一致。

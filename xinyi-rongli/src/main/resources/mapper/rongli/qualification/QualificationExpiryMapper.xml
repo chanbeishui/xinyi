@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xinyi.rongli.qualification.mapper.QualificationExpiryMapper">
+    <select id="account" resultType="long">
+        SELECT account_id FROM vi_driver_profile WHERE id=#{driverId}
+    </select>
+    <select id="review" resultType="map">
+        SELECT driver_id,decision FROM vi_qualification_review WHERE id=#{id}
+    </select>
+    <select id="missingTimers" resultType="long">
+        SELECT profile.id
+        FROM vi_driver_profile profile
+        JOIN vi_qualification_snapshot snapshot ON snapshot.id=profile.effective_snapshot_id
+            AND snapshot.driver_id=profile.id
+            AND snapshot.qualification_revision=profile.qualification_revision
+        WHERE profile.qualification_status='APPROVED'
+            AND NOT EXISTS(
+                SELECT 1 FROM vi_outbox event
+                WHERE event.event_key=CONCAT('QUALIFICATION_EXPIRY:',snapshot.id)
+            )
+        ORDER BY snapshot.expires_at,profile.id
+        LIMIT 200
+    </select>
+    <!-- 只改变本版本资格有效状态，不修改行政/听单/承接/占用，不把历史申请改成另一份审核事实。 -->
+    <update id="expire">
+        UPDATE vi_driver_profile
+        SET qualification_status='EXPIRED',version=version+1,updated_at=UTC_TIMESTAMP(3)
+        WHERE id=#{id} AND version=#{version}
+            AND effective_snapshot_id=#{snapshotId} AND qualification_revision=#{revision}
+            AND qualification_status='APPROVED'
+    </update>
+</mapper>

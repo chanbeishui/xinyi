@@ -344,6 +344,24 @@
         WHERE progress.run_id=#{run}
         GROUP BY progress.training_id,progress.verified_duration_millis,progress.status
     </select>
+    <!-- 冻结审批不采入提交后的考试或进度变更；政策版本仍按本申请已冻结集合。 -->
+    <select id="requiredPassedFactsAt" resultType="map">
+        SELECT progress.training_id,progress.verified_duration_millis,progress.status,
+            MAX(attempt.score) passed_score
+        FROM vi_training_progress progress
+        LEFT JOIN vi_training_attempt attempt ON attempt.run_id=progress.run_id
+            AND attempt.training_id=progress.training_id AND attempt.application_id=progress.application_id
+            AND attempt.material_revision=progress.material_revision AND attempt.material_hash=progress.material_hash
+            AND attempt.status='PASSED' AND attempt.grading_snapshot_cipher IS NOT NULL
+            AND attempt.submission_mac IS NOT NULL AND attempt.submitted_at IS NOT NULL
+            AND attempt.submitted_at&lt;=#{asOf,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler}
+        JOIN vi_training_run current_run ON current_run.id=progress.run_id
+            AND current_run.application_id=progress.application_id
+            AND current_run.material_revision=progress.material_revision AND current_run.material_hash=progress.material_hash
+        WHERE progress.run_id=#{run}
+            AND progress.updated_at&lt;=#{asOf,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler}
+        GROUP BY progress.training_id,progress.verified_duration_millis,progress.status
+    </select>
     <!-- 媒体授权完全由当前本人申请/材料/公司epoch/冻结集合联结，不采纳客户端裸run或同公司任意课程。 -->
     <select id="currentMediaContext" resultType="map">
         SELECT app.id application_id,run.id run_id,profile.training_context_revision company_revision,

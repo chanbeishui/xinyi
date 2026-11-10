@@ -24,18 +24,5 @@
     "status": "NOT_RUN",
     "evidence": "",
     "origin": "用户确认的登录方案及R1防错边界整合；需真实HTTP/MySQL验收"
-  },
-  {
-    "id": "TC-R62-005",
-    "priority": "P0",
-    "module": "身份与员工自动关联",
-    "flow": "F02 F03 F49 F43",
-    "title": "资格通过",
-    "given": "后台按原标准审批本人申请通过",
-    "when": "刷新session并切换DRIVER",
-    "then": "增加DRIVER，仍保留OWNER，资料与订单不复制",
-    "status": "NOT_RUN",
-    "evidence": "",
-    "origin": "用户确认的登录方案及R1防错边界整合；需真实HTTP/MySQL验收"
   }
 ]

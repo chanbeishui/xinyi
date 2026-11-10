@@ -342,7 +342,8 @@
     "testFiles": [],
     "status": "SPEC_NOT_IMPLEMENTED",
     "lastResult": "NOT_RUN",
-    "evidence": []
+    "evidence": [],
+    "taskId": "Q05"
   },
   {
     "caseId": "TC-016",
@@ -388,7 +389,8 @@
     "testFiles": [],
     "status": "SPEC_NOT_IMPLEMENTED",
     "lastResult": "NOT_RUN",
-    "evidence": []
+    "evidence": [],
+    "taskId": "D02"
   },
   {
     "caseId": "TC-018",
@@ -6968,7 +6970,8 @@
       "REAL_MYSQL",
       "HTTP_CONTRACT",
       "NEGATIVE_SIDE_EFFECT_CHECK"
-    ]
+    ],
+    "taskId": "Q05"
   },
   {
     "caseId": "TC-R62-006",

@@ -1,7 +1,7 @@
 # I01 · 统一微信登录与默认车主
 
 阶段：M1；责任域：identity；前置：E06, E07。
-范围版本：`V6.4-IDENTITY-CONSISTENCY-20261022`；definitionHash：`8f5384482995ab7da94bc62c4dc6dfac6e494cd7a0bd435c82fc8da8db8ef2f5`。
+范围版本：`V6.4-IDENTITY-CONSISTENCY-20261022`；definitionHash：`727bd63aea611de3405455161ffaf764844fc74c05d85b7278cc066489d6dc6c`。
 
 ## 本任务交付
 - 可信AppID/OpenID创建或恢复唯一账号；新会话OWNER
@@ -18,7 +18,7 @@
 接口：API_001_post, API_005_get
 画板：O29, D01, S01, B01, O29-staff, O29-driver, O29-unconfigured, O29-duplicate, O29-conflict, O29-denied, O29-processing, O29-error, S01-ready, S01-unconfigured, D01-draft, D01-pending, D01-rejected, D01-approved
 主责任表：vi_account, vi_account_security
-验收：TC-001, TC-002, TC-003, TC-004, TC-005, TC-006, TC-007, TC-008, TC-009, TC-010, TC-011, TC-012, TC-013, TC-014, TC-015, TC-016, TC-017, TC-018, TC-R50-007, TC-R50-008, TC-R50-012, TC-R50-032, TC-R62-001, TC-R62-002, TC-R62-018, TC-R62-035, TC-R63-014
+验收：TC-001, TC-002, TC-003, TC-004, TC-005, TC-006, TC-007, TC-008, TC-009, TC-010, TC-011, TC-012, TC-013, TC-014, TC-016, TC-018, TC-R50-007, TC-R50-008, TC-R50-012, TC-R50-032, TC-R62-001, TC-R62-002, TC-R62-018, TC-R62-035, TC-R63-014
 
 ## 代码落位
 `xinyi-rongli/src/main/java/com/xinyi/rongli/identity/`

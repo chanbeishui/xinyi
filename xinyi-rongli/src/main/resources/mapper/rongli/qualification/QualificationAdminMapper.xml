@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xinyi.rongli.qualification.mapper.QualificationAdminMapper">
+    <resultMap id="QualificationSubmission" type="com.xinyi.rongli.qualification.domain.QualificationSubmission">
+        <id property="id" column="id"/>
+        <result property="applicationId" column="application_id"/>
+        <result property="submissionRevision" column="submission_revision"/>
+        <result property="ownerDeptId" column="owner_dept_id"/>
+        <result property="profileVersion" column="profile_version"/>
+        <result property="companyRevision" column="company_revision"/>
+        <result property="sourceSessionId" column="source_session_id"/>
+        <result property="applicantUserIds" column="applicant_user_ids"/>
+        <result property="materialRevision" column="material_revision"/>
+        <result property="materialHash" column="material_hash"/>
+        <result property="sensitivePayloadCipher" column="sensitive_payload_cipher"/>
+        <result property="evidenceFileIds" column="evidence_file_ids"/>
+        <result property="providerResultIds" column="provider_result_ids"/>
+        <result property="consentVersion" column="consent_version"/>
+        <result property="consentText" column="consent_text"/>
+        <result property="consentAcceptedAt" column="consent_accepted_at" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+        <result property="submitReasonCipher" column="submit_reason_cipher"/>
+        <result property="submittedAt" column="submitted_at" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+        <result property="submissionSeal" column="submission_seal"/>
+    </resultMap>
+    <resultMap id="QualificationReview" type="com.xinyi.rongli.qualification.domain.QualificationReview">
+        <id property="id" column="id"/>
+        <result property="applicationId" column="application_id"/>
+        <result property="driverId" column="driver_id"/>
+        <result property="ownerDeptId" column="owner_dept_id"/>
+        <result property="companyRevision" column="company_revision"/>
+        <result property="submissionId" column="submission_id"/>
+        <result property="submissionRevision" column="submission_revision"/>
+        <result property="kind" column="kind"/>
+        <result property="decision" column="decision"/>
+        <result property="reviewerUserId" column="reviewer_user_id"/>
+        <result property="reviewedAt" column="reviewed_at" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+        <result property="internalOpinionCipher" column="internal_opinion_cipher"/>
+        <result property="publicOpinion" column="public_opinion"/>
+        <result property="rejectFields" column="reject_fields"/>
+        <result property="applicationVersion" column="application_version"/>
+        <result property="profileVersion" column="profile_version"/>
+    </resultMap>
+    <resultMap id="QualificationSnapshot" type="com.xinyi.rongli.qualification.domain.QualificationSnapshot">
+        <id property="id" column="id"/>
+        <result property="driverId" column="driver_id"/>
+        <result property="accountId" column="account_id"/>
+        <result property="applicationId" column="application_id"/>
+        <result property="submissionId" column="submission_id"/>
+        <result property="reviewId" column="review_id"/>
+        <result property="qualificationRevision" column="qualification_revision"/>
+        <result property="ownerDeptId" column="owner_dept_id"/>
+        <result property="companyRevision" column="company_revision"/>
+        <result property="materialRevision" column="material_revision"/>
+        <result property="materialHash" column="material_hash"/>
+        <result property="licenseClass" column="license_class"/>
+        <result property="licenseValidTo" column="license_valid_to" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+        <result property="licenseLongTerm" column="license_long_term"/>
+        <result property="reviewDueAt" column="review_due_at" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+        <result property="expiresAt" column="expires_at" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+        <result property="approvedAt" column="approved_at" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+        <result property="snapshotSeal" column="snapshot_seal"/>
+    </resultMap>
+    <insert id="insertSubmission" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO vi_driver_application_submission(
+            application_id,submission_revision,owner_dept_id,
+            profile_version,company_revision,source_session_id,
+            applicant_user_ids,material_revision,material_hash,
+            sensitive_payload_cipher,evidence_file_ids,provider_result_ids,
+            consent_version,consent_text,consent_accepted_at,
+            submit_reason_cipher
+        )
+        VALUES(
+            #{applicationId},#{submissionRevision},#{ownerDeptId},
+            #{profileVersion},#{companyRevision},#{sourceSessionId},
+            #{applicantUserIds},#{materialRevision},#{materialHash},
+            #{sensitivePayloadCipher},#{evidenceFileIds},#{providerResultIds},
+            #{consentVersion},#{consentText},#{consentAcceptedAt,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler},
+            #{submitReasonCipher}
+        )
+    </insert>
+    <insert id="insertReview" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO vi_qualification_review(
+            application_id,driver_id,owner_dept_id,
+            company_revision,submission_id,submission_revision,
+            kind,decision,reviewer_user_id,
+            public_opinion,reject_fields,application_version,
+            profile_version
+        )
+        VALUES(
+            #{applicationId},#{driverId},#{ownerDeptId},
+            #{companyRevision},#{submissionId},#{submissionRevision},
+            #{kind},#{decision},#{reviewerUserId},
+            #{publicOpinion},#{rejectFields},#{applicationVersion},
+            #{profileVersion}
+        )
+    </insert>
+    <insert id="insertSnapshot" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO vi_qualification_snapshot(
+            driver_id,account_id,application_id,
+            submission_id,review_id,qualification_revision,
+            owner_dept_id,company_revision,material_revision,
+            material_hash,license_class,license_valid_to,
+            license_long_term,review_due_at,expires_at
+        )
+        VALUES(
+            #{driverId},#{accountId},#{applicationId},
+            #{submissionId},#{reviewId},#{qualificationRevision},
+            #{ownerDeptId},#{companyRevision},#{materialRevision},
+            #{materialHash},#{licenseClass},#{licenseValidTo,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler},
+            #{licenseLongTerm},#{reviewDueAt,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler},#{expiresAt,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler}
+        )
+    </insert>
+    <update id="sealSubmission">
+        UPDATE vi_driver_application_submission
+        SET submission_seal=#{seal}
+        WHERE id=#{id} AND submission_seal IS NULL
+    </update>
+    <update id="sealSnapshot">
+        UPDATE vi_qualification_snapshot
+        SET snapshot_seal=#{seal}
+        WHERE id=#{id} AND snapshot_seal IS NULL
+    </update>
+    <update id="sealReviewOpinion">
+        UPDATE vi_qualification_review
+        SET internal_opinion_cipher=#{cipher}
+        WHERE id=#{id} AND internal_opinion_cipher IS NULL
+    </update>
+    <select id="submission" resultMap="QualificationSubmission">
+        SELECT *
+        FROM vi_driver_application_submission
+        WHERE application_id=#{application} AND submission_revision=#{revision}
+        FOR UPDATE
+    </select>
+    <select id="submissionById" resultMap="QualificationSubmission">
+        SELECT *
+        FROM vi_driver_application_submission
+        WHERE id=#{id}
+        FOR UPDATE
+    </select>
+    <select id="snapshot" resultMap="QualificationSnapshot">
+        SELECT *
+        FROM vi_qualification_snapshot
+        WHERE id=#{id}
+    </select>
+    <select id="review" resultMap="QualificationReview">
+        SELECT *
+        FROM vi_qualification_review
+        WHERE id=#{id}
+    </select>
+    <select id="reviews" resultMap="QualificationReview">
+        SELECT *
+        FROM vi_qualification_review
+        WHERE application_id=#{applicationId}
+        ORDER BY id
+    </select>
+    <select id="normalReviewCount" resultType="int">
+        SELECT COUNT(*)
+        FROM vi_qualification_review
+        WHERE application_id=#{applicationId} AND kind='DECISION'
+    </select>
+    <select id="context" resultType="map">
+        SELECT a.id application_id,a.driver_id,p.account_id,p.owner_dept_id current_owner_dept_id,
+            COALESCE(a.owner_dept_id,p.owner_dept_id) owner_dept_id,
+            company.dept_name company_name,current_company.dept_name current_company_name,
+            account.nickname applicant_name,p.effective_snapshot_id
+        FROM vi_driver_application a
+        JOIN vi_driver_profile p ON p.id=a.driver_id
+        JOIN vi_account account ON account.id=p.account_id
+        LEFT JOIN sys_dept company ON company.dept_id=COALESCE(a.owner_dept_id,p.owner_dept_id)
+        LEFT JOIN sys_dept current_company ON current_company.dept_id=p.owner_dept_id
+        WHERE a.id=#{applicationId}
+    </select>
+    <select id="lockAccount" resultType="map">
+        SELECT a.id,a.status,s.security_status
+        FROM vi_account a
+        JOIN vi_account_security s ON s.account_id=a.id
+        WHERE a.id=#{accountId}
+        FOR UPDATE
+    </select>
+    <select id="lockEvidence" resultType="map">
+        SELECT id,application_id,uploader_account_id,purpose,status
+        FROM vi_file
+        WHERE id=#{fileId}
+        FOR UPDATE
+    </select>
+    <select id="boundUsers" resultType="long">
+        SELECT DISTINCT sys_user_id
+        FROM vi_employee_binding
+        WHERE account_id=#{accountId}
+    </select>
+    <select id="verifiedPhone" resultType="map">
+        SELECT phone_lookup
+        FROM vi_account
+        WHERE id=#{accountId} AND phone_verified_at IS NOT NULL
+    </select>
+    <select id="usersWithPhone" resultType="map">
+        SELECT user_id,phonenumber
+        FROM sys_user
+        WHERE phonenumber IS NOT NULL AND phonenumber&lt;>''
+    </select>
+    <sql id="listFrom">
+        FROM vi_driver_application a
+        JOIN vi_driver_profile p ON p.id=a.driver_id
+        JOIN vi_account account ON account.id=p.account_id
+        WHERE 1=1
+        <if test="scope != null">
+            AND COALESCE(a.owner_dept_id,p.owner_dept_id) IN
+            <foreach collection="scope" item="dept" open="(" separator="," close=")">#{dept}</foreach>
+        </if>
+        <if test="query.ownerDeptId != null">
+            AND COALESCE(a.owner_dept_id,p.owner_dept_id)=#{query.ownerDeptId}
+        </if>
+        <if test="query.status != null">AND a.status=#{query.status}</if>
+        <if test="query.keyword != null">
+            AND (account.nickname LIKE CONCAT('%',#{query.keyword},'%')
+                OR CAST(a.id AS CHAR)=#{query.keyword})
+        </if>
+    </sql>
+    <select id="list" resultType="long">
+        SELECT a.id
+        <include refid="listFrom"/>
+        <choose>
+            <when test="query.sort == 'idDesc'">ORDER BY a.id DESC</when>
+            <otherwise>ORDER BY a.submitted_at DESC,a.id DESC</otherwise>
+        </choose>
+        LIMIT #{query.pageSize} OFFSET #{offset}
+    </select>
+    <select id="count" resultType="long">
+        SELECT COUNT(*)
+        <include refid="listFrom"/>
+    </select>
+    <update id="decideApplication">
+        UPDATE vi_driver_application
+        SET status=CASE WHEN #{review.decision}='APPROVE' THEN 'APPROVED' ELSE 'REJECTED' END,
+            owner_dept_id=CASE WHEN owner_dept_id IS NULL AND #{review.decision}='REPAIR_REJECTION'
+                THEN #{review.ownerDeptId} ELSE owner_dept_id END,
+            reviewer_user_id=#{review.reviewerUserId},reviewed_at=UTC_TIMESTAMP(3),
+            public_review_opinion=#{review.publicOpinion},reject_fields=#{review.rejectFields},
+            version=version+1,updated_at=UTC_TIMESTAMP(3)
+        WHERE id=#{id} AND version=#{version}
+    </update>
+    <!-- 生效快照指针与资格投影在同一CAS写入；行政新邀约及本人听单偏好绝不被审批重开。 -->
+    <update id="approveProfile">
+        UPDATE vi_driver_profile
+        SET qualification_status='APPROVED',qualification_revision=#{snapshot.qualificationRevision},
+            effective_snapshot_id=#{snapshot.id},license_class=#{snapshot.licenseClass},
+            license_valid_to=#{snapshot.licenseValidTo,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler},
+            license_long_term=#{snapshot.licenseLongTerm},
+            review_due_at=#{snapshot.reviewDueAt,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler},
+            version=version+1,updated_at=UTC_TIMESTAMP(3)
+        WHERE id=#{id} AND version=#{version}
+    </update>
+</mapper>

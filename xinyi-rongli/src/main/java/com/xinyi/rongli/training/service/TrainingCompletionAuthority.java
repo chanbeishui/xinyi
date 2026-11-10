@@ -3,6 +3,7 @@ package com.xinyi.rongli.training.service;
 import com.xinyi.rongli.driver.domain.DriverProfile;
 import com.xinyi.rongli.platform.json.ViJson;
 import com.xinyi.rongli.qualification.domain.QualificationApplication;
+import com.xinyi.rongli.qualification.domain.QualificationSubmission;
 import com.xinyi.rongli.training.domain.*;
 import com.xinyi.rongli.training.dto.FrozenTrainingCourse;
 import com.xinyi.rongli.training.mapper.LearningMapper;
@@ -45,15 +46,64 @@ public class TrainingCompletionAuthority {
         return run.getProviderVerificationId();
     }
 
+    /** 审核只核对原提交时刻已经完成的冻结集合，不依赖当前活跃政策或原MINI登录。 */
+    public Long frozenProof(QualificationSubmission submission) {
+        if (submission == null
+                || submission.getCompanyRevision() == null
+                || submission.getSubmittedAt() == null) return null;
+        TrainingPlan plan =
+                mapper.plan(submission.getApplicationId(), submission.getCompanyRevision());
+        if (plan == null || !Objects.equals(plan.getOwnerDeptId(), submission.getOwnerDeptId()))
+            return null;
+        TrainingRun run = mapper.run(plan.getId(), submission.getMaterialRevision());
+        if (run == null
+                || !Objects.equals(run.getApplicationId(), submission.getApplicationId())
+                || !equal(run.getMaterialHash(), submission.getMaterialHash())
+                || !"PASSED".equals(run.getStatus())
+                || run.getProviderVerificationId() == null
+                || run.getCompletedAt() == null
+                || run.getCompletedAt().isAfter(submission.getSubmittedAt())) return null;
+        var proof = mapper.trainingProof(run.getProviderVerificationId());
+        if (proof == null
+                || number(proof.get("application_id")) != submission.getApplicationId()
+                || number(proof.get("material_revision")) != submission.getMaterialRevision()
+                || !equal((byte[]) proof.get("material_hash"), submission.getMaterialHash())
+                || asInstant(proof.get("verified_at")) == null
+                || asInstant(proof.get("verified_at")).isAfter(submission.getSubmittedAt()))
+            return null;
+        List<?> ids = ViJson.read(submission.getProviderResultIds(), List.class);
+        if (ids.stream()
+                .noneMatch(id -> run.getProviderVerificationId().toString().equals(id.toString())))
+            return null;
+        return passedFacts(
+                        plan,
+                        mapper.requiredPassedFactsAt(run.getId(), submission.getSubmittedAt()))
+                ? run.getProviderVerificationId()
+                : null;
+    }
+
+    private static Instant asInstant(Object value) {
+        if (value instanceof Instant instant) return instant;
+        if (value instanceof java.sql.Timestamp timestamp) return timestamp.toInstant();
+        if (value instanceof java.time.LocalDateTime time)
+            return time.toInstant(java.time.ZoneOffset.UTC);
+        return null;
+    }
+
     /** 不依赖“当前生效政策==冻结政策”，因此正常发布新课不会撤销已冻结学员的有效进度。 */
     public boolean allPassed(TrainingPlan plan, TrainingRun run) {
         List<FrozenTrainingCourse> selected = courses(plan);
         if (selected.isEmpty()
                 || !Objects.equals(run.getPlanSnapshotId(), plan.getId())
                 || !Objects.equals(run.getApplicationId(), plan.getApplicationId())) return false;
+        return passedFacts(plan, mapper.requiredPassedFacts(run.getId()));
+    }
+
+    private boolean passedFacts(TrainingPlan plan, List<Map<String, Object>> rows) {
+        List<FrozenTrainingCourse> selected = courses(plan);
+        if (selected.isEmpty()) return false;
         Map<Long, Map<String, Object>> facts = new HashMap<>();
-        for (var row : mapper.requiredPassedFacts(run.getId()))
-            facts.put(number(row.get("training_id")), row);
+        for (var row : rows) facts.put(number(row.get("training_id")), row);
         for (var course : selected) {
             var fact = facts.get(course.trainingId());
             if (fact == null

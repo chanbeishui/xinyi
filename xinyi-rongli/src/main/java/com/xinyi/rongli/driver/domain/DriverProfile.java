@@ -175,4 +175,34 @@ public class DriverProfile extends ViRecord {
     public void setCompanyName(String value) {
         companyName = value;
     }
+
+    private Long effectiveSnapshotId;
+
+    public Long getEffectiveSnapshotId() {
+        return effectiveSnapshotId;
+    }
+
+    public void setEffectiveSnapshotId(Long value) {
+        effectiveSnapshotId = value;
+    }
+
+    private Long qualificationOwnerDeptId;
+
+    public Long getQualificationOwnerDeptId() {
+        return qualificationOwnerDeptId;
+    }
+
+    public void setQualificationOwnerDeptId(Long value) {
+        qualificationOwnerDeptId = value;
+    }
+
+    private Long qualificationCompanyRevision;
+
+    public Long getQualificationCompanyRevision() {
+        return qualificationCompanyRevision;
+    }
+
+    public void setQualificationCompanyRevision(Long value) {
+        qualificationCompanyRevision = value;
+    }
 }

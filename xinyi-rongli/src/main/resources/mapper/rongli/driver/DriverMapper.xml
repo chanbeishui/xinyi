@@ -15,6 +15,9 @@
         <result property="licenseValidTo" column="license_valid_to" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
         <result property="licenseLongTerm" column="license_long_term"/>
         <result property="qualificationRevision" column="qualification_revision"/>
+        <result property="effectiveSnapshotId" column="effective_snapshot_id"/>
+        <result property="qualificationOwnerDeptId" column="qualification_owner_dept_id"/>
+        <result property="qualificationCompanyRevision" column="qualification_company_revision"/>
         <result property="internalRemark" column="internal_remark"/>
         <result property="displayName" column="display_name"/>
         <result property="phoneCipher" column="phone_cipher"/>
@@ -28,11 +31,15 @@
         SELECT d.*,a.nickname display_name,
             CASE WHEN a.phone_verified_at IS NOT NULL THEN a.phone_cipher ELSE NULL END phone_cipher,
             a.status account_status,
-            security.security_status,company.dept_name company_name
+            security.security_status,company.dept_name company_name,
+            qualification.owner_dept_id qualification_owner_dept_id,
+            qualification.company_revision qualification_company_revision
         FROM vi_driver_profile d
         JOIN vi_account a ON a.id=d.account_id
         LEFT JOIN vi_account_security security ON security.account_id=a.id
         LEFT JOIN sys_dept company ON company.dept_id=d.owner_dept_id
+        LEFT JOIN vi_qualification_snapshot qualification ON qualification.id=d.effective_snapshot_id
+            AND qualification.driver_id=d.id AND qualification.qualification_revision=d.qualification_revision
     </sql>
     <select id="find" resultMap="Driver">
         <include refid="columns"/>

@@ -1,29 +1,40 @@
-<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TASK</title><style>body{font:16px/1.75 -apple-system,BlinkMacSystemFont,"Microsoft YaHei",sans-serif;color:#202632;margin:0;background:#f6f7f9}header{padding:14px 24px;background:white;border-bottom:1px solid #ddd}main{max-width:1120px;margin:24px auto;padding:30px;background:white}h1{font-size:30px}h2{margin-top:36px}a{color:#0661bd}table{border-collapse:collapse;width:100%;display:block;overflow:auto;font-size:14px}td,th{border:1px solid #dde2ea;padding:10px;vertical-align:top}th{background:#f1f5fb}pre{padding:15px;background:#f2f4f7;overflow:auto}img{max-width:100%;height:auto}blockquote{padding:10px 20px;border-left:3px solid #2571be;background:#f4f8fc}@media(max-width:700px){main{padding:15px;margin:8px}h1{font-size:25px}}</style></head><body><header><a href="../../../00_开始.html">V6.4 完整资料</a>　<a href="../../../02_UI/index.html">交互原型</a>　T3.4</header><main><h1>Q05 · 资格审批与到期复审</h1>
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TASK</title><style>body{font:16px/1.75 -apple-system,BlinkMacSystemFont,"Microsoft YaHei",sans-serif;color:#202632;margin:0;background:#f6f7f9}header{padding:14px 24px;background:white;border-bottom:1px solid #ddd}main{max-width:1120px;margin:24px auto;padding:30px;background:white}h1{font-size:30px}h2{margin-top:36px}a{color:#0661bd}table{border-collapse:collapse;width:100%;display:block;overflow:auto;font-size:14px}td,th{border:1px solid #dde2ea;padding:10px;vertical-align:top}th{background:#f1f5fb}pre{padding:15px;background:#f2f4f7;overflow:auto}img{max-width:100%;height:auto}blockquote{padding:10px 20px;border-left:3px solid #2571be;background:#f4f8fc}@media(max-width:700px){main{padding:15px;margin:8px}h1{font-size:25px}}</style></head><body><header><a href="../../../00_开始.html">V6.4 完整资料</a>　<a href="../../../02_UI/index.html">交互原型</a>　T3.4</header><main><h1>Q05 · 资格审批、生效快照与到期复审</h1>
 <p>阶段：M1；责任域：qualification；前置：Q01, Q03, Q04, I06。
-范围版本：<code>V6.1-UNCHANGED</code>；definitionHash：<code>c2180563939e2d2361d93e1876f7240b7f548f84e55e65fb687fe1ada9cc88e0</code>。</p>
+范围版本：<code>V6.4-QUALIFICATION-AUDIT-20261110</code>；definitionHash：<code>38ea09c0fd125d374b003e62b8c308b841c774d8bc52396f36a091eea98fc3f2</code>。</p>
 <h2>本任务交付</h2>
 <ul>
-<li>后台资格列表详情审核，资格快照、到期任务、拒绝原因</li>
+<li>独立ADMIN列表/冻结提交详情/精确9键审核，查询原公司、审批原与当前公司范围并集，自审禁止但人工经办复核人可参加最终审核</li>
+<li>可信提交冻结公司epoch、实际MINI会话、已知后台同人及一次认证封装；审批不依赖申请人保持在线，不读后改草稿冒充提交</li>
+<li>只追加审核历史与生效版本，公开补正字段与内部密文意见分离；复审驳回不覆盖原生效资格，旧驳回结构明确修复不直接批准</li>
+<li>显式未来UTC复审截止、上海证件到期日含当天；实际截止取两者较早，不默认一年或提前30天；版本到期任务永久去重/重启补缺</li>
+<li>到期实时禁止新单，不撤历史DRIVER入口、不改行政听单或在手车辆；permission_version/审计/outbox同事务</li>
+<li>资格四图另需敏感及文件权限/原公司范围、理由加密审计和60秒提交版本票据，不开放草稿或同公司任意证件</li>
 </ul>
 <h2>必测失败与并发</h2>
 <ul>
-<li>个人不能自批</li>
-<li>证件失效禁新单但历史/返还不丢</li>
-<li>无保险条件</li>
+<li>当前/冻结公司epoch不一致不可批准，A转B再转A不复活旧提交；查询当前公司字段另需query范围</li>
+<li>冻结提交四证明需认证父事实/提交时点，旧NULL来源/原客户端passed/篡改封装不可批准；退出和新登录不撤销真实已提交事实</li>
+<li>申请人历史关联/可信手机号及冻结后台同人不得自审，跨域数值碰巧相等不当同人；人工复核人可最终审核</li>
+<li>九键/四版本/UUID严格，未知原键原体，重复终态、并发批准/驳回至多一份事实；审计/outbox失败整体回滚</li>
+<li>证件/复审到期不依赖Job及时，旧版本任务不使新资格过期，行政/听单/承接/占用/返还责任不变</li>
+<li>敏感原图按确切可信提交四ID与各自公司权限，旧票/未提交/替换文件/撤权/IO期间变化拒绝，不泄全身份证与内部意见</li>
 </ul>
 <h2>精确输入</h2>
 <p>主源：04_接口/openapi_V6.4.yaml、05_数据设计/data_model_V6.4.json、06_验收/test_cases_V6.4.json。本目录派生，不独立维护。
 接口：API_121_get, API_122_get, API_123_post
 画板：B16, B16-review
-主责任表：无
-验收：无</p>
+主责任表：vi_qualification_review, vi_qualification_snapshot
+验收：TC-015, TC-R62-005</p>
 <h2>代码落位</h2>
 <p><code>xinyi-rongli/src/main/java/com/xinyi/rongli/qualification/</code>
 <code>xinyi-rongli/src/main/resources/mapper/rongli/qualification/</code>
-<code>xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/qualification/</code>
+<code>xinyi-rongli/src/main/java/com/xinyi/rongli/verification/service/CanonicalVerificationAuthority.java</code>
+<code>xinyi-rongli/src/main/java/com/xinyi/rongli/training/service/TrainingCompletionAuthority.java</code>
+<code>xinyi-rongli/src/main/java/com/xinyi/rongli/driver/service/DriverNewAssignmentPolicy.java</code>
 <code>xinyi-ui/src/views/rongli/qualification/</code>
 <code>xinyi-ui/src/api/rongli/qualification.ts</code>
-<code>xinyi-miniapp/src/features/qualification/</code></p>
+<code>xinyi-miniapp/src/pages/qualification/index.vue</code>
+<code>xinyi-admin/src/test/java/com/xinyi/web/viit/Q05QualificationIT.java</code></p>
 <h2>验证命令</h2>
 <pre><code class="language-bash">mvn -pl xinyi-admin -am -Pvi-it -Dit.test=Q05QualificationIT verify
 npm --prefix xinyi-ui run build:prod

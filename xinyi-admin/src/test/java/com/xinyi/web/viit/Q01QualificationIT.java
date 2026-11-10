@@ -6,12 +6,16 @@ import static org.mockito.Mockito.doThrow;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.xinyi.RuoYiApplication;
+import com.xinyi.rongli.driver.mapper.DriverMapper;
+import com.xinyi.rongli.driver.service.DriverNewAssignmentPolicy;
 import com.xinyi.rongli.identity.domain.ViSession;
 import com.xinyi.rongli.identity.mapper.ViSessionMapper;
 import com.xinyi.rongli.identity.service.MiniTokenService;
 import com.xinyi.rongli.identity.service.PhoneCrypto;
 import com.xinyi.rongli.integration.config.IntegrationKeyProperties;
 import com.xinyi.rongli.integration.service.IntegrationCrypto;
+import com.xinyi.rongli.platform.error.ViErrorCode;
+import com.xinyi.rongli.platform.error.ViException;
 import com.xinyi.rongli.platform.json.ViJson;
 import com.xinyi.rongli.platform.service.IdempotencyService;
 import com.xinyi.rongli.platform.service.OutboxService;
@@ -82,6 +86,8 @@ class Q01QualificationIT extends PricingHttpFixture {
     @Autowired IntegrationCrypto crypto;
     @Autowired IdempotencyService idempotency;
     @Autowired PlatformTransactionManager transactionManager;
+    @Autowired DriverMapper driverProfiles;
+    @Autowired DriverNewAssignmentPolicy newAssignments;
     @MockitoSpyBean OutboxService outbox;
 
     String owner;
@@ -710,7 +716,17 @@ class Q01QualificationIT extends PricingHttpFixture {
                     number(
                             "SELECT new_assignment_enabled FROM vi_driver_profile WHERE id=?",
                             driverId(previous)));
-            assertFalse(session(applicant).path("availableRoles").toString().contains("DRIVER"));
+            // 曾批准的代驾保留历史/在手任务视角；复审草稿不能恢复资格或绕过新承接策略。
+            assertTrue(session(applicant).path("availableRoles").toString().contains("DRIVER"));
+            assertFalse(revision.path("canAcceptOrder").asBoolean());
+            ViException blocked =
+                    assertThrows(
+                            ViException.class,
+                            () ->
+                                    newAssignments.requireQualification(
+                                            driverProfiles.find(driverId(previous))));
+            assertEquals(ViErrorCode.VI_STATE_CONFLICT, blocked.getErrorCode());
+            assertTrue(blocked.getMessage().contains("QUALIFICATION_NOT_APPROVED"));
         }
     }
 
@@ -1500,7 +1516,7 @@ class Q01QualificationIT extends PricingHttpFixture {
     }
 
     private void historyApproved(JsonNode row) {
-        // Q05 尚未实现：这里只验证已有生效资格不会被复审草稿覆盖，不声称完成真实审批链。
+        // 仅建立Q01已生效历史消费边界，不代表此用例执行Q05真实审批链：这里只验证已有生效资格不会被复审草稿覆盖，不声称完成真实审批链。
         jdbc.update(
                 "UPDATE vi_driver_application SET"
                         + " status='APPROVED',reviewer_user_id=1,reviewed_at=UTC_TIMESTAMP(3) WHERE"

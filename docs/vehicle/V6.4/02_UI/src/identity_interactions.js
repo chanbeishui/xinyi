@@ -42,8 +42,8 @@ U.action=async function(action,payload='',el=null){const a=U.auth62();
    U.toast('请先完成本机确认、背景与驾驶证双人确认、培训四项演示检查');
    return;
   }
+  U.freezeQualification05();
   a.driverStatus = 'PENDING';
-  a.driverApproved = false;
   a.journeyStarted = true;
   U.sync62();
   U.log('代驾申请', '完整申请已提交，未开通代驾身份');
@@ -51,11 +51,79 @@ U.action=async function(action,payload='',el=null){const a=U.auth62();
   return;
  }
  if(action==='identity-refresh-driver'||action==='auth-refresh'){U.sync62();U.testing.render('D05');U.toast('已刷新审核结果；刷新不会代替后台审核');return;}
- if(action==='qualification-approve'||action==='qualification-reject'){
-  if(!value('qualification.opinion')){U.toast('请填写审核意见');return;}
-  if(action==='qualification-approve'&&(!U.get('qualification.checked')||!value('qualification.reviewDate'))){U.toast('请核对必要材料并填写复审日期');return;}
-  a.driverApproved=action==='qualification-approve';a.driverStatus=a.driverApproved?'APPROVED':'REJECTED';a.journeyStarted=true;
-  a.history.push('代驾资格审核：'+a.driverStatus);U.sync62();U.log('代驾资格演示审核',a.driverStatus);U.go('B16');return;
+ if (action === 'q05-load-scenario') {
+  const kind = U.get('qualification.scenario', 'FIRST');
+  clear('qualification.');
+  delete U.store.qualification05;
+  const q = U.qualification05(kind);
+  a.driverApproved = !!q.effective;
+  a.driverStatus = 'PENDING';
+  a.journeyStarted = true;
+  U.sync62();
+  U.testing.render('B16');
+  return;
+ }
+ if (['qualification-approve', 'qualification-reject', 'qualification-repair'].includes(action)) {
+  const q = U.qualification05(), repair = action === 'qualification-repair';
+  if (U.get('qualification.reviewer', 'OTHER') === 'APPLICANT') {
+   U.toast('申请人不能自审；表单选择不会授予真实审核权限');
+   return;
+  }
+  if (repair ? q.status !== 'REJECTED' || q.rejectFields.length || q.history.length : q.status !== 'SUBMITTED') {
+   U.toast('本次申请状态不允许该操作，不重复记录决定');
+   return;
+  }
+  const intent = q.intent;
+  if (!intent || intent.applicationId !== q.applicationId || intent.version !== q.version ||
+      intent.profileVersion !== q.profileVersion || intent.companyRevision !== q.companyRevision ||
+      intent.submissionRevision !== q.submissionRevision) {
+   U.toast('演示版本已变化，请重新载入；不能把原审核意图套到其他提交');
+   return;
+  }
+  if (!value('qualification.opinion')) {U.toast('请填写内部审核意见，原型不会自动把它公开');return;}
+  const publicOpinion = value('qualification.publicOpinion');
+  const fields = Object.keys(U.q05Fields).filter(key => U.get('qualification.reject.' + key));
+  const dueText = value('qualification.reviewDueAt');
+  if (action === 'qualification-approve') {
+   if (!q.trustedSubmission || !Object.values(q.frozenChecks).every(Boolean)) {
+    U.toast('缺少可信提交或四项冻结结果，不能批准演示');return;
+   }
+   if (!U.get('qualification.checked')) {U.toast('请先核对本次冻结资料及四项结果');return;}
+   const syntax = /^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\.[0-9]{1,3})?Z$/;
+   const due = Date.parse(dueText);
+   if (!syntax.test(dueText) || !Number.isFinite(due) || due <= Date.now()) {
+    U.toast('请明确填写未来UTC复审截止（Z结尾，最多毫秒），不默认一年');return;
+   }
+   if (fields.length) {U.toast('批准不能携带公开补正字段');return;}
+   const licenseEnd = Date.parse(q.validTo + 'T00:00:00+08:00') + 86400000;
+   const revision = (q.effective?.revision || 0) + 1;
+   q.effective = {snapshotId: 'QUAL-DEMO-101-V' + revision, revision, status: 'APPROVED',
+     reviewDueAt: new Date(due).toISOString(), expiresAt: new Date(Math.min(due, licenseEnd)).toISOString()};
+   q.status = 'APPROVED';
+   q.profileVersion++;
+  } else {
+   if (!publicOpinion || !fields.length || dueText) {
+    U.toast('驳回/修复须有公开意见及明确补正字段，并清空批准期限');return;
+   }
+   q.status = 'REJECTED';
+   if (!repair && !q.effective) q.profileVersion++;
+  }
+  q.publicOpinion = publicOpinion || null;
+  q.rejectFields = fields;
+  q.history.push({decision: repair ? 'REPAIR_REJECTION' : action === 'qualification-approve' ? 'APPROVE' : 'REJECT',
+    publicOpinion: q.publicOpinion, rejectFields: [...fields], internalOpinionStored: true});
+  q.version++;
+  // 内部意见只用于本地后台输入演示；决定后清空，不复制到公开反馈、日志或申请人页面。
+  U.set('qualification.opinion', '');
+  U.set('qualification.checked', false);
+  U.set('qualification.reviewDueAt', '');
+  a.driverApproved = !!q.effective;
+  a.driverStatus = q.status === 'APPROVED' ? 'APPROVED' : 'REJECTED';
+  a.journeyStarted = true;
+  U.sync62();
+  U.log('资格审核演示', q.history.at(-1).decision + '；仅本地状态，不是正式资格决定');
+  U.go('B16');
+  return;
  }
  if(action==='identity-search'){refresh();return;}
  if(action==='identity-reset-search'){clear('identity.query');clear('identity.filter');refresh();return;}
@@ -107,6 +175,8 @@ U.action=async function(action,payload='',el=null){const a=U.auth62();
 // Re-render dependent controls when changing the target employee; never save with another person's visible form.
 document.addEventListener('change',ev=>{const k=ev.target?.dataset?.field;if(k==='identity.employee'){
  clear('identity.grant.');clear('identity.expectedVersion.');U.set('identity.grantReason','');U.testing.render('B26');
+}else if(k==='qualification.reviewer'){
+ U.testing.render('B16-review');
 }else if(k==='identity.manageEmployee'){
  U.set('identity.adminReason','');U.testing.render('B36');
 }});

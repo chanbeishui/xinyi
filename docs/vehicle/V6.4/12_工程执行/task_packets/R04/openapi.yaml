@@ -1428,6 +1428,9 @@ components:
       - CLOSE_DEVICE_AUTH
       - VIEW_MANUAL_VERIFICATION
       - REVIEW_MANUAL_VERIFICATION
+      - VIEW_QUALIFICATION
+      - AUDIT_QUALIFICATION
+      - REPAIR_QUALIFICATION_REJECTION
     DriverStatementLine:
       type: object
       additionalProperties: false

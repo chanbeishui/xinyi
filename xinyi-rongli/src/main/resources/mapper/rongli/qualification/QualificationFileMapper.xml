@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xinyi.rongli.qualification.mapper.QualificationFileMapper">
+    <select id="parent" resultType="map">
+        SELECT application.id,application.submission_revision,profile.account_id
+        FROM vi_driver_application application
+        JOIN vi_driver_profile profile ON profile.id=application.driver_id
+        WHERE application.id=#{applicationId}
+        FOR UPDATE
+    </select>
+</mapper>

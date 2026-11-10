@@ -680,6 +680,7 @@ components:
           maximum: 9007199254740991
         effectiveQualificationStatus:
           $ref: '#/components/schemas/QualificationStatus'
+          description: 原生效档案的持久审核状态，不是实时可接单结论；本人实时状态见session.driverQualification，后台见effectiveQualification.effectiveStatus，新单每次另核准入。
         ownerDeptId:
           type: string
           pattern: ^[1-9][0-9]{0,18}$
@@ -1076,10 +1077,11 @@ components:
           - FAILED
           - EXPIRED
           - UNAVAILABLE
+          - UNKNOWN
       required:
       - type
       - status
-      description: 当前四项可信状态：设备结果绑定原登录会话，人工来自双人确认，培训来自Q03真实冻结运行；全部绑定当前申请/公司epoch/材料及可信时刻。历史实名活体不作为当前门槛，独立PASSED不可信。
+      description: 当前四项可信状态：设备结果绑定原登录会话，人工来自双人确认，培训来自Q03真实冻结运行；全部绑定当前申请/公司epoch/材料及可信时刻。历史实名活体不作为当前门槛，独立PASSED不可信。 SUBMITTED/APPROVED展示已认证提交冻结事实；DRAFT/REJECTED仍检查当前材料及实际登录会话，未知不能提交。
     AllowedAction:
       type: string
       description: 服务端按当前角色、对象状态、版本和实时授权计算的可执行动作集合；不能由客户端授予
@@ -1171,6 +1173,9 @@ components:
       - CLOSE_DEVICE_AUTH
       - VIEW_MANUAL_VERIFICATION
       - REVIEW_MANUAL_VERIFICATION
+      - VIEW_QUALIFICATION
+      - AUDIT_QUALIFICATION
+      - REPAIR_QUALIFICATION_REJECTION
   responses:
     UnprocessableEntity:
       description: 填写内容不符合要求。参见errorCode注册表；HTTP状态与code一致。

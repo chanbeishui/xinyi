@@ -1,7 +1,7 @@
 # Q01 · 代驾资格草稿与提交
 
 阶段：M1；责任域：qualification；前置：I02, C01, F01。
-范围版本：`V6.4-QUALIFICATION-DRAFT-20261107`；definitionHash：`90cd44d8df0ada1e9cbb6a88e5a1bec4d5380004be933078082c8d4fd5c176e5`。
+范围版本：`V6.4-QUALIFICATION-DRAFT-20261107`；definitionHash：`efc3037c98c6f5c386374b2b6ee41e73ea5f1578570ee8b3df919412faf9c3c7`。
 
 ## 本任务交付
 - 本人认证档案、证件归属、提交校验、驳回只补相关项
@@ -19,7 +19,7 @@
 接口：API_042_get, API_043_put, v5_post_api_app_driver_qualification, API_044_post
 画板：D02, D03, D05, D05-passed, D05-rejected, D28, D28-expired
 主责任表：vi_driver_profile, vi_driver_application, vi_driver_application_submission
-验收：TC-R62-003, TC-R62-004, TC-R62-005
+验收：TC-R62-003, TC-R62-004
 
 ## 代码落位
 `xinyi-rongli/src/main/java/com/xinyi/rongli/qualification/`

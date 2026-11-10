@@ -1,0 +1,555 @@
+{
+  "mode": "Browser plugin not available；临时Playwright真实PC页面+明确API/F01字节夹具，不替代真实后端权限、事务或证件真实性审核",
+  "url": "http://127.0.0.1:5173/driver-management/qualification",
+  "timezone": "UTC（验证北京时间显式转换）",
+  "viewports": [
+    "1440x1000",
+    "390x844"
+  ],
+  "checks": [
+    "真实路由、列表只用昵称和范围内摘要，不默认账号主部门或泄露身份证/详情材料",
+    "本人隔离与服务端allowedActions共同禁止自审，不额外排除人工经办或复核人员",
+    "仅依服务端reviewBlockers禁止已知不能批准的材料，仍保留有权驳回路径，不把audit权限当批准条件已满足",
+    "无可信提交的草稿不展示伪材料、不猜四项通过、不开放审批",
+    "新复审冻结提交与原生效快照并列，材料只显示掩码，内部历史意见不回显",
+    "原图理由必填，真实F01 POST访问+原字节同源GET带登录/ticket，临时blob关闭回收，非公开URL",
+    "驳回要求公开说明和精确补正字段；409保留填写重读新CAS，九键正文不夹带资格/公司/通过字段",
+    "历史REPAIR只补结构与公开说明，保持驳回，不批准或伪造旧可信提交",
+    "批准无默认截止；UTC浏览器输入北京时间转Z正确，503关闭/换申请后原目标原体UUID恢复，另一申请不被写入",
+    "仅原公司可读历史时当前公司/档案版本/生效快照遮蔽，不根据原列表权限开放当前审核",
+    "证件下载在途关闭并换申请，迟到blob被回收，不在另一份审核中展示",
+    "敏感原图真实403清空整份旧详情及已输入意见，不能继续凭旧授权审核",
+    "详情真实403清空旧冻结材料、生效资格、证件与表单",
+    "1440/390列表与审核抽屉无整页横向溢出，快照小屏单列，日期/补正/意见不被固定操作遮挡",
+    "只读query账号无审核按钮及原图访问；不读取内部历史意见",
+    "逐一缺sensitive、files:query、files:access均禁原图，避免把多权限数组当作任一即可",
+    "目录HTTP200/code403不被吞成成功；公司筛选关闭但列表仍用真实业务范围，无主部门兜底"
+  ],
+  "errors": [],
+  "warnings": [],
+  "expectedHttpErrors": [
+    "Failed to load resource: the server responded with a status of 409 (Conflict)",
+    "Failed to load resource: the server responded with a status of 503 (Service Unavailable)",
+    "Failed to load resource: the server responded with a status of 403 (Forbidden)",
+    "Failed to load resource: the server responded with a status of 403 (Forbidden)"
+  ],
+  "unknown": [],
+  "requests": [
+    {
+      "path": "/getInfo",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/getRouters",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/system/notice/listTop",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/system/dept/list",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/admin/driver-qualifications",
+      "method": "GET",
+      "query": {
+        "sort": "submittedAtDesc",
+        "pageNum": "1",
+        "pageSize": "10"
+      }
+    },
+    {
+      "path": "/api/admin/driver-qualifications/23",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/admin/driver-qualifications/30",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/admin/driver-qualifications/24",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/admin/driver-qualifications/22",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/common/files/501/access",
+      "method": "POST",
+      "query": {}
+    },
+    {
+      "path": "/vi-private-transfer/files/501",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/admin/driver-qualifications/27",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/admin/driver-qualifications/27/audit",
+      "method": "POST",
+      "query": {}
+    },
+    {
+      "path": "/api/admin/driver-qualifications/27",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/admin/driver-qualifications/27/audit",
+      "method": "POST",
+      "query": {}
+    },
+    {
+      "path": "/api/admin/driver-qualifications",
+      "method": "GET",
+      "query": {
+        "sort": "submittedAtDesc",
+        "pageNum": "1",
+        "pageSize": "10"
+      }
+    },
+    {
+      "path": "/api/admin/driver-qualifications/25",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/admin/driver-qualifications/25/audit",
+      "method": "POST",
+      "query": {}
+    },
+    {
+      "path": "/api/admin/driver-qualifications",
+      "method": "GET",
+      "query": {
+        "sort": "submittedAtDesc",
+        "pageNum": "1",
+        "pageSize": "10"
+      }
+    },
+    {
+      "path": "/api/admin/driver-qualifications/28",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/admin/driver-qualifications/28/audit",
+      "method": "POST",
+      "query": {}
+    },
+    {
+      "path": "/api/admin/driver-qualifications/29",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/admin/driver-qualifications/28",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/admin/driver-qualifications/28/audit",
+      "method": "POST",
+      "query": {}
+    },
+    {
+      "path": "/api/admin/driver-qualifications",
+      "method": "GET",
+      "query": {
+        "sort": "submittedAtDesc",
+        "pageNum": "1",
+        "pageSize": "10"
+      }
+    },
+    {
+      "path": "/api/admin/driver-qualifications/26",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/admin/driver-qualifications/21",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/common/files/501/access",
+      "method": "POST",
+      "query": {}
+    },
+    {
+      "path": "/vi-private-transfer/files/501",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/admin/driver-qualifications/22",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/admin/driver-qualifications/21",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/common/files/501/access",
+      "method": "POST",
+      "query": {}
+    },
+    {
+      "path": "/api/admin/driver-qualifications/21",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/admin/driver-qualifications",
+      "method": "GET",
+      "query": {
+        "sort": "submittedAtDesc",
+        "pageNum": "1",
+        "pageSize": "10"
+      }
+    },
+    {
+      "path": "/api/admin/driver-qualifications/22",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/system/notice/listTop",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/getInfo",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/getRouters",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/system/notice/listTop",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/admin/driver-qualifications",
+      "method": "GET",
+      "query": {
+        "sort": "submittedAtDesc",
+        "pageNum": "1",
+        "pageSize": "10"
+      }
+    },
+    {
+      "path": "/api/admin/driver-qualifications/21",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/getInfo",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/getRouters",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/system/notice/listTop",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/admin/driver-qualifications",
+      "method": "GET",
+      "query": {
+        "sort": "submittedAtDesc",
+        "pageNum": "1",
+        "pageSize": "10"
+      }
+    },
+    {
+      "path": "/api/admin/driver-qualifications/21",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/getInfo",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/getRouters",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/system/notice/listTop",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/admin/driver-qualifications",
+      "method": "GET",
+      "query": {
+        "sort": "submittedAtDesc",
+        "pageNum": "1",
+        "pageSize": "10"
+      }
+    },
+    {
+      "path": "/api/admin/driver-qualifications/21",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/getInfo",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/getRouters",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/system/notice/listTop",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/admin/driver-qualifications",
+      "method": "GET",
+      "query": {
+        "sort": "submittedAtDesc",
+        "pageNum": "1",
+        "pageSize": "10"
+      }
+    },
+    {
+      "path": "/api/admin/driver-qualifications/21",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/getInfo",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/getRouters",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/system/notice/listTop",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/system/dept/list",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/admin/driver-qualifications",
+      "method": "GET",
+      "query": {
+        "sort": "submittedAtDesc",
+        "pageNum": "1",
+        "pageSize": "10"
+      }
+    },
+    {
+      "path": "/api/admin/driver-qualifications/29",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/getInfo",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/getRouters",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/system/notice/listTop",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/system/dept/list",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/admin/driver-qualifications",
+      "method": "GET",
+      "query": {
+        "sort": "submittedAtDesc",
+        "pageNum": "1",
+        "pageSize": "10"
+      }
+    }
+  ],
+  "writes": [
+    {
+      "id": "27",
+      "path": "/api/admin/driver-qualifications/27/audit",
+      "input": {
+        "expectedVersion": 4,
+        "expectedProfileVersion": 8,
+        "expectedSubmissionRevision": 1,
+        "expectedCompanyRevision": 2,
+        "decision": "REJECT",
+        "opinion": "内部依据：需补齐清晰证件",
+        "publicOpinion": "请重新上传清晰的驾驶证副页",
+        "rejectFields": [
+          "licenseSubFileId"
+        ],
+        "reviewDueAt": null
+      },
+      "key": "14c6cabe-f3b6-4dd6-84a0-a685598eba51"
+    },
+    {
+      "id": "27",
+      "path": "/api/admin/driver-qualifications/27/audit",
+      "input": {
+        "expectedVersion": 5,
+        "expectedProfileVersion": 8,
+        "expectedSubmissionRevision": 1,
+        "expectedCompanyRevision": 2,
+        "decision": "REJECT",
+        "opinion": "内部依据：需补齐清晰证件",
+        "publicOpinion": "请重新上传清晰的驾驶证副页",
+        "rejectFields": [
+          "licenseSubFileId"
+        ],
+        "reviewDueAt": null
+      },
+      "key": "8912b463-53d2-4f8b-ab4a-3d548a79b4e2"
+    },
+    {
+      "id": "25",
+      "path": "/api/admin/driver-qualifications/25/audit",
+      "input": {
+        "expectedVersion": 4,
+        "expectedProfileVersion": 8,
+        "expectedSubmissionRevision": 0,
+        "expectedCompanyRevision": 2,
+        "decision": "REPAIR_REJECTION",
+        "opinion": "内部依据：补齐历史遗留的补正范围",
+        "publicOpinion": "请补齐身份证人像面",
+        "rejectFields": [
+          "idCardFrontFileId"
+        ],
+        "reviewDueAt": null
+      },
+      "key": "25d70970-dc47-40dc-a2d1-63d7501d2ce5"
+    },
+    {
+      "id": "28",
+      "path": "/api/admin/driver-qualifications/28/audit",
+      "input": {
+        "expectedVersion": 4,
+        "expectedProfileVersion": 8,
+        "expectedSubmissionRevision": 1,
+        "expectedCompanyRevision": 2,
+        "decision": "APPROVE",
+        "opinion": "内部依据：本次冻结材料及四项证明已核对",
+        "publicOpinion": null,
+        "rejectFields": [],
+        "reviewDueAt": "2027-03-01T09:45:00.000Z"
+      },
+      "key": "132c53f9-1654-4916-ab33-3d256cfaaf47"
+    },
+    {
+      "id": "28",
+      "path": "/api/admin/driver-qualifications/28/audit",
+      "input": {
+        "expectedVersion": 4,
+        "expectedProfileVersion": 8,
+        "expectedSubmissionRevision": 1,
+        "expectedCompanyRevision": 2,
+        "decision": "APPROVE",
+        "opinion": "内部依据：本次冻结材料及四项证明已核对",
+        "publicOpinion": null,
+        "rejectFields": [],
+        "reviewDueAt": "2027-03-01T09:45:00.000Z"
+      },
+      "key": "132c53f9-1654-4916-ab33-3d256cfaaf47"
+    }
+  ],
+  "fileAccess": [
+    {
+      "path": "/api/common/files/501/access",
+      "input": {
+        "purpose": "审核本次冻结提交中身份证图像与填写材料是否一致"
+      }
+    },
+    {
+      "path": "/api/common/files/501/access",
+      "input": {
+        "purpose": "核对申请提交的证件原图"
+      }
+    },
+    {
+      "path": "/api/common/files/501/access",
+      "input": {
+        "purpose": "按授权核对冻结证件"
+      }
+    }
+  ],
+  "downloads": [
+    {
+      "path": "/vi-private-transfer/files/501",
+      "headers": {
+        "accept": "*/*",
+        "authorization": "Bearer fixture",
+        "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36",
+        "x-client-type": "admin",
+        "x-file-ticket": "fixture-submission-ticket",
+        "sec-ch-ua": "\"Not:A-Brand\";v=\"8\", \"Chromium\";v=\"156\", \"Google Chrome\";v=\"156\"",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"macOS\""
+      }
+    },
+    {
+      "path": "/vi-private-transfer/files/501",
+      "headers": {
+        "accept": "*/*",
+        "authorization": "Bearer fixture",
+        "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36",
+        "x-client-type": "admin",
+        "x-file-ticket": "fixture-submission-ticket",
+        "sec-ch-ua": "\"Not:A-Brand\";v=\"8\", \"Chromium\";v=\"156\", \"Google Chrome\";v=\"156\"",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"macOS\""
+      }
+    }
+  ],
+  "revoked": []
+}

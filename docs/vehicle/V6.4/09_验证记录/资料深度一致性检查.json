@@ -5,8 +5,8 @@
   "fail": 0,
   "counts": {
     "operations": 305,
-    "schemas": 413,
-    "tables": 89,
+    "schemas": 421,
+    "tables": 91,
     "generatedColumns": 20,
     "screens": 355,
     "cases": 412,
@@ -164,6 +164,8 @@
       "name": "30 数据列与SQL列集合精确相同",
       "result": "PASS",
       "detail": [
+        null,
+        null,
         null,
         null,
         null,

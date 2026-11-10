@@ -752,9 +752,7 @@
       "TC-012",
       "TC-013",
       "TC-014",
-      "TC-015",
       "TC-016",
-      "TC-017",
       "TC-018",
       "TC-R50-007",
       "TC-R50-008",
@@ -772,7 +770,7 @@
     "code_paths": [
       "xinyi-rongli/src/main/java/com/xinyi/rongli/identity/",
       "xinyi-rongli/src/main/resources/mapper/rongli/identity/",
-      "xinyi-rongli/src/main/java/com/xinyi/rongli/identity/controller/",
+      "xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/identity/",
       "xinyi-ui/src/views/rongli/identity/",
       "xinyi-ui/src/api/rongli/identity.ts",
       "xinyi-miniapp/src/features/identity/"
@@ -797,7 +795,7 @@
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
     "scopeRevision": "V6.4-IDENTITY-CONSISTENCY-20261022",
-    "definitionHash": "8f5384482995ab7da94bc62c4dc6dfac6e494cd7a0bd435c82fc8da8db8ef2f5",
+    "definitionHash": "727bd63aea611de3405455161ffaf764844fc74c05d85b7278cc066489d6dc6c",
     "evidence": [
       {
         "path": "docs/implementation/vehicle/evidence/I01.json",
@@ -2128,8 +2126,7 @@
     ],
     "case_ids": [
       "TC-R62-003",
-      "TC-R62-004",
-      "TC-R62-005"
+      "TC-R62-004"
     ],
     "scope": "DEVELOPMENT",
     "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
@@ -2161,7 +2158,7 @@
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
     "scopeRevision": "V6.4-QUALIFICATION-DRAFT-20261107",
-    "definitionHash": "90cd44d8df0ada1e9cbb6a88e5a1bec4d5380004be933078082c8d4fd5c176e5",
+    "definitionHash": "efc3037c98c6f5c386374b2b6ee41e73ea5f1578570ee8b3df919412faf9c3c7",
     "evidence": [
       {
         "path": "docs/implementation/vehicle/evidence/Q01-20261107.json",
@@ -2480,7 +2477,7 @@
   {
     "id": "Q05",
     "phase": "M1",
-    "title": "资格审批与到期复审",
+    "title": "资格审批、生效快照与到期复审",
     "domain": "qualification",
     "depends_on": [
       "Q01",
@@ -2489,12 +2486,20 @@
       "I06"
     ],
     "deliverables": [
-      "后台资格列表详情审核，资格快照、到期任务、拒绝原因"
+      "独立ADMIN列表/冻结提交详情/精确9键审核，查询原公司、审批原与当前公司范围并集，自审禁止但人工经办复核人可参加最终审核",
+      "可信提交冻结公司epoch、实际MINI会话、已知后台同人及一次认证封装；审批不依赖申请人保持在线，不读后改草稿冒充提交",
+      "只追加审核历史与生效版本，公开补正字段与内部密文意见分离；复审驳回不覆盖原生效资格，旧驳回结构明确修复不直接批准",
+      "显式未来UTC复审截止、上海证件到期日含当天；实际截止取两者较早，不默认一年或提前30天；版本到期任务永久去重/重启补缺",
+      "到期实时禁止新单，不撤历史DRIVER入口、不改行政听单或在手车辆；permission_version/审计/outbox同事务",
+      "资格四图另需敏感及文件权限/原公司范围、理由加密审计和60秒提交版本票据，不开放草稿或同公司任意证件"
     ],
     "negative_checks": [
-      "个人不能自批",
-      "证件失效禁新单但历史/返还不丢",
-      "无保险条件"
+      "当前/冻结公司epoch不一致不可批准，A转B再转A不复活旧提交；查询当前公司字段另需query范围",
+      "冻结提交四证明需认证父事实/提交时点，旧NULL来源/原客户端passed/篡改封装不可批准；退出和新登录不撤销真实已提交事实",
+      "申请人历史关联/可信手机号及冻结后台同人不得自审，跨域数值碰巧相等不当同人；人工复核人可最终审核",
+      "九键/四版本/UUID严格，未知原键原体，重复终态、并发批准/驳回至多一份事实；审计/outbox失败整体回滚",
+      "证件/复审到期不依赖Job及时，旧版本任务不使新资格过期，行政/听单/承接/占用/返还责任不变",
+      "敏感原图按确切可信提交四ID与各自公司权限，旧票/未提交/替换文件/撤权/IO期间变化拒绝，不泄全身份证与内部意见"
     ],
     "api_ids": [
       "API_121_get",
@@ -2505,18 +2510,27 @@
       "B16",
       "B16-review"
     ],
-    "tables": [],
-    "case_ids": [],
+    "tables": [
+      "vi_qualification_review",
+      "vi_qualification_snapshot"
+    ],
+    "case_ids": [
+      "TC-015",
+      "TC-R62-005"
+    ],
     "scope": "DEVELOPMENT",
     "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
-    "status": "NOT_ASSESSED",
+    "status": "VERIFIED",
     "code_paths": [
       "xinyi-rongli/src/main/java/com/xinyi/rongli/qualification/",
       "xinyi-rongli/src/main/resources/mapper/rongli/qualification/",
-      "xinyi-rongli/src/main/java/com/xinyi/rongli/qualification/controller/",
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/verification/service/CanonicalVerificationAuthority.java",
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/training/service/TrainingCompletionAuthority.java",
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/driver/service/DriverNewAssignmentPolicy.java",
       "xinyi-ui/src/views/rongli/qualification/",
       "xinyi-ui/src/api/rongli/qualification.ts",
-      "xinyi-miniapp/src/features/qualification/"
+      "xinyi-miniapp/src/pages/qualification/index.vue",
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q05QualificationIT.java"
     ],
     "test_class": "Q05QualificationIT",
     "commands": [
@@ -2536,12 +2550,19 @@
       "access": "不得绕过限制；保存恢复点",
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
-    "scopeRevision": "V6.1-UNCHANGED",
-    "definitionHash": "c2180563939e2d2361d93e1876f7240b7f548f84e55e65fb687fe1ada9cc88e0",
-    "evidence": [],
+    "scopeRevision": "V6.4-QUALIFICATION-AUDIT-20261110",
+    "definitionHash": "38ea09c0fd125d374b003e62b8c308b841c774d8bc52396f36a091eea98fc3f2",
+    "evidence": [
+      {
+        "path": "docs/implementation/vehicle/evidence/Q05-20261110.json",
+        "sha256": "7d115ce847bbca6c98bdf576dc036102d82711340b751c0dd66579cf14fd2533"
+      }
+    ],
     "implementation": null,
     "review": null,
-    "blocker": null
+    "blocker": null,
+    "updatedAt": "2026-11-10T15:00:26.676269+00:00",
+    "needsAdaptation": false
   },
   {
     "id": "B01",
@@ -3349,7 +3370,8 @@
       "TC-063",
       "TC-064",
       "TC-065",
-      "TC-066"
+      "TC-066",
+      "TC-017"
     ],
     "scope": "DEVELOPMENT",
     "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
@@ -3376,7 +3398,7 @@
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
     "scopeRevision": "V6.1-UNCHANGED",
-    "definitionHash": "d6fcd551cc7600326ebbe5fd6afff8bc7c434d697ed785e0d9fae0da6b2a15c1",
+    "definitionHash": "fd8ac859de9beeaceff1dcfd01c80ecce9c78da513405126ecf03d4ec19a18b8",
     "evidence": [],
     "implementation": null,
     "review": null,

@@ -1,0 +1,113 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-failsafe-plugin/xsd/failsafe-test-report.xsd" version="3.0.2" name="com.xinyi.web.viit.Q05QualificationIT" time="26.884" tests="55" errors="0" skipped="0" failures="0">
+  <testcase name="completeRealDeviceManualTrainingSubmissionAuditAndExplicitRoleSwitchWorkTogether" classname="com.xinyi.web.viit.Q05QualificationIT" time="3.718">
+    </testcase>
+  <testcase name="oldExpiryTimerCannotExpireANewerApprovedRenewalSnapshot" classname="com.xinyi.web.viit.Q05QualificationIT" time="0.678">
+    </testcase>
+  <testcase name="auditOutboxFailureRollsBackReviewSnapshotProfileAndPermissionVersion" classname="com.xinyi.web.viit.Q05QualificationIT" time="0.437">
+    </testcase>
+  <testcase name="repeatedAndConcurrentExpiryWorkersRecordOneExpiryEventOnly" classname="com.xinyi.web.viit.Q05QualificationIT" time="0.453">
+    </testcase>
+  <testcase name="approvalMustSpecifyFutureUtcDeadlineAndCannotInventRejectFields" classname="com.xinyi.web.viit.Q05QualificationIT" time="0.379">
+    </testcase>
+  <testcase name="threeActualAdminResponsesMatchBothPrimaryAndTaskContracts" classname="com.xinyi.web.viit.Q05QualificationIT" time="1.715">
+    </testcase>
+  <testcase name="companyTransferAndRoundTripPreventApprovalOfTheOldFrozenCompanyEpoch" classname="com.xinyi.web.viit.Q05QualificationIT" time="0.326">
+    </testcase>
+  <testcase name="terminalDecisionCannotBeReplacedByAnotherUuidOrOppositeDecision" classname="com.xinyi.web.viit.Q05QualificationIT" time="0.318">
+    </testcase>
+  <testcase name="renewalRejectionPreservesApprovedSnapshotFlagsAndExistingVehicleResponsibility" classname="com.xinyi.web.viit.Q05QualificationIT" time="0.521">
+    </testcase>
+  <testcase name="trustedPhoneMatchIsFrozenAtSubmitAndCannotBeErasedByChangingAdminPhone" classname="com.xinyi.web.viit.Q05QualificationIT" time="0.24">
+    </testcase>
+  <testcase name="qualificationReadTicketRejectsTamperingDifferentAdminAndRevokedAuthentication" classname="com.xinyi.web.viit.Q05QualificationIT" time="0.451">
+    </testcase>
+  <testcase name="sameIdempotencyKeyReturnsOneDecisionButAnotherBodyConflicts" classname="com.xinyi.web.viit.Q05QualificationIT" time="0.553">
+    </testcase>
+  <testcase name="authorizedAdminReadsExactlyTheFrozenFourPrivateImagesAndEncryptedAccessReason" classname="com.xinyi.web.viit.Q05QualificationIT" time="0.388">
+    </testcase>
+  <testcase name="missingLegacySubmissionSealCannotBeApprovedButCanBeExplicitlyRejected" classname="com.xinyi.web.viit.Q05QualificationIT" time="0.259">
+    </testcase>
+  <testcase name="queryFiltersSortingAndPaginationHaveNoAuthorityBypass" classname="com.xinyi.web.viit.Q05QualificationIT" time="0.435">
+    </testcase>
+  <testcase name="functionPermissionsCannotBeInferredFromCompanyMembership" classname="com.xinyi.web.viit.Q05QualificationIT" time="0.321">
+    </testcase>
+  <testcase name="manualReviewerMayPerformFinalAuditWhenTheyAreNotTheApplicant" classname="com.xinyi.web.viit.Q05QualificationIT" time="1.903">
+    </testcase>
+  <testcase name="rejectStoresOnlyPublicOpinionInMiniAndKeepsIndependentReviewHistory" classname="com.xinyi.web.viit.Q05QualificationIT" time="0.277">
+    </testcase>
+  <testcase name="revokedAdminCannotAuditOrReplayEvenWhenRedisEvictionFails" classname="com.xinyi.web.viit.Q05QualificationIT" time="0.199">
+    </testcase>
+  <testcase name="changingAnySealedSubmissionFactFailsClosedWithoutAnApproval" classname="com.xinyi.web.viit.Q05QualificationIT" time="0.199">
+    </testcase>
+  <testcase name="approvalCreatesAuthenticatedEffectiveSnapshotWithoutSwitchingOrEnablingListening" classname="com.xinyi.web.viit.Q05QualificationIT" time="0.233">
+    </testcase>
+  <testcase name="qualificationFileReadRequiresIndependentSensitiveAndFileScopes" classname="com.xinyi.web.viit.Q05QualificationIT" time="0.226">
+    </testcase>
+  <testcase name="rejectionNeedsPublicOpinionAndExactUniqueMaterialFields" classname="com.xinyi.web.viit.Q05QualificationIT" time="0.183">
+    </testcase>
+  <testcase name="concurrentAuditorsCommitOneReviewOneSnapshotAndOnePermissionChange" classname="com.xinyi.web.viit.Q05QualificationIT" time="0.231">
+    </testcase>
+  <testcase name="ordinaryAdministrativeRemarkChangesCasButDoesNotInvalidateSubmittedMaterials" classname="com.xinyi.web.viit.Q05QualificationIT" time="0.259">
+    </testcase>
+  <testcase name="submittedProofRemainsAuditableAfterOriginalMiniLogoutOrAnotherLogin" classname="com.xinyi.web.viit.Q05QualificationIT" time="0.244">
+    </testcase>
+  <testcase name="applicantHistoricEmployeeBindingCannotBeUsedToApproveTheirOwnSubmission" classname="com.xinyi.web.viit.Q05QualificationIT" time="0.192">
+    </testcase>
+  <testcase name="transferredSubmissionReadBelongsToOriginalCompanyAndRejectionNeedsBothScopes" classname="com.xinyi.web.viit.Q05QualificationIT" time="0.374">
+    </testcase>
+  <testcase name="internalOpinionSealBindsItsReviewAndNeverAppearsInAnyProjection" classname="com.xinyi.web.viit.Q05QualificationIT" time="0.336">
+    </testcase>
+  <testcase name="replayAfterPermissionsAreRevokedCannotReturnThePreviousSensitiveDetail" classname="com.xinyi.web.viit.Q05QualificationIT" time="0.239">
+    </testcase>
+  <testcase name="renewalApprovalCreatesNextRevisionWithoutReenablingAdministrativePause" classname="com.xinyi.web.viit.Q05QualificationIT" time="0.342">
+    </testcase>
+  <testcase name="emptyDepartmentScopeFailsClosedForReadsAndAudit" classname="com.xinyi.web.viit.Q05QualificationIT" time="0.166">
+    </testcase>
+  <testcase name="nineKeysAreExactAndAllInternalUpdatesAreForbidden" classname="com.xinyi.web.viit.Q05QualificationIT" time="0.174">
+    </testcase>
+  <testcase name="multiDepartmentAuditorMustCoverOriginalAndCurrentCompanyWithoutGlobalScope" classname="com.xinyi.web.viit.Q05QualificationIT" time="0.193">
+    </testcase>
+  <testcase name="legacyRejectionRepairAddsOnlyPublicCorrectionStructureWithoutApprovingOrOpeningFiles" classname="com.xinyi.web.viit.Q05QualificationIT" time="0.17">
+    </testcase>
+  <testcase name="pastReviewDeadlineBlocksNewAssignmentsBeforeAnyJobRunsAndKeepsDriverHistoryRole" classname="com.xinyi.web.viit.Q05QualificationIT" time="0.186">
+    </testcase>
+  <testcase name="typedVersionsAndUuidMustBeCanonicalAndSafe" classname="com.xinyi.web.viit.Q05QualificationIT" time="0.176">
+    </testcase>
+  <testcase name="frozenProofSourceTamperingCannotBeReplacedByAnIndependentPassedRow" classname="com.xinyi.web.viit.Q05QualificationIT" time="0.169">
+    </testcase>
+  <testcase name="legacyRepairCannotBeUsedToChangeModernRejectionOrAnUnsubmittedDraft" classname="com.xinyi.web.viit.Q05QualificationIT" time="0.296">
+    </testcase>
+  <testcase name="newlyVerifiedPhoneMappingAtAuditAlsoPreventsApplicantSelfApproval" classname="com.xinyi.web.viit.Q05QualificationIT" time="0.17">
+    </testcase>
+  <testcase name="rejectedSubmissionAllowsOnlyNamedFieldsAndResubmitAppendsNewDecision" classname="com.xinyi.web.viit.Q05QualificationIT" time="0.247">
+    </testcase>
+  <testcase name="adminAndMiniRealmsCannotBeReplacedByClientHeaders" classname="com.xinyi.web.viit.Q05QualificationIT" time="0.176">
+    </testcase>
+  <testcase name="internalQueriesInvalidIdsAndUnboundedPaginationAreRejected" classname="com.xinyi.web.viit.Q05QualificationIT" time="0.168">
+    </testcase>
+  <testcase name="expiredOriginalDeviceChallengeDoesNotInvalidateAlreadyFrozenSuccessfulProof" classname="com.xinyi.web.viit.Q05QualificationIT" time="0.178">
+    </testcase>
+  <testcase name="expiryJobPreservesApprovedHistoryVehicleCustodyAndAdministrativePreferences" classname="com.xinyi.web.viit.Q05QualificationIT" time="0.221">
+    </testcase>
+  <testcase name="sameApplicationUnselectedReadyImageAndUnsubmittedDraftAreNotOpenedToAdmins" classname="com.xinyi.web.viit.Q05QualificationIT" time="0.299">
+    </testcase>
+  <testcase name="eachIndependentCasConflictKeepsOriginalSubmittedRecord" classname="com.xinyi.web.viit.Q05QualificationIT" time="0.175">
+    </testcase>
+  <testcase name="summaryAndDetailNeverExposeRawIdentityInternalCipherOrDeviceSecrets" classname="com.xinyi.web.viit.Q05QualificationIT" time="0.153">
+    </testcase>
+  <testcase name="unknownDeviceStatusIsARealQualificationResponseAndCannotBeSubmitted" classname="com.xinyi.web.viit.Q05QualificationIT" time="1.482">
+    </testcase>
+  <testcase name="missingExpiryTimerIsRepairedFromAuthenticatedSnapshotExactlyOnce" classname="com.xinyi.web.viit.Q05QualificationIT" time="0.226">
+    </testcase>
+  <testcase name="expiryTimerPublicationFailureAlsoRollsBackApprovalAndPermissionVersion" classname="com.xinyi.web.viit.Q05QualificationIT" time="0.182">
+    </testcase>
+  <testcase name="approvalCopiesOnlyFrozenLicenseAndUsesMinimumExplicitDeadline" classname="com.xinyi.web.viit.Q05QualificationIT" time="0.167">
+    </testcase>
+  <testcase name="listAndDetailRespectTheRealFrozenCompanyAndAccurateTotal" classname="com.xinyi.web.viit.Q05QualificationIT" time="0.249">
+    </testcase>
+  <testcase name="longTermLicenseStillHasAnExplicitReviewDeadlineAndCanExpire" classname="com.xinyi.web.viit.Q05QualificationIT" time="0.178">
+    </testcase>
+  <testcase name="shanghaiLicenseExpiryIncludesTodayAndStopsAtNextLocalMidnight" classname="com.xinyi.web.viit.Q05QualificationIT" time="0.209">
+    </testcase>
+</testsuite>

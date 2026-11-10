@@ -1516,7 +1516,7 @@
 <p>关联页面：D01–D05/D28/D46、B16/B28。本人基础账号已核验手机号即可建立申请，员工不免审。<strong>资料完整、有效公司、当前同意及DEVICE_AUTH/BACKGROUND/LICENSE/TRAINING四项可信通过，才可提交审核</strong>。四项证明绑定当前申请、公司epoch、材料revision/HMAC及可信核验时刻，本机认证另绑定当前本人登录session；旧公司、旧材料、旧登录或任意独立PASSED不能旁路。缺项显示真实阻断，保存草稿仍可继续。</p>
 <p>历史决策说明：2026-11-07采用实名、活体、背景、驾照及培训五项要求；2026-11-09用户明确改为微信SOTER仅确认设备使用者，加背景/驾照人工及培训四项。旧实名活体条目保留作历史追溯，不再作为当前接口、页面或提交门槛，不以SOTER伪造实名/活体通过。</p>
 <p>首次申请不猜公司，由后台A04明确认领；提交检查真实有效公司、现行同意版本及公开原文hash、applicationId和申请/档案版本，并冻结材料、证明、公司和同意快照。SUBMITTED后证件写入冻结。驳回只补明确字段，历史驳回缺结构先由管理员补齐记录；不公开内部审核意见。</p>
-<p>复审另建申请，草稿、待审和驳回均不覆盖原已生效资格；到期/暂停仍保留历史与必要在手入口，不解除车辆保管责任。Q01不自行批准或接入简化培训/供应商；Q03只以当前申请/公司epoch/材料run全部必修真实完成的关联证明满足TRAINING项，Q04本机签名认证及背景/驾驶证独立人工复核，Q05最终资格审核按对应任务接通，新单准入另核验。</p>
+<p>复审另建申请，草稿、待审和驳回均不覆盖原已生效资格；到期/暂停仍保留历史与必要在手入口，不解除车辆保管责任。Q01不自行批准或接入简化培训/供应商；Q03只以当前申请/公司epoch/材料run全部必修真实完成的关联证明满足TRAINING项，Q04本机签名认证及背景/驾驶证独立人工复核，Q05后台最终资格审核已接通，新单准入另核验。</p>
 <h4>Q04 本机认证与人工核验</h4>
 <p>当前选择微信原生SOTER，无腾讯慧眼配置或SDK装配依赖。D04/D46实际复用小程序“本机生物认证”页面，先检查设备支持方式，再查是否已录入指纹/人脸，仅使用可用方式；服务器生成一次性挑战，前端原样提交resultJSON与resultJSONSignature，由服务器持当前应用access_token调用微信verify_signature，并检查微信openid、挑战、防重放及本人申请/登录/公司epoch/材料上下文。客户端回调不直接写通过。H5只展示当前服务端进度，不能模拟微信真机或证件实名。</p>
 <p>创建、签名确认及恢复均需UUID及显式CAS/上下文，独立本机认证同意version/textHash/accepted=true须匹配当前已发布原文；相同version正文变化也必须重新同意。challenge、签名、设备标识不进入路由、本地持久缓存、普通日志、审计或outbox明文。GET纯DB读取，不隐式调用微信验证；只有显式confirm/recover处理服务端原冻结签名。UNKNOWN保留原请求，不更换原签名/挑战规避不确定结果，409重读后核对；本机能力不可用、未录入、取消、签名缺失或微信校验不通过均不得通过。</p>
@@ -1526,6 +1526,18 @@
 <p><img src="../../../implementation/vehicle/Q04/mini-device-mobile.png" alt="Q04 本机认证与四分项当前进度" /></p>
 <p><img src="../../../implementation/vehicle/Q04/pc-manual.png" alt="Q04 人工经办与独立复核" /></p>
 <p><img src="../../../implementation/vehicle/Q04/pc-device-detail.png" alt="Q04 设备会话受控封存详情" /></p>
+<h4>Q05 后台最终资格审核与生效资格</h4>
+<p>B16与B16-review实际共用后台<code>/driver-management/qualification</code>列表及抽屉。列表以账号昵称或申请号查询，不把昵称当证件实名，也不提供身份证号搜索。归属来自数据库中的原提交公司；当前公司范围不足时仅保留有权原公司历史，屏蔽当前档案版本、当前公司和当前生效资格，并取消审核动作，不用审核人主部门填补归属。</p>
+<p>详情把“本次认证冻结提交”和“当前生效资格”分列。只有已认证的封存提交才能显示材料、四证件引用、同意版本/原文hash/时间与DEVICE_AUTH/BACKGROUND/LICENSE/TRAINING冻结结果；历史未认证记录不拼装现有草稿、不猜核验通过。身份证仅返回掩码和已提供标记，内部审核意见不通过任何GET返回。当前有效资格独立显示资格修订、准驾车型、证照日期/长期标记、明确复审截止、真实到期时刻及批准时间，复审草稿、待审或驳回均不覆盖旧快照。</p>
+<p>审核提交恰有九个字段：<code>expectedVersion</code>、<code>expectedProfileVersion</code>、<code>expectedSubmissionRevision</code>、<code>expectedCompanyRevision</code>、<code>decision</code>、<code>opinion</code>、<code>publicOpinion</code>、<code>rejectFields</code>、<code>reviewDueAt</code>，同时使用UUID <code>Idempotency-Key</code>。四版本绑定已读取的明确申请目标。内部<code>opinion</code>必填且仅加密保存；公开<code>publicOpinion</code>独立维护。批准须明确选择未来复审截止，界面按北京时间解释并转UTC Z提交，不默认一年或30天；批准时<code>rejectFields=[]</code>。驳回与历史补正修复均须非空公开说明及非空唯一材料字段集合，<code>reviewDueAt=null</code>，只开放这些精确字段，不能包含公司或同意字段。历史<code>REPAIR_REJECTION</code>只补公开说明与范围，不批准资格或造出旧证明。</p>
+<p>所有操作继续校验功能权限和原公司范围，以服务端<code>allowedActions</code>、自审标记及真实批准阻断为准。申请人不能审核或修复自己的申请；先前BACKGROUND/LICENSE人工经办或复核人可参加最终资格审核，不额外要求第三人。<code>reviewBlockers</code>禁止批准，不伪装禁止有权管理员驳回。409保留填写意见，明确重读核对新版本后再操作；未知响应冻结原申请、九键正文、四版本和UUID，关闭抽屉或查看其他申请不改变重试目标，不把重试当新决定。</p>
+<p>四证件原图须同时具备<code>biz:driverqualification:query</code>、<code>biz:driverqualification:sensitive</code>、<code>biz:files:query</code>、<code>biz:files:access</code>及对应原公司范围。操作者填写目的后调用<code>POST /api/common/files/{fileId}/access</code>，服务器签发60秒READ票，并绑定当前受信提交修订；随后只经同源私有通道带Token和票据读取。页面仅使用临时blob显示，关闭、切申请、撤权或离开即清理，不回显持久URL或票据；票到期后须重新申请，不把TRAINING_MEDIA的300秒期限用于证件。</p>
+<p>批准同事务生成新的权威资格快照并刷新身份权限版本，不自动打开行政新单开关或本人听单。资格到期为复审截止与非长期驾驶证上海到期日次日00:00的较早时刻；实时判断和到期任务只限制新单，保留批准历史、历史DRIVER入口及在手承接、占用、保管和归还责任，不因到期释放车辆。新单还须D01定位/可达等实时门槛，Q05通过不等于已完成派单能力。</p>
+<p>本人D05/D28把当前申请与当前生效资格分卡。SUBMITTED/APPROVED显示“已提交核验结果”，按认证提交快照读取，不因后来退出或重新登录抹去已提交DEVICE_AUTH事实；新草稿、补正或新材料仍按当前登录、公司与材料核验，不能借旧快照免验。公开说明与精确补正项可见，内部意见不可见。只有刷新后的<code>session.availableRoles</code>含DRIVER才显示主动切换入口，页面不自动切换身份或听单。</p>
+<p>本轮实际页面（明确为测试API夹具；不代表真实资格批准、真人证件审查或生产到期任务演练）：</p>
+<p><img src="../../../implementation/vehicle/Q05/pc-detail.png" alt="Q05 后台冻结提交与当前生效资格" /></p>
+<p><img src="../../../implementation/vehicle/Q05/pc-audit.png" alt="Q05 后台精确字段补正与公开内部意见" /></p>
+<p><img src="../../../implementation/vehicle/Q05/mini-approved-mobile.png" alt="Q05 本人批准状态与当前资格复审截止" /></p>
 <p><img src="../08_%E4%B8%9A%E5%8A%A1%E6%B5%81%E7%A8%8B%E5%9B%BE/PNG/F49.png" alt="F49 代驾资格申请、补正与复审" /></p>
 <h3>F05 低门槛预约与车辆地址复用</h3>
 <p>关联页面：O02/O04/O05/O32/O33/O34/O27/O29–O34。页面编号不是步骤顺序；O32→O33→O31→O34，已有车辆可预填。先选时段不保证名额。</p>

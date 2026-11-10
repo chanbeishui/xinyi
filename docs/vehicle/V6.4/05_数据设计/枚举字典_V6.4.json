@@ -1002,6 +1002,21 @@
         "RETURNED"
       ],
       "description": "ManualVerificationStatus"
+    },
+    "QualificationReviewDecision": {
+      "values": [
+        "APPROVE",
+        "REJECT",
+        "REPAIR_REJECTION"
+      ],
+      "description": "正常审批/驳回与只修复旧驳回结构"
+    },
+    "QualificationReviewKind": {
+      "values": [
+        "DECISION",
+        "REPAIR_REJECTION"
+      ],
+      "description": "不可变事实类型，修复不作为批准"
     }
   },
   "columnBindings": {
@@ -1103,7 +1118,9 @@
     "vi_refund_order.execution_mode": "RefundExecutionMode",
     "vi_manual_verification.verification_type": "ManualVerificationType",
     "vi_manual_verification.conclusion": "ManualVerificationConclusion",
-    "vi_manual_verification.status": "ManualVerificationStatus"
+    "vi_manual_verification.status": "ManualVerificationStatus",
+    "vi_qualification_review.decision": "QualificationReviewDecision",
+    "vi_qualification_review.kind": "QualificationReviewKind"
   },
   "governanceStatusByType": {
     "PRIVACY": [

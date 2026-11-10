@@ -38,7 +38,9 @@ public class TrainingAdminSecurityConfig {
                                     || uri.equals("/api/admin/manual-verifications")
                                     || uri.startsWith("/api/admin/manual-verifications/")
                                     || uri.equals("/api/admin/verification-sessions")
-                                    || uri.startsWith("/api/admin/verification-sessions/");
+                                    || uri.startsWith("/api/admin/verification-sessions/")
+                                    || uri.equals("/api/admin/driver-qualifications")
+                                    || uri.startsWith("/api/admin/driver-qualifications/");
                         })
                 .csrf(csrf -> csrf.disable())
                 .httpBasic(basic -> basic.disable())

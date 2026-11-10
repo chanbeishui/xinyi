@@ -31,6 +31,7 @@ public class FileAuthority {
     private final EmployeeStationAccessMapper stations;
     private final PrivateFileMapper files;
     private final com.xinyi.rongli.training.mapper.LearningMapper learning;
+    private final com.xinyi.rongli.qualification.service.QualificationFileAccess qualificationFiles;
 
     public FileAuthority(
             BusinessActorResolver actors,
@@ -43,7 +44,8 @@ public class FileAuthority {
             IDeptScopeService scopes,
             EmployeeStationAccessMapper stations,
             PrivateFileMapper files,
-            com.xinyi.rongli.training.mapper.LearningMapper learning) {
+            com.xinyi.rongli.training.mapper.LearningMapper learning,
+            com.xinyi.rongli.qualification.service.QualificationFileAccess qualificationFiles) {
         this.actors = actors;
         this.directory = directory;
         this.accounts = accounts;
@@ -55,6 +57,7 @@ public class FileAuthority {
         this.stations = stations;
         this.files = files;
         this.learning = learning;
+        this.qualificationFiles = qualificationFiles;
     }
 
     public Actor actor() {
@@ -119,7 +122,12 @@ public class FileAuthority {
         }
         if (file.getApplicationId() != null) {
             // Q01先锁资格父记录再锁文件。提交冻结后，旧上传票据和IO后的回写也必须重新拒绝。
-            // 本轮仍仅本人证件读写，不借公司字段提前开放Q05后台原图。
+            // ADMIN仅可独立授权读取可信提交的四图，不能上传、补换证件或读取未提交草稿。
+            if (actor.isAdmin()) {
+                if (write) denied();
+                qualificationFiles.context(actor, file, permission);
+                return;
+            }
             var application = files.lockApplication(file.getApplicationId());
             if (!actor.isMini()
                     || application == null
@@ -202,6 +210,13 @@ public class FileAuthority {
         if (write && !"DRAFT".equals(parent.get("status"))) {
             throw new ViException(ViErrorCode.VI_STATE_CONFLICT, "已发布课程媒体只读，请派生新草稿维护");
         }
+    }
+
+    /** 读取票据按父业务版本绑定；培训和资格使用各自的可信上下文。 */
+    public String readContext(Actor actor, PrivateFile file) {
+        if (actor.isAdmin() && file.getApplicationId() != null)
+            return qualificationFiles.context(actor, file, "biz:files:access");
+        return trainingReadContext(actor, file);
     }
 
     /** 票据MAC覆盖此上下文；同file在新run重新被选中，也不能复活旧公司/材料的读取票。 */

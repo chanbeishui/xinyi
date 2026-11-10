@@ -766,7 +766,7 @@
     "presentation": "PAGE",
     "taskId": "I01",
     "status": "NOT_ASSESSED",
-    "note": "目标实现路径，非已存在源码。状态画板与弹窗不是独立小程序路由；遵守原账号与权限边界。"
+    "note": "F49统一本人申请/资料/进度/补正/复审；OWNER/STATION/DRIVER已核验本人均可，状态画板不单建路由。Q03培训、Q04本机/人工核验与Q05最终审核已接通；严格四项通过后才提交，申请不授DRIVER。"
   },
   {
     "boardId": "D02",
@@ -777,7 +777,7 @@
     "presentation": "PAGE",
     "taskId": "Q01",
     "status": "NOT_ASSESSED",
-    "note": "F49统一本人申请/进度/补正/复审页面；OWNER/STATION/DRIVER已核验本人均可，状态画板不单独建路由。严格核验培训后才提交；Q05审批另接通。"
+    "note": "F49统一本人申请/资料/进度/补正/复审；OWNER/STATION/DRIVER已核验本人均可，状态画板不单建路由。Q03培训、Q04本机/人工核验与Q05最终审核已接通；严格四项通过后才提交，申请不授DRIVER。"
   },
   {
     "boardId": "D03",
@@ -788,7 +788,7 @@
     "presentation": "PAGE",
     "taskId": "Q01",
     "status": "NOT_ASSESSED",
-    "note": "F49统一本人申请/进度/补正/复审页面；OWNER/STATION/DRIVER已核验本人均可，状态画板不单独建路由。严格核验培训后才提交；Q05审批另接通。"
+    "note": "F49统一本人申请/资料/进度/补正/复审；OWNER/STATION/DRIVER已核验本人均可，状态画板不单建路由。Q03培训、Q04本机/人工核验与Q05最终审核已接通；严格四项通过后才提交，申请不授DRIVER。"
   },
   {
     "boardId": "D04",
@@ -816,7 +816,8 @@
     "presentation": "PAGE",
     "taskId": "Q01",
     "status": "NOT_ASSESSED",
-    "note": "F49统一本人申请/进度/补正/复审；完整资料、有效公司、现行同意及DEVICE_AUTH/BACKGROUND/LICENSE/TRAINING四项可信证明后提交。本机认证只确认设备使用者，不声明实名活体；Q05审批另接通。"
+    "note": "F49真实本人申请/补正/复审共用资格页；Q05已接后台最终审批。原提交冻结核验与当前生效资格分开，公开意见不含内部意见；当前角色仅刷新session后主动切换，不自动听单。到期保留历史身份/在手入口并阻新单。",
+    "implementationNote": "SUBMITTED/APPROVED读取已认证提交proof，原登录退出不抹去历史通过；新材料/补正仍当前申请、公司epoch及登录核验。复审草稿/待审/驳回不覆盖旧生效资格，截止仅显示当前资格的明确值；历史驳回缺结构先由后台修复。"
   },
   {
     "boardId": "D05-passed",
@@ -827,7 +828,8 @@
     "presentation": "STATE_OR_OVERLAY",
     "taskId": "Q01",
     "status": "NOT_ASSESSED",
-    "note": "F49统一本人申请/进度/补正/复审页面；OWNER/STATION/DRIVER已核验本人均可，状态画板不单独建路由。严格核验培训后才提交；Q05审批另接通。"
+    "note": "F49真实本人申请/补正/复审共用资格页；Q05已接后台最终审批。原提交冻结核验与当前生效资格分开，公开意见不含内部意见；当前角色仅刷新session后主动切换，不自动听单。到期保留历史身份/在手入口并阻新单。",
+    "implementationNote": "SUBMITTED/APPROVED读取已认证提交proof，原登录退出不抹去历史通过；新材料/补正仍当前申请、公司epoch及登录核验。复审草稿/待审/驳回不覆盖旧生效资格，截止仅显示当前资格的明确值；历史驳回缺结构先由后台修复。"
   },
   {
     "boardId": "D05-rejected",
@@ -838,7 +840,8 @@
     "presentation": "STATE_OR_OVERLAY",
     "taskId": "Q01",
     "status": "NOT_ASSESSED",
-    "note": "F49统一本人申请/进度/补正/复审页面；OWNER/STATION/DRIVER已核验本人均可，状态画板不单独建路由。严格核验培训后才提交；Q05审批另接通。"
+    "note": "F49真实本人申请/补正/复审共用资格页；Q05已接后台最终审批。原提交冻结核验与当前生效资格分开，公开意见不含内部意见；当前角色仅刷新session后主动切换，不自动听单。到期保留历史身份/在手入口并阻新单。",
+    "implementationNote": "SUBMITTED/APPROVED读取已认证提交proof，原登录退出不抹去历史通过；新材料/补正仍当前申请、公司epoch及登录核验。复审草稿/待审/驳回不覆盖旧生效资格，截止仅显示当前资格的明确值；历史驳回缺结构先由后台修复。"
   },
   {
     "boardId": "D06",
@@ -1227,7 +1230,8 @@
     "presentation": "PAGE",
     "taskId": "Q01",
     "status": "NOT_ASSESSED",
-    "note": "F49统一本人申请/进度/补正/复审页面；OWNER/STATION/DRIVER已核验本人均可，状态画板不单独建路由。严格核验培训后才提交；Q05审批另接通。"
+    "note": "F49真实本人申请/补正/复审共用资格页；Q05已接后台最终审批。原提交冻结核验与当前生效资格分开，公开意见不含内部意见；当前角色仅刷新session后主动切换，不自动听单。到期保留历史身份/在手入口并阻新单。",
+    "implementationNote": "SUBMITTED/APPROVED读取已认证提交proof，原登录退出不抹去历史通过；新材料/补正仍当前申请、公司epoch及登录核验。复审草稿/待审/驳回不覆盖旧生效资格，截止仅显示当前资格的明确值；历史驳回缺结构先由后台修复。"
   },
   {
     "boardId": "D28-expired",
@@ -1238,7 +1242,8 @@
     "presentation": "STATE_OR_OVERLAY",
     "taskId": "Q01",
     "status": "NOT_ASSESSED",
-    "note": "F49统一本人申请/进度/补正/复审页面；OWNER/STATION/DRIVER已核验本人均可，状态画板不单独建路由。严格核验培训后才提交；Q05审批另接通。"
+    "note": "F49真实本人申请/补正/复审共用资格页；Q05已接后台最终审批。原提交冻结核验与当前生效资格分开，公开意见不含内部意见；当前角色仅刷新session后主动切换，不自动听单。到期保留历史身份/在手入口并阻新单。",
+    "implementationNote": "SUBMITTED/APPROVED读取已认证提交proof，原登录退出不抹去历史通过；新材料/补正仍当前申请、公司epoch及登录核验。复审草稿/待审/驳回不覆盖旧生效资格，截止仅显示当前资格的明确值；历史驳回缺结构先由后台修复。"
   },
   {
     "boardId": "D30",
@@ -2105,22 +2110,32 @@
     "canonicalPage": "B16",
     "title": "代驾认证审核",
     "role": "admin",
-    "targetPath": "xinyi-ui/src/views/rongli/b16/index.vue",
+    "targetPath": "xinyi-ui/src/views/rongli/qualification/index.vue",
     "presentation": "PAGE",
     "taskId": "Q05",
     "status": "NOT_ASSESSED",
-    "note": "目标实现路径，非已存在源码。状态画板与弹窗不是独立小程序路由；遵守原账号与权限边界。"
+    "note": "Q05已实现/driver-management/qualification，B16-review为同页详情审核抽屉；按原提交公司范围、query/audit/sensitive及四证件文件权限独立控制，昵称不冒充实名。",
+    "implementationNote": "本次认证冻结提交与当前生效快照双卡；审批四版本CAS+UUID及9键、显式未来复审截止、公开/内部意见隔离、字段级驳回/历史修复、自审禁用；证件原图同源60秒READ票及临时blob清理。409保留重读，未知恢复原目标/正文/键；批准不自动听单，到期不解除在手保管责任。",
+    "apiTargetPath": "xinyi-ui/src/api/rongli/qualification.ts",
+    "componentTargetPaths": [
+      "xinyi-ui/src/views/rongli/qualification/QualificationEvidence.vue"
+    ]
   },
   {
     "boardId": "B16-review",
     "canonicalPage": "B16",
     "title": "代驾认证审核抽屉",
     "role": "admin",
-    "targetPath": "xinyi-ui/src/views/rongli/b16/index.vue",
+    "targetPath": "xinyi-ui/src/views/rongli/qualification/index.vue",
     "presentation": "STATE_OR_OVERLAY",
     "taskId": "Q05",
     "status": "NOT_ASSESSED",
-    "note": "目标实现路径，非已存在源码。状态画板与弹窗不是独立小程序路由；遵守原账号与权限边界。"
+    "note": "Q05已实现/driver-management/qualification，B16-review为同页详情审核抽屉；按原提交公司范围、query/audit/sensitive及四证件文件权限独立控制，昵称不冒充实名。",
+    "implementationNote": "本次认证冻结提交与当前生效快照双卡；审批四版本CAS+UUID及9键、显式未来复审截止、公开/内部意见隔离、字段级驳回/历史修复、自审禁用；证件原图同源60秒READ票及临时blob清理。409保留重读，未知恢复原目标/正文/键；批准不自动听单，到期不解除在手保管责任。",
+    "apiTargetPath": "xinyi-ui/src/api/rongli/qualification.ts",
+    "componentTargetPaths": [
+      "xinyi-ui/src/views/rongli/qualification/QualificationEvidence.vue"
+    ]
   },
   {
     "boardId": "B17",

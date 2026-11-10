@@ -520,7 +520,7 @@
       [
         "review_due_at",
         "DATETIME(3)",
-        "年度复审到期"
+        "审核员明确的UTC复审截止；不默认年度周期"
       ],
       [
         "license_class",
@@ -561,14 +561,20 @@
         "version",
         "BIGINT NOT NULL DEFAULT 0",
         "乐观锁版本"
+      ],
+      [
+        "effective_snapshot_id",
+        "BIGINT NULL",
+        "当前生效资格不可变快照；历史NULL不猜回填"
       ]
     ],
     "indexes": [
       "UNIQUE KEY uk_account (account_id)",
       "KEY ix_driver_company (owner_dept_id,id)",
+      "KEY ix_driver_qualification_expiry (qualification_status,effective_snapshot_id)",
       "KEY ix_pool (qualification_status,new_assignment_enabled,listening_enabled)"
     ],
-    "rule": "每名代驾明确归属一个公司部门，旗下站点共用；owner_dept_id不从员工、创建人或历史订单推断。存量NULL待全数据管理员显式认领；归属变更检查原新范围并集且无待响应/占用/在手任务，转移后禁新。资格审核、本人听单偏好与行政开关分开；暂停不释放承接或保管。 Q03：training_context_revision只在实际公司归属变化时递增，A→B→A不可复活旧学习；备注及行政开关不影响既有培训。",
+    "rule": "每名代驾明确归属一个公司部门，旗下站点共用；owner_dept_id不从员工、创建人或历史订单推断。存量NULL待全数据管理员显式认领；归属变更检查原新范围并集且无待响应/占用/在手任务，转移后禁新。资格审核、本人听单偏好与行政开关分开；暂停不释放承接或保管。 Q03：training_context_revision只在实际公司归属变化时递增，A→B→A不可复活旧学习；备注及行政开关不影响既有培训。 Q05：effective_snapshot_id仅实际批准事务切换；新单实时核资格/公司epoch/上海证件日期/明确UTC复审，不依赖Job准时。曾批准DRIVER仅历史/在手视角，不能作为新单资格；到期只更新资格状态，行政/听单/承接/占用均保留。",
     "primaryKey": [
       "id"
     ],
@@ -676,6 +682,13 @@
         "updatable": true,
         "clientWritable": false,
         "authority": "仅A04实际公司归属变更，由原值比较同事务递增。"
+      },
+      "effective_snapshot_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false,
+        "authority": "Q05真实批准不可变快照后与qualification_revision同事务切换，旧NULL不推断可信快照。"
       }
     },
     "checks": [
@@ -4415,7 +4428,7 @@
       "UNIQUE KEY uk_object_key (object_key)",
       "KEY ix_order_purpose (order_id,purpose)"
     ],
-    "rule": "访问签名不进明文长期表，不接受客户端READY/摘要即可信 Q02新增TRAINING_MEDIA仅ADMIN公司DRAFT父课程、私有MP4不超过100MiB；READY由实际容器/轨道/时长与流式SHA校验产生，发布后不可重写，可由同族派生白名单只读继承。图片仍JPEG/PNG10MiB。 Q03：MINI仅当前本人冻结run引用的发布媒体可读，不具上传权；300秒READ票据MAC绑定申请/材料/run/公司epoch，逐块重新校验。后台原公司DRAFT维护规则保留。",
+    "rule": "访问签名不进明文长期表，不接受客户端READY/摘要即可信 Q02新增TRAINING_MEDIA仅ADMIN公司DRAFT父课程、私有MP4不超过100MiB；READY由实际容器/轨道/时长与流式SHA校验产生，发布后不可重写，可由同族派生白名单只读继承。图片仍JPEG/PNG10MiB。 Q03：MINI仅当前本人冻结run引用的发布媒体可读，不具上传权；300秒READ票据MAC绑定申请/材料/run/公司epoch，逐块重新校验。后台原公司DRAFT维护规则保留。 Q05：ADMIN读取资格原图须独立query/sensitive/files query/access及原提交公司范围；只允许已认证当前提交四槽位，草稿或legacy无seal不开放。60秒READ短票绑定submission revision/seal摘要，IO前后重鉴权；实际访问理由AAD加密审计，不向后台开放写入。",
     "primaryKey": [
       "id"
     ],
@@ -16184,7 +16197,7 @@
   },
   {
     "name": "vi_driver_application_submission",
-    "comment": "资格申请不可变提交快照",
+    "comment": "资格申请不可变提交快照；无更新删除业务入口",
     "cols": [
       [
         "id",
@@ -16260,13 +16273,33 @@
         "submitted_at",
         "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
         "提交时刻UTC"
+      ],
+      [
+        "company_revision",
+        "BIGINT NULL",
+        "提交时专用公司归属epoch；历史NULL不可信"
+      ],
+      [
+        "source_session_id",
+        "BIGINT NULL",
+        "提交时实际MINI登录会话；审核不要求其仍在线"
+      ],
+      [
+        "applicant_user_ids",
+        "JSON NULL",
+        "服务端冻结已知申请人后台身份；换号不抹去自审约束"
+      ],
+      [
+        "submission_seal",
+        "MEDIUMBLOB NULL",
+        "取得数据库ID后同事务一次初始化的提交认证封装；历史NULL不可批准"
       ]
     ],
     "indexes": [
       "UNIQUE KEY uk_application_submission (application_id,submission_revision)",
       "KEY ix_qualification_submission_company (owner_dept_id,application_id,id)"
     ],
-    "rule": "服务端事务内追加已完整通过的材料、公司、同意与核验依据；不可更新/删除，不能以客户端声称PASSED替代。",
+    "rule": "本人严格提交事务冻结材料、四项可信证明、公司epoch、实际提交session、明确同意和已知后台同人集合；JSON/UTC时间回读后按DBID一次认证封装。审核消费冻结原始事实，不要求原登录仍在线，不用后改草稿替代；新申请/材料仍须本次session设备认证。历史新增字段NULL保持隔离，不猜回填可信；仅历史驳回结构修复，不直接批准。",
     "primaryKey": [
       "id"
     ],
@@ -16364,6 +16397,31 @@
         "updatable": false,
         "clientWritable": false,
         "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "company_revision": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "source_session_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "applicant_user_ids": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "submission_seal": {
+        "generated": false,
+        "insertable": false,
+        "updatable": true,
+        "clientWritable": false,
+        "authority": "取得真实数据库ID并回读JSON/UTC时间后，同事务仅一次初始化，WHERE原值NULL；无覆盖接口。"
       }
     },
     "checks": [
@@ -17222,6 +17280,436 @@
       "CONSTRAINT ck_manual_status CHECK (`status` IN ('PENDING_REVIEW','CONFIRMED','RETURNED'))",
       "CONSTRAINT ck_manual_distinct CHECK (reviewed_by_user_id IS NULL OR reviewed_by_user_id<>submitted_by_user_id)",
       "CONSTRAINT ck_manual_version CHECK (version>=0 AND company_revision>=0 AND material_revision>=0)"
+    ]
+  },
+  {
+    "name": "vi_qualification_review",
+    "comment": "资格不可变审核历史；内部意见不对外返回",
+    "cols": [
+      [
+        "id",
+        "BIGINT NOT NULL AUTO_INCREMENT",
+        "数据库生成不可变审核事实主键"
+      ],
+      [
+        "application_id",
+        "BIGINT NOT NULL",
+        "真实资格申请"
+      ],
+      [
+        "driver_id",
+        "BIGINT NOT NULL",
+        "真实父代驾档案"
+      ],
+      [
+        "owner_dept_id",
+        "BIGINT NOT NULL",
+        "审核原公司归属；历史修复继承显式父档案公司"
+      ],
+      [
+        "company_revision",
+        "BIGINT NOT NULL",
+        "审核对应的专用公司归属epoch"
+      ],
+      [
+        "submission_id",
+        "BIGINT NULL",
+        "可信提交快照；仅历史驳回结构修复可空"
+      ],
+      [
+        "submission_revision",
+        "BIGINT NOT NULL",
+        "本次明确提交修订，历史修复可为0"
+      ],
+      [
+        "kind",
+        "VARCHAR(32) NOT NULL",
+        "QualificationReviewKind: DECISION,REPAIR_REJECTION"
+      ],
+      [
+        "decision",
+        "VARCHAR(32) NOT NULL",
+        "QualificationReviewDecision: APPROVE,REJECT,REPAIR_REJECTION"
+      ],
+      [
+        "reviewer_user_id",
+        "BIGINT NOT NULL",
+        "真实ADMIN审核人，禁止已知申请人本人"
+      ],
+      [
+        "reviewed_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "服务器审核时刻UTC"
+      ],
+      [
+        "internal_opinion_cipher",
+        "MEDIUMBLOB NULL",
+        "取得ID后一次AAD加密内部意见；不返回GET"
+      ],
+      [
+        "public_opinion",
+        "VARCHAR(1000) NULL",
+        "可向本人公开的审核说明；与内部意见分离"
+      ],
+      [
+        "reject_fields",
+        "JSON NOT NULL",
+        "明确补正的材料字段；批准必须空集合"
+      ],
+      [
+        "application_version",
+        "BIGINT NOT NULL",
+        "审核前明确申请CAS"
+      ],
+      [
+        "profile_version",
+        "BIGINT NOT NULL",
+        "审核前明确档案CAS"
+      ]
+    ],
+    "indexes": [
+      "UNIQUE KEY uk_qualification_review_target (application_id,submission_revision,kind)",
+      "KEY ix_qualification_review_company (owner_dept_id,application_id,id)"
+    ],
+    "rule": "权威归属为真实提交原公司；写入须query/audit覆盖原与当前档案公司并集。审核仅指明的申请/提交revision/CAS/公司epoch，禁止已知申请人本人，人工经办及复核人可参与最终审核。正常审核及旧REJECTED结构修复分kind，事实仅追加，内部意见取DBID后一次AAD加密且不返回GET；公开意见和精确补正字段分列。旧无可信提交不批准或开放原图，修复仅使申请可补正，不授DRIVER。",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "engine": "InnoDB",
+    "collation": "utf8mb4_0900_ai_ci",
+    "columnRules": {
+      "id": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "application_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "driver_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "owner_dept_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "company_revision": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "submission_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "submission_revision": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "kind": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false,
+        "enumRef": "QualificationReviewKind"
+      },
+      "decision": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false,
+        "enumRef": "QualificationReviewDecision"
+      },
+      "reviewer_user_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "reviewed_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "internal_opinion_cipher": {
+        "generated": false,
+        "insertable": false,
+        "updatable": true,
+        "clientWritable": false,
+        "authority": "取得真实数据库ID并回读JSON/UTC时间后，同事务仅一次初始化，WHERE原值NULL；无覆盖接口。"
+      },
+      "public_opinion": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "reject_fields": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "application_version": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "profile_version": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      }
+    },
+    "checks": [
+      "CONSTRAINT ck_qualification_review_kind CHECK (`kind` IN ('DECISION','REPAIR_REJECTION'))",
+      "CONSTRAINT ck_qualification_review_decision CHECK (`decision` IN ('APPROVE','REJECT','REPAIR_REJECTION'))",
+      "CONSTRAINT ck_qualification_review_versions CHECK (submission_revision>=0 AND company_revision>=0 AND application_version>=0 AND profile_version>=0)"
+    ]
+  },
+  {
+    "name": "vi_qualification_snapshot",
+    "comment": "实际批准的不可变生效资格快照；到期不删除历史",
+    "cols": [
+      [
+        "id",
+        "BIGINT NOT NULL AUTO_INCREMENT",
+        "数据库生成生效资格快照主键"
+      ],
+      [
+        "driver_id",
+        "BIGINT NOT NULL",
+        "真实父代驾档案"
+      ],
+      [
+        "account_id",
+        "BIGINT NOT NULL",
+        "真实MINI申请人账号"
+      ],
+      [
+        "application_id",
+        "BIGINT NOT NULL",
+        "实际批准的申请"
+      ],
+      [
+        "submission_id",
+        "BIGINT NOT NULL",
+        "实际批准的可信提交快照"
+      ],
+      [
+        "review_id",
+        "BIGINT NOT NULL",
+        "唯一实际批准审核事实"
+      ],
+      [
+        "qualification_revision",
+        "BIGINT NOT NULL",
+        "司机专用生效资格单调版本"
+      ],
+      [
+        "owner_dept_id",
+        "BIGINT NOT NULL",
+        "批准时真实公司"
+      ],
+      [
+        "company_revision",
+        "BIGINT NOT NULL",
+        "批准时专用公司归属epoch"
+      ],
+      [
+        "material_revision",
+        "BIGINT NOT NULL",
+        "批准的实际材料修订"
+      ],
+      [
+        "material_hash",
+        "BINARY(32) NOT NULL",
+        "批准材料有密钥摘要"
+      ],
+      [
+        "license_class",
+        "VARCHAR(64) NOT NULL",
+        "冻结实际准驾类别，不以字母排序判断车型"
+      ],
+      [
+        "license_valid_to",
+        "DATETIME(3) NULL",
+        "上海证件到期日00:00转换UTC；到期当日仍有效"
+      ],
+      [
+        "license_long_term",
+        "TINYINT NOT NULL",
+        "是否明确长期有效；不得把NULL期限当永久"
+      ],
+      [
+        "review_due_at",
+        "DATETIME(3) NOT NULL",
+        "审核员本次明确的未来UTC复审截止，不默认一年"
+      ],
+      [
+        "expires_at",
+        "DATETIME(3) NOT NULL",
+        "实际期限取复审截止与证件到期日次日00:00较早值"
+      ],
+      [
+        "approved_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "真实批准UTC时刻"
+      ],
+      [
+        "snapshot_seal",
+        "MEDIUMBLOB NULL",
+        "取得ID后同事务一次初始化的生效事实认证封装"
+      ]
+    ],
+    "indexes": [
+      "UNIQUE KEY uk_qualification_snapshot_revision (driver_id,qualification_revision)",
+      "UNIQUE KEY uk_qualification_snapshot_review (review_id)",
+      "UNIQUE KEY uk_qualification_snapshot_submission (submission_id)",
+      "KEY ix_qualification_snapshot_due (expires_at,driver_id)"
+    ],
+    "rule": "实际APPROVE才生成不可变生效版本，绑定司机/账号/真实提交/审核/公司epoch/材料及确切证件、复审和期限。取得DBID后一次认证封装；原MINI后续退出不撤销已提交事实。截止=min(明确未来UTC复审，上海证件到期日次日00:00)，长期须明确，不默认一年。复审驳回不覆盖旧快照；到期实时禁新单、版本任务幂等补偿，不改行政开关/听单/在手责任。旧任务不得使新版本过期。",
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "engine": "InnoDB",
+    "collation": "utf8mb4_0900_ai_ci",
+    "columnRules": {
+      "id": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "driver_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "account_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "application_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "submission_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "review_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "qualification_revision": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "owner_dept_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "company_revision": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "material_revision": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "material_hash": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "license_class": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "license_valid_to": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "license_long_term": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "review_due_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "expires_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "approved_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "snapshot_seal": {
+        "generated": false,
+        "insertable": false,
+        "updatable": true,
+        "clientWritable": false,
+        "authority": "取得真实数据库ID并回读JSON/UTC时间后，同事务仅一次初始化，WHERE原值NULL；无覆盖接口。"
+      }
+    },
+    "checks": [
+      "CONSTRAINT ck_qualification_snapshot_revision CHECK (qualification_revision>0 AND company_revision>=0 AND material_revision>=0)",
+      "CONSTRAINT ck_qualification_snapshot_license CHECK (license_long_term IN (0,1) AND ((license_long_term=1 AND license_valid_to IS NULL) OR (license_long_term=0 AND license_valid_to IS NOT NULL)))",
+      "CONSTRAINT ck_qualification_snapshot_due CHECK (expires_at<=review_due_at)"
     ]
   }
 ]

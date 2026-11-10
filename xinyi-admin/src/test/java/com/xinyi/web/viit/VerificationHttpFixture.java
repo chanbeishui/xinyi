@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.DynamicPropertyRegistry;
@@ -48,9 +47,9 @@ abstract class VerificationHttpFixture extends TrainingHttpFixture {
         verificationConsent(FACE_CONSENT_VERSION, FACE_CONSENT_TEXT);
     }
 
-    @AfterAll
-    static void closeWechatTransport() {
-        WECHAT.close();
+    static {
+        // Q04/Q05共用无@Test夹具，不能在首个测试类结束时关掉下一类仍使用的静态协议端点。
+        Runtime.getRuntime().addShutdownHook(new Thread(WECHAT::close, "vi-test-wechat-shutdown"));
     }
 
     void verificationConsent(String version, String text) {

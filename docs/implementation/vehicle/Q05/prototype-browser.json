@@ -1,0 +1,128 @@
+{
+  "task": "Q05 static prototype semantic consistency",
+  "generatedAt": "2026-11-10T14:34:53.251Z",
+  "passed": true,
+  "browserPlugin": "Browser plugin not available",
+  "fallback": "Installed Playwright and Chrome; original set_content/UI.testing.render pipeline; no framework/dependency added",
+  "flow": "B16冻结提交 → B16-review自审/意见/补正/UTC期限 → 明确本地批准/驳回/修复 → B16与D05状态分离",
+  "scope": "Only offline prototype demonstrations. No production API/DB, proof verification, real qualification, deadline worker or notification executed. Real acceptance is owned by Q05 integration tests.",
+  "viewport": [
+    1440,
+    1050
+  ],
+  "checkCount": 13,
+  "checks": [
+    {
+      "name": "页面身份、非空及无框架错误覆盖层",
+      "passed": true,
+      "title": "O29 微信手机号授权登录 · V6.4 · 全量一致性修正版",
+      "url": "about:blank (self-contained HTML set_content)"
+    },
+    {
+      "name": "冻结提交与既有生效资格并列；四项按提交展示；新复审期限无默认值",
+      "passed": true
+    },
+    {
+      "name": "申请人自审按钮禁用，动作处理再次拒绝且不留成功记录",
+      "passed": true
+    },
+    {
+      "name": "批准须明确未来UTC期限；拒绝空值、过去、非Z和超毫秒精度",
+      "passed": true
+    },
+    {
+      "name": "人工复核人可最终审；批准明确期限取证件次日上海零点；内部意见不复制公开反馈/日志",
+      "passed": true
+    },
+    {
+      "name": "已决定的申请不重复批准、不重复添加本地审核记录",
+      "passed": true
+    },
+    {
+      "name": "新登录清当前设备标记，但已提交四项历史保持，申请人页面无内部意见",
+      "passed": true
+    },
+    {
+      "name": "复审驳回须公开意见及精确字段，保留原生效资格并向本人仅公开补正信息",
+      "passed": true
+    },
+    {
+      "name": "首次驳回不会产生生效资格或代驾身份",
+      "passed": true
+    },
+    {
+      "name": "历史补正修复独立动作，只补公开结构，不批准、不覆盖原资格",
+      "passed": true
+    },
+    {
+      "name": "陈旧本地版本意图拒绝，不静默绑定新版本",
+      "passed": true
+    },
+    {
+      "name": "仅导出B16/B16-review首屏及完整内容4PNG，统一复审待审核/原生效V1样本",
+      "passed": true
+    },
+    {
+      "name": "无页面异常、控制台警告错误或外部网络请求",
+      "passed": true
+    }
+  ],
+  "screens": [
+    {
+      "id": "B16",
+      "width": 1440,
+      "height": 1409.5625,
+      "bodyTextLength": 617,
+      "scenario": "RENEWAL",
+      "status": "SUBMITTED",
+      "effectiveRevision": 1,
+      "submissionRevision": 1,
+      "firstImage": "docs/vehicle/V6.4/02_UI/全量页面图/首屏/B16.png",
+      "fullImage": "docs/vehicle/V6.4/02_UI/全量页面图/完整内容/B16.png",
+      "firstSha256": "f65448c7c674a35c7ca7bbe66e21959e796f69bfd6f7bcbd44abfabf76f49a38",
+      "fullSha256": "6797068217411b143888ddc468b2aa28d1eb7c2e2ce38f04f291d0112d2b5e7a"
+    },
+    {
+      "id": "B16-review",
+      "width": 1440,
+      "height": 1050,
+      "bodyTextLength": 1769,
+      "scenario": "RENEWAL",
+      "status": "SUBMITTED",
+      "effectiveRevision": 1,
+      "submissionRevision": 1,
+      "firstImage": "docs/vehicle/V6.4/02_UI/全量页面图/首屏/B16-review.png",
+      "fullImage": "docs/vehicle/V6.4/02_UI/全量页面图/完整内容/B16-review.png",
+      "firstSha256": "312d451c2cf54ead8eadb0648b309514404a10b4546ac10fce8c070e120ee905",
+      "fullSha256": "582bf5a05a66dd9b6522c064d807a5e2f32534b86a3b2bf8c8903a8b715fcb3d"
+    }
+  ],
+  "targetedImageCount": 4,
+  "allScreenshotsRegenerated": false,
+  "pageErrors": [],
+  "consoleWarningsOrErrors": [],
+  "externalRequests": [],
+  "htmlSha256": "35458fc44517995c827cb12f51d0ab51838a2b90b7b2c223f9f06ddb068efad1",
+  "staticChecks": {
+    "javascriptSyntaxFiles": 6,
+    "javascriptSyntaxPassed": true,
+    "gitDiffCheckPassed": true,
+    "buildCommand": "python3 docs/vehicle/V6.4/02_UI/build.py"
+  },
+  "visualReview": {
+    "passed": true,
+    "reviewedImages": [
+      "全量页面图/首屏/B16.png",
+      "全量页面图/完整内容/B16-review.png"
+    ],
+    "findings": "列表清楚区分本次复审与生效V1；长抽屉完整展开、意见分区与空白UTC期限可读，操作区无重叠。"
+  },
+  "changedSources": [
+    "docs/vehicle/V6.4/02_UI/src/desktop.js",
+    "docs/vehicle/V6.4/02_UI/src/identity_model.js",
+    "docs/vehicle/V6.4/02_UI/src/identity_interactions.js",
+    "docs/vehicle/V6.4/02_UI/src/identity_pages.js",
+    "docs/vehicle/V6.4/02_UI/src/app.js",
+    "docs/vehicle/V6.4/02_UI/src/v4_interactions.js"
+  ]
+}

@@ -88,9 +88,11 @@
             AND provider&lt;>''
         ORDER BY id DESC
     </select>
+    <!-- 补正重提成为新提交，清理当前工作态的旧公开驳回信息；不可变审核历史单独按原公司保留。 -->
     <update id="submit">
         UPDATE vi_driver_application
         SET status='SUBMITTED',owner_dept_id=#{application.ownerDeptId},
+            reject_fields=NULL,public_review_opinion=NULL,
             provider_result_ids=#{application.providerResultIds},
             submission_revision=submission_revision+1,submitted_at=UTC_TIMESTAMP(3),
             version=version+1,updated_at=UTC_TIMESTAMP(3)

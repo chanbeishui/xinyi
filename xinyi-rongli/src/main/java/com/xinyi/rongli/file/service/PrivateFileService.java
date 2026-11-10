@@ -30,6 +30,7 @@ public class PrivateFileService {
     private final FileTickets tickets;
     private final IdempotencyService idem;
     private final AuditService audit;
+    private final com.xinyi.rongli.integration.service.IntegrationCrypto crypto;
     private final TransactionTemplate tx;
 
     public PrivateFileService(
@@ -39,6 +40,7 @@ public class PrivateFileService {
             FileTickets tickets,
             IdempotencyService idem,
             AuditService audit,
+            com.xinyi.rongli.integration.service.IntegrationCrypto crypto,
             PlatformTransactionManager manager) {
         this.files = files;
         this.authority = authority;
@@ -46,6 +48,7 @@ public class PrivateFileService {
         this.tickets = tickets;
         this.idem = idem;
         this.audit = audit;
+        this.crypto = crypto;
         tx = new TransactionTemplate(manager);
         tx.setIsolationLevel(
                 org.springframework.transaction.TransactionDefinition.ISOLATION_READ_COMMITTED);
@@ -354,18 +357,31 @@ public class PrivateFileService {
                                                     .plusSeconds(transferSeconds(file))
                                                     .truncatedTo(ChronoUnit.SECONDS);
                                     String requestId = UUID.randomUUID().toString();
-                                    // 原因是访问意图，不作为权限凭据；审计只保存脱敏动作与关联，避免自由文本夹带身份证号。
+                                    // 资格原图保留加密访问理由；普通审计不出现可能夹带身份证的自由文本。
+                                    Map<String, Object> accessSummary = new LinkedHashMap<>();
+                                    accessSummary.put("requestId", requestId);
+                                    accessSummary.put("purpose", file.getPurpose());
+                                    if (actor.isAdmin() && file.getApplicationId() != null) {
+                                        String reason =
+                                                Base64.getEncoder()
+                                                        .encodeToString(
+                                                                crypto.envelope(
+                                                                        request.purpose(),
+                                                                        "Q05:FILE_ACCESS:"
+                                                                                + id
+                                                                                + ":USER:"
+                                                                                + actor.sysUserId()
+                                                                                + ":REQUEST:"
+                                                                                + requestId));
+                                        accessSummary.put("accessReasonEnvelope", reason);
+                                    }
                                     audit.recordSuccess(
                                             actor,
                                             "FILE",
                                             id,
                                             "FILE_ACCESS",
                                             null,
-                                            Map.of(
-                                                    "requestId",
-                                                    requestId,
-                                                    "purpose",
-                                                    file.getPurpose()),
+                                            accessSummary,
                                             "查看业务凭证",
                                             file.getOrderId());
                                     return Map.of(
@@ -385,8 +401,7 @@ public class PrivateFileService {
                                                             id,
                                                             "READ",
                                                             expires,
-                                                            authority.trainingReadContext(
-                                                                    actor, file))));
+                                                            authority.readContext(actor, file))));
                                 }));
     }
 
@@ -412,7 +427,7 @@ public class PrivateFileService {
                                                 id,
                                                 "READ",
                                                 ticket,
-                                                authority.trainingReadContext(actor, row));
+                                                authority.readContext(actor, row));
                                         return row;
                                     });
                     if (file == null) return false;
@@ -469,7 +484,7 @@ public class PrivateFileService {
                             expected.getId(),
                             "READ",
                             ticket,
-                            authority.trainingReadContext(actor, current));
+                            authority.readContext(actor, current));
                     if (!Objects.equals(current.getObjectKey(), expected.getObjectKey())
                             || !Objects.equals(current.getServerSize(), expected.getServerSize())
                             || current.getServerSha256() == null
@@ -508,7 +523,7 @@ public class PrivateFileService {
                                                 id,
                                                 "READ",
                                                 ticket,
-                                                authority.trainingReadContext(actor, row));
+                                                authority.readContext(actor, row));
                                         ready(row);
                                         return row;
                                     });
@@ -540,7 +555,7 @@ public class PrivateFileService {
                                         id,
                                         "READ",
                                         ticket,
-                                        authority.trainingReadContext(actor, current));
+                                        authority.readContext(actor, current));
                                 audit.recordSuccess(
                                         actor,
                                         "FILE",

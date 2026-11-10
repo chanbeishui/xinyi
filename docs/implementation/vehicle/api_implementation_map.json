@@ -531,7 +531,8 @@
     "testFiles": [
       "xinyi-admin/src/test/java/com/xinyi/web/viit/Q01QualificationIT.java",
       "xinyi-admin/src/test/java/com/xinyi/web/viit/Q03TrainingIT.java",
-      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q04VerificationIT.java"
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q04VerificationIT.java",
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q05QualificationIT.java"
     ],
     "reviewEvidence": "docs/implementation/vehicle/Q01/review.md",
     "operationId": "API_042_get",
@@ -542,10 +543,12 @@
     "evidence": [
       "docs/implementation/vehicle/evidence/Q01-20261107.json",
       "docs/implementation/vehicle/evidence/Q03-20261109.json",
-      "docs/implementation/vehicle/evidence/Q04-20261110.json"
+      "docs/implementation/vehicle/evidence/Q04-20261110.json",
+      "docs/implementation/vehicle/evidence/Q05-20261110.json"
     ],
     "q03CompatibilityNote": "Q03补齐真实冻结run/培训证明消费、公司epoch与本人教材访问；保留该接口原责任与证据，未把审批/外部核验算完成。",
-    "q04CompatibilityNote": "按用户最终设备确认/双人人工范围，Q01四项canonical消费与同登录session、公共独立同意及旧资格/培训/档案关联回归；原责任和历史证据保留。"
+    "q04CompatibilityNote": "按用户最终设备确认/双人人工范围，Q01四项canonical消费与同登录session、公共独立同意及旧资格/培训/档案关联回归；原责任和历史证据保留。",
+    "q05CompatibilityNote": "当前四项认证冻结提交、审批与复审历史、真实公司权限、私有证件及身份/新单基础门禁关联回归；不改原任务责任或既有验证证据。"
   },
   {
     "implementationStatus": "VERIFIED",
@@ -555,7 +558,8 @@
     "testFiles": [
       "xinyi-admin/src/test/java/com/xinyi/web/viit/Q01QualificationIT.java",
       "xinyi-admin/src/test/java/com/xinyi/web/viit/Q03TrainingIT.java",
-      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q04VerificationIT.java"
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q04VerificationIT.java",
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q05QualificationIT.java"
     ],
     "reviewEvidence": "docs/implementation/vehicle/Q01/review.md",
     "operationId": "API_043_put",
@@ -566,10 +570,12 @@
     "evidence": [
       "docs/implementation/vehicle/evidence/Q01-20261107.json",
       "docs/implementation/vehicle/evidence/Q03-20261109.json",
-      "docs/implementation/vehicle/evidence/Q04-20261110.json"
+      "docs/implementation/vehicle/evidence/Q04-20261110.json",
+      "docs/implementation/vehicle/evidence/Q05-20261110.json"
     ],
     "q03CompatibilityNote": "Q03补齐真实冻结run/培训证明消费、公司epoch与本人教材访问；保留该接口原责任与证据，未把审批/外部核验算完成。",
-    "q04CompatibilityNote": "按用户最终设备确认/双人人工范围，Q01四项canonical消费与同登录session、公共独立同意及旧资格/培训/档案关联回归；原责任和历史证据保留。"
+    "q04CompatibilityNote": "按用户最终设备确认/双人人工范围，Q01四项canonical消费与同登录session、公共独立同意及旧资格/培训/档案关联回归；原责任和历史证据保留。",
+    "q05CompatibilityNote": "当前四项认证冻结提交、审批与复审历史、真实公司权限、私有证件及身份/新单基础门禁关联回归；不改原任务责任或既有验证证据。"
   },
   {
     "implementationStatus": "VERIFIED",
@@ -579,7 +585,8 @@
     "testFiles": [
       "xinyi-admin/src/test/java/com/xinyi/web/viit/Q01QualificationIT.java",
       "xinyi-admin/src/test/java/com/xinyi/web/viit/Q03TrainingIT.java",
-      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q04VerificationIT.java"
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q04VerificationIT.java",
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q05QualificationIT.java"
     ],
     "reviewEvidence": "docs/implementation/vehicle/Q01/review.md",
     "operationId": "v5_post_api_app_driver_qualification",
@@ -590,10 +597,12 @@
     "evidence": [
       "docs/implementation/vehicle/evidence/Q01-20261107.json",
       "docs/implementation/vehicle/evidence/Q03-20261109.json",
-      "docs/implementation/vehicle/evidence/Q04-20261110.json"
+      "docs/implementation/vehicle/evidence/Q04-20261110.json",
+      "docs/implementation/vehicle/evidence/Q05-20261110.json"
     ],
     "q03CompatibilityNote": "Q03补齐真实冻结run/培训证明消费、公司epoch与本人教材访问；保留该接口原责任与证据，未把审批/外部核验算完成。",
-    "q04CompatibilityNote": "按用户最终设备确认/双人人工范围，Q01四项canonical消费与同登录session、公共独立同意及旧资格/培训/档案关联回归；原责任和历史证据保留。"
+    "q04CompatibilityNote": "按用户最终设备确认/双人人工范围，Q01四项canonical消费与同登录session、公共独立同意及旧资格/培训/档案关联回归；原责任和历史证据保留。",
+    "q05CompatibilityNote": "当前四项认证冻结提交、审批与复审历史、真实公司权限、私有证件及身份/新单基础门禁关联回归；不改原任务责任或既有验证证据。"
   },
   {
     "implementationStatus": "VERIFIED",
@@ -603,7 +612,8 @@
     "testFiles": [
       "xinyi-admin/src/test/java/com/xinyi/web/viit/Q01QualificationIT.java",
       "xinyi-admin/src/test/java/com/xinyi/web/viit/Q03TrainingIT.java",
-      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q04VerificationIT.java"
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q04VerificationIT.java",
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q05QualificationIT.java"
     ],
     "reviewEvidence": "docs/implementation/vehicle/Q01/review.md",
     "operationId": "API_044_post",
@@ -614,10 +624,12 @@
     "evidence": [
       "docs/implementation/vehicle/evidence/Q01-20261107.json",
       "docs/implementation/vehicle/evidence/Q03-20261109.json",
-      "docs/implementation/vehicle/evidence/Q04-20261110.json"
+      "docs/implementation/vehicle/evidence/Q04-20261110.json",
+      "docs/implementation/vehicle/evidence/Q05-20261110.json"
     ],
     "q03CompatibilityNote": "Q03补齐真实冻结run/培训证明消费、公司epoch与本人教材访问；保留该接口原责任与证据，未把审批/外部核验算完成。",
-    "q04CompatibilityNote": "按用户最终设备确认/双人人工范围，Q01四项canonical消费与同登录session、公共独立同意及旧资格/培训/档案关联回归；原责任和历史证据保留。"
+    "q04CompatibilityNote": "按用户最终设备确认/双人人工范围，Q01四项canonical消费与同登录session、公共独立同意及旧资格/培训/档案关联回归；原责任和历史证据保留。",
+    "q05CompatibilityNote": "当前四项认证冻结提交、审批与复审历史、真实公司权限、私有证件及身份/新单基础门禁关联回归；不改原任务责任或既有验证证据。"
   },
   {
     "implementationStatus": "VERIFIED",
@@ -625,7 +637,8 @@
     "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/verification/service/DeviceAuthenticationService.java",
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/verification/VerificationMapper.xml",
     "testFiles": [
-      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q04VerificationIT.java"
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q04VerificationIT.java",
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q05QualificationIT.java"
     ],
     "reviewEvidence": "docs/implementation/vehicle/Q04/review.md",
     "operationId": "API_045_post",
@@ -634,8 +647,10 @@
     "summary": "创建本人本机生物认证挑战",
     "taskId": "Q04",
     "evidence": [
-      "docs/implementation/vehicle/evidence/Q04-20261110.json"
-    ]
+      "docs/implementation/vehicle/evidence/Q04-20261110.json",
+      "docs/implementation/vehicle/evidence/Q05-20261110.json"
+    ],
+    "q05CompatibilityNote": "当前四项认证冻结提交、审批与复审历史、真实公司权限、私有证件及身份/新单基础门禁关联回归；不改原任务责任或既有验证证据。"
   },
   {
     "implementationStatus": "VERIFIED",
@@ -644,7 +659,8 @@
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/training/LearningMapper.xml",
     "testFiles": [
       "xinyi-admin/src/test/java/com/xinyi/web/viit/Q03TrainingIT.java",
-      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q04VerificationIT.java"
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q04VerificationIT.java",
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q05QualificationIT.java"
     ],
     "reviewEvidence": "docs/implementation/vehicle/Q03/review.md",
     "operationId": "API_046_get",
@@ -654,9 +670,11 @@
     "taskId": "Q03",
     "evidence": [
       "docs/implementation/vehicle/evidence/Q03-20261109.json",
-      "docs/implementation/vehicle/evidence/Q04-20261110.json"
+      "docs/implementation/vehicle/evidence/Q04-20261110.json",
+      "docs/implementation/vehicle/evidence/Q05-20261110.json"
     ],
-    "q04CompatibilityNote": "按用户最终设备确认/双人人工范围，Q01四项canonical消费与同登录session、公共独立同意及旧资格/培训/档案关联回归；原责任和历史证据保留。"
+    "q04CompatibilityNote": "按用户最终设备确认/双人人工范围，Q01四项canonical消费与同登录session、公共独立同意及旧资格/培训/档案关联回归；原责任和历史证据保留。",
+    "q05CompatibilityNote": "当前四项认证冻结提交、审批与复审历史、真实公司权限、私有证件及身份/新单基础门禁关联回归；不改原任务责任或既有验证证据。"
   },
   {
     "implementationStatus": "VERIFIED",
@@ -665,7 +683,8 @@
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/training/LearningMapper.xml",
     "testFiles": [
       "xinyi-admin/src/test/java/com/xinyi/web/viit/Q03TrainingIT.java",
-      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q04VerificationIT.java"
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q04VerificationIT.java",
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q05QualificationIT.java"
     ],
     "reviewEvidence": "docs/implementation/vehicle/Q03/review.md",
     "operationId": "API_047_post",
@@ -675,9 +694,11 @@
     "taskId": "Q03",
     "evidence": [
       "docs/implementation/vehicle/evidence/Q03-20261109.json",
-      "docs/implementation/vehicle/evidence/Q04-20261110.json"
+      "docs/implementation/vehicle/evidence/Q04-20261110.json",
+      "docs/implementation/vehicle/evidence/Q05-20261110.json"
     ],
-    "q04CompatibilityNote": "按用户最终设备确认/双人人工范围，Q01四项canonical消费与同登录session、公共独立同意及旧资格/培训/档案关联回归；原责任和历史证据保留。"
+    "q04CompatibilityNote": "按用户最终设备确认/双人人工范围，Q01四项canonical消费与同登录session、公共独立同意及旧资格/培训/档案关联回归；原责任和历史证据保留。",
+    "q05CompatibilityNote": "当前四项认证冻结提交、审批与复审历史、真实公司权限、私有证件及身份/新单基础门禁关联回归；不改原任务责任或既有验证证据。"
   },
   {
     "implementationStatus": "NOT_ASSESSED",
@@ -1303,14 +1324,19 @@
     "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/scope/service/StationGrantService.java",
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/scope/StationGrantMapper.xml",
     "testFiles": [
-      "xinyi-admin/src/test/java/com/xinyi/web/viit/I06ScopeIT.java"
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/I06ScopeIT.java",
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q05QualificationIT.java"
     ],
     "reviewEvidence": null,
     "operationId": "API_094_get",
     "method": "GET",
     "path": "/api/app/station/authorized-stations",
     "summary": "员工获授权站点",
-    "taskId": "I06"
+    "taskId": "I06",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/Q05-20261110.json"
+    ],
+    "q05CompatibilityNote": "当前四项认证冻结提交、审批与复审历史、真实公司权限、私有证件及身份/新单基础门禁关联回归；不改原任务责任或既有验证证据。"
   },
   {
     "implementationStatus": "VERIFIED",
@@ -1579,43 +1605,58 @@
     "taskId": "S04"
   },
   {
-    "implementationStatus": "NOT_ASSESSED",
-    "controllerFile": null,
-    "serviceFile": null,
-    "mapperFile": null,
-    "testFiles": [],
-    "reviewEvidence": null,
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/qualification/controller/QualificationAdminController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/qualification/service/QualificationAdminService.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/qualification/QualificationAdminMapper.xml",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q05QualificationIT.java"
+    ],
+    "reviewEvidence": "docs/implementation/vehicle/Q05/review.md",
     "operationId": "API_121_get",
     "method": "GET",
     "path": "/api/admin/driver-qualifications",
     "summary": "资格审核列表",
-    "taskId": "Q05"
+    "taskId": "Q05",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/Q05-20261110.json"
+    ]
   },
   {
-    "implementationStatus": "NOT_ASSESSED",
-    "controllerFile": null,
-    "serviceFile": null,
-    "mapperFile": null,
-    "testFiles": [],
-    "reviewEvidence": null,
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/qualification/controller/QualificationAdminController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/qualification/service/QualificationAdminService.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/qualification/QualificationAdminMapper.xml",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q05QualificationIT.java"
+    ],
+    "reviewEvidence": "docs/implementation/vehicle/Q05/review.md",
     "operationId": "API_122_get",
     "method": "GET",
     "path": "/api/admin/driver-qualifications/{applicationId}",
     "summary": "资格审核详情",
-    "taskId": "Q05"
+    "taskId": "Q05",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/Q05-20261110.json"
+    ]
   },
   {
-    "implementationStatus": "NOT_ASSESSED",
-    "controllerFile": null,
-    "serviceFile": null,
-    "mapperFile": null,
-    "testFiles": [],
-    "reviewEvidence": null,
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/qualification/controller/QualificationAdminController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/qualification/service/QualificationAdminService.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/qualification/QualificationAdminMapper.xml",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q05QualificationIT.java"
+    ],
+    "reviewEvidence": "docs/implementation/vehicle/Q05/review.md",
     "operationId": "API_123_post",
     "method": "POST",
     "path": "/api/admin/driver-qualifications/{applicationId}/audit",
     "summary": "批准或驳回资格",
-    "taskId": "Q05"
+    "taskId": "Q05",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/Q05-20261110.json"
+    ]
   },
   {
     "implementationStatus": "VERIFIED",
@@ -1640,7 +1681,8 @@
     "testFiles": [
       "xinyi-admin/src/test/java/com/xinyi/web/viit/A04DriverIT.java",
       "xinyi-admin/src/test/java/com/xinyi/web/viit/Q03TrainingIT.java",
-      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q04VerificationIT.java"
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q04VerificationIT.java",
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q05QualificationIT.java"
     ],
     "reviewEvidence": "docs/implementation/vehicle/A04/review.md",
     "operationId": "V4_get_api_admin_drivers",
@@ -1651,10 +1693,12 @@
     "evidence": [
       "docs/implementation/vehicle/evidence/A04-20261107.json",
       "docs/implementation/vehicle/evidence/Q03-20261109.json",
-      "docs/implementation/vehicle/evidence/Q04-20261110.json"
+      "docs/implementation/vehicle/evidence/Q04-20261110.json",
+      "docs/implementation/vehicle/evidence/Q05-20261110.json"
     ],
     "q03CompatibilityNote": "Q03补齐真实冻结run/培训证明消费、公司epoch与本人教材访问；保留该接口原责任与证据，未把审批/外部核验算完成。",
-    "q04CompatibilityNote": "按用户最终设备确认/双人人工范围，Q01四项canonical消费与同登录session、公共独立同意及旧资格/培训/档案关联回归；原责任和历史证据保留。"
+    "q04CompatibilityNote": "按用户最终设备确认/双人人工范围，Q01四项canonical消费与同登录session、公共独立同意及旧资格/培训/档案关联回归；原责任和历史证据保留。",
+    "q05CompatibilityNote": "当前四项认证冻结提交、审批与复审历史、真实公司权限、私有证件及身份/新单基础门禁关联回归；不改原任务责任或既有验证证据。"
   },
   {
     "implementationStatus": "VERIFIED",
@@ -1664,7 +1708,8 @@
     "testFiles": [
       "xinyi-admin/src/test/java/com/xinyi/web/viit/A04DriverIT.java",
       "xinyi-admin/src/test/java/com/xinyi/web/viit/Q03TrainingIT.java",
-      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q04VerificationIT.java"
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q04VerificationIT.java",
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q05QualificationIT.java"
     ],
     "reviewEvidence": "docs/implementation/vehicle/A04/review.md",
     "operationId": "API_126_post",
@@ -1675,10 +1720,12 @@
     "evidence": [
       "docs/implementation/vehicle/evidence/A04-20261107.json",
       "docs/implementation/vehicle/evidence/Q03-20261109.json",
-      "docs/implementation/vehicle/evidence/Q04-20261110.json"
+      "docs/implementation/vehicle/evidence/Q04-20261110.json",
+      "docs/implementation/vehicle/evidence/Q05-20261110.json"
     ],
     "q03CompatibilityNote": "Q03补齐真实冻结run/培训证明消费、公司epoch与本人教材访问；保留该接口原责任与证据，未把审批/外部核验算完成。",
-    "q04CompatibilityNote": "按用户最终设备确认/双人人工范围，Q01四项canonical消费与同登录session、公共独立同意及旧资格/培训/档案关联回归；原责任和历史证据保留。"
+    "q04CompatibilityNote": "按用户最终设备确认/双人人工范围，Q01四项canonical消费与同登录session、公共独立同意及旧资格/培训/档案关联回归；原责任和历史证据保留。",
+    "q05CompatibilityNote": "当前四项认证冻结提交、审批与复审历史、真实公司权限、私有证件及身份/新单基础门禁关联回归；不改原任务责任或既有验证证据。"
   },
   {
     "implementationStatus": "NOT_ASSESSED",
@@ -1744,14 +1791,19 @@
     "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/scope/service/StationGrantService.java",
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/scope/StationGrantSetMapper.xml",
     "testFiles": [
-      "xinyi-admin/src/test/java/com/xinyi/web/viit/I06ScopeIT.java"
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/I06ScopeIT.java",
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q05QualificationIT.java"
     ],
     "reviewEvidence": null,
     "operationId": "API_131_get",
     "method": "GET",
     "path": "/api/admin/station-grants",
     "summary": "员工站点授权",
-    "taskId": "I06"
+    "taskId": "I06",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/Q05-20261110.json"
+    ],
+    "q05CompatibilityNote": "当前四项认证冻结提交、审批与复审历史、真实公司权限、私有证件及身份/新单基础门禁关联回归；不改原任务责任或既有验证证据。"
   },
   {
     "implementationStatus": "VERIFIED",
@@ -1759,14 +1811,19 @@
     "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/scope/service/StationGrantService.java",
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/scope/StationGrantSetMapper.xml",
     "testFiles": [
-      "xinyi-admin/src/test/java/com/xinyi/web/viit/I06ScopeIT.java"
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/I06ScopeIT.java",
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q05QualificationIT.java"
     ],
     "reviewEvidence": null,
     "operationId": "API_132_put",
     "method": "PUT",
     "path": "/api/admin/station-grants/{employeeUserId}",
     "summary": "修改跨站授权",
-    "taskId": "I06"
+    "taskId": "I06",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/Q05-20261110.json"
+    ],
+    "q05CompatibilityNote": "当前四项认证冻结提交、审批与复审历史、真实公司权限、私有证件及身份/新单基础门禁关联回归；不改原任务责任或既有验证证据。"
   },
   {
     "implementationStatus": "VERIFIED",
@@ -1774,14 +1831,19 @@
     "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/scope/service/StationGrantService.java",
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/scope/StationGrantSetMapper.xml",
     "testFiles": [
-      "xinyi-admin/src/test/java/com/xinyi/web/viit/I06ScopeIT.java"
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/I06ScopeIT.java",
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q05QualificationIT.java"
     ],
     "reviewEvidence": null,
     "operationId": "v62_get_station_grant",
     "method": "GET",
     "path": "/api/admin/station-grants/{employeeUserId}",
     "summary": "查询员工站点配置（可未登录微信）",
-    "taskId": "I06"
+    "taskId": "I06",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/Q05-20261110.json"
+    ],
+    "q05CompatibilityNote": "当前四项认证冻结提交、审批与复审历史、真实公司权限、私有证件及身份/新单基础门禁关联回归；不改原任务责任或既有验证证据。"
   },
   {
     "implementationStatus": "VERIFIED",
@@ -2156,7 +2218,8 @@
     "testFiles": [
       "xinyi-admin/src/test/java/com/xinyi/web/viit/F01FileIT.java",
       "xinyi-admin/src/test/java/com/xinyi/web/viit/Q02TrainingIT.java",
-      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q03TrainingIT.java"
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q03TrainingIT.java",
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q05QualificationIT.java"
     ],
     "reviewEvidence": "docs/implementation/vehicle/F01/review.md",
     "operationId": "API_157_post",
@@ -2167,10 +2230,12 @@
     "evidence": [
       "docs/implementation/vehicle/evidence/F01-20261105.json",
       "docs/implementation/vehicle/evidence/Q02-20261109.json",
-      "docs/implementation/vehicle/evidence/Q03-20261109.json"
+      "docs/implementation/vehicle/evidence/Q03-20261109.json",
+      "docs/implementation/vehicle/evidence/Q05-20261110.json"
     ],
     "implementationNote": "保留原图片/证件业务；Q02新增培训MP4父课程、真实校验/300s与同步完整流，F01/Q01及Q02已关联回归。",
-    "q03CompatibilityNote": "Q03补齐真实冻结run/培训证明消费、公司epoch与本人教材访问；保留该接口原责任与证据，未把审批/外部核验算完成。"
+    "q03CompatibilityNote": "Q03补齐真实冻结run/培训证明消费、公司epoch与本人教材访问；保留该接口原责任与证据，未把审批/外部核验算完成。",
+    "q05CompatibilityNote": "当前四项认证冻结提交、审批与复审历史、真实公司权限、私有证件及身份/新单基础门禁关联回归；不改原任务责任或既有验证证据。"
   },
   {
     "implementationStatus": "VERIFIED",
@@ -2180,7 +2245,8 @@
     "testFiles": [
       "xinyi-admin/src/test/java/com/xinyi/web/viit/F01FileIT.java",
       "xinyi-admin/src/test/java/com/xinyi/web/viit/Q02TrainingIT.java",
-      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q03TrainingIT.java"
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q03TrainingIT.java",
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q05QualificationIT.java"
     ],
     "reviewEvidence": "docs/implementation/vehicle/F01/review.md",
     "operationId": "API_158_post",
@@ -2191,10 +2257,12 @@
     "evidence": [
       "docs/implementation/vehicle/evidence/F01-20261105.json",
       "docs/implementation/vehicle/evidence/Q02-20261109.json",
-      "docs/implementation/vehicle/evidence/Q03-20261109.json"
+      "docs/implementation/vehicle/evidence/Q03-20261109.json",
+      "docs/implementation/vehicle/evidence/Q05-20261110.json"
     ],
     "implementationNote": "保留原图片/证件业务；Q02新增培训MP4父课程、真实校验/300s与同步完整流，F01/Q01及Q02已关联回归。",
-    "q03CompatibilityNote": "Q03补齐真实冻结run/培训证明消费、公司epoch与本人教材访问；保留该接口原责任与证据，未把审批/外部核验算完成。"
+    "q03CompatibilityNote": "Q03补齐真实冻结run/培训证明消费、公司epoch与本人教材访问；保留该接口原责任与证据，未把审批/外部核验算完成。",
+    "q05CompatibilityNote": "当前四项认证冻结提交、审批与复审历史、真实公司权限、私有证件及身份/新单基础门禁关联回归；不改原任务责任或既有验证证据。"
   },
   {
     "implementationStatus": "VERIFIED",
@@ -2204,7 +2272,8 @@
     "testFiles": [
       "xinyi-admin/src/test/java/com/xinyi/web/viit/F01FileIT.java",
       "xinyi-admin/src/test/java/com/xinyi/web/viit/Q02TrainingIT.java",
-      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q03TrainingIT.java"
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q03TrainingIT.java",
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q05QualificationIT.java"
     ],
     "reviewEvidence": "docs/implementation/vehicle/F01/review.md",
     "operationId": "API_159_get",
@@ -2215,10 +2284,12 @@
     "evidence": [
       "docs/implementation/vehicle/evidence/F01-20261105.json",
       "docs/implementation/vehicle/evidence/Q02-20261109.json",
-      "docs/implementation/vehicle/evidence/Q03-20261109.json"
+      "docs/implementation/vehicle/evidence/Q03-20261109.json",
+      "docs/implementation/vehicle/evidence/Q05-20261110.json"
     ],
     "implementationNote": "保留原图片/证件业务；Q02新增培训MP4父课程、真实校验/300s与同步完整流，F01/Q01及Q02已关联回归。",
-    "q03CompatibilityNote": "Q03补齐真实冻结run/培训证明消费、公司epoch与本人教材访问；保留该接口原责任与证据，未把审批/外部核验算完成。"
+    "q03CompatibilityNote": "Q03补齐真实冻结run/培训证明消费、公司epoch与本人教材访问；保留该接口原责任与证据，未把审批/外部核验算完成。",
+    "q05CompatibilityNote": "当前四项认证冻结提交、审批与复审历史、真实公司权限、私有证件及身份/新单基础门禁关联回归；不改原任务责任或既有验证证据。"
   },
   {
     "implementationStatus": "VERIFIED",
@@ -2228,7 +2299,8 @@
     "testFiles": [
       "xinyi-admin/src/test/java/com/xinyi/web/viit/F01FileIT.java",
       "xinyi-admin/src/test/java/com/xinyi/web/viit/Q02TrainingIT.java",
-      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q03TrainingIT.java"
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q03TrainingIT.java",
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q05QualificationIT.java"
     ],
     "reviewEvidence": "docs/implementation/vehicle/F01/review.md",
     "operationId": "API_160_post",
@@ -2239,10 +2311,12 @@
     "evidence": [
       "docs/implementation/vehicle/evidence/F01-20261105.json",
       "docs/implementation/vehicle/evidence/Q02-20261109.json",
-      "docs/implementation/vehicle/evidence/Q03-20261109.json"
+      "docs/implementation/vehicle/evidence/Q03-20261109.json",
+      "docs/implementation/vehicle/evidence/Q05-20261110.json"
     ],
     "implementationNote": "保留原图片/证件业务；Q02新增培训MP4父课程、真实校验/300s与同步完整流，F01/Q01及Q02已关联回归。",
-    "q03CompatibilityNote": "Q03补齐真实冻结run/培训证明消费、公司epoch与本人教材访问；保留该接口原责任与证据，未把审批/外部核验算完成。"
+    "q03CompatibilityNote": "Q03补齐真实冻结run/培训证明消费、公司epoch与本人教材访问；保留该接口原责任与证据，未把审批/外部核验算完成。",
+    "q05CompatibilityNote": "当前四项认证冻结提交、审批与复审历史、真实公司权限、私有证件及身份/新单基础门禁关联回归；不改原任务责任或既有验证证据。"
   },
   {
     "implementationStatus": "NOT_ASSESSED",
@@ -2603,7 +2677,8 @@
     "testFiles": [
       "xinyi-admin/src/test/java/com/xinyi/web/viit/A04DriverIT.java",
       "xinyi-admin/src/test/java/com/xinyi/web/viit/Q03TrainingIT.java",
-      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q04VerificationIT.java"
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q04VerificationIT.java",
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q05QualificationIT.java"
     ],
     "reviewEvidence": "docs/implementation/vehicle/A04/review.md",
     "operationId": "V4_get_api_admin_drivers__driverId",
@@ -2614,10 +2689,12 @@
     "evidence": [
       "docs/implementation/vehicle/evidence/A04-20261107.json",
       "docs/implementation/vehicle/evidence/Q03-20261109.json",
-      "docs/implementation/vehicle/evidence/Q04-20261110.json"
+      "docs/implementation/vehicle/evidence/Q04-20261110.json",
+      "docs/implementation/vehicle/evidence/Q05-20261110.json"
     ],
     "q03CompatibilityNote": "Q03补齐真实冻结run/培训证明消费、公司epoch与本人教材访问；保留该接口原责任与证据，未把审批/外部核验算完成。",
-    "q04CompatibilityNote": "按用户最终设备确认/双人人工范围，Q01四项canonical消费与同登录session、公共独立同意及旧资格/培训/档案关联回归；原责任和历史证据保留。"
+    "q04CompatibilityNote": "按用户最终设备确认/双人人工范围，Q01四项canonical消费与同登录session、公共独立同意及旧资格/培训/档案关联回归；原责任和历史证据保留。",
+    "q05CompatibilityNote": "当前四项认证冻结提交、审批与复审历史、真实公司权限、私有证件及身份/新单基础门禁关联回归；不改原任务责任或既有验证证据。"
   },
   {
     "implementationStatus": "VERIFIED",
@@ -2627,7 +2704,8 @@
     "testFiles": [
       "xinyi-admin/src/test/java/com/xinyi/web/viit/A04DriverIT.java",
       "xinyi-admin/src/test/java/com/xinyi/web/viit/Q03TrainingIT.java",
-      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q04VerificationIT.java"
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q04VerificationIT.java",
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q05QualificationIT.java"
     ],
     "reviewEvidence": "docs/implementation/vehicle/A04/review.md",
     "operationId": "V4_patch_api_admin_drivers__driverId",
@@ -2638,10 +2716,12 @@
     "evidence": [
       "docs/implementation/vehicle/evidence/A04-20261107.json",
       "docs/implementation/vehicle/evidence/Q03-20261109.json",
-      "docs/implementation/vehicle/evidence/Q04-20261110.json"
+      "docs/implementation/vehicle/evidence/Q04-20261110.json",
+      "docs/implementation/vehicle/evidence/Q05-20261110.json"
     ],
     "q03CompatibilityNote": "Q03补齐真实冻结run/培训证明消费、公司epoch与本人教材访问；保留该接口原责任与证据，未把审批/外部核验算完成。",
-    "q04CompatibilityNote": "按用户最终设备确认/双人人工范围，Q01四项canonical消费与同登录session、公共独立同意及旧资格/培训/档案关联回归；原责任和历史证据保留。"
+    "q04CompatibilityNote": "按用户最终设备确认/双人人工范围，Q01四项canonical消费与同登录session、公共独立同意及旧资格/培训/档案关联回归；原责任和历史证据保留。",
+    "q05CompatibilityNote": "当前四项认证冻结提交、审批与复审历史、真实公司权限、私有证件及身份/新单基础门禁关联回归；不改原任务责任或既有验证证据。"
   },
   {
     "implementationStatus": "VERIFIED",
@@ -2727,7 +2807,8 @@
     "testFiles": [
       "xinyi-admin/src/test/java/com/xinyi/web/viit/A04DriverIT.java",
       "xinyi-admin/src/test/java/com/xinyi/web/viit/Q03TrainingIT.java",
-      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q04VerificationIT.java"
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q04VerificationIT.java",
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q05QualificationIT.java"
     ],
     "reviewEvidence": "docs/implementation/vehicle/A04/review.md",
     "operationId": "V4_get_api_admin_drivers__driverId__assignments",
@@ -2738,10 +2819,12 @@
     "evidence": [
       "docs/implementation/vehicle/evidence/A04-20261107.json",
       "docs/implementation/vehicle/evidence/Q03-20261109.json",
-      "docs/implementation/vehicle/evidence/Q04-20261110.json"
+      "docs/implementation/vehicle/evidence/Q04-20261110.json",
+      "docs/implementation/vehicle/evidence/Q05-20261110.json"
     ],
     "q03CompatibilityNote": "Q03补齐真实冻结run/培训证明消费、公司epoch与本人教材访问；保留该接口原责任与证据，未把审批/外部核验算完成。",
-    "q04CompatibilityNote": "按用户最终设备确认/双人人工范围，Q01四项canonical消费与同登录session、公共独立同意及旧资格/培训/档案关联回归；原责任和历史证据保留。"
+    "q04CompatibilityNote": "按用户最终设备确认/双人人工范围，Q01四项canonical消费与同登录session、公共独立同意及旧资格/培训/档案关联回归；原责任和历史证据保留。",
+    "q05CompatibilityNote": "当前四项认证冻结提交、审批与复审历史、真实公司权限、私有证件及身份/新单基础门禁关联回归；不改原任务责任或既有验证证据。"
   },
   {
     "implementationStatus": "NOT_ASSESSED",
@@ -3419,7 +3502,8 @@
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/training/LearningMapper.xml",
     "testFiles": [
       "xinyi-admin/src/test/java/com/xinyi/web/viit/Q03TrainingIT.java",
-      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q04VerificationIT.java"
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q04VerificationIT.java",
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q05QualificationIT.java"
     ],
     "reviewEvidence": "docs/implementation/vehicle/Q03/review.md",
     "operationId": "v5_get_api_app_driver_qualification_training_trainingId",
@@ -3429,9 +3513,11 @@
     "taskId": "Q03",
     "evidence": [
       "docs/implementation/vehicle/evidence/Q03-20261109.json",
-      "docs/implementation/vehicle/evidence/Q04-20261110.json"
+      "docs/implementation/vehicle/evidence/Q04-20261110.json",
+      "docs/implementation/vehicle/evidence/Q05-20261110.json"
     ],
-    "q04CompatibilityNote": "按用户最终设备确认/双人人工范围，Q01四项canonical消费与同登录session、公共独立同意及旧资格/培训/档案关联回归；原责任和历史证据保留。"
+    "q04CompatibilityNote": "按用户最终设备确认/双人人工范围，Q01四项canonical消费与同登录session、公共独立同意及旧资格/培训/档案关联回归；原责任和历史证据保留。",
+    "q05CompatibilityNote": "当前四项认证冻结提交、审批与复审历史、真实公司权限、私有证件及身份/新单基础门禁关联回归；不改原任务责任或既有验证证据。"
   },
   {
     "implementationStatus": "VERIFIED",
@@ -3440,7 +3526,8 @@
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/training/LearningMapper.xml",
     "testFiles": [
       "xinyi-admin/src/test/java/com/xinyi/web/viit/Q03TrainingIT.java",
-      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q04VerificationIT.java"
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q04VerificationIT.java",
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q05QualificationIT.java"
     ],
     "reviewEvidence": "docs/implementation/vehicle/Q03/review.md",
     "operationId": "v5_post_api_app_driver_qualification_training_trainingId_playback",
@@ -3450,9 +3537,11 @@
     "taskId": "Q03",
     "evidence": [
       "docs/implementation/vehicle/evidence/Q03-20261109.json",
-      "docs/implementation/vehicle/evidence/Q04-20261110.json"
+      "docs/implementation/vehicle/evidence/Q04-20261110.json",
+      "docs/implementation/vehicle/evidence/Q05-20261110.json"
     ],
-    "q04CompatibilityNote": "按用户最终设备确认/双人人工范围，Q01四项canonical消费与同登录session、公共独立同意及旧资格/培训/档案关联回归；原责任和历史证据保留。"
+    "q04CompatibilityNote": "按用户最终设备确认/双人人工范围，Q01四项canonical消费与同登录session、公共独立同意及旧资格/培训/档案关联回归；原责任和历史证据保留。",
+    "q05CompatibilityNote": "当前四项认证冻结提交、审批与复审历史、真实公司权限、私有证件及身份/新单基础门禁关联回归；不改原任务责任或既有验证证据。"
   },
   {
     "implementationStatus": "VERIFIED",
@@ -3461,7 +3550,8 @@
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/training/LearningMapper.xml",
     "testFiles": [
       "xinyi-admin/src/test/java/com/xinyi/web/viit/Q03TrainingIT.java",
-      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q04VerificationIT.java"
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q04VerificationIT.java",
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q05QualificationIT.java"
     ],
     "reviewEvidence": "docs/implementation/vehicle/Q03/review.md",
     "operationId": "v5_post_api_app_driver_qualification_training_trainingId_progress",
@@ -3471,9 +3561,11 @@
     "taskId": "Q03",
     "evidence": [
       "docs/implementation/vehicle/evidence/Q03-20261109.json",
-      "docs/implementation/vehicle/evidence/Q04-20261110.json"
+      "docs/implementation/vehicle/evidence/Q04-20261110.json",
+      "docs/implementation/vehicle/evidence/Q05-20261110.json"
     ],
-    "q04CompatibilityNote": "按用户最终设备确认/双人人工范围，Q01四项canonical消费与同登录session、公共独立同意及旧资格/培训/档案关联回归；原责任和历史证据保留。"
+    "q04CompatibilityNote": "按用户最终设备确认/双人人工范围，Q01四项canonical消费与同登录session、公共独立同意及旧资格/培训/档案关联回归；原责任和历史证据保留。",
+    "q05CompatibilityNote": "当前四项认证冻结提交、审批与复审历史、真实公司权限、私有证件及身份/新单基础门禁关联回归；不改原任务责任或既有验证证据。"
   },
   {
     "implementationStatus": "VERIFIED",
@@ -3482,7 +3574,8 @@
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/training/LearningMapper.xml",
     "testFiles": [
       "xinyi-admin/src/test/java/com/xinyi/web/viit/Q03TrainingIT.java",
-      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q04VerificationIT.java"
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q04VerificationIT.java",
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q05QualificationIT.java"
     ],
     "reviewEvidence": "docs/implementation/vehicle/Q03/review.md",
     "operationId": "v5_post_api_app_driver_qualification_training_trainingId_attempts",
@@ -3492,9 +3585,11 @@
     "taskId": "Q03",
     "evidence": [
       "docs/implementation/vehicle/evidence/Q03-20261109.json",
-      "docs/implementation/vehicle/evidence/Q04-20261110.json"
+      "docs/implementation/vehicle/evidence/Q04-20261110.json",
+      "docs/implementation/vehicle/evidence/Q05-20261110.json"
     ],
-    "q04CompatibilityNote": "按用户最终设备确认/双人人工范围，Q01四项canonical消费与同登录session、公共独立同意及旧资格/培训/档案关联回归；原责任和历史证据保留。"
+    "q04CompatibilityNote": "按用户最终设备确认/双人人工范围，Q01四项canonical消费与同登录session、公共独立同意及旧资格/培训/档案关联回归；原责任和历史证据保留。",
+    "q05CompatibilityNote": "当前四项认证冻结提交、审批与复审历史、真实公司权限、私有证件及身份/新单基础门禁关联回归；不改原任务责任或既有验证证据。"
   },
   {
     "implementationStatus": "VERIFIED",
@@ -3503,7 +3598,8 @@
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/training/LearningMapper.xml",
     "testFiles": [
       "xinyi-admin/src/test/java/com/xinyi/web/viit/Q03TrainingIT.java",
-      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q04VerificationIT.java"
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q04VerificationIT.java",
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q05QualificationIT.java"
     ],
     "reviewEvidence": "docs/implementation/vehicle/Q03/review.md",
     "operationId": "v5_get_api_app_driver_qualification_training_attempts_attemptId",
@@ -3513,9 +3609,11 @@
     "taskId": "Q03",
     "evidence": [
       "docs/implementation/vehicle/evidence/Q03-20261109.json",
-      "docs/implementation/vehicle/evidence/Q04-20261110.json"
+      "docs/implementation/vehicle/evidence/Q04-20261110.json",
+      "docs/implementation/vehicle/evidence/Q05-20261110.json"
     ],
-    "q04CompatibilityNote": "按用户最终设备确认/双人人工范围，Q01四项canonical消费与同登录session、公共独立同意及旧资格/培训/档案关联回归；原责任和历史证据保留。"
+    "q04CompatibilityNote": "按用户最终设备确认/双人人工范围，Q01四项canonical消费与同登录session、公共独立同意及旧资格/培训/档案关联回归；原责任和历史证据保留。",
+    "q05CompatibilityNote": "当前四项认证冻结提交、审批与复审历史、真实公司权限、私有证件及身份/新单基础门禁关联回归；不改原任务责任或既有验证证据。"
   },
   {
     "implementationStatus": "VERIFIED",
@@ -3613,7 +3711,8 @@
     "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/verification/service/DeviceAuthenticationService.java",
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/verification/VerificationMapper.xml",
     "testFiles": [
-      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q04VerificationIT.java"
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q04VerificationIT.java",
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q05QualificationIT.java"
     ],
     "reviewEvidence": "docs/implementation/vehicle/Q04/review.md",
     "operationId": "v5_get_api_app_driver_qualification_face_sessions_verificationSessionId",
@@ -3622,8 +3721,10 @@
     "summary": "读取本人本机生物认证元数据",
     "taskId": "Q04",
     "evidence": [
-      "docs/implementation/vehicle/evidence/Q04-20261110.json"
-    ]
+      "docs/implementation/vehicle/evidence/Q04-20261110.json",
+      "docs/implementation/vehicle/evidence/Q05-20261110.json"
+    ],
+    "q05CompatibilityNote": "当前四项认证冻结提交、审批与复审历史、真实公司权限、私有证件及身份/新单基础门禁关联回归；不改原任务责任或既有验证证据。"
   },
   {
     "implementationStatus": "NOT_ASSESSED",
@@ -4367,7 +4468,8 @@
     "testFiles": [
       "xinyi-admin/src/test/java/com/xinyi/web/viit/A04DriverIT.java",
       "xinyi-admin/src/test/java/com/xinyi/web/viit/Q03TrainingIT.java",
-      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q04VerificationIT.java"
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q04VerificationIT.java",
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q05QualificationIT.java"
     ],
     "reviewEvidence": "docs/implementation/vehicle/A04/review.md",
     "operationId": "V64_post_api_admin_drivers__driverId__enable_new_assignments",
@@ -4378,10 +4480,12 @@
     "evidence": [
       "docs/implementation/vehicle/evidence/A04-20261107.json",
       "docs/implementation/vehicle/evidence/Q03-20261109.json",
-      "docs/implementation/vehicle/evidence/Q04-20261110.json"
+      "docs/implementation/vehicle/evidence/Q04-20261110.json",
+      "docs/implementation/vehicle/evidence/Q05-20261110.json"
     ],
     "q03CompatibilityNote": "Q03补齐真实冻结run/培训证明消费、公司epoch与本人教材访问；保留该接口原责任与证据，未把审批/外部核验算完成。",
-    "q04CompatibilityNote": "按用户最终设备确认/双人人工范围，Q01四项canonical消费与同登录session、公共独立同意及旧资格/培训/档案关联回归；原责任和历史证据保留。"
+    "q04CompatibilityNote": "按用户最终设备确认/双人人工范围，Q01四项canonical消费与同登录session、公共独立同意及旧资格/培训/档案关联回归；原责任和历史证据保留。",
+    "q05CompatibilityNote": "当前四项认证冻结提交、审批与复审历史、真实公司权限、私有证件及身份/新单基础门禁关联回归；不改原任务责任或既有验证证据。"
   },
   {
     "implementationStatus": "VERIFIED",
@@ -4390,7 +4494,8 @@
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/training/LearningMapper.xml",
     "testFiles": [
       "xinyi-admin/src/test/java/com/xinyi/web/viit/Q03TrainingIT.java",
-      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q04VerificationIT.java"
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q04VerificationIT.java",
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q05QualificationIT.java"
     ],
     "reviewEvidence": "docs/implementation/vehicle/Q03/review.md",
     "operationId": "q03_get_api_admin_training_policies_ownerDeptId",
@@ -4400,9 +4505,11 @@
     "taskId": "Q03",
     "evidence": [
       "docs/implementation/vehicle/evidence/Q03-20261109.json",
-      "docs/implementation/vehicle/evidence/Q04-20261110.json"
+      "docs/implementation/vehicle/evidence/Q04-20261110.json",
+      "docs/implementation/vehicle/evidence/Q05-20261110.json"
     ],
-    "q04CompatibilityNote": "按用户最终设备确认/双人人工范围，Q01四项canonical消费与同登录session、公共独立同意及旧资格/培训/档案关联回归；原责任和历史证据保留。"
+    "q04CompatibilityNote": "按用户最终设备确认/双人人工范围，Q01四项canonical消费与同登录session、公共独立同意及旧资格/培训/档案关联回归；原责任和历史证据保留。",
+    "q05CompatibilityNote": "当前四项认证冻结提交、审批与复审历史、真实公司权限、私有证件及身份/新单基础门禁关联回归；不改原任务责任或既有验证证据。"
   },
   {
     "implementationStatus": "VERIFIED",
@@ -4411,7 +4518,8 @@
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/training/LearningMapper.xml",
     "testFiles": [
       "xinyi-admin/src/test/java/com/xinyi/web/viit/Q03TrainingIT.java",
-      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q04VerificationIT.java"
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q04VerificationIT.java",
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q05QualificationIT.java"
     ],
     "reviewEvidence": "docs/implementation/vehicle/Q03/review.md",
     "operationId": "q03_put_api_admin_training_policies_ownerDeptId",
@@ -4421,9 +4529,11 @@
     "taskId": "Q03",
     "evidence": [
       "docs/implementation/vehicle/evidence/Q03-20261109.json",
-      "docs/implementation/vehicle/evidence/Q04-20261110.json"
+      "docs/implementation/vehicle/evidence/Q04-20261110.json",
+      "docs/implementation/vehicle/evidence/Q05-20261110.json"
     ],
-    "q04CompatibilityNote": "按用户最终设备确认/双人人工范围，Q01四项canonical消费与同登录session、公共独立同意及旧资格/培训/档案关联回归；原责任和历史证据保留。"
+    "q04CompatibilityNote": "按用户最终设备确认/双人人工范围，Q01四项canonical消费与同登录session、公共独立同意及旧资格/培训/档案关联回归；原责任和历史证据保留。",
+    "q05CompatibilityNote": "当前四项认证冻结提交、审批与复审历史、真实公司权限、私有证件及身份/新单基础门禁关联回归；不改原任务责任或既有验证证据。"
   },
   {
     "implementationStatus": "VERIFIED",
@@ -4432,7 +4542,8 @@
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/training/LearningMapper.xml",
     "testFiles": [
       "xinyi-admin/src/test/java/com/xinyi/web/viit/Q03TrainingIT.java",
-      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q04VerificationIT.java"
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q04VerificationIT.java",
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q05QualificationIT.java"
     ],
     "reviewEvidence": "docs/implementation/vehicle/Q03/review.md",
     "operationId": "q03_post_api_admin_training_policies_ownerDeptId_publish",
@@ -4442,9 +4553,11 @@
     "taskId": "Q03",
     "evidence": [
       "docs/implementation/vehicle/evidence/Q03-20261109.json",
-      "docs/implementation/vehicle/evidence/Q04-20261110.json"
+      "docs/implementation/vehicle/evidence/Q04-20261110.json",
+      "docs/implementation/vehicle/evidence/Q05-20261110.json"
     ],
-    "q04CompatibilityNote": "按用户最终设备确认/双人人工范围，Q01四项canonical消费与同登录session、公共独立同意及旧资格/培训/档案关联回归；原责任和历史证据保留。"
+    "q04CompatibilityNote": "按用户最终设备确认/双人人工范围，Q01四项canonical消费与同登录session、公共独立同意及旧资格/培训/档案关联回归；原责任和历史证据保留。",
+    "q05CompatibilityNote": "当前四项认证冻结提交、审批与复审历史、真实公司权限、私有证件及身份/新单基础门禁关联回归；不改原任务责任或既有验证证据。"
   },
   {
     "implementationStatus": "VERIFIED",
@@ -4452,7 +4565,8 @@
     "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/verification/service/ManualVerificationService.java",
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/verification/ManualVerificationMapper.xml",
     "testFiles": [
-      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q04VerificationIT.java"
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q04VerificationIT.java",
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q05QualificationIT.java"
     ],
     "reviewEvidence": "docs/implementation/vehicle/Q04/review.md",
     "operationId": "q04_get_api_admin_manual_verifications",
@@ -4461,8 +4575,10 @@
     "path": "/api/admin/manual-verifications",
     "summary": "人工确认记录列表",
     "evidence": [
-      "docs/implementation/vehicle/evidence/Q04-20261110.json"
-    ]
+      "docs/implementation/vehicle/evidence/Q04-20261110.json",
+      "docs/implementation/vehicle/evidence/Q05-20261110.json"
+    ],
+    "q05CompatibilityNote": "当前四项认证冻结提交、审批与复审历史、真实公司权限、私有证件及身份/新单基础门禁关联回归；不改原任务责任或既有验证证据。"
   },
   {
     "implementationStatus": "VERIFIED",
@@ -4470,7 +4586,8 @@
     "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/verification/service/ManualVerificationService.java",
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/verification/ManualVerificationMapper.xml",
     "testFiles": [
-      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q04VerificationIT.java"
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q04VerificationIT.java",
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q05QualificationIT.java"
     ],
     "reviewEvidence": "docs/implementation/vehicle/Q04/review.md",
     "operationId": "q04_get_api_admin_manual_verifications_applications",
@@ -4479,8 +4596,10 @@
     "path": "/api/admin/manual-verifications/applications",
     "summary": "候选人工确认申请",
     "evidence": [
-      "docs/implementation/vehicle/evidence/Q04-20261110.json"
-    ]
+      "docs/implementation/vehicle/evidence/Q04-20261110.json",
+      "docs/implementation/vehicle/evidence/Q05-20261110.json"
+    ],
+    "q05CompatibilityNote": "当前四项认证冻结提交、审批与复审历史、真实公司权限、私有证件及身份/新单基础门禁关联回归；不改原任务责任或既有验证证据。"
   },
   {
     "implementationStatus": "VERIFIED",
@@ -4488,7 +4607,8 @@
     "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/verification/service/ManualVerificationService.java",
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/verification/ManualVerificationMapper.xml",
     "testFiles": [
-      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q04VerificationIT.java"
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q04VerificationIT.java",
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q05QualificationIT.java"
     ],
     "reviewEvidence": "docs/implementation/vehicle/Q04/review.md",
     "operationId": "q04_get_api_admin_manual_verifications_id",
@@ -4497,8 +4617,10 @@
     "path": "/api/admin/manual-verifications/{id}",
     "summary": "人工确认详情",
     "evidence": [
-      "docs/implementation/vehicle/evidence/Q04-20261110.json"
-    ]
+      "docs/implementation/vehicle/evidence/Q04-20261110.json",
+      "docs/implementation/vehicle/evidence/Q05-20261110.json"
+    ],
+    "q05CompatibilityNote": "当前四项认证冻结提交、审批与复审历史、真实公司权限、私有证件及身份/新单基础门禁关联回归；不改原任务责任或既有验证证据。"
   },
   {
     "implementationStatus": "VERIFIED",
@@ -4506,7 +4628,8 @@
     "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/verification/service/DeviceAuthenticationService.java",
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/verification/VerificationMapper.xml",
     "testFiles": [
-      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q04VerificationIT.java"
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q04VerificationIT.java",
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q05QualificationIT.java"
     ],
     "reviewEvidence": "docs/implementation/vehicle/Q04/review.md",
     "operationId": "q04_get_api_admin_verification_sessions",
@@ -4515,8 +4638,10 @@
     "path": "/api/admin/verification-sessions",
     "summary": "本机生物认证会话列表",
     "evidence": [
-      "docs/implementation/vehicle/evidence/Q04-20261110.json"
-    ]
+      "docs/implementation/vehicle/evidence/Q04-20261110.json",
+      "docs/implementation/vehicle/evidence/Q05-20261110.json"
+    ],
+    "q05CompatibilityNote": "当前四项认证冻结提交、审批与复审历史、真实公司权限、私有证件及身份/新单基础门禁关联回归；不改原任务责任或既有验证证据。"
   },
   {
     "implementationStatus": "VERIFIED",
@@ -4524,7 +4649,8 @@
     "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/verification/service/DeviceAuthenticationService.java",
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/verification/VerificationMapper.xml",
     "testFiles": [
-      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q04VerificationIT.java"
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q04VerificationIT.java",
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q05QualificationIT.java"
     ],
     "reviewEvidence": "docs/implementation/vehicle/Q04/review.md",
     "operationId": "q04_get_api_admin_verification_sessions_id",
@@ -4533,8 +4659,10 @@
     "path": "/api/admin/verification-sessions/{id}",
     "summary": "本机生物认证会话详情",
     "evidence": [
-      "docs/implementation/vehicle/evidence/Q04-20261110.json"
-    ]
+      "docs/implementation/vehicle/evidence/Q04-20261110.json",
+      "docs/implementation/vehicle/evidence/Q05-20261110.json"
+    ],
+    "q05CompatibilityNote": "当前四项认证冻结提交、审批与复审历史、真实公司权限、私有证件及身份/新单基础门禁关联回归；不改原任务责任或既有验证证据。"
   },
   {
     "implementationStatus": "VERIFIED",
@@ -4542,7 +4670,8 @@
     "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/verification/service/ManualVerificationService.java",
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/verification/ManualVerificationMapper.xml",
     "testFiles": [
-      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q04VerificationIT.java"
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q04VerificationIT.java",
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q05QualificationIT.java"
     ],
     "reviewEvidence": "docs/implementation/vehicle/Q04/review.md",
     "operationId": "q04_post_api_admin_manual_verifications",
@@ -4551,8 +4680,10 @@
     "path": "/api/admin/manual-verifications",
     "summary": "登记背景或驾驶证人工确认",
     "evidence": [
-      "docs/implementation/vehicle/evidence/Q04-20261110.json"
-    ]
+      "docs/implementation/vehicle/evidence/Q04-20261110.json",
+      "docs/implementation/vehicle/evidence/Q05-20261110.json"
+    ],
+    "q05CompatibilityNote": "当前四项认证冻结提交、审批与复审历史、真实公司权限、私有证件及身份/新单基础门禁关联回归；不改原任务责任或既有验证证据。"
   },
   {
     "implementationStatus": "VERIFIED",
@@ -4560,7 +4691,8 @@
     "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/verification/service/ManualVerificationService.java",
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/verification/ManualVerificationMapper.xml",
     "testFiles": [
-      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q04VerificationIT.java"
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q04VerificationIT.java",
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q05QualificationIT.java"
     ],
     "reviewEvidence": "docs/implementation/vehicle/Q04/review.md",
     "operationId": "q04_post_api_admin_manual_verifications_id_review",
@@ -4569,8 +4701,10 @@
     "path": "/api/admin/manual-verifications/{id}/review",
     "summary": "独立复核人工确认",
     "evidence": [
-      "docs/implementation/vehicle/evidence/Q04-20261110.json"
-    ]
+      "docs/implementation/vehicle/evidence/Q04-20261110.json",
+      "docs/implementation/vehicle/evidence/Q05-20261110.json"
+    ],
+    "q05CompatibilityNote": "当前四项认证冻结提交、审批与复审历史、真实公司权限、私有证件及身份/新单基础门禁关联回归；不改原任务责任或既有验证证据。"
   },
   {
     "implementationStatus": "VERIFIED",
@@ -4578,7 +4712,8 @@
     "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/verification/service/DeviceAuthenticationService.java",
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/verification/VerificationMapper.xml",
     "testFiles": [
-      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q04VerificationIT.java"
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q04VerificationIT.java",
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q05QualificationIT.java"
     ],
     "reviewEvidence": "docs/implementation/vehicle/Q04/review.md",
     "operationId": "q04_post_api_admin_verification_sessions_id_close",
@@ -4587,8 +4722,10 @@
     "path": "/api/admin/verification-sessions/{id}/close",
     "summary": "封存未决本机认证会话",
     "evidence": [
-      "docs/implementation/vehicle/evidence/Q04-20261110.json"
-    ]
+      "docs/implementation/vehicle/evidence/Q04-20261110.json",
+      "docs/implementation/vehicle/evidence/Q05-20261110.json"
+    ],
+    "q05CompatibilityNote": "当前四项认证冻结提交、审批与复审历史、真实公司权限、私有证件及身份/新单基础门禁关联回归；不改原任务责任或既有验证证据。"
   },
   {
     "implementationStatus": "VERIFIED",
@@ -4596,7 +4733,8 @@
     "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/verification/service/DeviceAuthenticationService.java",
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/verification/VerificationMapper.xml",
     "testFiles": [
-      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q04VerificationIT.java"
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q04VerificationIT.java",
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/Q05QualificationIT.java"
     ],
     "reviewEvidence": "docs/implementation/vehicle/Q04/review.md",
     "operationId": "q04_post_api_app_driver_qualification_face_sessions_verificationSessionId_confirm",
@@ -4605,7 +4743,9 @@
     "path": "/api/app/driver/qualification/face-sessions/{verificationSessionId}/confirm",
     "summary": "提交微信SOTER原签名或恢复首次未知验签",
     "evidence": [
-      "docs/implementation/vehicle/evidence/Q04-20261110.json"
-    ]
+      "docs/implementation/vehicle/evidence/Q04-20261110.json",
+      "docs/implementation/vehicle/evidence/Q05-20261110.json"
+    ],
+    "q05CompatibilityNote": "当前四项认证冻结提交、审批与复审历史、真实公司权限、私有证件及身份/新单基础门禁关联回归；不改原任务责任或既有验证证据。"
   }
 ]

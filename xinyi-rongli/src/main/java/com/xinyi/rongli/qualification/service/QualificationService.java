@@ -16,6 +16,7 @@ import com.xinyi.rongli.platform.service.AuditService;
 import com.xinyi.rongli.platform.service.IdempotencyService;
 import com.xinyi.rongli.platform.service.OutboxService;
 import com.xinyi.rongli.qualification.domain.QualificationApplication;
+import com.xinyi.rongli.qualification.domain.QualificationSubmission;
 import com.xinyi.rongli.qualification.dto.QualificationRequests;
 import com.xinyi.rongli.qualification.mapper.QualificationMapper;
 
@@ -48,6 +49,8 @@ public class QualificationService {
     private final FileAuthority authority;
     private final ViAccountMapper accounts;
     private final QualificationMapper mapper;
+    private final QualificationSubmissionAuthority submissions;
+    private final QualificationApplicantAuthority applicants;
     private final ConfigMapper configs;
     private final com.xinyi.rongli.training.service.TrainingCompletionAuthority trainingCompletion;
     private final com.xinyi.rongli.verification.service.CanonicalVerificationAuthority
@@ -67,6 +70,8 @@ public class QualificationService {
             FileAuthority authority,
             ViAccountMapper accounts,
             QualificationMapper mapper,
+            QualificationSubmissionAuthority submissions,
+            QualificationApplicantAuthority applicants,
             ConfigMapper configs,
             com.xinyi.rongli.training.service.TrainingCompletionAuthority trainingCompletion,
             com.xinyi.rongli.verification.service.CanonicalVerificationAuthority verifications,
@@ -80,6 +85,8 @@ public class QualificationService {
         this.authority = authority;
         this.accounts = accounts;
         this.mapper = mapper;
+        this.submissions = submissions;
+        this.applicants = applicants;
         this.configs = configs;
         this.trainingCompletion = trainingCompletion;
         this.verifications = verifications;
@@ -297,11 +304,42 @@ public class QualificationService {
                                 + ":SUBMIT:"
                                 + (application.getSubmissionRevision() + 1));
         if (mapper.submit(application, profile.getVersion()) != 1) conflict();
-        mapper.insertSubmission(application, profile.getVersion(), reason);
+        freezeSubmission(actor, profile, application, reason);
+        application.setSubmissionRevision(application.getSubmissionRevision() + 1);
         mapper.updateInitialStatus(profile.getId(), "SUBMITTED");
         application.setVersion(application.getVersion() + 1);
         record(actor, application, "QUALIFICATION_SUBMITTED");
         return new Receipt(application.getId());
+    }
+
+    private void freezeSubmission(
+            Actor actor,
+            DriverProfile profile,
+            QualificationApplication application,
+            byte[] reason) {
+        QualificationSubmission row = new QualificationSubmission();
+        row.setApplicationId(application.getId());
+        row.setSubmissionRevision(application.getSubmissionRevision() + 1);
+        row.setOwnerDeptId(profile.getOwnerDeptId());
+        row.setProfileVersion(profile.getVersion());
+        row.setCompanyRevision(profile.getTrainingContextRevision());
+        row.setSourceSessionId(actor.sessionId());
+        row.setApplicantUserIds(
+                ViJson.write(
+                        applicants.users(actor.accountId()).stream()
+                                .map(String::valueOf)
+                                .sorted()
+                                .toList()));
+        row.setMaterialRevision(application.getMaterialRevision());
+        row.setMaterialHash(application.getMaterialHash());
+        row.setSensitivePayloadCipher(application.getSensitivePayloadCipher());
+        row.setEvidenceFileIds(application.getEvidenceFileIds());
+        row.setProviderResultIds(application.getProviderResultIds());
+        row.setConsentVersion(application.getConsentVersion());
+        row.setConsentText(application.getConsentText());
+        row.setConsentAcceptedAt(application.getConsentAcceptedAt());
+        row.setSubmitReasonCipher(reason);
+        submissions.insertAndSeal(row);
     }
 
     private void guard(Actor actor) {
@@ -519,7 +557,12 @@ public class QualificationService {
         result.put(
                 "items", FILE_FIELDS.stream().filter(field -> payload.get(field) != null).toList());
         result.put("checks", checks(profile, application));
-        result.put("submitBlockers", blockers(profile, application, payload));
+        // 已提交/已批准展示冻结结果，不把新登录的当前设备门禁误显示为这份历史提交未完成。
+        result.put(
+                "submitBlockers",
+                Set.of("DRAFT", "REJECTED").contains(application.getStatus())
+                        ? blockers(profile, application, payload)
+                        : List.of());
         List<String> actions = new ArrayList<>();
         if (!editable.isEmpty()) {
             actions.add("EDIT_QUALIFICATION");
@@ -538,10 +581,24 @@ public class QualificationService {
 
     private List<Map<String, String>> checks(
             DriverProfile profile, QualificationApplication application) {
-        Map<String, String> states =
-                new HashMap<>(verifications.currentStatuses(profile, application));
-        if (trainingCompletion.currentProof(profile, application) != null)
-            states.put("TRAINING", "PASSED");
+        Map<String, String> states = new HashMap<>();
+        if (Set.of("SUBMITTED", "APPROVED").contains(application.getStatus())) {
+            QualificationSubmission submission =
+                    submissions.authenticated(
+                            application.getId(), application.getSubmissionRevision());
+            if (submission != null) {
+                verifications
+                        .submittedProofsForOwner(submission)
+                        .forEach((type, proof) -> states.put(type, proof.getStatus()));
+                if (trainingCompletion.frozenProof(submission) != null)
+                    states.put("TRAINING", "PASSED");
+            }
+        } else {
+            // 草稿与驳回补正仍实时核当前材料、公司epoch和本次实际登录session，不跨会话复用。
+            states.putAll(verifications.currentStatuses(profile, application));
+            if (trainingCompletion.currentProof(profile, application) != null)
+                states.put("TRAINING", "PASSED");
+        }
         List<Map<String, String>> result = new ArrayList<>();
         for (String type : CHECK_TYPES)
             result.add(Map.of("type", type, "status", states.getOrDefault(type, "UNAVAILABLE")));

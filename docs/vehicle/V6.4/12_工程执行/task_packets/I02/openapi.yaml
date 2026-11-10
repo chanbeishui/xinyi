@@ -1069,6 +1069,7 @@ components:
       - biz:driverqualification:audit
       - biz:driverqualification:list
       - biz:driverqualification:query
+      - biz:driverqualification:sensitive
       - biz:driverstatement:add
       - biz:driverstatement:create
       - biz:driverstatement:list

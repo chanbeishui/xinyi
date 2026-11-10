@@ -1,6 +1,6 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TASK</title><style>body{font:16px/1.75 -apple-system,BlinkMacSystemFont,"Microsoft YaHei",sans-serif;color:#202632;margin:0;background:#f6f7f9}header{padding:14px 24px;background:white;border-bottom:1px solid #ddd}main{max-width:1120px;margin:24px auto;padding:30px;background:white}h1{font-size:30px}h2{margin-top:36px}a{color:#0661bd}table{border-collapse:collapse;width:100%;display:block;overflow:auto;font-size:14px}td,th{border:1px solid #dde2ea;padding:10px;vertical-align:top}th{background:#f1f5fb}pre{padding:15px;background:#f2f4f7;overflow:auto}img{max-width:100%;height:auto}blockquote{padding:10px 20px;border-left:3px solid #2571be;background:#f4f8fc}@media(max-width:700px){main{padding:15px;margin:8px}h1{font-size:25px}}</style></head><body><header><a href="../../../00_开始.html">V6.4 完整资料</a>　<a href="../../../02_UI/index.html">交互原型</a>　T3.4</header><main><h1>I01 · 统一微信登录与默认车主</h1>
 <p>阶段：M1；责任域：identity；前置：E06, E07。
-范围版本：<code>V6.4-IDENTITY-CONSISTENCY-20261022</code>；definitionHash：<code>8f5384482995ab7da94bc62c4dc6dfac6e494cd7a0bd435c82fc8da8db8ef2f5</code>。</p>
+范围版本：<code>V6.4-IDENTITY-CONSISTENCY-20261022</code>；definitionHash：<code>727bd63aea611de3405455161ffaf764844fc74c05d85b7278cc066489d6dc6c</code>。</p>
 <h2>本任务交付</h2>
 <ul>
 <li>可信AppID/OpenID创建或恢复唯一账号；新会话OWNER</li>
@@ -18,7 +18,7 @@
 接口：API_001_post, API_005_get
 画板：O29, D01, S01, B01, O29-staff, O29-driver, O29-unconfigured, O29-duplicate, O29-conflict, O29-denied, O29-processing, O29-error, S01-ready, S01-unconfigured, D01-draft, D01-pending, D01-rejected, D01-approved
 主责任表：vi_account, vi_account_security
-验收：TC-001, TC-002, TC-003, TC-004, TC-005, TC-006, TC-007, TC-008, TC-009, TC-010, TC-011, TC-012, TC-013, TC-014, TC-015, TC-016, TC-017, TC-018, TC-R50-007, TC-R50-008, TC-R50-012, TC-R50-032, TC-R62-001, TC-R62-002, TC-R62-018, TC-R62-035, TC-R63-014</p>
+验收：TC-001, TC-002, TC-003, TC-004, TC-005, TC-006, TC-007, TC-008, TC-009, TC-010, TC-011, TC-012, TC-013, TC-014, TC-016, TC-018, TC-R50-007, TC-R50-008, TC-R50-012, TC-R50-032, TC-R62-001, TC-R62-002, TC-R62-018, TC-R62-035, TC-R63-014</p>
 <h2>代码落位</h2>
 <p><code>xinyi-rongli/src/main/java/com/xinyi/rongli/identity/</code>
 <code>xinyi-rongli/src/main/resources/mapper/rongli/identity/</code>

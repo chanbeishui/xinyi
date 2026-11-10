@@ -44,6 +44,32 @@ U.authorize62=function(scenario){
  else{a.employeeId=emp.id;a.name=emp.name;a.phone=emp.phone;emp.linkedAccount=a.account;emp.linkStatus='LINKED';emp.allowRematch=false;a.link='LINKED';a.blocked=false;a.history.push('手机号核验后自动关联：'+emp.name);}
  a.version++;U.sync62();return a.link;
 };
+U.filterConfig.qualification = ['申请人昵称 / 申请编号', ['全部', '待审核', '本次申请已批准', '待补正']];
+// Q05仅有本地演示快照；固定编号和版本用于解释审批边界，不是正式接口返回或可信证明。
+U.q05Fields = {idCardFrontFileId: '身份证人像面', licenseMainFileId: '驾驶证主页', licenseClass: '准驾车型', validTo: '驾驶证到期日'};
+U.qualification05 = function(kind) {
+  if (U.store.qualification05) return U.store.qualification05;
+  const a = U.auth62(), renewal = kind === 'RENEWAL' || (!kind && a.driverApproved);
+  return U.store.qualification05 = {
+    applicationId: 'APP-DEMO-101', submissionId: 'SUB-DEMO-101-R1', submissionRevision: 1,
+    version: 3, profileVersion: 5, companyRevision: 0, materialRevision: 1,
+    kind: renewal ? 'RENEWAL' : 'FIRST', status: 'SUBMITTED', trustedSubmission: true,
+    companyName: '荣利检测公司（演示）', submittedAt: '2026-11-10T01:10:00.000Z',
+    licenseClass: 'C1', validTo: '2031-03-12',
+    frozenChecks: {face: true, background: true, licenseVerification: true, training: true},
+    publicOpinion: null, rejectFields: [], history: [],
+    effective: renewal ? {snapshotId: 'QUAL-DEMO-100', revision: 1, status: 'APPROVED',
+      reviewDueAt: '2027-04-08T08:00:00.000Z', expiresAt: '2027-04-08T08:00:00.000Z'} : null
+  };
+};
+U.freezeQualification05 = function() {
+  const a = U.auth62();
+  delete U.store.qualification05;
+  const q = U.qualification05(a.driverApproved ? 'RENEWAL' : 'FIRST');
+  q.frozenChecks = Object.fromEntries(['face', 'background', 'licenseVerification', 'training']
+    .map(key => [key, !!U.store.saved[key]]));
+  return q;
+};
 U.identityLabels={UNLINKED:'未关联员工',LINKED:'已自动关联',NEEDS_ADMIN:'需管理员核实',SUSPENDED:'工作关联已暂停',REVOKED:'关联已解除'};
 U.driverLabels={NONE:'尚未申请',DRAFT:'申请草稿',PENDING:'审核中',REJECTED:'待补充资料',APPROVED:'审核已通过'};
 U.prepareIdentityPreview=function(v){const a=U.auth62();if(a.journeyStarted||a.previewId===v.id)return;

@@ -127,9 +127,10 @@ const changedFields = computed(() =>
 const dirty = computed(
   () => changedFields.value.length > 0 || (consentChanged.value && acceptedCurrentConsent.value)
 );
+// 会话已包含服务端实时到期判断，不能被尚未由到期任务更新的申请持久状态覆盖。
 const effectiveStatus = computed(() =>
   qualificationStatus(
-    application.value?.effectiveQualificationStatus || session.value?.driverQualification
+    session.value?.driverQualification || application.value?.effectiveQualificationStatus
   )
 );
 const canSwitchDriver = computed(() => session.value?.availableRoles.includes('DRIVER'));
@@ -138,6 +139,9 @@ const reviewReasons = computed(
     application.value?.rejectReasons.filter(
       (item) => item !== application.value?.publicReviewOpinion
     ) || []
+);
+const submittedChecks = computed(() =>
+  Boolean(application.value && ['SUBMITTED', 'APPROVED'].includes(application.value.status))
 );
 
 function hasAction(action: string) {
@@ -467,13 +471,16 @@ function open(path: string) {
     <view v-if="session" class="card">
       <text class="section">当前有效资格</text>
       <text class="status">{{ effectiveStatus }}</text>
+      <text v-if="application?.reviewDueAt" class="muted"
+        >当前资格复审截止：{{ dateTime(application.reviewDueAt) }}</text
+      >
       <text class="muted">{{
         application?.companyName
           ? '所属公司：' + application.companyName
           : '所属公司尚未配置，请联系平台管理员认领。'
       }}</text>
       <text class="note"
-        >申请、保存或刷新都不会授予代驾身份，也不会开启听单。已有在手任务仍须继续保管并实际归还车辆。</text
+        >身份以后台实际生效结果为准，刷新不会开启听单。资格到期或暂停时限制新单，已有在手任务仍须继续保管并实际归还车辆。</text
       >
       <button v-if="canSwitchDriver" @click="open('/pages/identity/switch')">
         切换已有代驾身份
@@ -490,9 +497,6 @@ function open(path: string) {
       >
       <text class="muted"
         >申请编号 {{ application.applicationId }} · 资料版本 {{ application.version }}</text
-      >
-      <text v-if="application.reviewDueAt" class="muted"
-        >复审截止：{{ dateTime(application.reviewDueAt) }}</text
       >
       <text v-if="application.publicReviewOpinion" class="review"
         >审核意见：{{ application.publicReviewOpinion }}</text
@@ -679,8 +683,11 @@ function open(path: string) {
     </view>
 
     <view v-if="application" class="card">
-      <text class="section">真实核验与提交条件</text>
-      <text class="muted"
+      <text class="section">{{ submittedChecks ? '已提交核验结果' : '当前材料与提交准备' }}</text>
+      <text v-if="submittedChecks" class="muted"
+        >以下来自本次已认证的提交快照，不因后来退出或重新登录变为未核验。新申请或补正材料仍按当前上下文重新准备。</text
+      >
+      <text v-else class="muted"
         >资料完整、所属公司已配置、同意当前说明，且本机认证、背景及驾驶证人工核验与培训均通过后，才可提交审核。</text
       >
       <view v-for="check in application.checks" :key="check.type" class="check"
@@ -695,7 +702,7 @@ function open(path: string) {
       </button>
       <text v-if="dirty" class="muted">先保存当前资料，再进入本人核验，避免核验旧材料。</text>
       <button @click="open('/pages/training/list')">进入正式培训与考试</button>
-      <view v-if="application.submitBlockers.length" class="blockers"
+      <view v-if="!submittedChecks && application.submitBlockers.length" class="blockers"
         ><text v-for="(blocker, index) in application.submitBlockers" :key="index"
           >{{ fieldLabels[blocker.field] || '提交条件' }}：{{ blocker.message }}</text
         ></view

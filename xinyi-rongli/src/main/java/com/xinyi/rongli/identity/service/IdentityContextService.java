@@ -14,7 +14,7 @@ import java.util.Set;
 
 /**
  * 计算 MINI 账号的身份上下文（availableRoles / driverQualification / employeeLink / 能力 / 权限 / 站点）。
- * 全部读取权威状态：DRIVER 须已批准且证件准驾当前有效；STATION 须有效员工绑定 + 至少一个启用站点授权。
+ * 全部读取权威状态：DRIVER 视角须曾获批准；证件/复审到期保留历史及在手入口，新单另按实时资格判据；STATION 须有效员工绑定 + 至少一个启用站点授权。
  * 新账号无任何资格/关联 → 仅 OWNER、employeeLink=UNLINKED（V6.4 身份架构 §1/§3）。
  * 只读，不写代驾/员工/站点表（其写入分属对应任务）；不复制 sys_user 超管权限。
  */
@@ -32,6 +32,8 @@ public class IdentityContextService {
         roles.add("OWNER");
 
         String driverQualification = readMapper.selectDriverQualificationStatus(accountId);
+        // DRIVER是历史业务视角；到期/暂停不能使用户失去车辆返还等已有责任入口。
+        // 行政开关、听单、准驾和实时有效期仍由具体新单Service独立校验，不从身份推导可接单。
         if (readMapper.countDriverApprovedCurrent(accountId) > 0) {
             roles.add("DRIVER");
         }

@@ -7,6 +7,7 @@ import com.xinyi.rongli.platform.error.*;
 import com.xinyi.rongli.platform.json.ViJson;
 import com.xinyi.rongli.platform.service.*;
 import com.xinyi.rongli.qualification.domain.QualificationApplication;
+import com.xinyi.rongli.qualification.domain.QualificationSubmission;
 import com.xinyi.rongli.qualification.mapper.QualificationMapper;
 import com.xinyi.rongli.training.service.TrainingCompletionAuthority;
 import com.xinyi.rongli.verification.domain.*;
@@ -134,6 +135,76 @@ public class CanonicalVerificationAuthority {
     }
 
     private boolean sourceMatches(VerificationProof proof) {
+        return sourceMatches(proof, actors.requireMini().sessionId());
+    }
+
+    /** 审核消费的是已认证提交中的原会话事实，不能要求原MINI仍在线，更不能伪装为申请人。 */
+    public Map<String, VerificationProof> frozenProofs(QualificationSubmission submission) {
+        actors.requireAdmin();
+        requireTransaction();
+        return proofsAtSubmission(submission);
+    }
+
+    /** 本人只读已提交结果不重新要求原设备会话在线；此入口不能为草稿或补正生成新提交资格。 */
+    public Map<String, VerificationProof> submittedProofsForOwner(
+            QualificationSubmission submission) {
+        Actor actor = actors.requireMini();
+        requireTransaction();
+        Long account =
+                submission == null
+                        ? null
+                        : mapper.applicationAccount(submission.getApplicationId());
+        var application =
+                submission == null ? null : qualifications.lock(submission.getApplicationId());
+        if (!Objects.equals(account, actor.accountId())
+                || application == null
+                || !Set.of("SUBMITTED", "APPROVED").contains(application.getStatus())
+                || application.getSubmissionRevision() != submission.getSubmissionRevision())
+            throw new ViException(ViErrorCode.VI_RESOURCE_NOT_VISIBLE);
+        return proofsAtSubmission(submission);
+    }
+
+    private Map<String, VerificationProof> proofsAtSubmission(QualificationSubmission submission) {
+        Map<String, VerificationProof> result = new LinkedHashMap<>();
+        if (submission == null
+                || submission.getCompanyRevision() == null
+                || submission.getSourceSessionId() == null
+                || submission.getSubmittedAt() == null) return result;
+        try {
+            List<?> ids = ViJson.read(submission.getProviderResultIds(), List.class);
+            if (ids.size() != 4 || new HashSet<>(ids).size() != 4) return Map.of();
+            for (Object value : ids) {
+                long id = com.xinyi.rongli.core.ViId.parse(value.toString());
+                var proof = mapper.proof(id);
+                if (proof != null && "TRAINING".equals(proof.getTaskType())) continue;
+                if (proof == null
+                        || !Set.of("DEVICE_AUTH", "BACKGROUND", "LICENSE")
+                                .contains(proof.getTaskType())
+                        || result.containsKey(proof.getTaskType())
+                        || !"PASSED".equals(proof.getStatus())
+                        || !Objects.equals(proof.getApplicationId(), submission.getApplicationId())
+                        || !Objects.equals(proof.getOwnerDeptId(), submission.getOwnerDeptId())
+                        || !Objects.equals(
+                                proof.getCompanyRevision(), submission.getCompanyRevision())
+                        || proof.getMaterialRevision() != submission.getMaterialRevision()
+                        || !TrainingCompletionAuthority.equal(
+                                proof.getMaterialHash(), submission.getMaterialHash())
+                        || proof.getVerifiedAt() == null
+                        || proof.getVerifiedAt().isAfter(submission.getSubmittedAt())
+                        || !authenticated(proof)
+                        || !sourceMatches(proof, submission.getSourceSessionId())) return Map.of();
+                result.put(proof.getTaskType(), proof);
+            }
+            return result.size() == 3 ? result : Map.of();
+        } catch (ViException failure) {
+            if (failure.getErrorCode() == ViErrorCode.VI_SECRET_UNAVAILABLE) throw failure;
+            return Map.of();
+        } catch (RuntimeException failure) {
+            return Map.of();
+        }
+    }
+
+    private boolean sourceMatches(VerificationProof proof, Long expectedSessionId) {
         if ("DEVICE_SESSION".equals(proof.getSourceKind())) {
             var session = mapper.find(proof.getSourceRecordId());
             if (session == null
@@ -152,7 +223,7 @@ public class CanonicalVerificationAuthority {
                     || !session.getVerifiedAt().equals(proof.getVerifiedAt())) return false;
             // 已完成本机确认允许同一登录会话切身份，不能跨新登录/设备会话复用。
             return Objects.equals(session.getVerificationId(), proof.getId())
-                    && Objects.equals(session.getSessionId(), actors.requireMini().sessionId());
+                    && Objects.equals(session.getSessionId(), expectedSessionId);
         }
         if (!"MANUAL_REVIEW".equals(proof.getSourceKind())
                 || !Set.of("BACKGROUND", "LICENSE").contains(proof.getTaskType())) return false;

@@ -1,5 +1,18 @@
 [
   {
+    "id": "TC-017",
+    "priority": "P0",
+    "module": "身份权限",
+    "flow": "F02 F03 F49",
+    "title": "资格到期阻新增",
+    "given": "司机资格今日过期",
+    "when": "自动/人工派单",
+    "then": "都拒绝新承接，进行中按安全处置规范不自动释放",
+    "status": "NOT_RUN",
+    "evidence": "",
+    "origin": "V6.4新业务完整验收规格；未绑定真实Step实现前不是自动化测试结果"
+  },
+  {
     "id": "TC-051",
     "priority": "P1",
     "module": "派单资格",

@@ -23,12 +23,14 @@
       "docs/implementation/vehicle/evidence/A04-20261107.json",
       "docs/implementation/vehicle/evidence/Q01-20261107.json",
       "docs/implementation/vehicle/evidence/Q03-20261109.json",
-      "docs/implementation/vehicle/evidence/Q04-20261110.json"
+      "docs/implementation/vehicle/evidence/Q04-20261110.json",
+      "docs/implementation/vehicle/evidence/Q05-20261110.json"
     ],
     "table": "vi_driver_profile",
     "taskId": "Q01",
     "implementationNote": "公司归属、材料与提交/复审分离已验；Q05独立审批、资格生效及到期生命周期未完成。",
-    "q03Note": "公司epoch/当前材料run/固定课表及私有媒体权限兼容回归通过；原共享表的未完成责任保留。"
+    "q03Note": "公司epoch/当前材料run/固定课表及私有媒体权限兼容回归通过；原共享表的未完成责任保留。",
+    "q05CompatibilityNote": "Q05相关提交认证、生效指针、生命周期、原图/审计/能力版本与公司权限已验；原共享表责任及历史证据保留。"
   },
   {
     "status": "PARTIAL",
@@ -37,12 +39,14 @@
     "evidence": [
       "docs/implementation/vehicle/evidence/Q01-20261107.json",
       "docs/implementation/vehicle/evidence/Q03-20261109.json",
-      "docs/implementation/vehicle/evidence/Q04-20261110.json"
+      "docs/implementation/vehicle/evidence/Q04-20261110.json",
+      "docs/implementation/vehicle/evidence/Q05-20261110.json"
     ],
     "table": "vi_driver_application",
     "taskId": "Q01",
     "implementationNote": "公司归属、材料与提交/复审分离已验；Q05独立审批、资格生效及到期生命周期未完成。",
-    "q03Note": "公司epoch/当前材料run/固定课表及私有媒体权限兼容回归通过；原共享表的未完成责任保留。"
+    "q03Note": "公司epoch/当前材料run/固定课表及私有媒体权限兼容回归通过；原共享表的未完成责任保留。",
+    "q05CompatibilityNote": "Q05相关提交认证、生效指针、生命周期、原图/审计/能力版本与公司权限已验；原共享表责任及历史证据保留。"
   },
   {
     "status": "VERIFIED",
@@ -50,12 +54,14 @@
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/verification/VerificationMapper.xml",
     "evidence": [
       "docs/implementation/vehicle/evidence/Q03-20261109.json",
-      "docs/implementation/vehicle/evidence/Q04-20261110.json"
+      "docs/implementation/vehicle/evidence/Q04-20261110.json",
+      "docs/implementation/vehicle/evidence/Q05-20261110.json"
     ],
     "table": "vi_provider_verification",
     "taskId": "Q04",
     "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/verification/service/CanonicalVerificationAuthority.java",
-    "implementationNote": "按Q04当前用户范围验证；历史FACE/REALNAME/NULL来源隔离，设备只确认已录入生物特征、人工双人，无腾讯慧眼或实名活体通过。"
+    "implementationNote": "按Q04当前用户范围验证；历史FACE/REALNAME/NULL来源隔离，设备只确认已录入生物特征、人工双人，无腾讯慧眼或实名活体通过。",
+    "q05CompatibilityNote": "Q05相关提交认证、生效指针、生命周期、原图/审计/能力版本与公司权限已验；原共享表责任及历史证据保留。"
   },
   {
     "status": "NOT_ASSESSED",
@@ -223,12 +229,14 @@
     "evidence": [
       "docs/implementation/vehicle/evidence/F01-20261105.json",
       "docs/implementation/vehicle/evidence/Q02-20261109.json",
-      "docs/implementation/vehicle/evidence/Q03-20261109.json"
+      "docs/implementation/vehicle/evidence/Q03-20261109.json",
+      "docs/implementation/vehicle/evidence/Q05-20261110.json"
     ],
     "table": "vi_file",
     "taskId": "F01",
     "implementationNote": "F01图片原规则保留，Q02扩培训父课程与真实视频元数据、受保护同步流；3表结构对照和文件/资格/课程实际回归通过。",
-    "q03Note": "公司epoch/当前材料run/固定课表及私有媒体权限兼容回归通过；原共享表的未完成责任保留。"
+    "q03Note": "公司epoch/当前材料run/固定课表及私有媒体权限兼容回归通过；原共享表的未完成责任保留。",
+    "q05CompatibilityNote": "Q05相关提交认证、生效指针、生命周期、原图/审计/能力版本与公司权限已验；原共享表责任及历史证据保留。"
   },
   {
     "status": "NOT_ASSESSED",
@@ -323,7 +331,9 @@
     "status": "NOT_ASSESSED",
     "entityFile": null,
     "mapperFile": null,
-    "evidence": [],
+    "evidence": [
+      "docs/implementation/vehicle/evidence/Q05-20261110.json"
+    ],
     "table": "vi_event_log",
     "taskId": "E06",
     "previousVerification": {
@@ -331,13 +341,16 @@
       "lastResult": null,
       "evidence": []
     },
-    "needsRevalidation": true
+    "needsRevalidation": true,
+    "q05CompatibilityNote": "Q05相关提交认证、生效指针、生命周期、原图/审计/能力版本与公司权限已验；原共享表责任及历史证据保留。"
   },
   {
     "status": "NOT_ASSESSED",
     "entityFile": null,
     "mapperFile": null,
-    "evidence": [],
+    "evidence": [
+      "docs/implementation/vehicle/evidence/Q05-20261110.json"
+    ],
     "table": "vi_outbox",
     "taskId": "E06",
     "previousVerification": {
@@ -345,7 +358,8 @@
       "lastResult": null,
       "evidence": []
     },
-    "needsRevalidation": true
+    "needsRevalidation": true,
+    "q05CompatibilityNote": "Q05相关提交认证、生效指针、生命周期、原图/审计/能力版本与公司权限已验；原共享表责任及历史证据保留。"
   },
   {
     "status": "NOT_ASSESSED",
@@ -359,7 +373,9 @@
     "status": "NOT_ASSESSED",
     "entityFile": null,
     "mapperFile": null,
-    "evidence": [],
+    "evidence": [
+      "docs/implementation/vehicle/evidence/Q05-20261110.json"
+    ],
     "table": "vi_idempotency",
     "taskId": "E06",
     "previousVerification": {
@@ -367,7 +383,8 @@
       "lastResult": null,
       "evidence": []
     },
-    "needsRevalidation": true
+    "needsRevalidation": true,
+    "q05CompatibilityNote": "Q05相关提交认证、生效指针、生命周期、原图/审计/能力版本与公司权限已验；原共享表责任及历史证据保留。"
   },
   {
     "status": "NOT_ASSESSED",
@@ -474,9 +491,12 @@
     "status": "NOT_ASSESSED",
     "entityFile": null,
     "mapperFile": null,
-    "evidence": [],
+    "evidence": [
+      "docs/implementation/vehicle/evidence/Q05-20261110.json"
+    ],
     "table": "vi_account_security",
-    "taskId": "I01"
+    "taskId": "I01",
+    "q05CompatibilityNote": "Q05相关提交认证、生效指针、生命周期、原图/审计/能力版本与公司权限已验；原共享表责任及历史证据保留。"
   },
   {
     "status": "NOT_ASSESSED",
@@ -792,9 +812,11 @@
     "entityFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/qualification/domain/QualificationApplication.java",
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/qualification/QualificationMapper.xml",
     "evidence": [
-      "docs/implementation/vehicle/evidence/Q01-20261107.json"
+      "docs/implementation/vehicle/evidence/Q01-20261107.json",
+      "docs/implementation/vehicle/evidence/Q05-20261110.json"
     ],
-    "implementationNote": "提交快照只插入，无修改/删除业务入口，冻结证据已验。"
+    "implementationNote": "提交快照只插入，无修改/删除业务入口，冻结证据已验。",
+    "q05CompatibilityNote": "Q05相关提交认证、生效指针、生命周期、原图/审计/能力版本与公司权限已验；原共享表责任及历史证据保留。"
   },
   {
     "status": "VERIFIED",
@@ -835,11 +857,13 @@
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/training/LearningMapper.xml",
     "evidence": [
       "docs/implementation/vehicle/evidence/Q03-20261109.json",
-      "docs/implementation/vehicle/evidence/Q04-20261110.json"
+      "docs/implementation/vehicle/evidence/Q04-20261110.json",
+      "docs/implementation/vehicle/evidence/Q05-20261110.json"
     ],
     "table": "vi_training_run",
     "taskId": "Q03",
-    "implementationNote": "Q03父归属、冻结与当前运行、毫秒学时、计次、一次阅卷和真实证明已验；旧NULL运行不可信。"
+    "implementationNote": "Q03父归属、冻结与当前运行、毫秒学时、计次、一次阅卷和真实证明已验；旧NULL运行不可信。",
+    "q05CompatibilityNote": "Q05相关提交认证、生效指针、生命周期、原图/审计/能力版本与公司权限已验；原共享表责任及历史证据保留。"
   },
   {
     "status": "VERIFIED",
@@ -852,5 +876,37 @@
     "taskId": "Q04",
     "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/verification/service/ManualVerificationService.java",
     "implementationNote": "按Q04当前用户范围验证；历史FACE/REALNAME/NULL来源隔离，设备只确认已录入生物特征、人工双人，无腾讯慧眼或实名活体通过。"
+  },
+  {
+    "status": "VERIFIED",
+    "entityFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/qualification/domain/QualificationReview.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/qualification/QualificationAdminMapper.xml",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/Q05-20261110.json"
+    ],
+    "table": "vi_qualification_review",
+    "taskId": "Q05",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/qualification/service/QualificationAdminService.java",
+    "additionalImplementationFiles": [
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/qualification/service/QualificationExpiryService.java",
+      "xinyi-rongli/src/main/resources/mapper/rongli/qualification/QualificationExpiryMapper.xml"
+    ],
+    "implementationNote": "真实不可变审核/生效事实、封装、内部意见独立AAD与资格到期outbox；4表升级及完整初装比较一致。"
+  },
+  {
+    "status": "VERIFIED",
+    "entityFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/qualification/domain/QualificationSnapshot.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/qualification/QualificationAdminMapper.xml",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/Q05-20261110.json"
+    ],
+    "table": "vi_qualification_snapshot",
+    "taskId": "Q05",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/qualification/service/QualificationAdminService.java",
+    "additionalImplementationFiles": [
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/qualification/service/QualificationExpiryService.java",
+      "xinyi-rongli/src/main/resources/mapper/rongli/qualification/QualificationExpiryMapper.xml"
+    ],
+    "implementationNote": "真实不可变审核/生效事实、封装、内部意见独立AAD与资格到期outbox；4表升级及完整初装比较一致。"
   }
 ]

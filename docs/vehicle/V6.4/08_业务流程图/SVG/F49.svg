@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1260" height="2030" viewBox="0 0 1260 2030" role="img" aria-labelledby="title desc">
 <title id="title">F49 · 代驾资格申请、补正与复审</title>
-<desc id="desc">本人草稿、真实证件、有效公司及当前材料四项可信证明通过后才提交。微信SOTER只确认本机使用者；背景与驾驶证经办和复核人不同，复核人可参与最终资格审核。复审不覆盖生效资格和在手责任。</desc>
+<desc id="desc">本人草稿、真实证件、有效公司及当前材料四项可信证明通过后才提交。微信SOTER只确认本机使用者；背景与驾驶证经办和复核人不同，复核人可参与最终资格审核。Q05原公司可信冻结审核，明确未来复审截止，不自动听单；到期只停新单，复审不覆盖生效资格和在手责任。</desc>
 <!-- 按flows_V6.4.json的F49节点和边人工排布；SVG原生文字，未使用Graphviz或供应商界面截图。 -->
 <defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#52657d"/></marker></defs>
 <style>text{font-family:"PingFang SC","Microsoft YaHei",Arial,sans-serif;fill:#23354d}.edge{fill:none;stroke:#52657d;stroke-width:2;marker-end:url(#arrow)}.edge-label{font-size:16px;fill:#52657d}.node-title{font-size:21px;font-weight:600}.node-body{font-size:18px}.note{font-size:18px;fill:#5d6c80}</style>
@@ -19,7 +19,7 @@
 <path class="edge" d="M670,1088 V1134"/>
 <text x="686" y="1118" class="edge-label">是</text>
 <path class="edge" d="M670,1394 V1416"/>
-<text x="682" y="1412" class="edge-label">后续审核</text>
+<text x="682" y="1412" class="edge-label">最终审核</text>
 <path class="edge" d="M670,1576 V1636"/>
 <text x="686" y="1612" class="edge-label">批准</text>
 <path class="edge" d="M410,386 H190 V634"/>
@@ -84,19 +84,19 @@
 </g>
 <g id="n11"><rect x="410" y="1304" width="520" height="90" rx="12" fill="#ffffff" stroke="#a8bfdc" stroke-width="2"/>
 <text x="670.0" y="1330.0" text-anchor="middle" class="node-title">SUBMITTED：只读等待审核</text>
-<text x="670.0" y="1355.0" text-anchor="middle" class="node-body">证件写入冻结；本人可查看真实进度</text>
+<text x="670.0" y="1355.0" text-anchor="middle" class="node-body">材料与核验封存，不因退出重登丢失</text>
 <text x="670.0" y="1380.0" text-anchor="middle" class="node-body">提交不授DRIVER，也不代表可以接新单</text>
 </g>
 <g id="n13"><rect x="35" y="1450" width="280" height="148" rx="12" fill="#fff7e8" stroke="#d7a34b" stroke-width="2"/>
 <text x="175.0" y="1480.0" text-anchor="middle" class="node-title">REJECTED：仅补指定字段</text>
 <text x="175.0" y="1505.0" text-anchor="middle" class="node-body">公开意见与内部意见分开</text>
 <text x="175.0" y="1530.0" text-anchor="middle" class="node-body">保存仍REJECTED，不绕限制</text>
-<text x="175.0" y="1555.0" text-anchor="middle" class="node-body">历史缺字段结构先人工补齐</text>
+<text x="175.0" y="1555.0" text-anchor="middle" class="node-body">历史缺结构只修范围，不造资格</text>
 <text x="175.0" y="1580.0" text-anchor="middle" class="node-body">修改材料后重新核验</text>
 </g>
 <g id="n14"><rect x="410" y="1636" width="520" height="100" rx="12" fill="#edf4ff" stroke="#a8bfdc" stroke-width="2"/>
 <text x="670.0" y="1667.0" text-anchor="middle" class="node-title">APPROVED：按权威生效快照刷新身份</text>
-<text x="670.0" y="1692.0" text-anchor="middle" class="node-body">Q05后续独立审批，禁止本人审批</text>
+<text x="670.0" y="1692.0" text-anchor="middle" class="node-body">生成权威生效快照，不自动切身份或听单</text>
 <text x="670.0" y="1717.0" text-anchor="middle" class="node-body">新单另查行政开关、听单、定位及其它条件</text>
 </g>
 <g id="n15"><rect x="410" y="1790" width="520" height="108" rx="12" fill="#ffffff" stroke="#a8bfdc" stroke-width="2"/>
@@ -111,9 +111,9 @@
 </g>
 <g id="n12"><path d="M670,1416.0 L950.0,1496 L670,1576.0 L390.0,1496 Z" fill="#eaf4ee" stroke="#71a587" stroke-width="2"/>
 <text x="670" y="1478.0" text-anchor="middle" class="node-title">Q05 最终资格审核</text>
-<text x="670" y="1502.0" text-anchor="middle" class="node-body">禁止本人审批</text>
-<text x="670" y="1526.0" text-anchor="middle" class="node-body">人工复核人可参与本次审核</text>
+<text x="670" y="1502.0" text-anchor="middle" class="node-body">四版本 + UUID；禁止本人审批</text>
+<text x="670" y="1526.0" text-anchor="middle" class="node-body">批准须明确未来UTC复审截止</text>
 </g>
-<text x="630" y="1952" text-anchor="middle" class="note">Q01只消费四项可信证明，核验和提交不直接授予DRIVER；微信验签与Q05审核分别办理。</text>
+<text x="630" y="1952" text-anchor="middle" class="note">核验和提交不授DRIVER；Q05最终审核后刷新身份，人工复核人可参与，禁止自审。</text>
 <text x="630" y="1984" text-anchor="middle" class="note">证明绑定当前申请 / 公司epoch / 材料；本机认证另绑定本人登录session，旧证明不复活。</text>
 </svg>

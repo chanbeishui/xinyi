@@ -20,26 +20,65 @@ R.B10=()=>screen('检测结果待办','仅处理已收车订单的资料核验�
 R.B11=v=>screen('登记最终检测结果','与检测工作小程序同源；双端并发只保留一份有效提交。',(v.state==='conflict'?n('小程序端已提交结果 R01，您的草稿已保留。不能直接覆盖，请查看结果并按需申请更正。','error'):'')+grid(p('检测结论与项目',`<div class="form-grid">${U.resultForm('result',false)}</div>`),p('本单核对',kv('车辆',U.demoOrder.plate)+kv('检测点',stName())+kv('当前业务阶段','检测中')+kv('资料状态','已核实（演示）')+kv('本次登记来源','PC 管理后台')+kv('已有版本',v.state==='conflict'?'R01':'尚未登记'))+p('提交之后',U.timeline([['保存结果','新版本成为本次有效结果'],['通知车主与代驾','通知失败不回滚结果'],['后续更正','需提交理由并审核，保留前后版本']],0))+n('这里是人员登记的最终结果，不是软件自动完成物理检测。')),toolbar(b('保存草稿','result-draft','secondary'),v.state==='conflict'?g('申请更正','B30-review'):b('提交检测结果','result-submit','',{payload:'ADMIN'})));
 R.B15=v=>{let base=screen('普通服务异常与争议','记录服务事实、当前保管方与人工处置，不提供事故理赔或自动定责。',cardTable('待办工单',['工单 / 车辆','类型','当前保管方','处理状态','最近更新','操作'],[['CASE-DEMO-21<small>'+U.demoOrder.plate+'</small>','车辆交接待协调','检测点',tag('处理中','orange'),'10:20',g('处理','B15-detail','link')],['CASE-DEMO-20<small>粤K·3N2C5</small>','联系不上车主','代驾',tag('待响应','orange'),'10:12',g('处理','B15-detail','link')],['DIS-DEMO-19<small>粤K·9G6K1</small>','服务态度','车主',tag('核实中',''),'09:42',g('查看','B15-detail','link')]],'exceptions'));if(v.state==='detail')base.overlay=U.drawer('记录服务核实与处置',p('工单信息',kv('工单','CASE-DEMO-21')+kv('车辆',U.demoOrder.plate)+kv('当前保管方','检测点 · 城东检测站')+kv('申请说明','用户申请提前结束本次服务，需要协助返还车辆'))+f('核实情况','exception.handle','','textarea',{required:true,placeholder:'记录联系结果、当前事实及拟采取的业务动作'})+f('下一步','exception.next','联系协助','select',{options:['联系协助','转取消审核','转退款审核','记录已解决结论']})+n('只记录处置并进入合法业务流程，不可无交接证据强制完成订单。','warn'),g('取消','B15','secondary')+b('保存处置记录','exception-handle'),'B15');return base;};
 R.B16 = v => {
-  const check = (label, key, description) => row('shield', label, description,
-    tag(U.store.saved[key] ? '演示记录已齐' : '演示待确认', U.store.saved[key] ? 'green' : 'orange'));
-  const base = screen('代驾资格审核', '四项可信检查后仍须资格审核；普通申请人和检测员工同一标准。',
-    cardTable('完整申请与复审', ['申请人', '申请类型', '核验资料', '最终审核', '提交时间', '操作'], [
-      ['林晓<small>139****6688 · 员工申请</small>', '首次申请', '本人资料、四项检查', tag('待审核', 'orange'), '10-11 09:10', g('审查申请', 'B16-review', 'link')],
-      ['周明<small>138****1122 · 普通用户</small>', '年度复审', '证件有效期与四项状态', tag('待审核', 'orange'), '10-11 08:30', g('审查申请', 'B16-review', 'link')]
-    ], 'qualification'));
-  if (v.state === 'review') base.overlay = U.drawer('审核代驾申请',
-    p('申请人', kv('姓名', '林晓') + kv('身份来源', '已关联员工，仍需正常代驾审核') + kv('准驾车型', 'C1（演示）') + kv('证件有效期', '2031-03-12（演示）')) +
-    p('四项检查记录',
-      check('本机设备确认 · SOTER', 'face', '真实系统仅微信服务端验签，不作为实名或活体证明') +
-      check('背景双人人工确认', 'background', '经办提出结论，另一有权人员复核；无需核验附件') +
-      check('驾驶证双人人工确认', 'licenseVerification', '经办与复核人不同；复核人可参与最终资格审核') +
-      check('培训与考试', 'training', '本申请冻结必修课程真实完成后才产生培训证明') +
-      b('申请查看敏感材料', 'sensitive-request', 'secondary block')) +
-    f('审核意见', 'qualification.opinion', '', 'textarea', {required: true, placeholder: '批准或驳回均填写具体意见'}) +
-    f('复审日期', 'qualification.reviewDate', '2027-10-11', 'date', {required: true}) +
-    c('已核对所有必需资料及四项可信记录', 'qualification.checked', false) +
-    n('本地演示审批不构成真实资格通过。这里不执行设备验签、人工复核或真实培训，不因演示按钮开通生产DRIVER。', 'warn'),
-    b('驳回补充', 'qualification-reject', 'danger') + b('批准资格（演示）', 'qualification-approve', '', {require: 'qualification.checked'}), 'B16');
+  const q = U.qualification05(), self = U.get('qualification.reviewer', 'OTHER') === 'APPLICANT';
+  const submitted = q.status === 'SUBMITTED', repair = q.status === 'REJECTED' && !q.rejectFields.length && !q.history.length;
+  const statusLabel = {SUBMITTED: '待审核', APPROVED: '本次申请已批准', REJECTED: '待补正'}[q.status];
+  const check = (label, key) => row('shield', label, '本次提交中冻结的演示结果；不读取当前设备登录反馈',
+    tag(q.frozenChecks[key] ? '提交时演示已齐' : '演示未完成', q.frozenChecks[key] ? 'green' : 'orange'));
+  const effective = q.effective ? kv('生效快照', q.effective.snapshotId + ' · V' + q.effective.revision) +
+    kv('当前资格', '既有资格有效（演示）') + kv('复审截止（UTC）', q.effective.reviewDueAt) +
+    kv('实际截止（UTC）', q.effective.expiresAt) : kv('当前资格', '尚无生效资格');
+  const base = screen('代驾资格审核', '审查冻结提交；复审待审或驳回保留原生效资格，停新单不解除在手责任。',
+    p('原型场景', f('本地申请场景', 'qualification.scenario', q.kind, 'select', {
+      options: [['FIRST', '首次申请演示'], ['RENEWAL', '已有资格的复审演示']]
+    }) + b('载入所选演示场景', 'q05-load-scenario', 'secondary') +
+      n('场景选择只重置本地样本，不代表后台可以选择申请人身份或改写真实版本。')) +
+    cardTable('申请与生效资格分开查看', ['申请 / 申请人', '申请类型', '冻结提交', '本次申请', '当前生效', '操作'], [
+      ['林晓<small>APP-DEMO-101 · 员工与普通人同标准</small>', q.kind === 'RENEWAL' ? '复审申请' : '首次申请',
+        q.submissionId + '<small>提交R' + q.submissionRevision + ' · 公司epoch ' + q.companyRevision + '</small>',
+        tag(statusLabel, q.status === 'APPROVED' ? 'green' : 'orange'),
+        q.effective ? '生效V' + q.effective.revision + ' · 保留在手入口' : '尚无生效资格', g('审查冻结提交', 'B16-review', 'link')]
+    ], 'qualification') +
+    n('这是离线原型，不调用正式API、不执行真实验源、期限任务或通知，也不会修改生产DRIVER资格。', 'warn'));
+  if (v.state === 'review') {
+    if (!q.intent) q.intent = {applicationId: q.applicationId, version: q.version, profileVersion: q.profileVersion,
+      companyRevision: q.companyRevision, submissionRevision: q.submissionRevision};
+    base.overlay = U.drawer('审核冻结资格提交',
+    p('本次提交（只读演示快照）', kv('申请 / 类型', q.applicationId + ' · ' + (q.kind === 'RENEWAL' ? '复审' : '首次')) +
+      kv('提交快照', q.trustedSubmission ? q.submissionId : '历史样本缺少可信结构，不可批准') +
+      kv('提交修订 / 材料修订', 'R' + q.submissionRevision + ' / M' + q.materialRevision) +
+      kv('当前申请 / 档案版本', String(q.version) + ' / ' + q.profileVersion) +
+      kv('原 / 当前公司', q.companyName) + kv('公司epoch', String(q.companyRevision)) +
+      kv('提交时刻（UTC）', q.submittedAt) + kv('准驾 / 到期日', q.licenseClass + ' / ' + q.validTo) +
+      n('正式审核同时核对申请、档案、提交修订、公司epoch和认证封装。公司变化不能批准旧提交，原/当前公司越权不能写。')) +
+    p('当前生效资格（与本次申请分开）', effective +
+      n('复审待审、驳回或修复公开补正记录，都不会覆盖这里已有的生效快照。')) +
+    p('提交时四项检查', check('本机设备确认 · SOTER', 'face') + check('背景双人人工确认', 'background') +
+      check('驾驶证双人人工确认', 'licenseVerification') + check('培训与考试', 'training') +
+      b('演示敏感材料访问说明', 'sensitive-request', 'secondary block') +
+      n('正式原图仅限认证提交的确切四图，需要专门敏感权限和访问审计；不能据同公司查看所有证件。')) +
+    p('审核操作人', f('本地操作人演示', 'qualification.reviewer', U.get('qualification.reviewer', 'OTHER'), 'select', {
+      options: [['OTHER', '另一有权审核人（演示）'], ['MANUAL_REVIEWER', '曾做人工复核的另一人（演示）'], ['APPLICANT', '申请人本人（应拒绝）']]
+    }) + n(self ? '申请人不能自审；演示按钮禁用，操作处理也会再次拒绝。' : '人工经办/复核人可参与最终审核，但不能是申请人本人。', self ? 'error' : 'info') +
+      n('此处身份选项只验证原型提示；正式身份来自可信ADMIN会话、历史员工绑定和已核验手机号，不能由表单授权。')) +
+    p('审核意见与公开补正',
+      f('内部审核意见（不向申请人公开）', 'qualification.opinion', '', 'textarea', {required: true, maxlength: 1000}) +
+      f('公开意见（驳回/修复必填）', 'qualification.publicOpinion', '', 'textarea', {maxlength: 1000}) +
+      '<h4 class="mt">公开补正字段（仅演示常用项）</h4>' +
+      Object.entries(U.q05Fields).map(([key, label]) => c(label, 'qualification.reject.' + key, false)).join('') +
+      n('批准时不携带补正字段；驳回或历史修复必须明确字段及公开意见，不把内部意见自动公开。')) +
+    p('批准期限', f('复审截止（UTC，批准必填）', 'qualification.reviewDueAt', '', 'text', {
+      placeholder: 'YYYY-MM-DDTHH:mm:ss.SSSZ', hint: '手动选择未来UTC时刻，最多毫秒精度；本原型不默认一年或提前30天。'
+    }) + n('实际截止取复审截止与上海证件到期日次日00:00的较早值。到期禁新邀约，历史和在手责任保留；本原型不启动定时任务。') +
+      c('已核对本次冻结资料及四项结果', 'qualification.checked', false)) +
+    p('本次记录', kv('申请状态', statusLabel) + kv('公开意见', q.publicOpinion || '尚无公开审核意见') +
+      kv('公开补正字段', q.rejectFields.length ? q.rejectFields.map(key => U.q05Fields[key] || key).join('、') : '无') +
+      kv('内部意见', q.history.length ? '已单独留存（演示不回显正文）' : '尚未记录')) +
+    n('演示状态不能替代真实提交seal、双人核验或资格审批；原型批准不等于正式资格。', 'warn'),
+    b('修复历史补正（演示）', 'qualification-repair', 'secondary', {disabled: self || !repair}) +
+    b('驳回补正（演示）', 'qualification-reject', 'danger', {disabled: self || !submitted}) +
+    b('批准本次提交（演示）', 'qualification-approve', '', {disabled: self || !submitted || !q.trustedSubmission}), 'B16');
+  }
   return base;
 };
 R.B17=v=>{const base=screen('检测点管理','维护公开资料、服务范围、支持车型和营业配置。',cardTable('当前获授权检测点',['检测点','地址 / 营业时间','服务车型','状态','承诺名额','操作'],U.store.stations.map(x=>[`<b>${x.name}</b><small>${x.id}</small>`,x.address+'<small>'+x.hours+'</small>','小型载客汽车',tag(x.enabled?'启用':'暂停新预约',x.enabled?'green':'gray'),x.used+' / '+x.total,toolbar(g('编辑','B17-edit','link'),g('停用预览','B17-disable','link'))]),'stations'),g('维护检测点','B17-edit','',{icon:'add'}));if(v.state==='edit')base.overlay=U.drawer('编辑检测点资料',f('检测点名称','station.name',stName(),'text',{required:true})+f('地址','station.address',U.station().address,'text',{required:true})+f('营业时间','station.hours',U.station().hours,'text',{required:true})+f('服务区域','station.area','信宜市已开放服务区域','textarea',{required:true})+f('公开联系电话','station.phone','','text',{placeholder:'请输入经确认的客服电话'})+p('支持的车型',U.store.types.map(x=>c(x.name,'station.type.'+x.code,x.code==='SMALL')).join(''))+U.upload('营业资质文件','station-qualification')+n('车型字典新增后，仍需配置站点服务支持与价格。'),g('取消','B17','secondary')+b('保存资料','station-save'),'B17');if(v.state==='disable')base.overlay=U.drawer('暂停检测点新预约前确认',n('停止接收新预约，不删除已付款订单，不解除在手车辆保管。','warn')+p('影响范围',kv('检测点',stName())+kv('已承诺名额','12')+kv('站内车辆','1')+kv('待上门订单','2')+kv('仍需保留能力','交接、结果、取消返还与必要退款'))+f('停约原因','station.disableReason','','textarea',{required:true})+c('已安排人员处理在手业务','station.disableConfirmed',false),g('取消','B17','secondary')+b('暂停新预约','station-disable','danger',{require:'station.disableConfirmed'}),'B17');return base;};

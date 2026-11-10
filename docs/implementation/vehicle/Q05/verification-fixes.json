@@ -1,0 +1,107 @@
+{
+  "compileAttempts": [
+    {
+      "result": "testCompile失败，新增测试仍在并行撰写时EOF；0业务IT，不计测试通过"
+    },
+    {
+      "result": "testCompile失败，测试helper未声明checked Exception；已修，不改业务断言"
+    }
+  ],
+  "firstAssociated": {
+    "tests": 296,
+    "failures": 30,
+    "errors": 0,
+    "skipped": 0,
+    "suites": [
+      {
+        "suite": "Q05QualificationIT",
+        "tests": 55,
+        "failures": 29,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "Q04VerificationIT",
+        "tests": 58,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "Q01QualificationIT",
+        "tests": 42,
+        "failures": 1,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "Q03TrainingIT",
+        "tests": 56,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "A04DriverIT",
+        "tests": 45,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "I06ScopeIT",
+        "tests": 10,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "F01FileIT",
+        "tests": 30,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    ]
+  },
+  "fixes": [
+    "29项同根因：审核幂等请求含Instant，隔离ViJson无JavaTimeModule；仅将审核9键意图的时刻转UTC文本，不更改共享Mapper",
+    "1项旧Q01角色断言按Q05历史/在手DRIVER入口适配；仍禁止新单且不复活失效资格"
+  ],
+  "finalVerification": "PASS",
+  "postReviewScopeFix": {
+    "problem": "同一申请跨公司补正重提，旧审核历史未逐条按原公司过滤且顶部工作态还保留旧公开驳回信息",
+    "fix": "历史review按每行原公司query范围过滤；新提交清reject_fields/public_review_opinion，历史事实原样保留",
+    "verifiedInExistingTest": true
+  },
+  "associatedFinal": {
+    "tests": 296,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "finalFull": {
+    "integrationTests": 697,
+    "unitTests": 41,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "finalAssertionOnlyFollowup": {
+    "change": "既有自审用例补真实vi_event_log ADMIN主体/action/reason拒绝留痕断言，不增55例、不改生产源码",
+    "sandboxAttempt": {
+      "unitErrors": 5,
+      "businessIntegrationTests": 0,
+      "reason": "JDK Mockito/ByteBuddy本机附加受沙箱限制，不计业务通过或业务失败"
+    },
+    "permittedRerun": {
+      "exitCode": 0,
+      "tests": 55,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "scope": "最终仅增加既有自审拒绝场景的真实审计断言；生产源码与697全量一致",
+      "unitTests": 41
+    }
+  }
+}
