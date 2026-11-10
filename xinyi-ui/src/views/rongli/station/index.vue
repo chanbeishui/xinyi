@@ -39,11 +39,13 @@
             <span>{{ quotaText(row) }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="操作" width="200" fixed="right">
+        <el-table-column label="操作" width="200" fixed="right" align="center">
           <template #default="{ row }">
-            <el-button link type="primary" @click="openEdit(row)">编辑</el-button>
-            <el-button link type="primary" @click="openCapacity(row)">时段容量</el-button>
-            <el-button v-if="row.enabled" link type="danger" @click="openDisable(row)">停用预览</el-button>
+            <div class="rl-ops">
+              <el-button link type="primary" @click="openEdit(row)">编辑</el-button>
+              <el-button link type="primary" @click="openCapacity(row)">时段容量</el-button>
+              <el-button v-if="row.enabled" link type="danger" @click="openDisable(row)">停用预览</el-button>
+            </div>
           </template>
         </el-table-column>
         <template #empty>
@@ -94,7 +96,18 @@
           </p>
         </el-form-item>
         <el-form-item label="地址" required>
-          <el-input v-model="form.address" placeholder="请输入公开地址" />
+          <div class="st-address">
+            <el-input
+              v-model="form.address"
+              placeholder="请输入省、市、区及详细地址，如：广东省茂名市茂南区站前路1号"
+              clearable
+              @keyup.enter="searchAddress"
+            />
+            <el-button type="primary" plain icon="Search" :loading="locating" @click="searchAddress">
+              搜索
+            </el-button>
+          </div>
+          <p class="rl-hint">支持输入省 / 市 / 区及详细地址，点击「搜索」（或回车）会在下方地图定位并打点。</p>
         </el-form-item>
         <el-form-item label="营业时间" required>
           <div class="rl-hours">
@@ -114,15 +127,16 @@
         </el-form-item>
         <el-form-item label="经纬度（用于派单半径判定）">
           <MapPicker
+            ref="mapRef"
             v-model:lng="form.lng"
             v-model:lat="form.lat"
             @update:address="onMapAddress"
           />
-          <div class="rl-hours__range" style="margin-top: 8px">
-            <el-input v-model="form.lng" placeholder="经度 110.925" />
-            <el-input v-model="form.lat" placeholder="纬度 21.663" />
+          <div class="st-coords">
+            <el-input v-model="form.lng" placeholder="经度，如 110.925" />
+            <el-input v-model="form.lat" placeholder="纬度，如 21.663" />
           </div>
-          <p class="rl-hint">在地图上点选即可回填坐标；地址为空时会同时填入逆地理编码结果。</p>
+          <p class="rl-hint">在地图上点选或拖动标记可回填坐标；用上方「搜索」定位后也可在此微调。</p>
         </el-form-item>
         <el-form-item label="服务半径（米）">
           <el-input-number v-model="form.serviceRadiusMeter" :min="500" :step="500" />
@@ -135,8 +149,10 @@
       </el-form>
       <p class="rl-hint">车型字典新增后，仍需配置站点服务支持与价格。</p>
       <template #footer>
-        <el-button @click="formVisible = false">取消</el-button>
-        <el-button type="primary" :loading="saving" @click="submit">保存资料</el-button>
+        <div class="st-footer">
+          <el-button @click="formVisible = false">取消</el-button>
+          <el-button type="primary" :loading="saving" @click="submit">保存资料</el-button>
+        </div>
       </template>
     </el-drawer>
 
@@ -160,10 +176,12 @@
         </el-form-item>
       </el-form>
       <template #footer>
-        <el-button @click="disableVisible = false">取消</el-button>
-        <el-button type="danger" :disabled="!disableConfirmed" :loading="saving" @click="confirmDisable">
-          暂停新预约
-        </el-button>
+        <div class="st-footer">
+          <el-button @click="disableVisible = false">取消</el-button>
+          <el-button type="danger" :disabled="!disableConfirmed" :loading="saving" @click="confirmDisable">
+            暂停新预约
+          </el-button>
+        </div>
       </template>
     </el-drawer>
 
@@ -227,6 +245,8 @@ const query = reactive<any>({ pageNum: 1, pageSize: 10 })
 const capacityMap = reactive<Record<string, any>>({})
 
 const formVisible = ref(false)
+const mapRef = ref<any>(null)
+const locating = ref(false)
 const deptOptions = ref<any[]>([])
 const form = reactive<any>({
   id: '',
@@ -254,6 +274,38 @@ function onMapAddress(address: string) {
   if (!address) return
   if (!form.address || !String(form.address).trim()) {
     form.address = address
+  }
+}
+
+/**
+ * 按地址搜索定位。
+ *
+ * 只把地址交给地图组件解析，不在这里改写输入框内容：运营录入的地址是给车主看的
+ * 规范写法，被逆地理编码的长串地址覆盖反而更难读。
+ */
+async function searchAddress() {
+  const keyword = String(form.address || '').trim()
+  if (!keyword) {
+    ElMessage.warning('请先输入要搜索的地址，再点击「搜索」')
+    return
+  }
+  const picker = mapRef.value
+  if (!picker || typeof picker.locate !== 'function') {
+    ElMessage.warning('地图尚未加载完成，请稍候重试')
+    return
+  }
+  locating.value = true
+  try {
+    const res = await picker.locate(keyword)
+    if (!res || !res.ok) {
+      ElMessage.warning(res?.message || '未能定位到该地址，请补充省 / 市 / 区后重试')
+      return
+    }
+    ElMessage.success(res.message || '已在地图上定位')
+  } catch (e: any) {
+    ElMessage.error(e?.message || '地址搜索失败，请稍后重试')
+  } finally {
+    locating.value = false
   }
 }
 
@@ -480,5 +532,64 @@ async function changeEnabled(row: any, value: any) {
   align-items: center;
   gap: 8px;
   margin-top: 8px;
+}
+
+/* 地址行：输入框吃掉剩余宽度，搜索按钮固定宽度，两者同高 */
+.st-address {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.st-address .el-input {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.st-address :deep(.el-button) {
+  flex: 0 0 auto;
+  height: 32px;
+  padding: 0 16px;
+  font-weight: 500;
+  box-shadow: none;
+}
+
+.st-address :deep(.el-button:hover) {
+  box-shadow: none;
+  transform: none;
+}
+
+/* 经纬度手填：两列等宽，避免一长一短 */
+.st-coords {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  width: 100%;
+  margin-top: 10px;
+}
+
+/* 抽屉底部操作区：间距统一，取消与主操作同高同宽 */
+.st-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.st-footer :deep(.el-button) {
+  height: 32px;
+  min-width: 88px;
+  margin-left: 0;
+  font-weight: 500;
+}
+
+.st-footer :deep(.el-button--primary) {
+  box-shadow: 0 1px 2px rgba(23, 92, 211, 0.18);
+}
+
+.st-footer :deep(.el-button--primary:hover) {
+  box-shadow: 0 2px 8px rgba(23, 92, 211, 0.22);
+  transform: none;
 }
 </style>
