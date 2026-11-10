@@ -70,6 +70,64 @@ defineProps<{ title: string; subtitle?: string }>()
   padding-top: 2px;
 }
 
+/* 间距交给 gap，抵消 Element 默认的 .el-button + .el-button 12px 外边距，
+   否则两个按钮之间会变成 20px，和筛选条、表格里的间距对不上 */
+.rl-page__actions .el-button + .el-button {
+  margin-left: 0;
+}
+
+/* ---------------------------------------------------------------- 按钮 */
+/* link 按钮默认继承 --primary 的外发光（brand.scss 给主按钮加了投影），
+   在表格里会变成一个个浮起的浅蓝小胶囊；同时 12px 的相邻外边距会把
+   「编辑 / 时段容量 / 停用预览」挤到换行。这里统一成 24px 高、6px 圆角的
+   纯文字按钮，间距交给容器 gap。 */
+.rl-page .el-button.is-link {
+  height: 24px;
+  margin-left: 0;
+  padding: 0 6px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  box-shadow: none;
+  transform: none;
+}
+
+.rl-page .el-button.is-link + .el-button.is-link {
+  margin-left: 2px;
+}
+
+.rl-page .el-button.is-link:hover {
+  background: rgba(23, 92, 211, 0.08);
+}
+
+.rl-page .el-button.is-link.el-button--danger:hover {
+  background: rgba(180, 35, 24, 0.08);
+}
+
+.rl-page .el-button.is-link.is-disabled,
+.rl-page .el-button.is-link.is-disabled:hover {
+  background: transparent;
+}
+
+/* 实体按钮：保留品牌蓝，但去掉过重的蓝色光晕，hover 也不再整颗上移 */
+.rl-page .el-button--primary:not(.is-link) {
+  box-shadow: 0 1px 2px rgba(23, 92, 211, 0.18);
+}
+
+.rl-page .el-button--primary:not(.is-link):hover {
+  transform: none;
+  box-shadow: 0 2px 8px rgba(23, 92, 211, 0.22);
+}
+
+/* 表格操作列容器：等距、单行不换行 */
+.rl-ops {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  white-space: nowrap;
+}
+
 /* ---------------------------------------------------------------- 面板 */
 .rl-panel {
   background: #fff;
@@ -403,10 +461,13 @@ defineProps<{ title: string; subtitle?: string }>()
 }
 
 .rl-hint {
+  width: 100%;
   margin: 8px 0 0;
   font-size: 12px;
   line-height: 18px;
-  color: var(--rl-ink-3);
+  /* 用字面色值而非 --rl-ink-3：抽屉/对话框内容会被 teleport 到 body，
+     离开了 .rl-page 就取不到这组变量，提示条会退化成普通深色文字 */
+  color: #667085;
   background: #f9fafb;
   border-radius: 8px;
   padding: 10px 12px;
