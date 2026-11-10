@@ -10,7 +10,7 @@
 
 SQL顺序：既有前置→migration_20261109_03_device_authentication.sql→migration_20261110_qualification_review.sql；同步ry_20260417.sql及包内完整初始化。2改2新表、4稳定菜单，隔离升级/完整初始化一致；执行前备份并暂停提交/审核，DDL不可重复，旧NULL不猜回填。迁移后重启后端，通过统一授权服务明确资格/文件及公司范围，无需手动清Token缓存。vi.jobs.qualification-enabled默认false，正式受控部署启用；未启用任务也不能接过期新单。N01提醒、真实微信/真机及L01/L02/L03继续独立门槛。
 
-中文实现提交、实际SHA及任务标签vehicle-Q05-20261110见VERSIONS.md。本轮仅本地保存，未推送GitHub、部署、修改业务/生产库或操作真实渠道。
+中文实现提交`0eb3d10f78105e61ebc58a07fa9d261382d4d3b7`，任务标签`vehicle-Q05-20261110`包含随后记账提交，见VERSIONS.md。本轮仅本地保存，未推送GitHub、部署、修改业务/生产库或操作真实渠道。
 
 以下为Q04及更早已交付历史恢复点，不替代本节当前状态。
 
