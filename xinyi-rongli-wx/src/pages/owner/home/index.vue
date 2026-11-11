@@ -54,13 +54,11 @@
         <view class="chev"></view>
       </view>
 
-      <view class="slip__row slip__row--tap" hover-class="card-hover" @tap="scrollToStations">
+      <view class="slip__row slip__row--tap" hover-class="card-hover" @tap="openStationSheet">
         <text class="slip__key">检测点</text>
         <view class="slip__val-wrap">
           <text class="slip__val ellipsis">{{ pickedStation ? pickedStation.name : '未选择' }}</text>
-          <text class="slip__sub-inline">
-            {{ pickedStation ? (distanceText(pickedStation) || '在下方列表中更换') : '在下方可服务检测点中选择' }}
-          </text>
+          <text class="slip__sub-inline">{{ stationSubText() }}</text>
         </view>
         <view class="chev"></view>
       </view>
@@ -135,6 +133,35 @@
       <view v-if="!stations.length" class="empty">
         <view class="empty__title">暂无可用检测点</view>
         <view class="empty__hint">检测点由平台按区域授权，稍后刷新或联系客服确认</view>
+      </view>
+    </view>
+
+    <!-- 检测点选择弹层：按距离由近到远，当前选中的打勾 -->
+    <view v-if="stationSheetVisible" class="sheet-mask" @tap="stationSheetVisible = false">
+      <view class="sheet" @tap.stop>
+        <view class="sheet__head">
+          <text class="sheet__title">选择检测点</text>
+          <text class="sheet__sub">按距离由近到远</text>
+        </view>
+        <scroll-view scroll-y class="sheet__list">
+          <view
+            v-for="s in stationList"
+            :key="s.stationId"
+            class="pick"
+            :class="{ 'pick--on': isPicked(s) }"
+            @tap="pickStation(s)"
+          >
+            <view class="pick__main">
+              <text class="pick__name">{{ s.name }}</text>
+              <text class="pick__addr">{{ s.address || '地址待完善' }}</text>
+            </view>
+            <view class="pick__right">
+              <text v-if="distanceText(s)" class="pick__dist">{{ distanceText(s) }}</text>
+              <view class="pick__dot"></view>
+            </view>
+          </view>
+          <view v-if="!stationList.length" class="sheet__empty">暂无可用检测点</view>
+        </scroll-view>
       </view>
     </view>
 
@@ -213,6 +240,8 @@ const pickup = ref<{ mode: 'immediate' | 'custom'; at: string; label: string }>(
   label: '立即上门'
 })
 const sheetVisible = ref(false)
+/** 检测点选择弹层 */
+const stationSheetVisible = ref(false)
 /** 面板内的临时选择：只有点「确定」才写回 pickup，取消不改动 */
 const draftMode = ref<'immediate' | 'custom'>('immediate')
 const draftDate = ref('')
@@ -461,8 +490,24 @@ function confirmPickup() {
   sheetVisible.value = false
 }
 
-function scrollToStations() {
-  uni.pageScrollTo({ selector: '#station-list', duration: 200 })
+/** 点「检测点」那一行：弹层里选，不再靠滚动到底部列表 */
+function openStationSheet() {
+  if (!stationList.value.length) {
+    uni.showToast({ title: '暂无可用检测点', icon: 'none' })
+    return
+  }
+  stationSheetVisible.value = true
+}
+
+function pickStation(s: any) {
+  chooseStation(s)
+  stationSheetVisible.value = false
+}
+
+function stationSubText(): string {
+  if (!pickedStation.value) return '点此选择'
+  const d = distanceText(pickedStation.value)
+  return d ? `${d} · 点此更换` : '点此更换'
 }
 
 function pickVehicle() {
@@ -656,6 +701,75 @@ void session
   justify-content: space-between;
   padding: 20rpx 28rpx;
   border-bottom: 1rpx solid var(--line-2);
+}
+
+/* 检测点选择弹层 */
+.sheet__list {
+  max-height: 56vh;
+}
+
+.pick {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20rpx 28rpx;
+  border-bottom: 1rpx solid var(--line-2);
+}
+
+.pick--on {
+  background: var(--brand-soft);
+}
+
+.pick__main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.pick__name {
+  font-size: 27rpx;
+  font-weight: 500;
+}
+
+.pick--on .pick__name {
+  color: var(--brand);
+}
+
+.pick__addr {
+  margin-top: 4rpx;
+  font-size: 21rpx;
+  color: var(--ink-3);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.pick__right {
+  display: flex;
+  align-items: center;
+  margin-left: 16rpx;
+}
+
+.pick__dist {
+  margin-right: 14rpx;
+  font-size: 22rpx;
+  color: var(--brand);
+  white-space: nowrap;
+}
+
+.pick__dot {
+  width: 30rpx;
+  height: 30rpx;
+  border: 2rpx solid var(--line);
+  border-radius: 50%;
+  box-sizing: border-box;
+}
+
+.pick--on .pick__dot {
+  border-color: var(--brand);
+  background: var(--brand);
+  box-shadow: inset 0 0 0 4rpx #fff;
 }
 
 /* 两种上门模式二选一：默认立即上门，切到预约时间才展开选择器 */
