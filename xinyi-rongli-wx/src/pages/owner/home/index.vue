@@ -1,71 +1,108 @@
 <template>
   <view class="page">
-    <view class="hero">
-      <view class="hero-title">机动车检测预约</view>
-      <view class="hero-desc">上门接车 · 代驾送检 · 结果回传</view>
-      <view class="hero-steps">
-        <view class="step">选车</view>
-        <view class="step-line"></view>
-        <view class="step">选时段</view>
-        <view class="step-line"></view>
-        <view class="step">支付</view>
-        <view class="step-line"></view>
-        <view class="step">上门接车</view>
-      </view>
-    </view>
+    <!-- 墨色抬头：先说清服务，再给出当前进度 -->
+    <view class="ink-panel">
+      <view class="ink-panel__rule"></view>
+      <view class="ink-panel__eyebrow">机动车检测 · 上门代驾</view>
+      <view class="ink-panel__title">预约检车，代驾上门接车</view>
+      <view class="ink-panel__desc">选好车辆和接车地址，代驾按时上门，到站检测、缴费、结果回传都由我们代办。</view>
 
-    <view class="card" @tap="pickVehicle">
-      <view class="row-between">
-        <view>
-          <view class="card-title" style="margin-bottom: 6rpx">选择车辆</view>
-          <view v-if="vehicle" class="muted">{{ vehicle.plateNo }} · {{ vehicle.vehicleTypeName || vehicle.vehicleTypeCode }}</view>
-          <view v-else class="muted">尚未添加车辆，请先添加</view>
+      <view class="steps">
+        <view class="step" :class="{ 'step--done': currentStep > 0, 'step--now': currentStep === 0 }">
+          <text class="step__no">01</text>
+          <text class="step__label">选车</text>
         </view>
-        <view class="tag" :class="vehicle ? '' : 'warn'">{{ vehicle ? '更换' : '添加' }}</view>
-      </view>
-    </view>
-
-    <view class="card" @tap="pickAddress">
-      <view class="row-between">
-        <view style="flex: 1">
-          <view class="card-title" style="margin-bottom: 6rpx">上门接车地址</view>
-          <view v-if="address" class="muted">{{ address.label || '默认地址' }} · {{ address.address }}</view>
-          <view v-else class="muted">请选择或新增接车地址</view>
+        <view class="step__link"></view>
+        <view class="step" :class="{ 'step--done': currentStep > 1, 'step--now': currentStep === 1 }">
+          <text class="step__no">02</text>
+          <text class="step__label">时段</text>
         </view>
-        <view class="tag" :class="address ? '' : 'warn'">{{ address ? '更换' : '填写' }}</view>
-      </view>
-    </view>
-
-    <view class="btn" :class="{ disabled: !canBook }" @tap="startBooking">查询可约时段</view>
-    <view v-if="!canBook" class="muted" style="margin-top: 12rpx; text-align: center">
-      请先选择车辆与上门地址
-    </view>
-
-    <view class="card" style="margin-top: 28rpx">
-      <view class="card-title">我的预约</view>
-      <view class="row-between" @tap="go('/pages/owner/orders/index')">
-        <text class="label">全部预约记录</text>
-        <text class="muted">查看 ›</text>
-      </view>
-      <view class="row-between" @tap="go('/pages/owner/after-sales/list')">
-        <text class="label">售后与退款</text>
-        <text class="muted">查看 ›</text>
-      </view>
-      <view class="row-between" @tap="go('/pages/owner/vehicle/list')">
-        <text class="label">常用车辆与地址</text>
-        <text class="muted">管理 ›</text>
-      </view>
-    </view>
-
-    <view class="card">
-      <view class="card-title">检测点</view>
-      <view v-for="s in stations" :key="s.stationId" class="row-between">
-        <view style="flex: 1">
-          <view class="value" style="text-align: left">{{ s.name }}</view>
-          <view class="muted">{{ s.address || '地址待完善' }}</view>
+        <view class="step__link"></view>
+        <view class="step" :class="{ 'step--done': currentStep > 2, 'step--now': currentStep === 2 }">
+          <text class="step__no">03</text>
+          <text class="step__label">支付</text>
+        </view>
+        <view class="step__link"></view>
+        <view class="step">
+          <text class="step__no">04</text>
+          <text class="step__label">接车</text>
         </view>
       </view>
-      <view v-if="!stations.length" class="muted">暂无可服务检测点</view>
+    </view>
+
+    <!-- 工单首段：车辆与接车地址，缺一项就无法查时段 -->
+    <view class="slip">
+      <view class="slip__head" hover-class="card-hover" @tap="pickVehicle">
+        <view class="slip__main">
+          <text class="eyebrow">车辆</text>
+          <view class="slip__plate">{{ vehicle ? vehicle.plateNo : '未选择' }}</view>
+          <view class="slip__sub">
+            {{ vehicle ? vehicle.vehicleTypeName || vehicle.vehicleTypeCode : '先添加一辆要年检的车' }}
+          </view>
+        </view>
+        <view class="status" :class="vehicle ? 'status--brand' : 'status--warn'">
+          {{ vehicle ? '更换' : '添加' }}
+        </view>
+      </view>
+
+      <view class="slip__row slip__row--tap" hover-class="card-hover" @tap="pickAddress">
+        <text class="slip__key">接车地址</text>
+        <view class="slip__val-wrap">
+          <text class="slip__val ellipsis">{{ address ? address.address : '未填写' }}</text>
+          <text class="slip__sub-inline">{{ address ? address.label || '默认地址' : '点此选择' }}</text>
+        </view>
+        <view class="chev"></view>
+      </view>
+    </view>
+
+    <view class="btn block" :class="{ disabled: !canBook }" hover-class="btn-hover" @tap="startBooking">
+      查询可约时段
+    </view>
+    <view v-if="!canBook" class="form-hint">先选择车辆与接车地址，才能查询时段</view>
+
+    <view class="section-head">
+      <text class="section-head__title">我的预约</text>
+      <text class="section-head__meta">记录 · 售后 · 车辆</text>
+    </view>
+
+    <view class="list">
+      <view class="list-row" hover-class="card-hover" @tap="go('/pages/owner/orders/index')">
+        <text class="list-row__key">全部预约记录</text>
+        <view class="row">
+          <text class="list-row__hint">查看</text>
+          <view class="chev"></view>
+        </view>
+      </view>
+      <view class="list-row" hover-class="card-hover" @tap="go('/pages/owner/after-sales/list')">
+        <text class="list-row__key">售后与退款</text>
+        <view class="row">
+          <text class="list-row__hint">查看</text>
+          <view class="chev"></view>
+        </view>
+      </view>
+      <view class="list-row" hover-class="card-hover" @tap="go('/pages/owner/vehicle/list')">
+        <text class="list-row__key">常用车辆与地址</text>
+        <view class="row">
+          <text class="list-row__hint">管理</text>
+          <view class="chev"></view>
+        </view>
+      </view>
+    </view>
+
+    <view class="section-head">
+      <text class="section-head__title">可服务检测点</text>
+      <text class="section-head__meta">{{ stations.length }} 个</text>
+    </view>
+
+    <view class="list">
+      <view v-for="s in stations" :key="s.stationId" class="station">
+        <view class="station__name">{{ s.name }}</view>
+        <view class="station__addr ellipsis">{{ s.address || '地址待完善' }}</view>
+      </view>
+      <view v-if="!stations.length" class="empty">
+        <view class="empty__title">暂无可用检测点</view>
+        <view class="empty__hint">检测点由平台按区域授权，稍后刷新或联系客服确认</view>
+      </view>
     </view>
 
     <RoleTabBar role="OWNER" active="home" />
@@ -100,6 +137,9 @@ const address = computed(() => {
 })
 
 const canBook = computed(() => !!vehicle.value && !!address.value)
+
+/** 步骤条当前位：0 选车、1 选时段…（本页只走到「选时段」之前） */
+const currentStep = computed(() => (vehicle.value && address.value ? 1 : 0))
 
 onShow(() => {
   load()
@@ -160,50 +200,43 @@ void session
 </script>
 
 <style scoped>
-.hero {
-  background: linear-gradient(135deg, #1f6feb 0%, #3f8bff 100%);
-  border-radius: 28rpx;
-  padding: 36rpx 32rpx 32rpx;
-  color: #fff;
-  margin-bottom: 20rpx;
-}
-
-.hero-title {
-  font-size: 40rpx;
-  font-weight: 600;
-  letter-spacing: 1rpx;
-}
-
-.hero-desc {
-  margin-top: 8rpx;
-  font-size: 25rpx;
-  opacity: 0.9;
-}
-
-.hero-steps {
-  margin-top: 30rpx;
-  display: flex;
-  align-items: center;
-}
-
-.step {
-  font-size: 22rpx;
-  padding: 6rpx 16rpx;
-  border-radius: 20rpx;
-  background: rgba(255, 255, 255, 0.18);
-}
-
-.step-line {
+.slip__main {
   flex: 1;
-  height: 1rpx;
-  background: rgba(255, 255, 255, 0.35);
-  margin: 0 10rpx;
+  min-width: 0;
 }
 
-.btn.disabled {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  opacity: 0.45;
+.slip__val-wrap {
+  flex: 1;
+  min-width: 0;
+  padding-left: 16rpx;
+  text-align: right;
+}
+
+.slip__sub-inline {
+  display: block;
+  margin-top: 4rpx;
+  font-size: 21rpx;
+  color: var(--ink-3);
+}
+
+.station {
+  padding: 20rpx 24rpx;
+  border-bottom: 1rpx solid var(--line-2);
+}
+
+.station:last-child {
+  border-bottom: none;
+}
+
+.station__name {
+  font-size: 28rpx;
+  font-weight: 500;
+  letter-spacing: 0.3rpx;
+}
+
+.station__addr {
+  margin-top: 6rpx;
+  font-size: 23rpx;
+  color: var(--ink-3);
 }
 </style>
