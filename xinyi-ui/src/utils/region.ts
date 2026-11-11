@@ -1,4 +1,4 @@
-import { loadAMap } from './amap'
+import { amapErrorMessage, loadAMap } from './amap'
 
 /**
  * 省 / 市 / 区三级行政区划 + 地址拼接。
@@ -82,8 +82,9 @@ async function fetchTree(): Promise<Region[]> {
     const search = new AMap.DistrictSearch({ level: 'country', subdistrict: 3, extensions: 'base' })
     search.search('中国', (status: string, result: any) => {
       const root = result && result.districtList && result.districtList[0]
-      if (status === 'complete' && root) resolve(root)
-      else reject(new Error('行政区划数据获取失败'))
+      if (status === 'complete' && root) return resolve(root)
+      // 额度用尽 / Key 无效这类错误要原样报出去，别兜成「加载失败」
+      reject(new Error(status === 'error' ? amapErrorMessage(result) : '行政区划数据获取失败'))
     })
   })
 

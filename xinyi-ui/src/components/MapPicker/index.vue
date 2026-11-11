@@ -8,7 +8,10 @@
       未配置地图服务（系统参数 rongli.map.provider / rongli.map.key），请手动填写经纬度。
     </div>
     <template v-else>
-      <div ref="holder" class="map-picker__canvas" :style="{ height }"></div>
+      <div class="map-picker__stage">
+        <div ref="holder" class="map-picker__canvas" :style="{ height }"></div>
+        <div v-if="loadFailed" class="map-picker__mask">{{ error }}</div>
+      </div>
       <div class="map-picker__bar">
         <span class="map-picker__coords">
           {{ coordText }}
@@ -24,7 +27,7 @@
 
 <script setup lang="ts">
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
-import { readAMapConfig, loadAMap } from '@/utils/amap'
+import { amapErrorMessage, readAMapConfig, loadAMap } from '@/utils/amap'
 
 /**
  * 经纬度地图选点 + 服务范围圈。
@@ -58,6 +61,7 @@ const holder = ref<HTMLElement>()
 const error = ref('')
 const tip = ref('点击地图选点，拖动标记微调')
 const configLoaded = ref(false)
+const loadFailed = ref(false)
 const provider = ref('')
 const mapKey = ref('')
 
@@ -238,8 +242,10 @@ async function init() {
   if (!hasKey.value || !holder.value) return
   try {
     await createMap()
+    loadFailed.value = false
   } catch (e: any) {
     error.value = e?.message || '地图加载失败'
+    loadFailed.value = true
   }
 }
 
@@ -265,6 +271,11 @@ function geocodeByKeyword(AMap: any, keyword: string): Promise<GeoPoint | null> 
     try {
       geocoder = geocoder || new AMap.Geocoder({ city: '全国' })
       geocoder.getLocation(keyword, (status: string, result: any) => {
+        if (status === 'error') {
+          // 额度用尽、Key 无效这类服务级错误直接摆到状态条上，由 locate 原样返回给页面
+          error.value = amapErrorMessage(result)
+          return resolve(null)
+        }
         const geo = result && result.geocodes && result.geocodes[0]
         if (status !== 'complete' || !geo || !geo.location) return resolve(null)
         resolve({
@@ -285,6 +296,10 @@ function searchByPlace(AMap: any, keyword: string): Promise<GeoPoint | null> {
     try {
       const search = new AMap.PlaceSearch({ pageSize: 1, pageIndex: 1, citylimit: false })
       search.search(keyword, (status: string, result: any) => {
+        if (status === 'error') {
+          error.value = amapErrorMessage(result)
+          return resolve(null)
+        }
         const poi = result && result.poiList && result.poiList.pois && result.poiList.pois[0]
         if (status !== 'complete' || !poi || !poi.location) return resolve(null)
         resolve({
@@ -322,12 +337,15 @@ async function locate(address: string): Promise<LocateResult> {
       tip.value = '点击地图选点，拖动标记微调'
       return { ok: false, message: '地图尚未就绪，请稍候重试' }
     }
-    const hit =
-      (await withTimeout(geocodeByKeyword(AMap, keyword), 8000)) ||
-      (await withTimeout(searchByPlace(AMap, keyword), 8000))
+    const geocoded = await withTimeout(geocodeByKeyword(AMap, keyword), 8000)
+    // 地理编码是服务级错误（额度/Key）时不再拿 POI 检索重试，否则只会再错一次
+    const hit = geocoded || (error.value ? null : await withTimeout(searchByPlace(AMap, keyword), 8000))
     if (!hit || !Number.isFinite(hit.lng) || !Number.isFinite(hit.lat)) {
       tip.value = '点击地图选点，拖动标记微调'
-      return { ok: false, message: `未能定位到「${keyword}」，请补充省 / 市 / 区或换用更完整的地址` }
+      return {
+        ok: false,
+        message: error.value || `未能定位到「${keyword}」，请补充省 / 市 / 区或换用更完整的地址`
+      }
     }
     marker.setPosition([hit.lng, hit.lat])
     if (circle) {
@@ -399,6 +417,11 @@ defineExpose({ locate })
   min-width: 0;
 }
 
+.map-picker__stage {
+  position: relative;
+  width: 100%;
+}
+
 .map-picker__canvas {
   display: block;
   width: 100%;
@@ -406,6 +429,24 @@ defineExpose({ locate })
   border-radius: 8px;
   overflow: hidden;
   background: #f2f4f7;
+}
+
+/* 地图彻底起不来（Key 无效、域名未白名单、额度用尽）时，把原因铺在画布上，
+   不要只留一行小字——这种错误运营自己解决不了，必须一眼能看见该找谁 */
+.map-picker__mask {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 18px 20px;
+  border: 1px solid #fecdca;
+  border-radius: 8px;
+  background: #fef3f2;
+  color: #b42318;
+  font-size: 12.5px;
+  line-height: 20px;
+  text-align: center;
 }
 
 .map-picker__bar {
