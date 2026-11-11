@@ -109,6 +109,8 @@ const availability = ref<any>({})
 const current = ref<any>(null)
 const invites = ref<any[]>([])
 const agreed = ref(false)
+/** 授权被拒只提示一次，避免每次 onShow 都弹设置引导 */
+let locationPrompted = false
 
 const listening = computed(() => !!availability.value.listeningEnabled)
 const canReceive = computed(() => !!availability.value.canReceiveInvite)
@@ -141,6 +143,10 @@ const locationText = computed(() =>
 )
 
 onShow(() => {
+  // 一进代驾首页就上报定位：首次会弹授权框。
+  // 派单本身不看定位（只看听单与接单开关），但接车距离、到站时间都依赖它，
+  // 所以这里主动要权限，而不是等用户去点「刷新定位」。
+  ensureLocation()
   load()
 })
 
@@ -180,6 +186,41 @@ async function toggleListening(e: any) {
 
 function refreshLocation() {
   reportLocation().then(() => load())
+}
+
+/** 进页面自动上报：拿不到不打断使用，但授权被拒时明确引导去设置里打开 */
+function ensureLocation(): Promise<void> {
+  return new Promise((resolve) => {
+    uni.getLocation({
+      type: 'gcj02',
+      success: async (res) => {
+        try {
+          await driverApi.reportLocation(res.longitude, res.latitude)
+        } catch (e) {
+          // 上报失败不影响听单
+        }
+        resolve()
+      },
+      fail: (err: any) => {
+        const msg = String((err && err.errMsg) || '')
+        const denied = msg.indexOf('auth deny') >= 0 || msg.indexOf('auth denied') >= 0
+          || msg.indexOf('authorize') >= 0 || msg.indexOf('privacy') >= 0
+        // 只在第一次拒绝时弹窗，避免每次切页面都打扰
+        if (denied && !locationPrompted) {
+          locationPrompted = true
+          uni.showModal({
+            title: '需要位置权限',
+            content: '接单要计算接车距离和到站时间，请在设置中允许「位置信息」',
+            confirmText: '去设置',
+            success: (r) => {
+              if (r.confirm) uni.openSetting({})
+            }
+          })
+        }
+        resolve()
+      }
+    })
+  })
 }
 
 function reportLocation(): Promise<void> {

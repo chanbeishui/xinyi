@@ -54,7 +54,15 @@
         "setting" : {
             "urlCheck" : false
         },
-        "usingComponents" : true
+        "usingComponents" : true,
+        /* 微信要求：用到 wx.getLocation 必须在这里声明，否则真机直接 fail，
+           体验版/正式版都一样；开发者工具会放行，所以极易漏到真机才发现 */
+        "requiredPrivateInfos" : [ "getLocation" ],
+        "permission" : {
+            "scope.userLocation" : {
+                "desc" : "用于计算接车距离与就近派单"
+            }
+        }
     },
     "mp-alipay" : {
         "usingComponents" : true
