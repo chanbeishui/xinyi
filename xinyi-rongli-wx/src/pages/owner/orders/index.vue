@@ -1,12 +1,13 @@
 <template>
   <view class="page">
-    <scroll-view scroll-x class="filters">
-      <view class="filter-row">
+    <scroll-view scroll-x class="filters" :show-scrollbar="false">
+      <view class="chip-row">
         <view
           v-for="f in filters"
           :key="f.value"
-          class="chip"
+          class="chip chip-row__item"
           :class="{ on: status === f.value }"
+          hover-class="btn-hover"
           @tap="switchStatus(f.value)"
         >
           {{ f.label }}
@@ -14,27 +15,52 @@
       </view>
     </scroll-view>
 
-    <view v-for="o in orders" :key="o.orderNo" class="card" @tap="open(o)">
-      <view class="row-between">
-        <view>
-          <view class="plate">{{ o.plateNo }}</view>
-          <view class="muted" style="margin-top: 4rpx">{{ o.vehicleTypeName }} · {{ o.stationName }}</view>
-        </view>
-        <view class="tag" :class="statusClass(o.fulfillmentStatus)">{{ o.fulfillmentStatusLabel }}</view>
+    <template v-if="loading">
+      <view v-for="n in 3" :key="n" class="slip skeleton-card">
+        <view class="skeleton" style="width: 44%; height: 34rpx"></view>
+        <view class="skeleton" style="width: 66%; height: 24rpx; margin-top: 16rpx"></view>
+        <view class="skeleton" style="width: 100%; height: 1rpx; margin-top: 24rpx"></view>
+        <view class="skeleton" style="width: 52%; height: 24rpx; margin-top: 24rpx"></view>
       </view>
-      <view class="divider"></view>
-      <view class="row-between">
-        <text class="muted">上门 {{ windowLabel(o.pickupStartsAt) }}</text>
-        <text class="price" style="font-size: 30rpx">¥{{ o.totalYuan }}</text>
-      </view>
-      <view class="row-between">
-        <text class="muted">订单号 {{ o.orderNo }}</text>
-        <text class="muted">{{ shortTime(o.createdAt) }}</text>
-      </view>
-    </view>
+    </template>
 
-    <view v-if="!orders.length && !loading" class="empty">暂无预约记录</view>
-    <view v-if="loading" class="empty">加载中…</view>
+    <template v-else>
+      <view
+        v-for="o in orders"
+        :key="o.orderNo"
+        class="slip"
+        hover-class="card-hover"
+        @tap="open(o)"
+      >
+        <view class="slip__head">
+          <view class="slip__main">
+            <view class="slip__plate">{{ o.plateNo }}</view>
+            <view class="slip__sub ellipsis">{{ o.vehicleTypeName }} · {{ o.stationName }}</view>
+          </view>
+          <view class="status" :class="statusStyle(o.fulfillmentStatus)">
+            {{ o.fulfillmentStatusLabel }}
+          </view>
+        </view>
+
+        <view class="slip__row">
+          <text class="slip__key">上门时段</text>
+          <text class="slip__val">{{ windowLabel(o.pickupStartsAt) }}</text>
+        </view>
+
+        <view class="slip__foot">
+          <text class="slip__no">{{ o.orderNo }} · {{ shortTime(o.createdAt) }}</text>
+          <text class="price"><text class="price__unit">¥</text>{{ o.totalYuan }}</text>
+        </view>
+      </view>
+    </template>
+
+    <view v-if="!loading && !orders.length" class="empty">
+      <view class="empty__title">暂无预约记录</view>
+      <view class="empty__hint">
+        {{ status ? '这个状态下还没有订单，换个筛选看看' : '下单后这里会显示进度、交接码与检测结果' }}
+      </view>
+      <view v-if="!status" class="empty__action" hover-class="btn-hover" @tap="goBooking">去预约</view>
+    </view>
 
     <RoleTabBar role="OWNER" active="orders" />
   </view>
@@ -86,49 +112,35 @@ function switchStatus(value: string) {
   load()
 }
 
-function statusClass(s: string) {
-  if (s === 'COMPLETED') return 'ok'
-  if (s === 'CANCELLED' || s === 'CLOSED') return 'gray'
-  if (s === 'PENDING_PAY') return 'warn'
-  return ''
+function statusStyle(s: string) {
+  if (s === 'COMPLETED') return 'status--ok'
+  if (s === 'CANCELLED' || s === 'CLOSED') return 'status--gray'
+  if (s === 'PENDING_PAY') return 'status--warn'
+  return 'status--brand'
 }
 
 function open(o: any) {
   uni.navigateTo({ url: `/pages/owner/order/detail?orderNo=${o.orderNo}` })
+}
+
+function goBooking() {
+  uni.navigateTo({ url: '/pages/owner/home/index' })
 }
 </script>
 
 <style scoped>
 .filters {
   white-space: nowrap;
-  margin-bottom: 16rpx;
+  margin-bottom: 8rpx;
 }
 
-.filter-row {
-  display: flex;
-  gap: 14rpx;
-  padding: 4rpx 2rpx 8rpx;
+.slip__main {
+  flex: 1;
+  min-width: 0;
+  padding-right: 16rpx;
 }
 
-.chip {
-  flex-shrink: 0;
-  padding: 12rpx 26rpx;
-  border-radius: 30rpx;
-  background: #fff;
-  color: var(--sub);
-  font-size: 25rpx;
-  border: 1rpx solid var(--line);
-}
-
-.chip.on {
-  background: var(--brand);
-  color: #fff;
-  border-color: var(--brand);
-}
-
-.plate {
-  font-size: 32rpx;
-  font-weight: 600;
-  letter-spacing: 1rpx;
+.skeleton-card {
+  padding: 24rpx;
 }
 </style>
