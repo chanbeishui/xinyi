@@ -1,17 +1,18 @@
 <template>
   <view class="page">
-    <view v-if="order" class="hero">
-      <view class="hero-title">{{ order.fulfillmentStatusLabel }}</view>
-      <view class="hero-sub">{{ order.plateNo }} · {{ order.vehicleTypeName }}</view>
-      <view class="hero-window">上门 {{ windowLabel(order.pickupStartsAt) }}</view>
+    <view v-if="order" class="ink-panel">
+      <view class="ink-panel__rule"></view>
+      <view class="ink-panel__eyebrow">工单 {{ order.orderNo }}</view>
+      <view class="ink-panel__title">{{ order.fulfillmentStatusLabel }}</view>
+      <view class="ink-panel__desc">上门 {{ windowLabel(order.pickupStartsAt) }}</view>
+      <view class="ink-panel__foot">
+        <text class="hero__plate num">{{ order.plateNo }}</text>
+        <text class="hero__type">{{ order.vehicleTypeName }}</text>
+      </view>
     </view>
 
     <view v-if="order" class="card">
       <view class="card-title">订单信息</view>
-      <view class="row-between">
-        <text class="label">订单号</text>
-        <text class="value">{{ order.orderNo }}</text>
-      </view>
       <view class="row-between">
         <text class="label">车主</text>
         <text class="value">{{ order.ownerName || order.contactName || '-' }}</text>
@@ -26,7 +27,7 @@
       </view>
       <view class="row-between">
         <text class="label">证件核对</text>
-        <text class="tag" :class="order.licenseStatus === 'VERIFIED' ? 'ok' : 'warn'">{{ order.licenseStatus }}</text>
+        <text class="status" :class="order.licenseStatus === 'VERIFIED' ? 'status--ok' : 'status--warn'">{{ order.licenseStatus }}</text>
       </view>
     </view>
 
@@ -37,7 +38,7 @@
           <view class="value" style="text-align: left">{{ actionLabel(a) }}</view>
           <view class="muted">{{ actionHint(a) }}</view>
         </view>
-        <view class="btn small" @tap="runAction(a)">{{ actionButton(a) }}</view>
+        <view class="btn small action-btn" hover-class="btn-hover" @tap="runAction(a)">{{ actionButton(a) }}</view>
       </view>
     </view>
 
@@ -58,11 +59,11 @@
       </view>
       <view class="field">
         <view class="field-label">行驶证照片</view>
-        <view class="row" style="gap: 16rpx; margin-top: 8rpx">
-          <view class="btn ghost small" @tap="pickLicensePhoto('main')">
+        <view class="btn-row">
+          <view class="btn ghost small btn-row__item" hover-class="btn-hover" @tap="pickLicensePhoto('main')">
             {{ mainFileId ? '重拍正页' : '拍摄正页' }}
           </view>
-          <view class="btn ghost small" @tap="pickLicensePhoto('sub')">
+          <view class="btn ghost small btn-row__item" hover-class="btn-hover" @tap="pickLicensePhoto('sub')">
             {{ subFileId ? '重拍副页' : '拍摄副页' }}
           </view>
         </view>
@@ -70,11 +71,11 @@
           正页 {{ mainFileId ? '已上传' : '未上传' }} · 副页 {{ subFileId ? '已上传' : '未上传' }}
         </view>
       </view>
-      <view class="row" style="margin-top: 12rpx">
-        <text class="label">已核对无误</text>
+      <view class="switch-row">
+        <text class="switch-row__label">已核对无误</text>
         <switch :checked="licenseForm.verified" @change="(e:any) => (licenseForm.verified = e.detail.value)" />
       </view>
-      <view class="btn ghost" style="margin-top: 18rpx" @tap="saveLicense">保存核对结果</view>
+      <view class="btn ghost block btn-gap" hover-class="btn-hover" @tap="saveLicense">保存核对结果</view>
     </view>
 
     <!-- 结果登记 -->
@@ -82,14 +83,17 @@
       <view class="card-title">检测结果</view>
       <view v-if="result" class="row-between">
         <text class="label">当前结论</text>
-        <text class="tag" :class="result.conclusion === 'PASS' ? 'ok' : 'danger'">
+        <text class="status" :class="result.conclusion === 'PASS' ? 'status--ok' : 'status--danger'">
           {{ result.conclusionLabel || result.conclusion }}
         </text>
       </view>
       <view class="field">
         <view class="field-label">检测结论</view>
         <picker mode="selector" :range="conclusions" :value="resultIndex" @change="onConclusionChange">
-          <view class="input picker">{{ conclusions[resultIndex] }}</view>
+          <view class="input picker">
+            <text class="picker__text">{{ conclusions[resultIndex] }}</text>
+            <view class="chev"></view>
+          </view>
         </picker>
       </view>
       <view class="field">
@@ -98,8 +102,8 @@
         <textarea v-model="resultForm.items" class="textarea" placeholder="例如 制动:合格,灯光:合格" />
         <view class="muted" style="margin-top: 8rpx">需填 JSON 对象，键和值都要加双引号，如 {"制动":"合格"}</view>
       </view>
-      <view class="btn ghost" style="margin-top: 16rpx" @tap="submitResult">提交检测结果</view>
-      <view class="btn gray" style="margin-top: 12rpx" @tap="notifyPickup">通知取车</view>
+      <view class="btn ghost block btn-gap" hover-class="btn-hover" @tap="submitResult">提交检测结果</view>
+      <view class="btn gray block btn-gap-sm" hover-class="btn-hover" @tap="notifyPickup">通知取车</view>
     </view>
 
     <!-- 交接 -->
@@ -107,16 +111,16 @@
       <view class="card-title">{{ handover.handoverTypeLabel }}</view>
       <view class="row-between">
         <text class="label">状态</text>
-        <text class="tag" :class="handover.status === 'CONFIRMED' ? 'ok' : 'warn'">{{ handover.statusLabel }}</text>
+        <text class="status" :class="handover.status === 'CONFIRMED' ? 'status--ok' : 'status--warn'">{{ handover.statusLabel }}</text>
       </view>
       <view v-if="handover.actionHint" class="muted" style="margin-top: 12rpx">{{ handover.actionHint }}</view>
       <view v-if="code" class="code-box">
         <view class="code">{{ code.code }}</view>
         <view class="muted">{{ code.displayHint }}</view>
       </view>
-      <view class="row" style="gap: 16rpx; margin-top: 18rpx">
-        <view v-if="handover.canViewCode" class="btn ghost small" @tap="loadCode">查看交接码</view>
-        <view v-if="handover.canConfirm" class="btn small" @tap="showConfirm = true">核验交接码</view>
+      <view class="btn-row">
+        <view v-if="handover.canViewCode" class="btn ghost small btn-row__item" hover-class="btn-hover" @tap="loadCode">查看交接码</view>
+        <view v-if="handover.canConfirm" class="btn small btn-row__item" hover-class="btn-hover" @tap="showConfirm = true">核验交接码</view>
       </view>
     </view>
 
@@ -126,15 +130,18 @@
         <view class="field-label">异常说明</view>
         <textarea v-model="exceptionDesc" class="textarea" placeholder="如证件不符、车辆异常等" />
       </view>
-      <view class="btn ghost" style="margin-top: 16rpx" @tap="reportException">提交异常</view>
+      <view class="btn ghost block btn-gap" hover-class="btn-hover" @tap="reportException">提交异常</view>
     </view>
 
     <view v-if="showConfirm" class="mask" @tap="showConfirm = false">
       <view class="sheet" @tap.stop>
-        <view class="card-title">核验交接码</view>
-        <view class="muted">请输入代驾出示的 4 位交接码。</view>
-        <input v-model="confirmCode" class="input" type="number" maxlength="4" placeholder="4 位数字" style="margin-top: 20rpx" />
-        <view class="btn" style="margin-top: 24rpx" @tap="submitConfirm">确认收车</view>
+        <view class="sheet__head">
+          <text class="sheet__title">核验交接码</text>
+          <text class="sheet__close" @tap="showConfirm = false">关闭</text>
+        </view>
+        <view class="muted sheet__desc">请输入代驾出示的 4 位交接码。</view>
+        <input v-model="confirmCode" class="input code-input num" type="number" maxlength="4" placeholder="0000" />
+        <view class="btn block btn-gap" hover-class="btn-hover" @tap="submitConfirm">确认收车</view>
       </view>
     </view>
   </view>
@@ -413,29 +420,17 @@ async function reportException() {
 </script>
 
 <style scoped>
-.hero {
-  background: linear-gradient(135deg, #1f6feb 0%, #3f8bff 100%);
-  border-radius: 28rpx;
-  padding: 32rpx;
-  color: #fff;
-  margin-bottom: 20rpx;
-}
-
-.hero-title {
-  font-size: 36rpx;
+.hero__plate {
+  font-size: 34rpx;
   font-weight: 600;
+  letter-spacing: 3rpx;
+  color: #fff;
 }
 
-.hero-sub {
-  margin-top: 8rpx;
-  font-size: 25rpx;
-  opacity: 0.9;
-}
-
-.hero-window {
-  margin-top: 10rpx;
-  font-size: 23rpx;
-  opacity: 0.85;
+.hero__type {
+  font-size: 22rpx;
+  letter-spacing: 1rpx;
+  color: rgba(255, 255, 255, 0.55);
 }
 
 .action-row {
@@ -443,8 +438,7 @@ async function reportException() {
   align-items: center;
   justify-content: space-between;
   padding: 18rpx 0;
-  border-bottom: 1rpx solid var(--line);
-  gap: 20rpx;
+  border-bottom: 1rpx solid var(--line-2);
 }
 
 .action-row:last-child {
@@ -453,40 +447,88 @@ async function reportException() {
 
 .action-main {
   flex: 1;
+  min-width: 0;
+  padding-right: 20rpx;
+}
+
+.action-btn {
+  flex: 0 0 auto;
 }
 
 .picker {
   display: flex;
   align-items: center;
+  justify-content: space-between;
+  line-height: 78rpx;
 }
 
+.picker__text {
+  font-size: 28rpx;
+  color: var(--ink);
+}
+
+/* 交接码：盖章式，交接双方隔着屏幕也能读准 */
 .code-box {
   margin-top: 18rpx;
-  background: var(--brand-soft);
-  border-radius: 16rpx;
-  padding: 22rpx;
+  padding: 22rpx 0;
   text-align: center;
+  background: #f6f8fb;
+  border: 1rpx dashed #c9d4e4;
+  border-radius: 14rpx;
 }
 
 .code {
-  font-size: 60rpx;
+  font-size: 68rpx;
   font-weight: 700;
-  letter-spacing: 12rpx;
+  line-height: 1.2;
+  letter-spacing: 16rpx;
+  padding-left: 16rpx;
   color: var(--brand);
 }
 
-.mask {
-  position: fixed;
-  inset: 0;
-  background: rgba(17, 24, 39, 0.45);
+.btn-row {
   display: flex;
-  align-items: flex-end;
+  margin-top: 18rpx;
 }
 
-.sheet {
-  width: 100%;
-  background: #fff;
-  border-radius: 28rpx 28rpx 0 0;
-  padding: 32rpx 28rpx calc(32rpx + env(safe-area-inset-bottom));
+.btn-row__item {
+  flex: 1;
+}
+
+.btn-row__item + .btn-row__item {
+  margin-left: 16rpx;
+}
+
+.switch-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18rpx 0;
+  border-bottom: 1rpx solid var(--line-2);
+}
+
+.switch-row__label {
+  font-size: 26rpx;
+  color: var(--ink-2);
+}
+
+.btn-gap {
+  margin-top: 18rpx;
+}
+
+.btn-gap-sm {
+  margin-top: 12rpx;
+}
+
+.sheet__desc {
+  margin: 14rpx 0 4rpx;
+}
+
+.code-input {
+  height: 104rpx;
+  margin-top: 16rpx;
+  text-align: center;
+  font-size: 44rpx;
+  letter-spacing: 16rpx;
 }
 </style>
