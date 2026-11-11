@@ -138,35 +138,35 @@
       </view>
     </view>
 
-    <!-- 上门接车时间：只列所选检测点营业时间内仍可约的班次 -->
+    <!-- 上门接车时间：可自由选到具体某天某时，范围限制在检测点营业时间内 -->
     <view v-if="sheetVisible" class="sheet-mask" @tap="sheetVisible = false">
       <view class="sheet" @tap.stop>
         <view class="sheet__head">
           <text class="sheet__title">上门接车时间</text>
           <text class="sheet__sub">{{ pickedStation ? pickedStation.name : '' }}</text>
         </view>
-        <scroll-view scroll-y class="sheet__body">
+        <view class="sheet__body">
           <view class="sheet__item" :class="{ 'sheet__item--on': pickup.mode === 'immediate' }" @tap="pickImmediate">
             <text>立即上门</text>
-            <text class="sheet__meta">尽量 30 分钟内到达</text>
+            <text class="sheet__meta">30 分钟内到达</text>
           </view>
-          <view v-for="g in slotGroups" :key="g.date">
-            <view class="sheet__day">{{ g.dateLabel }}</view>
-            <view
-              v-for="s in g.items"
-              :key="s.slotId"
-              class="sheet__item"
-              :class="{ 'sheet__item--on': pickup.slotId === String(s.slotId) }"
-              @tap="pickSlot(s)"
-            >
-              <text>{{ timeText(s.startsAt) }} - {{ timeText(s.endsAt) }}</text>
-              <text class="sheet__meta">剩 {{ s.remaining }} 个</text>
-            </view>
+
+          <view class="sheet__field">
+            <text class="sheet__label">日期</text>
+            <picker mode="date" :value="draftDate" :start="minDate" :end="maxDate" @change="onDateChange">
+              <view class="sheet__picker">{{ draftDate }}</view>
+            </picker>
           </view>
-          <view v-if="!slotGroups.length" class="sheet__empty">
-            该检测点营业时间内暂无可约时段，可先选「立即上门」
+          <view class="sheet__field">
+            <text class="sheet__label">时间</text>
+            <picker mode="time" :value="draftTime" :start="timeStart" :end="timeEnd" @change="onTimeChange">
+              <view class="sheet__picker">{{ draftTime }}</view>
+            </picker>
           </view>
-        </scroll-view>
+          <view class="sheet__tip">可选 {{ timeStart }} - {{ timeEnd }}，限定在该检测点营业时间内</view>
+
+          <view class="btn block" hover-class="btn-hover" @tap="confirmCustom">确定</view>
+        </view>
       </view>
     </view>
 
@@ -180,7 +180,6 @@ import { onShow } from '@dcloudio/uni-app'
 import { commonApi, ownerApi } from '@/api'
 import RoleTabBar from '@/components/RoleTabBar.vue'
 import { session } from '@/store/session'
-import { toDate } from '@/utils/format'
 
 const vehicles = ref<any[]>([])
 const addresses = ref<any[]>([])
@@ -194,14 +193,15 @@ const myLng = ref(0)
 const myLat = ref(0)
 const located = ref(false)
 
-/** 上门接车时间：默认立即上门，改选后落到具体班次 */
-const pickup = ref<{ mode: 'immediate' | 'slot'; slotId: string; label: string }>({
+/** 上门接车时间：默认立即上门，也可自由选到具体某天某时（限检测点营业时间内） */
+const pickup = ref<{ mode: 'immediate' | 'custom'; at: string; label: string }>({
   mode: 'immediate',
-  slotId: '',
+  at: '',
   label: '立即上门'
 })
-const slots = ref<any[]>([])
 const sheetVisible = ref(false)
+const draftDate = ref('')
+const draftTime = ref('')
 
 const vehicle = computed(() => {
   if (pickedVehicleId.value) {
@@ -257,57 +257,78 @@ function isPicked(s: any): boolean {
   return !!pickedStationId.value && String(pickedStationId.value) === String(s.stationId)
 }
 
-/** 该检测点在指定时间的营业时间判断；weekdays 用 1=周一…7=周日 */
-function inBusinessHours(station: any, iso: string): boolean {
+/** 该检测点在指定时刻是否营业；weekdays 用 1=周一…7=周日 */
+function inBusinessHours(station: any, when: Date): boolean {
   const hours = station && station.businessHours ? station.businessHours : null
   if (!hours || hours.startHour === undefined || hours.endHour === undefined) return true
-  const d = toDate(iso)
-  if (!d) return true
-  const weekday = d.getDay() === 0 ? 7 : d.getDay()
+  const weekday = when.getDay() === 0 ? 7 : when.getDay()
   const days: number[] = Array.isArray(hours.weekdays) ? hours.weekdays : []
   if (days.length && !days.includes(weekday)) return false
-  const hour = d.getHours()
+  const hour = when.getHours()
   return hour >= Number(hours.startHour) && hour < Number(hours.endHour)
 }
 
-/** 弹层里可选的上门时间：只保留营业时间内、仍可预约且不早于 30 分钟后的班次 */
-const slotGroups = computed(() => {
+function pad2(n: number): string {
+  return String(n).padStart(2, '0')
+}
+
+function formatDate(d: Date): string {
+  return `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())}`
+}
+
+function formatAt(d: Date): string {
+  return `${formatDate(d)} ${pad2(d.getHours())}:${pad2(d.getMinutes())}`
+}
+
+/** 按本地时间解析 "yyyy-MM-dd HH:mm"；不要用 toDate，它会给无时区串补 Z 变成 UTC */
+function parseAt(text: string): Date | null {
+  const m = /^(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2})$/.exec(text || '')
+  if (!m) return null
+  return new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]), Number(m[4]), Number(m[5]))
+}
+
+const todayBase = new Date()
+const minDate = formatDate(todayBase)
+const maxDate = formatDate(new Date(todayBase.getTime() + 30 * 86400000))
+
+const businessRange = computed(() => {
+  const hours = pickedStation.value && pickedStation.value.businessHours
+  const start = hours && hours.startHour !== undefined ? Number(hours.startHour) : 0
+  const end = hours && hours.endHour !== undefined ? Number(hours.endHour) : 24
+  return { start, end }
+})
+
+/** 时间选择器范围：结束取营业结束前一分钟的 59 分，避免选到打烊整点被判越界 */
+const timeStart = computed(() => `${pad2(businessRange.value.start)}:00`)
+const timeEnd = computed(() => `${pad2(Math.max(businessRange.value.start, businessRange.value.end - 1))}:59`)
+
+/** 立即上门：30 分钟后，向上取整到 5 分钟 */
+function immediateAt(): string {
+  const d = new Date(Date.now() + 30 * 60000)
+  d.setSeconds(0, 0)
+  const m = d.getMinutes()
+  d.setMinutes(m + ((5 - (m % 5)) % 5))
+  return formatAt(d)
+}
+
+/** 当前时间选择是否可用：立即上门要落在营业时间内，自定义要求时间合法且不早于 30 分钟后 */
+const pickupReady = computed(() => {
   const station = pickedStation.value
-  if (!station) return []
-  const map = new Map<string, any[]>()
-  for (const s of slots.value) {
-    if (!s.selectable || !inBusinessHours(station, s.startsAt)) continue
-    const d = toDate(s.startsAt)
-    if (!d) continue
-    const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
-    if (!map.has(key)) map.set(key, [])
-    map.get(key)!.push(s)
-  }
-  const week = ['周日', '周一', '周二', '周三', '周四', '周五', '周六']
-  return Array.from(map.entries()).map(([date, items]) => {
-    const d = toDate(items[0].startsAt)
-    return { date, dateLabel: d ? `${date} ${week[d.getDay()]}` : date, items }
-  })
+  if (!station) return false
+  const d = parseAt(pickup.value.mode === 'custom' ? pickup.value.at : immediateAt())
+  if (!d) return false
+  if (d.getTime() < Date.now() + 30 * 60000) return false
+  return inBusinessHours(station, d)
 })
 
-/** 立即上门取最近的可用班次；没有可约班次时返回空 */
-const nearestSlot = computed(() => {
-  // 不用 flatMap：部分小程序基础库没有该方法，用 reduce 拼接最稳
-  const flat = slotGroups.value.reduce((acc: any[], g: any) => acc.concat(g.items), [])
-  return flat.length ? flat[0] : null
-})
-
-const canBook = computed(
-  () => !!vehicle.value && !!address.value && !!pickedStation.value && (pickup.value.mode === 'slot' ? !!pickup.value.slotId : !!nearestSlot.value)
-)
+const canBook = computed(() => !!vehicle.value && !!address.value && !!pickedStation.value && pickupReady.value)
 
 /** 按钮下方的缺项提示，按顺序只提示第一个没填的 */
 const bookHint = computed(() => {
   if (!vehicle.value) return '请先选择车辆'
   if (!address.value) return '请先填写接车地址'
   if (!pickedStation.value) return '请选择检测点'
-  if (pickup.value.mode === 'slot' && !pickup.value.slotId) return '请选择上门接车时间'
-  if (pickup.value.mode === 'immediate' && !nearestSlot.value) return '该检测点当前没有可预约时段'
+  if (!pickupReady.value) return '所选时间不在该检测点营业时间内'
   return ''
 })
 
@@ -320,16 +341,10 @@ onShow(() => {
 
 async function load() {
   try {
-    const [v, a, s, sl] = await Promise.all([
-      ownerApi.vehicles(),
-      ownerApi.addresses(),
-      commonApi.stations(),
-      ownerApi.slots().catch(() => [])
-    ])
+    const [v, a, s] = await Promise.all([ownerApi.vehicles(), ownerApi.addresses(), commonApi.stations()])
     vehicles.value = (v as any) || []
     addresses.value = (a as any) || []
     stations.value = (s as any) || []
-    slots.value = (sl as any) || []
   } catch (e) {
     // 请求层已提示
   }
@@ -359,11 +374,10 @@ function locateOnce() {
 }
 
 function chooseStation(s: any) {
+  if (pickedStationId.value === String(s.stationId)) return
   pickedStationId.value = String(s.stationId)
-  // 换了检测点，原来选的时间可能不在它营业时间内，回到默认值重新选
-  if (pickup.value.mode === 'slot') {
-    pickup.value = { mode: 'immediate', slotId: '', label: '立即上门' }
-  }
+  // 换了检测点营业时间就变了，原来选的时间可能不再合法，统一回到默认值
+  pickup.value = { mode: 'immediate', at: '', label: '立即上门' }
 }
 
 function openPickupSheet() {
@@ -371,35 +385,47 @@ function openPickupSheet() {
     uni.showToast({ title: '请先选择检测点', icon: 'none' })
     return
   }
+  const base = pickup.value.mode === 'custom' && pickup.value.at ? pickup.value.at : immediateAt()
+  const d = parseAt(base) || new Date()
+  draftDate.value = formatDate(d)
+  draftTime.value = `${pad2(d.getHours())}:${pad2(d.getMinutes())}`
   sheetVisible.value = true
 }
 
-function timeText(iso: string): string {
-  const d = toDate(iso)
-  if (!d) return ''
-  return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`
+function onDateChange(e: any) {
+  draftDate.value = e.detail.value
+}
+
+function onTimeChange(e: any) {
+  draftTime.value = e.detail.value
+}
+
+function pickImmediate() {
+  pickup.value = { mode: 'immediate', at: '', label: '立即上门' }
+  sheetVisible.value = false
+}
+
+function confirmCustom() {
+  const at = `${draftDate.value} ${draftTime.value}`
+  const d = parseAt(at)
+  if (!d) {
+    uni.showToast({ title: '时间格式不正确', icon: 'none' })
+    return
+  }
+  if (d.getTime() < Date.now() + 30 * 60000) {
+    uni.showToast({ title: '请选择 30 分钟之后的时间', icon: 'none' })
+    return
+  }
+  if (!inBusinessHours(pickedStation.value, d)) {
+    uni.showToast({ title: `营业时间 ${timeStart.value}-${timeEnd.value}，请重新选择`, icon: 'none' })
+    return
+  }
+  pickup.value = { mode: 'custom', at, label: at }
+  sheetVisible.value = false
 }
 
 function scrollToStations() {
   uni.pageScrollTo({ selector: '#station-list', duration: 200 })
-}
-
-function pickImmediate() {
-  pickup.value = { mode: 'immediate', slotId: '', label: '立即上门' }
-  sheetVisible.value = false
-}
-
-function pickSlot(s: any) {
-  const d = toDate(s.startsAt)
-  const e = toDate(s.endsAt)
-  const fmt = (x: Date | null) =>
-    x ? `${String(x.getMonth() + 1).padStart(2, '0')}-${String(x.getDate()).padStart(2, '0')} ${String(x.getHours()).padStart(2, '0')}:${String(x.getMinutes()).padStart(2, '0')}` : ''
-  pickup.value = {
-    mode: 'slot',
-    slotId: String(s.slotId),
-    label: `${fmt(d)} - ${fmt(e).slice(-5)}`
-  }
-  sheetVisible.value = false
 }
 
 function pickVehicle() {
@@ -433,14 +459,10 @@ function pickAddress() {
 
 function startBooking() {
   if (!canBook.value) return
-  const slotId = pickup.value.mode === 'slot' ? pickup.value.slotId : nearestSlot.value && nearestSlot.value.slotId
-  if (!slotId) {
-    uni.showToast({ title: '该检测点暂无可预约时段', icon: 'none' })
-    return
-  }
+  const at = pickup.value.mode === 'custom' ? pickup.value.at : immediateAt()
   uni.navigateTo({
     url: `/pages/owner/booking/confirm?vehicleId=${vehicle.value.vehicleId}&addressId=${address.value.addressId}`
-      + `&stationId=${pickedStation.value.stationId}&slotId=${slotId}`
+      + `&stationId=${pickedStation.value.stationId}&pickupAt=${encodeURIComponent(at)}`
   })
 }
 
@@ -587,6 +609,35 @@ void session
 }
 
 .sheet__meta {
+  font-size: 21rpx;
+  color: var(--ink-3);
+}
+
+.sheet__field {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20rpx 28rpx;
+  border-bottom: 1rpx solid var(--line-2);
+}
+
+.sheet__label {
+  font-size: 25rpx;
+  color: var(--ink-2);
+}
+
+.sheet__picker {
+  min-width: 240rpx;
+  padding: 10rpx 18rpx;
+  border: 1rpx solid var(--line);
+  border-radius: 10rpx;
+  text-align: center;
+  font-size: 26rpx;
+  color: var(--ink-1);
+}
+
+.sheet__tip {
+  padding: 16rpx 28rpx 8rpx;
   font-size: 21rpx;
   color: var(--ink-3);
 }

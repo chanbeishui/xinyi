@@ -99,6 +99,7 @@ const submitting = ref(false)
 const vehicleId = ref('')
 const addressId = ref('')
 const stationId = ref('')
+const pickupAt = ref('')
 const slotId = ref('')
 const slotLabel = ref('')
 const addressText = ref('')
@@ -112,6 +113,7 @@ onLoad(async (options) => {
   vehicleId.value = (options && options.vehicleId) || ''
   addressId.value = (options && options.addressId) || ''
   stationId.value = (options && options.stationId) || ''
+  pickupAt.value = decodeURIComponent((options && options.pickupAt) || '')
   slotId.value = (options && options.slotId) || ''
   contactName.value = (session.profile && session.profile.nickname) || ''
   await loadContext()
@@ -130,7 +132,8 @@ async function loadContext() {
     const a = (addresses as any[]).find((x) => String(x.addressId) === addressId.value)
     addressText.value = a ? a.address : ''
     const s = (slots as any[]).find((x) => String(x.slotId) === slotId.value)
-    slotLabel.value = s ? windowLabel(s.startsAt, s.endsAt) : ''
+    // 自由上门时间直接展示用户选的时间点；老入口（班次）仍回退到班次窗口
+    slotLabel.value = pickupAt.value || (s ? windowLabel(s.startsAt, s.endsAt) : '')
   } catch (e) {
     // 已提示
   }
@@ -144,7 +147,9 @@ async function doQuote() {
       addressId: addressId.value,
       // 车主手选的检测点：后端据此覆盖按地址自动匹配的结果，并校验车型与服务半径
       stationId: stationId.value || undefined,
-      pickupSlotId: slotId.value,
+      // 自由上门时间优先；后端见到 pickupAt 就不再要求班次
+      pickupAt: pickupAt.value || undefined,
+      pickupSlotId: pickupAt.value ? undefined : slotId.value,
       inspectionTypeCode: 'ANNUAL'
     })
     quote.value = view
