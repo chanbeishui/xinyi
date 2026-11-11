@@ -130,35 +130,15 @@ public class DispatchService
         }
 
         Set<Long> invited = invitedDriverIds(orderId);
-        List<Integer> steps = config.dispatchRadiusSteps();
-        // 断点续跑：从"已经走到过的最大轮次"接着扩，而不是每次都从第 1 档重来。
-        // 轮次取邀约与扩圈留痕的较大者——三轮都没候选的订单没有邀约，只看邀约会退化成 0。
-        int startRound = Math.max(1, Math.min(dispatchMapper.maxReachedRound(orderId), steps.size()));
-
-        Row candidate = null;
-        int round = startRound;
-        while (true)
-        {
-            candidate = pickCandidate(order, invited, steps.get(round - 1));
-            if (candidate != null)
-            {
-                break;
-            }
-            if (round >= steps.size())
-            {
-                break;
-            }
-            round++;
-            eventService.record("ORDER", orderId, "DISPATCH_EXPAND", orderId, null,
-                    Map.of("round", String.valueOf(round), "radiusMeter", String.valueOf(steps.get(round - 1))),
-                    "第 " + (round - 1) + " 轮半径内无可用代驾，按阶梯扩圈");
-        }
+        // 派单只看「是否可接单」：资格有效、开启听单、允许新接、账号正常、无在手占用。
+        // 定位只用于展示距离，不参与候选筛选，也不再按半径阶梯扩圈——没有定位照样派。
+        Row candidate = pickCandidate(invited);
         if (candidate == null)
         {
-            toManual(orderId, "扩圈 " + steps.size() + " 轮后仍无可用代驾");
+            toManual(orderId, "当前没有可派单的代驾：未开启听单、被停派或全部在履约中");
             return;
         }
-        issueInvite(order, candidate, "AUTO", round);
+        issueInvite(order, candidate, "AUTO", 1);
     }
 
     /** 转待人工安排并留痕 */
@@ -259,9 +239,9 @@ public class DispatchService
     }
 
     /** 全局游标轮转：从上次指针之后找第一位可用司机，找不到再从头 */
-    private Row pickCandidate(Row order, Set<Long> exclude, int radiusMeter)
+    private Row pickCandidate(Set<Long> exclude)
     {
-        List<Row> eligible = eligibleDrivers(order, radiusMeter);
+        List<Row> eligible = eligibleDrivers();
         if (eligible.isEmpty())
         {
             return null;
@@ -300,38 +280,17 @@ public class DispatchService
         return next;
     }
 
-    /** 资格有效、允许新接单、开启听单、无占用，且位置在派单半径内 */
-    private List<Row> eligibleDrivers(Row order, int radiusMeter)
+    /**
+     * 可派单候选：资格有效、开启听单、允许新接单、账号正常、无在手占用。
+     * 定位不参与筛选——没有定位或定位已过期的代驾同样是候选，
+     * 否则「开着听单却因为没定位一直派不到单」会变成隐形的业务故障。
+     */
+    private List<Row> eligibleDrivers()
     {
-        JSONObject snapshot = Json.read(order.json("vehicle_snapshot"));
-        double targetLng = snapshot.getDoubleValue("lng");
-        double targetLat = snapshot.getDoubleValue("lat");
-        int radius = radiusMeter;
-        long now = System.currentTimeMillis();
-        int freshSeconds = config.locationFreshSeconds();
-
         List<Row> out = new ArrayList<>();
         for (Map<String, Object> raw : dispatchMapper.listEligibleDrivers())
         {
-            Row d = Row.of(raw);
-            Object cipher = d.get("location_cipher");
-            if (cipher instanceof byte[] bytes && bytes.length > 12 && targetLng != 0 && targetLat != 0)
-            {
-                LocalDateTime capturedAt = d.time("captured_at");
-                if (capturedAt != null
-                        && capturedAt.plusSeconds(freshSeconds).isBefore(ViTime.now()))
-                {
-                    continue;
-                }
-                JSONObject loc = Json.read(crypto.decrypt(bytes));
-                double dLng = loc.getDoubleValue("lng");
-                double dLat = loc.getDoubleValue("lat");
-                if (haversine(targetLng, targetLat, dLng, dLat) > radius)
-                {
-                    continue;
-                }
-            }
-            out.add(d);
+            out.add(Row.of(raw));
         }
         return out;
     }
