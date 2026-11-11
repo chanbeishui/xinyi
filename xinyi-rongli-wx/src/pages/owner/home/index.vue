@@ -146,26 +146,39 @@
           <text class="sheet__sub">{{ pickedStation ? pickedStation.name : '' }}</text>
         </view>
         <view class="sheet__body">
-          <view class="sheet__item" :class="{ 'sheet__item--on': pickup.mode === 'immediate' }" @tap="pickImmediate">
-            <text>立即上门</text>
-            <text class="sheet__meta">30 分钟内到达</text>
+          <view class="mode" :class="{ 'mode--on': draftMode === 'immediate' }" @tap="chooseMode('immediate')">
+            <view class="mode__main">
+              <text class="mode__title">立即上门</text>
+              <text class="mode__desc">30 分钟内到达</text>
+            </view>
+            <view class="mode__dot"></view>
+          </view>
+          <view class="mode" :class="{ 'mode--on': draftMode === 'custom' }" @tap="chooseMode('custom')">
+            <view class="mode__main">
+              <text class="mode__title">预约时间</text>
+              <text class="mode__desc">自己选日期与时间</text>
+            </view>
+            <view class="mode__dot"></view>
           </view>
 
-          <view class="sheet__field">
-            <text class="sheet__label">日期</text>
-            <picker mode="date" :value="draftDate" :start="minDate" :end="maxDate" @change="onDateChange">
-              <view class="sheet__picker">{{ draftDate }}</view>
-            </picker>
+          <!-- 只有切到「预约时间」才展开选择器，默认状态不占空间 -->
+          <view v-if="draftMode === 'custom'" class="sheet__custom">
+            <view class="sheet__field">
+              <text class="sheet__label">日期</text>
+              <picker mode="date" :value="draftDate" :start="minDate" :end="maxDate" @change="onDateChange">
+                <view class="sheet__picker">{{ draftDate }}</view>
+              </picker>
+            </view>
+            <view class="sheet__field">
+              <text class="sheet__label">时间</text>
+              <picker mode="time" :value="draftTime" :start="timeStart" :end="timeEnd" @change="onTimeChange">
+                <view class="sheet__picker">{{ draftTime }}</view>
+              </picker>
+            </view>
+            <view class="sheet__tip">可选 {{ timeStart }} - {{ timeEnd }}，限定在该检测点营业时间内</view>
           </view>
-          <view class="sheet__field">
-            <text class="sheet__label">时间</text>
-            <picker mode="time" :value="draftTime" :start="timeStart" :end="timeEnd" @change="onTimeChange">
-              <view class="sheet__picker">{{ draftTime }}</view>
-            </picker>
-          </view>
-          <view class="sheet__tip">可选 {{ timeStart }} - {{ timeEnd }}，限定在该检测点营业时间内</view>
 
-          <view class="btn block" hover-class="btn-hover" @tap="confirmCustom">确定</view>
+          <view class="btn block" hover-class="btn-hover" @tap="confirmPickup">确定</view>
         </view>
       </view>
     </view>
@@ -200,6 +213,8 @@ const pickup = ref<{ mode: 'immediate' | 'custom'; at: string; label: string }>(
   label: '立即上门'
 })
 const sheetVisible = ref(false)
+/** 面板内的临时选择：只有点「确定」才写回 pickup，取消不改动 */
+const draftMode = ref<'immediate' | 'custom'>('immediate')
 const draftDate = ref('')
 const draftTime = ref('')
 
@@ -328,7 +343,12 @@ const bookHint = computed(() => {
   if (!vehicle.value) return '请先选择车辆'
   if (!address.value) return '请先填写接车地址'
   if (!pickedStation.value) return '请选择检测点'
-  if (!pickupReady.value) return '所选时间不在该检测点营业时间内'
+  if (!pickupReady.value) {
+    // 立即上门被拒几乎都是当前不在营业时间，提示改成可执行的下一步
+    return pickup.value.mode === 'immediate'
+      ? '当前不在该检测点营业时间，请改用「预约时间」'
+      : '所选时间不在该检测点营业时间内'
+  }
   return ''
 })
 
@@ -385,11 +405,28 @@ function openPickupSheet() {
     uni.showToast({ title: '请先选择检测点', icon: 'none' })
     return
   }
+  // 面板打开时对齐当前已生效的选择，取消则原样保留
+  draftMode.value = pickup.value.mode
   const base = pickup.value.mode === 'custom' && pickup.value.at ? pickup.value.at : immediateAt()
   const d = parseAt(base) || new Date()
   draftDate.value = formatDate(d)
   draftTime.value = `${pad2(d.getHours())}:${pad2(d.getMinutes())}`
   sheetVisible.value = true
+}
+
+function chooseMode(mode: 'immediate' | 'custom') {
+  draftMode.value = mode
+  if (mode !== 'custom') return
+  // 首次切到「预约时间」时，若当前草稿不在营业时间内，换成一个营业时间内的默认值，
+  // 避免用户刚展开就看到一个必然被拒的时间
+  const d = parseAt(`${draftDate.value} ${draftTime.value}`)
+  if (!d || !pickedStation.value || !inBusinessHours(pickedStation.value, d)) {
+    const fallback = parseAt(immediateAt())
+    if (fallback) {
+      draftDate.value = formatDate(fallback)
+      draftTime.value = `${pad2(fallback.getHours())}:${pad2(fallback.getMinutes())}`
+    }
+  }
 }
 
 function onDateChange(e: any) {
@@ -400,12 +437,12 @@ function onTimeChange(e: any) {
   draftTime.value = e.detail.value
 }
 
-function pickImmediate() {
-  pickup.value = { mode: 'immediate', at: '', label: '立即上门' }
-  sheetVisible.value = false
-}
-
-function confirmCustom() {
+function confirmPickup() {
+  if (draftMode.value === 'immediate') {
+    pickup.value = { mode: 'immediate', at: '', label: '立即上门' }
+    sheetVisible.value = false
+    return
+  }
   const at = `${draftDate.value} ${draftTime.value}`
   const d = parseAt(at)
   if (!d) {
@@ -619,6 +656,57 @@ void session
   justify-content: space-between;
   padding: 20rpx 28rpx;
   border-bottom: 1rpx solid var(--line-2);
+}
+
+/* 两种上门模式二选一：默认立即上门，切到预约时间才展开选择器 */
+.mode {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 22rpx 28rpx;
+  border-bottom: 1rpx solid var(--line-2);
+}
+
+.mode--on {
+  background: var(--brand-soft);
+}
+
+.mode__main {
+  display: flex;
+  flex-direction: column;
+}
+
+.mode__title {
+  font-size: 28rpx;
+  font-weight: 500;
+}
+
+.mode--on .mode__title {
+  color: var(--brand);
+}
+
+.mode__desc {
+  margin-top: 4rpx;
+  font-size: 21rpx;
+  color: var(--ink-3);
+}
+
+.mode__dot {
+  width: 30rpx;
+  height: 30rpx;
+  border: 2rpx solid var(--line);
+  border-radius: 50%;
+  box-sizing: border-box;
+}
+
+.mode--on .mode__dot {
+  border-color: var(--brand);
+  background: var(--brand);
+  box-shadow: inset 0 0 0 4rpx #fff;
+}
+
+.sheet__custom {
+  padding-top: 4rpx;
 }
 
 .sheet__label {
