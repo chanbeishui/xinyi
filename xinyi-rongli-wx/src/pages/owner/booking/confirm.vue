@@ -98,6 +98,7 @@ const error = ref('')
 const submitting = ref(false)
 const vehicleId = ref('')
 const addressId = ref('')
+const stationId = ref('')
 const slotId = ref('')
 const slotLabel = ref('')
 const addressText = ref('')
@@ -110,6 +111,7 @@ const canSubmit = computed(() => !!quote.value)
 onLoad(async (options) => {
   vehicleId.value = (options && options.vehicleId) || ''
   addressId.value = (options && options.addressId) || ''
+  stationId.value = (options && options.stationId) || ''
   slotId.value = (options && options.slotId) || ''
   contactName.value = (session.profile && session.profile.nickname) || ''
   await loadContext()
@@ -140,6 +142,8 @@ async function doQuote() {
     const view: any = await ownerApi.quote({
       vehicleId: vehicleId.value,
       addressId: addressId.value,
+      // 车主手选的检测点：后端据此覆盖按地址自动匹配的结果，并校验车型与服务半径
+      stationId: stationId.value || undefined,
       pickupSlotId: slotId.value,
       inspectionTypeCode: 'ANNUAL'
     })
@@ -152,8 +156,9 @@ async function doQuote() {
 }
 
 function backToSlots() {
-  uni.redirectTo({
-    url: `/pages/owner/booking/slot?vehicleId=${vehicleId.value}&addressId=${addressId.value}`
+  // 首页现在就能直接选时间和检测点，返回上一页比绕去独立的时段页更顺
+  uni.navigateBack({
+    fail: () => uni.redirectTo({ url: '/pages/owner/home/index' })
   })
 }
 
