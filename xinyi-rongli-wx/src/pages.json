@@ -43,7 +43,12 @@
     },
     {
       "path": "pages/owner/booking/slot",
-      "style": { "navigationBarTitleText": "选择上门时段" }
+      "style": {
+        "navigationBarTitleText": "选择上门时段",
+        "enablePullDownRefresh": true,
+        "backgroundTextStyle": "dark",
+        "backgroundColor": "#EDF0F4"
+      }
     },
     {
       "path": "pages/owner/booking/confirm",
