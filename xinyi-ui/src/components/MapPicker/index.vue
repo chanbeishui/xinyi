@@ -10,7 +10,10 @@
     <template v-else>
       <div ref="holder" class="map-picker__canvas" :style="{ height }"></div>
       <div class="map-picker__bar">
-        <span class="map-picker__coords">{{ coordText }}</span>
+        <span class="map-picker__coords">
+          {{ coordText }}
+          <em v-if="radiusText" class="map-picker__range">服务范围 {{ radiusText }}</em>
+        </span>
         <span class="map-picker__tip" :class="{ 'is-error': !!error }" :title="error || tip">
           {{ error || tip }}
         </span>
@@ -21,26 +24,25 @@
 
 <script setup lang="ts">
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
-import { getConfigKey } from '@/api/system/config'
+import { readAMapConfig, loadAMap } from '@/utils/amap'
 
 /**
- * 经纬度地图选点。
+ * 经纬度地图选点 + 服务范围圈。
  *
  * 坐标系必须是 gcj02：小程序端 uni.getLocation 用的是 gcj02，高德地图也是 gcj02，
  * 两者对齐后派单半径判定才不会偏几百米。换成 WGS84 的底图（如 OSM）会直接引入偏移。
  *
- * 供应商与凭据走系统参数，便于运营在「参数设置」里改，不必重新打包：
- *   rongli.map.provider      amap（当前仅支持）/ 留空表示未启用
- *   rongli.map.key           高德 Web 端（JS API）Key
- *   rongli.map.securityCode  JS API 2.0 安全密钥（jscode）
+ * Key、安全密钥的读取与脚本加载统一收在 utils/amap，省市区下拉也在用同一份配置。
  */
 const props = withDefaults(
   defineProps<{
     lng?: string | number
     lat?: string | number
     height?: string
+    /** 服务半径（米）。大于 0 时在地图上画服务范围圈 */
+    radius?: number | string
   }>(),
-  { height: '260px' }
+  { height: '260px', radius: 0 }
 )
 
 const emit = defineEmits<{
@@ -58,7 +60,6 @@ const tip = ref('点击地图选点，拖动标记微调')
 const configLoaded = ref(false)
 const provider = ref('')
 const mapKey = ref('')
-const securityCode = ref('')
 
 const unsupported = computed(() => !!provider.value && provider.value !== 'amap')
 const hasKey = computed(() => !!mapKey.value && !unsupported.value)
@@ -69,56 +70,38 @@ const coordText = computed(() => {
   return `${lng}, ${lat}`
 })
 
+const radiusValue = computed(() => {
+  const value = Number(props.radius)
+  return Number.isFinite(value) && value > 0 ? value : 0
+})
+
+const radiusText = computed(() => {
+  const value = radiusValue.value
+  if (!value) return ''
+  return value >= 1000 ? `${(value / 1000).toFixed(1)} km` : `${Math.round(value)} m`
+})
+
 let map: any = null
 let marker: any = null
+let circle: any = null
 let geocoder: any = null
-let loader: Promise<any> | null = null
 let resizeObserver: ResizeObserver | null = null
 let resizeRaf = 0
+let fitTimer: any = 0
 let creating: Promise<any> | null = null
 
-function readConfig(key: string): Promise<string> {
-  return getConfigKey(key)
-    .then((res: any) => String((res && (res.msg ?? res.data)) ?? '').trim())
-    .catch(() => '')
-}
-
 async function loadConfig() {
-  const [p, k, s] = await Promise.all([
-    readConfig('rongli.map.provider'),
-    readConfig('rongli.map.key'),
-    readConfig('rongli.map.securityCode')
-  ])
-  provider.value = p.toLowerCase()
-  mapKey.value = k
-  securityCode.value = s
-  configLoaded.value = true
+  try {
+    const config = await readAMapConfig()
+    provider.value = config.provider
+    mapKey.value = config.key
+  } finally {
+    configLoaded.value = true
+  }
   if (hasKey.value) {
     await nextTick()
     await init()
   }
-}
-
-function loadAMap(): Promise<any> {
-  if (loader) return loader
-  loader = new Promise((resolve, reject) => {
-    const existing = (window as any).AMap
-    if (existing) {
-      resolve(existing)
-      return
-    }
-    // JS API 2.0 的安全密钥；只在前端使用，需在高德控制台配置域名白名单
-    if (securityCode.value) {
-      ;(window as any)._AMapSecurityConfig = { securityJsCode: securityCode.value }
-    }
-    const script = document.createElement('script')
-    script.src = `https://webapi.amap.com/maps?v=2.0&key=${mapKey.value}&plugin=AMap.Geocoder,AMap.PlaceSearch`
-    script.async = true
-    script.onload = () => resolve((window as any).AMap)
-    script.onerror = () => reject(new Error('高德地图脚本加载失败，请检查 Key 与网络'))
-    document.head.appendChild(script)
-  })
-  return loader
 }
 
 function hasPoint(): boolean {
@@ -176,6 +159,29 @@ function observeResize() {
   resizeObserver.observe(holder.value)
 }
 
+/** 服务范围圈：半径 ≤ 0 或还没有坐标时摘掉，避免画在默认点上造成误读 */
+function syncCircle() {
+  if (!circle || !map) return
+  const radius = radiusValue.value
+  if (!radius || !hasPoint()) {
+    circle.setMap(null)
+    return
+  }
+  circle.setMap(map)
+  circle.setCenter([Number(props.lng), Number(props.lat)])
+  circle.setRadius(radius)
+}
+
+/** 把视野收到「刚好装下服务范围」；只在半径变化时做，点选地图时不动用户视野 */
+function scheduleFit(delay = 200) {
+  if (fitTimer) clearTimeout(fitTimer)
+  fitTimer = setTimeout(() => {
+    fitTimer = 0
+    if (!map || !circle || !hasPoint() || !radiusValue.value) return
+    map.setFitView([circle], false, [24, 24, 24, 24], 17)
+  }, delay)
+}
+
 async function createMap(): Promise<any> {
   if (map) return map
   if (!hasKey.value) return null
@@ -189,6 +195,19 @@ async function createMap(): Promise<any> {
     await waitForSize(el)
     const center = currentPosition()
     map = new AMap.Map(el, { zoom: 13, center, resizeEnable: true, viewMode: '2D' })
+    circle = new AMap.Circle({
+      center,
+      radius: radiusValue.value || 1,
+      strokeColor: '#175cd3',
+      strokeWeight: 1.5,
+      strokeOpacity: 0.9,
+      strokeStyle: 'dashed',
+      strokeDasharray: [6, 4],
+      fillColor: '#175cd3',
+      fillOpacity: 0.1,
+      zIndex: 20
+    })
+    map.add(circle)
     marker = new AMap.Marker({ position: center, draggable: true, cursor: 'move', zIndex: 120 })
     map.add(marker)
     map.on('click', (e: any) => {
@@ -204,6 +223,8 @@ async function createMap(): Promise<any> {
     })
     geocoder = new AMap.Geocoder()
     observeResize()
+    syncCircle()
+    scheduleFit(260)
     return AMap
   })()
   try {
@@ -309,11 +330,17 @@ async function locate(address: string): Promise<LocateResult> {
       return { ok: false, message: `未能定位到「${keyword}」，请补充省 / 市 / 区或换用更完整的地址` }
     }
     marker.setPosition([hit.lng, hit.lat])
+    if (circle) {
+      circle.setCenter([hit.lng, hit.lat])
+      circle.setRadius(radiusValue.value || 1)
+    }
     map.setZoomAndCenter(15, [hit.lng, hit.lat])
     emit('update:lng', hit.lng.toFixed(6))
     emit('update:lat', hit.lat.toFixed(6))
     emit('update:address', hit.address)
     tip.value = `已定位到：${hit.address}`
+    // 配了半径就把视野收到服务范围，否则停在街道级
+    if (radiusValue.value) scheduleFit(120)
     // 抽屉里地图在地址输入框下方，定位成功顺手滚到可见位置
     holder.value?.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
     return { ok: true, address: hit.address, message: `已在地图上定位到「${hit.address}」` }
@@ -325,13 +352,23 @@ async function locate(address: string): Promise<LocateResult> {
   }
 }
 
-// 外部（手动输入或切换记录）改了坐标时，让标记跟随，不反向触发地址回填
+// 外部（点选、拖拽、搜索、手动输入）改了坐标时，让标记与服务范围圈跟着走
 watch(
   () => [props.lng, props.lat],
   () => {
     if (!map || !marker || !hasPoint()) return
     marker.setPosition([Number(props.lng), Number(props.lat)])
     map.setCenter([Number(props.lng), Number(props.lat)])
+    syncCircle()
+  }
+)
+
+// 服务半径随表单实时变化：圈跟着放大缩小，并把视野收到刚好能看到整个范围
+watch(
+  () => props.radius,
+  () => {
+    syncCircle()
+    scheduleFit()
   }
 )
 
@@ -339,6 +376,7 @@ onMounted(loadConfig)
 
 onBeforeUnmount(() => {
   if (resizeRaf) cancelAnimationFrame(resizeRaf)
+  if (fitTimer) clearTimeout(fitTimer)
   if (resizeObserver) {
     resizeObserver.disconnect()
     resizeObserver = null
@@ -347,6 +385,7 @@ onBeforeUnmount(() => {
     map.destroy()
     map = null
     marker = null
+    circle = null
     geocoder = null
   }
 })
@@ -385,6 +424,13 @@ defineExpose({ locate })
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   font-size: 11.5px;
   color: var(--el-text-color-primary);
+}
+
+.map-picker__range {
+  margin-left: 10px;
+  font-style: normal;
+  font-size: 12px;
+  color: #175cd3;
 }
 
 .map-picker__tip {
