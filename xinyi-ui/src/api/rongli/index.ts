@@ -90,11 +90,16 @@ export function getDriver(driverId: number | string): Promise<any> {
 export function updateDriver(driverId: number | string, data: any): Promise<any> {
   return request({ url: `/api/admin/drivers/${driverId}`, method: 'patch', data })
 }
-export function disableDriverNewAssignments(driverId: number | string, disabled: boolean): Promise<any> {
+export function disableDriverNewAssignments(
+  driverId: number | string,
+  disabled: boolean,
+  reason: string
+): Promise<any> {
+  // 后端把 reason 当必填（要留痕并通知代驾），漏传会直接被判 400
   return request({
     url: `/api/admin/drivers/${driverId}/disable-new-assignments`,
     method: 'post',
-    data: { disabled }
+    data: { disabled, reason }
   })
 }
 export function listDriverAssignments(driverId: number | string, params?: any): Promise<any> {

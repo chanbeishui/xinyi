@@ -46,11 +46,9 @@
             </span>
           </template>
         </el-table-column>
-        <el-table-column label="接单状态" width="120">
+        <el-table-column label="接单状态" width="130">
           <template #default="{ row }">
-            <span class="rl-tag" :class="row.listening_enabled && row.new_assignment_enabled ? 'rl-tag--blue' : 'rl-tag--gray'">
-              {{ row.listening_enabled && row.new_assignment_enabled ? '听单中' : '暂停新单' }}
-            </span>
+            <span class="rl-tag" :class="listenState(row).cls">{{ listenState(row).text }}</span>
           </template>
         </el-table-column>
         <el-table-column label="在手任务" width="130">
@@ -73,9 +71,16 @@
         </el-table-column>
         <template #empty>
           <div class="rl-empty">
-            <div class="rl-empty__title">未找到匹配代驾</div>
-            <div class="rl-empty__hint">请调整关键词或资格状态后重新查询。</div>
-            <el-button @click="resetQuery">重置筛选</el-button>
+            <template v-if="loadError">
+              <div class="rl-empty__title">代驾列表加载失败</div>
+              <div class="rl-empty__hint">{{ loadError }}</div>
+              <el-button @click="load">重新加载</el-button>
+            </template>
+            <template v-else>
+              <div class="rl-empty__title">未找到匹配代驾</div>
+              <div class="rl-empty__hint">请调整关键词或资格状态后重新查询。</div>
+              <el-button @click="resetQuery">重置筛选</el-button>
+            </template>
           </div>
         </template>
       </el-table>
@@ -123,7 +128,7 @@
               <div class="rl-sub">关闭后仍需完成当前在手任务</div>
             </div>
             <el-switch
-              :model-value="!!(detail.listeningEnabled ?? detail.listening_enabled)"
+              :model-value="!!Number(detail.newAssignmentEnabled ?? detail.new_assignment_enabled ?? 1)"
               @change="(val: any) => toggleNew(detail, !!val)"
             />
           </div>
@@ -170,7 +175,7 @@
 import RongliPage from '../components/RongliPage.vue'
 import { onMounted, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { ElMessage } from 'element-plus'
+import { ElMessage, ElMessageBox } from 'element-plus'
 import { disableDriverNewAssignments, getDriver, getDriverFeeLedger, listDriverAssignments, listDrivers } from '@/api/rongli'
 import { money, shortDate, shortTime } from '../format'
 
@@ -178,6 +183,7 @@ const router = useRouter()
 const loading = ref(false)
 const rows = ref<any[]>([])
 const total = ref(0)
+const loadError = ref('')
 const query = reactive<any>({ keyword: '', status: '', pageNum: 1, pageSize: 10 })
 
 const detailVisible = ref(false)
@@ -198,6 +204,24 @@ onMounted(load)
 
 function qualificationLabel(value?: string) {
   return QUALIFICATION[value || ''] || value || '待审核'
+}
+
+/**
+ * 接单状态必须分三档，不能只看「能不能接单」。
+ * 资格通过后 listening_enabled 仍是 0（等代驾自己在小程序上线听单），
+ * 原来一律显示「暂停新单」，看起来就像审核没生效。
+ */
+function listenState(row: any) {
+  const newAssignment = Number(row.new_assignment_enabled ?? 1)
+  const listening = Number(row.listening_enabled ?? 0)
+  if (!newAssignment) return { text: '运营停派', cls: 'rl-tag--amber' }
+  if (!listening) return { text: '未开启听单', cls: 'rl-tag--gray' }
+  return { text: '听单中', cls: 'rl-tag--blue' }
+}
+
+/** 后端错误体统一在 response.data.msg，axios 只把状态码包成 message */
+function errText(e: any) {
+  return e?.response?.data?.msg || e?.message || '操作失败，请稍后重试'
 }
 
 function driverId(row: any) {
@@ -221,10 +245,17 @@ function initial(row: any) {
 
 async function load() {
   loading.value = true
+  loadError.value = ''
   try {
     const res: any = await listDrivers(query)
     rows.value = (res && res.rows) || []
     total.value = Number((res && res.total) || 0)
+  } catch (e: any) {
+    // 原来是 try/finally，请求失败会静默留下空表，看起来像「没有数据」
+    rows.value = []
+    total.value = 0
+    loadError.value = errText(e)
+    ElMessage.error(`代驾列表加载失败：${loadError.value}`)
   } finally {
     loading.value = false
   }
@@ -263,10 +294,39 @@ async function openDetail(row: any) {
 async function toggleNew(row: any, value: boolean) {
   const id = driverId(row)
   if (!id) return
-  await disableDriverNewAssignments(id, !value)
-  detail.value = { ...detail.value, listeningEnabled: value, listening_enabled: value }
-  ElMessage.success('已更新接单状态')
-  load()
+  const disabled = !value
+  // 后端把 reason 当必填（要留痕，也会推送给代驾），不填直接 400。
+  // 之前这里不弹窗、不带原因，所以每次拨动开关都报 Request failed with status code 400。
+  let reason = ''
+  try {
+    const { value: input } = (await ElMessageBox.prompt(
+      disabled
+        ? '停派后该代驾不会再收到新邀约，在手任务不受影响。请填写原因，会记入档案并通知本人。'
+        : '恢复后该代驾会重新进入派单池。请填写恢复原因，会记入档案。',
+      disabled ? '暂停接收新单' : '恢复接收新单',
+      {
+        inputPlaceholder: disabled ? '例如：连续两单超时未接' : '例如：申诉成立，恢复派单',
+        inputValidator: (v: string) => (v && v.trim() ? true : '原因不能为空'),
+        confirmButtonText: '确定',
+        cancelButtonText: '取消'
+      }
+    )) as any
+    reason = String(input || '').trim()
+  } catch {
+    return // 用户取消，不改状态
+  }
+  try {
+    await disableDriverNewAssignments(id, disabled, reason)
+    detail.value = {
+      ...detail.value,
+      newAssignmentEnabled: value,
+      new_assignment_enabled: value ? 1 : 0
+    }
+    ElMessage.success(disabled ? '已暂停接收新单' : '已恢复接收新单')
+    load()
+  } catch (e: any) {
+    ElMessage.error(errText(e))
+  }
 }
 
 function goStatement(row: any) {
