@@ -1,49 +1,73 @@
 <template>
   <view class="page">
-    <view class="profile-card">
-      <view class="avatar">{{ initial }}</view>
-      <view class="info">
-        <view class="name">{{ profile.nickname || '车主' }}</view>
-        <view class="sub">{{ profile.phoneBound ? '手机号已绑定' : '未绑定手机号' }}</view>
-      </view>
-      <view class="tag" style="background: rgba(255,255,255,0.2); color: #fff">车主视角</view>
-    </view>
-
-    <view class="card">
-      <view class="row-between" @tap="go('/pages/owner/orders/index')">
-        <text class="label">我的预约</text>
-        <text class="muted">全部记录 ›</text>
-      </view>
-      <view class="row-between" @tap="go('/pages/owner/after-sales/list')">
-        <text class="label">售后与退款</text>
-        <text class="muted">进度查询 ›</text>
-      </view>
-      <view class="row-between" @tap="go('/pages/owner/vehicle/list')">
-        <text class="label">常用车辆</text>
-        <text class="muted">管理 ›</text>
-      </view>
-      <view class="row-between" @tap="go('/pages/owner/vehicle/list?tab=address')">
-        <text class="label">接车地址</text>
-        <text class="muted">管理 ›</text>
+    <view class="ink-panel">
+      <view class="ink-panel__rule"></view>
+      <view class="profile">
+        <view class="avatar">{{ initial }}</view>
+        <view class="profile__info">
+          <view class="profile__name">{{ profile.nickname || '车主' }}</view>
+          <view class="profile__sub">{{ profile.phoneBound ? '手机号已绑定' : '未绑定手机号' }}</view>
+        </view>
+        <view class="profile__role">车主视角</view>
       </view>
     </view>
 
-    <view class="card">
-      <view class="row-between" @tap="go('/pages/role/index')">
-        <text class="label">切换视角</text>
-        <text class="muted">已开通 {{ roleCount }} 个 ›</text>
+    <view class="list">
+      <view class="list-row" hover-class="card-hover" @tap="go('/pages/owner/orders/index')">
+        <text class="list-row__key">我的预约</text>
+        <view class="row">
+          <text class="list-row__hint">全部记录</text>
+          <view class="chev"></view>
+        </view>
       </view>
-      <view class="row-between" @tap="go('/pages/settings/index')">
-        <text class="label">设置与隐私</text>
-        <text class="muted">账号安全 ›</text>
+      <view class="list-row" hover-class="card-hover" @tap="go('/pages/owner/after-sales/list')">
+        <text class="list-row__key">售后与退款</text>
+        <view class="row">
+          <text class="list-row__hint">进度查询</text>
+          <view class="chev"></view>
+        </view>
       </view>
-      <view class="row-between" @tap="callService">
-        <text class="label">联系客服</text>
-        <text class="muted">{{ servicePhone }} ›</text>
+      <view class="list-row" hover-class="card-hover" @tap="go('/pages/owner/vehicle/list')">
+        <text class="list-row__key">常用车辆</text>
+        <view class="row">
+          <text class="list-row__hint">管理</text>
+          <view class="chev"></view>
+        </view>
+      </view>
+      <view class="list-row" hover-class="card-hover" @tap="go('/pages/owner/vehicle/list?tab=address')">
+        <text class="list-row__key">接车地址</text>
+        <view class="row">
+          <text class="list-row__hint">管理</text>
+          <view class="chev"></view>
+        </view>
       </view>
     </view>
 
-    <view class="btn gray" @tap="logout">退出登录</view>
+    <view class="list">
+      <view class="list-row" hover-class="card-hover" @tap="go('/pages/role/index')">
+        <text class="list-row__key">切换视角</text>
+        <view class="row">
+          <text class="list-row__hint">已开通 {{ roleCount }} 个</text>
+          <view class="chev"></view>
+        </view>
+      </view>
+      <view class="list-row" hover-class="card-hover" @tap="go('/pages/settings/index')">
+        <text class="list-row__key">设置与隐私</text>
+        <view class="row">
+          <text class="list-row__hint">账号安全</text>
+          <view class="chev"></view>
+        </view>
+      </view>
+      <view class="list-row" hover-class="card-hover" @tap="callService">
+        <text class="list-row__key">联系客服</text>
+        <view class="row">
+          <text class="list-row__hint num">{{ servicePhone }}</text>
+          <view class="chev"></view>
+        </view>
+      </view>
+    </view>
+
+    <view class="btn gray block" hover-class="btn-hover" @tap="logout">退出登录</view>
 
     <RoleTabBar role="OWNER" active="mine" />
   </view>
@@ -102,41 +126,49 @@ function logout() {
 </script>
 
 <style scoped>
-.profile-card {
-  background: linear-gradient(135deg, #1f6feb 0%, #3f8bff 100%);
-  border-radius: 28rpx;
-  padding: 36rpx 30rpx;
+.profile {
   display: flex;
   align-items: center;
-  gap: 22rpx;
-  color: #fff;
-  margin-bottom: 20rpx;
 }
 
 .avatar {
-  width: 100rpx;
-  height: 100rpx;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.24);
+  width: 96rpx;
+  height: 96rpx;
+  border-radius: 16rpx;
+  border: 1rpx solid rgba(255, 255, 255, 0.24);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 38rpx;
+  font-size: 36rpx;
   font-weight: 600;
+  color: #fff;
 }
 
-.info {
+.profile__info {
   flex: 1;
+  min-width: 0;
+  margin-left: 22rpx;
 }
 
-.name {
-  font-size: 34rpx;
+.profile__name {
+  font-size: 36rpx;
   font-weight: 600;
+  letter-spacing: 0.6rpx;
 }
 
-.sub {
+.profile__sub {
   margin-top: 6rpx;
-  font-size: 24rpx;
-  opacity: 0.85;
+  font-size: 23rpx;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.profile__role {
+  flex: 0 0 auto;
+  padding: 4rpx 14rpx;
+  border: 1rpx solid rgba(255, 255, 255, 0.28);
+  border-radius: 4rpx;
+  font-size: 20rpx;
+  letter-spacing: 1rpx;
+  color: rgba(255, 255, 255, 0.8);
 }
 </style>

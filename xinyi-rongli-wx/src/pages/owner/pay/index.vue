@@ -1,106 +1,129 @@
 <template>
   <view class="page">
-    <view class="card">
-      <view class="card-title">支付订单</view>
-      <view class="row-between">
-        <text class="label">订单号</text>
-        <text class="value">{{ orderNo }}</text>
+    <!-- 金额抬头：这一页唯一的主角是「还要付多少」 -->
+    <view class="ink-panel pay-head">
+      <view class="ink-panel__rule"></view>
+      <view class="pay-head__top">
+        <text class="ink-panel__eyebrow">应付金额</text>
+        <text class="status pay-head__status" :class="paid ? 'status--ok' : 'status--warn'">
+          {{ statusLabel }}
+        </text>
       </view>
-      <view class="row-between">
-        <text class="label">支付状态</text>
-        <text class="tag" :class="statusClass">{{ statusLabel }}</text>
+      <view class="pay-head__amount num">
+        <text class="pay-head__unit">¥</text>{{ fen2yuan(amountFen) }}
       </view>
-      <view class="row-between">
-        <text class="label">应付金额</text>
-        <text class="price">¥{{ fen2yuan(amountFen) }}</text>
+      <view class="pay-head__meta num">订单号 {{ orderNo }}</view>
+      <view v-if="payment.expiresAt" class="pay-head__expire num">
+        支付截止 {{ dateTime(payment.expiresAt) }}
       </view>
-      <view v-if="payment.expiresAt" class="row-between">
-        <text class="label">支付截止</text>
-        <text class="value">{{ dateTime(payment.expiresAt) }}</text>
-      </view>
-      <view v-if="optionsNote" class="muted" style="margin-top: 12rpx">{{ optionsNote }}</view>
     </view>
 
-    <view class="card">
-      <view class="card-title">支付方式</view>
+    <view class="section-head">
+      <text class="section-head__title">支付方式</text>
+      <text v-if="optionsNote" class="section-head__meta ellipsis">{{ optionsNote }}</text>
+    </view>
 
-      <view v-if="!paid && options.length">
-        <view v-for="opt in options" :key="opt.method" class="method"
-              :class="{ active: selectedMethod === opt.method, disabled: !opt.available && selectedMethod !== opt.method }"
-              @tap="selectMethod(opt)">
-          <view class="method-main">
-            <view class="value" style="text-align: left">{{ opt.label }}</view>
-            <view class="muted">{{ methodHint(opt) }}</view>
-          </view>
-          <view class="tag" :class="methodTagClass(opt)">
-            {{ methodTagText(opt) }}
-          </view>
+    <view v-if="!paid && options.length" class="list">
+      <view
+        v-for="opt in options"
+        :key="opt.method"
+        class="method"
+        :class="{
+          'method--on': selectedMethod === opt.method,
+          'method--off': !opt.available && selectedMethod !== opt.method
+        }"
+        hover-class="card-hover"
+        @tap="selectMethod(opt)"
+      >
+        <view class="method__radio" :class="{ 'method__radio--on': selectedMethod === opt.method }">
+          <view class="method__dot"></view>
         </view>
-      </view>
-
-      <view v-else-if="paid" class="row-between">
-        <view>
-          <view class="value" style="text-align: left">{{ lockedMethodLabel }}</view>
-          <view class="muted">{{ paidHint }}</view>
+        <view class="method__main">
+          <view class="method__label">{{ opt.label }}</view>
+          <view class="method__hint">{{ methodHint(opt) }}</view>
         </view>
-        <view class="tag ok">已支付</view>
+        <text class="status" :class="methodTagClass(opt)">{{ methodTagText(opt) }}</text>
       </view>
+    </view>
 
-      <view v-else class="muted">当前未开放任何支付方式，请联系门店确认后再支付。</view>
+    <view v-else-if="paid" class="list">
+      <view class="method">
+        <view class="method__main">
+          <view class="method__label">{{ lockedMethodLabel }}</view>
+          <view class="method__hint">{{ paidHint }}</view>
+        </view>
+        <text class="status status--ok">已支付</text>
+      </view>
+    </view>
+
+    <view v-else class="card">
+      <view class="muted">当前未开放任何支付方式，请联系门店确认后再支付。</view>
     </view>
 
     <!-- 线下付款说明：只有选中或已锁定线下时才展示，避免误导为“可以不付” -->
     <view v-if="showOfflineInfo" class="card">
       <view class="card-title">线下付款说明</view>
       <view v-if="offline.instructions" class="offline-text">{{ offline.instructions }}</view>
-      <view v-if="offline.receiverName" class="row-between">
-        <text class="label">收款单位</text>
-        <text class="value">{{ offline.receiverName }}</text>
+      <view v-if="offline.receiverName" class="slip__row slip__row--loose">
+        <text class="slip__key">收款单位</text>
+        <text class="slip__val">{{ offline.receiverName }}</text>
       </view>
-      <view v-if="offline.bankName" class="row-between">
-        <text class="label">开户行</text>
-        <text class="value">{{ offline.bankName }}</text>
+      <view v-if="offline.bankName" class="slip__row slip__row--loose">
+        <text class="slip__key">开户行</text>
+        <text class="slip__val">{{ offline.bankName }}</text>
       </view>
-      <view v-if="offline.bankAccountName" class="row-between">
-        <text class="label">户名</text>
-        <text class="value">{{ offline.bankAccountName }}</text>
+      <view v-if="offline.bankAccountName" class="slip__row slip__row--loose">
+        <text class="slip__key">户名</text>
+        <text class="slip__val">{{ offline.bankAccountName }}</text>
       </view>
-      <view v-if="offline.receiverAccountDisplay" class="row-between">
-        <text class="label">收款账号</text>
-        <text class="value">{{ offline.receiverAccountDisplay }}</text>
+      <view v-if="offline.receiverAccountDisplay" class="slip__row slip__row--loose">
+        <text class="slip__key">收款账号</text>
+        <text class="slip__val num">{{ offline.receiverAccountDisplay }}</text>
       </view>
-      <view v-if="offlineContact" class="row-between">
-        <text class="label">联系电话</text>
-        <text class="value">{{ offlineContact }}</text>
+      <view v-if="offlineContact" class="slip__row slip__row--loose">
+        <text class="slip__key">联系电话</text>
+        <text class="slip__val num">{{ offlineContact }}</text>
       </view>
-      <view class="muted" style="margin-top: 16rpx">
+      <view class="muted offline-note">
         选择线下付款后订单仍为待支付：需要门店登记真实收款，并由另一位有权人员核实全额到账后，才会进入派单。
       </view>
     </view>
 
-    <view v-if="error" class="card">
+    <view v-if="error" class="card card--error">
       <view class="muted">{{ error }}</view>
-    </view>
-
-    <view class="action-bar">
-      <view class="btn gray" style="flex: 1" @tap="goDetail">查看订单</view>
-      <view v-if="paid" class="btn" style="flex: 2" @tap="goDetail">支付完成，查看订单</view>
-      <view v-else-if="selectedMethod === 'OFFLINE'" class="btn" :class="{ disabled: busy }" style="flex: 2"
-            @tap="confirmOffline">
-        {{ busy ? '提交中…' : (lockedMethod === 'OFFLINE' ? '已选择线下付款' : '确认选择线下付款') }}
-      </view>
-      <view v-else class="btn" :class="{ disabled: busy || !wechatOption || !wechatOption.available }" style="flex: 2"
-            @tap="pay">
-        {{ busy ? '支付中…' : '立即支付' }}
-      </view>
     </view>
 
     <!-- 订阅提醒入口：手动触发，失败不影响任何业务 -->
     <view v-if="orderId && paid" class="card">
       <view class="card-title">检测进度提醒</view>
       <view class="muted">订阅后可在微信收到取车、检测完成等提醒；不订阅也能正常查看订单，站内消息照常送达。</view>
-      <view class="btn ghost" style="margin-top: 20rpx" @tap="subscribe">
+      <view class="btn ghost block btn-gap" hover-class="btn-hover" @tap="subscribe">
         {{ subscribed ? '已提交订阅' : '开启微信进度提醒' }}
+      </view>
+    </view>
+
+    <view class="footer-space"></view>
+
+    <view class="action-bar">
+      <view class="btn gray" hover-class="btn-hover" @tap="goDetail">查看订单</view>
+      <view v-if="paid" class="btn btn-wide" hover-class="btn-hover" @tap="goDetail">支付完成，查看订单</view>
+      <view
+        v-else-if="selectedMethod === 'OFFLINE'"
+        class="btn btn-wide"
+        :class="{ disabled: busy }"
+        hover-class="btn-hover"
+        @tap="confirmOffline"
+      >
+        {{ busy ? '提交中…' : lockedMethod === 'OFFLINE' ? '已选择线下付款' : '确认选择线下付款' }}
+      </view>
+      <view
+        v-else
+        class="btn btn-wide"
+        :class="{ disabled: busy || !wechatOption || !wechatOption.available }"
+        hover-class="btn-hover"
+        @tap="pay"
+      >
+        {{ busy ? '支付中…' : '立即支付' }}
       </view>
     </view>
   </view>
@@ -135,7 +158,6 @@ const selectedMethod = ref('')
 const PAID_STATUS = ['PAID', 'PARTIAL_REFUNDED', 'REFUNDED']
 
 const paid = computed(() => payment.value && PAID_STATUS.indexOf(payment.value.status) >= 0)
-const statusClass = computed(() => (paid.value ? 'ok' : 'warn'))
 const statusLabel = computed(() => (payment.value && payment.value.statusLabel) || '待支付')
 
 const wechatOption = computed(() => options.value.find((o) => o.method === 'WECHAT'))
@@ -175,8 +197,9 @@ function methodHint(opt: any) {
 }
 
 function methodTagClass(opt: any) {
-  if (!opt.available && selectedMethod.value !== opt.method) return ''
-  return opt.method === 'OFFLINE' ? 'warn' : ''
+  if (selectedMethod.value === opt.method) return 'status--brand'
+  if (!opt.available) return 'status--gray'
+  return opt.method === 'OFFLINE' ? 'status--warn' : 'status--brand'
 }
 
 function methodTagText(opt: any) {
@@ -351,38 +374,141 @@ function goDetail() {
 </script>
 
 <style scoped>
-.action-bar .btn {
-  flex: 1;
-}
-.method {
+.pay-head__top {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 20rpx 24rpx;
-  border: 2rpx solid transparent;
-  border-radius: 12rpx;
 }
-.method.active {
-  border-color: #2f6bff;
-  background: rgba(47, 107, 255, 0.06);
+
+/* 墨底上的状态章要反白描边，否则浅色底与墨色融在一起 */
+.pay-head__status {
+  background: transparent;
+  border-color: rgba(255, 255, 255, 0.35);
+  color: #fff;
 }
-.method.disabled {
-  opacity: 0.45;
+
+.pay-head__amount {
+  display: flex;
+  align-items: baseline;
+  margin-top: 18rpx;
+  font-size: 76rpx;
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: 1rpx;
 }
-.method-main {
+
+.pay-head__unit {
+  margin-right: 6rpx;
+  font-size: 34rpx;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.pay-head__meta {
+  margin-top: 14rpx;
+  font-size: 22rpx;
+  letter-spacing: 0.8rpx;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.pay-head__expire {
+  margin-top: 6rpx;
+  font-size: 22rpx;
+  color: #f0b56a;
+}
+
+/* 支付方式：单选行，选中用墨点 + 淡蓝底，不用整块高亮 */
+.method {
+  display: flex;
+  align-items: center;
+  padding: 22rpx 24rpx;
+  border-bottom: 1rpx solid var(--line-2);
+}
+
+.method:last-child {
+  border-bottom: none;
+}
+
+.method--on {
+  background: var(--brand-soft);
+}
+
+.method--off {
+  opacity: 0.5;
+}
+
+.method__radio {
+  flex: 0 0 auto;
+  width: 34rpx;
+  height: 34rpx;
+  margin-right: 18rpx;
+  border: 1rpx solid #c3ccd8;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.method__radio--on {
+  border-color: var(--brand);
+}
+
+.method__dot {
+  width: 16rpx;
+  height: 16rpx;
+  border-radius: 50%;
+  background: transparent;
+}
+
+.method__radio--on .method__dot {
+  background: var(--brand);
+}
+
+.method__main {
   flex: 1;
+  min-width: 0;
+  padding-right: 16rpx;
 }
+
+.method__label {
+  font-size: 28rpx;
+  font-weight: 500;
+}
+
+.method__hint {
+  margin-top: 6rpx;
+  font-size: 22rpx;
+  line-height: 1.5;
+  color: var(--ink-3);
+}
+
 .offline-text {
   font-size: 26rpx;
   line-height: 1.7;
-  margin-bottom: 16rpx;
+  color: var(--ink-2);
+  margin-bottom: 8rpx;
 }
-.btn.ghost {
-  background: #fff;
-  color: #2f6bff;
-  border: 2rpx solid #2f6bff;
-  border-radius: 12rpx;
-  text-align: center;
-  padding: 20rpx 0;
+
+.offline-note {
+  margin-top: 14rpx;
+}
+
+/* 借用 slip 行的排版，但卡片本身是 .card */
+.slip__row--loose {
+  padding: 12rpx 0;
+  border-top: 1rpx solid var(--line-2);
+}
+
+.card--error {
+  border-color: #f3c9c4;
+  background: var(--danger-soft);
+}
+
+.btn-gap {
+  margin-top: 18rpx;
+}
+
+.btn-wide {
+  flex: 2;
 }
 </style>

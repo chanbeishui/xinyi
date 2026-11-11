@@ -1,58 +1,78 @@
 <template>
   <view class="page">
-    <view class="tabs">
-      <view class="tab" :class="{ on: tab === 'vehicle' }" @tap="tab = 'vehicle'">车辆</view>
-      <view class="tab" :class="{ on: tab === 'address' }" @tap="tab = 'address'">接车地址</view>
+    <view class="seg">
+      <view class="seg__item" :class="{ on: tab === 'vehicle' }" hover-class="card-hover" @tap="tab = 'vehicle'">
+        车辆
+      </view>
+      <view class="seg__item" :class="{ on: tab === 'address' }" hover-class="card-hover" @tap="tab = 'address'">
+        接车地址
+      </view>
     </view>
 
     <!-- 车辆 -->
     <view v-if="tab === 'vehicle'">
-      <view v-for="v in vehicles" :key="v.vehicleId" class="card" @tap="choose(v)">
-        <view class="row-between">
-          <view>
-            <view class="plate">{{ v.plateNo }}</view>
-            <view class="muted" style="margin-top: 6rpx">
+      <view v-for="v in vehicles" :key="v.vehicleId" class="slip" @tap="choose(v)">
+        <view class="slip__head">
+          <view class="slip__main">
+            <view class="slip__plate">{{ v.plateNo }}</view>
+            <view class="slip__sub ellipsis">
               {{ v.vehicleTypeName }} · {{ v.brandModel || '车型未填写' }}
             </view>
           </view>
-          <view class="tag" :class="v.isDefault ? 'ok' : 'gray'">{{ v.isDefault ? '默认' : '普通' }}</view>
+          <view class="status" :class="v.isDefault ? 'status--ok' : 'status--gray'">
+            {{ v.isDefault ? '默认' : '普通' }}
+          </view>
         </view>
-        <view class="divider"></view>
-        <view class="row" style="gap: 16rpx">
-          <view class="btn ghost small" @tap.stop="edit(v)">编辑</view>
-          <view v-if="!v.isDefault" class="btn gray small" @tap.stop="makeDefault(v)">设为默认</view>
-          <view class="btn gray small" @tap.stop="remove(v)">删除</view>
+
+        <view class="ops">
+          <text class="op" @tap.stop="edit(v)">编辑</text>
+          <text v-if="!v.isDefault" class="op" @tap.stop="makeDefault(v)">设为默认</text>
+          <text class="op op--danger" @tap.stop="remove(v)">删除</text>
         </view>
       </view>
-      <view v-if="!vehicles.length" class="empty">还没有车辆，先添加一辆吧</view>
-      <view class="btn" @tap="addVehicle">添加车辆</view>
+
+      <view v-if="!vehicles.length" class="empty">
+        <view class="empty__title">还没有车辆</view>
+        <view class="empty__hint">添加车牌与车型后即可预约年检</view>
+      </view>
+      <view class="btn block" hover-class="btn-hover" @tap="addVehicle">添加车辆</view>
     </view>
 
     <!-- 地址 -->
     <view v-if="tab === 'address'">
-      <view v-for="a in addresses" :key="a.addressId" class="card">
-        <view class="row-between">
-          <view style="flex: 1">
-            <view class="value" style="text-align: left">{{ a.label || '接车地址' }}</view>
-            <view class="muted" style="margin-top: 6rpx">{{ a.address }}</view>
+      <view v-for="a in addresses" :key="a.addressId" class="slip">
+        <view class="slip__head">
+          <view class="slip__main">
+            <view class="slip__plate slip__plate--label">{{ a.label || '接车地址' }}</view>
+            <view class="slip__sub">{{ a.address }}</view>
           </view>
-          <view class="tag" :class="a.isDefault ? 'ok' : 'gray'">{{ a.isDefault ? '默认' : '普通' }}</view>
+          <view class="status" :class="a.isDefault ? 'status--ok' : 'status--gray'">
+            {{ a.isDefault ? '默认' : '普通' }}
+          </view>
         </view>
-        <view class="divider"></view>
-        <view class="row" style="gap: 16rpx">
-          <view class="btn ghost small" @tap="editAddress(a)">编辑</view>
-          <view v-if="!a.isDefault" class="btn gray small" @tap="defaultAddress(a)">设为默认</view>
-          <view class="btn gray small" @tap="removeAddress(a)">删除</view>
+
+        <view class="ops">
+          <text class="op" @tap="editAddress(a)">编辑</text>
+          <text v-if="!a.isDefault" class="op" @tap="defaultAddress(a)">设为默认</text>
+          <text class="op op--danger" @tap="removeAddress(a)">删除</text>
         </view>
       </view>
-      <view v-if="!addresses.length" class="empty">还没有接车地址</view>
-      <view class="btn" @tap="openAddressForm(null)">新增接车地址</view>
+
+      <view v-if="!addresses.length" class="empty">
+        <view class="empty__title">还没有接车地址</view>
+        <view class="empty__hint">地址用于匹配检测点与计算上门距离</view>
+      </view>
+      <view class="btn block" hover-class="btn-hover" @tap="openAddressForm(null)">新增接车地址</view>
     </view>
 
     <!-- 地址表单 -->
     <view v-if="addressForm.show" class="mask" @tap="closeAddressForm">
       <view class="sheet" @tap.stop>
-        <view class="card-title">{{ addressForm.addressId ? '编辑接车地址' : '新增接车地址' }}</view>
+        <view class="sheet__head">
+          <text class="sheet__title">{{ addressForm.addressId ? '编辑接车地址' : '新增接车地址' }}</text>
+          <text class="sheet__close" @tap="closeAddressForm">关闭</text>
+        </view>
+
         <view class="field">
           <view class="field-label">地址标签</view>
           <input v-model="addressForm.label" class="input" placeholder="例如 家 / 公司" />
@@ -63,17 +83,19 @@
         </view>
         <view class="field">
           <view class="field-label">坐标（用于匹配检测点与计费距离）</view>
-          <view class="row" style="gap: 12rpx">
-            <input v-model="addressForm.lng" class="input" type="digit" placeholder="经度" style="flex: 1" />
-            <input v-model="addressForm.lat" class="input" type="digit" placeholder="纬度" style="flex: 1" />
+          <view class="coord-row">
+            <input v-model="addressForm.lng" class="input coord-row__item" type="digit" placeholder="经度" />
+            <input v-model="addressForm.lat" class="input coord-row__item" type="digit" placeholder="纬度" />
           </view>
-          <view class="btn ghost small" style="margin-top: 12rpx" @tap="chooseLocation">地图选点</view>
+          <view class="btn ghost small btn-gap" hover-class="btn-hover" @tap="chooseLocation">地图选点</view>
         </view>
-        <view class="row" style="margin-top: 12rpx">
-          <text class="label">设为默认地址</text>
+
+        <view class="switch-row">
+          <text class="switch-row__label">设为默认地址</text>
           <switch :checked="addressForm.isDefault" @change="(e:any) => (addressForm.isDefault = e.detail.value)" />
         </view>
-        <view class="btn" style="margin-top: 24rpx" @tap="saveAddress">保存</view>
+
+        <view class="btn block btn-gap" hover-class="btn-hover" @tap="saveAddress">保存</view>
       </view>
     </view>
   </view>
@@ -241,49 +263,90 @@ function removeAddress(a: any) {
 </script>
 
 <style scoped>
-.tabs {
+/* 分段控件：两段白底胶囊，选中填墨，和底部导航的短横语言一致 */
+.seg {
   display: flex;
-  background: #fff;
-  border-radius: 16rpx;
-  padding: 8rpx;
+  padding: 6rpx;
   margin-bottom: 20rpx;
-}
-
-.tab {
-  flex: 1;
-  text-align: center;
-  padding: 16rpx 0;
-  font-size: 27rpx;
-  color: var(--sub);
-  border-radius: 12rpx;
-}
-
-.tab.on {
-  background: var(--brand-soft);
-  color: var(--brand);
-  font-weight: 600;
-}
-
-.plate {
-  font-size: 34rpx;
-  font-weight: 600;
-  letter-spacing: 2rpx;
-}
-
-.mask {
-  position: fixed;
-  inset: 0;
-  background: rgba(17, 24, 39, 0.45);
-  display: flex;
-  align-items: flex-end;
-}
-
-.sheet {
-  width: 100%;
   background: #fff;
-  border-radius: 28rpx 28rpx 0 0;
-  padding: 32rpx 28rpx calc(32rpx + env(safe-area-inset-bottom));
-  max-height: 88vh;
-  overflow-y: auto;
+  border: 1rpx solid var(--line);
+  border-radius: 14rpx;
+}
+
+.seg__item {
+  flex: 1;
+  height: 72rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10rpx;
+  font-size: 27rpx;
+  color: var(--ink-2);
+}
+
+.seg__item.on {
+  background: var(--ink);
+  color: #fff;
+  font-weight: 600;
+}
+
+.slip__main {
+  flex: 1;
+  min-width: 0;
+  padding-right: 16rpx;
+}
+
+.slip__head .slip__plate--label {
+  font-size: 34rpx;
+  letter-spacing: 0.5rpx;
+}
+
+/* 卡片操作行：文字操作比三个方按钮更安静，也不占卡片宽度 */
+.ops {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 14rpx 24rpx;
+  border-top: 1rpx solid var(--line-2);
+  background: #fafbfc;
+}
+
+.op {
+  padding: 6rpx 0 6rpx 32rpx;
+  font-size: 25rpx;
+  color: var(--ink-2);
+}
+
+.op--danger {
+  color: var(--danger);
+}
+
+.coord-row {
+  display: flex;
+}
+
+.coord-row__item {
+  flex: 1;
+}
+
+.coord-row__item + .coord-row__item {
+  margin-left: 14rpx;
+}
+
+.btn-gap {
+  margin-top: 18rpx;
+}
+
+.switch-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18rpx 0;
+  border-bottom: 1rpx solid var(--line-2);
+}
+
+.switch-row__label {
+  font-size: 26rpx;
+  color: var(--ink-2);
 }
 </style>

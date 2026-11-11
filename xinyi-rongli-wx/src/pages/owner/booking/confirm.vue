@@ -1,54 +1,60 @@
 <template>
   <view class="page">
-    <view v-if="quote" class="card">
-      <view class="card-title">预约信息</view>
-      <view class="row-between">
-        <text class="label">检测点</text>
-        <text class="value">{{ quote.stationName }}</text>
+    <view v-if="quote" class="slip">
+      <view class="slip__head">
+        <view class="slip__main">
+          <text class="eyebrow">预约信息</text>
+          <view class="slip__plate">{{ vehiclePlate || '—' }}</view>
+          <view class="slip__sub ellipsis">{{ quote.vehicleTypeName }}</view>
+        </view>
+        <view class="status status--gray">待提交</view>
       </view>
-      <view class="row-between">
-        <text class="label">车辆</text>
-        <text class="value">{{ vehiclePlate }}</text>
+
+      <view class="slip__row">
+        <text class="slip__key">检测点</text>
+        <text class="slip__val ellipsis">{{ quote.stationName }}</text>
       </view>
-      <view class="row-between">
-        <text class="label">车型</text>
-        <text class="value">{{ quote.vehicleTypeName }}</text>
+      <view class="slip__row">
+        <text class="slip__key">上门时段</text>
+        <text class="slip__val num">{{ slotLabel }}</text>
       </view>
-      <view class="row-between">
-        <text class="label">上门时段</text>
-        <text class="value">{{ slotLabel }}</text>
-      </view>
-      <view class="row-between">
-        <text class="label">接车地址</text>
-        <text class="value" style="max-width: 60%">{{ addressText }}</text>
+      <view class="slip__row slip__row--stack">
+        <text class="slip__key">接车地址</text>
+        <text class="slip__val slip__val--wrap">{{ addressText }}</text>
       </view>
     </view>
 
-    <view v-if="quote" class="card">
-      <view class="card-title">费用明细</view>
-      <view class="row-between">
-        <text class="label">检测服务费</text>
-        <text class="value">¥{{ fen2yuan(quote.items.inspectionFeeFen) }}</text>
+    <view v-if="quote" class="slip">
+      <view class="slip__head">
+        <view class="slip__main">
+          <text class="eyebrow">费用明细</text>
+        </view>
       </view>
-      <view class="row-between">
-        <text class="label">起步费（含 {{ Math.round((quote.items.includedMeters || 0) / 1000) }} km）</text>
-        <text class="value">¥{{ fen2yuan(quote.items.baseFeeFen) }}</text>
+      <view class="slip__row">
+        <text class="slip__key">检测服务费</text>
+        <text class="slip__val num">¥{{ fen2yuan(quote.items.inspectionFeeFen) }}</text>
       </view>
-      <view class="row-between">
-        <text class="label">超出里程 {{ ((quote.items.extraMeters || 0) / 1000).toFixed(1) }} km</text>
-        <text class="value">计算在内</text>
+      <view class="slip__row">
+        <text class="slip__key">起步费</text>
+        <text class="slip__val num">
+          ¥{{ fen2yuan(quote.items.baseFeeFen) }}（含 {{ Math.round((quote.items.includedMeters || 0) / 1000) }} km）
+        </text>
       </view>
-      <view class="row-between">
-        <text class="label">接车距离</text>
-        <text class="value">{{ (quote.distanceMeters / 1000).toFixed(1) }} km</text>
+      <view class="slip__row">
+        <text class="slip__key">超出里程</text>
+        <text class="slip__val num">{{ ((quote.items.extraMeters || 0) / 1000).toFixed(1) }} km</text>
       </view>
-      <view class="divider"></view>
-      <view class="row-between">
-        <text class="label">应付金额</text>
-        <text class="price">¥{{ fen2yuan(quote.amountFen) }}</text>
+      <view class="slip__row">
+        <text class="slip__key">接车距离</text>
+        <text class="slip__val num">{{ (quote.distanceMeters / 1000).toFixed(1) }} km</text>
       </view>
-      <view class="muted" style="margin-top: 10rpx">报价 15 分钟内有效，超时需重新核价。</view>
+      <view class="slip__foot">
+        <text class="slip__no">应付金额</text>
+        <text class="price"><text class="price__unit">¥</text>{{ fen2yuan(quote.amountFen) }}</text>
+      </view>
     </view>
+
+    <view v-if="quote" class="form-hint form-hint--left">报价 15 分钟内有效，超时需重新核价。</view>
 
     <view v-if="quote" class="card">
       <view class="card-title">联系人</view>
@@ -60,18 +66,20 @@
         <view class="field-label">联系电话</view>
         <input v-model="contactPhone" class="input" type="number" placeholder="接车时联系的手机号" maxlength="11" />
       </view>
-      <view class="muted" style="margin-top: 10rpx">联系方式仅向本次服务的代驾在履约期间开放。</view>
+      <view class="form-hint form-hint--left">联系方式仅向本次服务的代驾在履约期间开放。</view>
     </view>
 
     <view v-if="error" class="card">
       <view class="card-title">暂时无法预约</view>
       <view class="muted">{{ error }}</view>
-      <view class="btn ghost" style="margin-top: 20rpx" @tap="backToSlots">重新选择时段</view>
+      <view class="btn ghost block btn-gap" hover-class="btn-hover" @tap="backToSlots">重新选择时段</view>
     </view>
 
+    <view class="footer-space"></view>
+
     <view class="action-bar">
-      <view class="btn gray" style="flex: 1" @tap="backToSlots">改时段</view>
-      <view class="btn" :class="{ disabled: !quote || submitting }" style="flex: 2" @tap="submit">
+      <view class="btn gray" hover-class="btn-hover" @tap="backToSlots">改时段</view>
+      <view class="btn btn-wide" :class="{ disabled: !quote || submitting }" hover-class="btn-hover" @tap="submit">
         {{ submitting ? '提交中…' : '提交订单' }}
       </view>
     </view>
@@ -170,7 +178,34 @@ async function submit() {
 </script>
 
 <style scoped>
-.action-bar .btn {
+.slip__main {
   flex: 1;
+  min-width: 0;
+  padding-right: 16rpx;
+}
+
+.slip__row--stack {
+  display: block;
+}
+
+.slip__val--wrap {
+  display: block;
+  margin-top: 8rpx;
+  text-align: left;
+  line-height: 1.65;
+  color: var(--ink-2);
+}
+
+.form-hint--left {
+  text-align: left;
+  margin: 4rpx 6rpx 18rpx;
+}
+
+.btn-gap {
+  margin-top: 18rpx;
+}
+
+.btn-wide {
+  flex: 2;
 }
 </style>

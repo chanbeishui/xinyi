@@ -8,7 +8,10 @@
       <view class="field">
         <view class="field-label">车型</view>
         <picker mode="selector" :range="typeLabels" :value="typeIndex" @change="onTypeChange">
-          <view class="input picker">{{ typeLabels[typeIndex] || '请选择车型' }}</view>
+          <view class="input picker">
+            <text class="picker__text">{{ typeLabels[typeIndex] || '请选择车型' }}</text>
+            <view class="chev"></view>
+          </view>
         </picker>
       </view>
       <view class="field">
@@ -22,25 +25,29 @@
       <view class="field">
         <view class="field-label">注册日期（选填）</view>
         <picker mode="date" :value="form.registeredOn" @change="onDateChange">
-          <view class="input picker">{{ form.registeredOn || '请选择注册日期' }}</view>
+          <view class="input picker">
+            <text class="picker__text">{{ form.registeredOn || '请选择注册日期' }}</text>
+            <view class="chev"></view>
+          </view>
         </picker>
       </view>
       <view class="field">
         <view class="field-label">使用性质</view>
         <picker mode="selector" :range="useLabels" :value="useIndex" @change="onUseChange">
-          <view class="input picker">{{ useLabels[useIndex] }}</view>
+          <view class="input picker">
+            <text class="picker__text">{{ useLabels[useIndex] }}</text>
+            <view class="chev"></view>
+          </view>
         </picker>
       </view>
-      <view class="row" style="margin-top: 12rpx">
-        <text class="label">设为默认车辆</text>
+      <view class="switch-row">
+        <text class="switch-row__label">设为默认车辆</text>
         <switch :checked="form.isDefault" @change="(e:any) => (form.isDefault = e.detail.value)" />
       </view>
     </view>
 
-    <view class="btn" @tap="save">保存</view>
-    <view class="muted" style="margin-top: 16rpx; text-align: center">
-      车型影响检测项目与计价方案，请按行驶证选择。
-    </view>
+    <view class="btn block" hover-class="btn-hover" @tap="save">保存</view>
+    <view class="form-hint">车型影响检测项目与计价方案，请按行驶证选择。</view>
   </view>
 </template>
 
@@ -185,6 +192,24 @@ async function save() {
 .picker {
   display: flex;
   align-items: center;
-  color: var(--text);
+  justify-content: space-between;
+  line-height: 78rpx;
+}
+
+.picker__text {
+  font-size: 28rpx;
+  color: var(--ink);
+}
+
+.switch-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18rpx 0 4rpx;
+}
+
+.switch-row__label {
+  font-size: 26rpx;
+  color: var(--ink-2);
 }
 </style>
