@@ -95,7 +95,10 @@
           <div class="rl-trial">
             <el-input v-model="trialKm" placeholder="14" style="width: 160px" />
             <el-button :loading="trialing" @click="runTrial">试算</el-button>
-            <span v-if="trialFee !== null" class="rl-trial__result">本次试算应付 {{ money(trialFee) }}</span>
+            <span v-if="trialFee !== null" class="rl-trial__result">
+              本次试算应付 {{ money(trialFee) }}
+              <span v-if="trialDetail" class="rl-trial__detail">（{{ trialDetail }}）</span>
+            </span>
           </div>
         </el-form-item>
         <el-form-item label="变更说明">
@@ -139,6 +142,7 @@ const rows = ref<any[]>([])
 const formVisible = ref(false)
 const trialKm = ref('14')
 const trialFee = ref<number | null>(null)
+const trialDetail = ref('')
 
 const form = reactive<any>({
   ruleId: '',
@@ -223,6 +227,7 @@ function openCreate() {
     checked: false
   })
   trialFee.value = null
+  trialDetail.value = ''
   formVisible.value = true
 }
 
@@ -242,6 +247,7 @@ function openEdit(row: any) {
     checked: false
   })
   trialFee.value = null
+  trialDetail.value = ''
   formVisible.value = true
 }
 
@@ -287,7 +293,13 @@ async function runTrial() {
   trialing.value = true
   try {
     const res: any = await trialFeeRule({ scenario: form.scenario, distanceMeters: Math.round(km * 1000) })
-    trialFee.value = Number(res?.feeFen ?? res?.totalFen ?? 0)
+    // 后端返回的是 amountFen（分）。原来读 feeFen / totalFen 两个都不存在的字段，
+    // 取不到就落到默认值 0，于是不管里程多少都显示 ¥0.00。
+    trialFee.value = Number(res?.amountFen ?? 0)
+    const extraKm = Number(res?.extraMeters ?? 0) / 1000
+    trialDetail.value = extraKm > 0
+      ? `基础 ${money(res.baseFen)} + 超 ${extraKm.toFixed(1)}km × ${money(res.unitPriceFen)}/km`
+      : `基础 ${money(res?.baseFen)}（未超出包含里程）`
   } finally {
     trialing.value = false
   }
@@ -312,5 +324,10 @@ async function publish() {
 .rl-trial__result {
   color: #067647;
   font-size: 12.5px;
+}
+.rl-trial__detail {
+  color: var(--el-text-color-secondary);
+  font-size: 12px;
+  margin-left: 4px;
 }
 </style>
