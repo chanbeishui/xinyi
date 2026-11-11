@@ -5,10 +5,12 @@
       :key="item.key"
       class="tab"
       :class="{ on: item.key === active }"
+      hover-class="tab--press"
+      :hover-stay-time="80"
       @tap="go(item)"
     >
-      <view class="dot" :class="{ filled: item.key === active }"></view>
-      <text class="txt">{{ item.label }}</text>
+      <view class="tab__mark"></view>
+      <text class="tab__label">{{ item.label }}</text>
     </view>
   </view>
 </template>
@@ -53,17 +55,18 @@ function go(item: TabItem) {
 </script>
 
 <style scoped>
+/* 底部导航：不画图标，用「顶部短横 + 字重」区分当前页。
+   小程序里图标字体要额外打包，纯文字反而更稳、也与工单体的排版一致。 */
 .tabbar {
   position: fixed;
   left: 0;
   right: 0;
   bottom: 0;
-  height: calc(112rpx + env(safe-area-inset-bottom));
-  padding-bottom: env(safe-area-inset-bottom);
-  background: #fff;
-  border-top: 1rpx solid var(--line);
+  z-index: 80;
   display: flex;
-  align-items: center;
+  align-items: stretch;
+  background: rgba(255, 255, 255, 0.98);
+  border-top: 1rpx solid var(--line);
 }
 
 .tab {
@@ -72,27 +75,41 @@ function go(item: TabItem) {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 8rpx;
-  color: var(--muted);
+  height: 100rpx;
+  padding-top: 6rpx;
+}
+
+.tab--press {
+  background: #f7f9fc;
+}
+
+/* 当前项的短横：位置固定在导航条上沿，视觉上像工单的分栏标 */
+.tab__mark {
+  width: 36rpx;
+  height: 5rpx;
+  border-radius: 3rpx;
+  background: transparent;
+}
+
+.tab.on .tab__mark {
+  background: var(--brand);
+}
+
+.tab__label {
+  margin-top: 10rpx;
   font-size: 22rpx;
+  letter-spacing: 1rpx;
+  color: var(--ink-3);
 }
 
-.tab.on {
-  color: var(--brand);
+.tab.on .tab__label {
+  color: var(--ink);
+  font-weight: 600;
 }
 
-.dot {
-  width: 16rpx;
-  height: 16rpx;
-  border-radius: 50%;
-  border: 2rpx solid currentColor;
-}
-
-.dot.filled {
-  background: currentColor;
-}
-
-.txt {
-  font-size: 22rpx;
+/* 安全区直接撑在容器上，避免 iPhone 上标签被 home indicator 压住 */
+.tabbar {
+  padding-bottom: constant(safe-area-inset-bottom);
+  padding-bottom: env(safe-area-inset-bottom);
 }
 </style>
