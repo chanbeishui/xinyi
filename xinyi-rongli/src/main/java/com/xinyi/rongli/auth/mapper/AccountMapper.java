@@ -382,15 +382,20 @@ public interface AccountMapper
             @Param("evidence") String evidence);
 
     @Select("""
+            <script>
             SELECT a.id, a.driver_id, a.status, a.submitted_at, a.reviewed_at, a.review_opinion,
                    d.account_id, acc.nickname, d.qualification_status, d.listening_enabled,
                    d.new_assignment_enabled, d.license_class, d.license_valid_to
             FROM vi_driver_application a
             JOIN vi_driver_profile d ON d.id = a.driver_id
             JOIN vi_account acc ON acc.id = d.account_id
-            WHERE a.status = #{status}
+            WHERE 1 = 1
+            <if test="status != null and status != ''">
+              AND a.status = #{status}
+            </if>
             ORDER BY a.submitted_at ASC, a.id ASC
             LIMIT #{limit}
+            </script>
             """)
     List<Map<String, Object>> listApplicationsByStatus(@Param("status") String status, @Param("limit") int limit);
 

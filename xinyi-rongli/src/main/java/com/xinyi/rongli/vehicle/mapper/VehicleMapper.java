@@ -271,7 +271,12 @@ public interface VehicleMapper
 
     @Select("""
             SELECT d.*, a.nickname, a.status, a.created_at AS account_created_at,
-                   (SELECT MAX(captured_at) FROM vi_driver_location l WHERE l.driver_id = d.id) AS last_location_at
+                   a.phone_cipher, a.phone_verified_at, a.open_id,
+                   (SELECT MAX(captured_at) FROM vi_driver_location l WHERE l.driver_id = d.id) AS last_location_at,
+                   (SELECT COUNT(1) FROM vi_driver_assignment x WHERE x.driver_id = d.id AND x.ended_at IS NULL) AS active_assignments,
+                   (SELECT COUNT(1) FROM vi_driver_assignment x WHERE x.driver_id = d.id) AS total_assignments,
+                   (SELECT MAX(x.ended_at) FROM vi_driver_assignment x WHERE x.driver_id = d.id) AS last_assignment_at,
+                   (SELECT dept_name FROM sys_dept sd WHERE sd.dept_id = d.dept_id) AS dept_name
             FROM vi_driver_profile d JOIN vi_account a ON a.id = d.account_id WHERE d.id = #{driverId}
             """)
     Map<String, Object> adminDriverDetail(@Param("driverId") Long driverId);

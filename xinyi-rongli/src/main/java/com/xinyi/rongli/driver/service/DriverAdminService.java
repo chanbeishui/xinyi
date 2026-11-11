@@ -60,7 +60,9 @@ public class DriverAdminService
 
     public Map<String, Object> qualifications(String status, int pageNum, int pageSize)
     {
-        String filter = status == null || status.isBlank() ? "SUBMITTED" : status;
+        // 不传 / 传 ALL 表示“全部状态”，不能退回 SUBMITTED——
+        // 否则运营选「全部状态」看到的仍是待审核结果（已通过的申请一条都不显示）
+        String filter = status == null || status.isBlank() || "ALL".equalsIgnoreCase(status) ? null : status;
         int limit = Math.min(Math.max(pageSize, 1), 100);
         int offset = (Math.max(pageNum, 1) - 1) * limit;
         List<Map<String, Object>> all = accountMapper.listApplicationsByStatus(filter, 500);
@@ -194,9 +196,50 @@ public class DriverAdminService
             throw ApiException.notFound("代驾不存在");
         }
         Map<String, Object> view = new LinkedHashMap<>(d.map());
+        // phone_cipher / open_id 不能直接回给前端：前者是密文（byte[] 会被序列化成 base64），
+        // 后者是登录标识。手机号只给脱敏值。
+        Object cipher = view.remove("phone_cipher");
+        view.remove("open_id");
+        view.put("phoneMasked", maskPhone(decryptText(cipher)));
+        view.put("phoneVerifiedAt", ViTime.iso(d.time("phone_verified_at")));
+
         Row progress = Row.of(accountMapper.findLatestApplication(driverId));
         view.put("latestApplicationId", progress.isEmpty() ? null : String.valueOf(progress.lng("id")));
         view.put("latestApplicationStatus", progress.isEmpty() ? null : progress.str("status"));
+        view.put("latestApplicationStatusLabel", progress.isEmpty() ? null : qualificationLabel(progress.str("status")));
+        view.put("latestApplicationSubmittedAt", progress.isEmpty() ? null : ViTime.iso(progress.time("submitted_at")));
+        view.put("latestApplicationReviewedAt", progress.isEmpty() ? null : ViTime.iso(progress.time("reviewed_at")));
+        view.put("latestApplicationOpinion", progress.isEmpty() ? null : progress.str("review_opinion"));
+
+        // 管理端统一给一份 camelCase 视图，前端不必再猜 snake_case / camelCase
+        view.put("driverId", String.valueOf(driverId));
+        view.put("accountId", d.get("account_id") == null ? null : String.valueOf(d.lng("account_id")));
+        view.put("nickname", d.str("nickname"));
+        view.put("accountStatus", d.str("status"));
+        view.put("qualificationStatus", d.str("qualification_status"));
+        view.put("qualificationLabel", qualificationLabel(d.str("qualification_status")));
+        view.put("listeningEnabled", d.bool("listening_enabled"));
+        view.put("newAssignmentEnabled", d.bool("new_assignment_enabled"));
+        view.put("licenseClass", d.str("license_class"));
+        view.put("licenseValidTo", d.date("license_valid_to") == null ? null : d.date("license_valid_to").toString());
+        view.put("licenseLongTerm", d.bool("license_long_term"));
+        view.put("reviewDueAt", ViTime.iso(d.time("review_due_at")));
+        view.put("qualificationRevision", d.lng("qualification_revision", 0L));
+        view.put("deptId", d.get("dept_id") == null ? null : String.valueOf(d.lng("dept_id")));
+        view.put("deptName", d.str("dept_name"));
+        view.put("internalRemark", d.str("internal_remark"));
+        view.put("createdAt", ViTime.iso(d.time("created_at")));
+        view.put("updatedAt", ViTime.iso(d.time("updated_at")));
+        view.put("accountCreatedAt", ViTime.iso(d.time("account_created_at")));
+        view.put("lastLocationAt", ViTime.iso(d.time("last_location_at")));
+        view.put("lastAssignmentAt", ViTime.iso(d.time("last_assignment_at")));
+        view.put("activeAssignments", d.intg("active_assignments", 0));
+        view.put("totalAssignments", d.intg("total_assignments", 0));
+        // 派单只看这四个条件（不要求定位），详情里直接算给运营看，省得来回猜
+        view.put("canReceive", "APPROVED".equals(d.str("qualification_status"))
+                && d.bool("listening_enabled") && d.bool("new_assignment_enabled")
+                && "ACTIVE".equals(d.str("status")));
+
         view.put("recentAssignments", dispatchMapper.listAssignmentsOfDriver(driverId, null, 0, 10));
         return view;
     }
@@ -265,5 +308,49 @@ public class DriverAdminService
         }
         return text.substring(0, keepLeft) + "*".repeat(Math.max(1, text.length() - keepLeft - keepRight))
                 + text.substring(text.length() - keepRight);
+    }
+
+    /** 申请单状态 → 中文；与小程序、审核列表保持一致 */
+    private String qualificationLabel(String status)
+    {
+        if (status == null)
+        {
+            return null;
+        }
+        return switch (status)
+        {
+            case "DRAFT" -> "资料待完善";
+            case "SUBMITTED" -> "待审核";
+            case "APPROVED" -> "已通过";
+            case "REJECTED" -> "已驳回";
+            case "EXPIRED" -> "已过期";
+            default -> status;
+        };
+    }
+
+    /** 手机号密文解密；密钥不可用或数据损坏时返回 null，不影响详情其它字段 */
+    private String decryptText(Object cipher)
+    {
+        if (!(cipher instanceof byte[] bytes) || bytes.length == 0)
+        {
+            return null;
+        }
+        try
+        {
+            return crypto.decrypt(bytes);
+        }
+        catch (RuntimeException e)
+        {
+            return null;
+        }
+    }
+
+    private String maskPhone(String phone)
+    {
+        if (phone == null || phone.length() < 7)
+        {
+            return "未绑定";
+        }
+        return phone.substring(0, 3) + "****" + phone.substring(phone.length() - 4);
     }
 }
