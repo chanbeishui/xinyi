@@ -93,6 +93,8 @@ public final class MiniDtos
         public String plateNo;
         public Long addressId;
         public AddressReq addressDraft;
+        /** 用户手选的检测点；为空时按地址与车型自动匹配最近的服务站 */
+        public Long stationId;
         public Long pickupSlotId;
         public String inspectionTypeCode;
     }

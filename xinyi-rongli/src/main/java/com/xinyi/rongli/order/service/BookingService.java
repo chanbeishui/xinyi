@@ -210,7 +210,35 @@ public class BookingService
         double lng = address.getDoubleValue("lng");
         double lat = address.getDoubleValue("lat");
 
-        Station station = matchStation(vehicleType, lng, lat);
+        Station station;
+        if (req.stationId != null)
+        {
+            // 车主在小程序里手选了检测点：以他的选择为准，但必须仍然承接该车型、
+            // 且接车地址在服务半径内，否则派单会把车送到根本不上门的地方。
+            Station chosen = stationMapper.findEnabled(req.stationId);
+            if (chosen == null)
+            {
+                throw ApiException.unprocessable(Codes.Error.NOT_SERVICEABLE, "所选检测点不存在或已停用");
+            }
+            JSONArray supported = JSON.parseArray(chosen.getSupportedVehicleCodes());
+            if (supported == null || !supported.contains(vehicleType))
+            {
+                throw ApiException.unprocessable(Codes.Error.NOT_SERVICEABLE,
+                        "该检测点不承接" + dictLabel("vehicle_type", vehicleType) + "，请选择其他检测点");
+            }
+            int radius = chosen.getServiceRadiusMeter() == null ? 30000 : chosen.getServiceRadiusMeter();
+            double distance = haversine(lng, lat, chosen.getLng().doubleValue(), chosen.getLat().doubleValue());
+            if (distance > radius)
+            {
+                throw ApiException.unprocessable(Codes.Error.NOT_SERVICEABLE,
+                        "该检测点不服务当前接车地址（超出 " + Math.round(radius / 1000.0) + " 公里服务范围）");
+            }
+            station = chosen;
+        }
+        else
+        {
+            station = matchStation(vehicleType, lng, lat);
+        }
         Long stationId = station.getId();
 
         QuotaSlot slot = req.pickupSlotId == null ? null : stationMapper.findSlot(req.pickupSlotId);
@@ -225,6 +253,11 @@ public class BookingService
         if (slot.getStartsAt().isBefore(ViTime.now().plusMinutes(30)))
         {
             throw ApiException.unprocessable(Codes.Error.NOT_SERVICEABLE, "所选时段过近，请选择更晚的时间");
+        }
+        if (req.stationId != null && !withinBusinessHours(station, slot.getStartsAt()))
+        {
+            throw ApiException.unprocessable(Codes.Error.NOT_SERVICEABLE,
+                    "所选时间不在检测点营业时间内，请重新选择");
         }
 
         String inspectionType = req.inspectionTypeCode == null || req.inspectionTypeCode.isBlank()
@@ -292,6 +325,54 @@ public class BookingService
     }
 
     /** 取最近且支持该车型、在服务半径内的已启用检测点 */
+    /**
+     * 所选时段是否落在检测点的营业时间内。
+     *
+     * businessHours 形如 {"weekdays":[1,2,3,4,5,6],"startHour":8,"endHour":18}，
+     * weekdays 用 1=周一 … 7=周日（与小程序 WEEK 定义一致）。配置缺失或格式异常时放行，
+     * 避免一条坏配置把整个下单链路堵死。
+     */
+    private boolean withinBusinessHours(Station station, LocalDateTime utcStartsAt)
+    {
+        String raw = station.getBusinessHours();
+        if (raw == null || raw.isBlank())
+        {
+            return true;
+        }
+        JSONObject hours;
+        try
+        {
+            hours = JSON.parseObject(raw);
+        }
+        catch (RuntimeException ex)
+        {
+            return true;
+        }
+        if (hours == null)
+        {
+            return true;
+        }
+        if (!hours.containsKey("startHour") || !hours.containsKey("endHour"))
+        {
+            return true;
+        }
+        int startHour = hours.getIntValue("startHour");
+        int endHour = hours.getIntValue("endHour");
+        if (startHour < 0 || endHour <= startHour)
+        {
+            return true;
+        }
+        LocalDateTime local = utcStartsAt.atZone(ZoneOffset.UTC)
+                .withZoneSameInstant(ViTime.SHANGHAI).toLocalDateTime();
+        JSONArray days = hours.getJSONArray("weekdays");
+        if (days != null && !days.isEmpty() && !days.contains(local.getDayOfWeek().getValue()))
+        {
+            return false;
+        }
+        int hour = local.getHour();
+        return hour >= startHour && hour < endHour;
+    }
+
     private Station matchStation(String vehicleType, double lng, double lat)
     {
         Station best = null;
