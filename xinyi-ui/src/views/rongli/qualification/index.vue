@@ -10,7 +10,7 @@
     <section class="rl-panel">
       <div class="rl-filters">
         <el-select v-model="query.status" placeholder="全部状态" style="width: 160px" @change="handleQuery">
-          <el-option label="全部状态" value="" />
+          <el-option label="全部状态" value="ALL" />
           <el-option label="待审核" value="SUBMITTED" />
           <el-option label="已通过" value="APPROVED" />
           <el-option label="已驳回" value="REJECTED" />
@@ -49,9 +49,9 @@
         </el-table-column>
         <template #empty>
           <div class="rl-empty">
-            <div class="rl-empty__title">没有待审核的资格申请</div>
+            <div class="rl-empty__title">{{ emptyTitle }}</div>
             <div class="rl-empty__hint">小程序提交的首次申请与年度复审都会进入这里。</div>
-            <el-button @click="query.status = ''; handleQuery()">查看全部</el-button>
+            <el-button v-if="query.status !== 'ALL'" @click="query.status = 'ALL'; handleQuery()">查看全部</el-button>
           </div>
         </template>
       </el-table>
@@ -185,6 +185,12 @@ const STATUS_LABEL: Record<string, string> = {
 }
 
 onMounted(load)
+
+const emptyTitle = computed(() => {
+  if (query.status === 'ALL') return '暂无资格申请'
+  if (query.status === 'SUBMITTED') return '没有待审核的资格申请'
+  return `没有${STATUS_LABEL[query.status] || ''}的资格申请`
+})
 
 async function load() {
   loading.value = true

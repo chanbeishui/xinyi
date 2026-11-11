@@ -114,18 +114,57 @@
       <el-tabs v-model="tab">
         <el-tab-pane label="资料与资格" name="base">
           <div class="rl-kv">
+            <div><span>代驾编号</span><b>{{ driverCode(detail) }}</b></div>
             <div><span>手机号</span><b>{{ detail.phoneMasked || '未绑定' }}</b></div>
-            <div><span>人员类型</span><b>{{ detail.employee ? '员工申请' : '普通用户' }}</b></div>
-            <div><span>准驾车型</span><b>{{ detail.licenseClass || detail.license_class || '—' }}</b></div>
-            <div><span>驾驶证有效期</span><b>{{ shortDate(detail.licenseValidTo || detail.license_valid_to) }}</b></div>
-            <div><span>复审日期</span><b>{{ shortDate(detail.reviewDueAt || detail.review_due_at) }}</b></div>
-            <div><span>累计服务</span><b>{{ Number(detail.totalAssignments || detail.total_assignments || 0) }} 单</b></div>
+            <div><span>账号状态</span><b>{{ accountStatusLabel(detail.accountStatus) }}</b></div>
+            <div><span>注册时间</span><b>{{ shortTime(detail.accountCreatedAt) }}</b></div>
+            <div><span>归属部门</span><b>{{ detail.deptName || '全公司共享' }}</b></div>
+            <div><span>建档时间</span><b>{{ shortTime(detail.createdAt) }}</b></div>
           </div>
+
+          <el-divider content-position="left">资格与证件</el-divider>
+          <div class="rl-kv">
+            <div><span>资格状态</span><b>{{ qualificationLabel(detail.qualificationStatus) }}</b></div>
+            <div><span>准驾车型</span><b>{{ detail.licenseClass || '未登记' }}</b></div>
+            <div>
+              <span>驾驶证有效期</span>
+              <b>{{ detail.licenseLongTerm ? '长期有效' : shortDate(detail.licenseValidTo) }}</b>
+            </div>
+            <div><span>复审日期</span><b>{{ shortDate(detail.reviewDueAt) }}</b></div>
+            <div><span>资格版本</span><b>第 {{ Number(detail.qualificationRevision || 0) }} 版</b></div>
+            <div>
+              <span>最近审核</span>
+              <b>{{ detail.latestApplicationStatusLabel || '—' }}</b>
+            </div>
+            <div><span>提交时间</span><b>{{ shortTime(detail.latestApplicationSubmittedAt) }}</b></div>
+            <div><span>审核时间</span><b>{{ shortTime(detail.latestApplicationReviewedAt) }}</b></div>
+          </div>
+          <div v-if="detail.latestApplicationOpinion" class="rl-note">
+            审核意见：{{ detail.latestApplicationOpinion }}
+          </div>
+
+          <el-divider content-position="left">接单与派单</el-divider>
+          <div class="rl-kv">
+            <div>
+              <span>派单资格</span>
+              <b :class="detail.canReceive ? 'rl-ok' : 'rl-warn'">{{ detail.canReceive ? '可派单' : assignBlockReason(detail) }}</b>
+            </div>
+            <div><span>听单状态</span><b>{{ detail.listeningEnabled ? '已开启' : '已关闭' }}</b></div>
+            <div><span>接受新邀约</span><b>{{ detail.newAssignmentEnabled ? '允许' : '运营已停派' }}</b></div>
+            <div><span>在手任务</span><b>{{ Number(detail.activeAssignments || 0) }} 单</b></div>
+            <div><span>累计服务</span><b>{{ Number(detail.totalAssignments || 0) }} 单</b></div>
+            <div><span>最近完单</span><b>{{ shortTime(detail.lastAssignmentAt) }}</b></div>
+            <div><span>最近定位</span><b>{{ shortTime(detail.lastLocationAt) }}</b></div>
+            <div><span>派单依据</span><b>只看听单与接单开关，不看定位</b></div>
+          </div>
+
+          <div v-if="detail.internalRemark" class="rl-note">内部备注：{{ detail.internalRemark }}</div>
+
           <el-divider content-position="left">接单控制</el-divider>
           <div class="rl-switch-row">
             <div>
               <div class="rl-strong">接受新邀约</div>
-              <div class="rl-sub">关闭后仍需完成当前在手任务</div>
+              <div class="rl-sub">关闭后仍需完成当前在手任务；听单开关由代驾在小程序首页控制</div>
             </div>
             <el-switch
               :model-value="!!Number(detail.newAssignmentEnabled ?? detail.new_assignment_enabled ?? 1)"
@@ -222,6 +261,20 @@ function listenState(row: any) {
 /** 后端错误体统一在 response.data.msg，axios 只把状态码包成 message */
 function errText(e: any) {
   return e?.response?.data?.msg || e?.message || '操作失败，请稍后重试'
+}
+
+function accountStatusLabel(status?: string) {
+  if (!status) return '—'
+  return status === 'ACTIVE' ? '正常' : status === 'DISABLED' ? '已停用' : status
+}
+
+/** 派单资格不满足时，直接说清卡在哪一条，运营不用再去猜 */
+function assignBlockReason(row: any) {
+  if ((row.qualificationStatus || row.qualification_status) !== 'APPROVED') return '资格未通过'
+  if ((row.accountStatus || row.status) !== 'ACTIVE') return '账号已停用'
+  if (!Number(row.newAssignmentEnabled ?? row.new_assignment_enabled ?? 1)) return '运营已停派'
+  if (!Number(row.listeningEnabled ?? row.listening_enabled ?? 0)) return '代驾未开启听单'
+  return '不可派单'
 }
 
 function driverId(row: any) {
@@ -348,4 +401,10 @@ function goStatement(row: any) {
   display: flex; align-items: center; justify-content: space-between;
   padding: 12px 0; border-bottom: 1px solid var(--rl-line-soft);
 }
+.rl-note {
+  margin-top: 10px; padding: 10px 12px; border-radius: 6px;
+  background: #f6f8fb; color: #475467; font-size: 12.5px; line-height: 1.6;
+}
+.rl-ok { color: #067647; }
+.rl-warn { color: #b54708; }
 </style>
