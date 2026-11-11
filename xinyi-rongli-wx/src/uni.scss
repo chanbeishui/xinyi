@@ -1,21 +1,31 @@
 /**
  * 全局样式变量。小程序端使用 scss 变量 + CSS 自定义属性双轨，
  * 便于在页面内直接写 var(--brand) 而不必 import。
+ *
+ * 取值来自「检验单」视觉体系：纸面白卡 + 发丝线 + 墨色文字 + 检测蓝。
+ * 旧的 $sub / $muted 等命名保留，避免已有页面编译不过。
  */
 
-$brand: #1f6feb;
-$brand-dark: #1758c4;
-$brand-soft: #eaf1ff;
-$bg: #f5f6f8;
+$brand: #1b4fd8;
+$brand-dark: #1540a8;
+$brand-soft: #eef3ff;
+$ink: #0e1726;
+$ink-2: #475467;
+$ink-3: #7b8794;
+$bg: #edf0f4;
 $card: #ffffff;
-$text: #1a1d24;
-$sub: #6b7280;
-$muted: #9aa1ac;
-$line: #edeff3;
-$ok: #12b76a;
-$warn: #f79009;
-$danger: #e5484d;
+$line: #e4e8ef;
+$line-2: #f1f3f7;
 
-$radius-lg: 24rpx;
-$radius-md: 16rpx;
-$radius-sm: 10rpx;
+/* 兼容旧变量名 */
+$text: $ink;
+$sub: $ink-2;
+$muted: $ink-3;
+
+$ok: #12905b;
+$warn: #b45309;
+$danger: #c0392b;
+
+$radius-lg: 20rpx;
+$radius-md: 14rpx;
+$radius-sm: 8rpx;
