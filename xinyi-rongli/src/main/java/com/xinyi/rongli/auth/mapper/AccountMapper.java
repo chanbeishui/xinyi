@@ -364,9 +364,13 @@ public interface AccountMapper
             @Param("reviewer") Long reviewer, @Param("opinion") String opinion);
 
     @Update("""
-            UPDATE vi_driver_application SET sensitive_payload_cipher = #{payload}, evidence_file_ids = #{evidence},
-                   updated_at = UTC_TIMESTAMP(3), version = version + 1
+            <script>
+            UPDATE vi_driver_application
+            SET sensitive_payload_cipher = #{payload},
+                <if test="evidence != null">evidence_file_ids = #{evidence},</if>
+                updated_at = UTC_TIMESTAMP(3), version = version + 1
             WHERE id = #{applicationId} AND status = 'DRAFT'
+            </script>
             """)
     int updateApplicationDraft(@Param("applicationId") Long applicationId, @Param("payload") byte[] payload,
             @Param("evidence") String evidence);
