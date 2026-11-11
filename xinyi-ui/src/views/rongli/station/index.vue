@@ -96,10 +96,41 @@
           </p>
         </el-form-item>
         <el-form-item label="地址" required>
+          <div class="st-region">
+            <el-select
+              v-model="form.province"
+              filterable
+              clearable
+              placeholder="省"
+              :disabled="!regionReady"
+              @change="onProvinceChange"
+            >
+              <el-option v-for="p in provinceOptions" :key="p" :label="p" :value="p" />
+            </el-select>
+            <el-select
+              v-model="form.city"
+              filterable
+              clearable
+              placeholder="市"
+              :disabled="!regionReady || !form.province"
+              @change="onCityChange"
+            >
+              <el-option v-for="c in cityOptions" :key="c" :label="c" :value="c" />
+            </el-select>
+            <el-select
+              v-model="form.district"
+              filterable
+              clearable
+              placeholder="区 / 县"
+              :disabled="!regionReady || !form.city"
+            >
+              <el-option v-for="d in districtOptions" :key="d" :label="d" :value="d" />
+            </el-select>
+          </div>
           <div class="st-address">
             <el-input
-              v-model="form.address"
-              placeholder="请输入省、市、区及详细地址，如：广东省茂名市茂南区站前路1号"
+              v-model="form.detail"
+              placeholder="详细地址，只填街道 / 门牌，如：站前路1号"
               clearable
               @keyup.enter="searchAddress"
             />
@@ -107,7 +138,14 @@
               搜索
             </el-button>
           </div>
-          <p class="rl-hint">支持输入省 / 市 / 区及详细地址，点击「搜索」（或回车）会在下方地图定位并打点。</p>
+          <p v-if="fullAddress && (form.province || form.city || form.district)" class="st-preview">
+            <span>保存地址</span>
+            <b>{{ fullAddress }}</b>
+          </p>
+          <p v-if="regionError" class="rl-hint rl-hint--warn">{{ regionError }}</p>
+          <p v-else class="rl-hint">
+            省 / 市 / 区用下拉选择，详细地址只填街道门牌即可；省市区重复写一遍会自动去掉。
+          </p>
         </el-form-item>
         <el-form-item label="营业时间" required>
           <div class="rl-hours">
@@ -130,13 +168,14 @@
             ref="mapRef"
             v-model:lng="form.lng"
             v-model:lat="form.lat"
+            :radius="form.serviceRadiusMeter"
             @update:address="onMapAddress"
           />
           <div class="st-coords">
             <el-input v-model="form.lng" placeholder="经度，如 110.925" />
             <el-input v-model="form.lat" placeholder="纬度，如 21.663" />
           </div>
-          <p class="rl-hint">在地图上点选或拖动标记可回填坐标；用上方「搜索」定位后也可在此微调。</p>
+          <p class="rl-hint">虚线圆圈即服务半径覆盖范围，改下方「服务半径」会实时放大缩小。</p>
         </el-form-item>
         <el-form-item label="服务半径（米）">
           <el-input-number v-model="form.serviceRadiusMeter" :min="500" :step="500" />
@@ -219,10 +258,11 @@
 <script setup name="RongliStation" lang="ts">
 import RongliPage from '../components/RongliPage.vue'
 import MapPicker from '@/components/MapPicker/index.vue'
-import { onMounted, reactive, ref } from 'vue'
+import { computed, onMounted, reactive, ref } from 'vue'
 import { ElMessage } from 'element-plus'
 import { createStation, listCapacity, listStations, updateCapacity, updateStation } from '@/api/rongli'
 import { deptTreeSelect } from '@/api/system/user'
+import { joinAddress, loadRegionTree, splitAddress, type Region } from '@/utils/region'
 
 const { vehicle_type } = useDict('vehicle_type')
 const vehicleType = vehicle_type as any
@@ -252,7 +292,10 @@ const form = reactive<any>({
   id: '',
   name: '',
   deptId: null,
-  address: '',
+  province: '',
+  city: '',
+  district: '',
+  detail: '',
   area: '',
   lng: '',
   lat: '',
@@ -264,29 +307,104 @@ const form = reactive<any>({
   enabled: true
 })
 
+/* ---------------------------------------------------------------- 省市区 */
+/**
+ * 行政区划取自高德（首次约 1 次请求，之后读 localStorage 缓存 30 天）。
+ * 取不到时不阻塞录入：下拉置灰，详细地址仍可手写完整地址。
+ */
+const regions = ref<Region[]>([])
+const regionReady = ref(false)
+const regionLoading = ref(false)
+const regionError = ref('')
+/** 打开抽屉的序号：编辑时地址要等行政区划加载完再拆，期间切了记录就放弃回填 */
+let editSeq = 0
+
+const provinceOptions = computed(() => regions.value.map((item) => item.name))
+const currentProvince = computed(() => regions.value.find((item) => item.name === form.province))
+const cityOptions = computed(() => (currentProvince.value?.children || []).map((item) => item.name))
+const currentCity = computed(() =>
+  (currentProvince.value?.children || []).find((item) => item.name === form.city)
+)
+const districtOptions = computed(() => (currentCity.value?.children || []).map((item) => item.name))
+
+/** 最终保存/搜索用的完整地址：省市区 + 详细地址，重复的省市区自动去掉 */
+const fullAddress = computed(() => joinAddress(form.province, form.city, form.district, form.detail))
+
+async function ensureRegions() {
+  if (regionReady.value || regionLoading.value) return
+  regionLoading.value = true
+  regionError.value = ''
+  try {
+    regions.value = await loadRegionTree()
+    regionReady.value = true
+  } catch (e: any) {
+    regionError.value = `省 / 市 / 区下拉暂不可用：${e?.message || '行政区划加载失败'}。可直接在详细地址里填写完整地址。`
+  } finally {
+    regionLoading.value = false
+  }
+}
+
+function onProvinceChange() {
+  form.city = ''
+  form.district = ''
+}
+
+function onCityChange() {
+  form.district = ''
+}
+
+function hasAddressInput() {
+  return !!(form.province || form.city || form.district || String(form.detail || '').trim())
+}
+
+function resetForm() {
+  Object.assign(form, {
+    id: '',
+    name: '',
+    deptId: null,
+    province: '',
+    city: '',
+    district: '',
+    detail: '',
+    area: '',
+    lng: '',
+    lat: '',
+    weekdays: [1, 2, 3, 4, 5, 6],
+    startHour: 8,
+    endHour: 18,
+    serviceRadiusMeter: 8000,
+    types: ['sedan'],
+    enabled: true
+  })
+}
+
 /**
  * 地图选点后的逆地理编码结果。
  *
- * 只在地址为空时回填：站点对外展示的地址通常是运营整理过的写法（"xx路1号"），
- * 直接覆盖成高德返回的长串地址反而不利于车主阅读。
+ * 只在地址还没填时回填：站点对外展示的地址通常是运营整理过的写法（"xx路1号"），
+ * 直接覆盖成高德返回的长串地址反而不利于车主阅读。现在能拆出省市区就顺手把下拉填上。
  */
-function onMapAddress(address: string) {
-  if (!address) return
-  if (!form.address || !String(form.address).trim()) {
-    form.address = address
+function onMapAddress(value: string) {
+  if (!value) return
+  if (hasAddressInput()) return
+  const parts = regions.value.length ? splitAddress(value, regions.value) : null
+  if (parts && parts.province) {
+    Object.assign(form, parts)
+  } else {
+    form.detail = value
   }
 }
 
 /**
  * 按地址搜索定位。
  *
- * 只把地址交给地图组件解析，不在这里改写输入框内容：运营录入的地址是给车主看的
+ * 只把拼好的地址交给地图组件解析，不反向改写下拉和输入框：运营录入的地址是给车主看的
  * 规范写法，被逆地理编码的长串地址覆盖反而更难读。
  */
 async function searchAddress() {
-  const keyword = String(form.address || '').trim()
+  const keyword = fullAddress.value.trim()
   if (!keyword) {
-    ElMessage.warning('请先输入要搜索的地址，再点击「搜索」')
+    ElMessage.warning('请先选择省市区或填写详细地址，再点击「搜索」')
     return
   }
   const picker = mapRef.value
@@ -393,31 +511,21 @@ function parseJson(raw: any, fallback: any) {
 }
 
 function openCreate() {
-  Object.assign(form, {
-    id: '',
-    name: '',
-    deptId: null,
-    address: '',
-    area: '',
-    lng: '',
-    lat: '',
-    weekdays: [1, 2, 3, 4, 5, 6],
-    startHour: 8,
-    endHour: 18,
-    serviceRadiusMeter: 8000,
-    types: ['sedan'],
-    enabled: true
-  })
+  editSeq++
+  resetForm()
   formVisible.value = true
+  // 行政区划按需加载：不进抽屉就不拉这一份数据
+  ensureRegions()
 }
 
-function openEdit(row: any) {
+async function openEdit(row: any) {
+  const seq = ++editSeq
   const hours = parseJson(row.business_hours, {}) || {}
+  resetForm()
   Object.assign(form, {
     id: String(row.id),
     name: row.name,
     deptId: row.dept_id ? Number(row.dept_id) : null,
-    address: row.address,
     area: row.area || '',
     lng: String(row.lng ?? ''),
     lat: String(row.lat ?? ''),
@@ -429,11 +537,25 @@ function openEdit(row: any) {
     enabled: !!row.enabled
   })
   formVisible.value = true
+
+  // 已有地址是整串文本，尽量拆回省/市/区回填下拉；拆不出来就整串留在详细地址里，信息不丢
+  const address = String(row.address || '').trim()
+  await ensureRegions()
+  if (seq !== editSeq) return
+  const parts = regions.value.length
+    ? splitAddress(address, regions.value)
+    : { province: '', city: '', district: '', detail: address }
+  Object.assign(form, parts)
 }
 
 async function submit() {
-  if (!form.name || !form.address) {
+  const address = fullAddress.value.trim()
+  if (!form.name || !address) {
     ElMessage.warning('请填写检测点名称与地址')
+    return
+  }
+  if (!String(form.detail || '').trim() && !(form.province && form.city && form.district)) {
+    ElMessage.warning('请选择到区县，或填写详细地址')
     return
   }
   if (!form.id && deptOptions.value.length && !form.deptId) {
@@ -442,7 +564,7 @@ async function submit() {
   }
   const payload: any = {
     name: form.name,
-    address: form.address,
+    address,
     lng: Number(form.lng || 0),
     lat: Number(form.lat || 0),
     serviceRadiusMeter: form.serviceRadiusMeter,
@@ -534,12 +656,25 @@ async function changeEnabled(row: any, value: any) {
   margin-top: 8px;
 }
 
+/* 省 / 市 / 区：三等分一行，下拉可搜索 */
+.st-region {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  width: 100%;
+}
+
+.st-region .el-select {
+  width: 100%;
+}
+
 /* 地址行：输入框吃掉剩余宽度，搜索按钮固定宽度，两者同高 */
 .st-address {
   display: flex;
   align-items: center;
   gap: 8px;
   width: 100%;
+  margin-top: 8px;
 }
 
 .st-address .el-input {
@@ -558,6 +693,26 @@ async function changeEnabled(row: any, value: any) {
 .st-address :deep(.el-button:hover) {
   box-shadow: none;
   transform: none;
+}
+
+/* 拼接后的地址预览：让「去重」结果可见，避免保存了才发现重复 */
+.st-preview {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  width: 100%;
+  margin: 10px 0 0;
+  font-size: 12px;
+  line-height: 18px;
+  color: #667085;
+}
+
+.st-preview b {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-weight: 500;
+  color: #101828;
+  word-break: break-all;
 }
 
 /* 经纬度手填：两列等宽，避免一长一短 */
