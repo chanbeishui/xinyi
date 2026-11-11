@@ -155,7 +155,8 @@ public class DriverAdminService
         Long driverId = a.lng("driver_id");
         if (approve)
         {
-            // 资格通过：递增资格版本并写入下次复审到期时间（12 个月）
+            // 资格通过：递增资格版本、写入下次复审到期时间（12 个月），
+            // 并同时开启听单——审核通过即进入可派单状态，不必等代驾再手动上线
             long revision = Row.of(accountMapper.findDriverById(driverId)).lng("qualification_revision", 0L) + 1;
             accountMapper.approveDriver(driverId, revision, ViTime.now().plusMonths(12));
         }
@@ -165,9 +166,12 @@ public class DriverAdminService
         }
         Row driver = Row.of(accountMapper.findDriverById(driverId));
         eventService.record("DRIVER", driverId, "QUALIFICATION_" + status, null,
-                Map.of("applicationId", String.valueOf(applicationId)), Map.of("status", status), opinion);
+                Map.of("applicationId", String.valueOf(applicationId)),
+                approve ? Map.of("status", status, "listeningEnabled", "true",
+                        "newAssignmentEnabled", "true") : Map.of("status", status), opinion);
         eventService.notify(driver.lng("account_id"), Codes.Role.DRIVER, null, "QUALIFICATION_" + status,
-                approve ? "您的代驾资格已通过审核，可以开始听单" : "您的代驾资格审核未通过：" + opinion);
+                approve ? "您的代驾资格已通过审核，已为您开启接单，可在首页随时关闭听单"
+                        : "您的代驾资格审核未通过：" + opinion);
         return qualificationDetail(applicationId);
     }
     public Map<String, Object> drivers(String keyword, String status, int pageNum, int pageSize)

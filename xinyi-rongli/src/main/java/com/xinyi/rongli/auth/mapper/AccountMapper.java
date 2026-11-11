@@ -281,8 +281,14 @@ public interface AccountMapper
             """)
     int updateDriverQualificationStatus(@Param("driverId") Long driverId, @Param("status") String status);
 
+    /**
+     * 审核通过：资格置 APPROVED，同时把 listening_enabled 一起打开。
+     * 派单侧要求 listening_enabled = 1，若只置 new_assignment_enabled，
+     * 代驾在打开小程序手动听单之前拿不到任何订单，运营看到的就是“通过了却不派单”。
+     */
     @Update("""
             UPDATE vi_driver_profile SET qualification_status = 'APPROVED', new_assignment_enabled = 1,
+                   listening_enabled = 1,
                    qualification_revision = #{revision}, review_due_at = #{reviewDueAt},
                    updated_at = UTC_TIMESTAMP(3), version = version + 1
             WHERE id = #{driverId}
