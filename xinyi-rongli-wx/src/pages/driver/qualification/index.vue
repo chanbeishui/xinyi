@@ -1,5 +1,6 @@
 <template>
   <view class="page">
+    <view v-if="lastError" class="error-bar" @tap="lastError = ''">{{ lastError }}（点击关闭）</view>
     <view class="card">
       <view class="row-between">
         <view class="card-title" style="margin: 0">代驾资格</view>
@@ -84,9 +85,29 @@ import { dateOnly } from '@/utils/format'
 
 const view = ref<any>({})
 const faceInfo = ref<any>(null)
+const lastError = ref('')
 const licenseClasses = ['C1', 'C2', 'B1', 'B2', 'A1', 'A2']
 const fileIds = reactive<{ idCard: string; license: string }>({ idCard: '', license: '' })
 const photoUrls = reactive<{ idCard: string; license: string }>({ idCard: '', license: '' })
+
+/**
+ * 展示用的图片地址。
+ *
+ * 后端可能直接给 OSS 绝对地址，也可能给站内相对路径，统一在这里处理：
+ * 已是绝对地址就不再拼 API_BASE（曾出现 prod-apihttp://... 这种双重前缀），
+ * 并把 http 升级成 https——小程序页面本身是 https，http 图片会被 Mixed Content 拦掉。
+ */
+function toDisplayUrl(url: string): string {
+  if (!url) return ''
+  if (/^https?:\/\//i.test(url)) return url.replace(/^http:\/\//i, 'https://')
+  return `${API_BASE}${url.startsWith('/') ? '' : '/'}${url}`
+}
+
+function errorText(e: any): string {
+  if (!e) return '操作失败，请稍后重试'
+  if (typeof e === 'string') return e
+  return e.message || e.errMsg || e.msg || '操作失败，请稍后重试'
+}
 
 const form = reactive<any>({
   realName: '',
@@ -134,7 +155,7 @@ async function load() {
     form.licenseValidTo = draft.licenseValidTo || view.value.licenseValidTo || ''
     form.licenseLongTerm = !!draft.licenseLongTerm
   } catch (e) {
-    // 已提示
+    lastError.value = errorText(e)
   }
 }
 
@@ -156,10 +177,10 @@ function pickPhoto(kind: 'idCard' | 'license') {
         const file: any = await commonApi.upload(path, 'DRIVER_QUALIFICATION')
         fileIds[kind] = String(file.fileId)
         const link: any = await commonApi.fileAccess(file.fileId)
-        photoUrls[kind] = `${API_BASE}${link.url}`
+        photoUrls[kind] = toDisplayUrl(link.url)
         uni.showToast({ title: '已上传', icon: 'success' })
       } catch (e) {
-        // 已提示
+        lastError.value = errorText(e)
       }
     }
   })
@@ -170,10 +191,16 @@ function evidenceJson(): string | null {
   return ids.length ? JSON.stringify(ids) : null
 }
 
-async function save() {
+/**
+ * 落草稿，返回是否成功。
+ *
+ * 提交审核前必须先调一次：后端校验的是草稿里的 evidence_file_ids，
+ * 只上传照片不保存就提交，会报「请上传驾驶证与身份证照片后再提交」。
+ */
+async function persist(showToast = true): Promise<boolean> {
   if (!form.realName || !form.idCardNo || !form.licenseClass) {
     uni.showToast({ title: '请填写姓名、身份证号与准驾车型', icon: 'none' })
-    return
+    return false
   }
   try {
     await driverApi.updateQualification({
@@ -184,14 +211,20 @@ async function save() {
       licenseLongTerm: form.licenseLongTerm,
       evidenceFileIds: evidenceJson()
     })
-    uni.showToast({ title: '已保存', icon: 'success' })
-    load()
+    if (showToast) uni.showToast({ title: '已保存', icon: 'success' })
+    return true
   } catch (e) {
-    // 已提示
+    lastError.value = errorText(e)
+    return false
   }
 }
 
+async function save() {
+  if (await persist()) load()
+}
+
 async function submit() {
+  if (!(await persist(false))) return
   uni.showModal({
     title: '提交审核',
     content: '提交后资料将进入审核，审核期间不可修改，是否继续？',
@@ -202,7 +235,7 @@ async function submit() {
         uni.showToast({ title: '已提交审核', icon: 'success' })
         load()
       } catch (e) {
-        // 已提示
+        lastError.value = errorText(e)
       }
     }
   })
@@ -213,7 +246,7 @@ async function startFace() {
     faceInfo.value = await driverApi.createFaceSession()
     uni.showToast({ title: '已创建核验会话', icon: 'none' })
   } catch (e) {
-    // 已提示
+    lastError.value = errorText(e)
   }
 }
 
@@ -227,7 +260,7 @@ async function mockFace() {
     uni.showToast({ title: '核验已完成', icon: 'success' })
     load()
   } catch (e) {
-    // 已提示
+    lastError.value = errorText(e)
   }
 }
 </script>
@@ -301,5 +334,17 @@ async function mockFace() {
 .photo-empty {
   color: var(--muted);
   font-size: 24rpx;
+}
+
+/* 失败原因常驻在页面顶部：toast 一闪而过，400 的业务提示容易错过 */
+.error-bar {
+  margin-bottom: 16rpx;
+  padding: 18rpx 22rpx;
+  border-radius: 12rpx;
+  background: #fdecea;
+  border: 1rpx solid #f5c2c0;
+  color: #a4262c;
+  font-size: 24rpx;
+  line-height: 1.5;
 }
 </style>
