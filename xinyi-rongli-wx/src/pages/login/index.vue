@@ -1,16 +1,25 @@
 <template>
   <view class="login">
     <view class="brand">
-      <view class="logo">荣利</view>
-      <view class="title">机动车检测预约</view>
-      <view class="subtitle">上门接车 · 代驾送检 · 结果回传</view>
+      <view class="brand__rule"></view>
+      <view class="brand__top">
+        <view class="logo">荣利</view>
+        <view class="brand__meta">
+          <text class="brand__meta-line">RONGLI · 机动车检测</text>
+          <text class="brand__meta-line">广东 茂名</text>
+        </view>
+      </view>
+      <view class="brand__title">上门接车，送检到站</view>
+      <view class="brand__desc">代驾接车 · 到站检测 · 结果回传，一张工单走完全程</view>
     </view>
 
     <view class="panel">
-      <view class="panel-title">微信登录</view>
-      <view class="panel-desc">
-        授权手机号后即可预约；若手机号与公司在册员工账号一致，系统会自动识别员工身份。
-        新账号默认为车主，代驾能力需另行申请并通过审核。
+      <view class="panel__head">
+        <text class="panel__title">微信登录</text>
+        <text class="panel__flag">身份自动识别</text>
+      </view>
+      <view class="panel__desc">
+        授权手机号即可预约；手机号与公司在册账号一致时自动识别员工身份。新账号默认为车主，代驾能力需另行申请。
       </view>
 
       <view v-if="showDev" class="field">
@@ -24,6 +33,7 @@
         v-if="!isMock"
         class="btn wx-btn"
         :class="{ disabled: loading }"
+        hover-class="btn-hover"
         open-type="getPhoneNumber"
         @getphonenumber="onGetPhoneNumber"
       >
@@ -32,11 +42,11 @@
       <!-- #endif -->
 
       <!-- 联调环境：getPhoneNumber 不可用，用输入框模拟同一条链路 -->
-      <view v-if="isMock" class="btn" :class="{ disabled: loading }" @tap="mockLogin">
+      <view v-if="isMock" class="btn" :class="{ disabled: loading }" hover-class="btn-hover" @tap="mockLogin">
         {{ loading ? '登录中…' : '微信手机号一键登录（联调）' }}
       </view>
 
-      <view class="btn ghost" :class="{ disabled: loading }" @tap="loginWithoutPhone">
+      <view class="btn ghost" :class="{ disabled: loading }" hover-class="btn-hover" @tap="loginWithoutPhone">
         暂不授权手机号，以车主身份进入
       </view>
 
@@ -48,20 +58,36 @@
       </view>
     </view>
 
-    <view class="tips">
-      <view class="tips-title">账号说明</view>
-      <view class="tips-item">· 车主：微信登录后即可预约，车辆与地址可随时维护</view>
-      <view class="tips-item">· 代驾：需提交实名与驾驶证资料并审核通过后接单</view>
-      <view class="tips-item">· 检测员工：公司账号登记的手机号与本微信一致时自动识别，检测点权限由后台配置</view>
+    <view class="section-head">
+      <text class="section-head__title">进入后的身份</text>
+      <text class="section-head__meta">三种视角</text>
     </view>
 
-    <view v-if="showTerms || showPrivacy" class="mask" @tap="closeDoc">
+    <view class="list roles">
+      <view class="role">
+        <view class="role__name">车主</view>
+        <view class="role__desc">微信登录即可预约，车辆与接车地址随时维护</view>
+      </view>
+      <view class="role">
+        <view class="role__name">代驾</view>
+        <view class="role__desc">提交实名与驾驶证资料，审核通过后听单接车</view>
+      </view>
+      <view class="role">
+        <view class="role__name">检测员工</view>
+        <view class="role__desc">公司账号登记的手机号与微信一致时自动识别，检测点权限由后台配置</view>
+      </view>
+    </view>
+
+    <view v-if="showTerms || showPrivacy" class="modal" @tap="closeDoc">
       <view class="doc" @tap.stop>
-        <view class="doc-title">{{ showTerms ? '服务协议（摘要）' : '隐私政策（摘要）' }}</view>
+        <view class="sheet__head">
+          <text class="sheet__title">{{ showTerms ? '服务协议（摘要）' : '隐私政策（摘要）' }}</text>
+          <text class="sheet__close" @tap="closeDoc">关闭</text>
+        </view>
         <scroll-view scroll-y class="doc-body">
           <view v-for="(p, i) in docParagraphs" :key="i" class="doc-p">{{ p }}</view>
         </scroll-view>
-        <view class="btn ghost" @tap="closeDoc">我知道了</view>
+        <view class="btn ghost small doc-btn" hover-class="btn-hover" @tap="closeDoc">我知道了</view>
       </view>
     </view>
   </view>
@@ -78,7 +104,7 @@ const loading = ref(false)
 const devPhone = ref('')
 const showTerms = ref(false)
 const showPrivacy = ref(false)
-const showDev = ref(USE_MOCK_LOGIN)
+const showDev = USE_MOCK_LOGIN
 const isMock = USE_MOCK_LOGIN
 
 const docParagraphs = computed(() => {
@@ -192,73 +218,133 @@ function loginWithoutPhone() {
 <style scoped>
 .login {
   min-height: 100vh;
-  padding: calc(120rpx + env(safe-area-inset-top)) 40rpx 60rpx;
-  background: linear-gradient(180deg, #eaf1ff 0%, #f5f6f8 42%);
+  padding-bottom: calc(60rpx + constant(safe-area-inset-bottom));
+  padding-bottom: calc(60rpx + env(safe-area-inset-bottom));
+  background: var(--bg);
 }
 
+/* 墨色招牌：半幅抬头，下沿压在白卡上 */
 .brand {
-  padding: 20rpx 0 48rpx;
+  position: relative;
+  overflow: hidden;
+  padding: 120rpx 40rpx 96rpx;
+  padding-top: calc(120rpx + constant(safe-area-inset-top));
+  padding-top: calc(120rpx + env(safe-area-inset-top));
+  background: #0e1726;
+  color: #fff;
+}
+
+/* 右侧细竖纹，像工单纸边的印刷线 */
+.brand__rule {
+  position: absolute;
+  top: 0;
+  right: 40rpx;
+  width: 1rpx;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.brand__top {
+  display: flex;
+  align-items: center;
 }
 
 .logo {
-  width: 104rpx;
-  height: 104rpx;
-  border-radius: 28rpx;
-  background: var(--brand);
+  width: 96rpx;
+  height: 96rpx;
+  border-radius: 16rpx;
+  border: 1rpx solid rgba(255, 255, 255, 0.24);
   color: #fff;
-  font-size: 34rpx;
+  font-size: 32rpx;
   font-weight: 600;
+  letter-spacing: 2rpx;
   display: flex;
   align-items: center;
   justify-content: center;
-  letter-spacing: 2rpx;
 }
 
-.title {
-  margin-top: 28rpx;
-  font-size: 44rpx;
+.brand__meta {
+  margin-left: 20rpx;
+}
+
+.brand__meta-line {
+  display: block;
+  font-size: 21rpx;
+  letter-spacing: 1.6rpx;
+  color: rgba(255, 255, 255, 0.5);
+  line-height: 1.7;
+}
+
+.brand__title {
+  margin-top: 44rpx;
+  font-size: 48rpx;
+  line-height: 1.3;
   font-weight: 600;
   letter-spacing: 1rpx;
 }
 
-.subtitle {
-  margin-top: 10rpx;
-  color: var(--sub);
-  font-size: 26rpx;
+.brand__desc {
+  margin-top: 14rpx;
+  font-size: 25rpx;
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.62);
 }
 
+/* 白卡上提，压住招牌下沿：纸压墨，是这套视觉的接头 */
 .panel {
+  position: relative;
+  margin: -64rpx 24rpx 0;
+  padding: 30rpx 26rpx 26rpx;
   background: #fff;
-  border-radius: 28rpx;
-  padding: 36rpx 32rpx;
-  box-shadow: 0 8rpx 40rpx rgba(31, 111, 235, 0.08);
+  border: 1rpx solid var(--line);
+  border-radius: 20rpx;
+  box-shadow: 0 10rpx 30rpx rgba(14, 23, 38, 0.06);
 }
 
-.panel-title {
+/* 小节抬头与卡片左边距对齐（全局默认是 4rpx） */
+.login .section-head {
+  margin: 32rpx 28rpx 16rpx;
+}
+
+.panel__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.panel__title {
   font-size: 32rpx;
   font-weight: 600;
+  letter-spacing: 0.4rpx;
 }
 
-.panel-desc {
+.panel__flag {
+  font-size: 21rpx;
+  letter-spacing: 1rpx;
+  color: var(--ink-3);
+}
+
+.panel__desc {
   margin-top: 12rpx;
-  color: var(--sub);
-  font-size: 25rpx;
-  line-height: 1.6;
+  font-size: 24rpx;
+  line-height: 1.7;
+  color: var(--ink-3);
 }
 
 .panel .field {
-  margin-top: 24rpx;
+  margin-top: 22rpx;
   border-bottom: none;
+  padding: 0;
 }
 
 .panel .btn {
-  margin-top: 32rpx;
+  margin-top: 22rpx;
 }
 
 /* 原生 button 用于 getPhoneNumber 时需抹掉默认样式，保持与 .btn 一致 */
 .wx-btn {
   width: 100%;
-  margin: 32rpx 0 0;
+  margin: 22rpx 0 0;
   padding: 0;
   line-height: 1;
   border: none;
@@ -270,9 +356,10 @@ function loginWithoutPhone() {
 }
 
 .agreement {
-  margin-top: 24rpx;
-  font-size: 23rpx;
-  color: var(--muted);
+  margin-top: 22rpx;
+  font-size: 22rpx;
+  line-height: 1.7;
+  color: var(--ink-3);
   text-align: center;
 }
 
@@ -280,55 +367,68 @@ function loginWithoutPhone() {
   color: var(--brand);
 }
 
-.tips {
-  margin-top: 40rpx;
-  padding: 0 8rpx;
+.roles {
+  margin: 0 24rpx;
 }
 
-.tips-title {
+.role {
+  padding: 20rpx 24rpx;
+  border-bottom: 1rpx solid var(--line-2);
+}
+
+.role:last-child {
+  border-bottom: none;
+}
+
+.role__name {
   font-size: 26rpx;
-  color: var(--sub);
-  margin-bottom: 12rpx;
+  font-weight: 600;
+  letter-spacing: 0.4rpx;
 }
 
-.tips-item {
-  font-size: 24rpx;
-  color: var(--muted);
-  line-height: 1.9;
+.role__desc {
+  margin-top: 6rpx;
+  font-size: 23rpx;
+  line-height: 1.6;
+  color: var(--ink-3);
 }
 
-.mask {
+/* 文档弹窗居中：不用全局 .mask（它是底部对齐的） */
+.modal {
   position: fixed;
-  inset: 0;
-  background: rgba(17, 24, 39, 0.45);
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 90;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 60rpx;
+  padding: 48rpx 40rpx;
+  background: rgba(14, 23, 38, 0.45);
 }
 
 .doc {
   width: 100%;
+  max-height: 76vh;
+  padding: 28rpx 26rpx 24rpx;
   background: #fff;
-  border-radius: 24rpx;
-  padding: 32rpx;
-}
-
-.doc-title {
-  font-size: 30rpx;
-  font-weight: 600;
-  margin-bottom: 20rpx;
+  border-radius: 20rpx;
 }
 
 .doc-body {
-  max-height: 620rpx;
-  margin-bottom: 24rpx;
+  max-height: 52vh;
+  margin: 18rpx 0;
 }
 
 .doc-p {
-  font-size: 25rpx;
-  color: var(--sub);
+  font-size: 24rpx;
   line-height: 1.8;
+  color: var(--ink-2);
   margin-bottom: 14rpx;
+}
+
+.doc-btn {
+  width: 100%;
 }
 </style>
