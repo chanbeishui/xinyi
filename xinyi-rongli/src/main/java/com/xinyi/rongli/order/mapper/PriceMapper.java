@@ -93,10 +93,10 @@ public interface PriceMapper
 
     @Insert("""
             INSERT INTO vi_quote (owner_account_id, station_id, vehicle_snapshot, address_snapshot_cipher,
-                   pickup_slot_id, receive_slot_id, rule_id, route_snapshot, amount_fen, items_json,
+                   pickup_slot_id, pickup_at, receive_slot_id, rule_id, route_snapshot, amount_fen, items_json,
                    expires_at, created_at, updated_at, version)
             VALUES (#{ownerAccountId}, #{stationId}, #{vehicleSnapshot}, #{addressCipher},
-                   #{pickupSlotId}, #{receiveSlotId}, #{ruleId}, #{routeSnapshot}, #{amountFen}, #{itemsJson},
+                   #{pickupSlotId}, #{pickupAt}, #{receiveSlotId}, #{ruleId}, #{routeSnapshot}, #{amountFen}, #{itemsJson},
                    #{expiresAt}, UTC_TIMESTAMP(3), UTC_TIMESTAMP(3), 0)
             """)
     @Options(useGeneratedKeys = true, keyProperty = "id")

@@ -95,6 +95,8 @@ public final class MiniDtos
         public AddressReq addressDraft;
         /** 用户手选的检测点；为空时按地址与车型自动匹配最近的服务站 */
         public Long stationId;
+        /** 自由上门时间（上海时间 yyyy-MM-dd HH:mm）；传了就忽略 pickupSlotId，不占班次 */
+        public String pickupAt;
         public Long pickupSlotId;
         public String inspectionTypeCode;
     }

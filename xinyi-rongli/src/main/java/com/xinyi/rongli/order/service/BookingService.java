@@ -241,23 +241,49 @@ public class BookingService
         }
         Long stationId = station.getId();
 
-        QuotaSlot slot = req.pickupSlotId == null ? null : stationMapper.findSlot(req.pickupSlotId);
-        if (slot == null)
+        // 上门时间有两种来源：车主自由选定的时间点（pickupAt，例如 2026-12-01 10:35），
+        // 或平台放出的班次（pickupSlotId）。自由时间不占班次容量，只校验"不早于 30 分钟后"
+        // 与"在检测点营业时间内"；两者都传时以 pickupAt 为准。
+        LocalDateTime pickupAtUtc = null;
+        QuotaSlot slot = null;
+        if (req.pickupAt != null && !req.pickupAt.isBlank())
         {
-            throw ApiException.validation("请先选择上门接车时段");
+            LocalDateTime local = parsePickupAt(req.pickupAt);
+            if (local == null)
+            {
+                throw ApiException.validation("上门时间格式不正确，应为 yyyy-MM-dd HH:mm");
+            }
+            pickupAtUtc = ViTime.fromShanghai(local);
+            if (pickupAtUtc.isBefore(ViTime.now().plusMinutes(30)))
+            {
+                throw ApiException.unprocessable(Codes.Error.NOT_SERVICEABLE, "上门时间过近，请选择 30 分钟之后");
+            }
+            if (!withinBusinessHours(station, pickupAtUtc))
+            {
+                throw ApiException.unprocessable(Codes.Error.NOT_SERVICEABLE,
+                        "所选时间不在「" + station.getName() + "」的营业时间内");
+            }
         }
-        if (!"PICKUP".equals(slot.getQuotaType()) || !ViBool.of(slot.getEnabled()))
+        else
         {
-            throw ApiException.unprocessable(Codes.Error.NOT_SERVICEABLE, "所选时段不可预约，请重新选择");
-        }
-        if (slot.getStartsAt().isBefore(ViTime.now().plusMinutes(30)))
-        {
-            throw ApiException.unprocessable(Codes.Error.NOT_SERVICEABLE, "所选时段过近，请选择更晚的时间");
-        }
-        if (req.stationId != null && !withinBusinessHours(station, slot.getStartsAt()))
-        {
-            throw ApiException.unprocessable(Codes.Error.NOT_SERVICEABLE,
-                    "所选时间不在检测点营业时间内，请重新选择");
+            slot = req.pickupSlotId == null ? null : stationMapper.findSlot(req.pickupSlotId);
+            if (slot == null)
+            {
+                throw ApiException.validation("请先选择上门接车时间");
+            }
+            if (!"PICKUP".equals(slot.getQuotaType()) || !ViBool.of(slot.getEnabled()))
+            {
+                throw ApiException.unprocessable(Codes.Error.NOT_SERVICEABLE, "所选时段不可预约，请重新选择");
+            }
+            if (slot.getStartsAt().isBefore(ViTime.now().plusMinutes(30)))
+            {
+                throw ApiException.unprocessable(Codes.Error.NOT_SERVICEABLE, "所选时段过近，请选择更晚的时间");
+            }
+            if (req.stationId != null && !withinBusinessHours(station, slot.getStartsAt()))
+            {
+                throw ApiException.unprocessable(Codes.Error.NOT_SERVICEABLE,
+                        "所选时间不在检测点营业时间内，请重新选择");
+            }
         }
 
         String inspectionType = req.inspectionTypeCode == null || req.inspectionTypeCode.isBlank()
@@ -298,7 +324,8 @@ public class BookingService
         row.put("stationId", stationId);
         row.put("vehicleSnapshot", vehicleSnapshot.toJSONString());
         row.put("addressCipher", crypto.encrypt(address.toJSONString()));
-        row.put("pickupSlotId", slot.getId());
+        row.put("pickupSlotId", slot == null ? null : slot.getId());
+        row.put("pickupAt", pickupAtUtc);
         row.put("receiveSlotId", null);
         row.put("ruleId", ruleRow.lng("id"));
         row.put("routeSnapshot", route.toJSONString());
@@ -320,11 +347,28 @@ public class BookingService
         view.put("items", items);
         view.put("ruleId", String.valueOf(ruleRow.lng("id")));
         view.put("expiresAt", ViTime.iso(ViTime.now().plusMinutes(QUOTE_TTL_MINUTES)));
-        view.put("pickupSlotId", String.valueOf(slot.getId()));
+        if (slot != null)
+        {
+            view.put("pickupSlotId", String.valueOf(slot.getId()));
+        }
+        view.put("pickupAt", pickupAtUtc == null ? null : ViTime.iso(pickupAtUtc));
         return view;
     }
 
     /** 取最近且支持该车型、在服务半径内的已启用检测点 */
+    /** 解析车主选定的上门时间（上海本地时间，分钟级），格式不对返回 null */
+    private LocalDateTime parsePickupAt(String text)
+    {
+        try
+        {
+            return LocalDateTime.parse(text.trim(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+        }
+        catch (RuntimeException ex)
+        {
+            return null;
+        }
+    }
+
     /**
      * 所选时段是否落在检测点的营业时间内。
      *
@@ -502,22 +546,37 @@ public class BookingService
             address = Json.read(plain);
         }
 
-        Long pickupSlotId = quote.lng("pickup_slot_id");
-        if (stationMapper.holdQuota(pickupSlotId, 1) <= 0)
-        {
-            throw ApiException.unprocessable(Codes.Error.QUOTA_EXHAUSTED, "该时段名额已满，请改约其他时段");
-        }
-
         LocalDateTime now = ViTime.now();
         LocalDateTime payExpiresAt = now.plusMinutes(config.payExpireMinutes());
-        // 预占成功后时段必然存在，一次查出起止时间，避免此前两次重复查询
-        QuotaSlot pickupSlot = stationMapper.findSlot(pickupSlotId);
-        if (pickupSlot == null)
+        Long pickupSlotId = quote.lng("pickup_slot_id");
+        LocalDateTime pickupStart;
+        LocalDateTime pickupEnd;
+        if (pickupSlotId != null)
         {
-            throw ApiException.unprocessable(Codes.Error.NOT_SERVICEABLE, "所选时段不存在，请重新选择");
+            if (stationMapper.holdQuota(pickupSlotId, 1) <= 0)
+            {
+                throw ApiException.unprocessable(Codes.Error.QUOTA_EXHAUSTED, "该时段名额已满，请改约其他时段");
+            }
+            // 预占成功后时段必然存在，一次查出起止时间，避免此前两次重复查询
+            QuotaSlot pickupSlot = stationMapper.findSlot(pickupSlotId);
+            if (pickupSlot == null)
+            {
+                throw ApiException.unprocessable(Codes.Error.NOT_SERVICEABLE, "所选时段不存在，请重新选择");
+            }
+            pickupStart = pickupSlot.getStartsAt();
+            pickupEnd = pickupSlot.getEndsAt();
         }
-        LocalDateTime pickupStart = pickupSlot.getStartsAt();
-        LocalDateTime pickupEnd = pickupSlot.getEndsAt();
+        else
+        {
+            // 自由上门时间：不占班次容量，起止给 30 分钟上门窗口，派单与展示沿用同一对字段
+            LocalDateTime pickupAt = quote.time("pickup_at");
+            if (pickupAt == null)
+            {
+                throw ApiException.validation("报价缺少上门时间，请重新核价");
+            }
+            pickupStart = pickupAt;
+            pickupEnd = pickupAt.plusMinutes(30);
+        }
         LocalDateTime dispatchAt = pickupStart.minusMinutes(config.dispatchLeadMinutes());
 
         JSONObject vehicleSnapshot = Json.read(quote.json("vehicle_snapshot"));
