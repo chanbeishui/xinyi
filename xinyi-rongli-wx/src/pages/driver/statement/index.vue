@@ -1,22 +1,30 @@
 <template>
   <view class="page">
     <template v-if="!detail">
-      <view v-for="s in rows" :key="s.statementId" class="card" @tap="open(s)">
-        <view class="row-between">
-          <view>
-            <view class="value" style="text-align: left">{{ s.statementNo }}</view>
-            <view class="muted" style="margin-top: 4rpx">第 {{ s.revision }} 版 · {{ s.statusLabel }}</view>
+      <view v-for="s in rows" :key="s.statementId" class="slip" hover-class="card-hover" @tap="open(s)">
+        <view class="slip__head">
+          <view class="slip__main">
+            <text class="eyebrow">对账单</text>
+            <view class="slip__plate slip-plate-sm num">{{ s.statementNo }}</view>
+            <view class="slip__sub">第 {{ s.revision }} 版 · {{ s.statusLabel }}</view>
           </view>
-          <view class="price" style="font-size: 32rpx">¥{{ s.amountYuan || fen2yuan(s.amountFen) }}</view>
-        </view>
-        <view class="row-between" style="margin-top: 8rpx">
-          <text class="muted">发出 {{ s.sentAt ? shortTime(s.sentAt) : '-' }}</text>
-          <text class="tag" :class="s.status === 'SENT' ? 'warn' : s.status === 'CONFIRMED' ? 'ok' : 'gray'">
+          <text
+            class="status"
+            :class="s.status === 'SENT' ? 'status--warn' : s.status === 'CONFIRMED' ? 'status--ok' : 'status--gray'"
+          >
             {{ s.status === 'SENT' ? '待核对' : s.status === 'CONFIRMED' ? '已确认' : '查看' }}
           </text>
         </view>
+        <view class="slip__foot">
+          <text class="slip__no num">发出 {{ s.sentAt ? shortTime(s.sentAt) : '-' }}</text>
+          <text class="price"><text class="price__unit">¥</text>{{ s.amountYuan || fen2yuan(s.amountFen) }}</text>
+        </view>
       </view>
-      <view v-if="!rows.length" class="empty">暂无对账单</view>
+
+      <view v-if="!rows.length" class="empty">
+        <view class="empty__title">暂无对账单</view>
+        <view class="empty__hint">完成接送任务后，平台按业务日汇总生成对账单</view>
+      </view>
 
       <view class="card">
         <view class="card-title">对账说明</view>
@@ -29,43 +37,49 @@
     </template>
 
     <template v-else>
-      <view class="card">
-        <view class="row-between">
-          <view class="card-title" style="margin: 0">{{ detail.statementNo }}</view>
-          <text class="tag">{{ detail.statusLabel }}</text>
+      <view class="slip">
+        <view class="slip__head">
+          <view class="slip__main">
+            <text class="eyebrow">对账单 {{ detail.statementNo }}</text>
+            <view class="slip__plate slip-plate-sm">第 {{ detail.revision }} 版</view>
+          </view>
+          <text class="status status--brand">{{ detail.statusLabel }}</text>
         </view>
-        <view class="row-between">
-          <text class="label">账单金额</text>
-          <text class="price">¥{{ detail.amountYuan || fen2yuan(detail.amountFen) }}</text>
+
+        <view class="slip__row">
+          <text class="slip__key">发出时间</text>
+          <text class="slip__val num">{{ detail.sentAt ? dateTime(detail.sentAt) : '-' }}</text>
         </view>
-        <view class="row-between">
-          <text class="label">版本</text>
-          <text class="value">第 {{ detail.revision }} 版</text>
+        <view v-if="detail.confirmedAt" class="slip__row">
+          <text class="slip__key">确认时间</text>
+          <text class="slip__val num">{{ dateTime(detail.confirmedAt) }}</text>
         </view>
-        <view class="row-between">
-          <text class="label">快照哈希</text>
-          <text class="value" style="max-width: 60%; word-break: break-all; font-size: 22rpx">{{ detail.snapshotHash || '-' }}</text>
+        <view class="slip__row slip__row--stack">
+          <text class="slip__key">快照哈希</text>
+          <text class="slip__val slip__val--mono">{{ detail.snapshotHash || '-' }}</text>
         </view>
-        <view class="row-between">
-          <text class="label">发出时间</text>
-          <text class="value">{{ detail.sentAt ? dateTime(detail.sentAt) : '-' }}</text>
-        </view>
-        <view v-if="detail.confirmedAt" class="row-between">
-          <text class="label">确认时间</text>
-          <text class="value">{{ dateTime(detail.confirmedAt) }}</text>
+        <view class="slip__foot">
+          <text class="slip__no">账单金额</text>
+          <text class="price"><text class="price__unit">¥</text>{{ detail.amountYuan || fen2yuan(detail.amountFen) }}</text>
         </view>
       </view>
 
-      <view class="card">
-        <view class="card-title">明细（{{ (detail.lines || []).length }} 条）</view>
+      <view class="section-head">
+        <text class="section-head__title">明细</text>
+        <text class="section-head__meta">{{ (detail.lines || []).length }} 条</text>
+      </view>
+
+      <view class="list">
         <view v-for="(line, i) in detail.lines" :key="i" class="line">
-          <view class="row-between">
-            <text class="value" style="text-align: left">{{ lineLabel(line) }}</text>
-            <text class="value">¥{{ fen2yuan(lineAmount(line)) }}</text>
+          <view class="line__top">
+            <text class="line__label">{{ lineLabel(line) }}</text>
+            <text class="line__amount num">¥{{ fen2yuan(lineAmount(line)) }}</text>
           </view>
-          <view class="muted">{{ lineDesc(line) }}</view>
+          <view class="line__desc">{{ lineDesc(line) }}</view>
         </view>
-        <view v-if="!(detail.lines || []).length" class="muted">该版本无可展示明细</view>
+        <view v-if="!(detail.lines || []).length" class="empty">
+          <view class="empty__title">该版本无可展示明细</view>
+        </view>
       </view>
 
       <view class="card">
@@ -74,12 +88,16 @@
           <view class="field-label">差异说明</view>
           <textarea v-model="difference" class="textarea" placeholder="说明差异订单与期望金额" />
         </view>
-        <view class="btn ghost" style="margin-top: 16rpx" @tap="submitDifference">提交差异</view>
+        <view class="btn ghost block btn-gap" hover-class="btn-hover" @tap="submitDifference">提交差异</view>
       </view>
 
+      <view class="footer-space"></view>
+
       <view class="action-bar">
-        <view class="btn gray" style="flex: 1" @tap="detail = null">返回列表</view>
-        <view v-if="detail.status === 'SENT'" class="btn" style="flex: 2" @tap="confirm">确认对账单</view>
+        <view class="btn gray" hover-class="btn-hover" @tap="detail = null">返回列表</view>
+        <view v-if="detail.status === 'SENT'" class="btn btn-wide" hover-class="btn-hover" @tap="confirm">
+          确认对账单
+        </view>
       </view>
     </template>
   </view>
@@ -175,12 +193,69 @@ async function submitDifference() {
 </script>
 
 <style scoped>
+.slip__main {
+  flex: 1;
+  min-width: 0;
+  padding-right: 16rpx;
+}
+
+.slip__head .slip-plate-sm {
+  font-size: 30rpx;
+  letter-spacing: 0.4rpx;
+}
+
+.slip__row--stack {
+  display: block;
+}
+
+/* 哈希是一长串十六进制，用等宽字体换行显示，别右对齐挤成一列 */
+.slip__val--mono {
+  display: block;
+  margin-top: 8rpx;
+  text-align: left;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 21rpx;
+  line-height: 1.6;
+  color: var(--ink-2);
+  word-break: break-all;
+}
+
 .line {
-  padding: 16rpx 0;
-  border-bottom: 1rpx solid var(--line);
+  padding: 18rpx 24rpx;
+  border-bottom: 1rpx solid var(--line-2);
 }
 
 .line:last-child {
   border-bottom: none;
+}
+
+.line__top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.line__label {
+  font-size: 26rpx;
+  font-weight: 500;
+}
+
+.line__amount {
+  font-size: 26rpx;
+  color: var(--ink);
+}
+
+.line__desc {
+  margin-top: 6rpx;
+  font-size: 22rpx;
+  color: var(--ink-3);
+}
+
+.btn-gap {
+  margin-top: 18rpx;
+}
+
+.btn-wide {
+  flex: 2;
 }
 </style>

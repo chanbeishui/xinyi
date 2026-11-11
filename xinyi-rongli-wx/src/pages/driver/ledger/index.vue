@@ -1,60 +1,79 @@
 <template>
   <view class="page">
-    <view class="card">
-      <view class="card-title">收支流水</view>
-      <view class="row-between">
-        <text class="label">明细合计</text>
-        <text class="price">¥{{ totalYuan }}</text>
+    <view class="ink-panel">
+      <view class="ink-panel__rule"></view>
+      <view class="ink-panel__eyebrow">收支流水</view>
+      <view class="ink-panel__title num">
+        <text class="amount-unit">¥</text>{{ totalYuan }}
       </view>
-      <view class="row-between">
-        <text class="label">已收款合计</text>
-        <text class="value">¥{{ paidYuan }}</text>
-      </view>
-      <view class="row" style="gap: 16rpx; margin-top: 16rpx">
-        <picker mode="date" :value="from" @change="(e:any) => onDate('from', e.detail.value)">
-          <view class="input picker">{{ from || '开始日期' }}</view>
-        </picker>
-        <picker mode="date" :value="to" @change="(e:any) => onDate('to', e.detail.value)">
-          <view class="input picker">{{ to || '结束日期' }}</view>
-        </picker>
-      </view>
-      <view class="row" style="gap: 16rpx; margin-top: 12rpx">
-        <input v-model="keyword" class="input" placeholder="订单号 / 车牌号" style="flex: 1" />
-        <view class="btn small" @tap="loadEntries">查询</view>
-        <view class="btn small gray" @tap="reset">重置</view>
+      <view class="ink-panel__foot">
+        <text class="panel-meta num">已收款 ¥{{ paidYuan }}</text>
+        <text class="panel-meta">{{ entries.length }} 条明细</text>
       </view>
     </view>
 
     <view class="card">
-      <view class="card-title">接送明细（{{ entries.length }}）</view>
-      <view v-if="!entries.length" class="muted">该时间段暂无可结算明细</view>
-      <view v-for="e in entries" :key="e.entryId" class="field">
-        <view class="row-between">
-          <text class="value" style="text-align: left">{{ e.orderNo }}</text>
-          <text class="price">¥{{ e.amountYuan != null ? e.amountYuan : '待定价' }}</text>
+      <view class="filter">
+        <view class="filter__item">
+          <picker mode="date" :value="from" @change="(e:any) => onDate('from', e.detail.value)">
+            <view class="input filter__date num">{{ from || '开始日期' }}</view>
+          </picker>
         </view>
-        <view class="muted" style="margin-top: 6rpx">
-          {{ e.plateNo || '-' }} · {{ e.entryKindLabel }} · {{ dateLabel(e.serviceEndedAt) }}
+        <view class="filter__item">
+          <picker mode="date" :value="to" @change="(e:any) => onDate('to', e.detail.value)">
+            <view class="input filter__date num">{{ to || '结束日期' }}</view>
+          </picker>
         </view>
-        <view class="muted" style="margin-top: 4rpx">
+      </view>
+      <view class="filter filter--gap">
+        <input v-model="keyword" class="input filter__kw" placeholder="订单号 / 车牌号" />
+        <view class="btn small" hover-class="btn-hover" @tap="loadEntries">查询</view>
+        <view class="btn small gray filter__btn" hover-class="btn-hover" @tap="reset">重置</view>
+      </view>
+    </view>
+
+    <view class="section-head">
+      <text class="section-head__title">接送明细</text>
+      <text class="section-head__meta">{{ entries.length }} 条</text>
+    </view>
+
+    <view class="list">
+      <view v-for="e in entries" :key="e.entryId" class="row-item">
+        <view class="row-item__top">
+          <text class="row-item__title num">{{ e.orderNo }}</text>
+          <text class="row-item__amount num">¥{{ e.amountYuan != null ? e.amountYuan : '待定价' }}</text>
+        </view>
+        <view class="row-item__meta">{{ e.plateNo || '-' }} · {{ e.entryKindLabel }} · {{ dateLabel(e.serviceEndedAt) }}</view>
+        <view class="row-item__meta">
           {{ e.statementNo ? '已入对账单 ' + e.statementNo : '未入对账单' }}
           <text v-if="e.statementStatus"> · {{ e.statementStatus }}</text>
         </view>
       </view>
+
+      <view v-if="!entries.length" class="empty">
+        <view class="empty__title">该时间段暂无可结算明细</view>
+        <view class="empty__hint">换个日期范围或清空关键词再查</view>
+      </view>
     </view>
 
-    <view class="card">
-      <view class="card-title">已登记收款（{{ payments.length }}）</view>
-      <view v-if="!payments.length" class="muted">暂无外部付款记录</view>
-      <view v-for="p in payments" :key="p.id" class="field">
-        <view class="row-between">
-          <text class="value" style="text-align: left">{{ p.statement_no || '-' }}</text>
-          <text class="price">¥{{ fenToYuan(p.amount_fen) }}</text>
+    <view class="section-head">
+      <text class="section-head__title">已登记收款</text>
+      <text class="section-head__meta">{{ payments.length }} 条</text>
+    </view>
+
+    <view class="list">
+      <view v-for="p in payments" :key="p.id" class="row-item">
+        <view class="row-item__top">
+          <text class="row-item__title">{{ p.statement_no || '-' }}</text>
+          <text class="row-item__amount num">¥{{ fenToYuan(p.amount_fen) }}</text>
         </view>
-        <view class="muted" style="margin-top: 6rpx">
-          付款时间 {{ dateLabel(p.paid_at) }} · {{ paymentStatus(p.status) }}
-        </view>
-        <view v-if="p.reason" class="muted" style="margin-top: 4rpx">说明：{{ p.reason }}</view>
+        <view class="row-item__meta num">付款时间 {{ dateLabel(p.paid_at) }} · {{ paymentStatus(p.status) }}</view>
+        <view v-if="p.reason" class="row-item__meta">说明：{{ p.reason }}</view>
+      </view>
+
+      <view v-if="!payments.length" class="empty">
+        <view class="empty__title">暂无外部付款记录</view>
+        <view class="empty__hint">对账确认后由平台登记收款，核实到账会显示在这里</view>
       </view>
     </view>
   </view>
@@ -147,9 +166,83 @@ function dateLabel(value: string) {
 </script>
 
 <style scoped>
-.picker {
+.ink-panel__title .amount-unit {
+  margin-right: 6rpx;
+  font-size: 34rpx;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.panel-meta {
+  font-size: 21rpx;
+  letter-spacing: 0.6rpx;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.filter {
   display: flex;
   align-items: center;
-  color: var(--sub);
+}
+
+.filter--gap {
+  margin-top: 14rpx;
+}
+
+.filter__item {
+  flex: 1;
+  min-width: 0;
+}
+
+.filter__item + .filter__item {
+  margin-left: 14rpx;
+}
+
+.filter__date {
+  width: 100%;
+  text-align: center;
+  font-size: 25rpx;
+  line-height: 78rpx;
+  color: var(--ink-2);
+}
+
+.filter__kw {
+  flex: 1;
+}
+
+.filter__btn {
+  margin-left: 12rpx;
+}
+
+.row-item {
+  padding: 18rpx 24rpx;
+  border-bottom: 1rpx solid var(--line-2);
+}
+
+.row-item:last-child {
+  border-bottom: none;
+}
+
+.row-item__top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.row-item__title {
+  font-size: 27rpx;
+  font-weight: 500;
+  letter-spacing: 0.4rpx;
+}
+
+.row-item__amount {
+  font-size: 27rpx;
+  color: var(--ink);
+}
+
+.row-item__meta {
+  margin-top: 6rpx;
+  font-size: 22rpx;
+  line-height: 1.55;
+  color: var(--ink-3);
 }
 </style>

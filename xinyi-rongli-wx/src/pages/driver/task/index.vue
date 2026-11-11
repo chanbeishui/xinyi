@@ -1,9 +1,14 @@
 <template>
   <view class="page">
-    <view v-if="order" class="hero">
-      <view class="hero-title">{{ order.fulfillmentStatusLabel }}</view>
-      <view class="hero-sub">{{ order.plateNo }} · {{ order.vehicleTypeName }}</view>
-      <view class="hero-window">上门时段 {{ order.pickupWindowLabel }}</view>
+    <view v-if="order" class="ink-panel">
+      <view class="ink-panel__rule"></view>
+      <view class="ink-panel__eyebrow">接送任务</view>
+      <view class="ink-panel__title">{{ order.fulfillmentStatusLabel }}</view>
+      <view class="ink-panel__desc">上门时段 {{ order.pickupWindowLabel }}</view>
+      <view class="ink-panel__foot">
+        <text class="hero__plate num">{{ order.plateNo }}</text>
+        <text class="hero__type">{{ order.vehicleTypeName }}</text>
+      </view>
     </view>
 
     <view v-if="order" class="card">
@@ -40,7 +45,7 @@
           <view class="value" style="text-align: left">{{ actionLabel(a) }}</view>
           <view class="muted">{{ actionHint(a) }}</view>
         </view>
-        <view class="btn small" :class="{ gray: a === 'CANCEL_ASSIGNMENT' }" @tap="runAction(a)">
+        <view class="btn small action-btn" :class="{ gray: a === 'CANCEL_ASSIGNMENT' }" hover-class="btn-hover" @tap="runAction(a)">
           {{ actionButton(a) }}
         </view>
       </view>
@@ -51,18 +56,18 @@
       <view class="card-title">{{ handover.handoverTypeLabel }}</view>
       <view class="row-between">
         <text class="label">状态</text>
-        <text class="tag" :class="handover.status === 'CONFIRMED' ? 'ok' : 'warn'">{{ handover.statusLabel }}</text>
+        <text class="status" :class="handover.status === 'CONFIRMED' ? 'status--ok' : 'status--warn'">{{ handover.statusLabel }}</text>
       </view>
       <view v-if="handover.actionHint" class="muted" style="margin-top: 12rpx">{{ handover.actionHint }}</view>
       <view v-if="code" class="code-box">
         <view class="code">{{ code.code }}</view>
         <view class="muted">{{ code.displayHint }}</view>
       </view>
-      <view class="row" style="gap: 16rpx; margin-top: 20rpx">
-        <view v-if="handover.canViewCode" class="btn ghost small" @tap="loadCode">查看交接码</view>
-        <view v-if="handover.canConfirm" class="btn small" @tap="showConfirm = true">核验交接码</view>
+      <view class="btn-row">
+        <view v-if="handover.canViewCode" class="btn ghost small btn-row__item" hover-class="btn-hover" @tap="loadCode">查看交接码</view>
+        <view v-if="handover.canConfirm" class="btn small btn-row__item" hover-class="btn-hover" @tap="showConfirm = true">核验交接码</view>
         <!-- 站内交接：检测点核验后，司机还要确认自己确实把车交出去了 -->
-        <view v-if="handover.canCounterConfirm" class="btn small" @tap="confirmDelivered">确认已交付</view>
+        <view v-if="handover.canCounterConfirm" class="btn small btn-row__item" hover-class="btn-hover" @tap="confirmDelivered">确认已交付</view>
       </view>
       <view v-if="handover.mutualConfirm && handover.status !== 'CONFIRMED'" class="muted" style="margin-top: 12rpx">
         本环节需双方确认：检测点核验交接码 + 您确认已交付，两者齐备才算完成。
@@ -77,7 +82,7 @@
       <view v-for="g in groups" :key="g.groupId" class="ev-group">
         <view class="row-between">
           <text class="value" style="text-align: left">节点 {{ g.nodeNo }} · {{ g.nodeLabel }}</text>
-          <text class="tag" :class="g.status === 'SEALED' ? 'ok' : 'gray'">{{ g.status === 'SEALED' ? '已封存' : '待完成' }}</text>
+          <text class="status" :class="g.status === 'SEALED' ? 'status--ok' : 'status--gray'">{{ g.status === 'SEALED' ? '已封存' : '待完成' }}</text>
         </view>
         <view class="muted">照片 {{ g.photoCount }} 张 · 里程 {{ g.mileageKm || '未填写' }}{{ g.mileageKm ? ' km' : '' }}</view>
       </view>
@@ -95,13 +100,13 @@
           <view class="field-label">仪表里程（km）</view>
           <input v-model="mileage" class="input" type="digit" placeholder="例如 38652" />
         </view>
-        <view class="row" style="gap: 16rpx; margin-top: 16rpx">
-          <view class="btn gray small" style="flex: 1" @tap="saveMileage">保存里程</view>
-          <view class="btn small" style="flex: 1" @tap="sealGroup">提交封存</view>
+        <view class="btn-row">
+          <view class="btn gray small btn-row__item" hover-class="btn-hover" @tap="saveMileage">保存里程</view>
+          <view class="btn small btn-row__item" hover-class="btn-hover" @tap="sealGroup">提交封存</view>
         </view>
       </view>
 
-      <view v-if="!currentGroup" class="btn ghost" style="margin-top: 20rpx" @tap="createGroup">新建留证</view>
+      <view v-if="!currentGroup" class="btn ghost block btn-gap" hover-class="btn-hover" @tap="createGroup">新建留证</view>
     </view>
 
     <view class="card">
@@ -110,16 +115,19 @@
         <view class="field-label">异常说明</view>
         <textarea v-model="exceptionDesc" class="textarea" placeholder="如车辆无法启动、地址无法进入等" />
       </view>
-      <view class="btn ghost" style="margin-top: 16rpx" @tap="reportException">提交异常</view>
+      <view class="btn ghost block btn-gap" hover-class="btn-hover" @tap="reportException">提交异常</view>
     </view>
 
     <!-- 交接码核验 -->
     <view v-if="showConfirm" class="mask" @tap="showConfirm = false">
       <view class="sheet" @tap.stop>
-        <view class="card-title">核验交接码</view>
-        <view class="muted">请向车主索要 4 位交接码，连续 3 次错误将锁定本阶段交接。</view>
-        <input v-model="confirmCode" class="input" type="number" maxlength="4" placeholder="4 位数字" style="margin-top: 20rpx" />
-        <view class="btn" style="margin-top: 24rpx" @tap="submitConfirm">确认交接</view>
+        <view class="sheet__head">
+          <text class="sheet__title">核验交接码</text>
+          <text class="sheet__close" @tap="showConfirm = false">关闭</text>
+        </view>
+        <view class="muted sheet__desc">请向车主索要 4 位交接码，连续 3 次错误将锁定本阶段交接。</view>
+        <input v-model="confirmCode" class="input code-input num" type="number" maxlength="4" placeholder="0000" />
+        <view class="btn block btn-gap" hover-class="btn-hover" @tap="submitConfirm">确认交接</view>
       </view>
     </view>
   </view>
@@ -416,29 +424,17 @@ async function reportException() {
 </script>
 
 <style scoped>
-.hero {
-  background: linear-gradient(135deg, #1f6feb 0%, #3f8bff 100%);
-  border-radius: 28rpx;
-  padding: 32rpx;
-  color: #fff;
-  margin-bottom: 20rpx;
-}
-
-.hero-title {
-  font-size: 38rpx;
+.hero__plate {
+  font-size: 34rpx;
   font-weight: 600;
+  letter-spacing: 3rpx;
+  color: #fff;
 }
 
-.hero-sub {
-  margin-top: 8rpx;
-  font-size: 26rpx;
-  opacity: 0.92;
-}
-
-.hero-window {
-  margin-top: 12rpx;
-  font-size: 24rpx;
-  opacity: 0.85;
+.hero__type {
+  font-size: 22rpx;
+  letter-spacing: 1rpx;
+  color: rgba(255, 255, 255, 0.55);
 }
 
 .action-row {
@@ -446,8 +442,7 @@ async function reportException() {
   align-items: center;
   justify-content: space-between;
   padding: 18rpx 0;
-  border-bottom: 1rpx solid var(--line);
-  gap: 20rpx;
+  border-bottom: 1rpx solid var(--line-2);
 }
 
 .action-row:last-child {
@@ -456,44 +451,58 @@ async function reportException() {
 
 .action-main {
   flex: 1;
+  min-width: 0;
+  padding-right: 20rpx;
 }
 
+.action-btn {
+  flex: 0 0 auto;
+}
+
+/* 交接码：盖章式，对面一眼能读 */
 .code-box {
   margin-top: 18rpx;
-  background: var(--brand-soft);
-  border-radius: 16rpx;
-  padding: 22rpx;
+  padding: 22rpx 0;
   text-align: center;
+  background: #f6f8fb;
+  border: 1rpx dashed #c9d4e4;
+  border-radius: 14rpx;
 }
 
 .code {
-  font-size: 60rpx;
+  font-size: 68rpx;
   font-weight: 700;
-  letter-spacing: 12rpx;
+  line-height: 1.2;
+  letter-spacing: 16rpx;
+  padding-left: 16rpx;
   color: var(--brand);
 }
 
 .ev-group {
   padding: 14rpx 0;
-  border-bottom: 1rpx solid var(--line);
+  border-bottom: 1rpx solid var(--line-2);
 }
 
 .photo-grid {
   display: flex;
-  gap: 16rpx;
   margin-top: 16rpx;
 }
 
 .photo {
   flex: 1;
   height: 130rpx;
-  border-radius: 12rpx;
+  margin-right: 14rpx;
+  border-radius: 10rpx;
   overflow: hidden;
   border: 1rpx dashed var(--line);
-  background: #f7f8fa;
+  background: #f6f8fb;
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.photo:last-child {
+  margin-right: 0;
 }
 
 .photo-img {
@@ -505,21 +514,35 @@ async function reportException() {
 
 .photo-empty {
   font-size: 22rpx;
-  color: var(--muted);
+  color: var(--ink-3);
 }
 
-.mask {
-  position: fixed;
-  inset: 0;
-  background: rgba(17, 24, 39, 0.45);
+.btn-row {
   display: flex;
-  align-items: flex-end;
+  margin-top: 18rpx;
 }
 
-.sheet {
-  width: 100%;
-  background: #fff;
-  border-radius: 28rpx 28rpx 0 0;
-  padding: 32rpx 28rpx calc(32rpx + env(safe-area-inset-bottom));
+.btn-row__item {
+  flex: 1;
+}
+
+.btn-row__item + .btn-row__item {
+  margin-left: 16rpx;
+}
+
+.btn-gap {
+  margin-top: 20rpx;
+}
+
+.sheet__desc {
+  margin: 14rpx 0 4rpx;
+}
+
+.code-input {
+  height: 104rpx;
+  margin-top: 16rpx;
+  text-align: center;
+  font-size: 44rpx;
+  letter-spacing: 16rpx;
 }
 </style>

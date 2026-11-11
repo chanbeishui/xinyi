@@ -7,19 +7,27 @@
       </view>
     </view>
 
-    <view v-if="!courses.length" class="empty">暂无已发布课程</view>
+    <view v-if="!courses.length" class="empty">
+      <view class="empty__title">暂无已发布课程</view>
+      <view class="empty__hint">培训课程由平台发布，认证前需完成学时与测验</view>
+    </view>
 
-    <view v-for="c in courses" :key="c.trainingId" class="card" @tap="openCourse(c)">
-      <view class="row-between">
-        <text class="value" style="text-align: left">{{ c.title }}</text>
-        <text class="tag" :class="statusClass(c.progressStatus)">{{ statusLabel(c.progressStatus) }}</text>
+    <view v-for="c in courses" :key="c.trainingId" class="slip" hover-class="card-hover" @tap="openCourse(c)">
+      <view class="slip__head">
+        <view class="slip__main">
+          <text class="eyebrow">课程</text>
+          <view class="course__title">{{ c.title }}</view>
+          <view class="slip__sub">{{ c.description }}</view>
+        </view>
+        <text class="status" :class="statusClass(c.progressStatus)">{{ statusLabel(c.progressStatus) }}</text>
       </view>
-      <view class="muted" style="margin-top: 8rpx">{{ c.description }}</view>
-      <view class="progress">
-        <view class="progress-inner" :style="{ width: percent(c) + '%' }"></view>
-      </view>
-      <view class="muted" style="margin-top: 6rpx">
-        已学 {{ c.verifiedSeconds }} / {{ c.requiredDurationSeconds }} 秒 · 及格 {{ c.passScore }} 分
+      <view class="course__body">
+        <view class="progress">
+          <view class="progress-inner" :style="{ width: percent(c) + '%' }"></view>
+        </view>
+        <view class="course__meta num">
+          已学 {{ c.verifiedSeconds }} / {{ c.requiredDurationSeconds }} 秒 · 及格 {{ c.passScore }} 分
+        </view>
       </view>
     </view>
 
@@ -42,10 +50,10 @@
         <view class="progress-inner" :style="{ width: percent(selected) + '%' }"></view>
       </view>
       <view class="muted" style="margin-top: 12rpx">{{ playing ? '学习中，请保持本页在前台…' : selected.canExam ? '学时已达标，可开始考试' : '继续学习以累计有效学时' }}</view>
-      <view class="row" style="gap: 16rpx; margin-top: 18rpx">
-        <view v-if="!playing" class="btn small" style="flex: 1" @tap="startLearning">开始/继续学习</view>
-        <view v-else class="btn small gray" style="flex: 1" @tap="stopLearning">暂停学习</view>
-        <view v-if="selected.canExam" class="btn small ghost" style="flex: 1" @tap="startExam">开始考试</view>
+      <view class="btn-row">
+        <view v-if="!playing" class="btn small btn-row__item" hover-class="btn-hover" @tap="startLearning">开始/继续学习</view>
+        <view v-else class="btn small gray btn-row__item" hover-class="btn-hover" @tap="stopLearning">暂停学习</view>
+        <view v-if="selected.canExam" class="btn small ghost btn-row__item" hover-class="btn-hover" @tap="startExam">开始考试</view>
       </view>
     </view>
 
@@ -53,7 +61,7 @@
     <view v-if="attempt" class="card">
       <view class="row-between">
         <text class="card-title">第 {{ attempt.attemptNo }} 次考试</text>
-        <text class="tag warn">{{ attempt.hint }}</text>
+        <text class="status status--warn">{{ attempt.hint }}</text>
       </view>
       <view v-for="(q, qi) in attempt.questions" :key="q.questionCode" class="field">
         <view class="value" style="text-align: left">{{ qi + 1 }}. {{ q.prompt }}</view>
@@ -68,7 +76,7 @@
           <text>{{ optText(opt) }}</text>
         </view>
       </view>
-      <view class="btn" style="margin-top: 20rpx" @tap="submitExam">提交答卷</view>
+      <view class="btn block btn-gap" hover-class="btn-hover" @tap="submitExam">提交答卷</view>
     </view>
 
     <!-- 成绩 -->
@@ -263,17 +271,58 @@ function statusLabel(status: string) {
 }
 
 function statusClass(status: string) {
-  if (status === 'PASSED') return 'ok'
-  if (status === 'READY_FOR_EXAM') return 'warn'
-  return 'gray'
+  if (status === 'PASSED') return 'status--ok'
+  if (status === 'READY_FOR_EXAM') return 'status--warn'
+  if (status === 'IN_PROGRESS') return 'status--brand'
+  return 'status--gray'
 }
 </script>
 
 <style scoped>
+.slip__main {
+  flex: 1;
+  min-width: 0;
+  padding-right: 16rpx;
+}
+
+.course__title {
+  margin-top: 6rpx;
+  font-size: 30rpx;
+  font-weight: 600;
+  letter-spacing: 0.3rpx;
+}
+
+.course__body {
+  padding: 0 24rpx 22rpx;
+}
+
+.course__meta {
+  margin-top: 8rpx;
+  font-size: 22rpx;
+  color: var(--ink-3);
+}
+
+.btn-row {
+  display: flex;
+  margin-top: 18rpx;
+}
+
+.btn-row__item {
+  flex: 1;
+}
+
+.btn-row__item + .btn-row__item {
+  margin-left: 16rpx;
+}
+
+.btn-gap {
+  margin-top: 20rpx;
+}
+
 .progress {
   height: 12rpx;
   border-radius: 6rpx;
-  background: #f0f1f4;
+  background: var(--line-2);
   overflow: hidden;
   margin-top: 14rpx;
 }
@@ -286,7 +335,6 @@ function statusClass(status: string) {
 .option {
   display: flex;
   align-items: center;
-  gap: 14rpx;
   padding: 18rpx;
   border: 1rpx solid var(--line);
   border-radius: 12rpx;
@@ -300,6 +348,8 @@ function statusClass(status: string) {
 }
 
 .option-code {
+  flex: 0 0 auto;
+  margin-right: 14rpx;
   width: 40rpx;
   height: 40rpx;
   border-radius: 50%;

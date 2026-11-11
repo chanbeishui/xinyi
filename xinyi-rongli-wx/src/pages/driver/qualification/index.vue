@@ -3,7 +3,7 @@
     <view class="card">
       <view class="row-between">
         <view class="card-title" style="margin: 0">代驾资格</view>
-        <view class="tag" :class="statusClass">{{ statusLabel }}</view>
+        <view class="status" :class="statusClass">{{ statusLabel }}</view>
       </view>
       <view class="muted" style="margin-top: 10rpx">
         需提交实名信息、驾驶证资料并通过审核后方可接单；准驾车型不符或证件过期将无法通过审核。
@@ -25,17 +25,17 @@
       <view class="field">
         <view class="field-label">准驾车型</view>
         <picker mode="selector" :range="licenseClasses" :value="licenseIndex" @change="onLicenseChange" :disabled="!view.canEdit">
-          <view class="input picker">{{ form.licenseClass || '请选择准驾车型' }}</view>
+          <view class="input picker"><text class="picker__text">{{ form.licenseClass || '请选择准驾车型' }}</text><view class="chev"></view></view>
         </picker>
       </view>
       <view class="field">
         <view class="field-label">驾驶证有效期至</view>
         <picker mode="date" :value="form.licenseValidTo" @change="onDateChange" :disabled="!view.canEdit">
-          <view class="input picker">{{ form.licenseValidTo || '请选择有效期' }}</view>
+          <view class="input picker"><text class="picker__text">{{ form.licenseValidTo || '请选择有效期' }}</text><view class="chev"></view></view>
         </picker>
       </view>
-      <view class="row" style="margin-top: 12rpx">
-        <text class="label">长期有效</text>
+      <view class="switch-row">
+        <text class="switch-row__label">长期有效</text>
         <switch :checked="form.licenseLongTerm" :disabled="!view.canEdit" @change="(e:any) => (form.licenseLongTerm = e.detail.value)" />
       </view>
     </view>
@@ -58,9 +58,9 @@
     <view class="card">
       <view class="card-title">实名活体核验</view>
       <view class="muted">活体核验用于确认本人操作，联调环境可模拟完成。</view>
-      <view class="row" style="gap: 16rpx; margin-top: 18rpx">
-        <view class="btn ghost small" style="flex: 1" @tap="startFace">发起核验</view>
-        <view class="btn small" style="flex: 1" @tap="mockFace">模拟完成</view>
+      <view class="btn-row">
+        <view class="btn ghost small btn-row__item" hover-class="btn-hover" @tap="startFace">发起核验</view>
+        <view class="btn small btn-row__item" hover-class="btn-hover" @tap="mockFace">模拟完成</view>
       </view>
       <view v-if="faceInfo" class="muted" style="margin-top: 12rpx">
         核验会话 {{ faceInfo.verificationSessionId }} · {{ faceInfo.hint }}
@@ -68,9 +68,9 @@
     </view>
 
     <view class="action-bar">
-      <view v-if="view.canEdit" class="btn gray" style="flex: 1" @tap="save">保存草稿</view>
-      <view v-if="view.canSubmit" class="btn" style="flex: 1" @tap="submit">提交审核</view>
-      <view v-if="!view.canEdit && !view.canSubmit" class="btn gray" style="flex: 1" @tap="load">刷新状态</view>
+      <view v-if="view.canEdit" class="btn gray" hover-class="btn-hover" @tap="save">保存草稿</view>
+      <view v-if="view.canSubmit" class="btn" hover-class="btn-hover" @tap="submit">提交审核</view>
+      <view v-if="!view.canEdit && !view.canSubmit" class="btn gray" hover-class="btn-hover" @tap="load">刷新状态</view>
     </view>
   </view>
 </template>
@@ -104,9 +104,9 @@ const licenseIndex = computed(() => {
 const statusLabel = computed(() => view.value.applicationStatusLabel || mapStatus(view.value.qualificationStatus))
 const statusClass = computed(() => {
   const s = view.value.qualificationStatus
-  if (s === 'APPROVED') return 'ok'
-  if (s === 'REJECTED' || s === 'EXPIRED') return 'danger'
-  return 'warn'
+  if (s === 'APPROVED') return 'status--ok'
+  if (s === 'REJECTED' || s === 'EXPIRED') return 'status--danger'
+  return 'status--warn'
 })
 
 function mapStatus(s: string) {
@@ -236,12 +236,47 @@ async function mockFace() {
 .picker {
   display: flex;
   align-items: center;
+  justify-content: space-between;
+  line-height: 78rpx;
+}
+
+.picker__text {
+  font-size: 28rpx;
+  color: var(--ink);
+}
+
+.btn-row {
+  display: flex;
+  margin-top: 18rpx;
+}
+
+.btn-row__item {
+  flex: 1;
+}
+
+.btn-row__item + .btn-row__item {
+  margin-left: 16rpx;
 }
 
 .photos {
   display: flex;
-  gap: 20rpx;
   margin-top: 18rpx;
+}
+
+.switch-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18rpx 0 4rpx;
+}
+
+.switch-row__label {
+  font-size: 26rpx;
+  color: var(--ink-2);
+}
+
+.photo + .photo {
+  margin-left: 20rpx;
 }
 
 .photo {

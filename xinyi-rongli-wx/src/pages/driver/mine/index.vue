@@ -1,79 +1,129 @@
 <template>
   <view class="page">
-    <view class="profile-card">
-      <view class="avatar">{{ initial }}</view>
-      <view class="info">
-        <view class="name">{{ profile.nickname || '代驾' }}</view>
-        <view class="sub">{{ qualificationText }}</view>
-      </view>
-      <view class="tag" style="background: rgba(255,255,255,0.2); color: #fff">代驾视角</view>
-    </view>
-
-    <view class="card">
-      <view class="row-between" @tap="go('/pages/driver/qualification/index')">
-        <text class="label">认证与复审</text>
-        <text class="muted">{{ qualificationText }} ›</text>
-      </view>
-      <view class="row-between" @tap="go('/pages/driver/statement/index')">
-        <text class="label">我的对账</text>
-        <text class="muted">查看 ›</text>
-      </view>
-      <view class="row-between" @tap="go('/pages/driver/ledger/index')">
-        <text class="label">收支流水</text>
-        <text class="muted">明细与收款 ›</text>
-      </view>
-      <view class="row-between" @tap="go('/pages/driver/training/index')">
-        <text class="label">服务培训</text>
-        <text class="muted">{{ trainingText }} ›</text>
-      </view>
-      <view class="row-between" @tap="loadOrders">
-        <text class="label">接送任务记录</text>
-        <text class="muted">{{ orderCount }} 单 ›</text>
-      </view>
-      <view class="row-between" @tap="go('/pages/driver/penalty/index')">
-        <text class="label">处罚与申诉</text>
-        <text class="muted">{{ penaltyCount }} 条 ›</text>
-      </view>
-    </view>
-
-    <view v-if="orders.length" class="card">
-      <view class="card-title">最近任务</view>
-      <view v-for="o in orders.slice(0, 5)" :key="o.orderNo" class="row-between" @tap="openTask(o)">
-        <view>
-          <view class="value" style="text-align: left">{{ o.orderNo }}</view>
-          <view class="muted">{{ o.plateNo || '' }} {{ o.fulfillmentStatusLabel || '' }}</view>
+    <view class="ink-panel">
+      <view class="ink-panel__rule"></view>
+      <view class="profile">
+        <view class="avatar">{{ initial }}</view>
+        <view class="profile__info">
+          <view class="profile__name">{{ profile.nickname || '代驾' }}</view>
+          <view class="profile__sub">{{ qualificationText }}</view>
         </view>
-        <text class="muted">查看 ›</text>
+        <view class="profile__role">代驾视角</view>
       </view>
     </view>
 
-    <view v-if="penalties.length" class="card">
-      <view class="card-title">处罚记录</view>
-      <view v-for="p in penalties.slice(0, 5)" :key="p.penaltyId" class="row-between">
-        <view>
-          <view class="value" style="text-align: left">{{ p.penaltyTypeLabel }}</view>
-          <view class="muted">{{ p.reason }}</view>
+    <view class="list">
+      <view class="list-row" hover-class="card-hover" @tap="go('/pages/driver/qualification/index')">
+        <text class="list-row__key">认证与复审</text>
+        <view class="row">
+          <text class="list-row__hint">{{ qualificationText }}</text>
+          <view class="chev"></view>
         </view>
-        <text class="tag" :class="p.status === 'ACTIVE' ? 'danger' : 'gray'">{{ p.statusLabel }}</text>
+      </view>
+      <view class="list-row" hover-class="card-hover" @tap="go('/pages/driver/statement/index')">
+        <text class="list-row__key">我的对账</text>
+        <view class="row">
+          <text class="list-row__hint">查看</text>
+          <view class="chev"></view>
+        </view>
+      </view>
+      <view class="list-row" hover-class="card-hover" @tap="go('/pages/driver/ledger/index')">
+        <text class="list-row__key">收支流水</text>
+        <view class="row">
+          <text class="list-row__hint">明细与收款</text>
+          <view class="chev"></view>
+        </view>
+      </view>
+      <view class="list-row" hover-class="card-hover" @tap="go('/pages/driver/training/index')">
+        <text class="list-row__key">服务培训</text>
+        <view class="row">
+          <text class="list-row__hint">{{ trainingText }}</text>
+          <view class="chev"></view>
+        </view>
+      </view>
+      <view class="list-row" hover-class="card-hover" @tap="loadOrders">
+        <text class="list-row__key">接送任务记录</text>
+        <view class="row">
+          <text class="list-row__hint num">{{ orderCount }} 单</text>
+          <view class="chev"></view>
+        </view>
+      </view>
+      <view class="list-row" hover-class="card-hover" @tap="go('/pages/driver/penalty/index')">
+        <text class="list-row__key">处罚与申诉</text>
+        <view class="row">
+          <text class="list-row__hint num">{{ penaltyCount }} 条</text>
+          <view class="chev"></view>
+        </view>
       </view>
     </view>
 
-    <view class="card">
-      <view class="row-between" @tap="go('/pages/role/index')">
-        <text class="label">切换视角</text>
-        <text class="muted">前往 ›</text>
+    <template v-if="orders.length">
+      <view class="section-head">
+        <text class="section-head__title">最近任务</text>
+        <text class="section-head__meta">近 5 单</text>
       </view>
-      <view class="row-between" @tap="go('/pages/settings/index')">
-        <text class="label">设置与隐私</text>
-        <text class="muted">账号安全 ›</text>
+
+      <view class="list">
+        <view
+          v-for="o in orders.slice(0, 5)"
+          :key="o.orderNo"
+          class="list-row"
+          hover-class="card-hover"
+          @tap="openTask(o)"
+        >
+          <view class="task">
+            <view class="task__no num">{{ o.orderNo }}</view>
+            <view class="task__meta">{{ o.plateNo || '' }} {{ o.fulfillmentStatusLabel || '' }}</view>
+          </view>
+          <view class="chev"></view>
+        </view>
       </view>
-      <view class="row-between" @tap="go('/pages/messages/index')">
-        <text class="label">消息中心</text>
-        <text class="muted">查看 ›</text>
+    </template>
+
+    <template v-if="penalties.length">
+      <view class="section-head">
+        <text class="section-head__title">处罚记录</text>
+        <text class="section-head__meta">{{ penaltyCount }} 条</text>
+      </view>
+
+      <view class="list">
+        <view v-for="p in penalties.slice(0, 5)" :key="p.penaltyId" class="list-row">
+          <view class="task">
+            <view class="task__no">{{ p.penaltyTypeLabel }}</view>
+            <view class="task__meta">{{ p.reason }}</view>
+          </view>
+          <text class="status" :class="p.status === 'ACTIVE' ? 'status--danger' : 'status--gray'">
+            {{ p.statusLabel }}
+          </text>
+        </view>
+      </view>
+    </template>
+
+    <view class="list">
+      <view class="list-row" hover-class="card-hover" @tap="go('/pages/role/index')">
+        <text class="list-row__key">切换视角</text>
+        <view class="row">
+          <text class="list-row__hint">前往</text>
+          <view class="chev"></view>
+        </view>
+      </view>
+      <view class="list-row" hover-class="card-hover" @tap="go('/pages/settings/index')">
+        <text class="list-row__key">设置与隐私</text>
+        <view class="row">
+          <text class="list-row__hint">账号安全</text>
+          <view class="chev"></view>
+        </view>
+      </view>
+      <view class="list-row" hover-class="card-hover" @tap="go('/pages/messages/index')">
+        <text class="list-row__key">消息中心</text>
+        <view class="row">
+          <text class="list-row__hint">查看</text>
+          <view class="chev"></view>
+        </view>
       </view>
     </view>
 
-    <view class="btn gray" @tap="logout">退出登录</view>
+    <view class="btn gray block" hover-class="btn-hover" @tap="logout">退出登录</view>
 
     <RoleTabBar role="DRIVER" active="mine" />
   </view>
@@ -178,41 +228,67 @@ function logout() {
 </script>
 
 <style scoped>
-.profile-card {
-  background: linear-gradient(135deg, #1f6feb 0%, #3f8bff 100%);
-  border-radius: 28rpx;
-  padding: 36rpx 30rpx;
+.profile {
   display: flex;
   align-items: center;
-  gap: 22rpx;
-  color: #fff;
-  margin-bottom: 20rpx;
 }
 
 .avatar {
-  width: 100rpx;
-  height: 100rpx;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.24);
+  width: 96rpx;
+  height: 96rpx;
+  border-radius: 16rpx;
+  border: 1rpx solid rgba(255, 255, 255, 0.24);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 38rpx;
+  font-size: 36rpx;
   font-weight: 600;
+  color: #fff;
 }
 
-.info {
+.profile__info {
   flex: 1;
+  min-width: 0;
+  margin-left: 22rpx;
 }
 
-.name {
-  font-size: 34rpx;
+.profile__name {
+  font-size: 36rpx;
   font-weight: 600;
+  letter-spacing: 0.6rpx;
 }
 
-.sub {
+.profile__sub {
   margin-top: 6rpx;
-  font-size: 24rpx;
-  opacity: 0.85;
+  font-size: 23rpx;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.profile__role {
+  flex: 0 0 auto;
+  padding: 4rpx 14rpx;
+  border: 1rpx solid rgba(255, 255, 255, 0.28);
+  border-radius: 4rpx;
+  font-size: 20rpx;
+  letter-spacing: 1rpx;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.task {
+  flex: 1;
+  min-width: 0;
+  padding-right: 16rpx;
+}
+
+.task__no {
+  font-size: 26rpx;
+  font-weight: 500;
+  letter-spacing: 0.4rpx;
+}
+
+.task__meta {
+  margin-top: 4rpx;
+  font-size: 22rpx;
+  color: var(--ink-3);
 }
 </style>
