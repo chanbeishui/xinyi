@@ -1,27 +1,40 @@
 <template>
   <view class="page">
-    <view class="card">
-      <view class="row-between">
-        <view>
-          <view class="card-title" style="margin: 0">消息中心</view>
-          <view class="muted">未读 {{ unread }} 条 · 当前视角 {{ roleLabel }}</view>
+    <view class="msg-head">
+      <view class="msg-head__main">
+        <view class="msg-head__count">
+          <text class="num">{{ unread }}</text>
+          <text class="msg-head__unit">条未读</text>
         </view>
-        <view class="btn gray small" @tap="load">刷新</view>
+        <view class="msg-head__meta">当前视角 · {{ roleLabel }}</view>
       </view>
+      <view class="btn ghost small" hover-class="btn-hover" @tap="load">刷新</view>
     </view>
 
-    <view v-for="m in rows" :key="m.messageId" class="card" :class="{ unread: !m.read }" @tap="open(m)">
-      <view class="row-between">
-        <text class="scene">{{ sceneLabel(m.scene) }}</text>
-        <text class="muted">{{ shortTime(m.createdAt) }}</text>
+    <view class="list">
+      <view
+        v-for="m in rows"
+        :key="m.messageId"
+        class="msg"
+        :class="{ 'msg--unread': !m.read }"
+        hover-class="card-hover"
+        @tap="open(m)"
+      >
+        <view class="msg__top">
+          <view class="msg__scene">
+            <view v-if="!m.read" class="msg__dot"></view>
+            <text class="msg__scene-text">{{ sceneLabel(m.scene) }}</text>
+          </view>
+          <text class="msg__time num">{{ shortTime(m.createdAt) }}</text>
+        </view>
+        <view class="msg__content">{{ m.content }}</view>
       </view>
-      <view class="content">{{ m.content }}</view>
-      <view v-if="!m.read" class="tag" style="margin-top: 12rpx">未读</view>
+
+      <view v-if="!rows.length" class="empty">
+        <view class="empty__title">暂无消息</view>
+        <view class="empty__hint">派单结果、支付与售后进展会推送到这里</view>
+      </view>
     </view>
-
-    <view v-if="!rows.length" class="empty">暂无消息</view>
-
-    <view class="footer-space"></view>
 
     <RoleTabBar :role="session.activeRole" active="messages" />
   </view>
@@ -81,19 +94,98 @@ async function open(m: any) {
 </script>
 
 <style scoped>
-.card.unread {
-  border-left: 6rpx solid var(--brand);
+.msg-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding: 8rpx 6rpx 24rpx;
 }
 
-.scene {
-  font-size: 27rpx;
+.msg-head__count {
+  display: flex;
+  align-items: flex-end;
+}
+
+.msg-head__count .num {
+  font-size: 56rpx;
   font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: 1rpx;
 }
 
-.content {
+.msg-head__unit {
+  margin-left: 8rpx;
+  padding-bottom: 8rpx;
+  font-size: 23rpx;
+  color: var(--ink-3);
+}
+
+.msg-head__meta {
+  margin-top: 6rpx;
+  font-size: 22rpx;
+  color: var(--ink-3);
+}
+
+/* 未读用左侧竖条 + 圆点双标，扫视时不必读文字 */
+.msg {
+  position: relative;
+  padding: 22rpx 24rpx;
+  border-bottom: 1rpx solid var(--line-2);
+}
+
+.msg:last-child {
+  border-bottom: none;
+}
+
+.msg--unread::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 22rpx;
+  bottom: 22rpx;
+  width: 5rpx;
+  border-radius: 0 3rpx 3rpx 0;
+  background: var(--brand);
+}
+
+.msg__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.msg__scene {
+  display: flex;
+  align-items: center;
+}
+
+.msg__dot {
+  width: 10rpx;
+  height: 10rpx;
+  margin-right: 10rpx;
+  border-radius: 50%;
+  background: var(--brand);
+}
+
+.msg__scene-text {
+  font-size: 26rpx;
+  font-weight: 600;
+  letter-spacing: 0.4rpx;
+}
+
+.msg__time {
+  font-size: 22rpx;
+  color: var(--ink-3);
+}
+
+.msg__content {
   margin-top: 10rpx;
   font-size: 26rpx;
-  color: var(--sub);
-  line-height: 1.6;
+  line-height: 1.65;
+  color: var(--ink-2);
+}
+
+.msg--unread .msg__content {
+  color: var(--ink);
 }
 </style>

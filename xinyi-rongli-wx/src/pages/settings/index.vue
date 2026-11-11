@@ -10,97 +10,108 @@
         <view class="field-label">称呼（用于服务沟通）</view>
         <input v-model="form.serviceName" class="input" placeholder="例如 王先生" />
       </view>
-      <view class="btn ghost" style="margin-top: 20rpx" @tap="saveProfile">保存资料</view>
+      <view class="btn block btn-gap" hover-class="btn-hover" @tap="saveProfile">保存资料</view>
     </view>
 
     <view class="card">
-      <view class="card-title">手机号</view>
       <view class="row-between">
-        <text class="label">绑定状态</text>
-        <text class="value">{{ profile.phoneBound ? '已绑定' : '未绑定' }}</text>
+        <text class="card-title">手机号</text>
+        <text class="status" :class="profile.phoneBound ? 'status--ok' : 'status--warn'">
+          {{ profile.phoneBound ? '已绑定' : '未绑定' }}
+        </text>
       </view>
-      <view class="muted" style="margin-top: 12rpx">
+      <view class="muted">
         建议使用微信授权手机号：若该号码与公司在册员工账号一致，系统会自动识别员工身份，无需另行申请。
       </view>
+
       <!-- #ifdef MP-WEIXIN -->
       <button
         v-if="!isMock"
-        class="btn ghost"
-        style="margin-top: 20rpx"
+        class="btn ghost block btn-gap"
+        hover-class="btn-hover"
         open-type="getPhoneNumber"
         @getphonenumber="onGetPhoneNumber"
       >
         微信授权手机号
       </button>
       <!-- #endif -->
+
       <template v-if="isMock">
-        <view class="field" style="margin-top: 16rpx">
+        <view class="field field-gap">
           <view class="field-label">联调手机号（后端 mock 模式）</view>
           <input v-model="wechatPhone" class="input" type="number" maxlength="11" placeholder="11 位手机号" />
         </view>
-        <view class="btn ghost" style="margin-top: 20rpx" @tap="mockBindWechatPhone">模拟微信授权</view>
+        <view class="btn ghost block btn-gap" hover-class="btn-hover" @tap="mockBindWechatPhone">
+          模拟微信授权
+        </view>
       </template>
 
       <view class="divider"></view>
       <view class="muted">无法获得微信授权时，可用短信验证码兜底绑定。</view>
-      <view class="field" style="margin-top: 12rpx">
+      <view class="field field-gap">
         <view class="field-label">手机号</view>
         <input v-model="phone" class="input" type="number" maxlength="11" placeholder="请输入手机号" />
       </view>
-      <view class="row" style="gap: 16rpx; margin-top: 16rpx">
-        <view class="btn gray small" @tap="sendSms">获取验证码</view>
-        <input v-model="smsCode" class="input" type="number" maxlength="6" placeholder="验证码" style="flex: 1" />
+      <view class="sms-row">
+        <input v-model="smsCode" class="input sms-row__input" type="number" maxlength="6" placeholder="验证码" />
+        <view class="btn gray small sms-row__btn" hover-class="btn-hover" @tap="sendSms">获取验证码</view>
       </view>
-      <view class="btn ghost" style="margin-top: 20rpx" @tap="bindPhone">短信验证绑定</view>
+      <view class="btn ghost block btn-gap" hover-class="btn-hover" @tap="bindPhone">短信验证绑定</view>
     </view>
 
     <view class="card">
-      <view class="card-title">员工身份</view>
       <view class="row-between">
-        <text class="label">绑定状态</text>
-        <text class="value">{{ profile.employeeBound ? (profile.employeeName || '已绑定') : '未绑定' }}</text>
+        <text class="card-title">员工身份</text>
+        <text class="status" :class="profile.employeeBound ? 'status--ok' : 'status--gray'">
+          {{ profile.employeeBound ? profile.employeeName || '已绑定' : '未绑定' }}
+        </text>
       </view>
-      <view v-if="profile.employeeBound" class="row-between">
-        <text class="label">所属部门</text>
-        <text class="value">{{ profile.employeeDeptName || '—' }}</text>
+      <view v-if="profile.employeeBound" class="kv">
+        <view class="kv__row">
+          <text class="kv__key">所属部门</text>
+          <text class="kv__val">{{ profile.employeeDeptName || '—' }}</text>
+        </view>
+        <view class="kv__row">
+          <text class="kv__key">已授权检测点</text>
+          <text class="kv__val num">{{ profile.employeeStationCount || 0 }} 个</text>
+        </view>
       </view>
-      <view v-if="profile.employeeBound" class="row-between">
-        <text class="label">已授权检测点</text>
-        <text class="value">{{ profile.employeeStationCount || 0 }} 个</text>
-      </view>
-      <view class="muted" style="margin-top: 12rpx">
-        {{ employeeHint }}
-      </view>
+      <view class="muted muted-gap">{{ employeeHint }}</view>
     </view>
 
     <view class="card">
       <view class="card-title">隐私与数据</view>
       <view class="muted">可申请查阅、更正或删除个人信息，平台按合规要求处理并留痕。</view>
-      <view class="field" style="margin-top: 16rpx">
+      <view class="field field-gap">
         <view class="field-label">请求说明</view>
         <textarea v-model="privacyReason" class="textarea" placeholder="说明希望处理的个人信息范围" />
       </view>
-      <view class="btn ghost" style="margin-top: 20rpx" @tap="submitPrivacy">提交隐私请求</view>
+      <view class="btn ghost block btn-gap" hover-class="btn-hover" @tap="submitPrivacy">提交隐私请求</view>
       <view v-if="privacyCases.length" class="divider"></view>
       <view v-for="c in privacyCases" :key="c.id" class="row-between">
-        <text class="muted">{{ c.reason || '隐私请求' }}</text>
-        <text class="tag gray">{{ c.status }}</text>
+        <text class="muted privacy-row__text">{{ c.reason || '隐私请求' }}</text>
+        <text class="status status--gray">{{ c.status }}</text>
       </view>
     </view>
 
-    <view class="card">
-      <view class="card-title">其他</view>
-      <view class="row-between" @tap="goRole">
-        <text class="label">切换视角</text>
-        <text class="muted">前往 ›</text>
+    <view class="list">
+      <view class="list-row" hover-class="card-hover" @tap="goRole">
+        <text class="list-row__key">切换视角</text>
+        <view class="row">
+          <text class="list-row__hint">前往</text>
+          <view class="chev"></view>
+        </view>
       </view>
-      <view class="row-between" @tap="goMessages">
-        <text class="label">消息中心</text>
-        <text class="muted">查看 ›</text>
+      <view class="list-row" hover-class="card-hover" @tap="goMessages">
+        <text class="list-row__key">消息中心</text>
+        <view class="row">
+          <text class="list-row__hint">查看</text>
+          <view class="chev"></view>
+        </view>
       </view>
     </view>
 
-    <view class="btn gray" @tap="logout">退出登录</view>
+    <view class="btn gray block" hover-class="btn-hover" @tap="logout">退出登录</view>
     <view class="footer-space"></view>
   </view>
 </template>
@@ -276,3 +287,80 @@ function logout() {
 
 void tab
 </script>
+
+<style scoped>
+.btn-gap {
+  margin-top: 22rpx;
+}
+
+.field-gap {
+  margin-top: 14rpx;
+}
+
+.muted-gap {
+  margin-top: 12rpx;
+}
+
+.sms-row {
+  display: flex;
+  align-items: center;
+  margin-top: 14rpx;
+}
+
+.sms-row__input {
+  flex: 1;
+}
+
+.sms-row__btn {
+  flex: 0 0 auto;
+  height: 80rpx;
+  margin-left: 14rpx;
+}
+
+.kv {
+  margin-top: 4rpx;
+}
+
+.kv__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14rpx 0;
+  border-bottom: 1rpx solid var(--line-2);
+}
+
+.kv__row:last-child {
+  border-bottom: none;
+}
+
+.kv__key {
+  font-size: 25rpx;
+  color: var(--ink-3);
+}
+
+.kv__val {
+  font-size: 26rpx;
+  color: var(--ink);
+}
+
+.privacy-row__text {
+  flex: 1;
+  min-width: 0;
+  padding-right: 16rpx;
+}
+
+/* 原生 button 用 open-type 时要抹掉默认样式，才能和 .btn 对齐；
+   只清左右下外边距，保留 .btn-gap 的上边距 */
+button.btn {
+  width: 100%;
+  margin-left: 0;
+  margin-right: 0;
+  margin-bottom: 0;
+  line-height: 1;
+  border: none;
+}
+
+button.btn::after {
+  border: none;
+}
+</style>

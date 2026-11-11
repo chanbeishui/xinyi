@@ -1,44 +1,52 @@
 <template>
   <view class="page">
-    <view class="card">
-      <view class="card-title">当前账号</view>
-      <view class="row-between">
-        <text class="label">昵称</text>
-        <text class="value">{{ profile.nickname || '车主' }}</text>
-      </view>
-      <view class="row-between">
-        <text class="label">手机号</text>
-        <text class="value">{{ profile.phoneBound ? '已绑定' : '未绑定' }}</text>
-      </view>
-      <view class="row-between">
-        <text class="label">公司绑定</text>
-        <text class="value">{{ profile.employeeBound ? (profile.employeeName || '已绑定') : '未绑定' }}</text>
+    <view class="ink-panel">
+      <view class="ink-panel__rule"></view>
+      <view class="ink-panel__eyebrow">当前账号</view>
+      <view class="ink-panel__title">{{ profile.nickname || '车主' }}</view>
+      <view class="ink-panel__foot">
+        <text class="panel-meta">手机号 {{ profile.phoneBound ? '已绑定' : '未绑定' }}</text>
+        <text class="panel-meta">
+          公司 {{ profile.employeeBound ? profile.employeeName || '已绑定' : '未绑定' }}
+        </text>
       </view>
     </view>
 
-    <view class="card">
-      <view class="card-title">选择视角</view>
-      <view class="muted" style="margin-bottom: 16rpx">切换视角只改变使用界面，不改变账号归属与已成立的承接任务。</view>
-      <view v-for="r in roleList" :key="r.code" class="role" :class="{ disabled: !r.enabled }" @tap="pick(r)">
-        <view class="role-main">
-          <view class="role-name">{{ r.label }}</view>
-          <view class="role-desc">{{ r.desc }}</view>
+    <view class="section-head">
+      <text class="section-head__title">选择视角</text>
+      <text class="section-head__meta">不改变账号归属</text>
+    </view>
+
+    <view class="list">
+      <view
+        v-for="r in roleList"
+        :key="r.code"
+        class="role"
+        :class="{ 'role--off': !r.enabled }"
+        hover-class="card-hover"
+        @tap="pick(r)"
+      >
+        <view class="role__main">
+          <view class="role__name">{{ r.label }}</view>
+          <view class="role__desc">{{ r.desc }}</view>
         </view>
-        <view class="tag" :class="r.enabled ? '' : 'gray'">{{ r.enabled ? '进入' : '未开通' }}</view>
+        <view class="status" :class="r.enabled ? 'status--brand' : 'status--gray'">
+          {{ r.enabled ? '进入' : '未开通' }}
+        </view>
       </view>
     </view>
+
+    <view class="hint-text">切换视角只改变使用界面，不改变账号归属与已成立的承接任务。</view>
 
     <view class="card">
       <view class="card-title">还没有员工视角？</view>
-      <view class="muted" style="margin-bottom: 20rpx">
-        {{ employeeHint }}
-      </view>
-      <view class="btn ghost small" @tap="goSettings">
+      <view class="muted">{{ employeeHint }}</view>
+      <view class="btn ghost small btn-inline" hover-class="btn-hover" @tap="goSettings">
         {{ profile.employeeBound ? '查看员工身份' : '授权公司登记的手机号' }}
       </view>
     </view>
 
-    <view class="btn gray" style="margin-top: 12rpx" @tap="logout">退出登录</view>
+    <view class="btn gray" hover-class="btn-hover" @tap="logout">退出登录</view>
   </view>
 </template>
 
@@ -155,45 +163,59 @@ function logout() {
     }
   })
 }
-
 </script>
 
 <style scoped>
+.panel-meta {
+  font-size: 21rpx;
+  letter-spacing: 0.8rpx;
+  color: rgba(255, 255, 255, 0.55);
+}
+
 .role {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 26rpx 0;
-  border-bottom: 1rpx solid var(--line);
+  padding: 24rpx 24rpx;
+  border-bottom: 1rpx solid var(--line-2);
 }
 
 .role:last-child {
   border-bottom: none;
 }
 
-.role.disabled {
+.role--off {
   opacity: 0.55;
 }
 
-.role-name {
-  font-size: 30rpx;
-  font-weight: 500;
+.role__main {
+  flex: 1;
+  min-width: 0;
+  padding-right: 16rpx;
 }
 
-.role-desc {
+.role__name {
+  font-size: 30rpx;
+  font-weight: 600;
+  letter-spacing: 0.4rpx;
+}
+
+.role__desc {
   margin-top: 6rpx;
-  font-size: 24rpx;
-  color: var(--muted);
+  font-size: 23rpx;
+  line-height: 1.6;
+  color: var(--ink-3);
 }
 
-.btn.gray {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 88rpx;
-  border-radius: 16rpx;
-  background: #f0f1f4;
-  color: var(--sub);
-  font-size: 30rpx;
+.hint-text {
+  margin: 4rpx 6rpx 20rpx;
+  font-size: 23rpx;
+  line-height: 1.7;
+  color: var(--ink-3);
+}
+
+.btn-inline {
+  display: inline-flex;
+  margin-top: 20rpx;
 }
 </style>
