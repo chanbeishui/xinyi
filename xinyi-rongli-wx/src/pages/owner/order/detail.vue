@@ -1,88 +1,98 @@
 <template>
   <view class="page">
-    <view v-if="order" class="hero">
-      <view class="hero-status">{{ order.fulfillmentStatusLabel }}</view>
-      <view class="hero-sub">{{ order.plateNo }} · {{ order.vehicleTypeName }}</view>
-      <view class="hero-hint">{{ hint }}</view>
+    <!-- 工单抬头：状态 + 一句话指引，比一堆标签更快读懂 -->
+    <view v-if="order" class="ink-panel">
+      <view class="ink-panel__rule"></view>
+      <view class="ink-panel__eyebrow">工单 {{ order.orderNo }}</view>
+      <view class="ink-panel__title">{{ order.fulfillmentStatusLabel }}</view>
+      <view class="ink-panel__desc">{{ hint }}</view>
+      <view class="ink-panel__foot">
+        <text class="hero__plate num">{{ order.plateNo }}</text>
+        <text class="hero__type">{{ order.vehicleTypeName }}</text>
+      </view>
     </view>
 
-    <view v-if="order" class="card">
-      <view class="card-title">预约信息</view>
-      <view class="row-between">
-        <text class="label">订单号</text>
-        <text class="value">{{ order.orderNo }}</text>
+    <view v-if="order" class="slip">
+      <view class="slip__row">
+        <text class="slip__key">检测点</text>
+        <text class="slip__val">{{ order.stationName }}</text>
       </view>
-      <view class="row-between">
-        <text class="label">检测点</text>
-        <text class="value">{{ order.stationName }}</text>
+      <view class="slip__row">
+        <text class="slip__key">上门时段</text>
+        <text class="slip__val num">{{ windowLabel(order.pickupStartsAt, order.pickupEndsAt) }}</text>
       </view>
-      <view class="row-between">
-        <text class="label">上门时段</text>
-        <text class="value">{{ windowLabel(order.pickupStartsAt, order.pickupEndsAt) }}</text>
+      <view class="slip__row">
+        <text class="slip__key">接车地址</text>
+        <text class="slip__val">{{ order.address || '-' }}</text>
       </view>
-      <view class="row-between">
-        <text class="label">接车地址</text>
-        <text class="value" style="max-width: 62%">{{ order.address || '-' }}</text>
+      <view v-if="order.payExpiresAt && order.fulfillmentStatus === 'PENDING_PAY'" class="slip__row">
+        <text class="slip__key">支付截止</text>
+        <text class="slip__val num">{{ dateTime(order.payExpiresAt) }}</text>
       </view>
-      <view class="row-between">
-        <text class="label">金额</text>
-        <text class="price">¥{{ order.totalYuan }}</text>
-      </view>
-      <view v-if="order.payExpiresAt && order.fulfillmentStatus === 'PENDING_PAY'" class="row-between">
-        <text class="label">支付截止</text>
-        <text class="value">{{ dateTime(order.payExpiresAt) }}</text>
+      <view class="slip__foot">
+        <text class="slip__no">合计</text>
+        <text class="price"><text class="price__unit">¥</text>{{ order.totalYuan }}</text>
       </view>
     </view>
 
     <!-- 交接 -->
     <view v-if="handover" class="card">
-      <view class="card-title">{{ handover.handoverTypeLabel }}</view>
       <view class="row-between">
-        <text class="label">状态</text>
-        <text class="tag" :class="handover.status === 'CONFIRMED' ? 'ok' : 'warn'">{{ handover.statusLabel }}</text>
+        <text class="card-title">{{ handover.handoverTypeLabel }}</text>
+        <text class="status" :class="handover.status === 'CONFIRMED' ? 'status--ok' : 'status--warn'">
+          {{ handover.statusLabel }}
+        </text>
       </view>
-      <view v-if="handover.expiresAt && handover.status === 'PENDING'" class="row-between">
-        <text class="label">有效至</text>
-        <text class="value">{{ dateTime(handover.expiresAt) }}</text>
+
+      <view v-if="handover.actionHint" class="muted hint-block">{{ handover.actionHint }}</view>
+      <view v-if="handover.expiresAt && handover.status === 'PENDING'" class="muted hint-block">
+        有效至 {{ dateTime(handover.expiresAt) }}
       </view>
-      <view v-if="handover.actionHint" class="muted" style="margin-top: 12rpx">{{ handover.actionHint }}</view>
 
       <view v-if="code" class="code-box">
-        <view class="code">{{ code.code }}</view>
-        <view class="muted">{{ code.displayHint }}</view>
+        <view class="code__label">出示给对方核对</view>
+        <view class="code num">{{ code.code }}</view>
+        <view class="code__hint">{{ code.displayHint }}</view>
       </view>
 
-      <view class="row" style="gap: 16rpx; margin-top: 20rpx">
-        <view v-if="handover.canViewCode" class="btn ghost small" @tap="loadCode">查看交接码</view>
-        <view v-if="handover.canConfirm" class="btn small" @tap="openConfirm">核验交接码</view>
+      <view class="btn-row">
+        <view v-if="handover.canViewCode" class="btn ghost small btn-row__item" hover-class="btn-hover" @tap="loadCode">
+          查看交接码
+        </view>
+        <view v-if="handover.canConfirm" class="btn small btn-row__item" hover-class="btn-hover" @tap="openConfirm">
+          核验交接码
+        </view>
       </view>
     </view>
 
     <!-- 检测结果 -->
     <view v-if="result && result.available" class="card">
-      <view class="card-title">检测结果</view>
       <view class="row-between">
-        <text class="label">结论</text>
-        <text class="tag" :class="result.conclusion === 'PASS' ? 'ok' : 'danger'">{{ result.conclusionLabel || result.conclusion }}</text>
+        <text class="card-title">检测结果</text>
+        <text class="status" :class="result.conclusion === 'PASS' ? 'status--ok' : 'status--danger'">
+          {{ result.conclusionLabel || result.conclusion }}
+        </text>
       </view>
-      <view v-for="(item, idx) in resultItems" :key="idx" class="row-between">
+      <view v-for="(item, idx) in resultItems" :key="idx" class="row-between result-row">
         <text class="label">{{ item.label }}</text>
         <text class="value">{{ item.value }}</text>
       </view>
-      <view v-if="result.inspectedAt" class="row-between">
+      <view v-if="result.inspectedAt" class="row-between result-row">
         <text class="label">检测时间</text>
-        <text class="value">{{ dateTime(result.inspectedAt) }}</text>
+        <text class="value num">{{ dateTime(result.inspectedAt) }}</text>
       </view>
     </view>
 
     <!-- 时间线 -->
     <view v-if="timeline.length" class="card">
       <view class="card-title">服务进度</view>
-      <view v-for="(t, i) in timeline" :key="i" class="timeline-item">
-        <view class="dot" :class="{ first: i === 0 }"></view>
-        <view class="tl-body">
-          <view class="tl-action">{{ t.label || t.action }}</view>
-          <view class="muted">{{ dateTime(t.at) }}<text v-if="t.reason"> · {{ t.reason }}</text></view>
+      <view class="timeline">
+        <view v-for="(t, i) in timeline" :key="i" class="tl-item" :class="{ first: i === 0 }">
+          <view class="tl-dot"></view>
+          <view class="tl-body">
+            <view class="tl-action">{{ t.label || t.action }}</view>
+            <view class="muted num">{{ dateTime(t.at) }}<text v-if="t.reason"> · {{ t.reason }}</text></view>
+          </view>
         </view>
       </view>
     </view>
@@ -92,78 +102,106 @@
       <view class="card-title">车况留证</view>
       <view v-for="g in evidenceGroups" :key="g.groupId" class="ev-group">
         <view class="row-between">
-          <text class="value" style="text-align: left">{{ g.nodeLabel || g.nodeName || '留证' }}</text>
-          <text class="muted">{{ (g.photos || []).length }} 张</text>
+          <text class="ev-group__name">{{ g.nodeLabel || g.nodeName || '留证' }}</text>
+          <text class="muted">{{ (g.photos || []).length }} 张照片</text>
         </view>
-        <view v-if="g.mileageKm" class="muted">里程 {{ g.mileageKm }} km</view>
+        <view v-if="g.mileageKm" class="muted num">里程 {{ g.mileageKm }} km</view>
       </view>
     </view>
 
+    <view class="footer-space"></view>
+
     <!-- 操作 -->
     <view class="action-bar">
-      <view v-if="has('APPLY_AFTER_SALE')" class="btn ghost" style="flex: 1" @tap="openAfterSale">取消与退款</view>
-      <view v-if="has('OPEN_DISPUTE')" class="btn ghost" style="flex: 1" @tap="openDispute">发起争议</view>
-      <view v-if="has('CONFIRM_SERVICE')" class="btn" style="flex: 1" @tap="confirmService">确认服务</view>
-      <view v-if="has('PAY')" class="btn" style="flex: 1" @tap="goPay">去支付</view>
-      <view v-if="has('REVIEW')" class="btn" style="flex: 1" @tap="openReview">评价</view>
+      <view v-if="has('APPLY_AFTER_SALE')" class="btn ghost" hover-class="btn-hover" @tap="openAfterSale">
+        取消与退款
+      </view>
+      <view v-if="has('OPEN_DISPUTE')" class="btn ghost" hover-class="btn-hover" @tap="openDispute">
+        发起争议
+      </view>
+      <view v-if="has('CONFIRM_SERVICE')" class="btn" hover-class="btn-hover" @tap="confirmService">
+        确认服务
+      </view>
+      <view v-if="has('PAY')" class="btn" hover-class="btn-hover" @tap="goPay">去支付</view>
+      <view v-if="has('REVIEW')" class="btn" hover-class="btn-hover" @tap="openReview">评价</view>
     </view>
 
     <!-- 交接码核验 -->
     <view v-if="confirmForm.show" class="mask" @tap="confirmForm.show = false">
       <view class="sheet" @tap.stop>
-        <view class="card-title">核验交接码</view>
-        <view class="muted">请输入对方出示的 4 位交接码，连续 3 次错误将锁定本阶段交接。</view>
-        <input v-model="confirmForm.code" class="input" type="number" maxlength="4" placeholder="4 位数字" style="margin-top: 20rpx" />
-        <view class="btn" style="margin-top: 24rpx" @tap="submitConfirm">确认交接</view>
+        <view class="sheet__head">
+          <text class="sheet__title">核验交接码</text>
+          <text class="sheet__close" @tap="confirmForm.show = false">关闭</text>
+        </view>
+        <view class="muted sheet__desc">请输入对方出示的 4 位交接码，连续 3 次错误将锁定本阶段交接。</view>
+        <input
+          v-model="confirmForm.code"
+          class="input code-input num"
+          type="number"
+          maxlength="4"
+          placeholder="0000"
+        />
+        <view class="btn btn-submit" hover-class="btn-hover" @tap="submitConfirm">确认交接</view>
       </view>
     </view>
 
     <!-- 取消与退款 -->
     <view v-if="afterSaleForm.show" class="mask" @tap="afterSaleForm.show = false">
       <view class="sheet" @tap.stop>
-        <view class="card-title">申请取消与退款</view>
-        <view class="muted">提交后由平台审核，审核结论将决定是否取消、是否需要实还车辆与批准退款金额。</view>
-        <view class="field" style="margin-top: 16rpx">
+        <view class="sheet__head">
+          <text class="sheet__title">申请取消与退款</text>
+          <text class="sheet__close" @tap="afterSaleForm.show = false">关闭</text>
+        </view>
+        <view class="muted sheet__desc">
+          提交后由平台审核，审核结论将决定是否取消、是否需要实还车辆与批准退款金额。
+        </view>
+        <view class="field">
           <view class="field-label">申请类型</view>
           <picker mode="selector" :range="kindLabels" :value="afterSaleForm.kindIndex" @change="onKindChange">
-            <view class="input picker">{{ kindLabels[afterSaleForm.kindIndex] }}</view>
+            <view class="input picker">{{ kindLabels[afterSaleForm.kindIndex] }}<text class="picker__arrow">›</text></view>
           </picker>
         </view>
         <view class="field">
           <view class="field-label">申请金额（元）</view>
-          <input v-model="afterSaleForm.amount" class="input" type="digit" placeholder="默认按已支付金额" />
+          <input v-model="afterSaleForm.amount" class="input num" type="digit" placeholder="默认按已支付金额" />
         </view>
         <view class="field">
           <view class="field-label">申请原因</view>
           <textarea v-model="afterSaleForm.reason" class="textarea" placeholder="请说明取消或退款原因" />
         </view>
-        <view class="btn" style="margin-top: 24rpx" @tap="submitAfterSale">提交申请</view>
+        <view class="btn btn-submit" hover-class="btn-hover" @tap="submitAfterSale">提交申请</view>
       </view>
     </view>
 
     <!-- 争议 -->
     <view v-if="disputeForm.show" class="mask" @tap="disputeForm.show = false">
       <view class="sheet" @tap.stop>
-        <view class="card-title">发起服务争议</view>
-        <view class="field" style="margin-top: 12rpx">
+        <view class="sheet__head">
+          <text class="sheet__title">发起服务争议</text>
+          <text class="sheet__close" @tap="disputeForm.show = false">关闭</text>
+        </view>
+        <view class="field">
           <view class="field-label">争议类型</view>
           <picker mode="selector" :range="disputeTypes" :value="disputeForm.typeIndex" @change="onDisputeType">
-            <view class="input picker">{{ disputeTypes[disputeForm.typeIndex] }}</view>
+            <view class="input picker">{{ disputeTypes[disputeForm.typeIndex] }}<text class="picker__arrow">›</text></view>
           </picker>
         </view>
         <view class="field">
           <view class="field-label">争议说明</view>
           <textarea v-model="disputeForm.description" class="textarea" placeholder="请描述问题与诉求" />
         </view>
-        <view class="btn" style="margin-top: 24rpx" @tap="submitDispute">提交争议</view>
+        <view class="btn btn-submit" hover-class="btn-hover" @tap="submitDispute">提交争议</view>
       </view>
     </view>
 
     <!-- 评价 -->
     <view v-if="reviewForm.show" class="mask" @tap="reviewForm.show = false">
       <view class="sheet" @tap.stop>
-        <view class="card-title">服务评价</view>
-        <view class="row" style="gap: 12rpx; margin-top: 16rpx">
+        <view class="sheet__head">
+          <text class="sheet__title">服务评价</text>
+          <text class="sheet__close" @tap="reviewForm.show = false">关闭</text>
+        </view>
+        <view class="stars">
           <view
             v-for="n in 5"
             :key="n"
@@ -171,14 +209,14 @@
             :class="{ on: n <= reviewForm.score }"
             @tap="reviewForm.score = n"
           >
-            {{ n }}
+            <text class="star__glyph">★</text>
           </view>
         </view>
-        <view class="field" style="margin-top: 12rpx">
+        <view class="field">
           <view class="field-label">评价内容</view>
           <textarea v-model="reviewForm.content" class="textarea" placeholder="服务体验如何？" />
         </view>
-        <view class="btn" style="margin-top: 24rpx" @tap="submitReview">提交评价</view>
+        <view class="btn btn-submit" hover-class="btn-hover" @tap="submitReview">提交评价</view>
       </view>
     </view>
   </view>
@@ -440,114 +478,201 @@ void fen2yuan
 </script>
 
 <style scoped>
-.hero {
-  background: linear-gradient(135deg, #1f6feb 0%, #3f8bff 100%);
-  border-radius: 28rpx;
-  padding: 32rpx;
-  color: #fff;
-  margin-bottom: 20rpx;
-}
-
-.hero-status {
-  font-size: 38rpx;
+.hero__plate {
+  font-size: 34rpx;
   font-weight: 600;
+  letter-spacing: 3rpx;
+  color: #fff;
 }
 
-.hero-sub {
-  margin-top: 10rpx;
-  font-size: 26rpx;
-  opacity: 0.92;
+.hero__type {
+  font-size: 22rpx;
+  color: rgba(255, 255, 255, 0.55);
+  letter-spacing: 1rpx;
 }
 
-.hero-hint {
-  margin-top: 14rpx;
-  font-size: 24rpx;
-  opacity: 0.85;
-}
-
-.code-box {
-  margin-top: 20rpx;
-  background: var(--brand-soft);
-  border-radius: 16rpx;
-  padding: 24rpx;
-  text-align: center;
-}
-
-.code {
-  font-size: 64rpx;
-  font-weight: 700;
-  letter-spacing: 14rpx;
-  color: var(--brand);
-}
-
-.timeline-item {
-  display: flex;
-  gap: 16rpx;
-  padding: 12rpx 0;
-}
-
-.dot {
-  width: 14rpx;
-  height: 14rpx;
-  border-radius: 50%;
-  background: var(--line);
+.hint-block {
   margin-top: 12rpx;
 }
 
-.dot.first {
+/* 交接码：像把印章按在纸上，数字要能被对面一眼读出来 */
+.code-box {
+  margin-top: 20rpx;
+  padding: 22rpx 0;
+  text-align: center;
+  background: #f6f8fb;
+  border: 1rpx dashed #c9d4e4;
+  border-radius: 14rpx;
+}
+
+.code__label {
+  font-size: 21rpx;
+  letter-spacing: 2rpx;
+  color: var(--ink-3);
+}
+
+.code {
+  margin-top: 8rpx;
+  font-size: 72rpx;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: 18rpx;
+  padding-left: 18rpx;
+  color: var(--brand);
+}
+
+.code__hint {
+  margin-top: 6rpx;
+  font-size: 22rpx;
+  color: var(--ink-3);
+}
+
+.btn-row {
+  display: flex;
+  margin-top: 20rpx;
+}
+
+.btn-row__item {
+  flex: 1;
+}
+
+.btn-row__item + .btn-row__item {
+  margin-left: 16rpx;
+}
+
+.result-row {
+  padding: 14rpx 0;
+  border-bottom: 1rpx solid var(--line-2);
+}
+
+.result-row:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+/* 时间线：一条竖线串起节点，最新一条用实心点 */
+.timeline {
+  margin-top: 12rpx;
+}
+
+.tl-item {
+  position: relative;
+  padding: 0 0 24rpx 34rpx;
+}
+
+.tl-item:last-child {
+  padding-bottom: 0;
+}
+
+.tl-item::before {
+  content: '';
+  position: absolute;
+  left: 7rpx;
+  top: 16rpx;
+  bottom: 0;
+  width: 1rpx;
+  background: var(--line);
+}
+
+.tl-item:last-child::before {
+  display: none;
+}
+
+.tl-dot {
+  position: absolute;
+  left: 0;
+  top: 10rpx;
+  width: 15rpx;
+  height: 15rpx;
+  border-radius: 50%;
+  background: #fff;
+  border: 1rpx solid #c3ccd8;
+}
+
+.tl-item.first .tl-dot {
   background: var(--brand);
+  border-color: var(--brand);
 }
 
 .tl-action {
   font-size: 27rpx;
+  color: var(--ink);
 }
 
 .ev-group {
   padding: 14rpx 0;
-  border-bottom: 1rpx solid var(--line);
+  border-bottom: 1rpx solid var(--line-2);
 }
 
 .ev-group:last-child {
   border-bottom: none;
 }
 
+.ev-group__name {
+  font-size: 27rpx;
+  color: var(--ink);
+}
+
+.sheet__desc {
+  margin: 16rpx 0 8rpx;
+}
+
+.sheet__desc + .input {
+  margin-top: 16rpx;
+}
+
+.code-input {
+  height: 104rpx;
+  margin-top: 18rpx;
+  text-align: center;
+  font-size: 44rpx;
+  letter-spacing: 16rpx;
+}
+
 .picker {
   display: flex;
   align-items: center;
+  justify-content: space-between;
+  line-height: 78rpx;
+}
+
+.picker__arrow {
+  color: #c3ccd8;
+  font-size: 28rpx;
+}
+
+.btn-submit {
+  margin-top: 24rpx;
+}
+
+.stars {
+  display: flex;
+  margin: 20rpx 0 8rpx;
 }
 
 .star {
-  width: 64rpx;
-  height: 64rpx;
-  border-radius: 50%;
-  border: 1rpx solid var(--line);
+  width: 68rpx;
+  height: 68rpx;
+  margin-right: 14rpx;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--muted);
-  font-size: 26rpx;
+  border: 1rpx solid var(--line);
+  border-radius: 12rpx;
+}
+
+.star__glyph {
+  font-size: 34rpx;
+  line-height: 1;
+  color: #d6dce6;
 }
 
 .star.on {
-  background: var(--brand);
-  border-color: var(--brand);
-  color: #fff;
+  border-color: #f0c36b;
+  background: #fff8ea;
 }
 
-.mask {
-  position: fixed;
-  inset: 0;
-  background: rgba(17, 24, 39, 0.45);
-  display: flex;
-  align-items: flex-end;
-}
-
-.sheet {
-  width: 100%;
-  background: #fff;
-  border-radius: 28rpx 28rpx 0 0;
-  padding: 32rpx 28rpx calc(32rpx + env(safe-area-inset-bottom));
-  max-height: 88vh;
-  overflow-y: auto;
+.star.on .star__glyph {
+  color: #e8a33d;
 }
 </style>
