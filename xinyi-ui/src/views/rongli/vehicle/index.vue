@@ -123,26 +123,58 @@
 
       <template #footer>
         <el-button @click="detailVisible = false">关闭</el-button>
-        <el-button type="primary" @click="openEdit">维护备注</el-button>
+        <el-button type="primary" @click="openEdit">编辑资料</el-button>
       </template>
     </el-drawer>
 
-    <!-- 维护备注 -->
-    <el-dialog v-model="editVisible" title="维护车辆备注" width="560px">
+    <!-- 编辑车辆资料 -->
+    <el-dialog v-model="editVisible" title="编辑车辆资料" width="560px">
       <div class="rl-kv" style="margin-bottom: 16px">
         <div><span>车辆编号</span><b class="rl-mono">{{ detail.id }}</b></div>
-        <div><span>车牌</span><b>{{ detail.plateNo }}</b></div>
         <div><span>关联车主</span><b>{{ detail.ownerName || '未关联' }}</b></div>
       </div>
       <el-form label-width="110px">
+        <el-form-item label="车牌号码" required>
+          <el-input v-model="editForm.plateNo" placeholder="例如 粤K12345" />
+        </el-form-item>
+        <el-form-item label="计价车型" required>
+          <el-select v-model="editForm.vehicleTypeCode" style="width: 100%" placeholder="请选择">
+            <el-option v-for="t in vehicle_type" :key="t.value" :label="t.label" :value="t.value" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="品牌型号">
+          <el-input v-model="editForm.brandModel" placeholder="例如 马自达 CX-5" />
+        </el-form-item>
+        <el-form-item label="注册日期">
+          <el-date-picker
+            v-model="editForm.registeredOn"
+            type="date"
+            value-format="YYYY-MM-DD"
+            placeholder="选择注册日期"
+            style="width: 100%"
+          />
+        </el-form-item>
+        <el-form-item label="使用性质">
+          <!-- 只有两种取值，暂未建字典；新增取值时同步 VehicleService 的校验 -->
+          <el-select v-model="editForm.useType" style="width: 100%">
+            <el-option label="非营运" value="NON_OPERATING" />
+            <el-option label="营运" value="OPERATING" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="默认车辆">
+          <el-switch v-model="editForm.isDefault" />
+        </el-form-item>
         <el-form-item label="内部备注">
-          <el-input v-model="editForm.remark" type="textarea" :rows="3" placeholder="仅内部可见，不改写历史订单资料" />
+          <el-input v-model="editForm.internalRemark" type="textarea" :rows="2" placeholder="仅内部可见，不改写历史订单资料" />
+        </el-form-item>
+        <el-form-item label="变更原因" required>
+          <el-input v-model="editForm.reason" type="textarea" :rows="2" placeholder="必填，会记入审计（谁在什么时候把哪个字段改成了什么）" />
         </el-form-item>
       </el-form>
-      <p class="rl-muted" style="font-size: 12px">车辆资料由车主自行登记，后台不做审核；这里只维护内部备注。</p>
+      <p class="rl-muted" style="font-size: 12px">修改只影响车辆档案；已生成订单继续使用下单时的车辆快照。</p>
       <template #footer>
         <el-button @click="editVisible = false">取消</el-button>
-        <el-button type="primary" @click="saveEdit">保存修改</el-button>
+        <el-button type="primary" :loading="saving" @click="saveEdit">保存修改</el-button>
       </template>
     </el-dialog>
   </RongliPage>
@@ -173,7 +205,18 @@ const tab = ref('base')
 const detail = ref<any>({})
 const orders = ref<any[]>([])
 const results = ref<any[]>([])
-const editForm = reactive<any>({ remark: '' })
+const saving = ref(false)
+const { vehicle_type } = useDict('vehicle_type')
+const editForm = reactive<any>({
+  plateNo: '',
+  vehicleTypeCode: '',
+  brandModel: '',
+  registeredOn: '',
+  useType: 'NON_OPERATING',
+  isDefault: false,
+  internalRemark: '',
+  reason: ''
+})
 
 onMounted(load)
 
@@ -230,23 +273,50 @@ function openOwner(row: any) {
 }
 
 function openEdit() {
-  editForm.remark = detail.value.internalRemark || ''
+  Object.assign(editForm, {
+    plateNo: detail.value.plateNo || '',
+    vehicleTypeCode: detail.value.vehicleTypeCode || '',
+    brandModel: detail.value.brandModel || '',
+    registeredOn: detail.value.registeredOn || '',
+    useType: detail.value.useType || 'NON_OPERATING',
+    isDefault: !!detail.value.isDefault,
+    internalRemark: detail.value.internalRemark || '',
+    reason: ''
+  })
   editVisible.value = true
 }
 
 async function saveEdit() {
-  if (!editForm.remark) {
-    ElMessage.warning('请填写资料变更原因')
+  if (!editForm.plateNo || !editForm.vehicleTypeCode) {
+    ElMessage.warning('车牌与计价车型不能为空')
     return
   }
-  // 只提交备注：车辆资料不做审核，verificationStatus 由后端保持原值
-  await updateVehicle(detail.value.id || detail.value.vehicleId, {
-    remark: editForm.remark
-  })
-  ElMessage.success('备注已更新')
-  editVisible.value = false
-  detailVisible.value = false
-  load()
+  if (!editForm.reason || !editForm.reason.trim()) {
+    ElMessage.warning('请填写变更原因，本次修改会记入审计')
+    return
+  }
+  saving.value = true
+  try {
+    const view: any = await updateVehicle(detail.value.id || detail.value.vehicleId, {
+      plateNo: editForm.plateNo,
+      vehicleTypeCode: editForm.vehicleTypeCode,
+      brandModel: editForm.brandModel,
+      registeredOn: editForm.registeredOn || null,
+      useType: editForm.useType,
+      isDefault: editForm.isDefault,
+      internalRemark: editForm.internalRemark,
+      reason: editForm.reason.trim()
+    })
+    // 保存后直接用返回的详情刷新抽屉，避免关闭再打开才看到新值
+    detail.value = { ...detail.value, ...(view.rows ? view.rows[0] || view : view) }
+    editVisible.value = false
+    ElMessage.success('车辆资料已更新')
+    load()
+  } catch (e: any) {
+    ElMessage.error(e?.response?.data?.msg || '保存失败，请稍后重试')
+  } finally {
+    saving.value = false
+  }
 }
 
 async function applyExport() {
