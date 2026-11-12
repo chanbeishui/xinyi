@@ -14,6 +14,9 @@
         <el-date-picker v-model="to" type="date" value-format="YYYY-MM-DD" placeholder="结束日期（含）" style="width: 170px" />
         <el-button type="primary" icon="Search" @click="load">查询</el-button>
         <el-button icon="Refresh" @click="resetFilter">重置</el-button>
+        <el-tag v-if="focusDriverId" closable @close="focusDriverId = ''">
+          仅看 D{{ String(focusDriverId).padStart(4, '0') }}
+        </el-tag>
         <div style="flex: 1"></div>
         <el-button type="primary" icon="Plus" @click="openCreate">新建对账单</el-button>
       </div>
@@ -156,7 +159,7 @@
 <script setup name="RongliStatement" lang="ts">
 import RongliPage from '../components/RongliPage.vue'
 import { computed, onMounted, reactive, ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import {
   createStatement,
@@ -171,6 +174,9 @@ import {
 import { money, shortDate, shortTime } from '../format'
 
 const router = useRouter()
+const route = useRoute()
+/** 从代驾档案点「查看个人对账」带过来的 driverId；为空表示看全部 */
+const focusDriverId = ref(String(route.query.driverId || ''))
 const loading = ref(false)
 const rows = ref<any[]>([])
 const entity = ref('MAIN')
@@ -220,6 +226,7 @@ const driverRows = computed(() => {
 
 const filteredRows = computed(() =>
   driverRows.value.filter((r) => {
+    if (focusDriverId.value && String(r.driverId) !== focusDriverId.value) return false
     if (!r.statement) return true
     const start = (r.statement.periodStart || '').slice(0, 10)
     const end = (r.statement.periodEnd || '').slice(0, 10)

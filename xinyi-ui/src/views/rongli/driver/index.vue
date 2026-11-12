@@ -2,7 +2,7 @@
   <RongliPage title="代驾员列表" subtitle="资格、接单状态、在手任务与个人对账集中管理。">
     <template #actions>
       <el-button @click="router.push('/rongli/people/qualification')">资格审核</el-button>
-      <el-button type="primary" @click="router.push('/rongli/settlement/statement')">全部对账</el-button>
+      <el-button type="primary" @click="router.push(RL.statement)">全部对账</el-button>
     </template>
 
     <section class="rl-panel">
@@ -155,7 +155,7 @@
             <div><span>累计服务</span><b>{{ Number(detail.totalAssignments || 0) }} 单</b></div>
             <div><span>最近完单</span><b>{{ shortTime(detail.lastAssignmentAt) }}</b></div>
             <div><span>最近定位</span><b>{{ shortTime(detail.lastLocationAt) }}</b></div>
-            <div><span>派单依据</span><b>听单与接单开关决定能否派单；有定位按距离就近，无定位兜底</b></div>
+            <div><span>派单依据</span><b>听单 + 接单开关；有定位就近、无定位兜底</b></div>
           </div>
 
           <div v-if="detail.internalRemark" class="rl-note">内部备注：{{ detail.internalRemark }}</div>
@@ -217,6 +217,7 @@ import { useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { disableDriverNewAssignments, getDriver, getDriverFeeLedger, listDriverAssignments, listDrivers } from '@/api/rongli'
 import { money, shortDate, shortTime } from '../format'
+import { RL } from '../routes'
 
 const router = useRouter()
 const loading = ref(false)
@@ -383,7 +384,7 @@ async function toggleNew(row: any, value: boolean) {
 }
 
 function goStatement(row: any) {
-  router.push({ path: '/rongli/settlement/statement', query: { driverId: String(driverId(row) || '') } })
+  router.push({ path: RL.statement, query: { driverId: String(driverId(row) || '') } })
 }
 </script>
 
