@@ -70,10 +70,13 @@ public class AdminOpsController
     public Map<String, Object> auditEvents(@RequestParam(required = false) Long orderId,
             @RequestParam(required = false) String aggregateType,
             @RequestParam(required = false) String action,
+            @RequestParam(required = false) String actorRealm,
+            @RequestParam(required = false) String result,
             @RequestParam(defaultValue = "1") int pageNum,
             @RequestParam(defaultValue = "20") int pageSize)
     {
-        return opsAdminService.auditEvents(orderId, aggregateType, action, pageNum, pageSize);
+        return opsAdminService.auditEvents(orderId, aggregateType, action, actorRealm, result,
+                pageNum, pageSize);
     }
     @GetMapping("/statistics")
     @PreAuthorize("@ss.hasPermi('biz:statistics:list')")

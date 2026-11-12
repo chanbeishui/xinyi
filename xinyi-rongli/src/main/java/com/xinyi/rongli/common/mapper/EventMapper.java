@@ -16,11 +16,11 @@ import org.apache.ibatis.annotations.Update;
 public interface EventMapper
 {
     @Insert("""
-            INSERT INTO vi_event_log (order_id, aggregate_type, aggregate_id, action, actor_account_id,
-                   actor_user_id, acting_role, station_id, before_summary, after_summary, reason,
+            INSERT INTO vi_event_log (order_id, aggregate_type, aggregate_id, action, result, failure_reason,
+                   actor_account_id, actor_user_id, acting_role, station_id, before_summary, after_summary, reason,
                    actor_realm, session_id, context_version, created_at, updated_at, version)
-            VALUES (#{orderId}, #{aggregateType}, #{aggregateId}, #{action}, #{actorAccountId},
-                   #{actorUserId}, #{actingRole}, #{stationId}, #{before}, #{after}, #{reason},
+            VALUES (#{orderId}, #{aggregateType}, #{aggregateId}, #{action}, #{result}, #{failureReason},
+                   #{actorAccountId}, #{actorUserId}, #{actingRole}, #{stationId}, #{before}, #{after}, #{reason},
                    #{realm}, #{sessionId}, #{contextVersion}, UTC_TIMESTAMP(3), UTC_TIMESTAMP(3), 0)
             """)
     int insertEvent(Map<String, Object> row);

@@ -124,11 +124,14 @@ public interface AdminOpsMapper
             <if test="orderId != null"> AND e.order_id = #{orderId} </if>
             <if test="aggregateType != null and aggregateType != ''"> AND e.aggregate_type = #{aggregateType} </if>
             <if test="action != null and action != ''"> AND e.action = #{action} </if>
+            <if test="actorRealm != null and actorRealm != ''"> AND e.actor_realm = #{actorRealm} </if>
+            <if test="result != null and result != ''"> AND e.result = #{result} </if>
             ORDER BY e.id DESC LIMIT #{offset}, #{limit}
             </script>
             """)
     List<Map<String, Object>> listEvents(@Param("orderId") Long orderId,
             @Param("aggregateType") String aggregateType, @Param("action") String action,
+            @Param("actorRealm") String actorRealm, @Param("result") String result,
             @Param("offset") int offset, @Param("limit") int limit);
     @Select("""
             <script>
@@ -136,10 +139,13 @@ public interface AdminOpsMapper
             <if test="orderId != null"> AND e.order_id = #{orderId} </if>
             <if test="aggregateType != null and aggregateType != ''"> AND e.aggregate_type = #{aggregateType} </if>
             <if test="action != null and action != ''"> AND e.action = #{action} </if>
+            <if test="actorRealm != null and actorRealm != ''"> AND e.actor_realm = #{actorRealm} </if>
+            <if test="result != null and result != ''"> AND e.result = #{result} </if>
             </script>
             """)
     long countEvents(@Param("orderId") Long orderId, @Param("aggregateType") String aggregateType,
-            @Param("action") String action);
+            @Param("action") String action, @Param("actorRealm") String actorRealm,
+            @Param("result") String result);
     @Select("""
             SELECT * FROM vi_outbox WHERE status IN ('READY','PROCESSING','FAILED')
             ORDER BY id DESC LIMIT #{offset}, #{limit}

@@ -51,12 +51,24 @@ public class EventService
     public void record(String aggregateType, Long aggregateId, String action, Long orderId,
             Object before, Object after, String reason)
     {
+        record(aggregateType, aggregateId, action, orderId, before, after, reason, "SUCCESS", null);
+    }
+
+    /**
+     * 带执行结果的留痕。失败/跳过必须写 failureReason，否则事后只会看到一条「做了什么」，
+     * 无法判断这件事到底成没成。
+     */
+    public void record(String aggregateType, Long aggregateId, String action, Long orderId,
+            Object before, Object after, String reason, String result, String failureReason)
+    {
         Map<String, Object> row = new LinkedHashMap<>();
         row.put("orderId", orderId);
         row.put("aggregateType", aggregateType);
         // 全局事件（如配置变更）没有具体聚合主键，表列 NOT NULL，统一落 0 表示"无单体"
         row.put("aggregateId", aggregateId == null ? 0L : aggregateId);
         row.put("action", action);
+        row.put("result", result == null || result.isBlank() ? "SUCCESS" : result);
+        row.put("failureReason", failureReason);
         row.put("before", before == null ? null : Json.write(before));
         row.put("after", after == null ? null : Json.write(after));
         row.put("reason", reason);
@@ -88,6 +100,35 @@ public class EventService
     public void record(String aggregateType, Long aggregateId, String action, Long orderId)
     {
         record(aggregateType, aggregateId, action, orderId, null, null, null);
+    }
+
+    /**
+     * 系统自动动作（定时派单、通知下发、超时转人工等）：主体固定 SYSTEM。
+     *
+     * <p>不能复用 {@link #record}——它按当前线程有没有登录人推断主体，
+     * 同一段逻辑被接口触发和被定时任务触发会记成两种主体，审计就对不上了。</p>
+     */
+    public void recordSystem(String aggregateType, Long aggregateId, String action, Long orderId,
+            String reason, String result, String failureReason)
+    {
+        Map<String, Object> row = new LinkedHashMap<>();
+        row.put("orderId", orderId);
+        row.put("aggregateType", aggregateType);
+        row.put("aggregateId", aggregateId == null ? 0L : aggregateId);
+        row.put("action", action);
+        row.put("result", result == null || result.isBlank() ? "SUCCESS" : result);
+        row.put("failureReason", failureReason);
+        row.put("before", null);
+        row.put("after", null);
+        row.put("reason", reason);
+        row.put("actorAccountId", null);
+        row.put("actorUserId", null);
+        row.put("actingRole", "SYSTEM");
+        row.put("stationId", null);
+        row.put("realm", "SYSTEM");
+        row.put("sessionId", null);
+        row.put("contextVersion", null);
+        eventMapper.insertEvent(row);
     }
 
     /** 写 outbox 事件 */

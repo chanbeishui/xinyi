@@ -145,8 +145,8 @@ public class DispatchService
     private void toManual(Long orderId, String reason)
     {
         orderMapper.casStatusByState(orderId, Codes.Fulfill.DISPATCHING, Codes.Fulfill.MANUAL_DISPATCH);
-        eventService.record("ORDER", orderId, "NO_CANDIDATE", orderId, null,
-                Map.of("status", Codes.Fulfill.MANUAL_DISPATCH), reason);
+        // 系统自动转人工：结果记为失败，并把原因写进去，否则事后只看到「转人工了」不知道为什么
+        eventService.recordSystem("ORDER", orderId, "NO_CANDIDATE", orderId, reason, "FAILED", reason);
     }
 
     /** 人工发出邀约 */
@@ -233,9 +233,10 @@ public class DispatchService
         Long accountId = Row.of(accountMapper.findDriverById(driverId)).lng("account_id");
         eventService.notify(accountId, Codes.Role.DRIVER, orderId, "DISPATCH_INVITE",
                 "您有新的接车邀约，请在 " + config.inviteExpireSeconds() + " 秒内响应");
+        // 自动派单与人工指派都走这里：用 record 让主体按线程推断，别把人工指派记成 SYSTEM
         eventService.record("ORDER", orderId, "INVITE_ISSUED", orderId, null,
                 Map.of("inviteId", String.valueOf(inviteId), "driverId", String.valueOf(driverId),
-                        "round", String.valueOf(roundNo)), source);
+                        "round", String.valueOf(roundNo)), source, "SUCCESS", null);
     }
 
     /**
@@ -529,7 +530,8 @@ public class DispatchService
             dispatchMapper.releaseOccupancy(inv.lng("driver_id"), inv.lng("id"));
             dispatchMapper.releaseExpiredInviteOccupancy();
             orderMapper.casStatusByState(orderId, Codes.Fulfill.DISPATCHING, Codes.Fulfill.PENDING_DISPATCH);
-            eventService.record("ORDER", orderId, "INVITE_EXPIRED", orderId, null, null, null);
+            eventService.record("ORDER", orderId, "INVITE_EXPIRED", orderId, null, null,
+                    "邀约超时未响应，已回收并重新派单", "SKIPPED", "超过邀约响应时限");
             dispatchOrder(orderId);
             expired++;
         }

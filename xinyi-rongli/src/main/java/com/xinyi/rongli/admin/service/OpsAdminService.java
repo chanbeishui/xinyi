@@ -192,13 +192,14 @@ public class OpsAdminService
         view.put("maskingRule", "车牌保留前后各 2 位，联系人只保留姓氏");
         return view;
     }
-    public Map<String, Object> auditEvents(Long orderId, String aggregateType, String action, int pageNum,
-            int pageSize)
+    public Map<String, Object> auditEvents(Long orderId, String aggregateType, String action,
+            String actorRealm, String result, int pageNum, int pageSize)
     {
         int limit = Math.min(Math.max(pageSize, 1), 200);
         int offset = (Math.max(pageNum, 1) - 1) * limit;
         List<Map<String, Object>> rows = new ArrayList<>();
-        for (Map<String, Object> e : adminOpsMapper.listEvents(orderId, aggregateType, action, offset, limit))
+        for (Map<String, Object> e : adminOpsMapper.listEvents(orderId, aggregateType, action,
+                actorRealm, result, offset, limit))
         {
             Row ev = Row.of(e);
             Map<String, Object> item = new LinkedHashMap<>();
@@ -208,6 +209,8 @@ public class OpsAdminService
             item.put("aggregateId", ev.lng("aggregate_id") == null ? null
                     : String.valueOf(ev.lng("aggregate_id")));
             item.put("action", ev.str("action"));
+            item.put("result", ev.str("result"));
+            item.put("failureReason", ev.str("failure_reason"));
             item.put("actorRealm", ev.str("actor_realm"));
             item.put("actingRole", ev.str("acting_role"));
             item.put("actorAccountId", ev.lng("actor_account_id") == null ? null
@@ -222,7 +225,7 @@ public class OpsAdminService
         Map<String, Object> view = new LinkedHashMap<>();
         view.put("pageNum", pageNum);
         view.put("pageSize", limit);
-        view.put("total", adminOpsMapper.countEvents(orderId, aggregateType, action));
+        view.put("total", adminOpsMapper.countEvents(orderId, aggregateType, action, actorRealm, result));
         view.put("rows", rows);
         return view;
     }
