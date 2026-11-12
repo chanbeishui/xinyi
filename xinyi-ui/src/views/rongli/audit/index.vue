@@ -22,6 +22,18 @@
           <el-option label="对账" value="LEDGER" />
           <el-option label="争议" value="DISPUTE" />
         </el-select>
+        <el-select v-model="query.actorRealm" placeholder="全部主体" style="width: 140px" @change="handleQuery">
+          <el-option label="全部主体" value="" />
+          <el-option label="系统自动" value="SYSTEM" />
+          <el-option label="管理端" value="ADMIN" />
+          <el-option label="小程序" value="MINI" />
+        </el-select>
+        <el-select v-model="query.result" placeholder="全部结果" style="width: 130px" @change="handleQuery">
+          <el-option label="全部结果" value="" />
+          <el-option label="成功" value="SUCCESS" />
+          <el-option label="失败" value="FAILED" />
+          <el-option label="跳过" value="SKIPPED" />
+        </el-select>
         <el-button icon="Refresh" @click="resetQuery">重置</el-button>
       </div>
 
@@ -41,6 +53,12 @@
             <div class="rl-mono">{{ row.action }}</div>
           </template>
         </el-table-column>
+        <el-table-column label="结果" width="120">
+          <template #default="{ row }">
+            <span class="rl-tag" :class="resultClass(row.result)">{{ resultLabel(row.result) }}</span>
+            <div v-if="row.failureReason" class="rl-sub">{{ row.failureReason }}</div>
+          </template>
+        </el-table-column>
         <el-table-column label="对象" width="160">
           <template #default="{ row }">
             <div>{{ row.aggregateType }}</div>
@@ -52,8 +70,8 @@
             <span class="rl-cell-sub">{{ summaryText(row) }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="来源" width="120">
-          <template #default="{ row }">{{ row.actorRealm === 'MINI' ? '小程序' : '管理端' }}</template>
+        <el-table-column label="来源" width="110">
+          <template #default="{ row }">{{ realmLabel(row.actorRealm) }}</template>
         </el-table-column>
         <el-table-column label="操作" width="90" fixed="right">
           <template #default="{ row }">
@@ -119,7 +137,7 @@ const router = useRouter()
 const loading = ref(false)
 const rows = ref<any[]>([])
 const total = ref(0)
-const query = reactive<any>({ aggregateType: '', action: '', pageNum: 1, pageSize: 20 })
+const query = reactive<any>({ aggregateType: '', action: '', actorRealm: '', result: '', pageNum: 1, pageSize: 20 })
 
 const detailVisible = ref(false)
 const current = ref<any>({})
@@ -156,6 +174,24 @@ async function load() {
 function actionLabel(code?: string) {
   if (!code) return '—'
   return ACTION_LABEL[code] || code
+}
+
+function resultLabel(value?: string) {
+  if (value === 'FAILED') return '失败'
+  if (value === 'SKIPPED') return '跳过'
+  return '成功'
+}
+
+function resultClass(value?: string) {
+  if (value === 'FAILED') return 'rl-tag--amber'
+  if (value === 'SKIPPED') return 'rl-tag--gray'
+  return 'rl-tag--green'
+}
+
+function realmLabel(value?: string) {
+  if (value === 'MINI') return '小程序'
+  if (value === 'SYSTEM') return '系统自动'
+  return '管理端'
 }
 
 function actorText(row: any) {
@@ -200,6 +236,8 @@ function handleQuery() {
 function resetQuery() {
   query.aggregateType = ''
   query.action = ''
+  query.actorRealm = ''
+  query.result = ''
   query.pageNum = 1
   load()
 }
