@@ -155,7 +155,7 @@
             <div><span>累计服务</span><b>{{ Number(detail.totalAssignments || 0) }} 单</b></div>
             <div><span>最近完单</span><b>{{ shortTime(detail.lastAssignmentAt) }}</b></div>
             <div><span>最近定位</span><b>{{ shortTime(detail.lastLocationAt) }}</b></div>
-            <div><span>派单依据</span><b>只看听单与接单开关，不看定位</b></div>
+            <div><span>派单依据</span><b>听单与接单开关决定能否派单；有定位按距离就近，无定位兜底</b></div>
           </div>
 
           <div v-if="detail.internalRemark" class="rl-note">内部备注：{{ detail.internalRemark }}</div>
