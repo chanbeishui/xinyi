@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites>
+  <testsuite name="com.xinyi.web.viit.C01ConfigIT" tests="6" failures="0" errors="0" skipped="0" time="5.549">
+    <testcase name="公开配置匿名白名单缺协议不开放下单不宣称可支付" classname="com.xinyi.web.viit.C01ConfigIT" time="0.431" />
+    <testcase name="新车型无价格不能0元下单" classname="com.xinyi.web.viit.C01ConfigIT" time="0.075" />
+    <testcase name="ADMIN配置CAS与固定安全项拒绝" classname="com.xinyi.web.viit.C01ConfigIT" time="1.017" />
+    <testcase name="发布协议后开放下单且公开配置反映" classname="com.xinyi.web.viit.C01ConfigIT" time="0.326" />
+    <testcase name="字典车型与检测类型" classname="com.xinyi.web.viit.C01ConfigIT" time="0.055" />
+    <testcase name="生产不采用测试主体与金额" classname="com.xinyi.web.viit.C01ConfigIT" time="0.016" />
+  </testsuite>
+  <testsuite name="com.xinyi.web.viit.D02DispatchIT" tests="1" failures="0" errors="0" skipped="0" time="4.423">
+    <testcase name="policyChangesDoNotRewriteExistingOrderOrUseCurrentRadiusForItsBatch" classname="com.xinyi.web.viit.D02DispatchIT" time="1.776" />
+  </testsuite>
+</testsuites>

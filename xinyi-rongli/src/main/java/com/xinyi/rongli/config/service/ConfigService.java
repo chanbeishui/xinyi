@@ -6,6 +6,7 @@ import com.xinyi.rongli.config.dto.ConfigView;
 import com.xinyi.rongli.config.dto.DictItemView;
 import com.xinyi.rongli.config.dto.PublicServiceConfigView;
 import com.xinyi.rongli.config.mapper.ConfigMapper;
+import com.xinyi.rongli.integration.service.IntegrationAuthority;
 import com.xinyi.rongli.platform.actor.Actor;
 import com.xinyi.rongli.platform.actor.BusinessActorResolver;
 import com.xinyi.rongli.platform.error.ViErrorCode;
@@ -23,8 +24,10 @@ import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -39,6 +42,7 @@ public class ConfigService {
             Set.of("vi.biz.payment.cap.minutes", "vi.biz.permission.registry", "vi.biz.watermark");
 
     private final ConfigMapper configMapper;
+    private final IntegrationAuthority authority;
     private final BusinessActorResolver actorResolver;
     private final AuditService auditService;
     private final OutboxService outboxService;
@@ -48,6 +52,7 @@ public class ConfigService {
 
     public ConfigService(
             ConfigMapper configMapper,
+            IntegrationAuthority authority,
             BusinessActorResolver actorResolver,
             AuditService auditService,
             OutboxService outboxService,
@@ -55,6 +60,7 @@ public class ConfigService {
             PricingService pricingService,
             @Value("${vi.environment:local}") String environment) {
         this.configMapper = configMapper;
+        this.authority = authority;
         this.pricingService = pricingService;
         this.actorResolver = actorResolver;
         this.auditService = auditService;
@@ -84,9 +90,12 @@ public class ConfigService {
     public ConfigView getConfig() {
         actorResolver.requireAdmin();
         requirePerm("biz:config:query");
-        configMapper.ensureVersion();
         List<ConfigView.Item> items = new ArrayList<>();
+        Set<String> keys = new HashSet<>();
         for (Map<String, Object> r : configMapper.selectBusiness()) {
+            String key = (String) r.get("config_key");
+            if (!keys.add(key))
+                throw new ViException(ViErrorCode.VI_CONFIG_INVALID, "配置键存在重复记录，请先核查处理：" + key);
             items.add(
                     new ConfigView.Item(
                             (String) r.get("config_key"), (String) r.get("config_value")));
@@ -97,7 +106,10 @@ public class ConfigService {
     public long putConfig(List<ConfigView.Item> items, long expectedVersion, String reason) {
         Actor actor = actorResolver.requireAdmin();
         requirePerm("biz:config:edit");
+        Set<String> keys = new HashSet<>();
         for (ConfigView.Item it : items) {
+            if (!keys.add(it.key()))
+                throw new ViException(ViErrorCode.VI_REQUEST_INVALID, "同次配置请求不能重复提交同一个键");
             // 派单参数只影响新订单；缺失/非法值不能用示例30分钟静默兜底。
             if (com.xinyi.rongli.jobs.service.DispatchPlan.LEAD_KEY.equals(it.key())) {
                 com.xinyi.rongli.jobs.service.DispatchPlan.minutes(it.value());
@@ -116,15 +128,26 @@ public class ConfigService {
                         .toList();
         return tx.execute(
                 s -> {
+                    // 统一守卫先持目录并复核真实auth_version/status；等待期间撤权不能沿用入口旧权限写配置。
+                    // 目录同时串行化首次建立版本行，不能仅靠无唯一键的NOT EXISTS防并发重复插入。
+                    authority.lockAuthority();
+                    requirePerm("biz:config:edit");
                     configMapper.ensureVersion();
-                    long current = configMapper.selectVersion();
+                    List<Map<String, Object>> versions = configMapper.lockVersion();
+                    ConfigMapper.requireUnique("vi.config.version", versions);
+                    if (versions.isEmpty())
+                        throw new ViException(ViErrorCode.VI_CONFIG_INVALID, "业务配置版本记录缺失");
+                    Map<String, Object> version = versions.get(0);
+                    long versionId = ((Number) version.get("config_id")).longValue();
+                    long current = ConfigMapper.versionValue((String) version.get("config_value"));
                     if (current != expectedVersion) {
                         throw new ViException(ViErrorCode.VI_VERSION_CONFLICT, "配置已变化，请刷新后重试");
                     }
                     for (ConfigView.Item it : orderedItems) {
-                        configMapper.upsert(it.key(), it.value());
+                        saveItem(it);
                     }
                     if (configMapper.casVersion(
+                                    versionId,
                                     Long.toString(expectedVersion),
                                     Long.toString(expectedVersion + 1))
                             != 1) {
@@ -148,8 +171,24 @@ public class ConfigService {
                 });
     }
 
+    /** 版本行锁持有到整个批量提交结束；沿键序检查真实0/1/>1行，任何异常令整批和版本/成功事件回滚。 */
+    private void saveItem(ConfigView.Item item) {
+        List<Map<String, Object>> rows = configMapper.selectEntries(item.key(), true);
+        ConfigMapper.requireUnique(item.key(), rows);
+        if (rows.isEmpty()) {
+            if (configMapper.insertValue(item.key(), item.value()) != 1)
+                throw new ViException(ViErrorCode.VI_VERSION_CONFLICT);
+            return;
+        }
+        Map<String, Object> before = rows.get(0);
+        // 同值无须UPDATE，兼容JDBC按changed rows计数；更不能因为返回0而再INSERT造成重复键。
+        if (Objects.equals(before.get("config_value"), item.value())) return;
+        long id = ((Number) before.get("config_id")).longValue();
+        if (configMapper.updateValue(id, item.key(), item.value()) != 1)
+            throw new ViException(ViErrorCode.VI_VERSION_CONFLICT);
+    }
+
     public PublicServiceConfigView publicConfig() {
-        configMapper.ensureVersion();
         String termsVersion = configMapper.selectValue("vi.biz.terms.version");
         String privacyVersion = configMapper.selectValue("vi.biz.privacy.version");
         boolean published =

@@ -1647,6 +1647,36 @@
         "PUT /api/admin/dispatch/companies/{companyId}/listening-config"
       ],
       "usage": "OPERATION"
+    },
+    {
+      "code": "biz:dispatchpolicy:query",
+      "resource": "dispatchpolicy",
+      "action": "query",
+      "description": "公司派单策略读取",
+      "operations": [
+        "GET /api/admin/dispatch/companies/{companyId}/dispatch-policy"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:dispatchpolicy:edit",
+      "resource": "dispatchpolicy",
+      "action": "edit",
+      "description": "公司派单策略维护",
+      "operations": [
+        "PUT /api/admin/dispatch/companies/{companyId}/dispatch-policy"
+      ],
+      "usage": "OPERATION"
+    },
+    {
+      "code": "biz:dispatch:revoke",
+      "resource": "dispatch",
+      "action": "revoke",
+      "description": "撤回未响应邀约",
+      "operations": [
+        "POST /api/admin/dispatch/invites/{inviteId}/revoke"
+      ],
+      "usage": "OPERATION"
     }
   ],
   "capabilities": [
@@ -3959,7 +3989,7 @@
       "capability": null,
       "authorization": {
         "realm": "ADMIN",
-        "scope": "ORG_DEPT_STATION",
+        "scope": "ORDER_AUTHORITATIVE_DEPT_AND_FROZEN_COMPANY_DRIVER_POOL",
         "permission": "biz:dispatch:list"
       }
     },
@@ -3972,7 +4002,7 @@
       "capability": null,
       "authorization": {
         "realm": "ADMIN",
-        "scope": "ORG_DEPT_STATION",
+        "scope": "ORDER_AUTHORITATIVE_DEPT_AND_FROZEN_COMPANY_DRIVER_POOL",
         "permission": "biz:dispatch:list"
       }
     },
@@ -3985,7 +4015,7 @@
       "capability": null,
       "authorization": {
         "realm": "ADMIN",
-        "scope": "ORG_DEPT_STATION",
+        "scope": "ORDER_AUTHORITATIVE_DEPT_AND_FROZEN_COMPANY_DRIVER_POOL",
         "permission": "biz:dispatch:create"
       }
     },
@@ -3998,7 +4028,7 @@
       "capability": null,
       "authorization": {
         "realm": "ADMIN",
-        "scope": "ORG_DEPT_STATION",
+        "scope": "ORDER_AUTHORITATIVE_DEPT_AND_FROZEN_COMPANY_DRIVER_POOL",
         "permission": "biz:dispatch:list"
       }
     },
@@ -6950,6 +6980,45 @@
         "realm": "ADMIN",
         "scope": "EXPLICIT_COMPANY_OWNER_DEPT",
         "permission": "biz:dispatchlistening:edit"
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/dispatch/companies/{companyId}/dispatch-policy",
+      "operationId": "d02_get_company_dispatch_policy",
+      "summary": "公司派单策略读取",
+      "permission": "biz:dispatchpolicy:query",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "EXPLICIT_COMPANY_OWNER_DEPT",
+        "permission": "biz:dispatchpolicy:query"
+      }
+    },
+    {
+      "method": "PUT",
+      "path": "/api/admin/dispatch/companies/{companyId}/dispatch-policy",
+      "operationId": "d02_put_company_dispatch_policy",
+      "summary": "公司派单策略维护",
+      "permission": "biz:dispatchpolicy:edit",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "EXPLICIT_COMPANY_OWNER_DEPT",
+        "permission": "biz:dispatchpolicy:edit"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/admin/dispatch/invites/{inviteId}/revoke",
+      "operationId": "d02_post_revoke_invite",
+      "summary": "撤回未响应邀约",
+      "permission": "biz:dispatch:revoke",
+      "capability": null,
+      "authorization": {
+        "realm": "ADMIN",
+        "scope": "ORDER_DEPT",
+        "permission": "biz:dispatch:revoke"
       }
     }
   ]

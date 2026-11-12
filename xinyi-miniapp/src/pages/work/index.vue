@@ -7,6 +7,7 @@ import { currentSession, onSessionChanged, saveSession } from '../../services/ht
 import { intentKey } from '../../features/file/api';
 import type { Profile, SessionView } from '../../api/types';
 import DriverListening from '../../components/dispatch/DriverListening.vue';
+import CurrentAssignment from '../../components/dispatch/CurrentAssignment.vue';
 const profile = ref<Profile | null>(null),
   session = ref<SessionView | null>(null),
   stations = ref<AuthorizedStation[]>([]),
@@ -218,6 +219,8 @@ function open(path: string) {
         </button>
         <text v-else class="muted">当前会话暂未开放本人服务入口，请核对权限后重试。</text>
         <text class="note">暂停新邀约不会结束在手服务，也不免除车辆保管和实际归还责任。</text>
+        <button class="primary" @click="open('/pages/dispatch/invites')">查看本人派单邀约</button>
+        <CurrentAssignment @access-lost="workAccessLost" />
         <DriverListening :background-allowed="canReportBackground" @access-lost="workAccessLost" />
         <button @click="open('/pages/qualification/index')">查看认证与复审资料</button>
       </view>

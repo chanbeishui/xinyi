@@ -2,8 +2,8 @@ package com.xinyi.rongli.aftersale.service;
 
 import com.xinyi.common.utils.SecurityUtils;
 import com.xinyi.rongli.aftersale.domain.AftersaleCase;
-import com.xinyi.rongli.aftersale.dto.AftersaleRequests.*;
 import com.xinyi.rongli.aftersale.dto.AdminAftersaleRequests.*;
+import com.xinyi.rongli.aftersale.dto.AftersaleRequests.*;
 import com.xinyi.rongli.aftersale.mapper.*;
 import com.xinyi.rongli.file.service.PrivateFileService;
 import com.xinyi.rongli.integration.service.IntegrationAuthority;
@@ -14,11 +14,13 @@ import com.xinyi.rongli.platform.actor.Actor;
 import com.xinyi.rongli.platform.error.*;
 import com.xinyi.rongli.platform.json.ViJson;
 import com.xinyi.rongli.platform.service.*;
-import java.util.*;
-import java.util.function.Supplier;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
+
+import java.util.*;
+import java.util.function.Supplier;
 
 /** 后台统一审核：订单业务部门和历史收款主体的资金权限各自校验，一个决定原子提交所有业务及资金事实。 */
 @Service
@@ -38,6 +40,7 @@ public class AdminAftersaleService {
     private final AuditService audit;
     private final OutboxService outbox;
     private final TransactionTemplate tx;
+    private final com.xinyi.rongli.dispatch.service.DispatchLifecyclePort dispatch;
 
     public AdminAftersaleService(
             IntegrationAuthority authority,
@@ -50,7 +53,9 @@ public class AdminAftersaleService {
             IdempotencyService idem,
             AuditService audit,
             OutboxService outbox,
+            com.xinyi.rongli.dispatch.service.DispatchLifecyclePort dispatch,
             PlatformTransactionManager manager) {
+        this.dispatch = dispatch;
         this.authority = authority;
         this.cases = cases;
         this.mapper = mapper;
@@ -510,11 +515,7 @@ public class AdminAftersaleService {
 
     /** 未接车只释放此订单的精确旧任务，绝不能按driverId清掉另一个订单当前占用。 */
     private void releaseUnpicked(ViOrder order) {
-        for (var invite : mapper.invites(order.getId())) {
-            long id = number(invite, "id");
-            mapper.releaseOccupancy(number(invite, "driver_id"), order.getId(), id, "INVITE");
-            if (mapper.revokeInvite(id, order.getId()) != 1) conflict();
-        }
+        dispatch.closeForCancellation(order.getId());
         for (var assignment : mapper.assignments(order.getId())) {
             long id = number(assignment, "id");
             if (!Objects.equals(order.getActiveAssignmentId(), id))

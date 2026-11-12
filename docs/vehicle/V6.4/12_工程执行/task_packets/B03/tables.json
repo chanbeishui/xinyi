@@ -137,18 +137,33 @@
         "version",
         "BIGINT NOT NULL DEFAULT 0",
         "乐观锁版本"
+      ],
+      [
+        "service_company_id",
+        "BIGINT NULL",
+        "下单时冻结站点所属服务公司；历史未知不猜回填"
+      ],
+      [
+        "dispatch_policy_version",
+        "BIGINT NULL",
+        "下单时冻结公司派单策略版本；缺失转人工"
+      ],
+      [
+        "dispatch_policy_snapshot",
+        "JSON NULL",
+        "冻结公司派单策略及内容认证，不追用当前策略"
       ]
     ],
     "indexes": [
+      "KEY ix_order_service_company (service_company_id,id)",
       "UNIQUE KEY uk_order_no (order_no)",
       "UNIQUE KEY uk_quote (quote_id)",
       "KEY ix_owner_list (owner_account_id,created_at,id)",
       "KEY ix_station_queue (station_id,fulfillment_status,created_at,id)",
       "KEY ix_dispatch_due (fulfillment_status,dispatch_at,id)",
-      "KEY ix_auto_confirm (fulfillment_status,auto_confirm_at,id)",
-      "CONSTRAINT ck_order_total CHECK (total_fen>=0)"
+      "KEY ix_auto_confirm (fulfillment_status,auto_confirm_at,id)"
     ],
-    "rule": "主状态不得存REFUNDING或事故标记；已返回不等于已服务确认",
+    "rule": "主状态不得存REFUNDING或事故标记；已返回不等于已服务确认 D02：服务公司及策略按创建订单时冻结，历史NULL不猜回填；绝对截止、同司机/订单唯一占用与精确holder保护，旧事件不改新责任。",
     "primaryKey": [
       "id"
     ],
@@ -322,9 +337,28 @@
         "insertable": false,
         "updatable": false,
         "clientWritable": false
+      },
+      "service_company_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "dispatch_policy_version": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "dispatch_policy_snapshot": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
       }
     },
     "checks": [
+      "CONSTRAINT ck_order_total CHECK (total_fen>=0)",
       "CONSTRAINT ck_66_0ff90a4c30f3 CHECK (`fulfillment_status` IN ('PENDING_PAY','SCHEDULED','PENDING_DISPATCH','DISPATCHING','MANUAL_DISPATCH','ACCEPTED','GOING_PICKUP','ARRIVED_PICKUP','PICKED_UP','ARRIVED_STATION','INSPECTING','INSPECTED','CAR_TAKEN','WAIT_CONFIRM','COMPLETED','CANCELLED','CLOSED'))",
       "CONSTRAINT ck_66_0237ff511e2d CHECK (`cancel_status` IN ('NONE','APPLIED','REJECTED','APPROVED_WAIT_RETURN','COMPLETED'))",
       "CONSTRAINT ck_66_daacf35a5049 CHECK (`custody_type` IN ('OWNER','DRIVER','STATION'))",

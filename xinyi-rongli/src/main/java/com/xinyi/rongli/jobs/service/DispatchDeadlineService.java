@@ -1,9 +1,9 @@
 package com.xinyi.rongli.jobs.service;
 
+import com.xinyi.rongli.identity.mapper.EmployeeDirectoryGuardMapper;
 import com.xinyi.rongli.jobs.mapper.DispatchDeadlineMapper;
 import com.xinyi.rongli.order.domain.ViOrder;
 import com.xinyi.rongli.payment.mapper.PaymentMapper;
-import com.xinyi.rongli.identity.mapper.EmployeeDirectoryGuardMapper;
 import com.xinyi.rongli.platform.actor.Actor;
 import com.xinyi.rongli.platform.domain.ViOutbox;
 import com.xinyi.rongli.platform.error.ViErrorCode;
@@ -11,9 +11,7 @@ import com.xinyi.rongli.platform.error.ViException;
 import com.xinyi.rongli.platform.json.ViJson;
 import com.xinyi.rongli.platform.service.AuditService;
 import com.xinyi.rongli.platform.service.OutboxService;
-import java.time.Clock;
-import java.time.Instant;
-import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -21,6 +19,10 @@ import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
+
+import java.time.Clock;
+import java.time.Instant;
+import java.util.Map;
 
 /** 订单到期只进入待派单；D02负责选司机/邀约，P03不提前占用司机。 */
 @Service
@@ -129,9 +131,13 @@ public class DispatchDeadlineService {
                         && !"MANUAL_CONFLICT".equals(payment.getCapacityResolution())
                         && !"RELEASED".equals(payment.getCapacityResolution())
                         && mapper.pendingRefund(order.getId()) == 0;
-        boolean available =
-                mapper.stationAvailable(order.getStationId(), order.getDeptId()) == 1
-                        && mapper.confirmedReservations(order.getId()) == 2;
+        // 新单已有明确冻结公司，迁站只改变当前运营检查，不漂移原单司机池或权限。
+        // 历史缺失仍保留原严格归属检查，不能借此从当前站点猜补历史服务公司。
+        boolean stationAvailable =
+                order.getServiceCompanyId() == null
+                        ? mapper.stationAvailable(order.getStationId(), order.getDeptId()) == 1
+                        : mapper.stationOperational(order.getStationId()) == 1;
+        boolean available = stationAvailable && mapper.confirmedReservations(order.getId()) == 2;
         boolean inTime = order.getPickupStartsAt().isAfter(now);
         if (fromPayment && inTime) {
             String json = mapper.quotePolicy(order.getQuoteId());

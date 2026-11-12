@@ -1,6 +1,6 @@
 openapi: 3.0.3
 info:
-  title: D02 自动邀约轮转与扩圈
+  title: D02 自动派单、单人邀约与接受事务
   version: 6.4.0
 servers:
 - url: http://localhost:8080
@@ -11,5 +11,1013 @@ servers:
     host:
       default: api.example.invalid
       description: 占位不可用于真实支付或发布
-paths: {}
-components: {}
+paths:
+  /api/admin/dispatch/companies/{companyId}/dispatch-policy:
+    get:
+      operationId: d02_get_company_dispatch_policy
+      summary: 公司派单策略读取
+      tags:
+      - ADMIN
+      description: 显式真实公司或原订单数据范围；写入权限/CAS/UUID/业务/审计/outbox同事务。原因认证加密，响应无明文。
+      x-flow-ids:
+      - F10
+      - F31
+      security:
+      - AdminBearerAuth: []
+      responses:
+        '200':
+          description: 操作成功；领域校验后返回真实结果
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                required:
+                - code
+                - msg
+                - data
+                properties:
+                  code:
+                    type: integer
+                    enum:
+                    - 200
+                  msg:
+                    type: string
+                  data:
+                    allOf:
+                    - $ref: '#/components/schemas/DispatchCompanyPolicy'
+                    nullable: true
+                    type: object
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+                enum:
+                - no-store
+              description: 身份/交易/个人业务响应不缓存
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalError'
+        '503':
+          $ref: '#/components/responses/Unavailable'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+      parameters:
+      - name: X-Client-Type
+        in: header
+        required: true
+        schema:
+          type: string
+          enum:
+          - owner
+          - driver
+          - station
+          - admin
+        description: 仅审计来源，不作为授权；须匹配服务端会话视角
+      - name: companyId
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+      x-permission: biz:dispatchpolicy:query
+      x-authorization:
+        realm: ADMIN
+        scope: EXPLICIT_COMPANY_OWNER_DEPT
+        permission: biz:dispatchpolicy:query
+      x-error-codes:
+      - VI_REQUEST_INVALID
+      - VI_AUTH_REQUIRED
+      - VI_TOKEN_REALM_MISMATCH
+      - VI_REFRESH_REUSED
+      - VI_FORBIDDEN
+      - VI_SELF_REVIEW_DENIED
+      - VI_RATE_LIMITED
+      - VI_INTERNAL_ERROR
+      - VI_AUTHORITY_UNAVAILABLE
+      - VI_UPSTREAM_UNAVAILABLE
+      x-error-policy: OBJECT_404_HIDES_EXISTENCE
+      x-contract-baseline: V6.4
+    put:
+      operationId: d02_put_company_dispatch_policy
+      summary: 公司派单策略维护
+      tags:
+      - ADMIN
+      description: 显式真实公司或原订单数据范围；写入权限/CAS/UUID/业务/审计/outbox同事务。原因认证加密，响应无明文。
+      x-flow-ids:
+      - F10
+      - F31
+      security:
+      - AdminBearerAuth: []
+      responses:
+        '200':
+          description: 操作成功；领域校验后返回真实结果
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                required:
+                - code
+                - msg
+                - data
+                properties:
+                  code:
+                    type: integer
+                    enum:
+                    - 200
+                  msg:
+                    type: string
+                  data:
+                    allOf:
+                    - $ref: '#/components/schemas/DispatchCompanyPolicy'
+                    nullable: true
+                    type: object
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+                enum:
+                - no-store
+              description: 身份/交易/个人业务响应不缓存
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalError'
+        '503':
+          $ref: '#/components/responses/Unavailable'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      parameters:
+      - name: Idempotency-Key
+        in: header
+        required: true
+        schema:
+          type: string
+          description: UUID；按主体+动作+资源+键及请求摘要保存首次结果；同键不同体409，至少24h，资金/交接另有永久业务去重
+      - name: X-Client-Type
+        in: header
+        required: true
+        schema:
+          type: string
+          enum:
+          - owner
+          - driver
+          - station
+          - admin
+        description: 仅审计来源，不作为授权；须匹配服务端会话视角
+      - name: companyId
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DispatchCompanyPolicyWrite'
+      x-permission: biz:dispatchpolicy:edit
+      x-authorization:
+        realm: ADMIN
+        scope: EXPLICIT_COMPANY_OWNER_DEPT
+        permission: biz:dispatchpolicy:edit
+      x-error-codes:
+      - VI_REQUEST_INVALID
+      - VI_AUTH_REQUIRED
+      - VI_TOKEN_REALM_MISMATCH
+      - VI_REFRESH_REUSED
+      - VI_FORBIDDEN
+      - VI_SELF_REVIEW_DENIED
+      - VI_VERSION_CONFLICT
+      - VI_STATE_CONFLICT
+      - VI_IDEMPOTENCY_CONFLICT
+      - VI_SELECTION_CONFLICT
+      - VI_CONTEXT_CHANGED
+      - VI_SNAPSHOT_CHANGED
+      - VI_DATA_INVALID
+      - VI_EVIDENCE_INCOMPLETE
+      - VI_HANDOVER_CODE_INVALID
+      - VI_HANDOVER_LOCKED
+      - VI_UNPRICED_LINES
+      - VI_REFUND_LIMIT
+      - VI_PAYMENT_LIMIT
+      - VI_SERVICE_UNAVAILABLE
+      - VI_CAPABILITY_NOT_CONFIGURED
+      - VI_TRAINING_NOT_READY
+      - VI_RATE_LIMITED
+      - VI_INTERNAL_ERROR
+      - VI_AUTHORITY_UNAVAILABLE
+      - VI_UPSTREAM_UNAVAILABLE
+      x-error-policy: OBJECT_404_HIDES_EXISTENCE
+      x-contract-baseline: V6.4
+  /api/admin/dispatch/invites/{inviteId}/revoke:
+    post:
+      operationId: d02_post_revoke_invite
+      summary: 撤回未响应邀约
+      tags:
+      - ADMIN
+      description: 显式真实公司或原订单数据范围；写入权限/CAS/UUID/业务/审计/outbox同事务。原因认证加密，响应无明文。
+      x-flow-ids:
+      - F10
+      - F31
+      security:
+      - AdminBearerAuth: []
+      responses:
+        '200':
+          description: 操作成功；领域校验后返回真实结果
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                required:
+                - code
+                - msg
+                - data
+                properties:
+                  code:
+                    type: integer
+                    enum:
+                    - 200
+                  msg:
+                    type: string
+                  data:
+                    allOf:
+                    - $ref: '#/components/schemas/DriverInvite'
+                    nullable: true
+                    type: object
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+                enum:
+                - no-store
+              description: 身份/交易/个人业务响应不缓存
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalError'
+        '503':
+          $ref: '#/components/responses/Unavailable'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      parameters:
+      - name: Idempotency-Key
+        in: header
+        required: true
+        schema:
+          type: string
+          description: UUID；按主体+动作+资源+键及请求摘要保存首次结果；同键不同体409，至少24h，资金/交接另有永久业务去重
+      - name: X-Client-Type
+        in: header
+        required: true
+        schema:
+          type: string
+          enum:
+          - owner
+          - driver
+          - station
+          - admin
+        description: 仅审计来源，不作为授权；须匹配服务端会话视角
+      - name: inviteId
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DispatchRevoke'
+      x-permission: biz:dispatch:revoke
+      x-authorization:
+        realm: ADMIN
+        scope: ORDER_DEPT
+        permission: biz:dispatch:revoke
+      x-error-codes:
+      - VI_REQUEST_INVALID
+      - VI_AUTH_REQUIRED
+      - VI_TOKEN_REALM_MISMATCH
+      - VI_REFRESH_REUSED
+      - VI_FORBIDDEN
+      - VI_SELF_REVIEW_DENIED
+      - VI_VERSION_CONFLICT
+      - VI_STATE_CONFLICT
+      - VI_IDEMPOTENCY_CONFLICT
+      - VI_SELECTION_CONFLICT
+      - VI_CONTEXT_CHANGED
+      - VI_SNAPSHOT_CHANGED
+      - VI_DATA_INVALID
+      - VI_EVIDENCE_INCOMPLETE
+      - VI_HANDOVER_CODE_INVALID
+      - VI_HANDOVER_LOCKED
+      - VI_UNPRICED_LINES
+      - VI_REFUND_LIMIT
+      - VI_PAYMENT_LIMIT
+      - VI_SERVICE_UNAVAILABLE
+      - VI_CAPABILITY_NOT_CONFIGURED
+      - VI_TRAINING_NOT_READY
+      - VI_RATE_LIMITED
+      - VI_INTERNAL_ERROR
+      - VI_AUTHORITY_UNAVAILABLE
+      - VI_UPSTREAM_UNAVAILABLE
+      x-error-policy: OBJECT_404_HIDES_EXISTENCE
+      x-contract-baseline: V6.4
+components:
+  schemas:
+    DispatchRevoke:
+      type: object
+      additionalProperties: false
+      required:
+      - expectedVersion
+      - expectedOrderVersion
+      - reason
+      properties:
+        expectedVersion: &id001
+          type: integer
+          format: int64
+          minimum: 0
+          maximum: 9007199254740991
+        expectedOrderVersion: *id001
+        reason:
+          type: string
+          minLength: 1
+          maxLength: 500
+    ApiError:
+      type: object
+      additionalProperties: false
+      properties:
+        code:
+          type: integer
+          description: 等于HTTP状态
+          enum:
+          - 400
+          - 401
+          - 403
+          - 404
+          - 409
+          - 422
+          - 429
+          - 500
+          - 503
+        errorCode:
+          type: string
+          enum:
+          - VI_REQUEST_INVALID
+          - VI_AUTH_REQUIRED
+          - VI_TOKEN_REALM_MISMATCH
+          - VI_REFRESH_REUSED
+          - VI_FORBIDDEN
+          - VI_SELF_REVIEW_DENIED
+          - VI_RESOURCE_NOT_VISIBLE
+          - VI_VERSION_CONFLICT
+          - VI_STATE_CONFLICT
+          - VI_IDEMPOTENCY_CONFLICT
+          - VI_SELECTION_CONFLICT
+          - VI_CONTEXT_CHANGED
+          - VI_SNAPSHOT_CHANGED
+          - VI_DATA_INVALID
+          - VI_EVIDENCE_INCOMPLETE
+          - VI_HANDOVER_CODE_INVALID
+          - VI_HANDOVER_LOCKED
+          - VI_UNPRICED_LINES
+          - VI_REFUND_LIMIT
+          - VI_PAYMENT_LIMIT
+          - VI_SERVICE_UNAVAILABLE
+          - VI_CAPABILITY_NOT_CONFIGURED
+          - VI_TRAINING_NOT_READY
+          - VI_RATE_LIMITED
+          - VI_INTERNAL_ERROR
+          - VI_AUTHORITY_UNAVAILABLE
+          - VI_UPSTREAM_UNAVAILABLE
+          - VI_PHONE_PROOF_REQUIRED
+          - VI_PHONE_PROOF_REUSED
+          - VI_EMPLOYEE_LINK_CONFLICT
+          - VI_EMPLOYEE_LINK_BLOCKED
+          - VI_CONFIG_INVALID
+          - VI_CONFIG_CHANGED
+          - VI_SECRET_UNAVAILABLE
+          - VI_PAYMENT_METHOD_DISABLED
+          - VI_PAYMENT_METHOD_LOCKED
+          - VI_SEND_RESULT_UNKNOWN
+          - VI_SUBSCRIPTION_UNAVAILABLE
+          - VI_OFFLINE_PROOF_CONFLICT
+        msg:
+          type: string
+          description: 服务端安全人类文案，前端逻辑按errorCode而非此文本
+        requestId:
+          type: string
+        retryable:
+          type: boolean
+        retryAfterSeconds:
+          type: integer
+          minimum: 0
+          nullable: true
+        data:
+          $ref: '#/components/schemas/ApiErrorDetails'
+      required:
+      - code
+      - errorCode
+      - msg
+      - requestId
+      - retryable
+      - retryAfterSeconds
+      - data
+    ApiErrorDetails:
+      type: object
+      additionalProperties: false
+      properties:
+        fieldErrors:
+          type: array
+          items:
+            $ref: '#/components/schemas/FieldViolation'
+        conflicts:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConflictItem'
+        missingPhotoTypes:
+          type: array
+          items:
+            $ref: '#/components/schemas/PhotoType'
+        remainingAttempts:
+          type: integer
+          minimum: 0
+          nullable: true
+        currentVersion:
+          type: integer
+          format: int64
+          minimum: 0
+          maximum: 9007199254740991
+          description: 最后读取的非负版本；更新CAS，冲突409
+          nullable: true
+      description: 错误详情固定白名单；无明文Token/凭证/交接码/SQL
+    PhotoType:
+      type: string
+      enum:
+      - FRONT
+      - BACK
+      - LEFT
+      - RIGHT
+      - DASHBOARD
+      - INTERIOR
+      - EXTRA
+    ConflictItem:
+      type: object
+      additionalProperties: false
+      properties:
+        resourceType:
+          type: string
+        resourceId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+        reasonCode:
+          type: string
+        currentVersion:
+          type: integer
+          format: int64
+          minimum: 0
+          maximum: 9007199254740991
+          description: 最后读取的非负版本；更新CAS，冲突409
+          nullable: true
+      required:
+      - resourceType
+      - resourceId
+      - reasonCode
+      - currentVersion
+      description: 仅返回调用者已获权对象，禁止泄露其他账单成员
+    FieldViolation:
+      type: object
+      additionalProperties: false
+      properties:
+        field:
+          type: string
+        reasonCode:
+          type: string
+        message:
+          type: string
+      required:
+      - field
+      - reasonCode
+      - message
+    DriverInvite:
+      type: object
+      additionalProperties: false
+      required:
+      - inviteId
+      - orderNo
+      - assignmentId
+      - batchId
+      - source
+      - status
+      - storedStatus
+      - version
+      - orderVersion
+      - serviceCompanyId
+      - serviceCompanyName
+      - stationId
+      - stationName
+      - pickupArea
+      - pickupSlotStartAt
+      - pickupSlotEndAt
+      - vehicleTypeCode
+      - vehicleTypeName
+      - vehiclePlateMasked
+      - distanceMeter
+      - distanceMode
+      - issuedAt
+      - expiresAt
+      - overallDeadlineAt
+      - respondedAt
+      - sessionId
+      - contextVersion
+      - allowedActions
+      - driverId
+      - driverName
+      - acceptBlockReason
+      properties:
+        inviteId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+        orderNo:
+          type: string
+        assignmentId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+          nullable: true
+        batchId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+          nullable: true
+        source:
+          $ref: '#/components/schemas/DispatchSource'
+        status:
+          $ref: '#/components/schemas/InviteStatus'
+        storedStatus:
+          $ref: '#/components/schemas/InviteStatus'
+        version:
+          type: integer
+          format: int64
+          minimum: 0
+          maximum: 9007199254740991
+        orderVersion:
+          type: integer
+          format: int64
+          minimum: 0
+          maximum: 9007199254740991
+        serviceCompanyId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+          nullable: true
+        serviceCompanyName:
+          type: string
+          nullable: true
+        stationId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+        stationName:
+          type: string
+        pickupArea:
+          type: string
+        pickupSlotStartAt:
+          type: string
+          format: date-time
+          pattern: Z$
+        pickupSlotEndAt:
+          type: string
+          format: date-time
+          pattern: Z$
+        vehicleTypeCode:
+          type: string
+        vehicleTypeName:
+          type: string
+        vehiclePlateMasked:
+          type: string
+          nullable: true
+        distanceMeter:
+          type: integer
+          format: int64
+          minimum: 0
+          maximum: 9007199254740991
+          nullable: true
+        distanceMode:
+          type: string
+          enum:
+          - GCJ02_GREAT_CIRCLE
+        issuedAt:
+          type: string
+          format: date-time
+          pattern: Z$
+        expiresAt:
+          type: string
+          format: date-time
+          pattern: Z$
+        overallDeadlineAt:
+          type: string
+          format: date-time
+          pattern: Z$
+          nullable: true
+        respondedAt:
+          type: string
+          format: date-time
+          pattern: Z$
+          nullable: true
+        sessionId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+          nullable: true
+        contextVersion:
+          type: integer
+          format: int64
+          minimum: 0
+          maximum: 9007199254740991
+          nullable: true
+        allowedActions:
+          type: array
+          uniqueItems: true
+          items:
+            type: string
+            enum:
+            - ACCEPT_INVITE
+            - REJECT_INVITE
+            - REVOKE_INVITE
+            - VIEW_ASSIGNMENT
+        driverId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+        driverName:
+          type: string
+        acceptBlockReason:
+          type: string
+          nullable: true
+      description: 真实本人或原订单权限内邀约；status为绝对截止有效投影，storedStatus保留真实持久状态。接受前不泄精确位置/电话，无收入或持码信息。
+    InviteStatus:
+      type: string
+      enum:
+      - WAIT_RESPONSE
+      - ACCEPTED
+      - REJECTED
+      - EXPIRED
+      - REVOKED
+    DispatchSource:
+      type: string
+      enum:
+      - AUTO
+      - MANUAL
+    DispatchCompanyPolicyWrite:
+      type: object
+      additionalProperties: false
+      required:
+      - expectedVersion
+      - inviteResponseSeconds
+      - radiusMeter
+      - expandedRadiusMeter
+      - overallDeadlineSeconds
+      - roundPolicy
+      - distanceMode
+      - licenseCompatibility
+      - reason
+      properties:
+        expectedVersion:
+          type: integer
+          format: int64
+          minimum: 0
+          maximum: 9007199254740991
+        inviteResponseSeconds:
+          type: integer
+          minimum: 1
+          maximum: 3600
+        radiusMeter:
+          type: integer
+          minimum: 1
+          maximum: 1000000
+        expandedRadiusMeter:
+          type: integer
+          minimum: 1
+          maximum: 1000000
+        overallDeadlineSeconds:
+          type: integer
+          minimum: 1
+          maximum: 86400
+        roundPolicy:
+          type: string
+          enum:
+          - COMPANY_CURSOR
+        distanceMode:
+          type: string
+          enum:
+          - GCJ02_GREAT_CIRCLE
+        licenseCompatibility:
+          type: array
+          minItems: 1
+          maxItems: 200
+          items:
+            $ref: '#/components/schemas/DispatchLicenseCompatibility'
+        reason:
+          type: string
+          minLength: 1
+          maxLength: 500
+      description: 无运营默认；expandedRadius>=radius，车型必须存在启用字典。仅影响后续建单冻结，不追改旧预约。准驾集合由授权管理员明确维护，不自动推导法定关系。
+    DispatchLicenseCompatibility:
+      type: object
+      additionalProperties: false
+      required:
+      - vehicleTypeCode
+      - licenseClasses
+      properties:
+        vehicleTypeCode:
+          type: string
+          minLength: 1
+          maxLength: 64
+        licenseClasses:
+          type: array
+          minItems: 1
+          maxItems: 32
+          uniqueItems: true
+          items:
+            type: string
+            minLength: 1
+            maxLength: 32
+    DispatchCompanyPolicy:
+      type: object
+      additionalProperties: false
+      required:
+      - ownerDeptId
+      - companyName
+      - configured
+      - version
+      - inviteResponseSeconds
+      - radiusMeter
+      - expandedRadiusMeter
+      - overallDeadlineSeconds
+      - roundPolicy
+      - distanceMode
+      - licenseCompatibility
+      - allowedActions
+      properties:
+        ownerDeptId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+        companyName:
+          type: string
+        configured:
+          type: boolean
+        version:
+          type: integer
+          format: int64
+          minimum: 0
+          maximum: 9007199254740991
+        inviteResponseSeconds:
+          type: integer
+          minimum: 1
+          maximum: 3600
+          nullable: true
+        radiusMeter:
+          type: integer
+          minimum: 1
+          maximum: 1000000
+          nullable: true
+        expandedRadiusMeter:
+          type: integer
+          minimum: 1
+          maximum: 1000000
+          nullable: true
+        overallDeadlineSeconds:
+          type: integer
+          minimum: 1
+          maximum: 86400
+          nullable: true
+        roundPolicy:
+          type: string
+          enum:
+          - COMPANY_CURSOR
+          nullable: true
+        distanceMode:
+          type: string
+          enum:
+          - GCJ02_GREAT_CIRCLE
+          nullable: true
+        licenseCompatibility:
+          type: array
+          minItems: 1
+          maxItems: 200
+          items:
+            $ref: '#/components/schemas/DispatchLicenseCompatibility'
+          nullable: true
+        allowedActions:
+          type: array
+          uniqueItems: true
+          items:
+            type: string
+            enum:
+            - EDIT_DISPATCH_POLICY
+  responses:
+    NotFound:
+      description: 记录不存在或不可访问。参见errorCode注册表；HTTP状态与code一致。
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+          example:
+            code: 404
+            errorCode: VI_RESOURCE_NOT_VISIBLE
+            msg: 记录不存在或不可访问
+            requestId: req-example
+            retryable: false
+            retryAfterSeconds: null
+            data: {}
+    UnprocessableEntity:
+      description: 填写内容不符合要求。参见errorCode注册表；HTTP状态与code一致。
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+          example:
+            code: 422
+            errorCode: VI_DATA_INVALID
+            msg: 填写内容不符合要求
+            requestId: req-example
+            retryable: false
+            retryAfterSeconds: null
+            data: {}
+    Conflict:
+      description: 记录已变化，请刷新后重试。参见errorCode注册表；HTTP状态与code一致。
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+          example:
+            code: 409
+            errorCode: VI_VERSION_CONFLICT
+            msg: 记录已变化，请刷新后重试
+            requestId: req-example
+            retryable: false
+            retryAfterSeconds: null
+            data: {}
+    Unavailable:
+      description: 权限权威状态暂不可读取。参见errorCode注册表；HTTP状态与code一致。
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+          example:
+            code: 503
+            errorCode: VI_AUTHORITY_UNAVAILABLE
+            msg: 权限权威状态暂不可读取
+            requestId: req-example
+            retryable: true
+            retryAfterSeconds: null
+            data: {}
+      headers:
+        Retry-After:
+          description: 建议等待秒数；429必带，503仅在可估计时返回
+          schema:
+            type: integer
+            minimum: 1
+    InternalError:
+      description: 处理失败，请联系服务人员。参见errorCode注册表；HTTP状态与code一致。
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+          example:
+            code: 500
+            errorCode: VI_INTERNAL_ERROR
+            msg: 处理失败，请联系服务人员
+            requestId: req-example
+            retryable: false
+            retryAfterSeconds: null
+            data: {}
+    TooManyRequests:
+      description: 操作过于频繁，请稍后重试。参见errorCode注册表；HTTP状态与code一致。
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+          example:
+            code: 429
+            errorCode: VI_RATE_LIMITED
+            msg: 操作过于频繁，请稍后重试
+            requestId: req-example
+            retryable: true
+            retryAfterSeconds: 10
+            data: {}
+      headers:
+        Retry-After:
+          description: 建议等待秒数；429必带，503仅在可估计时返回
+          schema:
+            type: integer
+            minimum: 1
+    Forbidden:
+      description: 没有执行此操作的权限。参见errorCode注册表；HTTP状态与code一致。
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+          example:
+            code: 403
+            errorCode: VI_FORBIDDEN
+            msg: 没有执行此操作的权限
+            requestId: req-example
+            retryable: false
+            retryAfterSeconds: null
+            data: {}
+    Unauthorized:
+      description: 登录已失效，请重新登录。参见errorCode注册表；HTTP状态与code一致。
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+          example:
+            code: 401
+            errorCode: VI_AUTH_REQUIRED
+            msg: 登录已失效，请重新登录
+            requestId: req-example
+            retryable: false
+            retryAfterSeconds: null
+            data: {}
+      headers:
+        WWW-Authenticate:
+          schema:
+            type: string
+          description: Bearer realm="mini" 或 "admin"；不泄露令牌细节
+    BadRequest:
+      description: 请求格式不正确。参见errorCode注册表；HTTP状态与code一致。
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+          example:
+            code: 400
+            errorCode: VI_REQUEST_INVALID
+            msg: 请求格式不正确
+            requestId: req-example
+            retryable: false
+            retryAfterSeconds: null
+            data: {}
+  securitySchemes:
+    MiniBearerAuth:
+      type: http
+      scheme: bearer
+      description: 小程序不透明随机访问令牌；数据库权威会话，非sys_user JWT；见T3.4
+    AdminBearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: 现有xinyi后台sys_user会话，不能作为小程序车主/代驾身份

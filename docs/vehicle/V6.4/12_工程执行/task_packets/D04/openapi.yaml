@@ -18,9 +18,7 @@ paths:
       summary: 本人有效邀约
       tags:
       - DRIVER
-      description: '流程：F10。
-
-        参数校验、真实归属、服务端当前状态/版本先于写入；不接受主体伪造。'
+      description: D02真实派单整链：本人可信MINI当前DRIVER，真实invite/assignment父归属。 服务端重验当前状态、独立CAS与绝对截止；接受不等于接车，关闭听单不释放责任。
       x-flow-ids:
       - F10
       security:
@@ -32,6 +30,12 @@ paths:
             application/json:
               schema:
                 type: object
+                additionalProperties: false
+                required:
+                - code
+                - msg
+                - rows
+                - total
                 properties:
                   code:
                     type: integer
@@ -42,16 +46,12 @@ paths:
                   rows:
                     type: array
                     items:
-                      $ref: '#/components/schemas/Invite'
+                      $ref: '#/components/schemas/DriverInvite'
                   total:
                     type: integer
+                    format: int64
                     minimum: 0
-                additionalProperties: false
-                required:
-                - code
-                - msg
-                - rows
-                - total
+                    maximum: 9007199254740991
           headers:
             Cache-Control:
               schema:
@@ -85,17 +85,29 @@ paths:
         description: 仅审计来源，不作为授权；须匹配服务端会话视角
       - name: pageNum
         in: query
+        required: false
         schema:
           type: integer
           minimum: 1
           default: 1
       - name: pageSize
         in: query
+        required: false
         schema:
           type: integer
           minimum: 1
           maximum: 100
-          default: 10
+          default: 20
+      - name: status
+        in: query
+        required: false
+        schema:
+          $ref: '#/components/schemas/InviteStatus'
+      - name: orderNo
+        in: query
+        required: false
+        schema:
+          type: string
       x-capability: DRIVER_INVITE_LIST
       x-authorization:
         realm: MINI
@@ -120,9 +132,7 @@ paths:
       summary: 邀约详情
       tags:
       - DRIVER
-      description: '流程：F10。
-
-        参数校验、真实归属、服务端当前状态/版本先于写入；不接受主体伪造。'
+      description: D02真实派单整链：本人可信MINI当前DRIVER，真实invite/assignment父归属。 服务端重验当前状态、独立CAS与绝对截止；接受不等于接车，关闭听单不释放责任。
       x-flow-ids:
       - F10
       security:
@@ -134,6 +144,11 @@ paths:
             application/json:
               schema:
                 type: object
+                additionalProperties: false
+                required:
+                - code
+                - msg
+                - data
                 properties:
                   code:
                     type: integer
@@ -143,14 +158,9 @@ paths:
                     type: string
                   data:
                     allOf:
-                    - $ref: '#/components/schemas/Invite'
+                    - $ref: '#/components/schemas/DriverInvite'
                     nullable: true
                     type: object
-                additionalProperties: false
-                required:
-                - code
-                - msg
-                - data
           headers:
             Cache-Control:
               schema:
@@ -217,9 +227,7 @@ paths:
       summary: 响应邀约
       tags:
       - DRIVER
-      description: '流程：F10。ACCEPT转承接并占用；REJECT释放邀约而非返回已接单
-
-        参数校验、真实归属、服务端当前状态/版本先于写入；不接受主体伪造。'
+      description: D02真实派单整链：本人可信MINI当前DRIVER，真实invite/assignment父归属。 服务端重验当前状态、独立CAS与绝对截止；接受不等于接车，关闭听单不释放责任。
       x-flow-ids:
       - F10
       security:
@@ -231,6 +239,11 @@ paths:
             application/json:
               schema:
                 type: object
+                additionalProperties: false
+                required:
+                - code
+                - msg
+                - data
                 properties:
                   code:
                     type: integer
@@ -240,14 +253,9 @@ paths:
                     type: string
                   data:
                     allOf:
-                    - $ref: '#/components/schemas/Invite'
+                    - $ref: '#/components/schemas/DriverInvite'
                     nullable: true
                     type: object
-                additionalProperties: false
-                required:
-                - code
-                - msg
-                - data
           headers:
             Cache-Control:
               schema:
@@ -304,7 +312,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/InviteResponse'
+              $ref: '#/components/schemas/DispatchInviteResponse'
       x-capability: DRIVER_INVITE_RESPONSE
       x-authorization:
         realm: MINI
@@ -346,9 +354,7 @@ paths:
       summary: 当前在手任务
       tags:
       - DRIVER
-      description: '流程：F31。无在手任务data=null；不以WAIT_CONFIRM历史单填充当前任务
-
-        参数校验、真实归属、服务端当前状态/版本先于写入；不接受主体伪造。'
+      description: D02/D04本人当前真实承接，历史任务结束不回传为当前。仅OWNER→DRIVER授权视角有效，不伪造owner身份；后续履约动作归D05起。
       x-flow-ids:
       - F31
       security:
@@ -1134,26 +1140,73 @@ components:
       - COMPLETED
       - CANCELLED
       - CLOSED
-    InviteResponse:
+    DispatchInviteResponse:
       type: object
+      additionalProperties: false
+      required:
+      - decision
+      - expectedVersion
+      - expectedOrderVersion
+      - expectedSessionId
+      - expectedContextVersion
+      - reason
       properties:
         decision:
           type: string
           enum:
           - ACCEPT
           - REJECT
-        expectedVersion:
+        expectedVersion: &id001
           type: integer
+          format: int64
           minimum: 0
-          description: 客户端最后读取的版本；服务端条件更新，冲突返回409
+          maximum: 9007199254740991
+        expectedOrderVersion: *id001
+        expectedSessionId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+        expectedContextVersion: *id001
         reason:
           type: string
+          maxLength: 500
+          nullable: true
+    DriverInvite:
+      type: object
       additionalProperties: false
       required:
-      - decision
-      - expectedVersion
-    Invite:
-      type: object
+      - inviteId
+      - orderNo
+      - assignmentId
+      - batchId
+      - source
+      - status
+      - storedStatus
+      - version
+      - orderVersion
+      - serviceCompanyId
+      - serviceCompanyName
+      - stationId
+      - stationName
+      - pickupArea
+      - pickupSlotStartAt
+      - pickupSlotEndAt
+      - vehicleTypeCode
+      - vehicleTypeName
+      - vehiclePlateMasked
+      - distanceMeter
+      - distanceMode
+      - issuedAt
+      - expiresAt
+      - overallDeadlineAt
+      - respondedAt
+      - sessionId
+      - contextVersion
+      - allowedActions
+      - driverId
+      - driverName
+      - acceptBlockReason
       properties:
         inviteId:
           type: string
@@ -1162,46 +1215,128 @@ components:
           description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
         orderNo:
           type: string
-          description: 不透明ID，以字符串传输，避免JavaScript大整数精度丢失
         assignmentId:
           type: string
           pattern: ^[1-9][0-9]{0,18}$
           maxLength: 19
           description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+          nullable: true
+        batchId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+          nullable: true
+        source:
+          $ref: '#/components/schemas/DispatchSource'
+        status:
+          $ref: '#/components/schemas/InviteStatus'
+        storedStatus:
+          $ref: '#/components/schemas/InviteStatus'
+        version:
+          type: integer
+          format: int64
+          minimum: 0
+          maximum: 9007199254740991
+        orderVersion:
+          type: integer
+          format: int64
+          minimum: 0
+          maximum: 9007199254740991
+        serviceCompanyId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+          nullable: true
+        serviceCompanyName:
+          type: string
+          nullable: true
+        stationId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+        stationName:
+          type: string
         pickupArea:
           type: string
         pickupSlotStartAt:
           type: string
           format: date-time
           pattern: Z$
-          description: ISO8601 UTC时刻，必须Z结尾；显示与业务日期Asia/Shanghai
         pickupSlotEndAt:
           type: string
           format: date-time
           pattern: Z$
-          description: ISO8601 UTC时刻，必须Z结尾；显示与业务日期Asia/Shanghai
+        vehicleTypeCode:
+          type: string
+        vehicleTypeName:
+          type: string
+        vehiclePlateMasked:
+          type: string
+          nullable: true
         distanceMeter:
           type: integer
+          format: int64
           minimum: 0
+          maximum: 9007199254740991
+          nullable: true
+        distanceMode:
+          type: string
+          enum:
+          - GCJ02_GREAT_CIRCLE
+        issuedAt:
+          type: string
+          format: date-time
+          pattern: Z$
         expiresAt:
           type: string
           format: date-time
           pattern: Z$
-          description: ISO8601 UTC时刻，必须Z结尾；显示与业务日期Asia/Shanghai
-        status:
-          $ref: '#/components/schemas/InviteStatus'
-        version:
+        overallDeadlineAt:
+          type: string
+          format: date-time
+          pattern: Z$
+          nullable: true
+        respondedAt:
+          type: string
+          format: date-time
+          pattern: Z$
+          nullable: true
+        sessionId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+          nullable: true
+        contextVersion:
           type: integer
+          format: int64
           minimum: 0
-          description: 客户端最后读取的版本；服务端条件更新，冲突返回409
-      additionalProperties: false
-      required:
-      - inviteId
-      - orderNo
-      - expiresAt
-      - status
-      - version
-      description: 不返回收入/佣金，不包含持码信息；接单前精确位置按最小必要裁剪
+          maximum: 9007199254740991
+          nullable: true
+        allowedActions:
+          type: array
+          uniqueItems: true
+          items:
+            type: string
+            enum:
+            - ACCEPT_INVITE
+            - REJECT_INVITE
+            - REVOKE_INVITE
+            - VIEW_ASSIGNMENT
+        driverId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+        driverName:
+          type: string
+        acceptBlockReason:
+          type: string
+          nullable: true
+      description: 真实本人或原订单权限内邀约；status为绝对截止有效投影，storedStatus保留真实持久状态。接受前不泄精确位置/电话，无收入或持码信息。
     InviteStatus:
       type: string
       enum:
@@ -1210,6 +1345,11 @@ components:
       - REJECTED
       - EXPIRED
       - REVOKED
+    DispatchSource:
+      type: string
+      enum:
+      - AUTO
+      - MANUAL
   securitySchemes:
     MiniBearerAuth:
       type: http

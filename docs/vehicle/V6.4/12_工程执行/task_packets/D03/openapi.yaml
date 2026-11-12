@@ -18,9 +18,7 @@ paths:
       summary: 调度队列
       tags:
       - ADMIN
-      description: '流程：F10。权限码为建议，须映射实际仓库；非全局角色必须有站点范围；审核不允许自己审批自己的申请
-
-        参数校验、真实归属、服务端当前状态/版本先于写入；不接受主体伪造。'
+      description: D02真实派单整链：真实ADMIN功能权限及原订单dept范围，候选另限冻结服务公司。 服务端重验当前状态、独立CAS与绝对截止；接受不等于接车，关闭听单不释放责任。
       x-flow-ids:
       - F10
       security:
@@ -32,6 +30,12 @@ paths:
             application/json:
               schema:
                 type: object
+                additionalProperties: false
+                required:
+                - code
+                - msg
+                - rows
+                - total
                 properties:
                   code:
                     type: integer
@@ -42,16 +46,12 @@ paths:
                   rows:
                     type: array
                     items:
-                      $ref: '#/components/schemas/AdminOrderSummary'
+                      $ref: '#/components/schemas/DispatchQueueItem'
                   total:
                     type: integer
+                    format: int64
                     minimum: 0
-                additionalProperties: false
-                required:
-                - code
-                - msg
-                - rows
-                - total
+                    maximum: 9007199254740991
           headers:
             Cache-Control:
               schema:
@@ -85,21 +85,54 @@ paths:
         description: 仅审计来源，不作为授权；须匹配服务端会话视角
       - name: pageNum
         in: query
+        required: false
         schema:
           type: integer
           minimum: 1
           default: 1
       - name: pageSize
         in: query
+        required: false
         schema:
           type: integer
           minimum: 1
           maximum: 100
-          default: 10
+          default: 20
+      - name: orderNo
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: stationId
+        in: query
+        required: false
+        schema:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+      - name: status
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - PENDING_DISPATCH
+          - DISPATCHING
+          - MANUAL_DISPATCH
+          - ACCEPTED
+      - name: serviceCompanyId
+        in: query
+        required: false
+        schema:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
       x-permission: biz:dispatch:list
       x-authorization:
         realm: ADMIN
-        scope: ORG_DEPT_STATION
+        scope: ORDER_AUTHORITATIVE_DEPT_AND_FROZEN_COMPANY_DRIVER_POOL
         permission: biz:dispatch:list
       x-error-codes:
       - VI_REQUEST_INVALID
@@ -120,9 +153,7 @@ paths:
       summary: 候选司机
       tags:
       - ADMIN
-      description: '流程：F10。权限码为建议，须映射实际仓库；非全局角色必须有站点范围；审核不允许自己审批自己的申请
-
-        参数校验、真实归属、服务端当前状态/版本先于写入；不接受主体伪造。'
+      description: D02真实派单整链：真实ADMIN功能权限及原订单dept范围，候选另限冻结服务公司。 服务端重验当前状态、独立CAS与绝对截止；接受不等于接车，关闭听单不释放责任。
       x-flow-ids:
       - F10
       security:
@@ -134,6 +165,12 @@ paths:
             application/json:
               schema:
                 type: object
+                additionalProperties: false
+                required:
+                - code
+                - msg
+                - rows
+                - total
                 properties:
                   code:
                     type: integer
@@ -144,16 +181,12 @@ paths:
                   rows:
                     type: array
                     items:
-                      $ref: '#/components/schemas/Availability'
+                      $ref: '#/components/schemas/DispatchCandidate'
                   total:
                     type: integer
+                    format: int64
                     minimum: 0
-                additionalProperties: false
-                required:
-                - code
-                - msg
-                - rows
-                - total
+                    maximum: 9007199254740991
           headers:
             Cache-Control:
               schema:
@@ -173,6 +206,10 @@ paths:
           $ref: '#/components/responses/InternalError'
         '503':
           $ref: '#/components/responses/Unavailable'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
       parameters:
       - name: X-Client-Type
         in: header
@@ -187,21 +224,36 @@ paths:
         description: 仅审计来源，不作为授权；须匹配服务端会话视角
       - name: pageNum
         in: query
+        required: false
         schema:
           type: integer
           minimum: 1
           default: 1
       - name: pageSize
         in: query
+        required: false
         schema:
           type: integer
           minimum: 1
           maximum: 100
-          default: 10
+          default: 20
+      - name: orderNo
+        in: query
+        required: true
+        schema:
+          type: string
+      - name: sort
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - cursor
+          - distanceAsc
       x-permission: biz:dispatch:list
       x-authorization:
         realm: ADMIN
-        scope: ORG_DEPT_STATION
+        scope: ORDER_AUTHORITATIVE_DEPT_AND_FROZEN_COMPANY_DRIVER_POOL
         permission: biz:dispatch:list
       x-error-codes:
       - VI_REQUEST_INVALID
@@ -214,7 +266,7 @@ paths:
       - VI_INTERNAL_ERROR
       - VI_AUTHORITY_UNAVAILABLE
       - VI_UPSTREAM_UNAVAILABLE
-      x-error-policy: GLOBAL_FAILURES_NO_RESOURCE_404
+      x-error-policy: OBJECT_404_HIDES_EXISTENCE
       x-contract-baseline: V6.4
   /api/admin/dispatch/manual-invites:
     post:
@@ -222,9 +274,7 @@ paths:
       summary: 人工发出邀约
       tags:
       - ADMIN
-      description: '流程：F10。权限码为建议，须映射实际仓库；非全局角色必须有站点范围；审核不允许自己审批自己的申请
-
-        参数校验、真实归属、服务端当前状态/版本先于写入；不接受主体伪造。'
+      description: D02真实派单整链：真实ADMIN功能权限及原订单dept范围，候选另限冻结服务公司。 服务端重验当前状态、独立CAS与绝对截止；接受不等于接车，关闭听单不释放责任。
       x-flow-ids:
       - F10
       security:
@@ -236,6 +286,11 @@ paths:
             application/json:
               schema:
                 type: object
+                additionalProperties: false
+                required:
+                - code
+                - msg
+                - data
                 properties:
                   code:
                     type: integer
@@ -245,14 +300,9 @@ paths:
                     type: string
                   data:
                     allOf:
-                    - $ref: '#/components/schemas/Invite'
+                    - $ref: '#/components/schemas/DriverInvite'
                     nullable: true
                     type: object
-                additionalProperties: false
-                required:
-                - code
-                - msg
-                - data
           headers:
             Cache-Control:
               schema:
@@ -299,11 +349,11 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ManualInvite'
+              $ref: '#/components/schemas/DispatchManualInvite'
       x-permission: biz:dispatch:create
       x-authorization:
         realm: ADMIN
-        scope: ORG_DEPT_STATION
+        scope: ORDER_AUTHORITATIVE_DEPT_AND_FROZEN_COMPANY_DRIVER_POOL
         permission: biz:dispatch:create
       x-error-codes:
       - VI_REQUEST_INVALID
@@ -340,9 +390,7 @@ paths:
       summary: 派单邀约记录
       tags:
       - ADMIN
-      description: '流程：F10。权限码为建议，须映射实际仓库；非全局角色必须有站点范围；审核不允许自己审批自己的申请
-
-        参数校验、真实归属、服务端当前状态/版本先于写入；不接受主体伪造。'
+      description: D02真实派单整链：真实ADMIN功能权限及原订单dept范围，候选另限冻结服务公司。 服务端重验当前状态、独立CAS与绝对截止；接受不等于接车，关闭听单不释放责任。
       x-flow-ids:
       - F10
       security:
@@ -354,6 +402,12 @@ paths:
             application/json:
               schema:
                 type: object
+                additionalProperties: false
+                required:
+                - code
+                - msg
+                - rows
+                - total
                 properties:
                   code:
                     type: integer
@@ -364,16 +418,12 @@ paths:
                   rows:
                     type: array
                     items:
-                      $ref: '#/components/schemas/Invite'
+                      $ref: '#/components/schemas/DriverInvite'
                   total:
                     type: integer
+                    format: int64
                     minimum: 0
-                additionalProperties: false
-                required:
-                - code
-                - msg
-                - rows
-                - total
+                    maximum: 9007199254740991
           headers:
             Cache-Control:
               schema:
@@ -407,21 +457,41 @@ paths:
         description: 仅审计来源，不作为授权；须匹配服务端会话视角
       - name: pageNum
         in: query
+        required: false
         schema:
           type: integer
           minimum: 1
           default: 1
       - name: pageSize
         in: query
+        required: false
         schema:
           type: integer
           minimum: 1
           maximum: 100
-          default: 10
+          default: 20
+      - name: orderNo
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: driverId
+        in: query
+        required: false
+        schema:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+      - name: status
+        in: query
+        required: false
+        schema:
+          $ref: '#/components/schemas/InviteStatus'
       x-permission: biz:dispatch:list
       x-authorization:
         realm: ADMIN
-        scope: ORG_DEPT_STATION
+        scope: ORDER_AUTHORITATIVE_DEPT_AND_FROZEN_COMPANY_DRIVER_POOL
         permission: biz:dispatch:list
       x-error-codes:
       - VI_REQUEST_INVALID
@@ -1206,56 +1276,6 @@ components:
       required:
       - dispatchLeadMinutes
       - version
-    Invite:
-      type: object
-      properties:
-        inviteId:
-          type: string
-          pattern: ^[1-9][0-9]{0,18}$
-          maxLength: 19
-          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
-        orderNo:
-          type: string
-          description: 不透明ID，以字符串传输，避免JavaScript大整数精度丢失
-        assignmentId:
-          type: string
-          pattern: ^[1-9][0-9]{0,18}$
-          maxLength: 19
-          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
-        pickupArea:
-          type: string
-        pickupSlotStartAt:
-          type: string
-          format: date-time
-          pattern: Z$
-          description: ISO8601 UTC时刻，必须Z结尾；显示与业务日期Asia/Shanghai
-        pickupSlotEndAt:
-          type: string
-          format: date-time
-          pattern: Z$
-          description: ISO8601 UTC时刻，必须Z结尾；显示与业务日期Asia/Shanghai
-        distanceMeter:
-          type: integer
-          minimum: 0
-        expiresAt:
-          type: string
-          format: date-time
-          pattern: Z$
-          description: ISO8601 UTC时刻，必须Z结尾；显示与业务日期Asia/Shanghai
-        status:
-          $ref: '#/components/schemas/InviteStatus'
-        version:
-          type: integer
-          minimum: 0
-          description: 客户端最后读取的版本；服务端条件更新，冲突返回409
-      additionalProperties: false
-      required:
-      - inviteId
-      - orderNo
-      - expiresAt
-      - status
-      - version
-      description: 不返回收入/佣金，不包含持码信息；接单前精确位置按最小必要裁剪
     InviteStatus:
       type: string
       enum:
@@ -1264,248 +1284,406 @@ components:
       - REJECTED
       - EXPIRED
       - REVOKED
-    ManualInvite:
+    DriverInvite:
       type: object
-      properties:
-        orderNo:
-          type: string
-          description: 不透明ID，以字符串传输，避免JavaScript大整数精度丢失
-        driverId:
-          type: string
-          pattern: ^[1-9][0-9]{0,18}$
-          maxLength: 19
-          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
-        expectedOrderVersion:
-          type: integer
-          minimum: 0
-          description: 客户端最后读取的版本；服务端条件更新，冲突返回409
-        reason:
-          type: string
       additionalProperties: false
       required:
+      - inviteId
       - orderNo
-      - driverId
-      - expectedOrderVersion
-      - reason
-    Availability:
-      type: object
-      properties:
-        listeningEnabled:
-          type: boolean
-        qualificationValid:
-          type: boolean
-        occupationType:
-          $ref: '#/components/schemas/OccupationType'
-        holderId:
-          type: string
-          pattern: ^[1-9][0-9]{0,18}$
-          maxLength: 19
-          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
-          nullable: true
-        availableForNewOrder:
-          type: boolean
-        reason:
-          type: string
-          description: 实际阻断原因；后台缺少本人当前会话上下文时返回CLIENT_CONTEXT_REQUIRED，不能把行政开关开启当作可接单。
-        version:
-          type: integer
-          minimum: 0
-          description: 客户端最后读取的版本；服务端条件更新，冲突返回409
-          format: int64
-          maximum: 9007199254740991
-        activePenaltyIds:
-          type: array
-          items:
-            type: string
-            pattern: ^[1-9][0-9]{0,18}$
-            maxLength: 19
-            description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
-        newAssignmentEnabled:
-          type: boolean
-      additionalProperties: false
-      description: A04后台保守投影：行政允许、本人意愿、有效听单截止、资格、占用分别判断；没有本人当前会话上下文时不宣称客户端可达或最终候选通过。D01本人完整状态使用DriverAvailability。
-    OccupationType:
-      type: string
-      enum:
-      - NONE
-      - INVITE
-      - ASSIGNMENT
-    AdminOrderSummary:
-      type: object
-      additionalProperties: false
-      properties:
-        view:
-          type: string
-          enum:
-          - ADMIN
-        orderNo:
-          type: string
-        fulfillmentStatus:
-          $ref: '#/components/schemas/FulfillmentStatus'
-        displayStatus:
-          type: string
-        cancelStatus:
-          $ref: '#/components/schemas/CancelStatus'
-        custody:
-          $ref: '#/components/schemas/CustodyType'
-        vehicle:
-          $ref: '#/components/schemas/OrderVehicleView'
-        station:
-          $ref: '#/components/schemas/OrderStationView'
-        slotStartAt:
-          type: string
-          format: date-time
-          pattern: Z$
-          description: ISO8601 UTC时刻，必须Z结尾；显示与业务日期Asia/Shanghai
-        slotEndAt:
-          type: string
-          format: date-time
-          pattern: Z$
-          description: ISO8601 UTC时刻，必须Z结尾；显示与业务日期Asia/Shanghai
-        returnedAt:
-          type: string
-          format: date-time
-          pattern: Z$
-          description: ISO8601 UTC时刻，必须Z结尾；显示与业务日期Asia/Shanghai
-          nullable: true
-        version:
-          type: integer
-          format: int64
-          minimum: 0
-          maximum: 9007199254740991
-          description: 最后读取的非负版本；更新CAS，冲突409
-        allowedActions:
-          type: array
-          items:
-            $ref: '#/components/schemas/AdminOrderAction'
-          uniqueItems: true
-        paymentStatus:
-          $ref: '#/components/schemas/PaymentStatus'
-      required:
-      - view
-      - orderNo
-      - fulfillmentStatus
-      - displayStatus
-      - cancelStatus
-      - custody
-      - vehicle
-      - station
-      - slotStartAt
-      - slotEndAt
-      - returnedAt
+      - assignmentId
+      - batchId
+      - source
+      - status
+      - storedStatus
       - version
+      - orderVersion
+      - serviceCompanyId
+      - serviceCompanyName
+      - stationId
+      - stationName
+      - pickupArea
+      - pickupSlotStartAt
+      - pickupSlotEndAt
+      - vehicleTypeCode
+      - vehicleTypeName
+      - vehiclePlateMasked
+      - distanceMeter
+      - distanceMode
+      - issuedAt
+      - expiresAt
+      - overallDeadlineAt
+      - respondedAt
+      - sessionId
+      - contextVersion
       - allowedActions
-      - paymentStatus
-      description: 列表最小投影；详情查询使用AdminOrderView
-    PaymentStatus:
-      type: string
-      enum:
-      - PENDING
-      - REVIEW_PENDING
-      - SUCCESS
-      - CLOSED
-      - UNKNOWN
-    AdminOrderAction:
-      type: string
-      description: 动作仍需服务端逐次鉴权，不可把UI集合当授权凭证
-      enum:
-      - MANUAL_INVITE
-      - REVIEW_AFTERSALE
-      - REVIEW_LICENSE
-      - REGISTER_RESULT
-      - REQUEST_RESULT_CORRECTION
-      - CONTACT_OWNER
-      - CONTACT_DRIVER
-      - CONTACT_STATION
-      - EXPORT
-      - VIEW_DETAIL
-      - VIEW_EVIDENCE
-      - VIEW_RESULT
-      - VIEW_PAYMENT
-    OrderStationView:
-      type: object
-      additionalProperties: false
+      - driverId
+      - driverName
+      - acceptBlockReason
       properties:
+        inviteId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+        orderNo:
+          type: string
+        assignmentId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+          nullable: true
+        batchId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+          nullable: true
+        source:
+          $ref: '#/components/schemas/DispatchSource'
+        status:
+          $ref: '#/components/schemas/InviteStatus'
+        storedStatus:
+          $ref: '#/components/schemas/InviteStatus'
+        version:
+          type: integer
+          format: int64
+          minimum: 0
+          maximum: 9007199254740991
+        orderVersion:
+          type: integer
+          format: int64
+          minimum: 0
+          maximum: 9007199254740991
+        serviceCompanyId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+          nullable: true
+        serviceCompanyName:
+          type: string
+          nullable: true
         stationId:
           type: string
           pattern: ^[1-9][0-9]{0,18}$
           maxLength: 19
           description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
-        name:
+        stationName:
           type: string
-        publicAddress:
+        pickupArea:
           type: string
-        location:
-          $ref: '#/components/schemas/GeoPoint'
-        servicePhone:
+        pickupSlotStartAt:
           type: string
-          description: 已批准公开的检测点服务电话
+          format: date-time
+          pattern: Z$
+        pickupSlotEndAt:
+          type: string
+          format: date-time
+          pattern: Z$
+        vehicleTypeCode:
+          type: string
+        vehicleTypeName:
+          type: string
+        vehiclePlateMasked:
+          type: string
           nullable: true
-      required:
-      - stationId
-      - name
-      - publicAddress
-      - location
-      - servicePhone
-    GeoPoint:
-      type: object
-      additionalProperties: false
-      properties:
-        lng:
-          type: number
-          minimum: -180
-          maximum: 180
-        lat:
-          type: number
-          minimum: -90
-          maximum: 90
-        coordinateSystem:
+        distanceMeter:
+          type: integer
+          format: int64
+          minimum: 0
+          maximum: 9007199254740991
+          nullable: true
+        distanceMode:
           type: string
           enum:
-          - GCJ02
-      required:
-      - lng
-      - lat
-      - coordinateSystem
-    OrderVehicleView:
-      type: object
-      additionalProperties: false
-      properties:
-        vehicleId:
+          - GCJ02_GREAT_CIRCLE
+        issuedAt:
+          type: string
+          format: date-time
+          pattern: Z$
+        expiresAt:
+          type: string
+          format: date-time
+          pattern: Z$
+        overallDeadlineAt:
+          type: string
+          format: date-time
+          pattern: Z$
+          nullable: true
+        respondedAt:
+          type: string
+          format: date-time
+          pattern: Z$
+          nullable: true
+        sessionId:
           type: string
           pattern: ^[1-9][0-9]{0,18}$
           maxLength: 19
           description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
           nullable: true
-        plateNo:
+        contextVersion:
+          type: integer
+          format: int64
+          minimum: 0
+          maximum: 9007199254740991
+          nullable: true
+        allowedActions:
+          type: array
+          uniqueItems: true
+          items:
+            type: string
+            enum:
+            - ACCEPT_INVITE
+            - REJECT_INVITE
+            - REVOKE_INVITE
+            - VIEW_ASSIGNMENT
+        driverId:
           type: string
-          description: 本人/有效服务对象完整车牌；历史仅保留业务核对所需车牌
-        vehicleTypeCode:
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+        driverName:
           type: string
-        vehicleTypeLabel:
-          type: string
-        brandModel:
+        acceptBlockReason:
           type: string
           nullable: true
-        vinLast4:
-          type: string
-          maxLength: 4
-          nullable: true
-      required:
-      - vehicleId
-      - plateNo
-      - vehicleTypeCode
-      - vehicleTypeLabel
-      - brandModel
-      - vinLast4
-      description: 订单时点车辆快照；无车主账号、证件原图、密文、内备注或全VIN 临时车辆仅在订单保存快照，vehicleId为null，不暗中创建常用车辆。
-    CustodyType:
+      description: 真实本人或原订单权限内邀约；status为绝对截止有效投影，storedStatus保留真实持久状态。接受前不泄精确位置/电话，无收入或持码信息。
+    DispatchSource:
       type: string
-      description: 当前实物保管方类型
       enum:
-      - OWNER
-      - DRIVER
-      - STATION
+      - AUTO
+      - MANUAL
+    DispatchManualInvite:
+      type: object
+      additionalProperties: false
+      required:
+      - orderNo
+      - driverId
+      - expectedOrderVersion
+      - expectedDriverVersion
+      - reason
+      properties:
+        orderNo:
+          type: string
+        driverId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+        expectedOrderVersion: &id001
+          type: integer
+          format: int64
+          minimum: 0
+          maximum: 9007199254740991
+        expectedDriverVersion: *id001
+        reason:
+          type: string
+          minLength: 1
+          maxLength: 500
+    DispatchCandidate:
+      type: object
+      additionalProperties: false
+      required:
+      - driverId
+      - driverName
+      - phoneMask
+      - driverVersion
+      - serviceCompanyId
+      - licenseClass
+      - distanceMeter
+      - distanceMode
+      - eligibilityExpiresAt
+      - locationCapturedAt
+      - locationExpiresAt
+      - reachabilityExpiresAt
+      - listeningUntil
+      - reviewDueAt
+      - allowedActions
+      properties:
+        driverId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+        driverName:
+          type: string
+        phoneMask:
+          type: string
+          nullable: true
+        driverVersion:
+          type: integer
+          format: int64
+          minimum: 0
+          maximum: 9007199254740991
+        serviceCompanyId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+        licenseClass:
+          type: string
+        distanceMeter:
+          type: integer
+          format: int64
+          minimum: 0
+          maximum: 9007199254740991
+        distanceMode:
+          type: string
+          enum:
+          - GCJ02_GREAT_CIRCLE
+        eligibilityExpiresAt:
+          type: string
+          format: date-time
+          pattern: Z$
+        locationCapturedAt:
+          type: string
+          format: date-time
+          pattern: Z$
+        locationExpiresAt:
+          type: string
+          format: date-time
+          pattern: Z$
+        reachabilityExpiresAt:
+          type: string
+          format: date-time
+          pattern: Z$
+        listeningUntil:
+          type: string
+          format: date-time
+          pattern: Z$
+        reviewDueAt:
+          type: string
+          format: date-time
+          pattern: Z$
+        allowedActions:
+          type: array
+          uniqueItems: true
+          items:
+            type: string
+            enum:
+            - CREATE_MANUAL_INVITE
+    DispatchQueueItem:
+      type: object
+      additionalProperties: false
+      required:
+      - orderNo
+      - orderVersion
+      - serviceCompanyId
+      - serviceCompanyName
+      - stationId
+      - stationName
+      - fulfillmentStatus
+      - cancelStatus
+      - pickupSlotStartAt
+      - pickupSlotEndAt
+      - pickupArea
+      - batchId
+      - batchStatus
+      - batchVersion
+      - policyVersion
+      - overallDeadlineAt
+      - radiusStage
+      - activeInviteId
+      - reasonCode
+      - allowedActions
+      properties:
+        orderNo:
+          type: string
+        orderVersion:
+          type: integer
+          format: int64
+          minimum: 0
+          maximum: 9007199254740991
+        serviceCompanyId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+          nullable: true
+        serviceCompanyName:
+          type: string
+          nullable: true
+        stationId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+        stationName:
+          type: string
+        fulfillmentStatus:
+          $ref: '#/components/schemas/FulfillmentStatus'
+        cancelStatus:
+          $ref: '#/components/schemas/CancelStatus'
+        pickupSlotStartAt:
+          type: string
+          format: date-time
+          pattern: Z$
+        pickupSlotEndAt:
+          type: string
+          format: date-time
+          pattern: Z$
+        pickupArea:
+          type: string
+        batchId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+          nullable: true
+        batchStatus:
+          $ref: '#/components/schemas/DispatchBatchStatus'
+          nullable: true
+        batchVersion:
+          type: integer
+          format: int64
+          minimum: 0
+          maximum: 9007199254740991
+          nullable: true
+        policyVersion:
+          type: integer
+          format: int64
+          minimum: 0
+          maximum: 9007199254740991
+          nullable: true
+        overallDeadlineAt:
+          type: string
+          format: date-time
+          pattern: Z$
+          nullable: true
+        radiusStage:
+          type: integer
+          format: int64
+          minimum: 0
+          maximum: 9007199254740991
+          nullable: true
+        activeInviteId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+          nullable: true
+        reasonCode:
+          type: string
+          nullable: true
+        allowedActions:
+          type: array
+          uniqueItems: true
+          items:
+            type: string
+            enum:
+            - VIEW_DISPATCH_CANDIDATES
+            - CREATE_MANUAL_INVITE
+            - VIEW_DISPATCH_INVITES
+    DispatchBatchStatus:
+      type: string
+      enum:
+      - RUNNING
+      - WAIT_RESPONSE
+      - PAUSED
+      - ASSIGNED
+      - MANUAL
+      - CLOSED
     CancelStatus:
       type: string
       description: 一次售后决定派生的取消进展

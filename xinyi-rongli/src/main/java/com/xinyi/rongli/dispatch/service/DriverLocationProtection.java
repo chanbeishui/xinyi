@@ -46,7 +46,8 @@ public class DriverLocationProtection {
                 new BigDecimal(point.get("lat").toString()));
     }
 
-    private Map<String, Object> coordinates(DriverLocation row) {
+    /** 仅供统一派单权威在已锁定真实司机/来源后计算直线距离；HTTP投影禁止输出。 */
+    Map<String, Object> coordinates(DriverLocation row) {
         Map<String, Object> point =
                 ViJson.read(crypto.unenvelope(row.getLocationCipher(), aad(row)), Map.class);
         if (!point.keySet().equals(Set.of("lng", "lat", "coordinateSystem"))

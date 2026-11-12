@@ -25,6 +25,9 @@
         <result property="dispatchConfigVersion" column="dispatch_config_version" />
         <result property="dispatchAt" column="dispatch_at" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler" />
         <result property="autoConfirmAt" column="auto_confirm_at" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler" />
+        <result property="serviceCompanyId" column="service_company_id"/>
+        <result property="dispatchPolicyVersion" column="dispatch_policy_version"/>
+        <result property="dispatchPolicySnapshot" column="dispatch_policy_snapshot"/>
     </resultMap>
     <insert id="insert" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO vi_order (order_no,
@@ -44,7 +47,7 @@
         total_fen,
         terms_version,
         dispatch_at,
-        dispatch_config_version)
+        dispatch_config_version,service_company_id,dispatch_policy_version,dispatch_policy_snapshot)
         VALUES (#{orderNo},
         #{ownerAccountId},
         #{vehicleId},
@@ -62,7 +65,7 @@
         #{totalFen},
         #{termsVersion},
         #{dispatchAt,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler},
-        #{dispatchConfigVersion})
+        #{dispatchConfigVersion},#{serviceCompanyId},#{dispatchPolicyVersion},#{dispatchPolicySnapshot})
     </insert>
     <select id="find" resultMap="Order">
         SELECT *

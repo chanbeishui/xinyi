@@ -348,7 +348,7 @@ onBeforeUnmount(() => {
       <text class="muted">所属公司：{{ state.companyName || '尚未配置' }}</text>
       <text>已完成服务单量：{{ state.completedAssignmentCount }} 单（实际归还承接）</text>
       <text class="muted"
-        >个人邀约详情与接受操作尚由后续任务接通；当前仅展示真实占用和服务记录入口。</text
+        >本人派单邀约与当前承接入口已接通；此处占用摘要不会代替邀约响应或解除已有服务责任。</text
       >
       <view class="intent-card">
         <text class="state-title">{{
@@ -401,7 +401,8 @@ onBeforeUnmount(() => {
         <view
           ><text>位置精度</text
           ><text
-            >{{ state.accuracyMeter === null ? '尚未确认' : state.accuracyMeter + '米' }} ·
+            >{{ state.accuracyMeter === null ? '尚未确认' : state.accuracyMeter + '米' }}
+            ·
             {{ state.locationAccuracyValid ? '符合配置' : '不符合或未知' }}</text
           ></view
         >

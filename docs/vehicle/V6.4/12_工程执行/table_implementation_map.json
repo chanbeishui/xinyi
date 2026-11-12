@@ -742,5 +742,21 @@
     "evidence": [],
     "table": "vi_driver_listening_config",
     "taskId": "D01"
+  },
+  {
+    "status": "NOT_ASSESSED",
+    "entityFile": null,
+    "mapperFile": null,
+    "evidence": [],
+    "table": "vi_dispatch_policy",
+    "taskId": "D02"
+  },
+  {
+    "status": "NOT_ASSESSED",
+    "entityFile": null,
+    "mapperFile": null,
+    "evidence": [],
+    "table": "vi_dispatch_batch",
+    "taskId": "D02"
   }
 ]

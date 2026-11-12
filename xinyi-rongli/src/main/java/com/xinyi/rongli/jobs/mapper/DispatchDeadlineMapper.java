@@ -1,12 +1,15 @@
 package com.xinyi.rongli.jobs.mapper;
 
-import java.util.List;
 import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 public interface DispatchDeadlineMapper {
     List<Long> missingTimers();
 
     int stationAvailable(@Param("stationId") long stationId, @Param("deptId") long deptId);
+
+    int stationOperational(long stationId);
 
     int confirmedReservations(long orderId);
 

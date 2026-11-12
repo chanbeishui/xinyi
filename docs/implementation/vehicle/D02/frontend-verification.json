@@ -1,0 +1,76 @@
+{
+  "task": "D02前端及关联D03/D04实际链路",
+  "browserAvailability": "Browser plugin not available; frontend-testing-debugging skill fallback: cached Playwright 1.61.1 and local Chrome. No new repository test framework/dependency.",
+  "environment": {
+    "pc": "http://127.0.0.1:5173/dispatch/{queue,invites,policy}",
+    "mini": "http://127.0.0.1:5176/#/pages/dispatch/{invites,invite}",
+    "viewports": [
+      "1440x1000",
+      "390x844"
+    ],
+    "data": "真实Vue/uni-app页面＋明确API夹具；不是后台/DB/微信真机或消息实投递验收"
+  },
+  "results": {
+    "pcBrowser": 18,
+    "miniBrowser": 13,
+    "prototype": 7,
+    "pcBuild": {
+      "command": "npm run build:prod",
+      "exitCode": 0
+    },
+    "miniTypeCheck": {
+      "command": "npm run type-check",
+      "exitCode": 0
+    },
+    "miniWeChatBuild": {
+      "command": "npm run build:mp-weixin",
+      "exitCode": 0
+    },
+    "miniH5Build": {
+      "command": "npm run build:h5",
+      "exitCode": 0
+    }
+  },
+  "pcTypes": {
+    "command": "npx vue-tsc --noEmit",
+    "exitCode": 2,
+    "totalErrors": 149,
+    "priorBaselineErrors": 134,
+    "newVueDeclarationErrors": 15,
+    "ownBusinessErrors": 0,
+    "note": "全站Vue导出声明等既有问题未在本轮扩修，不能表述全站类型通过。"
+  },
+  "sourceBoards": 358,
+  "newBoards": {
+    "B24-dispatch-company": "D02",
+    "D07-list": "D04"
+  },
+  "ownerBoundaries": {
+    "B05/B05-invite/B06": "D03 owner保持，计划104/105仍后续",
+    "D07/D08/D07-list": "D04 owner保持，本轮实际接通本人邀约/响应/current",
+    "D06-occupied": "D01 owner保持，保留D01历史证据，本轮追加真实当前承接组件"
+  },
+  "remaining": [
+    "微信真机本地GPS/隐私能力沿D01另验；本轮H5不假GPS",
+    "生产任务启用与N01通知实投递未执行",
+    "D03计划预览应用104/105、D09出发/接车/交接与主动取消/处罚后续",
+    "真实后端/DB权限和并发回归由root统一，浏览器证据不代替该验证"
+  ],
+  "reproduceTemporaryScripts": [
+    "/private/tmp/d02-ui-qa/pc.cjs",
+    "/private/tmp/d02-ui-qa/mini.cjs",
+    "/private/tmp/d02-ui-qa/prototype.cjs"
+  ],
+  "screenshots": [
+    "pc-queue",
+    "pc-queue-mobile",
+    "pc-candidates",
+    "pc-invites",
+    "pc-policy",
+    "pc-policy-mobile",
+    "mini-list",
+    "mini-detail",
+    "mini-current",
+    "mini-desktop"
+  ]
+}

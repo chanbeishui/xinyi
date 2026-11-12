@@ -1,0 +1,19 @@
+{
+  "passed": true,
+  "upgradeEqualsFull": true,
+  "testSchemaEqualsFull": true,
+  "tables": [
+    "vi_dispatch_batch",
+    "vi_dispatch_invite",
+    "vi_dispatch_policy",
+    "vi_order"
+  ],
+  "comparedTables": 4,
+  "menuRows": 8,
+  "existingRowsPreserved": true,
+  "columnOrdinalCompared": true,
+  "checksCompared": true,
+  "businessOrProductionChanged": false,
+  "migration": "sql/migration_20261112_02_dispatch_invites.sql",
+  "at": "2026-11-12T15:56:35.824141+00:00"
+}

@@ -1,0 +1,9 @@
+{
+  "command": "npx vue-tsc --noEmit",
+  "exitCode": 2,
+  "totalErrors": 149,
+  "priorBaselineErrors": 134,
+  "newVueDeclarationErrors": 15,
+  "ownBusinessErrors": 0,
+  "note": "全站Vue导出声明等既有问题未在本轮扩修，不能表述全站类型通过。"
+}

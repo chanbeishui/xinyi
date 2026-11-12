@@ -1,0 +1,583 @@
+{
+  "mode": "Browser plugin not available; cached Playwright, real PC pages with explicit API fixtures. Not backend/DB department-scope acceptance.",
+  "urls": [
+    "/dispatch/queue",
+    "/dispatch/invites",
+    "/dispatch/policy"
+  ],
+  "viewports": [
+    "1440x1000",
+    "390x844"
+  ],
+  "clock": "Controlled 2026-11-12T04:00:00Z then61s advance to candidate earliest cutoff; API clock advanced consistently.",
+  "checks": [
+    "实际队列→真实订单候选，冻结服务公司与当前站点分开展示，直线距离和轮转排序边界明确",
+    "人工原因必填；409撤回旧候选并保留原因，真实重读订单与司机两份CAS后才允许再选",
+    "人工邀约503关闭重开保留原订单/司机/5键正文和UUID，原回执恢复不创建第二意图",
+    "候选读取503与独立eligibilityExpiresAt到期均清旧有效候选；不延长坐标或沿用旧接受资格",
+    "实际邀约记录→受控撤回，3键+UUID；503关闭详情后原体重试，只撤等待邀约不直接取消订单",
+    "已接受记录只读原承接编号，服务端无REVOKE动作即不显示撤回，不释放在手任务",
+    "后台邀约绝对截止撤回旧等待行与撤回按钮，不在客户端改EXPIRED或推迟原截止",
+    "后台邀约GET503清旧列表及详情可操作投影，不把先前等待状态继续当事实",
+    "公司策略不默认主部门；真实未配置null模式进入空表单，数字与兼容关系均不伪造默认",
+    "首次策略本地必填校验，真实车型字典code+显式准驾集合，精确9键PUT/UUID/CAS成功，不覆盖旧订单提示可见",
+    "真实车型字典每页最多100项，分页读完110项，不把后页车型误判为停用或缺失",
+    "策略409撤旧配置投影、保留填写，显式重读取得新CAS后才可继续",
+    "策略503切公司不串表单；回原公司保原9键/版本/UUID重试，其他公司未写入",
+    "1440与390策略页面无整页横向溢出，明示公司/运营值/兼容关系与旧单冻结边界",
+    "业务公司403清旧策略与原因，不把可选部门目录当维护授权",
+    "query-only只读不查询编辑用车型目录、不开放写入，仍服从服务端allowedActions",
+    "真实/system/dept/list旧信封HTTP200 code403失败关闭，不默认账号主部门",
+    "仅派单list权限可查候选但不开放人工邀约，390队列表格内部滚动不造成整页横向溢出"
+  ],
+  "errors": [],
+  "warnings": [],
+  "expectedErrors": [
+    "Failed to load resource: the server responded with a status of 409 (Conflict)",
+    "Failed to load resource: the server responded with a status of 503 (Service Unavailable)",
+    "Failed to load resource: the server responded with a status of 503 (Service Unavailable)",
+    "Failed to load resource: the server responded with a status of 503 (Service Unavailable)",
+    "Failed to load resource: the server responded with a status of 503 (Service Unavailable)",
+    "Failed to load resource: the server responded with a status of 409 (Conflict)",
+    "Failed to load resource: the server responded with a status of 503 (Service Unavailable)",
+    "Failed to load resource: the server responded with a status of 403 (Forbidden)"
+  ],
+  "unknown": [],
+  "requests": [
+    {
+      "path": "/getInfo",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/getRouters",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/system/notice/listTop",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/admin/dispatch/queue",
+      "method": "GET",
+      "query": {
+        "pageNum": "1",
+        "pageSize": "10"
+      }
+    },
+    {
+      "path": "/api/admin/dispatch/queue",
+      "method": "GET",
+      "query": {
+        "orderNo": "VI202611120001",
+        "pageNum": "1",
+        "pageSize": "10"
+      }
+    },
+    {
+      "path": "/api/admin/dispatch/candidates",
+      "method": "GET",
+      "query": {
+        "orderNo": "VI202611120001",
+        "pageNum": "1",
+        "pageSize": "10",
+        "sort": "cursor"
+      }
+    },
+    {
+      "path": "/api/admin/dispatch/manual-invites",
+      "method": "POST",
+      "query": {}
+    },
+    {
+      "path": "/api/admin/dispatch/queue",
+      "method": "GET",
+      "query": {
+        "orderNo": "VI202611120001",
+        "pageNum": "1",
+        "pageSize": "10"
+      }
+    },
+    {
+      "path": "/api/admin/dispatch/candidates",
+      "method": "GET",
+      "query": {
+        "orderNo": "VI202611120001",
+        "pageNum": "1",
+        "pageSize": "10",
+        "sort": "cursor"
+      }
+    },
+    {
+      "path": "/api/admin/dispatch/manual-invites",
+      "method": "POST",
+      "query": {}
+    },
+    {
+      "path": "/api/admin/dispatch/queue",
+      "method": "GET",
+      "query": {
+        "orderNo": "VI202611120001",
+        "pageNum": "1",
+        "pageSize": "10"
+      }
+    },
+    {
+      "path": "/api/admin/dispatch/candidates",
+      "method": "GET",
+      "query": {
+        "orderNo": "VI202611120001",
+        "pageNum": "1",
+        "pageSize": "10",
+        "sort": "cursor"
+      }
+    },
+    {
+      "path": "/api/admin/dispatch/manual-invites",
+      "method": "POST",
+      "query": {}
+    },
+    {
+      "path": "/api/admin/dispatch/queue",
+      "method": "GET",
+      "query": {
+        "orderNo": "VI202611120001",
+        "pageNum": "1",
+        "pageSize": "10"
+      }
+    },
+    {
+      "path": "/api/admin/dispatch/candidates",
+      "method": "GET",
+      "query": {
+        "orderNo": "VI202611120001",
+        "pageNum": "1",
+        "pageSize": "10",
+        "sort": "cursor"
+      }
+    },
+    {
+      "path": "/api/admin/dispatch/queue",
+      "method": "GET",
+      "query": {
+        "orderNo": "VI202611120001",
+        "pageNum": "1",
+        "pageSize": "10"
+      }
+    },
+    {
+      "path": "/api/admin/dispatch/candidates",
+      "method": "GET",
+      "query": {
+        "orderNo": "VI202611120001",
+        "pageNum": "1",
+        "pageSize": "10",
+        "sort": "cursor"
+      }
+    },
+    {
+      "path": "/api/admin/dispatch/queue",
+      "method": "GET",
+      "query": {
+        "orderNo": "VI202611120001",
+        "pageNum": "1",
+        "pageSize": "10"
+      }
+    },
+    {
+      "path": "/api/admin/dispatch/candidates",
+      "method": "GET",
+      "query": {
+        "orderNo": "VI202611120001",
+        "pageNum": "1",
+        "pageSize": "10",
+        "sort": "cursor"
+      }
+    },
+    {
+      "path": "/getInfo",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/getRouters",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/system/notice/listTop",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/admin/dispatch/invites",
+      "method": "GET",
+      "query": {
+        "pageNum": "1",
+        "pageSize": "10"
+      }
+    },
+    {
+      "path": "/api/admin/dispatch/invites/501/revoke",
+      "method": "POST",
+      "query": {}
+    },
+    {
+      "path": "/api/admin/dispatch/invites/501/revoke",
+      "method": "POST",
+      "query": {}
+    },
+    {
+      "path": "/api/admin/dispatch/invites",
+      "method": "GET",
+      "query": {
+        "pageNum": "1",
+        "pageSize": "10"
+      }
+    },
+    {
+      "path": "/api/admin/dispatch/invites",
+      "method": "GET",
+      "query": {
+        "pageNum": "1",
+        "pageSize": "10"
+      }
+    },
+    {
+      "path": "/api/admin/dispatch/invites",
+      "method": "GET",
+      "query": {
+        "pageNum": "1",
+        "pageSize": "10"
+      }
+    },
+    {
+      "path": "/api/admin/dispatch/invites",
+      "method": "GET",
+      "query": {
+        "pageNum": "1",
+        "pageSize": "10"
+      }
+    },
+    {
+      "path": "/getInfo",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/getRouters",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/system/notice/listTop",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/system/dept/list",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/common/dict/vi_vehicle_type",
+      "method": "GET",
+      "query": {
+        "pageNum": "1",
+        "pageSize": "100"
+      }
+    },
+    {
+      "path": "/api/common/dict/vi_vehicle_type",
+      "method": "GET",
+      "query": {
+        "pageNum": "2",
+        "pageSize": "100"
+      }
+    },
+    {
+      "path": "/api/admin/dispatch/companies/101/dispatch-policy",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/admin/dispatch/companies/101/dispatch-policy",
+      "method": "PUT",
+      "query": {}
+    },
+    {
+      "path": "/api/admin/dispatch/companies/101/dispatch-policy",
+      "method": "PUT",
+      "query": {}
+    },
+    {
+      "path": "/api/admin/dispatch/companies/101/dispatch-policy",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/admin/dispatch/companies/101/dispatch-policy",
+      "method": "PUT",
+      "query": {}
+    },
+    {
+      "path": "/api/admin/dispatch/companies/102/dispatch-policy",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/admin/dispatch/companies/101/dispatch-policy",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/admin/dispatch/companies/101/dispatch-policy",
+      "method": "PUT",
+      "query": {}
+    },
+    {
+      "path": "/system/notice/listTop",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/admin/dispatch/companies/102/dispatch-policy",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/getInfo",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/getRouters",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/system/notice/listTop",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/system/dept/list",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/admin/dispatch/companies/101/dispatch-policy",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/getInfo",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/getRouters",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/system/notice/listTop",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/system/dept/list",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/getInfo",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/getRouters",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/system/notice/listTop",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/admin/dispatch/queue",
+      "method": "GET",
+      "query": {
+        "pageNum": "1",
+        "pageSize": "10"
+      }
+    },
+    {
+      "path": "/api/admin/dispatch/queue",
+      "method": "GET",
+      "query": {
+        "orderNo": "VI202611120001",
+        "pageNum": "1",
+        "pageSize": "10"
+      }
+    },
+    {
+      "path": "/api/admin/dispatch/candidates",
+      "method": "GET",
+      "query": {
+        "orderNo": "VI202611120001",
+        "pageNum": "1",
+        "pageSize": "10",
+        "sort": "cursor"
+      }
+    }
+  ],
+  "writes": [
+    {
+      "kind": "manual",
+      "input": {
+        "orderNo": "VI202611120001",
+        "driverId": "31",
+        "expectedOrderVersion": 12,
+        "expectedDriverVersion": 8,
+        "reason": "按客户预约时段协调同公司可用代驾"
+      },
+      "key": "2d903731-eaf6-40bd-9555-ae4592f2a63a"
+    },
+    {
+      "kind": "manual",
+      "input": {
+        "orderNo": "VI202611120001",
+        "driverId": "31",
+        "expectedOrderVersion": 13,
+        "expectedDriverVersion": 8,
+        "reason": "按客户预约时段协调同公司可用代驾"
+      },
+      "key": "fe027649-d93f-40c3-83ed-2ed11e4ee0b0"
+    },
+    {
+      "kind": "manual",
+      "input": {
+        "orderNo": "VI202611120001",
+        "driverId": "31",
+        "expectedOrderVersion": 13,
+        "expectedDriverVersion": 8,
+        "reason": "按客户预约时段协调同公司可用代驾"
+      },
+      "key": "fe027649-d93f-40c3-83ed-2ed11e4ee0b0"
+    },
+    {
+      "kind": "revoke",
+      "input": {
+        "expectedVersion": 2,
+        "expectedOrderVersion": 12,
+        "reason": "原预约协调调整，撤回本次等待邀约"
+      },
+      "key": "d0f8dd6e-eb42-4d7e-ae31-8ba4d3f329c7"
+    },
+    {
+      "kind": "revoke",
+      "input": {
+        "expectedVersion": 2,
+        "expectedOrderVersion": 12,
+        "reason": "原预约协调调整，撤回本次等待邀约"
+      },
+      "key": "d0f8dd6e-eb42-4d7e-ae31-8ba4d3f329c7"
+    },
+    {
+      "kind": "policy",
+      "company": "101",
+      "input": {
+        "expectedVersion": 0,
+        "inviteResponseSeconds": 60,
+        "radiusMeter": 3000,
+        "expandedRadiusMeter": 6000,
+        "overallDeadlineSeconds": 600,
+        "roundPolicy": "COMPANY_CURSOR",
+        "distanceMode": "GCJ02_GREAT_CIRCLE",
+        "licenseCompatibility": [
+          {
+            "vehicleTypeCode": "SMALL",
+            "licenseClasses": [
+              "C1"
+            ]
+          }
+        ],
+        "reason": "按公司服务车型明确维护派单范围及准驾业务关系"
+      },
+      "key": "5a1eed79-2c36-4141-94bf-554fe95a4ace"
+    },
+    {
+      "kind": "policy",
+      "company": "101",
+      "input": {
+        "expectedVersion": 1,
+        "inviteResponseSeconds": 60,
+        "radiusMeter": 3000,
+        "expandedRadiusMeter": 6000,
+        "overallDeadlineSeconds": 600,
+        "roundPolicy": "COMPANY_CURSOR",
+        "distanceMode": "GCJ02_GREAT_CIRCLE",
+        "licenseCompatibility": [
+          {
+            "vehicleTypeCode": "SMALL",
+            "licenseClasses": [
+              "C1"
+            ]
+          }
+        ],
+        "reason": "根据公司预约安排核对派单策略"
+      },
+      "key": "2c9e64fe-56de-43c6-b0ee-47ba5de72dcb"
+    },
+    {
+      "kind": "policy",
+      "company": "101",
+      "input": {
+        "expectedVersion": 2,
+        "inviteResponseSeconds": 60,
+        "radiusMeter": 3000,
+        "expandedRadiusMeter": 6000,
+        "overallDeadlineSeconds": 600,
+        "roundPolicy": "COMPANY_CURSOR",
+        "distanceMode": "GCJ02_GREAT_CIRCLE",
+        "licenseCompatibility": [
+          {
+            "vehicleTypeCode": "SMALL",
+            "licenseClasses": [
+              "C1"
+            ]
+          }
+        ],
+        "reason": "根据公司预约安排核对派单策略"
+      },
+      "key": "9d674126-d442-4df3-a0ba-6e77b9d78e2f"
+    },
+    {
+      "kind": "policy",
+      "company": "101",
+      "input": {
+        "expectedVersion": 2,
+        "inviteResponseSeconds": 60,
+        "radiusMeter": 3000,
+        "expandedRadiusMeter": 6000,
+        "overallDeadlineSeconds": 600,
+        "roundPolicy": "COMPANY_CURSOR",
+        "distanceMode": "GCJ02_GREAT_CIRCLE",
+        "licenseCompatibility": [
+          {
+            "vehicleTypeCode": "SMALL",
+            "licenseClasses": [
+              "C1"
+            ]
+          }
+        ],
+        "reason": "根据公司预约安排核对派单策略"
+      },
+      "key": "9d674126-d442-4df3-a0ba-6e77b9d78e2f"
+    }
+  ]
+}

@@ -1692,7 +1692,10 @@
       "completed_at",
       "cancelled_at",
       "total_fen",
-      "terms_version"
+      "terms_version",
+      "service_company_id",
+      "dispatch_policy_version",
+      "dispatch_policy_snapshot"
     ],
     "updateColumns": [
       "order_no",
@@ -1886,6 +1889,24 @@
         "insertable": false,
         "updatable": false,
         "clientWritable": false
+      },
+      "service_company_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "dispatch_policy_version": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "dispatch_policy_snapshot": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
       }
     },
     "rule": "主状态不得存REFUNDING或事故标记；已返回不等于已服务确认"
@@ -1981,7 +2002,8 @@
     "table": "vi_dispatch_invite",
     "writeMode": "BUSINESS_ACTION_CAS",
     "generatedColumns": [
-      "active_order"
+      "active_order",
+      "active_driver"
     ],
     "insertColumns": [
       "order_id",
@@ -1991,17 +2013,22 @@
       "round_key",
       "issued_at",
       "expires_at",
-      "responded_at"
+      "responded_at",
+      "batch_id",
+      "service_company_id",
+      "company_revision",
+      "distance_meter",
+      "driver_session_id",
+      "driver_context_version",
+      "driver_location_version",
+      "driver_presence_version",
+      "issued_by_user_id",
+      "reason_cipher"
     ],
     "updateColumns": [
-      "order_id",
-      "driver_id",
       "status",
-      "source",
-      "round_key",
-      "issued_at",
-      "expires_at",
-      "responded_at"
+      "responded_at",
+      "reason_cipher"
     ],
     "columnRules": {
       "id": {
@@ -2013,13 +2040,13 @@
       "order_id": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "driver_id": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "status": {
@@ -2032,25 +2059,26 @@
       "source": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
-        "clientWritable": false
+        "updatable": false,
+        "clientWritable": false,
+        "enumRef": "DispatchSource"
       },
       "round_key": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "issued_at": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "expires_at": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "responded_at": {
@@ -2081,6 +2109,72 @@
       },
       "version": {
         "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "batch_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "service_company_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "company_revision": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "distance_meter": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "driver_session_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "driver_context_version": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "driver_location_version": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "driver_presence_version": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "issued_by_user_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "reason_cipher": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "active_driver": {
+        "generated": true,
         "insertable": false,
         "updatable": false,
         "clientWritable": false
@@ -11685,6 +11779,231 @@
       "max_accuracy_meter",
       "location_report_interval_seconds",
       "updated_by_user_id",
+      "version"
+    ]
+  },
+  {
+    "table": "vi_dispatch_policy",
+    "writeMode": "BUSINESS_ACTION_CAS",
+    "generatedColumns": [],
+    "columnRules": {
+      "owner_dept_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "invite_response_seconds": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "radius_meter": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "expanded_radius_meter": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "overall_deadline_seconds": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "license_compatibility": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "config_hash": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "updated_by_user_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "version": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "created_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "updated_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      }
+    },
+    "insertColumns": [
+      "owner_dept_id",
+      "invite_response_seconds",
+      "radius_meter",
+      "expanded_radius_meter",
+      "overall_deadline_seconds",
+      "license_compatibility",
+      "config_hash",
+      "updated_by_user_id",
+      "version"
+    ],
+    "updateColumns": [
+      "invite_response_seconds",
+      "radius_meter",
+      "expanded_radius_meter",
+      "overall_deadline_seconds",
+      "license_compatibility",
+      "config_hash",
+      "updated_by_user_id",
+      "version"
+    ]
+  },
+  {
+    "table": "vi_dispatch_batch",
+    "writeMode": "BUSINESS_ACTION_CAS",
+    "generatedColumns": [
+      "active_order"
+    ],
+    "columnRules": {
+      "id": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "order_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "run_no": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "service_company_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "source": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false,
+        "enumRef": "DispatchSource"
+      },
+      "status": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false,
+        "enumRef": "DispatchBatchStatus"
+      },
+      "policy_version": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "policy_snapshot": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "started_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "deadline_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "radius_stage": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "reason_code": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "version": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "created_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "updated_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "active_order": {
+        "generated": true,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      }
+    },
+    "insertColumns": [
+      "order_id",
+      "run_no",
+      "service_company_id",
+      "source",
+      "status",
+      "policy_version",
+      "policy_snapshot",
+      "started_at",
+      "deadline_at",
+      "radius_stage",
+      "reason_code",
+      "version"
+    ],
+    "updateColumns": [
+      "status",
+      "radius_stage",
+      "reason_code",
       "version"
     ]
   }

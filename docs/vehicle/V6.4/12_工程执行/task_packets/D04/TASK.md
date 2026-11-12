@@ -1,10 +1,10 @@
 # D04 · 司机接受与拒绝邀约
 
 阶段：M3；责任域：dispatch；前置：D02, E04。
-范围版本：`V6.1-UNCHANGED`；definitionHash：`69fd9e6103260c9eeb92c17a1fe81ec2339478ced5cfb1daa3fd6c8a1653a4e9`。
+范围版本：`V6.4-DISPATCH-RESPONSE-20261112`；definitionHash：`8c54410efa2fe45af7ea656c2e44e2f4ce5b630d659c52fadee8c87f8da65a64`。
 
 ## 本任务交付
-- 本人邀约列表详情响应、当前承接，响应版本和占用转换
+- 本人邀约列表详情响应、当前承接，响应版本和占用转换；本轮与D02共用实际D02DispatchIT验证，69为同一集合不重复累计
 
 ## 必测失败与并发
 - 超时与接受只一成功
@@ -14,21 +14,21 @@
 ## 精确输入
 主源：04_接口/openapi_V6.4.yaml、05_数据设计/data_model_V6.4.json、06_验收/test_cases_V6.4.json。本目录派生，不独立维护。
 接口：API_051_get, API_052_get, API_053_post, API_054_get
-画板：D07, D08
+画板：D07, D08, D07-list
 主责任表：vi_driver_assignment
 验收：无
 
 ## 代码落位
 `xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/`
 `xinyi-rongli/src/main/resources/mapper/rongli/dispatch/`
-`xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/dispatch/`
 `xinyi-ui/src/views/rongli/dispatch/`
 `xinyi-ui/src/api/rongli/dispatch.ts`
 `xinyi-miniapp/src/features/dispatch/`
+`xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/controller/`
 
 ## 验证命令
 ```bash
-mvn -pl xinyi-admin -am -Pvi-it -Dit.test=D04DispatchIT verify
+mvn -pl xinyi-admin -am -Pvi-it -Dit.test=D02DispatchIT verify
 npm --prefix xinyi-ui run build:prod
 npm --prefix xinyi-miniapp run build:mp-weixin
 ```

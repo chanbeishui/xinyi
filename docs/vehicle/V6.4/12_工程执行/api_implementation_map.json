@@ -4002,5 +4002,44 @@
     "path": "/api/admin/dispatch/companies/{companyId}/listening-config",
     "summary": "公司听单配置维护",
     "taskId": "D01"
+  },
+  {
+    "implementationStatus": "NOT_ASSESSED",
+    "controllerFile": null,
+    "serviceFile": null,
+    "mapperFile": null,
+    "testFiles": [],
+    "reviewEvidence": null,
+    "operationId": "d02_get_company_dispatch_policy",
+    "method": "GET",
+    "path": "/api/admin/dispatch/companies/{companyId}/dispatch-policy",
+    "summary": "公司派单策略读取",
+    "taskId": "D02"
+  },
+  {
+    "implementationStatus": "NOT_ASSESSED",
+    "controllerFile": null,
+    "serviceFile": null,
+    "mapperFile": null,
+    "testFiles": [],
+    "reviewEvidence": null,
+    "operationId": "d02_put_company_dispatch_policy",
+    "method": "PUT",
+    "path": "/api/admin/dispatch/companies/{companyId}/dispatch-policy",
+    "summary": "公司派单策略维护",
+    "taskId": "D02"
+  },
+  {
+    "implementationStatus": "NOT_ASSESSED",
+    "controllerFile": null,
+    "serviceFile": null,
+    "mapperFile": null,
+    "testFiles": [],
+    "reviewEvidence": null,
+    "operationId": "d02_post_revoke_invite",
+    "method": "POST",
+    "path": "/api/admin/dispatch/invites/{inviteId}/revoke",
+    "summary": "撤回未响应邀约",
+    "taskId": "D02"
   }
 ]

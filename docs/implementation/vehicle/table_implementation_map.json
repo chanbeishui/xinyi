@@ -135,10 +135,12 @@
     "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/order/OrderMapper.xml",
     "evidence": [
       "docs/implementation/vehicle/evidence/B03-20261102.json",
-      "docs/implementation/vehicle/B03/B03OrderIT.xml"
+      "docs/implementation/vehicle/B03/B03OrderIT.xml",
+      "docs/implementation/vehicle/evidence/D02-20261113.json"
     ],
     "table": "vi_order",
-    "taskId": "B03"
+    "taskId": "B03",
+    "d02Compatibility": "建单同事务冻结服务公司/认证策略；历史NULL拒绝猜回填。"
   },
   {
     "status": "VERIFIED",
@@ -153,36 +155,51 @@
     "implementationNote": "凭证采用内部强类型Mapper参数写入，双额度及父订单同事务；未暴露HTTP实体"
   },
   {
-    "status": "NOT_ASSESSED",
-    "entityFile": null,
-    "mapperFile": null,
-    "evidence": [],
+    "status": "VERIFIED",
+    "entityFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/domain/DispatchInvite.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/dispatch/DispatchInviteMapper.xml",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/D02-20261113.json"
+    ],
     "table": "vi_dispatch_invite",
-    "taskId": "D02"
+    "taskId": "D02",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/service/DispatchEngineService.java"
   },
   {
-    "status": "NOT_ASSESSED",
+    "status": "VERIFIED",
     "entityFile": null,
-    "mapperFile": null,
-    "evidence": [],
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/dispatch/DispatchInviteMapper.xml",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/D02-20261113.json"
+    ],
     "table": "vi_driver_assignment",
-    "taskId": "D04"
+    "taskId": "D04",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/service/DispatchEngineService.java",
+    "representation": "统一Mapper显式参数/Map与OrderViews.DriverDetail；未生成空实体或绑定请求实体"
   },
   {
-    "status": "NOT_ASSESSED",
+    "status": "VERIFIED",
     "entityFile": null,
-    "mapperFile": null,
-    "evidence": [],
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/dispatch/DispatchInviteMapper.xml",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/D02-20261113.json"
+    ],
     "table": "vi_driver_occupancy",
-    "taskId": "D02"
+    "taskId": "D02",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/service/DispatchEngineService.java",
+    "representation": "统一Mapper显式参数/Map与OrderViews.DriverDetail；未生成空实体或绑定请求实体"
   },
   {
-    "status": "NOT_ASSESSED",
+    "status": "VERIFIED",
     "entityFile": null,
-    "mapperFile": null,
-    "evidence": [],
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/dispatch/DispatchInviteMapper.xml",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/D02-20261113.json"
+    ],
     "table": "vi_dispatch_cursor",
-    "taskId": "D02"
+    "taskId": "D02",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/service/DispatchEngineService.java",
+    "representation": "统一Mapper显式参数/Map与OrderViews.DriverDetail；未生成空实体或绑定请求实体"
   },
   {
     "status": "VERIFIED",
@@ -935,5 +952,27 @@
     "table": "vi_driver_listening_config",
     "taskId": "D01",
     "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/service/CompanyListeningConfigService.java"
+  },
+  {
+    "status": "VERIFIED",
+    "entityFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/domain/DispatchPolicy.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/dispatch/DispatchInviteMapper.xml",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/D02-20261113.json"
+    ],
+    "table": "vi_dispatch_policy",
+    "taskId": "D02",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/service/DispatchPolicyService.java"
+  },
+  {
+    "status": "VERIFIED",
+    "entityFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/domain/DispatchBatch.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/dispatch/DispatchInviteMapper.xml",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/D02-20261113.json"
+    ],
+    "table": "vi_dispatch_batch",
+    "taskId": "D02",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/service/DispatchEngineService.java"
   }
 ]

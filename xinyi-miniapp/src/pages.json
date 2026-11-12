@@ -155,6 +155,18 @@
       "style": {
         "navigationBarTitleText": "测验结果"
       }
+    },
+    {
+      "path": "pages/dispatch/invites",
+      "style": {
+        "navigationBarTitleText": "本人派单邀约"
+      }
+    },
+    {
+      "path": "pages/dispatch/invite",
+      "style": {
+        "navigationBarTitleText": "本次派单邀约"
+      }
     }
   ],
   "globalStyle": {

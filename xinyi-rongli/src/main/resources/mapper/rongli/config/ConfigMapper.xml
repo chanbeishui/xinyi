@@ -2,8 +2,20 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.xinyi.rongli.config.mapper.ConfigMapper">
 
-    <select id="selectValue" resultType="java.lang.String">
-        SELECT config_value FROM sys_config WHERE config_key = #{key}
+    <select id="selectEntries" resultType="java.util.LinkedHashMap">
+        SELECT config_id,config_key,config_value
+        FROM sys_config
+        WHERE config_key=#{key}
+        ORDER BY config_id
+        <if test="lock">FOR UPDATE</if>
+    </select>
+
+    <select id="lockVersion" resultType="java.util.LinkedHashMap">
+        SELECT config_id,config_key,config_value
+        FROM sys_config
+        WHERE config_key='vi.config.version'
+        ORDER BY config_id
+        FOR UPDATE
     </select>
 
     <!-- 两个同意键按统一顺序读取；资格写事务锁住原文直到提交，发布不能在校验后穿透。 -->
@@ -25,37 +37,53 @@
     </select>
 
     <select id="selectBusiness" resultType="java.util.LinkedHashMap">
-        SELECT config_key, config_value FROM sys_config WHERE config_key LIKE 'vi.biz.%' ORDER BY config_key
+        SELECT config_key,config_value
+        FROM sys_config
+        WHERE config_key LIKE 'vi.biz.%'
+        ORDER BY config_key,config_id
     </select>
 
-    <insert id="upsert">
-        INSERT INTO sys_config (config_name, config_key, config_value, config_type)
-        VALUES (#{key}, #{key}, #{value}, 'N')
-        ON DUPLICATE KEY UPDATE config_value = #{value}, update_time = NOW()
+    <insert id="insertValue">
+        INSERT INTO sys_config(config_name,config_key,config_value,config_type)
+        VALUES(#{key},#{key},#{value},'N')
     </insert>
+
+    <!-- 原记录必须由Service加载并验证唯一；config_id是更新依据，键仅作为额外归属核对。 -->
+    <update id="updateValue">
+        UPDATE sys_config
+        SET config_value=#{value},update_time=NOW()
+        WHERE config_id=#{id}
+            AND config_key=#{key}
+    </update>
 
     <insert id="ensureVersion">
         INSERT INTO sys_config (config_name, config_key, config_value, config_type)
-        SELECT 'vi.config.version', 'vi.config.version', '0', 'N' FROM DUAL
+        SELECT 'vi.config.version','vi.config.version','0','N'
+        FROM DUAL
         WHERE NOT EXISTS (SELECT 1 FROM sys_config WHERE config_key = 'vi.config.version')
     </insert>
 
-    <select id="selectVersion" resultType="long">
-        SELECT COALESCE((SELECT config_value FROM sys_config WHERE config_key = 'vi.config.version'), '0')
-    </select>
-
     <update id="casVersion">
-        UPDATE sys_config SET config_value = #{next}, update_time = NOW()
-        WHERE config_key = 'vi.config.version' AND config_value = #{expected}
+        UPDATE sys_config
+        SET config_value=#{next},update_time=NOW()
+        WHERE config_id=#{id}
+            AND config_key='vi.config.version'
+            AND config_value=#{expected}
     </update>
 
     <select id="selectDict" resultType="java.util.LinkedHashMap">
-        SELECT dict_value, dict_label, dict_sort, status
-        FROM sys_dict_data WHERE dict_type = #{dictType} AND status = '0' ORDER BY dict_sort
+        SELECT dict_value,dict_label,dict_sort,status
+        FROM sys_dict_data
+        WHERE dict_type=#{dictType}
+            AND status='0'
+        ORDER BY dict_sort
     </select>
 
     <select id="countPublishedPrice" resultType="int">
-        SELECT COUNT(*) FROM vi_price_rule WHERE vehicle_type_code = #{vehicleTypeCode} AND status = 'PUBLISHED'
+        SELECT COUNT(*)
+        FROM vi_price_rule
+        WHERE vehicle_type_code=#{vehicleTypeCode}
+            AND status='PUBLISHED'
     </select>
 
 </mapper>

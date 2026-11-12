@@ -1,0 +1,331 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xinyi.rongli.dispatch.mapper.DispatchInviteMapper">
+    <resultMap id="DispatchPolicy" type="com.xinyi.rongli.dispatch.domain.DispatchPolicy">
+        <result property="ownerDeptId" column="owner_dept_id"/>
+        <result property="inviteResponseSeconds" column="invite_response_seconds"/>
+        <result property="radiusMeter" column="radius_meter"/>
+        <result property="expandedRadiusMeter" column="expanded_radius_meter"/>
+        <result property="overallDeadlineSeconds" column="overall_deadline_seconds"/>
+        <result property="licenseCompatibility" column="license_compatibility"/>
+        <result property="configHash" column="config_hash"/>
+        <result property="updatedByUserId" column="updated_by_user_id"/>
+        <result property="version" column="version"/>
+    </resultMap>
+    <resultMap id="DispatchBatch" type="com.xinyi.rongli.dispatch.domain.DispatchBatch">
+        <result property="id" column="id"/>
+        <result property="orderId" column="order_id"/>
+        <result property="runNo" column="run_no"/>
+        <result property="serviceCompanyId" column="service_company_id"/>
+        <result property="source" column="source"/>
+        <result property="status" column="status"/>
+        <result property="policyVersion" column="policy_version"/>
+        <result property="policySnapshot" column="policy_snapshot"/>
+        <result property="startedAt" column="started_at" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+        <result property="deadlineAt" column="deadline_at" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+        <result property="radiusStage" column="radius_stage"/>
+        <result property="reasonCode" column="reason_code"/>
+        <result property="version" column="version"/>
+    </resultMap>
+    <resultMap id="DispatchInvite" type="com.xinyi.rongli.dispatch.domain.DispatchInvite">
+        <result property="id" column="id"/>
+        <result property="orderId" column="order_id"/>
+        <result property="driverId" column="driver_id"/>
+        <result property="status" column="status"/>
+        <result property="source" column="source"/>
+        <result property="roundKey" column="round_key"/>
+        <result property="issuedAt" column="issued_at" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+        <result property="expiresAt" column="expires_at" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+        <result property="respondedAt" column="responded_at" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+        <result property="batchId" column="batch_id"/>
+        <result property="serviceCompanyId" column="service_company_id"/>
+        <result property="companyRevision" column="company_revision"/>
+        <result property="distanceMeter" column="distance_meter"/>
+        <result property="driverSessionId" column="driver_session_id"/>
+        <result property="driverContextVersion" column="driver_context_version"/>
+        <result property="driverLocationVersion" column="driver_location_version"/>
+        <result property="driverPresenceVersion" column="driver_presence_version"/>
+        <result property="issuedByUserId" column="issued_by_user_id"/>
+        <result property="reasonCipher" column="reason_cipher"/>
+        <result property="version" column="version"/>
+    </resultMap>
+    <select id="policy" resultMap="DispatchPolicy">
+        SELECT *
+        FROM vi_dispatch_policy
+        WHERE owner_dept_id=#{owner}
+        FOR UPDATE
+    </select>
+    <insert id="insertPolicy">
+        INSERT INTO vi_dispatch_policy(owner_dept_id,invite_response_seconds,radius_meter,
+            expanded_radius_meter,overall_deadline_seconds,license_compatibility,config_hash,updated_by_user_id,version)
+        VALUES(#{ownerDeptId},#{inviteResponseSeconds},#{radiusMeter},#{expandedRadiusMeter},
+            #{overallDeadlineSeconds},#{licenseCompatibility},#{configHash},#{updatedByUserId},#{version})
+    </insert>
+    <update id="updatePolicy">
+        UPDATE vi_dispatch_policy
+        SET invite_response_seconds=#{row.inviteResponseSeconds},radius_meter=#{row.radiusMeter},
+            expanded_radius_meter=#{row.expandedRadiusMeter},overall_deadline_seconds=#{row.overallDeadlineSeconds},
+            license_compatibility=#{row.licenseCompatibility},config_hash=#{row.configHash},
+            updated_by_user_id=#{row.updatedByUserId},version=#{row.version},updated_at=UTC_TIMESTAMP(3)
+        WHERE owner_dept_id=#{row.ownerDeptId} AND version=#{expected}
+    </update>
+    <select id="validVehicle" resultType="int">
+        SELECT COUNT(*)
+        FROM sys_dict_data
+        WHERE dict_type='vi_vehicle_type' AND dict_value=#{code} AND status='0'
+    </select>
+    <!-- 收款配置的公司必须是建单当时站点真实部门自身或祖先，不能用客户端或管理员主部门猜归属。 -->
+    <select id="stationCompany" resultType="int">
+        SELECT COUNT(*)
+        FROM vi_station s
+        JOIN sys_dept d ON d.dept_id=s.dept_id
+        JOIN sys_dept c ON c.dept_id=#{company} AND c.status='0' AND c.del_flag='0'
+        WHERE s.id=#{station} AND d.status='0' AND d.del_flag='0'
+            AND (d.dept_id=c.dept_id OR FIND_IN_SET(c.dept_id,d.ancestors))
+    </select>
+    <select id="orderId" resultType="long">
+        SELECT id
+        FROM vi_order
+        WHERE order_no=#{orderNo}
+    </select>
+    <select id="metadata" resultType="map">
+        SELECT s.name station_name,c.dept_name service_company_name
+        FROM vi_order o
+        JOIN vi_station s ON s.id=o.station_id
+        LEFT
+        JOIN sys_dept c ON c.dept_id=o.service_company_id
+        WHERE o.id=#{orderId}
+    </select>
+    <sql id="scope">
+        <if test="scope != null">
+            <choose><when test="scope.size()==0">AND 1=0</when><otherwise>
+                AND o.dept_id IN <foreach collection="scope" item="dept" open="(" close=")" separator=",">#{dept}</foreach>
+            </otherwise></choose>
+        </if>
+    </sql>
+    <sql id="queueFilter">
+        WHERE o.fulfillment_status IN ('SCHEDULED','PENDING_DISPATCH','DISPATCHING','MANUAL_DISPATCH')
+        <include refid="scope"/>
+        <if test="q.orderNo != null">AND o.order_no=#{q.orderNo}</if>
+        <if test="q.stationId != null">AND o.station_id=#{q.stationId}</if>
+        <if test="q.serviceCompanyId != null">AND o.service_company_id=#{q.serviceCompanyId}</if>
+        <if test="q.status != null">AND o.fulfillment_status=#{q.status}</if>
+    </sql>
+    <select id="queue" resultMap="com.xinyi.rongli.order.mapper.OrderMapper.Order">
+        SELECT o.*
+        FROM vi_order o <include refid="queueFilter"/>
+        ORDER BY o.pickup_starts_at,o.id
+        LIMIT #{q.pageSize}
+        OFFSET #{q.offset}
+    </select>
+    <select id="queueCount" resultType="long">
+        SELECT COUNT(*)
+        FROM vi_order o <include refid="queueFilter"/>
+    </select>
+    <sql id="inviteFilter">
+        WHERE 1=1 <include refid="scope"/>
+        <if test="driver != null">AND i.driver_id=#{driver}</if>
+        <if test="q.driverId != null">AND i.driver_id=#{q.driverId}</if>
+        <if test="q.orderNo != null">AND o.order_no=#{q.orderNo}</if>
+        <if test="q.status != null">
+            AND (CASE WHEN i.status='WAIT_RESPONSE' AND i.expires_at&lt;=#{now,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler}
+                THEN 'EXPIRED' ELSE i.status END)=#{q.status}
+        </if>
+    </sql>
+    <select id="invites" resultMap="DispatchInvite">
+        SELECT i.*
+        FROM vi_dispatch_invite i
+        JOIN vi_order o ON o.id=i.order_id
+        <include refid="inviteFilter"/> ORDER BY i.id DESC
+        LIMIT #{q.pageSize}
+        OFFSET #{q.offset}
+    </select>
+    <select id="inviteCount" resultType="long">
+        SELECT COUNT(*)
+        FROM vi_dispatch_invite i
+        JOIN vi_order o ON o.id=i.order_id <include refid="inviteFilter"/>
+    </select>
+    <select id="findInvite" resultMap="DispatchInvite">
+        SELECT *
+        FROM vi_dispatch_invite
+        WHERE id=#{id}
+    </select>
+    <!-- ACCEPT只能排除本邀约本身，不能让优先返回的INVITE占用遮住另一个真实在手责任。 -->
+    <select id="otherResponsibilities" resultType="int">
+        SELECT (
+            EXISTS(
+                SELECT 1
+                FROM vi_driver_assignment
+                WHERE driver_id=#{driver}
+                    AND ended_at IS NULL
+            )
+            OR EXISTS(
+                SELECT 1
+                FROM vi_dispatch_invite
+                WHERE driver_id=#{driver}
+                    AND status='WAIT_RESPONSE'
+                    AND id&lt;&gt;#{ownInvite}
+            )
+        )
+    </select>
+    <select id="lockLiveSession" resultType="map">
+        SELECT session.account_id,session.active_role,session.context_version,session.status,session.revoked_at,
+            session.absolute_expires_at,session.session_epoch,security.session_epoch current_epoch,
+            security.security_status,account.status account_status
+        FROM vi_session session
+        JOIN vi_account account ON account.id=session.account_id
+        JOIN vi_account_security security ON security.account_id=account.id
+        WHERE session.id=#{id}
+        FOR UPDATE
+    </select>
+    <update id="issuedReason">
+        UPDATE vi_dispatch_invite
+        SET reason_cipher=#{cipher}
+        WHERE id=#{id} AND version=0 AND status='WAIT_RESPONSE' AND reason_cipher IS NULL
+    </update>
+    <select id="invite" resultMap="DispatchInvite">
+        SELECT *
+        FROM vi_dispatch_invite
+        WHERE id=#{id}
+        FOR UPDATE
+    </select>
+    <select id="activeInvite" resultMap="DispatchInvite">
+        SELECT *
+        FROM vi_dispatch_invite
+        WHERE order_id=#{orderId} AND status='WAIT_RESPONSE'
+        FOR UPDATE
+    </select>
+    <select id="batch" resultMap="DispatchBatch">
+        SELECT *
+        FROM vi_dispatch_batch
+        WHERE order_id=#{orderId}
+        ORDER BY run_no DESC
+        LIMIT 1
+        FOR UPDATE
+    </select>
+    <select id="batchById" resultMap="DispatchBatch">
+        SELECT *
+        FROM vi_dispatch_batch
+        WHERE id=#{id}
+        FOR UPDATE
+    </select>
+    <select id="nextRun" resultType="int">
+        SELECT COALESCE(MAX(run_no),0)+1
+        FROM vi_dispatch_batch
+        WHERE order_id=#{orderId}
+    </select>
+    <insert id="insertBatch" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO vi_dispatch_batch(order_id,run_no,service_company_id,source,status,policy_version,
+            policy_snapshot,started_at,deadline_at,radius_stage,reason_code,version)
+        VALUES(#{orderId},#{runNo},#{serviceCompanyId},#{source},#{status},#{policyVersion},#{policySnapshot},
+            #{startedAt,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler},
+            #{deadlineAt,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler},#{radiusStage},#{reasonCode},#{version})
+    </insert>
+    <update id="updateBatch">
+        UPDATE vi_dispatch_batch
+        SET status=#{row.status},radius_stage=#{row.radiusStage},reason_code=#{row.reasonCode},
+            version=version+1,updated_at=UTC_TIMESTAMP(3)
+        WHERE id=#{row.id} AND version=#{expected}
+    </update>
+    <select id="drivers" resultType="long">
+        SELECT id
+        FROM vi_driver_profile
+        WHERE owner_dept_id=#{owner}
+        ORDER BY id
+    </select>
+    <select id="alreadyInvited" resultType="int">
+        SELECT COUNT(*)
+        FROM vi_dispatch_invite
+        WHERE batch_id=#{batch} AND driver_id=#{driver}
+    </select>
+    <insert id="ensureCursor">
+        INSERT INTO vi_dispatch_cursor(scope_key,round_no) VALUES(#{key},0) ON DUPLICATE KEY UPDATE scope_key=scope_key
+    </insert>
+    <select id="cursor" resultType="map">
+        SELECT last_driver_id,round_no,version
+        FROM vi_dispatch_cursor
+        WHERE scope_key=#{key}
+        FOR UPDATE
+    </select>
+    <update id="advanceCursor">
+        UPDATE vi_dispatch_cursor
+        SET round_no=round_no+IF(last_driver_id IS NOT NULL AND #{driver}&lt;=last_driver_id,1,0),
+            last_driver_id=#{driver},version=version+1,updated_at=UTC_TIMESTAMP(3)
+        WHERE scope_key=#{key} AND version=#{version}
+    </update>
+    <insert id="insertInvite" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO vi_dispatch_invite(order_id,driver_id,status,source,round_key,issued_at,expires_at,batch_id,
+            service_company_id,company_revision,distance_meter,driver_session_id,driver_context_version,
+            driver_location_version,driver_presence_version,issued_by_user_id,reason_cipher)
+        VALUES(#{orderId},#{driverId},#{status},#{source},#{roundKey},
+            #{issuedAt,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler},
+            #{expiresAt,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler},#{batchId},#{serviceCompanyId},
+            #{companyRevision},#{distanceMeter},#{driverSessionId},#{driverContextVersion},#{driverLocationVersion},
+            #{driverPresenceVersion},#{issuedByUserId},#{reasonCipher})
+    </insert>
+    <update id="finishInvite">
+        UPDATE vi_dispatch_invite
+        SET status=#{row.status},responded_at=#{row.respondedAt,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler},
+            reason_cipher=COALESCE(#{row.reasonCipher},reason_cipher),version=version+1,updated_at=UTC_TIMESTAMP(3)
+        WHERE id=#{row.id} AND version=#{expected} AND status='WAIT_RESPONSE'
+    </update>
+    <insert id="occupy">
+        INSERT INTO vi_driver_occupancy(driver_id,holder_type,holder_id,order_id,expires_at)
+        VALUES(#{driverId},'INVITE',#{id},#{orderId},#{expiresAt,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler})
+    </insert>
+    <delete id="release">
+        DELETE
+        FROM vi_driver_occupancy
+        WHERE driver_id=#{driver} AND order_id=#{order} AND holder_type='INVITE' AND holder_id=#{invite}
+    </delete>
+    <update id="promote">
+        UPDATE vi_driver_occupancy
+        SET holder_type='ASSIGNMENT',holder_id=#{assignment},expires_at=NULL,
+            version=version+1,updated_at=UTC_TIMESTAMP(3)
+        WHERE driver_id=#{driver} AND order_id=#{order} AND holder_type='INVITE' AND holder_id=#{invite}
+    </update>
+    <insert id="insertAssignment" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO vi_driver_assignment(order_id,driver_id,invite_id,accepted_at)
+        VALUES(#{orderId},#{driverId},#{inviteId},#{acceptedAt,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler})
+    </insert>
+    <select id="assignment" resultType="long">
+        SELECT id
+        FROM vi_driver_assignment
+        WHERE invite_id=#{invite}
+    </select>
+    <select id="currentOrder" resultType="long">
+        SELECT a.order_id
+        FROM vi_driver_assignment a
+        JOIN vi_order o ON o.id=a.order_id AND o.active_assignment_id=a.id
+        WHERE a.driver_id=#{driver} AND a.ended_at IS NULL
+        ORDER BY a.id DESC
+        LIMIT 1
+    </select>
+    <update id="transition">
+        UPDATE vi_order
+        SET fulfillment_status=#{state},active_assignment_id=#{assignment},version=version+1,updated_at=UTC_TIMESTAMP(3)
+        WHERE id=#{row.id} AND version=#{row.version}
+    </update>
+    <select id="pendingOrders" resultType="long">
+        SELECT id
+        FROM vi_order
+        WHERE fulfillment_status='PENDING_DISPATCH'
+        ORDER BY dispatch_at,id
+        LIMIT 200
+    </select>
+    <select id="dueInvites" resultType="long">
+        SELECT id
+        FROM vi_dispatch_invite
+        WHERE status='WAIT_RESPONSE'
+            AND expires_at&lt;=#{now,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler}
+        ORDER BY expires_at,id
+        LIMIT 200
+    </select>
+    <select id="activeBatches" resultType="long">
+        SELECT order_id
+        FROM vi_dispatch_batch
+        WHERE status IN ('RUNNING','WAIT_RESPONSE','PAUSED')
+        ORDER BY id
+        LIMIT 200
+    </select>
+</mapper>

@@ -1,0 +1,425 @@
+{
+  "mode": "Browser plugin not available; cached Playwright running real H5 pages with explicit API fixtures. Not backend/DB or WeChat native verification.",
+  "url": "http://127.0.0.1:5176/#/pages/dispatch/invites",
+  "clock": "Controlled 2026-11-12 12:00 Asia/Shanghai, fast-forward61s for original absolute invite cutoff; API fixture clock moved consistently.",
+  "viewports": [
+    "390x844",
+    "1440x1000"
+  ],
+  "checks": [
+    "真实本人列表路由非空，首页不自动接受；列表只暴露站点、车型、车牌摘要和直线距离",
+    "列表进入原邀约详情，原公司与绝对截止可见；邀请前不暴露精确地址、联系人或把收费作收入",
+    "拒绝精确6键+UUID，成功只标已拒绝且不建立承接，不继续显示旧接受按钮",
+    "409撤回旧可操作投影，必须显式重读原邀约，不凭旧版本自动再接受",
+    "503原响应跨页面与显示截止保留原目标、6键正文和UUID；只核原回执，成功映射同一承接",
+    "接受后真实当前承接API回工作台，保留在手责任；未造D09出发、接车或归还控件",
+    "历史已接受邀约只显示原801映射；查看当前承接重新查API802，不把历史回包覆盖新任务",
+    "已可接受后GET503清旧详情与接受资格，重读成功才重新开放",
+    "受控时钟到expiresAt撤本地按钮和旧投影，不改后台状态或延长原邀约",
+    "列表成功后GET503撤回旧列表，不继续保留旧等待记录作为当前事实",
+    "直接目标403失败关闭，详情与动作清除，不凭列表权限或旧邀请继续受理",
+    "实际切换OWNER后不请求代驾邀约；旧身份投影与响应意图清理",
+    "390与1440实际页面布局无整页横向溢出；身份和截止文案可读"
+  ],
+  "errors": [],
+  "warnings": [],
+  "expectedErrors": [
+    "Failed to load resource: the server responded with a status of 409 (Conflict)",
+    "Failed to load resource: the server responded with a status of 503 (Service Unavailable)",
+    "Failed to load resource: the server responded with a status of 503 (Service Unavailable)",
+    "Failed to load resource: the server responded with a status of 503 (Service Unavailable)",
+    "Failed to load resource: the server responded with a status of 403 (Forbidden)",
+    "Failed to load resource: the server responded with a status of 503 (Service Unavailable)"
+  ],
+  "unknown": [],
+  "requests": [
+    {
+      "path": "/api/common/session",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/app/driver/invites",
+      "method": "GET",
+      "query": {
+        "pageNum": "1",
+        "pageSize": "10"
+      }
+    },
+    {
+      "path": "/api/common/session",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/app/driver/invites/501",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/app/driver/invites/501/response",
+      "method": "POST",
+      "query": {}
+    },
+    {
+      "path": "/api/common/session",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/app/driver/invites/502",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/common/session",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/app/driver/invites/502",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/app/driver/invites/502/response",
+      "method": "POST",
+      "query": {}
+    },
+    {
+      "path": "/api/common/session",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/app/driver/invites/502",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/app/driver/invites/502/response",
+      "method": "POST",
+      "query": {}
+    },
+    {
+      "path": "/api/common/session",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/app/driver/invites",
+      "method": "GET",
+      "query": {
+        "pageNum": "1",
+        "pageSize": "10"
+      }
+    },
+    {
+      "path": "/api/common/session",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/app/driver/invites/502",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/app/driver/invites/502/response",
+      "method": "POST",
+      "query": {}
+    },
+    {
+      "path": "/api/common/session",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/common/profile",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/common/session",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/app/driver/availability",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/app/driver/assignments/current",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/common/session",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/app/driver/invites/502",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/common/session",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/common/profile",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/common/session",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/app/driver/availability",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/app/driver/assignments/current",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/common/session",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/app/driver/invites",
+      "method": "GET",
+      "query": {
+        "pageNum": "1",
+        "pageSize": "10"
+      }
+    },
+    {
+      "path": "/api/common/session",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/app/driver/invites/503",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/common/session",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/app/driver/invites/503",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/common/session",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/app/driver/invites/503",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/common/session",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/app/driver/invites",
+      "method": "GET",
+      "query": {
+        "pageNum": "1",
+        "pageSize": "10"
+      }
+    },
+    {
+      "path": "/api/common/session",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/app/driver/invites",
+      "method": "GET",
+      "query": {
+        "pageNum": "1",
+        "pageSize": "10"
+      }
+    },
+    {
+      "path": "/api/common/session",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/app/driver/invites",
+      "method": "GET",
+      "query": {
+        "pageNum": "1",
+        "pageSize": "10"
+      }
+    },
+    {
+      "path": "/api/common/session",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/app/driver/invites/504",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/common/session",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/app/driver/invites/504",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/common/session",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/app/driver/invites/504",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/app/driver/invites/504/response",
+      "method": "POST",
+      "query": {}
+    },
+    {
+      "path": "/api/common/session",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/common/profile",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/common/session",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/app/driver/availability",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/app/driver/assignments/current",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/common/session",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/common/session/role",
+      "method": "POST",
+      "query": {}
+    },
+    {
+      "path": "/api/common/session",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/common/session",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/app/driver/invites",
+      "method": "GET",
+      "query": {
+        "pageNum": "1",
+        "pageSize": "10"
+      }
+    }
+  ],
+  "writes": [
+    {
+      "id": "501",
+      "input": {
+        "decision": "REJECT",
+        "expectedVersion": 2,
+        "expectedOrderVersion": 12,
+        "expectedSessionId": "1",
+        "expectedContextVersion": 1,
+        "reason": "本次无法按时到达"
+      },
+      "key": "a65dcc07-d0b3-4a52-9bad-b5d9e770cf9f"
+    },
+    {
+      "id": "502",
+      "input": {
+        "decision": "ACCEPT",
+        "expectedVersion": 2,
+        "expectedOrderVersion": 12,
+        "expectedSessionId": "1",
+        "expectedContextVersion": 1,
+        "reason": null
+      },
+      "key": "8423233a-b079-4023-a665-9bd1d454ebc9"
+    },
+    {
+      "id": "502",
+      "input": {
+        "decision": "ACCEPT",
+        "expectedVersion": 3,
+        "expectedOrderVersion": 12,
+        "expectedSessionId": "1",
+        "expectedContextVersion": 1,
+        "reason": null
+      },
+      "key": "de2ef54d-5c20-475e-9d05-5dd88cf7105e"
+    },
+    {
+      "id": "502",
+      "input": {
+        "decision": "ACCEPT",
+        "expectedVersion": 3,
+        "expectedOrderVersion": 12,
+        "expectedSessionId": "1",
+        "expectedContextVersion": 1,
+        "reason": null
+      },
+      "key": "de2ef54d-5c20-475e-9d05-5dd88cf7105e"
+    },
+    {
+      "id": "504",
+      "input": {
+        "decision": "ACCEPT",
+        "expectedVersion": 2,
+        "expectedOrderVersion": 12,
+        "expectedSessionId": "1",
+        "expectedContextVersion": 1,
+        "reason": null
+      },
+      "key": "b9e4f896-33fd-4925-84f1-94b9f46c703f"
+    }
+  ]
+}

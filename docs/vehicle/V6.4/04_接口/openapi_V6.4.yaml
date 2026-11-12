@@ -5154,9 +5154,7 @@ paths:
       summary: 本人有效邀约
       tags:
       - DRIVER
-      description: '流程：F10。
-
-        参数校验、真实归属、服务端当前状态/版本先于写入；不接受主体伪造。'
+      description: D02真实派单整链：本人可信MINI当前DRIVER，真实invite/assignment父归属。 服务端重验当前状态、独立CAS与绝对截止；接受不等于接车，关闭听单不释放责任。
       x-flow-ids:
       - F10
       security:
@@ -5168,26 +5166,28 @@ paths:
             application/json:
               schema:
                 type: object
-                properties:
-                  code:
-                    type: integer
-                    enum:
-                    - 200
-                  msg:
-                    type: string
-                  rows:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Invite'
-                  total:
-                    type: integer
-                    minimum: 0
                 additionalProperties: false
                 required:
                 - code
                 - msg
                 - rows
                 - total
+                properties:
+                  code:
+                    type: integer
+                    enum:
+                    - 200
+                  msg: &id001
+                    type: string
+                  rows:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/DriverInvite'
+                  total: &id002
+                    type: integer
+                    format: int64
+                    minimum: 0
+                    maximum: 9007199254740991
           headers:
             Cache-Control:
               schema:
@@ -5221,17 +5221,29 @@ paths:
         description: 仅审计来源，不作为授权；须匹配服务端会话视角
       - name: pageNum
         in: query
+        required: false
         schema:
           type: integer
           minimum: 1
           default: 1
       - name: pageSize
         in: query
+        required: false
         schema:
           type: integer
           minimum: 1
           maximum: 100
-          default: 10
+          default: 20
+      - name: status
+        in: query
+        required: false
+        schema:
+          $ref: '#/components/schemas/InviteStatus'
+      - name: orderNo
+        in: query
+        required: false
+        schema:
+          type: string
       x-capability: DRIVER_INVITE_LIST
       x-authorization:
         realm: MINI
@@ -5256,9 +5268,7 @@ paths:
       summary: 邀约详情
       tags:
       - DRIVER
-      description: '流程：F10。
-
-        参数校验、真实归属、服务端当前状态/版本先于写入；不接受主体伪造。'
+      description: D02真实派单整链：本人可信MINI当前DRIVER，真实invite/assignment父归属。 服务端重验当前状态、独立CAS与绝对截止；接受不等于接车，关闭听单不释放责任。
       x-flow-ids:
       - F10
       security:
@@ -5270,23 +5280,22 @@ paths:
             application/json:
               schema:
                 type: object
-                properties:
-                  code:
-                    type: integer
-                    enum:
-                    - 200
-                  msg:
-                    type: string
-                  data:
-                    allOf:
-                    - $ref: '#/components/schemas/Invite'
-                    nullable: true
-                    type: object
                 additionalProperties: false
                 required:
                 - code
                 - msg
                 - data
+                properties:
+                  code:
+                    type: integer
+                    enum:
+                    - 200
+                  msg: *id001
+                  data:
+                    allOf:
+                    - $ref: '#/components/schemas/DriverInvite'
+                    nullable: true
+                    type: object
           headers:
             Cache-Control:
               schema:
@@ -5353,9 +5362,7 @@ paths:
       summary: 响应邀约
       tags:
       - DRIVER
-      description: '流程：F10。ACCEPT转承接并占用；REJECT释放邀约而非返回已接单
-
-        参数校验、真实归属、服务端当前状态/版本先于写入；不接受主体伪造。'
+      description: D02真实派单整链：本人可信MINI当前DRIVER，真实invite/assignment父归属。 服务端重验当前状态、独立CAS与绝对截止；接受不等于接车，关闭听单不释放责任。
       x-flow-ids:
       - F10
       security:
@@ -5367,23 +5374,22 @@ paths:
             application/json:
               schema:
                 type: object
-                properties:
-                  code:
-                    type: integer
-                    enum:
-                    - 200
-                  msg:
-                    type: string
-                  data:
-                    allOf:
-                    - $ref: '#/components/schemas/Invite'
-                    nullable: true
-                    type: object
                 additionalProperties: false
                 required:
                 - code
                 - msg
                 - data
+                properties:
+                  code:
+                    type: integer
+                    enum:
+                    - 200
+                  msg: *id001
+                  data:
+                    allOf:
+                    - $ref: '#/components/schemas/DriverInvite'
+                    nullable: true
+                    type: object
           headers:
             Cache-Control:
               schema:
@@ -5440,7 +5446,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/InviteResponse'
+              $ref: '#/components/schemas/DispatchInviteResponse'
       x-capability: DRIVER_INVITE_RESPONSE
       x-authorization:
         realm: MINI
@@ -5482,9 +5488,7 @@ paths:
       summary: 当前在手任务
       tags:
       - DRIVER
-      description: '流程：F31。无在手任务data=null；不以WAIT_CONFIRM历史单填充当前任务
-
-        参数校验、真实归属、服务端当前状态/版本先于写入；不接受主体伪造。'
+      description: D02/D04本人当前真实承接，历史任务结束不回传为当前。仅OWNER→DRIVER授权视角有效，不伪造owner身份；后续履约动作归D05起。
       x-flow-ids:
       - F31
       security:
@@ -10855,9 +10859,7 @@ paths:
       summary: 调度队列
       tags:
       - ADMIN
-      description: '流程：F10。权限码为建议，须映射实际仓库；非全局角色必须有站点范围；审核不允许自己审批自己的申请
-
-        参数校验、真实归属、服务端当前状态/版本先于写入；不接受主体伪造。'
+      description: D02真实派单整链：真实ADMIN功能权限及原订单dept范围，候选另限冻结服务公司。 服务端重验当前状态、独立CAS与绝对截止；接受不等于接车，关闭听单不释放责任。
       x-flow-ids:
       - F10
       security:
@@ -10869,26 +10871,23 @@ paths:
             application/json:
               schema:
                 type: object
-                properties:
-                  code:
-                    type: integer
-                    enum:
-                    - 200
-                  msg:
-                    type: string
-                  rows:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/AdminOrderSummary'
-                  total:
-                    type: integer
-                    minimum: 0
                 additionalProperties: false
                 required:
                 - code
                 - msg
                 - rows
                 - total
+                properties:
+                  code:
+                    type: integer
+                    enum:
+                    - 200
+                  msg: *id001
+                  rows:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/DispatchQueueItem'
+                  total: *id002
           headers:
             Cache-Control:
               schema:
@@ -10922,21 +10921,54 @@ paths:
         description: 仅审计来源，不作为授权；须匹配服务端会话视角
       - name: pageNum
         in: query
+        required: false
         schema:
           type: integer
           minimum: 1
           default: 1
       - name: pageSize
         in: query
+        required: false
         schema:
           type: integer
           minimum: 1
           maximum: 100
-          default: 10
+          default: 20
+      - name: orderNo
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: stationId
+        in: query
+        required: false
+        schema:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+      - name: status
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - PENDING_DISPATCH
+          - DISPATCHING
+          - MANUAL_DISPATCH
+          - ACCEPTED
+      - name: serviceCompanyId
+        in: query
+        required: false
+        schema:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
       x-permission: biz:dispatch:list
       x-authorization:
         realm: ADMIN
-        scope: ORG_DEPT_STATION
+        scope: ORDER_AUTHORITATIVE_DEPT_AND_FROZEN_COMPANY_DRIVER_POOL
         permission: biz:dispatch:list
       x-error-codes:
       - VI_REQUEST_INVALID
@@ -10957,9 +10989,7 @@ paths:
       summary: 候选司机
       tags:
       - ADMIN
-      description: '流程：F10。权限码为建议，须映射实际仓库；非全局角色必须有站点范围；审核不允许自己审批自己的申请
-
-        参数校验、真实归属、服务端当前状态/版本先于写入；不接受主体伪造。'
+      description: D02真实派单整链：真实ADMIN功能权限及原订单dept范围，候选另限冻结服务公司。 服务端重验当前状态、独立CAS与绝对截止；接受不等于接车，关闭听单不释放责任。
       x-flow-ids:
       - F10
       security:
@@ -10971,26 +11001,23 @@ paths:
             application/json:
               schema:
                 type: object
-                properties:
-                  code:
-                    type: integer
-                    enum:
-                    - 200
-                  msg:
-                    type: string
-                  rows:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Availability'
-                  total:
-                    type: integer
-                    minimum: 0
                 additionalProperties: false
                 required:
                 - code
                 - msg
                 - rows
                 - total
+                properties:
+                  code:
+                    type: integer
+                    enum:
+                    - 200
+                  msg: *id001
+                  rows:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/DispatchCandidate'
+                  total: *id002
           headers:
             Cache-Control:
               schema:
@@ -11010,6 +11037,10 @@ paths:
           $ref: '#/components/responses/InternalError'
         '503':
           $ref: '#/components/responses/Unavailable'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
       parameters:
       - name: X-Client-Type
         in: header
@@ -11024,21 +11055,36 @@ paths:
         description: 仅审计来源，不作为授权；须匹配服务端会话视角
       - name: pageNum
         in: query
+        required: false
         schema:
           type: integer
           minimum: 1
           default: 1
       - name: pageSize
         in: query
+        required: false
         schema:
           type: integer
           minimum: 1
           maximum: 100
-          default: 10
+          default: 20
+      - name: orderNo
+        in: query
+        required: true
+        schema:
+          type: string
+      - name: sort
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - cursor
+          - distanceAsc
       x-permission: biz:dispatch:list
       x-authorization:
         realm: ADMIN
-        scope: ORG_DEPT_STATION
+        scope: ORDER_AUTHORITATIVE_DEPT_AND_FROZEN_COMPANY_DRIVER_POOL
         permission: biz:dispatch:list
       x-error-codes:
       - VI_REQUEST_INVALID
@@ -11051,7 +11097,7 @@ paths:
       - VI_INTERNAL_ERROR
       - VI_AUTHORITY_UNAVAILABLE
       - VI_UPSTREAM_UNAVAILABLE
-      x-error-policy: GLOBAL_FAILURES_NO_RESOURCE_404
+      x-error-policy: OBJECT_404_HIDES_EXISTENCE
       x-contract-baseline: V6.4
   /api/admin/dispatch/manual-invites:
     post:
@@ -11059,9 +11105,7 @@ paths:
       summary: 人工发出邀约
       tags:
       - ADMIN
-      description: '流程：F10。权限码为建议，须映射实际仓库；非全局角色必须有站点范围；审核不允许自己审批自己的申请
-
-        参数校验、真实归属、服务端当前状态/版本先于写入；不接受主体伪造。'
+      description: D02真实派单整链：真实ADMIN功能权限及原订单dept范围，候选另限冻结服务公司。 服务端重验当前状态、独立CAS与绝对截止；接受不等于接车，关闭听单不释放责任。
       x-flow-ids:
       - F10
       security:
@@ -11073,23 +11117,22 @@ paths:
             application/json:
               schema:
                 type: object
-                properties:
-                  code:
-                    type: integer
-                    enum:
-                    - 200
-                  msg:
-                    type: string
-                  data:
-                    allOf:
-                    - $ref: '#/components/schemas/Invite'
-                    nullable: true
-                    type: object
                 additionalProperties: false
                 required:
                 - code
                 - msg
                 - data
+                properties:
+                  code:
+                    type: integer
+                    enum:
+                    - 200
+                  msg: *id001
+                  data:
+                    allOf:
+                    - $ref: '#/components/schemas/DriverInvite'
+                    nullable: true
+                    type: object
           headers:
             Cache-Control:
               schema:
@@ -11136,11 +11179,11 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ManualInvite'
+              $ref: '#/components/schemas/DispatchManualInvite'
       x-permission: biz:dispatch:create
       x-authorization:
         realm: ADMIN
-        scope: ORG_DEPT_STATION
+        scope: ORDER_AUTHORITATIVE_DEPT_AND_FROZEN_COMPANY_DRIVER_POOL
         permission: biz:dispatch:create
       x-error-codes:
       - VI_REQUEST_INVALID
@@ -11177,9 +11220,7 @@ paths:
       summary: 派单邀约记录
       tags:
       - ADMIN
-      description: '流程：F10。权限码为建议，须映射实际仓库；非全局角色必须有站点范围；审核不允许自己审批自己的申请
-
-        参数校验、真实归属、服务端当前状态/版本先于写入；不接受主体伪造。'
+      description: D02真实派单整链：真实ADMIN功能权限及原订单dept范围，候选另限冻结服务公司。 服务端重验当前状态、独立CAS与绝对截止；接受不等于接车，关闭听单不释放责任。
       x-flow-ids:
       - F10
       security:
@@ -11191,26 +11232,23 @@ paths:
             application/json:
               schema:
                 type: object
-                properties:
-                  code:
-                    type: integer
-                    enum:
-                    - 200
-                  msg:
-                    type: string
-                  rows:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Invite'
-                  total:
-                    type: integer
-                    minimum: 0
                 additionalProperties: false
                 required:
                 - code
                 - msg
                 - rows
                 - total
+                properties:
+                  code:
+                    type: integer
+                    enum:
+                    - 200
+                  msg: *id001
+                  rows:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/DriverInvite'
+                  total: *id002
           headers:
             Cache-Control:
               schema:
@@ -11244,21 +11282,41 @@ paths:
         description: 仅审计来源，不作为授权；须匹配服务端会话视角
       - name: pageNum
         in: query
+        required: false
         schema:
           type: integer
           minimum: 1
           default: 1
       - name: pageSize
         in: query
+        required: false
         schema:
           type: integer
           minimum: 1
           maximum: 100
-          default: 10
+          default: 20
+      - name: orderNo
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: driverId
+        in: query
+        required: false
+        schema:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+      - name: status
+        in: query
+        required: false
+        schema:
+          $ref: '#/components/schemas/InviteStatus'
       x-permission: biz:dispatch:list
       x-authorization:
         realm: ADMIN
-        scope: ORG_DEPT_STATION
+        scope: ORDER_AUTHORITATIVE_DEPT_AND_FROZEN_COMPANY_DRIVER_POOL
         permission: biz:dispatch:list
       x-error-codes:
       - VI_REQUEST_INVALID
@@ -27996,7 +28054,7 @@ paths:
       - name: ownerDeptId
         in: query
         required: false
-        schema: &id001
+        schema: &id003
           type: string
           description: 内部Long对外十进制字符串
           pattern: ^[1-9][0-9]{0,18}$
@@ -28219,7 +28277,7 @@ paths:
       - name: profileId
         in: path
         required: true
-        schema: *id001
+        schema: *id003
       responses:
         '200':
           description: 真实处理后的公开/脱敏结果，不返回占位Ack
@@ -28318,7 +28376,7 @@ paths:
       - name: profileId
         in: path
         required: true
-        schema: *id001
+        schema: *id003
       responses:
         '200':
           description: 真实处理后的公开/脱敏结果，不返回占位Ack
@@ -28423,7 +28481,7 @@ paths:
       - name: profileId
         in: path
         required: true
-        schema: *id001
+        schema: *id003
       responses:
         '200':
           description: 真实处理后的公开/脱敏结果，不返回占位Ack
@@ -28528,7 +28586,7 @@ paths:
       - name: profileId
         in: path
         required: true
-        schema: *id001
+        schema: *id003
       responses:
         '200':
           description: 真实处理后的公开/脱敏结果，不返回占位Ack
@@ -28627,7 +28685,7 @@ paths:
       - name: profileId
         in: path
         required: true
-        schema: *id001
+        schema: *id003
       - name: pageNum
         in: query
         required: false
@@ -28748,7 +28806,7 @@ paths:
       - name: profileId
         in: path
         required: true
-        schema: *id001
+        schema: *id003
       responses:
         '200':
           description: 真实处理后的公开/脱敏结果，不返回占位Ack
@@ -28847,7 +28905,7 @@ paths:
       - name: profileId
         in: path
         required: true
-        schema: *id001
+        schema: *id003
       - name: pageNum
         in: query
         required: false
@@ -28972,7 +29030,7 @@ paths:
       - name: ownerDeptId
         in: query
         required: false
-        schema: *id001
+        schema: *id003
       - name: pageNum
         in: query
         required: false
@@ -29187,7 +29245,7 @@ paths:
       - name: templateId
         in: path
         required: true
-        schema: *id001
+        schema: *id003
       responses:
         '200':
           description: 真实处理后的公开/脱敏结果，不返回占位Ack
@@ -29286,7 +29344,7 @@ paths:
       - name: templateId
         in: path
         required: true
-        schema: *id001
+        schema: *id003
       responses:
         '200':
           description: 真实处理后的公开/脱敏结果，不返回占位Ack
@@ -29391,7 +29449,7 @@ paths:
       - name: templateId
         in: path
         required: true
-        schema: *id001
+        schema: *id003
       responses:
         '200':
           description: 真实处理后的公开/脱敏结果，不返回占位Ack
@@ -29496,7 +29554,7 @@ paths:
       - name: templateId
         in: path
         required: true
-        schema: *id001
+        schema: *id003
       responses:
         '200':
           description: 真实处理后的公开/脱敏结果，不返回占位Ack
@@ -29601,7 +29659,7 @@ paths:
       - name: templateId
         in: path
         required: true
-        schema: *id001
+        schema: *id003
       responses:
         '200':
           description: 真实处理后的公开/脱敏结果，不返回占位Ack
@@ -29700,7 +29758,7 @@ paths:
       - name: templateId
         in: path
         required: true
-        schema: *id001
+        schema: *id003
       - name: pageNum
         in: query
         required: false
@@ -29821,7 +29879,7 @@ paths:
       - name: templateId
         in: path
         required: true
-        schema: *id001
+        schema: *id003
       responses:
         '200':
           description: 真实处理后的公开/脱敏结果，不返回占位Ack
@@ -30137,7 +30195,7 @@ paths:
       - name: routeId
         in: path
         required: true
-        schema: *id001
+        schema: *id003
       responses:
         '200':
           description: 真实处理后的公开/脱敏结果，不返回占位Ack
@@ -30246,7 +30304,7 @@ paths:
       - name: ownerDeptId
         in: query
         required: false
-        schema: *id001
+        schema: *id003
       - name: pageNum
         in: query
         required: false
@@ -30367,7 +30425,7 @@ paths:
       - name: deliveryId
         in: path
         required: true
-        schema: *id001
+        schema: *id003
       responses:
         '200':
           description: 真实处理后的公开/脱敏结果，不返回占位Ack
@@ -30472,7 +30530,7 @@ paths:
       - name: deliveryId
         in: path
         required: true
-        schema: *id001
+        schema: *id003
       responses:
         '200':
           description: 真实处理后的公开/脱敏结果，不返回占位Ack
@@ -30999,7 +31057,7 @@ paths:
       - name: proofId
         in: path
         required: true
-        schema: *id001
+        schema: *id003
       responses:
         '200':
           description: 真实处理后的公开/脱敏结果，不返回占位Ack
@@ -31099,7 +31157,7 @@ paths:
       - name: proofId
         in: path
         required: true
-        schema: *id001
+        schema: *id003
       responses:
         '200':
           description: 真实处理后的公开/脱敏结果，不返回占位Ack
@@ -31305,7 +31363,7 @@ paths:
       - name: promptId
         in: path
         required: true
-        schema: *id001
+        schema: *id003
       responses:
         '200':
           description: 真实处理后的公开/脱敏结果，不返回占位Ack
@@ -31621,7 +31679,7 @@ paths:
       - name: recipientId
         in: path
         required: true
-        schema: *id001
+        schema: *id003
       responses:
         '200':
           description: 真实处理后的公开/脱敏结果，不返回占位Ack
@@ -33790,7 +33848,7 @@ paths:
       - name: companyId
         in: path
         required: true
-        schema: &id002
+        schema: &id004
           type: string
           pattern: ^[1-9][0-9]{0,18}$
           maxLength: 19
@@ -33892,7 +33950,7 @@ paths:
       - name: companyId
         in: path
         required: true
-        schema: *id002
+        schema: *id004
       requestBody:
         required: true
         content:
@@ -33932,6 +33990,345 @@ paths:
       - VI_AUTHORITY_UNAVAILABLE
       - VI_UPSTREAM_UNAVAILABLE
       x-error-policy: GLOBAL_FAILURES_NO_RESOURCE_404
+      x-contract-baseline: V6.4
+  /api/admin/dispatch/companies/{companyId}/dispatch-policy:
+    get:
+      operationId: d02_get_company_dispatch_policy
+      summary: 公司派单策略读取
+      tags:
+      - ADMIN
+      description: 显式真实公司或原订单数据范围；写入权限/CAS/UUID/业务/审计/outbox同事务。原因认证加密，响应无明文。
+      x-flow-ids:
+      - F10
+      - F31
+      security:
+      - AdminBearerAuth: []
+      responses:
+        '200':
+          description: 操作成功；领域校验后返回真实结果
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                required:
+                - code
+                - msg
+                - data
+                properties:
+                  code:
+                    type: integer
+                    enum:
+                    - 200
+                  msg: *id001
+                  data:
+                    allOf:
+                    - $ref: '#/components/schemas/DispatchCompanyPolicy'
+                    nullable: true
+                    type: object
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+                enum:
+                - no-store
+              description: 身份/交易/个人业务响应不缓存
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalError'
+        '503':
+          $ref: '#/components/responses/Unavailable'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+      parameters:
+      - name: X-Client-Type
+        in: header
+        required: true
+        schema:
+          type: string
+          enum:
+          - owner
+          - driver
+          - station
+          - admin
+        description: 仅审计来源，不作为授权；须匹配服务端会话视角
+      - name: companyId
+        in: path
+        required: true
+        schema: &id005
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+      x-permission: biz:dispatchpolicy:query
+      x-authorization:
+        realm: ADMIN
+        scope: EXPLICIT_COMPANY_OWNER_DEPT
+        permission: biz:dispatchpolicy:query
+      x-error-codes:
+      - VI_REQUEST_INVALID
+      - VI_AUTH_REQUIRED
+      - VI_TOKEN_REALM_MISMATCH
+      - VI_REFRESH_REUSED
+      - VI_FORBIDDEN
+      - VI_SELF_REVIEW_DENIED
+      - VI_RATE_LIMITED
+      - VI_INTERNAL_ERROR
+      - VI_AUTHORITY_UNAVAILABLE
+      - VI_UPSTREAM_UNAVAILABLE
+      x-error-policy: OBJECT_404_HIDES_EXISTENCE
+      x-contract-baseline: V6.4
+    put:
+      operationId: d02_put_company_dispatch_policy
+      summary: 公司派单策略维护
+      tags:
+      - ADMIN
+      description: 显式真实公司或原订单数据范围；写入权限/CAS/UUID/业务/审计/outbox同事务。原因认证加密，响应无明文。
+      x-flow-ids:
+      - F10
+      - F31
+      security:
+      - AdminBearerAuth: []
+      responses:
+        '200':
+          description: 操作成功；领域校验后返回真实结果
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                required:
+                - code
+                - msg
+                - data
+                properties:
+                  code:
+                    type: integer
+                    enum:
+                    - 200
+                  msg: *id001
+                  data:
+                    allOf:
+                    - $ref: '#/components/schemas/DispatchCompanyPolicy'
+                    nullable: true
+                    type: object
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+                enum:
+                - no-store
+              description: 身份/交易/个人业务响应不缓存
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalError'
+        '503':
+          $ref: '#/components/responses/Unavailable'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      parameters:
+      - name: Idempotency-Key
+        in: header
+        required: true
+        schema:
+          type: string
+          description: UUID；按主体+动作+资源+键及请求摘要保存首次结果；同键不同体409，至少24h，资金/交接另有永久业务去重
+      - name: X-Client-Type
+        in: header
+        required: true
+        schema:
+          type: string
+          enum:
+          - owner
+          - driver
+          - station
+          - admin
+        description: 仅审计来源，不作为授权；须匹配服务端会话视角
+      - name: companyId
+        in: path
+        required: true
+        schema: *id005
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DispatchCompanyPolicyWrite'
+      x-permission: biz:dispatchpolicy:edit
+      x-authorization:
+        realm: ADMIN
+        scope: EXPLICIT_COMPANY_OWNER_DEPT
+        permission: biz:dispatchpolicy:edit
+      x-error-codes:
+      - VI_REQUEST_INVALID
+      - VI_AUTH_REQUIRED
+      - VI_TOKEN_REALM_MISMATCH
+      - VI_REFRESH_REUSED
+      - VI_FORBIDDEN
+      - VI_SELF_REVIEW_DENIED
+      - VI_VERSION_CONFLICT
+      - VI_STATE_CONFLICT
+      - VI_IDEMPOTENCY_CONFLICT
+      - VI_SELECTION_CONFLICT
+      - VI_CONTEXT_CHANGED
+      - VI_SNAPSHOT_CHANGED
+      - VI_DATA_INVALID
+      - VI_EVIDENCE_INCOMPLETE
+      - VI_HANDOVER_CODE_INVALID
+      - VI_HANDOVER_LOCKED
+      - VI_UNPRICED_LINES
+      - VI_REFUND_LIMIT
+      - VI_PAYMENT_LIMIT
+      - VI_SERVICE_UNAVAILABLE
+      - VI_CAPABILITY_NOT_CONFIGURED
+      - VI_TRAINING_NOT_READY
+      - VI_RATE_LIMITED
+      - VI_INTERNAL_ERROR
+      - VI_AUTHORITY_UNAVAILABLE
+      - VI_UPSTREAM_UNAVAILABLE
+      x-error-policy: OBJECT_404_HIDES_EXISTENCE
+      x-contract-baseline: V6.4
+  /api/admin/dispatch/invites/{inviteId}/revoke:
+    post:
+      operationId: d02_post_revoke_invite
+      summary: 撤回未响应邀约
+      tags:
+      - ADMIN
+      description: 显式真实公司或原订单数据范围；写入权限/CAS/UUID/业务/审计/outbox同事务。原因认证加密，响应无明文。
+      x-flow-ids:
+      - F10
+      - F31
+      security:
+      - AdminBearerAuth: []
+      responses:
+        '200':
+          description: 操作成功；领域校验后返回真实结果
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                required:
+                - code
+                - msg
+                - data
+                properties:
+                  code:
+                    type: integer
+                    enum:
+                    - 200
+                  msg: *id001
+                  data:
+                    allOf:
+                    - $ref: '#/components/schemas/DriverInvite'
+                    nullable: true
+                    type: object
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+                enum:
+                - no-store
+              description: 身份/交易/个人业务响应不缓存
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalError'
+        '503':
+          $ref: '#/components/responses/Unavailable'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      parameters:
+      - name: Idempotency-Key
+        in: header
+        required: true
+        schema:
+          type: string
+          description: UUID；按主体+动作+资源+键及请求摘要保存首次结果；同键不同体409，至少24h，资金/交接另有永久业务去重
+      - name: X-Client-Type
+        in: header
+        required: true
+        schema:
+          type: string
+          enum:
+          - owner
+          - driver
+          - station
+          - admin
+        description: 仅审计来源，不作为授权；须匹配服务端会话视角
+      - name: inviteId
+        in: path
+        required: true
+        schema: *id005
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DispatchRevoke'
+      x-permission: biz:dispatch:revoke
+      x-authorization:
+        realm: ADMIN
+        scope: ORDER_DEPT
+        permission: biz:dispatch:revoke
+      x-error-codes:
+      - VI_REQUEST_INVALID
+      - VI_AUTH_REQUIRED
+      - VI_TOKEN_REALM_MISMATCH
+      - VI_REFRESH_REUSED
+      - VI_FORBIDDEN
+      - VI_SELF_REVIEW_DENIED
+      - VI_VERSION_CONFLICT
+      - VI_STATE_CONFLICT
+      - VI_IDEMPOTENCY_CONFLICT
+      - VI_SELECTION_CONFLICT
+      - VI_CONTEXT_CHANGED
+      - VI_SNAPSHOT_CHANGED
+      - VI_DATA_INVALID
+      - VI_EVIDENCE_INCOMPLETE
+      - VI_HANDOVER_CODE_INVALID
+      - VI_HANDOVER_LOCKED
+      - VI_UNPRICED_LINES
+      - VI_REFUND_LIMIT
+      - VI_PAYMENT_LIMIT
+      - VI_SERVICE_UNAVAILABLE
+      - VI_CAPABILITY_NOT_CONFIGURED
+      - VI_TRAINING_NOT_READY
+      - VI_RATE_LIMITED
+      - VI_INTERNAL_ERROR
+      - VI_AUTHORITY_UNAVAILABLE
+      - VI_UPSTREAM_UNAVAILABLE
+      x-error-policy: OBJECT_404_HIDES_EXISTENCE
       x-contract-baseline: V6.4
 components:
   securitySchemes:
@@ -34068,7 +34465,7 @@ components:
           minLength: 1
           maxLength: 512
           description: 用户主动获取的微信手机号临时凭据，服务端消费；不同于wx.login code；不可日志/持久保存原文
-        expectedAccountVersion: &id003
+        expectedAccountVersion: &id006
           type: integer
           format: int64
           minimum: 0
@@ -34155,7 +34552,7 @@ components:
           minimum: 1
         employeeLink:
           $ref: '#/components/schemas/EmployeeLinkPublic'
-        accountVersion: *id003
+        accountVersion: *id006
       required:
       - sessionId
       - accountId
@@ -34633,7 +35030,7 @@ components:
           type: boolean
         paymentMethod:
           $ref: '#/components/schemas/PaymentMethod'
-        paymentPolicyRevisionId: *id001
+        paymentPolicyRevisionId: *id003
         merchantProfileRevisionId:
           type: string
           description: 内部Long对外十进制字符串
@@ -35467,21 +35864,21 @@ components:
       properties:
         enabled:
           type: boolean
-        expectedVersion: &id004
+        expectedVersion: &id007
           type: integer
           format: int64
           minimum: 0
           maximum: 9007199254740991
-        expectedCompanyRevision: *id004
+        expectedCompanyRevision: *id007
         expectedConfigVersion:
           type: integer
           format: int64
           minimum: 0
           maximum: 9007199254740991
           nullable: true
-        expectedSessionId: *id002
-        expectedContextVersion: *id004
-        expectedBusinessDate: &id027
+        expectedSessionId: *id004
+        expectedContextVersion: *id007
+        expectedBusinessDate: &id030
           type: string
           format: date
           pattern: ^\d{4}-\d{2}-\d{2}$
@@ -35707,14 +36104,14 @@ components:
           nullable: true
         authorizedStationIds:
           type: array
-          items: &id005
+          items: &id008
             type: string
             pattern: ^[1-9][0-9]{0,18}$
             maxLength: 19
             description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
           uniqueItems: true
-        expectedVersion: *id003
-        reason: &id007
+        expectedVersion: *id006
+        reason: &id010
           type: string
           minLength: 1
           maxLength: 500
@@ -38469,7 +38866,7 @@ components:
           nullable: true
         employeeLink:
           $ref: '#/components/schemas/EmployeeLinkPublic'
-        accountVersion: *id003
+        accountVersion: *id006
       required:
       - sessionId
       - accountId
@@ -38548,7 +38945,7 @@ components:
           minimum: 1
         employeeLink:
           $ref: '#/components/schemas/EmployeeLinkPublic'
-        accountVersion: *id003
+        accountVersion: *id006
       required:
       - sessionId
       - accountId
@@ -42656,6 +43053,9 @@ components:
       - biz:verification:query
       - biz:dispatchlistening:query
       - biz:dispatchlistening:edit
+      - biz:dispatchpolicy:query
+      - biz:dispatchpolicy:edit
+      - biz:dispatch:revoke
     CapabilityCode:
       type: string
       description: 会话能力注册表；资格申请及本人历史不要求已获正式接单资格
@@ -42844,6 +43244,14 @@ components:
       - DISABLE_LISTENING
       - REPORT_DRIVER_LOCATION
       - REPORT_DRIVER_PRESENCE
+      - VIEW_DISPATCH_CANDIDATES
+      - CREATE_MANUAL_INVITE
+      - VIEW_DISPATCH_INVITES
+      - EDIT_DISPATCH_POLICY
+      - ACCEPT_INVITE
+      - REJECT_INVITE
+      - REVOKE_INVITE
+      - VIEW_ASSIGNMENT
     AccountStatus:
       type: string
       enum:
@@ -43981,7 +44389,7 @@ components:
         phoneMask:
           type: string
           nullable: true
-        accountVersion: *id003
+        accountVersion: *id006
         employeeLink:
           $ref: '#/components/schemas/EmployeeLinkPublic'
         requiresSessionRefresh:
@@ -44000,7 +44408,7 @@ components:
       type: object
       additionalProperties: false
       properties:
-        expectedContextVersion: *id003
+        expectedContextVersion: *id006
       required:
       - expectedContextVersion
       description: 只重试当前账号已有的最近微信手机号验证结果（服务端有效窗口默认10分钟）；不接收任意手机号或目标员工，不重复消费phoneCode。到期必须重新手机号授权。
@@ -44008,11 +44416,11 @@ components:
       type: object
       additionalProperties: false
       properties:
-        bindingId: *id005
-        accountId: *id005
+        bindingId: *id008
+        accountId: *id008
         appId:
           type: string
-        sysUserId: *id005
+        sysUserId: *id008
         employeeName:
           type: string
         phoneMask:
@@ -44026,14 +44434,14 @@ components:
           type: string
           enum:
           - WECHAT_PHONE_MATCH
-        boundAt: &id006
+        boundAt: &id009
           type: string
           format: date-time
           pattern: Z$
-        lastPhoneVerifiedAt: *id006
+        lastPhoneVerifiedAt: *id009
         autoRebindBlocked:
           type: boolean
-        version: *id003
+        version: *id006
       required:
       - bindingId
       - accountId
@@ -44053,8 +44461,8 @@ components:
       type: object
       additionalProperties: false
       properties:
-        expectedVersion: *id003
-        reason: *id007
+        expectedVersion: *id006
+        reason: *id010
       required:
       - expectedVersion
       - reason
@@ -44075,7 +44483,7 @@ components:
       type: object
       additionalProperties: false
       properties:
-        employeeUserId: *id005
+        employeeUserId: *id008
         ownStationId:
           type: string
           pattern: ^[1-9][0-9]{0,18}$
@@ -44084,9 +44492,9 @@ components:
           nullable: true
         authorizedStationIds:
           type: array
-          items: *id005
+          items: *id008
           uniqueItems: true
-        version: *id003
+        version: *id006
         wechatLinkStatus:
           type: string
           enum:
@@ -44271,7 +44679,7 @@ components:
         fingerprint:
           type: string
           description: 服务端指纹，不是秘密片段
-        updatedAt: &id009
+        updatedAt: &id012
           type: string
           format: date-time
         expiresAt:
@@ -44306,8 +44714,8 @@ components:
       type: object
       additionalProperties: false
       properties:
-        profileId: *id001
-        revisionId: *id001
+        profileId: *id003
+        revisionId: *id003
       required:
       - profileId
       - revisionId
@@ -44335,7 +44743,7 @@ components:
         offlineBankName:
           type: string
           maxLength: 100
-        offlineMethods: &id021
+        offlineMethods: &id024
           type: array
           items:
             type: string
@@ -44405,7 +44813,7 @@ components:
           maxLength: 32768
         bindingAcknowledged:
           type: boolean
-        bindingEvidenceId: *id001
+        bindingEvidenceId: *id003
       description: mchid/appProfile是资金身份，关联交易后不得原位改为别家；此处校验是本地格式，不证明商户资格。回调地址由部署生成。
     TencentSmsConfig:
       type: object
@@ -44475,7 +44883,7 @@ components:
       type: object
       additionalProperties: false
       properties:
-        ownerDeptId: *id001
+        ownerDeptId: *id003
         environment:
           $ref: '#/components/schemas/IntegrationEnvironment'
       required:
@@ -44518,7 +44926,7 @@ components:
           properties:
             offlineBankAccount:
               $ref: '#/components/schemas/SecretMutation'
-        reason: &id008
+        reason: &id011
           type: string
           minLength: 2
           maxLength: 500
@@ -44570,7 +44978,7 @@ components:
               $ref: '#/components/schemas/SecretMutation'
             apiV3Key:
               $ref: '#/components/schemas/SecretMutation'
-        reason: *id008
+        reason: *id011
       required:
       - kind
       - expectedVersion
@@ -44619,7 +45027,7 @@ components:
           properties:
             secretKey:
               $ref: '#/components/schemas/SecretMutation'
-        reason: *id008
+        reason: *id011
       required:
       - kind
       - expectedVersion
@@ -44666,7 +45074,7 @@ components:
           properties:
             accessKeySecret:
               $ref: '#/components/schemas/SecretMutation'
-        reason: *id008
+        reason: *id011
       required:
       - kind
       - expectedVersion
@@ -44713,7 +45121,7 @@ components:
           properties:
             appSecret:
               $ref: '#/components/schemas/SecretMutation'
-        reason: *id008
+        reason: *id011
       required:
       - kind
       - expectedVersion
@@ -44768,17 +45176,17 @@ components:
       type: object
       additionalProperties: false
       properties:
-        revisionId: *id001
-        profileId: *id001
+        revisionId: *id003
+        profileId: *id003
         revision:
           type: integer
           format: int64
           minimum: 0
-        contentHash: &id010
+        contentHash: &id013
           type: string
           pattern: ^[a-f0-9]{64}$
-        createdAt: *id009
-        createdBy: *id001
+        createdAt: *id012
+        createdBy: *id003
         reason:
           type: string
         settings:
@@ -44794,7 +45202,7 @@ components:
       type: object
       additionalProperties: false
       properties:
-        profileId: *id001
+        profileId: *id003
         kind:
           $ref: '#/components/schemas/IntegrationKind'
         name:
@@ -44852,7 +45260,7 @@ components:
       type: object
       additionalProperties: false
       properties:
-        revisionId: *id001
+        revisionId: *id003
         expectedVersion:
           type: integer
           format: int64
@@ -44867,10 +45275,10 @@ components:
       type: object
       additionalProperties: false
       properties:
-        checkId: *id001
-        profileId: *id001
-        revisionId: *id001
-        contentHash: *id010
+        checkId: *id003
+        profileId: *id003
+        revisionId: *id003
+        contentHash: *id013
         level:
           $ref: '#/components/schemas/IntegrationCheckLevel'
         status:
@@ -44879,8 +45287,8 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/IntegrationValidationIssue'
-        checkedAt: *id009
-        expiresAt: *id009
+        checkedAt: *id012
+        expiresAt: *id012
         realPaymentVerified:
           type: boolean
       required:
@@ -44898,14 +45306,14 @@ components:
       type: object
       additionalProperties: false
       properties:
-        revisionId: *id001
+        revisionId: *id003
         expectedVersion:
           type: integer
           format: int64
           minimum: 0
-        contentHash: *id010
-        checkId: *id001
-        reason: *id008
+        contentHash: *id013
+        checkId: *id003
+        reason: *id011
         acknowledgeNoPaymentMethods:
           type: boolean
         expectedDependencyVersions:
@@ -44923,9 +45331,9 @@ components:
       type: object
       additionalProperties: false
       properties:
-        publicationId: *id001
-        profileId: *id001
-        revisionId: *id001
+        publicationId: *id003
+        profileId: *id003
+        revisionId: *id003
         previousRevisionId:
           type: string
           description: 内部Long对外十进制字符串
@@ -44942,8 +45350,8 @@ components:
           - ROLLBACK
         reason:
           type: string
-        publishedAt: *id009
-        publishedBy: *id001
+        publishedAt: *id012
+        publishedBy: *id003
         effectiveFor:
           type: string
           enum:
@@ -44962,13 +45370,13 @@ components:
       type: object
       additionalProperties: false
       properties:
-        targetRevisionId: *id001
+        targetRevisionId: *id003
         expectedVersion:
           type: integer
           format: int64
           minimum: 0
-        reason: *id008
-        checkId: *id001
+        reason: *id011
+        checkId: *id003
       required:
       - targetRevisionId
       - expectedVersion
@@ -45053,22 +45461,22 @@ components:
       type: object
       additionalProperties: false
       properties:
-        expectedVersion: &id011
+        expectedVersion: &id014
           type: integer
           format: int64
           minimum: 0
-        profile: &id012
+        profile: &id015
           $ref: '#/components/schemas/ConfigReference'
-        vendorTemplateId: &id013
+        vendorTemplateId: &id016
           type: string
           minLength: 1
           maxLength: 256
-        approvedContent: &id014
+        approvedContent: &id017
           type: string
           maxLength: 2000
-        enabled: &id015
+        enabled: &id018
           type: boolean
-        reason: *id008
+        reason: *id011
         provider:
           type: string
           enum:
@@ -45093,12 +45501,12 @@ components:
       type: object
       additionalProperties: false
       properties:
-        expectedVersion: *id011
-        profile: *id012
-        vendorTemplateId: *id013
-        approvedContent: *id014
-        enabled: *id015
-        reason: *id008
+        expectedVersion: *id014
+        profile: *id015
+        vendorTemplateId: *id016
+        approvedContent: *id017
+        enabled: *id018
+        reason: *id011
         provider:
           type: string
           enum:
@@ -45138,7 +45546,7 @@ components:
           enum:
           - ONCE
           - LONG
-        longTermQualificationEvidenceId: *id001
+        longTermQualificationEvidenceId: *id003
       required:
       - expectedVersion
       - profile
@@ -45156,12 +45564,12 @@ components:
       type: object
       additionalProperties: false
       properties:
-        revisionId: *id001
+        revisionId: *id003
         revision:
           type: integer
           format: int64
           minimum: 0
-        contentHash: *id010
+        contentHash: *id013
         provider:
           $ref: '#/components/schemas/ExternalMessageProvider'
         profile:
@@ -45211,7 +45619,7 @@ components:
           - UNKNOWN
           - APPROVED
           - REJECTED
-        createdAt: *id009
+        createdAt: *id012
       required:
       - revisionId
       - revision
@@ -45225,7 +45633,7 @@ components:
       type: object
       additionalProperties: false
       properties:
-        templateId: *id001
+        templateId: *id003
         name:
           type: string
         provider:
@@ -45272,7 +45680,7 @@ components:
       type: object
       additionalProperties: false
       properties:
-        revisionId: *id001
+        revisionId: *id003
         sampleValues:
           type: object
           additionalProperties: false
@@ -45356,9 +45764,9 @@ components:
       type: object
       additionalProperties: false
       properties:
-        revisionId: *id001
-        testRecipientId: *id001
-        purpose: *id008
+        revisionId: *id003
+        testRecipientId: *id003
+        purpose: *id011
         acknowledgeRealSendAndCost:
           type: boolean
           enum:
@@ -45420,23 +45828,23 @@ components:
           type: integer
           format: int64
           minimum: 0
-        scene: &id016
+        scene: &id019
           $ref: '#/components/schemas/NotificationScene'
-        audience: &id017
+        audience: &id020
           $ref: '#/components/schemas/NotificationAudience'
-        ownerDeptId: *id001
-        environment: &id018
+        ownerDeptId: *id003
+        environment: &id021
           $ref: '#/components/schemas/IntegrationEnvironment'
-        primaryTemplateId: *id001
-        fallbackTemplateId: *id001
-        fallbackPolicy: &id019
+        primaryTemplateId: *id003
+        fallbackTemplateId: *id003
+        fallbackPolicy: &id022
           type: string
           enum:
           - NONE
           - DEFINITELY_NOT_SENT_ONLY
-        enabled: &id020
+        enabled: &id023
           type: boolean
-        reason: *id008
+        reason: *id011
       required:
       - expectedVersion
       - scene
@@ -45452,20 +45860,20 @@ components:
       type: object
       additionalProperties: false
       properties:
-        scene: *id016
-        audience: *id017
-        ownerDeptId: *id001
-        environment: *id018
-        primaryTemplateId: *id001
-        fallbackTemplateId: *id001
-        fallbackPolicy: *id019
-        enabled: *id020
-        routeId: *id001
+        scene: *id019
+        audience: *id020
+        ownerDeptId: *id003
+        environment: *id021
+        primaryTemplateId: *id003
+        fallbackTemplateId: *id003
+        fallbackPolicy: *id022
+        enabled: *id023
+        routeId: *id003
         version:
           type: integer
           format: int64
           minimum: 0
-        effectiveAt: *id009
+        effectiveAt: *id012
       required:
       - routeId
       - version
@@ -45481,17 +45889,17 @@ components:
       type: object
       additionalProperties: false
       properties:
-        deliveryId: *id001
-        eventId: *id001
+        deliveryId: *id003
+        eventId: *id003
         scene:
           $ref: '#/components/schemas/NotificationScene'
         provider:
           $ref: '#/components/schemas/ExternalMessageProvider'
         recipientMask:
           type: string
-        templateId: *id001
-        templateRevisionId: *id001
-        profileRevisionId: *id001
+        templateId: *id003
+        templateRevisionId: *id003
+        profileRevisionId: *id003
         status:
           $ref: '#/components/schemas/ExternalDeliveryStatus'
         vendorRequestId:
@@ -45506,8 +45914,8 @@ components:
           type: integer
           format: int64
           minimum: 0
-        createdAt: *id009
-        updatedAt: *id009
+        createdAt: *id012
+        updatedAt: *id012
         allowedActions:
           type: array
           items:
@@ -45539,7 +45947,7 @@ components:
           type: integer
           format: int64
           minimum: 0
-        reason: *id008
+        reason: *id011
       required:
       - expectedVersion
       - reason
@@ -45567,7 +45975,7 @@ components:
         receiverAccountDisplay:
           type: string
           description: 仅本人线下支付页必要展示企业收款账号；不可进入公开配置
-        offlineMethods: *id021
+        offlineMethods: *id024
         contactName:
           type: string
         contactPhone:
@@ -45589,14 +45997,14 @@ components:
           type: integer
           format: int64
           minimum: 0
-        policyRevisionId: *id001
+        policyRevisionId: *id003
         options:
           type: array
           items:
             $ref: '#/components/schemas/PaymentOption'
         lockedMethod:
           $ref: '#/components/schemas/PaymentMethod'
-        expiresAt: *id009
+        expiresAt: *id012
         newPaymentAllowed:
           type: boolean
       required:
@@ -45616,7 +46024,7 @@ components:
           type: integer
           format: int64
           minimum: 0
-        expectedPolicyRevisionId: *id001
+        expectedPolicyRevisionId: *id003
       required:
       - expectedVersion
       - expectedPolicyRevisionId
@@ -45638,7 +46046,7 @@ components:
           type: integer
           format: int64
           minimum: 1
-        paidAt: *id009
+        paidAt: *id012
         method:
           type: string
           enum:
@@ -45650,10 +46058,10 @@ components:
           maxLength: 128
         voucherFileIds:
           type: array
-          items: *id001
+          items: *id003
           minItems: 1
           maxItems: 9
-        note: *id008
+        note: *id011
       required:
       - direction
       - orderNo
@@ -45685,19 +46093,19 @@ components:
       type: object
       additionalProperties: false
       properties:
-        proofId: *id001
+        proofId: *id003
         direction:
           $ref: '#/components/schemas/OfflineProofDirection'
         orderNo:
           type: string
         refundNo:
           type: string
-        ownerDeptId: *id001
+        ownerDeptId: *id003
         amount:
           type: integer
           format: int64
           minimum: 0
-        paidAt: *id009
+        paidAt: *id012
         method:
           type: string
           enum:
@@ -45711,7 +46119,7 @@ components:
             type: object
             additionalProperties: false
             properties:
-              fileId: *id001
+              fileId: *id003
             required:
             - fileId
         status:
@@ -45720,13 +46128,13 @@ components:
           type: integer
           format: int64
           minimum: 0
-        registeredBy: *id001
+        registeredBy: *id003
         verifiedBy:
           type: string
           description: 内部Long对外十进制字符串
           pattern: ^[1-9][0-9]{0,18}$
           nullable: true
-        registeredAt: *id009
+        registeredAt: *id012
         verifiedAt:
           type: string
           format: date-time
@@ -45765,7 +46173,7 @@ components:
           enum:
           - VERIFY
           - REJECT
-        reason: *id008
+        reason: *id011
       required:
       - expectedVersion
       - decision
@@ -45775,7 +46183,7 @@ components:
       type: object
       additionalProperties: false
       properties:
-        templateRevisionId: *id001
+        templateRevisionId: *id003
         vendorTemplateId:
           type: string
         scene:
@@ -45811,7 +46219,7 @@ components:
           - ASSIGNMENT
           - STATEMENT
           - DRIVER_APPLICATION
-        businessObjectId: *id001
+        businessObjectId: *id003
       required:
       - scenes
       - businessObjectType
@@ -45821,12 +46229,12 @@ components:
       type: object
       additionalProperties: false
       properties:
-        promptId: *id001
+        promptId: *id003
         appId:
           type: string
         nonce:
           type: string
-        expiresAt: *id009
+        expiresAt: *id012
         templates:
           type: array
           items:
@@ -45877,7 +46285,7 @@ components:
       type: object
       additionalProperties: false
       properties:
-        promptId: *id001
+        promptId: *id003
         reported:
           type: boolean
         acceptedTemplateIds:
@@ -45902,11 +46310,11 @@ components:
       type: object
       additionalProperties: false
       properties:
-        checkId: &id022
+        checkId: &id025
           type: string
           description: 内部Long对外十进制字符串
           pattern: ^[1-9][0-9]{0,18}$
-        revisionId: *id022
+        revisionId: *id025
         contentHash:
           type: string
           pattern: ^[a-f0-9]{64}$
@@ -45918,13 +46326,13 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/IntegrationValidationIssue'
-        checkedAt: &id023
+        checkedAt: &id026
           type: string
           format: date-time
-        expiresAt: *id023
+        expiresAt: *id026
         realPaymentVerified:
           type: boolean
-        templateId: *id001
+        templateId: *id003
       required:
       - checkId
       - templateId
@@ -45940,11 +46348,11 @@ components:
       type: object
       additionalProperties: false
       properties:
-        publicationId: &id024
+        publicationId: &id027
           type: string
           description: 内部Long对外十进制字符串
           pattern: ^[1-9][0-9]{0,18}$
-        revisionId: *id024
+        revisionId: *id027
         previousRevisionId:
           type: string
           description: 内部Long对外十进制字符串
@@ -45964,14 +46372,14 @@ components:
         publishedAt:
           type: string
           format: date-time
-        publishedBy: *id024
+        publishedBy: *id027
         effectiveFor:
           type: string
           enum:
           - NEW_OPERATIONS
         historicalHandling:
           type: string
-        templateId: *id001
+        templateId: *id003
       required:
       - publicationId
       - templateId
@@ -45988,14 +46396,14 @@ components:
           $ref: '#/components/schemas/NotificationScene'
         audience:
           $ref: '#/components/schemas/NotificationAudience'
-        ownerDeptId: &id025
+        ownerDeptId: &id028
           type: string
           description: 内部Long对外十进制字符串
           pattern: ^[1-9][0-9]{0,18}$
         environment:
           $ref: '#/components/schemas/IntegrationEnvironment'
-        primaryTemplateId: *id025
-        fallbackTemplateId: *id025
+        primaryTemplateId: *id028
+        fallbackTemplateId: *id028
         fallbackPolicy:
           type: string
           enum:
@@ -46021,7 +46429,7 @@ components:
       type: object
       additionalProperties: false
       properties:
-        recipientId: *id001
+        recipientId: *id003
         name:
           type: string
         kind:
@@ -46031,10 +46439,10 @@ components:
           - MINI_ACCOUNT
         phoneMask:
           type: string
-        accountId: *id001
+        accountId: *id003
         appId:
           type: string
-        ownerDeptId: *id001
+        ownerDeptId: *id003
         environment:
           $ref: '#/components/schemas/IntegrationEnvironment'
         version:
@@ -46069,12 +46477,12 @@ components:
           description: 敏感输入仅密文保存
           writeOnly: true
           maxLength: 32
-        accountId: *id001
-        appProfileId: *id001
-        ownerDeptId: *id001
+        accountId: *id003
+        appProfileId: *id003
+        ownerDeptId: *id003
         environment:
           $ref: '#/components/schemas/IntegrationEnvironment'
-        reason: *id008
+        reason: *id011
       required:
       - name
       - kind
@@ -46111,7 +46519,7 @@ components:
           type: integer
           format: int64
           minimum: 0
-        reason: *id008
+        reason: *id011
       required:
       - expectedVersion
       - reason
@@ -48417,7 +48825,7 @@ components:
           minimum: 0
           maximum: 100000
           nullable: true
-        capturedAt: &id026
+        capturedAt: &id029
           type: string
           format: date-time
           pattern: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,3})?Z$
@@ -48426,10 +48834,10 @@ components:
           type: string
           enum:
           - GCJ02
-        expectedVersion: *id004
-        expectedCompanyRevision: *id004
-        expectedSessionId: *id002
-        expectedContextVersion: *id004
+        expectedVersion: *id007
+        expectedCompanyRevision: *id007
+        expectedSessionId: *id004
+        expectedContextVersion: *id007
       required:
       - lng
       - lat
@@ -48447,11 +48855,11 @@ components:
       properties:
         clientState:
           $ref: '#/components/schemas/DriverClientState'
-        observedAt: *id026
-        expectedVersion: *id004
-        expectedCompanyRevision: *id004
-        expectedSessionId: *id002
-        expectedContextVersion: *id004
+        observedAt: *id029
+        expectedVersion: *id007
+        expectedCompanyRevision: *id007
+        expectedSessionId: *id004
+        expectedContextVersion: *id007
       required:
       - clientState
       - observedAt
@@ -48464,7 +48872,7 @@ components:
       type: object
       additionalProperties: false
       properties:
-        expectedVersion: *id004
+        expectedVersion: *id007
         closingTime:
           type: string
           pattern: ^(?:[01][0-9]|2[0-3]):[0-5][0-9]$
@@ -48502,7 +48910,7 @@ components:
       type: object
       additionalProperties: false
       properties:
-        ownerDeptId: *id002
+        ownerDeptId: *id004
         companyName:
           type: string
         timeZone:
@@ -48511,7 +48919,7 @@ components:
           - Asia/Shanghai
         configured:
           type: boolean
-        version: *id004
+        version: *id007
         closingTime:
           type: string
           pattern: ^(?:[01][0-9]|2[0-3]):[0-5][0-9]$
@@ -48633,14 +49041,14 @@ components:
           minimum: 0
           maximum: 9007199254740991
           nullable: true
-        driverId: *id002
+        driverId: *id004
         ownerDeptId:
           type: string
           pattern: ^[1-9][0-9]{0,18}$
           maxLength: 19
           description: 数据库Long十进制字符串，服务端进一步限制Long.MAX_VALUE
           nullable: true
-        sessionId: *id002
+        sessionId: *id004
         holderId:
           type: string
           pattern: ^[1-9][0-9]{0,18}$
@@ -48667,7 +49075,7 @@ components:
           $ref: '#/components/schemas/OccupationType'
         activePenaltyIds:
           type: array
-          items: *id002
+          items: *id004
         locationStatus:
           type: string
           enum:
@@ -48744,7 +49152,7 @@ components:
           pattern: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,3})?Z$
           description: UTC Z；四位年、最多毫秒，业务日期使用Asia/Shanghai
           nullable: true
-        businessDate: *id027
+        businessDate: *id030
         completedAssignmentCount:
           type: integer
           format: int64
@@ -48798,6 +49206,571 @@ components:
       - businessDate
       - completedAssignmentCount
       description: D01本人当前状态。持久听单意愿与按固定截止/公司epoch生效的听单分开；后台保留意愿但不能假称网络与定位实时。version为listeningVersion别名，profileVersion另列；availableForNewOrder只为基础候选，不代表特定订单准驾/半径/邀请接受条件已通过。
+    DispatchSource:
+      type: string
+      enum:
+      - AUTO
+      - MANUAL
+    DispatchBatchStatus:
+      type: string
+      enum:
+      - RUNNING
+      - WAIT_RESPONSE
+      - PAUSED
+      - ASSIGNED
+      - MANUAL
+      - CLOSED
+    DriverInvite:
+      type: object
+      additionalProperties: false
+      required:
+      - inviteId
+      - orderNo
+      - assignmentId
+      - batchId
+      - source
+      - status
+      - storedStatus
+      - version
+      - orderVersion
+      - serviceCompanyId
+      - serviceCompanyName
+      - stationId
+      - stationName
+      - pickupArea
+      - pickupSlotStartAt
+      - pickupSlotEndAt
+      - vehicleTypeCode
+      - vehicleTypeName
+      - vehiclePlateMasked
+      - distanceMeter
+      - distanceMode
+      - issuedAt
+      - expiresAt
+      - overallDeadlineAt
+      - respondedAt
+      - sessionId
+      - contextVersion
+      - allowedActions
+      - driverId
+      - driverName
+      - acceptBlockReason
+      properties:
+        inviteId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+        orderNo:
+          type: string
+        assignmentId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+          nullable: true
+        batchId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+          nullable: true
+        source:
+          $ref: '#/components/schemas/DispatchSource'
+        status:
+          $ref: '#/components/schemas/InviteStatus'
+        storedStatus:
+          $ref: '#/components/schemas/InviteStatus'
+        version:
+          type: integer
+          format: int64
+          minimum: 0
+          maximum: 9007199254740991
+        orderVersion:
+          type: integer
+          format: int64
+          minimum: 0
+          maximum: 9007199254740991
+        serviceCompanyId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+          nullable: true
+        serviceCompanyName:
+          type: string
+          nullable: true
+        stationId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+        stationName:
+          type: string
+        pickupArea:
+          type: string
+        pickupSlotStartAt:
+          type: string
+          format: date-time
+          pattern: Z$
+        pickupSlotEndAt:
+          type: string
+          format: date-time
+          pattern: Z$
+        vehicleTypeCode:
+          type: string
+        vehicleTypeName:
+          type: string
+        vehiclePlateMasked:
+          type: string
+          nullable: true
+        distanceMeter:
+          type: integer
+          format: int64
+          minimum: 0
+          maximum: 9007199254740991
+          nullable: true
+        distanceMode:
+          type: string
+          enum:
+          - GCJ02_GREAT_CIRCLE
+        issuedAt:
+          type: string
+          format: date-time
+          pattern: Z$
+        expiresAt:
+          type: string
+          format: date-time
+          pattern: Z$
+        overallDeadlineAt:
+          type: string
+          format: date-time
+          pattern: Z$
+          nullable: true
+        respondedAt:
+          type: string
+          format: date-time
+          pattern: Z$
+          nullable: true
+        sessionId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+          nullable: true
+        contextVersion:
+          type: integer
+          format: int64
+          minimum: 0
+          maximum: 9007199254740991
+          nullable: true
+        allowedActions:
+          type: array
+          uniqueItems: true
+          items:
+            type: string
+            enum:
+            - ACCEPT_INVITE
+            - REJECT_INVITE
+            - REVOKE_INVITE
+            - VIEW_ASSIGNMENT
+        driverId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+        driverName:
+          type: string
+        acceptBlockReason:
+          type: string
+          nullable: true
+      description: 真实本人或原订单权限内邀约；status为绝对截止有效投影，storedStatus保留真实持久状态。接受前不泄精确位置/电话，无收入或持码信息。
+    DispatchQueueItem:
+      type: object
+      additionalProperties: false
+      required:
+      - orderNo
+      - orderVersion
+      - serviceCompanyId
+      - serviceCompanyName
+      - stationId
+      - stationName
+      - fulfillmentStatus
+      - cancelStatus
+      - pickupSlotStartAt
+      - pickupSlotEndAt
+      - pickupArea
+      - batchId
+      - batchStatus
+      - batchVersion
+      - policyVersion
+      - overallDeadlineAt
+      - radiusStage
+      - activeInviteId
+      - reasonCode
+      - allowedActions
+      properties:
+        orderNo:
+          type: string
+        orderVersion:
+          type: integer
+          format: int64
+          minimum: 0
+          maximum: 9007199254740991
+        serviceCompanyId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+          nullable: true
+        serviceCompanyName:
+          type: string
+          nullable: true
+        stationId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+        stationName:
+          type: string
+        fulfillmentStatus:
+          $ref: '#/components/schemas/FulfillmentStatus'
+        cancelStatus:
+          $ref: '#/components/schemas/CancelStatus'
+        pickupSlotStartAt:
+          type: string
+          format: date-time
+          pattern: Z$
+        pickupSlotEndAt:
+          type: string
+          format: date-time
+          pattern: Z$
+        pickupArea:
+          type: string
+        batchId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+          nullable: true
+        batchStatus:
+          $ref: '#/components/schemas/DispatchBatchStatus'
+          nullable: true
+        batchVersion:
+          type: integer
+          format: int64
+          minimum: 0
+          maximum: 9007199254740991
+          nullable: true
+        policyVersion:
+          type: integer
+          format: int64
+          minimum: 0
+          maximum: 9007199254740991
+          nullable: true
+        overallDeadlineAt:
+          type: string
+          format: date-time
+          pattern: Z$
+          nullable: true
+        radiusStage:
+          type: integer
+          format: int64
+          minimum: 0
+          maximum: 9007199254740991
+          nullable: true
+        activeInviteId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+          nullable: true
+        reasonCode:
+          type: string
+          nullable: true
+        allowedActions:
+          type: array
+          uniqueItems: true
+          items:
+            type: string
+            enum:
+            - VIEW_DISPATCH_CANDIDATES
+            - CREATE_MANUAL_INVITE
+            - VIEW_DISPATCH_INVITES
+    DispatchCandidate:
+      type: object
+      additionalProperties: false
+      required:
+      - driverId
+      - driverName
+      - phoneMask
+      - driverVersion
+      - serviceCompanyId
+      - licenseClass
+      - distanceMeter
+      - distanceMode
+      - eligibilityExpiresAt
+      - locationCapturedAt
+      - locationExpiresAt
+      - reachabilityExpiresAt
+      - listeningUntil
+      - reviewDueAt
+      - allowedActions
+      properties:
+        driverId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+        driverName:
+          type: string
+        phoneMask:
+          type: string
+          nullable: true
+        driverVersion:
+          type: integer
+          format: int64
+          minimum: 0
+          maximum: 9007199254740991
+        serviceCompanyId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+        licenseClass:
+          type: string
+        distanceMeter:
+          type: integer
+          format: int64
+          minimum: 0
+          maximum: 9007199254740991
+        distanceMode:
+          type: string
+          enum:
+          - GCJ02_GREAT_CIRCLE
+        eligibilityExpiresAt:
+          type: string
+          format: date-time
+          pattern: Z$
+        locationCapturedAt:
+          type: string
+          format: date-time
+          pattern: Z$
+        locationExpiresAt:
+          type: string
+          format: date-time
+          pattern: Z$
+        reachabilityExpiresAt:
+          type: string
+          format: date-time
+          pattern: Z$
+        listeningUntil:
+          type: string
+          format: date-time
+          pattern: Z$
+        reviewDueAt:
+          type: string
+          format: date-time
+          pattern: Z$
+        allowedActions:
+          type: array
+          uniqueItems: true
+          items:
+            type: string
+            enum:
+            - CREATE_MANUAL_INVITE
+    DispatchLicenseCompatibility:
+      type: object
+      additionalProperties: false
+      required:
+      - vehicleTypeCode
+      - licenseClasses
+      properties:
+        vehicleTypeCode:
+          type: string
+          minLength: 1
+          maxLength: 64
+        licenseClasses:
+          type: array
+          minItems: 1
+          maxItems: 32
+          uniqueItems: true
+          items:
+            type: string
+            minLength: 1
+            maxLength: 32
+    DispatchCompanyPolicy:
+      type: object
+      additionalProperties: false
+      required:
+      - ownerDeptId
+      - companyName
+      - configured
+      - version
+      - inviteResponseSeconds
+      - radiusMeter
+      - expandedRadiusMeter
+      - overallDeadlineSeconds
+      - roundPolicy
+      - distanceMode
+      - licenseCompatibility
+      - allowedActions
+      properties:
+        ownerDeptId: *id005
+        companyName: *id001
+        configured:
+          type: boolean
+        version: *id002
+        inviteResponseSeconds:
+          type: integer
+          minimum: 1
+          maximum: 3600
+          nullable: true
+        radiusMeter:
+          type: integer
+          minimum: 1
+          maximum: 1000000
+          nullable: true
+        expandedRadiusMeter:
+          type: integer
+          minimum: 1
+          maximum: 1000000
+          nullable: true
+        overallDeadlineSeconds:
+          type: integer
+          minimum: 1
+          maximum: 86400
+          nullable: true
+        roundPolicy:
+          type: string
+          enum:
+          - COMPANY_CURSOR
+          nullable: true
+        distanceMode:
+          type: string
+          enum:
+          - GCJ02_GREAT_CIRCLE
+          nullable: true
+        licenseCompatibility:
+          type: array
+          minItems: 1
+          maxItems: 200
+          items:
+            $ref: '#/components/schemas/DispatchLicenseCompatibility'
+          nullable: true
+        allowedActions:
+          type: array
+          uniqueItems: true
+          items:
+            type: string
+            enum:
+            - EDIT_DISPATCH_POLICY
+    DispatchCompanyPolicyWrite:
+      type: object
+      additionalProperties: false
+      required:
+      - expectedVersion
+      - inviteResponseSeconds
+      - radiusMeter
+      - expandedRadiusMeter
+      - overallDeadlineSeconds
+      - roundPolicy
+      - distanceMode
+      - licenseCompatibility
+      - reason
+      properties:
+        expectedVersion: *id002
+        inviteResponseSeconds:
+          type: integer
+          minimum: 1
+          maximum: 3600
+        radiusMeter:
+          type: integer
+          minimum: 1
+          maximum: 1000000
+        expandedRadiusMeter:
+          type: integer
+          minimum: 1
+          maximum: 1000000
+        overallDeadlineSeconds:
+          type: integer
+          minimum: 1
+          maximum: 86400
+        roundPolicy:
+          type: string
+          enum:
+          - COMPANY_CURSOR
+        distanceMode:
+          type: string
+          enum:
+          - GCJ02_GREAT_CIRCLE
+        licenseCompatibility:
+          type: array
+          minItems: 1
+          maxItems: 200
+          items:
+            $ref: '#/components/schemas/DispatchLicenseCompatibility'
+        reason:
+          type: string
+          minLength: 1
+          maxLength: 500
+      description: 无运营默认；expandedRadius>=radius，车型必须存在启用字典。仅影响后续建单冻结，不追改旧预约。准驾集合由授权管理员明确维护，不自动推导法定关系。
+    DispatchInviteResponse:
+      type: object
+      additionalProperties: false
+      required:
+      - decision
+      - expectedVersion
+      - expectedOrderVersion
+      - expectedSessionId
+      - expectedContextVersion
+      - reason
+      properties:
+        decision:
+          type: string
+          enum:
+          - ACCEPT
+          - REJECT
+        expectedVersion: *id002
+        expectedOrderVersion: *id002
+        expectedSessionId: *id005
+        expectedContextVersion: *id002
+        reason:
+          type: string
+          maxLength: 500
+          nullable: true
+    DispatchManualInvite:
+      type: object
+      additionalProperties: false
+      required:
+      - orderNo
+      - driverId
+      - expectedOrderVersion
+      - expectedDriverVersion
+      - reason
+      properties:
+        orderNo: *id001
+        driverId: *id005
+        expectedOrderVersion: *id002
+        expectedDriverVersion: *id002
+        reason:
+          type: string
+          minLength: 1
+          maxLength: 500
+    DispatchRevoke:
+      type: object
+      additionalProperties: false
+      required:
+      - expectedVersion
+      - expectedOrderVersion
+      - reason
+      properties:
+        expectedVersion: *id002
+        expectedOrderVersion: *id002
+        reason:
+          type: string
+          minLength: 1
+          maxLength: 500
   responses:
     BadRequest:
       description: 请求格式不正确。参见errorCode注册表；HTTP状态与code一致。

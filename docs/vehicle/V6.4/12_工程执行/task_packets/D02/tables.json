@@ -67,14 +67,72 @@
         "version",
         "BIGINT NOT NULL DEFAULT 0",
         "乐观锁版本"
+      ],
+      [
+        "batch_id",
+        "BIGINT NULL",
+        "所属持久派单批次；历史NULL不猜"
+      ],
+      [
+        "service_company_id",
+        "BIGINT NULL",
+        "原订单冻结服务公司"
+      ],
+      [
+        "company_revision",
+        "BIGINT NULL",
+        "发邀约时真实司机公司epoch"
+      ],
+      [
+        "distance_meter",
+        "INT NULL",
+        "GCJ02直线距离，非道路里程"
+      ],
+      [
+        "driver_session_id",
+        "BIGINT NULL",
+        "候选位置和交互绑定的真实有效设备会话"
+      ],
+      [
+        "driver_context_version",
+        "BIGINT NULL",
+        "可信设备DRIVER上下文版本"
+      ],
+      [
+        "driver_location_version",
+        "BIGINT NULL",
+        "发出时最近点版本"
+      ],
+      [
+        "driver_presence_version",
+        "BIGINT NULL",
+        "发出时最近交互版本"
+      ],
+      [
+        "issued_by_user_id",
+        "BIGINT NULL",
+        "人工邀约操作者，自动为NULL"
+      ],
+      [
+        "reason_cipher",
+        "MEDIUMBLOB NULL",
+        "人工或响应原因的认证加密封装"
+      ],
+      [
+        "active_driver",
+        "BIGINT GENERATED ALWAYS AS (IF(status='WAIT_RESPONSE',driver_id,NULL)) STORED",
+        "同司机最多一份待响应邀约，旧终态不占用"
       ]
     ],
     "indexes": [
+      "UNIQUE KEY uk_dispatch_batch_driver (batch_id,driver_id)",
+      "UNIQUE KEY uk_dispatch_active_driver (active_driver)",
+      "KEY ix_dispatch_batch_status (batch_id,status,id)",
       "UNIQUE KEY uk_active_order (active_order)",
       "KEY ix_driver_status (driver_id,status)",
       "KEY ix_expire (status,expires_at)"
     ],
-    "rule": "",
+    "rule": " D02：服务公司及策略按创建订单时冻结，历史NULL不猜回填；绝对截止、同司机/订单唯一占用与精确holder保护，旧事件不改新责任。",
     "primaryKey": [
       "id"
     ],
@@ -91,13 +149,13 @@
       "order_id": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "driver_id": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "status": {
@@ -110,25 +168,26 @@
       "source": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
-        "clientWritable": false
+        "updatable": false,
+        "clientWritable": false,
+        "enumRef": "DispatchSource"
       },
       "round_key": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "issued_at": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "expires_at": {
         "generated": false,
         "insertable": true,
-        "updatable": true,
+        "updatable": false,
         "clientWritable": false
       },
       "responded_at": {
@@ -162,11 +221,79 @@
         "insertable": false,
         "updatable": false,
         "clientWritable": false
+      },
+      "batch_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "service_company_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "company_revision": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "distance_meter": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "driver_session_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "driver_context_version": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "driver_location_version": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "driver_presence_version": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "issued_by_user_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "reason_cipher": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "active_driver": {
+        "generated": true,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
       }
     },
     "checks": [
+      "CONSTRAINT ck_dispatch_invite_distance CHECK (distance_meter IS NULL OR distance_meter>=0)",
       "CONSTRAINT ck_66_22cd3ab6b830 CHECK (`status` IN ('WAIT_RESPONSE','ACCEPTED','REJECTED','EXPIRED','REVOKED'))",
-      "CONSTRAINT ck_ver_dispatch_invite CHECK (version >= 0)"
+      "CONSTRAINT ck_ver_dispatch_invite CHECK (version >= 0)",
+      "CONSTRAINT ck_dispatch_invite_source CHECK (`source` IN ('AUTO','MANUAL'))"
     ]
   },
   {
@@ -318,7 +445,7 @@
       ]
     ],
     "indexes": [],
-    "rule": "事务锁内原子推进，与创建邀约和占用协调",
+    "rule": "事务锁内原子推进，与创建邀约和占用协调 D02游标明确按company:{serviceCompanyId}隔离，同公司跨站共享；仅实际自动邀约成功推进，距离仅过滤，旧GLOBAL不自动沿用。",
     "primaryKey": [
       "scope_key"
     ],
@@ -368,5 +495,356 @@
     "checks": [
       "CONSTRAINT ck_ver_dispatch_cursor CHECK (version >= 0)"
     ]
+  },
+  {
+    "name": "vi_dispatch_policy",
+    "rule": " D02：服务公司及策略按创建订单时冻结，历史NULL不猜回填；绝对截止、同司机/订单唯一占用与精确holder保护，旧事件不改新责任。",
+    "engine": "InnoDB",
+    "collation": "utf8mb4_0900_ai_ci",
+    "comment": "同公司共享的明确派单策略；新订单冻结，不追改旧单",
+    "cols": [
+      [
+        "owner_dept_id",
+        "BIGINT NOT NULL",
+        "权威服务公司，不从管理员主部门推断"
+      ],
+      [
+        "invite_response_seconds",
+        "INT NOT NULL",
+        "1..3600，明确配置无默认"
+      ],
+      [
+        "radius_meter",
+        "INT NOT NULL",
+        "1..1000000，初圈直线半径"
+      ],
+      [
+        "expanded_radius_meter",
+        "INT NOT NULL",
+        "不小于初圈且不超过1000000"
+      ],
+      [
+        "overall_deadline_seconds",
+        "INT NOT NULL",
+        "1..86400，自动总截止"
+      ],
+      [
+        "license_compatibility",
+        "JSON NOT NULL",
+        "明确业务车型与准驾类别允许集合，不自动推导法律准驾"
+      ],
+      [
+        "config_hash",
+        "BINARY(32) NOT NULL",
+        "策略内容HMAC认证摘要"
+      ],
+      [
+        "updated_by_user_id",
+        "BIGINT NOT NULL",
+        "真实后台操作者"
+      ],
+      [
+        "version",
+        "BIGINT NOT NULL DEFAULT 0",
+        "独立CAS，首次成功写入1"
+      ],
+      [
+        "created_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "创建UTC时间"
+      ],
+      [
+        "updated_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "UTC更新时间，Mapper显式维护"
+      ]
+    ],
+    "indexes": [],
+    "checks": [
+      "CONSTRAINT ck_dispatch_policy_ranges CHECK ( invite_response_seconds BETWEEN 1 AND 3600 AND radius_meter BETWEEN 1 AND 1000000 AND expanded_radius_meter BETWEEN radius_meter AND 1000000 AND overall_deadline_seconds BETWEEN 1 AND 86400 )",
+      "CONSTRAINT ck_dispatch_policy_license CHECK ( JSON_TYPE(license_compatibility)='ARRAY' AND JSON_LENGTH(license_compatibility) BETWEEN 1 AND 200 )",
+      "CONSTRAINT ck_dispatch_policy_version CHECK (version>=0)"
+    ],
+    "primaryKey": [
+      "owner_dept_id"
+    ],
+    "idStrategy": "BUSINESS_KEY",
+    "columnRules": {
+      "owner_dept_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "invite_response_seconds": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "radius_meter": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "expanded_radius_meter": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "overall_deadline_seconds": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "license_compatibility": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "config_hash": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "updated_by_user_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "version": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "created_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "updated_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      }
+    }
+  },
+  {
+    "name": "vi_dispatch_batch",
+    "rule": " D02：服务公司及策略按创建订单时冻结，历史NULL不猜回填；绝对截止、同司机/订单唯一占用与精确holder保护，旧事件不改新责任。",
+    "engine": "InnoDB",
+    "collation": "utf8mb4_0900_ai_ci",
+    "comment": "单订单持久轮转批次，绝对截止和一次扩圈",
+    "cols": [
+      [
+        "id",
+        "BIGINT NOT NULL AUTO_INCREMENT",
+        "数据库自增Long，API十进制字符串"
+      ],
+      [
+        "order_id",
+        "BIGINT NOT NULL",
+        "原订单"
+      ],
+      [
+        "run_no",
+        "INT NOT NULL",
+        "本订单递增批次号"
+      ],
+      [
+        "service_company_id",
+        "BIGINT NOT NULL",
+        "原订单冻结服务公司"
+      ],
+      [
+        "source",
+        "VARCHAR(16) NOT NULL",
+        "DispatchSource: AUTO,MANUAL"
+      ],
+      [
+        "status",
+        "VARCHAR(24) NOT NULL",
+        "DispatchBatchStatus: RUNNING,WAIT_RESPONSE,PAUSED,ASSIGNED,MANUAL,CLOSED"
+      ],
+      [
+        "policy_version",
+        "BIGINT NOT NULL",
+        "原订单冻结策略版本"
+      ],
+      [
+        "policy_snapshot",
+        "JSON NOT NULL",
+        "原订单明确策略和认证，不随当前配置变化"
+      ],
+      [
+        "started_at",
+        "DATETIME(3) NOT NULL",
+        "开始UTC时刻"
+      ],
+      [
+        "deadline_at",
+        "DATETIME(3) NOT NULL",
+        "绝对总截止，与接车开始取较早者"
+      ],
+      [
+        "radius_stage",
+        "INT NOT NULL DEFAULT 0",
+        "0初圈，1唯一扩圈"
+      ],
+      [
+        "reason_code",
+        "VARCHAR(64) NULL",
+        "当前转人工或暂停原因，非内部明文意见"
+      ],
+      [
+        "version",
+        "BIGINT NOT NULL DEFAULT 0",
+        "CAS版本"
+      ],
+      [
+        "created_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "创建UTC时间"
+      ],
+      [
+        "updated_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "UTC更新时间，Mapper显式维护"
+      ],
+      [
+        "active_order",
+        "BIGINT GENERATED ALWAYS AS ( IF(status IN ('RUNNING','WAIT_RESPONSE','PAUSED'),order_id,NULL) ) STORED",
+        "每订单唯一活动派单批次"
+      ]
+    ],
+    "indexes": [
+      "UNIQUE KEY uk_dispatch_batch_run (order_id,run_no)",
+      "UNIQUE KEY uk_dispatch_batch_active_order (active_order)",
+      "KEY ix_dispatch_batch_deadline (status,deadline_at,id)"
+    ],
+    "checks": [
+      "CONSTRAINT ck_dispatch_batch_source CHECK (`source` IN ('AUTO','MANUAL'))",
+      "CONSTRAINT ck_dispatch_batch_status CHECK ( `status` IN ('RUNNING','WAIT_RESPONSE','PAUSED','ASSIGNED','MANUAL','CLOSED') )",
+      "CONSTRAINT ck_dispatch_batch_version CHECK (version>=0 AND run_no>0 AND policy_version>=0)",
+      "CONSTRAINT ck_dispatch_batch_radius CHECK (radius_stage IN (0,1))",
+      "CONSTRAINT ck_dispatch_batch_deadline CHECK (deadline_at>started_at)"
+    ],
+    "primaryKey": [
+      "id"
+    ],
+    "idStrategy": "MYSQL_AUTO_INCREMENT",
+    "columnRules": {
+      "id": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "order_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "run_no": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "service_company_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "source": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false,
+        "enumRef": "DispatchSource"
+      },
+      "status": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false,
+        "enumRef": "DispatchBatchStatus"
+      },
+      "policy_version": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "policy_snapshot": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "started_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "deadline_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "radius_stage": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "reason_code": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "version": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "created_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "updated_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "active_order": {
+        "generated": true,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false
+      }
+    }
   }
 ]

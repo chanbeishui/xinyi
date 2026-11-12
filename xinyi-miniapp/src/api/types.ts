@@ -2378,7 +2378,11 @@ export type PermissionCode =
   | 'biz:verification:list'
   | 'biz:verification:query'
   | 'biz:dispatchlistening:query'
-  | 'biz:dispatchlistening:edit';
+  | 'biz:dispatchlistening:edit'
+  | 'biz:dispatchpolicy:query'
+  | 'biz:dispatchpolicy:edit'
+  | 'biz:dispatch:revoke';
+
 
 export type CapabilityCode =
   | 'COMMON_DICT_QUERY'
@@ -2562,7 +2566,16 @@ export type AllowedAction =
   | 'ENABLE_LISTENING'
   | 'DISABLE_LISTENING'
   | 'REPORT_DRIVER_LOCATION'
-  | 'REPORT_DRIVER_PRESENCE';
+  | 'REPORT_DRIVER_PRESENCE'
+  | 'VIEW_DISPATCH_CANDIDATES'
+  | 'CREATE_MANUAL_INVITE'
+  | 'VIEW_DISPATCH_INVITES'
+  | 'EDIT_DISPATCH_POLICY'
+  | 'ACCEPT_INVITE'
+  | 'REJECT_INVITE'
+  | 'REVOKE_INVITE'
+  | 'VIEW_ASSIGNMENT';
+
 
 export type AccountStatus = 'ACTIVE' | 'LOCKED';
 
@@ -3527,3 +3540,155 @@ export type CompanyListeningConfigWrite = {
 };
 
 export type DriverClientState = 'FOREGROUND' | 'BACKGROUND';
+
+export type DriverInvite = {
+  inviteId: string;
+  orderNo: string;
+  assignmentId: string | null;
+  batchId: string | null;
+  source: DispatchSource;
+  status: InviteStatus;
+  storedStatus: InviteStatus;
+  version: number;
+  orderVersion: number;
+  serviceCompanyId: string | null;
+  serviceCompanyName: string | null;
+  stationId: string;
+  stationName: string;
+  pickupArea: string;
+  pickupSlotStartAt: string;
+  pickupSlotEndAt: string;
+  vehicleTypeCode: string;
+  vehicleTypeName: string;
+  vehiclePlateMasked: string | null;
+  distanceMeter: number | null;
+  distanceMode: 'GCJ02_GREAT_CIRCLE';
+  issuedAt: string;
+  expiresAt: string;
+  overallDeadlineAt: string | null;
+  respondedAt: string | null;
+  sessionId: string | null;
+  contextVersion: number | null;
+  allowedActions: Array<'ACCEPT_INVITE' | 'REJECT_INVITE' | 'REVOKE_INVITE' | 'VIEW_ASSIGNMENT'>;
+  driverId: string;
+  driverName: string;
+  acceptBlockReason: string | null;
+};
+
+
+export type DispatchSource = 'AUTO' | 'MANUAL';
+
+
+export type DispatchBatchStatus =
+  | 'RUNNING'
+  | 'WAIT_RESPONSE'
+  | 'PAUSED'
+  | 'ASSIGNED'
+  | 'MANUAL'
+  | 'CLOSED';
+
+
+export type DispatchQueueItem = {
+  orderNo: string;
+  orderVersion: number;
+  serviceCompanyId: string | null;
+  serviceCompanyName: string | null;
+  stationId: string;
+  stationName: string;
+  fulfillmentStatus: FulfillmentStatus;
+  cancelStatus: CancelStatus;
+  pickupSlotStartAt: string;
+  pickupSlotEndAt: string;
+  pickupArea: string;
+  batchId: string | null;
+  batchStatus: DispatchBatchStatus | null;
+  batchVersion: number | null;
+  policyVersion: number | null;
+  overallDeadlineAt: string | null;
+  radiusStage: number | null;
+  activeInviteId: string | null;
+  reasonCode: string | null;
+  allowedActions: Array<
+    'VIEW_DISPATCH_CANDIDATES' | 'CREATE_MANUAL_INVITE' | 'VIEW_DISPATCH_INVITES'
+  >;
+};
+
+
+export type DispatchCandidate = {
+  driverId: string;
+  driverName: string;
+  phoneMask: string | null;
+  driverVersion: number;
+  serviceCompanyId: string;
+  licenseClass: string;
+  distanceMeter: number;
+  distanceMode: 'GCJ02_GREAT_CIRCLE';
+  eligibilityExpiresAt: string;
+  locationCapturedAt: string;
+  locationExpiresAt: string;
+  reachabilityExpiresAt: string;
+  listeningUntil: string;
+  reviewDueAt: string;
+  allowedActions: Array<'CREATE_MANUAL_INVITE'>;
+};
+
+
+export type DispatchLicenseCompatibility = {
+  vehicleTypeCode: string;
+  licenseClasses: Array<string>;
+};
+
+
+export type DispatchCompanyPolicy = {
+  ownerDeptId: string;
+  companyName: string;
+  configured: boolean;
+  version: number;
+  inviteResponseSeconds: number | null;
+  radiusMeter: number | null;
+  expandedRadiusMeter: number | null;
+  overallDeadlineSeconds: number | null;
+  roundPolicy: 'COMPANY_CURSOR' | null;
+  distanceMode: 'GCJ02_GREAT_CIRCLE' | null;
+  licenseCompatibility: Array<DispatchLicenseCompatibility> | null;
+  allowedActions: Array<'EDIT_DISPATCH_POLICY'>;
+};
+
+
+export type DispatchCompanyPolicyWrite = {
+  expectedVersion: number;
+  inviteResponseSeconds: number;
+  radiusMeter: number;
+  expandedRadiusMeter: number;
+  overallDeadlineSeconds: number;
+  roundPolicy: 'COMPANY_CURSOR';
+  distanceMode: 'GCJ02_GREAT_CIRCLE';
+  licenseCompatibility: Array<DispatchLicenseCompatibility>;
+  reason: string;
+};
+
+
+export type DispatchInviteResponse = {
+  decision: 'ACCEPT' | 'REJECT';
+  expectedVersion: number;
+  expectedOrderVersion: number;
+  expectedSessionId: string;
+  expectedContextVersion: number;
+  reason: string | null;
+};
+
+
+export type DispatchManualInvite = {
+  orderNo: string;
+  driverId: string;
+  expectedOrderVersion: number;
+  expectedDriverVersion: number;
+  reason: string;
+};
+
+
+export type DispatchRevoke = {
+  expectedVersion: number;
+  expectedOrderVersion: number;
+  reason: string;
+};

@@ -547,14 +547,14 @@
   },
   {
     "status": "NOT_ASSESSED",
-    "implementationFile": null,
+    "implementationFile": "xinyi-miniapp/src/pages/dispatch/invite.vue",
     "evidence": [],
     "boardId": "D07",
     "taskId": "D04"
   },
   {
     "status": "NOT_ASSESSED",
-    "implementationFile": null,
+    "implementationFile": "xinyi-miniapp/src/pages/dispatch/invite.vue",
     "evidence": [],
     "boardId": "D08",
     "taskId": "D04"
@@ -1128,21 +1128,21 @@
   },
   {
     "status": "NOT_ASSESSED",
-    "implementationFile": null,
+    "implementationFile": "xinyi-ui/src/views/rongli/dispatch/queue.vue",
     "evidence": [],
     "boardId": "B05",
     "taskId": "D03"
   },
   {
     "status": "NOT_ASSESSED",
-    "implementationFile": null,
+    "implementationFile": "xinyi-ui/src/views/rongli/dispatch/queue.vue",
     "evidence": [],
     "boardId": "B05-invite",
     "taskId": "D03"
   },
   {
     "status": "NOT_ASSESSED",
-    "implementationFile": null,
+    "implementationFile": "xinyi-ui/src/views/rongli/dispatch/invites.vue",
     "evidence": [],
     "boardId": "B06",
     "taskId": "D03"
@@ -2490,5 +2490,19 @@
     "evidence": [],
     "boardId": "B24-listening-company",
     "taskId": "D01"
+  },
+  {
+    "status": "NOT_ASSESSED",
+    "implementationFile": "xinyi-miniapp/src/pages/dispatch/invites.vue",
+    "evidence": [],
+    "boardId": "D07-list",
+    "taskId": "D04"
+  },
+  {
+    "status": "NOT_ASSESSED",
+    "implementationFile": "xinyi-ui/src/views/rongli/dispatch/policy.vue",
+    "evidence": [],
+    "boardId": "B24-dispatch-company",
+    "taskId": "D02"
   }
 ]

@@ -1001,6 +1001,14 @@ components:
       - DISABLE_LISTENING
       - REPORT_DRIVER_LOCATION
       - REPORT_DRIVER_PRESENCE
+      - VIEW_DISPATCH_CANDIDATES
+      - CREATE_MANUAL_INVITE
+      - VIEW_DISPATCH_INVITES
+      - EDIT_DISPATCH_POLICY
+      - ACCEPT_INVITE
+      - REJECT_INVITE
+      - REVOKE_INVITE
+      - VIEW_ASSIGNMENT
     AfterSaleApply:
       type: object
       additionalProperties: false

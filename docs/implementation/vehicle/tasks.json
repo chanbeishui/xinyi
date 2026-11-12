@@ -1751,7 +1751,13 @@
       }
     ],
     "needsAdaptation": false,
-    "updatedAt": "2026-11-01T15:45:15.824815+00:00"
+    "updatedAt": "2026-11-01T15:45:15.824815+00:00",
+    "compatibilityEvidence": [
+      {
+        "path": "docs/implementation/vehicle/evidence/D02-20261113.json",
+        "note": "真实改N修复配置重复键与锁内授权；7聚焦及最终全量验证，原C01证据保留"
+      }
+    ]
   },
   {
     "id": "C02",
@@ -3363,33 +3369,41 @@
   {
     "id": "D02",
     "phase": "M3",
-    "title": "自动邀约轮转与扩圈",
+    "title": "自动派单、单人邀约与接受事务",
     "domain": "dispatch",
     "depends_on": [
       "D01",
       "P03"
     ],
     "deliverables": [
-      "游标、公平轮转、单次邀约、截止和人工兜底",
-      "DB占用原子"
+      "订单独立冻结服务公司与策略；公司共享游标、一次扩圈、单人邀约、绝对截止及人工兜底",
+      "数据库司机/订单唯一占用与接受原子事务；旧事件精确holder保护",
+      "公司策略与撤回接口；本人API051–054及D07/D08/D07-list随D04共同交付，后台API098–101/B05/B06为D03已实现子范围；关联切片D03/D04，不整体宣称计划预览应用已完成"
     ],
     "negative_checks": [
       "司机/订单不能双占",
       "候选为空不死循环",
       "超时撤旧邀约"
     ],
-    "api_ids": [],
-    "page_ids": [],
+    "api_ids": [
+      "d02_get_company_dispatch_policy",
+      "d02_put_company_dispatch_policy",
+      "d02_post_revoke_invite"
+    ],
+    "page_ids": [
+      "B24-dispatch-company"
+    ],
     "tables": [
       "vi_dispatch_invite",
       "vi_driver_occupancy",
-      "vi_dispatch_cursor"
+      "vi_dispatch_cursor",
+      "vi_dispatch_policy",
+      "vi_dispatch_batch"
     ],
     "case_ids": [
       "TC-051",
       "TC-052",
       "TC-053",
-      "TC-054",
       "TC-055",
       "TC-056",
       "TC-057",
@@ -3402,13 +3416,21 @@
       "TC-064",
       "TC-066",
       "TC-017",
-      "TC-065"
+      "TC-065",
+      "TC-D02-001",
+      "TC-D02-002",
+      "TC-D02-003",
+      "TC-D02-004",
+      "TC-D02-005"
     ],
     "scope": "DEVELOPMENT",
     "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
-    "status": "NOT_ASSESSED",
+    "status": "VERIFIED",
     "code_paths": [
-      "docs/implementation/vehicle/D02/"
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/",
+      "xinyi-rongli/src/main/resources/mapper/rongli/dispatch/",
+      "xinyi-ui/src/views/rongli/dispatch/",
+      "xinyi-miniapp/src/features/dispatch/"
     ],
     "test_class": "D02DispatchIT",
     "commands": [
@@ -3428,12 +3450,46 @@
       "access": "不得绕过限制；保存恢复点",
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
-    "scopeRevision": "V6.1-UNCHANGED",
-    "definitionHash": "b81e29562cefdcf24274fcd0b4167330b5bb25f5b4b7515bd6f300f58cb8394f",
-    "evidence": [],
-    "implementation": null,
-    "review": null,
-    "blocker": null
+    "scopeRevision": "V6.4-DISPATCH-INVITES-20261112",
+    "definitionHash": "1ec34daa6ce139e45b068b9dd0c8f129f88b42fb62ecc9609fa8b9c5964694bc",
+    "evidence": [
+      {
+        "path": "docs/implementation/vehicle/evidence/D02-20261113.json",
+        "sha256": "104e50543eba6c5e078341b3a70012115c62bc7f4342dc3411b668afff6b4d4f"
+      }
+    ],
+    "implementation": "docs/implementation/vehicle/D02/report.md",
+    "review": "docs/implementation/vehicle/D02/review.md",
+    "blocker": null,
+    "updatedAt": "2026-11-12T16:25:35.776097+00:00",
+    "related_api_ids": [
+      "API_051_get",
+      "API_052_get",
+      "API_053_post",
+      "API_054_get",
+      "API_098_get",
+      "API_099_get",
+      "API_100_post",
+      "API_101_get"
+    ],
+    "related_page_ids": [
+      "B05",
+      "B05-invite",
+      "B06",
+      "D07",
+      "D08",
+      "D07-list",
+      "D06-occupied"
+    ],
+    "scopeHistory": [
+      {
+        "fromScope": "V6.1-UNCHANGED",
+        "toScope": "V6.4-DISPATCH-INVITES-20261112",
+        "priorStatus": "IN_PROGRESS",
+        "reason": "本轮真实冻结公司、策略、邀约/接受范围适配，保留原证据"
+      }
+    ],
+    "needsAdaptation": false
   },
   {
     "id": "D03",
@@ -3445,7 +3501,8 @@
       "E05"
     ],
     "deliverables": [
-      "调度队列/候选/邀约记录/规则和影响预览"
+      "调度队列/候选/邀约记录/规则和影响预览",
+      "当前API098–101/B05/B06已由D02共享真实回归覆盖；剩余102–105尤其旧计划影响预览/应用仍待D03完成，当前测试为D02DispatchIT"
     ],
     "negative_checks": [
       "人工派单仍需司机接受",
@@ -3470,17 +3527,19 @@
       "B24-impact"
     ],
     "tables": [],
-    "case_ids": [],
+    "case_ids": [
+      "TC-054"
+    ],
     "scope": "DEVELOPMENT",
     "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
-    "status": "NOT_ASSESSED",
+    "status": "IN_PROGRESS",
     "code_paths": [
       "xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/",
       "xinyi-rongli/src/main/resources/mapper/rongli/dispatch/",
-      "xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/controller/",
       "xinyi-ui/src/views/rongli/dispatch/",
       "xinyi-ui/src/api/rongli/dispatch.ts",
-      "xinyi-miniapp/src/features/dispatch/"
+      "xinyi-miniapp/src/features/dispatch/",
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/controller/"
     ],
     "test_class": "D03DispatchIT",
     "commands": [
@@ -3501,11 +3560,27 @@
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
     "scopeRevision": "V6.1-UNCHANGED",
-    "definitionHash": "9881ddca29d8d5d4caf2aaf19877db9b8a8cb96500fd37f9b12fe47c39a05a79",
+    "definitionHash": "81937cf8e47cb944a0a42340a0c644b581dcaa0f26fcdbb74501194194ebfedb",
     "evidence": [],
-    "implementation": null,
+    "implementation": "docs/implementation/vehicle/D02/report.md",
     "review": null,
-    "blocker": null
+    "blocker": null,
+    "partialImplementation": {
+      "completedApiIds": [
+        "API_098_get",
+        "API_099_get",
+        "API_100_post",
+        "API_101_get"
+      ],
+      "pendingApiIds": [
+        "API_102_get",
+        "API_103_put",
+        "API_104_post",
+        "API_105_post"
+      ],
+      "note": "后台子范围已验，任务整体未完成，旧计划影响预览/应用后续"
+    },
+    "updatedAt": "2026-11-12T16:25:35.835675+00:00"
   },
   {
     "id": "D04",
@@ -3517,7 +3592,7 @@
       "E04"
     ],
     "deliverables": [
-      "本人邀约列表详情响应、当前承接，响应版本和占用转换"
+      "本人邀约列表详情响应、当前承接，响应版本和占用转换；本轮与D02共用实际D02DispatchIT验证，69为同一集合不重复累计"
     ],
     "negative_checks": [
       "超时与接受只一成功",
@@ -3532,7 +3607,8 @@
     ],
     "page_ids": [
       "D07",
-      "D08"
+      "D08",
+      "D07-list"
     ],
     "tables": [
       "vi_driver_assignment"
@@ -3540,18 +3616,18 @@
     "case_ids": [],
     "scope": "DEVELOPMENT",
     "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
-    "status": "NOT_ASSESSED",
+    "status": "VERIFIED",
     "code_paths": [
       "xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/",
       "xinyi-rongli/src/main/resources/mapper/rongli/dispatch/",
-      "xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/controller/",
       "xinyi-ui/src/views/rongli/dispatch/",
       "xinyi-ui/src/api/rongli/dispatch.ts",
-      "xinyi-miniapp/src/features/dispatch/"
+      "xinyi-miniapp/src/features/dispatch/",
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/controller/"
     ],
-    "test_class": "D04DispatchIT",
+    "test_class": "D02DispatchIT",
     "commands": [
-      "mvn -pl xinyi-admin -am -Pvi-it -Dit.test=D04DispatchIT verify",
+      "mvn -pl xinyi-admin -am -Pvi-it -Dit.test=D02DispatchIT verify",
       "npm --prefix xinyi-ui run build:prod",
       "npm --prefix xinyi-miniapp run build:mp-weixin"
     ],
@@ -3567,12 +3643,27 @@
       "access": "不得绕过限制；保存恢复点",
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
-    "scopeRevision": "V6.1-UNCHANGED",
-    "definitionHash": "69fd9e6103260c9eeb92c17a1fe81ec2339478ced5cfb1daa3fd6c8a1653a4e9",
-    "evidence": [],
-    "implementation": null,
-    "review": null,
-    "blocker": null
+    "scopeRevision": "V6.4-DISPATCH-RESPONSE-20261112",
+    "definitionHash": "8c54410efa2fe45af7ea656c2e44e2f4ce5b630d659c52fadee8c87f8da65a64",
+    "evidence": [
+      {
+        "path": "docs/implementation/vehicle/evidence/D04-20261113.json",
+        "sha256": "e5145af34f40f28c25b208cb576e0f5be25c4081b14befe27dffcfc801a30aa0"
+      }
+    ],
+    "implementation": "docs/implementation/vehicle/D02/report.md",
+    "review": "docs/implementation/vehicle/D02/review.md",
+    "blocker": null,
+    "scopeHistory": [
+      {
+        "fromScope": "V6.1-UNCHANGED",
+        "toScope": "V6.4-DISPATCH-RESPONSE-20261112",
+        "priorStatus": "NOT_ASSESSED",
+        "reason": "本轮真实冻结公司、策略、邀约/接受范围适配，保留原证据"
+      }
+    ],
+    "needsAdaptation": false,
+    "updatedAt": "2026-11-12T16:25:35.807899+00:00"
   },
   {
     "id": "D05",

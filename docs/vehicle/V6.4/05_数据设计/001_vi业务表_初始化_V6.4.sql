@@ -380,6 +380,10 @@ CREATE TABLE `vi_order` (
   `created_at` DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3)) COMMENT '创建时间，统一UTC',
   `updated_at` DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3)) COMMENT 'UTC更新时间；Mapper每次修改显式SET updated_at=UTC_TIMESTAMP(3)，不依赖连接时区',
   `version` BIGINT NOT NULL DEFAULT 0 COMMENT '乐观锁版本',
+  `service_company_id` BIGINT NULL COMMENT '下单时冻结站点所属服务公司；历史未知不猜回填',
+  `dispatch_policy_version` BIGINT NULL COMMENT '下单时冻结公司派单策略版本；缺失转人工',
+  `dispatch_policy_snapshot` JSON NULL COMMENT '冻结公司派单策略及内容认证，不追用当前策略',
+  KEY ix_order_service_company (service_company_id,id),
   PRIMARY KEY (`id`),
   UNIQUE KEY uk_order_no (order_no),
   UNIQUE KEY uk_quote (quote_id),
@@ -426,6 +430,22 @@ CREATE TABLE `vi_dispatch_invite` (
   `created_at` DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3)) COMMENT '创建时间，统一UTC',
   `updated_at` DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3)) COMMENT 'UTC更新时间；Mapper每次修改显式SET updated_at=UTC_TIMESTAMP(3)，不依赖连接时区',
   `version` BIGINT NOT NULL DEFAULT 0 COMMENT '乐观锁版本',
+  `batch_id` BIGINT NULL COMMENT '所属持久派单批次；历史NULL不猜',
+  `service_company_id` BIGINT NULL COMMENT '原订单冻结服务公司',
+  `company_revision` BIGINT NULL COMMENT '发邀约时真实司机公司epoch',
+  `distance_meter` INT NULL COMMENT 'GCJ02直线距离，非道路里程',
+  `driver_session_id` BIGINT NULL COMMENT '候选位置和交互绑定的真实有效设备会话',
+  `driver_context_version` BIGINT NULL COMMENT '可信设备DRIVER上下文版本',
+  `driver_location_version` BIGINT NULL COMMENT '发出时最近点版本',
+  `driver_presence_version` BIGINT NULL COMMENT '发出时最近交互版本',
+  `issued_by_user_id` BIGINT NULL COMMENT '人工邀约操作者，自动为NULL',
+  `reason_cipher` MEDIUMBLOB NULL COMMENT '人工或响应原因的认证加密封装',
+  `active_driver` BIGINT GENERATED ALWAYS AS (IF(status='WAIT_RESPONSE',driver_id,NULL)) STORED COMMENT '同司机最多一份待响应邀约，旧终态不占用',
+  UNIQUE KEY uk_dispatch_batch_driver (batch_id,driver_id),
+  UNIQUE KEY uk_dispatch_active_driver (active_driver),
+  KEY ix_dispatch_batch_status (batch_id,status,id),
+  CONSTRAINT ck_dispatch_invite_distance CHECK (distance_meter IS NULL OR distance_meter>=0),
+  CONSTRAINT ck_dispatch_invite_source CHECK (`source` IN ('AUTO','MANUAL')),
   PRIMARY KEY (`id`),
   UNIQUE KEY uk_active_order (active_order),
   KEY ix_driver_status (driver_id,status),
@@ -2338,3 +2358,60 @@ CREATE TABLE `vi_driver_listening_config` (
   ),
   CONSTRAINT ck_driver_listening_config_version CHECK (version>=0)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='同公司共用每日听单截止与位置/可达参数';
+
+CREATE TABLE `vi_dispatch_policy` (
+  `owner_dept_id` BIGINT NOT NULL COMMENT '权威服务公司，不从管理员主部门推断',
+  `invite_response_seconds` INT NOT NULL COMMENT '1..3600，明确配置无默认',
+  `radius_meter` INT NOT NULL COMMENT '1..1000000，初圈直线半径',
+  `expanded_radius_meter` INT NOT NULL COMMENT '不小于初圈且不超过1000000',
+  `overall_deadline_seconds` INT NOT NULL COMMENT '1..86400，自动总截止',
+  `license_compatibility` JSON NOT NULL COMMENT '明确业务车型与准驾类别允许集合，不自动推导法律准驾',
+  `config_hash` BINARY(32) NOT NULL COMMENT '策略内容HMAC认证摘要',
+  `updated_by_user_id` BIGINT NOT NULL COMMENT '真实后台操作者',
+  `version` BIGINT NOT NULL DEFAULT 0 COMMENT '独立CAS，首次成功写入1',
+  `created_at` DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3)) COMMENT '创建UTC时间',
+  `updated_at` DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3)) COMMENT 'UTC更新时间，Mapper显式维护',
+  PRIMARY KEY (`owner_dept_id`),
+  CONSTRAINT ck_dispatch_policy_ranges CHECK (
+    invite_response_seconds BETWEEN 1 AND 3600
+    AND radius_meter BETWEEN 1 AND 1000000
+    AND expanded_radius_meter BETWEEN radius_meter AND 1000000
+    AND overall_deadline_seconds BETWEEN 1 AND 86400
+  ),
+  CONSTRAINT ck_dispatch_policy_license CHECK (
+    JSON_TYPE(license_compatibility)='ARRAY' AND JSON_LENGTH(license_compatibility) BETWEEN 1 AND 200
+  ),
+  CONSTRAINT ck_dispatch_policy_version CHECK (version>=0)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='同公司共享的明确派单策略；新订单冻结，不追改旧单';
+
+CREATE TABLE `vi_dispatch_batch` (
+  `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '数据库自增Long，API十进制字符串',
+  `order_id` BIGINT NOT NULL COMMENT '原订单',
+  `run_no` INT NOT NULL COMMENT '本订单递增批次号',
+  `service_company_id` BIGINT NOT NULL COMMENT '原订单冻结服务公司',
+  `source` VARCHAR(16) NOT NULL COMMENT 'DispatchSource: AUTO,MANUAL',
+  `status` VARCHAR(24) NOT NULL COMMENT 'DispatchBatchStatus: RUNNING,WAIT_RESPONSE,PAUSED,ASSIGNED,MANUAL,CLOSED',
+  `policy_version` BIGINT NOT NULL COMMENT '原订单冻结策略版本',
+  `policy_snapshot` JSON NOT NULL COMMENT '原订单明确策略和认证，不随当前配置变化',
+  `started_at` DATETIME(3) NOT NULL COMMENT '开始UTC时刻',
+  `deadline_at` DATETIME(3) NOT NULL COMMENT '绝对总截止，与接车开始取较早者',
+  `radius_stage` INT NOT NULL DEFAULT 0 COMMENT '0初圈，1唯一扩圈',
+  `reason_code` VARCHAR(64) NULL COMMENT '当前转人工或暂停原因，非内部明文意见',
+  `version` BIGINT NOT NULL DEFAULT 0 COMMENT 'CAS版本',
+  `created_at` DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3)) COMMENT '创建UTC时间',
+  `updated_at` DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3)) COMMENT 'UTC更新时间，Mapper显式维护',
+  `active_order` BIGINT GENERATED ALWAYS AS (
+    IF(status IN ('RUNNING','WAIT_RESPONSE','PAUSED'),order_id,NULL)
+  ) STORED COMMENT '每订单唯一活动派单批次',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY uk_dispatch_batch_run (order_id,run_no),
+  UNIQUE KEY uk_dispatch_batch_active_order (active_order),
+  KEY ix_dispatch_batch_deadline (status,deadline_at,id),
+  CONSTRAINT ck_dispatch_batch_source CHECK (`source` IN ('AUTO','MANUAL')),
+  CONSTRAINT ck_dispatch_batch_status CHECK (
+    `status` IN ('RUNNING','WAIT_RESPONSE','PAUSED','ASSIGNED','MANUAL','CLOSED')
+  ),
+  CONSTRAINT ck_dispatch_batch_version CHECK (version>=0 AND run_no>0 AND policy_version>=0),
+  CONSTRAINT ck_dispatch_batch_radius CHECK (radius_stage IN (0,1)),
+  CONSTRAINT ck_dispatch_batch_deadline CHECK (deadline_at>started_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='单订单持久轮转批次，绝对截止和一次扩圈';

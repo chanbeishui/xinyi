@@ -1,10 +1,11 @@
 # D03 · 人工邀约与计划变更
 
 阶段：M3；责任域：dispatch；前置：D02, E05。
-范围版本：`V6.1-UNCHANGED`；definitionHash：`9881ddca29d8d5d4caf2aaf19877db9b8a8cb96500fd37f9b12fe47c39a05a79`。
+范围版本：`V6.1-UNCHANGED`；definitionHash：`81937cf8e47cb944a0a42340a0c644b581dcaa0f26fcdbb74501194194ebfedb`。
 
 ## 本任务交付
 - 调度队列/候选/邀约记录/规则和影响预览
+- 当前API098–101/B05/B06已由D02共享真实回归覆盖；剩余102–105尤其旧计划影响预览/应用仍待D03完成，当前测试为D02DispatchIT
 
 ## 必测失败与并发
 - 人工派单仍需司机接受
@@ -16,15 +17,15 @@
 接口：API_098_get, API_099_get, API_100_post, API_101_get, API_102_get, API_103_put, API_104_post, API_105_post
 画板：B05, B05-invite, B06, B24, B24-impact
 主责任表：无
-验收：无
+验收：TC-054
 
 ## 代码落位
 `xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/`
 `xinyi-rongli/src/main/resources/mapper/rongli/dispatch/`
-`xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/dispatch/`
 `xinyi-ui/src/views/rongli/dispatch/`
 `xinyi-ui/src/api/rongli/dispatch.ts`
 `xinyi-miniapp/src/features/dispatch/`
+`xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/controller/`
 
 ## 验证命令
 ```bash

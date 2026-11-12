@@ -1,0 +1,76 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites>
+  <testsuite name="com.xinyi.web.viit.D02DispatchIT" tests="69" failures="1" errors="0" skipped="0" time="49.76">
+    <testcase name="crossCompanyDriverIsExcludedEvenWithFreshPositionAndManualSelection" classname="com.xinyi.web.viit.D02DispatchIT" time="3.115" />
+    <testcase name="stalePositionAndReachabilityNeverBecomeCandidatesJustBecauseListeningIsOn" classname="com.xinyi.web.viit.D02DispatchIT" time="1.001" />
+    <testcase name="missingInitialRadiusCandidateExpandsOnceAndDoesNotInviteTheSameDriverAgain" classname="com.xinyi.web.viit.D02DispatchIT" time="0.983" />
+    <testcase name="missingCompanyPolicyIsReadOnlyAndNeverInventsOperationalDefaults" classname="com.xinyi.web.viit.D02DispatchIT" time="0.535" />
+    <testcase name="expiredSourceSessionAndChangedContextDoNotSurviveInCandidateCache" classname="com.xinyi.web.viit.D02DispatchIT" time="1.162" />
+    <testcase name="companyEpochRoundTripCannotRevivePreviouslyTrustedPositionOrReachability" classname="com.xinyi.web.viit.D02DispatchIT" time="0.85" />
+    <testcase name="manualInvitationRemainsPendingAndDoesNotMoveAutomaticFairnessCursor" classname="com.xinyi.web.viit.D02DispatchIT" time="0.758" />
+    <testcase name="anotherDriverCannotEnumerateOrAnswerInvitesByChangingTheId" classname="com.xinyi.web.viit.D02DispatchIT" time="0.951" />
+    <testcase name="acceptedReplayCannotOverwriteANewerAssignmentOrReacquireReleasedResponsibility" classname="com.xinyi.web.viit.D02DispatchIT" time="0.917" />
+    <testcase name="policyLicenseMatrixRejectsMissingDuplicateUnknownAndForgedMappings" classname="com.xinyi.web.viit.D02DispatchIT" time="0.403" />
+    <testcase name="unconfiguredOrderStillBuildsAndPaysButDispatchRequiresManualCoordination" classname="com.xinyi.web.viit.D02DispatchIT" time="0.665" />
+    <testcase name="paymentAfterFrozenPlanImmediatelyEntersCurrentBatchWithoutNextDayDelay" classname="com.xinyi.web.viit.D02DispatchIT" time="0.639" />
+    <testcase name="manualInviteNeedsOrderScopeAndDedicatedCreateAndReadPermissions" classname="com.xinyi.web.viit.D02DispatchIT" time="0.589" />
+    <testcase name="approvedRefundOnlyReservationAllowsServiceWhileUnexplainedBalanceBlocksIt" classname="com.xinyi.web.viit.D02DispatchIT" time="0.822" />
+    <testcase name="revokedInviteRequiresDedicatedPermissionAndReleasesOnlyUnacceptedHolder" classname="com.xinyi.web.viit.D02DispatchIT" time="0.6" />
+    <testcase name="unpaidOrderNeverCreatesBatchInvitationOrDriverOccupancy" classname="com.xinyi.web.viit.D02DispatchIT" time="0.518" />
+    <testcase name="realOrderFreezesServiceCompanyMatchingHistoricalPaymentReceiver" classname="com.xinyi.web.viit.D02DispatchIT" time="0.624" />
+    <testcase name="automaticInviteOccupiesDriverButDoesNotPretendHeAlreadyAccepted" classname="com.xinyi.web.viit.D02DispatchIT" time="0.532" />
+    <testcase name="oldAdminAuthVersionAndRevokedMiniStayRejectedWhenRedisEvictionFails" classname="com.xinyi.web.viit.D02DispatchIT" time="0.604" />
+    <testcase name="inaccurateLocationAndOutsideExpandedRadiusCannotBeManuallyBypassed" classname="com.xinyi.web.viit.D02DispatchIT" time="0.56" />
+    <testcase name="singleInviteIsCappedByCompanyListeningCutoffAndCannotExtendItByReplay" classname="com.xinyi.web.viit.D02DispatchIT" time="0.521" />
+    <testcase name="expiredOldInviteTimerCannotDeleteAnAssignmentForANewerOrder" classname="com.xinyi.web.viit.D02DispatchIT" time="0.71" />
+    <testcase name="policyConcurrentUpdatesCommitOneVersionAndOneSuccessEvent" classname="com.xinyi.web.viit.D02DispatchIT" time="0.352" />
+    <testcase name="policyRejectsUnknownFieldsInternalScopeMalformedIdsAndNonIntegerValues" classname="com.xinyi.web.viit.D02DispatchIT" time="0.361" />
+    <testcase name="ownerRoleAndFakeClientIdentityCannotReadOrAnswerDriverInvites" classname="com.xinyi.web.viit.D02DispatchIT" time="0.621" />
+    <testcase name="explicitLicenseMatrixDoesNotTreatC1AsUniversal" classname="com.xinyi.web.viit.D02DispatchIT" time="0.545" />
+    <testcase name="acceptedInviteCannotBeRevokedAndResponsibilitySurvivesListeningOff" classname="com.xinyi.web.viit.D02DispatchIT" time="0.769" />
+    <testcase name="companyCursorSharedAcrossStationsAdvancesOnlyOnCommittedAutomaticInvites" classname="com.xinyi.web.viit.D02DispatchIT" time="0.805" />
+    <testcase name="policyReadAndWriteNeedBothDedicatedFunctionPermissions" classname="com.xinyi.web.viit.D02DispatchIT" time="0.334" />
+    <testcase name="repeatedWorkerDeliveryDoesNotCreateAnotherBatchOrDuplicateInvitation" classname="com.xinyi.web.viit.D02DispatchIT" time="0.573" />
+    <testcase name="noCandidatesTerminateWithoutAnInvitationStormOrInfiniteRescans" classname="com.xinyi.web.viit.D02DispatchIT" time="0.455" />
+    <testcase name="activePenaltyAndStoppedListeningAreBothRealCandidateGates" classname="com.xinyi.web.viit.D02DispatchIT" time="0.578" />
+    <testcase name="allActualHttpResponseShapesConformToMainOpenApiIncludingCurrentAssignment" classname="com.xinyi.web.viit.D02DispatchIT" time="2.277" />
+    <testcase name="revokedSourceSessionCannotSupplyCandidatesToAnOtherwiseActiveAccount" classname="com.xinyi.web.viit.D02DispatchIT" time="0.706" />
+    <testcase name="manualVersionsAndForgedInternalFieldsCannotChooseOrOverwriteAnotherDriver" classname="com.xinyi.web.viit.D02DispatchIT" time="0.615" />
+    <testcase name="qualificationExpiryIsRecheckedByAutomaticAndManualDispatchBeforeExpiryJobRuns" classname="com.xinyi.web.viit.D02DispatchIT" time="1.11" />
+    <testcase name="scheduledPaymentBeforeFrozenDispatchAtCannotInviteAndAtDeadlineIssuesOnlyOnce" classname="com.xinyi.web.viit.D02DispatchIT" time="0.607" />
+    <testcase name="acceptanceOutboxFailureCannotLeaveTaskPointerOrConvertedOccupancy" classname="com.xinyi.web.viit.D02DispatchIT" time="0.55" />
+    <testcase name="policyDepartmentScopeAndEmptySetFailClosedAndRecordDenials" classname="com.xinyi.web.viit.D02DispatchIT" time="0.366" />
+    <testcase name="policyCasUuidAndIdempotencyDoNotSilentlyOverwriteAnotherVersion" classname="com.xinyi.web.viit.D02DispatchIT" time="0.635" />
+    <testcase name="simultaneousOrdersCanOnlyOccupyTheSameDriverOnceAndContinueToAnotherCandidate" classname="com.xinyi.web.viit.D02DispatchIT" time="0.935" />
+    <testcase name="preacceptInviteProjectionDoesNotLeakPreciseAddressPhoneCoordinatesOrPrivateReason" classname="com.xinyi.web.viit.D02DispatchIT" time="0.524" />
+    <testcase name="accountSecurityEpochChangeInvalidatesSourceFactsWithoutRedisCleanup" classname="com.xinyi.web.viit.D02DispatchIT" time="0.478" />
+    <testcase name="acceptedSameKeyDifferentDecisionConflictsAndRevokedTokenCannotReplay" classname="com.xinyi.web.viit.D02DispatchIT" time="0.487" />
+    <testcase name="policyChangesDoNotRewriteExistingOrderOrUseCurrentRadiusForItsBatch" classname="com.xinyi.web.viit.D02DispatchIT" time="0.567">
+      <failure message="详见验证修复记录；未复制环境/日志正文" />
+    </testcase>
+    <testcase name="trueTwoActiveDriverDevicesAcceptTheSameInviteAndReceiveOnePermanentAssignment" classname="com.xinyi.web.viit.D02DispatchIT" time="0.526" />
+    <testcase name="acceptRechecksSourceDeviceRevocationEvenWhenTheAcceptingDeviceIsStillValid" classname="com.xinyi.web.viit.D02DispatchIT" time="0.538" />
+    <testcase name="administrativePauseBlocksAutomaticAndManualWithoutReleasingCurrentResponsibility" classname="com.xinyi.web.viit.D02DispatchIT" time="0.464" />
+    <testcase name="acceptRechecksAdministrativePauseRatherThanTrustingIssuedInvite" classname="com.xinyi.web.viit.D02DispatchIT" time="0.618" />
+    <testcase name="cancellationDuringInvitePreventsAcceptAndApprovedCancellationClosesOnlyOldInvite" classname="com.xinyi.web.viit.D02DispatchIT" time="0.68" />
+    <testcase name="invitationOutboxFailureRollsBackInviteOccupancyOrderAndCursor" classname="com.xinyi.web.viit.D02DispatchIT" time="0.443" />
+    <testcase name="missingTokensAndWrongRealmsReturnReal401RatherThanSuccessfulEnvelope" classname="com.xinyi.web.viit.D02DispatchIT" time="0.31" />
+    <testcase name="missingHistoricalServiceCompanyNeverGuessesCurrentStationOrReceivingCompany" classname="com.xinyi.web.viit.D02DispatchIT" time="0.438" />
+    <testcase name="acceptAndRejectRaceCommitOneDecisionWithoutTwoTasksOrDanglingHolder" classname="com.xinyi.web.viit.D02DispatchIT" time="0.467" />
+    <testcase name="policyReasonAuditIsAuthenticatedOnceAndNeverLeakedIntoBusinessOutputs" classname="com.xinyi.web.viit.D02DispatchIT" time="0.298" />
+    <testcase name="stationTransferDoesNotMoveOldOrderIntoAnotherCompanyDriverPool" classname="com.xinyi.web.viit.D02DispatchIT" time="0.461" />
+    <testcase name="rejectionReleasesOnlyItsInviteAndContinuesToAnotherEligibleDriver" classname="com.xinyi.web.viit.D02DispatchIT" time="0.725" />
+    <testcase name="twoDifferentDeviceSessionsCannotContributeHalfOfCandidateEvidence" classname="com.xinyi.web.viit.D02DispatchIT" time="0.517" />
+    <testcase name="batchDeadlineWinsOverLongSingleInviteAndDoesNotWaitForAllCandidates" classname="com.xinyi.web.viit.D02DispatchIT" time="0.675" />
+    <testcase name="policyRequiresExplicitPositiveRangesExpansionAndKnownEnums" classname="com.xinyi.web.viit.D02DispatchIT" time="0.309" />
+    <testcase name="acceptAtomicallyConvertsExactOccupancyAndExposesOnlyTheRealCurrentAssignment" classname="com.xinyi.web.viit.D02DispatchIT" time="0.5" />
+    <testcase name="acceptingFromASecondDeviceMayUseTheSameAccountsOtherFullyValidSourceDevice" classname="com.xinyi.web.viit.D02DispatchIT" time="0.51" />
+    <testcase name="policyOutboxFailureRollsBackConfigurationAndAuditBeforeRetry" classname="com.xinyi.web.viit.D02DispatchIT" time="0.351" />
+    <testcase name="freshBackgroundPresenceKeepsListeningAndCanReceiveAnInvite" classname="com.xinyi.web.viit.D02DispatchIT" time="0.421" />
+    <testcase name="responseUnknownKeysBadUuidWrongCasAndClientSessionCannotGrantAssignment" classname="com.xinyi.web.viit.D02DispatchIT" time="0.447" />
+    <testcase name="manualSameKeyReplaysOneInviteAndDifferentBodyCannotExtendItsDeadline" classname="com.xinyi.web.viit.D02DispatchIT" time="0.502" />
+    <testcase name="exactAbsoluteExpiryRejectsAcceptEvenBeforeTheTimerPersistsExpiredStatus" classname="com.xinyi.web.viit.D02DispatchIT" time="0.497" />
+    <testcase name="cancellationApplicationPausesNewInvitationsWithoutPretendingItIsFormalCancellation" classname="com.xinyi.web.viit.D02DispatchIT" time="0.389" />
+    <testcase name="queueHistoryAndCandidatesUseRealOrderDepartmentAndRejectForgedScope" classname="com.xinyi.web.viit.D02DispatchIT" time="0.446" />
+  </testsuite>
+</testsuites>

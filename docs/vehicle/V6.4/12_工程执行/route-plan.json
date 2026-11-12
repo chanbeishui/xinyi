@@ -869,10 +869,11 @@
     "taskId": "D01",
     "status": "NOT_ASSESSED",
     "hostView": "DRIVER_HOME",
-    "note": "D01真实工作页共用D06三态；公司下班固定窗口、独立听单/可达/位置/资格/占用。D02个人邀约/接受不在本轮声称通过。",
+    "note": "D01听单主画板owner不变；本轮追加CurrentAssignment.vue真实当前承接与本人邀约入口，保留D01历史证据。",
     "implementationNote": "components/dispatch/DriverListening.vue与features/dispatch/api.ts/location.ts；工作页前后台事件、GCJ02仅微信真机主动授权；身份变化即清旧坐标和意图，退出未知保原键/凭据，明确成功才清session。",
     "componentTargetPaths": [
-      "xinyi-miniapp/src/components/dispatch/DriverListening.vue"
+      "xinyi-miniapp/src/components/dispatch/DriverListening.vue",
+      "xinyi-miniapp/src/components/dispatch/CurrentAssignment.vue"
     ]
   },
   {
@@ -896,22 +897,24 @@
     "canonicalPage": "D07",
     "title": "单人派单邀约",
     "role": "driver",
-    "targetPath": "xinyi-miniapp/src/subpackages/driver/d07/index.vue",
+    "targetPath": "xinyi-miniapp/src/pages/dispatch/invite.vue",
     "presentation": "PAGE",
     "taskId": "D04",
     "status": "NOT_ASSESSED",
-    "note": "目标实现路径，非已存在源码。状态画板与弹窗不是独立小程序路由；遵守原账号与权限边界。"
+    "note": "D02本轮整链接通，唯一owner保持D04；实际入口 /pages/dispatch/invite?inviteId=真实编号。不声明D03计划104/105或D09履约已完成。",
+    "implementationNote": "所有写入按真实部门及当前会话范围重新鉴权，只按服务端allowedActions操作。未知保留原目标/版本/正文/UUID，不因刷新、换页或显示截止重建意图；409撤回旧有效投影，显式重读后人工决定；任何读取失败撤旧投影。截止只撤本地操作，不客户端代写状态。切账号/角色/上下文即清旧投影及原意图。邀请前不暴露精确地址/坐标/联系方式，不把收费称为本单收入。响应精确6键decision/expectedVersion/expectedOrderVersion/expectedSessionId/expectedContextVersion/reason；人工邀约也需本人接受。接受永久映射原invite→assignment，重放不复制承接。D09履约按钮尚后续。"
   },
   {
     "boardId": "D08",
     "canonicalPage": "D08",
     "title": "邀约失效",
     "role": "driver",
-    "targetPath": "xinyi-miniapp/src/subpackages/driver/d08/index.vue",
+    "targetPath": "xinyi-miniapp/src/pages/dispatch/invite.vue",
     "presentation": "PAGE",
     "taskId": "D04",
     "status": "NOT_ASSESSED",
-    "note": "目标实现路径，非已存在源码。状态画板与弹窗不是独立小程序路由；遵守原账号与权限边界。"
+    "note": "D02本轮整链接通，唯一owner保持D04；实际入口 与D07同真实路由的确定失效状态。不声明D03计划104/105或D09履约已完成。",
+    "implementationNote": "所有写入按真实部门及当前会话范围重新鉴权，只按服务端allowedActions操作。未知保留原目标/版本/正文/UUID，不因刷新、换页或显示截止重建意图；409撤回旧有效投影，显式重读后人工决定；任何读取失败撤旧投影。截止只撤本地操作，不客户端代写状态。切账号/角色/上下文即清旧投影及原意图。失效请求不能建立新承接；历史ACCEPT回执只指向其原assignment，不代表当前任务。显示截止不延长，也不能擦除原未知结果。"
   },
   {
     "boardId": "D09",
@@ -1814,33 +1817,36 @@
     "canonicalPage": "B05",
     "title": "调度台",
     "role": "admin",
-    "targetPath": "xinyi-ui/src/views/rongli/b05/index.vue",
+    "targetPath": "xinyi-ui/src/views/rongli/dispatch/queue.vue",
     "presentation": "PAGE",
     "taskId": "D03",
     "status": "NOT_ASSESSED",
-    "note": "目标实现路径，非已存在源码。状态画板与弹窗不是独立小程序路由；遵守原账号与权限边界。"
+    "note": "D02本轮整链接通，唯一owner保持D03；实际入口 /dispatch/queue。不声明D03计划104/105或D09履约已完成。",
+    "implementationNote": "所有写入按真实部门及当前会话范围重新鉴权，只按服务端allowedActions操作。未知保留原目标/版本/正文/UUID，不因刷新、换页或显示截止重建意图；409撤回旧有效投影，显式重读后人工决定；任何读取失败撤旧投影。截止只撤本地操作，不客户端代写状态。切账号/角色/上下文即清旧投影及原意图。同公司池以建单冻结服务公司为准，站点迁移不漂移旧池；历史缺失不猜主部门。候选只过滤资格/听单/同可信设备位置与可达/车型兼容/半径/处罚/占用。距离为直线过滤非导航ETA，自动按公司游标。人工不推进自动游标。"
   },
   {
     "boardId": "B05-invite",
     "canonicalPage": "B05",
     "title": "人工派单邀约抽屉",
     "role": "admin",
-    "targetPath": "xinyi-ui/src/views/rongli/b05/index.vue",
+    "targetPath": "xinyi-ui/src/views/rongli/dispatch/queue.vue",
     "presentation": "STATE_OR_OVERLAY",
     "taskId": "D03",
     "status": "NOT_ASSESSED",
-    "note": "目标实现路径，非已存在源码。状态画板与弹窗不是独立小程序路由；遵守原账号与权限边界。"
+    "note": "D02本轮整链接通，唯一owner保持D03；实际入口 /dispatch/queue真实候选抽屉。不声明D03计划104/105或D09履约已完成。",
+    "implementationNote": "所有写入按真实部门及当前会话范围重新鉴权，只按服务端allowedActions操作。未知保留原目标/版本/正文/UUID，不因刷新、换页或显示截止重建意图；409撤回旧有效投影，显式重读后人工决定；任何读取失败撤旧投影。截止只撤本地操作，不客户端代写状态。切账号/角色/上下文即清旧投影及原意图。人工写精确5键orderNo/driverId/expectedOrderVersion/expectedDriverVersion/reason；候选最早截止即清候选可操作投影。读取失败不得沿用旧候选。未知按原单和原司机恢复，不重指向新选择。"
   },
   {
     "boardId": "B06",
     "canonicalPage": "B06",
     "title": "派单记录",
     "role": "admin",
-    "targetPath": "xinyi-ui/src/views/rongli/b06/index.vue",
+    "targetPath": "xinyi-ui/src/views/rongli/dispatch/invites.vue",
     "presentation": "PAGE",
     "taskId": "D03",
     "status": "NOT_ASSESSED",
-    "note": "目标实现路径，非已存在源码。状态画板与弹窗不是独立小程序路由；遵守原账号与权限边界。"
+    "note": "D02本轮整链接通，唯一owner保持D03；实际入口 /dispatch/invites。不声明D03计划104/105或D09履约已完成。",
+    "implementationNote": "所有写入按真实部门及当前会话范围重新鉴权，只按服务端allowedActions操作。未知保留原目标/版本/正文/UUID，不因刷新、换页或显示截止重建意图；409撤回旧有效投影，显式重读后人工决定；任何读取失败撤旧投影。截止只撤本地操作，不客户端代写状态。切账号/角色/上下文即清旧投影及原意图。撤回精确3键expectedVersion/expectedOrderVersion/reason，仅释放该INVITE holder并转人工等待；不取消订单或释放已接受承接。原因加密只写不GET回显。"
   },
   {
     "boardId": "B07",
@@ -3985,5 +3991,29 @@
     "status": "NOT_ASSESSED",
     "note": "B24专用公司听单子页，实际route /driver-management/listening-config；须明确选择公司，独立query/edit和真实范围，非C01整页完成。",
     "implementationNote": "api/rongli/listeningPolicy.ts；7键PUT立即生效，无默认/上班时间/自动恢复，CAS/UUID，未知按原公司保存意图。"
+  },
+  {
+    "boardId": "D07-list",
+    "canonicalPage": "D07",
+    "title": "本人派单邀约列表",
+    "role": "driver",
+    "presentation": "STATE_OR_OVERLAY",
+    "status": "NOT_ASSESSED",
+    "taskId": "D04",
+    "targetPath": "xinyi-miniapp/src/pages/dispatch/invites.vue",
+    "note": "D02本轮整链接通，唯一owner保持D04；实际入口 /pages/dispatch/invites。不声明D03计划104/105或D09履约已完成。",
+    "implementationNote": "所有写入按真实部门及当前会话范围重新鉴权，只按服务端allowedActions操作。未知保留原目标/版本/正文/UUID，不因刷新、换页或显示截止重建意图；409撤回旧有效投影，显式重读后人工决定；任何读取失败撤旧投影。截止只撤本地操作，不客户端代写状态。切账号/角色/上下文即清旧投影及原意图。仅DRIVER当前本人；空列表不推断在手服务结束。绝对截止清列表并要求重读，不以旧消息接受。"
+  },
+  {
+    "boardId": "B24-dispatch-company",
+    "canonicalPage": "B24",
+    "title": "公司派单策略",
+    "role": "admin",
+    "presentation": "STATE_OR_OVERLAY",
+    "status": "NOT_ASSESSED",
+    "taskId": "D02",
+    "targetPath": "xinyi-ui/src/views/rongli/dispatch/policy.vue",
+    "note": "D02本轮整链接通，唯一owner保持D02；实际入口 /dispatch/policy。不声明D03计划104/105或D09履约已完成。",
+    "implementationNote": "所有写入按真实部门及当前会话范围重新鉴权，只按服务端allowedActions操作。未知保留原目标/版本/正文/UUID，不因刷新、换页或显示截止重建意图；409撤回旧有效投影，显式重读后人工决定；任何读取失败撤旧投影。截止只撤本地操作，不客户端代写状态。切账号/角色/上下文即清旧投影及原意图。无默认公司/运营值；首次未配置nullable映射空表单，不造完整策略。车型来自启用vi_vehicle_type真实字典；准驾类别由授权管理员明确维护，不推导法定兼容。订单建单冻结原公司策略，新保存不覆盖旧订单或已启动批次；初圈无候选只扩一圈，同批同司机不重邀；总截止优先单邀约。"
   }
 ]

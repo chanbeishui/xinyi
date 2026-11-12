@@ -1,7 +1,8 @@
 package com.xinyi.rongli.order.domain;
 
-import java.time.Instant;
 import com.xinyi.rongli.core.ViRecord;
+
+import java.time.Instant;
 
 public class ViOrder extends ViRecord {
     private String orderNo;
@@ -212,5 +213,35 @@ public class ViOrder extends ViRecord {
 
     public void setAutoConfirmAt(Instant value) {
         autoConfirmAt = value;
+    }
+
+    private Long serviceCompanyId;
+
+    public Long getServiceCompanyId() {
+        return serviceCompanyId;
+    }
+
+    public void setServiceCompanyId(Long value) {
+        serviceCompanyId = value;
+    }
+
+    private Long dispatchPolicyVersion;
+
+    public Long getDispatchPolicyVersion() {
+        return dispatchPolicyVersion;
+    }
+
+    public void setDispatchPolicyVersion(Long value) {
+        dispatchPolicyVersion = value;
+    }
+
+    private String dispatchPolicySnapshot;
+
+    public String getDispatchPolicySnapshot() {
+        return dispatchPolicySnapshot;
+    }
+
+    public void setDispatchPolicySnapshot(String value) {
+        dispatchPolicySnapshot = value;
     }
 }

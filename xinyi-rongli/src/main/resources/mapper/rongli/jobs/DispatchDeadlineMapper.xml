@@ -16,6 +16,16 @@
         WHERE s.id = #{stationId} AND s.dept_id = #{deptId} AND s.enabled = 1
           AND d.status = '0' AND d.del_flag = '0'
     </select>
+    <!-- 已冻结服务公司的订单允许站点后来迁部门；运营状态读取当前站点，但原单权限和司机池仍使用原快照。 -->
+    <select id="stationOperational" resultType="int">
+        SELECT COUNT(*)
+        FROM vi_station s
+        JOIN sys_dept d ON d.dept_id=s.dept_id
+        WHERE s.id=#{stationId}
+            AND s.enabled=1
+            AND d.status='0'
+            AND d.del_flag='0'
+    </select>
     <select id="confirmedReservations" resultType="int">
         SELECT COUNT(DISTINCT s.quota_type) FROM vi_quota_reservation r
         JOIN vi_quota_slot s ON s.id = r.slot_id

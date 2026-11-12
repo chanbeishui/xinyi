@@ -1,0 +1,105 @@
+{
+  "exitCode": 1,
+  "integrationTests": 69,
+  "unitTests": 50,
+  "suites": [
+    {
+      "suite": "com.xinyi.web.viit.ViTestResourceCustomizerFactoryTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "com.xinyi.framework.web.service.TokenServiceTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "com.xinyi.rongli.booking.TencentRouteGatewayTest",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "com.xinyi.rongli.dispatch.ListeningDayPolicyTest",
+      "tests": 9,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "com.xinyi.rongli.file.TrainingMediaInspectorTest",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "com.xinyi.rongli.integration.IntegrationInputTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "com.xinyi.rongli.payment.PaymentEnvironmentTest",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "com.xinyi.rongli.platform.IdempotencyMacTest",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "com.xinyi.rongli.platform.PlatformPrimitivesTest",
+      "tests": 6,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "com.xinyi.rongli.platform.SecretGuardTest",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "com.xinyi.rongli.pricing.PriceCalculatorTest",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "com.xinyi.rongli.pricing.PriceEnvironmentTest",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "com.xinyi.system.service.impl.DeptScopeServiceImplTest",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "com.xinyi.web.viit.D02DispatchIT",
+      "tests": 69,
+      "failures": 1,
+      "errors": 0,
+      "skipped": 0
+    }
+  ]
+}

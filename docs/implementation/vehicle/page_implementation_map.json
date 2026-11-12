@@ -734,11 +734,16 @@
     "status": "VERIFIED",
     "implementationFile": "xinyi-miniapp/src/components/dispatch/DriverListening.vue",
     "evidence": [
-      "docs/implementation/vehicle/evidence/D01-20261112.json"
+      "docs/implementation/vehicle/evidence/D01-20261112.json",
+      "docs/implementation/vehicle/evidence/D02-20261113.json"
     ],
     "boardId": "D06-occupied",
     "taskId": "D01",
-    "scopeNote": "D01配置/基础工作状态已验；实际邀约、接受与履约跳转依赖D02及后续任务，不以本页判定整链完成。"
+    "scopeNote": "D01配置/基础工作状态已验；实际邀约、接受与履约跳转依赖D02及后续任务，不以本页判定整链完成。",
+    "additionalImplementationFiles": [
+      "xinyi-miniapp/src/components/dispatch/CurrentAssignment.vue"
+    ],
+    "d02Scope": "新增本人真实当前承接卡；保留D01旧证据及原owner"
   },
   {
     "status": "VERIFIED",
@@ -751,16 +756,20 @@
     "scopeNote": "D01配置/基础工作状态已验；实际邀约、接受与履约跳转依赖D02及后续任务，不以本页判定整链完成。"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "VERIFIED",
+    "implementationFile": "xinyi-miniapp/src/pages/dispatch/invite.vue",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/D04-20261113.json"
+    ],
     "boardId": "D07",
     "taskId": "D04"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "VERIFIED",
+    "implementationFile": "xinyi-miniapp/src/pages/dispatch/invite.vue",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/D04-20261113.json"
+    ],
     "boardId": "D08",
     "taskId": "D04"
   },
@@ -1446,23 +1455,29 @@
     "remainingScope": "原画板业务写动作、未在主OpenAPI提供的搜索条件及专用待办由后续任务交付；不宣称完整画板验收"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "VERIFIED",
+    "implementationFile": "xinyi-ui/src/views/rongli/dispatch/queue.vue",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/D02-20261113.json"
+    ],
     "boardId": "B05",
     "taskId": "D03"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "VERIFIED",
+    "implementationFile": "xinyi-ui/src/views/rongli/dispatch/queue.vue",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/D02-20261113.json"
+    ],
     "boardId": "B05-invite",
     "taskId": "D03"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "VERIFIED",
+    "implementationFile": "xinyi-ui/src/views/rongli/dispatch/invites.vue",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/D02-20261113.json"
+    ],
     "boardId": "B06",
     "taskId": "D03"
   },
@@ -3053,5 +3068,23 @@
     "boardId": "B24-listening-company",
     "taskId": "D01",
     "scopeNote": "D01配置/基础工作状态已验；实际邀约、接受与履约跳转依赖D02及后续任务，不以本页判定整链完成。"
+  },
+  {
+    "status": "VERIFIED",
+    "implementationFile": "xinyi-miniapp/src/pages/dispatch/invites.vue",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/D04-20261113.json"
+    ],
+    "boardId": "D07-list",
+    "taskId": "D04"
+  },
+  {
+    "status": "VERIFIED",
+    "implementationFile": "xinyi-ui/src/views/rongli/dispatch/policy.vue",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/D02-20261113.json"
+    ],
+    "boardId": "B24-dispatch-company",
+    "taskId": "D02"
   }
 ]

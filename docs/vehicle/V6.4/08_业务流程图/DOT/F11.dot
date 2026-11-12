@@ -1,7 +1,9 @@
 digraph G {
-graph [rankdir=TB,bgcolor="white",pad="0.3",nodesep="0.3",ranksep="0.45",fontname="Noto Sans CJK SC",label="F11 · 代驾取消承接与原单重派",labelloc=t,fontsize=20];
-node [shape=box,style="rounded,filled",fillcolor="#F2F6FC",color="#B5C9E5",fontname="Noto Sans CJK SC",fontsize=12,margin=".15,.12"];
-edge [color="#607A9C",fontname="Noto Sans CJK SC",fontsize=10];
+graph [rankdir=TB,bgcolor="white",fontname="PingFang SC",label="F11 · 代驾取消承接与原单重派",labelloc=t];
+node [shape=box,style="rounded,filled",fontname="PingFang SC",fillcolor="#F2F6FC"];
+edge [fontname="PingFang SC"];
+boundary [label="D02仅等待邀约撤回；接受后保持责任\n以下主动取消/处罚为后续设计，未验收"];
+boundary -> n1 [style=dashed];
 n1 [label="代驾在履约详情申请取消接单"];
 n2 [label="车辆已接走？",shape=diamond];
 n3 [label="禁止自助解除，联系运营保持责任"];

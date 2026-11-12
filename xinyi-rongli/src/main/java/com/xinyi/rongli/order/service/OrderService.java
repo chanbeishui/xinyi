@@ -1,27 +1,28 @@
 package com.xinyi.rongli.order.service;
 
-import com.xinyi.rongli.order.domain.*;
-import com.xinyi.rongli.order.dto.*;
-import com.xinyi.rongli.order.mapper.OrderMapper;
+import com.xinyi.rongli.address.dto.GeoPoint;
+import com.xinyi.rongli.address.service.AddressCrypto;
 import com.xinyi.rongli.booking.mapper.QuoteMapper;
 import com.xinyi.rongli.booking.service.QuoteService;
-import com.xinyi.rongli.booking.dto.QuoteView;
-import com.xinyi.rongli.capacity.mapper.ViQuotaSlotMapper;
 import com.xinyi.rongli.capacity.domain.ViQuotaSlot;
-import com.xinyi.rongli.station.mapper.ViStationMapper;
+import com.xinyi.rongli.capacity.mapper.ViQuotaSlotMapper;
+import com.xinyi.rongli.core.ViId;
 import com.xinyi.rongli.identity.mapper.EmployeeDirectoryGuardMapper;
 import com.xinyi.rongli.identity.mapper.ViAccountMapper;
 import com.xinyi.rongli.identity.service.PhoneCrypto;
-import com.xinyi.rongli.address.service.AddressCrypto;
-import com.xinyi.rongli.address.dto.GeoPoint;
+import com.xinyi.rongli.order.domain.*;
+import com.xinyi.rongli.order.dto.*;
+import com.xinyi.rongli.order.mapper.OrderMapper;
 import com.xinyi.rongli.platform.actor.*;
 import com.xinyi.rongli.platform.error.*;
 import com.xinyi.rongli.platform.json.ViJson;
 import com.xinyi.rongli.platform.service.*;
-import com.xinyi.rongli.core.ViId;
+import com.xinyi.rongli.station.mapper.ViStationMapper;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
+
 import java.time.Instant;
 import java.util.*;
 
@@ -29,6 +30,7 @@ import java.util.*;
 public class OrderService {
     private static final String ACTION = "POST /api/app/owner/orders";
     private final com.xinyi.rongli.jobs.service.DispatchPlan dispatchPlan;
+    private final com.xinyi.rongli.dispatch.service.DispatchPolicyService dispatchPolicy;
     private final OrderProjection projection;
     private final OrderMapper mapper;
     private final QuoteMapper quoteMapper;
@@ -49,6 +51,7 @@ public class OrderService {
 
     public OrderService(
             com.xinyi.rongli.jobs.service.DispatchPlan dispatchPlan,
+            com.xinyi.rongli.dispatch.service.DispatchPolicyService dispatchPolicy,
             OrderProjection projection,
             OrderMapper mapper,
             QuoteMapper quoteMapper,
@@ -67,6 +70,7 @@ public class OrderService {
             OutboxService outbox,
             PlatformTransactionManager manager) {
         this.dispatchPlan = dispatchPlan;
+        this.dispatchPolicy = dispatchPolicy;
         this.projection = projection;
         this.mapper = mapper;
         this.quoteMapper = quoteMapper;
@@ -237,6 +241,7 @@ public class OrderService {
                                             row.setTotalFen(quote.getAmountFen());
                                             row.setTermsVersion(input.termsVersion());
                                             dispatchPlan.snapshot(row);
+                                            dispatchPolicy.freeze(row, payment.receiverDeptId());
                                             mapper.insert(row);
                                             var stationView =
                                                     new OwnerOrderView.Station(

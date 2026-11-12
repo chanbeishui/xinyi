@@ -428,7 +428,7 @@
     "testFiles": [],
     "evidence": null,
     "caseId": "TC-054",
-    "taskId": "D02",
+    "taskId": "D03",
     "testMethod": "test_tc_054"
   },
   {
@@ -3273,5 +3273,45 @@
     "testFiles": [],
     "evidence": null,
     "testMethod": "case_tc_d01_005"
+  },
+  {
+    "status": "NOT_RUN",
+    "testFiles": [],
+    "evidence": [],
+    "caseId": "TC-D02-001",
+    "taskId": "D02",
+    "testMethod": "pending_actual_test_method"
+  },
+  {
+    "status": "NOT_RUN",
+    "testFiles": [],
+    "evidence": [],
+    "caseId": "TC-D02-002",
+    "taskId": "D02",
+    "testMethod": "pending_actual_test_method"
+  },
+  {
+    "status": "NOT_RUN",
+    "testFiles": [],
+    "evidence": [],
+    "caseId": "TC-D02-003",
+    "taskId": "D02",
+    "testMethod": "pending_actual_test_method"
+  },
+  {
+    "status": "NOT_RUN",
+    "testFiles": [],
+    "evidence": [],
+    "caseId": "TC-D02-004",
+    "taskId": "D02",
+    "testMethod": "pending_actual_test_method"
+  },
+  {
+    "status": "NOT_RUN",
+    "testFiles": [],
+    "evidence": [],
+    "caseId": "TC-D02-005",
+    "taskId": "D02",
+    "testMethod": "pending_actual_test_method"
   }
 ]

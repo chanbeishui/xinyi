@@ -1,0 +1,386 @@
+{
+  "taskId": "D02",
+  "reviewedTaskIds": [
+    "D02",
+    "D04"
+  ],
+  "approvedTaskIds": [
+    "D02",
+    "D04"
+  ],
+  "reviewer": "/root/f01_tests（只编写测试与复核，未编写生产代码）",
+  "approved": true,
+  "date": "2026-11-13",
+  "baseline": "4df721d",
+  "sourceScopeRevision": "V6.4-DISPATCH-INVITES-20261112",
+  "scope": "公司冻结策略/公平轮转、真实来源候选、自动/人工邀约、本人接受拒绝及永久承接、绝对截止/取消生命周期/精确holder、权限事务审计、C01真实改N与唯一行/锁内授权、前端未知恢复与资料同步。D04四API及页面同轮完整复核；D03预览/应用仍后续。",
+  "sources": {
+    "docs/implementation/vehicle/D02/verify_schema.py": "c6c285b62dca2d2b847a30a5afb05857807219c8bd1e59b08b5c9062e4d22539",
+    "docs/vehicle/V6.4/01_PRD/page_specs_V6.4.json": "3afce4362d1a59daede3e91dde49bc2ce1862662732399350048cca39f71a0c5",
+    "docs/vehicle/V6.4/01_PRD/全量页面与交互规格_V6.4.html": "cd7e779e62e59386643d1aa4e93b01a2b99ffcd081810da370884ac5d6f5ca0a",
+    "docs/vehicle/V6.4/01_PRD/全量页面与交互规格_V6.4.md": "afe62e846ddb95b00325823e06131a7879146970eed62ef754be30d85a84fc52",
+    "docs/vehicle/V6.4/01_PRD/机动车检测预约_PRD_V6.4_完整整合版.html": "4eaba99609dd2fcb766a9393231d47adb932ca2dfdaf47a2eb5c20b581b40132",
+    "docs/vehicle/V6.4/01_PRD/机动车检测预约_PRD_V6.4_完整整合版.md": "f59095e225e5b6c5112ccb10b5ceafcbb7283beed2fdcec0ec1a528be30779d8",
+    "docs/vehicle/V6.4/02_UI/build.py": "a5bb842547ec24a906dcd337d7348635b09f0c03024e70e8d27a46b071a1abc4",
+    "docs/vehicle/V6.4/02_UI/index.html": "1f475bcbd6e165ce4f3075fbf241c93536e23d5ac62e6fd1eb7583b04e0e818c",
+    "docs/vehicle/V6.4/02_UI/src/app.js": "a9e287a7506af8eb01f1865d74fa384901c85e4a2b32b4ac0c3037df283be0a6",
+    "docs/vehicle/V6.4/02_UI/src/catalog.js": "48e4cd4143424eb25aa16acdbb00a0ae53c6e7fbcd6ed9c82fae85515dd38827",
+    "docs/vehicle/V6.4/02_UI/src/dispatch_invites.js": "dd009eaa14ba2672e40d30c486cd4e1b18cafd782355266fa9055d01513a1c1c",
+    "docs/vehicle/V6.4/02_UI/src/dispatch_pages.js": "7822b496dea1d082749439ae0e292db2beb0f2980cfff54a0ee372bee750acd6",
+    "docs/vehicle/V6.4/02_UI/src/prd_pages.json": "e42088064fbf5e1836f5c4b150f4490e02522602ac2ad627d045f17396a954da",
+    "docs/vehicle/V6.4/02_UI/全量页面图/完整内容/B05-invite.png": "4d53f238148d07cdebfb213d35822e446038813edea3b1cec446f5dc94991730",
+    "docs/vehicle/V6.4/02_UI/全量页面图/完整内容/B05.png": "a6847452018a829f891943cbcda73fdade2bc73ce13d85a4d88a635ea8be948f",
+    "docs/vehicle/V6.4/02_UI/全量页面图/完整内容/B06.png": "80970524df430c75ca53c2550405afcbe1b363a2255f806aff494d2e73e5e4ea",
+    "docs/vehicle/V6.4/02_UI/全量页面图/完整内容/B24-dispatch-company.png": "33ff22d686a77fc1c46ae95258c4a9aa9c800bb2a6ef3e25a573969b8f9e0976",
+    "docs/vehicle/V6.4/02_UI/全量页面图/完整内容/D06-occupied.png": "a30804c277301e756dc2d46c22dae582b5d3563c30a0e039b87f441539d5e84a",
+    "docs/vehicle/V6.4/02_UI/全量页面图/完整内容/D07-list.png": "06b3f9ebe13ff81c10a0fb4a89cc2ddae767629cf8b7b578e2b636e12bd08aa4",
+    "docs/vehicle/V6.4/02_UI/全量页面图/完整内容/D07.png": "34abeb88a59dfe62a8e47ba59375a44e04e65dc7afb2dda4966661b46ad3af2c",
+    "docs/vehicle/V6.4/02_UI/全量页面图/完整内容/D08.png": "eac99ee302f92999f430624bcad623d694cc62ad3bcb281241badf62a1d8e55b",
+    "docs/vehicle/V6.4/02_UI/全量页面图/首屏/B05-invite.png": "733a88278d2305b4df1523f65b3f37f0bef8369fa77242e32d9072f6864f21cf",
+    "docs/vehicle/V6.4/02_UI/全量页面图/首屏/B05.png": "9e31b00606fd68682d1938d31991fc75742265815afb434881fe3736d260c3d4",
+    "docs/vehicle/V6.4/02_UI/全量页面图/首屏/B06.png": "97b340e8f5ff600e1799f1b4b0f24747db9a78910f5df10a3ae5add9b42139a4",
+    "docs/vehicle/V6.4/02_UI/全量页面图/首屏/B24-dispatch-company.png": "77b68f67cdff053c79d51eb93802c9d07dcb043a0b1b1a9608aa3cc380677a31",
+    "docs/vehicle/V6.4/02_UI/全量页面图/首屏/D06-occupied.png": "953a499ed95c00b25aaf134598988bf7ebf795c82b58328841cd8be0d5d18894",
+    "docs/vehicle/V6.4/02_UI/全量页面图/首屏/D07-list.png": "06b3f9ebe13ff81c10a0fb4a89cc2ddae767629cf8b7b578e2b636e12bd08aa4",
+    "docs/vehicle/V6.4/02_UI/全量页面图/首屏/D07.png": "955b505bc4048cbe20e2fa619fd7ca16b5d5f24020cb8adc98d3e71391f61126",
+    "docs/vehicle/V6.4/02_UI/全量页面图/首屏/D08.png": "eac99ee302f92999f430624bcad623d694cc62ad3bcb281241badf62a1d8e55b",
+    "docs/vehicle/V6.4/04_接口/dto-types.ts": "79d74fe5219a6ebf84e784a6335c1bc796d5268bdae34027f00fe597bb25768e",
+    "docs/vehicle/V6.4/04_接口/openapi_V6.4.yaml": "d24623f0fbf12436d78beea56c38c93bbb06bb6c3ae7660176ed9cc11edb2fed",
+    "docs/vehicle/V6.4/04_接口/接口操作索引_V6.4.json": "c747340482039b80c9aa7cb1be33d6bc1a6827a52fbc9f93a07001f5272ac8aa",
+    "docs/vehicle/V6.4/04_接口/权限与能力注册表.json": "6715f506de4abddc39d413f72e8f8ad9d583f41838ce0c6adc01e62237d9b787",
+    "docs/vehicle/V6.4/05_数据设计/001_vi业务表_初始化_V6.4.sql": "931ad89c90622fb2aca6fd2223cee59a7895ed9b8602530c0a083e5c488208de",
+    "docs/vehicle/V6.4/05_数据设计/data_model_V6.4.json": "50b7604a6abc1563106da54e78d83c746aecdf92c7414b672042f9082c36ec08",
+    "docs/vehicle/V6.4/05_数据设计/数据模型与字段字典_V6.4.html": "a50a3e9f59d8f6d325884f3f8f9f88264f8cbfe1f0f779a12bde0f58cf452fb1",
+    "docs/vehicle/V6.4/05_数据设计/数据模型与字段字典_V6.4.md": "1c1e7a3b2fdb267f844da132299634996a1528dd1204a2cb2e53f4913ee521f9",
+    "docs/vehicle/V6.4/05_数据设计/生成列与写入白名单.json": "d3bda034b077acb984322274c41979a78395385ef8fb5d3c9c222d0600231431",
+    "docs/vehicle/V6.4/06_验收/test_cases_V6.4.json": "78036b38b13c6bc86576a7a9a3da91c1d94a21e8d7dbd0fc2a285944cee71dae",
+    "docs/vehicle/V6.4/08_业务流程图/DOT/F10.dot": "80be5b3017ac740b4cc8f359792a0a20a124bf3266b9da23d778f9ca5b5f81c6",
+    "docs/vehicle/V6.4/08_业务流程图/DOT/F11.dot": "f29c735e4d1ceee678283ddf4810bdbe3539c171e258f7d997644df5f1dfcb2c",
+    "docs/vehicle/V6.4/08_业务流程图/Mermaid/F10.mmd": "d6dac5dbbac1bdadfb21efce657d9a913620a2b48f85c8d8f4104055cf3d0128",
+    "docs/vehicle/V6.4/08_业务流程图/Mermaid/F11.mmd": "4ad115717a79d5f32320a8a239090c7a895e9d9f98c8abbe0678f83cb3a1aef9",
+    "docs/vehicle/V6.4/08_业务流程图/PNG/F10.png": "fff57a03c7047b6cd8957b119a636242004d34dd55fe33688004897ecfd2ea1f",
+    "docs/vehicle/V6.4/08_业务流程图/PNG/F11.png": "f6c4c11c8e9429d2685a3b2b6393b2f9a9ec65aa7082d6638a03c99e56436a49",
+    "docs/vehicle/V6.4/08_业务流程图/SVG/F10.svg": "64baba6bfa8f86ed1a64fe9c1e60c22ef396973e63b43f48d36fa24eccc829d7",
+    "docs/vehicle/V6.4/08_业务流程图/SVG/F11.svg": "10922098d3c64e212df9a60665d4159674887da808a7ad4a1b25976d5a2d95e7",
+    "docs/vehicle/V6.4/08_业务流程图/flows_V6.4.json": "6a44db022aa25604a70c6adb323328067d1d85bd78b769c300b7d6d2bc66b4fe",
+    "docs/vehicle/V6.4/12_工程执行/task_packets/D02/TASK.html": "60a380ea8f1bb66cedd1dc21030449effbb66274a1000f5088c60f72bdc1b99b",
+    "docs/vehicle/V6.4/12_工程执行/task_packets/D02/TASK.md": "e96f3087e7f35be03068afe7c24b06d386e5f5165dfb8e820c7e71cf67220138",
+    "docs/vehicle/V6.4/12_工程执行/task_packets/D02/acceptance.json": "2ab64f87e2b7ed53875de4957f589054643024b45215ee12d13074401d081c55",
+    "docs/vehicle/V6.4/12_工程执行/task_packets/D02/openapi.yaml": "08d91947be01182383e47cbf5eea3d3b87b0f965fb2b005e0aa7c391a1573a50",
+    "docs/vehicle/V6.4/12_工程执行/task_packets/D02/pages.json": "053df73eb61db989ddc3956aa1c083946e44e56d0df0970b42f56c3a5fa0ebc0",
+    "docs/vehicle/V6.4/12_工程执行/task_packets/D02/tables.json": "dfc0777927eeec3ad2af3430c408f4ee75ecdc12dcbce1ff355715de01d59948",
+    "docs/vehicle/V6.4/12_工程执行/task_packets/D03/TASK.html": "9f49fcecb2a63477d8976011779b9966d8aeae6bb85d99b7920f989402540dc3",
+    "docs/vehicle/V6.4/12_工程执行/task_packets/D03/TASK.md": "7ed830c17cc131d5eb7cf9624e2699a5d2b5a72040895155675edc2b6f3c6b8a",
+    "docs/vehicle/V6.4/12_工程执行/task_packets/D03/acceptance.json": "45b79cf809748d98727c7c9c16b4ffe4e7c9d1ba5f0c54869c69d54eebedd89e",
+    "docs/vehicle/V6.4/12_工程执行/task_packets/D03/openapi.yaml": "547d32a8f225bf7076a0f061681bbb68de87c29d899e0eae122bf026c80ba1f7",
+    "docs/vehicle/V6.4/12_工程执行/task_packets/D03/pages.json": "6cfc77822ca7c76b7d047fcc5ab757304bcfed32c35e653f297c62a75339864e",
+    "docs/vehicle/V6.4/12_工程执行/task_packets/D03/tables.json": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+    "docs/vehicle/V6.4/12_工程执行/task_packets/D04/TASK.html": "b5faef3050bd1624c1c184650d60e4ae75634589305cbbf921aff0eee44b211d",
+    "docs/vehicle/V6.4/12_工程执行/task_packets/D04/TASK.md": "da06e2e83f6c31aef0816952e5f495f0093f951d70f887db7f992f46320f2340",
+    "docs/vehicle/V6.4/12_工程执行/task_packets/D04/acceptance.json": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "docs/vehicle/V6.4/12_工程执行/task_packets/D04/openapi.yaml": "d0f7d672f06d779e7841b8a1714497daee7fa4da372d3414850779b454ec5209",
+    "docs/vehicle/V6.4/12_工程执行/task_packets/D04/pages.json": "3f3167d027c8170c599473c431084668acec140652a17d5d81b65e2ca783ed02",
+    "docs/vehicle/V6.4/12_工程执行/task_packets/D04/tables.json": "2f04f139383bd816cc2f93c583be7ed98543376571aeea9e86985f123d7e45a6",
+    "docs/vehicle/V6.4/12_工程执行/tasks.json": "cd19a775b8dd68cc9d8d5e30819a3968154d7c1c05b0df5623e744722fc6c2c8",
+    "docs/vehicle/V6.4/14_工程模板/miniapp/src/api/types.ts": "d9239b2d80ac2919640fa41f666ad7135fb2e9be85885b53b429918dc0e1392f",
+    "docs/vehicle/V6.4/15_部署与运维/01_部署与发布流水线.html": "17c2202940046d40fbff8c6c47708d84f9e240811f91b7ecd0fda9e35728bcad",
+    "docs/vehicle/V6.4/15_部署与运维/01_部署与发布流水线.md": "e04d4c40a8dd54cdf4a787a3e04733eee9b8b94e464d2130feebefc5dc96e00d",
+    "sql/migration_20261112_02_dispatch_invites.sql": "1ecfb8265c6cfb20b5a034d1bfd0bd4fc71160eb1d4e64ad913263743e45ec87",
+    "sql/ry_20260417.sql": "b61aac37185d6154f7f81996dfd4de4326af7e5514c2b9a728382695bb9eef4b",
+    "xinyi-admin/src/main/java/com/xinyi/web/config/DispatchAdminSecurityConfig.java": "3e86377dcfd0625b0b321411e69469608cd60312f7881f4dd7a266e01d2240ec",
+    "xinyi-admin/src/test/java/com/xinyi/web/viit/D02DispatchIT.java": "d028705827dd9b44d7ae8b0c24ea9e742b5bfe40bfa55a9251c0aa9aa7928615",
+    "xinyi-admin/src/test/java/com/xinyi/web/viit/D02HttpFixture.java": "1e80774d6afc5934641cedbac626a51efcd3c649c130fac9d81c414106858c07",
+    "xinyi-admin/src/test/java/com/xinyi/web/viit/E08PlatformIT.java": "7f0caca76cfbe15646096b45cf0d3603a28ba44cfbb1c5fcfd04f6b62b60781b",
+    "xinyi-admin/src/test/resources/integration/d02_contract.py": "2cc4cf9911bac6d8ae4a5e94577edb96fc47fc216f00022b20e6e386ff6dae70",
+    "xinyi-miniapp/src/api/types.ts": "301d5c010eb817c928d72f7345a1043667490ffc99d2877441759f99ac9b8e68",
+    "xinyi-miniapp/src/components/dispatch/CurrentAssignment.vue": "f5eda75f3d663f30e9fc3716d9dd3dede630d818c3df33832cf90e4acdca95e1",
+    "xinyi-miniapp/src/components/dispatch/DriverListening.vue": "1270ad3825dfca45b462215a577052cfdea34bec1dd1978b4f9b9592768a1483",
+    "xinyi-miniapp/src/features/dispatch/expiry.ts": "9631e4bc79aa4388586c2a71054f6664afc49efaec6aacf7f4596db859bcb443",
+    "xinyi-miniapp/src/features/dispatch/invites.ts": "f662ea97bfaf792418cb34d001a09bfb19653d3a55787c959fcafa344632503a",
+    "xinyi-miniapp/src/pages/dispatch/invite.vue": "2be04efb8cbbf214e6c189dc15863f6ec7a692b37bea6ca5fa05aeaca0f1feca",
+    "xinyi-miniapp/src/pages/dispatch/invites.vue": "5970e9e7b44d7c731408ebb1ccb1dad960ef0e61ae6576b835db33303ac3ab1d",
+    "xinyi-miniapp/src/pages/work/index.vue": "e1c0f763a982eec4a2ae6e034094fba9715d65b7bf8c5dc5ee58df7df10b2263",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/aftersale/service/AdminAftersaleService.java": "c0915f5dfe85a3001fed1decd6991479cf3233d6273868368d4762c2f2bb6777",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/config/mapper/ConfigMapper.java": "4a5b5b05064ad8d92577bfffffed2cdf9b2c09f46489861a8fc91cfba3776744",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/config/service/ConfigService.java": "dbfe70a87b651de67484a0c8e884e35992d92bc6f4caad414d2fa6378cfab760",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/controller/AdminDispatchController.java": "99b8be54cbbe538dee8a736388110573db250db9b35b1e27b8f0fff9ba20e383",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/controller/DriverInviteController.java": "951de8fd92fa98536670b0b7530aeb3dfbc51cc6abb3cd58ad4bafddd69db6ff",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/domain/DispatchBatch.java": "488d2a873148d419a2c50517e8831c0920b97d75a2ee0305909408493e239786",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/domain/DispatchInvite.java": "d2182651ab451a055885d184246c409d0eef688840cafdb4952b0d40a44ea3e7",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/domain/DispatchPolicy.java": "36a21999e5a2d7c09d3fbfb5e28eb08e741e1ee51dd19ca0700b80ee701ce65d",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/dto/InviteRequests.java": "af30dd470f2e740241b38e17d15a1d979eca27fcc7447760836e81258a14eb6d",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/mapper/DispatchInviteMapper.java": "2a766fa46d34c468c2c3e027dd15cf14922bd1e9390fc4fb1422f07eaa8e746b",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/service/DispatchCandidateAuthority.java": "2c68b2190544c45e50b8d572cc5d08a947154a8844529ac71c011b1fa40e7f5a",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/service/DispatchEngineDispatcher.java": "fd71bf1bc1cc6d1a7e8bfa42f66c0cb79d2b50ce6ff1051b475d9ffe544b5aa4",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/service/DispatchEngineJob.java": "855d09306cc1d2cd8dccf01b5e0cb7a5a7e76f212828b1338f20a81296312cc0",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/service/DispatchEngineService.java": "7068fca4dd481aede39ee49851dd19a63f66c874a6bac9fd7261d03ebd06bf5f",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/service/DispatchLifecyclePort.java": "8a2e126081cecd7e3d9b728b0c689ff928497bbbc8c4d354aa5d9179ba61a66e",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/service/DispatchPolicyService.java": "ebf4ec0491b3daa8bbd7f528d97e89078f25158ffa10e6c08f668053bf0fd953",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/service/DriverLocationProtection.java": "8aed1f68a0c244730512fce6d26b6ac88ecef0909c29a5eeca9a1c8218123d08",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/jobs/mapper/DispatchDeadlineMapper.java": "9741e80ce07c6a27dde79c06e5620df8638b9bd6d9844fe386e1956253b4fa18",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/jobs/service/DispatchDeadlineService.java": "489a5f44f818f1e15350336d500eef01407a99076f52fd225e9324e1bc3c9e7c",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/order/domain/ViOrder.java": "5b7ebcfcae2c7bff486ff923e938f3ffe25636f0aca2e5737b9d09a7bddd9517",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/order/service/OrderService.java": "87d8153385021f7a815dea26ca74767d7e2ff62eecc76fc177e2748cb9d63f50",
+    "xinyi-rongli/src/main/resources/mapper/rongli/config/ConfigMapper.xml": "0b33efe9b793093a49106cdfb19a8c5bea87f773212bed2adbd2d544b8d61399",
+    "xinyi-rongli/src/main/resources/mapper/rongli/dispatch/DispatchInviteMapper.xml": "00e5b9eb113531867257a17ef7f2f1976a4576014b5f0aad31858cde55a60d02",
+    "xinyi-rongli/src/main/resources/mapper/rongli/jobs/DispatchDeadlineMapper.xml": "94c2eac193e7ad8b0306d33f815885cabc3a59c26c260be8ad467729603d51cb",
+    "xinyi-rongli/src/main/resources/mapper/rongli/order/OrderMapper.xml": "af308900243e688738f135b909461127b0dbd2b9faf86a6a7c9be699d227ba71",
+    "xinyi-ui/src/api/rongli/dispatch.ts": "9825ad10dc49a64898249d5045ba43ae040df01a7770b219c50a07871372316c",
+    "xinyi-ui/src/views/rongli/dispatch/invites.vue": "d2bd5456ca3ae04150e9a049cb913b4bcd5cade988fcf2c22785d9bfe9faf536",
+    "xinyi-ui/src/views/rongli/dispatch/policy.vue": "52d1cc7a0e1d5a213e2dd70e37902322c6b4a4accd49581041172d71d04032f9",
+    "xinyi-ui/src/views/rongli/dispatch/queue.vue": "02fa897e796259cae46fde1ec641cc02be3e7ec0fa263ed9860f64d8fff2c95d"
+  },
+  "sourceCount": 114,
+  "fullRegression": {
+    "path": "docs/implementation/vehicle/D02/full-regression.json",
+    "sha256": "6f5fc07a8d3bdf62b5e94057924b4611b555aa7f86d6f2a21bf53158938f7ab0",
+    "integrationTests": 822,
+    "unitTests": 50,
+    "integrationSuites": 38,
+    "unitSuites": 13
+  },
+  "fullIntegrationJUnit": {
+    "path": "docs/implementation/vehicle/D02/full-regression-integration-junit.xml",
+    "sha256": "e154a930e73a52acfcf403ba4d11c6326aeb18ed19bc450708de958ca4caa317",
+    "suites": 38,
+    "tests": 822,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "fullUnitJUnit": {
+    "path": "docs/implementation/vehicle/D02/full-regression-unit-junit.xml",
+    "sha256": "79463811c7fb35b07a4089efe16726c2ed3268bccecbf666496ffd7cfea54371",
+    "suites": 13,
+    "tests": 50,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "rootKeyRotationTarget": {
+    "path": "docs/implementation/vehicle/D02/final-target.json",
+    "sha256": "5cc841dba2acd5ee0f7710297e2f9a79ee4dd56a5081e5d97fed60fe9035766c",
+    "integrationTests": 69,
+    "unitTests": 50
+  },
+  "rootKeyRotationIntegrationJUnit": {
+    "path": "docs/implementation/vehicle/D02/final-target-integration-junit.xml",
+    "sha256": "7cf3327b6c76861920042129fa2b69f7d18ac0953645e55588425417c7a254b6",
+    "suites": 1,
+    "tests": 69,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "rootKeyRotationUnitJUnit": {
+    "path": "docs/implementation/vehicle/D02/final-target-unit-junit.xml",
+    "sha256": "fbc5df2a2e24fd6dab4c65299024a58640bfd449a684db8a60ebf5a3a13bf48f",
+    "suites": 13,
+    "tests": 50,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "configFocused": {
+    "path": "docs/implementation/vehicle/D02/config-focused.json",
+    "sha256": "05b24d76ab18d2a1125100ca4eee1c9d5606676a2413089df24245592602626b",
+    "integrationTests": 7,
+    "unitTests": 50,
+    "scope": "原TC053单方法及C01关联，重复行/重复请求/同值保存与新旧N冻结真实验证"
+  },
+  "configFocusedIntegrationJUnit": {
+    "path": "docs/implementation/vehicle/D02/config-focused-integration-junit.xml",
+    "sha256": "abe4d437e8be372e9da2ea6f477adc754a0377d6b9bed8ddde577b894faa594b",
+    "suites": 2,
+    "tests": 7,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "configFocusedUnitJUnit": {
+    "path": "docs/implementation/vehicle/D02/config-focused-unit-junit.xml",
+    "sha256": "426fcf8caae902b7c821ffa39636b0364f1464627d851fe1956bd559570d9a23",
+    "suites": 13,
+    "tests": 50,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "firstGlobalLeadAssertion": {
+    "path": "docs/implementation/vehicle/D02/final-n-assertion-first-failure.json",
+    "sha256": "1246e82ba201366c322fff19d20c73add370d2728d7e5ad99f19fca2f95b1766",
+    "integrationTests": 69,
+    "failures": 1,
+    "errors": 0,
+    "note": "真实C01更新旧键后导致两个值、新建单500，生产缺陷已修复并由新全量覆盖"
+  },
+  "firstBusinessRun": {
+    "path": "docs/implementation/vehicle/D02/target-first-business.json",
+    "sha256": "77a09f8d90e0b0daf98c5182d7f6909c38de616e798a4d06b450cfec6184501f",
+    "integrationTests": 256,
+    "d02Tests": 69,
+    "d02Failures": 6,
+    "d02Errors": 1,
+    "associatedTests": 187,
+    "note": "失败历史保留，不计为全通过"
+  },
+  "schema": {
+    "path": "docs/implementation/vehicle/D02/schema-verification.json",
+    "sha256": "f201fbd0c4a7bb472b6b31591ceeda03b270bca277e62b310732217e9c7a8533",
+    "passed": true,
+    "comparedTables": 4,
+    "menuRows": 8
+  },
+  "engineering": {
+    "path": "docs/implementation/vehicle/D02/engineering.json",
+    "sha256": "d7b5055eee28f9af1386d451d72208cdccb3f532a9768eba11c7674416366778",
+    "passed": 34,
+    "failed": 0
+  },
+  "package": {
+    "path": "docs/implementation/vehicle/D02/package.json",
+    "sha256": "753ae1c29b2e2799906b1be84a16c67d9ab3b5f9c3c9c1ce14fa67a4b136d776",
+    "passed": 42,
+    "failed": 0
+  },
+  "readability": {
+    "path": "docs/implementation/vehicle/D02/readability.json",
+    "sha256": "911f06a56a74bf3f2851bc5adfa1b10640b33fed05213c2560f125fb2b6346db"
+  },
+  "verificationFixes": {
+    "path": "docs/implementation/vehicle/D02/verification-fixes.json",
+    "sha256": "7c97645e07ee61a6e837f1e015f052ad37fd23cbc5ac133f3231d50be0ba361a"
+  },
+  "gui": {
+    "pc": {
+      "path": "docs/implementation/vehicle/D02/pc-browser.json",
+      "sha256": "163afcffab1c887a4a651ccaeeb8ff7a90d9fab341d381729eba6c20807cf2ca",
+      "tests": 18
+    },
+    "mini": {
+      "path": "docs/implementation/vehicle/D02/mini-browser.json",
+      "sha256": "5b2838b0b7e61b89d84ad20eb3399b8fa88d1eed7bab3f8e1f697515acae97c0",
+      "tests": 13
+    },
+    "prototype": {
+      "path": "docs/implementation/vehicle/D02/prototype-browser.json",
+      "sha256": "28c3b6dc5d7cb9d56ebe70b84663c11b5189a7ecc6d6b999b55b0b5e7dff3aee",
+      "tests": 7
+    },
+    "summary": {
+      "path": "docs/implementation/vehicle/D02/frontend-verification.json",
+      "sha256": "fa323e6eb32e92385e66e315b17441512d2716cb23912a108ae72f515674592e",
+      "total": 38,
+      "boundary": "真实页面+明确API夹具，不代替MySQL/供应商/微信设备"
+    },
+    "screenshots": [
+      {
+        "path": "docs/implementation/vehicle/D02/pc-queue.png",
+        "sha256": "1252f58a837d44f96325cf227c4163b313a552a26ec76c52f671accb081e4f40"
+      },
+      {
+        "path": "docs/implementation/vehicle/D02/pc-queue-mobile.png",
+        "sha256": "a854028515288d3db182ff66e7377c4bbc0ce75a9daa0e35c8c49f82fafc398b"
+      },
+      {
+        "path": "docs/implementation/vehicle/D02/pc-candidates.png",
+        "sha256": "9153bc1ffd67cff0736fdfc7ba09b8b8519cd63143ca772fabcbc503aa8ea19e"
+      },
+      {
+        "path": "docs/implementation/vehicle/D02/pc-invites.png",
+        "sha256": "c78d53cd4f228a6b660852afb64ecf95e6940c351653e31390565070abb6143e"
+      },
+      {
+        "path": "docs/implementation/vehicle/D02/pc-policy.png",
+        "sha256": "ab152bf4535e067ce9b542d448f275f691579e06255746152ea86a4618cb49ad"
+      },
+      {
+        "path": "docs/implementation/vehicle/D02/pc-policy-mobile.png",
+        "sha256": "1cd2fd66d715a1eababf5105bb1d1fb8ce2ec9a5bee3806ff2c6ec9f6b5c3a98"
+      },
+      {
+        "path": "docs/implementation/vehicle/D02/mini-list.png",
+        "sha256": "61beb94d63a7655dc5dee9859e5de60eed70fe2c0a8a4b34422d85feee6b39b3"
+      },
+      {
+        "path": "docs/implementation/vehicle/D02/mini-detail.png",
+        "sha256": "df7ba2cfaa722f8d2319c8f080e96aaffaae6fca39a60065e03205c155e741f8"
+      },
+      {
+        "path": "docs/implementation/vehicle/D02/mini-current.png",
+        "sha256": "8ee3820faf46290d80b3ebcc08f11923e7073081e6dd0a96c33bfa75752d29ad"
+      },
+      {
+        "path": "docs/implementation/vehicle/D02/mini-desktop.png",
+        "sha256": "8b08447af940d3c070b5f88b3603399271aa352df027c62d628012ede6faf714"
+      }
+    ]
+  },
+  "builds": {
+    "pc": {
+      "path": "docs/implementation/vehicle/D02/pc-build.log",
+      "sha256": "ad4a99e666cffe586beec0a34087e8a40913c4a39553d88f0ba3122225c8938f",
+      "exitCode": 0
+    },
+    "miniTypes": {
+      "path": "docs/implementation/vehicle/D02/mini-types.log",
+      "sha256": "aa88a9902920e3c1c2e4e640a476555060ba2a3397e3c0758997503616cf2546",
+      "exitCode": 0
+    },
+    "miniMp": {
+      "path": "docs/implementation/vehicle/D02/mini-mp.log",
+      "sha256": "ace1271aca24136e8afff8358c1b9fd580a6173a309bff22586a0cfe9cbab1b9",
+      "exitCode": 0
+    },
+    "miniH5": {
+      "path": "docs/implementation/vehicle/D02/mini-h5.log",
+      "sha256": "cb7b00ee33819ae7e8ec478839ab2c0907fc9a183e93b69bc5d4a5246e94a7e9",
+      "exitCode": 0
+    },
+    "pcTypes": {
+      "path": "docs/implementation/vehicle/D02/pc-type-summary.json",
+      "sha256": "d5cdaf60117f85cca60f3f40908f2e84fbd6621cdeb6c6fb367c50f8d8c57b8e",
+      "exitCode": 2,
+      "totalErrors": 149,
+      "priorBaselineErrors": 134,
+      "newVueDeclarationErrors": 15,
+      "ownBusinessErrors": 0
+    }
+  },
+  "deliveryReport": {
+    "path": "docs/implementation/vehicle/D02/report.md",
+    "sha256": "060d7e23714e20a2c92741dcc411375907c010f1b36032fbc0482cfbfd1140c8"
+  },
+  "boundaries": [
+    "Q03/Q04为明示正式消费者事实，Q01/Q05与D01/B03/SDK支付/P03/D02真实执行；不重新冒称真实设备/培训全链。",
+    "TC054仍D03后续；TC063以缩放参数验证总截止优先，不称实际50名逐轮等待。",
+    "处罚生成/物理交接归还、N01实投递、地图/微信真实渠道、真机与生产部署不在本批准范围。",
+    "真实TC053追加断言揭示C01生产缺陷，旧822及失败69保留历史；最终full为C01修复及原69最新断言的新822，聚焦7/50不重复累加。",
+    "本批准不包括GitHub推送或生产迁移。"
+  ],
+  "finalAcceptance": {
+    "path": "docs/implementation/vehicle/D02/final-acceptance.json",
+    "sha256": "0eacaecc437391482b282e3334d91b405aec667a7180d73816f7c81e1dddc8f4",
+    "integrationTests": 69,
+    "unitTests": 50,
+    "note": "最终C01修复后同次全量中的D02 69子集，非另一次运行"
+  },
+  "finalAcceptanceIntegrationJUnit": {
+    "path": "docs/implementation/vehicle/D02/final-acceptance-integration-junit.xml",
+    "sha256": "07ef986842ae5061219c6eca6c607cbbe34db88d645614e6409f7338fc524029",
+    "suites": 1,
+    "tests": 69,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "finalAcceptanceUnitJUnit": {
+    "path": "docs/implementation/vehicle/D02/final-acceptance-unit-junit.xml",
+    "sha256": "79463811c7fb35b07a4089efe16726c2ed3268bccecbf666496ffd7cfea54371",
+    "suites": 13,
+    "tests": 50,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  }
+}

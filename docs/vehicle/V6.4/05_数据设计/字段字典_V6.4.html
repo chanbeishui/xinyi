@@ -1171,7 +1171,8 @@ CONSTRAINT ck_driver_listening_revision CHECK (listening_revision &gt;= 0)
 </tbody>
 </table>
 <h2>vi_order · 订单主履约与实际保管</h2>
-<p>主状态不得存REFUNDING或事故标记；已返回不等于已服务确认</p>
+<p>主状态不得存REFUNDING或事故标记；已返回不等于已服务确认 D02：服务公司及策略按创建订单时冻结，历史NULL不猜回填；绝对截止、同司机/订单唯一占用与精确holder保护，旧事件不改新责任。</p>
+<p>主键：id；ID策略：MYSQL_AUTO_INCREMENT</p>
 <table>
 <thead>
 <tr>
@@ -1316,8 +1317,36 @@ CONSTRAINT ck_driver_listening_revision CHECK (listening_revision &gt;= 0)
   <td><code>BIGINT NOT NULL DEFAULT 0</code></td>
   <td>乐观锁版本</td>
 </tr>
+<tr>
+  <td>service_company_id</td>
+  <td><code>BIGINT NULL</code></td>
+  <td>下单时冻结站点所属服务公司；历史未知不猜回填</td>
+</tr>
+<tr>
+  <td>dispatch_policy_version</td>
+  <td><code>BIGINT NULL</code></td>
+  <td>下单时冻结公司派单策略版本；缺失转人工</td>
+</tr>
+<tr>
+  <td>dispatch_policy_snapshot</td>
+  <td><code>JSON NULL</code></td>
+  <td>冻结公司派单策略及内容认证，不追用当前策略</td>
+</tr>
 </tbody>
 </table>
+<pre><code class="language-sql">KEY ix_order_service_company (service_company_id,id)
+UNIQUE KEY uk_order_no (order_no)
+UNIQUE KEY uk_quote (quote_id)
+KEY ix_owner_list (owner_account_id,created_at,id)
+KEY ix_station_queue (station_id,fulfillment_status,created_at,id)
+KEY ix_dispatch_due (fulfillment_status,dispatch_at,id)
+KEY ix_auto_confirm (fulfillment_status,auto_confirm_at,id)
+CONSTRAINT ck_order_total CHECK (total_fen&gt;=0)
+CONSTRAINT ck_66_0ff90a4c30f3 CHECK (`fulfillment_status` IN ('PENDING_PAY','SCHEDULED','PENDING_DISPATCH','DISPATCHING','MANUAL_DISPATCH','ACCEPTED','GOING_PICKUP','ARRIVED_PICKUP','PICKED_UP','ARRIVED_STATION','INSPECTING','INSPECTED','CAR_TAKEN','WAIT_CONFIRM','COMPLETED','CANCELLED','CLOSED'))
+CONSTRAINT ck_66_0237ff511e2d CHECK (`cancel_status` IN ('NONE','APPLIED','REJECTED','APPROVED_WAIT_RETURN','COMPLETED'))
+CONSTRAINT ck_66_daacf35a5049 CHECK (`custody_type` IN ('OWNER','DRIVER','STATION'))
+CONSTRAINT ck_ver_order CHECK (version &gt;= 0)
+</code></pre>
 <h2>vi_quota_reservation · 每单额度占用凭证</h2>
 <p>每次变更和quota_slot聚合计数在同事务；只释放HELD/未消耗预约</p>
 <table>
@@ -1382,6 +1411,8 @@ CONSTRAINT ck_driver_listening_revision CHECK (listening_revision &gt;= 0)
 </tbody>
 </table>
 <h2>vi_dispatch_invite · 单人派单邀约</h2>
+<p>D02：服务公司及策略按创建订单时冻结，历史NULL不猜回填；绝对截止、同司机/订单唯一占用与精确holder保护，旧事件不改新责任。</p>
+<p>主键：id；ID策略：MYSQL_AUTO_INCREMENT</p>
 <table>
 <thead>
 <tr>
@@ -1456,8 +1487,74 @@ CONSTRAINT ck_driver_listening_revision CHECK (listening_revision &gt;= 0)
   <td><code>BIGINT NOT NULL DEFAULT 0</code></td>
   <td>乐观锁版本</td>
 </tr>
+<tr>
+  <td>batch_id</td>
+  <td><code>BIGINT NULL</code></td>
+  <td>所属持久派单批次；历史NULL不猜</td>
+</tr>
+<tr>
+  <td>service_company_id</td>
+  <td><code>BIGINT NULL</code></td>
+  <td>原订单冻结服务公司</td>
+</tr>
+<tr>
+  <td>company_revision</td>
+  <td><code>BIGINT NULL</code></td>
+  <td>发邀约时真实司机公司epoch</td>
+</tr>
+<tr>
+  <td>distance_meter</td>
+  <td><code>INT NULL</code></td>
+  <td>GCJ02直线距离，非道路里程</td>
+</tr>
+<tr>
+  <td>driver_session_id</td>
+  <td><code>BIGINT NULL</code></td>
+  <td>候选位置和交互绑定的真实有效设备会话</td>
+</tr>
+<tr>
+  <td>driver_context_version</td>
+  <td><code>BIGINT NULL</code></td>
+  <td>可信设备DRIVER上下文版本</td>
+</tr>
+<tr>
+  <td>driver_location_version</td>
+  <td><code>BIGINT NULL</code></td>
+  <td>发出时最近点版本</td>
+</tr>
+<tr>
+  <td>driver_presence_version</td>
+  <td><code>BIGINT NULL</code></td>
+  <td>发出时最近交互版本</td>
+</tr>
+<tr>
+  <td>issued_by_user_id</td>
+  <td><code>BIGINT NULL</code></td>
+  <td>人工邀约操作者，自动为NULL</td>
+</tr>
+<tr>
+  <td>reason_cipher</td>
+  <td><code>MEDIUMBLOB NULL</code></td>
+  <td>人工或响应原因的认证加密封装</td>
+</tr>
+<tr>
+  <td>active_driver</td>
+  <td><code>BIGINT GENERATED ALWAYS AS (IF(status='WAIT_RESPONSE',driver_id,NULL)) STORED</code></td>
+  <td>同司机最多一份待响应邀约，旧终态不占用</td>
+</tr>
 </tbody>
 </table>
+<pre><code class="language-sql">UNIQUE KEY uk_dispatch_batch_driver (batch_id,driver_id)
+UNIQUE KEY uk_dispatch_active_driver (active_driver)
+KEY ix_dispatch_batch_status (batch_id,status,id)
+UNIQUE KEY uk_active_order (active_order)
+KEY ix_driver_status (driver_id,status)
+KEY ix_expire (status,expires_at)
+CONSTRAINT ck_dispatch_invite_distance CHECK (distance_meter IS NULL OR distance_meter&gt;=0)
+CONSTRAINT ck_66_22cd3ab6b830 CHECK (`status` IN ('WAIT_RESPONSE','ACCEPTED','REJECTED','EXPIRED','REVOKED'))
+CONSTRAINT ck_ver_dispatch_invite CHECK (version &gt;= 0)
+CONSTRAINT ck_dispatch_invite_source CHECK (`source` IN ('AUTO','MANUAL'))
+</code></pre>
 <h2>vi_driver_assignment · 司机承接历史，结束后仍保留</h2>
 <table>
 <thead>
@@ -1584,7 +1681,8 @@ CONSTRAINT ck_driver_listening_revision CHECK (listening_revision &gt;= 0)
 </tbody>
 </table>
 <h2>vi_dispatch_cursor · 全局轮转游标与版本</h2>
-<p>事务锁内原子推进，与创建邀约和占用协调</p>
+<p>事务锁内原子推进，与创建邀约和占用协调 D02游标明确按company:{serviceCompanyId}隔离，同公司跨站共享；仅实际自动邀约成功推进，距离仅过滤，旧GLOBAL不自动沿用。</p>
+<p>主键：scope_key；ID策略：BUSINESS_KEY</p>
 <table>
 <thead>
 <tr>
@@ -1626,6 +1724,8 @@ CONSTRAINT ck_driver_listening_revision CHECK (listening_revision &gt;= 0)
 </tr>
 </tbody>
 </table>
+<pre><code class="language-sql">CONSTRAINT ck_ver_dispatch_cursor CHECK (version &gt;= 0)
+</code></pre>
 <h2>vi_driver_location · 代驾最近前台定位</h2>
 <p>位置过期不参与候选；不是持续后台实时轨迹库 D01仅真实会话/公司epoch最近加密点，旧点不按补报接收时间续期；历史NULL隔离，无轨迹或ADMIN坐标读接口。</p>
 <p>主键：driver_id；ID策略：BUSINESS_KEY</p>
@@ -8323,5 +8423,181 @@ CONSTRAINT ck_driver_presence_version CHECK (version&gt;=0 AND company_revision&
 <pre><code class="language-sql">CONSTRAINT ck_driver_listening_time CHECK (closing_time REGEXP '^([01][0-9]|2[0-3]):[0-5][0-9]$')
 CONSTRAINT ck_driver_listening_config_ranges CHECK (location_max_age_seconds BETWEEN 31 AND 86400 AND reachability_max_age_seconds BETWEEN 31 AND 86400 AND max_accuracy_meter BETWEEN 1 AND 100000 AND location_report_interval_seconds BETWEEN 30 AND 3600 AND location_report_interval_seconds&lt;location_max_age_seconds AND location_report_interval_seconds&lt;reachability_max_age_seconds)
 CONSTRAINT ck_driver_listening_config_version CHECK (version&gt;=0)
+</code></pre>
+<h2>vi_dispatch_policy · 同公司共享的明确派单策略；新订单冻结，不追改旧单</h2>
+<p>D02：服务公司及策略按创建订单时冻结，历史NULL不猜回填；绝对截止、同司机/订单唯一占用与精确holder保护，旧事件不改新责任。</p>
+<p>主键：owner_dept_id；ID策略：BUSINESS_KEY</p>
+<table>
+<thead>
+<tr>
+  <th>字段</th>
+  <th>SQL类型与约束</th>
+  <th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>owner_dept_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>权威服务公司，不从管理员主部门推断</td>
+</tr>
+<tr>
+  <td>invite_response_seconds</td>
+  <td><code>INT NOT NULL</code></td>
+  <td>1..3600，明确配置无默认</td>
+</tr>
+<tr>
+  <td>radius_meter</td>
+  <td><code>INT NOT NULL</code></td>
+  <td>1..1000000，初圈直线半径</td>
+</tr>
+<tr>
+  <td>expanded_radius_meter</td>
+  <td><code>INT NOT NULL</code></td>
+  <td>不小于初圈且不超过1000000</td>
+</tr>
+<tr>
+  <td>overall_deadline_seconds</td>
+  <td><code>INT NOT NULL</code></td>
+  <td>1..86400，自动总截止</td>
+</tr>
+<tr>
+  <td>license_compatibility</td>
+  <td><code>JSON NOT NULL</code></td>
+  <td>明确业务车型与准驾类别允许集合，不自动推导法律准驾</td>
+</tr>
+<tr>
+  <td>config_hash</td>
+  <td><code>BINARY(32) NOT NULL</code></td>
+  <td>策略内容HMAC认证摘要</td>
+</tr>
+<tr>
+  <td>updated_by_user_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>真实后台操作者</td>
+</tr>
+<tr>
+  <td>version</td>
+  <td><code>BIGINT NOT NULL DEFAULT 0</code></td>
+  <td>独立CAS，首次成功写入1</td>
+</tr>
+<tr>
+  <td>created_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>创建UTC时间</td>
+</tr>
+<tr>
+  <td>updated_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>UTC更新时间，Mapper显式维护</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="language-sql">CONSTRAINT ck_dispatch_policy_ranges CHECK ( invite_response_seconds BETWEEN 1 AND 3600 AND radius_meter BETWEEN 1 AND 1000000 AND expanded_radius_meter BETWEEN radius_meter AND 1000000 AND overall_deadline_seconds BETWEEN 1 AND 86400 )
+CONSTRAINT ck_dispatch_policy_license CHECK ( JSON_TYPE(license_compatibility)='ARRAY' AND JSON_LENGTH(license_compatibility) BETWEEN 1 AND 200 )
+CONSTRAINT ck_dispatch_policy_version CHECK (version&gt;=0)
+</code></pre>
+<h2>vi_dispatch_batch · 单订单持久轮转批次，绝对截止和一次扩圈</h2>
+<p>D02：服务公司及策略按创建订单时冻结，历史NULL不猜回填；绝对截止、同司机/订单唯一占用与精确holder保护，旧事件不改新责任。</p>
+<p>主键：id；ID策略：MYSQL_AUTO_INCREMENT</p>
+<table>
+<thead>
+<tr>
+  <th>字段</th>
+  <th>SQL类型与约束</th>
+  <th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>id</td>
+  <td><code>BIGINT NOT NULL AUTO_INCREMENT</code></td>
+  <td>数据库自增Long，API十进制字符串</td>
+</tr>
+<tr>
+  <td>order_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>原订单</td>
+</tr>
+<tr>
+  <td>run_no</td>
+  <td><code>INT NOT NULL</code></td>
+  <td>本订单递增批次号</td>
+</tr>
+<tr>
+  <td>service_company_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>原订单冻结服务公司</td>
+</tr>
+<tr>
+  <td>source</td>
+  <td><code>VARCHAR(16) NOT NULL</code></td>
+  <td>DispatchSource: AUTO,MANUAL</td>
+</tr>
+<tr>
+  <td>status</td>
+  <td><code>VARCHAR(24) NOT NULL</code></td>
+  <td>DispatchBatchStatus: RUNNING,WAIT_RESPONSE,PAUSED,ASSIGNED,MANUAL,CLOSED</td>
+</tr>
+<tr>
+  <td>policy_version</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>原订单冻结策略版本</td>
+</tr>
+<tr>
+  <td>policy_snapshot</td>
+  <td><code>JSON NOT NULL</code></td>
+  <td>原订单明确策略和认证，不随当前配置变化</td>
+</tr>
+<tr>
+  <td>started_at</td>
+  <td><code>DATETIME(3) NOT NULL</code></td>
+  <td>开始UTC时刻</td>
+</tr>
+<tr>
+  <td>deadline_at</td>
+  <td><code>DATETIME(3) NOT NULL</code></td>
+  <td>绝对总截止，与接车开始取较早者</td>
+</tr>
+<tr>
+  <td>radius_stage</td>
+  <td><code>INT NOT NULL DEFAULT 0</code></td>
+  <td>0初圈，1唯一扩圈</td>
+</tr>
+<tr>
+  <td>reason_code</td>
+  <td><code>VARCHAR(64) NULL</code></td>
+  <td>当前转人工或暂停原因，非内部明文意见</td>
+</tr>
+<tr>
+  <td>version</td>
+  <td><code>BIGINT NOT NULL DEFAULT 0</code></td>
+  <td>CAS版本</td>
+</tr>
+<tr>
+  <td>created_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>创建UTC时间</td>
+</tr>
+<tr>
+  <td>updated_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>UTC更新时间，Mapper显式维护</td>
+</tr>
+<tr>
+  <td>active_order</td>
+  <td><code>BIGINT GENERATED ALWAYS AS ( IF(status IN ('RUNNING','WAIT_RESPONSE','PAUSED'),order_id,NULL) ) STORED</code></td>
+  <td>每订单唯一活动派单批次</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="language-sql">UNIQUE KEY uk_dispatch_batch_run (order_id,run_no)
+UNIQUE KEY uk_dispatch_batch_active_order (active_order)
+KEY ix_dispatch_batch_deadline (status,deadline_at,id)
+CONSTRAINT ck_dispatch_batch_source CHECK (`source` IN ('AUTO','MANUAL'))
+CONSTRAINT ck_dispatch_batch_status CHECK ( `status` IN ('RUNNING','WAIT_RESPONSE','PAUSED','ASSIGNED','MANUAL','CLOSED') )
+CONSTRAINT ck_dispatch_batch_version CHECK (version&gt;=0 AND run_no&gt;0 AND policy_version&gt;=0)
+CONSTRAINT ck_dispatch_batch_radius CHECK (radius_stage IN (0,1))
+CONSTRAINT ck_dispatch_batch_deadline CHECK (deadline_at&gt;started_at)
 </code></pre>
 </main></body></html>

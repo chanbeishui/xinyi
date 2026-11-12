@@ -754,6 +754,9 @@ components:
       - biz:verification:query
       - biz:dispatchlistening:query
       - biz:dispatchlistening:edit
+      - biz:dispatchpolicy:query
+      - biz:dispatchpolicy:edit
+      - biz:dispatch:revoke
     MiniRole:
       type: string
       enum:

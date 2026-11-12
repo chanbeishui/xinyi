@@ -1,0 +1,63 @@
+{
+  "baseline": "4df721d",
+  "initialCompile": {
+    "productionCompiled": true,
+    "integrationTestsRun": 0,
+    "cause": "D02夹具引用父类private config辅助方法，testCompile不可见",
+    "fix": "新增D02专用测试配置辅助方法；不改业务规则或降低断言",
+    "productionChangedForThisError": false
+  },
+  "beforeFirstBusinessRun": [
+    "半径比较先使用原始double距离过滤，再取整展示，防止圈外不足半米被算入",
+    "候选有效期及队列动作按当前批次总截止收口",
+    "保留D01占用UNION兜底；接受排除原邀约前独立检查异常其它承接/待邀约，避免首条占用遮蔽",
+    "首次公司策略未配置的nullable字段在PC允许加载为空表单，不用默认配置猜值",
+    "对已冻结服务公司新单，P03与D02校当前站点运营有效性，不将当前站点部门变更覆盖原订单服务公司/权限；旧无冻结继续严格校验"
+  ],
+  "note": "以上提前复核修订在首轮实际业务IT前完成，不将静态检查或0IT编译失败计为真实业务通过；最终命令结果另见实际归档。",
+  "firstBusinessRun": {
+    "integrationTestsRun": 256,
+    "failures": 6,
+    "errors": 1,
+    "skipped": 0,
+    "associatedPassed": 187,
+    "d02Passed": 62,
+    "d02Total": 69,
+    "productionFixes": [
+      "新增Controller入口@PreAuthorize拒绝被统一泛异常映射为500；去掉重复入口检查，保留窄ADMIN JWT链及Service事务内完整功能/数据权限和拒绝审计，恢复403",
+      "本人响应先校真实DRIVER和本人邀约归属，再比较客户端session/context观察；OWNER返回403、其他司机返回404，不由伪来源先触发409"
+    ],
+    "testFixes": [
+      "晚付款例推进10分钟后沿用过期D01点/联系而被正确拒派；现先在实际付款时刻真实报告新鲜事实再验立即邀约",
+      "退款断言错误引用refund.order_id；改按真实payment_id关联payment.order_id，不增加伪字段或放宽断言"
+    ],
+    "reportPath": "docs/implementation/vehicle/D02/target-first-business.json"
+  },
+  "rootKeyRotation": {
+    "finding": "策略行config_hash原按当前integration根密钥生成，但未带keyVersion，轮换后新建单可能拒绝原有效配置",
+    "fix": "仅Policy.hash改用已有稳定vi.lookup-key的域分隔HMAC；认证快照仍用带版本envelope，保留旧根密钥可读旧单",
+    "ddlOrSharedCryptoChanged": false,
+    "verifiedIn": "最终69专项中的真实新单/旧单/篡改场景"
+  },
+  "sourceAlignment": [
+    "模型ID策略标识改为既有MYSQL_AUTO_INCREMENT，未改数据库自增行为",
+    "补齐显式source/status枚举CHECK和不可变冻结字段写入白名单；4表8菜单隔离升级/完整/测试库再次一致"
+  ],
+  "realLeadUpdateFinding": {
+    "run": "final-n-assertion-first-failure.json",
+    "integrationTests": 69,
+    "failures": 1,
+    "errors": 0,
+    "productionCause": "原C01 upsert依赖不存在的config_key唯一键，更新N插入第二行，后续建单selectOne失败500",
+    "scope": "实际C01配置写入缺陷，非时间窗口或测试问题；保留原断言",
+    "priorFullRun": "full-regression-before-config-fix.json",
+    "fix": "由统一配置写事务显式锁版本、按真实config_id更新唯一已有键，不存在才插入；历史重复键报告并拒绝，不静默删数据",
+    "focusedVerification": {
+      "reportPath": "docs/implementation/vehicle/D02/config-focused.json",
+      "integrationTests": 7,
+      "unitTests": 50,
+      "exitCode": 0
+    },
+    "writeAuthority": "版本行写入前在目录守卫内核真实管理员status/auth_version及edit功能权限；C01为既有全局配置，不新增部门范围"
+  }
+}

@@ -1024,6 +1024,24 @@
         "BACKGROUND"
       ],
       "description": "客户端报告的最近交互状态；不保证持续网络可达"
+    },
+    "DispatchSource": {
+      "values": [
+        "AUTO",
+        "MANUAL"
+      ],
+      "description": "D02持久派单事实，写入必须通过统一Service"
+    },
+    "DispatchBatchStatus": {
+      "values": [
+        "RUNNING",
+        "WAIT_RESPONSE",
+        "PAUSED",
+        "ASSIGNED",
+        "MANUAL",
+        "CLOSED"
+      ],
+      "description": "D02持久派单事实，写入必须通过统一Service"
     }
   },
   "columnBindings": {
@@ -1128,7 +1146,10 @@
     "vi_manual_verification.status": "ManualVerificationStatus",
     "vi_qualification_review.decision": "QualificationReviewDecision",
     "vi_qualification_review.kind": "QualificationReviewKind",
-    "vi_driver_presence.client_state": "DriverClientState"
+    "vi_driver_presence.client_state": "DriverClientState",
+    "vi_dispatch_batch.source": "DispatchSource",
+    "vi_dispatch_invite.source": "DispatchSource",
+    "vi_dispatch_batch.status": "DispatchBatchStatus"
   },
   "governanceStatusByType": {
     "PRIVACY": [

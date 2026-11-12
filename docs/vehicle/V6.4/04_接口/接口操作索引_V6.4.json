@@ -1712,7 +1712,7 @@
     "capability": null,
     "authorization": {
       "realm": "ADMIN",
-      "scope": "ORG_DEPT_STATION",
+      "scope": "ORDER_AUTHORITATIVE_DEPT_AND_FROZEN_COMPANY_DRIVER_POOL",
       "permission": "biz:dispatch:list"
     },
     "flows": [
@@ -1728,7 +1728,7 @@
     "capability": null,
     "authorization": {
       "realm": "ADMIN",
-      "scope": "ORG_DEPT_STATION",
+      "scope": "ORDER_AUTHORITATIVE_DEPT_AND_FROZEN_COMPANY_DRIVER_POOL",
       "permission": "biz:dispatch:list"
     },
     "flows": [
@@ -1744,7 +1744,7 @@
     "capability": null,
     "authorization": {
       "realm": "ADMIN",
-      "scope": "ORG_DEPT_STATION",
+      "scope": "ORDER_AUTHORITATIVE_DEPT_AND_FROZEN_COMPANY_DRIVER_POOL",
       "permission": "biz:dispatch:create"
     },
     "flows": [
@@ -1760,7 +1760,7 @@
     "capability": null,
     "authorization": {
       "realm": "ADMIN",
-      "scope": "ORG_DEPT_STATION",
+      "scope": "ORDER_AUTHORITATIVE_DEPT_AND_FROZEN_COMPANY_DRIVER_POOL",
       "permission": "biz:dispatch:list"
     },
     "flows": [
@@ -5369,6 +5369,57 @@
       "realm": "ADMIN",
       "scope": "EXPLICIT_COMPANY_OWNER_DEPT",
       "permission": "biz:dispatchlistening:edit"
+    },
+    "flows": [
+      "F10",
+      "F31"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/admin/dispatch/companies/{companyId}/dispatch-policy",
+    "operationId": "d02_get_company_dispatch_policy",
+    "summary": "公司派单策略读取",
+    "permission": "biz:dispatchpolicy:query",
+    "capability": null,
+    "authorization": {
+      "realm": "ADMIN",
+      "scope": "EXPLICIT_COMPANY_OWNER_DEPT",
+      "permission": "biz:dispatchpolicy:query"
+    },
+    "flows": [
+      "F10",
+      "F31"
+    ]
+  },
+  {
+    "method": "PUT",
+    "path": "/api/admin/dispatch/companies/{companyId}/dispatch-policy",
+    "operationId": "d02_put_company_dispatch_policy",
+    "summary": "公司派单策略维护",
+    "permission": "biz:dispatchpolicy:edit",
+    "capability": null,
+    "authorization": {
+      "realm": "ADMIN",
+      "scope": "EXPLICIT_COMPANY_OWNER_DEPT",
+      "permission": "biz:dispatchpolicy:edit"
+    },
+    "flows": [
+      "F10",
+      "F31"
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/api/admin/dispatch/invites/{inviteId}/revoke",
+    "operationId": "d02_post_revoke_invite",
+    "summary": "撤回未响应邀约",
+    "permission": "biz:dispatch:revoke",
+    "capability": null,
+    "authorization": {
+      "realm": "ADMIN",
+      "scope": "ORDER_DEPT",
+      "permission": "biz:dispatch:revoke"
     },
     "flows": [
       "F10",

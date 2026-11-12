@@ -327,7 +327,10 @@
       "biz:verification:list",
       "biz:verification:query",
       "biz:dispatchlistening:query",
-      "biz:dispatchlistening:edit"
+      "biz:dispatchlistening:edit",
+      "biz:dispatchpolicy:query",
+      "biz:dispatchpolicy:edit",
+      "biz:dispatch:revoke"
     ],
     "CapabilityCode": [
       "COMMON_DICT_QUERY",
@@ -511,7 +514,15 @@
       "ENABLE_LISTENING",
       "DISABLE_LISTENING",
       "REPORT_DRIVER_LOCATION",
-      "REPORT_DRIVER_PRESENCE"
+      "REPORT_DRIVER_PRESENCE",
+      "VIEW_DISPATCH_CANDIDATES",
+      "CREATE_MANUAL_INVITE",
+      "VIEW_DISPATCH_INVITES",
+      "EDIT_DISPATCH_POLICY",
+      "ACCEPT_INVITE",
+      "REJECT_INVITE",
+      "REVOKE_INVITE",
+      "VIEW_ASSIGNMENT"
     ],
     "AccountStatus": [
       "ACTIVE",
@@ -1038,6 +1049,18 @@
     "DriverClientState": [
       "FOREGROUND",
       "BACKGROUND"
+    ],
+    "DispatchSource": [
+      "AUTO",
+      "MANUAL"
+    ],
+    "DispatchBatchStatus": [
+      "RUNNING",
+      "WAIT_RESPONSE",
+      "PAUSED",
+      "ASSIGNED",
+      "MANUAL",
+      "CLOSED"
     ]
   }
 }
