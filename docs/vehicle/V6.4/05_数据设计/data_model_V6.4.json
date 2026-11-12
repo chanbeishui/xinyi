@@ -566,15 +566,36 @@
         "effective_snapshot_id",
         "BIGINT NULL",
         "当前生效资格不可变快照；历史NULL不猜回填"
+      ],
+      [
+        "listening_revision",
+        "BIGINT NOT NULL DEFAULT 0",
+        "D01本人听单独立CAS，不复用档案备注版本"
+      ],
+      [
+        "listening_until",
+        "DATETIME(3) NULL",
+        "本人本次开启固定当日UTC截止；历史NULL不猜填"
+      ],
+      [
+        "listening_company_revision",
+        "BIGINT NULL",
+        "开启时真实公司epoch；转公司不可复用"
+      ],
+      [
+        "listening_config_version",
+        "BIGINT NULL",
+        "开启对应明确公司配置版本"
       ]
     ],
     "indexes": [
       "UNIQUE KEY uk_account (account_id)",
       "KEY ix_driver_company (owner_dept_id,id)",
       "KEY ix_driver_qualification_expiry (qualification_status,effective_snapshot_id)",
-      "KEY ix_pool (qualification_status,new_assignment_enabled,listening_enabled)"
+      "KEY ix_pool (qualification_status,new_assignment_enabled,listening_enabled)",
+      "KEY ix_driver_listening_expiry (listening_enabled,listening_until,id)"
     ],
-    "rule": "每名代驾明确归属一个公司部门，旗下站点共用；owner_dept_id不从员工、创建人或历史订单推断。存量NULL待全数据管理员显式认领；归属变更检查原新范围并集且无待响应/占用/在手任务，转移后禁新。资格审核、本人听单偏好与行政开关分开；暂停不释放承接或保管。 Q03：training_context_revision只在实际公司归属变化时递增，A→B→A不可复活旧学习；备注及行政开关不影响既有培训。 Q05：effective_snapshot_id仅实际批准事务切换；新单实时核资格/公司epoch/上海证件日期/明确UTC复审，不依赖Job准时。曾批准DRIVER仅历史/在手视角，不能作为新单资格；到期只更新资格状态，行政/听单/承接/占用均保留。",
+    "rule": "每名代驾明确归属一个公司部门，旗下站点共用；owner_dept_id不从员工、创建人或历史订单推断。存量NULL待全数据管理员显式认领；归属变更检查原新范围并集且无待响应/占用/在手任务，转移后禁新。资格审核、本人听单偏好与行政开关分开；暂停不释放承接或保管。 Q03：training_context_revision只在实际公司归属变化时递增，A→B→A不可复活旧学习；备注及行政开关不影响既有培训。 Q05：effective_snapshot_id仅实际批准事务切换；新单实时核资格/公司epoch/上海证件日期/明确UTC复审，不依赖Job准时。曾批准DRIVER仅历史/在手视角，不能作为新单资格；到期只更新资格状态，行政/听单/承接/占用均保留。 D01：本人开启固定当日截止和公司epoch，切后台不关偏好，到期实时关闭且任务持久收敛，次日不自动恢复；不改在手责任。",
     "primaryKey": [
       "id"
     ],
@@ -689,12 +710,37 @@
         "updatable": true,
         "clientWritable": false,
         "authority": "Q05真实批准不可变快照后与qualification_revision同事务切换，旧NULL不推断可信快照。"
+      },
+      "listening_revision": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "listening_until": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "listening_company_revision": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "listening_config_version": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
       }
     },
     "checks": [
       "CONSTRAINT ck_66_c6bf03f0ceed CHECK (`qualification_status` IN ('DRAFT','SUBMITTED','APPROVED','REJECTED','EXPIRED','SUSPENDED'))",
       "CONSTRAINT ck_driver_owner_dept CHECK (owner_dept_id IS NULL OR owner_dept_id>0)",
-      "CONSTRAINT ck_ver_driver_profile CHECK (version >= 0)"
+      "CONSTRAINT ck_ver_driver_profile CHECK (version >= 0)",
+      "CONSTRAINT ck_driver_listening_revision CHECK (listening_revision >= 0)"
     ]
   },
   {
@@ -3555,10 +3601,47 @@
         "version",
         "BIGINT NOT NULL DEFAULT 0",
         "乐观锁版本"
+      ],
+      [
+        "owner_dept_id",
+        "BIGINT NULL",
+        "最近点真实父档案公司；历史NULL不可信"
+      ],
+      [
+        "company_revision",
+        "BIGINT NULL",
+        "采点时真实公司epoch"
+      ],
+      [
+        "session_id",
+        "BIGINT NULL",
+        "实际MINI采点会话"
+      ],
+      [
+        "context_version",
+        "BIGINT NULL",
+        "实际会话视角版本"
+      ],
+      [
+        "accuracy_meter",
+        "INT NULL",
+        "设备报告精度；未知精度不能作为候选点"
+      ],
+      [
+        "valid_until",
+        "DATETIME(3) NULL",
+        "按采集与接收较早时间计算UTC有效期"
+      ],
+      [
+        "config_version",
+        "BIGINT NULL",
+        "计算有效期的公司配置版本"
       ]
     ],
-    "indexes": [],
-    "rule": "位置过期不参与候选；不是持续后台实时轨迹库",
+    "indexes": [
+      "KEY ix_driver_location_company (owner_dept_id,driver_id)"
+    ],
+    "rule": "位置过期不参与候选；不是持续后台实时轨迹库 D01仅真实会话/公司epoch最近加密点，旧点不按补报接收时间续期；历史NULL隔离，无轨迹或ADMIN坐标读接口。",
     "primaryKey": [
       "driver_id"
     ],
@@ -3609,10 +3692,53 @@
         "insertable": false,
         "updatable": false,
         "clientWritable": false
+      },
+      "owner_dept_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "company_revision": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "session_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "context_version": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "accuracy_meter": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "valid_until": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "config_version": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
       }
     },
     "checks": [
-      "CONSTRAINT ck_ver_driver_location CHECK (version >= 0)"
+      "CONSTRAINT ck_ver_driver_location CHECK (version >= 0)",
+      "CONSTRAINT ck_driver_location_accuracy CHECK (accuracy_meter IS NULL OR accuracy_meter BETWEEN 0 AND 100000)"
     ]
   },
   {
@@ -17710,6 +17836,307 @@
       "CONSTRAINT ck_qualification_snapshot_revision CHECK (qualification_revision>0 AND company_revision>=0 AND material_revision>=0)",
       "CONSTRAINT ck_qualification_snapshot_license CHECK (license_long_term IN (0,1) AND ((license_long_term=1 AND license_valid_to IS NULL) OR (license_long_term=0 AND license_valid_to IS NOT NULL)))",
       "CONSTRAINT ck_qualification_snapshot_due CHECK (expires_at<=review_due_at)"
+    ]
+  },
+  {
+    "name": "vi_driver_presence",
+    "comment": "代驾最近认证交互；不保证后台持续可达",
+    "cols": [
+      [
+        "driver_id",
+        "BIGINT NOT NULL",
+        "真实父代驾档案主键"
+      ],
+      [
+        "owner_dept_id",
+        "BIGINT NOT NULL",
+        "实际所属公司"
+      ],
+      [
+        "company_revision",
+        "BIGINT NOT NULL",
+        "真实公司epoch"
+      ],
+      [
+        "session_id",
+        "BIGINT NOT NULL",
+        "实际MINI交互会话"
+      ],
+      [
+        "context_version",
+        "BIGINT NOT NULL",
+        "真实会话视角版本"
+      ],
+      [
+        "client_state",
+        "VARCHAR(16) NOT NULL",
+        "DriverClientState: FOREGROUND,BACKGROUND"
+      ],
+      [
+        "observed_at",
+        "DATETIME(3) NOT NULL",
+        "客户端事件UTC时间"
+      ],
+      [
+        "received_at",
+        "DATETIME(3) NOT NULL",
+        "服务端收到认证事件UTC时间"
+      ],
+      [
+        "valid_until",
+        "DATETIME(3) NOT NULL",
+        "最近交互有效UTC截止，不保证后续网络"
+      ],
+      [
+        "config_version",
+        "BIGINT NOT NULL",
+        "公司配置版本"
+      ],
+      [
+        "version",
+        "BIGINT NOT NULL DEFAULT 0",
+        "独立CAS，首次真实写入版本1"
+      ],
+      [
+        "created_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "创建UTC时间"
+      ],
+      [
+        "updated_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "UTC更新时间，由Mapper显式维护"
+      ]
+    ],
+    "indexes": [
+      "KEY ix_driver_presence_company (owner_dept_id,driver_id)"
+    ],
+    "rule": "仅POST认证交互更新；GET不刷新，后台事件不关闭听单意愿；旧会话/公司epoch不能复用。",
+    "primaryKey": [
+      "driver_id"
+    ],
+    "idStrategy": "BUSINESS_KEY",
+    "engine": "InnoDB",
+    "collation": "utf8mb4_0900_ai_ci",
+    "columnRules": {
+      "driver_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "owner_dept_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "company_revision": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "session_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "context_version": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "client_state": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false,
+        "enumRef": "DriverClientState"
+      },
+      "observed_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "received_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "valid_until": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "config_version": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "version": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "created_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "updated_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      }
+    },
+    "checks": [
+      "CONSTRAINT ck_driver_presence_state CHECK (`client_state` IN ('FOREGROUND','BACKGROUND'))",
+      "CONSTRAINT ck_driver_presence_version CHECK (version>=0 AND company_revision>=0 AND context_version>=0 AND config_version>=0)"
+    ]
+  },
+  {
+    "name": "vi_driver_listening_config",
+    "comment": "同公司共用每日听单截止与位置/可达参数",
+    "cols": [
+      [
+        "owner_dept_id",
+        "BIGINT NOT NULL",
+        "明确公司主键，不从管理员主部门推断"
+      ],
+      [
+        "closing_time",
+        "CHAR(5) NOT NULL",
+        "Asia/Shanghai每日HH:mm下班时间"
+      ],
+      [
+        "location_max_age_seconds",
+        "INT NOT NULL",
+        "31..86400，位置有效期，无生产默认"
+      ],
+      [
+        "reachability_max_age_seconds",
+        "INT NOT NULL",
+        "31..86400，最近认证交互有效期，无生产默认"
+      ],
+      [
+        "max_accuracy_meter",
+        "INT NOT NULL",
+        "1..100000，允许位置精度上限"
+      ],
+      [
+        "location_report_interval_seconds",
+        "INT NOT NULL",
+        "30..3600且小于两种有效期；本系统节流约束"
+      ],
+      [
+        "updated_by_user_id",
+        "BIGINT NOT NULL",
+        "最后真实ADMIN操作者"
+      ],
+      [
+        "version",
+        "BIGINT NOT NULL DEFAULT 0",
+        "独立CAS，首次真实写入版本1"
+      ],
+      [
+        "created_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "创建UTC时间"
+      ],
+      [
+        "updated_at",
+        "DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))",
+        "UTC更新时间，由Mapper显式维护"
+      ]
+    ],
+    "indexes": [],
+    "rule": "保存立即生效，独立query/edit公司范围、CAS/幂等、原因加密审计；提前持久收紧旧窗口，延后不延长已有开启，次日必须本人手动开启。",
+    "primaryKey": [
+      "owner_dept_id"
+    ],
+    "idStrategy": "BUSINESS_KEY",
+    "engine": "InnoDB",
+    "collation": "utf8mb4_0900_ai_ci",
+    "columnRules": {
+      "owner_dept_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "closing_time": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "location_max_age_seconds": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "reachability_max_age_seconds": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "max_accuracy_meter": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "location_report_interval_seconds": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "updated_by_user_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "version": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "created_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "updated_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      }
+    },
+    "checks": [
+      "CONSTRAINT ck_driver_listening_time CHECK (closing_time REGEXP '^([01][0-9]|2[0-3]):[0-5][0-9]$')",
+      "CONSTRAINT ck_driver_listening_config_ranges CHECK (location_max_age_seconds BETWEEN 31 AND 86400 AND reachability_max_age_seconds BETWEEN 31 AND 86400 AND max_accuracy_meter BETWEEN 1 AND 100000 AND location_report_interval_seconds BETWEEN 30 AND 3600 AND location_report_interval_seconds<location_max_age_seconds AND location_report_interval_seconds<reachability_max_age_seconds)",
+      "CONSTRAINT ck_driver_listening_config_version CHECK (version>=0)"
     ]
   }
 ]

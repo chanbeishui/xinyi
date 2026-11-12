@@ -1,0 +1,12 @@
+{
+  "mode": "actual compiled MP JS executed with explicit uni/http adapter fixtures, not real WeChat hardware/GPS/consent acceptance",
+  "checks": [
+    "实际MP构建调用uni.getLocation GCJ02高精度，精度向上取整不夸大准确性，采点开始时间不改为回调时间",
+    "同身份短间隔重复采点被阻断，不重新获取位置或绕过报告节流",
+    "页面/身份改变后的迟到原生回调被拒绝，不形成可上报坐标",
+    "原生隐私/位置拒绝返回不可用，不伪造授权或定位成功",
+    "没有真实精度时显式null，交服务端独立阻断候选，不猜默认精度",
+    "切为OWNER后原生采点在客户端失败关闭，真实权限仍由后端核验",
+    "实际MP模块未知位置原体仅当前上下文保留；session订阅在切角色上下文和退出当刻清除，不等页面重入"
+  ]
+}

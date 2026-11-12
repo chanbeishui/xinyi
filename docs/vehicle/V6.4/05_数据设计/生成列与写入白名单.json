@@ -329,7 +329,11 @@
       "internal_remark",
       "owner_dept_id",
       "training_context_revision",
-      "effective_snapshot_id"
+      "effective_snapshot_id",
+      "listening_revision",
+      "listening_until",
+      "listening_company_revision",
+      "listening_config_version"
     ],
     "updateColumns": [
       "account_id",
@@ -344,7 +348,11 @@
       "internal_remark",
       "owner_dept_id",
       "training_context_revision",
-      "effective_snapshot_id"
+      "effective_snapshot_id",
+      "listening_revision",
+      "listening_until",
+      "listening_company_revision",
+      "listening_config_version"
     ],
     "columnRules": {
       "id": {
@@ -454,6 +462,30 @@
         "updatable": true,
         "clientWritable": false,
         "authority": "Q05真实批准不可变快照后与qualification_revision同事务切换，旧NULL不推断可信快照。"
+      },
+      "listening_revision": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "listening_until": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "listening_company_revision": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "listening_config_version": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
       }
     },
     "rule": "每名代驾明确归属一个公司部门，旗下站点共用；owner_dept_id不从员工、创建人或历史订单推断。存量NULL待全数据管理员显式认领；归属变更检查原新范围并集且无待响应/占用/在手任务，转移后禁新。资格审核、本人听单偏好与行政开关分开；暂停不释放承接或保管。 Q03：training_context_revision只在实际公司归属变化时递增，A→B→A不可复活旧学习；备注及行政开关不影响既有培训。 Q05：effective_snapshot_id仅实际批准事务切换；新单实时核资格/公司epoch/上海证件日期/明确UTC复审，不依赖Job准时。曾批准DRIVER仅历史/在手视角，不能作为新单资格；到期只更新资格状态，行政/听单/承接/占用均保留。"
@@ -2293,12 +2325,26 @@
       "driver_id",
       "location_cipher",
       "captured_at",
-      "received_at"
+      "received_at",
+      "owner_dept_id",
+      "company_revision",
+      "session_id",
+      "context_version",
+      "accuracy_meter",
+      "valid_until",
+      "config_version"
     ],
     "updateColumns": [
       "location_cipher",
       "captured_at",
-      "received_at"
+      "received_at",
+      "owner_dept_id",
+      "company_revision",
+      "session_id",
+      "context_version",
+      "accuracy_meter",
+      "valid_until",
+      "config_version"
     ],
     "columnRules": {
       "driver_id": {
@@ -2343,6 +2389,48 @@
         "generated": false,
         "insertable": false,
         "updatable": false,
+        "clientWritable": false
+      },
+      "owner_dept_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "company_revision": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "session_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "context_version": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "accuracy_meter": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "valid_until": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "config_version": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
         "clientWritable": false
       }
     },
@@ -11398,5 +11486,206 @@
       "snapshot_seal"
     ],
     "generatedColumns": []
+  },
+  {
+    "table": "vi_driver_presence",
+    "writeMode": "BUSINESS_ACTION_CAS",
+    "generatedColumns": [],
+    "columnRules": {
+      "driver_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "owner_dept_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "company_revision": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "session_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "context_version": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "client_state": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false,
+        "enumRef": "DriverClientState"
+      },
+      "observed_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "received_at": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "valid_until": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "config_version": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "version": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "created_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "updated_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      }
+    },
+    "insertColumns": [
+      "driver_id",
+      "owner_dept_id",
+      "company_revision",
+      "session_id",
+      "context_version",
+      "client_state",
+      "observed_at",
+      "received_at",
+      "valid_until",
+      "config_version",
+      "version"
+    ],
+    "updateColumns": [
+      "owner_dept_id",
+      "company_revision",
+      "session_id",
+      "context_version",
+      "client_state",
+      "observed_at",
+      "received_at",
+      "valid_until",
+      "config_version",
+      "version"
+    ]
+  },
+  {
+    "table": "vi_driver_listening_config",
+    "writeMode": "BUSINESS_ACTION_CAS",
+    "generatedColumns": [],
+    "columnRules": {
+      "owner_dept_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": false,
+        "clientWritable": false
+      },
+      "closing_time": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "location_max_age_seconds": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "reachability_max_age_seconds": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "max_accuracy_meter": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "location_report_interval_seconds": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "updated_by_user_id": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "version": {
+        "generated": false,
+        "insertable": true,
+        "updatable": true,
+        "clientWritable": false
+      },
+      "created_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      },
+      "updated_at": {
+        "generated": false,
+        "insertable": false,
+        "updatable": false,
+        "clientWritable": false,
+        "serverClock": "UTC_TIMESTAMP(3)"
+      }
+    },
+    "insertColumns": [
+      "owner_dept_id",
+      "closing_time",
+      "location_max_age_seconds",
+      "reachability_max_age_seconds",
+      "max_accuracy_meter",
+      "location_report_interval_seconds",
+      "updated_by_user_id",
+      "version"
+    ],
+    "updateColumns": [
+      "closing_time",
+      "location_max_age_seconds",
+      "reachability_max_age_seconds",
+      "max_accuracy_meter",
+      "location_report_interval_seconds",
+      "updated_by_user_id",
+      "version"
+    ]
   }
 ]

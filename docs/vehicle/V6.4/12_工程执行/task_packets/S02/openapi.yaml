@@ -1400,6 +1400,70 @@ components:
       - refundState
       - version
       description: 审核和执行分开；批准后不得再制造独立退款审核。非终态退款异常保留原号、金额预留和同一申请。 以原订单归属授权。financeVisible仅在biz:refund:query及原收款主体部门范围均满足时为true，否则所有结构化资金字段为null。后台notes为公开补充，reviews.opinion仅后台查看；公开说明单独维护。
+    AfterSaleReviewHistory:
+      type: object
+      additionalProperties: false
+      required:
+      - decision
+      - approvedAmount
+      - opinion
+      - publicOpinion
+      - reviewedAt
+      - reviewerUserId
+      properties:
+        decision:
+          type: string
+          enum:
+          - APPROVE
+          - REJECT
+        approvedAmount:
+          type: integer
+          format: int64
+          minimum: 0
+          nullable: true
+        opinion:
+          type: string
+          maxLength: 1000
+        publicOpinion:
+          type: string
+          nullable: true
+          maxLength: 1000
+        reviewedAt:
+          type: string
+          format: date-time
+        reviewerUserId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+    AfterSaleNotePublic:
+      type: object
+      additionalProperties: false
+      required:
+      - noteId
+      - note
+      - voucherFileIds
+      - createdAt
+      properties:
+        noteId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+        note:
+          type: string
+          minLength: 1
+          maxLength: 1000
+        voucherFileIds:
+          type: array
+          items:
+            type: string
+            pattern: ^[1-9][0-9]{0,18}$
+        createdAt:
+          type: string
+          format: date-time
+        authorType:
+          type: string
+          enum:
+          - MINI
+          - ADMIN
+          description: 公开来源类别，不暴露后台人员ID。
     AllowedAction:
       type: string
       description: 服务端按当前角色、对象状态、版本和实时授权计算的可执行动作集合；不能由客户端授予
@@ -1494,6 +1558,11 @@ components:
       - VIEW_QUALIFICATION
       - AUDIT_QUALIFICATION
       - REPAIR_QUALIFICATION_REJECTION
+      - EDIT_LISTENING_CONFIG
+      - ENABLE_LISTENING
+      - DISABLE_LISTENING
+      - REPORT_DRIVER_LOCATION
+      - REPORT_DRIVER_PRESENCE
     AfterSaleReview:
       type: object
       additionalProperties: false
@@ -1690,67 +1759,13 @@ components:
       - requestedAmount
       - expectedOrderVersion
       description: 以当前登录车主创建一次售后请求。同订单仅一个未办结申请，其他金额仍须资金锁与预留校验。
-    AfterSaleNotePublic:
-      type: object
-      additionalProperties: false
-      required:
-      - noteId
-      - note
-      - voucherFileIds
-      - createdAt
-      properties:
-        noteId:
-          type: string
-          pattern: ^[1-9][0-9]{0,18}$
-        note:
-          type: string
-          minLength: 1
-          maxLength: 1000
-        voucherFileIds:
-          type: array
-          items:
-            type: string
-            pattern: ^[1-9][0-9]{0,18}$
-        createdAt:
-          type: string
-          format: date-time
-        authorType:
-          type: string
-          enum:
-          - MINI
-          - ADMIN
-          description: 公开来源类别，不暴露后台人员ID。
-    AfterSaleReviewHistory:
-      type: object
-      additionalProperties: false
-      required:
-      - decision
-      - approvedAmount
-      - opinion
-      - publicOpinion
-      - reviewedAt
-      - reviewerUserId
-      properties:
-        decision:
-          type: string
-          enum:
-          - APPROVE
-          - REJECT
-        approvedAmount:
-          type: integer
-          format: int64
-          minimum: 0
-          nullable: true
-        opinion:
-          type: string
-          maxLength: 1000
-        publicOpinion:
-          type: string
-          nullable: true
-          maxLength: 1000
-        reviewedAt:
-          type: string
-          format: date-time
-        reviewerUserId:
-          type: string
-          pattern: ^[1-9][0-9]{0,18}$
+  securitySchemes:
+    MiniBearerAuth:
+      type: http
+      scheme: bearer
+      description: 小程序不透明随机访问令牌；数据库权威会话，非sys_user JWT；见T3.4
+    AdminBearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: 现有xinyi后台sys_user会话，不能作为小程序车主/代驾身份

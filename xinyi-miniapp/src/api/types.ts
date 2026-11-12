@@ -381,7 +381,16 @@ export type TrainingSubmit = {
   }>;
 };
 
-export type Listening = { enabled: boolean; expectedVersion: number };
+export type Listening = {
+  enabled: boolean;
+  expectedVersion: number;
+  expectedCompanyRevision: number;
+  expectedConfigVersion: number | null;
+  expectedSessionId: string;
+  expectedContextVersion: number;
+  expectedBusinessDate: string;
+};
+
 
 export type Availability = {
   listeningEnabled?: boolean;
@@ -2367,7 +2376,9 @@ export type PermissionCode =
   | 'biz:vehicle:query'
   | 'biz:verification:close'
   | 'biz:verification:list'
-  | 'biz:verification:query';
+  | 'biz:verification:query'
+  | 'biz:dispatchlistening:query'
+  | 'biz:dispatchlistening:edit';
 
 export type CapabilityCode =
   | 'COMMON_DICT_QUERY'
@@ -2386,6 +2397,8 @@ export type CapabilityCode =
   | 'COMMON_PRIVACYCASES_CREATE'
   | 'COMMON_PRIVACYCASES_LIST'
   | 'COMMON_STATIONS_LIST'
+  | 'COMMON_SUBSCRIPTION_REPORT'
+  | 'COMMON_SUBSCRIPTION_REQUEST'
   | 'COMMON_UPLOADS_COMPLETE'
   | 'COMMON_UPLOADS_CREATE'
   | 'DRIVER_ASSIGNMENT_QUERY'
@@ -2422,9 +2435,8 @@ export type CapabilityCode =
   | 'DRIVER_QUALIFICATION_PROGRESS'
   | 'DRIVER_QUALIFICATION_QUERY'
   | 'DRIVER_QUALIFICATION_SUBMIT'
-  | 'EMPLOYEE_BINDING_CONSUME'
-  | 'EMPLOYEE_BINDING_READ'
-  | 'EMPLOYEE_BINDING_REQUEST'
+  | 'EMPLOYEE_LINK_READ'
+  | 'EMPLOYEE_LINK_RECONCILE'
   | 'OWNER_ADDRESSES_CREATE'
   | 'OWNER_ADDRESSES_DEFAULT'
   | 'OWNER_ADDRESSES_EDIT'
@@ -2433,11 +2445,13 @@ export type CapabilityCode =
   | 'OWNER_AFTERSALE_CREATE'
   | 'OWNER_AFTERSALE_LIST'
   | 'OWNER_AFTERSALE_QUERY'
+  | 'OWNER_OFFLINE_INTENT'
   | 'OWNER_ORDER_CLOSEUNPAID'
   | 'OWNER_ORDER_CREATE'
   | 'OWNER_ORDER_LIST'
   | 'OWNER_ORDER_QUERY'
   | 'OWNER_ORDER_SERVICECONFIRMATION'
+  | 'OWNER_PAYMENT_OPTIONS'
   | 'OWNER_PROFILE_EDIT'
   | 'OWNER_SCHEDULE_LIST'
   | 'OWNER_VEHICLE_CREATE'
@@ -2445,11 +2459,13 @@ export type CapabilityCode =
   | 'OWNER_VEHICLE_EDIT'
   | 'OWNER_VEHICLE_LIST'
   | 'OWNER_VEHICLE_REMOVE'
+  | 'PHONE_BIND'
   | 'PROFILE_READ'
   | 'SESSION_LOGOUT'
   | 'SESSION_READ'
   | 'SESSION_SWITCH_ROLE'
-  | 'SESSION_SWITCH_STATION';
+  | 'SESSION_SWITCH_STATION'
+  | 'DRIVER_PRESENCE_CREATE';
 
 export type AllowedAction =
   | 'ADD_REVIEW'
@@ -2541,7 +2557,12 @@ export type AllowedAction =
   | 'REVIEW_MANUAL_VERIFICATION'
   | 'VIEW_QUALIFICATION'
   | 'AUDIT_QUALIFICATION'
-  | 'REPAIR_QUALIFICATION_REJECTION';
+  | 'REPAIR_QUALIFICATION_REJECTION'
+  | 'EDIT_LISTENING_CONFIG'
+  | 'ENABLE_LISTENING'
+  | 'DISABLE_LISTENING'
+  | 'REPORT_DRIVER_LOCATION'
+  | 'REPORT_DRIVER_PRESENCE';
 
 export type AccountStatus = 'ACTIVE' | 'LOCKED';
 
@@ -3401,3 +3422,108 @@ export type QualificationAdminDetail = {
   effectiveSnapshotId: string | null;
   effectiveQualification: QualificationEffectiveSnapshot | null;
 };
+
+export type DriverLocationReport = {
+  lng: number;
+  lat: number;
+  accuracyMeter: number | null;
+  capturedAt: string;
+  coordinateSystem: 'GCJ02';
+  expectedVersion: number;
+  expectedCompanyRevision: number;
+  expectedSessionId: string;
+  expectedContextVersion: number;
+};
+
+export type DriverPresenceReport = {
+  clientState: DriverClientState;
+  observedAt: string;
+  expectedVersion: number;
+  expectedCompanyRevision: number;
+  expectedSessionId: string;
+  expectedContextVersion: number;
+};
+
+export type DriverAvailability = {
+  newAssignmentEnabled: boolean;
+  listeningIntentEnabled: boolean;
+  listeningEnabled: boolean;
+  configurationReady: boolean;
+  qualificationValid: boolean;
+  occupied: boolean;
+  locationFresh: boolean;
+  locationAccuracyValid: boolean;
+  clientReachable: boolean;
+  availableForNewOrder: boolean;
+  companyRevision: number;
+  contextVersion: number;
+  version: number;
+  listeningVersion: number;
+  profileVersion: number;
+  locationVersion: number;
+  presenceVersion: number;
+  listeningCompanyRevision: number | null;
+  listeningConfigVersion: number | null;
+  configVersion: number | null;
+  driverId: string;
+  ownerDeptId: string | null;
+  sessionId: string;
+  holderId: string | null;
+  companyName: string | null;
+  closingTime: string | null;
+  locationReportIntervalSeconds: number | null;
+  qualificationReason: string | null;
+  occupationType: OccupationType;
+  activePenaltyIds: Array<string>;
+  locationStatus:
+    | 'MISSING'
+    | 'UNTRUSTED'
+    | 'CONTEXT_CHANGED'
+    | 'STALE'
+    | 'INACCURATE'
+    | 'UNKNOWN_ACCURACY'
+    | 'FRESH';
+  accuracyMeter: number | null;
+  clientState: DriverClientState | null;
+  reachabilityStatus: 'RECENT_CONTACT' | 'STALE' | 'UNKNOWN' | 'CONTEXT_CHANGED';
+  eligibilityScope: 'BASE_CANDIDATE_ONLY';
+  reason: string;
+  allowedActions: Array<
+    'ENABLE_LISTENING' | 'DISABLE_LISTENING' | 'REPORT_DRIVER_LOCATION' | 'REPORT_DRIVER_PRESENCE'
+  >;
+  listeningUntil: string | null;
+  locationCapturedAt: string | null;
+  locationReceivedAt: string | null;
+  locationExpiresAt: string | null;
+  lastContactAt: string | null;
+  reachabilityExpiresAt: string | null;
+  businessDate: string;
+  completedAssignmentCount: number;
+};
+
+
+export type CompanyListeningConfig = {
+  ownerDeptId: string;
+  companyName: string;
+  timeZone: 'Asia/Shanghai';
+  configured: boolean;
+  version: number;
+  closingTime: string | null;
+  locationMaxAgeSeconds: number | null;
+  reachabilityMaxAgeSeconds: number | null;
+  maxAccuracyMeter: number | null;
+  locationReportIntervalSeconds: number | null;
+  allowedActions: Array<'EDIT_LISTENING_CONFIG'>;
+};
+
+export type CompanyListeningConfigWrite = {
+  expectedVersion: number;
+  closingTime: string;
+  locationMaxAgeSeconds: number;
+  reachabilityMaxAgeSeconds: number;
+  maxAccuracyMeter: number;
+  locationReportIntervalSeconds: number;
+  reason: string;
+};
+
+export type DriverClientState = 'FOREGROUND' | 'BACKGROUND';

@@ -10,7 +10,13 @@
     "setting": {
       "urlCheck": true
     },
-    "usingComponents": true
+    "usingComponents": true,
+    "permission": {
+      "scope.userLocation": {
+        "desc": "用于代驾主动听单时在工作台前台判断接车位置与位置有效性，离开工作台停止采集"
+      }
+    },
+    "requiredPrivateInfos": ["getLocation"]
   },
   "h5": {
     "router": {

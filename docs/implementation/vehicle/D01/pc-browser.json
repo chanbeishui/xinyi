@@ -1,0 +1,259 @@
+{
+  "mode": "Browser plugin not available; cached Playwright, rendered PC application with explicit API fixtures; not real backend scope/DB acceptance",
+  "url": "http://127.0.0.1:5173/driver-management/listening-config",
+  "viewports": [
+    "1440x1000",
+    "390x844"
+  ],
+  "checks": [
+    "真实路由与非空页面；公司必须明确选择，业务配置不默认账号主部门",
+    "未配置公司显示版本0，所有运营值留空，不注入平台默认下班或有效期",
+    "必填与间隔小于两个有效期做真实本地拦截，不发送不完整配置",
+    "7键PUT及真实UUID/CAS，保存即生效，无发布/上班时间/自动恢复字段",
+    "409保留填写并锁定旧版本，显式重读后使用新CAS与新意图",
+    "503切公司不串表单或目标；回原公司按原7键、版本、UUID重试，另一公司未被写入",
+    "1440与390布局无整页横向溢出，明确公司、字段说明和生效边界可读",
+    "公司真实403清理原配置与填写，不把有权目录选择当业务写入授权",
+    "query只读账号不开放写入；服务器allowedActions与功能权限共同控制",
+    "即使客户端功能权限齐备，缺服务端EDIT动作也不能保存",
+    "目录HTTP200业务403明确失败关闭，不吞为空成功或回退主部门",
+    "无query时不获取目录或任何公司配置，直接路由访问仍失败关闭"
+  ],
+  "errors": [],
+  "warnings": [],
+  "expectedHttpErrors": [
+    "Failed to load resource: the server responded with a status of 409 (Conflict)",
+    "Failed to load resource: the server responded with a status of 503 (Service Unavailable)",
+    "Failed to load resource: the server responded with a status of 403 (Forbidden)"
+  ],
+  "unknown": [],
+  "requests": [
+    {
+      "path": "/getInfo",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/getRouters",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/system/notice/listTop",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/system/dept/list",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/admin/dispatch/companies/101/listening-config",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/admin/dispatch/companies/101/listening-config",
+      "method": "PUT",
+      "query": {}
+    },
+    {
+      "path": "/api/admin/dispatch/companies/101/listening-config",
+      "method": "PUT",
+      "query": {}
+    },
+    {
+      "path": "/api/admin/dispatch/companies/101/listening-config",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/admin/dispatch/companies/101/listening-config",
+      "method": "PUT",
+      "query": {}
+    },
+    {
+      "path": "/api/admin/dispatch/companies/101/listening-config",
+      "method": "PUT",
+      "query": {}
+    },
+    {
+      "path": "/api/admin/dispatch/companies/102/listening-config",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/admin/dispatch/companies/101/listening-config",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/admin/dispatch/companies/101/listening-config",
+      "method": "PUT",
+      "query": {}
+    },
+    {
+      "path": "/system/notice/listTop",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/admin/dispatch/companies/102/listening-config",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/getInfo",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/getRouters",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/system/notice/listTop",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/system/dept/list",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/admin/dispatch/companies/101/listening-config",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/getInfo",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/getRouters",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/system/notice/listTop",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/system/dept/list",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/api/admin/dispatch/companies/101/listening-config",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/getInfo",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/getRouters",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/system/notice/listTop",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/system/dept/list",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/getInfo",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/getRouters",
+      "method": "GET",
+      "query": {}
+    },
+    {
+      "path": "/system/notice/listTop",
+      "method": "GET",
+      "query": {}
+    }
+  ],
+  "writes": [
+    {
+      "company": "101",
+      "input": {
+        "expectedVersion": 0,
+        "closingTime": "22:30",
+        "locationMaxAgeSeconds": 120,
+        "reachabilityMaxAgeSeconds": 120,
+        "maxAccuracyMeter": 100,
+        "locationReportIntervalSeconds": 30,
+        "reason": "按公司当日服务安排维护下班和前台更新参数"
+      },
+      "key": "81104e64-60e1-4f82-9672-ce3907f4e658"
+    },
+    {
+      "company": "101",
+      "input": {
+        "expectedVersion": 1,
+        "closingTime": "22:30",
+        "locationMaxAgeSeconds": 120,
+        "reachabilityMaxAgeSeconds": 120,
+        "maxAccuracyMeter": 100,
+        "locationReportIntervalSeconds": 30,
+        "reason": "公司统一调整当日服务安排"
+      },
+      "key": "dc2a9dd8-b482-4e2a-b013-77b8e6fdba26"
+    },
+    {
+      "company": "101",
+      "input": {
+        "expectedVersion": 2,
+        "closingTime": "22:30",
+        "locationMaxAgeSeconds": 120,
+        "reachabilityMaxAgeSeconds": 120,
+        "maxAccuracyMeter": 100,
+        "locationReportIntervalSeconds": 30,
+        "reason": "公司统一调整当日服务安排"
+      },
+      "key": "c0923d3f-b9a4-4a0d-924b-64f478c91abb"
+    },
+    {
+      "company": "101",
+      "input": {
+        "expectedVersion": 3,
+        "closingTime": "22:30",
+        "locationMaxAgeSeconds": 120,
+        "reachabilityMaxAgeSeconds": 120,
+        "maxAccuracyMeter": 100,
+        "locationReportIntervalSeconds": 30,
+        "reason": "核对公司统一听单配置"
+      },
+      "key": "f21b4068-a091-439f-bf8b-9d0837ce63d0"
+    },
+    {
+      "company": "101",
+      "input": {
+        "expectedVersion": 3,
+        "closingTime": "22:30",
+        "locationMaxAgeSeconds": 120,
+        "reachabilityMaxAgeSeconds": 120,
+        "maxAccuracyMeter": 100,
+        "locationReportIntervalSeconds": 30,
+        "reason": "核对公司统一听单配置"
+      },
+      "key": "f21b4068-a091-439f-bf8b-9d0837ce63d0"
+    }
+  ]
+}

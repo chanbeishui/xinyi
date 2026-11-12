@@ -1,7 +1,7 @@
 # D02 · 自动邀约轮转与扩圈
 
 阶段：M3；责任域：dispatch；前置：D01, P03。
-范围版本：`V6.1-UNCHANGED`；definitionHash：`fd8ac859de9beeaceff1dcfd01c80ecce9c78da513405126ecf03d4ec19a18b8`。
+范围版本：`V6.1-UNCHANGED`；definitionHash：`b81e29562cefdcf24274fcd0b4167330b5bb25f5b4b7515bd6f300f58cb8394f`。
 
 ## 本任务交付
 - 游标、公平轮转、单次邀约、截止和人工兜底
@@ -17,7 +17,7 @@
 接口：无
 画板：无
 主责任表：vi_dispatch_invite, vi_driver_occupancy, vi_dispatch_cursor
-验收：TC-051, TC-052, TC-053, TC-054, TC-055, TC-056, TC-057, TC-058, TC-059, TC-060, TC-061, TC-062, TC-063, TC-064, TC-065, TC-066, TC-017
+验收：TC-051, TC-052, TC-053, TC-054, TC-055, TC-056, TC-057, TC-058, TC-059, TC-060, TC-061, TC-062, TC-063, TC-064, TC-066, TC-017, TC-065
 
 ## 代码落位
 `docs/implementation/vehicle/D02/`

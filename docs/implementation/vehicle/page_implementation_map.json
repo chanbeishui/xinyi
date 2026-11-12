@@ -721,25 +721,34 @@
     "implementationNote": "本人材料、严格提交、冻结进度及结构化驳回补正按本次范围实际验证，不授正式身份。"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "VERIFIED",
+    "implementationFile": "xinyi-miniapp/src/components/dispatch/DriverListening.vue",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/D01-20261112.json"
+    ],
     "boardId": "D06",
-    "taskId": "D01"
+    "taskId": "D01",
+    "scopeNote": "D01配置/基础工作状态已验；实际邀约、接受与履约跳转依赖D02及后续任务，不以本页判定整链完成。"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "VERIFIED",
+    "implementationFile": "xinyi-miniapp/src/components/dispatch/DriverListening.vue",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/D01-20261112.json"
+    ],
     "boardId": "D06-occupied",
-    "taskId": "D01"
+    "taskId": "D01",
+    "scopeNote": "D01配置/基础工作状态已验；实际邀约、接受与履约跳转依赖D02及后续任务，不以本页判定整链完成。"
   },
   {
-    "status": "NOT_ASSESSED",
-    "implementationFile": null,
-    "evidence": [],
+    "status": "VERIFIED",
+    "implementationFile": "xinyi-miniapp/src/components/dispatch/DriverListening.vue",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/D01-20261112.json"
+    ],
     "boardId": "D06-offline",
-    "taskId": "D01"
+    "taskId": "D01",
+    "scopeNote": "D01配置/基础工作状态已验；实际邀约、接受与履约跳转依赖D02及后续任务，不以本页判定整链完成。"
   },
   {
     "status": "NOT_ASSESSED",
@@ -3034,5 +3043,15 @@
     "evidence": [],
     "boardId": "O10-offline-paid",
     "taskId": "X06"
+  },
+  {
+    "status": "VERIFIED",
+    "implementationFile": "xinyi-ui/src/views/rongli/dispatch/listening-config.vue",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/D01-20261112.json"
+    ],
+    "boardId": "B24-listening-company",
+    "taskId": "D01",
+    "scopeNote": "D01配置/基础工作状态已验；实际邀约、接受与履约跳转依赖D02及后续任务，不以本页判定整链完成。"
   }
 ]

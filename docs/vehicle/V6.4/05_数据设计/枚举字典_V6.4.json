@@ -1017,6 +1017,13 @@
         "REPAIR_REJECTION"
       ],
       "description": "不可变事实类型，修复不作为批准"
+    },
+    "DriverClientState": {
+      "values": [
+        "FOREGROUND",
+        "BACKGROUND"
+      ],
+      "description": "客户端报告的最近交互状态；不保证持续网络可达"
     }
   },
   "columnBindings": {
@@ -1120,7 +1127,8 @@
     "vi_manual_verification.conclusion": "ManualVerificationConclusion",
     "vi_manual_verification.status": "ManualVerificationStatus",
     "vi_qualification_review.decision": "QualificationReviewDecision",
-    "vi_qualification_review.kind": "QualificationReviewKind"
+    "vi_qualification_review.kind": "QualificationReviewKind",
+    "vi_driver_presence.client_state": "DriverClientState"
   },
   "governanceStatusByType": {
     "PRIVACY": [

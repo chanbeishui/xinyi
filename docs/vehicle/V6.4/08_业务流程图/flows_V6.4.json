@@ -860,8 +860,38 @@
   {
     "id": "F10",
     "title": "自动轮转、扩圈与人工兜底",
-    "scope": "派单",
+    "scope": "D01已实现公司每日下班、本人听单意愿与独立位置/可达基础门槛；具体订单轮转/邀约接受为后续D02等设计，未随D01验收",
     "nodes": [
+      {
+        "id": "d01config",
+        "label": "D01 公司明确配置每日下班与位置/可达参数\n无平台默认；保存立即生效",
+        "decision": false
+      },
+      {
+        "id": "d01intent",
+        "label": "D01 本人手动开启今日听单\n冻结上海业务日及公司/配置/会话版本、当天UTC截止",
+        "decision": false
+      },
+      {
+        "id": "d01background",
+        "label": "D01 切后台只报BACKGROUND并停止前台采点\n保持意愿；旧点和失联凭据按服务端租约过期",
+        "decision": false
+      },
+      {
+        "id": "d01close",
+        "label": "D01 手动关闭或公司下班截止时关闭\n提前可收紧、延后不延旧窗口；次日不自动恢复",
+        "decision": false
+      },
+      {
+        "id": "d01base",
+        "label": "D01 基础条件分别满足？\n听单/行政/资格/占用/限制/位置时间与精度/近期联系",
+        "decision": true
+      },
+      {
+        "id": "d01blocked",
+        "label": "保持听单意愿并展示真实阻断；本人刷新重核，不把旧定位当实时",
+        "decision": false
+      },
       {
         "id": "n1",
         "label": "按资格、定位新鲜度、占用、半径筛候选",
@@ -914,6 +944,46 @@
       }
     ],
     "edges": [
+      {
+        "from": "d01config",
+        "to": "d01intent",
+        "label": "本人主动开启"
+      },
+      {
+        "from": "d01intent",
+        "to": "d01base",
+        "label": "服务端逐项判断"
+      },
+      {
+        "from": "d01intent",
+        "to": "d01background",
+        "label": "切到后台"
+      },
+      {
+        "from": "d01background",
+        "to": "d01base",
+        "label": "仅仍有效凭据"
+      },
+      {
+        "from": "d01intent",
+        "to": "d01close",
+        "label": "手动或下班"
+      },
+      {
+        "from": "d01close",
+        "to": "d01intent",
+        "label": "次日本人再开启"
+      },
+      {
+        "from": "d01base",
+        "to": "d01blocked",
+        "label": "条件未满足"
+      },
+      {
+        "from": "d01base",
+        "to": "n1",
+        "label": "基础就绪，后续仍须订单匹配"
+      },
       {
         "from": "n1",
         "to": "n2",
@@ -971,7 +1041,7 @@
       }
     ],
     "note": "5分钟总上限优先，不能等待50人各60秒再宣称5分钟兜底。人工不可绕过资格和占用。策略见P01。",
-    "pages": "D06–D08、B05/B06",
+    "pages": "D06–D08、B05/B06/B24-listening-company",
     "decision": "P01/C06"
   },
   {
@@ -3022,7 +3092,7 @@
         "label": "新邀约"
       }
     ],
-    "note": "并发与重试必须以occupancy.holderId精确匹配；旧订单自动完成不能误释放当前新订单。",
+    "note": "并发与重试必须以occupancy.holderId精确匹配；旧订单自动完成不能误释放当前新订单。 释放占用不自动开启听单，也不恢复已到期的听单、位置或交互记录；图中“接下一个订单”只表示资源可重新参与评估，必须先通过F10/D01实时基础条件，再通过D02特定订单匹配与接受事务。邀约及完整履约链属于后续任务。",
     "pages": "D06/D23、调度服务",
     "decision": "C09/C10/C11"
   },

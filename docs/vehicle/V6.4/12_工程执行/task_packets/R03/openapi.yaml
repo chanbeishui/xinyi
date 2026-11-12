@@ -1657,6 +1657,11 @@ components:
       - VIEW_QUALIFICATION
       - AUDIT_QUALIFICATION
       - REPAIR_QUALIFICATION_REJECTION
+      - EDIT_LISTENING_CONFIG
+      - ENABLE_LISTENING
+      - DISABLE_LISTENING
+      - REPORT_DRIVER_LOCATION
+      - REPORT_DRIVER_PRESENCE
     DriverStatementLine:
       type: object
       additionalProperties: false
@@ -2020,3 +2025,13 @@ components:
       - proposedAmount
       - reason
       description: 只编辑单条服务最终拟价，不传差额；服务端读原值算差额并留痕。只允许DRAFT/DISPUTED；原账锁定返回409并指引调差。
+  securitySchemes:
+    MiniBearerAuth:
+      type: http
+      scheme: bearer
+      description: 小程序不透明随机访问令牌；数据库权威会话，非sys_user JWT；见T3.4
+    AdminBearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: 现有xinyi后台sys_user会话，不能作为小程序车主/代驾身份

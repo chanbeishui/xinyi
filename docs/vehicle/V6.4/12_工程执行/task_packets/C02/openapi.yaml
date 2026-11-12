@@ -671,10 +671,15 @@ paths:
       x-contract-baseline: V6.4
 components:
   schemas:
-    StationUpdate:
+    AdminStationUpdate:
       type: object
       additionalProperties: false
       properties:
+        deptId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: ADMIN受控迁部门，须同时有权访问原部门和目标部门且无在手订单
         name:
           type: string
         address:
@@ -926,70 +931,6 @@ components:
       additionalProperties: false
       required:
       - version
-    StationCreate:
-      type: object
-      additionalProperties: false
-      properties:
-        name:
-          type: string
-        address:
-          type: string
-        location:
-          $ref: '#/components/schemas/GeoPoint'
-        contactPhone:
-          type: string
-        enabled:
-          type: boolean
-        supportedVehicleTypeCodes:
-          type: array
-          items:
-            type: string
-        businessHours:
-          type: string
-        serviceRadiusMeter:
-          type: integer
-          minimum: 0
-        qualificationFileIds:
-          type: array
-          items:
-            type: string
-            description: 不透明ID，以字符串传输，避免JavaScript大整数精度丢失
-      required:
-      - name
-      - address
-      - location
-      - supportedVehicleTypeCodes
-    PublicStationView:
-      type: object
-      additionalProperties: false
-      properties:
-        stationId:
-          type: string
-          pattern: ^[1-9][0-9]{0,18}$
-          maxLength: 19
-          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
-        name:
-          type: string
-        address:
-          type: string
-        location:
-          $ref: '#/components/schemas/GeoPoint'
-        phoneMask:
-          type: string
-        supportedVehicleTypeCodes:
-          type: array
-          items:
-            type: string
-        businessHours:
-          type: string
-        serviceRadiusMeter:
-          type: integer
-          minimum: 0
-      required:
-      - stationId
-      - name
-      - address
-      description: 公开营业信息；禁止包含授权范围/人员/内部状态
     AdminStationCreate:
       type: object
       additionalProperties: false
@@ -1029,15 +970,10 @@ components:
       - address
       - location
       - supportedVehicleTypeCodes
-    AdminStationUpdate:
+    StationUpdate:
       type: object
       additionalProperties: false
       properties:
-        deptId:
-          type: string
-          pattern: ^[1-9][0-9]{0,18}$
-          maxLength: 19
-          description: ADMIN受控迁部门，须同时有权访问原部门和目标部门且无在手订单
         name:
           type: string
         address:
@@ -1074,6 +1010,37 @@ components:
       - location
       - supportedVehicleTypeCodes
       - expectedVersion
+    PublicStationView:
+      type: object
+      additionalProperties: false
+      properties:
+        stationId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+        name:
+          type: string
+        address:
+          type: string
+        location:
+          $ref: '#/components/schemas/GeoPoint'
+        phoneMask:
+          type: string
+        supportedVehicleTypeCodes:
+          type: array
+          items:
+            type: string
+        businessHours:
+          type: string
+        serviceRadiusMeter:
+          type: integer
+          minimum: 0
+      required:
+      - stationId
+      - name
+      - address
+      description: 公开营业信息；禁止包含授权范围/人员/内部状态
   responses:
     UnprocessableEntity:
       description: 填写内容不符合要求。参见errorCode注册表；HTTP状态与code一致。
@@ -1218,3 +1185,13 @@ components:
             retryable: false
             retryAfterSeconds: null
             data: {}
+  securitySchemes:
+    MiniBearerAuth:
+      type: http
+      scheme: bearer
+      description: 小程序不透明随机访问令牌；数据库权威会话，非sys_user JWT；见T3.4
+    AdminBearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: 现有xinyi后台sys_user会话，不能作为小程序车主/代驾身份

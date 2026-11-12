@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xinyi.rongli.dispatch.mapper.DispatchListeningMapper">
+    <resultMap id="ListeningCompanyConfig" type="com.xinyi.rongli.dispatch.domain.ListeningCompanyConfig">
+        <result property="ownerDeptId" column="owner_dept_id"/>
+        <result property="closingTime" column="closing_time"/>
+        <result property="locationMaxAgeSeconds" column="location_max_age_seconds"/>
+        <result property="reachabilityMaxAgeSeconds" column="reachability_max_age_seconds"/>
+        <result property="maxAccuracyMeter" column="max_accuracy_meter"/>
+        <result property="locationReportIntervalSeconds" column="location_report_interval_seconds"/>
+        <result property="updatedByUserId" column="updated_by_user_id"/>
+        <result property="version" column="version"/>
+    </resultMap>
+    <resultMap id="DriverLocation" type="com.xinyi.rongli.dispatch.domain.DriverLocation">
+        <result property="driverId" column="driver_id"/>
+        <result property="locationCipher" column="location_cipher"/>
+        <result property="capturedAt" column="captured_at" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+        <result property="receivedAt" column="received_at" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+        <result property="ownerDeptId" column="owner_dept_id"/>
+        <result property="companyRevision" column="company_revision"/>
+        <result property="sessionId" column="session_id"/>
+        <result property="contextVersion" column="context_version"/>
+        <result property="accuracyMeter" column="accuracy_meter"/>
+        <result property="validUntil" column="valid_until" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+        <result property="configVersion" column="config_version"/>
+        <result property="version" column="version"/>
+    </resultMap>
+    <resultMap id="DriverPresence" type="com.xinyi.rongli.dispatch.domain.DriverPresence">
+        <result property="driverId" column="driver_id"/>
+        <result property="ownerDeptId" column="owner_dept_id"/>
+        <result property="companyRevision" column="company_revision"/>
+        <result property="sessionId" column="session_id"/>
+        <result property="contextVersion" column="context_version"/>
+        <result property="clientState" column="client_state"/>
+        <result property="observedAt" column="observed_at" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+        <result property="receivedAt" column="received_at" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+        <result property="validUntil" column="valid_until" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+        <result property="configVersion" column="config_version"/>
+        <result property="version" column="version"/>
+    </resultMap>
+    <select id="config" resultMap="ListeningCompanyConfig">
+        SELECT *
+        FROM vi_driver_listening_config
+        WHERE owner_dept_id=#{id}
+        FOR UPDATE
+    </select>
+    <insert id="insertConfig">
+        INSERT INTO vi_driver_listening_config(
+            owner_dept_id,closing_time,location_max_age_seconds,
+            reachability_max_age_seconds,max_accuracy_meter,location_report_interval_seconds,
+            updated_by_user_id,version
+        )
+        VALUES(
+            #{ownerDeptId},#{closingTime},#{locationMaxAgeSeconds},
+            #{reachabilityMaxAgeSeconds},#{maxAccuracyMeter},#{locationReportIntervalSeconds},
+            #{updatedByUserId},#{version}
+        )
+    </insert>
+    <update id="updateConfig">
+        UPDATE vi_driver_listening_config
+        SET
+            closing_time=#{row.closingTime},
+            location_max_age_seconds=#{row.locationMaxAgeSeconds},
+            reachability_max_age_seconds=#{row.reachabilityMaxAgeSeconds},
+            max_accuracy_meter=#{row.maxAccuracyMeter},
+            location_report_interval_seconds=#{row.locationReportIntervalSeconds},
+            updated_by_user_id=#{row.updatedByUserId},
+            version=#{row.version},
+            updated_at=UTC_TIMESTAMP(3)
+        WHERE owner_dept_id=#{row.ownerDeptId}
+            AND version=#{expected}
+    </update>
+    <select id="location" resultMap="DriverLocation">
+        SELECT *
+        FROM vi_driver_location
+        WHERE driver_id=#{id}
+        FOR UPDATE
+    </select>
+    <insert id="insertLocation">
+        INSERT INTO vi_driver_location(
+            driver_id,location_cipher,captured_at,
+            received_at,owner_dept_id,company_revision,
+            session_id,context_version,accuracy_meter,
+            valid_until,config_version,version
+        )
+        VALUES(
+            #{driverId},#{locationCipher},#{capturedAt,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler},
+            #{receivedAt,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler},#{ownerDeptId},#{companyRevision},
+            #{sessionId},#{contextVersion},#{accuracyMeter},
+            #{validUntil,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler},#{configVersion},#{version}
+        )
+    </insert>
+    <update id="updateLocation">
+        UPDATE vi_driver_location
+        SET
+            location_cipher=#{row.locationCipher},
+            captured_at=#{row.capturedAt,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler},
+            received_at=#{row.receivedAt,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler},
+            owner_dept_id=#{row.ownerDeptId},
+            company_revision=#{row.companyRevision},
+            session_id=#{row.sessionId},
+            context_version=#{row.contextVersion},
+            accuracy_meter=#{row.accuracyMeter},
+            valid_until=#{row.validUntil,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler},
+            config_version=#{row.configVersion},
+            version=#{row.version},
+            updated_at=UTC_TIMESTAMP(3)
+        WHERE driver_id=#{row.driverId}
+            AND version=#{expected}
+    </update>
+    <select id="presence" resultMap="DriverPresence">
+        SELECT *
+        FROM vi_driver_presence
+        WHERE driver_id=#{id}
+        FOR UPDATE
+    </select>
+    <insert id="insertPresence">
+        INSERT INTO vi_driver_presence(
+            driver_id,owner_dept_id,company_revision,
+            session_id,context_version,client_state,
+            observed_at,received_at,valid_until,
+            config_version,version
+        )
+        VALUES(
+            #{driverId},#{ownerDeptId},#{companyRevision},
+            #{sessionId},#{contextVersion},#{clientState},
+            #{observedAt,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler},
+            #{receivedAt,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler},
+            #{validUntil,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler},
+            #{configVersion},#{version}
+        )
+    </insert>
+    <update id="updatePresence">
+        UPDATE vi_driver_presence
+        SET
+            owner_dept_id=#{row.ownerDeptId},
+            company_revision=#{row.companyRevision},
+            session_id=#{row.sessionId},
+            context_version=#{row.contextVersion},
+            client_state=#{row.clientState},
+            observed_at=#{row.observedAt,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler},
+            received_at=#{row.receivedAt,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler},
+            valid_until=#{row.validUntil,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler},
+            config_version=#{row.configVersion},
+            version=#{row.version},
+            updated_at=UTC_TIMESTAMP(3)
+        WHERE driver_id=#{row.driverId}
+            AND version=#{expected}
+    </update>
+    <select id="lockProfile" resultMap="com.xinyi.rongli.driver.mapper.DriverMapper.Driver">
+        <include refid="com.xinyi.rongli.driver.mapper.DriverMapper.columns"/>
+        WHERE d.account_id=#{accountId}
+        FOR UPDATE
+    </select>
+    <select id="account" resultType="long">
+        SELECT account_id
+        FROM vi_driver_profile
+        WHERE id=#{driverId}
+    </select>
+    <select id="companyDrivers" resultType="long">
+        SELECT id
+        FROM vi_driver_profile
+        WHERE owner_dept_id=#{ownerDeptId}
+        ORDER BY id
+    </select>
+    <!-- 独立听单代次防止备注或行政修改变成重复开启；通用档案版本仍同步递增供后台CAS。 -->
+    <update id="saveListening">
+        UPDATE vi_driver_profile
+        SET listening_enabled=#{enabled},listening_until=#{until,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler},
+            listening_company_revision=#{epoch},listening_config_version=#{config},
+            listening_revision=listening_revision+1,version=version+1,updated_at=UTC_TIMESTAMP(3)
+        WHERE id=#{row.id} AND listening_revision=#{row.listeningRevision} AND version=#{row.version}
+    </update>
+    <select id="liveSession" resultType="map">
+        SELECT session.account_id,session.active_role,session.context_version,session.status,session.revoked_at,
+            session.absolute_expires_at,session.session_epoch,security.session_epoch current_epoch,
+            security.security_status,account.status account_status
+        FROM vi_session session
+        JOIN vi_account account ON account.id=session.account_id
+        JOIN vi_account_security security ON security.account_id=account.id
+        WHERE session.id=#{sessionId}
+    </select>
+    <select id="penalties" resultType="long">
+        SELECT id
+        FROM vi_penalty
+        WHERE driver_id=#{driver} AND status='ACTIVE' AND revoked_at IS NULL AND counted=1
+            AND (effective_until IS NULL OR effective_until&gt;#{now,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler})
+        ORDER BY id
+    </select>
+    <select id="occupation" resultType="map">
+        SELECT holder_type,holder_id
+        FROM (
+            SELECT holder_type,holder_id,0 priority FROM vi_driver_occupancy WHERE driver_id=#{driverId}
+            UNION ALL
+            SELECT 'ASSIGNMENT',id,1 FROM vi_driver_assignment WHERE driver_id=#{driverId} AND ended_at IS NULL
+            UNION ALL
+            SELECT 'INVITE',id,2 FROM vi_dispatch_invite WHERE driver_id=#{driverId} AND status='WAIT_RESPONSE'
+        ) active
+        ORDER BY priority,holder_id
+        LIMIT 1
+    </select>
+    <select id="dueDrivers" resultType="long">
+        SELECT id
+        FROM vi_driver_profile
+        WHERE listening_enabled=1
+            AND (listening_until IS NULL OR listening_until&lt;=#{now,typeHandler=com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler}
+                OR listening_company_revision IS NULL OR listening_company_revision&lt;>training_context_revision)
+        ORDER BY id
+        LIMIT 200
+    </select>
+    <select id="missingTimers" resultType="long">
+        SELECT profile.id
+        FROM vi_driver_profile profile
+        WHERE profile.listening_enabled=1 AND profile.listening_until IS NOT NULL
+            AND profile.listening_company_revision=profile.training_context_revision
+            AND NOT EXISTS(
+                SELECT 1 FROM vi_outbox event
+                WHERE event.event_key=CONCAT('LISTENING_EXPIRY:',profile.id,':',profile.listening_revision)
+            )
+        ORDER BY profile.id
+        LIMIT 200
+    </select>
+</mapper>

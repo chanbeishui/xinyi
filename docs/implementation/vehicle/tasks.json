@@ -3273,36 +3273,52 @@
       "I04"
     ],
     "deliverables": [
-      "分开听单意愿/客户端可达/定位新鲜度/在手任务，拒绝原因明确"
+      "公司独立配置每日下班时间及位置/可达阈值，真实权限/CAS/审计",
+      "本人手动开启固定当日截止；切后台保留听单意愿，下班关闭、次日不自动恢复",
+      "分开听单意愿/行政许可/资格/客户端可达/定位新鲜度/在手任务，拒绝原因明确"
     ],
     "negative_checks": [
-      "旧定位不报实时",
-      "位置取样不成为后台轨迹直播"
+      "旧位置/旧会话/旧公司epoch不报实时",
+      "截止及次日不能因延迟任务或幂等重放继续听单",
+      "关闭听单不释放在手承接、占用或车辆责任",
+      "跨公司、功能或数据越权拒绝；坐标不写明文审计、不提供后台轨迹直播"
     ],
     "api_ids": [
       "API_048_get",
       "API_049_patch",
-      "API_050_post"
+      "API_050_post",
+      "d01_post_driver_presence",
+      "d01_get_company_listening_config",
+      "d01_put_company_listening_config"
     ],
     "page_ids": [
       "D06",
       "D06-occupied",
-      "D06-offline"
+      "D06-offline",
+      "B24-listening-company"
     ],
     "tables": [
-      "vi_driver_location"
+      "vi_driver_location",
+      "vi_driver_presence",
+      "vi_driver_listening_config"
     ],
-    "case_ids": [],
+    "case_ids": [
+      "TC-D01-001",
+      "TC-D01-002",
+      "TC-D01-003",
+      "TC-D01-004",
+      "TC-D01-005"
+    ],
     "scope": "DEVELOPMENT",
     "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
-    "status": "IN_PROGRESS",
+    "status": "VERIFIED",
     "code_paths": [
       "xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/",
       "xinyi-rongli/src/main/resources/mapper/rongli/dispatch/",
-      "xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/controller/",
       "xinyi-ui/src/views/rongli/dispatch/",
-      "xinyi-ui/src/api/rongli/dispatch.ts",
-      "xinyi-miniapp/src/features/dispatch/"
+      "xinyi-ui/src/api/rongli/listeningPolicy.ts",
+      "xinyi-miniapp/src/features/dispatch/",
+      "xinyi-miniapp/src/pages/work/"
     ],
     "test_class": "D01DispatchIT",
     "commands": [
@@ -3322,13 +3338,27 @@
       "access": "不得绕过限制；保存恢复点",
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
-    "scopeRevision": "V6.1-UNCHANGED",
-    "definitionHash": "09e5d040924dfb502dba01837c213c02697d0731a21c17f1a34ef5d30dd28147",
-    "evidence": [],
-    "implementation": null,
-    "review": null,
+    "scopeRevision": "V6.4-LISTENING-DAY-20261112",
+    "definitionHash": "06dc4295165b1ef9698ea6b0cc01b1724e81a4667e355176af1ebe93bae8777e",
+    "evidence": [
+      {
+        "path": "docs/implementation/vehicle/evidence/D01-20261112.json",
+        "sha256": "b652b64fa8fc975948def8112295f370f0465100a3242e5350fe0b3b239f6098"
+      }
+    ],
+    "implementation": "docs/implementation/vehicle/D01/report.md",
+    "review": "docs/implementation/vehicle/D01/review.md",
     "blocker": null,
-    "updatedAt": "2026-11-12T13:27:02.176833+00:00"
+    "updatedAt": "2026-11-12T14:44:03.232705+00:00",
+    "scopeHistory": [
+      {
+        "fromScope": "V6.1-UNCHANGED",
+        "toScope": "V6.4-LISTENING-DAY-20261112",
+        "priorStatus": "IN_PROGRESS",
+        "reason": "用户最终确认公司统一下班、后台保留意愿、次日本人手动开启；保留首批纯策略证据，不作为完整运行验收。"
+      }
+    ],
+    "needsAdaptation": false
   },
   {
     "id": "D02",
@@ -3370,9 +3400,9 @@
       "TC-062",
       "TC-063",
       "TC-064",
-      "TC-065",
       "TC-066",
-      "TC-017"
+      "TC-017",
+      "TC-065"
     ],
     "scope": "DEVELOPMENT",
     "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
@@ -3399,7 +3429,7 @@
       "contract": "局部冲突登记并修订同源契约，独立任务继续"
     },
     "scopeRevision": "V6.1-UNCHANGED",
-    "definitionHash": "fd8ac859de9beeaceff1dcfd01c80ecce9c78da513405126ecf03d4ec19a18b8",
+    "definitionHash": "b81e29562cefdcf24274fcd0b4167330b5bb25f5b4b7515bd6f300f58cb8394f",
     "evidence": [],
     "implementation": null,
     "review": null,

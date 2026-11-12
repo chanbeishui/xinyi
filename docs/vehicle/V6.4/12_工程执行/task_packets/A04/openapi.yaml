@@ -140,7 +140,8 @@ paths:
       summary: 禁止新增承接
       tags:
       - ADMIN
-      description: 真实ADMIN及对应功能/公司部门范围；权威归属driver.owner_dept_id，不取员工绑定、主部门或历史订单。空范围拒绝。写入版本、UUID和原因，审计/outbox同事务。 只关闭新增承接，不改资格、听单、邀约、保管或既有承接。
+      description: 真实ADMIN及对应功能/公司部门范围；权威归属driver.owner_dept_id，不取员工绑定、主部门或历史订单。空范围拒绝。写入版本、UUID和原因，审计/outbox同事务。
+        只关闭新增承接，不改资格、听单、邀约、保管或既有承接。
       x-flow-ids:
       - F04
       security:
@@ -355,7 +356,8 @@ paths:
       - AdminBearerAuth: []
       x-flow-ids:
       - F25
-      description: 真实ADMIN及对应功能/公司部门范围；权威归属driver.owner_dept_id，不取员工绑定、主部门或历史订单。空范围拒绝。写入版本、UUID和原因，审计/outbox同事务。 改公司覆盖原新归属；未归属认领须ALL。不可伪造资格/听单/证件。
+      description: 真实ADMIN及对应功能/公司部门范围；权威归属driver.owner_dept_id，不取员工绑定、主部门或历史订单。空范围拒绝。写入版本、UUID和原因，审计/outbox同事务。
+        改公司覆盖原新归属；未归属认领须ALL。不可伪造资格/听单/证件。
       parameters:
       - name: driverId
         in: path
@@ -473,7 +475,8 @@ paths:
       x-flow-ids:
       - F31
       - F32
-      description: 真实ADMIN及对应功能/公司部门范围；权威归属driver.owner_dept_id，不取员工绑定、主部门或历史订单。空范围拒绝。写入版本、UUID和原因，审计/outbox同事务。 同时需要司机query与assignment:list；承接记录再按原订单真实部门过滤，row/total同范围。
+      description: 真实ADMIN及对应功能/公司部门范围；权威归属driver.owner_dept_id，不取员工绑定、主部门或历史订单。空范围拒绝。写入版本、UUID和原因，审计/outbox同事务。
+        同时需要司机query与assignment:list；承接记录再按原订单真实部门过滤，row/total同范围。
       parameters:
       - name: driverId
         in: path
@@ -593,7 +596,8 @@ paths:
       summary: 恢复新承接行政开关
       tags:
       - ADMIN
-      description: 真实ADMIN及对应功能/公司部门范围；权威归属driver.owner_dept_id，不取员工绑定、主部门或历史订单。空范围拒绝。写入版本、UUID和原因，审计/outbox同事务。 只有明确APPROVED、准驾类别/证照有效、复审未到期、公司有效才恢复行政开关；不代表D01最终可派单。
+      description: 真实ADMIN及对应功能/公司部门范围；权威归属driver.owner_dept_id，不取员工绑定、主部门或历史订单。空范围拒绝。写入版本、UUID和原因，审计/outbox同事务。
+        只有明确APPROVED、准驾类别/证照有效、复审未到期、公司有效才恢复行政开关；不代表D01最终可派单。
       x-flow-ids:
       - F04
       security:
@@ -717,151 +721,25 @@ paths:
       x-authority-sources:
         driver: vi_driver_profile.owner_dept_id
 components:
-  responses:
-    NotFound:
-      description: 记录不存在或不可访问。参见errorCode注册表；HTTP状态与code一致。
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ApiError'
-          example:
-            code: 404
-            errorCode: VI_RESOURCE_NOT_VISIBLE
-            msg: 记录不存在或不可访问
-            requestId: req-example
-            retryable: false
-            retryAfterSeconds: null
-            data: {}
-    Unavailable:
-      description: 权限权威状态暂不可读取。参见errorCode注册表；HTTP状态与code一致。
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ApiError'
-          example:
-            code: 503
-            errorCode: VI_AUTHORITY_UNAVAILABLE
-            msg: 权限权威状态暂不可读取
-            requestId: req-example
-            retryable: true
-            retryAfterSeconds: null
-            data: {}
-      headers:
-        Retry-After:
-          description: 建议等待秒数；429必带，503仅在可估计时返回
-          schema:
-            type: integer
-            minimum: 1
-    InternalError:
-      description: 处理失败，请联系服务人员。参见errorCode注册表；HTTP状态与code一致。
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ApiError'
-          example:
-            code: 500
-            errorCode: VI_INTERNAL_ERROR
-            msg: 处理失败，请联系服务人员
-            requestId: req-example
-            retryable: false
-            retryAfterSeconds: null
-            data: {}
-    TooManyRequests:
-      description: 操作过于频繁，请稍后重试。参见errorCode注册表；HTTP状态与code一致。
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ApiError'
-          example:
-            code: 429
-            errorCode: VI_RATE_LIMITED
-            msg: 操作过于频繁，请稍后重试
-            requestId: req-example
-            retryable: true
-            retryAfterSeconds: 10
-            data: {}
-      headers:
-        Retry-After:
-          description: 建议等待秒数；429必带，503仅在可估计时返回
-          schema:
-            type: integer
-            minimum: 1
-    Forbidden:
-      description: 没有执行此操作的权限。参见errorCode注册表；HTTP状态与code一致。
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ApiError'
-          example:
-            code: 403
-            errorCode: VI_FORBIDDEN
-            msg: 没有执行此操作的权限
-            requestId: req-example
-            retryable: false
-            retryAfterSeconds: null
-            data: {}
-    Unauthorized:
-      description: 登录已失效，请重新登录。参见errorCode注册表；HTTP状态与code一致。
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ApiError'
-          example:
-            code: 401
-            errorCode: VI_AUTH_REQUIRED
-            msg: 登录已失效，请重新登录
-            requestId: req-example
-            retryable: false
-            retryAfterSeconds: null
-            data: {}
-      headers:
-        WWW-Authenticate:
-          schema:
-            type: string
-          description: Bearer realm="mini" 或 "admin"；不泄露令牌细节
-    BadRequest:
-      description: 请求格式不正确。参见errorCode注册表；HTTP状态与code一致。
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ApiError'
-          example:
-            code: 400
-            errorCode: VI_REQUEST_INVALID
-            msg: 请求格式不正确
-            requestId: req-example
-            retryable: false
-            retryAfterSeconds: null
-            data: {}
-    UnprocessableEntity:
-      description: 填写内容不符合要求。参见errorCode注册表；HTTP状态与code一致。
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ApiError'
-          example:
-            code: 422
-            errorCode: VI_DATA_INVALID
-            msg: 填写内容不符合要求
-            requestId: req-example
-            retryable: false
-            retryAfterSeconds: null
-            data: {}
-    Conflict:
-      description: 记录已变化，请刷新后重试。参见errorCode注册表；HTTP状态与code一致。
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ApiError'
-          example:
-            code: 409
-            errorCode: VI_VERSION_CONFLICT
-            msg: 记录已变化，请刷新后重试
-            requestId: req-example
-            retryable: false
-            retryAfterSeconds: null
-            data: {}
   schemas:
+    VersionReason:
+      type: object
+      properties:
+        expectedVersion:
+          type: integer
+          minimum: 0
+          description: 客户端最后读取的版本；服务端条件更新，冲突返回409
+          format: int64
+          maximum: 9007199254740991
+        reason:
+          type: string
+          description: 必填；具体字段长度与原规范对齐，上限500字
+          minLength: 1
+          maxLength: 500
+      additionalProperties: false
+      required:
+      - expectedVersion
+      - reason
     ApiError:
       type: object
       additionalProperties: false
@@ -1020,6 +898,49 @@ components:
       - field
       - reasonCode
       - message
+    Availability:
+      type: object
+      properties:
+        listeningEnabled:
+          type: boolean
+        qualificationValid:
+          type: boolean
+        occupationType:
+          $ref: '#/components/schemas/OccupationType'
+        holderId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+          nullable: true
+        availableForNewOrder:
+          type: boolean
+        reason:
+          type: string
+          description: 实际阻断原因；后台缺少本人当前会话上下文时返回CLIENT_CONTEXT_REQUIRED，不能把行政开关开启当作可接单。
+        version:
+          type: integer
+          minimum: 0
+          description: 客户端最后读取的版本；服务端条件更新，冲突返回409
+          format: int64
+          maximum: 9007199254740991
+        activePenaltyIds:
+          type: array
+          items:
+            type: string
+            pattern: ^[1-9][0-9]{0,18}$
+            maxLength: 19
+            description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+        newAssignmentEnabled:
+          type: boolean
+      additionalProperties: false
+      description: A04后台保守投影：行政允许、本人意愿、有效听单截止、资格、占用分别判断；没有本人当前会话上下文时不宣称客户端可达或最终候选通过。D01本人完整状态使用DriverAvailability。
+    OccupationType:
+      type: string
+      enum:
+      - NONE
+      - INVITE
+      - ASSIGNMENT
     DriverAssignmentRecord:
       type: object
       additionalProperties: false
@@ -1308,64 +1229,162 @@ components:
       - VIEW_QUALIFICATION
       - AUDIT_QUALIFICATION
       - REPAIR_QUALIFICATION_REJECTION
-    VersionReason:
-      type: object
-      properties:
-        expectedVersion:
-          type: integer
-          minimum: 0
-          description: 客户端最后读取的版本；服务端条件更新，冲突返回409
-          format: int64
-          maximum: 9007199254740991
-        reason:
-          type: string
-          description: 必填；具体字段长度与原规范对齐，上限500字
-          minLength: 1
-          maxLength: 500
-      additionalProperties: false
-      required:
-      - expectedVersion
-      - reason
-    Availability:
-      type: object
-      properties:
-        listeningEnabled:
-          type: boolean
-        qualificationValid:
-          type: boolean
-        occupationType:
-          $ref: '#/components/schemas/OccupationType'
-        holderId:
-          type: string
-          pattern: ^[1-9][0-9]{0,18}$
-          maxLength: 19
-          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
-          nullable: true
-        availableForNewOrder:
-          type: boolean
-        reason:
-          type: string
-          description: 当前不能接受新单的实际原因；A04未接通D01定位/可达最终判定时不能将行政开关开启当作可接单。
-        version:
-          type: integer
-          minimum: 0
-          description: 客户端最后读取的版本；服务端条件更新，冲突返回409
-          format: int64
-          maximum: 9007199254740991
-        activePenaltyIds:
-          type: array
-          items:
+      - EDIT_LISTENING_CONFIG
+      - ENABLE_LISTENING
+      - DISABLE_LISTENING
+      - REPORT_DRIVER_LOCATION
+      - REPORT_DRIVER_PRESENCE
+  responses:
+    UnprocessableEntity:
+      description: 填写内容不符合要求。参见errorCode注册表；HTTP状态与code一致。
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+          example:
+            code: 422
+            errorCode: VI_DATA_INVALID
+            msg: 填写内容不符合要求
+            requestId: req-example
+            retryable: false
+            retryAfterSeconds: null
+            data: {}
+    Conflict:
+      description: 记录已变化，请刷新后重试。参见errorCode注册表；HTTP状态与code一致。
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+          example:
+            code: 409
+            errorCode: VI_VERSION_CONFLICT
+            msg: 记录已变化，请刷新后重试
+            requestId: req-example
+            retryable: false
+            retryAfterSeconds: null
+            data: {}
+    NotFound:
+      description: 记录不存在或不可访问。参见errorCode注册表；HTTP状态与code一致。
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+          example:
+            code: 404
+            errorCode: VI_RESOURCE_NOT_VISIBLE
+            msg: 记录不存在或不可访问
+            requestId: req-example
+            retryable: false
+            retryAfterSeconds: null
+            data: {}
+    Unavailable:
+      description: 权限权威状态暂不可读取。参见errorCode注册表；HTTP状态与code一致。
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+          example:
+            code: 503
+            errorCode: VI_AUTHORITY_UNAVAILABLE
+            msg: 权限权威状态暂不可读取
+            requestId: req-example
+            retryable: true
+            retryAfterSeconds: null
+            data: {}
+      headers:
+        Retry-After:
+          description: 建议等待秒数；429必带，503仅在可估计时返回
+          schema:
+            type: integer
+            minimum: 1
+    InternalError:
+      description: 处理失败，请联系服务人员。参见errorCode注册表；HTTP状态与code一致。
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+          example:
+            code: 500
+            errorCode: VI_INTERNAL_ERROR
+            msg: 处理失败，请联系服务人员
+            requestId: req-example
+            retryable: false
+            retryAfterSeconds: null
+            data: {}
+    TooManyRequests:
+      description: 操作过于频繁，请稍后重试。参见errorCode注册表；HTTP状态与code一致。
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+          example:
+            code: 429
+            errorCode: VI_RATE_LIMITED
+            msg: 操作过于频繁，请稍后重试
+            requestId: req-example
+            retryable: true
+            retryAfterSeconds: 10
+            data: {}
+      headers:
+        Retry-After:
+          description: 建议等待秒数；429必带，503仅在可估计时返回
+          schema:
+            type: integer
+            minimum: 1
+    Forbidden:
+      description: 没有执行此操作的权限。参见errorCode注册表；HTTP状态与code一致。
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+          example:
+            code: 403
+            errorCode: VI_FORBIDDEN
+            msg: 没有执行此操作的权限
+            requestId: req-example
+            retryable: false
+            retryAfterSeconds: null
+            data: {}
+    Unauthorized:
+      description: 登录已失效，请重新登录。参见errorCode注册表；HTTP状态与code一致。
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+          example:
+            code: 401
+            errorCode: VI_AUTH_REQUIRED
+            msg: 登录已失效，请重新登录
+            requestId: req-example
+            retryable: false
+            retryAfterSeconds: null
+            data: {}
+      headers:
+        WWW-Authenticate:
+          schema:
             type: string
-            pattern: ^[1-9][0-9]{0,18}$
-            maxLength: 19
-            description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
-        newAssignmentEnabled:
-          type: boolean
-      additionalProperties: false
-      description: 行政允许、本人意愿、资格、占用分开；A04不伪造D01客户端可达和定位新鲜度。
-    OccupationType:
-      type: string
-      enum:
-      - NONE
-      - INVITE
-      - ASSIGNMENT
+          description: Bearer realm="mini" 或 "admin"；不泄露令牌细节
+    BadRequest:
+      description: 请求格式不正确。参见errorCode注册表；HTTP状态与code一致。
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+          example:
+            code: 400
+            errorCode: VI_REQUEST_INVALID
+            msg: 请求格式不正确
+            requestId: req-example
+            retryable: false
+            retryAfterSeconds: null
+            data: {}
+  securitySchemes:
+    MiniBearerAuth:
+      type: http
+      scheme: bearer
+      description: 小程序不透明随机访问令牌；数据库权威会话，非sys_user JWT；见T3.4
+    AdminBearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: 现有xinyi后台sys_user会话，不能作为小程序车主/代驾身份

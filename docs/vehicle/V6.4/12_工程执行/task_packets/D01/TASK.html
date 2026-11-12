@@ -1,28 +1,32 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TASK</title><style>body{font:16px/1.75 -apple-system,BlinkMacSystemFont,"Microsoft YaHei",sans-serif;color:#202632;margin:0;background:#f6f7f9}header{padding:14px 24px;background:white;border-bottom:1px solid #ddd}main{max-width:1120px;margin:24px auto;padding:30px;background:white}h1{font-size:30px}h2{margin-top:36px}a{color:#0661bd}table{border-collapse:collapse;width:100%;display:block;overflow:auto;font-size:14px}td,th{border:1px solid #dde2ea;padding:10px;vertical-align:top}th{background:#f1f5fb}pre{padding:15px;background:#f2f4f7;overflow:auto}img{max-width:100%;height:auto}blockquote{padding:10px 20px;border-left:3px solid #2571be;background:#f4f8fc}@media(max-width:700px){main{padding:15px;margin:8px}h1{font-size:25px}}</style></head><body><header><a href="../../../00_开始.html">V6.4 完整资料</a>　<a href="../../../02_UI/index.html">交互原型</a>　T3.4</header><main><h1>D01 · 听单、位置与资格判定</h1>
 <p>阶段：M3；责任域：dispatch；前置：Q05, I04。
-范围版本：<code>V6.1-UNCHANGED</code>；definitionHash：<code>09e5d040924dfb502dba01837c213c02697d0731a21c17f1a34ef5d30dd28147</code>。</p>
+范围版本：<code>V6.4-LISTENING-DAY-20261112</code>；definitionHash：<code>06dc4295165b1ef9698ea6b0cc01b1724e81a4667e355176af1ebe93bae8777e</code>。</p>
 <h2>本任务交付</h2>
 <ul>
-<li>分开听单意愿/客户端可达/定位新鲜度/在手任务，拒绝原因明确</li>
+<li>公司独立配置每日下班时间及位置/可达阈值，真实权限/CAS/审计</li>
+<li>本人手动开启固定当日截止；切后台保留听单意愿，下班关闭、次日不自动恢复</li>
+<li>分开听单意愿/行政许可/资格/客户端可达/定位新鲜度/在手任务，拒绝原因明确</li>
 </ul>
 <h2>必测失败与并发</h2>
 <ul>
-<li>旧定位不报实时</li>
-<li>位置取样不成为后台轨迹直播</li>
+<li>旧位置/旧会话/旧公司epoch不报实时</li>
+<li>截止及次日不能因延迟任务或幂等重放继续听单</li>
+<li>关闭听单不释放在手承接、占用或车辆责任</li>
+<li>跨公司、功能或数据越权拒绝；坐标不写明文审计、不提供后台轨迹直播</li>
 </ul>
 <h2>精确输入</h2>
 <p>主源：04_接口/openapi_V6.4.yaml、05_数据设计/data_model_V6.4.json、06_验收/test_cases_V6.4.json。本目录派生，不独立维护。
-接口：API_048_get, API_049_patch, API_050_post
-画板：D06, D06-occupied, D06-offline
-主责任表：vi_driver_location
-验收：无</p>
+接口：API_048_get, API_049_patch, API_050_post, d01_post_driver_presence, d01_get_company_listening_config, d01_put_company_listening_config
+画板：D06, D06-occupied, D06-offline, B24-listening-company
+主责任表：vi_driver_location, vi_driver_presence, vi_driver_listening_config
+验收：TC-D01-001, TC-D01-002, TC-D01-003, TC-D01-004, TC-D01-005</p>
 <h2>代码落位</h2>
 <p><code>xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/</code>
 <code>xinyi-rongli/src/main/resources/mapper/rongli/dispatch/</code>
-<code>xinyi-admin/src/main/java/com/xinyi/web/controller/rongli/dispatch/</code>
 <code>xinyi-ui/src/views/rongli/dispatch/</code>
-<code>xinyi-ui/src/api/rongli/dispatch.ts</code>
-<code>xinyi-miniapp/src/features/dispatch/</code></p>
+<code>xinyi-ui/src/api/rongli/listeningPolicy.ts</code>
+<code>xinyi-miniapp/src/features/dispatch/</code>
+<code>xinyi-miniapp/src/pages/work/</code></p>
 <h2>验证命令</h2>
 <pre><code class="language-bash">mvn -pl xinyi-admin -am -Pvi-it -Dit.test=D01DispatchIT verify
 npm --prefix xinyi-ui run build:prod

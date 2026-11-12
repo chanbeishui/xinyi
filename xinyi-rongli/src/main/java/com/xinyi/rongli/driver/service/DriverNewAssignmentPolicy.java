@@ -2,8 +2,10 @@ package com.xinyi.rongli.driver.service;
 
 import com.xinyi.rongli.driver.domain.DriverProfile;
 import com.xinyi.rongli.platform.error.*;
-import java.time.*;
+
 import org.springframework.stereotype.Service;
+
+import java.time.*;
 
 /** 新承接资格与身份视角分离；停新单或资格异常不能删除已有任务，D01/D02后续复用此基础规则。 */
 @Service
@@ -51,15 +53,31 @@ public class DriverNewAssignmentPolicy {
             throw new ViException(ViErrorCode.VI_STATE_CONFLICT, "资格、准驾、证件或复审尚未明确有效：" + reason);
     }
 
+    public boolean listeningEffective(DriverProfile row) {
+        return com.xinyi.rongli.dispatch.service.ListeningDayPolicy.isListening(
+                row.getListeningEnabled(),
+                row.getListeningUntil(),
+                row.getListeningCompanyRevision(),
+                row.getTrainingContextRevision(),
+                clock.instant());
+    }
+
+    public String currentQualificationBlock(DriverProfile row) {
+        return qualificationBlock(row, clock.instant());
+    }
+
     public String availabilityReason(DriverProfile row, boolean companyActive, boolean busy) {
         if (row.getOwnerDeptId() == null) return "DRIVER_COMPANY_UNASSIGNED";
         if (!companyActive) return "DRIVER_COMPANY_UNAVAILABLE";
         String qualification = qualificationBlock(row, clock.instant());
         if (qualification != null) return qualification;
         if (!row.getNewAssignmentEnabled()) return "NEW_ASSIGNMENTS_DISABLED";
-        if (!row.getListeningEnabled()) return "LISTENING_DISABLED";
+        if (!listeningEffective(row))
+            return row.getListeningEnabled()
+                    ? "LISTENING_EXPIRED_OR_CONTEXT_CHANGED"
+                    : "LISTENING_DISABLED";
         if (busy) return "OCCUPIED";
-        // A04只恢复行政开关；位置新鲜度、半径、处罚轮次等尚待D01/D02，绝不能在此宣称可邀约。
-        return "DISPATCH_ELIGIBILITY_NOT_READY";
+        // ADMIN未绑定代驾当前客户端上下文；D01由本人读取最近交互/位置，D02仍须按原订单重新核验。
+        return "CLIENT_CONTEXT_REQUIRED";
     }
 }

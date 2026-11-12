@@ -1181,6 +1181,8 @@ components:
       - biz:verification:close
       - biz:verification:list
       - biz:verification:query
+      - biz:dispatchlistening:query
+      - biz:dispatchlistening:edit
     MiniRole:
       type: string
       enum:
@@ -1263,3 +1265,13 @@ components:
       - expectedAccountVersion
       - verificationRequestId
       description: 先微信登录得到MINI会话后核验手机号；不接受裸手机号、openid、sysUserId、role、stationId。超时先查询本次核验，外部凭据已消费而结果不明时重新主动授权。
+  securitySchemes:
+    MiniBearerAuth:
+      type: http
+      scheme: bearer
+      description: 小程序不透明随机访问令牌；数据库权威会话，非sys_user JWT；见T3.4
+    AdminBearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: 现有xinyi后台sys_user会话，不能作为小程序车主/代驾身份

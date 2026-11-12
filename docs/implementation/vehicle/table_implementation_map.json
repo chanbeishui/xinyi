@@ -24,13 +24,15 @@
       "docs/implementation/vehicle/evidence/Q01-20261107.json",
       "docs/implementation/vehicle/evidence/Q03-20261109.json",
       "docs/implementation/vehicle/evidence/Q04-20261110.json",
-      "docs/implementation/vehicle/evidence/Q05-20261110.json"
+      "docs/implementation/vehicle/evidence/Q05-20261110.json",
+      "docs/implementation/vehicle/evidence/D01-20261112.json"
     ],
     "table": "vi_driver_profile",
     "taskId": "Q01",
     "implementationNote": "公司归属、材料与提交/复审分离已验；Q05独立审批、资格生效及到期生命周期未完成。",
     "q03Note": "公司epoch/当前材料run/固定课表及私有媒体权限兼容回归通过；原共享表的未完成责任保留。",
-    "q05CompatibilityNote": "Q05相关提交认证、生效指针、生命周期、原图/审计/能力版本与公司权限已验；原共享表责任及历史证据保留。"
+    "q05CompatibilityNote": "Q05相关提交认证、生效指针、生命周期、原图/审计/能力版本与公司权限已验；原共享表责任及历史证据保留。",
+    "d01Compatibility": "独立听单版本、固定截止与公司epoch；A04管理员投影使用同一截止策略，45项关联回归通过。"
   },
   {
     "status": "PARTIAL",
@@ -183,12 +185,15 @@
     "taskId": "D02"
   },
   {
-    "status": "NOT_ASSESSED",
-    "entityFile": null,
-    "mapperFile": null,
-    "evidence": [],
+    "status": "VERIFIED",
+    "entityFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/domain/DriverLocation.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/dispatch/DispatchListeningMapper.xml",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/D01-20261112.json"
+    ],
     "table": "vi_driver_location",
-    "taskId": "D01"
+    "taskId": "D01",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/service/DriverDispatchService.java"
   },
   {
     "status": "NOT_ASSESSED",
@@ -908,5 +913,27 @@
       "xinyi-rongli/src/main/resources/mapper/rongli/qualification/QualificationExpiryMapper.xml"
     ],
     "implementationNote": "真实不可变审核/生效事实、封装、内部意见独立AAD与资格到期outbox；4表升级及完整初装比较一致。"
+  },
+  {
+    "status": "VERIFIED",
+    "entityFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/domain/DriverPresence.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/dispatch/DispatchListeningMapper.xml",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/D01-20261112.json"
+    ],
+    "table": "vi_driver_presence",
+    "taskId": "D01",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/service/DriverDispatchService.java"
+  },
+  {
+    "status": "VERIFIED",
+    "entityFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/domain/ListeningCompanyConfig.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/dispatch/DispatchListeningMapper.xml",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/D01-20261112.json"
+    ],
+    "table": "vi_driver_listening_config",
+    "taskId": "D01",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/service/CompanyListeningConfigService.java"
   }
 ]

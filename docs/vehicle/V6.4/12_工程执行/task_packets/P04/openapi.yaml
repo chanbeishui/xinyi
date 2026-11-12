@@ -997,6 +997,105 @@ components:
       - resolvedAt
       - allowedActions
       description: 从原payment.receiver_dept_id校验资金范围；只有本地与可信渠道终态一致且容量/余额冲突已消除才能办结。reason是审计说明，不能手工把未知写成成功。
+    AllowedAction:
+      type: string
+      description: 服务端按当前角色、对象状态、版本和实时授权计算的可执行动作集合；不能由客户端授予
+      enum:
+      - ADD_REVIEW
+      - ADD_TO_DRAFT
+      - APPEAL_PENALTY
+      - APPLY_ADJUSTMENT
+      - APPLY_CANCEL_REFUND
+      - APPLY_REFUND_ONLY
+      - APPROVE_AND_SEND
+      - ARRIVE_PICKUP
+      - ARRIVE_STATION
+      - CANCEL_ASSIGNMENT
+      - CLOSE_UNPAID
+      - CONFIRM_HANDOVER
+      - CONFIRM_STATEMENT
+      - CONTACT_DRIVER
+      - CONTACT_OWNER
+      - CONTACT_STATION
+      - CREATE_HANDOVER
+      - DEPART
+      - EDIT_PRICE
+      - EXPORT
+      - FILL_MILEAGE
+      - FILL_PRICE
+      - MANUAL_INVITE
+      - MARK_EVIDENCE_READY
+      - OPEN_DISPUTE
+      - PAY
+      - RECORD_PAYMENT
+      - REGISTER_RESULT
+      - REJECT_REVIEW
+      - REMOVE_FROM_DRAFT
+      - RENOTIFY_PICKUP
+      - REPORT_DIFFERENCE
+      - REPORT_EXCEPTION
+      - REQUEST_RESULT_CORRECTION
+      - REVIEW_AFTERSALE
+      - REVIEW_LICENSE
+      - SEND_STATEMENT
+      - SERVICE_CONFIRM
+      - SUBMIT_REVIEW
+      - UPLOAD_PHOTO
+      - VERIFY_PAYMENT
+      - VIEW_APPEAL
+      - VIEW_DETAIL
+      - VIEW_EVIDENCE
+      - VIEW_HANDOVER_SECRET
+      - VIEW_PAYMENT
+      - VIEW_PRICE_HISTORY
+      - VIEW_PRICING
+      - VIEW_RESULT
+      - VOID_STATEMENT
+      - WITHDRAW_STATEMENT
+      - ADD_NOTE
+      - VIEW_AFTERSALE
+      - QUERY_REFUND
+      - RETRY_REFUND
+      - QUERY_RECONCILIATION
+      - RESOLVE_RECONCILIATION
+      - VIEW_DRIVER
+      - EDIT_DRIVER
+      - DISABLE_NEW_ASSIGNMENTS
+      - ENABLE_NEW_ASSIGNMENTS
+      - ASSIGN_DRIVER_COMPANY
+      - VIEW_ASSIGNMENTS
+      - EDIT_QUALIFICATION
+      - SUBMIT_QUALIFICATION
+      - CREATE_QUALIFICATION_REVISION
+      - VIEW_TRAINING_COURSE
+      - EDIT_TRAINING_COURSE
+      - PUBLISH_TRAINING_COURSE
+      - CREATE_TRAINING_REVISION
+      - VIEW_TRAINING_POLICY
+      - EDIT_TRAINING_POLICY
+      - PUBLISH_TRAINING_POLICY
+      - START_TRAINING
+      - START_PLAYBACK
+      - REPORT_TRAINING_PROGRESS
+      - CREATE_TRAINING_ATTEMPT
+      - VIEW_TRAINING_ATTEMPT
+      - SUBMIT_TRAINING_ATTEMPT
+      - START_DEVICE_AUTH
+      - CONFIRM_DEVICE_AUTH
+      - RECOVER_DEVICE_AUTH
+      - QUERY_DEVICE_AUTH
+      - VIEW_DEVICE_AUTH
+      - CLOSE_DEVICE_AUTH
+      - VIEW_MANUAL_VERIFICATION
+      - REVIEW_MANUAL_VERIFICATION
+      - VIEW_QUALIFICATION
+      - AUDIT_QUALIFICATION
+      - REPAIR_QUALIFICATION_REJECTION
+      - EDIT_LISTENING_CONFIG
+      - ENABLE_LISTENING
+      - DISABLE_LISTENING
+      - REPORT_DRIVER_LOCATION
+      - REPORT_DRIVER_PRESENCE
     ReconcileStatus:
       type: string
       enum:
@@ -1132,100 +1231,6 @@ components:
       - CLOSED
       - ABNORMAL
       - UNKNOWN
-    AllowedAction:
-      type: string
-      description: 服务端按当前角色、对象状态、版本和实时授权计算的可执行动作集合；不能由客户端授予
-      enum:
-      - ADD_REVIEW
-      - ADD_TO_DRAFT
-      - APPEAL_PENALTY
-      - APPLY_ADJUSTMENT
-      - APPLY_CANCEL_REFUND
-      - APPLY_REFUND_ONLY
-      - APPROVE_AND_SEND
-      - ARRIVE_PICKUP
-      - ARRIVE_STATION
-      - CANCEL_ASSIGNMENT
-      - CLOSE_UNPAID
-      - CONFIRM_HANDOVER
-      - CONFIRM_STATEMENT
-      - CONTACT_DRIVER
-      - CONTACT_OWNER
-      - CONTACT_STATION
-      - CREATE_HANDOVER
-      - DEPART
-      - EDIT_PRICE
-      - EXPORT
-      - FILL_MILEAGE
-      - FILL_PRICE
-      - MANUAL_INVITE
-      - MARK_EVIDENCE_READY
-      - OPEN_DISPUTE
-      - PAY
-      - RECORD_PAYMENT
-      - REGISTER_RESULT
-      - REJECT_REVIEW
-      - REMOVE_FROM_DRAFT
-      - RENOTIFY_PICKUP
-      - REPORT_DIFFERENCE
-      - REPORT_EXCEPTION
-      - REQUEST_RESULT_CORRECTION
-      - REVIEW_AFTERSALE
-      - REVIEW_LICENSE
-      - SEND_STATEMENT
-      - SERVICE_CONFIRM
-      - SUBMIT_REVIEW
-      - UPLOAD_PHOTO
-      - VERIFY_PAYMENT
-      - VIEW_APPEAL
-      - VIEW_DETAIL
-      - VIEW_EVIDENCE
-      - VIEW_HANDOVER_SECRET
-      - VIEW_PAYMENT
-      - VIEW_PRICE_HISTORY
-      - VIEW_PRICING
-      - VIEW_RESULT
-      - VOID_STATEMENT
-      - WITHDRAW_STATEMENT
-      - ADD_NOTE
-      - VIEW_AFTERSALE
-      - QUERY_REFUND
-      - RETRY_REFUND
-      - QUERY_RECONCILIATION
-      - RESOLVE_RECONCILIATION
-      - VIEW_DRIVER
-      - EDIT_DRIVER
-      - DISABLE_NEW_ASSIGNMENTS
-      - ENABLE_NEW_ASSIGNMENTS
-      - ASSIGN_DRIVER_COMPANY
-      - VIEW_ASSIGNMENTS
-      - EDIT_QUALIFICATION
-      - SUBMIT_QUALIFICATION
-      - CREATE_QUALIFICATION_REVISION
-      - VIEW_TRAINING_COURSE
-      - EDIT_TRAINING_COURSE
-      - PUBLISH_TRAINING_COURSE
-      - CREATE_TRAINING_REVISION
-      - VIEW_TRAINING_POLICY
-      - EDIT_TRAINING_POLICY
-      - PUBLISH_TRAINING_POLICY
-      - START_TRAINING
-      - START_PLAYBACK
-      - REPORT_TRAINING_PROGRESS
-      - CREATE_TRAINING_ATTEMPT
-      - VIEW_TRAINING_ATTEMPT
-      - SUBMIT_TRAINING_ATTEMPT
-      - START_DEVICE_AUTH
-      - CONFIRM_DEVICE_AUTH
-      - RECOVER_DEVICE_AUTH
-      - QUERY_DEVICE_AUTH
-      - VIEW_DEVICE_AUTH
-      - CLOSE_DEVICE_AUTH
-      - VIEW_MANUAL_VERIFICATION
-      - REVIEW_MANUAL_VERIFICATION
-      - VIEW_QUALIFICATION
-      - AUDIT_QUALIFICATION
-      - REPAIR_QUALIFICATION_REJECTION
   responses:
     UnprocessableEntity:
       description: 填写内容不符合要求。参见errorCode注册表；HTTP状态与code一致。
@@ -1370,3 +1375,13 @@ components:
             retryable: false
             retryAfterSeconds: null
             data: {}
+  securitySchemes:
+    MiniBearerAuth:
+      type: http
+      scheme: bearer
+      description: 小程序不透明随机访问令牌；数据库权威会话，非sys_user JWT；见T3.4
+    AdminBearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: 现有xinyi后台sys_user会话，不能作为小程序车主/代驾身份

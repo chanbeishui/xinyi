@@ -3963,5 +3963,44 @@
     "method": "POST",
     "path": "/api/app/driver/qualification/face-sessions/{verificationSessionId}/confirm",
     "summary": "提交微信SOTER原签名或恢复首次未知验签"
+  },
+  {
+    "implementationStatus": "NOT_ASSESSED",
+    "controllerFile": null,
+    "serviceFile": null,
+    "mapperFile": null,
+    "testFiles": [],
+    "reviewEvidence": null,
+    "operationId": "d01_post_driver_presence",
+    "method": "POST",
+    "path": "/api/app/driver/presence",
+    "summary": "报告最近认证交互状态",
+    "taskId": "D01"
+  },
+  {
+    "implementationStatus": "NOT_ASSESSED",
+    "controllerFile": null,
+    "serviceFile": null,
+    "mapperFile": null,
+    "testFiles": [],
+    "reviewEvidence": null,
+    "operationId": "d01_get_company_listening_config",
+    "method": "GET",
+    "path": "/api/admin/dispatch/companies/{companyId}/listening-config",
+    "summary": "公司听单配置读取",
+    "taskId": "D01"
+  },
+  {
+    "implementationStatus": "NOT_ASSESSED",
+    "controllerFile": null,
+    "serviceFile": null,
+    "mapperFile": null,
+    "testFiles": [],
+    "reviewEvidence": null,
+    "operationId": "d01_put_company_listening_config",
+    "method": "PUT",
+    "path": "/api/admin/dispatch/companies/{companyId}/listening-config",
+    "summary": "公司听单配置维护",
+    "taskId": "D01"
   }
 ]

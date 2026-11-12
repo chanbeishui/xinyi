@@ -6,11 +6,18 @@ if (!base || (mode === 'production' && !base.startsWith('https://')))
 const key = 'vi.session.' + mode + '.' + base;
 let session: Session | null = uni.getStorageSync(key) || null;
 let refreshing: Promise<void> | null = null;
+const sessionListeners = new Set<() => void>();
+// 含敏感原体的前端意图可在身份变化时立即清理，不必等待再次访问旧业务页面。
+export function onSessionChanged(listener: () => void) {
+  sessionListeners.add(listener);
+  return () => sessionListeners.delete(listener);
+}
 // 本地会话只供发起请求；角色与部门权限仍由服务端验证，不能根据缓存自行授权。
 export function saveSession(value: Session | null) {
   session = value;
   if (value) uni.setStorageSync(key, value);
   else uni.removeStorageSync(key);
+  sessionListeners.forEach((listener) => listener());
 }
 export function currentSession(): Session | null {
   return session;

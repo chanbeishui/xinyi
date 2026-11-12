@@ -872,6 +872,36 @@ components:
       - voucherFileIds
       - notes
       description: 本人申请公开投影；待审核approvedAmount为null，不把申请金额当成批准金额；原说明与凭证不可覆盖，补充资料按notes追加。退款执行及实际返还依赖后续审核与退款任务。
+    AfterSaleNotePublic:
+      type: object
+      additionalProperties: false
+      required:
+      - noteId
+      - note
+      - voucherFileIds
+      - createdAt
+      properties:
+        noteId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+        note:
+          type: string
+          minLength: 1
+          maxLength: 1000
+        voucherFileIds:
+          type: array
+          items:
+            type: string
+            pattern: ^[1-9][0-9]{0,18}$
+        createdAt:
+          type: string
+          format: date-time
+        authorType:
+          type: string
+          enum:
+          - MINI
+          - ADMIN
+          description: 公开来源类别，不暴露后台人员ID。
     AllowedAction:
       type: string
       description: 服务端按当前角色、对象状态、版本和实时授权计算的可执行动作集合；不能由客户端授予
@@ -966,6 +996,11 @@ components:
       - VIEW_QUALIFICATION
       - AUDIT_QUALIFICATION
       - REPAIR_QUALIFICATION_REJECTION
+      - EDIT_LISTENING_CONFIG
+      - ENABLE_LISTENING
+      - DISABLE_LISTENING
+      - REPORT_DRIVER_LOCATION
+      - REPORT_DRIVER_PRESENCE
     AfterSaleApply:
       type: object
       additionalProperties: false
@@ -1002,36 +1037,6 @@ components:
       - requestedAmount
       - expectedOrderVersion
       description: 以当前登录车主创建一次售后请求。同订单仅一个未办结申请，其他金额仍须资金锁与预留校验。
-    AfterSaleNotePublic:
-      type: object
-      additionalProperties: false
-      required:
-      - noteId
-      - note
-      - voucherFileIds
-      - createdAt
-      properties:
-        noteId:
-          type: string
-          pattern: ^[1-9][0-9]{0,18}$
-        note:
-          type: string
-          minLength: 1
-          maxLength: 1000
-        voucherFileIds:
-          type: array
-          items:
-            type: string
-            pattern: ^[1-9][0-9]{0,18}$
-        createdAt:
-          type: string
-          format: date-time
-        authorType:
-          type: string
-          enum:
-          - MINI
-          - ADMIN
-          description: 公开来源类别，不暴露后台人员ID。
   responses:
     UnprocessableEntity:
       description: 填写内容不符合要求。参见errorCode注册表；HTTP状态与code一致。
@@ -1176,3 +1181,13 @@ components:
             retryable: false
             retryAfterSeconds: null
             data: {}
+  securitySchemes:
+    MiniBearerAuth:
+      type: http
+      scheme: bearer
+      description: 小程序不透明随机访问令牌；数据库权威会话，非sys_user JWT；见T3.4
+    AdminBearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: 现有xinyi后台sys_user会话，不能作为小程序车主/代驾身份

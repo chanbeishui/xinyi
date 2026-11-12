@@ -1,0 +1,30 @@
+{
+  "paths": [
+    "xinyi-ui/src/api/rongli/listeningPolicy.ts",
+    "xinyi-ui/src/views/rongli/dispatch/listening-config.vue",
+    "xinyi-miniapp/src/features/dispatch/api.ts",
+    "xinyi-miniapp/src/features/dispatch/location.ts",
+    "xinyi-miniapp/src/components/dispatch/DriverListening.vue",
+    "xinyi-miniapp/src/pages/work/index.vue",
+    "xinyi-miniapp/src/services/http.ts",
+    "xinyi-miniapp/src/manifest.json",
+    "docs/vehicle/V6.4/01_PRD/page_specs_V6.4.json",
+    "docs/vehicle/V6.4/01_PRD/全量页面与交互规格_V6.4.md",
+    "docs/vehicle/V6.4/01_PRD/机动车检测预约_PRD_V6.4_完整整合版.md",
+    "docs/vehicle/V6.4/01_PRD/身份流程_员工自动关联_V6.4.md",
+    "docs/vehicle/V6.4/02_UI/src/prd_pages.json",
+    "docs/vehicle/V6.4/02_UI/src/catalog.js",
+    "docs/vehicle/V6.4/02_UI/src/dispatch_pages.js",
+    "docs/vehicle/V6.4/02_UI/build.py",
+    "docs/vehicle/V6.4/02_UI/index.html",
+    "docs/vehicle/V6.4/03_交互与设计规范/画板索引.json",
+    "docs/vehicle/V6.4/12_工程执行/route-plan.json",
+    "docs/vehicle/V6.4/12_工程执行/page_implementation_map.json",
+    "docs/vehicle/V6.4/08_业务流程图/flows_V6.4.json",
+    "docs/vehicle/V6.4/08_业务流程图/DOT/F10.dot",
+    "docs/vehicle/V6.4/08_业务流程图/Mermaid/F10.mmd",
+    "docs/vehicle/V6.4/08_业务流程图/SVG/F10.svg",
+    "docs/vehicle/V6.4/08_业务流程图/PNG/F10.png"
+  ],
+  "note": "根任务后续派生/render和schema不由本清单冒认前端手改；主图列表见board-export.json"
+}

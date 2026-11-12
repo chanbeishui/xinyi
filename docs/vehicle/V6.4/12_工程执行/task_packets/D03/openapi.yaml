@@ -1306,7 +1306,7 @@ components:
           type: boolean
         reason:
           type: string
-          description: 当前不能接受新单的实际原因；A04未接通D01定位/可达最终判定时不能将行政开关开启当作可接单。
+          description: 实际阻断原因；后台缺少本人当前会话上下文时返回CLIENT_CONTEXT_REQUIRED，不能把行政开关开启当作可接单。
         version:
           type: integer
           minimum: 0
@@ -1323,7 +1323,7 @@ components:
         newAssignmentEnabled:
           type: boolean
       additionalProperties: false
-      description: 行政允许、本人意愿、资格、占用分开；A04不伪造D01客户端可达和定位新鲜度。
+      description: A04后台保守投影：行政允许、本人意愿、有效听单截止、资格、占用分别判断；没有本人当前会话上下文时不宣称客户端可达或最终候选通过。D01本人完整状态使用DriverAvailability。
     OccupationType:
       type: string
       enum:
@@ -1680,3 +1680,13 @@ components:
             retryable: false
             retryAfterSeconds: null
             data: {}
+  securitySchemes:
+    MiniBearerAuth:
+      type: http
+      scheme: bearer
+      description: 小程序不透明随机访问令牌；数据库权威会话，非sys_user JWT；见T3.4
+    AdminBearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: 现有xinyi后台sys_user会话，不能作为小程序车主/代驾身份

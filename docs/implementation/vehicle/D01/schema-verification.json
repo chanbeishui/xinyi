@@ -1,0 +1,19 @@
+{
+  "passed": true,
+  "upgradeEqualsFull": true,
+  "testSchemaEqualsFull": true,
+  "tables": [
+    "vi_driver_listening_config",
+    "vi_driver_location",
+    "vi_driver_presence",
+    "vi_driver_profile"
+  ],
+  "comparedTables": 4,
+  "menuRows": 3,
+  "existingRowsPreserved": true,
+  "columnOrdinalCompared": true,
+  "checksCompared": true,
+  "businessOrProductionChanged": false,
+  "migration": "sql/migration_20261112_driver_listening.sql",
+  "at": "2026-11-12T14:16:08.214221+00:00"
+}

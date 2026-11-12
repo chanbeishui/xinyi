@@ -205,4 +205,44 @@ public class DriverProfile extends ViRecord {
     public void setQualificationCompanyRevision(Long value) {
         qualificationCompanyRevision = value;
     }
+
+    private long listeningRevision;
+
+    public long getListeningRevision() {
+        return listeningRevision;
+    }
+
+    public void setListeningRevision(long value) {
+        listeningRevision = value;
+    }
+
+    private Instant listeningUntil;
+
+    public Instant getListeningUntil() {
+        return listeningUntil;
+    }
+
+    public void setListeningUntil(Instant value) {
+        listeningUntil = value;
+    }
+
+    private Long listeningCompanyRevision;
+
+    public Long getListeningCompanyRevision() {
+        return listeningCompanyRevision;
+    }
+
+    public void setListeningCompanyRevision(Long value) {
+        listeningCompanyRevision = value;
+    }
+
+    private Long listeningConfigVersion;
+
+    public Long getListeningConfigVersion() {
+        return listeningConfigVersion;
+    }
+
+    public void setListeningConfigVersion(Long value) {
+        listeningConfigVersion = value;
+    }
 }

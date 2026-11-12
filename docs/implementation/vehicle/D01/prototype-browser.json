@@ -1,0 +1,22 @@
+{
+  "mode": "Built main prototype local simulation and current F10 native SVG rendering; no production APIs or GPS",
+  "checks": [
+    "356画板含公司听单子页，真实主原型可渲染，未选择公司不默认主部门",
+    "原型无默认参数，七键完整保存立即生效；未知跨公司保留原体/版本，另一公司不被更新",
+    "只读授权场景禁维护，表单选择只代表演示不授予真实公司权限",
+    "D06后台保留意愿且不直接判不可达，另行演示位置/联系过期，基础条件独立",
+    "每日下班/次日场景无自动恢复，须本人明确再次开启",
+    "在手态关未来听单仍保留占用，服务数不造0/18、不编收入或D02接受成功",
+    "F10当前SVG/PNG原生文字重渲，D01与后续订单设计显式分区，新增矩形节点无文字溢出"
+  ],
+  "errors": [],
+  "warnings": [],
+  "F10": {
+    "renderer": "Chrome native SVG screenshot; current D01 layout added manually, downstream legacy diagram preserved; dot unavailable, no dependency installed",
+    "size": [
+      1260,
+      2310
+    ],
+    "rectangleTextOverflow": []
+  }
+}

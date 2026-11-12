@@ -1,0 +1,61 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites>
+  <testsuite name="com.xinyi.web.viit.D01DispatchIT" tests="56" failures="0" errors="0" skipped="0" time="25.948">
+    <testcase name="busyDriverMayListenButClosingNeverAbandonsAnExistingHeldVehicle" classname="com.xinyi.web.viit.D01DispatchIT" time="1.89" />
+    <testcase name="earlierCompanyClosingTimePersistentlyTightensExistingDeadlines" classname="com.xinyi.web.viit.D01DispatchIT" time="0.868" />
+    <testcase name="extendingCompanyClosingTimeCannotExtendAnAlreadyOpenedDay" classname="com.xinyi.web.viit.D01DispatchIT" time="0.473" />
+    <testcase name="locationIsOnlyEncryptedLatestPointAndDoesNotExposeCoordinatesInViewsOrArtifacts" classname="com.xinyi.web.viit.D01DispatchIT" time="0.435" />
+    <testcase name="revokedAdminAndMiniSessionRemainRevokedWhenRedisEvictionFails" classname="com.xinyi.web.viit.D01DispatchIT" time="0.365" />
+    <testcase name="presenceUuidReplayDoesNotRenewContactAndAnotherBodyConflicts" classname="com.xinyi.web.viit.D01DispatchIT" time="0.698" />
+    <testcase name="aNewSessionCannotReuseAnotherSessionsLocationOrPresence" classname="com.xinyi.web.viit.D01DispatchIT" time="0.528" />
+    <testcase name="ownerRoleAndClientSubmittedIdentityCannotGrantDriverAuthority" classname="com.xinyi.web.viit.D01DispatchIT" time="0.432" />
+    <testcase name="oldAndEqualObservationTimesWithNewKeysCannotReplaceNewerFacts" classname="com.xinyi.web.viit.D01DispatchIT" time="0.455" />
+    <testcase name="expiredQualificationKeepsHistoricalRoleAndAllowsClosingWithoutRestoringQualification" classname="com.xinyi.web.viit.D01DispatchIT" time="0.38" />
+    <testcase name="concurrentLocationWritesWithTheSameCasHaveOneWinner" classname="com.xinyi.web.viit.D01DispatchIT" time="0.334" />
+    <testcase name="exactDeadlineDisablesListeningBeforeThePersistentWorkerRuns" classname="com.xinyi.web.viit.D01DispatchIT" time="0.382" />
+    <testcase name="locationRejectsWrongCoordinatesAccuracyTypesAndCoordinateSystems" classname="com.xinyi.web.viit.D01DispatchIT" time="0.375" />
+    <testcase name="activeUnexpiredPenaltyIsIndependentOfListeningLocationAndExpiredPenaltyHistory" classname="com.xinyi.web.viit.D01DispatchIT" time="0.377" />
+    <testcase name="missingPersistentTimerIsRepairedWithoutChangingTheFrozenDeadline" classname="com.xinyi.web.viit.D01DispatchIT" time="0.303" />
+    <testcase name="locationUuidReplayDoesNotExtendFreshnessAndChangedBodyConflicts" classname="com.xinyi.web.viit.D01DispatchIT" time="0.34" />
+    <testcase name="companyConfigurationScopeUsesRealSelectedCompanyAndEmptyScopeFailsClosed" classname="com.xinyi.web.viit.D01DispatchIT" time="0.314" />
+    <testcase name="persistentDeadlineClosurePreservesAssignmentOccupationAndAdministrativePreference" classname="com.xinyi.web.viit.D01DispatchIT" time="0.313" />
+    <testcase name="listeningRequestBindsSeparateVersionCompanyConfigAndActualSession" classname="com.xinyi.web.viit.D01DispatchIT" time="0.34" />
+    <testcase name="sixActualResponsesMatchPrimaryAndD01PacketContracts" classname="com.xinyi.web.viit.D01DispatchIT" time="1.727" />
+    <testcase name="missingMiniAuthenticationReturnsReal401ForAllFourRoutes" classname="com.xinyi.web.viit.D01DispatchIT" time="0.266" />
+    <testcase name="configurationHasNoAmbiguousTimeOrImplicitOperatingParameterBounds" classname="com.xinyi.web.viit.D01DispatchIT" time="0.316" />
+    <testcase name="allowedFutureSkewCannotExtendFreshnessBeyondServerReceiptPlusTtl" classname="com.xinyi.web.viit.D01DispatchIT" time="0.32" />
+    <testcase name="nonexistentDisabledAndMalformedCompanyTargetsAreNotSilentlyConfigured" classname="com.xinyi.web.viit.D01DispatchIT" time="0.259" />
+    <testcase name="theThreeCasCountersAreIndependentAndStaleLocationDoesNotAffectListening" classname="com.xinyi.web.viit.D01DispatchIT" time="0.352" />
+    <testcase name="locationOutboxFailureRollsBackEncryptedPointAndItsVersion" classname="com.xinyi.web.viit.D01DispatchIT" time="0.272" />
+    <testcase name="companyConfigurationNeedsIndependentQueryAndEditPermissions" classname="com.xinyi.web.viit.D01DispatchIT" time="0.312" />
+    <testcase name="delayedOldPointCanBeRecordedButCannotBecomeFreshAtItsReceiptTime" classname="com.xinyi.web.viit.D01DispatchIT" time="0.282" />
+    <testcase name="administrativePauseCannotBeBypassedButNeverPreventsManualOff" classname="com.xinyi.web.viit.D01DispatchIT" time="0.327" />
+    <testcase name="shanghaiDateCanDifferFromUtcAndMidnightIsNotUnlimitedListening" classname="com.xinyi.web.viit.D01DispatchIT" time="0.351" />
+    <testcase name="pollingAvailabilityDoesNotRefreshReachabilityLocationOrTheirVersions" classname="com.xinyi.web.viit.D01DispatchIT" time="0.379" />
+    <testcase name="administratorTokensCannotEnterOwnDriverApiEvenWithDriverHeaders" classname="com.xinyi.web.viit.D01DispatchIT" time="0.231" />
+    <testcase name="configurationCasUuidAndPermissionRevocationApplyAlsoToReplays" classname="com.xinyi.web.viit.D01DispatchIT" time="0.245" />
+    <testcase name="presenceOutboxFailureCannotLeaveReachabilityAlive" classname="com.xinyi.web.viit.D01DispatchIT" time="0.223" />
+    <testcase name="backgroundObservationKeepsListeningIntentAndDoesNotClaimPermanentReachability" classname="com.xinyi.web.viit.D01DispatchIT" time="0.275" />
+    <testcase name="missingOrPoorAccuracyIsSeparateFromFreshTimestampAndBlocksBaseCandidate" classname="com.xinyi.web.viit.D01DispatchIT" time="0.259" />
+    <testcase name="completeFreshFactsProduceOnlyABaseCandidateAndManualOffRemainsIndependent" classname="com.xinyi.web.viit.D01DispatchIT" time="0.277" />
+    <testcase name="companyRoundTripCannotReviveOldListeningOrObservationFacts" classname="com.xinyi.web.viit.D01DispatchIT" time="0.273" />
+    <testcase name="legacyEnabledWithoutDeadlineFailsClosedAndWorkerDoesNotInventTodaysWindow" classname="com.xinyi.web.viit.D01DispatchIT" time="0.27" />
+    <testcase name="repeatedDeadlineWorkersRecordOnlyOneClosure" classname="com.xinyi.web.viit.D01DispatchIT" time="0.254" />
+    <testcase name="configurationWriteRequiresExactKeysAndCannotWriteInternalOwnership" classname="com.xinyi.web.viit.D01DispatchIT" time="0.239" />
+    <testcase name="anUndeliveredOpeningCannotMoveToTomorrowEvenWhenAllVersionsStillMatch" classname="com.xinyi.web.viit.D01DispatchIT" time="0.317" />
+    <testcase name="missingConfigurationIsExplicitAndReadsCannotInventDefaultsOrWriteFreshness" classname="com.xinyi.web.viit.D01DispatchIT" time="0.273" />
+    <testcase name="successfulAndRejectedOperationsKeepRealAuditWithoutCoordinateOrReasonPlaintext" classname="com.xinyi.web.viit.D01DispatchIT" time="0.273" />
+    <testcase name="anOldDayTimerCannotCloseANewerExplicitOpening" classname="com.xinyi.web.viit.D01DispatchIT" time="0.261" />
+    <testcase name="staleSessionContextAndCompanyTargetsCannotBeWrittenOrReplayedIntoANewContext" classname="com.xinyi.web.viit.D01DispatchIT" time="0.235" />
+    <testcase name="observationTimesAreStrictUtcMillisWithExplicitFiveSecondAndDayBounds" classname="com.xinyi.web.viit.D01DispatchIT" time="0.256" />
+    <testcase name="oldUuidReplayNeverReopensTomorrowOrExtendsTheOriginalDeadline" classname="com.xinyi.web.viit.D01DispatchIT" time="0.305" />
+    <testcase name="manualOpeningFreezesTodayShanghaiDeadlineWithoutGrantingLocationOrReachability" classname="com.xinyi.web.viit.D01DispatchIT" time="0.222" />
+    <testcase name="configurationEventFailureRollsBackTheWholeImmediateChange" classname="com.xinyi.web.viit.D01DispatchIT" time="0.212" />
+    <testcase name="timerPublicationFailureCannotCommitAnOpeningWithoutItsClosurePlan" classname="com.xinyi.web.viit.D01DispatchIT" time="0.205" />
+    <testcase name="concurrentCompanyEditsCommitOnlyOneRevision" classname="com.xinyi.web.viit.D01DispatchIT" time="0.2" />
+    <testcase name="listeningTypesAndUuidCannotBeReplacedByTruthyOrUnsafeValues" classname="com.xinyi.web.viit.D01DispatchIT" time="0.259" />
+    <testcase name="presenceAndLocationHaveSeparateDeadlinesAndNeitherCanEnableListening" classname="com.xinyi.web.viit.D01DispatchIT" time="0.219" />
+    <testcase name="nextBusinessDayRequiresANewExplicitManualOpening" classname="com.xinyi.web.viit.D01DispatchIT" time="0.248" />
+    <testcase name="listeningOutboxFailureRollsBackPreferenceVersionAndSuccessAudit" classname="com.xinyi.web.viit.D01DispatchIT" time="0.23" />
+  </testsuite>
+</testsuites>

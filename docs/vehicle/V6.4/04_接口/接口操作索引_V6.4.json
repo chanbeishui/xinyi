@@ -605,12 +605,7 @@
     },
     "flows": [
       "F49"
-    ],
-    "authoritySources": {
-      "subject": "可信MINI accountId与当前本人applicationId",
-      "company": "vi_driver_profile.owner_dept_id，提交时冻结",
-      "proofs": "服务端当前材料绑定的vi_provider_verification，不采信客户端PASSED"
-    }
+    ]
   },
   {
     "method": "PUT",
@@ -632,12 +627,7 @@
     },
     "flows": [
       "F49"
-    ],
-    "authoritySources": {
-      "subject": "可信MINI accountId与当前本人applicationId",
-      "company": "vi_driver_profile.owner_dept_id，提交时冻结",
-      "proofs": "服务端当前材料绑定的vi_provider_verification，不采信客户端PASSED"
-    }
+    ]
   },
   {
     "method": "POST",
@@ -659,12 +649,7 @@
     },
     "flows": [
       "F49"
-    ],
-    "authoritySources": {
-      "subject": "可信MINI accountId与当前本人applicationId",
-      "company": "vi_driver_profile.owner_dept_id，提交时冻结",
-      "proofs": "服务端当前材料绑定的vi_provider_verification，不采信客户端PASSED"
-    }
+    ]
   },
   {
     "method": "POST",
@@ -686,12 +671,7 @@
     },
     "flows": [
       "F49"
-    ],
-    "authoritySources": {
-      "subject": "可信MINI accountId与当前本人applicationId",
-      "company": "vi_driver_profile.owner_dept_id，提交时冻结",
-      "proofs": "服务端当前材料绑定的vi_provider_verification，不采信客户端PASSED"
-    }
+    ]
   },
   {
     "method": "POST",
@@ -1622,6 +1602,22 @@
     ]
   },
   {
+    "method": "POST",
+    "path": "/api/admin/capacity",
+    "operationId": "V64_post_api_admin_capacity",
+    "summary": "新增站点未来供给时段",
+    "permission": "biz:capacity:edit",
+    "capability": null,
+    "authorization": {
+      "realm": "ADMIN",
+      "scope": "ORG_DEPT_STATION",
+      "permission": "biz:capacity:edit"
+    },
+    "flows": [
+      "F24"
+    ]
+  },
+  {
     "method": "PUT",
     "path": "/api/admin/capacity/{slotId}",
     "operationId": "API_093_put",
@@ -1849,10 +1845,7 @@
     },
     "flows": [
       "F20"
-    ],
-    "authoritySources": {
-      "funds": "vi_payment_order.receiver_dept_id"
-    }
+    ]
   },
   {
     "method": "POST",
@@ -1868,10 +1861,7 @@
     },
     "flows": [
       "F20"
-    ],
-    "authoritySources": {
-      "funds": "vi_payment_order.receiver_dept_id"
-    }
+    ]
   },
   {
     "method": "POST",
@@ -1887,10 +1877,7 @@
     },
     "flows": [
       "F20"
-    ],
-    "authoritySources": {
-      "funds": "vi_payment_order.receiver_dept_id"
-    }
+    ]
   },
   {
     "method": "GET",
@@ -2056,10 +2043,7 @@
     },
     "flows": [
       "F25"
-    ],
-    "authoritySources": {
-      "driver": "vi_driver_profile.owner_dept_id"
-    }
+    ]
   },
   {
     "method": "POST",
@@ -2075,10 +2059,7 @@
     },
     "flows": [
       "F04"
-    ],
-    "authoritySources": {
-      "driver": "vi_driver_profile.owner_dept_id"
-    }
+    ]
   },
   {
     "method": "POST",
@@ -2334,10 +2315,7 @@
     },
     "flows": [
       "F20"
-    ],
-    "authoritySources": {
-      "funds": "vi_payment_order.receiver_dept_id"
-    }
+    ]
   },
   {
     "method": "POST",
@@ -2353,10 +2331,7 @@
     },
     "flows": [
       "F20"
-    ],
-    "authoritySources": {
-      "funds": "vi_payment_order.receiver_dept_id"
-    }
+    ]
   },
   {
     "method": "POST",
@@ -2372,10 +2347,7 @@
     },
     "flows": [
       "F20"
-    ],
-    "authoritySources": {
-      "funds": "vi_payment_order.receiver_dept_id"
-    }
+    ]
   },
   {
     "method": "POST",
@@ -2899,9 +2871,6 @@
       "F12",
       "F13",
       "F20"
-    ],
-    "additionalPermissions": [
-      "biz:refund:query"
     ]
   },
   {
@@ -3037,9 +3006,6 @@
       "F12",
       "F13",
       "F20"
-    ],
-    "additionalPermissions": [
-      "biz:refund:query"
     ]
   },
   {
@@ -3058,9 +3024,6 @@
       "F12",
       "F13",
       "F20"
-    ],
-    "additionalPermissions": [
-      "biz:refund:approve"
     ]
   },
   {
@@ -3157,10 +3120,7 @@
     },
     "flows": [
       "F25"
-    ],
-    "authoritySources": {
-      "driver": "vi_driver_profile.owner_dept_id"
-    }
+    ]
   },
   {
     "method": "PATCH",
@@ -3176,10 +3136,7 @@
     },
     "flows": [
       "F25"
-    ],
-    "authoritySources": {
-      "driver": "vi_driver_profile.owner_dept_id"
-    }
+    ]
   },
   {
     "method": "GET",
@@ -3276,11 +3233,7 @@
     "flows": [
       "F31",
       "F32"
-    ],
-    "authoritySources": {
-      "driver": "vi_driver_profile.owner_dept_id",
-      "history": "vi_order.dept_id"
-    }
+    ]
   },
   {
     "method": "GET",
@@ -3296,10 +3249,7 @@
     },
     "flows": [
       "F32"
-    ],
-    "authoritySources": {
-      "driver": "vi_driver_profile.owner_dept_id"
-    }
+    ]
   },
   {
     "method": "GET",
@@ -3861,10 +3811,7 @@
     "flows": [
       "F39",
       "F40"
-    ],
-    "authoritySources": {
-      "driver": "vi_driver_profile.owner_dept_id"
-    }
+    ]
   },
   {
     "method": "GET",
@@ -3881,10 +3828,7 @@
     "flows": [
       "F39",
       "F40"
-    ],
-    "authoritySources": {
-      "driver": "vi_driver_profile.owner_dept_id"
-    }
+    ]
   },
   {
     "method": "POST",
@@ -5082,22 +5026,6 @@
   },
   {
     "method": "POST",
-    "path": "/api/admin/capacity",
-    "operationId": "V64_post_api_admin_capacity",
-    "summary": "新增站点未来供给时段",
-    "permission": "biz:capacity:edit",
-    "capability": null,
-    "authorization": {
-      "realm": "ADMIN",
-      "scope": "ORG_DEPT_STATION",
-      "permission": "biz:capacity:edit"
-    },
-    "flows": [
-      "F24"
-    ]
-  },
-  {
-    "method": "POST",
     "path": "/api/admin/prices/{ruleId}/trial",
     "operationId": "V64_post_api_admin_prices_ruleId_trial",
     "summary": "试算已保存计价版本",
@@ -5145,9 +5073,9 @@
     ]
   },
   {
-    "operationId": "V64_post_api_app_owner_orders_stations",
     "method": "POST",
     "path": "/api/app/owner/orders/stations",
+    "operationId": "V64_post_api_app_owner_orders_stations",
     "summary": "按本次资料查询可服务站点，由车主明确选择",
     "permission": null,
     "capability": "OWNER_ORDER_CREATE",
@@ -5156,7 +5084,10 @@
       "scope": "OWN_ACCOUNT_RESOURCE",
       "activeRole": "OWNER",
       "capability": "OWNER_ORDER_CREATE"
-    }
+    },
+    "flows": [
+      "F05"
+    ]
   },
   {
     "method": "POST",
@@ -5172,15 +5103,12 @@
     },
     "flows": [
       "F04"
-    ],
-    "authoritySources": {
-      "driver": "vi_driver_profile.owner_dept_id"
-    }
+    ]
   },
   {
-    "operationId": "q03_get_api_admin_training_policies_ownerDeptId",
     "method": "GET",
     "path": "/api/admin/training-policies/{ownerDeptId}",
+    "operationId": "q03_get_api_admin_training_policies_ownerDeptId",
     "summary": "读取公司培训政策",
     "permission": "biz:trainingpolicy:query",
     "capability": null,
@@ -5194,30 +5122,9 @@
     ]
   },
   {
-    "operationId": "q03_post_api_admin_training_policies_ownerDeptId_publish",
-    "method": "POST",
-    "path": "/api/admin/training-policies/{ownerDeptId}/publish",
-    "summary": "发布公司培训政策",
-    "permission": "biz:trainingpolicy:publish",
-    "capability": null,
-    "authorization": {
-      "realm": "ADMIN",
-      "scope": "COMPANY_OWNER_DEPT",
-      "permission": "biz:trainingpolicy:publish",
-      "additionalRequiredPermissions": [
-        "biz:trainingpolicy:query",
-        "biz:trainingcourse:query"
-      ],
-      "scopeDetails": "写动作与policyquery均按数据库公司范围验证，非空选课另需coursequery及公司范围；课程候选列表另需trainingcourse:list，不能代替query或写权限。"
-    },
-    "flows": [
-      "F41"
-    ]
-  },
-  {
-    "operationId": "q03_put_api_admin_training_policies_ownerDeptId",
     "method": "PUT",
     "path": "/api/admin/training-policies/{ownerDeptId}",
+    "operationId": "q03_put_api_admin_training_policies_ownerDeptId",
     "summary": "保存公司培训政策草稿",
     "permission": "biz:trainingpolicy:edit",
     "capability": null,
@@ -5241,111 +5148,30 @@
     ]
   },
   {
-    "operationId": "q04_post_api_admin_manual_verifications_id_review",
     "method": "POST",
-    "path": "/api/admin/manual-verifications/{id}/review",
-    "summary": "独立复核人工确认",
-    "permission": "biz:manualverification:review",
+    "path": "/api/admin/training-policies/{ownerDeptId}/publish",
+    "operationId": "q03_post_api_admin_training_policies_ownerDeptId_publish",
+    "summary": "发布公司培训政策",
+    "permission": "biz:trainingpolicy:publish",
     "capability": null,
     "authorization": {
       "realm": "ADMIN",
       "scope": "COMPANY_OWNER_DEPT",
-      "permission": "biz:manualverification:review",
+      "permission": "biz:trainingpolicy:publish",
       "additionalRequiredPermissions": [
-        "biz:manualverification:query"
-      ]
+        "biz:trainingpolicy:query",
+        "biz:trainingcourse:query"
+      ],
+      "scopeDetails": "写动作与policyquery均按数据库公司范围验证，非空选课另需coursequery及公司范围；课程候选列表另需trainingcourse:list，不能代替query或写权限。"
     },
     "flows": [
-      "F49"
+      "F41"
     ]
   },
   {
-    "operationId": "q04_get_api_admin_verification_sessions",
-    "method": "GET",
-    "path": "/api/admin/verification-sessions",
-    "summary": "本机生物认证会话列表",
-    "permission": "biz:verification:list",
-    "capability": null,
-    "authorization": {
-      "realm": "ADMIN",
-      "scope": "COMPANY_OWNER_DEPT",
-      "permission": "biz:verification:list"
-    },
-    "flows": [
-      "F49"
-    ]
-  },
-  {
-    "operationId": "q04_get_api_admin_verification_sessions_id",
-    "method": "GET",
-    "path": "/api/admin/verification-sessions/{id}",
-    "summary": "本机生物认证会话详情",
-    "permission": "biz:verification:query",
-    "capability": null,
-    "authorization": {
-      "realm": "ADMIN",
-      "scope": "COMPANY_OWNER_DEPT",
-      "permission": "biz:verification:query"
-    },
-    "flows": [
-      "F49"
-    ]
-  },
-  {
-    "operationId": "q04_get_api_admin_manual_verifications_applications",
-    "method": "GET",
-    "path": "/api/admin/manual-verifications/applications",
-    "summary": "候选人工确认申请",
-    "permission": "biz:manualverification:query",
-    "capability": null,
-    "authorization": {
-      "realm": "ADMIN",
-      "scope": "COMPANY_OWNER_DEPT",
-      "permission": "biz:manualverification:query"
-    },
-    "flows": [
-      "F49"
-    ]
-  },
-  {
-    "operationId": "q04_get_api_admin_manual_verifications",
-    "method": "GET",
-    "path": "/api/admin/manual-verifications",
-    "summary": "人工确认记录列表",
-    "permission": "biz:manualverification:list",
-    "capability": null,
-    "authorization": {
-      "realm": "ADMIN",
-      "scope": "COMPANY_OWNER_DEPT",
-      "permission": "biz:manualverification:list"
-    },
-    "flows": [
-      "F49"
-    ]
-  },
-  {
-    "operationId": "q04_post_api_admin_manual_verifications",
-    "method": "POST",
-    "path": "/api/admin/manual-verifications",
-    "summary": "登记背景或驾驶证人工确认",
-    "permission": "biz:manualverification:create",
-    "capability": null,
-    "authorization": {
-      "realm": "ADMIN",
-      "scope": "COMPANY_OWNER_DEPT",
-      "permission": "biz:manualverification:create",
-      "additionalRequiredPermissions": [
-        "biz:manualverification:query"
-      ]
-    },
-    "flows": [
-      "F49"
-    ]
-  },
-  {
-    "operationId": "q04_post_api_app_driver_qualification_face_sessions_verificationSessionId_confirm",
     "method": "POST",
     "path": "/api/app/driver/qualification/face-sessions/{verificationSessionId}/confirm",
+    "operationId": "q04_post_api_app_driver_qualification_face_sessions_verificationSessionId_confirm",
     "summary": "提交微信SOTER原签名或恢复首次未知验签",
     "permission": null,
     "capability": "DRIVER_QUALIFICATION_CREATE",
@@ -5366,9 +5192,60 @@
     ]
   },
   {
-    "operationId": "q04_get_api_admin_manual_verifications_id",
+    "method": "GET",
+    "path": "/api/admin/manual-verifications/applications",
+    "operationId": "q04_get_api_admin_manual_verifications_applications",
+    "summary": "候选人工确认申请",
+    "permission": "biz:manualverification:query",
+    "capability": null,
+    "authorization": {
+      "realm": "ADMIN",
+      "scope": "COMPANY_OWNER_DEPT",
+      "permission": "biz:manualverification:query"
+    },
+    "flows": [
+      "F49"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/admin/manual-verifications",
+    "operationId": "q04_get_api_admin_manual_verifications",
+    "summary": "人工确认记录列表",
+    "permission": "biz:manualverification:list",
+    "capability": null,
+    "authorization": {
+      "realm": "ADMIN",
+      "scope": "COMPANY_OWNER_DEPT",
+      "permission": "biz:manualverification:list"
+    },
+    "flows": [
+      "F49"
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/api/admin/manual-verifications",
+    "operationId": "q04_post_api_admin_manual_verifications",
+    "summary": "登记背景或驾驶证人工确认",
+    "permission": "biz:manualverification:create",
+    "capability": null,
+    "authorization": {
+      "realm": "ADMIN",
+      "scope": "COMPANY_OWNER_DEPT",
+      "permission": "biz:manualverification:create",
+      "additionalRequiredPermissions": [
+        "biz:manualverification:query"
+      ]
+    },
+    "flows": [
+      "F49"
+    ]
+  },
+  {
     "method": "GET",
     "path": "/api/admin/manual-verifications/{id}",
+    "operationId": "q04_get_api_admin_manual_verifications_id",
     "summary": "人工确认详情",
     "permission": "biz:manualverification:query",
     "capability": null,
@@ -5382,9 +5259,60 @@
     ]
   },
   {
-    "operationId": "q04_post_api_admin_verification_sessions_id_close",
+    "method": "POST",
+    "path": "/api/admin/manual-verifications/{id}/review",
+    "operationId": "q04_post_api_admin_manual_verifications_id_review",
+    "summary": "独立复核人工确认",
+    "permission": "biz:manualverification:review",
+    "capability": null,
+    "authorization": {
+      "realm": "ADMIN",
+      "scope": "COMPANY_OWNER_DEPT",
+      "permission": "biz:manualverification:review",
+      "additionalRequiredPermissions": [
+        "biz:manualverification:query"
+      ]
+    },
+    "flows": [
+      "F49"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/admin/verification-sessions",
+    "operationId": "q04_get_api_admin_verification_sessions",
+    "summary": "本机生物认证会话列表",
+    "permission": "biz:verification:list",
+    "capability": null,
+    "authorization": {
+      "realm": "ADMIN",
+      "scope": "COMPANY_OWNER_DEPT",
+      "permission": "biz:verification:list"
+    },
+    "flows": [
+      "F49"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/admin/verification-sessions/{id}",
+    "operationId": "q04_get_api_admin_verification_sessions_id",
+    "summary": "本机生物认证会话详情",
+    "permission": "biz:verification:query",
+    "capability": null,
+    "authorization": {
+      "realm": "ADMIN",
+      "scope": "COMPANY_OWNER_DEPT",
+      "permission": "biz:verification:query"
+    },
+    "flows": [
+      "F49"
+    ]
+  },
+  {
     "method": "POST",
     "path": "/api/admin/verification-sessions/{id}/close",
+    "operationId": "q04_post_api_admin_verification_sessions_id_close",
     "summary": "封存未决本机认证会话",
     "permission": "biz:verification:close",
     "capability": null,
@@ -5395,6 +5323,56 @@
     },
     "flows": [
       "F49"
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/api/app/driver/presence",
+    "operationId": "d01_post_driver_presence",
+    "summary": "报告最近认证交互状态",
+    "permission": null,
+    "capability": "DRIVER_PRESENCE_CREATE",
+    "authorization": {
+      "realm": "MINI",
+      "scope": "OWN_DRIVER_RECORD",
+      "capability": "DRIVER_PRESENCE_CREATE"
+    },
+    "flows": [
+      "F10"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/admin/dispatch/companies/{companyId}/listening-config",
+    "operationId": "d01_get_company_listening_config",
+    "summary": "公司听单配置读取",
+    "permission": "biz:dispatchlistening:query",
+    "capability": null,
+    "authorization": {
+      "realm": "ADMIN",
+      "scope": "EXPLICIT_COMPANY_OWNER_DEPT",
+      "permission": "biz:dispatchlistening:query"
+    },
+    "flows": [
+      "F10",
+      "F31"
+    ]
+  },
+  {
+    "method": "PUT",
+    "path": "/api/admin/dispatch/companies/{companyId}/listening-config",
+    "operationId": "d01_put_company_listening_config",
+    "summary": "公司听单配置维护",
+    "permission": "biz:dispatchlistening:edit",
+    "capability": null,
+    "authorization": {
+      "realm": "ADMIN",
+      "scope": "EXPLICIT_COMPANY_OWNER_DEPT",
+      "permission": "biz:dispatchlistening:edit"
+    },
+    "flows": [
+      "F10",
+      "F31"
     ]
   }
 ]

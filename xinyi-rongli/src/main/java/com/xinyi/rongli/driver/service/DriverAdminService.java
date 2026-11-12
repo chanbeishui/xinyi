@@ -11,12 +11,14 @@ import com.xinyi.rongli.platform.error.*;
 import com.xinyi.rongli.platform.json.ViJson;
 import com.xinyi.rongli.platform.service.*;
 import com.xinyi.rongli.refund.dto.RefundRequests.Action;
-import java.time.*;
-import java.util.*;
-import java.util.function.Supplier;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
+
+import java.time.*;
+import java.util.*;
+import java.util.function.Supplier;
 
 /** 代驾档案按后台明确指定的公司归属；资料查询、跨公司转移、行政启停及历史订单权限各自校验。 */
 @Service
@@ -341,7 +343,7 @@ public class DriverAdminService {
         result.put("qualificationStatus", row.getQualificationStatus());
         result.put("qualificationRevision", row.getQualificationRevision());
         result.put("newAssignmentEnabled", row.getNewAssignmentEnabled());
-        result.put("listening", row.getListeningEnabled());
+        result.put("listening", policy.listeningEffective(row));
         result.put("licenseClass", row.getLicenseClass());
         result.put("licenseValidTo", date(row.getLicenseValidTo()));
         result.put("licenseLongTerm", row.getLicenseLongTerm());
@@ -375,7 +377,7 @@ public class DriverAdminService {
         if (!row.getNewAssignmentEnabled()
                 && can(row, "biz:driver:enablenewassignments")
                 && companyActive(row.getOwnerDeptId())
-                && policy.qualificationBlock(row, Instant.now()) == null)
+                && policy.currentQualificationBlock(row) == null)
             actions.add("ENABLE_NEW_ASSIGNMENTS");
         if (canHistory(row)) actions.add("VIEW_ASSIGNMENTS");
         return actions;
@@ -386,8 +388,8 @@ public class DriverAdminService {
         boolean busy = mapper.busy(row.getId()) > 0;
         var occupancy = mapper.occupancy(row.getId());
         result.put("newAssignmentEnabled", row.getNewAssignmentEnabled());
-        result.put("listeningEnabled", row.getListeningEnabled());
-        result.put("qualificationValid", policy.qualificationBlock(row, Instant.now()) == null);
+        result.put("listeningEnabled", policy.listeningEffective(row));
+        result.put("qualificationValid", policy.currentQualificationBlock(row) == null);
         result.put("occupationType", occupancy == null ? "NONE" : occupancy.get("holder_type"));
         result.put("holderId", null);
         if (occupancy != null

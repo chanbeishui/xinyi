@@ -41,7 +41,7 @@ paths:
                     type: string
                   data:
                     allOf:
-                    - $ref: '#/components/schemas/Availability'
+                    - $ref: '#/components/schemas/DriverAvailability'
                     nullable: true
                     type: object
                 additionalProperties: false
@@ -127,7 +127,7 @@ paths:
                     type: string
                   data:
                     allOf:
-                    - $ref: '#/components/schemas/Availability'
+                    - $ref: '#/components/schemas/DriverAvailability'
                     nullable: true
                     type: object
                 additionalProperties: false
@@ -299,7 +299,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Location'
+              $ref: '#/components/schemas/DriverLocationReport'
       x-capability: DRIVER_LOCATION_CREATE
       x-authorization:
         realm: MINI
@@ -334,37 +334,383 @@ paths:
       - VI_UPSTREAM_UNAVAILABLE
       x-error-policy: GLOBAL_FAILURES_NO_RESOURCE_404
       x-contract-baseline: V6.4
-components:
-  schemas:
-    Location:
-      type: object
-      properties:
-        lng:
-          type: number
-          minimum: -180
-          maximum: 180
-        lat:
-          type: number
-          minimum: -90
-          maximum: 90
-        accuracyMeter:
-          type: integer
-          minimum: 0
-        capturedAt:
+  /api/app/driver/presence:
+    post:
+      operationId: d01_post_driver_presence
+      summary: 报告最近认证交互状态
+      tags:
+      - DRIVER
+      description: 本人最近前后台认证交互；不保证后台持续可达，不关闭听单，GET不刷新。
+      x-flow-ids:
+      - F10
+      security:
+      - MiniBearerAuth: []
+      responses:
+        '200':
+          description: 操作成功；领域校验后返回真实结果
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    enum:
+                    - 200
+                  msg:
+                    type: string
+                  data:
+                    allOf:
+                    - $ref: '#/components/schemas/Ack'
+                    nullable: true
+                    type: object
+                additionalProperties: false
+                required:
+                - code
+                - msg
+                - data
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+                enum:
+                - no-store
+              description: 身份/交易/个人业务响应不缓存
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalError'
+        '503':
+          $ref: '#/components/responses/Unavailable'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+      parameters:
+      - name: Idempotency-Key
+        in: header
+        required: true
+        schema:
           type: string
-          format: date-time
-          pattern: Z$
-          description: ISO8601 UTC时刻，必须Z结尾；显示与业务日期Asia/Shanghai
-        coordinateSystem:
+          description: UUID；按主体+动作+资源+键及请求摘要保存首次结果；同键不同体409，至少24h，资金/交接另有永久业务去重
+      - name: X-Client-Type
+        in: header
+        required: true
+        schema:
           type: string
           enum:
-          - GCJ02
+          - owner
+          - driver
+          - station
+          - admin
+        description: 仅审计来源，不作为授权；须匹配服务端会话视角
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DriverPresenceReport'
+      x-capability: DRIVER_PRESENCE_CREATE
+      x-authorization:
+        realm: MINI
+        scope: OWN_DRIVER_RECORD
+        capability: DRIVER_PRESENCE_CREATE
+      x-error-codes:
+      - VI_REQUEST_INVALID
+      - VI_AUTH_REQUIRED
+      - VI_TOKEN_REALM_MISMATCH
+      - VI_REFRESH_REUSED
+      - VI_FORBIDDEN
+      - VI_SELF_REVIEW_DENIED
+      - VI_VERSION_CONFLICT
+      - VI_STATE_CONFLICT
+      - VI_IDEMPOTENCY_CONFLICT
+      - VI_SELECTION_CONFLICT
+      - VI_CONTEXT_CHANGED
+      - VI_SNAPSHOT_CHANGED
+      - VI_DATA_INVALID
+      - VI_EVIDENCE_INCOMPLETE
+      - VI_HANDOVER_CODE_INVALID
+      - VI_HANDOVER_LOCKED
+      - VI_UNPRICED_LINES
+      - VI_REFUND_LIMIT
+      - VI_PAYMENT_LIMIT
+      - VI_SERVICE_UNAVAILABLE
+      - VI_CAPABILITY_NOT_CONFIGURED
+      - VI_TRAINING_NOT_READY
+      - VI_RATE_LIMITED
+      - VI_INTERNAL_ERROR
+      - VI_AUTHORITY_UNAVAILABLE
+      - VI_UPSTREAM_UNAVAILABLE
+      x-error-policy: GLOBAL_FAILURES_NO_RESOURCE_404
+      x-contract-baseline: V6.4
+  /api/admin/dispatch/companies/{companyId}/listening-config:
+    get:
+      operationId: d01_get_company_listening_config
+      summary: 公司听单配置读取
+      tags:
+      - ADMIN
+      description: 公司归属从真实部门及配置记录确定；功能与数据范围分别检查。保存立即生效；原因加密、不授权角色、不设置自动次日开启。
+      x-flow-ids:
+      - F10
+      - F31
+      security:
+      - AdminBearerAuth: []
+      responses:
+        '200':
+          description: 操作成功；领域校验后返回真实结果
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    enum:
+                    - 200
+                  msg:
+                    type: string
+                  data:
+                    allOf:
+                    - $ref: '#/components/schemas/CompanyListeningConfig'
+                    nullable: true
+                    type: object
+                additionalProperties: false
+                required:
+                - code
+                - msg
+                - data
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+                enum:
+                - no-store
+              description: 身份/交易/个人业务响应不缓存
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalError'
+        '503':
+          $ref: '#/components/responses/Unavailable'
+      parameters:
+      - name: X-Client-Type
+        in: header
+        required: true
+        schema:
+          type: string
+          enum:
+          - owner
+          - driver
+          - station
+          - admin
+        description: 仅审计来源，不作为授权；须匹配服务端会话视角
+      - name: companyId
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库Long十进制字符串，服务端进一步限制Long.MAX_VALUE
+      x-permission: biz:dispatchlistening:query
+      x-authorization:
+        realm: ADMIN
+        scope: EXPLICIT_COMPANY_OWNER_DEPT
+        permission: biz:dispatchlistening:query
+      x-error-codes:
+      - VI_REQUEST_INVALID
+      - VI_AUTH_REQUIRED
+      - VI_TOKEN_REALM_MISMATCH
+      - VI_REFRESH_REUSED
+      - VI_FORBIDDEN
+      - VI_SELF_REVIEW_DENIED
+      - VI_RATE_LIMITED
+      - VI_INTERNAL_ERROR
+      - VI_AUTHORITY_UNAVAILABLE
+      - VI_UPSTREAM_UNAVAILABLE
+      x-error-policy: GLOBAL_FAILURES_NO_RESOURCE_404
+      x-contract-baseline: V6.4
+    put:
+      operationId: d01_put_company_listening_config
+      summary: 公司听单配置维护
+      tags:
+      - ADMIN
+      description: 公司归属从真实部门及配置记录确定；功能与数据范围分别检查。保存立即生效；原因加密、不授权角色、不设置自动次日开启。
+      x-flow-ids:
+      - F10
+      - F31
+      security:
+      - AdminBearerAuth: []
+      responses:
+        '200':
+          description: 操作成功；领域校验后返回真实结果
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    enum:
+                    - 200
+                  msg:
+                    type: string
+                  data:
+                    allOf:
+                    - $ref: '#/components/schemas/CompanyListeningConfig'
+                    nullable: true
+                    type: object
+                additionalProperties: false
+                required:
+                - code
+                - msg
+                - data
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+                enum:
+                - no-store
+              description: 身份/交易/个人业务响应不缓存
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalError'
+        '503':
+          $ref: '#/components/responses/Unavailable'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+      parameters:
+      - name: Idempotency-Key
+        in: header
+        required: true
+        schema:
+          type: string
+          description: UUID；按主体+动作+资源+键及请求摘要保存首次结果；同键不同体409，至少24h，资金/交接另有永久业务去重
+      - name: X-Client-Type
+        in: header
+        required: true
+        schema:
+          type: string
+          enum:
+          - owner
+          - driver
+          - station
+          - admin
+        description: 仅审计来源，不作为授权；须匹配服务端会话视角
+      - name: companyId
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库Long十进制字符串，服务端进一步限制Long.MAX_VALUE
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CompanyListeningConfigWrite'
+      x-permission: biz:dispatchlistening:edit
+      x-authorization:
+        realm: ADMIN
+        scope: EXPLICIT_COMPANY_OWNER_DEPT
+        permission: biz:dispatchlistening:edit
+      x-error-codes:
+      - VI_REQUEST_INVALID
+      - VI_AUTH_REQUIRED
+      - VI_TOKEN_REALM_MISMATCH
+      - VI_REFRESH_REUSED
+      - VI_FORBIDDEN
+      - VI_SELF_REVIEW_DENIED
+      - VI_VERSION_CONFLICT
+      - VI_STATE_CONFLICT
+      - VI_IDEMPOTENCY_CONFLICT
+      - VI_SELECTION_CONFLICT
+      - VI_CONTEXT_CHANGED
+      - VI_SNAPSHOT_CHANGED
+      - VI_DATA_INVALID
+      - VI_EVIDENCE_INCOMPLETE
+      - VI_HANDOVER_CODE_INVALID
+      - VI_HANDOVER_LOCKED
+      - VI_UNPRICED_LINES
+      - VI_REFUND_LIMIT
+      - VI_PAYMENT_LIMIT
+      - VI_SERVICE_UNAVAILABLE
+      - VI_CAPABILITY_NOT_CONFIGURED
+      - VI_TRAINING_NOT_READY
+      - VI_RATE_LIMITED
+      - VI_INTERNAL_ERROR
+      - VI_AUTHORITY_UNAVAILABLE
+      - VI_UPSTREAM_UNAVAILABLE
+      x-error-policy: GLOBAL_FAILURES_NO_RESOURCE_404
+      x-contract-baseline: V6.4
+components:
+  schemas:
+    CompanyListeningConfigWrite:
+      type: object
       additionalProperties: false
+      properties:
+        expectedVersion:
+          type: integer
+          format: int64
+          minimum: 0
+          maximum: 9007199254740991
+        closingTime:
+          type: string
+          pattern: ^(?:[01][0-9]|2[0-3]):[0-5][0-9]$
+        locationMaxAgeSeconds:
+          type: integer
+          minimum: 31
+          maximum: 86400
+        reachabilityMaxAgeSeconds:
+          type: integer
+          minimum: 31
+          maximum: 86400
+        maxAccuracyMeter:
+          type: integer
+          minimum: 1
+          maximum: 100000
+        locationReportIntervalSeconds:
+          type: integer
+          minimum: 30
+          maximum: 3600
+          description: 必须小于两个MaxAge；最少30秒为本系统节流约束，不作为微信官方频率承诺
+        reason:
+          type: string
+          minLength: 1
+          maxLength: 500
       required:
-      - lng
-      - lat
-      - capturedAt
-      - coordinateSystem
+      - expectedVersion
+      - closingTime
+      - locationMaxAgeSeconds
+      - reachabilityMaxAgeSeconds
+      - maxAccuracyMeter
+      - locationReportIntervalSeconds
+      - reason
+      description: 公司统一每日配置，所有参数明确填写；原因加密审计。保存同事务立即生效，提前持久收紧当前窗口，延后不延长已开启窗口，不设置次日自动开启。
     ApiError:
       type: object
       additionalProperties: false
@@ -523,6 +869,108 @@ components:
       - field
       - reasonCode
       - message
+    CompanyListeningConfig:
+      type: object
+      additionalProperties: false
+      properties:
+        ownerDeptId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库Long十进制字符串，服务端进一步限制Long.MAX_VALUE
+        companyName:
+          type: string
+        timeZone:
+          type: string
+          enum:
+          - Asia/Shanghai
+        configured:
+          type: boolean
+        version:
+          type: integer
+          format: int64
+          minimum: 0
+          maximum: 9007199254740991
+        closingTime:
+          type: string
+          pattern: ^(?:[01][0-9]|2[0-3]):[0-5][0-9]$
+          nullable: true
+        locationMaxAgeSeconds:
+          type: integer
+          minimum: 31
+          maximum: 86400
+          nullable: true
+        reachabilityMaxAgeSeconds:
+          type: integer
+          minimum: 31
+          maximum: 86400
+          nullable: true
+        maxAccuracyMeter:
+          type: integer
+          minimum: 1
+          maximum: 100000
+          nullable: true
+        locationReportIntervalSeconds:
+          type: integer
+          minimum: 30
+          maximum: 3600
+          description: 必须小于两个MaxAge；最少30秒为本系统节流约束，不作为微信官方频率承诺
+          nullable: true
+        allowedActions:
+          type: array
+          items:
+            type: string
+            enum:
+            - EDIT_LISTENING_CONFIG
+      required:
+      - ownerDeptId
+      - companyName
+      - timeZone
+      - configured
+      - version
+      - closingTime
+      - locationMaxAgeSeconds
+      - reachabilityMaxAgeSeconds
+      - maxAccuracyMeter
+      - locationReportIntervalSeconds
+      - allowedActions
+      description: 缺配置返回configured=false/version=0，参数均null，不制造生产默认。
+    DriverPresenceReport:
+      type: object
+      additionalProperties: false
+      properties:
+        clientState:
+          $ref: '#/components/schemas/DriverClientState'
+        observedAt:
+          type: string
+          format: date-time
+          pattern: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,3})?Z$
+          description: UTC Z；四位年、最多毫秒，业务日期使用Asia/Shanghai
+        expectedVersion: &id001
+          type: integer
+          format: int64
+          minimum: 0
+          maximum: 9007199254740991
+        expectedCompanyRevision: *id001
+        expectedSessionId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库Long十进制字符串，服务端进一步限制Long.MAX_VALUE
+        expectedContextVersion: *id001
+      required:
+      - clientState
+      - observedAt
+      - expectedVersion
+      - expectedCompanyRevision
+      - expectedSessionId
+      - expectedContextVersion
+      description: 认证交互独立presenceVersion；GET不续期。同幂等请求不刷新接触时间。BACKGROUND不关闭听单，不保证后台持续网络可达。
+    DriverClientState:
+      type: string
+      enum:
+      - FOREGROUND
+      - BACKGROUND
     Ack:
       type: object
       properties:
@@ -538,56 +986,344 @@ components:
       additionalProperties: false
       required:
       - accepted
+    DriverLocationReport:
+      type: object
+      additionalProperties: false
+      properties:
+        lng:
+          type: number
+          minimum: -180
+          maximum: 180
+        lat:
+          type: number
+          minimum: -90
+          maximum: 90
+        accuracyMeter:
+          type: integer
+          minimum: 0
+          maximum: 100000
+          nullable: true
+        capturedAt:
+          type: string
+          format: date-time
+          pattern: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,3})?Z$
+          description: UTC Z；四位年、最多毫秒，业务日期使用Asia/Shanghai
+        coordinateSystem:
+          type: string
+          enum:
+          - GCJ02
+        expectedVersion: &id002
+          type: integer
+          format: int64
+          minimum: 0
+          maximum: 9007199254740991
+        expectedCompanyRevision: *id002
+        expectedSessionId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库Long十进制字符串，服务端进一步限制Long.MAX_VALUE
+        expectedContextVersion: *id002
+      required:
+      - lng
+      - lat
+      - accuracyMeter
+      - capturedAt
+      - coordinateSystem
+      - expectedVersion
+      - expectedCompanyRevision
+      - expectedSessionId
+      - expectedContextVersion
+      description: 只更新当前本人最近加密点，独立locationVersion；历史点不按补报接收时间续期，位置不进入明文审计。采集最多过去24小时/未来5秒为技术校验，新鲜度仍按明确公司配置；未知精度不作为可接候选。
     Listening:
       type: object
+      additionalProperties: false
       properties:
         enabled:
           type: boolean
-        expectedVersion:
+        expectedVersion: &id003
           type: integer
+          format: int64
           minimum: 0
-          description: 客户端最后读取的版本；服务端条件更新，冲突返回409
-      additionalProperties: false
+          maximum: 9007199254740991
+        expectedCompanyRevision: *id003
+        expectedConfigVersion:
+          type: integer
+          format: int64
+          minimum: 0
+          maximum: 9007199254740991
+          nullable: true
+        expectedSessionId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库Long十进制字符串，服务端进一步限制Long.MAX_VALUE
+        expectedContextVersion: *id003
+        expectedBusinessDate:
+          type: string
+          format: date
+          pattern: ^\d{4}-\d{2}-\d{2}$
+          description: 服务端Asia/Shanghai业务日期；未知开启请求保留原观察日期，不能跨日自动换成今天
       required:
       - enabled
       - expectedVersion
-    Availability:
+      - expectedCompanyRevision
+      - expectedConfigVersion
+      - expectedSessionId
+      - expectedContextVersion
+      - expectedBusinessDate
+      description: D01七键；expectedVersion为独立listeningVersion。开启必须匹配真实公司配置版本；关闭允许expectedConfigVersion为null。来源观察值不能代替真实会话鉴权。开启固定当天截止，切后台不关闭，次日需手动开启。
+        开启还须expectedBusinessDate为今天；关闭接受格式合法旧日期，不阻安全关闭。
+    DriverAvailability:
       type: object
+      additionalProperties: false
       properties:
+        newAssignmentEnabled:
+          type: boolean
+        listeningIntentEnabled:
+          type: boolean
         listeningEnabled:
+          type: boolean
+        configurationReady:
           type: boolean
         qualificationValid:
           type: boolean
-        occupationType:
-          $ref: '#/components/schemas/OccupationType'
+        occupied:
+          type: boolean
+        locationFresh:
+          type: boolean
+        locationAccuracyValid:
+          type: boolean
+        clientReachable:
+          type: boolean
+        availableForNewOrder:
+          type: boolean
+        companyRevision:
+          type: integer
+          format: int64
+          minimum: 0
+          maximum: 9007199254740991
+        contextVersion:
+          type: integer
+          format: int64
+          minimum: 0
+          maximum: 9007199254740991
+        version:
+          type: integer
+          format: int64
+          minimum: 0
+          maximum: 9007199254740991
+        listeningVersion:
+          type: integer
+          format: int64
+          minimum: 0
+          maximum: 9007199254740991
+        profileVersion:
+          type: integer
+          format: int64
+          minimum: 0
+          maximum: 9007199254740991
+        locationVersion:
+          type: integer
+          format: int64
+          minimum: 0
+          maximum: 9007199254740991
+        presenceVersion:
+          type: integer
+          format: int64
+          minimum: 0
+          maximum: 9007199254740991
+        listeningCompanyRevision:
+          type: integer
+          format: int64
+          minimum: 0
+          maximum: 9007199254740991
+          nullable: true
+        listeningConfigVersion:
+          type: integer
+          format: int64
+          minimum: 0
+          maximum: 9007199254740991
+          nullable: true
+        configVersion:
+          type: integer
+          format: int64
+          minimum: 0
+          maximum: 9007199254740991
+          nullable: true
+        driverId: &id004
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库Long十进制字符串，服务端进一步限制Long.MAX_VALUE
+        ownerDeptId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库Long十进制字符串，服务端进一步限制Long.MAX_VALUE
+          nullable: true
+        sessionId: *id004
         holderId:
           type: string
           pattern: ^[1-9][0-9]{0,18}$
           maxLength: 19
-          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+          description: 数据库Long十进制字符串，服务端进一步限制Long.MAX_VALUE
           nullable: true
-        availableForNewOrder:
-          type: boolean
-        reason:
+        companyName:
           type: string
-          description: 当前不能接受新单的实际原因；A04未接通D01定位/可达最终判定时不能将行政开关开启当作可接单。
-        version:
+          nullable: true
+        closingTime:
+          type: string
+          pattern: ^(?:[01][0-9]|2[0-3]):[0-5][0-9]$
+          nullable: true
+        locationReportIntervalSeconds:
+          type: integer
+          minimum: 30
+          maximum: 3600
+          description: 必须小于两个MaxAge；最少30秒为本系统节流约束，不作为微信官方频率承诺
+          nullable: true
+        qualificationReason:
+          type: string
+          nullable: true
+        occupationType:
+          $ref: '#/components/schemas/OccupationType'
+        activePenaltyIds:
+          type: array
+          items: *id004
+        locationStatus:
+          type: string
+          enum:
+          - MISSING
+          - UNTRUSTED
+          - CONTEXT_CHANGED
+          - STALE
+          - INACCURATE
+          - UNKNOWN_ACCURACY
+          - FRESH
+        accuracyMeter:
           type: integer
           minimum: 0
-          description: 客户端最后读取的版本；服务端条件更新，冲突返回409
-          format: int64
-          maximum: 9007199254740991
-        activePenaltyIds:
+          maximum: 100000
+          nullable: true
+        clientState:
+          $ref: '#/components/schemas/DriverClientState'
+          nullable: true
+        reachabilityStatus:
+          type: string
+          enum:
+          - RECENT_CONTACT
+          - STALE
+          - UNKNOWN
+          - CONTEXT_CHANGED
+        eligibilityScope:
+          type: string
+          enum:
+          - BASE_CANDIDATE_ONLY
+        reason:
+          type: string
+        allowedActions:
           type: array
           items:
             type: string
-            pattern: ^[1-9][0-9]{0,18}$
-            maxLength: 19
-            description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
-        newAssignmentEnabled:
-          type: boolean
-      additionalProperties: false
-      description: 行政允许、本人意愿、资格、占用分开；A04不伪造D01客户端可达和定位新鲜度。
+            enum:
+            - ENABLE_LISTENING
+            - DISABLE_LISTENING
+            - REPORT_DRIVER_LOCATION
+            - REPORT_DRIVER_PRESENCE
+        listeningUntil:
+          type: string
+          format: date-time
+          pattern: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,3})?Z$
+          description: UTC Z；四位年、最多毫秒，业务日期使用Asia/Shanghai
+          nullable: true
+        locationCapturedAt:
+          type: string
+          format: date-time
+          pattern: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,3})?Z$
+          description: UTC Z；四位年、最多毫秒，业务日期使用Asia/Shanghai
+          nullable: true
+        locationReceivedAt:
+          type: string
+          format: date-time
+          pattern: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,3})?Z$
+          description: UTC Z；四位年、最多毫秒，业务日期使用Asia/Shanghai
+          nullable: true
+        locationExpiresAt:
+          type: string
+          format: date-time
+          pattern: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,3})?Z$
+          description: UTC Z；四位年、最多毫秒，业务日期使用Asia/Shanghai
+          nullable: true
+        lastContactAt:
+          type: string
+          format: date-time
+          pattern: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,3})?Z$
+          description: UTC Z；四位年、最多毫秒，业务日期使用Asia/Shanghai
+          nullable: true
+        reachabilityExpiresAt:
+          type: string
+          format: date-time
+          pattern: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,3})?Z$
+          description: UTC Z；四位年、最多毫秒，业务日期使用Asia/Shanghai
+          nullable: true
+        businessDate:
+          type: string
+          format: date
+          pattern: ^\d{4}-\d{2}-\d{2}$
+          description: 服务端Asia/Shanghai业务日期；未知开启请求保留原观察日期，不能跨日自动换成今天
+        completedAssignmentCount:
+          type: integer
+          format: int64
+          minimum: 0
+          maximum: 9007199254740991
+          description: 当前可信MINI代驾本人已结束且RETURNED的服务任务累计数，可包含本人原公司历史；不返回订单详情。
+      required:
+      - newAssignmentEnabled
+      - listeningIntentEnabled
+      - listeningEnabled
+      - configurationReady
+      - qualificationValid
+      - occupied
+      - locationFresh
+      - locationAccuracyValid
+      - clientReachable
+      - availableForNewOrder
+      - companyRevision
+      - contextVersion
+      - version
+      - listeningVersion
+      - profileVersion
+      - locationVersion
+      - presenceVersion
+      - listeningCompanyRevision
+      - listeningConfigVersion
+      - configVersion
+      - driverId
+      - ownerDeptId
+      - sessionId
+      - holderId
+      - companyName
+      - closingTime
+      - locationReportIntervalSeconds
+      - qualificationReason
+      - occupationType
+      - activePenaltyIds
+      - locationStatus
+      - accuracyMeter
+      - clientState
+      - reachabilityStatus
+      - eligibilityScope
+      - reason
+      - allowedActions
+      - listeningUntil
+      - locationCapturedAt
+      - locationReceivedAt
+      - locationExpiresAt
+      - lastContactAt
+      - reachabilityExpiresAt
+      - businessDate
+      - completedAssignmentCount
+      description: D01本人当前状态。持久听单意愿与按固定截止/公司epoch生效的听单分开；后台保留意愿但不能假称网络与定位实时。version为listeningVersion别名，profileVersion另列；availableForNewOrder只为基础候选，不代表特定订单准驾/半径/邀请接受条件已通过。
     OccupationType:
       type: string
       enum:
@@ -724,3 +1460,13 @@ components:
             retryable: false
             retryAfterSeconds: null
             data: {}
+  securitySchemes:
+    MiniBearerAuth:
+      type: http
+      scheme: bearer
+      description: 小程序不透明随机访问令牌；数据库权威会话，非sys_user JWT；见T3.4
+    AdminBearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: 现有xinyi后台sys_user会话，不能作为小程序车主/代驾身份

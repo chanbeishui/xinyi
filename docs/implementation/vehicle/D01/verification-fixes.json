@@ -1,0 +1,31 @@
+{
+  "baseline": "c898769",
+  "fixes": [
+    {
+      "stage": "首轮关联编译",
+      "integrationTestsRun": 0,
+      "cause": "测试追加ViJson使用后缺少import，生产编译已通过但testCompile失败",
+      "fix": "补回明确import，随后关联166集成和50单元通过",
+      "productionChanged": false
+    },
+    {
+      "stage": "全量后直接审计断言增强",
+      "integrationTestsRun": 56,
+      "failures": 1,
+      "errors": 0,
+      "skipped": 0,
+      "cause": "断言期望GET/PUT共4条拒绝，但SQL仅筛选CHANGED_DENIED，遗漏QUERY_DENIED；实际返回2条修改拒绝",
+      "fix": "分别核对查询与修改拒绝各2条，不减少主体、原因、范围和真实审计要求；最终重测结果见final-target.json",
+      "productionChanged": false,
+      "reportPath": "docs/implementation/vehicle/D01/final-target-first-failure.json"
+    },
+    {
+      "stage": "独立前端复核",
+      "cause": "网络失败或409后仍可保留旧就绪显示；关闭听单停止刷新后，位置/近期交互有效标记可能超出原截止仍显示有效",
+      "fix": "统一撤回失败投影，使用独立最早已知截止计时器撤回缓存；保留原UUID/原体恢复，不写后台听单或延长租约。最终新GUI直接覆盖GET503、presence503和关闭后TTL",
+      "backendProductionChanged": false,
+      "frontendChanged": true,
+      "reportPath": "docs/implementation/vehicle/D01/mini-browser.json"
+    }
+  ]
+}

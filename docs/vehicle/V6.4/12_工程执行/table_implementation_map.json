@@ -726,5 +726,21 @@
     "evidence": [],
     "table": "vi_qualification_snapshot",
     "taskId": "Q05"
+  },
+  {
+    "status": "NOT_ASSESSED",
+    "entityFile": null,
+    "mapperFile": null,
+    "evidence": [],
+    "table": "vi_driver_presence",
+    "taskId": "D01"
+  },
+  {
+    "status": "NOT_ASSESSED",
+    "entityFile": null,
+    "mapperFile": null,
+    "evidence": [],
+    "table": "vi_driver_listening_config",
+    "taskId": "D01"
   }
 ]

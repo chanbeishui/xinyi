@@ -701,43 +701,76 @@
     "q05CompatibilityNote": "当前四项认证冻结提交、审批与复审历史、真实公司权限、私有证件及身份/新单基础门禁关联回归；不改原任务责任或既有验证证据。"
   },
   {
-    "implementationStatus": "NOT_ASSESSED",
-    "controllerFile": null,
-    "serviceFile": null,
-    "mapperFile": null,
-    "testFiles": [],
-    "reviewEvidence": null,
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/controller/DriverDispatchController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/service/DriverDispatchService.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/dispatch/DispatchListeningMapper.xml",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/D01DispatchIT.java"
+    ],
+    "reviewEvidence": "docs/implementation/vehicle/D01/review.md",
     "operationId": "API_048_get",
     "method": "GET",
     "path": "/api/app/driver/availability",
     "summary": "可接单状态",
-    "taskId": "D01"
+    "taskId": "D01",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/D01-20261112.json"
+    ],
+    "additionalImplementationFiles": [
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/service/DriverDispatchViewService.java",
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/service/DispatchAuthority.java",
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/service/ListeningDeadlineService.java",
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/service/ListeningExpiryJob.java"
+    ]
   },
   {
-    "implementationStatus": "NOT_ASSESSED",
-    "controllerFile": null,
-    "serviceFile": null,
-    "mapperFile": null,
-    "testFiles": [],
-    "reviewEvidence": null,
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/controller/DriverDispatchController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/service/DriverDispatchService.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/dispatch/DispatchListeningMapper.xml",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/D01DispatchIT.java"
+    ],
+    "reviewEvidence": "docs/implementation/vehicle/D01/review.md",
     "operationId": "API_049_patch",
     "method": "PATCH",
     "path": "/api/app/driver/listening",
     "summary": "听单开关",
-    "taskId": "D01"
+    "taskId": "D01",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/D01-20261112.json"
+    ],
+    "additionalImplementationFiles": [
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/service/DriverDispatchViewService.java",
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/service/DispatchAuthority.java",
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/service/ListeningDeadlineService.java",
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/service/ListeningExpiryJob.java"
+    ]
   },
   {
-    "implementationStatus": "NOT_ASSESSED",
-    "controllerFile": null,
-    "serviceFile": null,
-    "mapperFile": null,
-    "testFiles": [],
-    "reviewEvidence": null,
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/controller/DriverDispatchController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/service/DriverDispatchService.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/dispatch/DispatchListeningMapper.xml",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/D01DispatchIT.java"
+    ],
+    "reviewEvidence": "docs/implementation/vehicle/D01/review.md",
     "operationId": "API_050_post",
     "method": "POST",
     "path": "/api/app/driver/location",
     "summary": "前台位置打点",
-    "taskId": "D01"
+    "taskId": "D01",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/D01-20261112.json"
+    ],
+    "additionalImplementationFiles": [
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/service/DriverDispatchViewService.java",
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/service/DispatchAuthority.java",
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/service/ListeningDeadlineService.java",
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/service/ListeningExpiryJob.java"
+    ]
   },
   {
     "implementationStatus": "NOT_ASSESSED",
@@ -4747,5 +4780,77 @@
       "docs/implementation/vehicle/evidence/Q05-20261110.json"
     ],
     "q05CompatibilityNote": "当前四项认证冻结提交、审批与复审历史、真实公司权限、私有证件及身份/新单基础门禁关联回归；不改原任务责任或既有验证证据。"
+  },
+  {
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/controller/DriverDispatchController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/service/DriverDispatchService.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/dispatch/DispatchListeningMapper.xml",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/D01DispatchIT.java"
+    ],
+    "reviewEvidence": "docs/implementation/vehicle/D01/review.md",
+    "operationId": "d01_post_driver_presence",
+    "method": "POST",
+    "path": "/api/app/driver/presence",
+    "summary": "报告最近认证交互状态",
+    "taskId": "D01",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/D01-20261112.json"
+    ],
+    "additionalImplementationFiles": [
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/service/DriverDispatchViewService.java",
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/service/DispatchAuthority.java",
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/service/ListeningDeadlineService.java",
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/service/ListeningExpiryJob.java"
+    ]
+  },
+  {
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/controller/CompanyListeningConfigController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/service/CompanyListeningConfigService.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/dispatch/DispatchListeningMapper.xml",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/D01DispatchIT.java"
+    ],
+    "reviewEvidence": "docs/implementation/vehicle/D01/review.md",
+    "operationId": "d01_get_company_listening_config",
+    "method": "GET",
+    "path": "/api/admin/dispatch/companies/{companyId}/listening-config",
+    "summary": "公司听单配置读取",
+    "taskId": "D01",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/D01-20261112.json"
+    ],
+    "additionalImplementationFiles": [
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/service/DriverDispatchViewService.java",
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/service/DispatchAuthority.java",
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/service/ListeningDeadlineService.java",
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/service/ListeningExpiryJob.java"
+    ]
+  },
+  {
+    "implementationStatus": "VERIFIED",
+    "controllerFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/controller/CompanyListeningConfigController.java",
+    "serviceFile": "xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/service/CompanyListeningConfigService.java",
+    "mapperFile": "xinyi-rongli/src/main/resources/mapper/rongli/dispatch/DispatchListeningMapper.xml",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/D01DispatchIT.java"
+    ],
+    "reviewEvidence": "docs/implementation/vehicle/D01/review.md",
+    "operationId": "d01_put_company_listening_config",
+    "method": "PUT",
+    "path": "/api/admin/dispatch/companies/{companyId}/listening-config",
+    "summary": "公司听单配置维护",
+    "taskId": "D01",
+    "evidence": [
+      "docs/implementation/vehicle/evidence/D01-20261112.json"
+    ],
+    "additionalImplementationFiles": [
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/service/DriverDispatchViewService.java",
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/service/DispatchAuthority.java",
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/service/ListeningDeadlineService.java",
+      "xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/service/ListeningExpiryJob.java"
+    ]
   }
 ]

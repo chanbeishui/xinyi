@@ -573,12 +573,17 @@
     "testMethod": "test_tc_064"
   },
   {
-    "status": "NOT_RUN",
-    "testFiles": [],
-    "evidence": null,
+    "status": "PARTIAL",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/D01DispatchIT.java"
+    ],
+    "evidence": [
+      "docs/implementation/vehicle/evidence/D01-20261112.json"
+    ],
     "caseId": "TC-065",
     "taskId": "D02",
-    "testMethod": "test_tc_065"
+    "testMethod": "busyDriverMayListenButClosingNeverAbandonsAnExistingHeldVehicle",
+    "note": "D01关闭后基础候选拒绝且既有责任保留已验；D02实际不新增邀约及履约链尚未实现，不标完整通过。"
   },
   {
     "status": "NOT_RUN",
@@ -3589,5 +3594,83 @@
     "evidence": [],
     "caseId": "TC-CFG-062",
     "taskId": "X07"
+  },
+  {
+    "caseId": "TC-D01-001",
+    "taskId": "D01",
+    "status": "VERIFIED",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/D01DispatchIT.java"
+    ],
+    "evidence": [
+      "docs/implementation/vehicle/evidence/D01-20261112.json"
+    ],
+    "testMethod": "companyConfigurationScopeUsesRealSelectedCompanyAndEmptyScopeFailsClosed",
+    "additionalTestMethods": [
+      "configurationCasUuidAndPermissionRevocationApplyAlsoToReplays"
+    ]
+  },
+  {
+    "caseId": "TC-D01-002",
+    "taskId": "D01",
+    "status": "VERIFIED",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/D01DispatchIT.java"
+    ],
+    "evidence": [
+      "docs/implementation/vehicle/evidence/D01-20261112.json"
+    ],
+    "testMethod": "nextBusinessDayRequiresANewExplicitManualOpening",
+    "additionalTestMethods": [
+      "exactDeadlineDisablesListeningBeforeThePersistentWorkerRuns",
+      "earlierCompanyClosingTimePersistentlyTightensExistingDeadlines"
+    ]
+  },
+  {
+    "caseId": "TC-D01-003",
+    "taskId": "D01",
+    "status": "VERIFIED",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/D01DispatchIT.java"
+    ],
+    "evidence": [
+      "docs/implementation/vehicle/evidence/D01-20261112.json"
+    ],
+    "testMethod": "backgroundObservationKeepsListeningIntentAndDoesNotClaimPermanentReachability",
+    "additionalTestMethods": [
+      "busyDriverMayListenButClosingNeverAbandonsAnExistingHeldVehicle",
+      "persistentDeadlineClosurePreservesAssignmentOccupationAndAdministrativePreference"
+    ]
+  },
+  {
+    "caseId": "TC-D01-004",
+    "taskId": "D01",
+    "status": "VERIFIED",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/D01DispatchIT.java"
+    ],
+    "evidence": [
+      "docs/implementation/vehicle/evidence/D01-20261112.json"
+    ],
+    "testMethod": "staleSessionContextAndCompanyTargetsCannotBeWrittenOrReplayedIntoANewContext",
+    "additionalTestMethods": [
+      "locationIsOnlyEncryptedLatestPointAndDoesNotExposeCoordinatesInViewsOrArtifacts"
+    ]
+  },
+  {
+    "caseId": "TC-D01-005",
+    "taskId": "D01",
+    "status": "VERIFIED",
+    "testFiles": [
+      "xinyi-admin/src/test/java/com/xinyi/web/viit/D01DispatchIT.java"
+    ],
+    "evidence": [
+      "docs/implementation/vehicle/evidence/D01-20261112.json"
+    ],
+    "testMethod": "manualOpeningFreezesTodayShanghaiDeadlineWithoutGrantingLocationOrReachability",
+    "additionalTestMethods": [
+      "oldUuidReplayNeverReopensTomorrowOrExtendsTheOriginalDeadline",
+      "listeningOutboxFailureRollsBackPreferenceVersionAndSuccessAudit"
+    ]
   }
 ]

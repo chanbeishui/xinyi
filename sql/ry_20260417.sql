@@ -899,14 +899,20 @@ CREATE TABLE `vi_driver_profile` (
   `updated_at` DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3)) COMMENT 'UTC更新时间；Mapper每次修改显式SET updated_at=UTC_TIMESTAMP(3)，不依赖连接时区',
   `version` BIGINT NOT NULL DEFAULT 0 COMMENT '乐观锁版本',
   `effective_snapshot_id` BIGINT NULL COMMENT '当前生效资格不可变快照；历史NULL不猜回填',
+  `listening_revision` BIGINT NOT NULL DEFAULT 0 COMMENT 'D01本人听单独立CAS，不复用档案备注版本',
+  `listening_until` DATETIME(3) NULL COMMENT '本人本次开启固定当日UTC截止；历史NULL不猜填',
+  `listening_company_revision` BIGINT NULL COMMENT '开启时真实公司epoch；转公司不可复用',
+  `listening_config_version` BIGINT NULL COMMENT '开启对应明确公司配置版本',
   PRIMARY KEY (`id`),
   UNIQUE KEY uk_account (account_id),
   KEY ix_driver_company (owner_dept_id,id),
   KEY ix_driver_qualification_expiry (qualification_status,effective_snapshot_id),
   KEY ix_pool (qualification_status,new_assignment_enabled,listening_enabled),
+  KEY ix_driver_listening_expiry (listening_enabled,listening_until,id),
   CONSTRAINT ck_66_c6bf03f0ceed CHECK (`qualification_status` IN ('DRAFT','SUBMITTED','APPROVED','REJECTED','EXPIRED','SUSPENDED')),
   CONSTRAINT ck_driver_owner_dept CHECK (owner_dept_id IS NULL OR owner_dept_id>0),
-  CONSTRAINT ck_ver_driver_profile CHECK (version >= 0)
+  CONSTRAINT ck_ver_driver_profile CHECK (version >= 0),
+  CONSTRAINT ck_driver_listening_revision CHECK (listening_revision >= 0)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='代驾资格与听单偏好';
 
 CREATE TABLE `vi_driver_application` (
@@ -1296,8 +1302,17 @@ CREATE TABLE `vi_driver_location` (
   `created_at` DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3)) COMMENT '创建时间，统一UTC',
   `updated_at` DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3)) COMMENT 'UTC更新时间；Mapper每次修改显式SET updated_at=UTC_TIMESTAMP(3)，不依赖连接时区',
   `version` BIGINT NOT NULL DEFAULT 0 COMMENT '乐观锁版本',
+  `owner_dept_id` BIGINT NULL COMMENT '最近点真实父档案公司；历史NULL不可信',
+  `company_revision` BIGINT NULL COMMENT '采点时真实公司epoch',
+  `session_id` BIGINT NULL COMMENT '实际MINI采点会话',
+  `context_version` BIGINT NULL COMMENT '实际会话视角版本',
+  `accuracy_meter` INT NULL COMMENT '设备报告精度；未知精度不能作为候选点',
+  `valid_until` DATETIME(3) NULL COMMENT '按采集与接收较早时间计算UTC有效期',
+  `config_version` BIGINT NULL COMMENT '计算有效期的公司配置版本',
   PRIMARY KEY (`driver_id`),
-  CONSTRAINT ck_ver_driver_location CHECK (version >= 0)
+  KEY ix_driver_location_company (owner_dept_id,driver_id),
+  CONSTRAINT ck_ver_driver_location CHECK (version >= 0),
+  CONSTRAINT ck_driver_location_accuracy CHECK (accuracy_meter IS NULL OR accuracy_meter BETWEEN 0 AND 100000)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='代驾最近前台定位';
 
 CREATE TABLE `vi_handover` (
@@ -3863,3 +3878,62 @@ SELECT 2971403,'查看提交证件原图',2971400,140,'#',NULL,1,1,'F','0','0','
 WHERE NOT EXISTS(SELECT 1 FROM sys_menu WHERE menu_id=2971403);
 
 DROP TEMPORARY TABLE q05_menu_guard;
+
+
+CREATE TABLE `vi_driver_presence` (
+  `driver_id` BIGINT NOT NULL COMMENT '真实父代驾档案主键',
+  `owner_dept_id` BIGINT NOT NULL COMMENT '实际所属公司',
+  `company_revision` BIGINT NOT NULL COMMENT '真实公司epoch',
+  `session_id` BIGINT NOT NULL COMMENT '实际MINI交互会话',
+  `context_version` BIGINT NOT NULL COMMENT '真实会话视角版本',
+  `client_state` VARCHAR(16) NOT NULL COMMENT 'DriverClientState: FOREGROUND,BACKGROUND',
+  `observed_at` DATETIME(3) NOT NULL COMMENT '客户端事件UTC时间',
+  `received_at` DATETIME(3) NOT NULL COMMENT '服务端收到认证事件UTC时间',
+  `valid_until` DATETIME(3) NOT NULL COMMENT '最近交互有效UTC截止，不保证后续网络',
+  `config_version` BIGINT NOT NULL COMMENT '公司配置版本',
+  `version` BIGINT NOT NULL DEFAULT 0 COMMENT '独立CAS，首次真实写入版本1',
+  `created_at` DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3)) COMMENT '创建UTC时间',
+  `updated_at` DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3)) COMMENT 'UTC更新时间，由Mapper显式维护',
+  PRIMARY KEY (`driver_id`),
+  KEY ix_driver_presence_company (owner_dept_id,driver_id),
+  CONSTRAINT ck_driver_presence_state CHECK (`client_state` IN ('FOREGROUND','BACKGROUND')),
+  CONSTRAINT ck_driver_presence_version CHECK (version>=0 AND company_revision>=0 AND context_version>=0 AND config_version>=0)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='代驾最近认证交互；不保证后台持续可达';
+
+
+CREATE TABLE `vi_driver_listening_config` (
+  `owner_dept_id` BIGINT NOT NULL COMMENT '明确公司主键，不从管理员主部门推断',
+  `closing_time` CHAR(5) NOT NULL COMMENT 'Asia/Shanghai每日HH:mm下班时间',
+  `location_max_age_seconds` INT NOT NULL COMMENT '31..86400，位置有效期，无生产默认',
+  `reachability_max_age_seconds` INT NOT NULL COMMENT '31..86400，最近认证交互有效期，无生产默认',
+  `max_accuracy_meter` INT NOT NULL COMMENT '1..100000，允许位置精度上限',
+  `location_report_interval_seconds` INT NOT NULL COMMENT '30..3600且小于两种有效期；本系统节流约束',
+  `updated_by_user_id` BIGINT NOT NULL COMMENT '最后真实ADMIN操作者',
+  `version` BIGINT NOT NULL DEFAULT 0 COMMENT '独立CAS，首次真实写入版本1',
+  `created_at` DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3)) COMMENT '创建UTC时间',
+  `updated_at` DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3)) COMMENT 'UTC更新时间，由Mapper显式维护',
+  PRIMARY KEY (`owner_dept_id`),
+  CONSTRAINT ck_driver_listening_time CHECK (closing_time REGEXP '^([01][0-9]|2[0-3]):[0-5][0-9]$'),
+  CONSTRAINT ck_driver_listening_config_ranges CHECK (
+    location_max_age_seconds BETWEEN 31 AND 86400
+    AND reachability_max_age_seconds BETWEEN 31 AND 86400
+    AND max_accuracy_meter BETWEEN 1 AND 100000
+    AND location_report_interval_seconds BETWEEN 30 AND 3600
+    AND location_report_interval_seconds < location_max_age_seconds
+    AND location_report_interval_seconds < reachability_max_age_seconds
+  ),
+  CONSTRAINT ck_driver_listening_config_version CHECK (version>=0)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='同公司共用每日听单截止与位置/可达参数';
+
+-- D01 公司听单配置入口，不自动授予角色。
+INSERT INTO sys_menu (menu_id,menu_name,parent_id,order_num,path,component,is_frame,is_cache,menu_type,visible,status,perms,icon,create_by,create_time,remark)
+SELECT 2971500,'公司听单配置',2971000,5,'listening-config','rongli/dispatch/listening-config',1,1,'C','0','0','biz:dispatchlistening:query','time','system',SYSDATE(),'D01；仅建菜单，不自动授权角色'
+WHERE NOT EXISTS(SELECT 1 FROM sys_menu WHERE menu_id=2971500);
+
+INSERT INTO sys_menu (menu_id,menu_name,parent_id,order_num,path,component,is_frame,is_cache,menu_type,visible,status,perms,icon,create_by,create_time,remark)
+SELECT 2971501,'听单配置查询',2971500,1,'#',NULL,1,1,'F','0','0','biz:dispatchlistening:query','time','system',SYSDATE(),'D01；仅建菜单，不自动授权角色'
+WHERE NOT EXISTS(SELECT 1 FROM sys_menu WHERE menu_id=2971501);
+
+INSERT INTO sys_menu (menu_id,menu_name,parent_id,order_num,path,component,is_frame,is_cache,menu_type,visible,status,perms,icon,create_by,create_time,remark)
+SELECT 2971502,'听单配置维护',2971500,2,'#',NULL,1,1,'F','0','0','biz:dispatchlistening:edit','time','system',SYSDATE(),'D01；仅建菜单，不自动授权角色'
+WHERE NOT EXISTS(SELECT 1 FROM sys_menu WHERE menu_id=2971502);

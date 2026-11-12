@@ -109,8 +109,8 @@ paths:
       - VI_AUTHORITY_UNAVAILABLE
       - VI_UPSTREAM_UNAVAILABLE
       x-error-policy: GLOBAL_FAILURES_NO_RESOURCE_404
-      x-idempotency: NO_PLAINTEXT_RESPONSE_CACHE; domain dedupe only; on lost credential response reissue/refresh through
-        controlled protocol
+      x-idempotency: NO_PLAINTEXT_RESPONSE_CACHE; domain dedupe only; on lost credential response reissue/refresh
+        through controlled protocol
       x-contract-baseline: V6.4
   /api/common/profile:
     get:
@@ -752,6 +752,8 @@ components:
       - biz:verification:close
       - biz:verification:list
       - biz:verification:query
+      - biz:dispatchlistening:query
+      - biz:dispatchlistening:edit
     MiniRole:
       type: string
       enum:
@@ -958,3 +960,14 @@ components:
       - SESSION_READ
       - SESSION_SWITCH_ROLE
       - SESSION_SWITCH_STATION
+      - DRIVER_PRESENCE_CREATE
+  securitySchemes:
+    MiniBearerAuth:
+      type: http
+      scheme: bearer
+      description: 小程序不透明随机访问令牌；数据库权威会话，非sys_user JWT；见T3.4
+    AdminBearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: 现有xinyi后台sys_user会话，不能作为小程序车主/代驾身份

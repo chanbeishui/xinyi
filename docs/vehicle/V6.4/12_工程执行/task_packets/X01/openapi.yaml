@@ -49,7 +49,7 @@ paths:
       - name: ownerDeptId
         in: query
         required: false
-        schema: &id001
+        schema:
           type: string
           description: 内部Long对外十进制字符串
           pattern: ^[1-9][0-9]{0,18}$
@@ -272,7 +272,10 @@ paths:
       - name: profileId
         in: path
         required: true
-        schema: *id001
+        schema:
+          type: string
+          description: 内部Long对外十进制字符串
+          pattern: ^[1-9][0-9]{0,18}$
       responses:
         '200':
           description: 真实处理后的公开/脱敏结果，不返回占位Ack
@@ -371,7 +374,10 @@ paths:
       - name: profileId
         in: path
         required: true
-        schema: *id001
+        schema:
+          type: string
+          description: 内部Long对外十进制字符串
+          pattern: ^[1-9][0-9]{0,18}$
       responses:
         '200':
           description: 真实处理后的公开/脱敏结果，不返回占位Ack
@@ -476,7 +482,10 @@ paths:
       - name: profileId
         in: path
         required: true
-        schema: *id001
+        schema:
+          type: string
+          description: 内部Long对外十进制字符串
+          pattern: ^[1-9][0-9]{0,18}$
       responses:
         '200':
           description: 真实处理后的公开/脱敏结果，不返回占位Ack
@@ -581,7 +590,10 @@ paths:
       - name: profileId
         in: path
         required: true
-        schema: *id001
+        schema:
+          type: string
+          description: 内部Long对外十进制字符串
+          pattern: ^[1-9][0-9]{0,18}$
       responses:
         '200':
           description: 真实处理后的公开/脱敏结果，不返回占位Ack
@@ -680,7 +692,10 @@ paths:
       - name: profileId
         in: path
         required: true
-        schema: *id001
+        schema:
+          type: string
+          description: 内部Long对外十进制字符串
+          pattern: ^[1-9][0-9]{0,18}$
       - name: pageNum
         in: query
         required: false
@@ -801,7 +816,10 @@ paths:
       - name: profileId
         in: path
         required: true
-        schema: *id001
+        schema:
+          type: string
+          description: 内部Long对外十进制字符串
+          pattern: ^[1-9][0-9]{0,18}$
       responses:
         '200':
           description: 真实处理后的公开/脱敏结果，不返回占位Ack
@@ -900,7 +918,10 @@ paths:
       - name: profileId
         in: path
         required: true
-        schema: *id001
+        schema:
+          type: string
+          description: 内部Long对外十进制字符串
+          pattern: ^[1-9][0-9]{0,18}$
       - name: pageNum
         in: query
         required: false
@@ -1232,7 +1253,10 @@ paths:
       - name: recipientId
         in: path
         required: true
-        schema: *id001
+        schema:
+          type: string
+          description: 内部Long对外十进制字符串
+          pattern: ^[1-9][0-9]{0,18}$
       responses:
         '200':
           description: 真实处理后的公开/脱敏结果，不返回占位Ack
@@ -1309,7 +1333,7 @@ components:
           type: integer
           format: int64
           minimum: 0
-        reason: &id002
+        reason:
           type: string
           minLength: 2
           maxLength: 500
@@ -1478,7 +1502,10 @@ components:
       type: object
       additionalProperties: false
       properties:
-        recipientId: *id001
+        recipientId: &id001
+          type: string
+          description: 内部Long对外十进制字符串
+          pattern: ^[1-9][0-9]{0,18}$
         name:
           type: string
         kind:
@@ -1531,12 +1558,18 @@ components:
           description: 敏感输入仅密文保存
           writeOnly: true
           maxLength: 32
-        accountId: *id001
-        appProfileId: *id001
-        ownerDeptId: *id001
+        accountId: &id002
+          type: string
+          description: 内部Long对外十进制字符串
+          pattern: ^[1-9][0-9]{0,18}$
+        appProfileId: *id002
+        ownerDeptId: *id002
         environment:
           $ref: '#/components/schemas/IntegrationEnvironment'
-        reason: *id002
+        reason:
+          type: string
+          minLength: 2
+          maxLength: 500
       required:
       - name
       - kind
@@ -1569,19 +1602,22 @@ components:
       type: object
       additionalProperties: false
       properties:
-        revisionId: *id001
-        profileId: *id001
+        revisionId: &id003
+          type: string
+          description: 内部Long对外十进制字符串
+          pattern: ^[1-9][0-9]{0,18}$
+        profileId: *id003
         revision:
           type: integer
           format: int64
           minimum: 0
-        contentHash: &id004
+        contentHash:
           type: string
           pattern: ^[a-f0-9]{64}$
-        createdAt: &id003
+        createdAt:
           type: string
           format: date-time
-        createdBy: *id001
+        createdBy: *id003
         reason:
           type: string
         settings:
@@ -1631,7 +1667,9 @@ components:
         fingerprint:
           type: string
           description: 服务端指纹，不是秘密片段
-        updatedAt: *id003
+        updatedAt:
+          type: string
+          format: date-time
         expiresAt:
           type: string
           format: date-time
@@ -1809,14 +1847,20 @@ components:
           maxLength: 32768
         bindingAcknowledged:
           type: boolean
-        bindingEvidenceId: *id001
+        bindingEvidenceId:
+          type: string
+          description: 内部Long对外十进制字符串
+          pattern: ^[1-9][0-9]{0,18}$
       description: mchid/appProfile是资金身份，关联交易后不得原位改为别家；此处校验是本地格式，不证明商户资格。回调地址由部署生成。
     ConfigReference:
       type: object
       additionalProperties: false
       properties:
-        profileId: *id001
-        revisionId: *id001
+        profileId: &id004
+          type: string
+          description: 内部Long对外十进制字符串
+          pattern: ^[1-9][0-9]{0,18}$
+        revisionId: *id004
       required:
       - profileId
       - revisionId
@@ -1893,13 +1937,19 @@ components:
       type: object
       additionalProperties: false
       properties:
-        targetRevisionId: *id001
+        targetRevisionId: &id005
+          type: string
+          description: 内部Long对外十进制字符串
+          pattern: ^[1-9][0-9]{0,18}$
         expectedVersion:
           type: integer
           format: int64
           minimum: 0
-        reason: *id002
-        checkId: *id001
+        reason:
+          type: string
+          minLength: 2
+          maxLength: 500
+        checkId: *id005
       required:
       - targetRevisionId
       - expectedVersion
@@ -1910,9 +1960,12 @@ components:
       type: object
       additionalProperties: false
       properties:
-        publicationId: *id001
-        profileId: *id001
-        revisionId: *id001
+        publicationId: &id006
+          type: string
+          description: 内部Long对外十进制字符串
+          pattern: ^[1-9][0-9]{0,18}$
+        profileId: *id006
+        revisionId: *id006
         previousRevisionId:
           type: string
           description: 内部Long对外十进制字符串
@@ -1929,8 +1982,10 @@ components:
           - ROLLBACK
         reason:
           type: string
-        publishedAt: *id003
-        publishedBy: *id001
+        publishedAt:
+          type: string
+          format: date-time
+        publishedBy: *id006
         effectiveFor:
           type: string
           enum:
@@ -1949,14 +2004,22 @@ components:
       type: object
       additionalProperties: false
       properties:
-        revisionId: *id001
+        revisionId: &id007
+          type: string
+          description: 内部Long对外十进制字符串
+          pattern: ^[1-9][0-9]{0,18}$
         expectedVersion:
           type: integer
           format: int64
           minimum: 0
-        contentHash: *id004
-        checkId: *id001
-        reason: *id002
+        contentHash:
+          type: string
+          pattern: ^[a-f0-9]{64}$
+        checkId: *id007
+        reason:
+          type: string
+          minLength: 2
+          maxLength: 500
         acknowledgeNoPaymentMethods:
           type: boolean
         expectedDependencyVersions:
@@ -1974,7 +2037,10 @@ components:
       type: object
       additionalProperties: false
       properties:
-        revisionId: *id001
+        revisionId:
+          type: string
+          description: 内部Long对外十进制字符串
+          pattern: ^[1-9][0-9]{0,18}$
         expectedVersion:
           type: integer
           format: int64
@@ -1995,10 +2061,15 @@ components:
       type: object
       additionalProperties: false
       properties:
-        checkId: *id001
-        profileId: *id001
-        revisionId: *id001
-        contentHash: *id004
+        checkId: &id008
+          type: string
+          description: 内部Long对外十进制字符串
+          pattern: ^[1-9][0-9]{0,18}$
+        profileId: *id008
+        revisionId: *id008
+        contentHash:
+          type: string
+          pattern: ^[a-f0-9]{64}$
         level:
           $ref: '#/components/schemas/IntegrationCheckLevel'
         status:
@@ -2007,8 +2078,10 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/IntegrationValidationIssue'
-        checkedAt: *id003
-        expiresAt: *id003
+        checkedAt: &id009
+          type: string
+          format: date-time
+        expiresAt: *id009
         realPaymentVerified:
           type: boolean
       required:
@@ -2086,7 +2159,10 @@ components:
           properties:
             appSecret:
               $ref: '#/components/schemas/SecretMutation'
-        reason: *id002
+        reason:
+          type: string
+          minLength: 2
+          maxLength: 500
       required:
       - kind
       - expectedVersion
@@ -2150,7 +2226,10 @@ components:
           properties:
             accessKeySecret:
               $ref: '#/components/schemas/SecretMutation'
-        reason: *id002
+        reason:
+          type: string
+          minLength: 2
+          maxLength: 500
       required:
       - kind
       - expectedVersion
@@ -2177,7 +2256,10 @@ components:
           properties:
             secretKey:
               $ref: '#/components/schemas/SecretMutation'
-        reason: *id002
+        reason:
+          type: string
+          minLength: 2
+          maxLength: 500
       required:
       - kind
       - expectedVersion
@@ -2206,7 +2288,10 @@ components:
               $ref: '#/components/schemas/SecretMutation'
             apiV3Key:
               $ref: '#/components/schemas/SecretMutation'
-        reason: *id002
+        reason:
+          type: string
+          minLength: 2
+          maxLength: 500
       required:
       - kind
       - expectedVersion
@@ -2233,7 +2318,10 @@ components:
           properties:
             offlineBankAccount:
               $ref: '#/components/schemas/SecretMutation'
-        reason: *id002
+        reason:
+          type: string
+          minLength: 2
+          maxLength: 500
       required:
       - kind
       - expectedVersion
@@ -2244,7 +2332,10 @@ components:
       type: object
       additionalProperties: false
       properties:
-        profileId: *id001
+        profileId:
+          type: string
+          description: 内部Long对外十进制字符串
+          pattern: ^[1-9][0-9]{0,18}$
         kind:
           $ref: '#/components/schemas/IntegrationKind'
         name:
@@ -2308,7 +2399,10 @@ components:
       type: object
       additionalProperties: false
       properties:
-        ownerDeptId: *id001
+        ownerDeptId:
+          type: string
+          description: 内部Long对外十进制字符串
+          pattern: ^[1-9][0-9]{0,18}$
         environment:
           $ref: '#/components/schemas/IntegrationEnvironment'
       required:
@@ -2483,3 +2577,13 @@ components:
             retryable: false
             retryAfterSeconds: null
             data: {}
+  securitySchemes:
+    MiniBearerAuth:
+      type: http
+      scheme: bearer
+      description: 小程序不透明随机访问令牌；数据库权威会话，非sys_user JWT；见T3.4
+    AdminBearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: 现有xinyi后台sys_user会话，不能作为小程序车主/代驾身份

@@ -270,7 +270,7 @@ paths:
       - name: proofId
         in: path
         required: true
-        schema: &id001
+        schema:
           type: string
           description: 内部Long对外十进制字符串
           pattern: ^[1-9][0-9]{0,18}$
@@ -373,7 +373,10 @@ paths:
       - name: proofId
         in: path
         required: true
-        schema: *id001
+        schema:
+          type: string
+          description: 内部Long对外十进制字符串
+          pattern: ^[1-9][0-9]{0,18}$
       responses:
         '200':
           description: 真实处理后的公开/脱敏结果，不返回占位Ack
@@ -455,7 +458,7 @@ components:
           enum:
           - VERIFY
           - REJECT
-        reason: &id003
+        reason:
           type: string
           minLength: 2
           maxLength: 500
@@ -626,7 +629,10 @@ components:
       type: object
       additionalProperties: false
       properties:
-        proofId: *id001
+        proofId: &id001
+          type: string
+          description: 内部Long对外十进制字符串
+          pattern: ^[1-9][0-9]{0,18}$
         direction:
           $ref: '#/components/schemas/OfflineProofDirection'
         orderNo:
@@ -724,7 +730,9 @@ components:
           type: integer
           format: int64
           minimum: 1
-        paidAt: *id002
+        paidAt:
+          type: string
+          format: date-time
         method:
           type: string
           enum:
@@ -736,10 +744,16 @@ components:
           maxLength: 128
         voucherFileIds:
           type: array
-          items: *id001
+          items:
+            type: string
+            description: 内部Long对外十进制字符串
+            pattern: ^[1-9][0-9]{0,18}$
           minItems: 1
           maxItems: 9
-        note: *id003
+        note:
+          type: string
+          minLength: 2
+          maxLength: 500
       required:
       - direction
       - orderNo
@@ -911,3 +925,13 @@ components:
             retryable: false
             retryAfterSeconds: null
             data: {}
+  securitySchemes:
+    MiniBearerAuth:
+      type: http
+      scheme: bearer
+      description: 小程序不透明随机访问令牌；数据库权威会话，非sys_user JWT；见T3.4
+    AdminBearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: 现有xinyi后台sys_user会话，不能作为小程序车主/代驾身份

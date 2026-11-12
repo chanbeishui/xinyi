@@ -1,16 +1,39 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import { onHide, onShow, onUnload } from '@dcloudio/uni-app';
-import { getProfile, getSession } from '../../features/identity/api';
+import { getProfile, getSession, logout } from '../../features/identity/api';
 import { getAuthorizedStations, type AuthorizedStation } from '../../features/scope/api';
-import { currentSession } from '../../services/http';
+import { currentSession, onSessionChanged, saveSession } from '../../services/http';
+import { intentKey } from '../../features/file/api';
 import type { Profile, SessionView } from '../../api/types';
+import DriverListening from '../../components/dispatch/DriverListening.vue';
 const profile = ref<Profile | null>(null),
   session = ref<SessionView | null>(null),
   stations = ref<AuthorizedStation[]>([]),
   loading = ref(false),
   error = ref('');
-let sequence = 0;
+const logoutBusy = ref(false),
+  logoutMessage = ref(''),
+  logoutKey = ref('');
+let logoutOwner = '';
+const identityScope = () => {
+  const value = currentSession();
+  return value
+    ? [value.accountId, value.sessionId, value.contextVersion, value.activeRole].join(':')
+    : '';
+};
+let identityOwner = identityScope();
+const unsubscribeSession = onSessionChanged(() => {
+  const next = identityScope();
+  if (identityOwner === next) return;
+  identityOwner = next;
+  clear();
+  logoutKey.value = '';
+  logoutOwner = '';
+});
+let sequence = 0,
+  workForeground = false;
+const canReportBackground = () => !workForeground && !logoutBusy.value;
 const title = computed(() =>
   session.value?.activeRole === 'DRIVER'
     ? '我的代驾工作'
@@ -67,9 +90,20 @@ const stationRecords = computed(
     Boolean(session.value?.stationId) &&
     session.value?.permissions?.includes('biz:order:list')
 );
-onShow(load);
-onHide(clear);
-onUnload(clear);
+onShow(() => {
+  workForeground = true;
+  void load();
+});
+onHide(() => {
+  workForeground = false;
+  clear();
+});
+onUnload(() => {
+  workForeground = false;
+  clear();
+  unsubscribeSession();
+  logoutKey.value = '';
+});
 function clear() {
   sequence++;
   profile.value = null;
@@ -79,6 +113,8 @@ function clear() {
   error.value = '';
 }
 async function load() {
+  if (logoutKey.value && logoutOwner === identityScope()) return;
+  logoutMessage.value = '';
   const run = ++sequence,
     previous = currentSession();
   profile.value = null;
@@ -122,6 +158,38 @@ async function load() {
     if (run === sequence) loading.value = false;
   }
 }
+function workAccessLost(message: string) {
+  clear();
+  error.value = message;
+}
+async function logoutCurrent() {
+  if (logoutBusy.value || !currentSession()) return;
+  const owner = identityScope();
+  if (logoutOwner !== owner) {
+    logoutOwner = owner;
+    logoutKey.value = '';
+  }
+  logoutKey.value ||= intentKey();
+  const key = logoutKey.value;
+  logoutBusy.value = true;
+  logoutMessage.value = '';
+  // 原退出结果未知时停止本页采点并隐藏旧投影，但不先删登录凭据或伪装服务端退出成功。
+  clear();
+  try {
+    const value = await logout(false, key);
+    if (identityScope() !== owner) return;
+    if (value?.loggedOut !== true || value.scope !== 'CURRENT') throw new Error('退出回执尚未确认');
+    saveSession(null);
+    logoutMessage.value = '已退出当前登录，听单与已有服务责任以服务端实际状态为准。';
+  } catch (failure) {
+    if (identityScope() !== owner) return;
+    logoutMessage.value = failure instanceof Error ? failure.message : '退出结果尚未确认';
+    const status = (failure as { status?: number }).status;
+    if (status !== undefined && status < 500) logoutKey.value = '';
+  } finally {
+    logoutBusy.value = false;
+  }
+}
 function open(path: string) {
   uni.navigateTo({ url: path });
 }
@@ -144,13 +212,13 @@ function open(path: string) {
       </view>
       <view v-if="session.activeRole === 'DRIVER'" class="card">
         <text class="section">代驾资格与服务</text>
-        <text>{{ qualification }}</text>
+        <text>上次服务端核对：{{ qualification }}</text>
         <button v-if="driverRecords" class="primary" @click="open('/pages/order/list')">
           查看本人服务记录
         </button>
         <text v-else class="muted">当前会话暂未开放本人服务入口，请核对权限后重试。</text>
         <text class="note">暂停新邀约不会结束在手服务，也不免除车辆保管和实际归还责任。</text>
-        <button disabled>听单控制暂不可用</button>
+        <DriverListening :background-allowed="canReportBackground" @access-lost="workAccessLost" />
         <button @click="open('/pages/qualification/index')">查看认证与复审资料</button>
       </view>
       <view v-else-if="session.activeRole === 'STATION'" class="card">
@@ -189,12 +257,25 @@ function open(path: string) {
       <button v-if="!session.phoneBound" @click="open('/pages/identity/phone')">
         核验本人手机号
       </button>
+      <button :disabled="logoutBusy" @click="logoutCurrent">退出当前登录</button>
     </template>
+    <text v-if="logoutMessage" class="note">{{ logoutMessage }}</text>
+    <template v-if="logoutKey">
+      <text class="note"
+        >原退出回执尚未确认。当前凭据尚未删除，保留原请求键核对，不创建新的退出意图。</text
+      >
+      <button :disabled="logoutBusy" @click="logoutCurrent">重试原退出操作</button>
+    </template>
+    <button v-if="logoutMessage && !logoutKey && !session" @click="open('/pages/identity/login')">
+      重新登录
+    </button>
     <text v-if="error" class="error" role="alert">{{ error }}</text>
     <button v-if="error && !session" @click="open('/pages/identity/login')">
       重新登录核对身份
     </button>
-    <button :disabled="loading" @click="load">刷新工作信息</button>
+    <button :disabled="loading || logoutBusy || Boolean(logoutKey)" @click="load">
+      刷新工作信息
+    </button>
   </view>
 </template>
 <style scoped>

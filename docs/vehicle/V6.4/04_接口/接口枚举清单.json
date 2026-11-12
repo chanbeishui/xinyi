@@ -325,7 +325,9 @@
       "biz:vehicle:query",
       "biz:verification:close",
       "biz:verification:list",
-      "biz:verification:query"
+      "biz:verification:query",
+      "biz:dispatchlistening:query",
+      "biz:dispatchlistening:edit"
     ],
     "CapabilityCode": [
       "COMMON_DICT_QUERY",
@@ -411,7 +413,8 @@
       "SESSION_LOGOUT",
       "SESSION_READ",
       "SESSION_SWITCH_ROLE",
-      "SESSION_SWITCH_STATION"
+      "SESSION_SWITCH_STATION",
+      "DRIVER_PRESENCE_CREATE"
     ],
     "AllowedAction": [
       "ADD_REVIEW",
@@ -503,7 +506,12 @@
       "REVIEW_MANUAL_VERIFICATION",
       "VIEW_QUALIFICATION",
       "AUDIT_QUALIFICATION",
-      "REPAIR_QUALIFICATION_REJECTION"
+      "REPAIR_QUALIFICATION_REJECTION",
+      "EDIT_LISTENING_CONFIG",
+      "ENABLE_LISTENING",
+      "DISABLE_LISTENING",
+      "REPORT_DRIVER_LOCATION",
+      "REPORT_DRIVER_PRESENCE"
     ],
     "AccountStatus": [
       "ACTIVE",
@@ -742,7 +750,8 @@
       "VIEW_DETAIL",
       "VIEW_EVIDENCE",
       "VIEW_RESULT",
-      "VIEW_HANDOVER_SECRET"
+      "VIEW_HANDOVER_SECRET",
+      "VIEW_AFTERSALE"
     ],
     "DriverOrderAction": [
       "DEPART",
@@ -1025,6 +1034,10 @@
       "validFrom",
       "validTo",
       "longTermValid"
+    ],
+    "DriverClientState": [
+      "FOREGROUND",
+      "BACKGROUND"
     ]
   }
 }

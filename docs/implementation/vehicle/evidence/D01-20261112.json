@@ -1,0 +1,238 @@
+{
+  "taskId": "D01",
+  "scopeRevision": "V6.4-LISTENING-DAY-20261112",
+  "at": "2026-11-12T14:44:03.165292+00:00",
+  "implementer": "Codex",
+  "baselineCommit": "c898769",
+  "userDecisions": [
+    "同公司后台统一维护每天下班时间",
+    "切后台保留听单意愿，手动关闭或下班截止结束",
+    "次日本人手动开启；撤回过的自动恢复不实施"
+  ],
+  "codeFiles": [
+    "docs/vehicle/V6.4/02_UI/index.html",
+    "docs/vehicle/V6.4/02_UI/src/catalog.js",
+    "docs/vehicle/V6.4/02_UI/src/dispatch_pages.js",
+    "docs/vehicle/V6.4/02_UI/src/prd_pages.json",
+    "sql/migration_20261112_driver_listening.sql",
+    "sql/ry_20260417.sql",
+    "xinyi-admin/src/main/java/com/xinyi/web/config/DispatchListeningAdminSecurityConfig.java",
+    "xinyi-admin/src/test/java/com/xinyi/web/viit/D01DispatchIT.java",
+    "xinyi-admin/src/test/java/com/xinyi/web/viit/DispatchHttpFixture.java",
+    "xinyi-admin/src/test/java/com/xinyi/web/viit/E08PlatformIT.java",
+    "xinyi-miniapp/src/api/types.ts",
+    "xinyi-miniapp/src/components/dispatch/DriverListening.vue",
+    "xinyi-miniapp/src/features/dispatch/api.ts",
+    "xinyi-miniapp/src/features/dispatch/location.ts",
+    "xinyi-miniapp/src/manifest.json",
+    "xinyi-miniapp/src/pages/work/index.vue",
+    "xinyi-miniapp/src/services/http.ts",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/controller/CompanyListeningConfigController.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/controller/DriverDispatchController.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/domain/DriverLocation.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/domain/DriverPresence.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/domain/ListeningCompanyConfig.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/dto/DispatchRequests.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/mapper/DispatchListeningMapper.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/service/CompanyListeningConfigService.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/service/DispatchAuthority.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/service/DriverDispatchService.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/service/DriverDispatchViewService.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/service/DriverLocationProtection.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/service/ListeningDayPolicy.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/service/ListeningDeadlineService.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/service/ListeningExpiryDispatcher.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/service/ListeningExpiryJob.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/driver/domain/DriverProfile.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/driver/service/DriverAdminService.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/driver/service/DriverNewAssignmentPolicy.java",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/identity/auth/MiniCapabilityRegistry.java",
+    "xinyi-rongli/src/main/resources/mapper/rongli/dispatch/DispatchListeningMapper.xml",
+    "xinyi-rongli/src/main/resources/mapper/rongli/driver/DriverMapper.xml",
+    "xinyi-rongli/src/test/java/com/xinyi/rongli/dispatch/ListeningDayPolicyTest.java",
+    "xinyi-ui/src/api/rongli/listeningPolicy.ts",
+    "xinyi-ui/src/views/rongli/dispatch/listening-config.vue"
+  ],
+  "sourceDigests": {
+    "docs/vehicle/V6.4/02_UI/index.html": "a4f3db342c470390d30282487f99cf66eedfdd1cb9b9fb95241b0dbd72cb02a1",
+    "docs/vehicle/V6.4/02_UI/src/catalog.js": "3766b8c6be45ea2234bfcc3ee0580efdf500c850c43b3b846ddd7aa1bcaed22f",
+    "docs/vehicle/V6.4/02_UI/src/dispatch_pages.js": "7822b496dea1d082749439ae0e292db2beb0f2980cfff54a0ee372bee750acd6",
+    "docs/vehicle/V6.4/02_UI/src/prd_pages.json": "c2195dc465599460024c9bbdfb014d7c5e72cf0f8119ef844fc4894a4a77f482",
+    "sql/migration_20261112_driver_listening.sql": "3736a14fe7936299d2d568800c6990914a861b10f41d7c61b1a41fe758b952db",
+    "sql/ry_20260417.sql": "6a3760a74eb5ad4ba82382cc5ba58ef23583404c52739c4fd91ff470ed860710",
+    "xinyi-admin/src/main/java/com/xinyi/web/config/DispatchListeningAdminSecurityConfig.java": "db3aaaf14959a8e1fa6c2db0d014ac072d9d8d243f0d8efc0db0a83b18e45005",
+    "xinyi-admin/src/test/java/com/xinyi/web/viit/D01DispatchIT.java": "682de58659b70b0b2f2b7bed77b8801d6419504adeabe9718484550adc8415f3",
+    "xinyi-admin/src/test/java/com/xinyi/web/viit/DispatchHttpFixture.java": "1ff0f33963cfd34a24aa6c7b76d55d62abbf6ce304c310c22291a234925640f0",
+    "xinyi-admin/src/test/java/com/xinyi/web/viit/E08PlatformIT.java": "38fc623193eb8d2cb44bd7f97a038b7378efefcfc3ba1d1b44dd42e593c1b323",
+    "xinyi-miniapp/src/api/types.ts": "f15c7f6f00512f4261c613968ae7b89ec58a22e78ceb631123788c7362ab759d",
+    "xinyi-miniapp/src/components/dispatch/DriverListening.vue": "1fec83af90911312f6e5c2a1874e9c0413278feb11bad4e3bcc94582b30a93a9",
+    "xinyi-miniapp/src/features/dispatch/api.ts": "fe1eb8e31f047820b4990006fc9d1cd00b757d874a402cddf9dbd661750141f3",
+    "xinyi-miniapp/src/features/dispatch/location.ts": "9e5b83b68e1f628f4a41bef0bb94287f6e4adb33beb7e0d433d727bd50c1dc44",
+    "xinyi-miniapp/src/manifest.json": "baddaaa8f0253f457d9e3cdbc5edcdef3412c0403f16b085b277b6eac2e5f36d",
+    "xinyi-miniapp/src/pages/work/index.vue": "04a804550cb5c4930b0c5a5773a2834068923eb7a09fd25cf877c3dd5a047642",
+    "xinyi-miniapp/src/services/http.ts": "dfc0f22b84e359a3148f332c6a0c2d254cc0ff762a3f653c0c0df6085328de27",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/controller/CompanyListeningConfigController.java": "3fc3267908313806f5250c2000cb6ac6ad041ea29daf25bd2185cc57067bdb85",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/controller/DriverDispatchController.java": "8c29442f707e1b703f7580e45873a6b89d8ec2cb24327c81433106834538af46",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/domain/DriverLocation.java": "9c3696ac2a3589ac2a42a59498b4b5d6f1d62c891d214c8e6dfae303a52657fe",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/domain/DriverPresence.java": "1108ded296889d691212654713033d3317c0b1cc9c3f313124b352828c3ce172",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/domain/ListeningCompanyConfig.java": "85a3df33c7b80148914a0a4dd18c8c7abf296eac7fa1eb5fcc3ab11137bba789",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/dto/DispatchRequests.java": "cd16ac393feb7c3c86824307f8d42100bd34672721717c1b2177d33f8034483a",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/mapper/DispatchListeningMapper.java": "c438dd32809f89a7ce0dd5def25dad9d8e53af7254f9345b05dc94562381f587",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/service/CompanyListeningConfigService.java": "c027d8ccccb47720a707f11dc3a4a8ea2baa7efaeb4f66f10fe250669f868603",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/service/DispatchAuthority.java": "89f9af1496ecf2eb3fc0a3151e7473f1f9e0d3941af2b59e0d1cb1728e0f2c84",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/service/DriverDispatchService.java": "ddd06318e5e30af4e9d4b25fa44abc1efee2dc3166b9038807734aa4bf60add5",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/service/DriverDispatchViewService.java": "94eddaee570fa56e6b302158883ca04ff88832362c513ee5c5557fb7d10d228c",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/service/DriverLocationProtection.java": "31a9313a5aadf3754df5f353b894708219fbfc19abbd4cd266015aa9a8671641",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/service/ListeningDayPolicy.java": "febc5de004a63d9a8eca0e7f48be98ebf8bb6431744132f15db6bde5f815e91a",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/service/ListeningDeadlineService.java": "5f20b5350b7b40c6c7bbe755026aed5a122f64103f172585802b7fbb93d91432",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/service/ListeningExpiryDispatcher.java": "501f726586af87acde4b32700747f4316a72c5425bd89a31f2efac23f3fc76b8",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/service/ListeningExpiryJob.java": "5ff3db7db9449fb895ac05b0cad349078e11ac169dc96961889f98f207dcebb5",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/driver/domain/DriverProfile.java": "3230f7dcff8e3c6a69277810769dfd40a302f49e2e07d01c349da7a6bb5de064",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/driver/service/DriverAdminService.java": "fd0ccbfd6572585c66e3e036c35f0e226b157247f28054bd81415fe67ce43e55",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/driver/service/DriverNewAssignmentPolicy.java": "fe3736a56e0ac449e176a85818e6b90ae6ce2833dd4b289b02d44280312a27ea",
+    "xinyi-rongli/src/main/java/com/xinyi/rongli/identity/auth/MiniCapabilityRegistry.java": "6423982463ee249df96b2f2c072e023ca6b35f44ffeb27f9bbb0631b5f4d9ef4",
+    "xinyi-rongli/src/main/resources/mapper/rongli/dispatch/DispatchListeningMapper.xml": "c51b6a9b321a98f4fb540ac4600724a3b55f5c09d3efc5a62b726e4ccf6cd793",
+    "xinyi-rongli/src/main/resources/mapper/rongli/driver/DriverMapper.xml": "7f1b4481ac8a9b0266611ba69f48d106556e29690f806a03b8854d3bf475c074",
+    "xinyi-rongli/src/test/java/com/xinyi/rongli/dispatch/ListeningDayPolicyTest.java": "c9fb042f9986b7ef6beffe6fa04c1b5932783198a62fad9297058612a0676591",
+    "xinyi-ui/src/api/rongli/listeningPolicy.ts": "c16a4243ec9ad1e992eeba158c2219195f6a7c02000069f3ccaf94ddce2fb996",
+    "xinyi-ui/src/views/rongli/dispatch/listening-config.vue": "acf3ca1ea53de71db36fa5896cf3df2c738dff035206087e4ece2216bf7c7368"
+  },
+  "runs": [
+    {
+      "command": "mvn -o -pl xinyi-admin -am -Pvi-it -Dit.test=!*ViHttpSuiteIT,*IT clean verify",
+      "layer": "LIVE_HTTP_MYSQL",
+      "exitCode": 0,
+      "testsRun": 753,
+      "skipped": 0,
+      "reportPath": "docs/implementation/vehicle/D01/full-regression.json"
+    },
+    {
+      "command": "mvn -o -pl xinyi-admin -am -Pvi-it -Dit.test=D01DispatchIT verify（独立复核断言增强后最终运行）",
+      "layer": "LIVE_HTTP_MYSQL",
+      "exitCode": 0,
+      "testsRun": 56,
+      "skipped": 0,
+      "reportPath": "docs/implementation/vehicle/D01/final-target-integration-junit.xml"
+    },
+    {
+      "command": "最终后端单元",
+      "layer": "UNIT",
+      "exitCode": 0,
+      "testsRun": 50,
+      "skipped": 0,
+      "reportPath": "docs/implementation/vehicle/D01/final-target-unit-junit.xml"
+    }
+  ],
+  "additionalChecks": [
+    {
+      "command": "pc-browser",
+      "layer": "BROWSER_SIMULATOR",
+      "exitCode": 0,
+      "checksRun": 12,
+      "reportPath": "docs/implementation/vehicle/D01/pc-browser.json"
+    },
+    {
+      "command": "mini-browser",
+      "layer": "BROWSER_SIMULATOR",
+      "exitCode": 0,
+      "checksRun": 18,
+      "reportPath": "docs/implementation/vehicle/D01/mini-browser.json"
+    },
+    {
+      "command": "prototype-browser",
+      "layer": "BROWSER_SIMULATOR",
+      "exitCode": 0,
+      "checksRun": 7,
+      "reportPath": "docs/implementation/vehicle/D01/prototype-browser.json"
+    },
+    {
+      "command": "native-adapter",
+      "layer": "COMPILED_MP_ADAPTER_SIMULATOR",
+      "exitCode": 0,
+      "checksRun": 7,
+      "reportPath": "docs/implementation/vehicle/D01/native-adapter.json"
+    },
+    {
+      "command": "engineering",
+      "layer": "STATIC_CONTRACT",
+      "exitCode": 0,
+      "checksRun": 34,
+      "reportPath": "docs/implementation/vehicle/D01/engineering.json"
+    },
+    {
+      "command": "package",
+      "layer": "STATIC_CONTRACT",
+      "exitCode": 0,
+      "checksRun": 42,
+      "reportPath": "docs/implementation/vehicle/D01/package.json"
+    },
+    {
+      "command": "schema-verification",
+      "layer": "ISOLATED_SCHEMA",
+      "exitCode": 0,
+      "checksRun": 7,
+      "reportPath": "docs/implementation/vehicle/D01/schema-verification.json"
+    },
+    {
+      "command": "mini-type-check",
+      "layer": "BUILD",
+      "exitCode": 0,
+      "checksRun": 1,
+      "reportPath": "docs/implementation/vehicle/D01/mini-type-check.log"
+    },
+    {
+      "command": "mini-mp-build",
+      "layer": "BUILD",
+      "exitCode": 0,
+      "checksRun": 1,
+      "reportPath": "docs/implementation/vehicle/D01/mini-mp-build.log"
+    },
+    {
+      "command": "mini-h5-build",
+      "layer": "BUILD",
+      "exitCode": 0,
+      "checksRun": 1,
+      "reportPath": "docs/implementation/vehicle/D01/mini-h5-build.log"
+    },
+    {
+      "command": "ui-build",
+      "layer": "BUILD",
+      "exitCode": 0,
+      "checksRun": 1,
+      "reportPath": "docs/implementation/vehicle/D01/ui-build.log"
+    },
+    {
+      "command": "PC全站额外vue-tsc",
+      "layer": "OPTIONAL_PC_TYPECHECK",
+      "exitCode": 2,
+      "passed": false,
+      "reportPath": "docs/implementation/vehicle/D01/ui-type-summary.json",
+      "note": "134=此前129+同源Vue声明5，本轮业务错误0；未宣称全站类型通过。"
+    }
+  ],
+  "review": {
+    "approved": true,
+    "reviewer": "/root/f01_tests",
+    "status": "APPROVED_WITH_SCOPE_BOUNDARIES",
+    "reportPath": "docs/implementation/vehicle/D01/review.md"
+  },
+  "databaseStructureChanged": true,
+  "migration": "sql/migration_20261112_driver_listening.sql",
+  "databaseFiles": [
+    "sql/migration_20261112_driver_listening.sql",
+    "sql/ry_20260417.sql",
+    "docs/vehicle/V6.4/05_数据设计/001_vi业务表_初始化_V6.4.sql"
+  ],
+  "wechatDevice": "NOT_RUN",
+  "productionDeploy": "NOT_RUN",
+  "gitPush": "NOT_RUN",
+  "boundaries": [
+    "当前只提供D01基础候选，D02订单距离/准驾/实际邀约及接受后续；TC065完整链仍PARTIAL",
+    "真实HTTP/MySQL使用生产鉴权与业务Service，上游核验事实、Clock与故障接缝明确；浏览器与MP模块夹具不等于真机",
+    "753全量后仅增强既有测试断言，再56专项/50单元通过；后端逻辑不变，Mapper仅非空白字符一致排版",
+    "关闭不释放承接/占用/车辆责任；后台最近认证交互不保证持续网络",
+    "定时器默认关闭，实时截止持续生效；受控部署需显式启用物理到期任务",
+    "独立发现前端网络失败及时间流逝旧就绪问题已修并另有最终GUI；保留初轮证据，不用其代替修复后验证",
+    "额外PC类型134项明示；未推送/部署/修改业务或生产库/调用真实渠道"
+  ]
+}

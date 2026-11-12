@@ -1,5 +1,5 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>数据模型与字段字典_V6.4</title><style>body{font:16px/1.75 -apple-system,BlinkMacSystemFont,"Microsoft YaHei",sans-serif;color:#202632;margin:0;background:#f6f7f9}header{padding:14px 24px;background:white;border-bottom:1px solid #ddd}main{max-width:1120px;margin:24px auto;padding:30px;background:white}h1{font-size:30px}h2{margin-top:36px}a{color:#0661bd}table{border-collapse:collapse;width:100%;display:block;overflow:auto;font-size:14px}td,th{border:1px solid #dde2ea;padding:10px;vertical-align:top}th{background:#f1f5fb}pre{padding:15px;background:#f2f4f7;overflow:auto}img{max-width:100%;height:auto}blockquote{padding:10px 20px;border-left:3px solid #2571be;background:#f4f8fc}@media(max-width:700px){main{padding:15px;margin:8px}h1{font-size:25px}}</style></head><body><header><a href="../00_开始.html">V6.4 完整资料</a>　<a href="../02_UI/index.html">交互原型</a>　T3.4</header><main><h1>数据模型与字段字典 V6.4</h1>
-<p>共 80 个参考业务表；不是实际数据库执行记录。主源为data_model_V6.4.json。已有实现须比对并前向适配，不执行全量初始化覆盖真实库。</p>
+<p>共 93 个参考业务表；不是实际数据库执行记录。主源为data_model_V6.4.json。已有实现须比对并前向适配，不执行全量初始化覆盖真实库。</p>
 <h2>vi_account · 微信统一基础账户</h2>
 <p>角色是账户扩展资格，不按客户端role直接建高权身份；新号只有OWNER；AppID/OpenID不由客户端指定；普通联系人号码不是身份号码。
 主键：id；ID策略：MYSQL_AUTO_INCREMENT</p>
@@ -235,7 +235,8 @@ CONSTRAINT ck_employee_link_revoke CHECK ((status='REVOKED' AND revoked_at IS NO
 CONSTRAINT ck_employee_link_source_actor CHECK (source='WECHAT_PHONE_MATCH' AND bound_by IS NULL)
 </code></pre>
 <h2>vi_driver_profile · 代驾资格与听单偏好</h2>
-<p>每名代驾明确归属一个公司部门，旗下站点共用；owner_dept_id不从员工、创建人或历史订单推断。存量NULL待全数据管理员显式认领；归属变更检查原新范围并集且无待响应/占用/在手任务，转移后禁新。资格审核、本人听单偏好与行政开关分开；暂停不释放承接或保管。 Q03：training_context_revision只在实际公司归属变化时递增，A→B→A不可复活旧学习；备注及行政开关不影响既有培训。 Q05：effective_snapshot_id仅实际批准事务切换；新单实时核资格/公司epoch/上海证件日期/明确UTC复审，不依赖Job准时。曾批准DRIVER仅历史/在手视角，不能作为新单资格；到期只更新资格状态，行政/听单/承接/占用均保留。</p>
+<p>每名代驾明确归属一个公司部门，旗下站点共用；owner_dept_id不从员工、创建人或历史订单推断。存量NULL待全数据管理员显式认领；归属变更检查原新范围并集且无待响应/占用/在手任务，转移后禁新。资格审核、本人听单偏好与行政开关分开；暂停不释放承接或保管。 Q03：training_context_revision只在实际公司归属变化时递增，A→B→A不可复活旧学习；备注及行政开关不影响既有培训。 Q05：effective_snapshot_id仅实际批准事务切换；新单实时核资格/公司epoch/上海证件日期/明确UTC复审，不依赖Job准时。曾批准DRIVER仅历史/在手视角，不能作为新单资格；到期只更新资格状态，行政/听单/承接/占用均保留。 D01：本人开启固定当日截止和公司epoch，切后台不关偏好，到期实时关闭且任务持久收敛，次日不自动恢复；不改在手责任。</p>
+<p>主键：id；ID策略：MYSQL_AUTO_INCREMENT</p>
 <table>
 <thead>
 <tr>
@@ -330,8 +331,38 @@ CONSTRAINT ck_employee_link_source_actor CHECK (source='WECHAT_PHONE_MATCH' AND 
   <td><code>BIGINT NULL</code></td>
   <td>当前生效资格不可变快照；历史NULL不猜回填</td>
 </tr>
+<tr>
+  <td>listening_revision</td>
+  <td><code>BIGINT NOT NULL DEFAULT 0</code></td>
+  <td>D01本人听单独立CAS，不复用档案备注版本</td>
+</tr>
+<tr>
+  <td>listening_until</td>
+  <td><code>DATETIME(3) NULL</code></td>
+  <td>本人本次开启固定当日UTC截止；历史NULL不猜填</td>
+</tr>
+<tr>
+  <td>listening_company_revision</td>
+  <td><code>BIGINT NULL</code></td>
+  <td>开启时真实公司epoch；转公司不可复用</td>
+</tr>
+<tr>
+  <td>listening_config_version</td>
+  <td><code>BIGINT NULL</code></td>
+  <td>开启对应明确公司配置版本</td>
+</tr>
 </tbody>
 </table>
+<pre><code class="language-sql">UNIQUE KEY uk_account (account_id)
+KEY ix_driver_company (owner_dept_id,id)
+KEY ix_driver_qualification_expiry (qualification_status,effective_snapshot_id)
+KEY ix_pool (qualification_status,new_assignment_enabled,listening_enabled)
+KEY ix_driver_listening_expiry (listening_enabled,listening_until,id)
+CONSTRAINT ck_66_c6bf03f0ceed CHECK (`qualification_status` IN ('DRAFT','SUBMITTED','APPROVED','REJECTED','EXPIRED','SUSPENDED'))
+CONSTRAINT ck_driver_owner_dept CHECK (owner_dept_id IS NULL OR owner_dept_id&gt;0)
+CONSTRAINT ck_ver_driver_profile CHECK (version &gt;= 0)
+CONSTRAINT ck_driver_listening_revision CHECK (listening_revision &gt;= 0)
+</code></pre>
 <h2>vi_driver_application · 代驾资格申请与复审版本</h2>
 <p>本人草稿与生效资格分离，显式申请ID/CAS/单活动约束；仅结构化驳回字段可补正。材料HMAC版本与可信核验绑定，用户确认五项核验/培训全通过后提交。公司来自档案并冻结，同意记录版本、实际正文与时刻；内部意见不公开，提交另存不可变快照。</p>
 <table>
@@ -1720,55 +1751,92 @@ CONSTRAINT ck_ver_driver_occupancy CHECK (version &gt;= 0)
 <pre><code class="language-sql">CONSTRAINT ck_ver_dispatch_cursor CHECK (version &gt;= 0)
 </code></pre>
 <h2>vi_driver_location · 代驾最近前台定位</h2>
-<p>位置过期不参与候选；不是持续后台实时轨迹库
-主键：driver_id；ID策略：BUSINESS_KEY</p>
+<p>位置过期不参与候选；不是持续后台实时轨迹库 D01仅真实会话/公司epoch最近加密点，旧点不按补报接收时间续期；历史NULL隔离，无轨迹或ADMIN坐标读接口。</p>
+<p>主键：driver_id；ID策略：BUSINESS_KEY</p>
 <table>
 <thead>
 <tr>
   <th>字段</th>
-  <th>SQL类型</th>
-  <th>含义</th>
+  <th>SQL类型与约束</th>
+  <th>说明</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-  <td><code>driver_id</code></td>
+  <td>driver_id</td>
   <td><code>BIGINT NOT NULL</code></td>
   <td>主键</td>
 </tr>
 <tr>
-  <td><code>location_cipher</code></td>
+  <td>location_cipher</td>
   <td><code>VARBINARY(1024) NOT NULL</code></td>
   <td>加密位置</td>
 </tr>
 <tr>
-  <td><code>captured_at</code></td>
+  <td>captured_at</td>
   <td><code>DATETIME(3) NOT NULL</code></td>
   <td>设备采集时间</td>
 </tr>
 <tr>
-  <td><code>received_at</code></td>
+  <td>received_at</td>
   <td><code>DATETIME(3) NOT NULL</code></td>
   <td>服务器接收时间</td>
 </tr>
 <tr>
-  <td><code>created_at</code></td>
+  <td>created_at</td>
   <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
   <td>创建时间，统一UTC</td>
 </tr>
 <tr>
-  <td><code>updated_at</code></td>
+  <td>updated_at</td>
   <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
   <td>UTC更新时间；Mapper每次修改显式SET updated_at=UTC_TIMESTAMP(3)，不依赖连接时区</td>
 </tr>
 <tr>
-  <td><code>version</code></td>
+  <td>version</td>
   <td><code>BIGINT NOT NULL DEFAULT 0</code></td>
   <td>乐观锁版本</td>
 </tr>
+<tr>
+  <td>owner_dept_id</td>
+  <td><code>BIGINT NULL</code></td>
+  <td>最近点真实父档案公司；历史NULL不可信</td>
+</tr>
+<tr>
+  <td>company_revision</td>
+  <td><code>BIGINT NULL</code></td>
+  <td>采点时真实公司epoch</td>
+</tr>
+<tr>
+  <td>session_id</td>
+  <td><code>BIGINT NULL</code></td>
+  <td>实际MINI采点会话</td>
+</tr>
+<tr>
+  <td>context_version</td>
+  <td><code>BIGINT NULL</code></td>
+  <td>实际会话视角版本</td>
+</tr>
+<tr>
+  <td>accuracy_meter</td>
+  <td><code>INT NULL</code></td>
+  <td>设备报告精度；未知精度不能作为候选点</td>
+</tr>
+<tr>
+  <td>valid_until</td>
+  <td><code>DATETIME(3) NULL</code></td>
+  <td>按采集与接收较早时间计算UTC有效期</td>
+</tr>
+<tr>
+  <td>config_version</td>
+  <td><code>BIGINT NULL</code></td>
+  <td>计算有效期的公司配置版本</td>
+</tr>
 </tbody>
 </table>
-<pre><code class="language-sql">CONSTRAINT ck_ver_driver_location CHECK (version &gt;= 0)
+<pre><code class="language-sql">KEY ix_driver_location_company (owner_dept_id,driver_id)
+CONSTRAINT ck_ver_driver_location CHECK (version &gt;= 0)
+CONSTRAINT ck_driver_location_accuracy CHECK (accuracy_meter IS NULL OR accuracy_meter BETWEEN 0 AND 100000)
 </code></pre>
 <h2>vi_handover · 一次实物交接事务凭证</h2>
 <p>核验方不得读取密文解码接口；码消费/保管转移/封存/释放同一事务
@@ -8530,4 +8598,155 @@ CONSTRAINT ck_recipient_shape CHECK ((kind='PHONE' AND phone_cipher IS NOT NULL 
 </tr>
 </tbody>
 </table>
+<h2>vi_driver_presence · 代驾最近认证交互；不保证后台持续可达</h2>
+<p>仅POST认证交互更新；GET不刷新，后台事件不关闭听单意愿；旧会话/公司epoch不能复用。</p>
+<p>主键：driver_id；ID策略：BUSINESS_KEY</p>
+<table>
+<thead>
+<tr>
+  <th>字段</th>
+  <th>SQL类型与约束</th>
+  <th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>driver_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>真实父代驾档案主键</td>
+</tr>
+<tr>
+  <td>owner_dept_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>实际所属公司</td>
+</tr>
+<tr>
+  <td>company_revision</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>真实公司epoch</td>
+</tr>
+<tr>
+  <td>session_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>实际MINI交互会话</td>
+</tr>
+<tr>
+  <td>context_version</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>真实会话视角版本</td>
+</tr>
+<tr>
+  <td>client_state</td>
+  <td><code>VARCHAR(16) NOT NULL</code></td>
+  <td>DriverClientState: FOREGROUND,BACKGROUND</td>
+</tr>
+<tr>
+  <td>observed_at</td>
+  <td><code>DATETIME(3) NOT NULL</code></td>
+  <td>客户端事件UTC时间</td>
+</tr>
+<tr>
+  <td>received_at</td>
+  <td><code>DATETIME(3) NOT NULL</code></td>
+  <td>服务端收到认证事件UTC时间</td>
+</tr>
+<tr>
+  <td>valid_until</td>
+  <td><code>DATETIME(3) NOT NULL</code></td>
+  <td>最近交互有效UTC截止，不保证后续网络</td>
+</tr>
+<tr>
+  <td>config_version</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>公司配置版本</td>
+</tr>
+<tr>
+  <td>version</td>
+  <td><code>BIGINT NOT NULL DEFAULT 0</code></td>
+  <td>独立CAS，首次真实写入版本1</td>
+</tr>
+<tr>
+  <td>created_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>创建UTC时间</td>
+</tr>
+<tr>
+  <td>updated_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>UTC更新时间，由Mapper显式维护</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="language-sql">KEY ix_driver_presence_company (owner_dept_id,driver_id)
+CONSTRAINT ck_driver_presence_state CHECK (`client_state` IN ('FOREGROUND','BACKGROUND'))
+CONSTRAINT ck_driver_presence_version CHECK (version&gt;=0 AND company_revision&gt;=0 AND context_version&gt;=0 AND config_version&gt;=0)
+</code></pre>
+<h2>vi_driver_listening_config · 同公司共用每日听单截止与位置/可达参数</h2>
+<p>保存立即生效，独立query/edit公司范围、CAS/幂等、原因加密审计；提前持久收紧旧窗口，延后不延长已有开启，次日必须本人手动开启。</p>
+<p>主键：owner_dept_id；ID策略：BUSINESS_KEY</p>
+<table>
+<thead>
+<tr>
+  <th>字段</th>
+  <th>SQL类型与约束</th>
+  <th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>owner_dept_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>明确公司主键，不从管理员主部门推断</td>
+</tr>
+<tr>
+  <td>closing_time</td>
+  <td><code>CHAR(5) NOT NULL</code></td>
+  <td>Asia/Shanghai每日HH:mm下班时间</td>
+</tr>
+<tr>
+  <td>location_max_age_seconds</td>
+  <td><code>INT NOT NULL</code></td>
+  <td>31..86400，位置有效期，无生产默认</td>
+</tr>
+<tr>
+  <td>reachability_max_age_seconds</td>
+  <td><code>INT NOT NULL</code></td>
+  <td>31..86400，最近认证交互有效期，无生产默认</td>
+</tr>
+<tr>
+  <td>max_accuracy_meter</td>
+  <td><code>INT NOT NULL</code></td>
+  <td>1..100000，允许位置精度上限</td>
+</tr>
+<tr>
+  <td>location_report_interval_seconds</td>
+  <td><code>INT NOT NULL</code></td>
+  <td>30..3600且小于两种有效期；本系统节流约束</td>
+</tr>
+<tr>
+  <td>updated_by_user_id</td>
+  <td><code>BIGINT NOT NULL</code></td>
+  <td>最后真实ADMIN操作者</td>
+</tr>
+<tr>
+  <td>version</td>
+  <td><code>BIGINT NOT NULL DEFAULT 0</code></td>
+  <td>独立CAS，首次真实写入版本1</td>
+</tr>
+<tr>
+  <td>created_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>创建UTC时间</td>
+</tr>
+<tr>
+  <td>updated_at</td>
+  <td><code>DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3))</code></td>
+  <td>UTC更新时间，由Mapper显式维护</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="language-sql">CONSTRAINT ck_driver_listening_time CHECK (closing_time REGEXP '^([01][0-9]|2[0-3]):[0-5][0-9]$')
+CONSTRAINT ck_driver_listening_config_ranges CHECK (location_max_age_seconds BETWEEN 31 AND 86400 AND reachability_max_age_seconds BETWEEN 31 AND 86400 AND max_accuracy_meter BETWEEN 1 AND 100000 AND location_report_interval_seconds BETWEEN 30 AND 3600 AND location_report_interval_seconds&lt;location_max_age_seconds AND location_report_interval_seconds&lt;reachability_max_age_seconds)
+CONSTRAINT ck_driver_listening_config_version CHECK (version&gt;=0)
+</code></pre>
 </main></body></html>

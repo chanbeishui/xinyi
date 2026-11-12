@@ -54,7 +54,7 @@ paths:
       - name: ownerDeptId
         in: query
         required: false
-        schema: &id001
+        schema:
           type: string
           description: 内部Long对外十进制字符串
           pattern: ^[1-9][0-9]{0,18}$
@@ -272,7 +272,10 @@ paths:
       - name: templateId
         in: path
         required: true
-        schema: *id001
+        schema:
+          type: string
+          description: 内部Long对外十进制字符串
+          pattern: ^[1-9][0-9]{0,18}$
       responses:
         '200':
           description: 真实处理后的公开/脱敏结果，不返回占位Ack
@@ -371,7 +374,10 @@ paths:
       - name: templateId
         in: path
         required: true
-        schema: *id001
+        schema:
+          type: string
+          description: 内部Long对外十进制字符串
+          pattern: ^[1-9][0-9]{0,18}$
       responses:
         '200':
           description: 真实处理后的公开/脱敏结果，不返回占位Ack
@@ -476,7 +482,10 @@ paths:
       - name: templateId
         in: path
         required: true
-        schema: *id001
+        schema:
+          type: string
+          description: 内部Long对外十进制字符串
+          pattern: ^[1-9][0-9]{0,18}$
       responses:
         '200':
           description: 真实处理后的公开/脱敏结果，不返回占位Ack
@@ -581,7 +590,10 @@ paths:
       - name: templateId
         in: path
         required: true
-        schema: *id001
+        schema:
+          type: string
+          description: 内部Long对外十进制字符串
+          pattern: ^[1-9][0-9]{0,18}$
       responses:
         '200':
           description: 真实处理后的公开/脱敏结果，不返回占位Ack
@@ -686,7 +698,10 @@ paths:
       - name: templateId
         in: path
         required: true
-        schema: *id001
+        schema:
+          type: string
+          description: 内部Long对外十进制字符串
+          pattern: ^[1-9][0-9]{0,18}$
       responses:
         '200':
           description: 真实处理后的公开/脱敏结果，不返回占位Ack
@@ -785,7 +800,10 @@ paths:
       - name: templateId
         in: path
         required: true
-        schema: *id001
+        schema:
+          type: string
+          description: 内部Long对外十进制字符串
+          pattern: ^[1-9][0-9]{0,18}$
       - name: pageNum
         in: query
         required: false
@@ -906,7 +924,10 @@ paths:
       - name: templateId
         in: path
         required: true
-        schema: *id001
+        schema:
+          type: string
+          description: 内部Long对外十进制字符串
+          pattern: ^[1-9][0-9]{0,18}$
       responses:
         '200':
           description: 真实处理后的公开/脱敏结果，不返回占位Ack
@@ -1222,7 +1243,10 @@ paths:
       - name: routeId
         in: path
         required: true
-        schema: *id001
+        schema:
+          type: string
+          description: 内部Long对外十进制字符串
+          pattern: ^[1-9][0-9]{0,18}$
       responses:
         '200':
           description: 真实处理后的公开/脱敏结果，不返回占位Ack
@@ -1331,7 +1355,10 @@ paths:
       - name: ownerDeptId
         in: query
         required: false
-        schema: *id001
+        schema:
+          type: string
+          description: 内部Long对外十进制字符串
+          pattern: ^[1-9][0-9]{0,18}$
       - name: pageNum
         in: query
         required: false
@@ -1452,7 +1479,10 @@ paths:
       - name: deliveryId
         in: path
         required: true
-        schema: *id001
+        schema:
+          type: string
+          description: 内部Long对外十进制字符串
+          pattern: ^[1-9][0-9]{0,18}$
       responses:
         '200':
           description: 真实处理后的公开/脱敏结果，不返回占位Ack
@@ -1557,7 +1587,10 @@ paths:
       - name: deliveryId
         in: path
         required: true
-        schema: *id001
+        schema:
+          type: string
+          description: 内部Long对外十进制字符串
+          pattern: ^[1-9][0-9]{0,18}$
       responses:
         '200':
           description: 真实处理后的公开/脱敏结果，不返回占位Ack
@@ -1634,7 +1667,7 @@ components:
           type: integer
           format: int64
           minimum: 0
-        reason: &id003
+        reason:
           type: string
           minLength: 2
           maxLength: 500
@@ -1803,7 +1836,10 @@ components:
       type: object
       additionalProperties: false
       properties:
-        deliveryId: *id001
+        deliveryId: &id001
+          type: string
+          description: 内部Long对外十进制字符串
+          pattern: ^[1-9][0-9]{0,18}$
         eventId: *id001
         scene:
           $ref: '#/components/schemas/NotificationScene'
@@ -1893,23 +1929,29 @@ components:
           type: integer
           format: int64
           minimum: 0
-        scene: &id004
+        scene:
           $ref: '#/components/schemas/NotificationScene'
-        audience: &id005
+        audience:
           $ref: '#/components/schemas/NotificationAudience'
-        ownerDeptId: *id001
-        environment: &id006
+        ownerDeptId: &id003
+          type: string
+          description: 内部Long对外十进制字符串
+          pattern: ^[1-9][0-9]{0,18}$
+        environment:
           $ref: '#/components/schemas/IntegrationEnvironment'
-        primaryTemplateId: *id001
-        fallbackTemplateId: *id001
-        fallbackPolicy: &id007
+        primaryTemplateId: *id003
+        fallbackTemplateId: *id003
+        fallbackPolicy:
           type: string
           enum:
           - NONE
           - DEFINITELY_NOT_SENT_ONLY
-        enabled: &id008
+        enabled:
           type: boolean
-        reason: *id003
+        reason:
+          type: string
+          minLength: 2
+          maxLength: 500
       required:
       - expectedVersion
       - scene
@@ -1936,20 +1978,33 @@ components:
       type: object
       additionalProperties: false
       properties:
-        scene: *id004
-        audience: *id005
-        ownerDeptId: *id001
-        environment: *id006
-        primaryTemplateId: *id001
-        fallbackTemplateId: *id001
-        fallbackPolicy: *id007
-        enabled: *id008
-        routeId: *id001
+        scene:
+          $ref: '#/components/schemas/NotificationScene'
+        audience:
+          $ref: '#/components/schemas/NotificationAudience'
+        ownerDeptId: &id004
+          type: string
+          description: 内部Long对外十进制字符串
+          pattern: ^[1-9][0-9]{0,18}$
+        environment:
+          $ref: '#/components/schemas/IntegrationEnvironment'
+        primaryTemplateId: *id004
+        fallbackTemplateId: *id004
+        fallbackPolicy:
+          type: string
+          enum:
+          - NONE
+          - DEFINITELY_NOT_SENT_ONLY
+        enabled:
+          type: boolean
+        routeId: *id004
         version:
           type: integer
           format: int64
           minimum: 0
-        effectiveAt: *id002
+        effectiveAt:
+          type: string
+          format: date-time
       required:
       - routeId
       - version
@@ -1969,14 +2024,14 @@ components:
           $ref: '#/components/schemas/NotificationScene'
         audience:
           $ref: '#/components/schemas/NotificationAudience'
-        ownerDeptId: &id009
+        ownerDeptId: &id005
           type: string
           description: 内部Long对外十进制字符串
           pattern: ^[1-9][0-9]{0,18}$
         environment:
           $ref: '#/components/schemas/IntegrationEnvironment'
-        primaryTemplateId: *id009
-        fallbackTemplateId: *id009
+        primaryTemplateId: *id005
+        fallbackTemplateId: *id005
         fallbackPolicy:
           type: string
           enum:
@@ -2002,9 +2057,15 @@ components:
       type: object
       additionalProperties: false
       properties:
-        revisionId: *id001
-        testRecipientId: *id001
-        purpose: *id003
+        revisionId: &id006
+          type: string
+          description: 内部Long对外十进制字符串
+          pattern: ^[1-9][0-9]{0,18}$
+        testRecipientId: *id006
+        purpose:
+          type: string
+          minLength: 2
+          maxLength: 500
         acknowledgeRealSendAndCost:
           type: boolean
           enum:
@@ -2062,11 +2123,11 @@ components:
       type: object
       additionalProperties: false
       properties:
-        publicationId: &id010
+        publicationId: &id007
           type: string
           description: 内部Long对外十进制字符串
           pattern: ^[1-9][0-9]{0,18}$
-        revisionId: *id010
+        revisionId: *id007
         previousRevisionId:
           type: string
           description: 内部Long对外十进制字符串
@@ -2086,14 +2147,17 @@ components:
         publishedAt:
           type: string
           format: date-time
-        publishedBy: *id010
+        publishedBy: *id007
         effectiveFor:
           type: string
           enum:
           - NEW_OPERATIONS
         historicalHandling:
           type: string
-        templateId: *id001
+        templateId:
+          type: string
+          description: 内部Long对外十进制字符串
+          pattern: ^[1-9][0-9]{0,18}$
       required:
       - publicationId
       - templateId
@@ -2106,16 +2170,22 @@ components:
       type: object
       additionalProperties: false
       properties:
-        revisionId: *id001
+        revisionId: &id008
+          type: string
+          description: 内部Long对外十进制字符串
+          pattern: ^[1-9][0-9]{0,18}$
         expectedVersion:
           type: integer
           format: int64
           minimum: 0
-        contentHash: &id018
+        contentHash:
           type: string
           pattern: ^[a-f0-9]{64}$
-        checkId: *id001
-        reason: *id003
+        checkId: *id008
+        reason:
+          type: string
+          minLength: 2
+          maxLength: 500
         acknowledgeNoPaymentMethods:
           type: boolean
         expectedDependencyVersions:
@@ -2133,8 +2203,11 @@ components:
       type: object
       additionalProperties: false
       properties:
-        profileId: *id001
-        revisionId: *id001
+        profileId: &id009
+          type: string
+          description: 内部Long对外十进制字符串
+          pattern: ^[1-9][0-9]{0,18}$
+        revisionId: *id009
       required:
       - profileId
       - revisionId
@@ -2143,7 +2216,10 @@ components:
       type: object
       additionalProperties: false
       properties:
-        revisionId: *id001
+        revisionId:
+          type: string
+          description: 内部Long对外十进制字符串
+          pattern: ^[1-9][0-9]{0,18}$
         sampleValues:
           type: object
           additionalProperties: false
@@ -2249,7 +2325,10 @@ components:
       type: object
       additionalProperties: false
       properties:
-        revisionId: *id001
+        revisionId:
+          type: string
+          description: 内部Long对外十进制字符串
+          pattern: ^[1-9][0-9]{0,18}$
         expectedVersion:
           type: integer
           format: int64
@@ -2270,11 +2349,11 @@ components:
       type: object
       additionalProperties: false
       properties:
-        checkId: &id011
+        checkId: &id010
           type: string
           description: 内部Long对外十进制字符串
           pattern: ^[1-9][0-9]{0,18}$
-        revisionId: *id011
+        revisionId: *id010
         contentHash:
           type: string
           pattern: ^[a-f0-9]{64}$
@@ -2286,13 +2365,16 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/IntegrationValidationIssue'
-        checkedAt: &id012
+        checkedAt: &id011
           type: string
           format: date-time
-        expiresAt: *id012
+        expiresAt: *id011
         realPaymentVerified:
           type: boolean
-        templateId: *id001
+        templateId:
+          type: string
+          description: 内部Long对外十进制字符串
+          pattern: ^[1-9][0-9]{0,18}$
       required:
       - checkId
       - templateId
@@ -2321,22 +2403,25 @@ components:
       type: object
       additionalProperties: false
       properties:
-        expectedVersion: &id013
+        expectedVersion:
           type: integer
           format: int64
           minimum: 0
-        profile: &id014
+        profile:
           $ref: '#/components/schemas/ConfigReference'
-        vendorTemplateId: &id015
+        vendorTemplateId:
           type: string
           minLength: 1
           maxLength: 256
-        approvedContent: &id016
+        approvedContent:
           type: string
           maxLength: 2000
-        enabled: &id017
+        enabled:
           type: boolean
-        reason: *id003
+        reason:
+          type: string
+          minLength: 2
+          maxLength: 500
         provider:
           type: string
           enum:
@@ -2376,7 +2461,10 @@ components:
           enum:
           - ONCE
           - LONG
-        longTermQualificationEvidenceId: *id001
+        longTermQualificationEvidenceId:
+          type: string
+          description: 内部Long对外十进制字符串
+          pattern: ^[1-9][0-9]{0,18}$
       required:
       - expectedVersion
       - profile
@@ -2438,12 +2526,25 @@ components:
       type: object
       additionalProperties: false
       properties:
-        expectedVersion: *id013
-        profile: *id014
-        vendorTemplateId: *id015
-        approvedContent: *id016
-        enabled: *id017
-        reason: *id003
+        expectedVersion:
+          type: integer
+          format: int64
+          minimum: 0
+        profile:
+          $ref: '#/components/schemas/ConfigReference'
+        vendorTemplateId:
+          type: string
+          minLength: 1
+          maxLength: 256
+        approvedContent:
+          type: string
+          maxLength: 2000
+        enabled:
+          type: boolean
+        reason:
+          type: string
+          minLength: 2
+          maxLength: 500
         provider:
           type: string
           enum:
@@ -2486,7 +2587,10 @@ components:
       type: object
       additionalProperties: false
       properties:
-        templateId: *id001
+        templateId:
+          type: string
+          description: 内部Long对外十进制字符串
+          pattern: ^[1-9][0-9]{0,18}$
         name:
           type: string
         provider:
@@ -2533,12 +2637,17 @@ components:
       type: object
       additionalProperties: false
       properties:
-        revisionId: *id001
+        revisionId:
+          type: string
+          description: 内部Long对外十进制字符串
+          pattern: ^[1-9][0-9]{0,18}$
         revision:
           type: integer
           format: int64
           minimum: 0
-        contentHash: *id018
+        contentHash:
+          type: string
+          pattern: ^[a-f0-9]{64}$
         provider:
           $ref: '#/components/schemas/ExternalMessageProvider'
         profile:
@@ -2588,7 +2697,9 @@ components:
           - UNKNOWN
           - APPROVED
           - REJECTED
-        createdAt: *id002
+        createdAt:
+          type: string
+          format: date-time
       required:
       - revisionId
       - revision
@@ -2602,7 +2713,10 @@ components:
       type: object
       additionalProperties: false
       properties:
-        ownerDeptId: *id001
+        ownerDeptId:
+          type: string
+          description: 内部Long对外十进制字符串
+          pattern: ^[1-9][0-9]{0,18}$
         environment:
           $ref: '#/components/schemas/IntegrationEnvironment'
       required:
@@ -2775,3 +2889,13 @@ components:
             retryable: false
             retryAfterSeconds: null
             data: {}
+  securitySchemes:
+    MiniBearerAuth:
+      type: http
+      scheme: bearer
+      description: 小程序不透明随机访问令牌；数据库权威会话，非sys_user JWT；见T3.4
+    AdminBearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: 现有xinyi后台sys_user会话，不能作为小程序车主/代驾身份

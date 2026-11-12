@@ -999,3 +999,13 @@ components:
       - paidAt
       - evidenceFileIds
       description: 只对已有CONFIRMED账单登记。账单ID由详情带入；服务端重验主体、收款人及余额；金额<=确认应付-净已核实-待核实预留。同主体流水永久唯一，凭证文件READY且有权。0元/负净额不登记。非真实转账。
+  securitySchemes:
+    MiniBearerAuth:
+      type: http
+      scheme: bearer
+      description: 小程序不透明随机访问令牌；数据库权威会话，非sys_user JWT；见T3.4
+    AdminBearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: 现有xinyi后台sys_user会话，不能作为小程序车主/代驾身份

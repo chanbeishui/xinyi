@@ -1,0 +1,476 @@
+{
+  "mode": "Browser plugin not available; cached Playwright real H5 pages with explicit authenticated API fixtures; no real WeChat GPS or device privacy grant",
+  "url": "http://127.0.0.1:5175/#/pages/work/index",
+  "clock": "Explicit browser/API fixture clock starts 2026-11-12 12:00 Asia/Shanghai; forward31s for presence,120s for cache expiry,1day for manual restart. No real backend time assertion.",
+  "viewports": [
+    "390x844",
+    "1440x1000"
+  ],
+  "checks": [
+    "真实DRIVER工作入口及非空页面；首进只核对身份和报告前台，不自动开启听单",
+    "H5无可信GCJ02能力时只读投影，不把浏览器坐标假作微信位置或自动索权",
+    "未知7键听单意图跨刷新/页面隐藏保留原UUID正文与业务日；hide只报告BACKGROUND不关听单，恢复原意图不换键",
+    "听单意愿与过期位置、近期不可达独立显示，不用过期点冒充实时或自动关闭意愿",
+    "时间新鲜与精度分别判断，精度不足不显示基础候选就绪",
+    "只展示服务端BASE_CANDIDATE_ONLY就绪，不声称D02订单匹配/邀约接受已完成",
+    "BASE_READY后GET503撤回旧有效投影并停止采点，不继续显示fresh或绿色ready，不修改后台听单意愿，重读成功才恢复",
+    "BASE_READY后真实前台心跳503撤回旧ready并保留原UUID/时间/正文；原键恢复不重复增加版本或续租，当前GET确认后才恢复",
+    "有在手占用时可关闭未来听单，原holder与占用保留，保管归还责任不被清除",
+    "手动关闭后独立缓存截止timer仍生效，超位置/联系TTL撤回旧有效事实且不发PATCH或心跳，不改变后台关闭状态及在手占用",
+    "昨日原偏好仍true但服务端实时关闭时显示未听单，跨日GET不自动开启或推导新截止",
+    "409禁止旧观察版本写入，显式重读后本人再操作，冻结当前业务日而非沿用旧日期",
+    "390与1440实际工作页无整页横向溢出，独立条件与责任说明可读",
+    "实际切换OWNER清旧代驾投影与未知意图，OWNER不调用DRIVER接口，切回重新鉴权且不恢复旧键",
+    "已完成服务单量使用真实API整数；缺失时拒绝旧投影并要求重读，服务端明确0才显示0",
+    "真实403清除旧位置、资格与听单投影，不继续凭旧动作操作",
+    "真实退出按钮调用既有I03 API；503停止采点并隐藏旧工作信息，保持凭据和原UUID，不先假报退出成功或关闭听单",
+    "退出明确成功才清会话缓存，原UUID正文重试一致，工作投影与未知坐标/意图随身份清理，不改在手责任"
+  ],
+  "errors": [],
+  "warnings": [],
+  "expectedHttpErrors": [
+    "Failed to load resource: the server responded with a status of 503 (Service Unavailable)",
+    "Failed to load resource: the server responded with a status of 503 (Service Unavailable)",
+    "Failed to load resource: the server responded with a status of 503 (Service Unavailable)",
+    "Failed to load resource: the server responded with a status of 409 (Conflict)",
+    "Failed to load resource: the server responded with a status of 503 (Service Unavailable)",
+    "Failed to load resource: the server responded with a status of 403 (Forbidden)",
+    "Failed to load resource: the server responded with a status of 503 (Service Unavailable)",
+    "Failed to load resource: the server responded with a status of 503 (Service Unavailable)"
+  ],
+  "unknown": [],
+  "requests": [
+    {
+      "path": "/api/common/session",
+      "method": "GET"
+    },
+    {
+      "path": "/api/common/profile",
+      "method": "GET"
+    },
+    {
+      "path": "/api/app/driver/availability",
+      "method": "GET"
+    },
+    {
+      "path": "/api/app/driver/presence",
+      "method": "POST"
+    },
+    {
+      "path": "/api/app/driver/availability",
+      "method": "GET"
+    },
+    {
+      "path": "/api/app/driver/listening",
+      "method": "POST"
+    },
+    {
+      "path": "/api/app/driver/availability",
+      "method": "GET"
+    },
+    {
+      "path": "/api/app/driver/presence",
+      "method": "POST"
+    },
+    {
+      "path": "/api/common/session",
+      "method": "GET"
+    },
+    {
+      "path": "/api/common/session",
+      "method": "GET"
+    },
+    {
+      "path": "/api/common/profile",
+      "method": "GET"
+    },
+    {
+      "path": "/api/app/driver/availability",
+      "method": "GET"
+    },
+    {
+      "path": "/api/app/driver/listening",
+      "method": "POST"
+    },
+    {
+      "path": "/api/app/driver/availability",
+      "method": "GET"
+    },
+    {
+      "path": "/api/app/driver/availability",
+      "method": "GET"
+    },
+    {
+      "path": "/api/app/driver/availability",
+      "method": "GET"
+    },
+    {
+      "path": "/api/app/driver/availability",
+      "method": "GET"
+    },
+    {
+      "path": "/api/app/driver/availability",
+      "method": "GET"
+    },
+    {
+      "path": "/api/app/driver/availability",
+      "method": "GET"
+    },
+    {
+      "path": "/api/app/driver/presence",
+      "method": "POST"
+    },
+    {
+      "path": "/api/app/driver/presence",
+      "method": "POST"
+    },
+    {
+      "path": "/api/app/driver/availability",
+      "method": "GET"
+    },
+    {
+      "path": "/api/app/driver/availability",
+      "method": "GET"
+    },
+    {
+      "path": "/api/app/driver/listening",
+      "method": "POST"
+    },
+    {
+      "path": "/api/app/driver/availability",
+      "method": "GET"
+    },
+    {
+      "path": "/api/app/driver/availability",
+      "method": "GET"
+    },
+    {
+      "path": "/api/app/driver/availability",
+      "method": "GET"
+    },
+    {
+      "path": "/api/app/driver/listening",
+      "method": "POST"
+    },
+    {
+      "path": "/api/app/driver/availability",
+      "method": "GET"
+    },
+    {
+      "path": "/api/app/driver/listening",
+      "method": "POST"
+    },
+    {
+      "path": "/api/app/driver/availability",
+      "method": "GET"
+    },
+    {
+      "path": "/api/app/driver/listening",
+      "method": "POST"
+    },
+    {
+      "path": "/api/app/driver/availability",
+      "method": "GET"
+    },
+    {
+      "path": "/api/app/driver/listening",
+      "method": "POST"
+    },
+    {
+      "path": "/api/common/session",
+      "method": "GET"
+    },
+    {
+      "path": "/api/common/session/role",
+      "method": "POST"
+    },
+    {
+      "path": "/api/common/session",
+      "method": "GET"
+    },
+    {
+      "path": "/api/common/session",
+      "method": "GET"
+    },
+    {
+      "path": "/api/common/profile",
+      "method": "GET"
+    },
+    {
+      "path": "/api/common/session",
+      "method": "GET"
+    },
+    {
+      "path": "/api/common/profile",
+      "method": "GET"
+    },
+    {
+      "path": "/api/common/session",
+      "method": "GET"
+    },
+    {
+      "path": "/api/common/session/role",
+      "method": "POST"
+    },
+    {
+      "path": "/api/common/session",
+      "method": "GET"
+    },
+    {
+      "path": "/api/common/session",
+      "method": "GET"
+    },
+    {
+      "path": "/api/common/profile",
+      "method": "GET"
+    },
+    {
+      "path": "/api/app/driver/availability",
+      "method": "GET"
+    },
+    {
+      "path": "/api/app/driver/presence",
+      "method": "POST"
+    },
+    {
+      "path": "/api/app/driver/availability",
+      "method": "GET"
+    },
+    {
+      "path": "/api/app/driver/availability",
+      "method": "GET"
+    },
+    {
+      "path": "/api/app/driver/availability",
+      "method": "GET"
+    },
+    {
+      "path": "/api/app/driver/availability",
+      "method": "GET"
+    },
+    {
+      "path": "/api/common/session",
+      "method": "GET"
+    },
+    {
+      "path": "/api/common/profile",
+      "method": "GET"
+    },
+    {
+      "path": "/api/app/driver/availability",
+      "method": "GET"
+    },
+    {
+      "path": "/api/app/driver/presence",
+      "method": "POST"
+    },
+    {
+      "path": "/api/app/driver/availability",
+      "method": "GET"
+    },
+    {
+      "path": "/api/app/driver/listening",
+      "method": "POST"
+    },
+    {
+      "path": "/api/common/session/logout",
+      "method": "POST"
+    },
+    {
+      "path": "/api/common/session/logout",
+      "method": "POST"
+    }
+  ],
+  "writes": [
+    {
+      "action": "presence",
+      "input": {
+        "expectedCompanyRevision": 3,
+        "expectedSessionId": "1",
+        "expectedContextVersion": 1,
+        "expectedVersion": 0,
+        "clientState": "FOREGROUND",
+        "observedAt": "2026-11-12T04:00:01.159Z"
+      },
+      "key": "74680813-d08c-4a2a-a813-f016479b25a4"
+    },
+    {
+      "action": "listening",
+      "input": {
+        "expectedCompanyRevision": 3,
+        "expectedSessionId": "1",
+        "expectedContextVersion": 1,
+        "enabled": true,
+        "expectedVersion": 0,
+        "expectedConfigVersion": 2,
+        "expectedBusinessDate": "2026-11-12"
+      },
+      "key": "28fdc708-f66a-4f7a-8c14-21cb078f1459"
+    },
+    {
+      "action": "presence",
+      "input": {
+        "expectedCompanyRevision": 3,
+        "expectedSessionId": "1",
+        "expectedContextVersion": 1,
+        "expectedVersion": 1,
+        "clientState": "BACKGROUND",
+        "observedAt": "2026-11-12T04:00:01.701Z"
+      },
+      "key": "0d9a9182-4208-4963-9f52-3e8075c52dbc"
+    },
+    {
+      "action": "listening",
+      "input": {
+        "expectedCompanyRevision": 3,
+        "expectedSessionId": "1",
+        "expectedContextVersion": 1,
+        "enabled": true,
+        "expectedVersion": 0,
+        "expectedConfigVersion": 2,
+        "expectedBusinessDate": "2026-11-12"
+      },
+      "key": "28fdc708-f66a-4f7a-8c14-21cb078f1459"
+    },
+    {
+      "action": "presence",
+      "input": {
+        "expectedCompanyRevision": 3,
+        "expectedSessionId": "1",
+        "expectedContextVersion": 1,
+        "expectedVersion": 2,
+        "clientState": "FOREGROUND",
+        "observedAt": "2026-11-12T04:00:34.341Z"
+      },
+      "key": "526ff917-9415-478c-b36a-9786fb97bb44"
+    },
+    {
+      "action": "presence",
+      "input": {
+        "expectedCompanyRevision": 3,
+        "expectedSessionId": "1",
+        "expectedContextVersion": 1,
+        "expectedVersion": 2,
+        "clientState": "FOREGROUND",
+        "observedAt": "2026-11-12T04:00:34.341Z"
+      },
+      "key": "526ff917-9415-478c-b36a-9786fb97bb44"
+    },
+    {
+      "action": "listening",
+      "input": {
+        "expectedCompanyRevision": 3,
+        "expectedSessionId": "1",
+        "expectedContextVersion": 1,
+        "enabled": false,
+        "expectedVersion": 1,
+        "expectedConfigVersion": 2,
+        "expectedBusinessDate": "2026-11-12"
+      },
+      "key": "1336be24-2644-4a1e-ad34-2742d4c9ee15"
+    },
+    {
+      "action": "listening",
+      "input": {
+        "expectedCompanyRevision": 3,
+        "expectedSessionId": "1",
+        "expectedContextVersion": 1,
+        "enabled": true,
+        "expectedVersion": 2,
+        "expectedConfigVersion": 2,
+        "expectedBusinessDate": "2026-11-13"
+      },
+      "key": "273375c2-a671-4179-b8d7-e8d99f577fbd"
+    },
+    {
+      "action": "listening",
+      "input": {
+        "expectedCompanyRevision": 3,
+        "expectedSessionId": "1",
+        "expectedContextVersion": 1,
+        "enabled": true,
+        "expectedVersion": 3,
+        "expectedConfigVersion": 2,
+        "expectedBusinessDate": "2026-11-13"
+      },
+      "key": "28f91c98-b12b-49d0-a4ca-5612ba6dd66f"
+    },
+    {
+      "action": "listening",
+      "input": {
+        "expectedCompanyRevision": 3,
+        "expectedSessionId": "1",
+        "expectedContextVersion": 1,
+        "enabled": false,
+        "expectedVersion": 4,
+        "expectedConfigVersion": 2,
+        "expectedBusinessDate": "2026-11-13"
+      },
+      "key": "79389edb-c3c4-4da5-a8b2-34034a741e0f"
+    },
+    {
+      "action": "listening",
+      "input": {
+        "expectedCompanyRevision": 3,
+        "expectedSessionId": "1",
+        "expectedContextVersion": 1,
+        "enabled": true,
+        "expectedVersion": 5,
+        "expectedConfigVersion": 2,
+        "expectedBusinessDate": "2026-11-13"
+      },
+      "key": "b53dc7c4-c192-4430-9fbd-521ae879c1c3"
+    },
+    {
+      "action": "presence",
+      "input": {
+        "expectedCompanyRevision": 3,
+        "expectedSessionId": "1",
+        "expectedContextVersion": 3,
+        "expectedVersion": 3,
+        "clientState": "FOREGROUND",
+        "observedAt": "2026-11-13T04:02:36.520Z"
+      },
+      "key": "ef19444a-ea19-4f61-a56f-5bd882c6493d"
+    },
+    {
+      "action": "presence",
+      "input": {
+        "expectedCompanyRevision": 3,
+        "expectedSessionId": "1",
+        "expectedContextVersion": 3,
+        "expectedVersion": 4,
+        "clientState": "FOREGROUND",
+        "observedAt": "2026-11-13T04:02:37.351Z"
+      },
+      "key": "1f1c7108-90c9-4796-8a57-c44913122d8d"
+    },
+    {
+      "action": "listening",
+      "input": {
+        "expectedCompanyRevision": 3,
+        "expectedSessionId": "1",
+        "expectedContextVersion": 3,
+        "enabled": true,
+        "expectedVersion": 5,
+        "expectedConfigVersion": 2,
+        "expectedBusinessDate": "2026-11-13"
+      },
+      "key": "8c06ee78-5d13-495f-a93e-a6ffe85f33db"
+    },
+    {
+      "action": "logout",
+      "input": {
+        "allDevices": false
+      },
+      "key": "6b96624a-cdc0-4eed-8118-955c6fd4598a"
+    },
+    {
+      "action": "logout",
+      "input": {
+        "allDevices": false
+      },
+      "key": "6b96624a-cdc0-4eed-8118-955c6fd4598a"
+    }
+  ]
+}

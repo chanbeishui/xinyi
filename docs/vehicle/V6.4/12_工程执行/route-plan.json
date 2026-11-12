@@ -848,36 +848,48 @@
     "canonicalPage": "D06",
     "title": "听单工作台",
     "role": "driver",
-    "targetPath": "xinyi-miniapp/src/pages/workbench/index.vue",
+    "targetPath": "xinyi-miniapp/src/pages/work/index.vue",
     "presentation": "MAIN_HOST_VIEW",
     "taskId": "D01",
     "status": "NOT_ASSESSED",
     "hostView": "DRIVER_HOME",
-    "note": "目标实现路径，非已存在源码。状态画板与弹窗不是独立小程序路由；遵守原账号与权限边界。"
+    "note": "D01真实工作页共用D06三态；公司下班固定窗口、独立听单/可达/位置/资格/占用。D02个人邀约/接受不在本轮声称通过。",
+    "implementationNote": "components/dispatch/DriverListening.vue与features/dispatch/api.ts/location.ts；工作页前后台事件、GCJ02仅微信真机主动授权；身份变化即清旧坐标和意图，退出未知保原键/凭据，明确成功才清session。",
+    "componentTargetPaths": [
+      "xinyi-miniapp/src/components/dispatch/DriverListening.vue"
+    ]
   },
   {
     "boardId": "D06-occupied",
     "canonicalPage": "D06",
     "title": "有在手承接任务",
     "role": "driver",
-    "targetPath": "xinyi-miniapp/src/pages/workbench/index.vue",
+    "targetPath": "xinyi-miniapp/src/pages/work/index.vue",
     "presentation": "STATE_OR_OVERLAY",
     "taskId": "D01",
     "status": "NOT_ASSESSED",
     "hostView": "DRIVER_HOME",
-    "note": "目标实现路径，非已存在源码。状态画板与弹窗不是独立小程序路由；遵守原账号与权限边界。"
+    "note": "D01真实工作页共用D06三态；公司下班固定窗口、独立听单/可达/位置/资格/占用。D02个人邀约/接受不在本轮声称通过。",
+    "implementationNote": "components/dispatch/DriverListening.vue与features/dispatch/api.ts/location.ts；工作页前后台事件、GCJ02仅微信真机主动授权；身份变化即清旧坐标和意图，退出未知保原键/凭据，明确成功才清session。",
+    "componentTargetPaths": [
+      "xinyi-miniapp/src/components/dispatch/DriverListening.vue"
+    ]
   },
   {
     "boardId": "D06-offline",
     "canonicalPage": "D06",
     "title": "未开启听单",
     "role": "driver",
-    "targetPath": "xinyi-miniapp/src/pages/workbench/index.vue",
+    "targetPath": "xinyi-miniapp/src/pages/work/index.vue",
     "presentation": "STATE_OR_OVERLAY",
     "taskId": "D01",
     "status": "NOT_ASSESSED",
     "hostView": "DRIVER_HOME",
-    "note": "目标实现路径，非已存在源码。状态画板与弹窗不是独立小程序路由；遵守原账号与权限边界。"
+    "note": "D01真实工作页共用D06三态；公司下班固定窗口、独立听单/可达/位置/资格/占用。D02个人邀约/接受不在本轮声称通过。",
+    "implementationNote": "components/dispatch/DriverListening.vue与features/dispatch/api.ts/location.ts；工作页前后台事件、GCJ02仅微信真机主动授权；身份变化即清旧坐标和意图，退出未知保原键/凭据，明确成功才清session。",
+    "componentTargetPaths": [
+      "xinyi-miniapp/src/components/dispatch/DriverListening.vue"
+    ]
   },
   {
     "boardId": "D07",
@@ -3961,5 +3973,17 @@
     "taskId": "X06",
     "status": "NOT_ASSESSED",
     "note": "规划代码路径，不表示已实现；状态变体共用主页面。"
+  },
+  {
+    "boardId": "B24-listening-company",
+    "canonicalPage": "B24",
+    "title": "公司听单设置",
+    "role": "admin",
+    "targetPath": "xinyi-ui/src/views/rongli/dispatch/listening-config.vue",
+    "presentation": "STATE_OR_OVERLAY",
+    "taskId": "D01",
+    "status": "NOT_ASSESSED",
+    "note": "B24专用公司听单子页，实际route /driver-management/listening-config；须明确选择公司，独立query/edit和真实范围，非C01整页完成。",
+    "implementationNote": "api/rongli/listeningPolicy.ts；7键PUT立即生效，无默认/上班时间/自动恢复，CAS/UUID，未知按原公司保存意图。"
   }
 ]

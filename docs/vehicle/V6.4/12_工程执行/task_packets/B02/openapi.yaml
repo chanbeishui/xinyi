@@ -243,7 +243,7 @@ paths:
       x-contract-baseline: V6.4
 components:
   schemas:
-    QuoteRequest:
+    StationSelectionRequest:
       type: object
       properties:
         slotId:
@@ -267,16 +267,10 @@ components:
           $ref: '#/components/schemas/AddressCreate'
         inspectionTypeCode:
           type: string
-        stationId:
-          type: string
-          pattern: ^[1-9][0-9]{0,18}$
-          maxLength: 19
-          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
       additionalProperties: false
       required:
       - slotId
       - inspectionTypeCode
-      - stationId
       description: vehicleId/vehicleDraft二选一；addressId/addressDraft二选一；站点由服务端匹配，不允许客户端指定低价站点绕过匹配。V6修复：两组XOR作为机器约束；地址草稿无addressId/version；null不视为有效分支。草稿仅保存在报价快照，地址簿保存仍需本人明确操作。
       allOf:
       - oneOf:
@@ -514,6 +508,89 @@ components:
       - field
       - reasonCode
       - message
+    AvailableStation:
+      type: object
+      additionalProperties: false
+      required:
+      - stationId
+      - name
+      - address
+      - routeDistanceMeter
+      - estimatedDurationSecond
+      properties:
+        stationId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+        name:
+          type: string
+        address:
+          type: string
+        routeDistanceMeter:
+          type: integer
+          minimum: 1
+        estimatedDurationSecond:
+          type: integer
+          minimum: 1
+    QuoteRequest:
+      type: object
+      properties:
+        slotId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+        vehicleId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+        vehicleDraft:
+          $ref: '#/components/schemas/VehicleCreate'
+        addressId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+        addressDraft:
+          $ref: '#/components/schemas/AddressCreate'
+        inspectionTypeCode:
+          type: string
+        stationId:
+          type: string
+          pattern: ^[1-9][0-9]{0,18}$
+          maxLength: 19
+          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
+      additionalProperties: false
+      required:
+      - slotId
+      - inspectionTypeCode
+      - stationId
+      description: vehicleId/vehicleDraft二选一；addressId/addressDraft二选一；站点由服务端匹配，不允许客户端指定低价站点绕过匹配。V6修复：两组XOR作为机器约束；地址草稿无addressId/version；null不视为有效分支。草稿仅保存在报价快照，地址簿保存仍需本人明确操作。
+      allOf:
+      - oneOf:
+        - required:
+          - vehicleId
+          not:
+            required:
+            - vehicleDraft
+        - required:
+          - vehicleDraft
+          not:
+            required:
+            - vehicleId
+      - oneOf:
+        - required:
+          - addressId
+          not:
+            required:
+            - addressDraft
+        - required:
+          - addressDraft
+          not:
+            required:
+            - addressId
     Quote:
       type: object
       properties:
@@ -600,83 +677,6 @@ components:
       - feeCode
       - name
       - amount
-    AvailableStation:
-      type: object
-      additionalProperties: false
-      required:
-      - stationId
-      - name
-      - address
-      - routeDistanceMeter
-      - estimatedDurationSecond
-      properties:
-        stationId:
-          type: string
-          pattern: ^[1-9][0-9]{0,18}$
-          maxLength: 19
-          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
-        name:
-          type: string
-        address:
-          type: string
-        routeDistanceMeter:
-          type: integer
-          minimum: 1
-        estimatedDurationSecond:
-          type: integer
-          minimum: 1
-    StationSelectionRequest:
-      type: object
-      properties:
-        slotId:
-          type: string
-          pattern: ^[1-9][0-9]{0,18}$
-          maxLength: 19
-          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
-        vehicleId:
-          type: string
-          pattern: ^[1-9][0-9]{0,18}$
-          maxLength: 19
-          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
-        vehicleDraft:
-          $ref: '#/components/schemas/VehicleCreate'
-        addressId:
-          type: string
-          pattern: ^[1-9][0-9]{0,18}$
-          maxLength: 19
-          description: 数据库BIGINT/Java Long；API十进制字符串；服务端还须校验 <=9223372036854775807
-        addressDraft:
-          $ref: '#/components/schemas/AddressCreate'
-        inspectionTypeCode:
-          type: string
-      additionalProperties: false
-      required:
-      - slotId
-      - inspectionTypeCode
-      description: vehicleId/vehicleDraft二选一；addressId/addressDraft二选一；站点由服务端匹配，不允许客户端指定低价站点绕过匹配。V6修复：两组XOR作为机器约束；地址草稿无addressId/version；null不视为有效分支。草稿仅保存在报价快照，地址簿保存仍需本人明确操作。
-      allOf:
-      - oneOf:
-        - required:
-          - vehicleId
-          not:
-            required:
-            - vehicleDraft
-        - required:
-          - vehicleDraft
-          not:
-            required:
-            - vehicleId
-      - oneOf:
-        - required:
-          - addressId
-          not:
-            required:
-            - addressDraft
-        - required:
-          - addressDraft
-          not:
-            required:
-            - addressId
   responses:
     UnprocessableEntity:
       description: 填写内容不符合要求。参见errorCode注册表；HTTP状态与code一致。
@@ -807,3 +807,13 @@ components:
             retryable: false
             retryAfterSeconds: null
             data: {}
+  securitySchemes:
+    MiniBearerAuth:
+      type: http
+      scheme: bearer
+      description: 小程序不透明随机访问令牌；数据库权威会话，非sys_user JWT；见T3.4
+    AdminBearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: 现有xinyi后台sys_user会话，不能作为小程序车主/代驾身份

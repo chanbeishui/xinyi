@@ -10,6 +10,10 @@
         <result property="qualificationStatus" column="qualification_status"/>
         <result property="newAssignmentEnabled" column="new_assignment_enabled"/>
         <result property="listeningEnabled" column="listening_enabled"/>
+        <result property="listeningRevision" column="listening_revision"/>
+        <result property="listeningUntil" column="listening_until" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
+        <result property="listeningCompanyRevision" column="listening_company_revision"/>
+        <result property="listeningConfigVersion" column="listening_config_version"/>
         <result property="reviewDueAt" column="review_due_at" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
         <result property="licenseClass" column="license_class"/>
         <result property="licenseValidTo" column="license_valid_to" typeHandler="com.xinyi.rongli.platform.mybatis.ViUtcInstantTypeHandler"/>
