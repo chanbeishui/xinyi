@@ -51,12 +51,27 @@ public interface VehicleMapper
     int insert(Map<String, Object> row);
 
     @Update("""
-            UPDATE vi_vehicle SET plate_no = #{plateNo}, vehicle_type_code = #{vehicleTypeCode},
+            UPDATE vi_vehicle SET plate_no = #{plateNo}, active_plate = #{plateNo},
+                   vehicle_type_code = #{vehicleTypeCode},
                    brand_model = #{brandModel}, vin_last4 = #{vinLast4}, registered_on = #{registeredOn},
                    use_type = #{useType}, updated_at = UTC_TIMESTAMP(3), version = version + 1
             WHERE id = #{id} AND owner_account_id = #{ownerAccountId} AND deleted_at IS NULL
             """)
     int update(Map<String, Object> row);
+
+    /** 管理端维护车辆：整行覆盖，调用方已把未提交的字段填成库里的原值 */
+    @Update("""
+            <script>
+            UPDATE vi_vehicle SET plate_no = #{plateNo}, active_plate = #{plateNo},
+                   vehicle_type_code = #{vehicleTypeCode}, brand_model = #{brandModel},
+                   registered_on = #{registeredOn}, use_type = #{useType},
+                   internal_remark = #{internalRemark},
+                   <if test="isDefault != null">is_default = #{isDefault},</if>
+                   updated_at = UTC_TIMESTAMP(3), version = version + 1
+            WHERE id = #{id} AND deleted_at IS NULL
+            </script>
+            """)
+    int adminUpdate(Map<String, Object> row);
 
     @Update("""
             UPDATE vi_vehicle SET is_default = 0, updated_at = UTC_TIMESTAMP(3), version = version + 1
@@ -76,14 +91,6 @@ public interface VehicleMapper
             WHERE id = #{id} AND owner_account_id = #{accountId} AND deleted_at IS NULL
             """)
     int softDelete(@Param("id") Long id, @Param("accountId") Long accountId);
-
-    @Update("""
-            UPDATE vi_vehicle SET internal_remark = #{remark}, verification_status = #{verificationStatus},
-                   updated_at = UTC_TIMESTAMP(3), version = version + 1
-            WHERE id = #{id}
-            """)
-    int adminMaintain(@Param("id") Long id, @Param("remark") String remark,
-            @Param("verificationStatus") String verificationStatus);
 
     @Select("""
             <script>

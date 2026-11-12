@@ -18,6 +18,7 @@ import com.xinyi.rongli.owner.service.OwnerAdminService;
 import com.xinyi.rongli.driver.service.DriverAdminService;
 import com.xinyi.rongli.ledger.service.LedgerAdminService;
 import com.xinyi.rongli.vehicle.service.VehicleAdminService;
+import com.xinyi.rongli.vehicle.dto.VehicleDtos;
 
 /**
  * 管理端 vehicle 域接口。由原跨域控制器按端点路径拆分而来，URL 保持不变。
@@ -48,13 +49,9 @@ public class VehicleAdminController
     @PatchMapping("/vehicles/{vehicleId}")
     @PreAuthorize("@ss.hasPermi('biz:vehicle:edit')")
     public Map<String, Object> maintainVehicle(@PathVariable Long vehicleId,
-            @RequestBody Map<String, Object> body)
+            @RequestBody VehicleDtos.VehicleUpdateReq req)
     {
-        String remark = body == null || body.get("remark") == null ? null
-                : String.valueOf(body.get("remark"));
-        String status = body == null || body.get("verificationStatus") == null ? null
-                : String.valueOf(body.get("verificationStatus"));
-        return vehicleAdminService.maintainVehicle(vehicleId, remark, status, SecurityUtils.getUserId());
+        return vehicleAdminService.updateVehicle(vehicleId, req, SecurityUtils.getUserId());
     }
     @GetMapping("/vehicles/{vehicleId}/orders")
     @PreAuthorize("@ss.hasPermi('biz:vehicle:list')")

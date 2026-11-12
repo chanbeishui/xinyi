@@ -7,6 +7,7 @@ import com.xinyi.rongli.order.service.BookingService;
 import com.xinyi.rongli.station.service.StationService;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -26,6 +27,7 @@ import com.xinyi.rongli.order.mapper.OrderMapper;
 import com.xinyi.rongli.order.mapper.PriceMapper;
 import com.xinyi.rongli.station.mapper.StationMapper;
 import com.xinyi.rongli.vehicle.mapper.VehicleMapper;
+import com.xinyi.rongli.vehicle.dto.VehicleDtos;
 import com.xinyi.rongli.common.support.ApiException;
 import com.xinyi.rongli.common.support.BizConfig;
 import com.xinyi.rongli.common.support.DeptScope;
@@ -76,27 +78,102 @@ public class VehicleAdminService
         view.put("inspectionResults", camelRows(vehicleMapper.resultsByVehicle(vehicleId)));
         return view;
     }
+    /**
+     * 维护车辆档案。字段为 null 表示本次不改；每个字段都写进审计的前后值。
+     *
+     * <p>两条必须同时满足的约束：改车牌要同步 active_plate（唯一索引建在它上面），
+     * 改计价车型要落在 vehicle_type 字典内——否则订单核价会拿到不存在的车型。</p>
+     */
     @Transactional
-    public Map<String, Object> maintainVehicle(Long vehicleId, String remark, String verificationStatus, Long userId)
+    public Map<String, Object> updateVehicle(Long vehicleId, VehicleDtos.VehicleUpdateReq req, Long userId)
     {
         Row v = Row.of(vehicleMapper.findById(vehicleId));
-        if (v.isEmpty())
+        if (v.isEmpty() || v.get("deleted_at") != null)
         {
             throw ApiException.notFound("车辆不存在");
         }
-        if (verificationStatus != null
-                && !List.of("PENDING", "VERIFIED", "REJECTED").contains(verificationStatus.toUpperCase()))
+        // dept_id 为空表示全公司共享，任何持有编辑权限的账号都可维护；非空时按任职部门校验
+        if (v.get("dept_id") != null)
         {
-            throw ApiException.validation("核验状态只能是 PENDING / VERIFIED / REJECTED");
+            deptScope.requireAssigned(v.lng("dept_id"), "无权维护该车辆");
         }
-        // 车辆资料不做审核：前端已不再提交核验状态，为空时保持库里的原值，
-        // 留痕也要记录「实际结果」，不能写成 null 让人以为被清空过
-        String nextStatus = verificationStatus == null ? v.str("verification_status")
-                : verificationStatus.toUpperCase();
-        vehicleMapper.adminMaintain(vehicleId, remark == null ? v.str("internal_remark") : remark, nextStatus);
-        eventService.record("VEHICLE", vehicleId, "VEHICLE_MAINTAINED", null,
-                Map.of("verificationStatus", String.valueOf(v.str("verification_status"))),
-                Map.of("verificationStatus", String.valueOf(nextStatus)), remark);
+        if (req == null || req.reason == null || req.reason.isBlank())
+        {
+            throw ApiException.validation("请填写变更原因，本次修改会记入审计");
+        }
+        String reason = req.reason.trim();
+
+        String plate = req.plateNo == null || req.plateNo.isBlank() ? v.str("plate_no")
+                : normalizePlate(req.plateNo);
+        if (!plate.equals(v.str("plate_no"))
+                && vehicleMapper.countByPlate(v.lng("owner_account_id"), plate) > 0)
+        {
+            throw ApiException.stateConflict("该车主名下已存在相同车牌");
+        }
+        String typeCode = req.vehicleTypeCode == null || req.vehicleTypeCode.isBlank()
+                ? v.str("vehicle_type_code") : req.vehicleTypeCode.trim();
+        if (!typeCode.equals(v.str("vehicle_type_code"))
+                && vehicleMapper.countDictValue("vehicle_type", typeCode) == 0)
+        {
+            throw ApiException.validation("计价车型不在车型字典中");
+        }
+        LocalDate registeredOn = req.registeredOn == null || req.registeredOn.isBlank()
+                ? v.date("registered_on") : parseDate(req.registeredOn);
+        String brandModel = req.brandModel == null ? v.str("brand_model") : req.brandModel.trim();
+        String useType = req.useType == null || req.useType.isBlank() ? v.str("use_type") : req.useType.trim();
+        String remark = req.internalRemark == null ? v.str("internal_remark") : req.internalRemark.trim();
+
+        Map<String, Object> row = new LinkedHashMap<>();
+        row.put("id", vehicleId);
+        row.put("plateNo", plate);
+        row.put("vehicleTypeCode", typeCode);
+        row.put("brandModel", brandModel);
+        row.put("registeredOn", registeredOn);
+        row.put("useType", useType);
+        row.put("internalRemark", remark);
+        row.put("isDefault", req.isDefault);
+        vehicleMapper.adminUpdate(row);
+
+        Long ownerId = v.lng("owner_account_id");
+        boolean defaultAfter = req.isDefault == null ? v.bool("is_default") : req.isDefault;
+        if (Boolean.TRUE.equals(req.isDefault))
+        {
+            vehicleMapper.clearDefault(ownerId);
+            vehicleMapper.markDefault(vehicleId, ownerId);
+        }
+
+        Map<String, Object> before = new LinkedHashMap<>();
+        before.put("plateNo", v.str("plate_no"));
+        before.put("vehicleTypeCode", v.str("vehicle_type_code"));
+        before.put("brandModel", v.str("brand_model"));
+        before.put("registeredOn", v.date("registered_on") == null ? null : v.date("registered_on").toString());
+        before.put("useType", v.str("use_type"));
+        before.put("internalRemark", v.str("internal_remark"));
+        before.put("isDefault", v.bool("is_default"));
+
+        Map<String, Object> after = new LinkedHashMap<>();
+        after.put("plateNo", plate);
+        after.put("vehicleTypeCode", typeCode);
+        after.put("brandModel", brandModel);
+        after.put("registeredOn", registeredOn == null ? null : registeredOn.toString());
+        after.put("useType", useType);
+        after.put("internalRemark", remark);
+        after.put("isDefault", defaultAfter);
+
+        // 只把真正变化的字段写进审计，避免每次保存都刷一整屏一样的值
+        Map<String, Object> changedBefore = new LinkedHashMap<>();
+        Map<String, Object> changedAfter = new LinkedHashMap<>();
+        for (String key : before.keySet())
+        {
+            if (!Objects.equals(before.get(key), after.get(key)))
+            {
+                changedBefore.put(key, before.get(key));
+                changedAfter.put(key, after.get(key));
+            }
+        }
+        eventService.record("VEHICLE", vehicleId, "VEHICLE_UPDATED", null,
+                changedBefore.isEmpty() ? null : changedBefore,
+                changedAfter.isEmpty() ? null : changedAfter, reason);
         return vehicleDetail(vehicleId);
     }
     public Map<String, Object> vehicleOrders(Long vehicleId)
@@ -133,6 +210,29 @@ public class VehicleAdminService
         }
         return sb.toString();
     }
+    /** 车牌归一化：去空格、转大写，并校验「省份简称 + 字母 + 5~6 位」 */
+    private String normalizePlate(String plateNo)
+    {
+        String plate = plateNo.trim().replace(" ", "").toUpperCase();
+        if (!plate.matches("^[\\u4e00-\\u9fa5][A-Z][A-Z0-9]{5,6}$"))
+        {
+            throw ApiException.validation("车牌号格式不正确，例如：粤K12345");
+        }
+        return plate;
+    }
+
+    private LocalDate parseDate(String text)
+    {
+        try
+        {
+            return LocalDate.parse(text.length() > 10 ? text.substring(0, 10) : text);
+        }
+        catch (RuntimeException e)
+        {
+            throw ApiException.validation("日期格式应为 yyyy-MM-dd");
+        }
+    }
+
     private Map<String, Object> camelRow(Map<String, Object> row)
     {
         Map<String, Object> out = new LinkedHashMap<>();
