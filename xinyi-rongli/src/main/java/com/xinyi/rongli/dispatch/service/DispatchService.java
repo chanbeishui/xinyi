@@ -131,8 +131,8 @@ public class DispatchService
 
         Set<Long> invited = invitedDriverIds(orderId);
         // 派单只看「是否可接单」：资格有效、开启听单、允许新接、账号正常、无在手占用。
-        // 定位只用于展示距离，不参与候选筛选，也不再按半径阶梯扩圈——没有定位照样派。
-        Row candidate = pickCandidate(invited);
+        // 定位不参与筛选，只决定优先级：有定位的按距离就近，没有的兜底轮询。
+        Row candidate = pickCandidate(order, invited);
         if (candidate == null)
         {
             toManual(orderId, "当前没有可派单的代驾：未开启听单、被停派或全部在履约中");
@@ -238,18 +238,108 @@ public class DispatchService
                         "round", String.valueOf(roundNo)), source);
     }
 
-    /** 全局游标轮转：从上次指针之后找第一位可用司机，找不到再从头 */
-    private Row pickCandidate(Set<Long> exclude)
+    /**
+     * 选人顺序：有定位的按距离就近优先；没有定位（或定位过期、坐标不可解）的作为兜底，
+     * 按全局游标轮询，保证「开着听单就一定派得到」，同时不会让无定位的人长期霸占首派。
+     */
+    private Row pickCandidate(Row order, Set<Long> exclude)
     {
-        List<Row> eligible = eligibleDrivers();
-        if (eligible.isEmpty())
+        List<Row> located = new ArrayList<>();
+        List<Row> fallback = new ArrayList<>();
+        Map<Long, Double> distances = new LinkedHashMap<>();
+
+        JSONObject snapshot = Json.read(order.json("vehicle_snapshot"));
+        double targetLng = snapshot == null ? 0 : snapshot.getDoubleValue("lng");
+        double targetLat = snapshot == null ? 0 : snapshot.getDoubleValue("lat");
+        int freshSeconds = config.locationFreshSeconds();
+
+        for (Row d : eligibleDrivers())
+        {
+            long id = d.lng("driver_id", 0);
+            Double distance = distanceMeters(d, targetLng, targetLat, freshSeconds);
+            if (distance == null)
+            {
+                fallback.add(d);
+            }
+            else
+            {
+                distances.put(id, distance);
+                located.add(d);
+            }
+        }
+        // 同距离按 id 稳定排序，避免两次调用顺序不同导致派单抖动
+        located.sort(java.util.Comparator
+                .comparingDouble((Row r) -> distances.getOrDefault(r.lng("driver_id", 0), Double.MAX_VALUE))
+                .thenComparingLong(r -> r.lng("driver_id", 0)));
+        fallback.sort(java.util.Comparator.comparingLong(r -> r.lng("driver_id", 0)));
+
+        Row next = nearestAvailable(located, exclude);
+        if (next != null)
+        {
+            return next;
+        }
+        // 有定位的一个都没有（或被排除光），退到无定位队列按游标轮询
+        return pickByCursor(fallback, exclude);
+    }
+
+    /**
+     * 有可用定位时返回直线距离（米）；无定位、定位过期、坐标不可解一律返回 null，
+     * 由调用方放进兜底队列——不能因为定位问题把人直接排除掉。
+     */
+    private Double distanceMeters(Row driver, double targetLng, double targetLat, int freshSeconds)
+    {
+        if (targetLng == 0 || targetLat == 0)
+        {
+            return null;
+        }
+        Object cipher = driver.get("location_cipher");
+        if (!(cipher instanceof byte[] bytes) || bytes.length <= 12)
+        {
+            return null;
+        }
+        LocalDateTime capturedAt = driver.time("captured_at");
+        if (capturedAt == null || capturedAt.plusSeconds(freshSeconds).isBefore(ViTime.now()))
+        {
+            return null;
+        }
+        try
+        {
+            JSONObject loc = Json.read(crypto.decrypt(bytes));
+            if (loc == null)
+            {
+                return null;
+            }
+            return haversine(targetLng, targetLat, loc.getDoubleValue("lng"), loc.getDoubleValue("lat"));
+        }
+        catch (RuntimeException e)
+        {
+            return null;
+        }
+    }
+
+    private Row nearestAvailable(List<Row> candidates, Set<Long> exclude)
+    {
+        for (Row d : candidates)
+        {
+            if (!exclude.contains(d.lng("driver_id", 0)))
+            {
+                return d;
+            }
+        }
+        return null;
+    }
+
+    /** 全局游标轮转：从上次指针之后找第一位可用司机，找不到再从头 */
+    private Row pickByCursor(List<Row> candidates, Set<Long> exclude)
+    {
+        if (candidates.isEmpty())
         {
             return null;
         }
         Map<String, Object> cursor = orderMapper.findCursor(CURSOR_SCOPE);
         long lastDriverId = cursor == null ? 0 : Row.of(cursor).lng("last_driver_id", 0);
         Row next = null;
-        for (Row d : eligible)
+        for (Row d : candidates)
         {
             long id = d.lng("driver_id", 0);
             if (exclude.contains(id))
@@ -264,7 +354,7 @@ public class DispatchService
         }
         if (next == null)
         {
-            for (Row d : eligible)
+            for (Row d : candidates)
             {
                 if (!exclude.contains(d.lng("driver_id", 0)))
                 {
@@ -282,8 +372,8 @@ public class DispatchService
 
     /**
      * 可派单候选：资格有效、开启听单、允许新接单、账号正常、无在手占用。
-     * 定位不参与筛选——没有定位或定位已过期的代驾同样是候选，
-     * 否则「开着听单却因为没定位一直派不到单」会变成隐形的业务故障。
+     * 定位不参与筛选（只影响优先级）——误把「没定位」当「不可派」会让开着听单的代驾
+     * 一条单都收不到，且没有任何提示。
      */
     private List<Row> eligibleDrivers()
     {
