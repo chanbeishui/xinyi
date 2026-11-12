@@ -85,8 +85,14 @@
             <div><span>车牌号码</span><b>{{ detail.plateNo || '—' }}</b></div>
             <div><span>计价车型</span><b>{{ detail.vehicleTypeName || detail.vehicleTypeCode || '—' }}</b></div>
             <div><span>品牌型号</span><b>{{ detail.brandModel || '—' }}</b></div>
-            <div><span>车辆识别代号</span><b>{{ detail.vin || '—' }}</b></div>
-            <div><span>注册日期</span><b>{{ detail.registerDate || '—' }}</b></div>
+            <!-- 库里只存 vin_last4（完整 VIN 属敏感信息），有完整值时才显示完整值 -->
+            <div>
+              <span>车辆识别代号</span>
+              <b>{{ detail.vin || (detail.vinLast4 ? '尾号 ' + detail.vinLast4 : '—') }}</b>
+            </div>
+            <div><span>注册日期</span><b>{{ detail.registeredOn || '—' }}</b></div>
+            <div><span>使用性质</span><b>{{ detail.useType || '—' }}</b></div>
+            <div><span>是否默认车辆</span><b>{{ detail.isDefault ? '是' : '否' }}</b></div>
             <div><span>内部备注</span><b>{{ detail.internalRemark || '暂无备注' }}</b></div>
             <div><span>创建时间</span><b>{{ shortDate(detail.createdAt) }}</b></div>
           </div>
