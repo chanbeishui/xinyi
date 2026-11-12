@@ -89,11 +89,14 @@ public class VehicleAdminService
         {
             throw ApiException.validation("核验状态只能是 PENDING / VERIFIED / REJECTED");
         }
-        vehicleMapper.adminMaintain(vehicleId, remark == null ? v.str("internal_remark") : remark,
-                verificationStatus == null ? v.str("verification_status") : verificationStatus.toUpperCase());
+        // 车辆资料不做审核：前端已不再提交核验状态，为空时保持库里的原值，
+        // 留痕也要记录「实际结果」，不能写成 null 让人以为被清空过
+        String nextStatus = verificationStatus == null ? v.str("verification_status")
+                : verificationStatus.toUpperCase();
+        vehicleMapper.adminMaintain(vehicleId, remark == null ? v.str("internal_remark") : remark, nextStatus);
         eventService.record("VEHICLE", vehicleId, "VEHICLE_MAINTAINED", null,
                 Map.of("verificationStatus", String.valueOf(v.str("verification_status"))),
-                Map.of("verificationStatus", String.valueOf(verificationStatus)), remark);
+                Map.of("verificationStatus", String.valueOf(nextStatus)), remark);
         return vehicleDetail(vehicleId);
     }
     public Map<String, Object> vehicleOrders(Long vehicleId)
