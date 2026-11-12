@@ -3295,7 +3295,7 @@
     "case_ids": [],
     "scope": "DEVELOPMENT",
     "estimated_size": "1-3可复核提交；按实测拆分，不是工期承诺",
-    "status": "NOT_ASSESSED",
+    "status": "IN_PROGRESS",
     "code_paths": [
       "xinyi-rongli/src/main/java/com/xinyi/rongli/dispatch/",
       "xinyi-rongli/src/main/resources/mapper/rongli/dispatch/",
@@ -3327,7 +3327,8 @@
     "evidence": [],
     "implementation": null,
     "review": null,
-    "blocker": null
+    "blocker": null,
+    "updatedAt": "2026-11-12T13:27:02.176833+00:00"
   },
   {
     "id": "D02",

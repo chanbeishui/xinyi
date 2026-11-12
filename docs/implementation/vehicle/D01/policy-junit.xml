@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd" version="3.0.2" name="com.xinyi.rongli.dispatch.ListeningDayPolicyTest" time="0.008" tests="9" errors="0" skipped="0" failures="0">
+  <testcase name="companyChangeCanShortenButNeverExtendExistingDay" classname="com.xinyi.rongli.dispatch.ListeningDayPolicyTest" time="0.002" />
+  <testcase name="nextMorningNeverReactivatesYesterdayListening" classname="com.xinyi.rongli.dispatch.ListeningDayPolicyTest" time="0.001" />
+  <testcase name="explicitCompanyTimeRejectsMissingAndAmbiguousValues" classname="com.xinyi.rongli.dispatch.ListeningDayPolicyTest" time="0.001" />
+  <testcase name="manualOffCannotBeOverriddenByUnexpiredWindow" classname="com.xinyi.rongli.dispatch.ListeningDayPolicyTest" time="0.0" />
+  <testcase name="legacyOrTransferredCompanyCannotReuseAnOldOpening" classname="com.xinyi.rongli.dispatch.ListeningDayPolicyTest" time="0.0" />
+  <testcase name="openingUsesShanghaiBusinessDateEvenWhenUtcIsPreviousDay" classname="com.xinyi.rongli.dispatch.ListeningDayPolicyTest" time="0.0" />
+  <testcase name="midnightClosingDoesNotMeanUnlimitedTwentyFourHours" classname="com.xinyi.rongli.dispatch.ListeningDayPolicyTest" time="0.0" />
+  <testcase name="exactClosingInstantAndLaterCannotRollOverToTomorrow" classname="com.xinyi.rongli.dispatch.ListeningDayPolicyTest" time="0.0" />
+  <testcase name="expirationIsEffectiveEvenWhenShutdownWorkerHasNotRun" classname="com.xinyi.rongli.dispatch.ListeningDayPolicyTest" time="0.0" />
+</testsuite>
