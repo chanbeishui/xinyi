@@ -12,7 +12,7 @@ SQL顺序：既有前置→migration_20261112_driver_listening.sql→migration_2
 
 部署需重启后端并通过统一授权服务配置订单部门/公司策略功能与范围。vi.jobs.dispatch-enabled、vi.jobs.invitation-enabled默认false，正式受控部署分别启用；D01固定截止仍实时生效，次日本人手动开启。稳定vi.lookup-key需保留；版本化envelope所需旧root key保留用于旧订单，未调用真实渠道或部署生产。
 
-中文实现提交和vehicle-D02-20261113/vehicle-D04-20261113标签见VERSIONS.md，两任务为本次同一完整链路交付，可独立追溯。本轮仅本地版本，未推送GitHub。
+中文实现提交`d2894f2f9ff0279167c1aa3987a51627f12f2a82`，任务标签`vehicle-D02-20261113`/`vehicle-D04-20261113`包含随后记账提交，见VERSIONS.md，两任务为本次同一完整链路交付，可独立追溯。本轮仅本地版本，未推送GitHub。
 
 以下保留此前已交付恢复点；历史状态不替代本节当前进度。
 
