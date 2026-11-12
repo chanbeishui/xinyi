@@ -1562,6 +1562,8 @@ CREATE TABLE `vi_event_log` (
   `aggregate_type` VARCHAR(64) NOT NULL COMMENT '聚合类型',
   `aggregate_id` BIGINT NOT NULL COMMENT '聚合ID',
   `action` VARCHAR(64) NOT NULL COMMENT '事件或动作',
+  `result` VARCHAR(16) NOT NULL DEFAULT 'SUCCESS' COMMENT '执行结果：SUCCESS/FAILED/SKIPPED',
+  `failure_reason` VARCHAR(500) COMMENT '失败或跳过原因；result=SUCCESS 时为空',
   `actor_account_id` BIGINT COMMENT '小程序账户',
   `actor_user_id` BIGINT COMMENT '框架人员',
   `acting_role` VARCHAR(64) COMMENT '视角',
@@ -1577,6 +1579,7 @@ CREATE TABLE `vi_event_log` (
   `version` BIGINT NOT NULL DEFAULT 0 COMMENT '乐观锁版本',
   PRIMARY KEY (`id`),
   KEY ix_order_time (order_id,created_at,id),
+  KEY ix_realm_time (actor_realm,created_at),
   CONSTRAINT ck_ver_event_log CHECK (version >= 0)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='不可变业务事实流水';
 
