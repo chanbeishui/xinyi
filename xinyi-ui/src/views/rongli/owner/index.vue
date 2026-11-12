@@ -121,9 +121,7 @@
               <div class="rl-strong">{{ v.plateNo }}</div>
               <div class="rl-sub">{{ v.brandModel || v.vehicleTypeName || '未登记品牌型号' }}</div>
             </div>
-            <span class="rl-tag rl-tag--plain" :class="v.verificationStatus === 'VERIFIED' ? 'rl-tag--green' : 'rl-tag--amber'">
-              {{ v.verificationStatus === 'VERIFIED' ? '资料已核验' : '资料待核验' }}
-            </span>
+            <span v-if="v.isDefault" class="rl-tag rl-tag--plain">默认车辆</span>
           </div>
           <div v-if="!vehicles.length" class="rl-empty"><div class="rl-empty__hint">暂无关联车辆。</div></div>
         </el-tab-pane>

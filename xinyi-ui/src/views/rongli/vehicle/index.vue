@@ -14,11 +14,6 @@
           class="rl-w-260"
           @keyup.enter="handleQuery"
         />
-        <el-select v-model="query.verificationStatus" placeholder="全部" style="width: 150px" @change="handleQuery">
-          <el-option label="全部" value="" />
-          <el-option label="资料已核验" value="VERIFIED" />
-          <el-option label="资料待核验" value="PENDING" />
-        </el-select>
         <el-button type="primary" icon="Search" @click="handleQuery">查询</el-button>
         <el-button icon="Refresh" @click="resetQuery">重置</el-button>
         <el-button icon="Sort" @click="toggleSort">{{ sortDesc ? '降序' : '升序' }}</el-button>
@@ -49,13 +44,6 @@
             <span v-else class="rl-muted">暂无检测记录</span>
           </template>
         </el-table-column>
-        <el-table-column label="资料状态" width="130">
-          <template #default="{ row }">
-            <span class="rl-tag" :class="row.verificationStatus === 'VERIFIED' ? 'rl-tag--green' : 'rl-tag--amber'">
-              {{ row.verificationStatus === 'VERIFIED' ? '资料已核验' : '资料待核验' }}
-            </span>
-          </template>
-        </el-table-column>
         <el-table-column label="操作" width="110" fixed="right">
           <template #default="{ row }">
             <el-button link type="primary" @click="openDetail(row)">查看档案</el-button>
@@ -64,7 +52,7 @@
         <template #empty>
           <div class="rl-empty">
             <div class="rl-empty__title">未找到匹配车辆</div>
-            <div class="rl-empty__hint">请调整关键词或资料状态后重新查询。</div>
+            <div class="rl-empty__hint">请调整关键词后重新查询。</div>
             <el-button @click="resetQuery">重置筛选</el-button>
           </div>
         </template>
@@ -86,7 +74,6 @@
     <!-- 车辆档案 -->
     <el-drawer v-model="detailVisible" :title="detail.plateNo || '车辆档案'" size="620px">
       <div class="rl-detail-strip">
-        <div><span>资料状态</span><b>{{ detail.verificationStatus === 'VERIFIED' ? '资料已核验' : '资料待核验' }}</b></div>
         <div><span>计价车型</span><b>{{ detail.vehicleTypeName || detail.vehicleTypeCode || '—' }}</b></div>
         <div><span>关联车主</span><b>{{ detail.ownerName || '未关联' }}</b></div>
         <div><span>最近检测</span><b>{{ detail.lastInspectedAt ? shortDate(detail.lastInspectedAt) : '暂无' }}</b></div>
@@ -100,7 +87,6 @@
             <div><span>品牌型号</span><b>{{ detail.brandModel || '—' }}</b></div>
             <div><span>车辆识别代号</span><b>{{ detail.vin || '—' }}</b></div>
             <div><span>注册日期</span><b>{{ detail.registerDate || '—' }}</b></div>
-            <div><span>资料状态</span><b>{{ detail.verificationStatus === 'VERIFIED' ? '资料已核验' : '资料待核验' }}</b></div>
             <div><span>内部备注</span><b>{{ detail.internalRemark || '暂无备注' }}</b></div>
             <div><span>创建时间</span><b>{{ shortDate(detail.createdAt) }}</b></div>
           </div>
@@ -131,31 +117,23 @@
 
       <template #footer>
         <el-button @click="detailVisible = false">关闭</el-button>
-        <el-button type="primary" @click="openEdit">编辑资料</el-button>
+        <el-button type="primary" @click="openEdit">维护备注</el-button>
       </template>
     </el-drawer>
 
-    <!-- 编辑资料 -->
-    <el-dialog v-model="editVisible" title="编辑车辆资料" width="560px">
+    <!-- 维护备注 -->
+    <el-dialog v-model="editVisible" title="维护车辆备注" width="560px">
       <div class="rl-kv" style="margin-bottom: 16px">
         <div><span>车辆编号</span><b class="rl-mono">{{ detail.id }}</b></div>
         <div><span>车牌</span><b>{{ detail.plateNo }}</b></div>
         <div><span>关联车主</span><b>{{ detail.ownerName || '未关联' }}</b></div>
-        <div><span>资料状态</span><b>{{ detail.verificationStatus === 'VERIFIED' ? '资料已核验' : '资料待核验' }}</b></div>
       </div>
       <el-form label-width="110px">
-        <el-form-item label="资料核验">
-          <el-select v-model="editForm.verificationStatus" style="width: 100%">
-            <el-option label="资料待核验" value="PENDING" />
-            <el-option label="资料已核验" value="VERIFIED" />
-            <el-option label="资料不通过" value="REJECTED" />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="资料变更原因">
-          <el-input v-model="editForm.remark" type="textarea" :rows="3" placeholder="说明核实依据，不改写历史订单资料" />
+        <el-form-item label="内部备注">
+          <el-input v-model="editForm.remark" type="textarea" :rows="3" placeholder="仅内部可见，不改写历史订单资料" />
         </el-form-item>
       </el-form>
-      <p class="rl-muted" style="font-size: 12px">本次编辑只影响车辆档案；已生成订单继续使用当时的信息。</p>
+      <p class="rl-muted" style="font-size: 12px">车辆资料由车主自行登记，后台不做审核；这里只维护内部备注。</p>
       <template #footer>
         <el-button @click="editVisible = false">取消</el-button>
         <el-button type="primary" @click="saveEdit">保存修改</el-button>
@@ -175,7 +153,7 @@ const loading = ref(false)
 const rows = ref<any[]>([])
 const total = ref(0)
 const sortDesc = ref(true)
-const query = reactive<any>({ keyword: '', verificationStatus: '', pageNum: 1, pageSize: 10 })
+const query = reactive<any>({ keyword: '', pageNum: 1, pageSize: 10 })
 
 const sortedRows = computed(() => {
   const list = [...rows.value]
@@ -189,7 +167,7 @@ const tab = ref('base')
 const detail = ref<any>({})
 const orders = ref<any[]>([])
 const results = ref<any[]>([])
-const editForm = reactive<any>({ verificationStatus: 'PENDING', remark: '' })
+const editForm = reactive<any>({ remark: '' })
 
 onMounted(load)
 
@@ -211,7 +189,6 @@ function handleQuery() {
 
 function resetQuery() {
   query.keyword = ''
-  query.verificationStatus = ''
   query.pageNum = 1
   load()
 }
@@ -247,7 +224,6 @@ function openOwner(row: any) {
 }
 
 function openEdit() {
-  editForm.verificationStatus = detail.value.verificationStatus || 'PENDING'
   editForm.remark = detail.value.internalRemark || ''
   editVisible.value = true
 }
@@ -257,11 +233,11 @@ async function saveEdit() {
     ElMessage.warning('请填写资料变更原因')
     return
   }
+  // 只提交备注：车辆资料不做审核，verificationStatus 由后端保持原值
   await updateVehicle(detail.value.id || detail.value.vehicleId, {
-    verificationStatus: editForm.verificationStatus,
     remark: editForm.remark
   })
-  ElMessage.success('车辆资料已更新')
+  ElMessage.success('备注已更新')
   editVisible.value = false
   detailVisible.value = false
   load()
