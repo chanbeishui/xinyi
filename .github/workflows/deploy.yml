@@ -36,6 +36,8 @@ on:
         type: boolean
         default: false
   push:
+    branches:
+      - rongli-wx
     tags:
       - "v*"
 
@@ -57,10 +59,71 @@ env:
   SERVICE: xinyi-admin
 
 jobs:
+  prepare:
+    name: 判定是否发布
+    runs-on: ubuntu-latest
+    outputs:
+      run: ${{ steps.decide.outputs.run }}
+      scope: ${{ steps.decide.outputs.scope }}
+      reason: ${{ steps.decide.outputs.reason }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: 决定是否发布与范围
+        id: decide
+        run: |
+          run=1
+          scope=frontend
+          reason=""
+
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            scope="${{ inputs.scope || 'frontend' }}"
+            if [ "$scope" != "frontend" ] && [ "${{ inputs.allow_backend }}" != "true" ]; then
+              echo "::error::手动触发默认只允许发布前端（4.5MB）。发后端请在服务器执行 deploy.sh backend，或勾选 allow_backend。"
+              exit 1
+            fi
+            reason="手动触发"
+          elif [ "${{ github.ref_type }}" = "tag" ]; then
+            scope=all
+            reason="tag 发布"
+          else
+            changed=$(git diff --name-only HEAD^ HEAD 2>/dev/null || true)
+            if echo "$changed" | grep -qE '^(xinyi-ui/|deploy/prod/|[.]github/workflows/deploy[.]yml)'; then
+              reason="检测到前端相关改动"
+            else
+              run=0
+              reason="本次未改动前端相关文件，跳过发布"
+            fi
+          fi
+
+          if echo "${{ github.event.head_commit.message }}" | grep -qi 'skip deploy'; then
+            run=0
+            reason="提交信息包含 skip deploy"
+          fi
+
+          echo "run=$run" >> "$GITHUB_OUTPUT"
+          echo "scope=$scope" >> "$GITHUB_OUTPUT"
+          echo "reason=$reason" >> "$GITHUB_OUTPUT"
+          {
+            echo "### 发布判定"
+            echo ""
+            echo "| 项 | 值 |"
+            echo "|---|---|"
+            echo "| 是否发布 | $run |"
+            echo "| 范围 | $scope |"
+            echo "| 原因 | $reason |"
+          } >> "$GITHUB_STEP_SUMMARY"
+
   build:
+    needs: prepare
+    if: needs.prepare.outputs.run == '1'
     name: 构建与测试
     runs-on: ubuntu-latest
     timeout-minutes: 25
+    env:
+      SCOPE: ${{ needs.prepare.outputs.scope }}
     outputs:
       sha: ${{ steps.meta.outputs.sha }}
       scope: ${{ steps.meta.outputs.scope }}
@@ -69,24 +132,11 @@ jobs:
         with:
           ref: ${{ inputs.ref || github.ref }}
 
-      - name: 校验部署范围
-        run: |
-          scope="${{ inputs.scope || 'all' }}"
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ] \
-             && [ "$scope" != "frontend" ] \
-             && [ "${{ inputs.allow_backend }}" != "true" ]; then
-            echo "::error::手动触发默认只允许发布前端（4.5MB）。"
-            echo "::error::发布后端 jar（94MB）请在本机执行：./deploy/prod/deploy.sh backend"
-            echo "::error::如确需在流水线发后端，请勾选 allow_backend，或用 tag 触发（git push origin v1.2.3）。"
-            exit 1
-          fi
-          echo "部署范围：$scope（事件：${{ github.event_name }}）"
-
       - name: 记录版本信息
         id: meta
         run: |
           echo "sha=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
-          echo "scope=${{ inputs.scope || 'all' }}" >> "$GITHUB_OUTPUT"
+          echo "scope=$SCOPE" >> "$GITHUB_OUTPUT"
           {
             echo "### 构建信息"
             echo ""
@@ -94,12 +144,12 @@ jobs:
             echo "|---|---|"
             echo "| 提交 | \`$(git rev-parse --short HEAD)\` $(git log -1 --pretty=%s) |"
             echo "| 分支/标签 | \`${GITHUB_REF_NAME}\` |"
-            echo "| 范围 | ${{ inputs.scope || 'all' }} |"
+            echo "| 范围 | $SCOPE |"
             echo "| 触发 | ${GITHUB_ACTOR} |"
           } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Set up JDK 17
-        if: ${{ (inputs.scope || 'all') != 'frontend' }}
+        if: ${{ env.SCOPE != 'frontend' }}
         uses: actions/setup-java@v4
         with:
           distribution: temurin
@@ -112,11 +162,11 @@ jobs:
         run: mvn -B -ntp -pl xinyi-framework,xinyi-system -am test
 
       - name: 打包后端
-        if: ${{ (inputs.scope || 'all') != 'frontend' }}
+        if: ${{ env.SCOPE != 'frontend' }}
         run: mvn -B -ntp -DskipTests package
 
       - name: 上传 jar
-        if: ${{ (inputs.scope || 'all') != 'frontend' }}
+        if: ${{ env.SCOPE != 'frontend' }}
         uses: actions/upload-artifact@v4
         with:
           name: deploy-jar
@@ -125,7 +175,7 @@ jobs:
           if-no-files-found: error
 
       - name: Set up Node 20
-        if: ${{ (inputs.scope || 'all') != 'backend' }}
+        if: ${{ env.SCOPE != 'backend' }}
         uses: actions/setup-node@v4
         with:
           node-version: "20"
@@ -133,14 +183,14 @@ jobs:
           cache-dependency-path: xinyi-ui/package-lock.json
 
       - name: 构建前端
-        if: ${{ (inputs.scope || 'all') != 'backend' }}
+        if: ${{ env.SCOPE != 'backend' }}
         working-directory: xinyi-ui
         run: |
           npm ci --no-audit --no-fund
           npm run build:prod
 
       - name: 上传前端产物
-        if: ${{ (inputs.scope || 'all') != 'backend' }}
+        if: ${{ env.SCOPE != 'backend' }}
         uses: actions/upload-artifact@v4
         with:
           name: deploy-dist
@@ -148,13 +198,16 @@ jobs:
           retention-days: 7
 
   deploy:
+    needs: [prepare, build]
+    if: needs.prepare.outputs.run == '1'
     name: 发布到生产
-    needs: build
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    env:
+      SCOPE: ${{ needs.prepare.outputs.scope }}
     # 需在仓库 Settings → Environments 里创建 production 并配置审批人
     environment:
-      name: production
+      name: ${{ (github.event_name == 'push' && github.ref_type == 'branch') && 'production-auto' || 'production' }}
     steps:
       - uses: actions/checkout@v4
         with:
