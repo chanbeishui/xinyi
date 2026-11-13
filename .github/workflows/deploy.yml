@@ -69,7 +69,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 2
+          fetch-depth: 0
 
       - name: 决定是否发布与范围
         id: decide
@@ -89,7 +89,12 @@ jobs:
             scope=all
             reason="tag 发布"
           else
-            changed=$(git diff --name-only HEAD^ HEAD 2>/dev/null || true)
+            base="${{ github.event.before }}"
+            if [ -n "$base" ] && [ "$base" != "0000000000000000000000000000000000000000" ]; then
+              changed=$(git diff --name-only "$base" "${{ github.sha }}" 2>/dev/null || true)
+            else
+              changed=$(git diff --name-only HEAD^ HEAD 2>/dev/null || true)
+            fi
             if echo "$changed" | grep -qE '^(xinyi-ui/|deploy/prod/|[.]github/workflows/deploy[.]yml)'; then
               reason="检测到前端相关改动"
             else
