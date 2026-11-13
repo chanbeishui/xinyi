@@ -161,11 +161,13 @@ create table sys_menu (
 -- 初始化-菜单信息表数据
 -- ----------------------------
 -- 一级菜单
-insert into sys_menu values('1', '系统管理', '0', '1', 'system',           null, '', '', 1, 0, 'M', '0', '0', '', 'system',   'admin', sysdate(), '', null, '系统管理目录');
-insert into sys_menu values('2', '系统监控', '0', '2', 'monitor',          null, '', '', 1, 0, 'M', '0', '0', '', 'monitor',  'admin', sysdate(), '', null, '系统监控目录');
-insert into sys_menu values('3', '系统工具', '0', '3', 'tool',             null, '', '', 1, 0, 'M', '0', '0', '', 'tool',     'admin', sysdate(), '', null, '系统工具目录');
-insert into sys_menu values('4', '若依官网', '0', '4', 'http://ruoyi.vip', null, '', '', 0, 0, 'M', '0', '0', '', 'guide',    'admin', sysdate(), '', null, '若依官网地址');
+insert into sys_menu values('1', '系统管理', '0', '2', 'system',           null, '', '', 1, 0, 'M', '0', '0', '', 'system',   'admin', sysdate(), '', null, '系统管理目录');
+insert into sys_menu values('4', '若依官网', '0', '9', 'http://ruoyi.vip', null, '', '', 0, 0, 'M', '0', '0', '', 'guide',    'admin', sysdate(), '', null, '若依官网地址');
 -- 二级菜单
+-- 系统监控、系统工具自 2026-11-13 起挂在「系统管理」下（migration_20261113_01_menu_consolidation.sql），
+-- 路径写成绝对路径，侧栏层级变了但页面 URL 仍是 /monitor/*、/tool/*
+insert into sys_menu values('2', '系统监控', '1', '10', '/monitor',        null, '', '', 1, 0, 'M', '0', '0', '', 'monitor',  'admin', sysdate(), '', null, '系统监控目录（归入系统管理）');
+insert into sys_menu values('3', '系统工具', '1', '11', '/tool',           null, '', '', 1, 0, 'M', '0', '0', '', 'tool',     'admin', sysdate(), '', null, '系统工具目录（归入系统管理）');
 insert into sys_menu values('100',  '用户管理', '1',   '1', 'user',       'system/user/index',        '', '', 1, 0, 'C', '0', '0', 'system:user:list',        'user',          'admin', sysdate(), '', null, '用户管理菜单');
 insert into sys_menu values('101',  '角色管理', '1',   '2', 'role',       'system/role/index',        '', '', 1, 0, 'C', '0', '0', 'system:role:list',        'peoples',       'admin', sysdate(), '', null, '角色管理菜单');
 insert into sys_menu values('102',  '菜单管理', '1',   '3', 'menu',       'system/menu/index',        '', '', 1, 0, 'C', '0', '0', 'system:menu:list',        'tree-table',    'admin', sysdate(), '', null, '菜单管理菜单');
@@ -2378,14 +2380,14 @@ ON DUPLICATE KEY UPDATE config_value = VALUES(config_value), remark = VALUES(rem
 DELETE FROM sys_menu WHERE menu_id BETWEEN 2100 AND 2114;
 
 INSERT INTO sys_menu (menu_id, menu_name, parent_id, order_num, path, component, query, route_name, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark) VALUES
- (2100, '车辆检测预约', 0, 6, 'rongli', NULL, '', '', 1, 0, 'M', '0', '0', '', 'car', 'admin', sysdate(), '', NULL, '荣利机动车检测预约目录'),
+ (2100, '车辆检测预约', 0, 1, 'rongli', NULL, '', '', 1, 0, 'M', '0', '0', '', 'car', 'admin', sysdate(), '', NULL, '荣利机动车检测预约目录'),
  (2101, '预约订单', 2100, 1, 'order', 'rongli/order/index', '', '', 1, 0, 'C', '0', '0', 'biz:order:list', 'form', 'admin', sysdate(), '', NULL, '订单列表与全生命周期操作'),
  (2102, '车辆档案', 2100, 2, 'vehicle', 'rongli/vehicle/index', '', '', 1, 0, 'C', '0', '0', 'biz:vehicle:list', 'guide', 'admin', sysdate(), '', NULL, '车辆独立档案'),
  (2103, '车主档案', 2100, 3, 'owner', 'rongli/owner/index', '', '', 1, 0, 'C', '0', '0', 'biz:owner:list', 'peoples', 'admin', sysdate(), '', NULL, '车主独立档案'),
  (2104, '代驾员', 2100, 4, 'driver', 'rongli/driver/index', '', '', 1, 0, 'C', '0', '0', 'biz:driver:list', 'user', 'admin', sysdate(), '', NULL, '代驾资格、听单与在手承接'),
  (2105, '检测点', 2100, 5, 'station', 'rongli/station/index', '', '', 1, 0, 'C', '0', '0', 'biz:station:list', 'tree', 'admin', sysdate(), '', NULL, '检测点与容量'),
  (2106, '计价规则', 2100, 6, 'price', 'rongli/price/index', '', '', 1, 0, 'C', '0', '0', 'biz:price:list', 'money', 'admin', sysdate(), '', NULL, '车主侧计价版本'),
- (2107, '派单调度', 2100, 7, 'dispatch', 'rongli/dispatch/index', '', '', 1, 0, 'C', '0', '0', 'biz:dispatch:list', 'send', 'admin', sysdate(), '', NULL, '自动/人工派单与派单参数'),
+ (2107, '派单调度', 2100, 7, 'dispatch', 'rongli/dispatch/index', '', '', 1, 0, 'C', '0', '0', 'biz:dispatch:list', 'job', 'admin', sysdate(), '', NULL, '自动/人工派单与派单参数'),
  (2108, '取消与退款', 2100, 8, 'aftersale', 'rongli/aftersale/index', '', '', 1, 0, 'C', '0', '0', 'biz:aftersale:list', 'money', 'admin', sysdate(), '', NULL, '一次审核的取消退款售后'),
  (2109, '代驾对账', 2100, 9, 'statement', 'rongli/statement/index', '', '', 1, 0, 'C', '0', '0', 'biz:driverstatement:list', 'documentation', 'admin', sysdate(), '', NULL, '对账单、行内核价与付款核实'),
  (2110, '代驾费用规则', 2100, 10, 'feeRule', 'rongli/feeRule/index', '', '', 1, 0, 'C', '0', '0', 'biz:driverfeerule:list', 'edit', 'admin', sysdate(), '', NULL, '代驾报酬规则版本'),
@@ -2437,7 +2439,7 @@ UNION ALL SELECT 'menu', COUNT(*) FROM sys_menu WHERE menu_id BETWEEN 2100 AND 2
 
 -- ---------------------------------------------------------------- 后台补齐页面菜单（2115-2120）
 INSERT INTO sys_menu (menu_id, menu_name, parent_id, order_num, path, component, query, route_name, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark) VALUES
- (2115, '运营工作台', 2100, 0, 'dashboard', 'rongli/dashboard/index', '', '', 1, 0, 'C', '0', '0', 'biz:statistics:list', 'dashboard', 'admin', sysdate(), '', NULL, '统计概览、待办与趋势'),
+ (2115, '运营工作台', 2100, 0, 'dashboard', 'rongli/dashboard/index', '', '', 1, 0, 'C', '1', '0', 'biz:statistics:list', 'dashboard', 'admin', sysdate(), '', NULL, '已并入首页 /index，仅保留旧地址兼容'),
  (2116, '异常与争议', 2100, 15, 'exception', 'rongli/exception/index', '', '', 1, 0, 'C', '0', '0', 'biz:dispute:list', 'bug', 'admin', sysdate(), '', NULL, '争议、异常、结果更正与支付对账异常'),
  (2117, '处罚与申诉', 2100, 16, 'penalty', 'rongli/penalty/index', '', '', 1, 0, 'C', '0', '0', 'biz:penalty:list', 'warning', 'admin', sysdate(), '', NULL, '接单限制记录与代驾申诉审核'),
  (2118, '培训课程', 2100, 17, 'training', 'rongli/training/index', '', '', 1, 0, 'C', '0', '0', 'biz:trainingcourse:list', 'education', 'admin', sysdate(), '', NULL, '课程版本、学时与题库'),
