@@ -83,6 +83,13 @@ function resolvePath(routePath: string, routeQuery?: string): string | { path: s
   if (isExternal(props.basePath)) {
     return props.basePath
   }
+  // 子菜单允许写绝对路径：菜单挂在某个目录下显示，但仍保留自己那层 URL。
+  // 例如「系统监控」挂到「系统管理」下，路径配 /monitor，链接仍是 /monitor/online，
+  // 不能拼成 /system/monitor（那是另一条不存在的路由）。
+  if (routePath.startsWith('/')) {
+    const absolute = getNormalPath(routePath)
+    return routeQuery ? { path: absolute, query: JSON.parse(routeQuery) } : absolute
+  }
   if (routeQuery) {
     const query = JSON.parse(routeQuery)
     return { path: getNormalPath(props.basePath + '/' + routePath), query: query }
