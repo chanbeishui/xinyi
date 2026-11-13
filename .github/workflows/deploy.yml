@@ -192,6 +192,8 @@ jobs:
         working-directory: xinyi-ui
         run: |
           npm ci --no-audit --no-fund
+          # 自动发版没有人工把关，构建前先跑单测，避免把坏逻辑推上生产
+          npm run test:unit
           npm run build:prod
 
       - name: 上传前端产物
