@@ -58,8 +58,10 @@ router.beforeEach(async (to, from) => {
         if (isRelogin.show) {
           return false
         }
+        // 错误对象直接丢给 ElMessage 会渲染成空白提示，必须取 message 才能看到原因
+        console.error('[permission] 初始化会话失败', err)
         await useUserStore().logOut()
-        ElMessage.error(err)
+        ElMessage.error((err as any)?.message || '身份信息校验失败，请重新登录')
         return { path: '/' }
       }
     }
