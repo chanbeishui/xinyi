@@ -1,91 +1,182 @@
 <template>
   <div class="app-container home">
-    <!-- 欢迎横幅 -->
+    <!-- 欢迎横幅：沿用原首页的渐变头，右侧信息按当日待办生成 -->
     <section class="hero">
       <div class="hero-text">
-        <p class="hero-kicker">XINYI WORKSPACE</p>
-        <h2>{{ greeting }}，{{ userStore.nickName || userStore.name || '管理员' }}</h2>
-        <p class="hero-sub">今天是 {{ todayText }}，欢迎使用{{ title }}。</p>
+        <p class="hero-kicker">XINYI OPERATIONS</p>
+        <h2>{{ greeting }}，{{ displayName }}</h2>
+        <p class="hero-sub">今天是 {{ todayText }}{{ heroSummary }}</p>
       </div>
       <img src="@/assets/logo/xinyi-lotus.png" alt="" class="hero-mark" />
     </section>
 
-    <!-- 统计卡片 -->
-    <el-row :gutter="20" class="stat-row">
-      <el-col v-for="card in statCards" :key="card.label" :xs="12" :sm="12" :md="6">
-        <div class="stat-card">
-          <div class="stat-icon" :style="{ background: card.bg, color: card.color }">
-            <svg-icon :icon-class="card.icon" />
+    <!-- 运营数据：只有具备运营看板权限才展示，避免对纯系统管理员显示空指标 -->
+    <template v-if="canOps">
+      <el-row :gutter="20" class="stat-row">
+        <el-col v-for="card in statCards" :key="card.key" :xs="12" :sm="12" :md="6">
+          <div class="stat-card is-link" @click="go(card.to)">
+            <div class="stat-icon" :style="{ background: card.bg, color: card.color }">
+              <svg-icon :icon-class="card.icon" />
+            </div>
+            <div class="stat-info">
+              <p class="stat-label">{{ card.label }}</p>
+              <p class="stat-value">{{ card.value }}</p>
+            </div>
+            <span v-if="card.alert" class="stat-alert">待处理</span>
+            <el-icon v-else class="stat-go"><ArrowRight /></el-icon>
           </div>
-          <div class="stat-info">
-            <p class="stat-label">{{ card.label }}</p>
-            <p class="stat-value">{{ card.value }}</p>
+        </el-col>
+      </el-row>
+
+      <el-row :gutter="20">
+        <el-col :xs="24" :md="15">
+          <el-card shadow="never" class="panel">
+            <template #header>
+              <div class="panel-head">
+                <span>需要先处理</span>
+                <el-button link type="primary" icon="Refresh" :loading="loading" @click="load">
+                  刷新
+                </el-button>
+              </div>
+            </template>
+            <div v-loading="loading" class="todo-list">
+              <div
+                v-for="item in todos"
+                :key="item.title"
+                class="todo"
+                @click="go(item.to)"
+              >
+                <span class="todo-icon" :class="'is-' + item.tone">{{ item.icon }}</span>
+                <div class="todo-main">
+                  <p class="todo-title">{{ item.title }}</p>
+                  <p class="todo-sub">{{ item.sub }}</p>
+                </div>
+                <span class="todo-action">
+                  {{ item.action }}
+                  <el-icon><ArrowRight /></el-icon>
+                </span>
+              </div>
+              <div v-if="!todos.length" class="todo-empty">
+                <p class="todo-empty__title">{{ loaded ? '当前没有待处理事项' : '正在读取待办…' }}</p>
+                <p class="todo-empty__hint">审核、返还、派单与异常处理完成后会从这里消失。</p>
+              </div>
+            </div>
+          </el-card>
+        </el-col>
+
+        <el-col :xs="24" :md="9">
+          <el-card shadow="never" class="panel">
+            <template #header><span>快捷入口</span></template>
+            <div class="quick-grid">
+              <router-link v-for="entry in quickLinks" :key="entry.path" :to="entry.path" class="quick-item">
+                <span class="quick-icon" :style="{ background: entry.bg, color: entry.color }">
+                  <svg-icon :icon-class="entry.icon" />
+                </span>
+                <span class="quick-label">{{ entry.label }}</span>
+              </router-link>
+            </div>
+            <p v-if="!quickLinks.length" class="quick-empty">
+              当前账号没有可进入的业务或系统页面，请联系管理员分配菜单权限。
+            </p>
+          </el-card>
+        </el-col>
+      </el-row>
+
+      <el-card v-if="canOrder" shadow="never" class="panel">
+        <template #header>
+          <div class="panel-head">
+            <span>当日预约</span>
+            <el-button link type="primary" @click="go(RL.order)">查看全部</el-button>
           </div>
-          <span class="stat-trend" :class="card.trend >= 0 ? 'up' : 'down'">
-            {{ card.trend >= 0 ? '+' : '' }}{{ card.trend }}%
-          </span>
-        </div>
-      </el-col>
-    </el-row>
-
-    <!-- 图表 -->
-    <el-row :gutter="20" class="chart-row">
-      <el-col :xs="24" :md="16">
-        <el-card shadow="never" class="panel">
-          <template #header><span>近 7 日访问趋势</span></template>
-          <div ref="lineChartRef" class="chart chart-line"></div>
-        </el-card>
-      </el-col>
-      <el-col :xs="24" :md="8">
-        <el-card shadow="never" class="panel">
-          <template #header><span>访问来源</span></template>
-          <div ref="pieChartRef" class="chart chart-pie"></div>
-        </el-card>
-      </el-col>
-    </el-row>
-
-    <!-- 快捷入口与更新日志 -->
-    <el-row :gutter="20">
-      <el-col :xs="24" :md="16">
-        <el-card shadow="never" class="panel">
-          <template #header><span>快捷入口</span></template>
-          <div class="quick-grid">
-            <router-link v-for="entry in quickLinks" :key="entry.path" :to="entry.path" class="quick-item">
-              <span class="quick-icon" :style="{ background: entry.bg, color: entry.color }">
-                <svg-icon :icon-class="entry.icon" />
+        </template>
+        <el-table v-loading="loading" :data="todayOrders" :border="false">
+          <el-table-column label="订单 / 车辆" min-width="190">
+            <template #default="{ row }">
+              <div class="cell-title">{{ row.plateNo || '—' }}</div>
+              <div class="cell-mono">{{ row.orderNo }}</div>
+            </template>
+          </el-table-column>
+          <el-table-column label="上门时段" width="170">
+            <template #default="{ row }">{{ row.pickupWindowLabel || shortTime(row.pickupStartsAt) }}</template>
+          </el-table-column>
+          <el-table-column label="检测点" width="200" show-overflow-tooltip>
+            <template #default="{ row }">{{ row.stationName || '—' }}</template>
+          </el-table-column>
+          <el-table-column label="履约状态" width="140">
+            <template #default="{ row }">
+              <span class="stage" :class="stageClass(row.fulfillmentStatus)">
+                {{ row.fulfillmentStatusLabel || stageLabel(row.fulfillmentStatus) }}
               </span>
-              <span class="quick-label">{{ entry.label }}</span>
-            </router-link>
+            </template>
+          </el-table-column>
+          <el-table-column label="操作" width="90" fixed="right">
+            <template #default="{ row }">
+              <el-button link type="primary" @click="goOrder(row)">查看</el-button>
+            </template>
+          </el-table-column>
+          <template #empty>
+            <div class="table-empty">
+              <p class="table-empty__title">今天还没有预约</p>
+              <p class="table-empty__hint">车主下单后会出现在这里，可下拉或点「刷新」重新读取。</p>
+              <el-button @click="go(RL.order)">查看全部订单</el-button>
+            </div>
+          </template>
+        </el-table>
+      </el-card>
+
+      <el-card shadow="never" class="panel">
+        <template #header>
+          <div class="panel-head">
+            <span>近 7 日预约趋势</span>
+            <span class="panel-head__note">按订单创建时间归属自然日</span>
           </div>
-        </el-card>
-      </el-col>
-      <el-col :xs="24" :md="8">
-        <el-card shadow="never" class="panel">
-          <template #header><span>更新日志</span></template>
-          <el-timeline class="changelog">
-            <el-timeline-item
-              v-for="log in changelogs"
-              :key="log.version"
-              :timestamp="log.date"
-              :type="log.primary ? 'primary' : ''"
-            >
-              <b>{{ log.version }}</b> {{ log.text }}
-            </el-timeline-item>
-          </el-timeline>
-        </el-card>
-      </el-col>
-    </el-row>
+        </template>
+        <div ref="trendChartRef" class="chart chart-trend"></div>
+        <p v-if="chartNote" class="chart-note">{{ chartNote }}</p>
+      </el-card>
+    </template>
+
+    <!-- 无运营权限时的兜底：保留原首页的快捷入口，不显示空指标 -->
+    <el-card v-else shadow="never" class="panel">
+      <template #header><span>快捷入口</span></template>
+      <div class="quick-grid">
+        <router-link v-for="entry in quickLinks" :key="entry.path" :to="entry.path" class="quick-item">
+          <span class="quick-icon" :style="{ background: entry.bg, color: entry.color }">
+            <svg-icon :icon-class="entry.icon" />
+          </span>
+          <span class="quick-label">{{ entry.label }}</span>
+        </router-link>
+      </div>
+      <p v-if="!quickLinks.length" class="quick-empty">
+        当前账号还没有被分配任何菜单权限，请联系管理员在「系统管理 / 用户管理」里授权。
+      </p>
+      <p v-else class="quick-note">
+        当前账号没有运营看板权限，运营数据（预约、售后、派单）不对其展示。
+      </p>
+    </el-card>
   </div>
 </template>
 
-<script setup lang="ts">
+<script setup name="Home" lang="ts">
 import * as echarts from 'echarts'
 import useUserStore from '@/store/modules/user'
 import useSettingsStore from '@/store/modules/settings'
+import auth from '@/plugins/auth'
+import { getStatistics, listOrders } from '@/api/rongli'
+import { RL } from '@/views/rongli/routes'
+import { shortTime } from '@/views/rongli/format'
+import { stageClass, stageLabel } from '@/views/rongli/status'
 
-const title = import.meta.env.VITE_APP_TITLE
+const router = useRouter()
 const userStore = useUserStore()
 const settingsStore = useSettingsStore()
+
+const displayName = computed(() => userStore.nickName || userStore.name || '管理员')
+
+// 运营数据依赖统计接口权限；没有该权限的账号只看欢迎语与系统入口
+const canOps = computed(() => auth.hasPermi('biz:statistics:list'))
+// 当日预约表格单独依赖订单查询权限：只有统计权限的角色不该去拉订单列表（会 403 弹错）
+const canOrder = computed(() => auth.hasPermi('biz:order:list'))
 
 // 按时段生成问候语
 const greeting = computed(() => {
@@ -105,137 +196,247 @@ const todayText = new Date().toLocaleDateString('zh-CN', {
   weekday: 'long'
 })
 
-const statCards = [
-  { label: '今日访问量', value: '12,480', trend: 12.5, icon: 'chart', color: '#1677ff', bg: 'rgba(22,119,255,.1)' },
-  { label: '在线用户', value: '268', trend: 4.2, icon: 'online', color: '#12b76a', bg: 'rgba(18,183,106,.1)' },
-  { label: '新增用户', value: '36', trend: -2.1, icon: 'peoples', color: '#f79009', bg: 'rgba(247,144,9,.1)' },
-  { label: '待办事项', value: '8', trend: 2.0, icon: 'clipboard', color: '#7a5af8', bg: 'rgba(122,90,248,.1)' }
+const overview = ref<any>({})
+const dash = ref<any>({})
+const todayOrders = ref<any[]>([])
+const last7 = ref<any[]>([])
+const chartNote = ref('')
+const loading = ref(false)
+const loaded = ref(false)
+
+function num(v: any): number {
+  return Number(v || 0)
+}
+
+/** 四张指标卡：与「需要先处理」同源，不重复计数口径，点击直接去对应处理页 */
+const statCards = computed(() => [
+  {
+    key: 'orders_today',
+    label: '今日预约',
+    value: loaded.value ? num(overview.value.orders_today) : '—',
+    icon: 'form',
+    color: '#1677ff',
+    bg: 'rgba(22,119,255,.1)',
+    to: RL.order,
+    alert: false
+  },
+  {
+    key: 'aftersale_pending',
+    label: '售后待审',
+    value: loaded.value ? num(overview.value.aftersale_pending) : '—',
+    icon: 'clipboard',
+    color: '#f79009',
+    bg: 'rgba(247,144,9,.1)',
+    to: RL.aftersale,
+    alert: num(overview.value.aftersale_pending) > 0
+  },
+  {
+    key: 'cancel_return_waiting',
+    label: '取消待返还',
+    value: loaded.value ? num(overview.value.cancel_return_waiting) : '—',
+    icon: 'money',
+    color: '#f04438',
+    bg: 'rgba(240,68,56,.1)',
+    to: RL.aftersale,
+    alert: num(overview.value.cancel_return_waiting) > 0
+  },
+  {
+    key: 'statement_pending',
+    label: '待核对账单',
+    value: loaded.value ? num(overview.value.statement_pending) : '—',
+    icon: 'documentation',
+    color: '#7a5af8',
+    bg: 'rgba(122,90,248,.1)',
+    to: RL.statement,
+    alert: num(overview.value.statement_pending) > 0
+  }
+])
+
+/** 待办只列真正需要动作的项；全部清零时走空态，不堆四行「已清空」 */
+const todos = computed(() => {
+  const rows: any[] = []
+  const aftersale = num(overview.value.aftersale_pending)
+  const waiting = num(overview.value.cancel_return_waiting)
+  const dispatching = num(dash.value.dispatching)
+  const abnormal = num(overview.value.dispute_open) + num(overview.value.exception_open)
+  if (aftersale > 0) {
+    rows.push({
+      icon: '审',
+      tone: 'amber',
+      title: `${aftersale} 笔取消与退款申请等待审核`,
+      sub: '一次审核决定取消结果与退款金额',
+      action: '去审核',
+      to: RL.aftersale
+    })
+  }
+  if (waiting > 0) {
+    rows.push({
+      icon: '返',
+      tone: 'red',
+      title: `${waiting} 台车辆取消已批准但尚未返还`,
+      sub: '返还完成前仍需保留保管责任',
+      action: '去处理',
+      to: RL.aftersale
+    })
+  }
+  if (dispatching > 0) {
+    rows.push({
+      icon: '派',
+      tone: 'blue',
+      title: `${dispatching} 个预约等待人工安排`,
+      sub: '只邀请当前具备资格与空闲条件的代驾',
+      action: '去派单',
+      to: RL.dispatch
+    })
+  }
+  if (abnormal > 0) {
+    rows.push({
+      icon: '异',
+      tone: 'red',
+      title: `${abnormal} 条异常或争议待处理`,
+      sub: '含服务异常、争议受理与检测结果更正',
+      action: '去处理',
+      to: RL.exception
+    })
+  }
+  return rows
+})
+
+const pendingTotal = computed(
+  () =>
+    num(overview.value.aftersale_pending) +
+    num(overview.value.cancel_return_waiting) +
+    num(dash.value.dispatching) +
+    num(overview.value.dispute_open) +
+    num(overview.value.exception_open)
+)
+
+const heroSummary = computed(() => {
+  if (!canOps.value) return '，欢迎使用『渔驿·荣利检测预约』后台。'
+  if (!loaded.value) return '，正在读取今日运营数据…'
+  if (pendingTotal.value > 0) return `，有 ${pendingTotal.value} 项待处理需要确认。`
+  return '，当前没有待处理事项，可以专注当日业务。'
+})
+
+/** 快捷入口：业务优先，按当前账号真实权限过滤，不出现点进去 401 的入口 */
+const QUICK_ENTRIES = [
+  { label: '预约订单', path: RL.order, perm: 'biz:order:list', icon: 'form', color: '#1677ff', bg: 'rgba(22,119,255,.1)' },
+  { label: '调度与派单', path: RL.dispatch, perm: 'biz:dispatch:list', icon: 'job', color: '#7a5af8', bg: 'rgba(122,90,248,.1)' },
+  { label: '取消与退款', path: RL.aftersale, perm: 'biz:aftersale:list', icon: 'money', color: '#f79009', bg: 'rgba(247,144,9,.1)' },
+  { label: '检测点与容量', path: RL.station, perm: 'biz:station:list', icon: 'tree', color: '#12b76a', bg: 'rgba(18,183,106,.1)' },
+  { label: '车辆列表', path: RL.vehicle, perm: 'biz:vehicle:list', icon: 'guide', color: '#0ea5e9', bg: 'rgba(14,165,233,.1)' },
+  { label: '业务统计', path: RL.statistics, perm: 'biz:statistics:list', icon: 'chart', color: '#ee46bc', bg: 'rgba(238,70,188,.1)' },
+  { label: '用户管理', path: '/system/user', perm: 'system:user:list', icon: 'user', color: '#1677ff', bg: 'rgba(22,119,255,.1)' },
+  { label: '角色管理', path: '/system/role', perm: 'system:role:list', icon: 'peoples', color: '#12b76a', bg: 'rgba(18,183,106,.1)' },
+  { label: '菜单管理', path: '/system/menu', perm: 'system:menu:list', icon: 'tree-table', color: '#f79009', bg: 'rgba(247,144,9,.1)' },
+  { label: '在线用户', path: '/monitor/online', perm: 'monitor:online:list', icon: 'online', color: '#0ea5e9', bg: 'rgba(14,165,233,.1)' }
 ]
 
-const quickLinks = [
-  { label: '用户管理', path: '/system/user', icon: 'user', color: '#1677ff', bg: 'rgba(22,119,255,.1)' },
-  { label: '角色管理', path: '/system/role', icon: 'peoples', color: '#12b76a', bg: 'rgba(18,183,106,.1)' },
-  { label: '菜单管理', path: '/system/menu', icon: 'tree-table', color: '#f79009', bg: 'rgba(247,144,9,.1)' },
-  { label: '在线用户', path: '/monitor/online', icon: 'online', color: '#0ea5e9', bg: 'rgba(14,165,233,.1)' },
-  { label: '定时任务', path: '/monitor/job', icon: 'job', color: '#7a5af8', bg: 'rgba(122,90,248,.1)' },
-  { label: '代码生成', path: '/tool/gen', icon: 'code', color: '#ee46bc', bg: 'rgba(238,70,188,.1)' }
-]
+const quickLinks = computed(() => QUICK_ENTRIES.filter((item) => auth.hasPermi(item.perm)).slice(0, 9))
 
-const changelogs = [
-  { version: 'v3.9.2', date: '2026-03-26', text: '新增锁定屏幕、首页消息提醒，全面升级依赖版本', primary: true },
-  { version: 'v3.9.1', date: '2025-12-18', text: '菜单导航支持纯顶部模式，修复多个已知问题', primary: false },
-  { version: 'v3.9.0', date: '2025-09-30', text: '代码生成支持 TypeScript 模板，优化数据权限', primary: false }
-]
+function todayStart(): string {
+  const d = new Date()
+  d.setHours(0, 0, 0, 0)
+  return d.toISOString().slice(0, 19)
+}
 
-const lineChartRef = ref<HTMLElement>()
-const pieChartRef = ref<HTMLElement>()
-let lineChart: echarts.ECharts | null = null
-let pieChart: echarts.ECharts | null = null
+async function load(): Promise<void> {
+  if (!canOps.value) {
+    loaded.value = true
+    return
+  }
+  loading.value = true
+  try {
+    const stat: any = await getStatistics({ days: 7 }).catch(() => null)
+    overview.value = (stat && stat.overview) || {}
+    dash.value = (stat && stat.dashboard) || {}
+    last7.value = (stat && stat.last7) || []
+    chartNote.value = (stat && stat.chartNote) || ''
+    if (canOrder.value) {
+      const res: any = await listOrders({ pageNum: 1, pageSize: 8, from: todayStart() }).catch(() => null)
+      todayOrders.value = (res && res.rows) || []
+    }
+    renderTrendChart()
+  } finally {
+    loading.value = false
+    loaded.value = true
+  }
+}
 
-// 暗色模式下坐标轴与文字颜色
+function go(path: string): void {
+  router.push(path)
+}
+
+function goOrder(row: any): void {
+  router.push({ path: RL.order, query: { orderNo: row.orderNo } })
+}
+
+// ---------------------------------------------------------------- 趋势图
+const trendChartRef = ref<HTMLElement>()
+let trendChart: echarts.ECharts | null = null
+
 const axisColor = computed(() => (settingsStore.isDark ? '#98a2b3' : '#667085'))
 const splitLineColor = computed(() => (settingsStore.isDark ? 'rgba(255,255,255,.08)' : 'rgba(16,24,40,.06)'))
 
-function renderLineChart(): void {
-  if (!lineChart) return
-  lineChart.setOption({
-    color: ['#1677ff', '#44b899'],
-    tooltip: { trigger: 'axis' },
-    legend: { data: ['访问量', '登录数'], textStyle: { color: axisColor.value }, top: 0 },
-    grid: { left: 8, right: 12, top: 36, bottom: 0, containLabel: true },
-    xAxis: {
-      type: 'category',
-      boundaryGap: false,
-      data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日'],
-      axisLine: { lineStyle: { color: splitLineColor.value } },
-      axisLabel: { color: axisColor.value }
-    },
-    yAxis: {
-      type: 'value',
-      axisLabel: { color: axisColor.value },
-      splitLine: { lineStyle: { color: splitLineColor.value } }
-    },
-    series: [
-      {
-        name: '访问量',
-        type: 'line',
-        smooth: true,
-        data: [1820, 2132, 1991, 2534, 2790, 2330, 3120],
-        areaStyle: {
-          color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-            { offset: 0, color: 'rgba(22,119,255,.22)' },
-            { offset: 1, color: 'rgba(22,119,255,0)' }
-          ])
-        },
-        showSymbol: false
+function renderTrendChart(): void {
+  if (!trendChart) return
+  const labels = last7.value.map((d: any) => d.label || String(d.day || '').slice(5))
+  const values = last7.value.map((d: any) => num(d.orders))
+  trendChart.setOption(
+    {
+      color: ['#1677ff'],
+      tooltip: { trigger: 'axis' },
+      grid: { left: 8, right: 16, top: 18, bottom: 0, containLabel: true },
+      xAxis: {
+        type: 'category',
+        boundaryGap: false,
+        data: labels,
+        axisLine: { lineStyle: { color: splitLineColor.value } },
+        axisLabel: { color: axisColor.value }
       },
-      {
-        name: '登录数',
-        type: 'line',
-        smooth: true,
-        data: [620, 732, 701, 834, 990, 830, 1120],
-        areaStyle: {
-          color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-            { offset: 0, color: 'rgba(68,184,153,.18)' },
-            { offset: 1, color: 'rgba(68,184,153,0)' }
-          ])
-        },
-        showSymbol: false
-      }
-    ]
-  })
-}
-
-function renderPieChart(): void {
-  if (!pieChart) return
-  pieChart.setOption({
-    color: ['#1677ff', '#44b899', '#f79009', '#7a5af8', '#98a2b3'],
-    tooltip: { trigger: 'item', formatter: '{b}: {c} ({d}%)' },
-    legend: { bottom: 0, textStyle: { color: axisColor.value }, icon: 'circle' },
-    series: [
-      {
-        type: 'pie',
-        radius: ['52%', '74%'],
-        center: ['50%', '44%'],
-        itemStyle: { borderRadius: 6, borderColor: settingsStore.isDark ? '#161d29' : '#fff', borderWidth: 2 },
-        label: { show: false },
-        data: [
-          { value: 4380, name: '直接访问' },
-          { value: 2860, name: '搜索引擎' },
-          { value: 1730, name: '外部链接' },
-          { value: 960, name: '邮件营销' },
-          { value: 550, name: '其他' }
-        ]
-      }
-    ]
-  })
+      yAxis: {
+        type: 'value',
+        minInterval: 1,
+        axisLabel: { color: axisColor.value },
+        splitLine: { lineStyle: { color: splitLineColor.value } }
+      },
+      series: [
+        {
+          name: '预约量',
+          type: 'line',
+          smooth: true,
+          data: values,
+          areaStyle: {
+            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+              { offset: 0, color: 'rgba(22,119,255,.22)' },
+              { offset: 1, color: 'rgba(22,119,255,0)' }
+            ])
+          }
+        }
+      ]
+    },
+    true
+  )
 }
 
 function resizeCharts(): void {
-  lineChart?.resize()
-  pieChart?.resize()
+  trendChart?.resize()
 }
 
-onMounted(() => {
-  if (lineChartRef.value) lineChart = echarts.init(lineChartRef.value)
-  if (pieChartRef.value) pieChart = echarts.init(pieChartRef.value)
-  renderLineChart()
-  renderPieChart()
+onMounted(async () => {
+  if (trendChartRef.value) trendChart = echarts.init(trendChartRef.value)
   window.addEventListener('resize', resizeCharts)
+  await load()
 })
 
-// 切换明暗主题后重绘图表
 watch(() => settingsStore.isDark, () => {
-  renderLineChart()
-  renderPieChart()
+  renderTrendChart()
 })
 
 onBeforeUnmount(() => {
   window.removeEventListener('resize', resizeCharts)
-  lineChart?.dispose()
-  pieChart?.dispose()
-  lineChart = null
-  pieChart = null
+  trendChart?.dispose()
+  trendChart = null
 })
 </script>
 
@@ -297,6 +498,8 @@ onBeforeUnmount(() => {
       transform: translateY(-2px);
       box-shadow: 0 10px 26px rgba(16, 24, 40, .08);
     }
+
+    &.is-link { cursor: pointer; }
   }
   .stat-icon {
     width: 46px;
@@ -309,33 +512,95 @@ onBeforeUnmount(() => {
     flex-shrink: 0;
   }
   .stat-info { flex: 1; min-width: 0; }
-  .stat-label { margin: 0; font-size: 13px; color: var(--xy-muted, #667085); }
+  .stat-label {
+    margin: 0;
+    font-size: 13px;
+    color: var(--xy-muted, #667085);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
   .stat-value { margin: 4px 0 0; font-size: 24px; font-weight: 700; letter-spacing: -.02em; color: var(--xy-ink, #101828); }
-  .stat-trend {
-    font-size: 12px;
-    font-weight: 700;
+  .stat-alert {
+    flex-shrink: 0;
     padding: 3px 8px;
     border-radius: 999px;
-    &.up { color: #12b76a; background: rgba(18, 183, 106, .1); }
-    &.down { color: #f04438; background: rgba(240, 68, 56, .1); }
+    font-size: 12px;
+    font-weight: 700;
+    color: #f79009;
+    background: rgba(247, 144, 9, .12);
   }
+  .stat-go { color: #c3ccd8; }
 
-  .chart-row { margin-bottom: 4px; }
   .panel { margin-bottom: 16px; }
-  .chart { width: 100%; }
-  .chart-line { height: 320px; }
-  .chart-pie { height: 320px; }
+  .panel-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .panel-head__note { font-size: 12px; font-weight: 400; color: var(--xy-muted, #667085); }
+
+  /* 待办：一行一件事，右侧给动作词，整行可点 */
+  .todo-list { min-height: 96px; }
+  .todo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--xy-line, rgba(16, 24, 40, .09));
+    cursor: pointer;
+
+    &:first-child { padding-top: 2px; }
+    &:last-child { border-bottom: 0; padding-bottom: 2px; }
+    &:hover .todo-title { color: #1677ff; }
+  }
+  .todo-icon {
+    flex: none;
+    width: 34px;
+    height: 34px;
+    border-radius: 9px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 600;
+    background: #f2f4f7;
+    color: #475467;
+
+    &.is-amber { background: #fffaeb; color: #b54708; }
+    &.is-blue { background: #eff8ff; color: #175cd3; }
+    &.is-red { background: #fef3f2; color: #b42318; }
+  }
+  .todo-main { flex: 1; min-width: 0; }
+  .todo-title { margin: 0; font-size: 14px; font-weight: 600; color: var(--xy-ink, #101828); }
+  .todo-sub { margin: 4px 0 0; font-size: 12px; color: var(--xy-muted, #667085); }
+  .todo-action {
+    flex: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #1677ff;
+  }
+  .todo-empty {
+    padding: 28px 0 24px;
+    text-align: center;
+  }
+  .todo-empty__title { margin: 0; font-size: 14px; font-weight: 600; color: var(--xy-ink, #101828); }
+  .todo-empty__hint { margin: 6px 0 0; font-size: 12px; color: var(--xy-muted, #667085); }
 
   .quick-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 14px;
+    grid-template-columns: repeat(auto-fill, minmax(132px, 1fr));
+    gap: 12px;
   }
   .quick-item {
     display: flex;
     align-items: center;
-    gap: 12px;
-    padding: 16px;
+    gap: 10px;
+    padding: 12px;
     border-radius: 12px;
     border: 1px solid var(--xy-line, rgba(16, 24, 40, .09));
     transition: border-color .18s ease, box-shadow .18s ease, transform .18s ease;
@@ -347,18 +612,69 @@ onBeforeUnmount(() => {
     }
   }
   .quick-icon {
-    width: 38px;
-    height: 38px;
+    width: 34px;
+    height: 34px;
     border-radius: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 18px;
+    font-size: 17px;
     flex-shrink: 0;
   }
-  .quick-label { font-size: 14px; font-weight: 600; color: var(--xy-ink, #101828); }
+  .quick-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--xy-ink, #101828);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .quick-empty { margin: 12px 0 0; font-size: 12px; line-height: 1.7; color: var(--xy-muted, #667085); }
+  .quick-note { margin: 14px 0 0; font-size: 12px; line-height: 1.7; color: var(--xy-muted, #667085); }
 
-  .changelog { padding-left: 4px; }
+  .cell-title { font-weight: 500; }
+  .cell-mono {
+    margin-top: 2px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 12px;
+    color: var(--xy-muted, #667085);
+  }
+
+  /* 状态标：与荣利页面同一套语义色，但颜色写在本页，避免依赖别的页面挂载样式 */
+  .stage {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 22px;
+    padding: 0 8px;
+    border-radius: 6px;
+    font-size: 12px;
+    line-height: 22px;
+    white-space: nowrap;
+    border: 1px solid transparent;
+
+    &::before {
+      content: '';
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+
+    &.rl-tag--amber { color: #b54708; background: #fffaeb; border-color: #fedf89; }
+    &.rl-tag--blue { color: #175cd3; background: #eff8ff; border-color: #b2ddff; }
+    &.rl-tag--green { color: #067647; background: #ecfdf3; border-color: #abefc6; }
+    &.rl-tag--gray { color: #475467; background: #f2f4f7; border-color: #e4e7ec; }
+    &.rl-tag--red { color: #b42318; background: #fef3f2; border-color: #fecdca; }
+  }
+
+  .table-empty { padding: 22px 0; }
+  .table-empty__title { margin: 0; font-size: 14px; font-weight: 600; color: var(--xy-ink, #101828); }
+  .table-empty__hint { margin: 6px 0 14px; font-size: 12px; color: var(--xy-muted, #667085); }
+
+  .chart { width: 100%; }
+  .chart-trend { height: 260px; }
+  .chart-note { margin: 10px 0 0; font-size: 12px; line-height: 1.6; color: var(--xy-muted, #667085); }
 }
 
 @media (max-width: 768px) {
@@ -366,6 +682,14 @@ onBeforeUnmount(() => {
     .hero { padding: 22px; }
     .hero-mark { display: none; }
     .quick-grid { grid-template-columns: repeat(2, 1fr); }
+
+    /* 窄屏两列卡片里，图标 + 标签 + 数值已经占满宽度，
+       「待处理」标和箭头继续占位会把标签压成竖排，这里只留数字本身 */
+    .stat-card { padding: 14px; gap: 10px; }
+    .stat-icon { width: 36px; height: 36px; font-size: 18px; }
+    .stat-value { font-size: 20px; }
+    .stat-alert,
+    .stat-go { display: none; }
   }
 }
 </style>
